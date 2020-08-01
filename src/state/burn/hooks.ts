@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {useAsync} from 'react-use';
 
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -17,6 +18,28 @@ const ZERO = JSBI.BigInt(0)
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
 }
+
+export type AsyncState<T> =
+  | {
+      loading: boolean;
+      error?: undefined;
+      value?: undefined;
+    }
+  | {
+      loading: true;
+      error?: Error | undefined;
+      value?: T;
+    }
+  | {
+      loading: false;
+      error: Error;
+      value?: undefined;
+    }
+  | {
+      loading: false;
+      error?: undefined;
+      value: T;
+    };
 
 export function useDerivedBurnInfo(): {
   tokens: { [field in Extract<Field, Field.TOKEN_A | Field.TOKEN_B>]?: Token }
@@ -65,32 +88,28 @@ export function useDerivedBurnInfo(): {
 
   // liquidity values
   const totalSupply = useTotalSupply(pair?.liquidityToken)
-  const liquidityValues: { [field in Extract<Field, Field.TOKEN_A | Field.TOKEN_B>]?: TokenAmount } = {
+  const liquidityValues: AsyncState<{ [field in Extract<Field, Field.TOKEN_A | Field.TOKEN_B>]?: TokenAmount }> = useAsync(async () => {
+    return {
     [Field.TOKEN_A]:
-      pair &&
-      tokens[Field.TOKEN_A] &&
-      totalSupply &&
-      userLiquidity &&
+      pair && tokens[Field.TOKEN_A] && totalSupply && userLiquidity &&
       // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
       JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
         ? new TokenAmount(
             tokens[Field.TOKEN_A] as Token,
-            pair.getLiquidityValue(tokens[Field.TOKEN_A] as Token, totalSupply, userLiquidity, false).raw
+            (await pair.getLiquidityValue(tokens[Field.TOKEN_A] as Token, totalSupply, userLiquidity, false)).raw
           )
         : undefined,
     [Field.TOKEN_B]:
-      pair &&
-      tokens[Field.TOKEN_B] &&
-      totalSupply &&
-      userLiquidity &&
+      pair && tokens[Field.TOKEN_B] && totalSupply && userLiquidity &&
       // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
       JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
         ? new TokenAmount(
             tokens[Field.TOKEN_B] as Token,
-            pair.getLiquidityValue(tokens[Field.TOKEN_B] as Token, totalSupply, userLiquidity, false).raw
+            (await pair.getLiquidityValue(tokens[Field.TOKEN_B] as Token, totalSupply, userLiquidity, false)).raw
           )
         : undefined
-  }
+      }
+  })
 
   let percentToRemove: Percent = new Percent('0', '100')
   // user specified a %
@@ -112,10 +131,10 @@ export function useDerivedBurnInfo(): {
       const independentAmount = tryParseAmount(typedValue, tokens[independentField])
       if (
         independentAmount &&
-        liquidityValues[independentField] &&
-        !independentAmount.greaterThan(liquidityValues[independentField] as TokenAmount)
+        liquidityValues.value[independentField] &&
+        !independentAmount.greaterThan(liquidityValues.value[independentField] as TokenAmount)
       ) {
-        percentToRemove = new Percent(independentAmount.raw, (liquidityValues[independentField] as TokenAmount).raw)
+        percentToRemove = new Percent(independentAmount.raw, (liquidityValues.value[independentField] as TokenAmount).raw)
       }
     }
   }
@@ -132,17 +151,17 @@ export function useDerivedBurnInfo(): {
         ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
         : undefined,
     [Field.TOKEN_A]:
-      tokens[Field.TOKEN_A] && percentToRemove && percentToRemove.greaterThan('0') && liquidityValues[Field.TOKEN_A]
+      tokens[Field.TOKEN_A] && percentToRemove && percentToRemove.greaterThan('0') && liquidityValues.value[Field.TOKEN_A]
         ? new TokenAmount(
             tokens[Field.TOKEN_A] as Token,
-            percentToRemove.multiply((liquidityValues[Field.TOKEN_A] as TokenAmount).raw).quotient
+            percentToRemove.multiply((liquidityValues.value[Field.TOKEN_A] as TokenAmount).raw).quotient
           )
         : undefined,
     [Field.TOKEN_B]:
-      tokens[Field.TOKEN_B] && percentToRemove && percentToRemove.greaterThan('0') && liquidityValues[Field.TOKEN_B]
+      tokens[Field.TOKEN_B] && percentToRemove && percentToRemove.greaterThan('0') && liquidityValues.value[Field.TOKEN_B]
         ? new TokenAmount(
             tokens[Field.TOKEN_B] as Token,
-            percentToRemove.multiply((liquidityValues[Field.TOKEN_B] as TokenAmount).raw).quotient
+            percentToRemove.multiply((liquidityValues.value[Field.TOKEN_B] as TokenAmount).raw).quotient
           )
         : undefined
   }

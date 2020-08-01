@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { darken } from 'polished'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { Percent, Pair, JSBI } from 'dxswap-sdk'
+import {useAsync} from 'react-use';
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -52,17 +53,23 @@ function PositionCard({ pair, history, border, minimal = false }: PositionCardPr
       ? new Percent(userPoolBalance.raw, totalPoolTokens.raw)
       : undefined
 
-  const [token0Deposited, token1Deposited] =
-    !!pair &&
+  const token0Deposited = useAsync(async () => {
+    return !!pair &&
     !!totalPoolTokens &&
     !!userPoolBalance &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
-      ? [
-          pair.getLiquidityValue(token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(token1, totalPoolTokens, userPoolBalance, false)
-        ]
-      : [undefined, undefined]
+      ? await pair.getLiquidityValue(token0, totalPoolTokens, userPoolBalance, false) : undefined
+  })
+  
+  const token1Deposited = useAsync(async () => {
+    return !!pair &&
+    !!totalPoolTokens &&
+    !!userPoolBalance &&
+    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+    JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
+      ? await pair.getLiquidityValue(token1, totalPoolTokens, userPoolBalance, false) : undefined
+  })
 
   if (minimal) {
     return (
@@ -95,10 +102,10 @@ function PositionCard({ pair, history, border, minimal = false }: PositionCardPr
                   <Text color="#888D9B" fontSize={16} fontWeight={500}>
                     {token0?.symbol}:
                   </Text>
-                  {token0Deposited ? (
+                  {token0Deposited.value ? (
                     <RowFixed>
                       <Text color="#888D9B" fontSize={16} fontWeight={500} marginLeft={'6px'}>
-                        {token0Deposited?.toSignificant(6)}
+                        {token0Deposited.value?.toSignificant(6)}
                       </Text>
                     </RowFixed>
                   ) : (
@@ -109,10 +116,10 @@ function PositionCard({ pair, history, border, minimal = false }: PositionCardPr
                   <Text color="#888D9B" fontSize={16} fontWeight={500}>
                     {token1?.symbol}:
                   </Text>
-                  {token1Deposited ? (
+                  {token1Deposited.value ? (
                     <RowFixed>
                       <Text color="#888D9B" fontSize={16} fontWeight={500} marginLeft={'6px'}>
-                        {token1Deposited?.toSignificant(6)}
+                        {token1Deposited.value?.toSignificant(6)}
                       </Text>
                     </RowFixed>
                   ) : (
@@ -152,10 +159,10 @@ function PositionCard({ pair, history, border, minimal = false }: PositionCardPr
                     Pooled {token0?.symbol}:
                   </Text>
                 </RowFixed>
-                {token0Deposited ? (
+                {token0Deposited.value ? (
                   <RowFixed>
                     <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
-                      {token0Deposited?.toSignificant(6)}
+                      {token0Deposited.value?.toSignificant(6)}
                     </Text>
                     <TokenLogo size="20px" style={{ marginLeft: '8px' }} address={token0?.address} />
                   </RowFixed>
@@ -170,10 +177,10 @@ function PositionCard({ pair, history, border, minimal = false }: PositionCardPr
                     Pooled {token1?.symbol}:
                   </Text>
                 </RowFixed>
-                {token1Deposited ? (
+                {token1Deposited.value ? (
                   <RowFixed>
                     <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
-                      {token1Deposited?.toSignificant(6)}
+                      {token1Deposited.value?.toSignificant(6)}
                     </Text>
                     <TokenLogo size="20px" style={{ marginLeft: '8px' }} address={token1?.address} />
                   </RowFixed>

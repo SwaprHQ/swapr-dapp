@@ -5,7 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
+import { useTradeExactIn, useTradeExactOut, useTrade } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -89,7 +89,12 @@ export function useDerivedSwapInfo(): {
     [Field.INPUT]: { address: tokenInAddress },
     [Field.OUTPUT]: { address: tokenOutAddress }
   } = useSwapState()
-
+  console.log({
+    independentField,
+    typedValue,
+    [Field.INPUT]: { address: tokenInAddress },
+    [Field.OUTPUT]: { address: tokenOutAddress }
+  })
   const tokenIn = useToken(tokenInAddress)
   const tokenOut = useToken(tokenOutAddress)
 
@@ -100,11 +105,12 @@ export function useDerivedSwapInfo(): {
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? tokenIn : tokenOut) ?? undefined)
+  // console.log(parsedAmount, parsedAmount ? parsedAmount.token : null, tokenIn, tokenOut)
+  // const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, tokenOut ?? undefined)
+  // const bestTradeExactOut = useTradeExactOut(tokenIn ?? undefined, !isExactIn ? parsedAmount : undefined)
+  // console.log(bestTradeExactIn, bestTradeExactOut);
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, tokenOut ?? undefined)
-  const bestTradeExactOut = useTradeExactOut(tokenIn ?? undefined, !isExactIn ? parsedAmount : undefined)
-
-  const bestTrade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const bestTrade = useTrade(isExactIn, isExactIn ? tokenOut : tokenIn, parsedAmount)
 
   const tokenBalances = {
     [Field.INPUT]: relevantTokenBalances?.[tokenIn?.address ?? ''],

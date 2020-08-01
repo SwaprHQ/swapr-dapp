@@ -59,6 +59,18 @@ export const DUMMY_PAIRS_TO_PIN: { readonly [chainId in ChainId]?: Pair[] } = {
         '0'
       )
     )
+  ],
+  [ChainId.KOVAN]: [
+    new Pair(
+      new TokenAmount(
+        WETH[ChainId.KOVAN],
+        '0'
+      ),
+      new TokenAmount(
+        new Token(ChainId.KOVAN, '0xDd25BaE0659fC06a8d00CD06C7f5A98D71bfB715', 18, 'DXD', 'DXdao'),
+        '0'
+      )
+    )
   ]
 }
 
