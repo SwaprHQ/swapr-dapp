@@ -43,35 +43,19 @@ function useAllCommonPairs(tokenA?: Token, tokenB?: Token): Pair[] {
 }
 
 /**
- * Returns the best trade for the exact amount of tokens in to the given token out
- */
-export function useTradeExactIn(amountIn?: TokenAmount, tokenOut?: Token): Trade | null {
-  const inputToken = amountIn?.token
-  const outputToken = tokenOut
-
-  const allowedPairs = useAllCommonPairs(inputToken, outputToken)
-
-  return useMemo(() => {
-    if (amountIn && tokenOut && allowedPairs.length > 0) {
-      return Trade.bestTradeExactIn(allowedPairs, amountIn, tokenOut)[0] ?? null
-    }
-    return null
-  }, [allowedPairs, amountIn, tokenOut])
-}
-
-/**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useTradeExactOut(tokenIn?: Token, amountOut?: TokenAmount): Trade | null {
-  const inputToken = tokenIn
-  const outputToken = amountOut?.token
+export function useTrade(exactIn: boolean, token: Token, amount: TokenAmount): Trade | null {
+  const tokenA = exactIn ? amount?.token : token
+  const tokenB = exactIn ? token : amount?.token
 
-  const allowedPairs = useAllCommonPairs(inputToken, outputToken)
+  const allowedPairs = useAllCommonPairs(tokenA, tokenB)
 
   return useMemo(() => {
-    if (tokenIn && amountOut && allowedPairs.length > 0) {
-      return Trade.bestTradeExactOut(allowedPairs, tokenIn, amountOut)[0] ?? null
+    if (tokenA && tokenB && amount && allowedPairs.length > 0) {
+      return exactIn ? Trade.bestTradeExactIn(allowedPairs, amount, tokenB)[0] ?? null
+      : Trade.bestTradeExactOut(allowedPairs, tokenA, amount)[0] ?? null
     }
     return null
-  }, [allowedPairs, tokenIn, amountOut])
+  }, [allowedPairs, token, amount])
 }
