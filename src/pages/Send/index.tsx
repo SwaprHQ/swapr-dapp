@@ -66,14 +66,14 @@ export default function Send() {
   const { independentField, typedValue } = useSwapState()
   const {
     parsedAmount,
-    bestTrade: bestTradeDXswap,
+    bestTrade: bestTradePromise,
     tokenBalances,
     tokens,
     error: swapError
   } = useDerivedSwapInfo()
-
-  const bestTrade = bestTradeDXswap
-
+  
+  const bestTrade = bestTradePromise && !bestTradePromise.loading && bestTradePromise.value ? bestTradePromise.value[0] : null
+  
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : bestTrade?.inputAmount,
     [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : bestTrade?.outputAmount
@@ -308,6 +308,7 @@ export default function Send() {
       ? 'Enter an amount'
       : null
 
+  if (bestTradePromise.loading) return <div>Loading...</div>
   return (
     <>
       {sendingWithSwap ? <TokenWarningCards tokens={tokens} /> : null}

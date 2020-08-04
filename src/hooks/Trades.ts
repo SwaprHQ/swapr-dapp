@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Token, TokenAmount, Trade, ChainId, Pair } from 'dxswap-sdk'
 import flatMap from 'lodash.flatmap'
-import {useAsync} from 'react-use';
+import { useAsync } from 'react-use';
 
 import { useActiveWeb3React } from './index'
 import { usePairs } from '../data/Reserves'
@@ -44,61 +44,20 @@ function useAllCommonPairs(tokenA?: Token, tokenB?: Token): Pair[] {
 }
 
 /**
- * Returns the best trade for the exact amount of tokens in to the given token out
- */
-export function useTradeExactIn(amountIn?: TokenAmount, tokenOut?: Token): Trade | null {
-  const inputToken = amountIn?.token
-  const outputToken = tokenOut
-
-  const allowedPairs = useAllCommonPairs(inputToken, outputToken)
-  
-  const tradeExactIn = useAsync(async () => {
-    return await Trade.bestTradeExactIn(allowedPairs, amountIn, tokenOut)
-  }, [allowedPairs, amountIn, tokenOut]);
-
-  if (!tradeExactIn.loading){
-    console.log(tradeExactIn)
-    console.log(allowedPairs, amountIn, inputToken, tokenOut)
-    return tradeExactIn.value ? tradeExactIn.value[0] : null
-  }
-}
-
-/**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useTradeExactOut(tokenIn?: Token, amountOut?: TokenAmount): Trade | null {
-  const inputToken = tokenIn
-  const outputToken = amountOut?.token
-
-  const allowedPairs = useAllCommonPairs(inputToken, outputToken)
+export function useTrade(exactIn: boolean, token: Token, amount: TokenAmount): 
+{ loading: boolean, error?: any, value?: Trade[] } | null {
+  const tokenA = exactIn ? amount?.token : token
+  const tokenB = exactIn ? token : amount?.token  
+  const allowedPairs = useAllCommonPairs(tokenA, tokenB)
   
-  const tradeExactOut = useAsync(async () => {
-      return await Trade.bestTradeExactOut(allowedPairs, tokenIn, amountOut)
-  }, [allowedPairs, tokenIn, amountOut]);
-  
-  if (!tradeExactOut.loading){
-    // console.log(tradeExactOut)
-    // console.log(allowedPairs, amountOut, inputToken, tokenIn)
-    return tradeExactOut.value ? tradeExactOut.value[0] : null
-  }
-}
-
-/**
- * Returns the best trade
- */
-export function useTrade(tokenIn: boolean, token: Token, amount: TokenAmount): Trade | null {
-
-  const allowedPairs = useAllCommonPairs(token, amount?.token)
-  console.log(token, amount?.token)
-  const trade = useAsync(async () => {  
-    return tokenIn ? await Trade.bestTradeExactIn(allowedPairs, amount, token)
-    : await Trade.bestTradeExactOut(allowedPairs, token, amount)
-  }, [allowedPairs, tokenIn, token, amount])
-  
-  if (!trade.loading){
-    console.log(trade)
-    console.log(allowedPairs, tokenIn, token, amount)
-    return trade.value ? trade.value[0] : null
-  }
+  return useAsync(async () => {
+    if (allowedPairs.length > 0 && amount && (tokenA || tokenB)){
+      return exactIn ? await Trade.bestTradeExactIn(allowedPairs, amount, tokenB)
+        : await Trade.bestTradeExactOut(allowedPairs, tokenA, amount)
+      }
+    else return null
+  }, [tokenA, tokenB, allowedPairs]);
   
 }

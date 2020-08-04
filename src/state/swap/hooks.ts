@@ -5,7 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut, useTrade } from '../../hooks/Trades'
+import { useTrade } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -78,7 +78,7 @@ export function useDerivedSwapInfo(): {
   tokens: { [field in Field]?: Token }
   tokenBalances: { [field in Field]?: TokenAmount }
   parsedAmount: TokenAmount | undefined
-  bestTrade: Trade | null
+  bestTrade: { loading: boolean, error?: any, value?: Trade[] } | null
   error?: string
 } {
   const { account } = useActiveWeb3React()
@@ -89,12 +89,6 @@ export function useDerivedSwapInfo(): {
     [Field.INPUT]: { address: tokenInAddress },
     [Field.OUTPUT]: { address: tokenOutAddress }
   } = useSwapState()
-  console.log({
-    independentField,
-    typedValue,
-    [Field.INPUT]: { address: tokenInAddress },
-    [Field.OUTPUT]: { address: tokenOutAddress }
-  })
   const tokenIn = useToken(tokenInAddress)
   const tokenOut = useToken(tokenOutAddress)
 
@@ -105,12 +99,8 @@ export function useDerivedSwapInfo(): {
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? tokenIn : tokenOut) ?? undefined)
-  // console.log(parsedAmount, parsedAmount ? parsedAmount.token : null, tokenIn, tokenOut)
-  // const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, tokenOut ?? undefined)
-  // const bestTradeExactOut = useTradeExactOut(tokenIn ?? undefined, !isExactIn ? parsedAmount : undefined)
-  // console.log(bestTradeExactIn, bestTradeExactOut);
-
-  const bestTrade = useTrade(isExactIn, isExactIn ? tokenOut : tokenIn, parsedAmount)
+  
+  const bestTrade = useTrade(isExactIn, isExactIn ? tokenOut : tokenIn, parsedAmount);
 
   const tokenBalances = {
     [Field.INPUT]: relevantTokenBalances?.[tokenIn?.address ?? ''],
@@ -138,7 +128,7 @@ export function useDerivedSwapInfo(): {
   const [allowedSlippage] = useUserSlippageTolerance()
 
   const slippageAdjustedAmounts =
-    bestTrade && allowedSlippage && computeSlippageAdjustedAmounts(bestTrade, allowedSlippage)
+    bestTrade && !bestTrade.loading && bestTrade.value && allowedSlippage && computeSlippageAdjustedAmounts(bestTrade.value[0], allowedSlippage)
 
   // compare input balance to MAx input based on version
   const [balanceIn, amountIn] = [

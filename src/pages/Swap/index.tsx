@@ -57,8 +57,8 @@ export default function Swap() {
 
   // swap state
   const { independentField, typedValue } = useSwapState()
-  const { bestTrade: bestTradeDXswap, tokenBalances, parsedAmount, tokens, error } = useDerivedSwapInfo()
-  const bestTrade = bestTradeDXswap
+  const { bestTrade: bestTradePromise, tokenBalances, parsedAmount, tokens, error } = useDerivedSwapInfo()
+  const bestTrade = bestTradePromise && !bestTradePromise.loading && bestTradePromise.value ? bestTradePromise.value[0] : null
 
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : bestTrade?.inputAmount,
@@ -96,7 +96,7 @@ export default function Swap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
+    if (approval === ApprovalState.PENDING && !bestTradePromise.loading) {
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
@@ -200,6 +200,7 @@ export default function Swap() {
     tokens[Field.INPUT]?.symbol
   } for ${parsedAmounts[Field.OUTPUT]?.toSignificant(6)} ${tokens[Field.OUTPUT]?.symbol}`
 
+  if (bestTradePromise.loading) return <div>Loading...</div>
   return (
     <>
       <TokenWarningCards tokens={tokens} />
