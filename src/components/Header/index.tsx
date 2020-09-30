@@ -1,7 +1,7 @@
 import { ChainId } from 'dxswap-sdk'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
-import { Link as HistoryLink } from 'react-router-dom'
+import { Link as HistoryLink, NavLink } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -19,6 +19,8 @@ import Menu from '../Menu'
 import Row, { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import { Text } from 'rebass'
+import { darken } from 'polished'
+import { useTranslation } from 'react-i18next'
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -76,6 +78,14 @@ const TitleText = styled(Row)<{ isDark: boolean }>`
   }
 `
 
+const HeaderLinks = styled(Row)`
+  justify-content: center;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 1rem 0 1rem 1rem;
+    justify-content: flex-end;
+`};
+`
+
 const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
   flex-direction: row;
@@ -129,6 +139,33 @@ const UniIcon = styled(HistoryLink)<{ to: string }>`
   }
 `
 
+const activeClassName = 'ACTIVE'
+
+const StyledNavLink = styled(NavLink).attrs({
+  activeClassName
+})`
+  ${({ theme }) => theme.flexRowNoWrap}
+  align-items: left;
+  border-radius: 3rem;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: ${({ theme }) => theme.text2};
+  font-size: 1rem;
+  width: fit-content;
+  margin: 0 12px;
+  font-weight: 500;
+  &.${activeClassName} {
+    border-radius: 12px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.text1};
+  }
+  :hover,
+  :focus {
+    color: ${({ theme }) => darken(0.1, theme.text1)};
+  }
+`
+
 const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
   [ChainId.MAINNET]: null,
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -139,6 +176,7 @@ const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
 
 function Header() {
   const { account, chainId } = useActiveWeb3React()
+  const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
@@ -157,6 +195,24 @@ function Header() {
               </HistoryLink>
             </TitleText>
           </Title>
+          <HeaderLinks>
+            <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+              {t('swap')}
+            </StyledNavLink>
+            <StyledNavLink
+              id={`pool-nav-link`}
+              to={'/pool'}
+              isActive={(match, { pathname }) =>
+                Boolean(match) ||
+                pathname.startsWith('/add') ||
+                pathname.startsWith('/remove') ||
+                pathname.startsWith('/create') ||
+                pathname.startsWith('/find')
+              }
+            >
+              {t('pool')}
+            </StyledNavLink>
+          </HeaderLinks>
         </HeaderElement>
         <HeaderElement>
           <TestnetWrapper>
