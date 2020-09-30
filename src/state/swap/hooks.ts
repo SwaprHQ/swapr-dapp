@@ -15,24 +15,25 @@ import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import useENS from '../../hooks/useENS'
+import { WrappedTokenInfo } from '../lists/hooks'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
 }
 
 export function useSwapActionHandlers(): {
-  onCurrencySelection: (field: Field, currency: Currency) => void
+  onCurrencySelection: (field: Field, currency: WrappedTokenInfo) => void
   onSwitchTokens: () => void
   onUserInput: (field: Field, typedValue: string) => void
   onChangeRecipient: (recipient: string | null) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
   const onCurrencySelection = useCallback(
-    (field: Field, currency: Currency) => {
+    (field: Field, currency: Token) => {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === ETHER ? 'ETH' : ''
+          currencyId: currency instanceof WrappedTokenInfo ? currency.address : currency === ETHER ? 'ETH' : ''
         })
       )
     },
@@ -108,7 +109,7 @@ export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: Trade | undefined
+  bestTrade: Trade | undefined
   inputError?: string
 } {
   const { account } = useActiveWeb3React()
@@ -137,7 +138,7 @@ export function useDerivedSwapInfo(): {
   const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
   const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
 
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const bestTrade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
@@ -177,7 +178,8 @@ export function useDerivedSwapInfo(): {
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
-  const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
+  const slippageAdjustedAmounts =
+    bestTrade && allowedSlippage && computeSlippageAdjustedAmounts(bestTrade, allowedSlippage)
 
   // compare input balance to MAx input based on version
   const [balanceIn, amountIn] = [
@@ -193,7 +195,7 @@ export function useDerivedSwapInfo(): {
     currencies,
     currencyBalances,
     parsedAmount,
-    v2Trade: v2Trade ?? undefined,
+    bestTrade: bestTrade ?? undefined,
     inputError
   }
 }

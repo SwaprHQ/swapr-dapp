@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent, Token, WETH } from 'dxswap-sdk'
+import { ChainId, JSBI, Pair, Percent, Token, TokenAmount, WETH } from 'dxswap-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
@@ -191,3 +191,38 @@ export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 export const BETTER_TRADE_LINK_THRESHOLD = new Percent(JSBI.BigInt(75), JSBI.BigInt(10000))
+
+export const DUMMY_PAIRS_TO_PIN: { readonly [chainId in ChainId]?: Pair[] } = {
+  [ChainId.MAINNET]: [
+    new Pair(
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643', 8, 'cDAI', 'Compound Dai'),
+        '0'
+      ),
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0x39AA39c021dfbaE8faC545936693aC917d5E7563', 8, 'cUSDC', 'Compound USD Coin'),
+        '0'
+      )
+    ),
+    new Pair(
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C'),
+        '0'
+      ),
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6, 'USDT', 'Tether USD'),
+        '0'
+      )
+    ),
+    new Pair(
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin'),
+        '0'
+      ),
+      new TokenAmount(
+        new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6, 'USDT', 'Tether USD'),
+        '0'
+      )
+    )
+  ]
+}

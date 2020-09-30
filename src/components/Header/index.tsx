@@ -18,10 +18,10 @@ import Menu from '../Menu'
 
 import Row, { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
+import { Text } from 'rebass'
 
 const HeaderFrame = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 120px;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   align-items: center;
@@ -30,7 +30,6 @@ const HeaderFrame = styled.div`
   top: 0;
   position: relative;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 1rem;
   z-index: 2;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: 1fr;
@@ -161,7 +160,9 @@ function Header() {
         </HeaderElement>
         <HeaderElement>
           <TestnetWrapper>
-            {!isMobile && NETWORK_LABELS[chainId] && <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>}
+            {!isMobile && NETWORK_LABELS[chainId as ChainId] && (
+              <NetworkCard>{NETWORK_LABELS[chainId as ChainId]}</NetworkCard>
+            )}
           </TestnetWrapper>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
