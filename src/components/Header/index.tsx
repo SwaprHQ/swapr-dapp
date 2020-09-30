@@ -1,22 +1,18 @@
-import { ChainId, WETH } from 'dxswap-sdk'
+import { ChainId } from 'dxswap-sdk'
 import React from 'react'
 import { isMobile } from 'react-device-detect'
 import { Link as HistoryLink } from 'react-router-dom'
-import { Text } from 'rebass'
+import { withRouter } from 'react-router-dom'
 
 import styled from 'styled-components'
 
 import Logo from '../../assets/svg/logo.svg'
 import LogoDark from '../../assets/svg/logo_white.svg'
-import Wordmark from '../../assets/svg/wordmark.svg'
-import WordmarkDark from '../../assets/svg/wordmark_white.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
-import { useTokenBalanceTreatingWETHasETH } from '../../state/wallet/hooks'
+import { useETHBalances } from '../../state/wallet/hooks'
 
-import { ExternalLink, StyledInternalLink } from '../../theme'
 import { YellowCard } from '../Card'
-import { AutoColumn } from '../Column'
 import Settings from '../Settings'
 import Menu from '../Menu'
 
@@ -24,35 +20,45 @@ import Row, { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 
 const HeaderFrame = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 120px;
   align-items: center;
   justify-content: space-between;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
   width: 100%;
   top: 0;
-  position: absolute;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem;
   z-index: 2;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    padding: 12px 0 0 0;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
     width: calc(100%);
     position: relative;
   `};
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+        padding: 0.5rem 1rem;
+  `}
 `
 
 const HeaderElement = styled.div`
   display: flex;
   align-items: center;
-  
-  a {
-    text-decoration: none;
-  }
+  gap: 8px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+   flex-direction: row-reverse;
+    align-items: center;
+  `};
 `
 
 const Title = styled.div`
   display: flex;
   align-items: center;
   pointer-events: auto;
-
   :hover {
     cursor: pointer;
   }
@@ -78,27 +84,43 @@ const AccountElement = styled.div<{ active: boolean }>`
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
   border-radius: 12px;
   white-space: nowrap;
+  width: 100%;
+  cursor: pointer;
 
   :focus {
     border: 1px solid blue;
   }
+  /* :hover {
+    background-color: ${({ theme, active }) => (!active ? theme.bg2 : theme.bg4)};
+  } */
 `
 
 const TestnetWrapper = styled.div`
   white-space: nowrap;
   width: fit-content;
   margin-left: 10px;
-
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
 `
 
 const NetworkCard = styled(YellowCard)`
-  width: fit-content;
-  margin-right: 10px;
   border-radius: 12px;
   padding: 8px 12px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0;
+    margin-right: 0.5rem;
+    width: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+  `};
+`
+
+const BalanceText = styled(Text)`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `};
 `
 
 const UniIcon = styled(HistoryLink)<{ to: string }>`
@@ -106,26 +128,6 @@ const UniIcon = styled(HistoryLink)<{ to: string }>`
     height: 30px;
     margin: 0px 5px;
   }
-`
-
-const MigrateBanner = styled(AutoColumn)`
-  width: 100%;
-  padding: 12px 0;
-  display: flex;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.primary5};
-  color: ${({ theme }) => theme.primaryText1};
-  font-weight: 400;
-  text-align: center;
-  pointer-events: auto;
-  a {
-    color: ${({ theme }) => theme.primaryText1};
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0;
-    display: none;
-  `};
 `
 
 const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
@@ -136,16 +138,10 @@ const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
   [ChainId.KOVAN]: 'Kovan'
 }
 
-const BalanceWrapper = styled.div`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-export default function Header() {
+function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const userEthBalance = useTokenBalanceTreatingWETHasETH(account, WETH[chainId])
+  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
 
   return (
@@ -168,13 +164,11 @@ export default function Header() {
             {!isMobile && NETWORK_LABELS[chainId] && <NetworkCard>{NETWORK_LABELS[chainId]}</NetworkCard>}
           </TestnetWrapper>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
-            <BalanceWrapper>
-              {account && userEthBalance ? (
-                <Text style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  {userEthBalance?.toSignificant(4)} ETH
-                </Text>
-              ) : null}
-            </BalanceWrapper>
+            {account && userEthBalance ? (
+              <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
+                {userEthBalance?.toSignificant(4)} ETH
+              </BalanceText>
+            ) : null}
             <Web3Status />
           </AccountElement>
           <Settings />
@@ -184,3 +178,5 @@ export default function Header() {
     </HeaderFrame>
   )
 }
+
+export default withRouter(Header)

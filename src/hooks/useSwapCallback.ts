@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { MaxUint256 } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, Trade, TradeType, WETH } from 'dxswap-sdk'
+import { ChainId, currencyEquals, Token, Trade, TradeType, WETH } from 'dxswap-sdk'
 import { useMemo } from 'react'
 import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
@@ -12,6 +11,8 @@ import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { useActiveWeb3React } from './index'
 import useENSName from './useENSName'
 
+// TODO: I have some doubts here. Lots of breaking changes coming in from Uniswap
+
 enum SwapType {
   EXACT_TOKENS_FOR_TOKENS,
   EXACT_TOKENS_FOR_ETH,
@@ -21,11 +22,16 @@ enum SwapType {
   ETH_FOR_EXACT_TOKENS
 }
 
-function getSwapType(trade: Trade | undefined): SwapType | undefined {
+export enum SwapCallbackState {
+  INVALID,
+  LOADING,
+  VALID
+}
+
+function getSwapType(trade: Trade | undefined, chainId: ChainId): SwapType | undefined {
   if (!trade) return undefined
-  const chainId = trade.inputAmount.token.chainId
-  const inputWETH = trade.inputAmount.token.equals(WETH[chainId])
-  const outputWETH = trade.outputAmount.token.equals(WETH[chainId])
+  const inputWETH = currencyEquals(trade.inputAmount.currency, WETH[chainId])
+  const outputWETH = currencyEquals(trade.outputAmount.currency, WETH[chainId])
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   if (isExactIn) {
     if (inputWETH) {
@@ -49,7 +55,8 @@ function getSwapType(trade: Trade | undefined): SwapType | undefined {
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade?: Trade, // trade to execute, required
+  trade?: Trade, // trade to execute, required,
+  inputToken?: Token,
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   to?: string // recipient of output, optional
@@ -58,14 +65,10 @@ export function useSwapCallback(
   const addTransaction = useTransactionAdder()
   const recipient = to ? isAddress(to) : account
   const ensName = useENSName(to)
-  const inputAllowance = useTokenAllowance(
-    trade?.inputAmount?.token,
-    account ?? undefined,
-    ROUTER_ADDRESS
-  )
+  const inputAllowance = useTokenAllowance(inputToken, account ?? undefined, ROUTER_ADDRESS)
 
   return useMemo(() => {
-    if (!trade || !recipient) return null
+    if (!trade || !recipient || !inputToken) return null
 
     // will always be defined
     const {
@@ -77,7 +80,7 @@ export function useSwapCallback(
 
     // no allowance
     if (
-      !trade.inputAmount.token.equals(WETH[chainId as ChainId]) &&
+      !currencyEquals(trade?.inputAmount?.currency, WETH[chainId as ChainId]) &&
       (!inputAllowance || slippageAdjustedInput.greaterThan(inputAllowance))
     ) {
       return null
@@ -97,7 +100,7 @@ export function useSwapCallback(
 
       const deadlineFromNow: number = Math.ceil(Date.now() / 1000) + deadline
 
-      const swapType = getSwapType(trade)
+      const swapType = getSwapType(trade, chainId)
 
       // let estimate: Function, method: Function,
       let methodNames: string[],
@@ -214,8 +217,8 @@ export function useSwapCallback(
           ...(value ? { value } : {})
         })
           .then((response: any) => {
-            const inputSymbol = trade.inputAmount.token.symbol
-            const outputSymbol = trade.outputAmount.token.symbol
+            const inputSymbol = trade.inputAmount.currency.symbol
+            const outputSymbol = trade.outputAmount.currency.symbol
             const inputAmount = slippageAdjustedInput.toSignificant(3)
             const outputAmount = slippageAdjustedOutput.toSignificant(3)
 
@@ -244,13 +247,14 @@ export function useSwapCallback(
   }, [
     trade,
     recipient,
+    inputToken,
     allowedSlippage,
     chainId,
     inputAllowance,
     library,
     account,
     deadline,
-    addTransaction,
-    ensName
+    ensName,
+    addTransaction
   ])
 }
