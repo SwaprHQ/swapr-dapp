@@ -4,7 +4,12 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
-import { useAddUserToken, useRemoveUserAddedToken, useAddUserBaseToken, useRemoveUserBaseToken } from '../../state/user/hooks'
+import { 
+  useAddUserToken,
+  useRemoveUserAddedToken,
+  useAddUserBaseToken,
+  useRemoveUserBaseToken
+} from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton, TYPE } from '../../theme'
 import { useIsUserAddedToken, useIsUserBaseToken } from '../../hooks/Tokens'
@@ -25,6 +30,14 @@ const StyledBalanceText = styled(Text)`
   overflow: hidden;
   max-width: 5rem;
   text-overflow: ellipsis;
+`
+
+const MenuCurrency = styled(MenuItem)`
+  grid-template-columns: auto minmax(auto,1fr) auto !important;
+`
+
+const TokenActionButton = styled(LinkStyledButton)`
+  font-size: 11px;
 `
 
 function Balance({ balance }: { balance: CurrencyAmount }) {
@@ -60,7 +73,7 @@ function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    <MenuItem
+    <MenuCurrency
       style={style}
       className={`token-item-${key}`}
       onClick={() => (isSelected ? null : onSelect())}
@@ -76,34 +89,35 @@ function CurrencyRow({
           {!isOnSelectedList && customAdded ? (
             <TYPE.main fontWeight={500}>
               {!customBaseAdded ? (
-                <LinkStyledButton
+                <TokenActionButton
                   onClick={event => {
                     event.stopPropagation()
                     if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
                   }}
                 >
                   Remove User Token
-                </LinkStyledButton>
+                </TokenActionButton>
               ) : null}
               {customBaseAdded ? (
-                  <LinkStyledButton
+                  <TokenActionButton
                     onClick={event => {
                       event.stopPropagation()
                       if (chainId && currency instanceof Token) removeBaseToken(chainId, currency.address)
                     }}
                   >
                     Remove Base Token
-                  </LinkStyledButton>
+                  </TokenActionButton>
               ) : null}
               {!customBaseAdded ? (
-                  <LinkStyledButton
+                  <TokenActionButton
+                    style={{ paddingLeft: "0" }}
                     onClick={event => {
                       event.stopPropagation()
                       if (currency instanceof Token) addBaseToken(currency)
                     }}
                   >
                     Add Base Token
-                  </LinkStyledButton>
+                  </TokenActionButton>
               ) : null}
               
             </TYPE.main>
@@ -126,7 +140,7 @@ function CurrencyRow({
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
       </RowFixed>
-    </MenuItem>
+    </MenuCurrency>
   )
 }
 
