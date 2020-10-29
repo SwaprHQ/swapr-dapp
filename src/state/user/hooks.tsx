@@ -11,6 +11,8 @@ import {
   addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
+  addBaseToken,
+  removeBaseToken,
   SerializedPair,
   SerializedToken,
   updateUserDarkMode,
@@ -136,7 +138,35 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 export function useUserAddedTokens(): Token[] {
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens']>(({ user: { tokens } }) => tokens)
+  return useMemo(() => {
+    if (!chainId) return []
+    return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
+  }, [serializedTokensMap, chainId])
+}
 
+export function useAddUserBaseToken(): (token: Token) => void {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (token: Token) => {
+      dispatch(addBaseToken({ baseToken: serializeToken(token) }))
+    },
+    [dispatch]
+  )
+}
+
+export function useRemoveUserBaseToken(): (chainId: number, address: string) => void {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (chainId: number, address: string) => {
+      dispatch(removeBaseToken({ chainId, address }))
+    },
+    [dispatch]
+  )
+}
+
+export function useUserBaseTokens(): Token[] {
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useSelector<AppState, AppState['user']['baseTokens']>(({ user: { baseTokens } }) => baseTokens)
   return useMemo(() => {
     if (!chainId) return []
     return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
@@ -187,8 +217,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const tokens = useAllTokens()
   
   // get user added tokens to be used as base
-  const userAddedTokens = useUserAddedTokens()
-
+  const userBaseTokens = useUserBaseTokens()
   // pinned pairs
   const pinnedPairs = useMemo(() => (chainId ? PINNED_PAIRS[chainId] ?? [] : []), [chainId])
 
@@ -201,7 +230,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             // for each token on the current chain,
             return (
               // loop though all bases on the current chain
-              (BASES_TO_TRACK_LIQUIDITY_FOR[chainId].concat(userAddedTokens) ?? [])
+              (BASES_TO_TRACK_LIQUIDITY_FOR[chainId].concat(userBaseTokens) ?? [])
                 // to construct pairs of the given token with each base
                 .map(base => {
                   if (base.address === token.address) {
@@ -214,7 +243,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             )
           })
         : [],
-    [tokens, userAddedTokens, chainId]
+    [tokens, userBaseTokens, chainId]
   )
 
   // pairs saved by users

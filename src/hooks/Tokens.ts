@@ -3,7 +3,7 @@ import { Currency, ETHER, Token, currencyEquals } from 'dxswap-sdk'
 import { useMemo } from 'react'
 import { useTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
-import { useUserAddedTokens } from '../state/user/hooks'
+import { useUserAddedTokens, useUserBaseTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
@@ -13,6 +13,7 @@ export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React()
   const allTokens = useTokenList()
   const userAddedTokens = useUserAddedTokens()
+
     // reduce into all ALL_TOKENS filtered by the current chain
     .reduce<{ [address: string]: Token }>(
       (tokenMap, token) => {
@@ -34,6 +35,12 @@ export function useAllTokens(): { [address: string]: Token } {
 export function useIsUserAddedToken(currency: Currency): boolean {
   const userAddedTokens = useUserAddedTokens()
   return !!userAddedTokens.find(token => currencyEquals(currency, token))
+}
+
+// Check if currency is included in custom base list from user storage
+export function useIsUserBaseToken(currency: Currency): boolean {
+  const userBaseTokens = useUserBaseTokens()
+  return !!userBaseTokens.find(token => currencyEquals(currency, token))
 }
 
 // parse a name or symbol from a token response

@@ -4,10 +4,10 @@ import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
+import { useAddUserToken, useRemoveUserAddedToken, useAddUserBaseToken, useRemoveUserBaseToken } from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton, TYPE } from '../../theme'
-import { useIsUserAddedToken } from '../../hooks/Tokens'
+import { useIsUserAddedToken, useIsUserBaseToken } from '../../hooks/Tokens'
 import Column from '../Column'
 import { RowFixed } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
@@ -49,10 +49,14 @@ function CurrencyRow({
   const selectedTokenList = useTokenList()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
+  const customBaseAdded = useIsUserBaseToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
+  
+  const removeBaseToken = useRemoveUserBaseToken()
+  const addBaseToken = useAddUserBaseToken()
 
   // only show add or remove buttons if not on selected list
   return (
@@ -71,30 +75,52 @@ function CurrencyRow({
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (
             <TYPE.main fontWeight={500}>
-              Added by user
-              <LinkStyledButton
-                onClick={event => {
-                  event.stopPropagation()
-                  if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
-                }}
-              >
-                (Remove)
-              </LinkStyledButton>
+              {!customBaseAdded ? (
+                <LinkStyledButton
+                  onClick={event => {
+                    event.stopPropagation()
+                    if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
+                  }}
+                >
+                  Remove User Token
+                </LinkStyledButton>
+              ) : null}
+              {customBaseAdded ? (
+                  <LinkStyledButton
+                    onClick={event => {
+                      event.stopPropagation()
+                      if (chainId && currency instanceof Token) removeBaseToken(chainId, currency.address)
+                    }}
+                  >
+                    Remove Base Token
+                  </LinkStyledButton>
+              ) : null}
+              {!customBaseAdded ? (
+                  <LinkStyledButton
+                    onClick={event => {
+                      event.stopPropagation()
+                      if (currency instanceof Token) addBaseToken(currency)
+                    }}
+                  >
+                    Add Base Token
+                  </LinkStyledButton>
+              ) : null}
+              
             </TYPE.main>
           ) : null}
           {!isOnSelectedList && !customAdded ? (
             <TYPE.main fontWeight={500}>
-              Found by address
               <LinkStyledButton
                 onClick={event => {
                   event.stopPropagation()
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (Add)
+                Add User Token
               </LinkStyledButton>
             </TYPE.main>
           ) : null}
+          
         </FadedSpan>
       </Column>
       <RowFixed style={{ justifySelf: 'flex-end' }}>

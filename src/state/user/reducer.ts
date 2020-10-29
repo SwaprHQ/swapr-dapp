@@ -6,6 +6,8 @@ import {
   addSerializedToken,
   removeSerializedPair,
   removeSerializedToken,
+  addBaseToken,
+  removeBaseToken,
   SerializedPair,
   SerializedToken,
   updateMatchesDarkMode,
@@ -38,6 +40,12 @@ export interface UserState {
       [address: string]: SerializedToken
     }
   }
+  
+  baseTokens: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
 
   pairs: {
     [chainId: number]: {
@@ -61,6 +69,7 @@ export const initialState: UserState = {
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
+  baseTokens: {},
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true
@@ -111,6 +120,16 @@ export default createReducer(initialState, builder =>
     .addCase(removeSerializedToken, (state, { payload: { address, chainId } }) => {
       state.tokens[chainId] = state.tokens[chainId] || {}
       delete state.tokens[chainId][address]
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(addBaseToken, (state, { payload: { baseToken } }) => {
+      state.baseTokens[baseToken.chainId] = state.baseTokens[baseToken.chainId] || {}
+      state.baseTokens[baseToken.chainId][baseToken.address] = baseToken
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(removeBaseToken, (state, { payload: { address, chainId } }) => {
+      state.baseTokens[chainId] = state.baseTokens[chainId] || {}
+      delete state.baseTokens[chainId][address]
       state.timestamp = currentTimestamp()
     })
     .addCase(addSerializedPair, (state, { payload: { serializedPair } }) => {
