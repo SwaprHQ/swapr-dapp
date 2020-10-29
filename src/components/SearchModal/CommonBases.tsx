@@ -2,7 +2,9 @@ import React from 'react'
 import { Text } from 'rebass'
 import { ChainId, Currency, currencyEquals, ETHER, Token } from 'dxswap-sdk'
 import styled from 'styled-components'
-
+import { 
+  useUserBaseTokens
+} from '../../state/user/hooks'
 import { SUGGESTED_BASES } from '../../constants'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
@@ -34,6 +36,7 @@ export default function CommonBases({
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {
+  const userBaseTokens = useUserBaseTokens();
   return (
     <AutoColumn gap="md">
       <AutoRow>
@@ -56,7 +59,7 @@ export default function CommonBases({
             ETH
           </Text>
         </BaseWrapper>
-        {(chainId ? SUGGESTED_BASES[chainId] : []).map((token: Token) => {
+        {(chainId ? SUGGESTED_BASES[chainId].concat(userBaseTokens) : userBaseTokens).map((token: Token) => {
           const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
           return (
             <BaseWrapper onClick={() => !selected && onSelect(token)} disable={selected} key={token.address}>
