@@ -168,7 +168,7 @@ export function useUserBaseTokens(): Token[] {
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['baseTokens']>(({ user: { baseTokens } }) => baseTokens)
   return useMemo(() => {
-    if (!chainId) return []
+    if (!chainId || !serializedTokensMap) return []
     return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
   }, [serializedTokensMap, chainId])
 }
