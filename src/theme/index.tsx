@@ -186,6 +186,8 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
 html, input, textarea, button {
   font-family: 'Montserrat', sans-serif;
   font-display: fallback;
