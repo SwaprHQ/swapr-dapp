@@ -27,7 +27,7 @@ const GridColumn = styled(AutoColumn)`
   margin-top: 7.75px;
 `
 
-const SwaperGovernance = styled(Column)`
+const Swapr = styled(Column)`
   padding: 20px;
   color: #8780bf;
   background: #14131d;
@@ -120,7 +120,7 @@ export default function Governance() {
           <Text style={{ marginLeft: 8, paddingTop: 4 }}>↗</Text>
         </StatisticsButton>
 
-        <SwaperGovernance>
+        <Swapr>
           <Text fontSize={16} fontWeight={600} style={{ lineHeight: '20px', marginBottom: 14 }}>
             Swaper Governance
           </Text>
@@ -135,7 +135,7 @@ export default function Governance() {
           >
             Read more about Swapr Governance
           </Text>
-        </SwaperGovernance>
+        </Swapr>
       </PageWrapper>
     </>
   )
