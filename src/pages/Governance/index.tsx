@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Text } from 'rebass'
-import { RowBetween, RowFlat } from '../../components/Row'
+import { RowBetween, RowFixed } from '../../components/Row'
 import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
 import Column, { AutoColumn } from '../../components/Column'
 
 import { GovernanceCard } from '../../components/GovernanceCard'
+import { HideSmall } from '../../theme'
 
 import imgTokenDAI from '../../assets/images/tokens/token-dai.png'
 import imgTokenDMG from '../../assets/images/tokens/token-dmg.png'
@@ -21,7 +22,7 @@ const PageWrapper = styled(AutoColumn)`
 `
 
 const GridColumn = styled(AutoColumn)`
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
   gap: 7.75px;
   margin-top: 7.75px;
 `
@@ -46,7 +47,7 @@ const CustomButtonPrimary = styled(ButtonPrimary)`
   border-radius: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 48%;
+    width: 100%;
   `};
 `
 
@@ -62,13 +63,22 @@ const CustomButtonSecondary = styled(ButtonSecondary)`
   border-radius: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 48%;
+    width: 100%;
+  `};
+`
+
+const ButtonRow = styled(RowFixed)`
+  gap: 8px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
   `};
 `
 
 const StatisticsButton = styled(CustomButtonSecondary)`
   height: 34px;
-  width: 100%;
+  width: 100% !important;
   display: flex;
   margin-top: 30px;
 `
@@ -78,16 +88,18 @@ export default function Governance() {
     <>
       <PageWrapper>
         <RowBetween style={{ marginBottom: 30 }}>
-          <Text fontWeight={500} fontSize={20}>
-            Governance
-          </Text>
+          <HideSmall>
+            <Text fontWeight={500} fontSize={20}>
+              Governance
+            </Text>
+          </HideSmall>
 
-          <RowFlat>
+          <ButtonRow>
             <CustomButtonSecondary padding="7px 14px">Your Proposals</CustomButtonSecondary>
             <CustomButtonPrimary padding="7px 14px" style={{ marginLeft: 8 }}>
               Create Governance
             </CustomButtonPrimary>
-          </RowFlat>
+          </ButtonRow>
         </RowBetween>
 
         <Column>

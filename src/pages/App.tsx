@@ -20,21 +20,6 @@ const AppWrapper = styled.div`
   flex-flow: column;
   align-items: flex-start;
   overflow-x: hidden;
-  background: #14131e;
-  min-height: 100vh;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0px;
-    top: -543px;
-    width: 1200px;
-    height: 1200px;
-    max-width: 100%;
-    max-height: 100%;
-    background: #26243c;
-    filter: blur(250px);
-  }
 `
 
 const HeaderWrapper = styled.div`

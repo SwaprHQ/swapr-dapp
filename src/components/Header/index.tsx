@@ -276,14 +276,13 @@ function Header({ history }: { history: any }) {
           >
             {t('pool')}
           </StyledNavLink>
-          <StyledNavLinkWithBadge href="/#">
-            <GovernanceText>Governance</GovernanceText>
-            <AbsoluteComingSoonBadgeFlex justifyContent="center" width="100%">
-              <Box>
-                <Badge label="COMING SOON" />
-              </Box>
-            </AbsoluteComingSoonBadgeFlex>
-          </StyledNavLinkWithBadge>
+          <StyledNavLink
+            id={`governance-nav-link`}
+            to={'/governance'}
+            isActive={() => history.location.pathname.includes('/governance')}
+          >
+            Governance
+          </StyledNavLink>
           <StyledExternalLink id={`stake-nav-link`} href={'https://uniswap.info'}>
             Charts{' '}
             <Text ml="4px" fontSize="11px">
