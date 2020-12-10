@@ -1,5 +1,5 @@
 import { ChainId } from 'dxswap-sdk'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { Link, NavLink, withRouter } from 'react-router-dom'
 
@@ -249,6 +249,10 @@ function Header({ history }: { history: any }) {
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
+
+  const handleDisabledAnchorClick = useCallback(event => {
+    event.preventDefault()
+  }, [])
 
   return (
     <HeaderFrame>
