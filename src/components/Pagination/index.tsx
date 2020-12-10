@@ -5,8 +5,6 @@ import { Text } from 'rebass'
 
 import Card from '../Card'
 import { RowBetween } from '../Row'
-import Column from '../Column'
-import { AutoRow } from '../Row'
 
 import nextImage from '../../assets/svg/next.svg'
 import prevImage from '../../assets/svg/prev.svg'
@@ -62,7 +60,7 @@ export function Pagination({ length }: PaginationProps) {
         <img src={prevImage} alt="prev" />
       </PrevButton>
       {new Array(length).fill(0).map((_, index) => (
-        <PaginationButton>
+        <PaginationButton key={index}>
           <Text fontWeight={500} fontSize="14px">
             {index + 1}
           </Text>
