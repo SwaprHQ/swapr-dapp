@@ -1,13 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, ETHER, TokenAmount, WETH, Percent, JSBI } from 'dxswap-sdk'
+import { Currency, currencyEquals, ETHER, TokenAmount, WETH, Percent, JSBI, ChainId } from 'dxswap-sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import { Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { ButtonPrimary } from '../../components/Button'
-import { LightCard, OutlineCard } from '../../components/Card'
+import { BlueCard, OutlineCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
@@ -121,8 +121,9 @@ export default function AddLiquidity({
   )
 
   // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS)
-  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS)
+  const routerAddress = ROUTER_ADDRESS[chainId ? chainId : ChainId.MAINNET]
+  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerAddress)
+  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerAddress)
 
   const addTransaction = useTransactionAdder()
 
@@ -327,17 +328,19 @@ export default function AddLiquidity({
             {noLiquidity ||
               (isCreate && (
                 <ColumnCenter>
-                  <LightCard>
+                  <BlueCard>
                     <AutoColumn gap="10px">
-                      <TYPE.body fontWeight={500} letterSpacing="-0.2px">
+                      <TYPE.link fontWeight={600} color={'primaryText1'}>
                         You are the first liquidity provider.
-                        <br />
+                      </TYPE.link>
+                      <TYPE.link fontWeight={400} color={'primaryText1'}>
                         The ratio of tokens you add will set the price of this pool.
-                        <br />
+                      </TYPE.link>
+                      <TYPE.link fontWeight={400} color={'primaryText1'}>
                         Once you are happy with the rate click supply to review.
-                      </TYPE.body>
+                      </TYPE.link>
                     </AutoColumn>
-                  </LightCard>
+                  </BlueCard>
                 </ColumnCenter>
               ))}
             <CurrencyInputPanel
