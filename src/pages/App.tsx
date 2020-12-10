@@ -7,6 +7,7 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
+import Governance from './Governance'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
@@ -73,6 +74,7 @@ export default function App() {
                 <Route exact strict path="/find" component={PoolFinder} />
                 <Route exact strict path="/pool" component={Pool} />
                 <Route exact strict path="/create" component={AddLiquidity} />
+                <Route exact strict path="/governance" component={Governance} />
                 <Route exact path="/add" component={AddLiquidity} />
                 <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                 <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
