@@ -23,7 +23,6 @@ const CardWrapper = styled(Column)`
   align-items: center;
   justify-content: center;
   background: rgba(20, 19, 29, 0.75);
-  backdrop-filter: blur(24px);
   border-radius: 4px;
   min-height: 96px;
   overflow: hidden;
@@ -32,11 +31,11 @@ const CardWrapper = styled(Column)`
 `
 
 const TokenIconSM = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 26.88px;
+  height: 26.88px;
 `
 
-interface GovernanceCardProps {
+interface GovernancePairCardProps {
   image: any
   pairCount: number
   proposalCount: number
@@ -44,7 +43,7 @@ interface GovernanceCardProps {
   onClick: () => void
 }
 
-export function GovernanceCard({ image, pairCount, proposalCount, description, onClick }: GovernanceCardProps) {
+export function GovernancePairCard({ image, pairCount, proposalCount, description, onClick }: GovernancePairCardProps) {
   const getSubTitle = () => {
     if (proposalCount > 0 && pairCount <= 0) return `${proposalCount} PROPOSALS`
     if (pairCount > 0 && proposalCount <= 0) return `${pairCount} PAIRS`
@@ -55,14 +54,12 @@ export function GovernanceCard({ image, pairCount, proposalCount, description, o
   return (
     <CardWrapper onClick={onClick}>
       <AutoRow justify="center">
-        <TokenIconSM src={image} style={{ marginRight: 6 }} />
-        <Text fontSize={16} fontWeight={600} lineHeight="20px">
-          {description}
-        </Text>
+        <TokenIconSM src={image} style={{ marginRight: -10 }} />
+        <TokenIconSM src={image} />
       </AutoRow>
       {getSubTitle() && (
-        <Text fontSize={9} fontWeight={600} lineHeight="11px" style={{ marginTop: 7 }}>
-          {getSubTitle()}
+        <Text fontSize={16} fontWeight={600} lineHeight="20px" style={{ marginTop: 8 }}>
+          {description}/ETH
         </Text>
       )}
     </CardWrapper>
