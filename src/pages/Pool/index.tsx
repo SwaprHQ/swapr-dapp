@@ -166,18 +166,20 @@ export default function Pool() {
           </AutoColumn>
         </AutoColumn>
 
-        <ButtonSecondary
-          id="join-pool-button"
-          as="a"
-          style={{ marginTop: '32px', padding: '10px 0px', borderRadius: '8px' }}
-          href={`https://dxstats.eth.link/account/${account}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <Text fontWeight={700} fontSize={12} lineHeight="15px">
-            ACCOUNT ANALYTICS AND ACCRUED FEES <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
-          </Text>
-        </ButtonSecondary>
+        {account && (
+          <ButtonSecondary
+            id="join-pool-button"
+            as="a"
+            style={{ marginTop: '32px', padding: '10px 0px', borderRadius: '8px' }}
+            href={`https://dxstats.eth.link/account/${account}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Text fontWeight={700} fontSize={12} lineHeight="15px">
+              ACCOUNT ANALYTICS AND ACCRUED FEES <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
+            </Text>
+          </ButtonSecondary>
+        )}
 
         <TYPE.body color="text4" textAlign="center" fontWeight="500" fontSize="14px" lineHeight="17px" marginTop="32px">
           Don't see a pool you joined?{' '}
