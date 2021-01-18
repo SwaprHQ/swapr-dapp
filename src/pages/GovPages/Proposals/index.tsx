@@ -14,7 +14,7 @@ import CurrencyLogo from '../../../components/CurrencyLogo'
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
 import ProposalCard, { ProposalProps } from './ProposalCard'
-// import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -64,9 +64,10 @@ export default function GovernanceProposals() {
   const pairName = t(router.query.asset) + '/' + t(router.query.pair)
   const currency = router.location.state?.currency
   const currency1 = router.location.state?.currency1
-  // if (currency === undefined || currency1 === undefined) {
-  //   return <Redirect to="/" />
-  // }
+
+  if (currency === undefined || currency1 === undefined) {
+    return <Redirect to="/" />
+  }
 
   return (
     <PageWrapper>
