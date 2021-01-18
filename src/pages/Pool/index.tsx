@@ -161,7 +161,7 @@ export default function Pool() {
           </AutoColumn>
         </AutoColumn>
         <ButtonWithLink
-          link={`https://dxstats.eth.link/account/${account}`}
+          link={`https://dxstats.eth.link/#/account/${account}`}
           text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
           marginTop="32px"
         />

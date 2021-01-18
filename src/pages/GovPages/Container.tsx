@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ETHER } from 'dxswap-sdk'
+import { Currency, ETHER } from 'dxswap-sdk'
 import { GovCard } from './Card'
 import { MainPage, PairPage, temporaryCurrencyData } from './constant'
 import { AutoRowCleanGap } from '../../components/Row'
+import { Redirect } from 'react-router-dom'
 
 const CardContainer = styled(AutoRowCleanGap)`
   max-height: 330px;
@@ -19,9 +20,10 @@ const CardContainer = styled(AutoRowCleanGap)`
 
 interface ContainerProps {
   currentPage: string
+  currency?: Currency
 }
 
-export default function Container({ currentPage }: ContainerProps) {
+export default function Container({ currentPage, currency }: ContainerProps) {
   const randomInteger = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -29,19 +31,28 @@ export default function Container({ currentPage }: ContainerProps) {
   if (currentPage === MainPage) {
     return (
       <CardContainer gap={8}>
-        {temporaryCurrencyData.map((currency, index) => (
-          <GovCard key={index} currency={currency} apy={152} />
+        {temporaryCurrencyData.map((ele, index) => (
+          <GovCard key={index} currency={ele} apy={152} />
         ))}
       </CardContainer>
     )
   } else if (currentPage === PairPage) {
-    return (
-      <CardContainer gap={8}>
-        {temporaryCurrencyData.map((currency, index) => (
-          <GovCard key={index} currency={currency} currency1={ETHER} proposals={randomInteger(index, 100)} />
-        ))}
-      </CardContainer>
-    )
+    if (currency === undefined) {
+      return <Redirect to="/" />
+    } else {
+      return (
+        <CardContainer gap={8}>
+          {temporaryCurrencyData.map((ele, index) => (
+            <GovCard
+              key={index}
+              currency={currency}
+              currency1={ele === currency ? ETHER : ele}
+              proposals={randomInteger(index, 100)}
+            />
+          ))}
+        </CardContainer>
+      )
+    }
   } else {
     return <></>
   }

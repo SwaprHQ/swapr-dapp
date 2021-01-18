@@ -69,8 +69,17 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   const theme = useContext(ThemeContext)
   const router = useRouter()
 
-  const onCurrencyClick = () => router.push(`/governance/${currency.symbol}/pairs`)
-  const onPairClick = () => router.push(`/governance/${currency.symbol}/pairs/${currency1?.symbol}/proposals`)
+  const onCurrencyClick = () => {
+    router.push({
+      pathname: `/governance/${currency.symbol}/pairs`,
+      state: {
+        currency: currency
+      }
+    })
+  }
+  const onPairClick = () => {
+    router.push(`/governance/${currency.symbol}/pairs/${currency1?.symbol}/proposals`)
+  }
 
   if (currency1 === undefined) {
     // main governance page
@@ -97,7 +106,7 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
       <LightCardWrap onClick={onPairClick}>
         <AutoRow align="flex-end" justify="center">
           <LogoContainer size={doubleCurrencyLogoSize}>
-            <DoubleCurrencyLogo size={doubleCurrencyLogoSize} currency0={currency} currency1={currency1} />
+            <DoubleCurrencyLogo size={doubleCurrencyLogoSize} currency0={currency1} currency1={currency} />
           </LogoContainer>
         </AutoRow>
         <AutoRow align="flex-start" justify="center">
