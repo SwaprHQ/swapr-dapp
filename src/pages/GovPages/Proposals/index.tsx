@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
-import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
 import { ETHER } from 'dxswap-sdk'
 import { USDC } from '../../../constants'
@@ -14,31 +13,9 @@ import { LightCard } from '../../../components/Card'
 import { RowBetween } from '../../../components/Row'
 import { AutoColumn } from '../../../components/Column'
 import CurrencyLogo from '../../../components/CurrencyLogo'
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
-
-const TitleRow = styled(RowBetween)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-wrap: wrap;
-    gap: 12px;
-    width: 100%;
-    
-  `};
-`
-
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
-const ResponsiveButtonSecondary = styled(ButtonSecondary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-  margin-right: 8px;
-`
+import { TitleRow, ResponsiveButtonPrimary, ResponsiveButtonSecondary, InfoText } from './styleds'
+import TabBar from '../../../components/TabBar'
+import ProposalCard, { fakeProposalData } from './ProposalCard'
 
 export default function GovernanceProposals() {
   const { t } = useTranslation()
@@ -77,60 +54,70 @@ export default function GovernanceProposals() {
             </Flex>
           </TitleRow>
         </AutoColumn>
-        <LightCard>
+        <LightCard padding="25px 20px">
           <AutoColumn gap="md">
             <Flex>
-              <Info color={theme.text4} size={18} />
-              <TYPE.body marginLeft="10px" color={'text4'} fontWeight={500} lineHeight="20px">
-                Swapr Governance
-              </TYPE.body>
+              <CurrencyLogo size="20px" currency={USDC} />
+              <CurrencyLogo size="20px" currency={ETHER} />
+              <TYPE.mediumHeader
+                marginLeft="10px"
+                color={theme.white}
+                fontWeight={600}
+                lineHeight="19.5px"
+                fontSize="16px"
+              >
+                {pairName}
+              </TYPE.mediumHeader>
             </Flex>
             <RowBetween>
-              <TYPE.body fontWeight="500" fontSize="11px" lineHeight="16px" letterSpacing="-0.4px">
-                SWP-LP tokens represent voting shares in Swapr governance. You can vote on each proposal yourself or
-                delegate your votes to a third party.
-              </TYPE.body>
+              <InfoText>Total Liquidity:</InfoText>
+              <InfoText>$146,787</InfoText>
             </RowBetween>
             <RowBetween>
-              <TYPE.body
-                as="a"
-                color={'text4'}
-                fontSize="17px"
-                lineHeight="17px"
-                style={{ textDecoration: 'underline', cursor: 'pointer' }}
-              >
-                Read more about Swapr Governance
-              </TYPE.body>
+              <InfoText>Volume:</InfoText>
+              <Flex alignItems="center">
+                <InfoText marginRight="8px">199.976</InfoText>
+                <CurrencyLogo currency={USDC} size="20px" />
+              </Flex>
+            </RowBetween>
+            <RowBetween>
+              <InfoText>Pool fees:</InfoText>
+              <InfoText>0.05%</InfoText>
+            </RowBetween>
+            <RowBetween>
+              <InfoText>Your DAO power:</InfoText>
+              <InfoText>0.4%</InfoText>
             </RowBetween>
           </AutoColumn>
         </LightCard>
-        <LightCard>
-          <AutoColumn gap="md">
-            <Flex>
-              <Info color={theme.text4} size={18} />
-              <TYPE.body marginLeft="10px" color={'text4'} fontWeight={500} lineHeight="20px">
-                Swapr Governance
-              </TYPE.body>
-            </Flex>
-            <RowBetween>
-              <TYPE.body fontWeight="500" fontSize="11px" lineHeight="16px" letterSpacing="-0.4px">
-                SWP-LP tokens represent voting shares in Swapr governance. You can vote on each proposal yourself or
-                delegate your votes to a third party.
-              </TYPE.body>
-            </RowBetween>
-            <RowBetween>
-              <TYPE.body
-                as="a"
-                color={'text4'}
-                fontSize="17px"
-                lineHeight="17px"
-                style={{ textDecoration: 'underline', cursor: 'pointer' }}
-              >
-                Read more about Swapr Governance
-              </TYPE.body>
-            </RowBetween>
-          </AutoColumn>
-        </LightCard>
+        <TabBar
+          tabs={[
+            {
+              title: 'Proposals',
+              // eslint-disable-next-line react/display-name
+              render: () => (
+                <>
+                  {fakeProposalData.map((ele, index) => (
+                    <ProposalCard
+                      key={index}
+                      id={ele.id}
+                      title={ele.title}
+                      totalVote={ele.totalVote}
+                      for={ele.for}
+                      against={ele.against}
+                      createdAt={ele.createdAt}
+                    />
+                  ))}
+                </>
+              )
+            },
+            {
+              title: 'Proposals history',
+              // eslint-disable-next-line react/display-name
+              render: () => <></>
+            }
+          ]}
+        />
       </AutoColumn>
     </PageWrapper>
   )
