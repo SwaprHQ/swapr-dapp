@@ -15,7 +15,7 @@ const LightCardWrap = styled(Card)`
   background-blend-mode: overlay, normal;
   padding: 0.8rem;
   width: calc(25% - 6px);
-  padding: 24px 30px;
+  padding: 24px 20px;
   display: flex;
   flex-wrap: wrap;
   cursor: pointer;

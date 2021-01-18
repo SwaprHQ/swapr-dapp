@@ -24,7 +24,6 @@ const TitleRow = styled(RowBetween)`
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
-    
   `};
 `
 const StyledSearchInput = styled(SearchInputWithIcon)`
