@@ -1,9 +1,7 @@
 import React, { useContext } from 'react'
-import { ThemeContext } from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
-import { ETHER } from 'dxswap-sdk'
-import { USDC } from '../../../constants'
 
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../Pool/styleds'
@@ -13,15 +11,62 @@ import { LightCard } from '../../../components/Card'
 import { RowBetween } from '../../../components/Row'
 import { AutoColumn } from '../../../components/Column'
 import CurrencyLogo from '../../../components/CurrencyLogo'
-import { TitleRow, ResponsiveButtonPrimary, ResponsiveButtonSecondary, InfoText } from './styleds'
+import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
-import ProposalCard, { fakeProposalData } from './ProposalCard'
+import ProposalCard, { ProposalProps } from './ProposalCard'
+// import { Redirect } from 'react-router-dom'
+
+const TitleRow = styled(RowBetween)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;    
+  `};
+`
+
+const ContentTitle = styled(TYPE.body)`
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  color: ${({ theme }) => theme.purple2};
+`
+
+const ResponsiveButtonPrimary = styled(ButtonPrimary)`
+  width: fit-content;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `};
+`
+
+const ResponsiveButtonSecondary = styled(ButtonSecondary)`
+  width: fit-content;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `};
+  margin-right: 8px;
+`
+
+const fakeProposalData: ProposalProps[] = [
+  {
+    id: 3,
+    title: 'USDC/ETH Pool Fee to 0.15%',
+    totalVote: 23,
+    for: 20,
+    against: 3,
+    createdAt: new Date('Jan 12, 2021 03:24:00').getTime()
+  }
+]
 
 export default function GovernanceProposals() {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const router = useRouter()
   const pairName = t(router.query.asset) + '/' + t(router.query.pair)
+  const currency = router.location.state?.currency
+  const currency1 = router.location.state?.currency1
+  // if (currency === undefined || currency1 === undefined) {
+  //   return <Redirect to="/" />
+  // }
 
   return (
     <PageWrapper>
@@ -33,8 +78,8 @@ export default function GovernanceProposals() {
                 {t('governance') + ' /'}
               </TYPE.mediumHeader>
               &nbsp;
-              <CurrencyLogo size="20px" currency={USDC} />
-              <CurrencyLogo size="20px" currency={ETHER} />
+              <CurrencyLogo size="20px" currency={currency} />
+              <CurrencyLogo size="20px" currency={currency1} />
               &nbsp;
               <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
                 {pairName}
@@ -57,8 +102,8 @@ export default function GovernanceProposals() {
         <LightCard padding="25px 20px">
           <AutoColumn gap="md">
             <Flex>
-              <CurrencyLogo size="20px" currency={USDC} />
-              <CurrencyLogo size="20px" currency={ETHER} />
+              <CurrencyLogo size="20px" currency={currency} />
+              <CurrencyLogo size="20px" currency={currency1} />
               <TYPE.mediumHeader
                 marginLeft="10px"
                 color={theme.white}
@@ -70,23 +115,23 @@ export default function GovernanceProposals() {
               </TYPE.mediumHeader>
             </Flex>
             <RowBetween>
-              <InfoText>Total Liquidity:</InfoText>
-              <InfoText>$146,787</InfoText>
+              <ContentTitle>Total Liquidity:</ContentTitle>
+              <ContentTitle>$146,787</ContentTitle>
             </RowBetween>
             <RowBetween>
-              <InfoText>Volume:</InfoText>
+              <ContentTitle>Volume:</ContentTitle>
               <Flex alignItems="center">
-                <InfoText marginRight="8px">199.976</InfoText>
-                <CurrencyLogo currency={USDC} size="20px" />
+                <ContentTitle marginRight="8px">199.976</ContentTitle>
+                <CurrencyLogo currency={currency} size="20px" />
               </Flex>
             </RowBetween>
             <RowBetween>
-              <InfoText>Pool fees:</InfoText>
-              <InfoText>0.05%</InfoText>
+              <ContentTitle>Pool fees:</ContentTitle>
+              <ContentTitle>0.05%</ContentTitle>
             </RowBetween>
             <RowBetween>
-              <InfoText>Your DAO power:</InfoText>
-              <InfoText>0.4%</InfoText>
+              <ContentTitle>Your DAO power:</ContentTitle>
+              <ContentTitle>0.4%</ContentTitle>
             </RowBetween>
           </AutoColumn>
         </LightCard>

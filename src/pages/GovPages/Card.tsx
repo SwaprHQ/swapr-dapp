@@ -73,12 +73,18 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
     router.push({
       pathname: `/governance/${currency.symbol}/pairs`,
       state: {
-        currency: currency
+        currency
       }
     })
   }
   const onPairClick = () => {
-    router.push(`/governance/${currency.symbol}/pairs/${currency1?.symbol}/proposals`)
+    router.push({
+      pathname: `/governance/${currency.symbol}/pairs/${currency1?.symbol}/proposals`,
+      state: {
+        currency,
+        currency1
+      }
+    })
   }
 
   if (currency1 === undefined) {

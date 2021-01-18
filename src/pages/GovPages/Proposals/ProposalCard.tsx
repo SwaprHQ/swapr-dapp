@@ -1,11 +1,43 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import { Flex } from 'rebass'
-
-import { TextCard } from './styleds'
 import { TYPE } from '../../../theme'
-import { RowBetween } from '../../../components/Row'
-import { LightCard } from '../../../components/Card'
+import HourGlass from '../../../assets/svg/hourglass.svg'
+
+import Card, { LightCard } from '../../../components/Card'
 import { AutoColumn } from '../../../components/Column'
+import { RowBetween } from '../../../components/Row'
+import useInterval from '../../../hooks/useInterval'
+
+const Container = styled(LightCard)`
+  padding: 1rem 1.25rem;
+  height: 76px;
+`
+
+const InfoText = styled(TYPE.main)`
+  font-size: 10px;
+  font-weight: 600 !important;
+  line-height: 12px;
+  font-style: normal;
+  color: ${({ theme }) => theme.purple3};
+`
+
+const TextCard = styled(Card)`
+  border: 1px solid ${({ theme }) => theme.purple3};
+  border-radius: 4px;
+  height: 16px;
+  padding: 2px 6px;
+  align-items: center;
+  width: auto;
+`
+
+const Progress = styled.div<{ isFor: boolean; width: string }>`
+  height: 2px;
+  margin: 0;
+  padding: 0;
+  width: ${({ width }) => width};
+  background-color: ${({ isFor, theme }) => (isFor ? theme.green2 : theme.red1)};
+`
 
 export interface ProposalProps {
   id: number
@@ -16,28 +48,56 @@ export interface ProposalProps {
   createdAt: number
 }
 
-export const fakeProposalData: ProposalProps[] = [
-  { id: 1, title: 'USDC/ETH Pool Fee to 0.15%', totalVote: 23, for: 20, against: 3, createdAt: 1610735340 }
-]
-
 export default function ProposalCard(props: ProposalProps) {
+  const theme = useContext(ThemeContext)
+  const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.createdAt) / 1000)) // displays in second
+
+  const FOR = ((props.for / props.totalVote) * 100).toFixed(0) + '%'
+  const AGAINST = ((props.against / props.totalVote) * 100).toFixed(0) + '%'
+
+  useInterval(() => {
+    setCounter(counter + 1)
+  }, 1000)
+
+  const formatTimeStamp = (timestamp: number): string => {
+    const day = (timestamp - (timestamp % 86400)) / 86400
+    const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
+    const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
+    return `${day}d ${hour}h ${minute}m`
+  }
+
   return (
-    <LightCard>
-      <AutoColumn gap="md">
-        <RowBetween>
-          <Flex flexDirection="column">
-            <Flex>
-              <TextCard>{props.id}</TextCard>
-              <TYPE.small>{props.createdAt + ' | ' + props.totalVote}</TYPE.small>
-            </Flex>
+    <Container>
+      <RowBetween>
+        <AutoColumn gap="sm">
+          <Flex alignItems="center">
+            <TextCard>
+              <InfoText>{'#' + ('00' + props.id).slice(-3)}</InfoText>
+            </TextCard>
+            <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
+            <InfoText style={{ marginLeft: '5px', marginRight: '10px' }}>{formatTimeStamp(counter)}</InfoText>
+            <InfoText>|</InfoText>
+            <InfoText style={{ marginLeft: '5px' }}>{props.totalVote + ' Voted'}</InfoText>
+          </Flex>
+          <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
             {props.title}
-          </Flex>
-          <Flex flexDirection="column">
-            <TYPE.small>{'FOR ' + props.for}</TYPE.small>
-            <TYPE.small>{'AGAINST ' + props.against}</TYPE.small>
-          </Flex>
-        </RowBetween>
-      </AutoColumn>
-    </LightCard>
+          </TYPE.mediumHeader>
+        </AutoColumn>
+        <AutoColumn gap="sm" style={{ width: '105px' }}>
+          <RowBetween>
+            <InfoText>FOR</InfoText>
+            <InfoText color={theme.green2}>{FOR}</InfoText>
+          </RowBetween>
+          <RowBetween>
+            <InfoText>AGAINST</InfoText>
+            <InfoText color={theme.red1}>{AGAINST}</InfoText>
+          </RowBetween>
+          <RowBetween>
+            <Progress width={FOR} isFor={true} />
+            <Progress width={AGAINST} isFor={false} />
+          </RowBetween>
+        </AutoColumn>
+      </RowBetween>
+    </Container>
   )
 }
