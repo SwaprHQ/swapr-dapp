@@ -90,9 +90,11 @@ export default function ProposalCard(props: ProposalProps) {
               <InfoText>{'#' + ('00' + props.id).slice(-3)}</InfoText>
             </TextCard>
             <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
-            <InfoText style={{ marginLeft: '5px', marginRight: '10px' }}>{formatTimeStamp(counter)}</InfoText>
+            <InfoText marginLeft="5px" marginRight="10px">
+              {formatTimeStamp(counter)}
+            </InfoText>
             <InfoText>|</InfoText>
-            <InfoText style={{ marginLeft: '5px' }}>{props.totalVote + ' Voted'}</InfoText>
+            <InfoText marginLeft="5px">{props.totalVote + ' Voted'}</InfoText>
           </Flex>
           <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
             {props.title}

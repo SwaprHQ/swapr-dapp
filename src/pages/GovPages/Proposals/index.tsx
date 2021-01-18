@@ -73,7 +73,7 @@ export default function GovernanceProposals() {
     <PageWrapper>
       <AutoColumn gap="lg" justify="center">
         <AutoColumn gap="lg" style={{ width: '100%' }}>
-          <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
+          <TitleRow margin="1rem" padding="0">
             <Flex alignItems="center">
               <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400}>
                 {t('governance') + ' /'}
