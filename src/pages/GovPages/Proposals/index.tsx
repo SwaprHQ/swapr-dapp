@@ -159,7 +159,7 @@ export default function GovernanceProposals() {
             {
               title: 'Proposals history',
               // eslint-disable-next-line react/display-name
-              render: () => <></>
+              render: () => <TYPE.mediumHeader>No Proposals Yet</TYPE.mediumHeader>
             }
           ]}
         />
