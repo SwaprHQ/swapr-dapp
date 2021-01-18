@@ -12,6 +12,21 @@ import useInterval from '../../../hooks/useInterval'
 const Container = styled(LightCard)`
   padding: 1rem 1.25rem;
   height: 76px;
+  position: relative;
+  cursor: pointer;
+  border: none;
+
+  ::before {
+    content: '';
+    background-image: linear-gradient(180deg, ${({ theme }) => theme.bg2} 0%, ${({ theme }) => theme.bg3} 100%);
+    top: -1px;
+    left: -1px;
+    bottom: -1px;
+    right: -1px;
+    position: absolute;
+    z-index: -1;
+    border-radius: 8px;
+  }
 `
 
 const InfoText = styled(TYPE.main)`
