@@ -51,12 +51,12 @@ export default function Governance() {
               <TYPE.mediumHeader lineHeight="24px">{t('governance')}</TYPE.mediumHeader>
             ) : (
               <>
-                <TYPE.mediumHeader color={theme.text4} lineHeight="24px">
-                  {t('governance')}
-                </TYPE.mediumHeader>
-                &nbsp; / &nbsp;
-                <CurrencyLogo size="20px" currency={ETHER} />
-                &nbsp;
+                <a href="#/governance">
+                  <TYPE.mediumHeader color={theme.text4} lineHeight="24px">
+                    {t('governance') + ' /'}
+                  </TYPE.mediumHeader>
+                </a>
+                <CurrencyLogo size="20px" currency={ETHER} style={{ marginLeft: '5px', marginRight: '5px' }} />
                 <TYPE.mediumHeader lineHeight="24px">{t(router.query?.asset)}</TYPE.mediumHeader>
               </>
             )}

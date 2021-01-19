@@ -97,9 +97,11 @@ export default function GovernanceProposals() {
         <AutoColumn gap="lg" style={{ width: '100%' }}>
           <TitleRow marginBottom="1rem" padding="0">
             <Flex alignItems="center">
-              <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400}>
-                {t('governance') + ' /'}
-              </TYPE.mediumHeader>
+              <a href="#/governance">
+                <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400} >
+                  {t('governance') + ' /'}
+                </TYPE.mediumHeader>
+              </a>
               &nbsp;
               <CurrencyLogo size="20px" currency={currency} />
               <CurrencyLogo size="20px" currency={currency1} />
