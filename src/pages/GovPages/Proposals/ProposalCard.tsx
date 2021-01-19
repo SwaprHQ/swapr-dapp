@@ -1,21 +1,32 @@
 import React, { useContext, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
+import { Clock } from 'react-feather'
 import { Flex } from 'rebass'
+
 import { TYPE } from '../../../theme'
-import HourGlass from '../../../assets/svg/hourglass.svg'
-
-import Card, { LightCard } from '../../../components/Card'
+import Row, { RowBetween } from '../../../components/Row'
 import { AutoColumn } from '../../../components/Column'
-import { RowBetween } from '../../../components/Row'
-import useInterval from '../../../hooks/useInterval'
+import Card, { LightCard } from '../../../components/Card'
 
-const Container = styled(LightCard)`
+import useInterval from '../../../hooks/useInterval'
+import HourGlass from '../../../assets/svg/hourglass.svg'
+import Block from '../../../assets/svg/block.svg'
+import Done from '../../../assets/svg/done_all.svg'
+
+const Container = styled(LightCard)<{ isPassed: number }>`
+  // 0 - voting in progress
+  // 1 - passed
+  // 2 - failed
   padding: 1rem 1.25rem;
   height: 76px;
   position: relative;
   cursor: pointer;
-  background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
-    ${({ theme }) => theme.dark1};
+  background: ${({ isPassed, theme }) =>
+    isPassed === 0
+      ? `linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%), ${theme.dark1}`
+      : `linear-gradient(141.72deg, ${theme.bg1} -11.46%, ${
+          isPassed === 1 ? 'rgba(5, 122, 85, 0.5)' : 'rgba(238, 46, 81, 0.5)'
+        } 180.17%)`};
   background-blend-mode: overlay, normal;
   border: none;
 
@@ -32,16 +43,17 @@ const Container = styled(LightCard)`
   }
 `
 
-const InfoText = styled(TYPE.main)`
+const InfoText = styled(TYPE.main)<{ isPassed: number }>`
   font-size: 10px;
   font-weight: 600 !important;
   line-height: 12px;
   font-style: normal;
-  color: ${({ theme }) => theme.purple3};
+  color: ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
 `
 
-const TextCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.purple3};
+const TextCard = styled(Card)<{ isPassed: number }>`
+  border: 1px solid
+    ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
   border-radius: 4px;
   height: 16px;
   padding: 2px 6px;
@@ -57,64 +69,81 @@ const Progress = styled.div<{ isFor: boolean; width: string }>`
   background-color: ${({ isFor, theme }) => (isFor ? theme.green2 : theme.red1)};
 `
 
-export interface ProposalProps {
+interface ProposalCardProps {
   id: number
   title: string
   totalVote: number
-  for: number
-  against: number
-  createdAt: number
+  for: number // percentage value
+  against: number // percentage value
+  isEnded: boolean
+  until: number
 }
 
-export default function ProposalCard(props: ProposalProps) {
+export default function ProposalCard(props: ProposalCardProps) {
   const theme = useContext(ThemeContext)
-  const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.createdAt) / 1000)) // displays in second
-
-  const FOR = ((props.for / props.totalVote) * 100).toFixed(0) + '%'
-  const AGAINST = ((props.against / props.totalVote) * 100).toFixed(0) + '%'
+  const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.until) / 1000)) // displays in second
 
   useInterval(() => {
     setCounter(counter + 1)
   }, 1000)
 
-  const formatTimeStamp = (timestamp: number): string => {
+  const formatTimeStamp = (origin: number): string => {
+    const timestamp = Math.abs(origin)
     const day = (timestamp - (timestamp % 86400)) / 86400
     const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
     const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
-    return `${day}d ${hour}h ${minute}m`
+    return `${day}d ${hour}h ${minute}m${props.isEnded ? ' AGO' : ''}`
   }
 
+  const isPassed = !props.isEnded ? 0 : props.for > props.against ? 1 : 2
   return (
-    <Container>
+    <Container isPassed={isPassed}>
       <RowBetween>
         <AutoColumn gap="sm">
           <Flex alignItems="center">
-            <TextCard>
-              <InfoText>{'#' + ('00' + props.id).slice(-3)}</InfoText>
+            <TextCard isPassed={isPassed}>
+              <InfoText isPassed={isPassed}>
+                {'#' + ('00' + props.id).slice(-3) + (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
+              </InfoText>
             </TextCard>
-            <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
-            <InfoText marginLeft="5px" marginRight="10px">
+            {!props.isEnded ? (
+              <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
+            ) : (
+              <Clock size={12} style={{ marginLeft: '10px' }} color={theme.purple2} />
+            )}
+            <InfoText isPassed={0} marginLeft="5px" marginRight="10px">
               {formatTimeStamp(counter)}
             </InfoText>
-            <InfoText>|</InfoText>
-            <InfoText marginLeft="5px">{props.totalVote + ' Voted'}</InfoText>
+            <InfoText isPassed={0}>|</InfoText>
+            <InfoText isPassed={0} marginLeft="5px">
+              {props.totalVote + ' Voted'}
+            </InfoText>
           </Flex>
-          <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
-            {props.title}
-          </TYPE.mediumHeader>
+          <Row>
+            {isPassed === 1 ? (
+              <img src={Done} alt="Done" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
+            ) : isPassed === 2 ? (
+              <img src={Block} alt="Block" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
+            ) : (
+              <></>
+            )}
+            <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
+              {props.title}
+            </TYPE.mediumHeader>
+          </Row>
         </AutoColumn>
         <AutoColumn gap="sm" style={{ width: '105px' }}>
           <RowBetween>
-            <InfoText>FOR</InfoText>
-            <InfoText color={theme.green2}>{FOR}</InfoText>
+            <InfoText isPassed={isPassed === 1 ? 1 : 0}>FOR</InfoText>
+            <InfoText isPassed={isPassed !== 2 ? 1 : 0}>{props.for + '%'}</InfoText>
           </RowBetween>
           <RowBetween>
-            <InfoText>AGAINST</InfoText>
-            <InfoText color={theme.red1}>{AGAINST}</InfoText>
+            <InfoText isPassed={isPassed === 2 ? 2 : 0}>AGAINST</InfoText>
+            <InfoText isPassed={isPassed !== 1 ? 2 : 0}>{props.against + '%'}</InfoText>
           </RowBetween>
           <RowBetween>
-            <Progress width={FOR} isFor={true} />
-            <Progress width={AGAINST} isFor={false} />
+            <Progress width={props.for + '%'} isFor={true} />
+            <Progress width={props.against + '%'} isFor={false} />
           </RowBetween>
         </AutoColumn>
       </RowBetween>

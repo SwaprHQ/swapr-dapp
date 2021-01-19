@@ -13,8 +13,9 @@ import { AutoColumn } from '../../../components/Column'
 import CurrencyLogo from '../../../components/CurrencyLogo'
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
-import ProposalCard, { ProposalProps } from './ProposalCard'
-import { Redirect } from 'react-router-dom'
+import Proposals from './Proposals'
+
+// import { Redirect } from 'react-router-dom'
 
 const ContentCard = styled(LightCard)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
@@ -72,17 +73,6 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
   border: 1px solid #28263f;
 `
 
-const fakeProposalData: ProposalProps[] = [
-  {
-    id: 3,
-    title: 'USDC/ETH Pool Fee to 0.15%',
-    totalVote: 23,
-    for: 20,
-    against: 3,
-    createdAt: new Date('Jan 12, 2021 03:24:00').getTime()
-  }
-]
-
 export default function GovernanceProposals() {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -91,9 +81,9 @@ export default function GovernanceProposals() {
   const currency = router.location.state?.currency
   const currency1 = router.location.state?.currency1
 
-  if (currency === undefined || currency1 === undefined) {
-    return <Redirect to="/" />
-  }
+  // if (currency === undefined || currency1 === undefined) {
+  //   return <Redirect to="/" />
+  // }
 
   return (
     <PageWrapper>
@@ -171,22 +161,7 @@ export default function GovernanceProposals() {
           tabs={[
             {
               title: 'Proposals',
-              // eslint-disable-next-line react/display-name
-              render: () => (
-                <>
-                  {fakeProposalData.map((ele, index) => (
-                    <ProposalCard
-                      key={index}
-                      id={ele.id}
-                      title={ele.title}
-                      totalVote={ele.totalVote}
-                      for={ele.for}
-                      against={ele.against}
-                      createdAt={ele.createdAt}
-                    />
-                  ))}
-                </>
-              )
+              render: Proposals
             },
             {
               title: 'Proposals history',
