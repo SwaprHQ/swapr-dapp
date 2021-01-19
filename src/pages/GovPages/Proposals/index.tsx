@@ -46,7 +46,7 @@ const TitleRow = styled(RowBetween)`
   `};
 `
 
-const ContentTitle = styled(TYPE.body)`
+const ContentTitle = styled(TYPE.main)`
   font-size: 14px;
   font-weight: 500;
   line-height: 17px;
@@ -124,7 +124,7 @@ export default function GovernanceProposals() {
         </AutoColumn>
         <ContentCard>
           <AutoColumn gap="md">
-            <Flex>
+            <Flex marginBottom="14px">
               <CurrencyLogo size="20px" currency={currency} />
               <CurrencyLogo size="20px" currency={currency1} />
               <TYPE.mediumHeader
