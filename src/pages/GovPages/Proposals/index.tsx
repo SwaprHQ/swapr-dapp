@@ -65,7 +65,11 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
   `};
-  margin-right: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(141.72deg, rgba(255, 255, 255, 0.55) -0.1%, rgba(0, 0, 0, 0) 98.9%),
+    ${({ theme }) => theme.dark1};
+  background-blend-mode: overlay;
+  border: 1px solid #28263f;
 `
 
 const fakeProposalData: ProposalProps[] = [
@@ -98,7 +102,7 @@ export default function GovernanceProposals() {
           <TitleRow marginBottom="1rem" padding="0">
             <Flex alignItems="center">
               <a href="#/governance">
-                <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400} >
+                <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400}>
                   {t('governance') + ' /'}
                 </TYPE.mediumHeader>
               </a>
@@ -111,11 +115,6 @@ export default function GovernanceProposals() {
               </TYPE.mediumHeader>
             </Flex>
             <Flex>
-              <ResponsiveButtonSecondary id="pair-stats" padding="8px 14px">
-                <Text fontWeight={700} fontSize={12}>
-                  {pairName + ' STATS'}
-                </Text>
-              </ResponsiveButtonSecondary>
               <ResponsiveButtonPrimary id="create-proposal-button" padding="8px 14px">
                 <Text fontWeight={700} fontSize={12}>
                   CREATE PROPOSAL
@@ -126,18 +125,26 @@ export default function GovernanceProposals() {
         </AutoColumn>
         <ContentCard>
           <AutoColumn gap="md">
-            <Flex marginBottom="14px">
-              <CurrencyLogo size="20px" currency={currency} />
-              <CurrencyLogo size="20px" currency={currency1} />
-              <TYPE.mediumHeader
-                marginLeft="10px"
-                color={theme.white}
-                fontWeight={600}
-                lineHeight="19.5px"
-                fontSize="16px"
-              >
-                {pairName}
-              </TYPE.mediumHeader>
+            <Flex marginBottom="14px" justifyContent="space-between" alignItems="center">
+              <Flex>
+                <CurrencyLogo size="20px" currency={currency} />
+                <CurrencyLogo size="20px" currency={currency1} />
+                <TYPE.mediumHeader
+                  marginLeft="10px"
+                  color={theme.white}
+                  fontWeight={600}
+                  lineHeight="19.5px"
+                  fontSize="16px"
+                >
+                  {pairName}
+                </TYPE.mediumHeader>
+              </Flex>
+              <ResponsiveButtonSecondary>
+                <Text fontWeight={700} fontSize={12}>
+                  {pairName + ' STATS'}
+                </Text>
+                <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
+              </ResponsiveButtonSecondary>
             </Flex>
             <RowBetween>
               <ContentTitle>Total Liquidity:</ContentTitle>
