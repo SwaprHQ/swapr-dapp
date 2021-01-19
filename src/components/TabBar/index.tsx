@@ -15,9 +15,8 @@ export default function TabBar({ tabs }: TabBarProps) {
     <>
       <TabContainer>
         {tabs.map((tab, index) => (
-          <TabButton key={index} onClick={() => setActiveTab(index)}>
+          <TabButton key={index} onClick={() => setActiveTab(index)} active={activeTab === index}>
             <Title active={activeTab === index}>{tab.title}</Title>
-            <Indicator active={activeTab === index} />
           </TabButton>
         ))}
       </TabContainer>
@@ -30,28 +29,28 @@ const TabContainer = styled.section`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 60px;
+  height: 50px;
 `
 
-const TabButton = styled.button`
+const TabButton = styled.button<{ active: boolean }>`
   width: auto;
-  height: 100%;
   cursor: pointer;
-  padding: 10px;
+  padding: 0;
   border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   transition: 0.6s;
-  background: transparent
-  
+  background: transparent;
+  margin-right: 2rem;
+
   &:focus {
     outline: none;
   }
 `
 
-const Title = styled.span<{ active: boolean }>`
+const Title = styled.p<{ active: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -60,16 +59,8 @@ const Title = styled.span<{ active: boolean }>`
   font-size: 18px;
   color: ${props => (props.active ? props.theme.text4 : props.theme.text5)};
   transition: 0.6s;
-`
-
-const Indicator = styled.span<{ active: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  padding-bottom: 4px;
   border-bottom-width: 2px;
   border-bottom-style: solid;
   border-bottom-color: ${props => (props.active ? props.theme.text4 : 'transparent')};
-  transition: 0.6s;
 `
