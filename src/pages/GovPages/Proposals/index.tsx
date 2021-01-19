@@ -16,6 +16,14 @@ import TabBar from '../../../components/TabBar'
 import ProposalCard, { ProposalProps } from './ProposalCard'
 import { Redirect } from 'react-router-dom'
 
+const ContentCard = styled(LightCard)`
+  background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
+    ${({ theme }) => theme.dark1};
+  background-blend-mode: overlay, normal;
+  border-radius: 8px;
+  padding: 25px 20px;
+`
+
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -100,7 +108,7 @@ export default function GovernanceProposals() {
             </Flex>
           </TitleRow>
         </AutoColumn>
-        <LightCard padding="25px 20px">
+        <ContentCard>
           <AutoColumn gap="md">
             <Flex>
               <CurrencyLogo size="20px" currency={currency} />
@@ -135,7 +143,7 @@ export default function GovernanceProposals() {
               <ContentTitle>0.4%</ContentTitle>
             </RowBetween>
           </AutoColumn>
-        </LightCard>
+        </ContentCard>
         <TabBar
           tabs={[
             {
