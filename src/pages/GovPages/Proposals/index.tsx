@@ -22,6 +22,20 @@ const ContentCard = styled(LightCard)`
   background-blend-mode: overlay, normal;
   border-radius: 8px;
   padding: 25px 20px;
+  position: relative;
+  border: none;
+
+  ::before {
+    content: '';
+    background-image: linear-gradient(180deg, ${({ theme }) => theme.bg1} 0%, ${({ theme }) => theme.bg3} 100%);
+    top: -1px;
+    left: -1px;
+    bottom: -1px;
+    right: -1px;
+    position: absolute;
+    z-index: -1;
+    border-radius: 8px;
+  }
 `
 
 const TitleRow = styled(RowBetween)`

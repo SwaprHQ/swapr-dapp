@@ -14,14 +14,14 @@ const Container = styled(LightCard)`
   height: 76px;
   position: relative;
   cursor: pointer;
-  border: none;
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
     ${({ theme }) => theme.dark1};
   background-blend-mode: overlay, normal;
+  border: none;
 
   ::before {
     content: '';
-    background-image: linear-gradient(180deg, ${({ theme }) => theme.bg2} 0%, ${({ theme }) => theme.bg3} 100%);
+    background-image: linear-gradient(180deg, ${({ theme }) => theme.bg1} 0%, ${({ theme }) => theme.bg3} 100%);
     top: -1px;
     left: -1px;
     bottom: -1px;
