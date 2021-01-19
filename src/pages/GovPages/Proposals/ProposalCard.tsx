@@ -15,6 +15,9 @@ const Container = styled(LightCard)`
   position: relative;
   cursor: pointer;
   border: none;
+  background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
+    ${({ theme }) => theme.dark1};
+  background-blend-mode: overlay, normal;
 
   ::before {
     content: '';
