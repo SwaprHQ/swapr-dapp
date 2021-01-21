@@ -66,8 +66,8 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
   `};
-  padding: 10px 20px;
-  background: linear-gradient(141.72deg, rgba(255, 255, 255, 0.55) -0.1%, rgba(0, 0, 0, 0) 98.9%),
+  padding: 9px 21px;
+  background: linear-gradient(141.72deg, rgba(255, 255, 255, 0.55) -11.46%, rgba(0, 0, 0, 0) 155.17%),
     ${({ theme }) => theme.dark1};
   background-blend-mode: overlay;
   border: 1px solid #28263f;
