@@ -92,7 +92,7 @@ export default function ProposalCard(props: ProposalCardProps) {
     const day = (timestamp - (timestamp % 86400)) / 86400
     const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
     const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
-    return `${day}d ${hour}h ${minute}m${props.isEnded ? ' AGO' : ''}`
+    return `${day}D ${hour}H ${minute}M${props.isEnded ? ' AGO' : ''}`
   }
 
   const isPassed = !props.isEnded ? 0 : props.for > props.against ? 1 : 2
@@ -116,7 +116,7 @@ export default function ProposalCard(props: ProposalCardProps) {
             </InfoText>
             <InfoText isPassed={0}>|</InfoText>
             <InfoText isPassed={0} marginLeft="5px">
-              {props.totalVote + ' Voted'}
+              {props.totalVote + ' VOTED'}
             </InfoText>
           </Flex>
           <Row>
