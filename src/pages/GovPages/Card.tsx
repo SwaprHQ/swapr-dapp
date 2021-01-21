@@ -14,7 +14,7 @@ const LightCardWrap = styled(Card)`
     ${({ theme }) => theme.dark1};
   background-blend-mode: overlay, normal;
   padding: 0.8rem;
-  width: calc(25% - 6px);
+  width: calc(25% - 8px);
   padding: 24px 20px;
   display: flex;
   flex-wrap: wrap;
@@ -36,6 +36,7 @@ const LightCardWrap = styled(Card)`
     right: -1px;
     position: absolute;
     z-index: -1;
+    width: calc(100% + 2px);
     border-radius: 8px;
   }
 `
