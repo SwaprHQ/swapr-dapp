@@ -155,6 +155,13 @@ export default function GovernanceProposals() {
               <ContentTitle>Your DAO power:</ContentTitle>
               <ContentTitle>0.4%</ContentTitle>
             </RowBetween>
+            <RowBetween>
+              <ResponsiveButtonSecondary width="100% !important">
+                <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
+                  GO TO POOL
+                </TYPE.main>
+              </ResponsiveButtonSecondary>
+            </RowBetween>
           </AutoColumn>
         </ContentCard>
         <TabBar
