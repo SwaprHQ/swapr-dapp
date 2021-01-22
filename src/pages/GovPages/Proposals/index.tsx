@@ -156,7 +156,7 @@ export default function GovernanceProposals() {
               <ContentTitle>0.4%</ContentTitle>
             </RowBetween>
             <RowBetween>
-              <ResponsiveButtonSecondary width="100% !important">
+              <ResponsiveButtonSecondary width="100% !important" marginTop="14px">
                 <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
                   GO TO POOL
                 </TYPE.main>
