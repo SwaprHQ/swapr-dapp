@@ -44,10 +44,12 @@ const Container = styled(LightCard)<{ isPassed: number }>`
 `
 
 const InfoText = styled(TYPE.main)<{ isPassed: number }>`
-  font-size: 10px;
-  font-weight: 600 !important;
-  line-height: 12px;
   font-style: normal;
+  font-weight: bold !important;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
 `
 
