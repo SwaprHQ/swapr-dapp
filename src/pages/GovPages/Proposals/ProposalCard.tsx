@@ -104,7 +104,7 @@ export default function ProposalCard(props: ProposalCardProps) {
         <AutoColumn gap="sm">
           <Flex alignItems="center">
             <TextCard isPassed={isPassed}>
-              <InfoText isPassed={isPassed}>
+              <InfoText isPassed={isPassed} fontWeight={'600 !important'} letterSpacing={'2% !important'}>
                 {'#' + ('00' + props.id).slice(-3) + (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
               </InfoText>
             </TextCard>
