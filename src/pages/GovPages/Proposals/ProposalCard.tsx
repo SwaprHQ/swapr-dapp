@@ -127,7 +127,13 @@ export default function ProposalCard(props: ProposalCardProps) {
             ) : (
               <></>
             )}
-            <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal">
+            <TYPE.mediumHeader
+              lineHeight="19.5px"
+              fontWeight={600}
+              fontSize="16px"
+              fontStyle="normal"
+              color={theme.text3}
+            >
               {props.title}
             </TYPE.mediumHeader>
           </Row>
