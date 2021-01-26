@@ -140,7 +140,7 @@ export default function ProposalCard(props: ProposalCardProps) {
             </TYPE.mediumHeader>
           </Row>
         </AutoColumn>
-        <AutoColumn gap="sm" style={{ width: '105px' }}>
+        <AutoColumn gap={'4px'} style={{ width: '105px' }}>
           <RowBetween>
             <InfoText isPassed={isPassed === 1 ? 1 : 0} small>
               FOR
