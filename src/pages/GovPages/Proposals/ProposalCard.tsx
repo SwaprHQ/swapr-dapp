@@ -46,7 +46,7 @@ const Container = styled(LightCard)<{ isPassed: number }>`
 const InfoText = styled(TYPE.main)<{ isPassed: number; small?: boolean }>`
   font-style: normal;
   font-weight: bold !important;
-  font-size: ${({ small }) => (small ? '9px !important' : '10px')};
+  font-size: ${({ small }) => (small ? '9.5px !important' : '10px')};
   line-height: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
