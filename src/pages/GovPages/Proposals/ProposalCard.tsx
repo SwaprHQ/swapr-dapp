@@ -18,7 +18,7 @@ const Container = styled(LightCard)<{ isPassed: number }>`
   // 1 - passed
   // 2 - failed
   padding: 1.25rem;
-  height: 76px;
+  height: 88px;
   position: relative;
   cursor: pointer;
   background: ${({ isPassed, theme }) =>
