@@ -43,10 +43,10 @@ const Container = styled(LightCard)<{ isPassed: number }>`
   }
 `
 
-const InfoText = styled(TYPE.main)<{ isPassed: number }>`
+const InfoText = styled(TYPE.main)<{ isPassed: number; small?: boolean }>`
   font-style: normal;
   font-weight: bold !important;
-  font-size: 10px;
+  font-size: ${({ small }) => (small ? '9px !important' : '10px')};
   line-height: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -142,12 +142,20 @@ export default function ProposalCard(props: ProposalCardProps) {
         </AutoColumn>
         <AutoColumn gap="sm" style={{ width: '105px' }}>
           <RowBetween>
-            <InfoText isPassed={isPassed === 1 ? 1 : 0}>FOR</InfoText>
-            <InfoText isPassed={isPassed !== 2 ? 1 : 0}>{props.for + '%'}</InfoText>
+            <InfoText isPassed={isPassed === 1 ? 1 : 0} small>
+              FOR
+            </InfoText>
+            <InfoText isPassed={isPassed !== 2 ? 1 : 0} small>
+              {props.for + '%'}
+            </InfoText>
           </RowBetween>
           <RowBetween>
-            <InfoText isPassed={isPassed === 2 ? 2 : 0}>AGAINST</InfoText>
-            <InfoText isPassed={isPassed !== 1 ? 2 : 0}>{props.against + '%'}</InfoText>
+            <InfoText isPassed={isPassed === 2 ? 2 : 0} small>
+              AGAINST
+            </InfoText>
+            <InfoText isPassed={isPassed !== 1 ? 2 : 0} small>
+              {props.against + '%'}
+            </InfoText>
           </RowBetween>
           <RowBetween>
             <Progress width={props.for + '%'} isFor={true} />
