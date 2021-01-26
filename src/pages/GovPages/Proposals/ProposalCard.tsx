@@ -32,7 +32,7 @@ const Container = styled(LightCard)<{ isPassed: number }>`
 
   ::before {
     content: '';
-    background-image: linear-gradient(180deg, ${({ theme }) => theme.bg1} 0%, ${({ theme }) => theme.bg3} 100%);
+    background-image: linear-gradient(180deg, #14131d 0%, rgb(68 65 99 / 50%) 100%);
     top: -1px;
     left: -1px;
     bottom: -1px;
