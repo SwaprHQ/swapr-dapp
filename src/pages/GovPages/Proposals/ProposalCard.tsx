@@ -17,7 +17,7 @@ const Container = styled(LightCard)<{ isPassed: number }>`
   // 0 - voting in progress
   // 1 - passed
   // 2 - failed
-  padding: 1rem 1.25rem;
+  padding: 1.25rem;
   height: 76px;
   position: relative;
   cursor: pointer;
