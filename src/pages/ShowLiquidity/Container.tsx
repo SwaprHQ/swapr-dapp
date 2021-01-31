@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import { ThemeContext } from 'styled-components'
 import { Flex, Text } from 'rebass'
 import { ETHER } from 'dxswap-sdk'
 import { USDC } from '../../constants'
@@ -9,14 +9,7 @@ import { RowBetween } from '../../components/Row'
 import { AutoColumn } from '../../components/Column'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import MyLiquidity from './MyLiquidity'
-import { GradientButton, ContentCard } from './styleds'
-
-const ContentTitle = styled(TYPE.main)`
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 17px;
-  color: ${({ theme }) => theme.purple2};
-`
+import { GradientButton, ContentCard, ContentTitle } from './styleds'
 
 export default function Container() {
   const theme = useContext(ThemeContext)

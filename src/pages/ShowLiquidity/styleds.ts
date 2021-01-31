@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import { TYPE } from '../../theme'
 import { RowBetween } from '../../components/Row'
 import { LightCard } from '../../components/Card'
 import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
@@ -49,4 +50,11 @@ export const ContentCard = styled(LightCard)`
     z-index: -1;
     border-radius: 8px;
   }
+`
+
+export const ContentTitle = styled(TYPE.main)`
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  color: ${({ theme }) => theme.purple2};
 `
