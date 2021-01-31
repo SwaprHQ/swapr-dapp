@@ -47,7 +47,7 @@ export default function Container() {
   return (
     <AutoColumn gap="lg" style={{ width: '100%' }}>
       <ContentCard>
-        <AutoColumn gap="md">
+        <AutoColumn gap="10px">
           <Flex marginBottom="14px" justifyContent="space-between" alignItems="center">
             <Flex>
               <CurrencyLogo size="20px" currency={USDC} />
