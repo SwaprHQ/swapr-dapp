@@ -63,7 +63,7 @@ export default function Container() {
           </RowBetween>
           <RowBetween>
             <GradientButton width="100% !important" marginTop="14px">
-              <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
+              <TYPE.main color={theme.text4} fontWeight="bold" fontSize="12px" lineHeight="15px" marginRight="8px">
                 GOVERNANCE
               </TYPE.main>
               <div
