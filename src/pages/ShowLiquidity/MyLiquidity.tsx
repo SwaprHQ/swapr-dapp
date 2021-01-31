@@ -1,18 +1,13 @@
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { Flex } from 'rebass'
-
-import { TYPE } from '../../theme'
-
-// import { LightCard } from '../../components/Card'
-import { RowBetween } from '../../components/Row'
-import { AutoColumn } from '../../components/Column'
-import CurrencyLogo from '../../components/CurrencyLogo'
-import { USDC } from '../../constants'
-import { GradientButton } from './styleds'
 import { ETHER } from 'dxswap-sdk'
-
-import { ContentCard } from './styleds'
+import { USDC } from '../../constants'
+import { TYPE } from '../../theme'
+import { AutoColumn } from '../../components/Column'
+import { RowBetween } from '../../components/Row'
+import CurrencyLogo from '../../components/CurrencyLogo'
+import { GradientButton, ContentCard } from './styleds'
 
 const ContentTitle = styled(TYPE.main)`
   font-size: 14px;

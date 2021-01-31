@@ -2,11 +2,9 @@ import React, { useContext } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Info } from 'react-feather'
 import { Flex } from 'rebass'
-
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../../components/Column'
 import { LightCard } from '../../components/Card'
-
 import { GradientButton } from './styleds'
 
 export default function Information() {

@@ -2,11 +2,10 @@ import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { Flex, Text } from 'rebass'
-
-import { USDC } from '../../constants'
 import { ETHER } from 'dxswap-sdk'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { USDC } from '../../constants'
 import { TYPE } from '../../theme'
+import CurrencyLogo from '../../components/CurrencyLogo'
 import { TitleRow, ResponsiveButtonPrimary, GradientButton } from './styleds'
 
 export default function Title() {

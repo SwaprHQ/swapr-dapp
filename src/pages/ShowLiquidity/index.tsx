@@ -2,7 +2,6 @@ import React from 'react'
 
 import { PageWrapper } from '../Pool/styleds'
 import { AutoColumn } from '../../components/Column'
-
 import Title from './Title'
 import Container from './Container'
 import Information from './Information'
