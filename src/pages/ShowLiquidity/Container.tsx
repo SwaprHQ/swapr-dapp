@@ -62,7 +62,7 @@ export default function Container() {
                 USDC/ETH
               </TYPE.mediumHeader>
             </Flex>
-            <GradientButton>
+            <GradientButton style={{ width: '102px' }}>
               <Text fontWeight={700} fontSize={12}>
                 STATS
               </Text>
