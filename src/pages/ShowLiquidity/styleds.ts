@@ -54,7 +54,7 @@ export const ContentCard = styled(LightCard)`
 
 export const ContentTitle = styled(TYPE.main)`
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400 !important;
   line-height: 17px;
   color: ${({ theme }) => theme.purple2};
 `
