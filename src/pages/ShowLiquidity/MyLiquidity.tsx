@@ -49,12 +49,12 @@ export default function MyLiquidity() {
           <ContentTitle>0.15%</ContentTitle>
         </RowBetween>
         <RowBetween>
-          <GradientButton style={{ margin: '0 4px', width: '100%' }}>
+          <GradientButton style={{ marginRight: '4px', width: '100%' }}>
             <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
               ADD LIQUIDITY
             </TYPE.main>
           </GradientButton>
-          <GradientButton style={{ margin: '0 4px', width: '100%' }}>
+          <GradientButton style={{ marginLeft: '4px', width: '100%' }}>
             <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
               REMOVE LIQUIDITY
             </TYPE.main>
