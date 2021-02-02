@@ -48,7 +48,7 @@ export default function MyLiquidity() {
           <ContentTitle>Voting Power:</ContentTitle>
           <ContentTitle>0.15%</ContentTitle>
         </RowBetween>
-        <RowBetween>
+        <RowBetween marginTop="11px">
           <GradientButton style={{ marginRight: '4px', width: '100%' }}>
             <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
               ADD LIQUIDITY
