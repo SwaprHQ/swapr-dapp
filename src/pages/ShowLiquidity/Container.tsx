@@ -58,7 +58,7 @@ export default function Container() {
             <ContentTitle>Your DAO power:</ContentTitle>
             <ContentTitle>0.4%</ContentTitle>
           </RowBetween>
-          <RowBetween>
+          <RowBetween marginTop="8px">
             <MyLiquidity />
           </RowBetween>
           <RowBetween>
