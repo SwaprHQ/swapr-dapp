@@ -4,8 +4,7 @@ import { Info } from 'react-feather'
 import { Flex } from 'rebass'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../../components/Column'
-import { LightCard } from '../../components/Card'
-import { GradientButton } from './styleds'
+import { ContentCard, GradientButton } from './styleds'
 
 export default function Information() {
   const theme = useContext(ThemeContext)
@@ -21,11 +20,18 @@ export default function Information() {
         {"Don't see a pool you joined? "}
         <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>Import it.</span>
       </TYPE.main>
-      <LightCard>
+      <ContentCard>
         <AutoColumn gap="md">
           <Flex>
             <Info color={theme.text4} size={18} />
-            <TYPE.body color={theme.text4} marginLeft="8px" fontWeight={500} lineHeight="20px" fontSize="16px">
+            <TYPE.body
+              color={theme.text4}
+              marginLeft="8px"
+              fontWeight={500}
+              fontStyle="normal"
+              fontSize="16px"
+              lineHeight="19.5px"
+            >
               Liquidity provider rewards
             </TYPE.body>
           </Flex>
@@ -35,11 +41,11 @@ export default function Information() {
             swap fee value is decided by DXdao and liquidty providers, it can be between 0% and 10% and it uses 0.15% as
             default value that is assigned when the pair is created.
           </TYPE.body>
-          <TYPE.body as="a" color={theme.text4} fontSize="17px" lineHeight="17px">
+          <TYPE.body color={theme.text4} fontWeight="500" fontSize="14px" lineHeight="17px">
             Read more about providing liquidity
           </TYPE.body>
         </AutoColumn>
-      </LightCard>
+      </ContentCard>
     </AutoColumn>
   )
 }
