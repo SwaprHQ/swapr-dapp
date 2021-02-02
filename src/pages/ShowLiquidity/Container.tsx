@@ -66,31 +66,31 @@ export default function Container() {
               <TYPE.main color={theme.text4} fontWeight="bold" fontSize="12px" lineHeight="15px" marginRight="8px">
                 GOVERNANCE
               </TYPE.main>
+              <div
+                style={{
+                  borderRadius: '50px',
+                  backgroundColor: theme.mainPurple,
+                  width: '16px',
+                  height: '16px',
+                  textAlign: 'center'
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    color: theme.text1,
+                    lineHeight: '16px',
+                    width: '16px',
+                    height: '16px',
+                    margin: '1px'
+                  }}
+                >
+                  3
+                </p>
+              </div>
             </GradientButton>
           </RowBetween>
-          <div
-            style={{
-              borderRadius: '50px',
-              backgroundColor: theme.mainPurple,
-              width: '16px',
-              height: '16px',
-              textAlign: 'center'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '10px',
-                fontWeight: 500,
-                color: theme.text1,
-                lineHeight: '16px',
-                width: '16px',
-                height: '16px',
-                margin: '1px'
-              }}
-            >
-              3
-            </p>
-          </div>
         </AutoColumn>
       </ContentCard>
     </AutoColumn>
