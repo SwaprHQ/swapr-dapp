@@ -79,6 +79,7 @@ interface ProposalCardProps {
   against: number // percentage value
   isEnded: boolean
   until: number
+  onClick: () => void
 }
 
 export default function ProposalCard(props: ProposalCardProps) {
@@ -99,7 +100,7 @@ export default function ProposalCard(props: ProposalCardProps) {
 
   const isPassed = !props.isEnded ? 0 : props.for > props.against ? 1 : 2
   return (
-    <Container isPassed={isPassed}>
+    <Container isPassed={isPassed} onClick={props.onClick}>
       <RowBetween>
         <AutoColumn gap="sm">
           <Flex alignItems="center">

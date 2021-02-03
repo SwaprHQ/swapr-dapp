@@ -97,7 +97,7 @@ export function colors(darkMode: boolean): Colors {
 
     // darkest // dark 1.1
     darkest: '#131218',
-    dark1: '#191824'
+    dark1: '#171621'
   }
 }
 

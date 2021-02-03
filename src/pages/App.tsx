@@ -10,6 +10,7 @@ import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from 
 import Pool from './Pool'
 import GovPages from './GovPages'
 import GovernanceProposals from './GovPages/Proposals'
+import GovernanceProposal from './GovPages/Proposal'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
@@ -79,6 +80,12 @@ export default function App() {
                 <Route exact strict path="/governance" component={GovPages} />
                 <Route exact strict path="/governance/:asset/pairs" component={GovPages} />
                 <Route exact strict path="/governance/:asset/pairs/:pair/proposals" component={GovernanceProposals} />
+                <Route
+                  exact
+                  strict
+                  path="/governance/:asset/pairs/:pair/proposals/:id"
+                  component={GovernanceProposal}
+                />
                 <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                 <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
                 <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />

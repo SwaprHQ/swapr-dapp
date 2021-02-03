@@ -168,7 +168,7 @@ export default function GovernanceProposals() {
           tabs={[
             {
               title: 'Proposals',
-              render: Proposals
+              render: () => <Proposals asset={router.query.asset} pair={router.query.pair} />
             },
             {
               title: 'Proposals history',

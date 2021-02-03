@@ -1,6 +1,8 @@
 import React from 'react'
 
 import { AutoColumn } from '../../../components/Column'
+import { useRouter } from '../../../hooks/useRouter'
+import { fakeProposalData } from '../constant'
 import ProposalCard from './ProposalCard'
 
 export interface ProposalProps {
@@ -12,34 +14,23 @@ export interface ProposalProps {
   until: number
 }
 
-const fakeProposalData: ProposalProps[] = [
-  {
-    id: 1,
-    title: 'USDC/ETH Pool Fee to 0.05%',
-    totalVote: 45,
-    for: 35,
-    against: 10,
-    until: new Date('Jan 18, 2021 03:24:00').getTime()
-  },
-  {
-    id: 2,
-    title: 'USDC/ETH Pool Fee to 0.09%',
-    totalVote: 45,
-    for: 10,
-    against: 35,
-    until: new Date('Jan 16, 2021 03:24:00').getTime()
-  },
-  {
-    id: 3,
-    title: 'USDC/ETH Pool Fee to 0.15%',
-    totalVote: 23,
-    for: 20,
-    against: 3,
-    until: new Date('Jan 25, 2021 03:24:00').getTime()
-  }
-]
+interface ProposalsProps {
+  asset: string
+  pair: string
+}
 
-export default function Proposals() {
+export default function Proposals(props: ProposalsProps) {
+  const router = useRouter()
+
+  const onCardClick = (id: number) => {
+    router.push({
+      pathname: `/governance/${props.asset}/pairs/${props.pair}/proposals/${id}`,
+      state: {
+        proposalInfo: fakeProposalData[id - 1]
+      }
+    })
+  }
+
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
       {fakeProposalData.map((ele, index) => {
@@ -57,6 +48,7 @@ export default function Proposals() {
             for={FOR}
             against={AGAINST}
             isEnded={isVotingEnded}
+            onClick={() => onCardClick(ele.id)}
           />
         )
       })}
