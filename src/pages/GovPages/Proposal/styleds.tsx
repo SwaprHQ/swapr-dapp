@@ -23,17 +23,19 @@ export const ContentCard = styled(Card)`
   padding: 24px 20px;
 `
 
-export const TextCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.purple3};
+export const TextCard = styled(Card)<{ isPassed: number }>`
+  border: 1px solid
+    ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
   border-radius: 4px;
   height: 16px;
   padding: 2px 6px;
   align-items: center;
   width: auto;
+  display: flex;
 `
 
-export const InfoText = styled(TYPE.main)`
-  color: ${({ theme }) => theme.purple3};
+export const InfoText = styled(TYPE.main)<{ isPassed: number }>`
+  color: ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
   font-style: normal;
   font-size: 11px;
   font-weight: 600;

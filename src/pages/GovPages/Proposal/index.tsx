@@ -25,21 +25,26 @@ import {
   ProposerAddress
 } from './styleds'
 import { useRouter } from '../../../hooks/useRouter'
+import { fakeProposalData } from '../constant'
 
 const pairName = 'USDC/ETH'
 const currency = USDC
 const currency1 = ETHER
 
 export default function GovernanceProposals() {
+  const router = useRouter()
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const proposalInfo = fakeProposalData[parseInt(router.query.id) - 1]
+  const isEnded = Date.now() > proposalInfo.until
+  const isPassed = !isEnded ? 0 : proposalInfo.for > proposalInfo.against ? 1 : 2
+
   const [isVoted, setIsVoted] = useState<{ isVoted: boolean; result: null | boolean }>({
     isVoted: false,
     result: null
   })
-  const [totalVote, setTotalVote] = useState({ for: 8, against: 3 })
+  const [totalVote, setTotalVote] = useState({ for: proposalInfo.for, against: proposalInfo.against })
   const [percentage, setPercentage] = useState({ for: '0%', against: '0%' })
-  const router = useRouter()
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
 
   useEffect(() => {
     setPercentage({
@@ -48,10 +53,9 @@ export default function GovernanceProposals() {
     })
   }, [totalVote])
 
-  const onBack = () => {
-    router.history.goBack()
-  }
+  const onBack = () => router.history.goBack()
   const onFor = () => {
+    if (isEnded) return
     if (isVoted.isVoted) return
     setTotalVote(prev => ({
       ...prev,
@@ -63,6 +67,7 @@ export default function GovernanceProposals() {
     })
   }
   const onAgainst = () => {
+    if (isEnded) return
     if (isVoted.isVoted) return
     setTotalVote(prev => ({
       ...prev,
@@ -98,17 +103,28 @@ export default function GovernanceProposals() {
         <Container>
           <AutoColumn gap="16px">
             <Flex marginBottom="4px" justifyContent="flex-start" alignItems="center">
-              <TextCard>
-                <InfoText>#003</InfoText>
+              <TextCard isPassed={isPassed}>
+                <InfoText isPassed={isPassed}>
+                  {'#' +
+                    ('00' + proposalInfo.id).slice(-3) +
+                    (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
+                </InfoText>
               </TextCard>
+              {isPassed === 1 ? (
+                <img src={Done} alt="Done" style={{ width: '20px', height: '20px', marginLeft: '5px' }} />
+              ) : isPassed === 2 ? (
+                <img src={Block} alt="Block" style={{ width: '20px', height: '20px', marginLeft: '5px' }} />
+              ) : (
+                <></>
+              )}
               <TYPE.mediumHeader
-                marginLeft="10px"
-                color={theme.white}
+                marginLeft="5px"
+                color={isPassed === 1 ? theme.green2 : isPassed === 2 ? theme.red1 : theme.white}
                 fontWeight={600}
                 lineHeight="19.5px"
                 fontSize="16px"
               >
-                Change USDC/ETH Pool Fee to 0.15%
+                {proposalInfo.title}
               </TYPE.mediumHeader>
             </Flex>
             <Flex>
@@ -153,12 +169,14 @@ export default function GovernanceProposals() {
               <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
                 TOTAL VOTES: {totalVote.for + totalVote.against} VOTES
               </TYPE.main>
-              <Flex>
-                <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
-                <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
-                  TIME LEFT: 1D 23H 32M
-                </TYPE.main>
-              </Flex>
+              {!isEnded && (
+                <Flex>
+                  <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
+                  <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
+                    TIME LEFT: 1D 23H 32M
+                  </TYPE.main>
+                </Flex>
+              )}
             </RowBetween>
             <RowBetween>
               <ContentCard marginRight="9px" padding="16px !important">
@@ -179,7 +197,7 @@ export default function GovernanceProposals() {
                     onClick={onFor}
                     bgColor={isVoted.isVoted && isVoted.result ? 'transparent' : theme.green2}
                     border={isVoted.result ? `1px solid ${theme.green2}` : 'none'}
-                    opacity={isVoted.isVoted && isVoted.result === false ? '0.32' : '1'}
+                    opacity={isEnded || (isVoted.isVoted && isVoted.result === false) ? '0.32' : '1'}
                     color={isVoted.result ? theme.green2 : 'white'}
                   >
                     {isVoted.isVoted && isVoted.result ? (
@@ -211,7 +229,7 @@ export default function GovernanceProposals() {
                     onClick={onAgainst}
                     bgColor={isVoted.isVoted && isVoted.result === false ? 'transparent' : theme.red1}
                     border={isVoted.result === false ? `1px solid ${theme.red1}` : 'none'}
-                    opacity={isVoted.isVoted && isVoted.result ? '0.32' : '1'}
+                    opacity={isEnded || (isVoted.isVoted && isVoted.result) ? '0.32' : '1'}
                     color={isVoted.result === false ? theme.red1 : 'white'}
                   >
                     {isVoted.isVoted && isVoted.result === false ? (
