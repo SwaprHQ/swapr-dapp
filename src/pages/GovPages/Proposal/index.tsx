@@ -169,14 +169,12 @@ export default function GovernanceProposals() {
               <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
                 TOTAL VOTES: {totalVote.for + totalVote.against} VOTES
               </TYPE.main>
-              {!isEnded && (
-                <Flex>
-                  <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
-                  <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
-                    TIME LEFT: 1D 23H 32M
-                  </TYPE.main>
-                </Flex>
-              )}
+              <Flex>
+                <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
+                <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
+                  {isPassed === 1 ? 'PASSED' : isPassed === 2 ? 'FAILED' : 'TIME LEFT'}: 1D 23H 32M
+                </TYPE.main>
+              </Flex>
             </RowBetween>
             <RowBetween>
               <ContentCard marginRight="9px" padding="16px !important">
