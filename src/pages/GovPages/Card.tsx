@@ -9,12 +9,12 @@ import { AutoRow } from '../../components/Row'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
-const LightCardWrap = styled(Card)`
+const LightCardWrap = styled(Card)<{ width: string }>`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
     ${({ theme }) => theme.dark1};
   background-blend-mode: overlay, normal;
   padding: 0.8rem;
-  width: calc(25% - 6px);
+  width: ${({ width }) => width};
   padding: 24px 30px;
   display: flex;
   flex-wrap: wrap;
@@ -81,7 +81,7 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   if (currency1 === undefined) {
     // main governance page
     return (
-      <LightCardWrap onClick={onClick}>
+      <LightCardWrap onClick={onClick} width="calc(25% - 6px)">
         <AutoRow align="flex-end" justify="center">
           <CurrencyLogo size="20px" currency={currency} />
           <Text width="auto" marginTop="0" marginLeft="6px" fontWeight={600} fontSize="16px" lineHeight="20px">
@@ -100,7 +100,7 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   } else {
     // pair page
     return (
-      <LightCardWrap>
+      <LightCardWrap width="calc(33% - 4px)">
         <AutoRow align="flex-end" justify="center">
           <LogoContainer size={doubleCurrencyLogoSize}>
             <DoubleCurrencyLogo size={doubleCurrencyLogoSize} currency0={currency1} currency1={currency} />
