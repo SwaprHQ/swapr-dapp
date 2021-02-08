@@ -118,10 +118,12 @@ export default function ProposalCard(props: ProposalCardProps) {
             </InfoText>
           </Flex>
           <Row>
-            {voteStatus === Passed ? (
-              <img src={Done} alt="Done" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
-            ) : voteStatus === Failed ? (
-              <img src={Block} alt="Block" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
+            {voteStatus !== InProgress ? (
+              <img
+                src={voteStatus === Passed ? Done : Block}
+                alt="Block"
+                style={{ width: '24px', height: '24px', marginRight: '10px' }}
+              />
             ) : (
               <></>
             )}
