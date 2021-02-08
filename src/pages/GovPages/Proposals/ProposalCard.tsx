@@ -118,14 +118,12 @@ export default function ProposalCard(props: ProposalCardProps) {
             </InfoText>
           </Flex>
           <Row>
-            {voteStatus !== InProgress ? (
+            {voteStatus !== InProgress && (
               <img
                 src={voteStatus === Passed ? Done : Block}
                 alt="Block"
                 style={{ width: '24px', height: '24px', marginRight: '10px' }}
               />
-            ) : (
-              <></>
             )}
             <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal" color={'text3'}>
               {props.title}
