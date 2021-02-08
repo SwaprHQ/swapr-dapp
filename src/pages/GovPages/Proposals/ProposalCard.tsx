@@ -93,15 +93,15 @@ export default function ProposalCard(props: ProposalCardProps) {
     setCounter(counter + 1)
   }, 1000)
 
+  const voteStatus = !props.ended ? InProgress : props.for > props.against ? Passed : Failed
+
   const formatTimeStamp = (origin: number): string => {
     const timestamp = Math.abs(origin)
     const day = (timestamp - (timestamp % 86400)) / 86400
     const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
     const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
-    return `${day}D ${hour}H ${minute}M${props.ended ? ' AGO' : ''}`
+    return `${day}D ${hour}H ${minute}M${voteStatus !== InProgress ? ' AGO' : ''}`
   }
-
-  const voteStatus = !props.ended ? InProgress : props.for > props.against ? Passed : Failed
 
   return (
     <Container status={voteStatus}>
