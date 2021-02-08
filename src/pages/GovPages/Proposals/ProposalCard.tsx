@@ -108,20 +108,22 @@ export default function ProposalCard(props: ProposalCardProps) {
                 {'#' + ('00' + props.id).slice(-3) + (voteStatus !== InProgress ? ' ' + voteStatus : '')}
               </InfoText>
             </TextCard>
-            {!props.ended ? (
-              <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
+            {voteStatus === InProgress ? (
+              <img
+                src={HourGlass}
+                alt="HourGlass"
+                style={{ width: '6px', height: '10px', marginLeft: '10px', marginRight: '10px' }}
+              />
             ) : (
-              <Clock size={12} style={{ marginLeft: '10px' }} color={theme.purple2} />
+              <Clock size={12} style={{ marginLeft: '10px', marginRight: '5px' }} color={theme.purple2} />
             )}
-            <InfoText status={voteStatus} marginLeft="5px">
-              {formatTimeStamp(counter) + ' | ' + props.totalVote + ' VOTED'}
-            </InfoText>
+            <InfoText status={voteStatus}>{formatTimeStamp(counter) + ' | ' + props.totalVote + ' VOTED'}</InfoText>
           </Flex>
           <Row>
             {voteStatus !== InProgress && (
               <img
                 src={voteStatus === Passed ? Done : Block}
-                alt="Block"
+                alt="FinishedProposal"
                 style={{ width: '24px', height: '24px', marginRight: '10px' }}
               />
             )}
@@ -131,7 +133,7 @@ export default function ProposalCard(props: ProposalCardProps) {
           </Row>
         </AutoColumn>
         <AutoColumn gap="4px" style={{ width: '105px' }}>
-          <RowBetween>
+          <RowBetween color="red">
             <InfoText status={voteStatus === Passed ? Passed : InProgress} small>
               FOR
             </InfoText>
