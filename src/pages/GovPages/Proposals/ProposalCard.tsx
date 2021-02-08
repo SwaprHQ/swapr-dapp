@@ -77,7 +77,7 @@ interface ProposalCardProps {
   totalVote: number
   for: number // percentage value
   against: number // percentage value
-  isEnded: boolean
+  ended: boolean
   until: number
 }
 
@@ -94,10 +94,10 @@ export default function ProposalCard(props: ProposalCardProps) {
     const day = (timestamp - (timestamp % 86400)) / 86400
     const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
     const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
-    return `${day}D ${hour}H ${minute}M${props.isEnded ? ' AGO' : ''}`
+    return `${day}D ${hour}H ${minute}M${props.ended ? ' AGO' : ''}`
   }
 
-  const isPassed = !props.isEnded ? 0 : props.for > props.against ? 1 : 2
+  const isPassed = !props.ended ? 0 : props.for > props.against ? 1 : 2
   return (
     <Container isPassed={isPassed}>
       <RowBetween>
@@ -108,7 +108,7 @@ export default function ProposalCard(props: ProposalCardProps) {
                 {'#' + ('00' + props.id).slice(-3) + (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
               </InfoText>
             </TextCard>
-            {!props.isEnded ? (
+            {!props.ended ? (
               <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginLeft: '10px' }} />
             ) : (
               <Clock size={12} style={{ marginLeft: '10px' }} color={theme.purple2} />

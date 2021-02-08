@@ -43,7 +43,7 @@ export default function Proposals() {
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
       {fakeProposalData.map((ele, index) => {
-        const isVotingEnded = Date.now() > ele.until
+        const ended = Date.now() > ele.until
         const FOR = +((ele.for / ele.totalVote) * 100).toFixed(0)
         const AGAINST = +((ele.against / ele.totalVote) * 100).toFixed(0)
 
@@ -56,7 +56,7 @@ export default function Proposals() {
             until={ele.until}
             for={FOR}
             against={AGAINST}
-            isEnded={isVotingEnded}
+            ended={ended}
           />
         )
       })}
