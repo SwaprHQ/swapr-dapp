@@ -62,12 +62,12 @@ const TextCard = styled(Card)<{ status: VoteStatusType }>`
   width: auto;
 `
 
-const Progress = styled.div<{ isFor: boolean; width: string }>`
+const Progress = styled.div<{ status: VoteStatusType; width: string }>`
   height: 2px;
   margin: 0;
   padding: 0;
   width: ${({ width }) => width};
-  background-color: ${({ isFor, theme }) => (isFor ? theme.green2 : theme.red1)};
+  background-color: ${({ status, theme }) => theme[VoteStatus[status]]};
 `
 
 interface ProposalCardProps {
@@ -133,7 +133,7 @@ export default function ProposalCard(props: ProposalCardProps) {
           </Row>
         </AutoColumn>
         <AutoColumn gap="4px" style={{ width: '105px' }}>
-          <RowBetween color="red">
+          <RowBetween>
             <InfoText status={voteStatus === Passed ? Passed : InProgress} small>
               FOR
             </InfoText>
@@ -150,8 +150,8 @@ export default function ProposalCard(props: ProposalCardProps) {
             </InfoText>
           </RowBetween>
           <RowBetween>
-            <Progress width={props.for + '%'} isFor={true} />
-            <Progress width={props.against + '%'} isFor={false} />
+            <Progress width={props.for + '%'} status={Passed} />
+            <Progress width={props.against + '%'} status={Failed} />
           </RowBetween>
         </AutoColumn>
       </RowBetween>
