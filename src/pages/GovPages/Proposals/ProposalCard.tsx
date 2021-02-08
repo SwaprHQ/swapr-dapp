@@ -9,23 +9,23 @@ import { AutoColumn } from '../../../components/Column'
 import Card, { LightCard } from '../../../components/Card'
 
 import useInterval from '../../../hooks/useInterval'
+
 import HourGlass from '../../../assets/svg/hourglass.svg'
 import Block from '../../../assets/svg/block.svg'
 import Done from '../../../assets/svg/done_all.svg'
 
-const Container = styled(LightCard)<{ isPassed: number }>`
-  // 0 - voting in progress
-  // 1 - passed
-  // 2 - failed
+import { VoteStatus, VoteStatusType, InProgress, Passed, Failed } from '../VoteStatus'
+
+const Container = styled(LightCard)<{ status: VoteStatusType }>`
   padding: 1.25rem;
   height: 88px;
   position: relative;
   cursor: pointer;
-  background: ${({ isPassed, theme }) =>
-    isPassed === 0
+  background: ${({ theme, status }) =>
+    status === InProgress
       ? `linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%), ${theme.dark1}`
       : `linear-gradient(141.72deg, ${theme.bg1} -11.46%, ${
-          isPassed === 1 ? 'rgba(5, 122, 85, 0.5)' : 'rgba(238, 46, 81, 0.5)'
+          status === Passed ? 'rgba(5, 122, 85, 0.5)' : 'rgba(238, 46, 81, 0.5)'
         } 180.17%)`};
   background-blend-mode: overlay, normal;
   border: none;
@@ -43,19 +43,18 @@ const Container = styled(LightCard)<{ isPassed: number }>`
   }
 `
 
-const InfoText = styled(TYPE.main)<{ isPassed: number; small?: boolean }>`
+const InfoText = styled(TYPE.main)<{ status: VoteStatusType; small?: boolean }>`
   font-style: normal;
   font-weight: bold !important;
   font-size: ${({ small }) => (small ? '9.5px !important' : '10px')};
   line-height: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
+  color: ${({ theme, status }) => theme[VoteStatus[status]]};
 `
 
-const TextCard = styled(Card)<{ isPassed: number }>`
-  border: 1px solid
-    ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
+const TextCard = styled(Card)<{ status: VoteStatusType }>`
+  border: 1px solid ${({ theme, status }) => theme[VoteStatus[status]]};
   border-radius: 4px;
   height: 16px;
   padding: 2px 6px;
@@ -83,7 +82,7 @@ interface ProposalCardProps {
 
 export default function ProposalCard(props: ProposalCardProps) {
   const theme = useContext(ThemeContext)
-  const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.until) / 1000)) // displays in second
+  const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.until) / 1000))
 
   useInterval(() => {
     setCounter(counter + 1)
@@ -97,15 +96,16 @@ export default function ProposalCard(props: ProposalCardProps) {
     return `${day}D ${hour}H ${minute}M${props.ended ? ' AGO' : ''}`
   }
 
-  const isPassed = !props.ended ? 0 : props.for > props.against ? 1 : 2
+  const voteStatus = !props.ended ? InProgress : props.for > props.against ? Passed : Failed
+
   return (
-    <Container isPassed={isPassed}>
+    <Container status={voteStatus}>
       <RowBetween>
         <AutoColumn gap="sm">
           <Flex alignItems="center">
-            <TextCard isPassed={isPassed}>
-              <InfoText isPassed={isPassed} fontWeight={'600 !important'} letterSpacing={'2% !important'}>
-                {'#' + ('00' + props.id).slice(-3) + (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
+            <TextCard status={voteStatus}>
+              <InfoText status={voteStatus} fontWeight={'600 !important'} letterSpacing={'2% !important'}>
+                {'#' + ('00' + props.id).slice(-3) + (voteStatus !== InProgress ? ' ' + voteStatus : '')}
               </InfoText>
             </TextCard>
             {!props.ended ? (
@@ -113,47 +113,37 @@ export default function ProposalCard(props: ProposalCardProps) {
             ) : (
               <Clock size={12} style={{ marginLeft: '10px' }} color={theme.purple2} />
             )}
-            <InfoText isPassed={0} marginLeft="5px" marginRight="10px">
-              {formatTimeStamp(counter)}
-            </InfoText>
-            <InfoText isPassed={0}>|</InfoText>
-            <InfoText isPassed={0} marginLeft="5px">
-              {props.totalVote + ' VOTED'}
+            <InfoText status={voteStatus} marginLeft="5px">
+              {formatTimeStamp(counter) + ' | ' + props.totalVote + ' VOTED'}
             </InfoText>
           </Flex>
           <Row>
-            {isPassed === 1 ? (
+            {voteStatus === Passed ? (
               <img src={Done} alt="Done" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
-            ) : isPassed === 2 ? (
+            ) : voteStatus === Failed ? (
               <img src={Block} alt="Block" style={{ width: '24px', height: '24px', marginRight: '10px' }} />
             ) : (
               <></>
             )}
-            <TYPE.mediumHeader
-              lineHeight="19.5px"
-              fontWeight={600}
-              fontSize="16px"
-              fontStyle="normal"
-              color={theme.text3}
-            >
+            <TYPE.mediumHeader lineHeight="19.5px" fontWeight={600} fontSize="16px" fontStyle="normal" color={'text3'}>
               {props.title}
             </TYPE.mediumHeader>
           </Row>
         </AutoColumn>
-        <AutoColumn gap={'4px'} style={{ width: '105px' }}>
+        <AutoColumn gap="4px" style={{ width: '105px' }}>
           <RowBetween>
-            <InfoText isPassed={isPassed === 1 ? 1 : 0} small>
+            <InfoText status={voteStatus === Passed ? Passed : InProgress} small>
               FOR
             </InfoText>
-            <InfoText isPassed={isPassed !== 2 ? 1 : 0} small>
+            <InfoText status={voteStatus !== Failed ? Passed : InProgress} small>
               {props.for + '%'}
             </InfoText>
           </RowBetween>
           <RowBetween>
-            <InfoText isPassed={isPassed === 2 ? 2 : 0} small>
+            <InfoText status={voteStatus === Failed ? Failed : InProgress} small>
               AGAINST
             </InfoText>
-            <InfoText isPassed={isPassed !== 1 ? 2 : 0} small>
+            <InfoText status={voteStatus !== Passed ? Failed : InProgress} small>
               {props.against + '%'}
             </InfoText>
           </RowBetween>
