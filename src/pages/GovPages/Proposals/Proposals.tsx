@@ -35,7 +35,7 @@ const fakeProposalData: ProposalProps[] = [
     totalVote: 23,
     for: 20,
     against: 3,
-    until: new Date('Jan 25, 2021 03:24:00').getTime()
+    until: new Date('May 25, 2021 03:24:00').getTime()
   }
 ]
 

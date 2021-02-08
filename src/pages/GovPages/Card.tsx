@@ -89,7 +89,6 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   }
 
   if (currency1 === undefined) {
-    // main governance page
     return (
       <LightCardWrap onClick={onCurrencyClick}>
         <AutoRow align="flex-end" justify="center">
@@ -108,7 +107,6 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
       </LightCardWrap>
     )
   } else {
-    // pair page
     return (
       <LightCardWrap onClick={onPairClick}>
         <AutoRow align="flex-end" justify="center">

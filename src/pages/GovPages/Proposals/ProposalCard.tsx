@@ -74,8 +74,8 @@ interface ProposalCardProps {
   id: number
   title: string
   totalVote: number
-  for: number // percentage value
-  against: number // percentage value
+  for: number
+  against: number
   ended: boolean
   until: number
 }

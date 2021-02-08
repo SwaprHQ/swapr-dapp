@@ -15,7 +15,7 @@ import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
 import Proposals from './Proposals'
 
-// import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 const ContentCard = styled(LightCard)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
@@ -80,9 +80,9 @@ export default function GovernanceProposals() {
   const currency = router.location.state?.currency
   const currency1 = router.location.state?.currency1
 
-  // if (currency === undefined || currency1 === undefined) {
-  //   return <Redirect to="/" />
-  // }
+  if (currency === undefined || currency1 === undefined) {
+    return <Redirect to="/" />
+  }
 
   return (
     <PageWrapper>
