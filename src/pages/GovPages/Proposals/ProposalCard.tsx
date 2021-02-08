@@ -89,9 +89,7 @@ interface ProposalCardProps {
 export default function ProposalCard(props: ProposalCardProps) {
   const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.until) / 1000))
 
-  useInterval(() => {
-    setCounter(counter + 1)
-  }, 1000)
+  useInterval(() => setCounter(counter + 1), 1000)
 
   const voteStatus = !props.ended ? InProgress : props.for > props.against ? Passed : Failed
 
