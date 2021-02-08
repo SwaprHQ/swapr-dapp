@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 import { Clock } from 'react-feather'
 import { Flex } from 'rebass'
 
@@ -70,6 +70,12 @@ const Progress = styled.div<{ status: VoteStatusType; width: string }>`
   background-color: ${({ status, theme }) => theme[VoteStatus[status]]};
 `
 
+const ClockIcon = styled(Clock)`
+  margin-left: 10px;
+  margin-right: 5px;
+  color: ${({ theme }) => theme.purple2};
+`
+
 interface ProposalCardProps {
   id: number
   title: string
@@ -81,7 +87,6 @@ interface ProposalCardProps {
 }
 
 export default function ProposalCard(props: ProposalCardProps) {
-  const theme = useContext(ThemeContext)
   const [counter, setCounter] = useState<number>(Math.round((Date.now() - props.until) / 1000))
 
   useInterval(() => {
@@ -112,10 +117,10 @@ export default function ProposalCard(props: ProposalCardProps) {
               <img
                 src={HourGlass}
                 alt="HourGlass"
-                style={{ width: '6px', height: '10px', marginLeft: '10px', marginRight: '10px' }}
+                style={{ width: '6px', height: '10px', marginLeft: '10px', marginRight: '5px' }}
               />
             ) : (
-              <Clock size={12} style={{ marginLeft: '10px', marginRight: '5px' }} color={theme.purple2} />
+              <ClockIcon size={12} />
             )}
             <InfoText status={voteStatus}>{formatTimeStamp(counter) + ' | ' + props.totalVote + ' VOTED'}</InfoText>
           </Flex>
