@@ -15,6 +15,7 @@ import CurrencyLogo from '../../../components/CurrencyLogo'
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
 import Proposals from './Proposals'
+import ProposalHistory from './ProposalHistory'
 
 const ContentCard = styled(LightCard)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
@@ -164,8 +165,7 @@ export default function GovernanceProposals() {
             },
             {
               title: 'Proposals history',
-              // eslint-disable-next-line react/display-name
-              render: () => <TYPE.largeHeader>No Proposals Yet</TYPE.largeHeader>
+              render: ProposalHistory
             }
           ]}
         />

@@ -4,12 +4,12 @@ import { AutoColumn } from '../../../components/Column'
 import ProposalCard from './ProposalCard'
 import { fakeProposalData } from '../constant'
 
-export default function Proposals() {
-  const inProgressProposals = fakeProposalData.filter(ele => Date.now() <= ele.until)
+export default function ProposalHistory() {
+  const endedProposals = fakeProposalData.filter(ele => Date.now() > ele.until)
 
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
-      {inProgressProposals.map((ele, index) => {
+      {endedProposals.map((ele, index) => {
         const FOR = +((ele.for / ele.totalVote) * 100).toFixed(0)
         const AGAINST = +((ele.against / ele.totalVote) * 100).toFixed(0)
 
@@ -22,7 +22,7 @@ export default function Proposals() {
             until={ele.until}
             for={FOR}
             against={AGAINST}
-            ended={false}
+            ended={true}
           />
         )
       })}
