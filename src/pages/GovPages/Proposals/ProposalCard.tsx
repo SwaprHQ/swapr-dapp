@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Clock } from 'react-feather'
 import { Flex } from 'rebass'
+import { DateTime } from 'luxon'
 
 import { TYPE } from '../../../theme'
 import Row, { RowBetween } from '../../../components/Row'
@@ -93,12 +94,15 @@ export default function ProposalCard(props: ProposalCardProps) {
 
   const voteStatus = !props.ended ? InProgress : props.for > props.against ? Passed : Failed
 
-  const formatTimeStamp = (origin: number): string => {
-    const timestamp = Math.abs(origin)
-    const day = (timestamp - (timestamp % 86400)) / 86400
-    const hour = (timestamp - day * 86400 - (timestamp % 3600)) / 3600
-    const minute = (timestamp - day * 86400 - hour * 3600 - (timestamp % 60)) / 60
-    return `${day}D ${hour}H ${minute}M${voteStatus !== InProgress ? ' AGO' : ''}`
+  const formatTimeStamp = (): string => {
+    const start = DateTime.fromMillis(Date.now())
+    const end = DateTime.fromMillis(props.until)
+    const diff =
+      voteStatus === InProgress
+        ? end.diff(start, ['day', 'hour', 'minutes'])
+        : start.diff(end, ['day', 'hour', 'minutes'])
+
+    return `${diff.days}D ${diff.hours}H ${diff.minutes.toFixed(0)}M${voteStatus !== InProgress ? ' AGO' : ''}`
   }
 
   return (
@@ -120,7 +124,7 @@ export default function ProposalCard(props: ProposalCardProps) {
             ) : (
               <ClockIcon size={12} />
             )}
-            <InfoText status={voteStatus}>{formatTimeStamp(counter) + ' | ' + props.totalVote + ' VOTED'}</InfoText>
+            <InfoText status={voteStatus}>{formatTimeStamp() + ' | ' + props.totalVote + ' VOTED'}</InfoText>
           </Flex>
           <Row>
             {voteStatus !== InProgress && (
