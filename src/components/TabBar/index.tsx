@@ -41,7 +41,6 @@ const TabButton = styled.button<{ active: boolean }>`
   flex-direction: column;
   align-items: center;
   position: relative;
-  transition: 0.6s;
   background: transparent;
   margin-right: 2rem;
 
