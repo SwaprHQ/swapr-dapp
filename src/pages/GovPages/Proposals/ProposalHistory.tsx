@@ -9,13 +9,13 @@ export default function ProposalHistory() {
 
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
-      {endedProposals.map((ele, index) => {
+      {endedProposals.map(ele => {
         const FOR = +((ele.for / ele.totalVote) * 100).toFixed(0)
         const AGAINST = +((ele.against / ele.totalVote) * 100).toFixed(0)
 
         return (
           <ProposalCard
-            key={index}
+            key={ele.id}
             id={ele.id}
             title={ele.title}
             totalVote={ele.totalVote}
