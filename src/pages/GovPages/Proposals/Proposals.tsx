@@ -1,11 +1,16 @@
 import React from 'react'
 
+import { TYPE } from '../../../theme'
 import { AutoColumn } from '../../../components/Column'
-import ProposalCard from './ProposalCard'
 import { fakeProposalData } from '../constant'
+import ProposalCard from './ProposalCard'
 
 export default function Proposals() {
   const inProgressProposals = fakeProposalData.filter(ele => Date.now() <= ele.until)
+
+  if (inProgressProposals.length === 0) {
+    return <TYPE.largeHeader>No Proposals Yet</TYPE.largeHeader>
+  }
 
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
