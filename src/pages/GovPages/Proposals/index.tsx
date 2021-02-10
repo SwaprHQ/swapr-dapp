@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 
@@ -79,10 +78,6 @@ export default function GovernanceProposals() {
   const pairName = t(router.query.asset) + '/' + t(router.query.pair)
   const currency = router.location.state?.currency
   const currency1 = router.location.state?.currency1
-
-  if (currency === undefined || currency1 === undefined) {
-    return <Redirect to="/" />
-  }
 
   return (
     <PageWrapper>
