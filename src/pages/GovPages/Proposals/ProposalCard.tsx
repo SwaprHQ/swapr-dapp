@@ -30,6 +30,8 @@ const Container = styled(LightCard)<{ status: VoteStatusType }>`
         } 180.17%)`};
   background-blend-mode: overlay, normal;
   border: none;
+  display: flex;
+  justify-content: center;
 
   ::before {
     content: '';
