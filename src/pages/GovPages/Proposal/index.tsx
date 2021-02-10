@@ -180,7 +180,7 @@ export default function GovernanceProposals() {
                 marginRight="9px"
                 padding="16px !important"
                 bgColor={
-                  isEnded || (isVoted.isVoted && isVoted.result === false)
+                  totalVote.for > totalVote.against
                     ? 'linear-gradient(170.32deg, rgba(14, 159, 110, 0.75) -292.86%, rgba(14, 159, 110, 0) 103.41%), #171621;'
                     : undefined
                 }
@@ -220,7 +220,7 @@ export default function GovernanceProposals() {
                 marginLeft="9px"
                 padding="16px !important"
                 bgColor={
-                  isEnded || (isVoted.isVoted && isVoted.result === true)
+                  totalVote.for <= totalVote.against
                     ? 'linear-gradient(176.29deg, rgba(237, 66, 102, 0.6) -241.75%, rgba(237, 66, 102, 0) 110.04%), #171621;'
                     : undefined
                 }
