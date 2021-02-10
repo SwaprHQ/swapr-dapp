@@ -1,11 +1,19 @@
 import { Currency } from 'dxswap-sdk'
 import { DAI, USDC, USDT, COMP, MKR, AMPL, WBTC } from '../../constants'
-import { ProposalProps } from './Proposals/Proposals'
 
 export const MainPage = 'Governance Main Page'
 export const PairPage = 'Governance Pair Page'
 
 export const temporaryCurrencyData: Array<Currency> = [DAI, USDC, USDT, COMP, MKR, AMPL, WBTC]
+
+interface ProposalProps {
+  id: number
+  title: string
+  totalVote: number
+  for: number
+  against: number
+  until: number
+}
 
 export const fakeProposalData: ProposalProps[] = [
   {
@@ -30,6 +38,6 @@ export const fakeProposalData: ProposalProps[] = [
     totalVote: 23,
     for: 20,
     against: 3,
-    until: new Date('Feb 25, 2021 03:24:00').getTime()
+    until: new Date('May 25, 2021 03:24:00').getTime()
   }
 ]

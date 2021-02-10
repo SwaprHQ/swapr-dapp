@@ -6,9 +6,9 @@ import { fakeProposalData } from '../constant'
 import ProposalCard from './ProposalCard'
 import { useRouter } from '../../../hooks/useRouter'
 
-export default function Proposals() {
+export default function ProposalHistory() {
   const router = useRouter()
-  const inProgressProposals = fakeProposalData.filter(ele => Date.now() <= ele.until)
+  const endedProposals = fakeProposalData.filter(ele => Date.now() > ele.until)
 
   const onCardClick = (id: number) => {
     router.push({
@@ -19,13 +19,13 @@ export default function Proposals() {
     })
   }
 
-  if (inProgressProposals.length === 0) {
+  if (endedProposals.length === 0) {
     return <TYPE.largeHeader>No Proposals Yet</TYPE.largeHeader>
   }
 
   return (
     <AutoColumn gap="sm" style={{ width: '100%' }}>
-      {inProgressProposals.map(ele => {
+      {endedProposals.map(ele => {
         const FOR = +((ele.for / ele.totalVote) * 100).toFixed(0)
         const AGAINST = +((ele.against / ele.totalVote) * 100).toFixed(0)
 
@@ -38,7 +38,7 @@ export default function Proposals() {
             until={ele.until}
             for={FOR}
             against={AGAINST}
-            ended={false}
+            ended={true}
             onClick={() => onCardClick(ele.id)}
           />
         )
