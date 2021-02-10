@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled from 'styled-components'
+import { Redirect } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 
@@ -14,8 +15,7 @@ import CurrencyLogo from '../../../components/CurrencyLogo'
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import TabBar from '../../../components/TabBar'
 import Proposals from './Proposals'
-
-// import { Redirect } from 'react-router-dom'
+import ProposalHistory from './ProposalHistory'
 
 const ContentCard = styled(LightCard)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
@@ -75,15 +75,14 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
 
 export default function GovernanceProposals() {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
   const router = useRouter()
   const pairName = t(router.query.asset) + '/' + t(router.query.pair)
   const currency = router.location.state?.currency
   const currency1 = router.location.state?.currency1
 
-  // if (currency === undefined || currency1 === undefined) {
-  //   return <Redirect to="/" />
-  // }
+  if (currency === undefined || currency1 === undefined) {
+    return <Redirect to="/" />
+  }
 
   return (
     <PageWrapper>
@@ -92,7 +91,7 @@ export default function GovernanceProposals() {
           <TitleRow marginBottom="1rem" padding="0">
             <Flex alignItems="center">
               <a href="#/governance">
-                <TYPE.mediumHeader color={theme.text4} lineHeight="24.38px" fontWeight={400}>
+                <TYPE.mediumHeader color="text4" lineHeight="24.38px" fontWeight={400}>
                   {t('governance') + ' /'}
                 </TYPE.mediumHeader>
               </a>
@@ -119,13 +118,7 @@ export default function GovernanceProposals() {
               <Flex>
                 <CurrencyLogo size="20px" currency={currency} />
                 <CurrencyLogo size="20px" currency={currency1} />
-                <TYPE.mediumHeader
-                  marginLeft="10px"
-                  color={theme.white}
-                  fontWeight={600}
-                  lineHeight="19.5px"
-                  fontSize="16px"
-                >
+                <TYPE.mediumHeader marginLeft="10px" color="white" fontWeight={600} lineHeight="19.5px" fontSize="16px">
                   {pairName}
                 </TYPE.mediumHeader>
               </Flex>
@@ -157,7 +150,7 @@ export default function GovernanceProposals() {
             </RowBetween>
             <RowBetween>
               <ResponsiveButtonSecondary width="100% !important" marginTop="14px">
-                <TYPE.main color={theme.text4} fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
+                <TYPE.main color="text4" fontWeight={'bold'} fontSize={'12px'} lineHeight={'15px'}>
                   GO TO POOL
                 </TYPE.main>
               </ResponsiveButtonSecondary>
@@ -172,8 +165,7 @@ export default function GovernanceProposals() {
             },
             {
               title: 'Proposals history',
-              // eslint-disable-next-line react/display-name
-              render: () => <TYPE.largeHeader>No Proposals Yet</TYPE.largeHeader>
+              render: ProposalHistory
             }
           ]}
         />
