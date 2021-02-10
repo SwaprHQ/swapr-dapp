@@ -14,8 +14,8 @@ const LightCardWrap = styled(Card)`
     ${({ theme }) => theme.dark1};
   background-blend-mode: overlay, normal;
   padding: 0.8rem;
-  width: calc(25% - 6px);
-  padding: 24px 30px;
+  width: calc(25% - 8px);
+  padding: 24px 20px;
   display: flex;
   flex-wrap: wrap;
   cursor: pointer;
@@ -36,6 +36,7 @@ const LightCardWrap = styled(Card)`
     right: -1px;
     position: absolute;
     z-index: -1;
+    width: calc(100% + 2px);
     border-radius: 8px;
   }
 `
@@ -69,19 +70,27 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   const theme = useContext(ThemeContext)
   const router = useRouter()
 
-  const onClick = () => {
+  const onCurrencyClick = () => {
     router.push({
       pathname: `/governance/${currency.symbol}/pairs`,
       state: {
-        currency: currency
+        currency
+      }
+    })
+  }
+  const onPairClick = () => {
+    router.push({
+      pathname: `/governance/${currency.symbol}/pairs/${currency1?.symbol}/proposals`,
+      state: {
+        currency,
+        currency1
       }
     })
   }
 
   if (currency1 === undefined) {
-    // main governance page
     return (
-      <LightCardWrap onClick={onClick}>
+      <LightCardWrap onClick={onCurrencyClick}>
         <AutoRow align="flex-end" justify="center">
           <CurrencyLogo size="20px" currency={currency} />
           <Text width="auto" marginTop="0" marginLeft="6px" fontWeight={600} fontSize="16px" lineHeight="20px">
@@ -98,9 +107,8 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
       </LightCardWrap>
     )
   } else {
-    // pair page
     return (
-      <LightCardWrap>
+      <LightCardWrap onClick={onPairClick}>
         <AutoRow align="flex-end" justify="center">
           <LogoContainer size={doubleCurrencyLogoSize}>
             <DoubleCurrencyLogo size={doubleCurrencyLogoSize} currency0={currency1} currency1={currency} />

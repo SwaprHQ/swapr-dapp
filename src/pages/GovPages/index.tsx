@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
@@ -24,7 +24,6 @@ const TitleRow = styled(RowBetween)`
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
-    
   `};
 `
 const StyledSearchInput = styled(SearchInputWithIcon)`
@@ -40,7 +39,6 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 
 export default function Governance() {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
   const router = useRouter()
 
   return (
@@ -52,12 +50,12 @@ export default function Governance() {
               <TYPE.mediumHeader lineHeight="24px">{t('governance')}</TYPE.mediumHeader>
             ) : (
               <>
-                <TYPE.mediumHeader color={theme.text4} lineHeight="24px">
-                  {t('governance')}
-                </TYPE.mediumHeader>
-                &nbsp; / &nbsp;
-                <CurrencyLogo size="20px" currency={ETHER} />
-                &nbsp;
+                <a href="#/governance">
+                  <TYPE.mediumHeader color="text4" lineHeight="24px">
+                    {t('governance') + ' /'}
+                  </TYPE.mediumHeader>
+                </a>
+                <CurrencyLogo size="20px" currency={ETHER} style={{ marginLeft: '5px', marginRight: '5px' }} />
                 <TYPE.mediumHeader lineHeight="24px">{t(router.query?.asset)}</TYPE.mediumHeader>
               </>
             )}
@@ -80,8 +78,8 @@ export default function Governance() {
         <LightCard>
           <AutoColumn gap="md">
             <Flex>
-              <Info color={theme.text4} size={18} />
-              <TYPE.body marginLeft="10px" color={theme.text4} fontWeight={500} lineHeight="20px">
+              <Info color="text4" size={18} />
+              <TYPE.body marginLeft="10px" color="text4" fontWeight={500} lineHeight="20px">
                 Swapr Governance
               </TYPE.body>
             </Flex>
@@ -94,7 +92,7 @@ export default function Governance() {
             <RowBetween>
               <TYPE.body
                 as="a"
-                color={theme.text4}
+                color="text4"
                 fontSize="17px"
                 lineHeight="17px"
                 style={{ textDecoration: 'underline', cursor: 'pointer' }}
