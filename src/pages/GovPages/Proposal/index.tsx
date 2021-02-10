@@ -177,7 +177,15 @@ export default function GovernanceProposals() {
               </Flex>
             </RowBetween>
             <RowBetween>
-              <ContentCard marginRight="9px" padding="16px !important">
+              <ContentCard
+                marginRight="9px"
+                padding="16px !important"
+                bgColor={
+                  isEnded || (isVoted.isVoted && isVoted.result === false)
+                    ? 'linear-gradient(170.32deg, rgba(14, 159, 110, 0.75) -292.86%, rgba(14, 159, 110, 0) 103.41%), #171621;'
+                    : undefined
+                }
+              >
                 <AutoColumn gap="17px">
                   <RowBetween>
                     <TYPE.main fontWeight={600} fontStyle="normal" fontSize="14px" lineHeight="17px" letterSpacing="4%">
@@ -209,7 +217,15 @@ export default function GovernanceProposals() {
                   </VoteButton>
                 </AutoColumn>
               </ContentCard>
-              <ContentCard marginLeft="9px" padding="16px !important">
+              <ContentCard
+                marginLeft="9px"
+                padding="16px !important"
+                bgColor={
+                  isEnded || (isVoted.isVoted && isVoted.result === true)
+                    ? 'linear-gradient(176.29deg, rgba(237, 66, 102, 0.6) -241.75%, rgba(237, 66, 102, 0) 110.04%), #171621;'
+                    : undefined
+                }
+              >
                 <AutoColumn gap="17px">
                   <RowBetween>
                     <TYPE.main fontWeight={600} fontStyle="normal" fontSize="14px" lineHeight="17px" letterSpacing="4%">
