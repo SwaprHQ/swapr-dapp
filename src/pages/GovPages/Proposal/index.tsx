@@ -26,6 +26,7 @@ import {
 } from './styleds'
 import { useRouter } from '../../../hooks/useRouter'
 import { fakeProposalData } from '../constant'
+import { Failed, InProgress, Passed, VoteStatus } from '../VoteStatus'
 
 const pairName = 'USDC/ETH'
 const currency = USDC
@@ -37,7 +38,7 @@ export default function GovernanceProposals() {
   const theme = useContext(ThemeContext)
   const proposalInfo = fakeProposalData[parseInt(router.query.id) - 1]
   const isEnded = Date.now() > proposalInfo.until
-  const isPassed = !isEnded ? 0 : proposalInfo.for > proposalInfo.against ? 1 : 2
+  const voteStatus = !isEnded ? InProgress : proposalInfo.for > proposalInfo.against ? Passed : Failed
 
   const [isVoted, setIsVoted] = useState<{ isVoted: boolean; result: null | boolean }>({
     isVoted: false,
@@ -103,23 +104,21 @@ export default function GovernanceProposals() {
         <Container>
           <AutoColumn gap="16px">
             <Flex marginBottom="4px" justifyContent="flex-start" alignItems="center">
-              <TextCard isPassed={isPassed}>
-                <InfoText isPassed={isPassed}>
-                  {'#' +
-                    ('00' + proposalInfo.id).slice(-3) +
-                    (isPassed === 1 ? ' PASSED' : isPassed === 2 ? ' FAILED' : '')}
+              <TextCard status={voteStatus}>
+                <InfoText status={voteStatus}>
+                  {'#' + ('00' + proposalInfo.id).slice(-3) + (voteStatus !== InProgress ? ' ' + voteStatus : '')}
                 </InfoText>
               </TextCard>
-              {isPassed === 1 ? (
-                <img src={Done} alt="Done" style={{ width: '20px', height: '20px', marginLeft: '5px' }} />
-              ) : isPassed === 2 ? (
-                <img src={Block} alt="Block" style={{ width: '20px', height: '20px', marginLeft: '5px' }} />
-              ) : (
-                <></>
+              {voteStatus !== InProgress && (
+                <img
+                  src={voteStatus === Passed ? Done : Block}
+                  alt="Done"
+                  style={{ width: '20px', height: '20px', marginLeft: '5px' }}
+                />
               )}
               <TYPE.mediumHeader
                 marginLeft="5px"
-                color={isPassed === 1 ? theme.green2 : isPassed === 2 ? theme.red1 : theme.white}
+                color={voteStatus === InProgress ? 'white' : VoteStatus[voteStatus]}
                 fontWeight={600}
                 lineHeight="19.5px"
                 fontSize="16px"
@@ -172,7 +171,7 @@ export default function GovernanceProposals() {
               <Flex>
                 <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
                 <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
-                  {isPassed === 1 ? 'PASSED' : isPassed === 2 ? 'FAILED' : 'TIME LEFT'}: 1D 23H 32M
+                  {voteStatus === InProgress ? 'TIME LEFT' : voteStatus}: 1D 23H 32M
                 </TYPE.main>
               </Flex>
             </RowBetween>

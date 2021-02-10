@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { TYPE } from '../../../theme'
 import Card, { LightCard } from '../../../components/Card'
 import { ButtonSecondary } from '../../../components/Button'
+import { VoteStatus, VoteStatusType } from '../VoteStatus'
 
 export const Container = styled(LightCard)`
   background-color: #171621;
@@ -26,9 +27,8 @@ export const ContentCard = styled(Card)<{ bgColor?: string }>`
   padding: 24px 20px;
 `
 
-export const TextCard = styled(Card)<{ isPassed: number }>`
-  border: 1px solid
-    ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
+export const TextCard = styled(Card)<{ status: VoteStatusType }>`
+  border: 1px solid ${({ theme, status }) => theme[VoteStatus[status]]};
   border-radius: 4px;
   height: 16px;
   padding: 2px 6px;
@@ -37,8 +37,8 @@ export const TextCard = styled(Card)<{ isPassed: number }>`
   display: flex;
 `
 
-export const InfoText = styled(TYPE.main)<{ isPassed: number }>`
-  color: ${({ theme, isPassed }) => (isPassed === 0 ? theme.purple3 : isPassed === 1 ? theme.green2 : theme.red1)};
+export const InfoText = styled(TYPE.main)<{ status: VoteStatusType }>`
+  color: ${({ theme, status }) => theme[VoteStatus[status]]};
   font-style: normal;
   font-size: 11px;
   font-weight: 600;
