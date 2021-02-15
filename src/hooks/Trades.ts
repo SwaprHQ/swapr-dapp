@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Pair, Token, Trade } from 'dxswap-sdk'
+import { Currency, CurrencyAmount, Pair, Token, Trade, SupportedPlatform } from 'dxswap-sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
 
@@ -8,10 +8,14 @@ import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 import { useActiveWeb3React } from './index'
 
-function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
+function useAllCommonPairs(
+  currencyA?: Currency,
+  currencyB?: Currency,
+  platform: SupportedPlatform = SupportedPlatform.SWAPR
+): Pair[] {
   const { chainId } = useActiveWeb3React()
 
-  const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []
+  const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])
 
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
@@ -44,7 +48,7 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
     [tokenA, tokenB, bases, basePairs]
   )
 
-  const allPairs = usePairs(allPairCombinations)
+  const allPairs = usePairs(allPairCombinations, platform)
 
   // only pass along valid pairs, non-duplicated pairs
   return useMemo(
@@ -67,7 +71,16 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
 export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?: Currency): Trade | undefined {
-  const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut)
+  const swaprCommonPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, SupportedPlatform.SWAPR)
+  const uniswapCommonPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, SupportedPlatform.UNISWAP)
+  const sushiswapCommonPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, SupportedPlatform.SUSHISWAP)
+
+  const allowedPairs = useMemo(() => [...swaprCommonPairs, ...uniswapCommonPairs, ...sushiswapCommonPairs], [
+    sushiswapCommonPairs,
+    swaprCommonPairs,
+    uniswapCommonPairs
+  ])
+
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
       return (
@@ -82,7 +95,18 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
  * Returns the best trade for the token in to the exact amount of token out
  */
 export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: CurrencyAmount): Trade | undefined {
-  const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency)
+  const swaprCommonPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, SupportedPlatform.SWAPR)
+  const uniswapCommonPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, SupportedPlatform.UNISWAP)
+  const sushiswapCommonPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, SupportedPlatform.SUSHISWAP)
+
+  console.log('uniswap', uniswapCommonPairs)
+  console.log('sushi', sushiswapCommonPairs)
+
+  const allowedPairs = useMemo(() => [...swaprCommonPairs, ...uniswapCommonPairs, ...sushiswapCommonPairs], [
+    sushiswapCommonPairs,
+    swaprCommonPairs,
+    uniswapCommonPairs
+  ])
 
   return useMemo(() => {
     if (currencyIn && currencyAmountOut && allowedPairs.length > 0) {

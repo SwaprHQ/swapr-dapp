@@ -1,4 +1,4 @@
-import { ChainId, Pair, Token } from 'dxswap-sdk'
+import { ChainId, Pair, Token, SupportedPlatform } from 'dxswap-sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
@@ -176,7 +176,7 @@ export function useURLWarningToggle(): () => void {
  * @param tokenB the other token
  */
 export function toDXSwapLiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
-  return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB), 18, 'DXD', 'DXswap')
+  return new Token(tokenA.chainId, Pair.getAddress(tokenA, tokenB, SupportedPlatform.SWAPR), 18, 'DXD', 'DXswap')
 }
 
 /**
@@ -185,7 +185,7 @@ export function toDXSwapLiquidityToken([tokenA, tokenB]: [Token, Token]): Token 
 export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
-  
+
   // get user added tokens to be used as base
   const userAddedTokens = useUserAddedTokens()
 
