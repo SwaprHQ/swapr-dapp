@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
@@ -54,8 +54,11 @@ export default function GovernanceProposals() {
     })
   }, [totalVote])
 
-  const onBack = () => router.history.goBack()
-  const onFor = () => {
+  const onBack = useCallback(() => {
+    router.history.goBack()
+  }, [router.history])
+
+  const onFor = useCallback(() => {
     if (isEnded) return
     if (isVoted.isVoted) return
     setTotalVote(prev => ({
@@ -66,8 +69,9 @@ export default function GovernanceProposals() {
       isVoted: true,
       result: true
     })
-  }
-  const onAgainst = () => {
+  }, [isEnded, isVoted.isVoted])
+
+  const onAgainst = useCallback(() => {
     if (isEnded) return
     if (isVoted.isVoted) return
     setTotalVote(prev => ({
@@ -78,7 +82,7 @@ export default function GovernanceProposals() {
       isVoted: true,
       result: false
     })
-  }
+  }, [isEnded, isVoted.isVoted])
 
   return (
     <PageWrapper>
