@@ -165,12 +165,26 @@ export default function GovernanceProposals() {
               </ContentCard>
             </Flex>
             <RowBetween>
-              <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
+              <TYPE.main
+                fontWeight={600}
+                fontStyle="normal"
+                fontSize="11px"
+                lineHeight="11px"
+                letterSpacing="4%"
+                color="text4"
+              >
                 TOTAL VOTES: {totalVote.for + totalVote.against} VOTES
               </TYPE.main>
               <Flex>
                 <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
-                <TYPE.main fontWeight={600} fontStyle="normal" fontSize="11px" lineHeight="11px" letterSpacing="4%">
+                <TYPE.main
+                  fontWeight={600}
+                  fontStyle="normal"
+                  fontSize="11px"
+                  lineHeight="11px"
+                  letterSpacing="4%"
+                  color="text4"
+                >
                   {voteStatus === InProgress ? 'TIME LEFT' : voteStatus}: 1D 23H 32M
                 </TYPE.main>
               </Flex>
@@ -180,7 +194,7 @@ export default function GovernanceProposals() {
                 marginRight="9px"
                 padding="16px !important"
                 bgColor={
-                  totalVote.for > totalVote.against
+                  (voteStatus !== InProgress || isVoted.isVoted) && totalVote.for > totalVote.against
                     ? 'linear-gradient(170.32deg, rgba(14, 159, 110, 0.75) -292.86%, rgba(14, 159, 110, 0) 103.41%), #171621;'
                     : undefined
                 }
@@ -220,7 +234,7 @@ export default function GovernanceProposals() {
                 marginLeft="9px"
                 padding="16px !important"
                 bgColor={
-                  totalVote.for <= totalVote.against
+                  (voteStatus !== InProgress || isVoted.isVoted) && totalVote.for <= totalVote.against
                     ? 'linear-gradient(176.29deg, rgba(237, 66, 102, 0.6) -241.75%, rgba(237, 66, 102, 0) 110.04%), #171621;'
                     : undefined
                 }
@@ -257,7 +271,9 @@ export default function GovernanceProposals() {
                 </AutoColumn>
               </ContentCard>
             </RowBetween>
-            <ProposerAddress>Proposer: 0xB5806a701c2ae0366e15BDe9bE140E82190fa3d6</ProposerAddress>
+            <ProposerAddress letterSpacing="0.08em">
+              Proposer: 0xB5806a701c2ae0366e15BDe9bE140E82190fa3d6
+            </ProposerAddress>
           </AutoColumn>
         </Container>
       </AutoColumn>
