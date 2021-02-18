@@ -98,31 +98,37 @@ export default function GovernanceProposals() {
                 {pairName}
               </TYPE.mediumHeader>
             </Flex>
-            <Flex>
-              <ResponsiveButtonPrimary id="create-proposal-button" padding="8px 14px">
-                <Text fontWeight={700} fontSize={12}>
-                  CREATE PROPOSAL
-                </Text>
-              </ResponsiveButtonPrimary>
-            </Flex>
+            <ResponsiveButtonPrimary id="create-proposal-button" padding="8px 14px">
+              <Text fontWeight={700} fontSize={12}>
+                CREATE PROPOSAL
+              </Text>
+            </ResponsiveButtonPrimary>
           </TitleRow>
         </AutoColumn>
         <ContentCard>
           <AutoColumn gap="md">
             <Flex marginBottom="14px" justifyContent="space-between" alignItems="center">
-              <Flex>
-                <CurrencyLogo size="20px" currency={currency} />
-                <CurrencyLogo size="20px" currency={currency1} />
-                <TYPE.mediumHeader marginLeft="10px" color="white" fontWeight={600} lineHeight="19.5px" fontSize="16px">
-                  {pairName}
-                </TYPE.mediumHeader>
-              </Flex>
-              <ResponsiveButtonSecondary>
-                <Text fontWeight={700} fontSize={12}>
-                  {pairName + ' STATS'}
-                </Text>
-                <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
-              </ResponsiveButtonSecondary>
+              <TitleRow>
+                <Flex>
+                  <CurrencyLogo size="20px" currency={currency} />
+                  <CurrencyLogo size="20px" currency={currency1} />
+                  <TYPE.mediumHeader
+                    marginLeft="10px"
+                    color="white"
+                    fontWeight={600}
+                    lineHeight="19.5px"
+                    fontSize="16px"
+                  >
+                    {pairName}
+                  </TYPE.mediumHeader>
+                </Flex>
+                <ResponsiveButtonSecondary>
+                  <Text fontWeight={700} fontSize={12}>
+                    {pairName + ' STATS'}
+                  </Text>
+                  <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
+                </ResponsiveButtonSecondary>
+              </TitleRow>
             </Flex>
             <RowBetween>
               <ContentTitle>Total Liquidity:</ContentTitle>

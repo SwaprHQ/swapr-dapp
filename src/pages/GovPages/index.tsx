@@ -49,7 +49,7 @@ export default function Governance() {
             {router.query.asset === undefined ? (
               <TYPE.mediumHeader lineHeight="24px">{t('governance')}</TYPE.mediumHeader>
             ) : (
-              <>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <a href="#/governance">
                   <TYPE.mediumHeader color="text4" lineHeight="24px">
                     {t('governance') + ' /'}
@@ -57,7 +57,7 @@ export default function Governance() {
                 </a>
                 <CurrencyLogo size="20px" currency={ETHER} style={{ marginLeft: '5px', marginRight: '5px' }} />
                 <TYPE.mediumHeader lineHeight="24px">{t(router.query?.asset)}</TYPE.mediumHeader>
-              </>
+              </div>
             )}
             <StyledSearchInput fontSize="12px" fontWeight={700} width="104px" height="32px" />
             <ResponsiveButtonPrimary id="create-proposal-button" padding="8px 14px">
