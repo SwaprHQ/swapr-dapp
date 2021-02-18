@@ -4,9 +4,20 @@ import { TYPE } from '../../../theme'
 import { AutoColumn } from '../../../components/Column'
 import { fakeProposalData } from '../constant'
 import ProposalCard from './ProposalCard'
+import { useRouter } from '../../../hooks/useRouter'
 
 export default function ProposalHistory() {
+  const router = useRouter()
   const endedProposals = fakeProposalData.filter(ele => Date.now() > ele.until)
+
+  const onCardClick = (id: number) => {
+    router.push({
+      pathname: `/governance/${router.query.asset}/pairs/${router.query.pair}/proposals/${id}`,
+      state: {
+        proposalInfo: fakeProposalData[id - 1]
+      }
+    })
+  }
 
   if (endedProposals.length === 0) {
     return <TYPE.largeHeader>No Proposals Yet</TYPE.largeHeader>
@@ -28,6 +39,7 @@ export default function ProposalHistory() {
             for={FOR}
             against={AGAINST}
             ended={true}
+            onClick={() => onCardClick(ele.id)}
           />
         )
       })}

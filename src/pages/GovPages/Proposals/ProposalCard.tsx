@@ -5,6 +5,7 @@ import { Flex } from 'rebass'
 import { DateTime } from 'luxon'
 
 import { TYPE } from '../../../theme'
+import { Colors } from '../../../theme/styled'
 import Row, { RowBetween } from '../../../components/Row'
 import { AutoColumn } from '../../../components/Column'
 import Card, { LightCard } from '../../../components/Card'
@@ -73,10 +74,10 @@ const Progress = styled.div<{ status: VoteStatusType; width: string }>`
   background-color: ${({ status, theme }) => theme[VoteStatus[status]]};
 `
 
-const ClockIcon = styled(Clock)`
+const ClockIcon = styled(Clock)<{ iconcolor: keyof Colors }>`
   margin-left: 10px;
   margin-right: 5px;
-  color: ${({ theme }) => theme.purple2};
+  color: ${({ theme, iconcolor }) => theme[iconcolor]};
 `
 
 interface ProposalCardProps {
@@ -87,6 +88,7 @@ interface ProposalCardProps {
   against: number
   ended: boolean
   until: number
+  onClick: () => void
 }
 
 export default function ProposalCard(props: ProposalCardProps) {
@@ -108,7 +110,7 @@ export default function ProposalCard(props: ProposalCardProps) {
   }
 
   return (
-    <Container status={voteStatus}>
+    <Container status={voteStatus} onClick={props.onClick}>
       <RowBetween>
         <AutoColumn gap="sm">
           <Flex alignItems="center">
@@ -124,7 +126,7 @@ export default function ProposalCard(props: ProposalCardProps) {
                 style={{ width: '6px', height: '10px', marginLeft: '10px', marginRight: '5px' }}
               />
             ) : (
-              <ClockIcon size={12} />
+              <ClockIcon size={12} iconcolor={voteStatus === Failed ? 'red1' : 'green2'} />
             )}
             <InfoText status={voteStatus}>{formatTimeStamp() + ' | ' + props.totalVote + ' VOTED'}</InfoText>
           </Flex>
