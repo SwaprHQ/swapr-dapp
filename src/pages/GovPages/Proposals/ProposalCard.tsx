@@ -162,6 +162,7 @@ export default function ProposalCard(props: ProposalCardProps) {
             </TYPE.mediumHeader>
           </Row>
         </MobileAutoColumn>
+        <div style={{ width: '1px', height: '17px' }}></div>
         <MobileAutoColumn gap="4px" style={{ width: '105px' }}>
           <RowBetween>
             <InfoText status={voteStatus === Passed ? Passed : InProgress} small>
