@@ -45,6 +45,25 @@ const Container = styled(LightCard)<{ status: VoteStatusType }>`
     z-index: -1;
     border-radius: 8px;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    height: 140px;
+    width: 327px;
+    padding: 24px 18px;
+  `};
+`
+
+const MobileRowBetween = styled(RowBetween)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+    justify-content: center;
+  `};
+`
+
+const MobileAutoColumn = styled(AutoColumn)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100% !important;
+  `};
 `
 
 const InfoText = styled(TYPE.main)<{ status: VoteStatusType; small?: boolean }>`
@@ -111,8 +130,8 @@ export default function ProposalCard(props: ProposalCardProps) {
 
   return (
     <Container status={voteStatus} onClick={props.onClick}>
-      <RowBetween>
-        <AutoColumn gap="sm">
+      <MobileRowBetween>
+        <MobileAutoColumn gap="sm">
           <Flex alignItems="center">
             <TextCard status={voteStatus}>
               <InfoText status={voteStatus} fontWeight={'600 !important'} letterSpacing={'2% !important'}>
@@ -142,8 +161,8 @@ export default function ProposalCard(props: ProposalCardProps) {
               {props.title}
             </TYPE.mediumHeader>
           </Row>
-        </AutoColumn>
-        <AutoColumn gap="4px" style={{ width: '105px' }}>
+        </MobileAutoColumn>
+        <MobileAutoColumn gap="4px" style={{ width: '105px' }}>
           <RowBetween>
             <InfoText status={voteStatus === Passed ? Passed : InProgress} small>
               FOR
@@ -164,8 +183,8 @@ export default function ProposalCard(props: ProposalCardProps) {
             <Progress width={props.for + '%'} status={Passed} />
             <Progress width={props.against + '%'} status={Failed} />
           </RowBetween>
-        </AutoColumn>
-      </RowBetween>
+        </MobileAutoColumn>
+      </MobileRowBetween>
     </Container>
   )
 }
