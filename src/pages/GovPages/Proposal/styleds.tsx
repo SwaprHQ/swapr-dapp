@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Flex } from 'rebass'
 
 import { TYPE } from '../../../theme'
 import Card, { LightCard } from '../../../components/Card'
@@ -9,6 +10,9 @@ import { RowBetween } from '../../../components/Row'
 export const Container = styled(LightCard)`
   background-color: #171621;
   padding: 34px 28px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 24px 16px;
+  `};
 `
 
 export const ContentTitle = styled(TYPE.main)<{ big?: boolean }>`
@@ -75,6 +79,11 @@ export const ProposerAddress = styled(TYPE.main)`
   text-align: center;
   color: ${({ theme }) => theme.text5};
   text-transform: uppercase;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  `};
 `
 
 export const MobileRowBetween = styled(RowBetween)`
@@ -88,4 +97,13 @@ export const MobileRowBetween = styled(RowBetween)`
 export const Gap = styled.div`
   width: 18px;
   height: 5px;
+`
+
+export const MobileFlex = styled(Flex)`
+  margin-bottom: 4px;
+  justify-content: flex-start;
+  align-items: center;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+  `};
 `

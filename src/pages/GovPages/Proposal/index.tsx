@@ -24,7 +24,8 @@ import {
   VoteButton,
   ProposerAddress,
   MobileRowBetween,
-  Gap
+  Gap,
+  MobileFlex
 } from './styleds'
 import { useRouter } from '../../../hooks/useRouter'
 import { fakeProposalData } from '../constant'
@@ -109,29 +110,31 @@ export default function GovernanceProposals() {
         </Flex>
         <Container>
           <AutoColumn gap="16px">
-            <Flex marginBottom="4px" justifyContent="flex-start" alignItems="center">
+            <MobileFlex>
               <TextCard status={voteStatus}>
                 <InfoText status={voteStatus}>
                   {'#' + ('00' + proposalInfo.id).slice(-3) + (voteStatus !== InProgress ? ' ' + voteStatus : '')}
                 </InfoText>
               </TextCard>
-              {voteStatus !== InProgress && (
-                <img
-                  src={voteStatus === Passed ? Done : Block}
-                  alt="Done"
-                  style={{ width: '20px', height: '20px', marginLeft: '5px' }}
-                />
-              )}
-              <TYPE.mediumHeader
-                marginLeft="5px"
-                color={voteStatus === InProgress ? 'white' : VoteStatus[voteStatus]}
-                fontWeight={600}
-                lineHeight="19.5px"
-                fontSize="16px"
-              >
-                {proposalInfo.title}
-              </TYPE.mediumHeader>
-            </Flex>
+              <Flex>
+                {voteStatus !== InProgress && (
+                  <img
+                    src={voteStatus === Passed ? Done : Block}
+                    alt="Done"
+                    style={{ width: '20px', height: '20px', marginLeft: '5px' }}
+                  />
+                )}
+                <TYPE.mediumHeader
+                  marginLeft="5px"
+                  color={voteStatus === InProgress ? 'white' : VoteStatus[voteStatus]}
+                  fontWeight={600}
+                  lineHeight="19.5px"
+                  fontSize="16px"
+                >
+                  {proposalInfo.title}
+                </TYPE.mediumHeader>
+              </Flex>
+            </MobileFlex>
             <Flex>
               <ContentCard>
                 <AutoColumn gap="10px">
@@ -278,7 +281,8 @@ export default function GovernanceProposals() {
               </ContentCard>
             </MobileRowBetween>
             <ProposerAddress letterSpacing="0.08em">
-              Proposer: 0xB5806a701c2ae0366e15BDe9bE140E82190fa3d6
+              Proposer:
+              <span style={{ textDecoration: 'underline' }}>0xB5806a701c2ae0366e15BDe9bE140E82190fa3d6</span>
             </ProposerAddress>
           </AutoColumn>
         </Container>
