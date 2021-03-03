@@ -4,6 +4,7 @@ import { TYPE } from '../../../theme'
 import Card, { LightCard } from '../../../components/Card'
 import { ButtonSecondary } from '../../../components/Button'
 import { VoteStatus, VoteStatusType } from '../VoteStatus'
+import { RowBetween } from '../../../components/Row'
 
 export const Container = styled(LightCard)`
   background-color: #171621;
@@ -74,4 +75,17 @@ export const ProposerAddress = styled(TYPE.main)`
   text-align: center;
   color: ${({ theme }) => theme.text5};
   text-transform: uppercase;
+`
+
+export const MobileRowBetween = styled(RowBetween)`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+  `};
+`
+
+export const Gap = styled.div`
+  width: 18px;
+  height: 5px;
 `

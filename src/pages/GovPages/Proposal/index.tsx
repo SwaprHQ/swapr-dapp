@@ -22,7 +22,9 @@ import {
   ContentCard,
   ProgressDiv,
   VoteButton,
-  ProposerAddress
+  ProposerAddress,
+  MobileRowBetween,
+  Gap
 } from './styleds'
 import { useRouter } from '../../../hooks/useRouter'
 import { fakeProposalData } from '../constant'
@@ -168,7 +170,7 @@ export default function GovernanceProposals() {
                 </AutoColumn>
               </ContentCard>
             </Flex>
-            <RowBetween>
+            <MobileRowBetween>
               <TYPE.main
                 fontWeight={600}
                 fontStyle="normal"
@@ -179,6 +181,7 @@ export default function GovernanceProposals() {
               >
                 TOTAL VOTES: {totalVote.for + totalVote.against} VOTES
               </TYPE.main>
+              <Gap />
               <Flex>
                 <img src={HourGlass} alt="HourGlass" style={{ width: '6px', height: '10px', marginRight: '5px' }} />
                 <TYPE.main
@@ -192,10 +195,9 @@ export default function GovernanceProposals() {
                   {voteStatus === InProgress ? 'TIME LEFT' : voteStatus}: 1D 23H 32M
                 </TYPE.main>
               </Flex>
-            </RowBetween>
-            <RowBetween>
+            </MobileRowBetween>
+            <MobileRowBetween>
               <ContentCard
-                marginRight="9px"
                 padding="16px !important"
                 bgColor={
                   voteStatus !== InProgress && totalVote.for > totalVote.against
@@ -234,8 +236,8 @@ export default function GovernanceProposals() {
                   </VoteButton>
                 </AutoColumn>
               </ContentCard>
+              <Gap />
               <ContentCard
-                marginLeft="9px"
                 padding="16px !important"
                 bgColor={
                   voteStatus !== InProgress && totalVote.for <= totalVote.against
@@ -274,7 +276,7 @@ export default function GovernanceProposals() {
                   </VoteButton>
                 </AutoColumn>
               </ContentCard>
-            </RowBetween>
+            </MobileRowBetween>
             <ProposerAddress letterSpacing="0.08em">
               Proposer: 0xB5806a701c2ae0366e15BDe9bE140E82190fa3d6
             </ProposerAddress>
