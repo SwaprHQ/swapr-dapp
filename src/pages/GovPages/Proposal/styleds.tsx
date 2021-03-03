@@ -40,6 +40,9 @@ export const TextCard = styled(Card)<{ status: VoteStatusType }>`
   align-items: center;
   width: auto;
   display: flex;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin-bottom: 8px;
+  `};
 `
 
 export const InfoText = styled(TYPE.main)<{ status: VoteStatusType }>`
