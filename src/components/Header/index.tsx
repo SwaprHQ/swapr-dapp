@@ -236,7 +236,7 @@ const StyledExternalLink = styled(ExternalLink).attrs({
   `};
 `
 
-const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
+export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.MAINNET]: 'Mainnet',
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ARBITRUM_TESTNET_V3]: 'Arbitrum',

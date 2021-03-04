@@ -24,7 +24,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.XDAI]: ''
 }
 
-const getExplorerPrefix = (chainId: ChainId) => {
+export function getExplorerPrefix(chainId: ChainId) {
   switch (chainId) {
     case ChainId.ARBITRUM_TESTNET_V3:
       return 'https://explorer.arbitrum.io/#'

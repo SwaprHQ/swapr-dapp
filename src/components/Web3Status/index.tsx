@@ -13,6 +13,7 @@ import { shortenAddress } from '../../utils'
 import { ButtonSecondary } from '../Button'
 
 import Loader from '../Loader'
+import MetamaskNetworkAdder from '../MetamaskNetworkUpdater'
 
 import { RowBetween } from '../Row'
 import WalletModal from '../WalletModal'
@@ -176,6 +177,7 @@ export default function Web3Status() {
     <>
       <Web3StatusInner />
       <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+      <MetamaskNetworkAdder />
     </>
   )
 }
