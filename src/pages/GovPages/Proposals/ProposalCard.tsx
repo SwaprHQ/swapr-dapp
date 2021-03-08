@@ -46,22 +46,22 @@ const Container = styled(LightCard)<{ status: VoteStatusType }>`
     border-radius: 8px;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     height: 140px;
-    width: 327px;
+    width: 100%;
     padding: 24px 18px;
   `};
 `
 
 const MobileRowBetween = styled(RowBetween)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     flex-direction: column;
     justify-content: center;
   `};
 `
 
 const MobileAutoColumn = styled(AutoColumn)`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     width: 100% !important;
   `};
 `
