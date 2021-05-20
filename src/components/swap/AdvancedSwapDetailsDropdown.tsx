@@ -4,7 +4,7 @@ import { ChainId, RoutablePlatform, Trade } from 'dxswap-sdk'
 import { useLastTruthy } from '../../hooks/useLast'
 import { AdvancedSwapDetails } from './AdvancedSwapDetails'
 import { SwapPlatformSelector } from './SwapPlatformSelector'
-import { AutoColumn } from '../Column'
+import { HideableAutoColumn } from '../Column'
 import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../state/application/hooks'
@@ -15,34 +15,7 @@ import { RowFixed } from '../Row'
 import { useMultihopManager, useUserPreferredGasPrice } from '../../state/user/hooks'
 import { transparentize } from 'polished'
 import { useActiveWeb3React } from '../../hooks'
-
-const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
-  transform: ${({ show }) => (show ? 'translateY(8px)' : 'translateY(-100%)')};
-  transition: transform 300ms ease;
-  z-index: -1;
-`
-
-const AdvancedDetailsFooter = styled.div<{
-  clickable?: boolean
-  fullWidth?: boolean
-  padding: string
-  height?: string
-}>`
-  width: ${props => (props.fullWidth ? '400px' : 'auto')};
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    width: calc(100% - 8px);
-    `}
-  max-width: 400px;
-  height: ${props => (props.height ? props.height : 'auto')};
-  padding: ${props => props.padding};
-  color: ${({ theme }) => theme.purple3};
-  background-color: ${props => transparentize(0.45, props.theme.bg1)};
-  border: solid 1px #292643;
-  border-radius: 12px;
-  backdrop-filter: blur(16px);
-  cursor: ${props => (props.clickable ? 'pointer' : 'auto')};
-  box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.1);
-`
+import { AdvancedDetailsFooter } from '../AdvancedDetailsFooter'
 
 const SettingsFlex = styled(Flex)`
   width: 400px;
