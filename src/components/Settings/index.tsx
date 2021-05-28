@@ -23,10 +23,8 @@ import SwaprVersionLogo from '../SwaprVersionLogo'
 import { DarkCard } from '../Card'
 
 const StyledMenuIcon = styled(Settings)`
-  height: 18px;
-  width: 18px;
-  margin: 0 8px;
-  cursor: pointer;
+  height: 15px;
+  width: 15px;
 
   > * {
     stroke: ${({ theme }) => theme.text4};
@@ -55,14 +53,18 @@ const EmojiWrapper = styled.div`
   font-size: 12px;
 `
 
-const StyledMenu = styled.div`
-  margin-left: 0.5rem;
+const StyledMenu = styled.button`
+  padding: 6px 8px;
+  border-radius: 12px;
+  margin-left: 7px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   border: none;
   text-align: left;
+  background: ${({ theme }) => theme.bg1};
+  cursor: pointer;
 `
 
 const MenuModal = styled(Modal)`
