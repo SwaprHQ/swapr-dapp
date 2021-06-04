@@ -259,6 +259,7 @@ function Header({ history }: { history: any }) {
       <HeaderControls>
         <HeaderElement>
           <Web3Status />
+          {!isMobile && <Settings />}
         </HeaderElement>
         <HeaderSubRow>
           {account && userNativeCurrencyBalance ? (
@@ -269,7 +270,6 @@ function Header({ history }: { history: any }) {
               </Amount>
             </>
           ) : null}
-          {!isMobile && <Settings />}
         </HeaderSubRow>
       </HeaderControls>
     </HeaderFrame>
