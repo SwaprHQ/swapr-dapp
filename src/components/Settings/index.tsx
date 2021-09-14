@@ -27,12 +27,12 @@ const StyledMenuIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 8px;
-  height: 29px;
-  width: 29px;
+  padding:  8px;
+  height: 32px;
+  width: 32px;
   cursor: pointer;
   background: ${props => props.theme.dark1};
-  border-radius: 12px;
+  border-radius: 8px;
 `
 
 const StyledMenuIcon = styled(Settings)`
@@ -69,7 +69,7 @@ const EmojiWrapper = styled.div`
 const StyledMenu = styled.button`
   height: 32px;
   width: 32px;
-  padding: 6px 8px;
+  padding:  8px;
   border-radius: 12px;
   margin-left: 7px;
   display: flex;

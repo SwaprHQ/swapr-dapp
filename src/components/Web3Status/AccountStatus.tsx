@@ -33,21 +33,20 @@ const ChainLabel: any = {
 }
 
 const View = styled.div`
-  height: 29px;
+  height:33px;
   display: flex;
   align-items: center;
   margin-left: auto;
   background-color: ${({ theme }) => theme.dark1};
-  border: solid 2px transparent;
   color: ${({ theme }) => theme.purple2};
-  border-radius: 12px;
+  border-radius: 8px;
   white-space: nowrap;
-  margin-left: 8px;
+  margin-left: 6px;
+
 `
 
 const Web3StatusConnected = styled.button<{ pending?: boolean }>`
-  height: 29px;
-  padding: 0 8px;
+  padding: 0 10px 0 12px;
   background: none;
   border: none;
   color: ${({ pending, theme }) => (pending ? theme.white : theme.text4)};
@@ -63,29 +62,30 @@ const Web3StatusConnected = styled.button<{ pending?: boolean }>`
 const Web3StatusNetwork = styled.button<{ pendingTransactions?: boolean; isConnected: boolean; clickable: boolean }>`
   display: flex;
   align-items: center;
-  height: 25px;
-  padding: 7px 8px;
+  padding: 7px 8px 7px 10px;
   font-size: 12px;
   line-height: 15px;
   text-align: center;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #ffffff;
-  border-radius: 12px;
+  height:33px;
+  border-radius: 8px;
   background-color: ${({ theme, isConnected }) => (isConnected ? theme.dark2 : 'transparent')};
-  border: none;
-  outline: none;
   cursor: ${props => (props.clickable ? 'pointer' : 'initial')};
+  border:2px solid ${({ theme }) =>  theme.dark1 };
+  border-left:none;
 `
 
-const IconWrapper = styled.div<{ size?: number | null }>`
+const IconWrapper = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
 
   & > img,
   span {
-    height: ${({ size }) => (size ? size + 'px' : '30px')};
+    height: 20px;
+    
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -167,7 +167,7 @@ export function AccountStatus({
           onClick={networkSwitchingActive ? toggleNetworkSwitcherPopover : undefined}
           isConnected={!!account}
         >
-          <IconWrapper size={20}>
+          <IconWrapper>
             <img src={ChainLogo[networkConnectorChainId]} alt="chain logo" />
           </IconWrapper>
           {account && (

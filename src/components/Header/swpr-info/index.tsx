@@ -8,7 +8,7 @@ import useDebounce from '../../../hooks/useDebounce'
 import { Amount } from '../index'
 
 const AirdropSign = styled.div`
-  padding: 8px 12px;
+  padding: 6px 12px;
   margin: 0;
   font-family: Montserrat;
   font-size: 10px;
@@ -20,7 +20,7 @@ const AirdropSign = styled.div`
   color: ${({ theme }) => theme.white};
   background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
   box-shadow: 0px 0px 42px rgba(165, 58, 196, 0.35);
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
   margin-right: 7px;
