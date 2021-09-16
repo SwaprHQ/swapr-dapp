@@ -184,7 +184,7 @@ const HeaderSubRow = styled(RowFlat)`
   `};
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean }>`
+export const Amount = styled.div<{ clickable?: boolean; zero: boolean }>`
   padding: 6px 12px;
   margin: 0;
   font-weight: bold;
@@ -195,7 +195,7 @@ export const Amount = styled.p<{ clickable?: boolean; zero: boolean }>`
   text-transform: uppercase;
   color: ${({ theme }) => theme.text4};
   background: ${({ theme }) => theme.bg1};
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: ${props => (props.clickable ? 'pointer' : 'initial')};
   white-space: nowrap;
   ${props =>
