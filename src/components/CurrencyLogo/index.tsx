@@ -3,7 +3,7 @@ import React, { ReactNode, useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import EthereumLogo from '../../assets/images/ethereum-logo.png'
+import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import XDAILogo from '../../assets/images/xdai-logo.png'
 import DXDLogo from '../../assets/svg/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'

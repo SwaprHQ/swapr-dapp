@@ -10,7 +10,7 @@ import {
   useEthereumOptionPopoverToggle
 } from '../../state/application/hooks'
 
-import EthereumLogo from '../../assets/images/ethereum-logo.png'
+import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import XDAILogo from '../../assets/images/xdai-stake-logo.svg'
 import ArbitrumLogo from '../../assets/images/arbitrum-logo.svg'
 import Popover from '../Popover'
