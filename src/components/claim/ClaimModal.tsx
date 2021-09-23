@@ -149,6 +149,9 @@ export default function ClaimModal({
     toggleWalletConnectionModal()
   }, [closeModals, toggleWalletConnectionModal])
 
+  const isOldSwprBalanceGreaterThanZero = oldSwprBalance?.greaterThan('0')
+  const isNewSwprBalanceGreaterThanZero = newSwprBalance?.greaterThan('0')
+
   const content = () => {
     if (error) {
       return <TransactionErrorContent onDismiss={wrappedOnDismiss} message="The operation wasn't successful" />
@@ -182,24 +185,26 @@ export default function ClaimModal({
               </NativeCurrencyWarning>
             )}
             <BottomAutoColumn gap="8px">
-              <RowBetween>
-                <div>
-                  <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
-                    UNCLAIMED SWPR (OLD)
-                  </TYPE.small>
-                  <TYPE.white fontWeight={700} fontSize="22px" lineHeight="27px">
-                    {debouncedUnclaimedBalance?.toFixed(3) || '0'}
-                  </TYPE.white>
-                </div>
-                <div>
-                  <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
-                    UNCONVERTED SWPR (OLD)
-                  </TYPE.small>
-                  <TYPE.white fontWeight={700} fontSize="22px" lineHeight="27px">
-                    {oldSwprBalance?.toFixed(3) || '0'}
-                  </TYPE.white>
-                </div>
-              </RowBetween>
+              {(isOldSwprBalanceGreaterThanZero || isNewSwprBalanceGreaterThanZero) && (
+                <RowBetween>
+                  <div>
+                    <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
+                      UNCLAIMED SWPR (OLD)
+                    </TYPE.small>
+                    <TYPE.white fontWeight={700} fontSize="22px" lineHeight="27px">
+                      {debouncedUnclaimedBalance?.toFixed(3) || '0'}
+                    </TYPE.white>
+                  </div>
+                  <div>
+                    <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
+                      UNCONVERTED SWPR (OLD)
+                    </TYPE.small>
+                    <TYPE.white fontWeight={700} fontSize="22px" lineHeight="27px">
+                      {oldSwprBalance?.toFixed(3) || '0'}
+                    </TYPE.white>
+                  </div>
+                </RowBetween>
+              )}
               {!debouncedIsOldSwaprLP && correctNetwork && nativeCurrencyBalance?.equalTo('0') && (
                 <>
                   <NativeCurrencyWarning>
