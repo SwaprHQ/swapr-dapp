@@ -149,9 +149,6 @@ export default function ClaimModal({
     toggleWalletConnectionModal()
   }, [closeModals, toggleWalletConnectionModal])
 
-  const isOldSwprBalanceGreaterThanZero = oldSwprBalance?.greaterThan('0')
-  const isNewSwprBalanceGreaterThanZero = newSwprBalance?.greaterThan('0')
-
   const content = () => {
     if (error) {
       return <TransactionErrorContent onDismiss={wrappedOnDismiss} message="The operation wasn't successful" />
@@ -185,8 +182,8 @@ export default function ClaimModal({
               </NativeCurrencyWarning>
             )}
             <BottomAutoColumn gap="8px">
-              {(isOldSwprBalanceGreaterThanZero || isNewSwprBalanceGreaterThanZero) && (
-                <RowBetween>
+              <RowBetween>
+                {debouncedUnclaimedBalance?.greaterThan('0') && (
                   <div>
                     <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
                       UNCLAIMED SWPR (OLD)
@@ -195,6 +192,8 @@ export default function ClaimModal({
                       {debouncedUnclaimedBalance?.toFixed(3) || '0'}
                     </TYPE.white>
                   </div>
+                )}
+                {oldSwprBalance?.greaterThan('0') && (
                   <div>
                     <TYPE.small fontWeight={600} fontSize="11px" lineHeight="13px" letterSpacing="0.08em" color="text5">
                       UNCONVERTED SWPR (OLD)
@@ -203,8 +202,8 @@ export default function ClaimModal({
                       {oldSwprBalance?.toFixed(3) || '0'}
                     </TYPE.white>
                   </div>
-                </RowBetween>
-              )}
+                )}
+              </RowBetween>
               {!debouncedIsOldSwaprLP && correctNetwork && nativeCurrencyBalance?.equalTo('0') && (
                 <>
                   <NativeCurrencyWarning>
