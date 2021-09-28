@@ -7,6 +7,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { AutoColumn } from '../../Column'
 
 const StyledClaimButton = styled(ButtonPrimary)`
+  margin-top: 0;
   color: ${props => props.theme.white} !important;
   background: linear-gradient(90deg, ${props => props.theme.primary1} -24.77%, #fb52a1 186.93%);
   :disabled {
