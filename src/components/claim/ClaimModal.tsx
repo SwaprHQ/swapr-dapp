@@ -41,6 +41,10 @@ const BottomAutoColumn = styled(AutoColumn)`
   border: 1px solid ${props => props.theme.bg3};
   border-radius: 8px;
   padding: 26px;
+
+  &:empty {
+    display: none;
+  }
 `
 
 const NetworkWarning = styled.div`
