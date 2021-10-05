@@ -104,8 +104,8 @@ export default function ClaimModal({
   const debouncedIsOldSwaprLP = useDebounce(isOldSwaprLp, 1000)
 
   useEffect(() => {
-    setCorrectNetwork(chainId === ChainId.ARBITRUM_ONE)
-  }, [chainId])
+    setCorrectNetwork(chainId === ChainId.ARBITRUM_ONE && !!account)
+  }, [chainId, account])
 
   const onClaim = useCallback(() => {
     setAttempting(true)
