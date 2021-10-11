@@ -9,17 +9,18 @@ import ApyBadge from '../../ApyBadge'
 import { formatCurrencyAmount } from '../../../../utils'
 import { AutoColumn } from '../../../Column'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
+import { AddSWPRToMetamaskButton } from '../../../Button'
 
 const SizedCard = styled(DarkCard)`
-  width: 210px;
-  height: 120px;
+  width: 100%;
+  height: 80px;
   padding: 16px;
-  ${props => props.theme.mediaWidth.upToMedium`
-    width: 100%;
-  `}
+  display: flex;
+  justify-content: space-between;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     height: initial;
     padding: 22px 16px;
+    height:128px;
   `}
 `
 
@@ -47,9 +48,11 @@ const EllipsizedText = styled(TYPE.body)`
 `
 
 const TextWrapper = styled(Box)`
-  order: 1;
   width: 100%;
   margin-top: 20px;
+  ${props => props.theme.mediaWidth.upToExtraSmall`
+    width:auto;
+  `}
 `
 
 const BadgeWrapper = styled.div`
@@ -64,46 +67,53 @@ const BadgeWrapper = styled.div`
 const RootFlex = styled.div`
   height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
   ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: row-reverse;
+    flex-direction: row;
+    display:contents;
     justify-content: auto;
   `}
 `
 
-const InnerUpperFlex = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: row-reverse;
-    align-items: center;
-  `}
-`
+// const InnerUpperFlex = styled.div`
+//   height: 100%;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: center;
+//   align-items: flex-start;
+//   margin-left: auto;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     flex-direction: row-reverse;
+//
+//   `};
+// `
 
 const InnerLowerFlex = styled.div`
   display: flex;
   flex: 0;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     flex: 1;
+    flex-direction:column;
+    justify-content:space-between;
   `}
 `
 
 const MobileHidden = styled(Box)`
-  display: block;
+  display: flex;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     display: none;
   `}
 `
+// const DesktopHidden = styled(Box)`
+//   display: none;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     display: block;
+//   `}
+// `
 
-const DesktopHidden = styled(Box)`
-  display: none;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    display: block;
-  `}
+const AddSWPRToMetamaskButtonWraper = styled(AddSWPRToMetamaskButton)`
+  display: flex;
 `
 
 interface PairProps {
@@ -119,43 +129,46 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
   return (
     <SizedCard selectable {...rest}>
       <RootFlex>
-        <InnerUpperFlex>
-          <MobileHidden>
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
-          </MobileHidden>
-          <Box>
-            <AutoColumn gap="6px">
-              {apy.greaterThan('0') && (
-                <BadgeWrapper>
-                  <ApyBadge apy={apy} />
-                </BadgeWrapper>
-              )}
-              {staked && (
-                <PositiveBadgeRoot>
-                  <BadgeText>STAKING</BadgeText>
-                </PositiveBadgeRoot>
-              )}
-            </AutoColumn>
-          </Box>
-        </InnerUpperFlex>
         <InnerLowerFlex>
-          <DesktopHidden mr="8px" minWidth="auto">
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
-          </DesktopHidden>
+          <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
           <TextWrapper>
-            <Box>
-              <TYPE.subHeader fontSize="9px" color="text4" lineHeight="14px" letterSpacing="2%" fontWeight="600">
-                ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-              </TYPE.subHeader>
-            </Box>
             <Box>
               <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
                 {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
               </EllipsizedText>
             </Box>
+            <Box>
+              <TYPE.subHeader
+                width="max-content"
+                fontSize="9px"
+                color="text4"
+                lineHeight="14px"
+                letterSpacing="2%"
+                fontWeight="600"
+              >
+                ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
+              </TYPE.subHeader>
+            </Box>
           </TextWrapper>
         </InnerLowerFlex>
+        <Box>
+          <AutoColumn>
+            {apy.greaterThan('0') && (
+              <BadgeWrapper>
+                <ApyBadge apy={apy} />
+              </BadgeWrapper>
+            )}
+            {staked && (
+              <PositiveBadgeRoot>
+                <BadgeText>STAKING</BadgeText>
+              </PositiveBadgeRoot>
+            )}
+          </AutoColumn>
+        </Box>
       </RootFlex>
+      <MobileHidden>
+        <AddSWPRToMetamaskButtonWraper>Provide Liquidity</AddSWPRToMetamaskButtonWraper>
+      </MobileHidden>
     </SizedCard>
   )
 }

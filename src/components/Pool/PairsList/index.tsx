@@ -14,15 +14,8 @@ import { PairsFilterType } from '../ListFilter'
 
 const ListLayout = styled.div`
   display: grid;
-  grid-gap: 12px 10px;
-  grid-template-columns: 210px 210px 210px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr 1fr;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    grid-template-columns: auto;
-    grid-gap: 8px;
-  `};
+  grid-template-columns: auto;
+  grid-gap: 8px;
 `
 
 const PaginationRow = styled(Flex)`
