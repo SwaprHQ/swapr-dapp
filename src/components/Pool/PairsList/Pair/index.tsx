@@ -7,7 +7,6 @@ import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
 import ApyBadge from '../../ApyBadge'
 import { formatCurrencyAmount } from '../../../../utils'
-import { AutoColumn } from '../../../Column'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { AddSWPRToMetamaskButton } from '../../../Button'
 
@@ -17,9 +16,11 @@ const SizedCard = styled(DarkCard)`
   padding: 16px;
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
+  padding: 22px;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     height: initial;
-    padding: 22px 16px;
+    padding: 16px;
     height:128px;
   `}
 `
@@ -50,8 +51,15 @@ const EllipsizedText = styled(TYPE.body)`
 const TextWrapper = styled(Box)`
   width: 100%;
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     width:auto;
+    justify-content: flex-start;
+}
+
+
   `}
 `
 
@@ -76,19 +84,6 @@ const RootFlex = styled.div`
   `}
 `
 
-// const InnerUpperFlex = styled.div`
-//   height: 100%;
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: center;
-//   align-items: flex-start;
-//   margin-left: auto;
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     flex-direction: row-reverse;
-//
-//   `};
-// `
-
 const InnerLowerFlex = styled.div`
   display: flex;
   flex: 0;
@@ -101,16 +96,17 @@ const InnerLowerFlex = styled.div`
 
 const MobileHidden = styled(Box)`
   display: flex;
+  min-width: auto !important;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     display: none;
   `}
 `
-// const DesktopHidden = styled(Box)`
-//   display: none;
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     display: block;
-//   `}
-// `
+const DesktopHidden = styled(Box)`
+  display: none;
+  ${props => props.theme.mediaWidth.upToExtraSmall`
+    display: block;
+  `}
+`
 
 const AddSWPRToMetamaskButtonWraper = styled(AddSWPRToMetamaskButton)`
   display: flex;
@@ -130,7 +126,12 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
     <SizedCard selectable {...rest}>
       <RootFlex>
         <InnerLowerFlex>
-          <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
+          <DesktopHidden>
+            <DoubleCurrencyLogo top={-25} right={22} currency0={token0} currency1={token1} size={64} />
+          </DesktopHidden>
+          <MobileHidden>
+            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
+          </MobileHidden>
           <TextWrapper>
             <Box>
               <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
@@ -138,33 +139,24 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
               </EllipsizedText>
             </Box>
             <Box>
-              <TYPE.subHeader
-                width="max-content"
-                fontSize="9px"
-                color="text4"
-                lineHeight="14px"
-                letterSpacing="2%"
-                fontWeight="600"
-              >
+              <TYPE.small width="max-content" fontSize="11px" color="text5">
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-              </TYPE.subHeader>
+              </TYPE.small>
             </Box>
           </TextWrapper>
         </InnerLowerFlex>
-        <Box>
-          <AutoColumn>
-            {apy.greaterThan('0') && (
-              <BadgeWrapper>
-                <ApyBadge apy={apy} />
-              </BadgeWrapper>
-            )}
-            {staked && (
-              <PositiveBadgeRoot>
-                <BadgeText>STAKING</BadgeText>
-              </PositiveBadgeRoot>
-            )}
-          </AutoColumn>
-        </Box>
+        <TextWrapper>
+          {apy.greaterThan('0') && (
+            <BadgeWrapper>
+              <ApyBadge apy={apy} />
+            </BadgeWrapper>
+          )}
+          {staked && (
+            <PositiveBadgeRoot>
+              <BadgeText>STAKING</BadgeText>
+            </PositiveBadgeRoot>
+          )}
+        </TextWrapper>
       </RootFlex>
       <MobileHidden>
         <AddSWPRToMetamaskButtonWraper>Provide Liquidity</AddSWPRToMetamaskButtonWraper>

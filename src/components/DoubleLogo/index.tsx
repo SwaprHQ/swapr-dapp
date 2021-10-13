@@ -4,7 +4,7 @@ import React from 'react'
 import styled from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
 
-const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: number }>`
+const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: number; top: number; right: number }>`
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -13,6 +13,8 @@ const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: n
   width: ${({ sizeraw }) => (sizeraw * 2 - sizeraw / 2).toString() + 'px'};
   margin-right: ${({ marginRight }) => marginRight}px;
   margin-left: ${({ marginLeft }) => marginLeft}px;
+  top: ${({ top }) => top}px;
+  right: ${({ right }) => right}px;
 `
 
 interface DoubleCurrencyLogoProps {
@@ -22,6 +24,8 @@ interface DoubleCurrencyLogoProps {
   marginLeft?: number
   currency0?: Currency
   currency1?: Currency
+  top?: number
+  right?: number
 }
 
 const HigherLogo = styled(CurrencyLogo)<{ loading?: boolean }>`
@@ -40,10 +44,12 @@ export default function DoubleCurrencyLogo({
   loading,
   size = 16,
   marginRight = 0,
-  marginLeft = 0
+  marginLeft = 0,
+  top = 0,
+  right = 0
 }: DoubleCurrencyLogoProps) {
   return (
-    <Wrapper sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
+    <Wrapper top={top} right={right} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
       <CoveredLogo loading={loading} currency={currency0} size={size.toString() + 'px'} />
       <HigherLogo loading={loading} currency={currency1} size={size.toString() + 'px'} />
     </Wrapper>
