@@ -48,14 +48,16 @@ const EllipsizedText = styled(TYPE.body)`
   text-overflow: ellipsis;
 `
 
-const TextWrapper = styled(Box)`
+const TextWrapper = styled.div`
   width: 100%;
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin: 0 12px;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     width:auto;
+    margin:0;
+    grid-gap:6px;
     justify-content: flex-start;
 }
 
@@ -99,7 +101,7 @@ const MobileHidden = styled(Box)`
   min-width: auto !important;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     display: none;
-  `}
+  `};
 `
 const DesktopHidden = styled(Box)`
   display: none;
