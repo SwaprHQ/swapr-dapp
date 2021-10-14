@@ -59,7 +59,6 @@ const TextWrapper = styled.div`
   ${props => props.theme.mediaWidth.upToExtraSmall`
     width:auto;
     margin:0;
-    grid-gap:6px;
     justify-content: flex-start;
 }
 
@@ -73,6 +72,7 @@ const BadgeWrapper = styled.div`
 
   ${props => props.theme.mediaWidth.upToExtraSmall`
     align-self: center;
+    margin-bottom:6px;
   `}
 `
 
@@ -140,7 +140,7 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
               </EllipsizedText>
             </Box>
             <Box>
-              <TYPE.small width="max-content" fontSize="11px" color="text5">
+              <TYPE.small width="max-content" fontSize="11px" color="text5" fontFamily="Fira Code">
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
               </TYPE.small>
             </Box>
