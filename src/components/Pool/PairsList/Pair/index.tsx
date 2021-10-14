@@ -138,7 +138,7 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
       <RootFlex>
         <InnerLowerFlex>
           <DesktopHidden>
-            <DoubleCurrencyLogo top={-25} right={22} currency0={token0} currency1={token1} size={64} />
+            <DoubleCurrencyLogo marginLeft={-23} top={-25} currency0={token0} currency1={token1} size={64} />
           </DesktopHidden>
           <MobileHidden>
             <DoubleCurrencyLogo currency0={token0} currency1={token1} size={45} />
