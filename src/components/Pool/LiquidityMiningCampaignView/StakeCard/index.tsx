@@ -87,7 +87,7 @@ const ButtonsRow = styled(RowBetween)`
   `}
 `
 
-const StyledButtonDark = styled(ButtonDark)`
+export const StyledButtonDark = styled(ButtonDark)`
   width: 100%;
   padding: 9.5px;
   font-weight: 500;

@@ -6,13 +6,7 @@ import LoadingCard from './LoadingCard'
 const ListLayout = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: auto auto auto;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: auto auto;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    grid-template-columns: auto;
-  `};
+  grid-template-columns: auto;
 `
 
 interface LoadingListProps {

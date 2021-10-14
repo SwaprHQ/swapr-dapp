@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import ApyBadge from '../../ApyBadge'
 import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import { AddSWPRToMetamaskButton } from '../../../Button'
+import { StyledButtonDark } from '../../LiquidityMiningCampaignView/StakeCard'
 
 const SizedCard = styled(DarkCard)`
   width: 100%;
@@ -26,20 +26,22 @@ const SizedCard = styled(DarkCard)`
 `
 
 const PositiveBadgeRoot = styled.div`
-  height: 16px;
+  //height: 16px;
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(14, 159, 110, 0.1);
+  background-color: transparent;
+  border: 1px solid ${props => props.theme.green2};
   border-radius: 4px;
-  padding: 0 4px;
+  padding: 1px;
 `
 
 const BadgeText = styled.div`
-  font-weight: 600;
+  font-weight: 700;
   font-size: 9px;
   line-height: 11px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   color: ${props => props.theme.green2};
 `
 
@@ -98,6 +100,7 @@ const InnerLowerFlex = styled.div`
 
 const MobileHidden = styled(Box)`
   display: flex;
+  align-items: center;
   min-width: auto !important;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     display: none;
@@ -108,10 +111,6 @@ const DesktopHidden = styled(Box)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
     display: block;
   `}
-`
-
-const AddSWPRToMetamaskButtonWraper = styled(AddSWPRToMetamaskButton)`
-  display: flex;
 `
 
 interface PairProps {
@@ -132,7 +131,7 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
             <DoubleCurrencyLogo top={-25} right={22} currency0={token0} currency1={token1} size={64} />
           </DesktopHidden>
           <MobileHidden>
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
+            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={45} />
           </MobileHidden>
           <TextWrapper>
             <Box>
@@ -161,7 +160,7 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
         </TextWrapper>
       </RootFlex>
       <MobileHidden>
-        <AddSWPRToMetamaskButtonWraper>Provide Liquidity</AddSWPRToMetamaskButtonWraper>
+        <StyledButtonDark>Provide Liquidity</StyledButtonDark>
       </MobileHidden>
     </SizedCard>
   )
