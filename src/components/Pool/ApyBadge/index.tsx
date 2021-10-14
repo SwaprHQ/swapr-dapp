@@ -3,7 +3,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Root = styled.div`
-  //background: linear-gradient(113.18deg, #ffffff -0.1%, rgba(0, 0, 0, 0) 98.9%), #28263f;
   background: ${props => props.theme.mainPurple};
   background-blend-mode: overlay, normal;
   border-radius: 4px;
@@ -17,6 +16,7 @@ const Text = styled.div`
   color: ${props => props.theme.white};
   text-align: center;
   font-family: 'Fira Code';
+  line-height: 9px;
 `
 
 interface ApyBadgeProps {

@@ -32,15 +32,18 @@ const PositiveBadgeRoot = styled.div`
   justify-content: center;
   align-items: center;
   background-color: transparent;
-  border: 1px solid ${props => props.theme.green2};
+  border: 1.5px solid ${props => props.theme.green2};
   border-radius: 4px;
-  padding: 1px;
+  padding: 1px 2.5px;
+  ${props => props.theme.mediaWidth.upToExtraSmall`
+    margin-left:auto;
+  `}
 `
 
 const BadgeText = styled.div`
   font-weight: 700;
   font-size: 9px;
-  line-height: 11px;
+  line-height: 9px;
   letter-spacing: 0.04em;
   color: ${props => props.theme.green2};
 `
@@ -113,6 +116,13 @@ const DesktopHidden = styled(Box)`
   `}
 `
 
+const RandomWrapper = styled.div`
+  display: flex;
+  width: max-content;
+  grid-gap: 6px;
+  align-items: center;
+`
+
 interface PairProps {
   token0?: Token
   token1?: Token
@@ -134,30 +144,46 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
             <DoubleCurrencyLogo currency0={token0} currency1={token1} size={45} />
           </MobileHidden>
           <TextWrapper>
-            <Box>
-              <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
+            <RandomWrapper>
+              <EllipsizedText color="white" lineHeight="19px" fontWeight="700" fontSize="16px" maxWidth="100%">
                 {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
               </EllipsizedText>
-            </Box>
-            <Box>
+              <MobileHidden>
+                {apy.greaterThan('0') && (
+                  <BadgeWrapper>
+                    <ApyBadge apy={apy} />
+                  </BadgeWrapper>
+                )}
+              </MobileHidden>
+            </RandomWrapper>
+            <RandomWrapper>
               <TYPE.small width="max-content" fontSize="11px" color="text5" fontFamily="Fira Code">
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
               </TYPE.small>
-            </Box>
+              <MobileHidden>
+                {staked && (
+                  <PositiveBadgeRoot>
+                    <BadgeText>STAKING</BadgeText>
+                  </PositiveBadgeRoot>
+                )}
+              </MobileHidden>
+            </RandomWrapper>
           </TextWrapper>
         </InnerLowerFlex>
-        <TextWrapper>
-          {apy.greaterThan('0') && (
-            <BadgeWrapper>
-              <ApyBadge apy={apy} />
-            </BadgeWrapper>
-          )}
-          {staked && (
-            <PositiveBadgeRoot>
-              <BadgeText>STAKING</BadgeText>
-            </PositiveBadgeRoot>
-          )}
-        </TextWrapper>
+        <DesktopHidden>
+          <TextWrapper>
+            {apy.greaterThan('0') && (
+              <BadgeWrapper>
+                <ApyBadge apy={apy} />
+              </BadgeWrapper>
+            )}
+            {staked && (
+              <PositiveBadgeRoot>
+                <BadgeText>STAKING</BadgeText>
+              </PositiveBadgeRoot>
+            )}
+          </TextWrapper>
+        </DesktopHidden>
       </RootFlex>
       <MobileHidden>
         <StyledButtonDark>Provide Liquidity</StyledButtonDark>
