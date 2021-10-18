@@ -23,6 +23,11 @@ import { NETWORK_DETAIL } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeStep, createNetworkOptions, getNetworkOptionById } from './utils'
 
+const Wrapper = styled.div`
+  max-width: 432px;
+  margin: 0 auto;
+`
+
 const Title = styled.p`
   margin: 0;
   font-weight: 500;
@@ -132,9 +137,9 @@ export default function Bridge() {
   })
 
   return (
-    <>
+    <Wrapper>
+      <Tabs step={step} setStep={setStep} handleResetBridge={handleResetBridge} />
       <AppBody>
-        <Tabs step={step} setStep={setStep} handleResetBridge={handleResetBridge} />
         <RowBetween mb="12px">
           <Title>{isCollecting ? 'Collect' : 'Swapr Bridge'}</Title>
         </RowBetween>
@@ -209,6 +214,6 @@ export default function Bridge() {
         setStatus={setModalStatus}
         modalData={modalData}
       />
-    </>
+    </Wrapper>
   )
 }
