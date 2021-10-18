@@ -41,7 +41,7 @@ const Row = styled(RowBetween)`
   align-items: stretch;
 
   & > div {
-    width: 100%;
+    min-width: 141px;
   }
 
   & > div,
