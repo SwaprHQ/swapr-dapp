@@ -42,6 +42,7 @@ const Row = styled(RowBetween)`
 
   & > div {
     min-width: 141px;
+    width: 100%;
   }
 
   & > div,
