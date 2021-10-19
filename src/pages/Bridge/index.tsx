@@ -56,6 +56,10 @@ const SwapButton = styled.button<{ disabled: boolean }>`
   border: none;
   background: none;
   cursor: ${({ disabled }) => (disabled ? 'auto' : 'pointer')};
+
+  @media only screen and (max-width: 600px) {
+    padding: 0 8px;
+  }
 `
 
 export default function Bridge() {
