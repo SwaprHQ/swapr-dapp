@@ -16,7 +16,7 @@ import { UndecoratedLink } from '../../../../UndercoratedLink'
 const ListLayout = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 210px 210px 210px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: auto;
     grid-gap: 10px;
@@ -50,7 +50,7 @@ export default function List({ stakablePair, loading, items }: LiquidityMiningCa
   return (
     <>
       <Flex flexDirection="column">
-        <Box mb="8px" height="100px">
+        <Box mb="8px">
           {overallLoading ? (
             <LoadingList itemsAmount={responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (

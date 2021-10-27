@@ -116,12 +116,13 @@ const DesktopHidden = styled(Box)`
   `}
 `
 
-const RandomWrapper = styled.div`
+const TokenWrapper = styled.div`
   display: flex;
   width: max-content;
   grid-gap: 6px;
   align-items: center;
 `
+const DoubleCurrencyLogoStyled = styled(DoubleCurrencyLogo)``
 
 interface PairProps {
   token0?: Token
@@ -138,13 +139,13 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
       <RootFlex>
         <InnerLowerFlex>
           <DesktopHidden>
-            <DoubleCurrencyLogo marginLeft={-23} top={-25} currency0={token0} currency1={token1} size={64} />
+            <DoubleCurrencyLogoStyled marginLeft={-23} top={-25} currency0={token0} currency1={token1} size={64} />
           </DesktopHidden>
           <MobileHidden>
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={45} />
+            <DoubleCurrencyLogoStyled currency0={token0} currency1={token1} size={45} />
           </MobileHidden>
           <TextWrapper>
-            <RandomWrapper>
+            <TokenWrapper>
               <EllipsizedText color="white" lineHeight="19px" fontWeight="700" fontSize="16px" maxWidth="100%">
                 {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
               </EllipsizedText>
@@ -155,8 +156,8 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
                   </BadgeWrapper>
                 )}
               </MobileHidden>
-            </RandomWrapper>
-            <RandomWrapper>
+            </TokenWrapper>
+            <TokenWrapper>
               <TYPE.small width="max-content" fontSize="11px" color="text5" fontFamily="Fira Code">
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
               </TYPE.small>
@@ -167,7 +168,7 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
                   </PositiveBadgeRoot>
                 )}
               </MobileHidden>
-            </RandomWrapper>
+            </TokenWrapper>
           </TextWrapper>
         </InnerLowerFlex>
         <DesktopHidden>
