@@ -26,7 +26,6 @@ const SizedCard = styled(DarkCard)`
 `
 
 const PositiveBadgeRoot = styled.div`
-  //height: 16px;
   width: fit-content;
   display: flex;
   justify-content: center;
