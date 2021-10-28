@@ -56,7 +56,7 @@ export default function LoadingCard() {
             </Box>
           </Flex>
 
-          <Flex height="100%" justifyContent="space-around" ml="8px" flexDirection="column">
+          <Flex height="100%" justifyContent="space-around" ml="13px" flexDirection="column">
             <Flex alignItems="center">
               <Box style={{ marginRight: '6px' }}>
                 <Skeleton height="20px" width="90px" />

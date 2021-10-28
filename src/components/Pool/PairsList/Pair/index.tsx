@@ -57,7 +57,7 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0 12px;
+  margin: 0 24px;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     width:auto;
     margin:0;
