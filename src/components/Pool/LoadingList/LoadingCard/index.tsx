@@ -48,10 +48,10 @@ export default function LoadingCard() {
           <Flex>
             <Box>
               <DesktopHidden>
-                <DoubleCurrencyLogo loading marginLeft={-101} top={-27} size={64} />
+                <DoubleCurrencyLogo spaceBetween={-12} loading marginLeft={-101} top={-27} size={64} />
               </DesktopHidden>
               <MobileHidden>
-                <DoubleCurrencyLogo loading size={45} />
+                <DoubleCurrencyLogo spaceBetween={-12} loading size={45} />
               </MobileHidden>
             </Box>
           </Flex>

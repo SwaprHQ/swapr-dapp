@@ -122,7 +122,6 @@ const TokenWrapper = styled.div`
   grid-gap: 6px;
   align-items: center;
 `
-const DoubleCurrencyLogoStyled = styled(DoubleCurrencyLogo)``
 
 interface PairProps {
   token0?: Token
@@ -139,10 +138,17 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
       <RootFlex>
         <InnerLowerFlex>
           <DesktopHidden>
-            <DoubleCurrencyLogoStyled marginLeft={-23} top={-25} currency0={token0} currency1={token1} size={64} />
+            <DoubleCurrencyLogo
+              spaceBetween={-12}
+              marginLeft={-23}
+              top={-25}
+              currency0={token0}
+              currency1={token1}
+              size={64}
+            />
           </DesktopHidden>
           <MobileHidden>
-            <DoubleCurrencyLogoStyled currency0={token0} currency1={token1} size={45} />
+            <DoubleCurrencyLogo spaceBetween={-12} currency0={token0} currency1={token1} size={45} />
           </MobileHidden>
           <TextWrapper>
             <TokenWrapper>
