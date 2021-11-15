@@ -27,13 +27,14 @@ const StyledLogo = styled(Logo)<{ size: string }>`
   border-radius: ${({ size }) => size};
 `
 
-const Wrapper = styled.div<{ size: string; marginRight: number; marginLeft: number; loading?: boolean }>`
+const Wrapper = styled.div<{ size: string; marginRight: number; marginLeft: number; loading?: boolean; top?: number }>`
   position: relative;
   width: ${({ size }) => size};
   height: ${({ size }) => size};
   margin-right: ${({ marginRight }) => marginRight}px;
   margin-left: ${({ marginLeft }) => marginLeft}px;
   border-radius: ${({ size }) => size};
+  top: ${({ top }) => top}px;
 
   &::after {
     content: '';
@@ -64,7 +65,8 @@ export default function CurrencyLogo({
   className,
   loading,
   marginRight = 0,
-  marginLeft = 0
+  marginLeft = 0,
+  top = 0
 }: {
   currency?: Currency
   size?: string
@@ -73,6 +75,7 @@ export default function CurrencyLogo({
   loading?: boolean
   marginRight?: number
   marginLeft?: number
+  top?: number
 }) {
   const { chainId } = useActiveWeb3React()
   const nativeCurrencyLogo = NATIVE_CURRENCY_LOGO[(chainId as ChainId) || ChainId.MAINNET]
@@ -112,7 +115,7 @@ export default function CurrencyLogo({
       />
     )
   return (
-    <Wrapper size={size} marginRight={marginRight} marginLeft={marginLeft} className={className}>
+    <Wrapper top={top} size={size} marginRight={marginRight} marginLeft={marginLeft} className={className}>
       <StyledLogo
         size={size}
         defaultText={currency?.symbol || '?'}

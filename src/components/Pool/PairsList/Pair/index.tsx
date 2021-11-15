@@ -9,6 +9,8 @@ import ApyBadge from '../../ApyBadge'
 import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { StyledButtonDark } from '../../LiquidityMiningCampaignView/StakeCard'
+import CurrencyLogo from '../../../CurrencyLogo'
+import { ButtonPrimary } from '../../../Button'
 
 const SizedCard = styled(DarkCard)`
   width: 100%;
@@ -121,7 +123,9 @@ const TokenWrapper = styled.div`
   grid-gap: 6px;
   align-items: center;
 `
-
+const StyledButtonPrimary = styled(ButtonPrimary)`
+  padding: 9.5px 14px;
+`
 interface PairProps {
   token0?: Token
   token1?: Token
@@ -132,27 +136,37 @@ interface PairProps {
 }
 
 export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiquidityText, ...rest }: PairProps) {
+  const hasDoubleToken = token0 && token1
   return (
     <SizedCard selectable {...rest}>
       <RootFlex>
         <InnerLowerFlex>
           <DesktopHidden>
-            <DoubleCurrencyLogo
-              spaceBetween={-12}
-              marginLeft={-23}
-              top={-25}
-              currency0={token0}
-              currency1={token1}
-              size={64}
-            />
+            {token0 && token1 ? (
+              <DoubleCurrencyLogo
+                spaceBetween={-12}
+                marginLeft={-23}
+                top={-25}
+                currency0={token0}
+                currency1={token1}
+                size={64}
+              />
+            ) : (
+              <CurrencyLogo marginLeft={-23} top={-25} size={'64px'} currency={token0} />
+            )}
           </DesktopHidden>
           <MobileHidden>
-            <DoubleCurrencyLogo spaceBetween={-12} currency0={token0} currency1={token1} size={45} />
+            {hasDoubleToken ? (
+              <DoubleCurrencyLogo spaceBetween={-12} currency0={token0} currency1={token1} size={45} />
+            ) : (
+              <CurrencyLogo size={'45px'} currency={token0} />
+            )}
           </MobileHidden>
           <TextWrapper>
             <TokenWrapper>
               <EllipsizedText color="white" lineHeight="19px" fontWeight="700" fontSize="16px" maxWidth="100%">
-                {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
+                {unwrappedToken(token0)?.symbol}
+                {hasDoubleToken && `/${unwrappedToken(token1)?.symbol}`}
               </EllipsizedText>
               <MobileHidden>
                 {apy.greaterThan('0') && (
@@ -167,11 +181,12 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
               </TYPE.small>
               <MobileHidden>
-                {staked && (
-                  <PositiveBadgeRoot>
-                    <BadgeText>STAKING</BadgeText>
-                  </PositiveBadgeRoot>
-                )}
+                {staked ||
+                  (!hasDoubleToken && (
+                    <PositiveBadgeRoot>
+                      <BadgeText>STAKING</BadgeText>
+                    </PositiveBadgeRoot>
+                  ))}
               </MobileHidden>
             </TokenWrapper>
           </TextWrapper>
@@ -183,16 +198,21 @@ export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiq
                 <ApyBadge apy={apy} />
               </BadgeWrapper>
             )}
-            {staked && (
-              <PositiveBadgeRoot>
-                <BadgeText>STAKING</BadgeText>
-              </PositiveBadgeRoot>
-            )}
+            {staked ||
+              (!hasDoubleToken && (
+                <PositiveBadgeRoot>
+                  <BadgeText>STAKING</BadgeText>
+                </PositiveBadgeRoot>
+              ))}
           </TextWrapper>
         </DesktopHidden>
       </RootFlex>
       <MobileHidden>
-        <StyledButtonDark>Provide Liquidity</StyledButtonDark>
+        {hasDoubleToken ? (
+          <StyledButtonDark>Provide Liquidity</StyledButtonDark>
+        ) : (
+          <StyledButtonPrimary>Stake</StyledButtonPrimary>
+        )}
       </MobileHidden>
     </SizedCard>
   )
