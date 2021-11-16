@@ -79,11 +79,11 @@ export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: T
 }
 
 export function useAggregatedByToken0PairComparator(): (
-  pairA: { liquidityUSD: CurrencyAmount },
-  pairB: { liquidityUSD: CurrencyAmount }
+  pairA: { liquidityUSD: CurrencyAmount; pair: any },
+  pairB: { liquidityUSD: CurrencyAmount; pair: any }
 ) => number {
   return useCallback((pairA, pairB): number => {
-    // sort by rewards
+    if (pairA.pair.tokenAmounts[0].currency.symbol === pairA.pair.tokenAmounts[1].currency.symbol) return -1
     if (pairA.liquidityUSD.equalTo(pairB.liquidityUSD)) return 0
     return pairA.liquidityUSD.lessThan(pairB.liquidityUSD) ? 1 : -1
   }, [])

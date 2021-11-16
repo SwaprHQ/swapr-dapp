@@ -136,13 +136,14 @@ interface PairProps {
 }
 
 export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiquidityText, ...rest }: PairProps) {
-  const hasDoubleToken = token0 && token1
+  const hasDoubleToken = token0 && token1 ? token0.symbol !== token1.symbol : false
+
   return (
     <SizedCard selectable {...rest}>
       <RootFlex>
         <InnerLowerFlex>
           <DesktopHidden>
-            {token0 && token1 ? (
+            {hasDoubleToken ? (
               <DoubleCurrencyLogo
                 spaceBetween={-12}
                 marginLeft={-23}

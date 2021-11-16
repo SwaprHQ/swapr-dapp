@@ -29,6 +29,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     const aggregation = []
     for (let i = 0; i < allWrappedPairs.length; i++) {
       const wrappedPair = allWrappedPairs[i]
+
       aggregation.push({
         pair: wrappedPair.pair,
         staked: wrappedPair.staked,

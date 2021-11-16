@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import Pagination from '../../Pagination'
 import LoadingList from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent, SWPR } from '@swapr/sdk'
+import { CurrencyAmount, Pair, Percent } from '@swapr/sdk'
 import Empty from '../Empty'
 import styled from 'styled-components'
 import { usePage } from '../../../hooks/usePage'
@@ -46,10 +46,8 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-  console.log(SWPR)
-  const swaprToken = useMemo(() => chainId && SWPR[chainId], [chainId])
 
-  console.log(swaprToken)
+  // const swaprToken = useMemo(() => chainId && SWPR[chainId], [chainId])
 
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -63,7 +61,7 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
           <LoadingList />
         ) : itemsPage.length > 0 ? (
           <ListLayout>
-            <UndecoratedLink
+            {/* <UndecoratedLink
               key={itemsPage[0].pair.liquidityToken.address}
               to={`/pools/${itemsPage[0].pair.token0.address}/${itemsPage[0].pair.token1.address}`}
             >
@@ -73,7 +71,7 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
                 apy={itemsPage[0].maximumApy}
                 staked={itemsPage[0].staked}
               />
-            </UndecoratedLink>
+            </UndecoratedLink> */}
             {itemsPage.map(aggregatedPair => {
               return (
                 <UndecoratedLink
