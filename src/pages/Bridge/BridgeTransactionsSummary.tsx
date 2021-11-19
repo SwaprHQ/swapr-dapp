@@ -106,7 +106,7 @@ const Dots = styled.div<{ status: BridgeTransactionStatus }>`
 const TextBridging = styled.div`
   font-size: 12px;
   line-height: 12px;
-  color: ${props => props.theme.white};
+  color: ${props => props.theme.text1};
 `
 
 const TextFrom = styled.div`
