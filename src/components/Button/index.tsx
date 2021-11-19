@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import { darken, lighten, transparentize } from 'polished'
 
@@ -6,14 +6,18 @@ import { RowBetween } from '../Row'
 import { ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
+import arrowIcon from './../../assets/svg/double-angle.svg'
 import { Text } from 'rebass'
+import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 
-const Base = styled(RebassButton)<{
+interface BaseProps {
   padding?: string
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
-}>`
+}
+
+const Base = styled(RebassButton)<BaseProps>`
   padding: ${({ padding }) => (padding ? padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
   font-weight: 600;
@@ -120,6 +124,18 @@ export const ButtonDark = styled(Base)`
   }
   a:hover {
     text-decoration: none;
+  }
+`
+export const ButtonDark2 = styled(Base)`
+  background-color: ${({ theme }) => theme.dark2};
+  color: ${({ theme }) => theme.white};
+  transition: background-color 0.3s ease;
+  border: 1px solid ${({ theme }) => theme.bg3};
+  &:hover {
+    background-color: ${({ theme }) => darken(0.05, theme.dark2)};
+  }
+  &:active {
+    background-color: ${({ theme }) => darken(0.1, theme.dark2)};
   }
 `
 
@@ -249,6 +265,35 @@ export function ButtonWithLink({ link, text, style }: { link: string; text: stri
   )
 }
 
+const CarrotIconWithMargin = styled(CarrotIcon)`
+  margin-right: 4px;
+`
+
+const CarrotButtonText = styled(Text)`
+  white-space: nowrap;
+  color: #fff;
+`
+
+const StyledButtonSecondary = styled(ButtonSecondary)`
+  padding: 0px 6px;
+  border-radius: 4px;
+  background-color: #ea6433;
+  width: auto;
+  height: 22px;
+  border: none;
+`
+
+export function CarrotButton({ link, text, style }: { link: string; text: string; style?: any }) {
+  return (
+    <StyledButtonSecondary as="a" style={style} href={link} rel="noopener noreferrer" target="_blank">
+      <CarrotIconWithMargin />
+      <CarrotButtonText fontWeight={700} fontSize={10} lineHeight="9px" letterSpacing="4%">
+        {text}
+      </CarrotButtonText>
+    </StyledButtonSecondary>
+  )
+}
+
 export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
@@ -291,3 +336,36 @@ export const AddSWPRToMetamaskButton = styled(Base)<{ active?: boolean }>`
   border: none;
   box-shadow: ${props => (props.active ? '0px 0px 42px rgba(165, 58, 196, 0.35)' : 'none')};
 `
+
+const MoreButton = styled.button`
+  position: relative;
+  display: block;
+  padding: 6px 8px;
+  margin: 12px auto 0;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.text5};
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  img {
+    margin-left: 10px;
+  }
+`
+
+interface ShowMoreButtonProps {
+  children: ReactNode
+  onClick: () => void
+  isOpen: boolean
+}
+
+export const ShowMoreButton = ({ children, onClick, isOpen }: ShowMoreButtonProps) => (
+  <MoreButton onClick={onClick}>
+    {children}
+    <img src={arrowIcon} alt="arrow down" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }} />
+  </MoreButton>
+)

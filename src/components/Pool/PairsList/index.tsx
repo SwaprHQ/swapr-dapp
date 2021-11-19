@@ -14,6 +14,7 @@ import { PairsFilterType } from '../ListFilter'
 
 const ListLayout = styled.div`
   display: grid;
+  //this should be toogleble as well to 1fr 1fr 1fr
   grid-template-columns: auto;
   grid-gap: 8px;
 `
@@ -36,6 +37,7 @@ interface PairsListProps {
     liquidityUSD: CurrencyAmount
     maximumApy: Percent
     staked?: boolean
+    containsKpiToken?: boolean
   }[]
   filter?: PairsFilterType
   loading?: boolean
@@ -71,6 +73,7 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
                     usdLiquidity={aggregatedPair.liquidityUSD}
                     apy={aggregatedPair.maximumApy}
                     staked={aggregatedPair.staked}
+                    containsKpiToken={aggregatedPair.containsKpiToken}
                   />
                 </UndecoratedLink>
               )

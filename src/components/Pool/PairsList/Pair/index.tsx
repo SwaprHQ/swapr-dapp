@@ -1,127 +1,135 @@
 import React from 'react'
-import { Box } from 'rebass'
+// import { Box } from 'rebass'
 import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
-import { TYPE } from '../../../../theme'
+// import { TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
-import ApyBadge from '../../ApyBadge'
-import { formatCurrencyAmount } from '../../../../utils'
-import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import { StyledButtonDark } from '../../LiquidityMiningCampaignView/StakeCard'
+// import ApyBadge from '../../ApyBadge'
+// import { formatCurrencyAmount } from '../../../../utils'
+// import { AutoColumn } from '../../../Column'
+// import { unwrappedToken } from '../../../../utils/wrappedCurrency'
+// import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
+// import { MouseoverTooltip } from '../../../Tooltip'
 
 const SizedCard = styled(DarkCard)`
+  //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
   width: 100%;
-  height: 80px;
+  /* height: 120px; */
   padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  overflow: hidden;
-  padding: 22px;
+  ${props => props.theme.mediaWidth.upToMedium`
+    width: 100%;
+  `}
   ${props => props.theme.mediaWidth.upToExtraSmall`
     height: initial;
-    padding: 16px;
-    height:128px;
+    padding: 22px 16px;
   `}
 `
 
-const PositiveBadgeRoot = styled.div`
-  width: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  border: 1.5px solid ${props => props.theme.green2};
-  border-radius: 4px;
-  padding: 1px 2.5px;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-left:auto;
-  `}
-`
+// const PositiveBadgeRoot = styled.div`
+//   height: 16px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   background-color: rgba(14, 159, 110, 0.1);
+//   border-radius: 4px;
+//   padding: 0 4px;
+// `
 
-const BadgeText = styled.div`
-  font-weight: 700;
-  font-size: 9px;
-  line-height: 9px;
-  letter-spacing: 0.04em;
-  color: ${props => props.theme.green2};
-`
+// const KpiBadge = styled.div`
+//   height: 16px;
+//   border: solid 1.5px #f2994a;
+//   color: #f2994a;
+//   border-radius: 4px;
+//   font-size: 9px;
+//   font-weight: 700;
+//   line-height: 9px;
+//   letter-spacing: 0.04em;
+//   display: flex;
+//   align-items: center;
+//   padding: 0 4px;
+// `
 
-const EllipsizedText = styled(TYPE.body)`
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
+// const StyledCarrotLogo = styled(CarrotLogo)`
+//   margin-right: 4px;
+//   > path {
+//     fill: #f2994a;
+//   }
+// `
 
-const TextWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 0 24px;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    width:auto;
-    margin:0;
-    justify-content: flex-start;
-}
+// const BadgeText = styled.div`
+//   font-weight: 600;
+//   font-size: 9px;
+//   line-height: 11px;
+//   letter-spacing: 0.02em;
+//   color: ${props => props.theme.green2};
+// `
 
+// const EllipsizedText = styled(TYPE.body)`
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// `
 
-  `}
-`
+// const TextWrapper = styled(Box)`
+//   order: 1;
+//   width: 100%;
+//   margin-top: 20px;
+// `
 
-const BadgeWrapper = styled.div`
-  align-self: flex-start;
-  margin-left: auto;
+// const BadgeWrapper = styled.div`
+//   align-self: flex-start;
+//   margin-left: auto;
 
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    align-self: center;
-    margin-bottom:6px;
-  `}
-`
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     align-self: center;
+//   `}
+// `
 
 const RootFlex = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
   ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: row;
-    display:contents;
+    flex-direction: row-reverse;
     justify-content: auto;
+    flex-direction: column;
   `}
 `
 
-const InnerLowerFlex = styled.div`
-  display: flex;
-  flex: 0;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex: 1;
-    flex-direction:column;
-    justify-content:space-between;
-  `}
-`
+// const InnerUpperFlex = styled.div`
+//   height: 100%;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   align-items: flex-start;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     flex-direction: row-reverse;
+//     align-items: center;
+//   `}
+// `
 
-const MobileHidden = styled(Box)`
-  display: flex;
-  align-items: center;
-  min-width: auto !important;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-const DesktopHidden = styled(Box)`
-  display: none;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    display: block;
-  `}
-`
+// const InnerLowerFlex = styled.div`
+//   display: flex;
+//   flex: 0;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     flex: 1;
+//   `}
+// `
 
-const TokenWrapper = styled.div`
-  display: flex;
-  width: max-content;
-  grid-gap: 6px;
-  align-items: center;
-`
+// const MobileHidden = styled(Box)`
+//   display: block;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     display: none;
+//   `}
+// `
 
+// const DesktopHidden = styled(Box)`
+//   display: none;
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     display: block;
+//   `}
+// `
+const LogoWithText = styled.div``
 interface PairProps {
   token0?: Token
   token1?: Token
@@ -129,71 +137,72 @@ interface PairProps {
   usdLiquidity: CurrencyAmount
   usdLiquidityText?: string
   staked?: boolean
+  containsKpiToken?: boolean
 }
 
-export default function Pair({ token0, token1, usdLiquidity, apy, staked, usdLiquidityText, ...rest }: PairProps) {
+export default function Pair({
+  token0,
+  token1,
+  usdLiquidity,
+  apy,
+  staked,
+  containsKpiToken,
+  usdLiquidityText,
+  ...rest
+}: PairProps) {
+  console.log(token0, token1, usdLiquidity, apy, staked, containsKpiToken, usdLiquidityText)
   return (
     <SizedCard selectable {...rest}>
       <RootFlex>
-        <InnerLowerFlex>
-          <DesktopHidden>
-            <DoubleCurrencyLogo
-              spaceBetween={-12}
-              marginLeft={-23}
-              top={-25}
-              currency0={token0}
-              currency1={token1}
-              size={64}
-            />
-          </DesktopHidden>
+        {/* <InnerUpperFlex>
           <MobileHidden>
-            <DoubleCurrencyLogo spaceBetween={-12} currency0={token0} currency1={token1} size={45} />
+            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
           </MobileHidden>
+          <Box>
+            <AutoColumn justify="flex-end" gap="6px">
+              {apy.greaterThan('0') && (
+                <BadgeWrapper>
+                  <ApyBadge upTo={containsKpiToken} apy={apy} />
+                </BadgeWrapper>
+              )}
+              {containsKpiToken && (
+                <MouseoverTooltip content="Rewards at least a Carrot KPI token">
+                  <KpiBadge>
+                    <StyledCarrotLogo />
+                    CARROT
+                  </KpiBadge>
+                </MouseoverTooltip>
+              )}
+              {staked && (
+                <PositiveBadgeRoot>
+                  <BadgeText>STAKING</BadgeText>
+                </PositiveBadgeRoot>
+              )}
+            </AutoColumn>
+          </Box>
+        </InnerUpperFlex>
+        <InnerLowerFlex>
+          <DesktopHidden mr="8px" minWidth="auto">
+            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
+          </DesktopHidden>
           <TextWrapper>
-            <TokenWrapper>
-              <EllipsizedText color="white" lineHeight="19px" fontWeight="700" fontSize="16px" maxWidth="100%">
+            <Box>
+              <TYPE.subHeader fontSize="9px" color="text4" lineHeight="14px" letterSpacing="2%" fontWeight="600">
+                ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
+              </TYPE.subHeader>
+            </Box>
+            <Box>
+              <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
                 {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
               </EllipsizedText>
-              <MobileHidden>
-                {apy.greaterThan('0') && (
-                  <BadgeWrapper>
-                    <ApyBadge apy={apy} />
-                  </BadgeWrapper>
-                )}
-              </MobileHidden>
-            </TokenWrapper>
-            <TokenWrapper>
-              <TYPE.small width="max-content" fontSize="11px" color="text5" fontFamily="Fira Code">
-                ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-              </TYPE.small>
-              <MobileHidden>
-                {staked && (
-                  <PositiveBadgeRoot>
-                    <BadgeText>STAKING</BadgeText>
-                  </PositiveBadgeRoot>
-                )}
-              </MobileHidden>
-            </TokenWrapper>
+            </Box>
           </TextWrapper>
-        </InnerLowerFlex>
-        <DesktopHidden>
-          <TextWrapper>
-            {apy.greaterThan('0') && (
-              <BadgeWrapper>
-                <ApyBadge apy={apy} />
-              </BadgeWrapper>
-            )}
-            {staked && (
-              <PositiveBadgeRoot>
-                <BadgeText>STAKING</BadgeText>
-              </PositiveBadgeRoot>
-            )}
-          </TextWrapper>
-        </DesktopHidden>
+        </InnerLowerFlex> */}
+        <LogoWithText>
+          <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
+        </LogoWithText>
+        <LogoWithText>Here2</LogoWithText>
       </RootFlex>
-      <MobileHidden>
-        <StyledButtonDark>Provide Liquidity</StyledButtonDark>
-      </MobileHidden>
     </SizedCard>
   )
 }
