@@ -92,6 +92,10 @@ const TextFrom = styled.div`
   position: relative;
 `
 
+const TextTo = styled(Link)<{ success: boolean }>`
+  color: ${({ success }) => (success ? '#0e9f6e' : '#8780bf')};
+`
+
 const Progress = styled.span<{ dashedLineWidth: number; success: boolean }>`
   position: absolute;
   right: -3px;
@@ -112,10 +116,6 @@ const Progress = styled.span<{ dashedLineWidth: number; success: boolean }>`
     height: 100%;
     background-color: #0e9f6e;
   }
-`
-
-const TextTo = styled(Link)<{ success: boolean }>`
-  color: ${({ success }) => (success ? '#0e9f6e' : '#8780bf')};
 `
 
 interface BridgeTransactionsSummaryRow {
