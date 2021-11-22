@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from 'rebass'
+
 import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
@@ -90,12 +90,7 @@ const BadgeWrapper = styled.div`
 const RootFlex = styled.div`
   height: 100%;
   display: flex;
-
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    justify-content: space-between;
-  
-    
-  `}
+  justify-content: space-between;
 `
 
 // const InnerUpperFlex = styled.div`
@@ -118,19 +113,6 @@ const RootFlex = styled.div`
 //   `}
 // `
 
-const MobileHidden = styled(Box)`
-  display: block;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `}
-`
-
-const DesktopHidden = styled(Box)`
-  display: none;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    display: block;
-  `}
-`
 const LogoWithText = styled.div`
   display: flex;
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -140,8 +122,10 @@ const LogoWithText = styled.div`
 const StyledBadgesWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
   ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: column;
+    justify-content: unset;
   `}
 `
 const Badges = styled.div`
@@ -150,6 +134,31 @@ const Badges = styled.div`
   flex-direction: row;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     flex-direction: column;
+  `}
+`
+const TitleText = styled.div`
+  color: ${props => props.theme.purple2};
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+`
+const ValueText = styled.div`
+  color: ${props => props.theme.purple2};
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+`
+const ItemsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`
+const MainWrapper = styled.div`
+  display: flex;
+  width: 65%;
+  justify-content: space-between;
+  ${props => props.theme.mediaWidth.upToExtraSmall`
+    width:auto;
   `}
 `
 interface PairProps {
@@ -224,11 +233,7 @@ export default function Pair({
           </TextWrapper>
         </InnerLowerFlex> */}
         <LogoWithText>
-          <MobileHidden>
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
-          </MobileHidden>
-          <DesktopHidden>
-            {' '}
+          {isMobile ? (
             <DoubleCurrencyLogo
               spaceBetween={-12}
               marginLeft={-23}
@@ -237,46 +242,67 @@ export default function Pair({
               currency1={token1}
               size={64}
             />
-          </DesktopHidden>
+          ) : (
+            <DoubleCurrencyLogo marginRight={14} currency0={token0} currency1={token1} size={34} />
+          )}
+
           <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
             {unwrappedToken(token0)?.symbol}
             {isMobile ? '/' : <br></br>}
             {unwrappedToken(token1)?.symbol}
           </EllipsizedText>
-          <DesktopHidden>
+
+          {isMobile && (
             <TYPE.subHeader fontSize="9px" color="text4" lineHeight="14px" letterSpacing="2%" fontWeight="600">
               ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
             </TYPE.subHeader>
-          </DesktopHidden>
+          )}
         </LogoWithText>
-        <StyledBadgesWrapper>
-          <MobileHidden>
-            <TYPE.mediumHeader color="white" fontWeight="600" fontSize="16px" lineHeight="20px">
-              Campagins
-            </TYPE.mediumHeader>
-          </MobileHidden>
+        <MainWrapper>
+          <StyledBadgesWrapper>
+            {!isMobile && <TitleText>CAMPAIGNS</TitleText>}
 
-          <Badges>
-            {apy.greaterThan('0') && (
-              <BadgeWrapper>
-                <ApyBadge upTo={containsKpiToken} apy={apy} />
-              </BadgeWrapper>
-            )}
-            {containsKpiToken && (
-              <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-                <KpiBadge>
-                  <StyledCarrotLogo />
-                  CARROT
-                </KpiBadge>
-              </MouseoverTooltip>
-            )}
-            {staked && (
-              <PositiveBadgeRoot>
-                <BadgeText>STAKING</BadgeText>
-              </PositiveBadgeRoot>
-            )}
-          </Badges>
-        </StyledBadgesWrapper>
+            <Badges>
+              {apy.greaterThan('0') && (
+                <BadgeWrapper>
+                  <ApyBadge upTo={containsKpiToken} apy={apy} />
+                </BadgeWrapper>
+              )}
+              {containsKpiToken && (
+                <MouseoverTooltip content="Rewards at least a Carrot KPI token">
+                  <KpiBadge>
+                    <StyledCarrotLogo />
+                    CARROT
+                  </KpiBadge>
+                </MouseoverTooltip>
+              )}
+              {staked && (
+                <PositiveBadgeRoot>
+                  <BadgeText>STAKING</BadgeText>
+                </PositiveBadgeRoot>
+              )}
+            </Badges>
+          </StyledBadgesWrapper>
+          {!isMobile && (
+            <>
+              <ItemsWrapper>
+                <TitleText>TVL</TitleText>
+
+                <ValueText> $19 980 211</ValueText>
+              </ItemsWrapper>
+              <ItemsWrapper>
+                <TitleText>24h VOLUME</TitleText>
+
+                <ValueText>$128 581</ValueText>
+              </ItemsWrapper>
+              <ItemsWrapper>
+                <TitleText>APY</TitleText>
+
+                <ValueText>124%</ValueText>
+              </ItemsWrapper>
+            </>
+          )}
+        </MainWrapper>
       </RootFlex>
     </SizedCard>
   )
