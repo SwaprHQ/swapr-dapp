@@ -27,7 +27,7 @@ interface ApyBadgeProps {
 export default function ApyBadge({ apy, upTo }: ApyBadgeProps) {
   return (
     <Root>
-      <Text>{`${upTo ? 'UP TO' : ''} ${apy.toFixed(2)}% APR`}</Text>
+      <Text>{`${upTo ? 'UP TO' : ''} ${apy.toFixed(2)}% APY`}</Text>
     </Root>
   )
 }

@@ -14,6 +14,7 @@ import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
 import { MouseoverTooltip } from '../../../Tooltip'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
+import Farming from '../../../../assets/svg/farming.svg'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
@@ -32,10 +33,12 @@ const SizedCard = styled(DarkCard)`
 
 const PositiveBadgeRoot = styled.div`
   height: 16px;
+  border: solid 1.5px ${props => props.theme.green2};
+  border-radius: 6px;
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(14, 159, 110, 0.1);
   border-radius: 4px;
   padding: 0 4px;
 `
@@ -60,11 +63,13 @@ const StyledCarrotLogo = styled(CarrotLogo)`
     fill: #f2994a;
   }
 `
+// const StyledFarmingLogo = styled(Farming)``
 
 const BadgeText = styled.div`
-  font-weight: 600;
+  font-weight: 700;
+  margin-left: 3px;
   font-size: 9px;
-  line-height: 11px;
+  line-height: 9px;
   letter-spacing: 0.02em;
   color: ${props => props.theme.green2};
 `
@@ -150,7 +155,11 @@ export default function Pair({
           <Flex flexDirection="column" alignItems="flex-start" justifyContent={isMobile ? '' : 'space-evenly'}>
             {!isMobile && <TitleText>CAMPAIGNS</TitleText>}
 
-            <Flex style={{ gap: '6px' }} flexDirection={isMobile ? 'column' : 'row'}>
+            <Flex
+              style={{ gap: '6px' }}
+              flexDirection={isMobile ? 'column' : 'row'}
+              alignItems={isMobile ? 'flex-end' : 'flex-start'}
+            >
               {apy.greaterThan('0') && (
                 <Flex alignSelf={isMobile ? 'center' : 'flex-start'} marginLeft="auto">
                   <ApyBadge upTo={containsKpiToken} apy={apy} />
@@ -166,7 +175,8 @@ export default function Pair({
               )}
               {staked && (
                 <PositiveBadgeRoot>
-                  <BadgeText>STAKING</BadgeText>
+                  <img src={Farming} alt="farming" />
+                  <BadgeText>FARMING</BadgeText>
                 </PositiveBadgeRoot>
               )}
             </Flex>
