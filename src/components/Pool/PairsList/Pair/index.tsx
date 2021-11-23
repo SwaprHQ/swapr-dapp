@@ -6,12 +6,14 @@ import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
 import ApyBadge from '../../ApyBadge'
+
 import { formatCurrencyAmount } from '../../../../utils'
 
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
 import { MouseoverTooltip } from '../../../Tooltip'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
+import { Flex, Text } from 'rebass'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
@@ -72,95 +74,25 @@ const EllipsizedText = styled(TYPE.body)`
   text-overflow: ellipsis;
 `
 
-// const TextWrapper = styled(Box)`
-//   order: 1;
-//   width: 100%;
-//   margin-top: 20px;
-// `
-
-const BadgeWrapper = styled.div`
-  align-self: flex-start;
-  margin-left: auto;
-
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    align-self: center;
-  `}
-`
-
-const RootFlex = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-`
-
-// const InnerUpperFlex = styled.div`
-//   height: 100%;
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: space-between;
-//   align-items: flex-start;
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     flex-direction: row-reverse;
-//     align-items: center;
-//   `}
-// `
-
-// const InnerLowerFlex = styled.div`
-//   display: flex;
-//   flex: 0;
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     flex: 1;
-//   `}
-// `
-
-const LogoWithText = styled.div`
-  display: flex;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: column;
-  `}
-`
-const StyledBadgesWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    justify-content: unset;
-  `}
-`
-const Badges = styled.div`
-  display: flex;
-  gap: 6px;
-  flex-direction: row;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: column;
-  `}
-`
 const TitleText = styled.div`
   color: ${props => props.theme.purple2};
   font-size: 10px;
   font-weight: 600;
   line-height: 12px;
+  opacity: 0.5;
 `
 const ValueText = styled.div`
   color: ${props => props.theme.purple2};
   font-size: 14px;
   font-weight: 500;
   line-height: 16.8px;
+  font-family: 'Fira Code';
 `
-const ItemsWrapper = styled.div`
-  display: flex;
-  justify-content: center;
+const ItemsWrapper = styled(Flex)`
+  justify-content: space-evenly;
   flex-direction: column;
 `
-const MainWrapper = styled.div`
-  display: flex;
-  width: 65%;
-  justify-content: space-between;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    width:auto;
-  `}
-`
+
 interface PairProps {
   token0?: Token
   token1?: Token
@@ -187,52 +119,8 @@ export default function Pair({
 
   return (
     <SizedCard selectable {...rest}>
-      <RootFlex>
-        {/* <InnerUpperFlex>
-          <MobileHidden>
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
-          </MobileHidden>
-          <Box>
-            <AutoColumn justify="flex-end" gap="6px">
-              {apy.greaterThan('0') && (
-                <BadgeWrapper>
-                  <ApyBadge upTo={containsKpiToken} apy={apy} />
-                </BadgeWrapper>
-              )}
-              {containsKpiToken && (
-                <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-                  <KpiBadge>
-                    <StyledCarrotLogo />
-                    CARROT
-                  </KpiBadge>
-                </MouseoverTooltip>
-              )}
-              {staked && (
-                <PositiveBadgeRoot>
-                  <BadgeText>STAKING</BadgeText>
-                </PositiveBadgeRoot>
-              )}
-            </AutoColumn>
-          </Box>
-        </InnerUpperFlex>
-        <InnerLowerFlex>
-          <DesktopHidden mr="8px" minWidth="auto">
-            <DoubleCurrencyLogo currency0={token0} currency1={token1} size={34} />
-          </DesktopHidden>
-          <TextWrapper>
-            <Box>
-              <TYPE.subHeader fontSize="9px" color="text4" lineHeight="14px" letterSpacing="2%" fontWeight="600">
-                ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-              </TYPE.subHeader>
-            </Box>
-            <Box>
-              <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
-                {unwrappedToken(token0)?.symbol}/{unwrappedToken(token1)?.symbol}
-              </EllipsizedText>
-            </Box>
-          </TextWrapper>
-        </InnerLowerFlex> */}
-        <LogoWithText>
+      <Flex height="100%" justifyContent="space-between">
+        <Flex flexDirection={isMobile ? 'column' : 'row'} alignItems={!isMobile ? 'center' : ''}>
           {isMobile ? (
             <DoubleCurrencyLogo
               spaceBetween={-12}
@@ -243,7 +131,7 @@ export default function Pair({
               size={64}
             />
           ) : (
-            <DoubleCurrencyLogo marginRight={14} currency0={token0} currency1={token1} size={34} />
+            <DoubleCurrencyLogo marginRight={14} currency0={token0} currency1={token1} size={45} />
           )}
 
           <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
@@ -257,16 +145,16 @@ export default function Pair({
               ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
             </TYPE.subHeader>
           )}
-        </LogoWithText>
-        <MainWrapper>
-          <StyledBadgesWrapper>
+        </Flex>
+        <Flex width={isMobile ? 'auto' : '65%'} justifyContent="space-between">
+          <Flex flexDirection="column" alignItems="flex-start" justifyContent={isMobile ? '' : 'space-evenly'}>
             {!isMobile && <TitleText>CAMPAIGNS</TitleText>}
 
-            <Badges>
+            <Flex style={{ gap: '6px' }} flexDirection={isMobile ? 'column' : 'row'}>
               {apy.greaterThan('0') && (
-                <BadgeWrapper>
+                <Flex alignSelf={isMobile ? 'center' : 'flex-start'} marginLeft="auto">
                   <ApyBadge upTo={containsKpiToken} apy={apy} />
-                </BadgeWrapper>
+                </Flex>
               )}
               {containsKpiToken && (
                 <MouseoverTooltip content="Rewards at least a Carrot KPI token">
@@ -281,29 +169,29 @@ export default function Pair({
                   <BadgeText>STAKING</BadgeText>
                 </PositiveBadgeRoot>
               )}
-            </Badges>
-          </StyledBadgesWrapper>
+            </Flex>
+          </Flex>
           {!isMobile && (
             <>
               <ItemsWrapper>
                 <TitleText>TVL</TitleText>
-
                 <ValueText> $19 980 211</ValueText>
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>24h VOLUME</TitleText>
-
                 <ValueText>$128 581</ValueText>
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>APY</TitleText>
 
-                <ValueText>124%</ValueText>
+                <Text fontWeight="700" fontSize="18px" fontFamily="Fira Code">
+                  124%
+                </Text>
               </ItemsWrapper>
             </>
           )}
-        </MainWrapper>
-      </RootFlex>
+        </Flex>
+      </Flex>
     </SizedCard>
   )
 }
