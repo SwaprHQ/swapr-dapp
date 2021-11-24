@@ -14,6 +14,7 @@ import { MouseoverTooltip } from '../../../Tooltip'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
 import Farming from '../../../../assets/svg/farming.svg'
+import ApyBadge from '../../ApyBadge'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
@@ -119,12 +120,9 @@ export default function Pair({
   pair,
   ...rest
 }: PairProps) {
-  console.log(token0, token1, usdLiquidity, apy, staked, containsKpiToken, usdLiquidityText)
-
   const { width } = useWindowSize()
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pair)
-  console.log('24volume', volume24hUSD)
-  console.log(loading)
+
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
   return (
@@ -165,6 +163,11 @@ export default function Pair({
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'flex-end' : 'flex-start'}
             >
+              {apy.greaterThan('0') && isMobile && (
+                <Flex alignSelf={isMobile ? 'center' : 'flex-start'} marginLeft="auto">
+                  <ApyBadge upTo={containsKpiToken} apy={apy} />
+                </Flex>
+              )}
               {containsKpiToken && (
                 <MouseoverTooltip content="Rewards at least a Carrot KPI token">
                   <KpiBadge>
