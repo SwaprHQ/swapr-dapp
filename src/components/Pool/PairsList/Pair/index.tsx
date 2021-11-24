@@ -63,7 +63,6 @@ const StyledCarrotLogo = styled(CarrotLogo)`
     fill: #f2994a;
   }
 `
-// const StyledFarmingLogo = styled(Farming)``
 
 const BadgeText = styled.div`
   font-weight: 700;
