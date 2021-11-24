@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
+import { CurrencyAmount, Percent, Token, Pair as PairType } from '@swapr/sdk'
 import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
-import ApyBadge from '../../ApyBadge'
-
+import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
 
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
@@ -31,7 +30,7 @@ const SizedCard = styled(DarkCard)`
   `}
 `
 
-const PositiveBadgeRoot = styled.div`
+const FarmingBadge = styled.div`
   height: 16px;
   border: solid 1.5px ${props => props.theme.green2};
   border-radius: 6px;
@@ -105,6 +104,7 @@ interface PairProps {
   usdLiquidity: CurrencyAmount
   usdLiquidityText?: string
   staked?: boolean
+  pair?: PairType
   containsKpiToken?: boolean
 }
 
@@ -116,10 +116,15 @@ export default function Pair({
   staked,
   containsKpiToken,
   usdLiquidityText,
+  pair,
   ...rest
 }: PairProps) {
   console.log(token0, token1, usdLiquidity, apy, staked, containsKpiToken, usdLiquidityText)
+
   const { width } = useWindowSize()
+  const { volume24hUSD, loading } = usePair24hVolumeUSD(pair)
+  console.log('24volume', volume24hUSD)
+  console.log(loading)
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
   return (
@@ -160,11 +165,6 @@ export default function Pair({
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'flex-end' : 'flex-start'}
             >
-              {apy.greaterThan('0') && (
-                <Flex alignSelf={isMobile ? 'center' : 'flex-start'} marginLeft="auto">
-                  <ApyBadge upTo={containsKpiToken} apy={apy} />
-                </Flex>
-              )}
               {containsKpiToken && (
                 <MouseoverTooltip content="Rewards at least a Carrot KPI token">
                   <KpiBadge>
@@ -174,10 +174,10 @@ export default function Pair({
                 </MouseoverTooltip>
               )}
               {staked && (
-                <PositiveBadgeRoot>
+                <FarmingBadge>
                   <img src={Farming} alt="farming" />
                   <BadgeText>FARMING</BadgeText>
-                </PositiveBadgeRoot>
+                </FarmingBadge>
               )}
             </Flex>
           </Flex>
@@ -185,17 +185,17 @@ export default function Pair({
             <>
               <ItemsWrapper>
                 <TitleText>TVL</TitleText>
-                <ValueText> $19 980 211</ValueText>
+                <ValueText> ${formatCurrencyAmount(usdLiquidity)}</ValueText>
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>24h VOLUME</TitleText>
-                <ValueText>$128 581</ValueText>
+                <ValueText>${!loading && formatCurrencyAmount(volume24hUSD)}</ValueText>
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>APY</TitleText>
 
                 <Text fontWeight="700" fontSize="18px" fontFamily="Fira Code">
-                  124%
+                  {apy.toFixed(0)}%
                 </Text>
               </ItemsWrapper>
             </>
