@@ -95,6 +95,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   wrappedPairs: {
     pair: Pair
     reserveUSD: CurrencyAmount
+    hasFarming: boolean
     staked: boolean
   }[]
 } {
@@ -210,10 +211,14 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           )
         })
         pair.liquidityMiningCampaigns = campaigns
+
         return {
           pair,
           // campaign.liquidityMiningPositions only has length > 0 if the user has staked positions in the campaign itself
           staked: rawPair.liquidityMiningCampaigns.some(campaign => campaign.liquidityMiningPositions.length > 0),
+          hasFarming: rawPair.liquidityMiningCampaigns.some(
+            campaign => Math.trunc(+new Date() / 1000) > parseInt(campaign.endsAt)
+          ),
           reserveUSD: CurrencyAmount.usd(
             parseUnits(new Decimal(reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
           )

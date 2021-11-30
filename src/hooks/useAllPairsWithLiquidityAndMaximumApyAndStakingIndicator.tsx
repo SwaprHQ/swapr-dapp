@@ -31,10 +31,10 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     const aggregation = []
     for (let i = 0; i < allWrappedPairs.length; i++) {
       const wrappedPair = allWrappedPairs[i]
-      console.log('wrappedPair', wrappedPair)
+
       const bestCampaign = getBestApyPairCampaign(wrappedPair.pair)
       aggregation.push({
-        hasFarming: wrappedPair.pair.liquidityMiningCampaigns.length !== 0,
+        hasFarming: wrappedPair.hasFarming,
         pair: wrappedPair.pair,
         staked: wrappedPair.staked,
         liquidityUSD: wrappedPair.reserveUSD,
