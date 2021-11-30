@@ -13,7 +13,7 @@ import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
 import { MouseoverTooltip } from '../../../Tooltip'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
-import Farming from '../../../../assets/svg/farming.svg'
+import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import ApyBadge from '../../ApyBadge'
 
 const SizedCard = styled(DarkCard)`
@@ -31,9 +31,10 @@ const SizedCard = styled(DarkCard)`
   `}
 `
 
-const FarmingBadge = styled.div`
+const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
   height: 16px;
-  border: solid 1.5px ${props => props.theme.green2};
+  border: ${props => !props.isGreyed && `solid 1.5px ${props.theme.green2}`};
+  color: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.green2)};
   border-radius: 6px;
   width: fit-content;
   display: flex;
@@ -41,12 +42,27 @@ const FarmingBadge = styled.div`
   align-items: center;
   border-radius: 4px;
   padding: 0 4px;
+  background-color: ${props => props.isGreyed && props.theme.bg3};
+  opacity: ${props => props.isGreyed && '0.5'};
+  svg {
+    > path {
+      fill: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.green2)};
+    }
+  }
 `
 
-const KpiBadge = styled.div`
+const KpiBadge = styled.div<{ isGreyed?: boolean }>`
   height: 16px;
-  border: solid 1.5px #f2994a;
-  color: #f2994a;
+  border: ${props => !props.isGreyed && `solid 1.5px ${props.theme.orange1}`};
+  color: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.orange1)};
+  svg {
+    > path {
+      fill: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.orange1)};
+    }
+  }
+  background-color: ${props => props.isGreyed && props.theme.bg3};
+  opacity: ${props => props.isGreyed && '0.5'};
+  gap: 4px;
   border-radius: 4px;
   font-size: 9px;
   font-weight: 700;
@@ -57,20 +73,12 @@ const KpiBadge = styled.div`
   padding: 0 4px;
 `
 
-const StyledCarrotLogo = styled(CarrotLogo)`
-  margin-right: 4px;
-  > path {
-    fill: #f2994a;
-  }
-`
-
 const BadgeText = styled.div`
   font-weight: 700;
   margin-left: 3px;
   font-size: 9px;
   line-height: 9px;
   letter-spacing: 0.02em;
-  color: ${props => props.theme.green2};
 `
 
 const EllipsizedText = styled(TYPE.body)`
@@ -78,7 +86,7 @@ const EllipsizedText = styled(TYPE.body)`
   text-overflow: ellipsis;
 `
 
-const TitleText = styled.div`
+const TitleText = styled(Text)`
   color: ${props => props.theme.purple2};
   font-size: 10px;
   font-weight: 600;
@@ -106,6 +114,7 @@ interface PairProps {
   staked?: boolean
   pair?: PairType
   containsKpiToken?: boolean
+  hasFarming?: boolean
 }
 
 export default function Pair({
@@ -113,10 +122,10 @@ export default function Pair({
   token1,
   usdLiquidity,
   apy,
-  staked,
   containsKpiToken,
   usdLiquidityText,
   pair,
+  hasFarming,
   ...rest
 }: PairProps) {
   const { width } = useWindowSize()
@@ -140,8 +149,13 @@ export default function Pair({
           ) : (
             <DoubleCurrencyLogo marginRight={14} currency0={token0} currency1={token1} size={45} />
           )}
-
-          <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="100%">
+          <EllipsizedText
+            color="white"
+            lineHeight="20px"
+            fontWeight="700"
+            fontSize="16px"
+            maxWidth={isMobile ? '100%' : '145px'}
+          >
             {unwrappedToken(token0)?.symbol}
             {isMobile ? '/' : <br></br>}
             {unwrappedToken(token1)?.symbol}
@@ -153,47 +167,49 @@ export default function Pair({
             </TYPE.subHeader>
           )}
         </Flex>
-        <Flex width={isMobile ? 'auto' : '65%'} justifyContent="space-between">
-          <Flex flexDirection="column" alignItems="flex-start" justifyContent={isMobile ? '' : 'space-evenly'}>
-            {!isMobile && <TitleText>CAMPAIGNS</TitleText>}
+        <Flex width={isMobile ? 'auto' : '70%'} justifyContent="space-between">
+          <Flex
+            width={isMobile ? 'auto' : '35%'}
+            flexDirection="column"
+            alignItems="flex-start"
+            justifyContent={isMobile ? '' : 'space-evenly'}
+          >
+            {!isMobile && <TitleText marginBottom={'6px'}>CAMPAIGNS</TitleText>}
 
             <Flex
               style={{ gap: '6px' }}
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'flex-end' : 'flex-start'}
+              flexWrap="wrap"
             >
               {apy.greaterThan('0') && isMobile && (
                 <Flex alignSelf={isMobile ? 'center' : 'flex-start'} marginLeft="auto">
                   <ApyBadge upTo={containsKpiToken} apy={apy} />
                 </Flex>
               )}
-              {containsKpiToken && (
-                <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-                  <KpiBadge>
-                    <StyledCarrotLogo />
-                    CARROT
-                  </KpiBadge>
-                </MouseoverTooltip>
-              )}
-              {staked && (
-                <FarmingBadge>
-                  <img src={Farming} alt="farming" />
-                  <BadgeText>FARMING</BadgeText>
-                </FarmingBadge>
-              )}
+              <FarmingBadge isGreyed={!hasFarming}>
+                <FarmingLogo />
+                <BadgeText>FARMING</BadgeText>
+              </FarmingBadge>
+              <MouseoverTooltip content="Rewards at least a Carrot KPI token">
+                <KpiBadge isGreyed={!containsKpiToken}>
+                  <CarrotLogo />
+                  CARROT
+                </KpiBadge>
+              </MouseoverTooltip>
             </Flex>
           </Flex>
           {!isMobile && (
             <>
               <ItemsWrapper>
                 <TitleText>TVL</TitleText>
-                <ValueText> ${formatCurrencyAmount(usdLiquidity)}</ValueText>
+                <ValueText> ${formatCurrencyAmount(usdLiquidity).split('.')[0]}</ValueText>
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>24h VOLUME</TitleText>
-                <ValueText>${!loading && formatCurrencyAmount(volume24hUSD)}</ValueText>
+                <ValueText>${!loading && formatCurrencyAmount(volume24hUSD).split('.')[0]}</ValueText>
               </ItemsWrapper>
-              <ItemsWrapper>
+              <ItemsWrapper width={'43px'}>
                 <TitleText>APY</TitleText>
 
                 <Text fontWeight="700" fontSize="18px" fontFamily="Fira Code">

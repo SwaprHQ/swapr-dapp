@@ -38,6 +38,7 @@ interface PairsListProps {
     maximumApy: Percent
     staked?: boolean
     containsKpiToken?: boolean
+    hasFarming?: boolean
   }[]
   filter?: PairsFilterType
   loading?: boolean
@@ -53,6 +54,7 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
+
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -80,6 +82,7 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
                     apy={aggregatedPair.maximumApy}
                     staked={aggregatedPair.staked}
                     containsKpiToken={aggregatedPair.containsKpiToken}
+                    hasFarming={aggregatedPair.hasFarming}
                   />
                 </UndecoratedLink>
               )
