@@ -11,6 +11,7 @@ import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
+import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
 
 const ListLayout = styled.div`
   display: grid;
@@ -54,13 +55,16 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
+  const { data, loading: singleLoading } = useSignelSidedStakeCampaigns()
+  console.log('data', data && data)
+  console.log('loading', singleLoading)
 
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
     setPage(1)
   }, [chainId, filter, aggregatedPairs])
-
+  console.log('here it will go')
   return (
     <Flex flexDirection="column">
       <Box>

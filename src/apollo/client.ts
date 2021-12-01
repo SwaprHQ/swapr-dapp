@@ -15,7 +15,8 @@ export const oldBuildClient = new ApolloClient({
 export const subgraphClients: { [chainId in ChainId]: ApolloClient<NormalizedCacheObject> } = {
   [ChainId.MAINNET]: defaultSubgraphClient,
   [ChainId.RINKEBY]: new ApolloClient({
-    uri: 'https://api.thegraph.com/subgraphs/name/luzzif/swapr-rinkeby-new',
+    // uri: 'https://api.thegraph.com/subgraphs/name/luzzif/swapr-rinkeby-new',
+    uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
     cache: new InMemoryCache()
   }),
   [ChainId.XDAI]: new ApolloClient({
