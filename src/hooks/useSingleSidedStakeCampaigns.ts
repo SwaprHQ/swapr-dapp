@@ -6,7 +6,7 @@ import { SubgraphSingleSidedStakingCampaign } from '../apollo'
 const QUERY = gql`
   query($owner: ID) {
     singleSidedStakingCampaigns(first: 5, where: { owner: $owner }) {
-      address: id
+      id
       owner
       startsAt
       endsAt
@@ -66,7 +66,7 @@ export function useSignelSidedStakeCampaigns(): {
     //     }
     //   })
     // }
-    console.log('shitherad', data)
+
     const wrapped = data.singleSidedStakingCampaigns[0]
     console.log('wrappedCampaigns', wrapped)
     return { loading: false, data: wrapped }

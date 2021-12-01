@@ -177,6 +177,7 @@ const HeaderSubRow = styled(RowFlat)`
 export const Amount = styled.p<{ clickable?: boolean; zero: boolean }>`
   padding: 8px 12px;
   margin: 0;
+  display: inline-flex;
   font-weight: bold;
   font-size: 10px;
   line-height: 12px;

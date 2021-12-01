@@ -26,6 +26,23 @@ const AirdropSign = styled.div`
   margin-right: 7px;
 `
 
+const StakeIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
+  border-radius: 0px 8px 8px 0px;
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 10px;
+  cursor: pointer;
+`
+const Wrapper = styled.div`
+  display: flex;
+  margin-right: 7px;
+  border-radius: 15px 50px 30px 5px;
+`
+
 interface SwprInfoProps {
   oldSwprBalance?: TokenAmount
   newSwprBalance?: TokenAmount
@@ -60,8 +77,11 @@ export function SwprInfo({ onToggleClaimPopup, oldSwprBalance, newSwprBalance }:
       </AirdropSign>
     )
   return (
-    <Amount zero={false} clickable onClick={onToggleClaimPopup}>
-      {!account || !newSwprBalance ? '0.000' : newSwprBalance.toFixed(3)} SWPR
-    </Amount>
+    <Wrapper onClick={onToggleClaimPopup}>
+      <Amount style={{ borderRadius: '8px 0px 0px 8px;' }} zero={false} clickable>
+        {!account || !newSwprBalance ? '0.000' : newSwprBalance.toFixed(3)} SWPR
+      </Amount>
+      <StakeIndicator>STAKE</StakeIndicator>
+    </Wrapper>
   )
 }
