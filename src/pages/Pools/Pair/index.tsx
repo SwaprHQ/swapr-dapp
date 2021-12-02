@@ -94,8 +94,13 @@ export default function Pair({
     },
     [router]
   )
+  const isSingleSidedStakingCampaign = !token1
 
-  if (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
+  if (
+    token0 &&
+    !isSingleSidedStakingCampaign &&
+    (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)
+  )
     return <Redirect to="/pools" />
   return (
     <>

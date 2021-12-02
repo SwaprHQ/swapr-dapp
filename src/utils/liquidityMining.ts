@@ -53,7 +53,36 @@ export function getBestApyPairCampaign(pair: Pair): LiquidityMiningCampaign | nu
     return campaign
   }, null)
 }
-
+// export function tokenToPricedTokenAmount(
+//   campaign: any,
+//   token: Token,
+//   amount: string,
+//   nativeCurrency: Currency,
+//   chainId: ChainId
+// ): PricedTokenAmount {
+//   const price = new Price(
+//     token,
+//     nativeCurrency,
+//     parseUnits('1', nativeCurrency.decimals).toString(),
+//     parseUnits(
+//       //chekc urself before u wreck urself
+//       new Decimal(campaign.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
+//       nativeCurrency.decimals
+//     ).toString()
+//   )
+//   const pricedRewardToken = new PricedToken(
+//     chainId,
+//     getAddress(token.address),
+//     token.decimals,
+//     price,
+//     token.symbol,
+//     token.name
+//   )
+//   return new PricedTokenAmount(
+//     pricedRewardToken,
+//     parseUnits(new Decimal(amount).toFixed(token.decimals), token.decimals).toString()
+//   )
+// }
 export function toLiquidityMiningCampaign(
   chainId: ChainId,
   targetedPair: Pair,

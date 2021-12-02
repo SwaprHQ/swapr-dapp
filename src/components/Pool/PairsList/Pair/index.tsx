@@ -5,7 +5,7 @@ import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
-import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
+//import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
 
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
@@ -15,6 +15,7 @@ import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import ApyBadge from '../../ApyBadge'
+import CurrencyLogo from '../../../CurrencyLogo'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
@@ -115,6 +116,7 @@ interface PairProps {
   pair?: PairType
   containsKpiToken?: boolean
   hasFarming?: boolean
+  isSingleSidedStakingCampaign?: boolean
 }
 
 export default function Pair({
@@ -126,10 +128,12 @@ export default function Pair({
   usdLiquidityText,
   pair,
   hasFarming,
+  isSingleSidedStakingCampaign,
   ...rest
 }: PairProps) {
   const { width } = useWindowSize()
-  const { volume24hUSD, loading } = usePair24hVolumeUSD(pair)
+  const isSingleSidedStaking = !token0
+  // const { volume24hUSD, loading } = usePair24hVolumeUSD(pair)
 
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
@@ -137,17 +141,18 @@ export default function Pair({
     <SizedCard selectable {...rest}>
       <Flex height="100%" justifyContent="space-between">
         <Flex flexDirection={isMobile ? 'column' : 'row'} alignItems={!isMobile ? 'center' : ''}>
-          {isMobile ? (
+          {isSingleSidedStakingCampaign ? (
+            <CurrencyLogo size={isMobile ? '64px' : '45px'} marginRight={14} currency={token0} />
+          ) : (
             <DoubleCurrencyLogo
-              spaceBetween={-12}
-              marginLeft={-23}
-              top={-25}
+              spaceBetween={isMobile ? -12 : 0}
+              marginLeft={isMobile ? -23 : 0}
+              marginRight={isMobile ? 0 : 14}
+              top={isMobile ? -25 : 0}
               currency0={token0}
               currency1={token1}
-              size={64}
+              size={isMobile ? 64 : 45}
             />
-          ) : (
-            <DoubleCurrencyLogo marginRight={14} currency0={token0} currency1={token1} size={45} />
           )}
           <EllipsizedText
             color="white"
@@ -157,8 +162,9 @@ export default function Pair({
             maxWidth={isMobile ? '100%' : '145px'}
           >
             {unwrappedToken(token0)?.symbol}
-            {isMobile ? '/' : <br></br>}
-            {unwrappedToken(token1)?.symbol}
+
+            {!isSingleSidedStaking && (isMobile ? '/' : <br></br>)}
+            {!isSingleSidedStaking && unwrappedToken(token1)?.symbol}
           </EllipsizedText>
 
           {isMobile && (
@@ -207,7 +213,8 @@ export default function Pair({
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>24h VOLUME</TitleText>
-                <ValueText>${!loading && formatCurrencyAmount(volume24hUSD).split('.')[0]}</ValueText>
+                {/* <ValueText>${!loading && formatCurrencyAmount(volume24hUSD).split('.')[0]}</ValueText> */}
+                <ValueText>22</ValueText>
               </ItemsWrapper>
               <ItemsWrapper width={'43px'}>
                 <TitleText>APY</TitleText>

@@ -1,4 +1,4 @@
-import { Pair, Percent, PricedTokenAmount, TokenAmount, KpiToken } from '@swapr/sdk'
+import { Percent, PricedTokenAmount, TokenAmount, KpiToken } from '@swapr/sdk'
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
@@ -155,7 +155,7 @@ const CarrotSectionContainer = styled(AutoColumn)`
 `
 
 interface InformationProps {
-  targetedPair?: Pair
+  targetedPair?: any
   stakingCap?: TokenAmount
   rewards?: PricedTokenAmount[]
   remainingRewards?: PricedTokenAmount[]
@@ -165,6 +165,7 @@ interface InformationProps {
   apy?: Percent
   staked?: PricedTokenAmount
   containsKpiToken?: boolean
+  isSingleSidedStake?: boolean
   showUSDValue: boolean
 }
 
@@ -179,6 +180,7 @@ function Information({
   apy,
   staked,
   containsKpiToken,
+  isSingleSidedStake,
   showUSDValue
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
@@ -197,6 +199,8 @@ function Information({
   const handleCountdownEnd = useCallback(() => {
     setCurrentPeriodEnded(true)
   }, [])
+  console.log(isSingleSidedStake)
+  console.log(targetedPair)
 
   return (
     <div>
@@ -207,17 +211,23 @@ function Information({
             data={
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <DoubleCurrencyLogo
-                    loading={!targetedPair}
-                    size={26}
-                    currency0={targetedPair?.token0}
-                    currency1={targetedPair?.token1}
-                  />
+                  {isSingleSidedStake ? (
+                    <CurrencyLogo loading={!targetedPair} currency={targetedPair} />
+                  ) : (
+                    <DoubleCurrencyLogo
+                      loading={!targetedPair}
+                      size={26}
+                      currency0={targetedPair?.token0}
+                      currency1={targetedPair?.token1}
+                    />
+                  )}
                 </Box>
                 <Box>
                   <Text fontSize="18px" fontWeight="600" lineHeight="20px">
                     {!targetedPair ? (
                       <Skeleton width="60px" height="18px" />
+                    ) : isSingleSidedStake ? (
+                      targetedPair.symbol
                     ) : (
                       `${targetedPair.token0.symbol}/${targetedPair.token1.symbol}`
                     )}
@@ -234,6 +244,8 @@ function Information({
               data={
                 !staked || loadingNativeCurrencyUSDPrice || !nativeCurrencyUSDPrice ? (
                   <Skeleton width="60px" height="14px" />
+                ) : isSingleSidedStake ? (
+                  staked
                 ) : (
                   `$${commify(staked.nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toFixed(2))}`
                 )
@@ -307,6 +319,14 @@ function Information({
                     <CurrencyLogo loading marginLeft={4} marginRight={4} size="14px" />
                   </Row>
                 ) : (
+                  // ) : isSingleSidedStake ? (
+                  //   <TokenAmountDisplayer
+                  //     key={reward.token.address}
+                  //     amount={reward}
+                  //     fontSize="16px"
+                  //     alignRight
+                  //     showUSDValue={showUSDValue}
+                  //   />
                   rewards.map(reward => (
                     <TokenAmountDisplayer
                       key={reward.token.address}

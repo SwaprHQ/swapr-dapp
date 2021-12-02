@@ -28,7 +28,13 @@ export interface SubgraphSingleSidedStakingCampaign {
   startsAt: string
   endsAt: string
   duration: string
-  stakeToken: { symbol: string; name: string; decimals: string; totalSupply: string }
-  rewardToken: { symbol: string; name: string; decimals: string; totalSupply: string }
+  stakingCap: string
+  locked: string
+  stakeToken: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
+  rewardToken: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
+  reward: {
+    token: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
+    amount: string
+  }
   stakedAmount: string
 }

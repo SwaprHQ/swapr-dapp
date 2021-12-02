@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { LiquidityMiningCampaign } from '@swapr/sdk'
+// import { LiquidityMiningCampaign } from '@swapr/sdk'
 import { DarkCard } from '../../Card'
 import Information from './Information'
-import StakeCard from './StakeCard'
+// import StakeCard from './StakeCard'
 import { AutoColumn } from '../../Column'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
@@ -52,13 +52,14 @@ const StyledCard = styled(DarkCard)`
 `
 
 interface PairViewProps {
-  campaign?: LiquidityMiningCampaign | null
+  campaign?: any
   containsKpiToken?: boolean
+  isSingleSidedStake?: boolean
 }
 
-function LiquidityMiningCampaignView({ campaign, containsKpiToken }: PairViewProps) {
+function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
   const history = useHistory()
-  const { account, chainId } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   const previousChainId = usePrevious(chainId)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
 
@@ -75,7 +76,9 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken }: PairViewPro
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
-
+  console.log(isSingleSidedStake, 'isSingleSidedStake')
+  console.log(campaign, 'campaign')
+  console.log(containsKpiToken)
   return (
     <AutoColumn gap="18px">
       <RowBetween>
@@ -91,7 +94,8 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken }: PairViewPro
       <StyledCard padding="32px">
         <AutoColumn gap="36px">
           <Information
-            targetedPair={campaign?.targetedPair}
+            isSingleSidedStake={isSingleSidedStake}
+            targetedPair={isSingleSidedStake ? campaign?.rewardToken : campaign?.targetedPair}
             stakingCap={campaign?.stakingCap}
             rewards={campaign?.rewards}
             remainingRewards={campaign?.remainingRewards}
@@ -99,11 +103,12 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken }: PairViewPro
             startsAt={campaign ? parseInt(campaign.startsAt.toString()) : undefined}
             endsAt={campaign ? parseInt(campaign.endsAt.toString()) : undefined}
             apy={campaign?.apy}
-            staked={campaign?.staked}
+            staked={isSingleSidedStake ? campaign.stakedAmount : campaign?.staked}
             containsKpiToken={containsKpiToken}
             showUSDValue={showUSDValue}
           />
-          {account && <StakeCard campaign={campaign || undefined} showUSDValue={showUSDValue} />}
+          {/* leave this nightmare alone for now */}
+          {/* {account && <StakeCard campaign={campaign || undefined} showUSDValue={showUSDValue} />} */}
         </AutoColumn>
       </StyledCard>
     </AutoColumn>

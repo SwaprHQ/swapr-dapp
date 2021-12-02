@@ -11,7 +11,7 @@ import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
-import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
+// import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
 
 const ListLayout = styled.div`
   display: grid;
@@ -41,6 +41,8 @@ interface PairsListProps {
     containsKpiToken?: boolean
     hasFarming?: boolean
   }[]
+  singleSidedStake?: any
+  hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
 }
@@ -50,21 +52,24 @@ interface PairsListProps {
 //   GRID
 // }
 
-export default function PairsList({ aggregatedPairs, loading, filter }: PairsListProps) {
+export default function PairsList({
+  aggregatedPairs,
+  loading,
+  filter,
+  singleSidedStake,
+  hasActiveCampaigns
+}: PairsListProps) {
   const { chainId } = useActiveWeb3React()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-  const { data, loading: singleLoading } = useSignelSidedStakeCampaigns()
-  console.log('data', data && data)
-  console.log('loading', singleLoading)
 
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
     setPage(1)
   }, [chainId, filter, aggregatedPairs])
-  console.log('here it will go')
+
   return (
     <Flex flexDirection="column">
       <Box>
@@ -72,6 +77,22 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
           <LoadingList />
         ) : itemsPage.length > 0 ? (
           <ListLayout>
+            {hasActiveCampaigns && (
+              <UndecoratedLink
+                key={singleSidedStake.stakeToken.id}
+                to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.id}/singleSidedStaking`}
+              >
+                <PairCard
+                  token0={singleSidedStake.stakeToken}
+                  pair={singleSidedStake.stakeToken.id}
+                  usdLiquidity={aggregatedPairs[0].liquidityUSD}
+                  apy={aggregatedPairs[0].maximumApy}
+                  staked={singleSidedStake.stakedAmount}
+                  hasFarming={true}
+                  isSingleSidedStakingCampaign={true}
+                />
+              </UndecoratedLink>
+            )}
             {itemsPage.map(aggregatedPair => {
               return (
                 <UndecoratedLink

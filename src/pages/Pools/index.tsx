@@ -21,6 +21,7 @@ import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
 import CurrencyLogo from '../../components/CurrencyLogo'
+import { useSignelSidedStakeCampaigns } from '../../hooks/useSingleSidedStakeCampaigns'
 
 /* const VoteCard = styled.div`
   overflow: hidden;
@@ -192,6 +193,9 @@ export default function Pools() {
     aggregatedDataFilter,
     filterToken
   )
+
+  const { loading: ssLoading, data, hasActiveCampaigns } = useSignelSidedStakeCampaigns(filterToken)
+
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
   const handleCurrencySelect = useCallback(token => {
@@ -223,9 +227,11 @@ export default function Pools() {
               <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} />
             ) : (
               <PairsList
-                loading={loadingUserLpPositions || loadingAggregatedData}
+                loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
                 aggregatedPairs={aggregatedData}
+                singleSidedStake={data}
                 filter={aggregatedDataFilter}
+                hasActiveCampaigns={hasActiveCampaigns}
               />
             )}
           </AutoColumn>

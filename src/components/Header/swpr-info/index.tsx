@@ -47,9 +47,10 @@ interface SwprInfoProps {
   oldSwprBalance?: TokenAmount
   newSwprBalance?: TokenAmount
   onToggleClaimPopup: () => void
+  hasActiveCampaigns: boolean
 }
 
-export function SwprInfo({ onToggleClaimPopup, oldSwprBalance, newSwprBalance }: SwprInfoProps) {
+export function SwprInfo({ onToggleClaimPopup, oldSwprBalance, newSwprBalance, hasActiveCampaigns }: SwprInfoProps) {
   const { account } = useActiveWeb3React()
   const { available: claimAvailable } = useIsClaimAvailable(account)
   const { isOldSwaprLp } = useIsOldSwaprLp(account || undefined)
@@ -78,10 +79,10 @@ export function SwprInfo({ onToggleClaimPopup, oldSwprBalance, newSwprBalance }:
     )
   return (
     <Wrapper onClick={onToggleClaimPopup}>
-      <Amount style={{ borderRadius: '8px 0px 0px 8px;' }} zero={false} clickable>
+      <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false} clickable>
         {!account || !newSwprBalance ? '0.000' : newSwprBalance.toFixed(3)} SWPR
       </Amount>
-      <StakeIndicator>STAKE</StakeIndicator>
+      {hasActiveCampaigns && <StakeIndicator>STAKE</StakeIndicator>}
     </Wrapper>
   )
 }
