@@ -68,7 +68,6 @@ export default function List({ stakablePair, loading, items }: LiquidityMiningCa
                       token1={token1}
                       usdLiquidity={getStakedAmountUSD(item.campaign, nativeCurrencyUSDPrice)}
                       apy={item.campaign.apy}
-                      staked={item.staked}
                       containsKpiToken={item.containsKpiToken}
                       usdLiquidityText="STAKED"
                     />

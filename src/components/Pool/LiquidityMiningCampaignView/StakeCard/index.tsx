@@ -1,4 +1,4 @@
-import { JSBI, LiquidityMiningCampaign, parseBigintIsh, TokenAmount } from '@swapr/sdk'
+import { JSBI, parseBigintIsh, TokenAmount } from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
@@ -101,13 +101,26 @@ export const StyledButtonDark = styled(ButtonDark)`
 `
 
 interface FullPositionCardProps {
-  campaign?: LiquidityMiningCampaign
+  campaign?: any
   showUSDValue: boolean
+  isSingleSided: boolean
+  targetedPairOrSingleToken: any
 }
 
-export default function StakeCard({ campaign, showUSDValue }: FullPositionCardProps) {
+export default function StakeCard({
+  campaign,
+  showUSDValue,
+  isSingleSided,
+  targetedPairOrSingleToken
+}: FullPositionCardProps) {
+  console.log(campaign)
+  console.log(isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken)
   const { account } = useActiveWeb3React()
-  const stakableTokenBalance = useTokenBalance(account || undefined, campaign?.targetedPair.liquidityToken)
+  const stakableTokenBalance = useTokenBalance(
+    account || undefined,
+    isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken
+  )
+
   const callbacks = useLiquidityMiningActionCallbacks(campaign?.address)
   const {
     stakedTokenAmount,
@@ -140,7 +153,9 @@ export default function StakeCard({ campaign, showUSDValue }: FullPositionCardPr
       return
     }
     if (!stakableTokenBalance) {
-      setNormalizedStakableTokenBalance(new TokenAmount(campaign.targetedPair.liquidityToken, '0'))
+      setNormalizedStakableTokenBalance(
+        new TokenAmount(isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken, '0')
+      )
     } else if (campaign.stakingCap.equalTo('0')) {
       setNormalizedStakableTokenBalance(stakableTokenBalance)
     } else if (campaign.stakingCap.subtract(campaign.staked).lessThan(stakableTokenBalance)) {
@@ -148,7 +163,7 @@ export default function StakeCard({ campaign, showUSDValue }: FullPositionCardPr
     } else {
       setNormalizedStakableTokenBalance(stakableTokenBalance)
     }
-  }, [campaign, stakableTokenBalance])
+  }, [campaign, stakableTokenBalance, targetedPairOrSingleToken, isSingleSided])
 
   useEffect(() => {
     setDisabledStaking(
@@ -336,7 +351,16 @@ export default function StakeCard({ campaign, showUSDValue }: FullPositionCardPr
                   title={<Row>STAKED</Row>}
                   data={
                     <AutoColumn gap="4px">
-                      {loadingLpTokensUnderlyingAssets || !underlyingAssets ? (
+                      {isSingleSided ? (
+                        stakedTokenAmount ? (
+                          <TokenAmountDisplayer amount={stakedTokenAmount} showUSDValue={showUSDValue} />
+                        ) : (
+                          <Row>
+                            <Skeleton width="40px" height="14px" />
+                            <CurrencyLogo marginLeft={4} loading size="14px" />
+                          </Row>
+                        )
+                      ) : loadingLpTokensUnderlyingAssets || !underlyingAssets ? (
                         <>
                           <Row>
                             <Skeleton width="40px" height="14px" />
@@ -449,9 +473,10 @@ export default function StakeCard({ campaign, showUSDValue }: FullPositionCardPr
       {campaign && campaign.address && normalizedStakableTokenBalance && (
         <ConfirmStakingModal
           isOpen={showStakingConfirmationModal}
+          isSingleSide={isSingleSided}
           stakableTokenBalance={normalizedStakableTokenBalance}
           onDismiss={handleDismiss}
-          stakablePair={campaign.targetedPair}
+          stakablePair={targetedPairOrSingleToken}
           distributionContractAddress={campaign.address}
           attemptingTxn={attemptingTransaction}
           errorMessage={errorMessage}
@@ -463,9 +488,10 @@ export default function StakeCard({ campaign, showUSDValue }: FullPositionCardPr
       )}
       <ConfirmWithdrawalModal
         isOpen={showWithdrawalConfirmationModal}
+        isSingleSide={isSingleSided}
         withdrawablTokenBalance={stakedTokenAmount || undefined}
         onDismiss={handleDismiss}
-        stakablePair={campaign?.targetedPair}
+        stakablePair={targetedPairOrSingleToken}
         attemptingTxn={attemptingTransaction}
         errorMessage={errorMessage}
         onConfirm={handleWithdrawalConfirmation}

@@ -112,7 +112,6 @@ interface PairProps {
   apy: Percent
   usdLiquidity: CurrencyAmount
   usdLiquidityText?: string
-  staked?: boolean
   pair?: PairType
   containsKpiToken?: boolean
   hasFarming?: boolean

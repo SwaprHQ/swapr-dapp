@@ -1,4 +1,4 @@
-import { Pair, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+import { PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import React, { useState } from 'react'
 import { AutoColumn } from '../../../../../Column'
 import CurrencyInputPanel from '../../../../../CurrencyInputPanel'
@@ -14,10 +14,11 @@ const AlertIcon = styled(AlertTriangle)`
 `
 
 interface ConfirmStakeModalHeaderProps {
-  stakablePair?: Pair | null
+  stakablePair?: any
   maximumAmount?: TokenAmount | PricedTokenAmount
   timelocked?: boolean
   endingTimestamp?: number
+  isSingleSided?: boolean
   onAmountChange: (amount: TokenAmount) => void
 }
 
@@ -26,7 +27,8 @@ export default function ConfirmStakingWithdrawingModalHeader({
   maximumAmount,
   timelocked,
   endingTimestamp,
-  onAmountChange
+  onAmountChange,
+  isSingleSided = false
 }: ConfirmStakeModalHeaderProps) {
   const [typedAmount, setTypedAmount] = useState('')
 
@@ -44,28 +46,53 @@ export default function ConfirmStakingWithdrawingModalHeader({
           </Box>
         </Flex>
       )}
-      <CurrencyInputPanel
-        value={typedAmount}
-        onUserInput={input => {
-          if (!stakablePair) return
-          setTypedAmount(input)
-          const parsedAmount = tryParseAmount(input, stakablePair.liquidityToken) as TokenAmount | undefined
-          if (parsedAmount) {
-            onAmountChange(parsedAmount)
-          }
-        }}
-        onMax={() => {
-          if (!maximumAmount) return
-          setTypedAmount(maximumAmount.toExact())
-          onAmountChange(new TokenAmount(maximumAmount.token, maximumAmount.raw))
-        }}
-        showMaxButton
-        pair={stakablePair}
-        id="staked-amount"
-        disableCurrencySelect
-        customBalanceText="Stakable: "
-        balance={maximumAmount}
-      />
+      {isSingleSided ? (
+        <CurrencyInputPanel
+          value={typedAmount}
+          onUserInput={input => {
+            if (!stakablePair) return
+            setTypedAmount(input)
+            const parsedAmount = tryParseAmount(input, stakablePair) as TokenAmount | undefined
+            if (parsedAmount) {
+              onAmountChange(parsedAmount)
+            }
+          }}
+          onMax={() => {
+            if (!maximumAmount) return
+            setTypedAmount(maximumAmount.toExact())
+            onAmountChange(new TokenAmount(maximumAmount.token, maximumAmount.raw))
+          }}
+          showMaxButton
+          currency={stakablePair}
+          id="staked-amount"
+          disableCurrencySelect
+          customBalanceText="Stakable: "
+          balance={maximumAmount}
+        />
+      ) : (
+        <CurrencyInputPanel
+          value={typedAmount}
+          onUserInput={input => {
+            if (!stakablePair) return
+            setTypedAmount(input)
+            const parsedAmount = tryParseAmount(input, stakablePair.liquidityToken) as TokenAmount | undefined
+            if (parsedAmount) {
+              onAmountChange(parsedAmount)
+            }
+          }}
+          onMax={() => {
+            if (!maximumAmount) return
+            setTypedAmount(maximumAmount.toExact())
+            onAmountChange(new TokenAmount(maximumAmount.token, maximumAmount.raw))
+          }}
+          showMaxButton
+          pair={stakablePair}
+          id="staked-amount"
+          disableCurrencySelect
+          customBalanceText="Stakable: "
+          balance={maximumAmount}
+        />
+      )}
     </AutoColumn>
   )
 }

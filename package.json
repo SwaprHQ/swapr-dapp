@@ -126,6 +126,7 @@
   "dependencies": {
     "arb-ts": "^0.0.42",
     "query-string": "^6.13.8",
-    "react-use": "^15.3.3"
+    "react-use": "^15.3.3",
+    "violet-swapr": "^0.10.20"
   }
 }

@@ -1,4 +1,4 @@
-import { Pair, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+import { PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -8,7 +8,7 @@ import ConfirmStakingModalFooter from '../ModalBase/Footer'
 import ConfirmStakingWithdrawingModalHeader from '../ModalBase/Header'
 
 interface ConfirmWithdrawalModalProps {
-  stakablePair?: Pair | null
+  stakablePair?: any
   isOpen: boolean
   withdrawablTokenBalance?: PricedTokenAmount
   attemptingTxn: boolean
@@ -16,6 +16,7 @@ interface ConfirmWithdrawalModalProps {
   onConfirm: (amount: TokenAmount) => void
   onDismiss: () => void
   errorMessage: string
+  isSingleSide: boolean
 }
 
 export default function ConfirmWithdrawalModal({
@@ -24,12 +25,15 @@ export default function ConfirmWithdrawalModal({
   attemptingTxn,
   txHash,
   errorMessage,
+  isSingleSide,
   withdrawablTokenBalance,
   onDismiss,
   onConfirm
 }: ConfirmWithdrawalModalProps) {
   const [withdrawableAmount, setWithdrawableAmount] = useState<TokenAmount | null>(null)
-
+  const transactionModalText = isSingleSide
+    ? `${stakablePair?.symbol}`
+    : `${stakablePair?.token0.symbol / stakablePair?.token1.symbol}`
   const handleWithdrawableAmountChange = useCallback(amount => {
     setWithdrawableAmount(amount)
   }, [])
@@ -44,10 +48,11 @@ export default function ConfirmWithdrawalModal({
       <ConfirmStakingWithdrawingModalHeader
         maximumAmount={withdrawablTokenBalance}
         onAmountChange={handleWithdrawableAmountChange}
-        stakablePair={stakablePair}
+        stakablePair={!isSingleSide && stakablePair}
+        isSingleSided={isSingleSide}
       />
     ),
-    [handleWithdrawableAmountChange, stakablePair, withdrawablTokenBalance]
+    [handleWithdrawableAmountChange, withdrawablTokenBalance, isSingleSide, stakablePair]
   )
 
   const content = useCallback(
@@ -67,14 +72,22 @@ export default function ConfirmWithdrawalModal({
                 !withdrawablTokenBalance ||
                 withdrawableAmount.greaterThan(withdrawablTokenBalance)
               }
-              stakablePair={stakablePair}
+              text={transactionModalText}
               showApprove={false}
               onConfirm={handleConfirm}
             />
           )}
         />
       ),
-    [errorMessage, handleConfirm, onDismiss, stakablePair, topContent, withdrawablTokenBalance, withdrawableAmount]
+    [
+      errorMessage,
+      handleConfirm,
+      onDismiss,
+      topContent,
+      withdrawablTokenBalance,
+      withdrawableAmount,
+      transactionModalText
+    ]
   )
 
   return (

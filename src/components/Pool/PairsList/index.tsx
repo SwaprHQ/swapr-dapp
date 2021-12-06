@@ -11,6 +11,7 @@ import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
+import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 // import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
 
 const ListLayout = styled.div`
@@ -41,7 +42,7 @@ interface PairsListProps {
     containsKpiToken?: boolean
     hasFarming?: boolean
   }[]
-  singleSidedStake?: any
+  singleSidedStake?: SingleSidedLiquidityMiningCampaign | undefined
   hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
@@ -77,17 +78,16 @@ export default function PairsList({
           <LoadingList />
         ) : itemsPage.length > 0 ? (
           <ListLayout>
-            {hasActiveCampaigns && (
+            {hasActiveCampaigns && singleSidedStake && (
               <UndecoratedLink
                 key={singleSidedStake.stakeToken.id}
-                to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.id}/singleSidedStaking`}
+                to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}
-                  pair={singleSidedStake.stakeToken.id}
-                  usdLiquidity={aggregatedPairs[0].liquidityUSD}
-                  apy={aggregatedPairs[0].maximumApy}
-                  staked={singleSidedStake.stakedAmount}
+                  pair={singleSidedStake.stakeToken.address}
+                  usdLiquidity={singleSidedStake.staked}
+                  apy={itemsPage[0].maximumApy}
                   hasFarming={true}
                   isSingleSidedStakingCampaign={true}
                 />
@@ -105,7 +105,6 @@ export default function PairsList({
                     pair={aggregatedPair.pair}
                     usdLiquidity={aggregatedPair.liquidityUSD}
                     apy={aggregatedPair.maximumApy}
-                    staked={aggregatedPair.staked}
                     containsKpiToken={aggregatedPair.containsKpiToken}
                     hasFarming={aggregatedPair.hasFarming}
                   />

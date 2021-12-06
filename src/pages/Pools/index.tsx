@@ -21,7 +21,7 @@ import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
 import CurrencyLogo from '../../components/CurrencyLogo'
-import { useSignelSidedStakeCampaigns } from '../../hooks/useSingleSidedStakeCampaigns'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/useSingleSidedStakeCampaigns'
 
 /* const VoteCard = styled.div`
   overflow: hidden;
@@ -194,7 +194,7 @@ export default function Pools() {
     filterToken
   )
 
-  const { loading: ssLoading, data, hasActiveCampaigns } = useSignelSidedStakeCampaigns(filterToken)
+  const { loading: ssLoading, data, hasActiveCampaigns } = useSwaprSinglelSidedStakeCampaigns(filterToken)
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 

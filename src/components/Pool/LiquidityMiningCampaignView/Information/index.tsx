@@ -199,8 +199,6 @@ function Information({
   const handleCountdownEnd = useCallback(() => {
     setCurrentPeriodEnded(true)
   }, [])
-  console.log(isSingleSidedStake)
-  console.log(targetedPair)
 
   return (
     <div>
@@ -244,8 +242,6 @@ function Information({
               data={
                 !staked || loadingNativeCurrencyUSDPrice || !nativeCurrencyUSDPrice ? (
                   <Skeleton width="60px" height="14px" />
-                ) : isSingleSidedStake ? (
-                  staked
                 ) : (
                   `$${commify(staked.nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toFixed(2))}`
                 )
@@ -283,13 +279,13 @@ function Information({
             </Box>
           </Flex>
           <Box>
-            <DataDisplayer
+            {/* <DataDisplayer
               title={!apy ? <Skeleton width="40px" height="11px" /> : containsKpiToken ? 'MAXIMUM APR' : 'APR'}
               data={!apy ? <Skeleton width="80px" height="22px" /> : `${apy.toFixed(2)}%`}
               dataTextSize={22}
               fontWeight={600}
               color="white"
-            />
+            /> */}
           </Box>
         </InfoRow>
         <MaxPollSizeSection mb="24px">
@@ -319,14 +315,6 @@ function Information({
                     <CurrencyLogo loading marginLeft={4} marginRight={4} size="14px" />
                   </Row>
                 ) : (
-                  // ) : isSingleSidedStake ? (
-                  //   <TokenAmountDisplayer
-                  //     key={reward.token.address}
-                  //     amount={reward}
-                  //     fontSize="16px"
-                  //     alignRight
-                  //     showUSDValue={showUSDValue}
-                  //   />
                   rewards.map(reward => (
                     <TokenAmountDisplayer
                       key={reward.token.address}

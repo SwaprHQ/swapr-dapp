@@ -46,6 +46,7 @@ export function useLiquidityMiningCampaign(
   const { loading, error, data } = useQuery<QueryResult>(QUERY, {
     variables: { id: id?.toLowerCase() || '' }
   })
+  console.log(data)
   const nativeCurrency = useNativeCurrency()
   const rewardAddresses = useMemo(() => {
     if (!data || !data.liquidityMiningCampaign) return []

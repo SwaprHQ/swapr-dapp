@@ -20,7 +20,7 @@ import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../Liquid
 import { useActiveWeb3React } from '../../../hooks'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import CurrencyLogo from '../../../components/CurrencyLogo'
-import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -53,17 +53,16 @@ export default function LiquidityMiningCampaign({
   const token1 = useToken(currencyIdB)
   const isSingleSidedCampaign = location.pathname.includes('/singleSidedStaking')
 
-  const { data, hasActiveCampaigns } = useSignelSidedStakeCampaigns(token0 || undefined)
+  const { data, loading: swaprLoading } = useSwaprSinglelSidedStakeCampaigns(token0 || undefined)
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const pairOrUndefined = useMemo(() => wrappedPair[1] || undefined, [wrappedPair])
-  const { campaign, containsKpiToken } = useLiquidityMiningCampaign(pairOrUndefined, liquidityMiningCampaignId)
+  const { campaign, containsKpiToken, loading } = useLiquidityMiningCampaign(pairOrUndefined, liquidityMiningCampaignId)
 
   const lpTokenBalance = useTokenBalance(account || undefined, wrappedPair[1]?.liquidityToken)
 
   if (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
-
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
   return (
@@ -127,11 +126,21 @@ export default function LiquidityMiningCampaign({
               </AddLiquidityButtonComponent>
             </ButtonRow>
           </TitleRow>
-          <LiquidityMiningCampaignView
-            isSingleSidedStake={isSingleSidedCampaign && hasActiveCampaigns}
-            campaign={isSingleSidedCampaign && hasActiveCampaigns ? data : campaign}
-            containsKpiToken={containsKpiToken}
-          />
+          {/* logic not working in these later hours need to ffix this */}
+          {!swaprLoading && isSingleSidedCampaign && (
+            <LiquidityMiningCampaignView
+              isSingleSidedStake={isSingleSidedCampaign}
+              campaign={isSingleSidedCampaign ? data : campaign}
+              containsKpiToken={containsKpiToken}
+            />
+          )}
+          {!isSingleSidedCampaign && !loading && (
+            <LiquidityMiningCampaignView
+              isSingleSidedStake={isSingleSidedCampaign}
+              campaign={isSingleSidedCampaign ? data : campaign}
+              containsKpiToken={containsKpiToken}
+            />
+          )}
         </AutoColumn>
       </AutoColumn>
     </PageWrapper>

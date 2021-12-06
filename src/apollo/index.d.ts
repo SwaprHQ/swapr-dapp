@@ -29,12 +29,15 @@ export interface SubgraphSingleSidedStakingCampaign {
   endsAt: string
   duration: string
   stakingCap: string
-  locked: string
-  stakeToken: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
-  rewardToken: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
-  reward: {
-    token: { id: string; symbol: string; name: string; decimals: string; totalSupply: string }
-    amount: string
+  locked: boolean
+  stakeToken: {
+    id: string
+    symbol: string
+    name: string
+    decimals: string
+    totalSupply: string
+    derivedNativeCurrency: string
   }
+  rewards: SubgraphLiquidityMiningCampaignReward[]
   stakedAmount: string
 }
