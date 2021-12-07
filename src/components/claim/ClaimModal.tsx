@@ -76,11 +76,13 @@ const SpacedExternalLinkIcon = styled(ExternalLinkIcon)`
 export default function ClaimModal({
   onDismiss,
   oldSwprBalance,
-  newSwprBalance
+  newSwprBalance,
+  stakedAmount
 }: {
   onDismiss: () => void
   oldSwprBalance?: TokenAmount
   newSwprBalance?: TokenAmount
+  stakedAmount?: string
 }) {
   const { account, chainId, connector } = useActiveWeb3React()
 
@@ -177,7 +179,7 @@ export default function ClaimModal({
 
               <Flex flexDirection="column">
                 <TYPE.white fontWeight={700} fontSize={26}>
-                  {newSwprBalance?.toFixed(3) || '0.000'}
+                  {stakedAmount || '0.000'}
                 </TYPE.white>
                 <TYPE.body fontWeight="600" fontSize="11px">
                   STAKED SWPR

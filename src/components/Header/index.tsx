@@ -209,7 +209,7 @@ function Header() {
   const nativeCurrency = useNativeCurrency()
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const [isDark] = useDarkModeManager()
-  const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
+  const { loading, data, stakedAmount } = useSwaprSinglelSidedStakeCampaigns()
   const toggleClaimPopup = useToggleShowClaimPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const { newSwpr, oldSwpr } = useMemo(
@@ -223,7 +223,12 @@ function Header() {
 
   return (
     <HeaderFrame>
-      <ClaimModal onDismiss={toggleClaimPopup} oldSwprBalance={oldSwprBalance} newSwprBalance={newSwprBalance} />
+      <ClaimModal
+        onDismiss={toggleClaimPopup}
+        oldSwprBalance={oldSwprBalance}
+        newSwprBalance={newSwprBalance}
+        stakedAmount={stakedAmount}
+      />
       <HeaderRow isDark={isDark}>
         <Title href=".">
           <SwaprVersionLogo />

@@ -40,6 +40,7 @@ const QUERY = gql`
       }
       singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
         id
+        stakedAmount
       }
       stakedAmount
       stakingCap
@@ -53,6 +54,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
 ): {
   loading: boolean
   data: SingleSidedLiquidityMiningCampaign | undefined
+  stakedAmount?: string
 } {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
   const { chainId, account } = useActiveWeb3React()
@@ -71,10 +73,10 @@ export function useSwaprSinglelSidedStakeCampaigns(
   })
   return useMemo(() => {
     if (loading || chainId === undefined) {
-      return { loading: true, data: undefined }
+      return { loading: true, data: undefined, stakedAmount: '0' }
     }
     if (error || !data) {
-      return { loading: false, data: undefined }
+      return { loading: false, data: undefined, stakedAmount: '0' }
     }
 
     // const wrappedCampaigns = []
@@ -119,7 +121,9 @@ export function useSwaprSinglelSidedStakeCampaigns(
 
     return {
       loading: false,
-      data: singleSidedStakeCampaign
+      data: singleSidedStakeCampaign,
+      stakedAmount:
+        wrapped.singleSidedStakingPositions.length > 0 ? wrapped.singleSidedStakingPositions[0].stakedAmount : '0'
     }
   }, [filter, data, loading, error, filterToken, swaprAddress, chainId, nativeCurrency, filterTokenAddress])
 }
