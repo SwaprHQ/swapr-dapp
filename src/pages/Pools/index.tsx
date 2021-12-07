@@ -194,7 +194,7 @@ export default function Pools() {
     filterToken
   )
 
-  const { loading: ssLoading, data, hasActiveCampaigns } = useSwaprSinglelSidedStakeCampaigns(filterToken)
+  const { loading: ssLoading, data } = useSwaprSinglelSidedStakeCampaigns(filterToken, aggregatedDataFilter)
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
@@ -224,14 +224,13 @@ export default function Pools() {
             />
             <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} />
             {aggregatedDataFilter === PairsFilterType.MY ? (
-              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} />
+              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
             ) : (
               <PairsList
                 loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
                 aggregatedPairs={aggregatedData}
                 singleSidedStake={data}
                 filter={aggregatedDataFilter}
-                hasActiveCampaigns={hasActiveCampaigns}
               />
             )}
           </AutoColumn>

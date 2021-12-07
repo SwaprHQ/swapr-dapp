@@ -45,8 +45,8 @@ export default function ConfirmStakingModal({
     distributionContractAddress
   )
   const transactionModalText = isSingleSide
-    ? `${stakablePair?.symbol}`
-    : `${stakablePair?.token0.symbol / stakablePair?.token1.symbol}`
+    ? `${stakablePair.symbol}`
+    : `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
   const handleStakedAmountChange = useCallback(amount => {
     setStakedAmount(amount)
   }, [])

@@ -32,8 +32,8 @@ export default function ConfirmWithdrawalModal({
 }: ConfirmWithdrawalModalProps) {
   const [withdrawableAmount, setWithdrawableAmount] = useState<TokenAmount | null>(null)
   const transactionModalText = isSingleSide
-    ? `${stakablePair?.symbol}`
-    : `${stakablePair?.token0.symbol / stakablePair?.token1.symbol}`
+    ? `${stakablePair.symbol}`
+    : `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
   const handleWithdrawableAmountChange = useCallback(amount => {
     setWithdrawableAmount(amount)
   }, [])
@@ -42,13 +42,12 @@ export default function ConfirmWithdrawalModal({
     if (!withdrawableAmount) return
     onConfirm(withdrawableAmount)
   }, [onConfirm, withdrawableAmount])
-
   const topContent = useCallback(
     () => (
       <ConfirmStakingWithdrawingModalHeader
         maximumAmount={withdrawablTokenBalance}
         onAmountChange={handleWithdrawableAmountChange}
-        stakablePair={!isSingleSide && stakablePair}
+        stakablePair={stakablePair}
         isSingleSided={isSingleSide}
       />
     ),

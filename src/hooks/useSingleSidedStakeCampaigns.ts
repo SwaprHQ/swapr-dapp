@@ -7,11 +7,12 @@ import { useMemo } from 'react'
 import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 import { useActiveWeb3React } from '.'
 import { SubgraphSingleSidedStakingCampaign } from '../apollo'
+import { PairsFilterType } from '../components/Pool/ListFilter'
 import { toSingleSidedStakeCampaign } from '../utils/liquidityMining'
 import { useNativeCurrency } from './useNativeCurrency'
 
 const QUERY = gql`
-  query($address: ID) {
+  query($address: ID, $userId: ID) {
     singleSidedStakingCampaigns(first: 100, where: { stakeToken: $address }) {
       id
       owner
@@ -37,6 +38,9 @@ const QUERY = gql`
         }
         amount
       }
+      singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+        id
+      }
       stakedAmount
       stakingCap
     }
@@ -44,32 +48,33 @@ const QUERY = gql`
 `
 
 export function useSwaprSinglelSidedStakeCampaigns(
-  filterToken?: Token
+  filterToken?: Token,
+  filter: PairsFilterType = PairsFilterType.ALL
 ): {
   loading: boolean
   data: SingleSidedLiquidityMiningCampaign | undefined
-  hasActiveCampaigns: boolean
 } {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-
+  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
+  const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
   //using xeenus as token for rinkeby
   const swaprAddress = chainId === 4 ? '0x022e292b44b5a146f2e8ee36ff44d3dd863c915c' : SWPR[chainId || 1].address
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(QUERY, {
     variables: {
-      address: swaprAddress.toLowerCase()
+      address: swaprAddress.toLowerCase(),
+      userId: subgraphAccountId
     }
   })
-
   return useMemo(() => {
     if (loading || chainId === undefined) {
-      return { loading: true, data: undefined, hasActiveCampaigns: false }
+      return { loading: true, data: undefined }
     }
-    if (error || !data || (filterToken !== undefined && filterToken?.address.toLowerCase() !== swaprAddress)) {
-      return { loading: false, data: undefined, hasActiveCampaigns: false }
+    if (error || !data) {
+      return { loading: false, data: undefined }
     }
 
     // const wrappedCampaigns = []
@@ -88,7 +93,6 @@ export function useSwaprSinglelSidedStakeCampaigns(
     // }
 
     const wrapped = data.singleSidedStakingCampaigns[data.singleSidedStakingCampaigns.length - 1]
-
     const stakeToken = new Token(
       chainId,
       wrapped.stakeToken.id,
@@ -105,11 +109,17 @@ export function useSwaprSinglelSidedStakeCampaigns(
       nativeCurrency,
       wrapped.stakeToken.derivedNativeCurrency
     )
+    if (
+      (filterToken !== undefined && filterTokenAddress !== swaprAddress) ||
+      (filter === PairsFilterType.MY && wrapped.singleSidedStakingPositions.length < 0) ||
+      singleSidedStakeCampaign.ended
+    ) {
+      return { loading: false, data: undefined }
+    }
 
     return {
       loading: false,
-      data: singleSidedStakeCampaign,
-      hasActiveCampaigns: data.singleSidedStakingCampaigns.length !== 0
+      data: singleSidedStakeCampaign
     }
-  }, [data, loading, error, filterToken, swaprAddress, chainId, nativeCurrency])
+  }, [filter, data, loading, error, filterToken, swaprAddress, chainId, nativeCurrency, filterTokenAddress])
 }

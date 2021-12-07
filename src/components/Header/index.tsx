@@ -209,8 +209,7 @@ function Header() {
   const nativeCurrency = useNativeCurrency()
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const [isDark] = useDarkModeManager()
-  const { loading, data, hasActiveCampaigns } = useSwaprSinglelSidedStakeCampaigns()
-  console.log(loading, data, hasActiveCampaigns)
+  const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
   const toggleClaimPopup = useToggleShowClaimPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const { newSwpr, oldSwpr } = useMemo(
@@ -266,7 +265,7 @@ function Header() {
         </HeaderElement>
         <HeaderSubRow>
           <SwprInfo
-            hasActiveCampaigns={hasActiveCampaigns}
+            hasActiveCampaigns={!loading && !!data}
             oldSwprBalance={oldSwprBalance}
             newSwprBalance={newSwprBalance}
             onToggleClaimPopup={toggleClaimPopup}

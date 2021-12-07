@@ -40,4 +40,5 @@ export interface SubgraphSingleSidedStakingCampaign {
   }
   rewards: SubgraphLiquidityMiningCampaignReward[]
   stakedAmount: string
+  singleSidedStakingPositions: { id: string }[]
 }

@@ -12,7 +12,6 @@ import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerP
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
 import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
-// import { useSignelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
 
 const ListLayout = styled.div`
   display: grid;
@@ -46,6 +45,7 @@ interface PairsListProps {
   hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
+  hasSingleSidedStake?: boolean
 }
 
 // enum Layout {
@@ -53,18 +53,11 @@ interface PairsListProps {
 //   GRID
 // }
 
-export default function PairsList({
-  aggregatedPairs,
-  loading,
-  filter,
-  singleSidedStake,
-  hasActiveCampaigns
-}: PairsListProps) {
+export default function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -76,9 +69,9 @@ export default function PairsList({
       <Box>
         {loading ? (
           <LoadingList />
-        ) : itemsPage.length > 0 ? (
+        ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
-            {hasActiveCampaigns && singleSidedStake && (
+            {singleSidedStake && (
               <UndecoratedLink
                 key={singleSidedStake.stakeToken.id}
                 to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
@@ -87,30 +80,31 @@ export default function PairsList({
                   token0={singleSidedStake.stakeToken}
                   pair={singleSidedStake.stakeToken.address}
                   usdLiquidity={singleSidedStake.staked}
-                  apy={itemsPage[0].maximumApy}
+                  apy={new Percent('0', '100')}
                   hasFarming={true}
                   isSingleSidedStakingCampaign={true}
                 />
               </UndecoratedLink>
             )}
-            {itemsPage.map(aggregatedPair => {
-              return (
-                <UndecoratedLink
-                  key={aggregatedPair.pair.liquidityToken.address}
-                  to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
-                >
-                  <PairCard
-                    token0={aggregatedPair.pair.token0}
-                    token1={aggregatedPair.pair.token1}
-                    pair={aggregatedPair.pair}
-                    usdLiquidity={aggregatedPair.liquidityUSD}
-                    apy={aggregatedPair.maximumApy}
-                    containsKpiToken={aggregatedPair.containsKpiToken}
-                    hasFarming={aggregatedPair.hasFarming}
-                  />
-                </UndecoratedLink>
-              )
-            })}
+            {itemsPage.length > 0 &&
+              itemsPage.map(aggregatedPair => {
+                return (
+                  <UndecoratedLink
+                    key={aggregatedPair.pair.liquidityToken.address}
+                    to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
+                  >
+                    <PairCard
+                      token0={aggregatedPair.pair.token0}
+                      token1={aggregatedPair.pair.token1}
+                      pair={aggregatedPair.pair}
+                      usdLiquidity={aggregatedPair.liquidityUSD}
+                      apy={aggregatedPair.maximumApy}
+                      containsKpiToken={aggregatedPair.containsKpiToken}
+                      hasFarming={aggregatedPair.hasFarming}
+                    />
+                  </UndecoratedLink>
+                )
+              })}
           </ListLayout>
         ) : (
           <Empty>
