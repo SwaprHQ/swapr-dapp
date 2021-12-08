@@ -2,6 +2,7 @@ import { Pair } from '@swapr/sdk'
 import { DateTime, Duration } from 'luxon'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { usePairCampaigns } from '../../../../hooks/singleSidedStakeCampaigns/usePairCampaigns'
 import { useLiquidityMiningCampaignsForPair } from '../../../../hooks/useLiquidityMiningCampaignsForPair'
 import { AutoColumn } from '../../../Column'
 import TabBar from '../../../TabBar'
@@ -30,6 +31,8 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
     expiredLoading,
     expiredWrappedCampagins
   } = useLiquidityMiningCampaignsForPair(pair, lowerExpiredCampaignTimeLimit)
+  const { active, expired, loading } = usePairCampaigns(pair?.token0.address, pair?.token1.address)
+  console.log(active, expired, loading)
 
   const [activeTab, setActiveTab] = useState(0)
 
@@ -59,8 +62,22 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
       />
       {pair ? (
         <>
-          {activeTab === 0 && <List loading={loadingActive} stakablePair={pair} items={activeWrappedCampaigns} />}
-          {activeTab === 1 && <List loading={expiredLoading} stakablePair={pair} items={expiredWrappedCampagins} />}
+          {activeTab === 0 && (
+            <List
+              singleSidedCampaings={active}
+              loading={loadingActive || loading}
+              stakablePair={pair}
+              items={activeWrappedCampaigns}
+            />
+          )}
+          {activeTab === 1 && (
+            <List
+              singleSidedCampaings={expired}
+              loading={expiredLoading || loading}
+              stakablePair={pair}
+              items={expiredWrappedCampagins}
+            />
+          )}
         </>
       ) : (
         <List loading />

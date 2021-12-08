@@ -74,8 +74,8 @@ export default function Pair({
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
-  const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
 
+  const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
 
   const handleAllClick = useCallback(() => {
@@ -94,13 +94,8 @@ export default function Pair({
     },
     [router]
   )
-  const isSingleSidedStakingCampaign = !token1
 
-  if (
-    token0 &&
-    !isSingleSidedStakingCampaign &&
-    (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)
-  )
+  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
   return (
     <>

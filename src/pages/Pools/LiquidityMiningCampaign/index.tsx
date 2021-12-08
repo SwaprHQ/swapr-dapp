@@ -20,8 +20,7 @@ import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../Liquid
 import { useActiveWeb3React } from '../../../hooks'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import CurrencyLogo from '../../../components/CurrencyLogo'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../../hooks/useSingleSidedStakeCampaigns'
-
+import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -53,7 +52,9 @@ export default function LiquidityMiningCampaign({
   const token1 = useToken(currencyIdB)
   const isSingleSidedCampaign = location.pathname.includes('/singleSidedStaking')
 
-  const { data, loading: swaprLoading } = useSwaprSinglelSidedStakeCampaigns(token0 || undefined)
+  const { singleSidedStakingCampaign, loading: SingleSidedCampaignLoader } = useSingleSidedCampaign(
+    liquidityMiningCampaignId
+  )
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const pairOrUndefined = useMemo(() => wrappedPair[1] || undefined, [wrappedPair])
@@ -127,17 +128,17 @@ export default function LiquidityMiningCampaign({
             </ButtonRow>
           </TitleRow>
           {/* logic not working in these later hours need to ffix this */}
-          {!swaprLoading && isSingleSidedCampaign && (
+          {!SingleSidedCampaignLoader && isSingleSidedCampaign && (
             <LiquidityMiningCampaignView
               isSingleSidedStake={isSingleSidedCampaign}
-              campaign={isSingleSidedCampaign ? data : campaign}
+              campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
               containsKpiToken={containsKpiToken}
             />
           )}
           {!isSingleSidedCampaign && !loading && (
             <LiquidityMiningCampaignView
               isSingleSidedStake={isSingleSidedCampaign}
-              campaign={isSingleSidedCampaign ? data : campaign}
+              campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
               containsKpiToken={containsKpiToken}
             />
           )}

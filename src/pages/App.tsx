@@ -90,7 +90,7 @@ export default function App() {
                     component={LiquidityMiningCampaign}
                   />
                   <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
-                  {/* single sided staking route */}
+
                   <Route
                     exact
                     strict

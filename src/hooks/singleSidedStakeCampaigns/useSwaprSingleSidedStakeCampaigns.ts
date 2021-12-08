@@ -5,11 +5,11 @@ import { SWPR, Token } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
-import { useActiveWeb3React } from '.'
-import { SubgraphSingleSidedStakingCampaign } from '../apollo'
-import { PairsFilterType } from '../components/Pool/ListFilter'
-import { toSingleSidedStakeCampaign } from '../utils/liquidityMining'
-import { useNativeCurrency } from './useNativeCurrency'
+import { useActiveWeb3React } from '..'
+import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
+import { PairsFilterType } from '../../components/Pool/ListFilter'
+import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
+import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
   query($address: ID, $userId: ID) {
@@ -78,21 +78,6 @@ export function useSwaprSinglelSidedStakeCampaigns(
     if (error || !data) {
       return { loading: false, data: undefined, stakedAmount: '0' }
     }
-
-    // const wrappedCampaigns = []
-    // for (let i = 0; i < data.singleSidedStakeCampaigns.length; i++) {
-    //   console.log('here', i)
-    //   const camapaign = data.singleSidedStakeCampaigns[i]
-    //   wrappedCampaigns.push({
-    //     owner: camapaign.owner,
-    //     stakeToken: {
-    //       symbol: camapaign.stakeToken.symbol,
-    //       name: camapaign.stakeToken.name,
-    //       decimals: camapaign.stakeToken.decimals,
-    //       totalSupply: camapaign.stakeToken.totalSupply
-    //     }
-    //   })
-    // }
 
     const wrapped = data.singleSidedStakingCampaigns[data.singleSidedStakingCampaigns.length - 1]
     const stakeToken = new Token(

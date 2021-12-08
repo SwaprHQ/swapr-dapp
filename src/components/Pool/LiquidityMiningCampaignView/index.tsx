@@ -75,8 +75,6 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
-  console.log(campaign)
-  console.log(campaign)
   return (
     <AutoColumn gap="18px">
       <RowBetween>

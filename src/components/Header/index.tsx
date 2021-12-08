@@ -25,7 +25,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { SwprInfo } from './swpr-info'
 import { OLD_SWPR } from '../../constants'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/useSingleSidedStakeCampaigns'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -210,6 +210,7 @@ function Header() {
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const [isDark] = useDarkModeManager()
   const { loading, data, stakedAmount } = useSwaprSinglelSidedStakeCampaigns()
+
   const toggleClaimPopup = useToggleShowClaimPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const { newSwpr, oldSwpr } = useMemo(

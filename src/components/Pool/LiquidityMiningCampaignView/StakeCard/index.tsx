@@ -113,8 +113,6 @@ export default function StakeCard({
   isSingleSided,
   targetedPairOrSingleToken
 }: FullPositionCardProps) {
-  console.log(campaign)
-  console.log(isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken)
   const { account } = useActiveWeb3React()
   const stakableTokenBalance = useTokenBalance(
     account || undefined,

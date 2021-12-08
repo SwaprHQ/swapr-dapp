@@ -21,7 +21,7 @@ import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
 import CurrencyLogo from '../../components/CurrencyLogo'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/useSingleSidedStakeCampaigns'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 
 /* const VoteCard = styled.div`
   overflow: hidden;
