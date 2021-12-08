@@ -8,7 +8,7 @@ import LoadingList from '../../../LoadingList'
 import { usePage } from '../../../../../hooks/usePage'
 import { useWindowSize } from '../../../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../../../theme'
-import PairCard from '../../../PairsList/Pair'
+import CampaignCard from '../../../PairsList/CampaignCard'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../../../UndercoratedLink'
@@ -63,14 +63,14 @@ export default function List({ stakablePair, loading, items }: LiquidityMiningCa
                     key={item.campaign.address}
                     to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
                   >
-                    <PairCard
+                    <CampaignCard
                       token0={token0}
                       token1={token1}
                       usdLiquidity={getStakedAmountUSD(item.campaign, nativeCurrencyUSDPrice)}
                       apy={item.campaign.apy}
                       staked={item.staked}
                       containsKpiToken={item.containsKpiToken}
-                      usdLiquidityText="STAKED"
+                      campaign={item.campaign}
                     />
                   </UndecoratedLink>
                 )
