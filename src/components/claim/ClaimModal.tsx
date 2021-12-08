@@ -3,7 +3,7 @@ import { AutoColumn } from '../Column'
 import styled from 'styled-components'
 import Row, { RowBetween } from '../Row'
 import { TYPE, CloseIcon, ExternalLink } from '../../theme'
-import { ButtonPrimary } from '../Button'
+import { ButtonDark1, ButtonPrimary, ButtonPurple } from '../Button'
 import { useActiveWeb3React } from '../../hooks'
 import useUnclaimedSWPRBalance from '../../hooks/swpr/useUnclaimedSWPRBalance'
 import { useCloseModals, useShowClaimPopup, useToggleModal } from '../../state/application/hooks'
@@ -159,7 +159,7 @@ export default function ClaimModal({
     } else
       return (
         <ContentWrapper gap="lg">
-          <UpperAutoColumn gap="16px">
+          <UpperAutoColumn gap="26px">
             <RowBetween>
               <TYPE.white fontWeight={500} fontSize="20px" lineHeight="24px" color="text4">
                 Your SWPR details
@@ -167,24 +167,24 @@ export default function ClaimModal({
               <CloseIcon onClick={wrappedOnDismiss} style={{ zIndex: 99 }} />
             </RowBetween>
             <RowBetween>
-              <Flex flexDirection="column">
+              <Flex width="50%" flexDirection="column">
                 <TYPE.white fontWeight={700} fontSize={26}>
                   {newSwprBalance?.toFixed(3) || '0.000'}
                 </TYPE.white>
-                <TYPE.body fontWeight="600" fontSize="11px">
+                <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                   SWPR
                 </TYPE.body>
-                <ButtonPrimary>STAKE</ButtonPrimary>
+                <ButtonPurple>STAKE</ButtonPurple>
               </Flex>
 
-              <Flex flexDirection="column">
+              <Flex width="50%" flexDirection="column">
                 <TYPE.white fontWeight={700} fontSize={26}>
                   {stakedAmount || '0.000'}
                 </TYPE.white>
-                <TYPE.body fontWeight="600" fontSize="11px">
+                <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                   STAKED SWPR
                 </TYPE.body>
-                <ButtonPrimary>UNSTAKE</ButtonPrimary>
+                <ButtonDark1>UNSTAKE</ButtonDark1>
               </Flex>
             </RowBetween>
           </UpperAutoColumn>
