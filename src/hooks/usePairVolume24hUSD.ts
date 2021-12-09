@@ -25,8 +25,6 @@ export function usePair24hVolumeUSD(
   pairOrTokenAddress?: string | null,
   isToken = false
 ): { loading: boolean; volume24hUSD: CurrencyAmount } {
-  console.log(isToken)
-  console.log(pairOrTokenAddress)
   const { loading, data, error } = useQuery(isToken ? TOKENQUERY : QUERY, {
     variables: {
       pairOrTokenAddress: pairOrTokenAddress?.toLowerCase(),
@@ -35,10 +33,8 @@ export function usePair24hVolumeUSD(
         .toSeconds()
     }
   })
-  console.log(data, error)
   return useMemo(() => {
     if (loading) return { loading: true, volume24hUSD: ZERO_USD }
-    console.log(data)
     if (
       !data ||
       (!isToken && (!data.pairDayDatas || data.pairDayDatas.length === 0 || !data.pairDayDatas[0])) ||

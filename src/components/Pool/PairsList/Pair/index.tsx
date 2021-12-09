@@ -134,8 +134,6 @@ export default function Pair({
 }: PairProps) {
   const { width } = useWindowSize()
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
-  console.log(volume24hUSD)
-  console.log(loading)
 
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 

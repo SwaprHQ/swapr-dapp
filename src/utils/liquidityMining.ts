@@ -92,7 +92,6 @@ export function toSingleSidedStakeCampaign(
   nativeCurrency: Currency,
   derivedNativeCurrency: string
 ): SingleSidedLiquidityMiningCampaign {
-  console.log('here')
   const rewards = campaign.rewards.map(reward => {
     const rewardToken = new Token(
       chainId,
@@ -111,7 +110,6 @@ export function toSingleSidedStakeCampaign(
         nativeCurrency.decimals
       ).toString()
     )
-    console.log(reward.token.derivedNativeCurrency)
     const pricedRewardToken = new PricedToken(
       chainId,
       getAddress(rewardToken.address),
@@ -126,7 +124,7 @@ export function toSingleSidedStakeCampaign(
     )
   })
   const decimalTotalSupply = new Decimal(totalSupplyStakeToken)
-  console.log(derivedNativeCurrency)
+
   const derivedNative = new Price(
     stakeToken,
     nativeCurrency,

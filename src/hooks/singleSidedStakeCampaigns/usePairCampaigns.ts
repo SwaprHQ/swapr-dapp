@@ -67,7 +67,6 @@ export function usePairCampaigns(
     .minus(Duration.fromObject({ days: 30 }))
     .toJSDate()
   const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
-  console.log(token0Address, token1Address)
 
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
@@ -77,7 +76,6 @@ export function usePairCampaigns(
       userId: subgraphAccountId
     }
   })
-  console.log(data, error)
   return useMemo(() => {
     if (loading || chainId === undefined) {
       return { loading: true, active: [], expired: [] }
@@ -89,8 +87,6 @@ export function usePairCampaigns(
     const expiredCampaigns = []
     const activeCampaigns = []
     for (let i = 0; i < data.singleSidedStakingCampaigns.length; i++) {
-      console.log('here', i)
-
       const camapaign = data.singleSidedStakingCampaigns[i]
       const stakeToken = new Token(
         chainId,
@@ -109,7 +105,6 @@ export function usePairCampaigns(
       )
       const hasStake = camapaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
-      console.log('isExpired', isExpired)
       if (hasStake || singleSidedStakeCampaign.currentlyActive) {
         activeCampaigns.push(singleSidedStakeCampaign)
       } else if (isExpired) {

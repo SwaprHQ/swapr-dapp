@@ -53,7 +53,6 @@ export function useSingleSidedCampaign(
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  console.log('entered query', campaginAddress)
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaign: SubgraphSingleSidedStakingCampaign
   }>(QUERY, {
@@ -69,7 +68,6 @@ export function useSingleSidedCampaign(
     if (error || !data) {
       return { loading: false, singleSidedStakingCampaign: undefined }
     }
-    console.log(data)
     const wrapped = data.singleSidedStakingCampaign
     const stakeToken = new Token(
       chainId,

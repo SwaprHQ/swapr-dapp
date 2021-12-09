@@ -32,7 +32,6 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
     expiredWrappedCampagins
   } = useLiquidityMiningCampaignsForPair(pair, lowerExpiredCampaignTimeLimit)
   const { active, expired, loading } = usePairCampaigns(pair?.token0.address, pair?.token1.address)
-  console.log(active, expired, loading)
 
   const [activeTab, setActiveTab] = useState(0)
 
