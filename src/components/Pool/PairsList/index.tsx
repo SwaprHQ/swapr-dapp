@@ -41,7 +41,7 @@ interface PairsListProps {
     containsKpiToken?: boolean
     hasFarming?: boolean
   }[]
-  singleSidedStake?: SingleSidedLiquidityMiningCampaign | undefined
+  singleSidedStake?: SingleSidedLiquidityMiningCampaign
   hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
@@ -58,6 +58,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
+
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -78,7 +79,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}
-                  pair={singleSidedStake.stakeToken.address}
+                  pairOrStakeAddress={singleSidedStake.stakeToken.address}
                   usdLiquidity={singleSidedStake.staked}
                   apy={new Percent('0', '100')}
                   hasFarming={true}
@@ -96,7 +97,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
                     <PairCard
                       token0={aggregatedPair.pair.token0}
                       token1={aggregatedPair.pair.token1}
-                      pair={aggregatedPair.pair}
+                      pairOrStakeAddress={aggregatedPair.pair.liquidityToken.address}
                       usdLiquidity={aggregatedPair.liquidityUSD}
                       apy={aggregatedPair.maximumApy}
                       containsKpiToken={aggregatedPair.containsKpiToken}

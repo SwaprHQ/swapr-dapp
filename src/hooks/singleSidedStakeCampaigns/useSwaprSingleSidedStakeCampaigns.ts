@@ -96,6 +96,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
       nativeCurrency,
       wrapped.stakeToken.derivedNativeCurrency
     )
+    console.log(singleSidedStakeCampaign)
     if (
       (filterToken !== undefined && filterTokenAddress !== swaprAddress) ||
       (filter === PairsFilterType.MY && wrapped.singleSidedStakingPositions.length < 0) ||

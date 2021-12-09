@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { CurrencyAmount, Percent, Token, Pair as PairType } from '@swapr/sdk'
+import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'
 import styled from 'styled-components'
-//import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
+import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
 
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
@@ -112,10 +112,11 @@ interface PairProps {
   apy: Percent
   usdLiquidity: CurrencyAmount
   usdLiquidityText?: string
-  pair?: PairType
+  pairOrStakeAddress?: string
   containsKpiToken?: boolean
   hasFarming?: boolean
   isSingleSidedStakingCampaign?: boolean
+  dayLiquidity?: string
 }
 
 export default function Pair({
@@ -125,14 +126,16 @@ export default function Pair({
   apy,
   containsKpiToken,
   usdLiquidityText,
-  pair,
+  pairOrStakeAddress,
   hasFarming,
+  dayLiquidity,
   isSingleSidedStakingCampaign,
   ...rest
 }: PairProps) {
   const { width } = useWindowSize()
-  const isSingleSidedStaking = !token0
-  // const { volume24hUSD, loading } = usePair24hVolumeUSD(pair)
+  const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
+  console.log(volume24hUSD)
+  console.log(loading)
 
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
@@ -162,8 +165,9 @@ export default function Pair({
           >
             {unwrappedToken(token0)?.symbol}
 
-            {!isSingleSidedStaking && (isMobile ? '/' : <br></br>)}
-            {!isSingleSidedStaking && unwrappedToken(token1)?.symbol}
+            {!isSingleSidedStakingCampaign && (isMobile ? '/' : <br></br>)}
+
+            {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
           </EllipsizedText>
 
           {isMobile && (
@@ -212,8 +216,10 @@ export default function Pair({
               </ItemsWrapper>
               <ItemsWrapper>
                 <TitleText>24h VOLUME</TitleText>
-                {/* <ValueText>${!loading && formatCurrencyAmount(volume24hUSD).split('.')[0]}</ValueText> */}
-                <ValueText>22</ValueText>
+                <ValueText>
+                  ${!loading && volume24hUSD ? formatCurrencyAmount(volume24hUSD).split('.')[0] : dayLiquidity}
+                  {dayLiquidity && dayLiquidity}
+                </ValueText>
               </ItemsWrapper>
               <ItemsWrapper width={'43px'}>
                 <TitleText>APY</TitleText>

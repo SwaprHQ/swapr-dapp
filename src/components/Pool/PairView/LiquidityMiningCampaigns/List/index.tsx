@@ -65,7 +65,6 @@ export default function List({
               {singleSidedCampaings &&
                 singleSidedCampaings.length > 0 &&
                 singleSidedCampaings.map(singleSidedStake => {
-                  console.log(singleSidedStake.address)
                   return (
                     <UndecoratedLink
                       key={singleSidedStake.stakeToken.id}
@@ -73,7 +72,7 @@ export default function List({
                     >
                       <PairCard
                         token0={singleSidedStake.stakeToken}
-                        pair={singleSidedStake.stakeToken.address}
+                        pairOrStakeAddress={singleSidedStake.stakeToken.address}
                         usdLiquidity={singleSidedStake.staked}
                         apy={new Percent('0', '100')}
                         hasFarming={true}
@@ -94,6 +93,7 @@ export default function List({
                       <PairCard
                         token0={token0}
                         token1={token1}
+                        pairOrStakeAddress={stakablePair?.liquidityToken.address}
                         usdLiquidity={getStakedAmountUSD(item.campaign, nativeCurrencyUSDPrice)}
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}

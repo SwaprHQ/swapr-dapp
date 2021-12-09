@@ -37,6 +37,9 @@ export interface SubgraphSingleSidedStakingCampaign {
     decimals: string
     totalSupply: string
     derivedNativeCurrency: string
+    tokenDayData: {
+      dailyVolumeUSD: string
+    }
   }
   rewards: SubgraphLiquidityMiningCampaignReward[]
   stakedAmount: string

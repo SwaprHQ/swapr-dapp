@@ -63,7 +63,7 @@ function PairView({ loading, pair }: PairViewProps) {
   const { account, chainId } = useActiveWeb3React()
   const history = useHistory()
   const previousChainId = usePrevious(chainId)
-  const { loading: volumeLoading, volume24hUSD } = usePair24hVolumeUSD(pair)
+  const { loading: volumeLoading, volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { loading: liquidityLoading, liquidityUSD } = usePairLiquidityUSD(pair)
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
