@@ -60,12 +60,11 @@ export function useSingleSidedCampaign(
       campaignAddress: campaginAddress.toLowerCase()
     }
   })
-
   return useMemo(() => {
     if (loading || chainId === undefined) {
       return { loading: true, singleSidedStakingCampaign: undefined }
     }
-    if (error || !data) {
+    if (error || !data || !data.singleSidedStakingCampaign) {
       return { loading: false, singleSidedStakingCampaign: undefined }
     }
     const wrapped = data.singleSidedStakingCampaign

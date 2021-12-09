@@ -127,15 +127,7 @@ export default function LiquidityMiningCampaign({
               </AddLiquidityButtonComponent>
             </ButtonRow>
           </TitleRow>
-          {/* logic not working in these later hours need to ffix this */}
-          {!SingleSidedCampaignLoader && isSingleSidedCampaign && (
-            <LiquidityMiningCampaignView
-              isSingleSidedStake={isSingleSidedCampaign}
-              campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
-              containsKpiToken={containsKpiToken}
-            />
-          )}
-          {!isSingleSidedCampaign && !loading && (
+          {((!isSingleSidedCampaign && !loading) || (!SingleSidedCampaignLoader && isSingleSidedCampaign)) && (
             <LiquidityMiningCampaignView
               isSingleSidedStake={isSingleSidedCampaign}
               campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
