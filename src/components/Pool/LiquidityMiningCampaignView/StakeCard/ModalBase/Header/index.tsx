@@ -14,11 +14,10 @@ const AlertIcon = styled(AlertTriangle)`
 `
 
 interface ConfirmStakeModalHeaderProps {
-  stakablePair?: any
+  stakablePair?: Token | Pair
   maximumAmount?: TokenAmount | PricedTokenAmount
   timelocked?: boolean
   endingTimestamp?: number
-  isSingleSided?: boolean
   onAmountChange: (amount: TokenAmount) => void
 }
 
@@ -51,7 +50,10 @@ export default function ConfirmStakingWithdrawingModalHeader({
         onUserInput={input => {
           if (!stakablePair) return
           setTypedAmount(input)
-          const parsedAmount = tryParseAmount(input, stakablePair) as TokenAmount | undefined
+          const parsedAmount = tryParseAmount(
+            input,
+            stakablePair instanceof Token ? stakablePair : stakablePair.liquidityToken
+          ) as TokenAmount | undefined
           if (parsedAmount) {
             onAmountChange(parsedAmount)
           }
