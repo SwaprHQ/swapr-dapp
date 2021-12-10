@@ -119,7 +119,7 @@ export default function ConfirmStakingModal({
       attemptingTxn={attemptingTxn}
       hash={txHash}
       content={content}
-      pendingText={`Staking ${stakedAmount?.toSignificant(6)} ${transactionModalText} ${
+      pendingText={`Staking ${stakedAmount?.toSignificant(6)} ${transactionModalText}${' '} ${
         isSingleSide ? 'TOKENS' : 'LP TOKENS'
       }`}
     />
