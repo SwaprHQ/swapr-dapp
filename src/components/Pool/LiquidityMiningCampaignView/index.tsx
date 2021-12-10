@@ -10,6 +10,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { usePrevious } from 'react-use'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { RowBetween } from '../../Row'
+import { SingleSidedLiquidityMiningCampaign, LiquidityMiningCampaign } from '@swapr/sdk'
 
 const GoBackContainer = styled.div`
   font-size: 11px;
@@ -51,9 +52,9 @@ const StyledCard = styled(DarkCard)`
 `
 
 interface PairViewProps {
-  campaign?: any
+  campaign?: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
   containsKpiToken?: boolean
-  isSingleSidedStake?: boolean
+  isSingleSidedStake: boolean
 }
 
 function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
@@ -71,7 +72,6 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
       history.push('/pools')
     }
   }, [chainId, history, previousChainId, switchingToCorrectChain])
-  console.log(campaign.rewards)
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
@@ -90,25 +90,28 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
       <StyledCard padding="32px">
         <AutoColumn gap="36px">
           <Information
-            isSingleSidedStake={isSingleSidedStake}
-            targetedPair={isSingleSidedStake ? campaign?.stakeToken : campaign?.targetedPair}
+            targetedPairOrToken={
+              campaign instanceof SingleSidedLiquidityMiningCampaign ? campaign?.stakeToken : campaign?.targetedPair
+            }
             stakingCap={campaign?.stakingCap}
             rewards={campaign?.rewards}
             remainingRewards={campaign?.remainingRewards}
             locked={campaign?.locked}
             startsAt={campaign ? parseInt(campaign.startsAt.toString()) : undefined}
             endsAt={campaign ? parseInt(campaign.endsAt.toString()) : undefined}
-            apy={campaign.apy}
+            apy={campaign?.apy}
             staked={campaign?.staked}
             containsKpiToken={containsKpiToken}
             showUSDValue={showUSDValue}
           />
           {account && (
             <StakeCard
-              isSingleSided={isSingleSidedStake || false}
+              isSingleSided={isSingleSidedStake}
               campaign={campaign || undefined}
               showUSDValue={showUSDValue}
-              targetedPairOrSingleToken={isSingleSidedStake ? campaign?.stakeToken : campaign?.targetedPair}
+              targetedPairOrToken={
+                campaign instanceof SingleSidedLiquidityMiningCampaign ? campaign?.stakeToken : campaign?.targetedPair
+              }
             />
           )}
         </AutoColumn>

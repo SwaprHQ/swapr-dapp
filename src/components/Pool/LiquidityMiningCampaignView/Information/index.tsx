@@ -1,4 +1,4 @@
-import { Percent, PricedTokenAmount, TokenAmount, KpiToken } from '@swapr/sdk'
+import { Percent, PricedTokenAmount, TokenAmount, KpiToken, Token, Pair } from '@swapr/sdk'
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
@@ -155,7 +155,7 @@ const CarrotSectionContainer = styled(AutoColumn)`
 `
 
 interface InformationProps {
-  targetedPair?: any
+  targetedPairOrToken?: Token | Pair
   stakingCap?: TokenAmount
   rewards?: PricedTokenAmount[]
   remainingRewards?: PricedTokenAmount[]
@@ -165,12 +165,11 @@ interface InformationProps {
   apy?: Percent
   staked?: PricedTokenAmount
   containsKpiToken?: boolean
-  isSingleSidedStake?: boolean
   showUSDValue: boolean
 }
 
 function Information({
-  targetedPair,
+  targetedPairOrToken: targetedPair,
   stakingCap,
   rewards,
   remainingRewards,
@@ -180,7 +179,6 @@ function Information({
   apy,
   staked,
   containsKpiToken,
-  isSingleSidedStake,
   showUSDValue
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
@@ -209,9 +207,7 @@ function Information({
             data={
               <Flex alignItems="center">
                 <Box mr="8px">
-                  {isSingleSidedStake ? (
-                    <CurrencyLogo loading={!targetedPair} currency={targetedPair} />
-                  ) : (
+                  {targetedPair instanceof Pair && (
                     <DoubleCurrencyLogo
                       loading={!targetedPair}
                       size={26}
@@ -224,10 +220,12 @@ function Information({
                   <Text fontSize="18px" fontWeight="600" lineHeight="20px">
                     {!targetedPair ? (
                       <Skeleton width="60px" height="18px" />
-                    ) : isSingleSidedStake ? (
+                    ) : targetedPair instanceof Token ? (
                       targetedPair.symbol
-                    ) : (
+                    ) : targetedPair instanceof Pair ? (
                       `${targetedPair.token0.symbol}/${targetedPair.token1.symbol}`
+                    ) : (
+                      ''
                     )}
                   </Text>
                 </Box>

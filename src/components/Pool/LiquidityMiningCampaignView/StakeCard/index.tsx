@@ -1,4 +1,10 @@
-import { JSBI, parseBigintIsh, TokenAmount } from '@swapr/sdk'
+import {
+  JSBI,
+  parseBigintIsh,
+  TokenAmount,
+  SingleSidedLiquidityMiningCampaign,
+  LiquidityMiningCampaign
+} from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
@@ -101,17 +107,17 @@ export const StyledButtonDark = styled(ButtonDark)`
 `
 
 interface FullPositionCardProps {
-  campaign?: any
+  campaign?: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign
   showUSDValue: boolean
   isSingleSided: boolean
-  targetedPairOrSingleToken: any
+  targetedPairOrToken: any
 }
 
 export default function StakeCard({
   campaign,
   showUSDValue,
   isSingleSided,
-  targetedPairOrSingleToken
+  targetedPairOrToken: targetedPairOrSingleToken
 }: FullPositionCardProps) {
   const { account } = useActiveWeb3React()
   const stakableTokenBalance = useTokenBalance(
@@ -128,7 +134,7 @@ export default function StakeCard({
   } = useLiquidityMiningCampaignPosition(campaign, account || undefined)
   const addTransaction = useTransactionAdder()
   const { loading: loadingLpTokensUnderlyingAssets, underlyingAssets } = useLpTokensUnderlyingAssets(
-    campaign?.targetedPair,
+    campaign instanceof LiquidityMiningCampaign ? campaign?.targetedPair : undefined,
     stakedTokenAmount || undefined
   )
 
@@ -486,7 +492,6 @@ export default function StakeCard({
       )}
       <ConfirmWithdrawalModal
         isOpen={showWithdrawalConfirmationModal}
-        isSingleSide={isSingleSided}
         withdrawablTokenBalance={stakedTokenAmount || undefined}
         onDismiss={handleDismiss}
         stakablePair={targetedPairOrSingleToken}
@@ -509,7 +514,7 @@ export default function StakeCard({
       <ConfirmExitModal
         isOpen={showExitConfirmationModal}
         onDismiss={handleDismiss}
-        stakablePair={campaign?.targetedPair}
+        stakablePair={targetedPairOrSingleToken}
         claimableRewards={claimableRewardAmounts}
         stakedTokenBalance={stakedTokenAmount || undefined}
         attemptingTxn={attemptingTransaction}

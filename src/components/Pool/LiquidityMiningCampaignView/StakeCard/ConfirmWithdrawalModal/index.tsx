@@ -1,4 +1,4 @@
-import { PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+import { PricedTokenAmount, TokenAmount, Token, Pair } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -8,7 +8,7 @@ import ConfirmStakingModalFooter from '../ModalBase/Footer'
 import ConfirmStakingWithdrawingModalHeader from '../ModalBase/Header'
 
 interface ConfirmWithdrawalModalProps {
-  stakablePair?: any
+  stakablePair?: Token | Pair
   isOpen: boolean
   withdrawablTokenBalance?: PricedTokenAmount
   attemptingTxn: boolean
@@ -16,7 +16,6 @@ interface ConfirmWithdrawalModalProps {
   onConfirm: (amount: TokenAmount) => void
   onDismiss: () => void
   errorMessage: string
-  isSingleSide: boolean
 }
 
 export default function ConfirmWithdrawalModal({
@@ -25,15 +24,17 @@ export default function ConfirmWithdrawalModal({
   attemptingTxn,
   txHash,
   errorMessage,
-  isSingleSide,
   withdrawablTokenBalance,
   onDismiss,
   onConfirm
 }: ConfirmWithdrawalModalProps) {
   const [withdrawableAmount, setWithdrawableAmount] = useState<TokenAmount | null>(null)
-  const transactionModalText = isSingleSide
-    ? `${stakablePair.symbol}`
-    : `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
+  const transactionModalText =
+    stakablePair instanceof Token
+      ? `${stakablePair.symbol}`
+      : stakablePair instanceof Pair
+      ? `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
+      : ''
   const handleWithdrawableAmountChange = useCallback(amount => {
     setWithdrawableAmount(amount)
   }, [])
@@ -48,10 +49,9 @@ export default function ConfirmWithdrawalModal({
         maximumAmount={withdrawablTokenBalance}
         onAmountChange={handleWithdrawableAmountChange}
         stakablePair={stakablePair}
-        isSingleSided={isSingleSide}
       />
     ),
-    [handleWithdrawableAmountChange, withdrawablTokenBalance, isSingleSide, stakablePair]
+    [handleWithdrawableAmountChange, withdrawablTokenBalance, stakablePair]
   )
 
   const content = useCallback(
