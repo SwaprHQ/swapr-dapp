@@ -77,7 +77,7 @@ export default function List({
                           nativeCurrencyUSDPrice
                         )}
                         apy={singleSidedStake.apy}
-                        hasFarming={true}
+                        hasFarming={singleSidedStake.currentlyActive}
                         isSingleSidedStakingCampaign={true}
                       />
                     </UndecoratedLink>

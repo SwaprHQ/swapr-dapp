@@ -18,7 +18,6 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
 import { getLpTokenPrice } from './prices'
-// import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 
 export function getRemainingRewardsUSD(
   campaign: LiquidityMiningCampaign,

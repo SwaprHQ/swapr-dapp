@@ -83,7 +83,6 @@ export function useSingleSidedCampaign(
       nativeCurrency,
       wrapped.stakeToken.derivedNativeCurrency
     )
-    console.log(singleSidedStakeCampaign)
 
     return {
       loading: false,

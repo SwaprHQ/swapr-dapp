@@ -42,7 +42,7 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
           <TabTitle
             key="active"
             loadingAmount={!!(!pair || loadingActive)}
-            itemsAmount={activeWrappedCampaigns.length}
+            itemsAmount={activeWrappedCampaigns.length + active.length}
             badgeTheme="orange"
           >
             Campaigns
@@ -50,7 +50,7 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
           <TabTitle
             key="active"
             loadingAmount={!!(!pair || expiredLoading)}
-            itemsAmount={expiredWrappedCampagins.length}
+            itemsAmount={expiredWrappedCampagins.length + expired.length}
             badgeTheme="red"
           >
             Expired (30 days)

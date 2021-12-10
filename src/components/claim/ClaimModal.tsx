@@ -179,7 +179,7 @@ export default function ClaimModal({
 
               <Flex width="50%" flexDirection="column">
                 <TYPE.white fontWeight={700} fontSize={26}>
-                  {stakedAmount || '0.000'}
+                  {stakedAmount ? parseFloat(stakedAmount).toFixed(3) : '0.000'}
                 </TYPE.white>
                 <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                   STAKED SWPR
