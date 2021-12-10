@@ -11,13 +11,14 @@ import {
   PricedToken,
   PricedTokenAmount,
   TokenAmount,
-  KpiToken
+  KpiToken,
+  SingleSidedLiquidityMiningCampaign
 } from '@swapr/sdk'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
 import { getLpTokenPrice } from './prices'
-import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+// import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 
 export function getRemainingRewardsUSD(
   campaign: LiquidityMiningCampaign,
@@ -147,7 +148,6 @@ export function toSingleSidedStakeCampaign(
     stakedPricedToken,
     parseUnits(campaign.stakedAmount, stakedPricedToken.decimals).toString()
   )
-
   return new SingleSidedLiquidityMiningCampaign(
     campaign.startsAt,
     campaign.endsAt,
@@ -210,6 +210,7 @@ export function toLiquidityMiningCampaign(
     targetedPairLpTokenTotalSupply,
     targetedPairReserveNativeCurrency
   )
+
   const stakedPricedToken = new PricedToken(
     chainId,
     getAddress(targetedPair.liquidityToken.address),
@@ -237,11 +238,8 @@ export function toLiquidityMiningCampaign(
   )
 }
 
-export function getStakedAmountUSD(campaign: LiquidityMiningCampaign, nativeCurrencyUSDPrice: Price): CurrencyAmount {
+export function getStakedAmountUSD(campaign: CurrencyAmount, nativeCurrencyUSDPrice: Price): CurrencyAmount {
   return CurrencyAmount.usd(
-    parseUnits(
-      campaign.staked.nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toFixed(USD.decimals),
-      USD.decimals
-    ).toString()
+    parseUnits(campaign.multiply(nativeCurrencyUSDPrice).toFixed(USD.decimals), USD.decimals).toString()
   )
 }

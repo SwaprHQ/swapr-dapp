@@ -1,4 +1,4 @@
-import { LiquidityMiningCampaign, Pair, Percent } from '@swapr/sdk'
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign, Pair } from '@swapr/sdk'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -12,7 +12,6 @@ import PairCard from '../../../PairsList/Pair'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../../../UndercoratedLink'
-import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 
 const ListLayout = styled.div`
   display: grid;
@@ -67,14 +66,17 @@ export default function List({
                 singleSidedCampaings.map(singleSidedStake => {
                   return (
                     <UndecoratedLink
-                      key={singleSidedStake.stakeToken.id}
+                      key={singleSidedStake.address}
                       to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
                     >
                       <PairCard
                         token0={singleSidedStake.stakeToken}
                         pairOrStakeAddress={singleSidedStake.stakeToken.address}
-                        usdLiquidity={singleSidedStake.staked}
-                        apy={new Percent('0', '100')}
+                        usdLiquidity={getStakedAmountUSD(
+                          singleSidedStake.staked.nativeCurrencyAmount,
+                          nativeCurrencyUSDPrice
+                        )}
+                        apy={singleSidedStake.apy}
                         hasFarming={true}
                         isSingleSidedStakingCampaign={true}
                       />
@@ -94,7 +96,10 @@ export default function List({
                         token0={token0}
                         token1={token1}
                         pairOrStakeAddress={stakablePair?.liquidityToken.address}
-                        usdLiquidity={getStakedAmountUSD(item.campaign, nativeCurrencyUSDPrice)}
+                        usdLiquidity={getStakedAmountUSD(
+                          item.campaign.staked.nativeCurrencyAmount,
+                          nativeCurrencyUSDPrice
+                        )}
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}
                         usdLiquidityText="STAKED"

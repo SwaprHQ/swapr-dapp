@@ -4,14 +4,15 @@ import Pagination from '../../Pagination'
 import LoadingList from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent } from '@swapr/sdk'
+import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import Empty from '../Empty'
 import styled from 'styled-components'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
-import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+import { getStakedAmountUSD } from '../../../utils/liquidityMining'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 
 const ListLayout = styled.div`
   display: grid;
@@ -58,7 +59,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-
+  const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -72,16 +73,19 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
-            {singleSidedStake && (
+            {singleSidedStake && !loadingNativeCurrencyUsdPrice && (
               <UndecoratedLink
-                key={singleSidedStake.stakeToken.id}
+                key={singleSidedStake.address}
                 to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}
                   pairOrStakeAddress={singleSidedStake.stakeToken.address}
-                  usdLiquidity={singleSidedStake.staked}
-                  apy={new Percent('0', '100')}
+                  usdLiquidity={getStakedAmountUSD(
+                    singleSidedStake.staked.nativeCurrencyAmount,
+                    nativeCurrencyUSDPrice
+                  )}
+                  apy={singleSidedStake.apy}
                   hasFarming={true}
                   isSingleSidedStakingCampaign={true}
                 />

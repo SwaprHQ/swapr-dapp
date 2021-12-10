@@ -279,13 +279,13 @@ function Information({
             </Box>
           </Flex>
           <Box>
-            {/* <DataDisplayer
+            <DataDisplayer
               title={!apy ? <Skeleton width="40px" height="11px" /> : containsKpiToken ? 'MAXIMUM APR' : 'APR'}
               data={!apy ? <Skeleton width="80px" height="22px" /> : `${apy.toFixed(2)}%`}
               dataTextSize={22}
               fontWeight={600}
               color="white"
-            /> */}
+            />
           </Box>
         </InfoRow>
         <MaxPollSizeSection mb="24px">

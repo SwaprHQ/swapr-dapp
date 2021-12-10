@@ -1,13 +1,13 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { SWPR, Token } from '@swapr/sdk'
-// import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+import { SWPR, Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import { useMemo } from 'react'
-import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
+
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
 

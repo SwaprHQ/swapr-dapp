@@ -71,7 +71,7 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
       history.push('/pools')
     }
   }, [chainId, history, previousChainId, switchingToCorrectChain])
-
+  console.log(campaign.rewards)
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
@@ -98,7 +98,7 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
             locked={campaign?.locked}
             startsAt={campaign ? parseInt(campaign.startsAt.toString()) : undefined}
             endsAt={campaign ? parseInt(campaign.endsAt.toString()) : undefined}
-            apy={campaign}
+            apy={campaign.apy}
             staked={campaign?.staked}
             containsKpiToken={containsKpiToken}
             showUSDValue={showUSDValue}

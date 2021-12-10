@@ -1,10 +1,9 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { Token } from '@swapr/sdk'
-// import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+import { Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import { useMemo } from 'react'
-import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
+
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 
@@ -84,6 +83,7 @@ export function useSingleSidedCampaign(
       nativeCurrency,
       wrapped.stakeToken.derivedNativeCurrency
     )
+    console.log(singleSidedStakeCampaign)
 
     return {
       loading: false,
