@@ -2,10 +2,8 @@ import { gql, useQuery } from '@apollo/client'
 
 import { DateTime, Duration } from 'luxon'
 import { Token } from '@swapr/sdk'
-// import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 
 import { useMemo } from 'react'
-//import { SingleSidedLiquidityMiningCampaign } from 'violet-swapr'
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'

@@ -26,6 +26,7 @@ import { ConvertFlow } from './ConvertFlow'
 import useDebounce from '../../hooks/useDebounce'
 import { AddTokenButton } from '../AddTokenButton/AddTokenButton'
 import { Flex } from 'rebass'
+import { useHistory } from 'react-router'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -77,15 +78,17 @@ export default function ClaimModal({
   onDismiss,
   oldSwprBalance,
   newSwprBalance,
-  stakedAmount
+  stakedAmount,
+  singleSidedCampaignLink
 }: {
   onDismiss: () => void
   oldSwprBalance?: TokenAmount
   newSwprBalance?: TokenAmount
-  stakedAmount?: string
+  stakedAmount?: string | null
+  singleSidedCampaignLink?: string
 }) {
   const { account, chainId, connector } = useActiveWeb3React()
-
+  const { push } = useHistory()
   const [attempting, setAttempting] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
   const [hash, setHash] = useState<string | undefined>()
@@ -153,6 +156,15 @@ export default function ClaimModal({
     toggleWalletConnectionModal()
   }, [closeModals, toggleWalletConnectionModal])
 
+  const handleStakeUnstakeClick = () => {
+    if (singleSidedCampaignLink) {
+      push(singleSidedCampaignLink)
+      wrappedOnDismiss()
+    } else {
+      return
+    }
+  }
+
   const content = () => {
     if (error) {
       return <TransactionErrorContent onDismiss={wrappedOnDismiss} message="The operation wasn't successful" />
@@ -174,7 +186,7 @@ export default function ClaimModal({
                 <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                   SWPR
                 </TYPE.body>
-                <ButtonPurple>STAKE</ButtonPurple>
+                <ButtonPurple onClick={handleStakeUnstakeClick}>STAKE</ButtonPurple>
               </Flex>
 
               <Flex width="50%" flexDirection="column">
@@ -184,7 +196,7 @@ export default function ClaimModal({
                 <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                   STAKED SWPR
                 </TYPE.body>
-                <ButtonDark1>UNSTAKE</ButtonDark1>
+                <ButtonDark1 onClick={handleStakeUnstakeClick}>UNSTAKE</ButtonDark1>
               </Flex>
             </RowBetween>
           </UpperAutoColumn>

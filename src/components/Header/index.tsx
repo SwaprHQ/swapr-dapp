@@ -229,6 +229,9 @@ function Header() {
         oldSwprBalance={oldSwprBalance}
         newSwprBalance={newSwprBalance}
         stakedAmount={stakedAmount}
+        singleSidedCampaignLink={
+          data && !loading ? `/pools/${data.stakeToken.address}/${data.address}/singleSidedStaking` : undefined
+        }
       />
       <HeaderRow isDark={isDark}>
         <Title href=".">
