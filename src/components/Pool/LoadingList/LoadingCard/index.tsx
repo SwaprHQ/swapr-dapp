@@ -35,8 +35,22 @@ const ResponsiveLogoAndTextWrapper = styled(Flex)`
   `}
 `
 const BottomFlex = styled(Flex)`
+  width: 70%;
+
   ${props => props.theme.mediaWidth.upToExtraSmall`
     align-self:flex-start;
+    width:auto;
+    
+  `};
+`
+const ResponsiveText = styled(Flex)`
+  justify-content: flex-start;
+  flex-direction: column;
+
+  ${props => props.theme.mediaWidth.upToExtraSmall`
+   flex-direction:row;
+   align-self: flex-start;
+   margin-left:0 !important;
   `};
 `
 
@@ -56,40 +70,41 @@ export default function LoadingCard() {
             </Box>
           </Flex>
 
-          <Flex height="100%" justifyContent="space-around" ml="13px" flexDirection="column">
-            <Flex alignItems="center">
-              <Box style={{ marginRight: '6px' }}>
-                <Skeleton height="20px" width="90px" />
-              </Box>
-              <MobileHidden>
-                <Box>
-                  <Skeleton height="15px" width="68px" />
-                </Box>
-              </MobileHidden>
-            </Flex>
-            <Flex alignItems="center">
-              <Box style={{ marginRight: '6px' }}>
-                <Skeleton height="14px" width="137px" />
-              </Box>
-              <MobileHidden>
-                <Box style={{ marginBottom: '-5px' }}>
-                  <Skeleton height="9px" width="44px" />
-                </Box>
-              </MobileHidden>
-            </Flex>
-          </Flex>
+          <ResponsiveText ml="25px" height="100%">
+            <Skeleton height="20px" width="35px" />
+
+            <Skeleton height="20px" width="48px" />
+          </ResponsiveText>
+          <DesktopHidden>
+            <Skeleton height="14px" width="132px" />
+          </DesktopHidden>
         </ResponsiveLogoAndTextWrapper>
-        <BottomFlex flexDirection="column" justifyContent="flex-end">
-          <Box>
-            <DesktopHidden>
-              <Box style={{ marginRight: '6px' }}>
-                <Skeleton height="14px" width="137px" />
-              </Box>
-            </DesktopHidden>
-            <MobileHidden>
-              <Skeleton height="32px" width="154px" />
-            </MobileHidden>
-          </Box>
+        <BottomFlex flexDirection="column">
+          <DesktopHidden>
+            <Skeleton height="14px" width="137px" />
+          </DesktopHidden>
+          <MobileHidden style={{ justifyContent: 'space-around' }}>
+            <Flex flexDirection="column">
+              <Skeleton height="12px" width="73px" />
+              <Flex alignItems="center">
+                <Skeleton height="15px" width="66px" />
+                <Skeleton style={{ marginLeft: '4px' }} height="15px" width="65px" />
+              </Flex>
+            </Flex>
+
+            <Flex flexDirection="column">
+              <Skeleton height="12px" width="23px" />
+              <Skeleton height="17px" width="91px" />
+            </Flex>
+            <Flex flexDirection="column">
+              <Skeleton height="12px" width="79px" />
+              <Skeleton height="17px" width="112px" />
+            </Flex>
+            <Flex flexDirection="column">
+              <Skeleton height="12px" width="23px" />
+              <Skeleton height="22px" width="48px" />
+            </Flex>
+          </MobileHidden>
         </BottomFlex>
       </Flex>
     </SizedCard>
