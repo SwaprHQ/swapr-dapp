@@ -12,14 +12,18 @@ import PairCard from '../../../PairsList/Pair'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../../../UndercoratedLink'
+import CampaignCard from '../../../PairsList/CampaignCard'
 
 const ListLayout = styled.div`
   display: grid;
-  grid-gap: 10px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  grid-gap: 12px 10px;
+  grid-template-columns: 244px 244px 244px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr 1fr;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     grid-template-columns: auto;
-    grid-gap: 10px;
+    grid-gap: 8px;
   `};
 `
 
@@ -92,7 +96,7 @@ export default function List({
                       key={item.campaign.address}
                       to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
                     >
-                      <PairCard
+                      <CampaignCard
                         token0={token0}
                         token1={token1}
                         pairOrStakeAddress={stakablePair?.liquidityToken.address}
@@ -103,6 +107,7 @@ export default function List({
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}
                         usdLiquidityText="STAKED"
+                        campaign={item.campaign}
                       />
                     </UndecoratedLink>
                   )
