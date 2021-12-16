@@ -219,7 +219,7 @@ export default function Pair({
                   {dayLiquidity && dayLiquidity}
                 </ValueText>
               </ItemsWrapper>
-              <ItemsWrapper width={'43px'}>
+              <ItemsWrapper width={'60px'}>
                 <TitleText>APY</TitleText>
 
                 <Text fontWeight="700" fontSize="18px" fontFamily="Fira Code">
