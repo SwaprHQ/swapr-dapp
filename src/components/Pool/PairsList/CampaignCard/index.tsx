@@ -43,17 +43,6 @@ const EllipsizedText = styled(TYPE.body)`
   text-overflow: ellipsis;
 `
 
-// const ValueText = styled.div`
-//   color: ${props => props.theme.purple2};
-//   font-size: 14px;
-//   font-weight: 500;
-//   line-height: 16.8px;
-//   font-family: 'Fira Code';
-// `
-// const ItemsWrapper = styled(Flex)`
-//   justify-content: space-evenly;
-//   flex-direction: column;
-// `
 const KpiBadge = styled.div`
   height: 16px;
   border: solid 1.5px #f2994a;
@@ -73,11 +62,11 @@ const StyledCarrotLogo = styled(CarrotLogo)`
     fill: #f2994a;
   }
 `
-const FarmingBadge = styled.div<{ badgeColor: string }>`
+const BadeText = styled.div<{ color: string }>`
   height: 16px;
   border: solid 1.75px;
-  border-color: ${props => props.badgeColor};
-  color: ${props => props.badgeColor};
+  border-color: ${props => props.color};
+  color: ${props => props.color};
   border-radius: 4px;
   width: fit-content;
   padding: 0 4px;
@@ -166,7 +155,7 @@ export default function CampaignCard({
   ...rest
 }: PairProps) {
   const [status, setStatus] = useState<StatusKeys | undefined>(undefined)
-
+  const isLimitedCampaign = !campaign.stakingCap.equalTo('0')
   const percentage = useCallback(() => {
     return campaign.staked
       .multiply('100')
@@ -228,7 +217,7 @@ export default function CampaignCard({
           </Flex>
           {status !== undefined && (
             <Flex>
-              <FarmingBadge badgeColor={STATUS[status].color}>{STATUS[status].key}</FarmingBadge>
+              <BadeText color={STATUS[status].color}>{STATUS[status].key}</BadeText>
             </Flex>
           )}
 
@@ -243,13 +232,20 @@ export default function CampaignCard({
         </RightSection>
       </Flex>
       <Flex flexDirection="column" marginTop="6px">
-        <Flex>
-          {campaign.locked && <LockSvg />}
-          <TYPE.body marginLeft={campaign.locked ? '4px' : '0'} fontSize="10px" fontWeight="600">
-            ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-          </TYPE.body>
+        <Flex justifyContent="space-between">
+          <Flex>
+            {campaign.locked && <LockSvg />}
+            <TYPE.body alignSelf={'center'} marginLeft={campaign.locked ? '4px' : '0'} fontSize="10px" fontWeight="600">
+              ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
+            </TYPE.body>
+          </Flex>
+          {!isLimitedCampaign && !campaign.locked && (
+            <Flex>
+              <BadeText color="#C7C0FF">STAKING</BadeText>
+            </Flex>
+          )}
         </Flex>
-        {!campaign.stakingCap.equalTo('0') && (
+        {isLimitedCampaign && (
           <Flex>
             <PercentageBar>
               <RelativePercentage>{percentage()}%</RelativePercentage>
