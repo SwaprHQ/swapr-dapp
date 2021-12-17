@@ -59,6 +59,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
+
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
@@ -73,7 +74,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
-            {singleSidedStake && !loadingNativeCurrencyUsdPrice && (
+            {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <UndecoratedLink
                 key={singleSidedStake.address}
                 to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
