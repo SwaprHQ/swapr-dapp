@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import { CurrencyAmount, LiquidityMiningCampaign, Percent, Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import { TYPE } from '../../../../theme'
@@ -9,6 +9,7 @@ import styled from 'styled-components'
 //import { ReactComponent as LockSvg } from '../../../../assets/lock.svg'
 import { formatCurrencyAmount } from '../../../../utils'
 import { ReactComponent as ClockSvg } from '../../../../assets/svg/clock.svg'
+import { ReactComponent as LockSvg } from '../../../../assets/svg/lock.svg'
 import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
@@ -19,7 +20,7 @@ import { MouseoverTooltip } from '../../../Tooltip'
 import Countdown from '../../../Countdown'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
-  width: 244px;
+  width: 260px;
 
   padding: 16px;
   border-radius: 6px;
@@ -79,12 +80,33 @@ const FarmingBadge = styled.div<{ badgeColor: string }>`
   color: ${props => props.badgeColor};
   border-radius: 4px;
   width: fit-content;
-  /* padding: 1px 2px; */
-
   padding: 0 4px;
   font-size: 9px;
   font-weight: bold;
   font-family: 'Montserrat';
+`
+
+const PercentageBar = styled.div`
+  width: 100%;
+  height: 3px;
+  position: relative;
+  background: ${props => props.theme.bg3};
+  border-radius: 6px;
+  margin-top: 7px;
+`
+
+const Loaded = styled(TYPE.body)`
+  background: ${props => props.theme.red1};
+  border-radius: 6px;
+  height: 100%;
+`
+const RelativePercentage = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 9px;
+  font-weight: 600;
+  font-size: 10px;
+  color: ${props => props.theme.red1};
 `
 const RightSection = styled(Flex)`
   gap: 8px;
@@ -96,6 +118,7 @@ enum StatusKeys {
   UPCOMING,
   ENDED
 }
+
 const STATUS = {
   [StatusKeys.ACTIVE]: {
     key: 'ACTIVE',
@@ -142,13 +165,18 @@ export default function CampaignCard({
   campaign,
   ...rest
 }: PairProps) {
-  console.log(STATUS)
   const [status, setStatus] = useState<StatusKeys | undefined>(undefined)
-  console.log(status)
-  //   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
+
+  const percentage = useCallback(() => {
+    return campaign.staked
+      .multiply('100')
+      .divide(campaign.stakingCap)
+      .toFixed(0)
+  }, [campaign])
+
   useEffect(() => {
     if (campaign.ended) setStatus(StatusKeys.ENDED)
-    else if (Date.now() < parseInt(campaign.startsAt.toString())) setStatus(StatusKeys.UPCOMING)
+    else if (Date.now() < parseInt(campaign.startsAt.toString()) * 1000) setStatus(StatusKeys.UPCOMING)
     else setStatus(StatusKeys.ACTIVE)
   }, [campaign.ended, campaign.startsAt])
 
@@ -157,7 +185,7 @@ export default function CampaignCard({
       <Flex height="100%" justifyContent="space-between">
         <Flex flexDirection="column">
           {isSingleSidedStakingCampaign ? (
-            <CurrencyLogo size={'45px'} marginRight={14} currency={token0} />
+            <CurrencyLogo size={'30px'} marginRight={14} currency={token0} />
           ) : (
             <DoubleCurrencyLogo spaceBetween={-5} currency0={token0} currency1={token1} size={30} />
           )}
@@ -170,7 +198,7 @@ export default function CampaignCard({
             fontFamily="Montserrat"
           >
             {unwrappedToken(token0)?.symbol}
-            {`/${!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}`}
+            {!isSingleSidedStakingCampaign && `/${unwrappedToken(token1)?.symbol}`}
           </EllipsizedText>
           <EllipsizedText
             fontFamily="Fira Mono"
@@ -183,7 +211,7 @@ export default function CampaignCard({
           </EllipsizedText>
         </Flex>
         <RightSection>
-          <Flex alignItems="center">
+          <Flex width="max-content" alignItems="center">
             <ClockSvg width={'10px'} height={'10px'} />
             <TYPE.body marginLeft="4px" fontSize="10px" fontFamily="Fira Code" fontWeight="500">
               <Countdown
@@ -214,10 +242,21 @@ export default function CampaignCard({
           )}
         </RightSection>
       </Flex>
-      <Flex marginTop="6px">
-        <TYPE.subHeader fontSize="9px" color="text4" letterSpacing="2%" fontWeight="600">
-          ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-        </TYPE.subHeader>
+      <Flex flexDirection="column" marginTop="6px">
+        <Flex>
+          {campaign.locked && <LockSvg />}
+          <TYPE.body marginLeft={campaign.locked ? '4px' : '0'} fontSize="10px" fontWeight="600">
+            ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
+          </TYPE.body>
+        </Flex>
+        {!campaign.stakingCap.equalTo('0') && (
+          <Flex>
+            <PercentageBar>
+              <RelativePercentage>{percentage()}%</RelativePercentage>
+              <Loaded width={percentage() + '%'} />
+            </PercentageBar>
+          </Flex>
+        )}
       </Flex>
     </SizedCard>
   )

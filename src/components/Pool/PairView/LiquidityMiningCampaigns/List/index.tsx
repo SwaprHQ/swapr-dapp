@@ -8,7 +8,7 @@ import LoadingList from '../../../LoadingList'
 import { usePage } from '../../../../../hooks/usePage'
 import { useWindowSize } from '../../../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../../../theme'
-import PairCard from '../../../PairsList/Pair'
+//import PairCard from '../../../PairsList/Pair'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../../../UndercoratedLink'
@@ -17,7 +17,7 @@ import CampaignCard from '../../../PairsList/CampaignCard'
 const ListLayout = styled.div`
   display: grid;
   grid-gap: 12px 10px;
-  grid-template-columns: 244px 244px 244px;
+  grid-template-columns: 260px 260px 260px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: 1fr 1fr;
   `};
@@ -73,7 +73,7 @@ export default function List({
                       key={singleSidedStake.address}
                       to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
                     >
-                      <PairCard
+                      <CampaignCard
                         token0={singleSidedStake.stakeToken}
                         pairOrStakeAddress={singleSidedStake.stakeToken.address}
                         usdLiquidity={getStakedAmountUSD(
@@ -83,6 +83,8 @@ export default function List({
                         apy={singleSidedStake.apy}
                         hasFarming={singleSidedStake.currentlyActive}
                         isSingleSidedStakingCampaign={true}
+                        usdLiquidityText={singleSidedStake.locked ? 'LOCKED' : 'STAKED'}
+                        campaign={singleSidedStake}
                       />
                     </UndecoratedLink>
                   )
@@ -106,7 +108,7 @@ export default function List({
                         )}
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}
-                        usdLiquidityText="STAKED"
+                        usdLiquidityText={item.campaign.locked ? 'LOCKED' : 'STAKED'}
                         campaign={item.campaign}
                       />
                     </UndecoratedLink>
