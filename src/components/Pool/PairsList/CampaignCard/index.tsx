@@ -5,19 +5,19 @@ import { TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 
 import styled from 'styled-components'
-//import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
-//import { ReactComponent as LockSvg } from '../../../../assets/lock.svg'
 import { formatCurrencyAmount } from '../../../../utils'
 import { ReactComponent as ClockSvg } from '../../../../assets/svg/clock.svg'
 import { ReactComponent as LockSvg } from '../../../../assets/svg/lock.svg'
-import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
+
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 import { Card, Flex } from 'rebass'
 
 import CurrencyLogo from '../../../CurrencyLogo'
-import { MouseoverTooltip } from '../../../Tooltip'
+
 import Countdown from '../../../Countdown'
+import CarrotBadge from '../../../Badge/Carrot'
+import SimpleTextBadge from '../../../Badge/SimpleText'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
   width: 260px;
@@ -41,38 +41,6 @@ const SizedCard = styled(Card)<{ cardColor: string }>`
 const EllipsizedText = styled(TYPE.body)`
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-const KpiBadge = styled.div`
-  height: 16px;
-  border: solid 1.5px #f2994a;
-  color: #f2994a;
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 9px;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  padding: 0 4px;
-`
-const StyledCarrotLogo = styled(CarrotLogo)`
-  margin-right: 4px;
-  > path {
-    fill: #f2994a;
-  }
-`
-const BadeText = styled.div<{ color: string }>`
-  height: 16px;
-  border: solid 1.75px;
-  border-color: ${props => props.color};
-  color: ${props => props.color};
-  border-radius: 4px;
-  width: fit-content;
-  padding: 0 4px;
-  font-size: 9px;
-  font-weight: bold;
-  font-family: 'Montserrat';
 `
 
 const PercentageBar = styled.div`
@@ -217,18 +185,11 @@ export default function CampaignCard({
           </Flex>
           {status !== undefined && (
             <Flex>
-              <BadeText color={STATUS[status].color}>{STATUS[status].key}</BadeText>
+              <SimpleTextBadge text={STATUS[status].key} color={STATUS[status].color} />
             </Flex>
           )}
 
-          {containsKpiToken && (
-            <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-              <KpiBadge>
-                <StyledCarrotLogo />
-                CARROT
-              </KpiBadge>
-            </MouseoverTooltip>
-          )}
+          {containsKpiToken && <CarrotBadge />}
         </RightSection>
       </Flex>
       <Flex flexDirection="column" marginTop="6px">
@@ -241,7 +202,7 @@ export default function CampaignCard({
           </Flex>
           {!isLimitedCampaign && !campaign.locked && (
             <Flex>
-              <BadeText color="#C7C0FF">STAKING</BadeText>
+              <SimpleTextBadge text={'STAKING'} color="#C7C0FF" />
             </Flex>
           )}
         </Flex>

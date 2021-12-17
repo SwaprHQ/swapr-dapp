@@ -9,13 +9,13 @@ import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
 
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import { ReactComponent as CarrotLogo } from '../../../../assets/svg/carrot.svg'
-import { MouseoverTooltip } from '../../../Tooltip'
+
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import ApyBadge from '../../ApyBadge'
 import CurrencyLogo from '../../../CurrencyLogo'
+import CarrotBadge from '../../../Badge/Carrot'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN
@@ -50,28 +50,11 @@ const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
       fill: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.green2)};
     }
   }
-`
-
-const KpiBadge = styled.div<{ isGreyed?: boolean }>`
-  height: 16px;
-  border: ${props => !props.isGreyed && `solid 1.5px ${props.theme.orange1}`};
-  color: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.orange1)};
-  svg {
-    > path {
-      fill: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.orange1)};
-    }
-  }
-  background-color: ${props => props.isGreyed && props.theme.bg3};
-  opacity: ${props => props.isGreyed && '0.5'};
-  gap: 4px;
-  border-radius: 4px;
-  font-size: 9px;
   font-weight: 700;
+  margin-left: 3px;
+  font-size: 9px;
   line-height: 9px;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  padding: 0 4px;
+  letter-spacing: 0.02em;
 `
 
 const BadgeText = styled.div`
@@ -198,12 +181,7 @@ export default function Pair({
                 <FarmingLogo />
                 <BadgeText>FARMING</BadgeText>
               </FarmingBadge>
-              <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-                <KpiBadge isGreyed={!containsKpiToken}>
-                  <CarrotLogo />
-                  CARROT
-                </KpiBadge>
-              </MouseoverTooltip>
+              <CarrotBadge isGreyed={!containsKpiToken} />
             </Flex>
           </Flex>
           {!isMobile && (
