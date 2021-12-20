@@ -23,9 +23,9 @@ const SizedCard = styled(Card)<{ cardColor: string }>`
   width: 260px;
 
   padding: 16px;
-  border-radius: 6px;
+  border-radius: 12px;
 
-  background: ${props => props.cardColor};
+  background-image: ${props => props.cardColor};
   border: solid 1px #44416380;
   background-blend-mode: overlay, normal;
 
@@ -100,11 +100,8 @@ interface PairProps {
   apy: Percent
   usdLiquidity: CurrencyAmount
   usdLiquidityText?: string
-  pairOrStakeAddress?: string
   containsKpiToken?: boolean
-  hasFarming?: boolean
   isSingleSidedStakingCampaign?: boolean
-  dayLiquidity?: string
   campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
 }
 
@@ -115,9 +112,6 @@ export default function CampaignCard({
   apy,
   containsKpiToken,
   usdLiquidityText,
-  pairOrStakeAddress,
-  hasFarming,
-  dayLiquidity,
   isSingleSidedStakingCampaign,
   campaign,
   ...rest

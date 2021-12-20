@@ -4,86 +4,109 @@ import Skeleton from 'react-loading-skeleton'
 import { DarkCard } from '../../../Card'
 import { Box, Flex } from 'rebass'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
+import { useWindowSize } from '../../../../hooks/useWindowSize'
+import { MEDIA_WIDTHS } from '../../../../theme'
 
-const SizedCard = styled(DarkCard)`
+const SizedCard = styled(DarkCard)<{ isMobile: boolean }>`
   width: 100%;
   height: 80px;
   padding: 17px 20px;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+  ${props =>
+    props.isMobile &&
+    `
    height:128px;
        overflow: hidden;
   `};
 `
-const MobileHidden = styled(Box)`
+const MobileHidden = styled(Box)<{ isMobile: boolean }>`
   display: flex;
   align-items: center;
   min-width: auto !important;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+  ${props =>
+    props.isMobile &&
+    `
     display: none;
   `};
 `
-const DesktopHidden = styled(Box)`
+const DesktopHidden = styled(Box)<{ isMobile: boolean }>`
   display: none;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+  ${props =>
+    props.isMobile &&
+    `
     display: block;
   `}
 `
-const ResponsiveLogoAndTextWrapper = styled(Flex)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+const ResponsiveLogoAndTextWrapper = styled(Flex)<{ isMobile: boolean }>`
+  ${props =>
+    props.isMobile &&
+    `
    flex-direction:column;
    height:auto;
   `}
 `
-const BottomFlex = styled(Flex)`
+const BottomFlex = styled(Flex)<{ isMobile: boolean }>`
   width: 70%;
 
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+  ${props =>
+    props.isMobile &&
+    `
     align-self:flex-start;
     width:auto;
     
   `};
 `
-const ResponsiveText = styled(Flex)`
+const ResponsiveText = styled(Flex)<{ isMobile: boolean }>`
   justify-content: flex-start;
   flex-direction: column;
 
-  ${props => props.theme.mediaWidth.upToExtraSmall`
+  ${props =>
+    props.isMobile &&
+    `
    flex-direction:row;
    align-self: flex-start;
    margin-left:0 !important;
   `};
 `
 
-export default function LoadingCard() {
+export default function LoadingCard({ isMobile }: { isMobile: boolean }) {
+  const { width } = useWindowSize()
+
+  const mobileLogic = isMobile ? true : width ? width < MEDIA_WIDTHS.upToExtraSmall : false
+  console.log('here', mobileLogic)
   return (
-    <SizedCard selectable>
+    <SizedCard isMobile={mobileLogic} selectable>
       <Flex alignItems="center" flexDirection="row" justifyContent="space-between" height="100%">
-        <ResponsiveLogoAndTextWrapper height="100%" alignItems="center" justifyContent="flex-start">
+        <ResponsiveLogoAndTextWrapper
+          isMobile={mobileLogic}
+          height="100%"
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Flex>
             <Box>
-              <DesktopHidden>
+              <DesktopHidden isMobile={mobileLogic}>
                 <DoubleCurrencyLogo spaceBetween={-12} loading marginLeft={-101} top={-27} size={64} />
               </DesktopHidden>
-              <MobileHidden>
+              <MobileHidden isMobile={mobileLogic}>
                 <DoubleCurrencyLogo spaceBetween={-12} loading size={45} />
               </MobileHidden>
             </Box>
           </Flex>
 
-          <ResponsiveText ml="25px" height="100%">
+          <ResponsiveText isMobile={mobileLogic} ml="25px" height="100%">
             <Skeleton height="20px" width="35px" />
 
             <Skeleton height="20px" width="48px" />
           </ResponsiveText>
-          <DesktopHidden>
+          <DesktopHidden isMobile={mobileLogic}>
             <Skeleton height="14px" width="132px" />
           </DesktopHidden>
         </ResponsiveLogoAndTextWrapper>
-        <BottomFlex flexDirection="column">
-          <DesktopHidden>
+        <BottomFlex isMobile={mobileLogic} flexDirection="column">
+          <DesktopHidden isMobile={mobileLogic}>
             <Skeleton height="14px" width="137px" />
           </DesktopHidden>
-          <MobileHidden style={{ justifyContent: 'space-around' }}>
+          <MobileHidden isMobile={mobileLogic} style={{ justifyContent: 'space-around' }}>
             <Flex flexDirection="column">
               <Skeleton height="12px" width="73px" />
               <Flex alignItems="center">

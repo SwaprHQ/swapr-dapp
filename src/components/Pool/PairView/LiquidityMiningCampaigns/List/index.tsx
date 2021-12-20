@@ -62,7 +62,7 @@ export default function List({
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingList itemsAmount={responsiveItemsPerPage} />
+            <LoadingList isMobile={true} itemsAmount={responsiveItemsPerPage} />
           ) : itemsPage.length > 0 || (singleSidedCampaings && singleSidedCampaings.length > 0) ? (
             <ListLayout>
               {singleSidedCampaings &&
@@ -75,13 +75,11 @@ export default function List({
                     >
                       <CampaignCard
                         token0={singleSidedStake.stakeToken}
-                        pairOrStakeAddress={singleSidedStake.stakeToken.address}
                         usdLiquidity={getStakedAmountUSD(
                           singleSidedStake.staked.nativeCurrencyAmount,
                           nativeCurrencyUSDPrice
                         )}
                         apy={singleSidedStake.apy}
-                        hasFarming={singleSidedStake.currentlyActive}
                         isSingleSidedStakingCampaign={true}
                         usdLiquidityText={singleSidedStake.locked ? 'LOCKED' : 'STAKED'}
                         campaign={singleSidedStake}
@@ -101,7 +99,6 @@ export default function List({
                       <CampaignCard
                         token0={token0}
                         token1={token1}
-                        pairOrStakeAddress={stakablePair?.liquidityToken.address}
                         usdLiquidity={getStakedAmountUSD(
                           item.campaign.staked.nativeCurrencyAmount,
                           nativeCurrencyUSDPrice
