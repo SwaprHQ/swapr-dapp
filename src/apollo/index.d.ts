@@ -21,3 +21,27 @@ export interface SubgraphLiquidityMiningCampaign {
   locked: boolean
   stakingCap: string
 }
+
+export interface SubgraphSingleSidedStakingCampaign {
+  id: string
+  owner: string
+  startsAt: string
+  endsAt: string
+  duration: string
+  stakingCap: string
+  locked: boolean
+  stakeToken: {
+    id: string
+    symbol: string
+    name: string
+    decimals: string
+    totalSupply: string
+    derivedNativeCurrency: string
+    tokenDayData: {
+      dailyVolumeUSD: string
+    }
+  }
+  rewards: SubgraphLiquidityMiningCampaignReward[]
+  stakedAmount: string
+  singleSidedStakingPositions: { id: string; stakedAmount: string }[]
+}

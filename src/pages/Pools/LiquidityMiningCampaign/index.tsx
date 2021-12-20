@@ -19,7 +19,8 @@ import Skeleton from 'react-loading-skeleton'
 import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'
 import { useActiveWeb3React } from '../../../hooks'
 import { useTokenBalance } from '../../../state/wallet/hooks'
-
+import CurrencyLogo from '../../../components/CurrencyLogo'
+import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -41,20 +42,28 @@ const ButtonRow = styled(RowFixed)`
 
 export default function LiquidityMiningCampaign({
   match: {
-    params: { currencyIdA, currencyIdB, liquidityMiningCampaignId }
-  }
+    params: { liquidityMiningCampaignId, currencyIdA, currencyIdB }
+  },
+  location
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; liquidityMiningCampaignId: string }>) {
   const { account } = useActiveWeb3React()
+
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
+  const isSingleSidedCampaign = location.pathname.includes('/singleSidedStaking')
+
+  const { singleSidedStakingCampaign, loading: SingleSidedCampaignLoader } = useSingleSidedCampaign(
+    liquidityMiningCampaignId
+  )
+
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const pairOrUndefined = useMemo(() => wrappedPair[1] || undefined, [wrappedPair])
-  const { campaign, containsKpiToken } = useLiquidityMiningCampaign(pairOrUndefined, liquidityMiningCampaignId)
+  const { campaign, containsKpiToken, loading } = useLiquidityMiningCampaign(pairOrUndefined, liquidityMiningCampaignId)
+
   const lpTokenBalance = useTokenBalance(account || undefined, wrappedPair[1]?.liquidityToken)
 
   if (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
-
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
   return (
@@ -77,16 +86,26 @@ export default function LiquidityMiningCampaign({
                 </TYPE.mediumHeader>
               </Box>
               <Box mr="4px">
-                <DoubleCurrencyLogo
-                  loading={!token0 || !token1}
-                  currency0={token0 || undefined}
-                  currency1={token1 || undefined}
-                  size={20}
-                />
+                {isSingleSidedCampaign ? (
+                  <CurrencyLogo currency={token0 || undefined} />
+                ) : (
+                  <DoubleCurrencyLogo
+                    loading={!token0 || !token1}
+                    currency0={token0 || undefined}
+                    currency1={token1 || undefined}
+                    size={20}
+                  />
+                )}
               </Box>
               <Box>
                 <TYPE.small color="text4" fontWeight="600" fontSize="16px" lineHeight="20px">
-                  {!token0 || !token1 ? <Skeleton width="60px" /> : `${token0.symbol}/${token1.symbol}`}
+                  {isSingleSidedCampaign ? (
+                    token0?.symbol
+                  ) : !token0 || !token1 ? (
+                    <Skeleton width="60px" />
+                  ) : (
+                    `${token0.symbol}/${token1.symbol}`
+                  )}
                 </TYPE.small>
               </Box>
             </Flex>
@@ -94,15 +113,27 @@ export default function LiquidityMiningCampaign({
               <AddLiquidityButtonComponent
                 as={Link}
                 padding="8px 14px"
-                to={token0 && token1 ? `/add/${token0.address}/${token1.address}` : ''}
+                to={
+                  isSingleSidedCampaign && token0
+                    ? `swap/${token0.address}`
+                    : token0 && token1
+                    ? `/add/${token0.address}/${token1.address}`
+                    : ''
+                }
               >
                 <Text fontWeight={700} fontSize={12}>
-                  ADD LIQUIDITY
+                  {isSingleSidedCampaign ? 'GET SWPR' : 'ADD LIQUIDITY'}
                 </Text>
               </AddLiquidityButtonComponent>
             </ButtonRow>
           </TitleRow>
-          <LiquidityMiningCampaignView campaign={campaign} containsKpiToken={containsKpiToken} />
+          {((!isSingleSidedCampaign && !loading) || (!SingleSidedCampaignLoader && isSingleSidedCampaign)) && (
+            <LiquidityMiningCampaignView
+              isSingleSidedStake={isSingleSidedCampaign}
+              campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
+              containsKpiToken={containsKpiToken}
+            />
+          )}
         </AutoColumn>
       </AutoColumn>
     </PageWrapper>

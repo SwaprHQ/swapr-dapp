@@ -1,4 +1,4 @@
-import { LiquidityMiningCampaign, Pair } from '@swapr/sdk'
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign, Pair } from '@swapr/sdk'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -27,11 +27,17 @@ interface LiquidityMiningCampaignsListProps {
   stakablePair?: Pair
   items?: { campaign: LiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
   loading?: boolean
+  singleSidedCampaings?: SingleSidedLiquidityMiningCampaign[]
 }
 
 const { upToSmall, upToMedium } = MEDIA_WIDTHS
 
-export default function List({ stakablePair, loading, items }: LiquidityMiningCampaignsListProps) {
+export default function List({
+  stakablePair,
+  loading,
+  items,
+  singleSidedCampaings
+}: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
   const itemsPage = usePage(items || [], responsiveItemsPerPage, page, 0)
@@ -53,28 +59,54 @@ export default function List({ stakablePair, loading, items }: LiquidityMiningCa
         <Box mb="8px">
           {overallLoading ? (
             <LoadingList itemsAmount={responsiveItemsPerPage} />
-          ) : itemsPage.length > 0 ? (
+          ) : itemsPage.length > 0 || (singleSidedCampaings && singleSidedCampaings.length > 0) ? (
             <ListLayout>
-              {itemsPage.map(item => {
-                const token0 = stakablePair?.token0
-                const token1 = stakablePair?.token1
-                return (
-                  <UndecoratedLink
-                    key={item.campaign.address}
-                    to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
-                  >
-                    <PairCard
-                      token0={token0}
-                      token1={token1}
-                      usdLiquidity={getStakedAmountUSD(item.campaign, nativeCurrencyUSDPrice)}
-                      apy={item.campaign.apy}
-                      staked={item.staked}
-                      containsKpiToken={item.containsKpiToken}
-                      usdLiquidityText="STAKED"
-                    />
-                  </UndecoratedLink>
-                )
-              })}
+              {singleSidedCampaings &&
+                singleSidedCampaings.length > 0 &&
+                singleSidedCampaings.map(singleSidedStake => {
+                  return (
+                    <UndecoratedLink
+                      key={singleSidedStake.address}
+                      to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
+                    >
+                      <PairCard
+                        token0={singleSidedStake.stakeToken}
+                        pairOrStakeAddress={singleSidedStake.stakeToken.address}
+                        usdLiquidity={getStakedAmountUSD(
+                          singleSidedStake.staked.nativeCurrencyAmount,
+                          nativeCurrencyUSDPrice
+                        )}
+                        apy={singleSidedStake.apy}
+                        hasFarming={singleSidedStake.currentlyActive}
+                        isSingleSidedStakingCampaign={true}
+                      />
+                    </UndecoratedLink>
+                  )
+                })}
+              {itemsPage.length > 0 &&
+                itemsPage.map(item => {
+                  const token0 = stakablePair?.token0
+                  const token1 = stakablePair?.token1
+                  return (
+                    <UndecoratedLink
+                      key={item.campaign.address}
+                      to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
+                    >
+                      <PairCard
+                        token0={token0}
+                        token1={token1}
+                        pairOrStakeAddress={stakablePair?.liquidityToken.address}
+                        usdLiquidity={getStakedAmountUSD(
+                          item.campaign.staked.nativeCurrencyAmount,
+                          nativeCurrencyUSDPrice
+                        )}
+                        apy={item.campaign.apy}
+                        containsKpiToken={item.containsKpiToken}
+                        usdLiquidityText="STAKED"
+                      />
+                    </UndecoratedLink>
+                  )
+                })}
             </ListLayout>
           ) : (
             <Empty>

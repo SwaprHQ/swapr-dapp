@@ -4,13 +4,15 @@ import Pagination from '../../Pagination'
 import LoadingList from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent } from '@swapr/sdk'
+import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import Empty from '../Empty'
 import styled from 'styled-components'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
+import { getStakedAmountUSD } from '../../../utils/liquidityMining'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 
 const ListLayout = styled.div`
   display: grid;
@@ -40,8 +42,11 @@ interface PairsListProps {
     containsKpiToken?: boolean
     hasFarming?: boolean
   }[]
+  singleSidedStake?: SingleSidedLiquidityMiningCampaign
+  hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
+  hasSingleSidedStake?: boolean
 }
 
 // enum Layout {
@@ -49,12 +54,13 @@ interface PairsListProps {
 //   GRID
 // }
 
-export default function PairsList({ aggregatedPairs, loading, filter }: PairsListProps) {
+export default function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
 
+  const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -66,27 +72,45 @@ export default function PairsList({ aggregatedPairs, loading, filter }: PairsLis
       <Box>
         {loading ? (
           <LoadingList />
-        ) : itemsPage.length > 0 ? (
+        ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
-            {itemsPage.map(aggregatedPair => {
-              return (
-                <UndecoratedLink
-                  key={aggregatedPair.pair.liquidityToken.address}
-                  to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
-                >
-                  <PairCard
-                    token0={aggregatedPair.pair.token0}
-                    token1={aggregatedPair.pair.token1}
-                    pair={aggregatedPair.pair}
-                    usdLiquidity={aggregatedPair.liquidityUSD}
-                    apy={aggregatedPair.maximumApy}
-                    staked={aggregatedPair.staked}
-                    containsKpiToken={aggregatedPair.containsKpiToken}
-                    hasFarming={aggregatedPair.hasFarming}
-                  />
-                </UndecoratedLink>
-              )
-            })}
+            {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
+              <UndecoratedLink
+                key={singleSidedStake.address}
+                to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
+              >
+                <PairCard
+                  token0={singleSidedStake.stakeToken}
+                  pairOrStakeAddress={singleSidedStake.stakeToken.address}
+                  usdLiquidity={getStakedAmountUSD(
+                    singleSidedStake.staked.nativeCurrencyAmount,
+                    nativeCurrencyUSDPrice
+                  )}
+                  apy={singleSidedStake.apy}
+                  hasFarming={true}
+                  isSingleSidedStakingCampaign={true}
+                />
+              </UndecoratedLink>
+            )}
+            {itemsPage.length > 0 &&
+              itemsPage.map(aggregatedPair => {
+                return (
+                  <UndecoratedLink
+                    key={aggregatedPair.pair.liquidityToken.address}
+                    to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
+                  >
+                    <PairCard
+                      token0={aggregatedPair.pair.token0}
+                      token1={aggregatedPair.pair.token1}
+                      pairOrStakeAddress={aggregatedPair.pair.liquidityToken.address}
+                      usdLiquidity={aggregatedPair.liquidityUSD}
+                      apy={aggregatedPair.maximumApy}
+                      containsKpiToken={aggregatedPair.containsKpiToken}
+                      hasFarming={aggregatedPair.hasFarming}
+                    />
+                  </UndecoratedLink>
+                )
+              })}
           </ListLayout>
         ) : (
           <Empty>

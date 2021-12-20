@@ -83,13 +83,21 @@ export default function App() {
                   <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                   <Route exact strict path="/pools" component={Pools} />
                   <Route exact strict path="/pools/mine" component={MyPairs} />
+                  <Route
+                    exact
+                    strict
+                    path="/pools/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
+                    component={LiquidityMiningCampaign}
+                  />
                   <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
+
                   <Route
                     exact
                     strict
                     path="/pools/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
+
                   <Route exact strict path="/create" component={AddLiquidity} />
                   <Route exact path="/add" component={AddLiquidity} />
                   {/* <Route exact strict path="/governance" component={GovPages} /> */}

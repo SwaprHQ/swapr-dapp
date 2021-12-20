@@ -21,6 +21,7 @@ import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
 import CurrencyLogo from '../../components/CurrencyLogo'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 
 /* const VoteCard = styled.div`
   overflow: hidden;
@@ -192,6 +193,9 @@ export default function Pools() {
     aggregatedDataFilter,
     filterToken
   )
+
+  const { loading: ssLoading, data } = useSwaprSinglelSidedStakeCampaigns(filterToken, aggregatedDataFilter)
+
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
   const handleCurrencySelect = useCallback(token => {
@@ -220,11 +224,12 @@ export default function Pools() {
             />
             <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} />
             {aggregatedDataFilter === PairsFilterType.MY ? (
-              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} />
+              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
             ) : (
               <PairsList
-                loading={loadingUserLpPositions || loadingAggregatedData}
+                loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
                 aggregatedPairs={aggregatedData}
+                singleSidedStake={data}
                 filter={aggregatedDataFilter}
               />
             )}

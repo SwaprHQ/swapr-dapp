@@ -25,6 +25,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { SwprInfo } from './swpr-info'
 import { OLD_SWPR } from '../../constants'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -174,9 +175,10 @@ const HeaderSubRow = styled(RowFlat)`
   `};
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean }>`
+export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
   padding: 8px 12px;
   margin: 0;
+  display: inline-flex;
   font-weight: bold;
   font-size: 10px;
   line-height: 12px;
@@ -185,7 +187,7 @@ export const Amount = styled.p<{ clickable?: boolean; zero: boolean }>`
   text-transform: uppercase;
   color: ${({ theme }) => theme.text4};
   background: ${({ theme }) => theme.bg1};
-  border-radius: 12px;
+  border-radius: ${props => (props.borderRadius ? props.borderRadius : '12px')};
   cursor: ${props => (props.clickable ? 'pointer' : 'initial')};
   white-space: nowrap;
   ${props =>
@@ -207,6 +209,8 @@ function Header() {
   const nativeCurrency = useNativeCurrency()
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const [isDark] = useDarkModeManager()
+  const { loading, data, stakedAmount } = useSwaprSinglelSidedStakeCampaigns()
+
   const toggleClaimPopup = useToggleShowClaimPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const { newSwpr, oldSwpr } = useMemo(
@@ -220,7 +224,15 @@ function Header() {
 
   return (
     <HeaderFrame>
-      <ClaimModal onDismiss={toggleClaimPopup} oldSwprBalance={oldSwprBalance} newSwprBalance={newSwprBalance} />
+      <ClaimModal
+        onDismiss={toggleClaimPopup}
+        oldSwprBalance={oldSwprBalance}
+        newSwprBalance={newSwprBalance}
+        stakedAmount={stakedAmount}
+        singleSidedCampaignLink={
+          data && !loading ? `/pools/${data.stakeToken.address}/${data.address}/singleSidedStaking` : undefined
+        }
+      />
       <HeaderRow isDark={isDark}>
         <Title href=".">
           <SwaprVersionLogo />
@@ -262,6 +274,7 @@ function Header() {
         </HeaderElement>
         <HeaderSubRow>
           <SwprInfo
+            hasActiveCampaigns={!loading && !!data}
             oldSwprBalance={oldSwprBalance}
             newSwprBalance={newSwprBalance}
             onToggleClaimPopup={toggleClaimPopup}
