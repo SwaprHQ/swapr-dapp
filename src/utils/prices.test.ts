@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from '@swapr/sdk'
+import { ChainId, JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from '@dxdao/swapr-sdk'
 import { computeTradePriceBreakdown } from './prices'
 
 describe('prices', () => {

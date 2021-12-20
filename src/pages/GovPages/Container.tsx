@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Currency } from '@swapr/sdk'
+import { Currency } from '@dxdao/swapr-sdk'
 import { GovCard } from './Card'
 import { MainPage, PairPage, temporaryCurrencyData } from './constant'
 import { AutoRowCleanGap } from '../../components/Row'

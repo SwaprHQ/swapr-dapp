@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
-import { PricedTokenAmount, Price, Token, PricedToken, KpiToken } from '@swapr/sdk'
+import { PricedTokenAmount, Price, Token, PricedToken, KpiToken } from '@dxdao/swapr-sdk'
 import { getAddress } from '@ethersproject/address'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { parseUnits } from '@ethersproject/units'

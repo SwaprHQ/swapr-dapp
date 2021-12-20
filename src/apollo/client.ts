@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { GraphQLClient } from 'graphql-request'
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 
 export const defaultSubgraphClient = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/luzzif/swapr-mainnet-v2',

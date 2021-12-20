@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
+import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@dxdao/swapr-sdk'
 import { useActiveWeb3React } from '../../../hooks'
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'

@@ -1,4 +1,4 @@
-import { Percent, CurrencyAmount } from '@swapr/sdk'
+import { Percent, CurrencyAmount } from '@dxdao/swapr-sdk'
 import React, { useContext } from 'react'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'

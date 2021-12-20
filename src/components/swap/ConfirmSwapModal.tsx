@@ -1,4 +1,4 @@
-import { currencyEquals, RoutablePlatform, Trade } from '@swapr/sdk'
+import { currencyEquals, RoutablePlatform, Trade } from '@dxdao/swapr-sdk'
 import React, { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from 'react'
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { Placement } from '@popperjs/core'
 import { SHOW_TESTNETS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'

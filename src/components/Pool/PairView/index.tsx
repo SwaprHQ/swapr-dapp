@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useMemo } from 'react'
 import { Box, Flex, Text } from 'rebass'
-import { Pair } from '@swapr/sdk'
+import { Pair } from '@dxdao/swapr-sdk'
 import { DarkCard } from '../../Card'
 import DoubleCurrencyLogo from '../../DoubleLogo'
 import styled from 'styled-components'

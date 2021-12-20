@@ -1,4 +1,4 @@
-import { Pair } from '@swapr/sdk'
+import { Pair } from '@dxdao/swapr-sdk'
 import React, { useCallback } from 'react'
 import Modal from '../Modal'
 import { PairSearch } from './PairSearch'

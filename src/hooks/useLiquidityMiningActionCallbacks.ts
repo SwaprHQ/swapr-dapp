@@ -1,4 +1,4 @@
-import { TokenAmount } from '@swapr/sdk'
+import { TokenAmount } from '@dxdao/swapr-sdk'
 import { useMemo } from 'react'
 import { useStakingRewardsDistributionContract } from './useContract'
 import { TransactionResponse } from '@ethersproject/providers'

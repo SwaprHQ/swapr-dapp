@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ChainId, Currency } from '@swapr/sdk'
+import { ChainId, Currency } from '@dxdao/swapr-sdk'
 
 import { AppDispatch, AppState } from '../index'
 import {

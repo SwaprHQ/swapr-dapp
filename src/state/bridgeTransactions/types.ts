@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { OutgoingMessageState } from 'arb-ts'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 

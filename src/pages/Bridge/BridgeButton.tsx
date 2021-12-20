@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import React from 'react'
 import styled from 'styled-components'
 import { ButtonPrimary } from '../../components/Button'

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { CurrencyAmount } from '@swapr/sdk'
+import { CurrencyAmount } from '@dxdao/swapr-sdk'
 
 import { Tabs } from './Tabs'
 import AppBody from '../AppBody'

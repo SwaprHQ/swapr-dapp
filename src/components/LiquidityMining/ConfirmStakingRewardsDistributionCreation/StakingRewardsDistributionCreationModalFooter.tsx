@@ -1,4 +1,4 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, TokenAmount } from '@dxdao/swapr-sdk'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Text } from 'rebass'

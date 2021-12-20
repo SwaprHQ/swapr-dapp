@@ -1,4 +1,4 @@
-import { SWPR_WHITELIST_IPFS_HASH } from '@swapr/sdk'
+import { SWPR_WHITELIST_IPFS_HASH } from '@dxdao/swapr-sdk'
 import { useEffect } from 'react'
 import { useClaimTxConfirmedUpdater, useClaimWhitelist, useClaimWhitelistUpdater } from './hooks'
 

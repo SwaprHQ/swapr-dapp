@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { Currency } from '@dxdao/swapr-sdk'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { TYPE } from '../../../../../../theme'

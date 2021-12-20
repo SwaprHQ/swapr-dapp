@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { NETWORK_DETAIL } from '../constants'
 import { BridgeTxnType } from '../state/bridgeTransactions/types'
 

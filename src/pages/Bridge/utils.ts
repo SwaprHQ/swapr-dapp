@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { NetworkOptionProps, networkOptionsPreset } from '../../components/NetworkSwitcher'
 import { NETWORK_DETAIL } from '../../constants'
 
