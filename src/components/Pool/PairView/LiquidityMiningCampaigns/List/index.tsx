@@ -39,12 +39,14 @@ const { upToSmall, upToMedium } = MEDIA_WIDTHS
 export default function List({
   stakablePair,
   loading,
-  items,
-  singleSidedCampaings
+  items = [],
+  singleSidedCampaings = []
 }: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
-  const itemsPage = usePage(items || [], responsiveItemsPerPage, page, 0)
+  const combinedCampaings = [...singleSidedCampaings, ...items]
+
+  const itemsPage = usePage(combinedCampaings, responsiveItemsPerPage, page, 0)
   const { width } = useWindowSize()
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
@@ -63,32 +65,26 @@ export default function List({
         <Box mb="8px">
           {overallLoading ? (
             <LoadingList isMobile={true} itemsAmount={responsiveItemsPerPage} />
-          ) : itemsPage.length > 0 || (singleSidedCampaings && singleSidedCampaings.length > 0) ? (
+          ) : itemsPage.length > 0 ? (
             <ListLayout>
-              {singleSidedCampaings &&
-                singleSidedCampaings.length > 0 &&
-                singleSidedCampaings.map(singleSidedStake => {
+              {itemsPage.map(item => {
+                if (item instanceof SingleSidedLiquidityMiningCampaign) {
                   return (
                     <UndecoratedLink
-                      key={singleSidedStake.address}
-                      to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
+                      key={item.address}
+                      to={`/pools/${item.stakeToken.address}/${item.address}/singleSidedStaking`}
                     >
                       <CampaignCard
-                        token0={singleSidedStake.stakeToken}
-                        usdLiquidity={getStakedAmountUSD(
-                          singleSidedStake.staked.nativeCurrencyAmount,
-                          nativeCurrencyUSDPrice
-                        )}
-                        apy={singleSidedStake.apy}
+                        token0={item.stakeToken}
+                        usdLiquidity={getStakedAmountUSD(item.staked.nativeCurrencyAmount, nativeCurrencyUSDPrice)}
+                        apy={item.apy}
                         isSingleSidedStakingCampaign={true}
-                        usdLiquidityText={singleSidedStake.locked ? 'LOCKED' : 'STAKED'}
-                        campaign={singleSidedStake}
+                        usdLiquidityText={item.locked ? 'LOCKED' : 'STAKED'}
+                        campaign={item}
                       />
                     </UndecoratedLink>
                   )
-                })}
-              {itemsPage.length > 0 &&
-                itemsPage.map(item => {
+                } else {
                   const token0 = stakablePair?.token0
                   const token1 = stakablePair?.token1
                   return (
@@ -110,7 +106,8 @@ export default function List({
                       />
                     </UndecoratedLink>
                   )
-                })}
+                }
+              })}
             </ListLayout>
           ) : (
             <Empty>

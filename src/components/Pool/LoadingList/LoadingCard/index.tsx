@@ -72,7 +72,7 @@ export default function LoadingCard({ isMobile }: { isMobile: boolean }) {
   const { width } = useWindowSize()
 
   const mobileLogic = isMobile ? true : width ? width < MEDIA_WIDTHS.upToExtraSmall : false
-  console.log('here', mobileLogic)
+
   return (
     <SizedCard isMobile={mobileLogic} selectable>
       <Flex alignItems="center" flexDirection="row" justifyContent="space-between" height="100%">
