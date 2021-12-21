@@ -34,7 +34,7 @@ interface LiquidityMiningCampaignsListProps {
   singleSidedCampaings?: { campaign: SingleSidedLiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
 }
 
-const { upToSmall, upToMedium } = MEDIA_WIDTHS
+const { upToSmall, upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
 export default function List({
   stakablePair,
@@ -45,14 +45,17 @@ export default function List({
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
   const combinedCampaings = [...singleSidedCampaings, ...items]
-
+  console.log(responsiveItemsPerPage)
   const itemsPage = usePage(combinedCampaings, responsiveItemsPerPage, page, 0)
   const { width } = useWindowSize()
+  console.log(width)
+  console.log(upToMedium)
+  console.log(upToSmall)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
     if (!width) return
-    else if (width <= upToSmall) setResponsiveItemsPerPage(1)
+    else if (width <= upToExtraSmall) setResponsiveItemsPerPage(1)
     else if (width <= upToMedium) setResponsiveItemsPerPage(2)
     else setResponsiveItemsPerPage(3)
   }, [width])

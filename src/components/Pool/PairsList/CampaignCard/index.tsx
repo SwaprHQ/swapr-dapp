@@ -45,6 +45,7 @@ const SizedCard = styled(Card)<{ cardColor: string }>`
 
 const EllipsizedText = styled(TYPE.body)`
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 `
 
@@ -210,7 +211,7 @@ export default function CampaignCard({
         {isLimitedCampaign && (
           <Flex>
             <PercentageBar>
-              <RelativePercentage>{percentage()}%</RelativePercentage>
+              {!staked && <RelativePercentage>{percentage()}%</RelativePercentage>}
               <Loaded width={percentage() + '%'} />
             </PercentageBar>
           </Flex>
