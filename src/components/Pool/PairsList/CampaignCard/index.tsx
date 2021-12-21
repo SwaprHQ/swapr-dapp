@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
-import { CurrencyAmount, LiquidityMiningCampaign, Percent, Token, SingleSidedLiquidityMiningCampaign } from '@dxdao/swapr-sdk'
+import {
+  CurrencyAmount,
+  LiquidityMiningCampaign,
+  Percent,
+  Token,
+  SingleSidedLiquidityMiningCampaign
+} from '@dxdao/swapr-sdk'
 import { TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 
@@ -21,7 +27,7 @@ import SimpleTextBadge from '../../../Badge/SimpleText'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
   width: 260px;
-
+  height: 147px;
   padding: 16px;
   border-radius: 12px;
 
@@ -133,7 +139,7 @@ export default function CampaignCard({
 
   return (
     <SizedCard cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'} {...rest}>
-      <Flex height="100%" justifyContent="space-between">
+      <Flex justifyContent="space-between">
         <Flex flexDirection="column">
           {isSingleSidedStakingCampaign ? (
             <CurrencyLogo size={'30px'} marginRight={14} currency={token0} />
