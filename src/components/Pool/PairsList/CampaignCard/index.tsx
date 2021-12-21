@@ -90,12 +90,12 @@ const STATUS = {
   [StatusKeys.UPCOMING]: {
     key: 'UPCOMING',
     color: '#F2994A',
-    cardColor: 'linear-gradient(226.13deg, rgba(191, 125, 65, 0.2) -7.71%, rgba(191, 125, 65, 0) 85.36%)'
+    cardColor: 'linear-gradient(226.13deg, rgba(191, 125, 65, 0.2) -7.71%, rgba(191, 125, 65, 0) 85.36%) '
   },
   [StatusKeys.ENDED]: {
     key: 'ENDED',
     color: '#F02E51',
-    cardColor: 'linear-gradient(226.13deg, rgba(190, 42, 70, 0.2) -7.71%, rgba(190, 42, 70, 0) 85.36%);'
+    cardColor: 'linear-gradient(226.13deg, rgba(190, 42, 70, 0.2) -7.71%, rgba(190, 42, 70, 0) 85.36%) '
   }
 }
 
