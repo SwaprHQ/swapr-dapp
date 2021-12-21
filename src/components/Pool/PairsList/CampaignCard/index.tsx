@@ -108,6 +108,7 @@ interface PairProps {
   usdLiquidityText?: string
   containsKpiToken?: boolean
   isSingleSidedStakingCampaign?: boolean
+  staked?: boolean
   campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
 }
 
@@ -120,6 +121,7 @@ export default function CampaignCard({
   usdLiquidityText,
   isSingleSidedStakingCampaign,
   campaign,
+  staked,
   ...rest
 }: PairProps) {
   const [status, setStatus] = useState<StatusKeys | undefined>(undefined)
@@ -200,7 +202,7 @@ export default function CampaignCard({
               ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
             </TYPE.body>
           </Flex>
-          {!isLimitedCampaign && !campaign.locked && (
+          {staked && (
             <Flex>
               <SimpleTextBadge text={'STAKING'} color="#C7C0FF" />
             </Flex>

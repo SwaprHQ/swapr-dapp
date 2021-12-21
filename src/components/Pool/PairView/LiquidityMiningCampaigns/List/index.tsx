@@ -31,7 +31,7 @@ interface LiquidityMiningCampaignsListProps {
   stakablePair?: Pair
   items?: { campaign: LiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
   loading?: boolean
-  singleSidedCampaings?: SingleSidedLiquidityMiningCampaign[]
+  singleSidedCampaings?: { campaign: SingleSidedLiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
 }
 
 const { upToSmall, upToMedium } = MEDIA_WIDTHS
@@ -68,19 +68,23 @@ export default function List({
           ) : itemsPage.length > 0 ? (
             <ListLayout>
               {itemsPage.map(item => {
-                if (item instanceof SingleSidedLiquidityMiningCampaign) {
+                if (item.campaign instanceof SingleSidedLiquidityMiningCampaign) {
                   return (
                     <UndecoratedLink
-                      key={item.address}
-                      to={`/pools/${item.stakeToken.address}/${item.address}/singleSidedStaking`}
+                      key={item.campaign.address}
+                      to={`/pools/${item.campaign.stakeToken.address}/${item.campaign.address}/singleSidedStaking`}
                     >
                       <CampaignCard
-                        token0={item.stakeToken}
-                        usdLiquidity={getStakedAmountUSD(item.staked.nativeCurrencyAmount, nativeCurrencyUSDPrice)}
-                        apy={item.apy}
+                        token0={item.campaign.stakeToken}
+                        usdLiquidity={getStakedAmountUSD(
+                          item.campaign.staked.nativeCurrencyAmount,
+                          nativeCurrencyUSDPrice
+                        )}
+                        apy={item.campaign.apy}
                         isSingleSidedStakingCampaign={true}
-                        usdLiquidityText={item.locked ? 'LOCKED' : 'STAKED'}
-                        campaign={item}
+                        usdLiquidityText={item.campaign.locked ? 'LOCKED' : 'STAKED'}
+                        staked={item.staked}
+                        campaign={item.campaign}
                       />
                     </UndecoratedLink>
                   )
@@ -102,6 +106,7 @@ export default function List({
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}
                         usdLiquidityText={item.campaign.locked ? 'LOCKED' : 'STAKED'}
+                        staked={item.staked}
                         campaign={item.campaign}
                       />
                     </UndecoratedLink>

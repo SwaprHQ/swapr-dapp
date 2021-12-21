@@ -103,14 +103,13 @@ export function usePairCampaigns(
       )
       const hasStake = camapaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
+      //reminder add support for kpi tokens if possbile
       if (hasStake || singleSidedStakeCampaign.currentlyActive) {
-        activeCampaigns.push(singleSidedStakeCampaign)
+        activeCampaigns.push({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
       } else if (isExpired) {
-        expiredCampaigns.push(singleSidedStakeCampaign)
+        expiredCampaigns.push({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
       }
     }
-
-    // const wrapped = data.singleSidedStakingCampaigns[data.singleSidedStakingCampaigns.length - 1]
 
     return {
       loading: false,
