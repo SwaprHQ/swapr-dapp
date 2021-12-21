@@ -31,9 +31,8 @@ const SizedCard = styled(Card)<{ cardColor: string }>`
   padding: 16px;
   border-radius: 12px;
 
-  background-image: ${props => props.cardColor};
+  background: ${props => props.cardColor}, linear-gradient(#171621, #171621);
   border: solid 1px #44416380;
-  background-blend-mode: overlay, normal;
 
   ${props => props.theme.mediaWidth.upToMedium`
     width: 100%;
