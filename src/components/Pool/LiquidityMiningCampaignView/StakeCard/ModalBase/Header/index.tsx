@@ -1,4 +1,4 @@
-import { PricedTokenAmount, TokenAmount, Token, Pair } from '@swapr/sdk'
+import { PricedTokenAmount, TokenAmount, Token, Pair } from '@dxdao/swapr-sdk'
 import React, { useState } from 'react'
 import { AutoColumn } from '../../../../../Column'
 import CurrencyInputPanel from '../../../../../CurrencyInputPanel'

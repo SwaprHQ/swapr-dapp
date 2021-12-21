@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { LiquidityMiningCampaign, Pair } from '@swapr/sdk'
+import { LiquidityMiningCampaign, Pair } from '@dxdao/swapr-sdk'
 import { useMemo } from 'react'
 import { DateTime, Duration } from 'luxon'
 import { useActiveWeb3React } from '.'

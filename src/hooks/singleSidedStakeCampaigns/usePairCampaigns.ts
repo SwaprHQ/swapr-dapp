@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 
 import { DateTime, Duration } from 'luxon'
-import { Token } from '@swapr/sdk'
+import { Token } from '@dxdao/swapr-sdk'
 
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '..'

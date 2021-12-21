@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { BridgeModalState, BridgeNetworkInput, BridgeTxsFilter } from './reducer'
 
 export const typeInput = createAction<{ typedValue: string }>('bridge/typeInput')
@@ -13,5 +13,5 @@ export const setBridgeModalStatus = createAction<Pick<BridgeModalState, 'status'
   'bridge/setBridgeModalStatus'
 )
 export const setBridgeModalData = createAction<
-  Pick<BridgeModalState, 'currencyId' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }
+  Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }
 >('bridge/setBridgeModalData')

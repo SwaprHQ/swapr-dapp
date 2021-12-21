@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { OutgoingMessageState } from 'arb-ts'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
@@ -31,6 +31,8 @@ export type BridgeTxn = {
   sender: string
   assetName: string
   assetType: BridgeAssetType
+  assetAddressL1?: string
+  assetAddressL2?: string
   value: string
   txHash: string
   blockNumber?: number
@@ -48,7 +50,14 @@ export type BridgeTransactionStatus = 'failed' | 'confirmed' | 'pending' | 'rede
 
 export type BridgeTransactionSummary = Pick<
   BridgeTxn,
-  'txHash' | 'assetName' | 'value' | 'batchIndex' | 'batchNumber' | 'timestampResolved'
+  | 'txHash'
+  | 'assetName'
+  | 'value'
+  | 'batchIndex'
+  | 'batchNumber'
+  | 'timestampResolved'
+  | 'assetAddressL1'
+  | 'assetAddressL2'
 > & {
   fromChainId: ChainId
   toChainId: ChainId

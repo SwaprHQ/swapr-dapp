@@ -1,6 +1,15 @@
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+import {
+  JSBI,
+  Pair,
+  parseBigintIsh,
+  Percent,
+  Price,
+  PricedToken,
+  PricedTokenAmount,
+  TokenAmount
+} from '@dxdao/swapr-sdk'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'

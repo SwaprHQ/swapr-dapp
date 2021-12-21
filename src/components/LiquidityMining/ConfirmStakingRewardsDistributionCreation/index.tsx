@@ -1,4 +1,4 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, TokenAmount } from '@dxdao/swapr-sdk'
 import React, { useCallback } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Flex } from 'rebass'
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, TokenAmount } from '@dxdao/swapr-sdk'
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'

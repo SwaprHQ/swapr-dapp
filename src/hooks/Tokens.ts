@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, Pair, Token } from '@swapr/sdk'
+import { Currency, Pair, Token } from '@dxdao/swapr-sdk'
 import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
@@ -179,4 +179,8 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
   const isNativeCurrency = currencyId?.toUpperCase() === nativeCurrency.symbol
   const token = useToken(isNativeCurrency ? undefined : currencyId)
   return isNativeCurrency ? nativeCurrency : token
+}
+
+export function isToken(currency: Currency | Token | null | undefined): currency is Token {
+  return !!currency && (currency as Token).address !== undefined
 }

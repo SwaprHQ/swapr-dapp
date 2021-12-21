@@ -1,4 +1,4 @@
-import { Percent, PricedTokenAmount, TokenAmount, KpiToken, Token, Pair } from '@swapr/sdk'
+import { Percent, PricedTokenAmount, TokenAmount, KpiToken, Token, Pair } from '@dxdao/swapr-sdk'
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'

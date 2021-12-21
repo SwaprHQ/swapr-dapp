@@ -1,4 +1,4 @@
-import { Percent } from '@swapr/sdk'
+import { Percent } from '@dxdao/swapr-sdk'
 import React from 'react'
 import styled from 'styled-components'
 

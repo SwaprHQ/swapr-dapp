@@ -1,4 +1,4 @@
-import { TokenAmount } from '@swapr/sdk'
+import { TokenAmount } from '@dxdao/swapr-sdk'
 import React from 'react'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../../hooks'

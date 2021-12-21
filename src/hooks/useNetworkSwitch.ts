@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { ChainId } from '@swapr/sdk'
+import { ChainId } from '@dxdao/swapr-sdk'
 import { isMobile } from 'react-device-detect'
 import { InjectedConnector } from '@web3-react/injected-connector'
 
@@ -17,8 +17,8 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
   const { connector, chainId, account } = useActiveWeb3React()
 
   const selectNetwork = useCallback(
-    (optionChainId: ChainId) => {
-      if (optionChainId === chainId) return
+    (optionChainId?: ChainId) => {
+      if (optionChainId === undefined || optionChainId === chainId) return
       if (!!!account && connector instanceof CustomNetworkConnector) connector.changeChainId(optionChainId)
       else if (connector instanceof InjectedConnector)
         switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)

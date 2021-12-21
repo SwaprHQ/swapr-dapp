@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform } from '@swapr/sdk'
+import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform } from '@dxdao/swapr-sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
@@ -117,13 +117,13 @@ export default function Swap() {
 
   const parsedAmounts = showWrap
     ? {
-      [Field.INPUT]: parsedAmount,
-      [Field.OUTPUT]: parsedAmount
-    }
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount
+      }
     : {
-      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
-    }
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+      }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -442,8 +442,8 @@ export default function Swap() {
                     {swapInputError
                       ? swapInputError
                       : priceImpactSeverity > 3 && !isExpertMode
-                        ? `Price Impact Too High`
-                        : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                      ? `Price Impact Too High`
+                      : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   </Text>
                 </ButtonPrimary>
               )}

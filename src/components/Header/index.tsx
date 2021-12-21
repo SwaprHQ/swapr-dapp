@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { NavLink, withRouter } from 'react-router-dom'
-import { SWPR } from '@swapr/sdk'
+import { SWPR } from '@dxdao/swapr-sdk'
 
 import styled, { css } from 'styled-components'
 

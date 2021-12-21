@@ -13,7 +13,7 @@ import {
   TokenAmount,
   KpiToken,
   SingleSidedLiquidityMiningCampaign
-} from '@swapr/sdk'
+} from '@dxdao/swapr-sdk'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
