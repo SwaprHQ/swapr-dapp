@@ -1,30 +1,28 @@
-import { utils } from 'ethers'
-import { Bridge, OutgoingMessageState } from 'arb-ts'
+import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
-import { Store } from '@reduxjs/toolkit'
-import { BigNumber } from '@ethersproject/bignumber'
+import { Bridge, OutgoingMessageState } from 'arb-ts'
+import { getChainPair, txnTypeToLayer } from '../../utils/arbitrum'
+import { Omnibridge } from './Omnibridge'
 
 import {
   bridgeOwnedTxsSelector,
   bridgeL1DepositsSelector,
   bridgePendingTxsSelector,
   bridgePendingWithdrawalsSelector
-} from '../state/bridgeTransactions/selectors'
-import { chainIdSelector } from '../state/application/selectors'
+} from '../../state/bridgeTransactions/selectors'
+
 import {
   addBridgeTxn,
   updateBridgeTxnReceipt,
   updateBridgeTxnPartnerHash,
   updateBridgeTxnWithdrawalInfo
-} from '../state/bridgeTransactions/actions'
-import { setBridgeLoadingWithdrawals, setBridgeModalData, setBridgeModalStatus } from '../state/bridge/actions'
+} from '../../state/bridgeTransactions/actions'
+import { setBridgeLoadingWithdrawals, setBridgeModalData, setBridgeModalStatus } from '../../state/bridge/actions'
 
-import { txnTypeToLayer } from '../utils/arbitrum'
-
-import { AppState } from '../state'
-import { BridgeModalStatus } from '../state/bridge/reducer'
-import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../state/bridgeTransactions/types'
-import { addTransaction } from '../state/transactions/actions'
+import { BridgeModalStatus } from '../../state/bridge/reducer'
+import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../state/bridgeTransactions/types'
+import { addTransaction } from '../../state/transactions/actions'
+import { BigNumber, utils } from 'ethers'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -33,15 +31,90 @@ const getErrorMsg = (error: any) => {
   return `Bridge failed: ${error.message}`
 }
 
-export class BridgeService {
-  private l1ChainId: ChainId | undefined
-  private l2ChainId: ChainId | undefined
+export class ArbitrumBridge {
+  private omnibridge: Omnibridge
+  private l1ChainId: ChainId
+  private l2ChainId: ChainId
+  private _bridge: Bridge | undefined
+  private store: Omnibridge['store']
   private initialPendingWithdrawalsChecked = false
+  private _listeners: NodeJS.Timeout[] = []
 
-  constructor(private bridge: Bridge, private store: Store<AppState>, private account: string | null | undefined) {
-    const { l1ChainId, l2ChainId } = chainIdSelector(store.getState())
+  public supportedChains = { from: ChainId.RINKEBY, to: ChainId.ARBITRUM_RINKEBY, reverse: true }
+
+  private constructor(omnibridge: Omnibridge) {
+    const { l1ChainId, l2ChainId } = getChainPair(this.supportedChains.from)
+    if (!l1ChainId || !l2ChainId) throw new Error('ArbBridge: Wrong config')
     this.l1ChainId = l1ChainId
     this.l2ChainId = l2ChainId
+    this.store = omnibridge.store
+    this.omnibridge = omnibridge
+  }
+
+  public get bridge() {
+    if (!this._bridge) throw new Error('ArbBridge: No bridge set')
+    return this._bridge
+  }
+
+  private setBridge = async ({ previousChainId }: { previousChainId?: ChainId } = {}) => {
+    let l1Signer: JsonRpcSigner | undefined = this.omnibridge.staticProviders[this.l1ChainId]?.getSigner(
+      this.omnibridge.account
+    )
+    let l2Signer: JsonRpcSigner | undefined = this.omnibridge.staticProviders[this.l2ChainId]?.getSigner(
+      this.omnibridge.account
+    )
+
+    if (!l1Signer || !l2Signer) throw new Error('ArbBridge: No static provider found')
+
+    const chains = [this.l1ChainId, this.l2ChainId]
+
+    if (
+      this._bridge &&
+      !chains.includes(this.omnibridge.activeChainId) &&
+      (!previousChainId || (previousChainId && !chains.includes(previousChainId)))
+    )
+      return
+
+    if (this.omnibridge.activeChainId === this.l1ChainId) {
+      l1Signer = this.omnibridge.activeProvider.getSigner()
+    }
+
+    if (this.omnibridge.activeChainId === this.l2ChainId) {
+      l2Signer = this.omnibridge.activeProvider.getSigner()
+    }
+
+    try {
+      console.log('nowy arb-ts')
+      this._bridge = await Bridge.init(l1Signer, l2Signer)
+    } catch (err) {
+      throw new Error('ArbBridge: ' + err)
+    }
+  }
+
+  public static async init({ omnibridge }: { omnibridge: Omnibridge }) {
+    const ArbBridge = new ArbitrumBridge(omnibridge)
+
+    await ArbBridge.setBridge()
+
+    ArbBridge.startListeners()
+    ArbBridge.updatePendingWithdrawals()
+
+    return ArbBridge
+  }
+
+  // private clearListeners = () => {
+  //   this._listeners.forEach(clearInterval)
+  //   this._listeners = []
+  // }
+
+  public startListeners = () => {
+    this._listeners.push(setInterval(this.l2DepositsListener, 5000))
+    this._listeners.push(setInterval(this.pendingTxListener, 5000))
+  }
+
+  public onSignerChange = async ({ previousChainId }: { previousChainId?: ChainId }) => {
+    await this.setBridge({ previousChainId })
+    await this.updatePendingWithdrawals()
   }
 
   // PendingTx Listener
@@ -151,16 +224,14 @@ export class BridgeService {
       txHash: tx.txHash
     }
 
-    if (!this.bridge || !this.l2ChainId || !tx.receipt) {
+    if (!tx.receipt) {
       return retVal
     }
-
     if (!retVal.batchNumber || !retVal.batchIndex) {
-      const l2ToL2EventData = await this.bridge.getWithdrawalsInL2Transaction(tx.receipt)
+      const l2ToL2EventData = await this.bridge.getWithdrawalsInL2Transaction(tx?.receipt)
       if (l2ToL2EventData.length === 1) {
         const { batchNumber, indexInBatch } = l2ToL2EventData[0]
         const outgoingMessageState = await this.bridge.getOutGoingMessageState(batchNumber, indexInBatch)
-
         retVal.batchIndex = indexInBatch.toHexString()
         retVal.batchNumber = batchNumber.toHexString()
         retVal.outgoingMessageState = outgoingMessageState
@@ -171,19 +242,21 @@ export class BridgeService {
       const outgoingMessageState = await this.bridge.getOutGoingMessageState(retValbatchNr, retValbatchIndex)
       retVal.outgoingMessageState = outgoingMessageState
     }
+
     return retVal
   }
 
   public updatePendingWithdrawals = async () => {
-    if (!this.bridge || !this.l2ChainId || this.initialPendingWithdrawalsChecked) return
+    // if (this.initialPendingWithdrawalsChecked) return
+    console.log(this.initialPendingWithdrawalsChecked)
 
     const pendingWithdrawals = bridgePendingWithdrawalsSelector(this.store.getState())
 
     this.store.dispatch(setBridgeLoadingWithdrawals(true))
 
     const promises = pendingWithdrawals.map(this.getOutgoingMessageState)
-    const withdrawalsInfo = await Promise.all(promises)
 
+    const withdrawalsInfo = await Promise.all(promises)
     withdrawalsInfo.forEach(withdrawalInfo => {
       if (!this.l2ChainId) return
       const { outgoingMessageState, batchNumber, batchIndex, txHash } = withdrawalInfo
@@ -232,7 +305,7 @@ export class BridgeService {
 
   // Handlers
   private depositEth = async (value: string) => {
-    if (!this.account || !this.bridge || !this.l1ChainId || !this.l2ChainId) return
+    if (!this.bridge || !this.l1ChainId || !this.l2ChainId) return
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     const weiValue = utils.parseEther(value)
@@ -249,7 +322,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l1ChainId,
-        sender: this.account
+        sender: this.omnibridge.account
       })
     )
 
@@ -265,7 +338,7 @@ export class BridgeService {
   }
 
   private depositERC20 = async (erc20L1Address: string, typedValue: string) => {
-    if (!this.l1ChainId || !this.l2ChainId || !this.account) return
+    if (!this.bridge || !this.l1ChainId || !this.l2ChainId) return
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
     const tokenData = await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)
@@ -291,7 +364,7 @@ export class BridgeService {
         value: typedValue,
         txHash: txn.hash,
         chainId: this.l1ChainId,
-        sender: this.account
+        sender: this.omnibridge.account
       })
     )
 
@@ -312,7 +385,7 @@ export class BridgeService {
   }
 
   private withdrawEth = async (value: string) => {
-    if (!this.account || !this.bridge || !this.l1ChainId || !this.l2ChainId) return
+    if (!this.bridge || !this.l1ChainId || !this.l2ChainId) return
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     this.store.dispatch(
@@ -336,7 +409,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l2ChainId,
-        sender: this.account
+        sender: this.omnibridge.account
       })
     )
 
@@ -352,7 +425,7 @@ export class BridgeService {
   }
 
   private withdrawERC20 = async (erc20L2Address: string, value: string) => {
-    if (!erc20L2Address || !this.account || !this.bridge || !this.l1ChainId || !this.l2ChainId) return
+    if (!erc20L2Address || !this.bridge || !this.l1ChainId || !this.l2ChainId) return
 
     const erc20L1Address = await this.bridge.l2Bridge.getERC20L1Address(erc20L2Address)
     if (!erc20L1Address) {
@@ -388,7 +461,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l2ChainId,
-        sender: this.account
+        sender: this.omnibridge.account
       })
     )
 
@@ -405,8 +478,7 @@ export class BridgeService {
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
     const { batchIndex, batchNumber, value, assetAddressL2 } = l2Tx
-    if (!this.account || !this.bridge || !this.l1ChainId || !this.l2ChainId || !batchIndex || !batchNumber || !value)
-      return
+    if (!this.bridge || !this.l1ChainId || !this.l2ChainId || !batchIndex || !batchNumber || !value) return
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
@@ -425,7 +497,7 @@ export class BridgeService {
           value,
           txHash: l1Tx.hash,
           chainId: this.l1ChainId,
-          sender: this.account
+          sender: this.omnibridge.account
         })
       )
 
@@ -463,7 +535,7 @@ export class BridgeService {
   }
 
   public approveERC20 = async (erc20L1Address: string, gatewayAddress?: string, tokenSymbol?: string) => {
-    if (!this.l1ChainId || !this.l2ChainId || !this.account) return
+    if (!this.bridge || !this.l1ChainId || !this.l2ChainId) return
 
     if (!gatewayAddress) {
       gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(erc20L1Address)
@@ -478,7 +550,7 @@ export class BridgeService {
     this.store.dispatch(
       addTransaction({
         hash: txn.hash,
-        from: this.account,
+        from: this.omnibridge.account,
         chainId: this.l1ChainId,
         approval: {
           spender: gatewayAddress,

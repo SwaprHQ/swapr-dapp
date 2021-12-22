@@ -2,12 +2,11 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import { BigNumber } from 'ethers'
 import { Token } from '@swapr/sdk'
 import { isToken } from '../../../hooks/Tokens'
-import { useBridge } from '../../../contexts/BridgeProvider'
 import { useBridgeInfo } from '../../../state/bridge/hooks'
-import { useBridgeService } from '../../../contexts/BridgeServiceProvider'
 import { useHasPendingApproval } from '../../../state/transactions/hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useChains } from '../../../hooks/useChains'
+import { OmnibridgeService } from '../../../services/Omnibridge/OmnibridgeUpdater'
 
 const defaultAddresses = {
   walletAddress: undefined,
@@ -15,9 +14,7 @@ const defaultAddresses = {
 }
 
 export const useBridgeActionPanel = () => {
-  const bridge = useBridge()
   const { isArbitrum } = useChains()
-  const bridgeService = useBridgeService()
   const { currencyId, isBalanceSufficient, parsedAmount, bridgeCurrency, typedValue } = useBridgeInfo()
   const [{ walletAddress, gatewayAddress }, setAddresses] = useState<{
     walletAddress?: string
@@ -31,9 +28,9 @@ export const useBridgeActionPanel = () => {
   const hasAmount = useMemo(() => !!Number(typedValue), [typedValue])
 
   const handleApprove = useCallback(async () => {
-    if (!bridgeService || !currencyId || !bridgeCurrency) return
-    await bridgeService.approveERC20(currencyId, gatewayAddress, bridgeCurrency.symbol)
-  }, [bridgeService, currencyId, gatewayAddress, bridgeCurrency])
+    if (!currencyId || !bridgeCurrency) return
+    await OmnibridgeService.approve(currencyId, gatewayAddress, bridgeCurrency.symbol)
+  }, [currencyId, gatewayAddress, bridgeCurrency])
 
   useEffect(() => {
     if (!isArbitrum) {
@@ -52,7 +49,7 @@ export const useBridgeActionPanel = () => {
     let active = true
 
     const checkAllowance = async () => {
-      if (!bridge || !currencyId) return
+      if (!currencyId) return
       let tmpWalletAddress = walletAddress
       let tmpGatewayAddress = gatewayAddress
 
@@ -60,8 +57,8 @@ export const useBridgeActionPanel = () => {
 
       if (!tmpWalletAddress && !tmpGatewayAddress) {
         ;[tmpWalletAddress, tmpGatewayAddress] = await Promise.all([
-          bridge.l1Bridge.getWalletAddress(),
-          bridge.l1Bridge.getGatewayAddress(currencyId)
+          OmnibridgeService.arbBridge.bridge.l1Bridge.getWalletAddress(),
+          OmnibridgeService.arbBridge.bridge.l1Bridge.getGatewayAddress(currencyId)
         ])
 
         if (active) {
@@ -70,7 +67,8 @@ export const useBridgeActionPanel = () => {
       }
 
       if (tmpWalletAddress && tmpGatewayAddress) {
-        const { contract } = await bridge?.l1Bridge.getL1TokenData(currencyId)
+        // TODO: Find a better way to do it
+        const { contract } = await OmnibridgeService.arbBridge.bridge.l1Bridge.getL1TokenData(currencyId)
         const allowance = await contract.allowance(tmpWalletAddress, tmpGatewayAddress)
 
         if (active) {
@@ -88,7 +86,7 @@ export const useBridgeActionPanel = () => {
     return () => {
       active = false
     }
-  }, [bridge, bridgeCurrency, currencyId, gatewayAddress, isArbitrum, parsedAmount, pendingApproval, walletAddress])
+  }, [bridgeCurrency, currencyId, gatewayAddress, isArbitrum, parsedAmount, pendingApproval, walletAddress])
 
   useEffect(() => {
     if (isArbitrum || !isToken(bridgeCurrency) || !parsedAmount) return

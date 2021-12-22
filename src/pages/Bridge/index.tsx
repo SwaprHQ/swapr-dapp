@@ -16,7 +16,6 @@ import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
 
 import { useActiveWeb3React } from '../../hooks'
-import { useBridgeService } from '../../contexts/BridgeServiceProvider'
 import { useBridgeTransactionsSummary } from '../../state/bridgeTransactions/hooks'
 import { useBridgeInfo, useBridgeActionHandlers, useBridgeModal, useBridgeTxsFilter } from '../../state/bridge/hooks'
 
@@ -29,6 +28,7 @@ import { isToken } from '../../hooks/Tokens'
 import { useChains } from '../../hooks/useChains'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
+import { OmnibridgeService } from '../../services/Omnibridge/OmnibridgeUpdater'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -76,7 +76,6 @@ const AssetWrapper = styled.div`
 
 export default function Bridge() {
   const dispatch = useDispatch()
-  const bridgeService = useBridgeService()
   const { account } = useActiveWeb3React()
   const bridgeSummaries = useBridgeTransactionsSummary()
   const { chainId, partnerChainId, isArbitrum } = useChains()
@@ -149,18 +148,18 @@ export default function Bridge() {
   }, [maxAmountInput, isNetworkConnected, onUserInput])
 
   const handleSubmit = useCallback(async () => {
-    if (!chainId || !bridgeService) return
+    if (!chainId) return
     let address: string | undefined = ''
 
     if (isToken(bridgeCurrency)) {
       address = bridgeCurrency.address
     }
     if (!isArbitrum) {
-      await bridgeService.deposit(typedValue, address)
+      await OmnibridgeService.deposit(typedValue, address)
     } else {
-      await bridgeService.withdraw(typedValue, address)
+      await OmnibridgeService.withdraw(typedValue, address)
     }
-  }, [bridgeCurrency, bridgeService, chainId, isArbitrum, typedValue])
+  }, [bridgeCurrency, chainId, isArbitrum, typedValue])
 
   const handleModal = useCallback(async () => {
     setModalData({
@@ -190,10 +189,9 @@ export default function Bridge() {
   )
 
   const handleCollectConfirm = useCallback(async () => {
-    if (!bridgeService) return
-    await bridgeService.collect(collectableTx)
+    await OmnibridgeService.collect(collectableTx)
     setStep(BridgeStep.Success)
-  }, [bridgeService, collectableTx])
+  }, [collectableTx])
 
   const fromNetworkList = useMemo(
     () =>
@@ -292,7 +290,7 @@ export default function Bridge() {
           setStep={setStep}
         />
       </AppBody>
-      {step !== BridgeStep.Collect && bridgeService && !!bridgeSummaries.length && (
+      {step !== BridgeStep.Collect && !!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           transactions={bridgeSummaries}
           collectableTx={collectableTx}
