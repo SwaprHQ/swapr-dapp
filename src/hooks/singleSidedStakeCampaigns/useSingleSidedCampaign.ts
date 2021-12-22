@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { Token, SingleSidedLiquidityMiningCampaign } from '@dxdao/swapr-sdk'
+import { Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 

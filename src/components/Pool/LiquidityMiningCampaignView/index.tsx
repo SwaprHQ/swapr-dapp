@@ -10,7 +10,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { usePrevious } from 'react-use'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { RowBetween } from '../../Row'
-import { SingleSidedLiquidityMiningCampaign, LiquidityMiningCampaign } from '@dxdao/swapr-sdk'
+import { SingleSidedLiquidityMiningCampaign, LiquidityMiningCampaign } from '@swapr/sdk'
 
 const GoBackContainer = styled.div`
   font-size: 11px;

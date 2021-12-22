@@ -4,7 +4,7 @@ import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { MainnetGasPrice, updateBlockNumber, updateMainnetGasPrices, setConnectorInfo } from './actions'
 import { useDispatch } from 'react-redux'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 
 export default function Updater(): null {
   const { library, chainId, account } = useActiveWeb3React()

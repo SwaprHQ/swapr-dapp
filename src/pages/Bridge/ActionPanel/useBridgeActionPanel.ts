@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
 import { BigNumber } from 'ethers'
-import { Token } from '@dxdao/swapr-sdk'
+import { Token } from '@swapr/sdk'
 import { isToken } from '../../../hooks/Tokens'
 import { useBridge } from '../../../contexts/BridgeProvider'
 import { useBridgeInfo } from '../../../state/bridge/hooks'

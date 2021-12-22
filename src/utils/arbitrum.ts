@@ -1,4 +1,4 @@
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { BridgeTxnType } from '../state/bridgeTransactions/types'
 import { getNetworkInfo } from './networksList'
 

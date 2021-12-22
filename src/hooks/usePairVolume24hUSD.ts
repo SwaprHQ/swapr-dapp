@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { CurrencyAmount, USD } from '@dxdao/swapr-sdk'
+import { CurrencyAmount, USD } from '@swapr/sdk'
 import { parseUnits } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { useMemo } from 'react'

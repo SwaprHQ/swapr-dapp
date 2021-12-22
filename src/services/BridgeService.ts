@@ -1,6 +1,6 @@
 import { utils } from 'ethers'
 import { Bridge, OutgoingMessageState } from 'arb-ts'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 import { BigNumber } from '@ethersproject/bignumber'
 

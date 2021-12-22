@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency, RoutablePlatform } from '@dxdao/swapr-sdk'
+import { TokenAmount, Pair, Currency, RoutablePlatform } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { Interface } from '@ethersproject/abi'

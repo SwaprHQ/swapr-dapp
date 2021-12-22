@@ -1,4 +1,4 @@
-import { PricedTokenAmount } from '@dxdao/swapr-sdk'
+import { PricedTokenAmount } from '@swapr/sdk'
 import React, { useContext } from 'react'
 import { Box, Flex } from 'rebass'
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'

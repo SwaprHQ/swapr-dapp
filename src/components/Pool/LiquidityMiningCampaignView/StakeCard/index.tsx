@@ -4,7 +4,7 @@ import {
   TokenAmount,
   SingleSidedLiquidityMiningCampaign,
   LiquidityMiningCampaign
-} from '@dxdao/swapr-sdk'
+} from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'

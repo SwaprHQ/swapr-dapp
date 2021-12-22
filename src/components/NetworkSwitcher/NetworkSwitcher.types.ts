@@ -1,5 +1,5 @@
 import { ReactNode, RefObject } from 'react'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { Placement } from '@popperjs/core'
 export interface NetworkSwitcherProps {
   children?: ReactNode
