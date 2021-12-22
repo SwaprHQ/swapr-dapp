@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { ButtonPrimary } from '../../../components/Button'
 import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
 import { useWalletSwitcherPopoverToggle } from '../../../state/application/hooks'

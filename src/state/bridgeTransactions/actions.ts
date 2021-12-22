@@ -1,4 +1,4 @@
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { createAction } from '@reduxjs/toolkit'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { OutgoingMessageState } from 'arb-ts'

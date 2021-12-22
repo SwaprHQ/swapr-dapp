@@ -1221,21 +1221,6 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@dxdao/swapr-sdk@^0.11.00":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@dxdao/swapr-sdk/-/swapr-sdk-0.11.0.tgz#f60c09ff769208ba76aed00f8b96d78a10e2dfa7"
-  integrity sha512-7vJlMSYfhwXfam7b2fNSscNDnifFOrFXb2/9iqKee7y+AYFnUhmmomAB/twfcbCbXuVkfZ7YuWvuCKf1+F7k5A==
-  dependencies:
-    "@makerdao/multicall" "^0.11.0"
-    "@swapr/core" "^0.3.18"
-    "@swapr/periphery" "^0.3.20"
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.1"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 "@emotion/cache@^10.0.27":
   version "10.0.29"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.29.tgz#87e7e64f412c060102d589fe7c6dc042e6f9d1e0"
@@ -2746,6 +2731,21 @@
   integrity sha512-h2nH1ZDbk6IGLj6HmZLrg6vcfrWj2uHQXXYsyEXojOwjQ2EXDLw+YrmHhhCHI+qVaQ4rrQ2OclwZWe4oyuMyWg==
   dependencies:
     "@swapr/core" "^0.3.17"
+
+"@swapr/sdk@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-0.11.0.tgz#60effd91cf3be4689b5fc18b01740c0d3e90a1cf"
+  integrity sha512-0qpLIEiD0y2rCCLuX2GybBoBzWbkveXm/PfG4Bc4QVuH1PSNHCY13eTx0vh8aPVTEQ4hFuWEP2sOv1c7J0HJZQ==
+  dependencies:
+    "@makerdao/multicall" "^0.11.0"
+    "@swapr/core" "^0.3.18"
+    "@swapr/periphery" "^0.3.20"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
 
 "@testing-library/dom@^7.11.0":
   version "7.29.6"

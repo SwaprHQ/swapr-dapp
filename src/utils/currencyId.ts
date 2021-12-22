@@ -1,4 +1,4 @@
-import { Currency, Token } from '@dxdao/swapr-sdk'
+import { Currency, Token } from '@swapr/sdk'
 
 export function currencyId(currency: Currency): string {
   if (Currency.isNative(currency)) return currency.symbol || ''

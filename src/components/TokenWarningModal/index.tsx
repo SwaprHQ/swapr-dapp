@@ -1,4 +1,4 @@
-import { Token } from '@dxdao/swapr-sdk'
+import { Token } from '@swapr/sdk'
 import React, { useCallback, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'

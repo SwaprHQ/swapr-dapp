@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { isMobile } from 'react-device-detect'
 import { InjectedConnector } from '@web3-react/injected-connector'
 

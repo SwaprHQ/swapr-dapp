@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { BridgeModalState, BridgeNetworkInput, BridgeTxsFilter } from './reducer'
 
 export const typeInput = createAction<{ typedValue: string }>('bridge/typeInput')

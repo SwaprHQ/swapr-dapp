@@ -1,4 +1,4 @@
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { getNetworkInfo } from '../../utils/networksList'
 
 export enum BridgeStep {

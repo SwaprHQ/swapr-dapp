@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { SWPR } from '@dxdao/swapr-sdk'
+import { SWPR } from '@swapr/sdk'
 import { useActiveWeb3React } from '../../hooks'
 import { AddSWPRToMetamaskButton } from '../Button'
 import swprLogo from '../../assets/images/swpr-logo.png'

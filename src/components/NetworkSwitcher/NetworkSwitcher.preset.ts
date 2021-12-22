@@ -1,4 +1,4 @@
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import XDAILogo from '../../assets/svg/xdai-logo.svg'

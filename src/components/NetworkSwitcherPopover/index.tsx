@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from 'react'
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import { Placement } from '@popperjs/core'
 import { useActiveWeb3React } from '../../hooks'
 import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'

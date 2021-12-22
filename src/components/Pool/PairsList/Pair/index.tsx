@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { CurrencyAmount, Percent, Token } from '@dxdao/swapr-sdk'
+import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { DarkCard } from '../../../Card'

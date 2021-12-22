@@ -1,4 +1,4 @@
-import { Pair } from '@dxdao/swapr-sdk'
+import { Pair } from '@swapr/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'

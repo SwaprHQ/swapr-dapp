@@ -13,7 +13,7 @@ import {
   SWPR_CLAIMER_ABI,
   SWPR_CLAIMER_ADDRESS,
   SWPR_CONVERTER_ADDRESS
-} from '@dxdao/swapr-sdk'
+} from '@swapr/sdk'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { useMemo } from 'react'

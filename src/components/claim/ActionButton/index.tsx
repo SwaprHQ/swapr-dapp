@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { CurrencyAmount } from '@dxdao/swapr-sdk'
+import { CurrencyAmount } from '@swapr/sdk'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../../hooks'
 import { ButtonPrimary } from '../../Button'

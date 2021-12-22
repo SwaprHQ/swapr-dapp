@@ -1,4 +1,4 @@
-import { ChainId } from '@dxdao/swapr-sdk'
+import { ChainId } from '@swapr/sdk'
 import useParsedQueryString from './useParsedQueryString'
 
 export function useTargetedChainIdFromUrl(): ChainId | undefined {

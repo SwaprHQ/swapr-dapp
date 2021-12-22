@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
-import {
-  CurrencyAmount,
-  LiquidityMiningCampaign,
-  Percent,
-  Token,
-  SingleSidedLiquidityMiningCampaign
-} from '@dxdao/swapr-sdk'
+import { CurrencyAmount, LiquidityMiningCampaign, Percent, Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import { TYPE } from '../../../../theme'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 

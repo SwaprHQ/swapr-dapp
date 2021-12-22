@@ -1,4 +1,4 @@
-import { LiquidityMiningCampaign, Pair } from '@dxdao/swapr-sdk'
+import { LiquidityMiningCampaign, Pair } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
