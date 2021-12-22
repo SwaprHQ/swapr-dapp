@@ -26,7 +26,7 @@ import CarrotBadge from '../../../Badge/Carrot'
 import SimpleTextBadge from '../../../Badge/SimpleText'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
-  width: 260px;
+  /* width: 260px; */
   height: 147px;
   padding: 16px;
   border-radius: 12px;

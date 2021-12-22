@@ -17,7 +17,7 @@ import CampaignCard from '../../../PairsList/CampaignCard'
 const ListLayout = styled.div`
   display: grid;
   grid-gap: 12px 10px;
-  grid-template-columns: 260px 260px 260px;
+  grid-template-columns: 1fr 1fr 1fr;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: 1fr 1fr;
   `};
