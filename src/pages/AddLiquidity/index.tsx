@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, TokenAmount, Percent, JSBI, ChainId, RoutablePlatform } from '@swapr/sdk'
+import { Currency, currencyEquals, TokenAmount, Percent, JSBI, ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import { Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router-dom'
@@ -125,7 +125,7 @@ export default function AddLiquidity({
   )
 
   // check whether the user has approved the router on the tokens
-  const routerAddress = RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
+  const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerAddress)
   const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerAddress)
 
@@ -133,7 +133,7 @@ export default function AddLiquidity({
 
   async function onAdd() {
     if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, RoutablePlatform.SWAPR, account)
+    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {

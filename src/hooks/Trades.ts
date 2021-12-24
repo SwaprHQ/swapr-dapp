@@ -126,14 +126,14 @@ export function useTradeExactOut(
 export function useTradeExactInAllPlatforms(
   currencyAmountIn?: CurrencyAmount,
   currencyOut?: Currency
-): (Trade | undefined)[] {
+): (UniswapV2Trade | undefined)[] {
   const bestTrades = [
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.SWAPR),
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.UNISWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.SUSHISWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.HONEYSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.BAOSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, RoutablePlatform.LEVINSWAP)
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SWAPR),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.UNISWAP),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SUSHISWAP),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP),
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }
@@ -145,14 +145,14 @@ export function useTradeExactInAllPlatforms(
 export function useTradeExactOutAllPlatforms(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount
-): (Trade | undefined)[] {
+): (UniswapV2Trade | undefined)[] {
   const bestTrades = [
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.SWAPR),
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.UNISWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.SUSHISWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.HONEYSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.BAOSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, RoutablePlatform.LEVINSWAP)
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SWAPR),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.UNISWAP),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SUSHISWAP),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.HONEYSWAP),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.BAOSWAP),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.LEVINSWAP)
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }

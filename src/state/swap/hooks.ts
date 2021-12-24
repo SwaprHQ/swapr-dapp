@@ -1,6 +1,6 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, UniswapV2Trade } from '@swapr/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -97,7 +97,7 @@ const BAD_RECIPIENT_ADDRESSES: string[] = [
  * @param trade to check for the given address
  * @param checksummedAddress address to check in the pairs and tokens
  */
-function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
+function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boolean {
   return (
     trade.route.path.some(token => token.address === checksummedAddress) ||
     trade.route.pairs.some(pair => pair.liquidityToken.address === checksummedAddress)
@@ -111,8 +111,8 @@ export function useDerivedSwapInfo(
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  trade: Trade | undefined
-  allPlatformTrades: (Trade | undefined)[] | undefined
+  trade: UniswapV2Trade | undefined
+  allPlatformTrades: (UniswapV2Trade | undefined)[] | undefined
   inputError?: string
 } {
   const { account, chainId } = useActiveWeb3React()
@@ -186,8 +186,8 @@ export function useDerivedSwapInfo(
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
+      (bestTradeExactIn && involvesAddress(bestTradeExactIn as UniswapV2Trade, formattedTo)) ||
+      (bestTradeExactOut && involvesAddress(bestTradeExactOut as UniswapV2Trade, formattedTo))
     ) {
       inputError = inputError ?? 'Invalid recipient'
     }
@@ -211,7 +211,9 @@ export function useDerivedSwapInfo(
     currencies,
     currencyBalances,
     parsedAmount,
+    // @ts-ignore
     trade,
+    // @ts-ignore
     allPlatformTrades,
     inputError
   }

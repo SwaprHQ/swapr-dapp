@@ -1,4 +1,4 @@
-import { Trade, TradeType } from '@swapr/sdk'
+import { Trade, UniswapV2Trade, TradeType } from '@swapr/sdk'
 import React, { useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
@@ -24,18 +24,21 @@ export default function SwapModalFooter({
   swapErrorMessage,
   disabledConfirm
 }: {
-  trade: Trade
+  trade: UniswapV2Trade | Trade
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
-    allowedSlippage,
-    trade
-  ])
-  const { priceImpactWithoutFee, realizedLPFeeAmount } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const slippageAdjustedAmounts = useMemo(
+    () => computeSlippageAdjustedAmounts(trade as UniswapV2Trade, allowedSlippage),
+    [allowedSlippage, trade]
+  )
+  const { priceImpactWithoutFee, realizedLPFeeAmount } = useMemo(
+    () => computeTradePriceBreakdown(trade as UniswapV2Trade),
+    [trade]
+  )
   const severity = warningSeverity(priceImpactWithoutFee)
 
   return (
@@ -57,7 +60,7 @@ export default function SwapModalFooter({
               paddingLeft: '10px'
             }}
           >
-            {formatExecutionPrice(trade, showInverted)}
+            {formatExecutionPrice(trade as UniswapV2Trade, showInverted)}
             <StyledBalanceMaxMini style={{ marginLeft: 6 }} onClick={() => setShowInverted(!showInverted)}>
               <Repeat size={14} />
             </StyledBalanceMaxMini>

@@ -4,7 +4,17 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, Pair, RoutablePlatform } from '@swapr/sdk'
+import {
+  ChainId,
+  JSBI,
+  Percent,
+  Token,
+  CurrencyAmount,
+  Currency,
+  Pair,
+  // RoutablePlatform,
+  UniswapV2RoutablePlatform
+} from '@swapr/sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
@@ -124,7 +134,7 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 export function getRouterContract(
   chainId: ChainId,
   library: Web3Provider,
-  platform: RoutablePlatform,
+  platform: UniswapV2RoutablePlatform,
   account?: string
 ): Contract {
   return getContract(

@@ -1,4 +1,4 @@
-import { Trade } from '@swapr/sdk'
+import { Trade, UniswapV2Trade } from '@swapr/sdk'
 import React, { Fragment, memo, useContext } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
@@ -13,22 +13,27 @@ const StyledChevronRight = styled(ChevronRight)`
 
 export default memo(function SwapRoute({ trade }: { trade: Trade }) {
   const theme = useContext(ThemeContext)
-  return (
-    <Flex width="100%" justifyContent="flex-end" alignItems="center">
-      {trade.route.path.map((token, i, path) => {
-        const isLastItem: boolean = i === path.length - 1
-        return (
-          <Fragment key={i}>
-            <Flex alignItems="center">
-              <CurrencyLogo currency={token} size="14px" />
-              <TYPE.black fontSize="13px" lineHeight="17px" fontWeight="600" color={theme.text1} ml="4px">
-                {token.symbol}
-              </TYPE.black>
-            </Flex>
-            {!isLastItem && <StyledChevronRight />}
-          </Fragment>
-        )
-      })}
-    </Flex>
-  )
+
+  if (trade instanceof UniswapV2Trade) {
+    return (
+      <Flex width="100%" justifyContent="flex-end" alignItems="center">
+        {trade.route.path.map((token, i, path) => {
+          const isLastItem: boolean = i === path.length - 1
+          return (
+            <Fragment key={i}>
+              <Flex alignItems="center">
+                <CurrencyLogo currency={token} size="14px" />
+                <TYPE.black fontSize="13px" lineHeight="17px" fontWeight="600" color={theme.text1} ml="4px">
+                  {token.symbol}
+                </TYPE.black>
+              </Flex>
+              {!isLastItem && <StyledChevronRight />}
+            </Fragment>
+          )
+        })}
+      </Flex>
+    )
+  }
+
+  return null
 })
