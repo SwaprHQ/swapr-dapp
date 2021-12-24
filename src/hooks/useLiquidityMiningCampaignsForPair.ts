@@ -158,7 +158,7 @@ export function useLiquidityMiningCampaignsForPair(
         containsKpiToken
       }
       expiredWrappedCampaigns.push(campaignObject)
-      if (campaign.liquidityMiningPositions.length > 0) wrappedCampaigns.push(campaignObject)
+      if (campaign.liquidityMiningPositions.length > 0) wrappedCampaigns.unshift(campaignObject)
     }
     return { loading: false, wrappedCampaigns, expiredLoading: false, expiredWrappedCampagins: expiredWrappedCampaigns }
   }, [

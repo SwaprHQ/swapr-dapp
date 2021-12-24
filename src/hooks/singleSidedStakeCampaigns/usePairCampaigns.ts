@@ -105,7 +105,9 @@ export function usePairCampaigns(
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
       //reminder add support for kpi tokens if possbile
       if (hasStake || singleSidedStakeCampaign.currentlyActive) {
-        activeCampaigns.push({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
+        if (isExpired)
+          activeCampaigns.unshift({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
+        else activeCampaigns.push({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
       } else if (isExpired) {
         expiredCampaigns.push({ campaign: singleSidedStakeCampaign, staked: hasStake, containsKpiToken: false })
       }
