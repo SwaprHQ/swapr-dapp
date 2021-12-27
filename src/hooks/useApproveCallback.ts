@@ -1,6 +1,14 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trade, TokenAmount, CurrencyAmount, ChainId } from '@swapr/sdk'
+import {
+  Trade,
+  TokenAmount,
+  CurrencyAmount,
+  ChainId,
+  CurveTrade,
+  UniswapV2Trade,
+  UniswapV2RoutablePlatform
+} from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -105,5 +113,18 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
-  return useApproveCallback(amountToApprove, trade?.platform.routerAddress[chainId || ChainId.MAINNET])
+
+  // Find the approve address for the trade
+  let approveAddress
+  if (trade instanceof CurveTrade) {
+    approveAddress = trade.approveAddress
+  } else if (trade instanceof UniswapV2Trade) {
+    /**
+     * @todo use approveAddress property in next version
+     */
+    const routerAddressList = trade.platform as UniswapV2RoutablePlatform
+    approveAddress = routerAddressList.routerAddress[chainId as ChainId]
+  }
+
+  return useApproveCallback(amountToApprove, approveAddress)
 }
