@@ -11,7 +11,8 @@ import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMining
 import Skeleton from 'react-loading-skeleton'
 import { usePair24hVolumeUSD } from '../../../hooks/usePairVolume24hUSD'
 import { usePairLiquidityUSD } from '../../../hooks/usePairLiquidityUSD'
-import LiquidityMiningCampaigns from './LiquidityMiningCampaigns'
+//import { Link } from 'react-router-dom'
+//import LiquidityMiningCampaigns from './LiquidityMiningCampaigns'
 import { useActiveWeb3React } from '../../../hooks'
 import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
@@ -83,7 +84,7 @@ function PairView({ loading, pair }: PairViewProps) {
 
   return (
     <>
-      {liquidityMiningEnabled && <LiquidityMiningCampaigns pair={pair || undefined} />}
+      {/* {liquidityMiningEnabled && <LiquidityMiningCampaigns pair={pair || undefined} />} */}
       <StyledDarkCard padding="32px">
         <Flex flexDirection="column">
           <Flex mb="18px" alignItems="center">
@@ -131,11 +132,26 @@ function PairView({ loading, pair }: PairViewProps) {
             </Box>
           )}
           <RowBetween mt="18px">
+            {/* find a way to use as="Link" */}
+            <ButtonGrey
+              id="rewards-campaing-for-pair"
+              onClick={() => {
+                history.push('/pools')
+              }}
+              disabled={!liquidityMiningEnabled}
+              padding="8px"
+              marginRight="18px"
+              width="50%"
+            >
+              <Text fontSize="12px" fontWeight="bold" lineHeight="15px">
+                REWARD CAMPAIGNS
+              </Text>
+            </ButtonGrey>
             <ButtonGrey
               padding="8px"
               disabled
               style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
-              width="100%"
+              width="50%"
             >
               GOVERNANCE (COMING SOON)
             </ButtonGrey>

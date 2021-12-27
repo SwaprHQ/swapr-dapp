@@ -241,6 +241,13 @@ function Header() {
           <StyledNavLink id="swap-nav-link" to="/swap" activeClassName="active">
             {t('swap')}
           </StyledNavLink>
+
+          <StyledNavLink id="pool-nav-link" to="/pools" activeClassName="active">
+            Liquidity
+          </StyledNavLink>
+          <StyledNavLink id="rewards-nav-link" to="/rewards" activeClassName="active">
+            Rewards
+          </StyledNavLink>
           <StyledActiveNavLinkWithBadge id="bridge-nav-link" to="/bridge" activeClassName="active">
             {t('bridge')}
             <AbsoluteBadgeFlex justifyContent="center" width="100%">
@@ -249,9 +256,6 @@ function Header() {
               </Box>
             </AbsoluteBadgeFlex>
           </StyledActiveNavLinkWithBadge>
-          <StyledNavLink id="pool-nav-link" to="/pools" activeClassName="active">
-            {t('pool')}
-          </StyledNavLink>
           <StyledExternalLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLink>
