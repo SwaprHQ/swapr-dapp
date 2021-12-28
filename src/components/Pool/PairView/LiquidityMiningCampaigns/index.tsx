@@ -63,18 +63,16 @@ export default function LiquidityMiningCampaigns({ pair }: LiquidityMiningCampai
         <>
           {activeTab === 0 && (
             <List
-              singleSidedCampaings={active}
               loading={loadingActive || loading}
               stakablePair={pair}
-              items={activeWrappedCampaigns}
+              items={[...active, ...activeWrappedCampaigns]}
             />
           )}
           {activeTab === 1 && (
             <List
-              singleSidedCampaings={expired}
               loading={expiredLoading || loading}
               stakablePair={pair}
-              items={expiredWrappedCampagins}
+              items={[...expired, ...expiredWrappedCampagins]}
             />
           )}
         </>

@@ -136,7 +136,7 @@ function PairView({ loading, pair }: PairViewProps) {
             <ButtonGrey
               id="rewards-campaing-for-pair"
               onClick={() => {
-                history.push('/pools')
+                history.push('/rewards')
               }}
               disabled={!liquidityMiningEnabled}
               padding="8px"

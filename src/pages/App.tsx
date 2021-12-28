@@ -82,7 +82,10 @@ export default function App() {
                   <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                   <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                   <Route exact strict path="/pools" component={Pools} />
+                  <Route exact strict path="/rewards" component={Pools} />
                   <Route exact strict path="/pools/mine" component={MyPairs} />
+                  <Route exact strict path="/rewards" component={Pools} />
+                  <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Pools} />
                   <Route
                     exact
                     strict

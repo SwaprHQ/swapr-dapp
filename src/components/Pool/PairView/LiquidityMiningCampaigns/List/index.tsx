@@ -29,28 +29,24 @@ const ListLayout = styled.div`
 
 interface LiquidityMiningCampaignsListProps {
   stakablePair?: Pair
-  items?: { campaign: LiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
+  items?: {
+    campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
+    staked: boolean
+    containsKpiToken: boolean
+  }[]
   loading?: boolean
-  singleSidedCampaings?: { campaign: SingleSidedLiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
 }
 
-const { upToSmall, upToMedium, upToExtraSmall } = MEDIA_WIDTHS
+const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export default function List({
-  stakablePair,
-  loading,
-  items = [],
-  singleSidedCampaings = []
-}: LiquidityMiningCampaignsListProps) {
+export default function List({ stakablePair, loading, items = [] }: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
-  const combinedCampaings = [...singleSidedCampaings, ...items]
+
   console.log(responsiveItemsPerPage)
-  const itemsPage = usePage(combinedCampaings, responsiveItemsPerPage, page, 0)
+  const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
   const { width } = useWindowSize()
-  console.log(width)
-  console.log(upToMedium)
-  console.log(upToSmall)
+
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
