@@ -114,7 +114,7 @@ export function formatExecutionPrice(trade?: UniswapV2Trade, inverted?: boolean)
       }`
 }
 
-export function sortTradesByExecutionPrice(trades: (UniswapV2Trade | undefined)[]): (UniswapV2Trade | undefined)[] {
+export function sortTradesByExecutionPrice(trades: (Trade | undefined)[]): (Trade | undefined)[] {
   return trades.sort((a, b) => {
     if (a === undefined || a === null) {
       return 1

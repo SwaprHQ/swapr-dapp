@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId } from '@swapr/sdk'
+import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
