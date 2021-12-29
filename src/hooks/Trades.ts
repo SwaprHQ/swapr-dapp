@@ -126,7 +126,6 @@ export function useTradeExactInCurve(
         const nextSwapTx = await newTrade?.swapTransaction()
 
         if (prevSwapTx?.data !== nextSwapTx?.data) {
-          console.log('Found a new Curve trade', newTrade)
           setTrade(newTrade)
         }
       })

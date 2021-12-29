@@ -186,8 +186,8 @@ export function useDerivedSwapInfo(
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn as UniswapV2Trade, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut as UniswapV2Trade, formattedTo))
+      (bestTradeExactIn instanceof UniswapV2Trade && involvesAddress(bestTradeExactIn, formattedTo)) ||
+      (bestTradeExactOut instanceof UniswapV2Trade && involvesAddress(bestTradeExactOut, formattedTo))
     ) {
       inputError = inputError ?? 'Invalid recipient'
     }

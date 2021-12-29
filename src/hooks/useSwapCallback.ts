@@ -1,17 +1,22 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, JSBI, Percent, RoutablePlatform, Router, SwapParameters, Trade, TradeType } from '@swapr/sdk'
+import { UnsignedTransaction } from 'ethers'
+import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId } from '@swapr/sdk'
 import { useMemo } from 'react'
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
-import isZero from '../utils/isZero'
+import {
+  // getRouterContract,
+  isAddress,
+  shortenAddress
+} from '../utils'
+// import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
-import { MainnetGasPrice } from '../state/application/actions'
+// import { MainnetGasPrice } from '../state/application/actions'
 
 export enum SwapCallbackState {
   INVALID,
@@ -20,8 +25,8 @@ export enum SwapCallbackState {
 }
 
 interface SwapCall {
-  contract: Contract
-  parameters: SwapParameters
+  contract?: Contract
+  transactionParameters: Promise<UnsignedTransaction>
 }
 
 interface SuccessfulCall {
@@ -48,7 +53,6 @@ export function useSwapsCallArguments(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
   const { account, chainId, library } = useActiveWeb3React()
-
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const deadline = useTransactionDeadline()
@@ -60,21 +64,26 @@ export function useSwapsCallArguments(
       if (!trade) {
         return []
       }
-      const contract: Contract | null = getRouterContract(chainId, library, trade.platform, account)
-      if (!contract) {
-        return []
-      }
 
       const swapMethods = []
+      // Curve trade
+      if (trade instanceof CurveTrade) {
+        return [
+          {
+            transactionParameters: trade.swapTransaction()
+          }
+        ]
+      }
+
+      // Uniswap V2 trade
       swapMethods.push(
-        Router.swapCallParameters(trade, {
-          feeOnTransfer: false,
-          allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+        trade.swapTransaction({
           recipient,
           ttl: deadline.toNumber()
         })
       )
 
+      /*
       if (trade.tradeType === TradeType.EXACT_INPUT) {
         swapMethods.push(
           Router.swapCallParameters(trade, {
@@ -85,8 +94,9 @@ export function useSwapsCallArguments(
           })
         )
       }
+      */
 
-      return swapMethods.map(parameters => ({ parameters, contract }))
+      return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
   }, [account, allowedSlippage, chainId, deadline, library, recipient, trades])
 }
@@ -94,7 +104,7 @@ export function useSwapsCallArguments(
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade: Trade | undefined, // trade to execute, required
+  trade: UniswapV2Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
@@ -126,27 +136,20 @@ export function useSwapCallback(
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
-          swapCalls.map(call => {
-            const {
-              parameters: { methodName, args, value },
-              contract
-            } = call
-            const options = !value || isZero(value) ? {} : { value }
-
-            return contract.estimateGas[methodName](...args, {
-              ...options,
-              gasLimit: chainId === ChainId.XDAI ? 1000000 : undefined
-            })
-              .then(gasEstimate => {
-                return {
-                  call,
-                  gasEstimate
-                }
-              })
+          swapCalls.map(async call => {
+            const transactionRequest = await call.transactionParameters
+            return library
+              .getSigner()
+              .estimateGas(transactionRequest as any)
+              .then(gasEstimate => ({
+                call,
+                gasEstimate
+              }))
               .catch(gasError => {
-                console.debug('Gas estimate failed, trying eth_call to extract error', call)
+                console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
-                return contract.callStatic[methodName](...args, options)
+                return library
+                  .call(transactionRequest as any)
                   .then(result => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
                     return { call, error: new Error('Unexpected issue with estimating the gas. Please try again.') }
@@ -182,13 +185,11 @@ export function useSwapCallback(
         }
 
         const {
-          call: {
-            contract,
-            parameters: { methodName, args, value }
-          },
-          gasEstimate
+          call: { transactionParameters }
+          // gasEstimate
         } = successfulEstimation
 
+        /*
         let normalizedGasPrice = undefined
         if (preferredGasPrice && chainId === ChainId.MAINNET) {
           if (!(preferredGasPrice in MainnetGasPrice)) {
@@ -197,12 +198,11 @@ export function useSwapCallback(
             normalizedGasPrice = mainnetGasPrices[preferredGasPrice as MainnetGasPrice]
           }
         }
+        */
 
-        return contract[methodName](...args, {
-          gasLimit: calculateGasMargin(gasEstimate),
-          gasPrice: normalizedGasPrice,
-          ...(value && !isZero(value) ? { value, from: account } : { from: account })
-        })
+        return library
+          .getSigner()
+          .sendTransaction((await transactionParameters) as any)
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol
@@ -211,7 +211,7 @@ export function useSwapCallback(
             const platformName = trade.platform.name
 
             const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
-              platformName !== RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
+              platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
             }`
             const withRecipient =
               recipient === account
@@ -234,7 +234,7 @@ export function useSwapCallback(
               throw new Error('Transaction rejected.')
             } else {
               // otherwise, the error was unexpected and we need to convey that
-              console.error(`Swap failed`, error, methodName, args, value)
+              console.error(`Swap failed`, error, transactionParameters)
               throw new Error(`Swap failed: ${error.message}`)
             }
           })

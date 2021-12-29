@@ -218,7 +218,7 @@ export default function Swap() {
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // warnings on slippage
-  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
+  const priceImpactSeverity = trade instanceof UniswapV2Trade ? warningSeverity(priceImpactWithoutFee) : 1
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -371,7 +371,7 @@ export default function Swap() {
                   {wrapInputError ??
                     (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                 </ButtonPrimary>
-              ) : noRoute && userHasSpecifiedInputOutput ? (
+              ) : noRoute && trade instanceof UniswapV2Trade && userHasSpecifiedInputOutput ? (
                 <ButtonPrimary style={{ textAlign: 'center' }} disabled>
                   Insufficient liquidity
                 </ButtonPrimary>

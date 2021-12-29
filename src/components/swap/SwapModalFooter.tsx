@@ -24,7 +24,7 @@ export default function SwapModalFooter({
   swapErrorMessage,
   disabledConfirm
 }: {
-  trade: UniswapV2Trade | Trade
+  trade: Trade
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
@@ -39,7 +39,7 @@ export default function SwapModalFooter({
     () => computeTradePriceBreakdown(trade as UniswapV2Trade),
     [trade]
   )
-  const severity = warningSeverity(priceImpactWithoutFee)
+  const severity = trade instanceof UniswapV2Trade ? warningSeverity(priceImpactWithoutFee) : 1
 
   return (
     <>
