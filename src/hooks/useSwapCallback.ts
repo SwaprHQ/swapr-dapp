@@ -1,22 +1,18 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade } from '@swapr/sdk'
+import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import {
-  // getRouterContract,
-  isAddress,
-  shortenAddress
-} from '../utils'
+import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 // import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
-// import { MainnetGasPrice } from '../state/application/actions'
+import { MainnetGasPrice } from '../state/application/actions'
 
 export enum SwapCallbackState {
   INVALID,
@@ -138,6 +134,14 @@ export function useSwapCallback(
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
             const transactionRequest = await call.transactionParameters
+            // Ignore gas estimation if the request has gasLimit property
+            if (transactionRequest.gasLimit) {
+              return {
+                call,
+                gasEstimate: transactionRequest.gasLimit as BigNumber
+              }
+            }
+
             return library
               .getSigner()
               .estimateGas(transactionRequest as any)
@@ -185,11 +189,10 @@ export function useSwapCallback(
         }
 
         const {
-          call: { transactionParameters }
-          // gasEstimate
+          call: { transactionParameters },
+          gasEstimate
         } = successfulEstimation
 
-        /*
         let normalizedGasPrice = undefined
         if (preferredGasPrice && chainId === ChainId.MAINNET) {
           if (!(preferredGasPrice in MainnetGasPrice)) {
@@ -202,7 +205,11 @@ export function useSwapCallback(
 
         return library
           .getSigner()
-          .sendTransaction((await transactionParameters) as any)
+          .sendTransaction({
+            gasLimit: calculateGasMargin(gasEstimate),
+            gasPrice: normalizedGasPrice,
+            ...((await transactionParameters) as any)
+          })
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol
