@@ -12,7 +12,7 @@ import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
   query($address: [ID!], $userId: ID) {
-    singleSidedStakingCampaigns(first: 100, where: { stakeToken_in: $address }) {
+    singleSidedStakingCampaigns(where: { stakeToken_in: $address }) {
       id
       owner
       startsAt
@@ -74,6 +74,8 @@ export function usePairCampaigns(
       userId: subgraphAccountId
     }
   })
+  console.log(data)
+  console.log([token0Address, token1Address])
   return useMemo(() => {
     if (loading || chainId === undefined) {
       return { loading: true, active: [], expired: [] }

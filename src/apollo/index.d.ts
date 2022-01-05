@@ -20,6 +20,16 @@ export interface SubgraphLiquidityMiningCampaign {
   stakedAmount: string
   locked: boolean
   stakingCap: string
+  stakablePair: {
+    id: string
+    reserveNativeCurrency: string
+    reserveUSD: string
+    totalSupply: string
+    reserve0: string
+    reserve1: string
+    token0: SubgraphToken
+    token1: SubgraphToken
+  }
 }
 
 export interface SubgraphSingleSidedStakingCampaign {

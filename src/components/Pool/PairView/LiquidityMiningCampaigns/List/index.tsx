@@ -1,4 +1,4 @@
-import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign, Pair } from '@swapr/sdk'
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -28,7 +28,6 @@ const ListLayout = styled.div`
 `
 
 interface LiquidityMiningCampaignsListProps {
-  stakablePair?: Pair
   items?: {
     campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
     staked: boolean
@@ -39,9 +38,9 @@ interface LiquidityMiningCampaignsListProps {
 
 const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export default function List({ stakablePair, loading, items = [] }: LiquidityMiningCampaignsListProps) {
+export default function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
-  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
+  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
 
   console.log(responsiveItemsPerPage)
   const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
@@ -53,10 +52,11 @@ export default function List({ stakablePair, loading, items = [] }: LiquidityMin
     if (!width) return
     else if (width <= upToExtraSmall) setResponsiveItemsPerPage(1)
     else if (width <= upToMedium) setResponsiveItemsPerPage(2)
-    else setResponsiveItemsPerPage(3)
+    else setResponsiveItemsPerPage(9)
   }, [width])
 
-  const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items || !stakablePair
+  const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items
+  console.log('overall laoding', loading, 'and', loadingNativeCurrencyUsdPrice, 'and', items)
 
   return (
     <>
@@ -88,8 +88,10 @@ export default function List({ stakablePair, loading, items = [] }: LiquidityMin
                     </UndecoratedLink>
                   )
                 } else {
-                  const token0 = stakablePair?.token0
-                  const token1 = stakablePair?.token1
+                  console.log(item.campaign)
+                  const token0 = item.campaign?.targetedPair.token0
+                  const token1 = item.campaign?.targetedPair.token1
+
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}

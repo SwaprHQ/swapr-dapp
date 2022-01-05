@@ -5,17 +5,17 @@ import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { PageWrapper } from './styleds'
 
 import { TYPE } from '../../theme'
-import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../components/Row'
-import { ButtonSecondary, ButtonWithLink } from '../../components/Button'
+import { Box, Button, Flex, Text } from 'rebass'
+import { RowBetween } from '../../components/Row'
+import { ButtonWithLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 
 import { useActiveWeb3React } from '../../hooks'
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
-import { ChevronDown, X } from 'react-feather'
+import { ChevronDown, Plus, X } from 'react-feather'
 import CurrencySearchModal from '../../components/SearchModal/CurrencySearchModal'
 import { Currency, Token } from '@swapr/sdk'
-import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
+
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
@@ -38,28 +38,6 @@ const TitleRow = styled(RowBetween)`
   `};
 `
 
-const ButtonRow = styled(RowFixed)`
-  & > a + a {
-    margin-left: 8px;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    justify-content: space-between;
-    margin: 26px 0 8px 0;
-  `};
-`
-
-const ResponsiveButtonSecondary = styled(ButtonSecondary)`
-  width: fit-content;
-  font-weight: 400;
-  color: ${({ theme }) => theme.text1};
-  border: 1px solid ${({ theme }) => theme.bg5};
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
 const PointableFlex = styled(Flex)`
   border: solid 1px ${props => props.theme.bg3};
   border-radius: 8px;
@@ -67,6 +45,13 @@ const PointableFlex = styled(Flex)`
   align-items: center;
   padding: 0 10px;
   cursor: pointer;
+`
+
+const TransperentButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  margin-left: 18px;
+  color: ${props => props.theme.text4};
 `
 
 const ResetFilterIconContainer = styled(Flex)`
@@ -94,7 +79,6 @@ interface TitleProps {
 // decoupling the title from the rest of the component avoids full-rerender everytime the pair selection modal is opened
 function Title({ onCurrencySelection, filteredToken, onFilteredTokenReset, aggregatedDataFilter }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
-  const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
 
   const handleAllClick = useCallback(() => {
     setOpenTokenModal(true)
@@ -159,21 +143,14 @@ function Title({ onCurrencySelection, filteredToken, onFilteredTokenReset, aggre
               )}
             </PointableFlex>
           )}
-        </Flex>
-        <ButtonRow>
-          <ResponsiveButtonSecondary id="join-pool-button" as={Link} padding="8px 14px" to="/create">
-            <Text fontWeight={700} fontSize={12}>
+
+          <TransperentButton as={Link} to="/create">
+            <Plus size="16" />
+            <Text marginLeft="5px" fontWeight="500" fontSize="12px">
               CREATE PAIR
             </Text>
-          </ResponsiveButtonSecondary>
-          {liquidityMiningEnabled && (
-            <ResponsiveButtonSecondary as={Link} padding="8px 14px" to="/liquidity-mining/create">
-              <Text fontWeight={700} fontSize={12} lineHeight="15px">
-                Create Rewards
-              </Text>
-            </ResponsiveButtonSecondary>
-          )}
-        </ButtonRow>
+          </TransperentButton>
+        </Flex>
       </TitleRow>
       <CurrencySearchModal
         isOpen={openTokenModal}
