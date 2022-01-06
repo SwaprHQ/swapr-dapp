@@ -17,11 +17,12 @@ import CurrencySearchModal from '../../components/SearchModal/CurrencySearchModa
 import { Currency, Token } from '@swapr/sdk'
 
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
-import ListFilter, { PairsFilterType } from '../../components/Pool/ListFilter'
+import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
+import Switch from '../../components/Switch'
 
 /* const VoteCard = styled.div`
   overflow: hidden;
@@ -74,10 +75,17 @@ interface TitleProps {
   onCurrencySelection: (currency: Currency) => void
   onFilteredTokenReset: () => void
   aggregatedDataFilter: PairsFilterType
+  onFilterChange: (filter: PairsFilterType) => void
 }
 
 // decoupling the title from the rest of the component avoids full-rerender everytime the pair selection modal is opened
-function Title({ onCurrencySelection, filteredToken, onFilteredTokenReset, aggregatedDataFilter }: TitleProps) {
+function Title({
+  onCurrencySelection,
+  filteredToken,
+  onFilteredTokenReset,
+  aggregatedDataFilter,
+  onFilterChange
+}: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
 
   const handleAllClick = useCallback(() => {
@@ -96,10 +104,17 @@ function Title({ onCurrencySelection, filteredToken, onFilteredTokenReset, aggre
     [onFilteredTokenReset]
   )
 
+  // const handleFilterRadioChange = useCallback(
+  //   event => {
+  //     onFilterChange(PairsFilterType[event.target.value as keyof typeof PairsFilterType])
+  //   },
+  //   [onFilterChange]
+  // )
+
   return (
     <>
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-        <Flex alignItems="center">
+        <Flex alignItems="center" justifyContent="space-between">
           <Box mr="8px">
             <Text fontSize="26px" lineHeight="32px">
               Pairs
@@ -151,6 +166,20 @@ function Title({ onCurrencySelection, filteredToken, onFilteredTokenReset, aggre
             </Text>
           </TransperentButton>
         </Flex>
+        <Flex>
+          <Switch
+            label="CAMPAIGNS"
+            handleToggle={() => onFilterChange(PairsFilterType.REWARDS)}
+            isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
+            value={PairsFilterType.REWARDS.toString()}
+          />
+          <Switch
+            label="MY PAIRS"
+            handleToggle={() => onFilterChange(PairsFilterType.MY)}
+            isOn={aggregatedDataFilter === PairsFilterType.MY}
+            value={PairsFilterType.MY.toString()}
+          />
+        </Flex>
       </TitleRow>
       <CurrencySearchModal
         isOpen={openTokenModal}
@@ -184,6 +213,7 @@ export default function Pools() {
   }, [])
 
   const handleFilterChange = useCallback(filter => {
+    console.log(filter)
     setAggregatedDataFilter(filter)
   }, [])
 
@@ -198,8 +228,9 @@ export default function Pools() {
               onCurrencySelection={handleCurrencySelect}
               filteredToken={filterToken}
               onFilteredTokenReset={handleFilterTokenReset}
+              onFilterChange={handleFilterChange}
             />
-            <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} />
+            {/* <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} /> */}
             {aggregatedDataFilter === PairsFilterType.MY ? (
               <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
             ) : (
