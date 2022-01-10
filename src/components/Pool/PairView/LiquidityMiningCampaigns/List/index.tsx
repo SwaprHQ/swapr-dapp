@@ -42,7 +42,6 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
 
-  console.log(responsiveItemsPerPage)
   const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
   const { width } = useWindowSize()
 
@@ -56,7 +55,6 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
   }, [width])
 
   const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items
-  console.log('overall laoding', loading, 'and', loadingNativeCurrencyUsdPrice, 'and', items)
 
   return (
     <>
@@ -88,7 +86,6 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
                     </UndecoratedLink>
                   )
                 } else {
-                  console.log(item.campaign)
                   const token0 = item.campaign?.targetedPair.token0
                   const token1 = item.campaign?.targetedPair.token1
 

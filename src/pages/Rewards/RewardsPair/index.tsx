@@ -23,8 +23,7 @@ export default function RewardsPair({
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
-  console.log(token0)
-  console.log(token1)
+
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const pair = wrappedPair[1]
   const lowerExpiredCampaignTimeLimit = useMemo(

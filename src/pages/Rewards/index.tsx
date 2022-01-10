@@ -7,53 +7,59 @@ import List from '../../components/Pool/PairView/LiquidityMiningCampaigns/List'
 
 import TabTitle from '../../components/Pool/PairView/LiquidityMiningCampaigns/TabTitle'
 import { useAllLiquidtyMiningCampaings } from '../../hooks/useAllLiquidtyMiningCampaings'
-import { RouteComponentProps } from 'react-router'
-import { useToken } from '../../hooks/Tokens'
-import { usePair } from '../../data/Reserves'
+
+import { PairsFilterType } from '../../components/Pool/ListFilter'
+import { Pair } from '@swapr/sdk'
+import { Flex } from 'rebass'
+import Switch from '../../components/Switch'
 
 const View = styled(AutoColumn)`
   margin-top: 20px;
 `
+interface RewardsInterface {
+  dataFilter: PairsFilterType
+  setDataFiler: any
+  pair?: Pair | null
+}
 
-export default function Rewards({
-  match: {
-    params: { currencyIdA, currencyIdB }
-  }
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const token0 = useToken(currencyIdA)
-
-  const token1 = useToken(currencyIdB)
-  const wrappedPair = usePair(token0 || undefined, token1 || undefined)
-  const pair = wrappedPair[1]
+export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInterface) {
   const { loading, singleSidedCampaings } = useAllLiquidtyMiningCampaings(pair ? pair : undefined)
-  console.log(loading)
-  console.log(singleSidedCampaings)
+  console.log(dataFilter)
   const [activeTab, setActiveTab] = useState(0)
 
   return (
     <View gap="16px">
-      <TabBar
-        titles={[
-          <TabTitle
-            key="active"
-            loadingAmount={loading}
-            itemsAmount={singleSidedCampaings.active.length}
-            badgeTheme="orange"
-          >
-            Campaigns
-          </TabTitle>,
-          <TabTitle
-            key="active"
-            loadingAmount={loading}
-            itemsAmount={singleSidedCampaings.expired.length}
-            badgeTheme="red"
-          >
-            Expired (30 days)
-          </TabTitle>
-        ]}
-        active={activeTab}
-        onChange={setActiveTab}
-      />
+      <Flex>
+        <TabBar
+          titles={[
+            <TabTitle
+              key="active"
+              loadingAmount={loading}
+              itemsAmount={singleSidedCampaings.active.length}
+              badgeTheme="orange"
+            >
+              Campaigns
+            </TabTitle>,
+            <TabTitle
+              key="active"
+              loadingAmount={loading}
+              itemsAmount={singleSidedCampaings.expired.length}
+              badgeTheme="red"
+            >
+              Expired (30 days)
+            </TabTitle>
+          ]}
+          active={activeTab}
+          onChange={setActiveTab}
+        />
+        <Switch
+          style={{ marginLeft: 'auto' }}
+          isOn={dataFilter === PairsFilterType.MY}
+          label="MY PAIRS"
+          handleToggle={setDataFiler}
+        />
+      </Flex>
+
       {!loading ? (
         <>
           {activeTab === 0 && <List loading={loading} items={singleSidedCampaings.active} />}

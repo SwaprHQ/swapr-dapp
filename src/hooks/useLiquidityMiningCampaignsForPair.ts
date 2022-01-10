@@ -94,7 +94,7 @@ export function useLiquidityMiningCampaignsForPair(
       userId: account ? account.toLowerCase() : ''
     }
   })
-  console.log('error', error)
+
   const { data: expiredData, loading: loadingExpiredCampaigns, error: expiredError } = useQuery<{
     liquidityMiningCampaigns: ExtendedSubgraphLiquidityMiningCampaign[]
   }>(EXPIRED_QUERY, {
@@ -105,7 +105,7 @@ export function useLiquidityMiningCampaignsForPair(
       userId: account ? account.toLowerCase() : ''
     }
   })
-  console.log('expired error', expiredError)
+
   const kpiTokenAddresses = useMemo(() => {
     if (!data) return []
     return data.liquidityMiningCampaigns.flatMap(campaign =>

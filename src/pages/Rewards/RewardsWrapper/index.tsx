@@ -9,18 +9,22 @@ import { TYPE } from '../../../theme'
 import { Box, Flex, Text } from 'rebass'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { AutoColumn } from '../../../components/Column'
+import { ReactComponent as ThreeBlurredCircles } from '../../../assets/svg/three-blurred-circles.svg'
 
 import { ChevronDown } from 'react-feather'
 import { useToken } from '../../../hooks/Tokens'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { PairState, usePair } from '../../../data/Reserves'
-import { useRouter } from '../../../hooks/useRouter'
+
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
-import Skeleton from 'react-loading-skeleton'
 import { ButtonSecondary } from '../../../components/Button'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
-import { unwrappedToken } from '../../../utils/wrappedCurrency'
+
+import { PairsFilterType } from '../../../components/Pool/ListFilter'
+import Rewards from '..'
+import { Pair } from '@swapr/sdk'
+import { ResetFilterIcon, ResetFilterIconContainer } from '../../Pools'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -62,10 +66,12 @@ export default function RewardsWrapper({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const router = useRouter()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
+  console.log(token0, currencyIdA)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
+  const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
+  const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
@@ -75,18 +81,18 @@ export default function RewardsWrapper({
   }, [])
 
   const handleModalClose = useCallback(() => {
+    setAggregatedDataFilter(PairsFilterType.MY)
     setOpenPairsModal(false)
   }, [])
 
-  const handlePairSelect = useCallback(
-    pair => {
-      router.push({
-        pathname: `/rewards/${pair.token0.address}/${pair.token1.address}`
-      })
-    },
-    [router]
-  )
-
+  const handlePairSelect = useCallback(pair => {
+    setFilterPair(pair)
+  }, [])
+  const handleFilterTokenReset = useCallback(() => {
+    setFilterPair(null)
+  }, [])
+  console.log(token0 !== undefined && token1 !== undefined ? wrappedPair[1] : undefined)
+  console.log(wrappedPair)
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/rewards" />
   return (
@@ -110,28 +116,46 @@ export default function RewardsWrapper({
                     /
                   </TYPE.mediumHeader>
                 </Box>
-                <PointableFlex onClick={handleAllClick}>
-                  <Box mr="4px">
-                    <DoubleCurrencyLogo
-                      loading={!token0 || !token1}
-                      currency0={token0 || undefined}
-                      currency1={token1 || undefined}
-                      size={20}
-                    />
-                  </Box>
-                  <Box mr="4px">
-                    <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                      {!token0 || !token1 ? (
-                        <Skeleton width="60px" />
-                      ) : (
-                        `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
-                      )}
-                    </Text>
-                  </Box>
+                {aggregatedDataFilter === PairsFilterType.MY ? (
                   <Box>
-                    <ChevronDown size={12} />
+                    <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
+                      {aggregatedDataFilter.toUpperCase()}
+                    </TYPE.mediumHeader>
                   </Box>
-                </PointableFlex>
+                ) : (
+                  <PointableFlex onClick={handleAllClick}>
+                    {!filterPair && (
+                      <Box mr="6px" height="21px">
+                        <ThreeBlurredCircles />
+                      </Box>
+                    )}
+                    {filterPair && (
+                      <Box mr="4px">
+                        <DoubleCurrencyLogo
+                          loading={!token0 || !token1}
+                          currency0={token0 || undefined}
+                          currency1={token1 || undefined}
+                          size={20}
+                        />
+                      </Box>
+                    )}
+                    <Box mr="4px">
+                      <Text fontWeight="600" fontSize="16px" lineHeight="20px">
+                        {filterPair ? `${filterPair.token0.symbol}/${filterPair.token1.symbol}` : 'ALL'}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <ChevronDown size={12} />
+                    </Box>
+                    {filterPair && (
+                      <Box ml="6px">
+                        <ResetFilterIconContainer onClick={handleFilterTokenReset}>
+                          <ResetFilterIcon />
+                        </ResetFilterIconContainer>
+                      </Box>
+                    )}
+                  </PointableFlex>
+                )}
               </Flex>
               <ButtonRow>
                 {liquidityMiningEnabled && (
@@ -145,6 +169,11 @@ export default function RewardsWrapper({
             </TitleRow>
           </AutoColumn>
         </AutoColumn>
+        <Rewards
+          pair={token0 !== undefined && token1 !== undefined ? wrappedPair[1] : undefined}
+          dataFilter={aggregatedDataFilter}
+          setDataFiler={setAggregatedDataFilter}
+        />
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
     </>

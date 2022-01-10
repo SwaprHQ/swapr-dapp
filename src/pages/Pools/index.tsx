@@ -55,7 +55,7 @@ const TransperentButton = styled(Button)`
   color: ${props => props.theme.text4};
 `
 
-const ResetFilterIconContainer = styled(Flex)`
+export const ResetFilterIconContainer = styled(Flex)`
   border: solid 1px ${props => props.theme.bg3};
   border-radius: 8px;
   width: 24px;
@@ -64,7 +64,7 @@ const ResetFilterIconContainer = styled(Flex)`
   justify-content: center;
 `
 
-const ResetFilterIcon = styled(X)`
+export const ResetFilterIcon = styled(X)`
   width: 12px;
   height: 12px;
   color: ${props => props.theme.purple3};
@@ -75,7 +75,7 @@ interface TitleProps {
   onCurrencySelection: (currency: Currency) => void
   onFilteredTokenReset: () => void
   aggregatedDataFilter: PairsFilterType
-  onFilterChange: (filter: PairsFilterType) => void
+  onFilterChange: any
 }
 
 // decoupling the title from the rest of the component avoids full-rerender everytime the pair selection modal is opened
@@ -103,13 +103,6 @@ function Title({
     },
     [onFilteredTokenReset]
   )
-
-  // const handleFilterRadioChange = useCallback(
-  //   event => {
-  //     onFilterChange(PairsFilterType[event.target.value as keyof typeof PairsFilterType])
-  //   },
-  //   [onFilterChange]
-  // )
 
   return (
     <>
@@ -169,15 +162,13 @@ function Title({
         <Flex>
           <Switch
             label="CAMPAIGNS"
-            handleToggle={() => onFilterChange(PairsFilterType.REWARDS)}
+            handleToggle={() => console.log('eherer')}
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
-            value={PairsFilterType.REWARDS.toString()}
           />
           <Switch
             label="MY PAIRS"
             handleToggle={() => onFilterChange(PairsFilterType.MY)}
             isOn={aggregatedDataFilter === PairsFilterType.MY}
-            value={PairsFilterType.MY.toString()}
           />
         </Flex>
       </TitleRow>
@@ -212,11 +203,6 @@ export default function Pools() {
     setFilterToken(undefined)
   }, [])
 
-  const handleFilterChange = useCallback(filter => {
-    console.log(filter)
-    setAggregatedDataFilter(filter)
-  }, [])
-
   return (
     <>
       <PageWrapper>
@@ -228,7 +214,7 @@ export default function Pools() {
               onCurrencySelection={handleCurrencySelect}
               filteredToken={filterToken}
               onFilteredTokenReset={handleFilterTokenReset}
-              onFilterChange={handleFilterChange}
+              onFilterChange={setAggregatedDataFilter}
             />
             {/* <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} /> */}
             {aggregatedDataFilter === PairsFilterType.MY ? (

@@ -74,8 +74,7 @@ export function usePairCampaigns(
       userId: subgraphAccountId
     }
   })
-  console.log(data)
-  console.log([token0Address, token1Address])
+
   return useMemo(() => {
     if (loading || chainId === undefined) {
       return { loading: true, active: [], expired: [] }
