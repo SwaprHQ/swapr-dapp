@@ -128,9 +128,9 @@ export default function RewardsWrapper({
                   {filterPair && (
                     <Box mr="4px">
                       <DoubleCurrencyLogo
-                        loading={!token0 || !token1}
-                        currency0={token0 || undefined}
-                        currency1={token1 || undefined}
+                        loading={!filterPair.token0 || !filterPair.token1}
+                        currency0={filterPair.token0 || undefined}
+                        currency1={filterPair.token1 || undefined}
                         size={20}
                       />
                     </Box>
@@ -169,7 +169,11 @@ export default function RewardsWrapper({
           </AutoColumn>
         </AutoColumn>
         <Rewards
-          pair={token0 !== undefined && token1 !== undefined ? wrappedPair[1] : undefined}
+          pair={
+            filterPair !== null && filterPair.token0 !== undefined && filterPair.token1 !== undefined
+              ? filterPair
+              : undefined
+          }
           dataFilter={aggregatedDataFilter}
           setDataFiler={setAggregatedDataFilter}
         />
