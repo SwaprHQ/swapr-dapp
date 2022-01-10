@@ -72,6 +72,7 @@ export default function RewardsWrapper({
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
+  console.log(filterPair && filterPair)
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
@@ -81,15 +82,17 @@ export default function RewardsWrapper({
   }, [])
 
   const handleModalClose = useCallback(() => {
-    setAggregatedDataFilter(PairsFilterType.MY)
     setOpenPairsModal(false)
   }, [])
 
   const handlePairSelect = useCallback(pair => {
+    console.log(pair)
     setFilterPair(pair)
   }, [])
-  const handleFilterTokenReset = useCallback(() => {
+  const handleFilterTokenReset = useCallback(e => {
+    setAggregatedDataFilter(PairsFilterType.ALL)
     setFilterPair(null)
+    e.stopPropagation()
   }, [])
   console.log(token0 !== undefined && token1 !== undefined ? wrappedPair[1] : undefined)
   console.log(wrappedPair)
@@ -116,46 +119,42 @@ export default function RewardsWrapper({
                     /
                   </TYPE.mediumHeader>
                 </Box>
-                {aggregatedDataFilter === PairsFilterType.MY ? (
-                  <Box>
-                    <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
-                      {aggregatedDataFilter.toUpperCase()}
-                    </TYPE.mediumHeader>
-                  </Box>
-                ) : (
-                  <PointableFlex onClick={handleAllClick}>
-                    {!filterPair && (
-                      <Box mr="6px" height="21px">
-                        <ThreeBlurredCircles />
-                      </Box>
-                    )}
-                    {filterPair && (
-                      <Box mr="4px">
-                        <DoubleCurrencyLogo
-                          loading={!token0 || !token1}
-                          currency0={token0 || undefined}
-                          currency1={token1 || undefined}
-                          size={20}
-                        />
-                      </Box>
-                    )}
+                <PointableFlex onClick={handleAllClick}>
+                  {!filterPair && (
+                    <Box mr="6px" height="21px">
+                      <ThreeBlurredCircles />
+                    </Box>
+                  )}
+                  {filterPair && (
                     <Box mr="4px">
-                      <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                        {filterPair ? `${filterPair.token0.symbol}/${filterPair.token1.symbol}` : 'ALL'}
-                      </Text>
+                      <DoubleCurrencyLogo
+                        loading={!token0 || !token1}
+                        currency0={token0 || undefined}
+                        currency1={token1 || undefined}
+                        size={20}
+                      />
                     </Box>
-                    <Box>
-                      <ChevronDown size={12} />
+                  )}
+                  <Box mr="4px">
+                    <Text fontWeight="600" fontSize="16px" lineHeight="20px">
+                      {filterPair
+                        ? `${filterPair.token0.symbol}/${filterPair.token1.symbol}`
+                        : aggregatedDataFilter === PairsFilterType.MY
+                        ? 'MY PAIRS'
+                        : 'ALL'}
+                    </Text>
+                  </Box>
+                  <Box>
+                    <ChevronDown size={12} />
+                  </Box>
+                  {filterPair && (
+                    <Box ml="6px">
+                      <ResetFilterIconContainer onClick={handleFilterTokenReset}>
+                        <ResetFilterIcon />
+                      </ResetFilterIconContainer>
                     </Box>
-                    {filterPair && (
-                      <Box ml="6px">
-                        <ResetFilterIconContainer onClick={handleFilterTokenReset}>
-                          <ResetFilterIcon />
-                        </ResetFilterIconContainer>
-                      </Box>
-                    )}
-                  </PointableFlex>
-                )}
+                  )}
+                </PointableFlex>
               </Flex>
               <ButtonRow>
                 {liquidityMiningEnabled && (
