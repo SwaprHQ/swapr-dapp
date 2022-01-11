@@ -1,7 +1,8 @@
 import { ChainId } from '@swapr/sdk'
 import { INFURA_PROJECT_ID } from '../../connectors'
 import { NETWORK_DETAIL } from '../../constants'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
+import { OmnibridgeProviders } from './Omnibridge.types'
 
 const addInfuraKey = (rpcUrl: string) => {
   if (rpcUrl.includes('infura')) {
@@ -17,11 +18,7 @@ const addInfuraKey = (rpcUrl: string) => {
   return rpcUrl
 }
 
-export type BridgeProviders = {
-  [key in ChainId]?: JsonRpcProvider | Web3Provider
-}
-
-export const initiateBridgeProviders = (): BridgeProviders => ({
+export const initiateOmnibridgeProviders = (): OmnibridgeProviders => ({
   [ChainId.ARBITRUM_ONE]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.ARBITRUM_ONE].rpcUrls[0])),
   [ChainId.ARBITRUM_RINKEBY]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.ARBITRUM_RINKEBY].rpcUrls[0])),
   // [ChainId.BSC]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.BSC].rpcUrls[0])),

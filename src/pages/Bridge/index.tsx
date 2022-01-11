@@ -28,7 +28,7 @@ import { isToken } from '../../hooks/Tokens'
 import { useChains } from '../../hooks/useChains'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
-import { OmnibridgeService } from '../../services/Omnibridge/OmnibridgeUpdater'
+import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -77,6 +77,7 @@ const AssetWrapper = styled.div`
 export default function Bridge() {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
+  const omnibridge = useOmnibridge()
   const bridgeSummaries = useBridgeTransactionsSummary()
   const { chainId, partnerChainId, isArbitrum } = useChains()
   const [modalData, setModalStatus, setModalData] = useBridgeModal()
@@ -155,11 +156,11 @@ export default function Bridge() {
       address = bridgeCurrency.address
     }
     if (!isArbitrum) {
-      await OmnibridgeService.deposit(typedValue, address)
+      await omnibridge.deposit(typedValue, address)
     } else {
-      await OmnibridgeService.withdraw(typedValue, address)
+      await omnibridge.withdraw(typedValue, address)
     }
-  }, [bridgeCurrency, chainId, isArbitrum, typedValue])
+  }, [bridgeCurrency, chainId, isArbitrum, typedValue, omnibridge])
 
   const handleModal = useCallback(async () => {
     setModalData({
@@ -189,9 +190,9 @@ export default function Bridge() {
   )
 
   const handleCollectConfirm = useCallback(async () => {
-    await OmnibridgeService.collect(collectableTx)
+    await omnibridge.collect(collectableTx)
     setStep(BridgeStep.Success)
-  }, [collectableTx])
+  }, [collectableTx, omnibridge])
 
   const fromNetworkList = useMemo(
     () =>

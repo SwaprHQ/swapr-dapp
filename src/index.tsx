@@ -21,7 +21,7 @@ import MultiChainLinksUpdater from './state/multi-chain-links/updater'
 import ClaimUpdater from './state/claim/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
-import OmnibridgeUpdater from './services/Omnibridge/OmnibridgeUpdater'
+import { OmnibridgeProvider } from './services/Omnibridge/OmnibridgeProvider'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -36,7 +36,6 @@ window.addEventListener('error', error => {
 function Updaters() {
   return (
     <>
-      <OmnibridgeUpdater />
       <UserUpdater />
       <ApplicationUpdater />
       <TransactionUpdater />
@@ -54,14 +53,16 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
-          <Updaters />
-          <ThemeProvider>
-            <ThemedGlobalStyle />
-            <HashRouter>
-              <MultiChainLinksUpdater />
-              <App />
-            </HashRouter>
-          </ThemeProvider>
+          <OmnibridgeProvider>
+            <Updaters />
+            <ThemeProvider>
+              <ThemedGlobalStyle />
+              <HashRouter>
+                <MultiChainLinksUpdater />
+                <App />
+              </HashRouter>
+            </ThemeProvider>
+          </OmnibridgeProvider>
         </Provider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
