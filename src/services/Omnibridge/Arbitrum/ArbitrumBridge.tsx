@@ -219,8 +219,11 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       throw new Error('ArbBridge: ' + err)
     }
   }
-  // TODO: verify that listener doesn't need to be restarted
+  // TODO: Currently when two instances arb bridge are running, listeners are colliding with each other because all arb bridges utilize same store.
+  // It needs to be divided
   private startListeners = () => {
+    // TODO: Remove this check when stores are separated
+    if ([ChainId.ARBITRUM_ONE, ChainId.MAINNET].includes(this.l1ChainId)) return
     this._listeners.push(setInterval(this.l2DepositsListener, 5000))
     this._listeners.push(setInterval(this.pendingTxListener, 5000))
   }
@@ -355,7 +358,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   }
 
   private updatePendingWithdrawals = async () => {
-    if (this._initialPendingWithdrawalsChecked) return
+    // TODO: Disabled until stores are not isolated
+    if (this._initialPendingWithdrawalsChecked || this.l1ChainId === ChainId.MAINNET) return
 
     const pendingWithdrawals = bridgePendingWithdrawalsSelector(this.store.getState())
 

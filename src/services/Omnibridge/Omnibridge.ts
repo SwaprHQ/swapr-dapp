@@ -14,9 +14,9 @@ import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
   public readonly store: OmnibridgeConstructorParams['store']
-  private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
-  private _initialized = false
   public readonly bridges: { [k in BridgeList]: OmnibridgeChildBase }
+  private _initialized = false
+  private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
   private _activeBridgeId: BridgeList | undefined
 
   public setActiveBridge = (bridgeId: BridgeList) => {
