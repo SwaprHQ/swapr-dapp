@@ -25,6 +25,7 @@ import { PairsFilterType } from '../../../components/Pool/ListFilter'
 import Rewards from '..'
 import { Pair } from '@swapr/sdk'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../../Pools'
+import { useRouter } from '../../../hooks/useRouter'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -66,13 +67,13 @@ export default function RewardsWrapper({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const router = useRouter()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
-  console.log(token0, currencyIdA)
+
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
-  console.log(filterPair && filterPair)
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
@@ -85,17 +86,27 @@ export default function RewardsWrapper({
     setOpenPairsModal(false)
   }, [])
 
-  const handlePairSelect = useCallback(pair => {
-    console.log(pair)
-    setFilterPair(pair)
-  }, [])
-  const handleFilterTokenReset = useCallback(e => {
-    setAggregatedDataFilter(PairsFilterType.ALL)
-    setFilterPair(null)
-    e.stopPropagation()
-  }, [])
-  console.log(token0 !== undefined && token1 !== undefined ? wrappedPair[1] : undefined)
-  console.log(wrappedPair)
+  const handlePairSelect = useCallback(
+    pair => {
+      router.push({
+        pathname: `/rewards/${pair.token0.address}/${pair.token1.address}`
+      })
+      setFilterPair(pair)
+    },
+    [router]
+  )
+  const handleFilterTokenReset = useCallback(
+    e => {
+      setAggregatedDataFilter(PairsFilterType.ALL)
+      router.push({
+        pathname: `/rewards`
+      })
+      setFilterPair(null)
+      e.stopPropagation()
+    },
+    [router]
+  )
+
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/rewards" />
   return (
@@ -108,7 +119,7 @@ export default function RewardsWrapper({
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <UndecoratedLink to="/pools">
+                  <UndecoratedLink to="/rewards">
                     <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                       Rewards
                     </TYPE.mediumHeader>

@@ -139,12 +139,11 @@ export function useAllLiquidtyMiningCampaings(
   singleSidedCampaings: any
 } {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
-  console.log(pair)
+
   const token0Address = useMemo(() => (pair ? pair.token0?.address.toLowerCase() : undefined), [pair])
   const token1Address = useMemo(() => (pair ? pair.token1?.address.toLowerCase() : undefined), [pair])
   const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
-  console.log(token0Address)
-  console.log(token1Address)
+
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
@@ -179,6 +178,7 @@ export function useAllLiquidtyMiningCampaings(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
+    console.log('rerender')
     if (singleSidedLoading || chainId === undefined || campaingLoading) {
       return { loading: true, singleSidedCampaings: { active: [], expired: [] } }
     }
@@ -197,9 +197,8 @@ export function useAllLiquidtyMiningCampaings(
     const activeCampaigns = []
     for (let i = 0; i < pairCampaings.liquidityMiningCampaigns.length; i++) {
       const camapaign = pairCampaings.liquidityMiningCampaigns[i]
-      console.log(pairAddress && pairAddress)
-      console.log(camapaign.stakablePair.id.toLowerCase())
-      if (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) break
+
+      if (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) continue
 
       const { reserveNativeCurrency, totalSupply, token0, token1, reserve0, reserve1 } = camapaign.stakablePair
       const containsKpiToken = !!camapaign.rewards.find(
@@ -207,8 +206,7 @@ export function useAllLiquidtyMiningCampaings(
       )
       const token0ChecksummedAddress = getAddress(token0.address)
       const token1ChecksummedAddress = getAddress(token1.address)
-      // console.log('checksummer address', token1ChecksummedAddress)
-      // console.log('checksummer address', token0ChecksummedAddress)
+
       const tokenA =
         tokensInCurrentChain &&
         tokensInCurrentChain[token0ChecksummedAddress] &&
@@ -246,6 +244,21 @@ export function useAllLiquidtyMiningCampaings(
 
     for (let i = 0; i < singleSidedCampaings.singleSidedStakingCampaigns.length; i++) {
       const camapaign = singleSidedCampaings.singleSidedStakingCampaigns[i]
+      console.log('token1', token0Address)
+      console.log('token2', token1Address)
+      console.log('stake token', camapaign.stakeToken.id.toLowerCase())
+      console.log(
+        'eval',
+        camapaign.stakeToken.id.toLowerCase() !== token0Address ||
+          camapaign.stakeToken.id.toLowerCase() !== token1Address
+      )
+      if (
+        token0Address &&
+        token1Address &&
+        camapaign.stakeToken.id.toLowerCase() !== token0Address &&
+          camapaign.stakeToken.id.toLowerCase() !== token1Address
+      )
+        continue
       const containsKpiToken = !!camapaign.rewards.find(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
       )
@@ -287,6 +300,8 @@ export function useAllLiquidtyMiningCampaings(
       singleSidedCampaings: { active: activeCampaigns, expired: expiredCampaigns }
     }
   }, [
+    token1Address,
+    token0Address,
     singleSidedCampaings,
     singleSidedLoading,
     singleSidedCampaingsError,
