@@ -56,7 +56,7 @@ export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInter
           style={{ marginLeft: 'auto' }}
           isOn={dataFilter === PairsFilterType.MY}
           label="MY PAIRS"
-          handleToggle={setDataFiler}
+          handleToggle={() => setDataFiler(PairsFilterType.MY)}
         />
       </Flex>
 

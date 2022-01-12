@@ -77,7 +77,7 @@ export default function RewardsWrapper({
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
-
+  const currencyExists = wrappedPair[0] !== PairState.NOT_EXISTS && currencyIdA && currencyIdB
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
   }, [])
@@ -136,7 +136,7 @@ export default function RewardsWrapper({
                       <ThreeBlurredCircles />
                     </Box>
                   )}
-                  {filterPair && (
+                  {filterPair && currencyExists && (
                     <Box mr="4px">
                       <DoubleCurrencyLogo
                         loading={!filterPair.token0 || !filterPair.token1}

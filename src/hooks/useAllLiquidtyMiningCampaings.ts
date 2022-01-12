@@ -244,19 +244,12 @@ export function useAllLiquidtyMiningCampaings(
 
     for (let i = 0; i < singleSidedCampaings.singleSidedStakingCampaigns.length; i++) {
       const camapaign = singleSidedCampaings.singleSidedStakingCampaigns[i]
-      console.log('token1', token0Address)
-      console.log('token2', token1Address)
-      console.log('stake token', camapaign.stakeToken.id.toLowerCase())
-      console.log(
-        'eval',
-        camapaign.stakeToken.id.toLowerCase() !== token0Address ||
-          camapaign.stakeToken.id.toLowerCase() !== token1Address
-      )
+
       if (
         token0Address &&
         token1Address &&
         camapaign.stakeToken.id.toLowerCase() !== token0Address &&
-          camapaign.stakeToken.id.toLowerCase() !== token1Address
+        camapaign.stakeToken.id.toLowerCase() !== token1Address
       )
         continue
       const containsKpiToken = !!camapaign.rewards.find(
