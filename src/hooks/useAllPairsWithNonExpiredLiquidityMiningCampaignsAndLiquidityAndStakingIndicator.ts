@@ -68,9 +68,9 @@ interface SubgraphToken {
   decimals: string
 }
 
-interface SubgraphLiquidityMiningCampaignWithPositions extends SubgraphLiquidityMiningCampaign {
-  liquidityMiningPositions: { id: string }[]
-}
+// interface SubgraphLiquidityMiningCampaignWithPositions extends SubgraphLiquidityMiningCampaign {
+//   liquidityMiningPositions: { id: string }[]
+// }
 
 interface SubgraphPair {
   address: string
@@ -81,7 +81,7 @@ interface SubgraphPair {
   totalSupply: string
   token0: SubgraphToken
   token1: SubgraphToken
-  liquidityMiningCampaigns: SubgraphLiquidityMiningCampaignWithPositions[]
+  liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
 }
 
 interface QueryResult {

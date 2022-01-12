@@ -30,6 +30,7 @@ export interface SubgraphLiquidityMiningCampaign {
     token0: SubgraphToken
     token1: SubgraphToken
   }
+  liquidityMiningPositions: { id: string; stakedAmount: string }[]
 }
 
 export interface SubgraphSingleSidedStakingCampaign {

@@ -63,9 +63,9 @@ const EXPIRED_QUERY = gql`
   }
 `
 
-interface ExtendedSubgraphLiquidityMiningCampaign extends SubgraphLiquidityMiningCampaign {
-  liquidityMiningPositions: { id: string }[]
-}
+// interface ExtendedSubgraphLiquidityMiningCampaign extends SubgraphLiquidityMiningCampaign {
+//   liquidityMiningPositions: { id: string }[]
+// }
 
 export function useLiquidityMiningCampaignsForPair(
   pair?: Pair,
@@ -86,7 +86,7 @@ export function useLiquidityMiningCampaignsForPair(
   const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
   const pairId = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : ''), [pair])
   const { data, loading: loadingActiveCampaigns, error } = useQuery<{
-    liquidityMiningCampaigns: ExtendedSubgraphLiquidityMiningCampaign[]
+    liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(QUERY, {
     variables: {
       pairId,
@@ -96,7 +96,7 @@ export function useLiquidityMiningCampaignsForPair(
   })
 
   const { data: expiredData, loading: loadingExpiredCampaigns, error: expiredError } = useQuery<{
-    liquidityMiningCampaigns: ExtendedSubgraphLiquidityMiningCampaign[]
+    liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(EXPIRED_QUERY, {
     variables: {
       pairId,

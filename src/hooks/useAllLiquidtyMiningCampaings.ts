@@ -1,7 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
-
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
@@ -12,6 +11,7 @@ import { DateTime, Duration } from 'luxon'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
+import { PairsFilterType } from '../components/Pool/ListFilter'
 
 // const QUERY = gql`
 //   query($stakeToken: [ID!], $userId: ID) {
@@ -133,7 +133,8 @@ const REGULAR_CAMPAIGN = gql`
 `
 
 export function useAllLiquidtyMiningCampaings(
-  pair?: any
+  pair?: any,
+  dataFilter?: PairsFilterType
 ): {
   loading: boolean
   singleSidedCampaings: any
@@ -197,8 +198,12 @@ export function useAllLiquidtyMiningCampaings(
     const activeCampaigns = []
     for (let i = 0; i < pairCampaings.liquidityMiningCampaigns.length; i++) {
       const camapaign = pairCampaings.liquidityMiningCampaigns[i]
-
-      if (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) continue
+      console.log(camapaign)
+      if (
+        (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) ||
+        camapaign.liquidityMiningPositions.length === 0
+      )
+        continue
 
       const { reserveNativeCurrency, totalSupply, token0, token1, reserve0, reserve1 } = camapaign.stakablePair
       const containsKpiToken = !!camapaign.rewards.find(

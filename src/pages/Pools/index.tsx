@@ -162,7 +162,7 @@ function Title({
         <Flex>
           <Switch
             label="CAMPAIGNS"
-            handleToggle={() => console.log('eherer')}
+            handleToggle={() => onFilterChange(PairsFilterType.REWARDS)}
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch

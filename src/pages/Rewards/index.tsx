@@ -23,7 +23,7 @@ interface RewardsInterface {
 }
 
 export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInterface) {
-  const { loading, singleSidedCampaings } = useAllLiquidtyMiningCampaings(pair ? pair : undefined)
+  const { loading, singleSidedCampaings } = useAllLiquidtyMiningCampaings(pair ? pair : undefined, dataFilter)
   console.log(pair)
   const [activeTab, setActiveTab] = useState(0)
 
