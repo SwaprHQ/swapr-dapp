@@ -6,6 +6,7 @@ const TabContainer = styled.div`
   flex-direction: row;
   width: fit-content;
   height: 50px;
+  align-items: center;
   overflow-x: auto;
 `
 

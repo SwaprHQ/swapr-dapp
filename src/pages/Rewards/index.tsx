@@ -29,7 +29,7 @@ export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInter
 
   return (
     <View gap="16px">
-      <Flex>
+      <Flex style={{ alignItems: 'center' }}>
         <TabBar
           titles={[
             <TabTitle
