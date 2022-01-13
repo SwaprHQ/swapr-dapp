@@ -162,12 +162,18 @@ function Title({
         <Flex>
           <Switch
             label="CAMPAIGNS"
-            handleToggle={() => onFilterChange(PairsFilterType.REWARDS)}
+            handleToggle={() =>
+              onFilterChange(
+                aggregatedDataFilter === PairsFilterType.REWARDS ? PairsFilterType.ALL : PairsFilterType.REWARDS
+              )
+            }
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch
             label="MY PAIRS"
-            handleToggle={() => onFilterChange(PairsFilterType.MY)}
+            handleToggle={() =>
+              onFilterChange(aggregatedDataFilter === PairsFilterType.MY ? PairsFilterType.ALL : PairsFilterType.MY)
+            }
             isOn={aggregatedDataFilter === PairsFilterType.MY}
           />
         </Flex>
