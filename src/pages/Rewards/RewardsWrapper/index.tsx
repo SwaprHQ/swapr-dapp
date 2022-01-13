@@ -74,13 +74,12 @@ export default function RewardsWrapper({
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
 
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
-  const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
+  const [filterPair, setFilterPair] = useState<Pair | null>(null)
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
 
   useEffect(() => {
-    console.log('here', wrappedPair)
     if (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.LOADING) setFilterPair(null)
     else if (wrappedPair[0] === PairState.EXISTS && !filterPair) setFilterPair(wrappedPair[1])
   }, [wrappedPair, filterPair])
