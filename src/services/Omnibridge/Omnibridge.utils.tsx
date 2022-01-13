@@ -1,4 +1,5 @@
 import {
+  BridgeList,
   OmnibridgeChangeHandler,
   OmnibridgeChildBaseConstructor,
   OmnibridgeChildBaseInit,
@@ -8,15 +9,18 @@ import {
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 
 export abstract class OmnibridgeChildBase {
+  public readonly bridgeId: BridgeList
+  public readonly displayName: string
   public readonly supportedChains: OmnibridgeChildBaseConstructor['supportedChains']
-
   protected _store: OmnibridgeChildBaseProps['store']
   protected _account: OmnibridgeChildBaseProps['account']
   protected _activeChainId: OmnibridgeChildBaseProps['activeChainId']
   protected _staticProviders: OmnibridgeChildBaseProps['staticProviders']
   protected _activeProvider: OmnibridgeChildBaseProps['activeProvider']
 
-  constructor({ supportedChains }: OmnibridgeChildBaseConstructor) {
+  constructor({ supportedChains, bridgeId, displayName }: OmnibridgeChildBaseConstructor) {
+    this.bridgeId = bridgeId
+    this.displayName = displayName
     this.supportedChains = supportedChains
   }
 
@@ -39,6 +43,7 @@ export abstract class OmnibridgeChildBase {
     staticProviders,
     store
   }: OmnibridgeChildBaseInit): Promise<void>
+
   abstract onSignerChange({
     account,
     activeChainId,

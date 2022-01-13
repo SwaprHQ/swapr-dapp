@@ -15,14 +15,18 @@ export const OmnibridgeProvider = ({ children }: { children?: React.ReactNode })
   useEffect(() => {
     const initOmnibridge = async () => {
       if (!omnibridge) {
-        const omniInstance = new Omnibridge(store, {
-          [BridgeList.ARB_TESTNET]: new ArbitrumBridge({
+        const omniInstance = new Omnibridge(store, [
+          new ArbitrumBridge({
+            bridgeId: BridgeList.ARB_TESTNET,
+            displayName: 'Arbitrum testnet',
             supportedChains: { from: ChainId.RINKEBY, to: ChainId.ARBITRUM_RINKEBY, reverse: true }
           }),
-          [BridgeList.ARB_MAINNET]: new ArbitrumBridge({
+          new ArbitrumBridge({
+            bridgeId: BridgeList.ARB_MAINNET,
+            displayName: 'Arbitrum mainnet',
             supportedChains: { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE, reverse: true }
           })
-        })
+        ])
         setOmnibridge(omniInstance)
       }
 

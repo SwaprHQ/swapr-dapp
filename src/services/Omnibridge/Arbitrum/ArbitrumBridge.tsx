@@ -1,28 +1,18 @@
+import { Bridge, OutgoingMessageState } from 'arb-ts'
+import { BigNumber, utils } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
-import { Bridge, OutgoingMessageState } from 'arb-ts'
-import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 
-import {
-  bridgeOwnedTxsSelector,
-  bridgeL1DepositsSelector,
-  bridgePendingTxsSelector,
-  bridgePendingWithdrawalsSelector
-} from '../../../state/bridgeTransactions/selectors'
-
-import {
-  addBridgeTxn,
-  updateBridgeTxnReceipt,
-  updateBridgeTxnPartnerHash,
-  updateBridgeTxnWithdrawalInfo
-} from '../../../state/bridgeTransactions/actions'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { addTransaction } from '../../../state/transactions/actions'
+import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { setBridgeLoadingWithdrawals, setBridgeModalData, setBridgeModalStatus } from '../../../state/bridge/actions'
+
+import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
+import { OmnibridgeChildBase } from '../Omnibridge.utils'
 
 import { BridgeModalStatus } from '../../../state/bridge/reducer'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { addTransaction } from '../../../state/transactions/actions'
-import { BigNumber, utils } from 'ethers'
-import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { OmnibridgeChangeHandler, OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit } from '../Omnibridge.types'
 
 const getErrorMsg = (error: any) => {
@@ -39,6 +29,13 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   private _initialPendingWithdrawalsChecked = false
   private _listeners: NodeJS.Timeout[] = []
 
+  private get actions() {
+    return arbitrumActions[this.bridgeId]
+  }
+
+  private get selectors() {
+    return arbitrumSelectors[this.bridgeId]
+  }
   // Typed setters
   public get bridge() {
     if (!this._bridge) throw new Error('ArbBridge: No bridge set')
@@ -50,8 +47,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     return this._store
   }
 
-  constructor({ supportedChains }: OmnibridgeChildBaseConstructor) {
-    super({ supportedChains })
+  constructor({ supportedChains, bridgeId, displayName = 'Arbitrum' }: OmnibridgeChildBaseConstructor) {
+    super({ supportedChains, bridgeId, displayName })
 
     const { l1ChainId, l2ChainId } = getChainPair(this.supportedChains.from)
 
@@ -117,7 +114,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
 
       this.store.dispatch(
-        addBridgeTxn({
+        this.actions.addTx({
           assetName: assetAddressL2 ? l2Tx.assetName : 'ETH',
           assetType: assetAddressL2 ? BridgeAssetType.ERC20 : BridgeAssetType.ETH,
           type: 'outbox',
@@ -129,7 +126,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       )
 
       this.store.dispatch(
-        updateBridgeTxnPartnerHash({
+        this.actions.updateTxPartnerHash({
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
           partnerTxHash: l2Tx.txHash,
@@ -142,7 +139,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
 
       this.store.dispatch(
-        updateBridgeTxnReceipt({
+        this.actions.updateTxReceipt({
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
           receipt: l1Receipt
@@ -150,7 +147,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       )
 
       this.store.dispatch(
-        updateBridgeTxnWithdrawalInfo({
+        this.actions.updateTxWithdrawal({
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
           outgoingMessageState: OutgoingMessageState.EXECUTED
@@ -160,7 +157,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) }))
     }
   }
-  // TODO: check if it requres signer
+
   public approve = async (erc20L1Address: string, gatewayAddress?: string, tokenSymbol?: string) => {
     if (!this._account) return
 
@@ -219,11 +216,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       throw new Error('ArbBridge: ' + err)
     }
   }
-  // TODO: Currently when two instances arb bridge are running, listeners are colliding with each other because all arb bridges utilize same store.
-  // It needs to be divided
+
   private startListeners = () => {
-    // TODO: Remove this check when stores are separated
-    if ([ChainId.ARBITRUM_ONE, ChainId.MAINNET].includes(this.l1ChainId)) return
     this._listeners.push(setInterval(this.l2DepositsListener, 5000))
     this._listeners.push(setInterval(this.pendingTxListener, 5000))
   }
@@ -237,7 +231,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   }
 
   private pendingTxListener = async () => {
-    const pendingTransactions = bridgePendingTxsSelector(this.store.getState())
+    const pendingTransactions = this.selectors.selectPendingTxs(this.store.getState(), this._account)
     if (!pendingTransactions.length) return
 
     const receipts = await Promise.all(pendingTransactions.map(this.getReceipt))
@@ -245,7 +239,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     receipts.forEach((txReceipt, index) => {
       if (txReceipt) {
         this.store.dispatch(
-          updateBridgeTxnReceipt({
+          this.actions.updateTxReceipt({
             chainId: pendingTransactions[index].chainId,
             txHash: txReceipt.transactionHash,
             receipt: txReceipt
@@ -283,8 +277,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   }
 
   private l2DepositsListener = async () => {
-    const allTransactions = bridgeOwnedTxsSelector(this.store.getState())
-    const depositTransactions = bridgeL1DepositsSelector(this.store.getState())
+    const allTransactions = this.selectors.selectOwnedTxs(this.store.getState(), this._account)
+    const depositTransactions = this.selectors.selectL1Deposits(this.store.getState(), this._account)
 
     const depositHashes = await Promise.all(depositTransactions.map(this.getL2TxnHash))
 
@@ -302,7 +296,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         !allTransactions[this.l2ChainId]?.[retryableTicketHash]
       ) {
         this.store.dispatch(
-          addBridgeTxn({
+          this.actions.addTx({
             ...txn,
             receipt: undefined,
             chainId: this.l2ChainId,
@@ -314,7 +308,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         )
 
         this.store.dispatch(
-          updateBridgeTxnPartnerHash({
+          this.actions.updateTxPartnerHash({
             chainId: this.l2ChainId,
             txHash: retryableTicketHash,
             partnerTxHash: txn.txHash,
@@ -358,10 +352,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   }
 
   private updatePendingWithdrawals = async () => {
-    // TODO: Disabled until stores are not isolated
-    if (this._initialPendingWithdrawalsChecked || this.l1ChainId === ChainId.MAINNET) return
+    if (this._initialPendingWithdrawalsChecked) return
 
-    const pendingWithdrawals = bridgePendingWithdrawalsSelector(this.store.getState())
+    const pendingWithdrawals = this.selectors.selectPendingWithdrawals(this.store.getState(), this._account)
 
     this.store.dispatch(setBridgeLoadingWithdrawals(true))
 
@@ -374,7 +367,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
       if (outgoingMessageState !== undefined) {
         this.store.dispatch(
-          updateBridgeTxnWithdrawalInfo({
+          this.actions.updateTxWithdrawal({
             chainId: this.l2ChainId,
             outgoingMessageState,
             txHash,
@@ -401,7 +394,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
     this.store.dispatch(
-      addBridgeTxn({
+      this.actions.addTx({
         assetName: 'ETH',
         assetType: BridgeAssetType.ETH,
         type: 'deposit-l1',
@@ -415,7 +408,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const l1Receipt = await txn.wait()
 
     this.store.dispatch(
-      updateBridgeTxnReceipt({
+      this.actions.updateTxReceipt({
         chainId: this.l1ChainId,
         txHash: txn.hash,
         receipt: l1Receipt
@@ -443,7 +436,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
     this.store.dispatch(
-      addBridgeTxn({
+      this.actions.addTx({
         assetName: tokenData.symbol,
         assetType: BridgeAssetType.ERC20,
         type: 'deposit-l1',
@@ -461,7 +454,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const seqNum = seqNums[0].toNumber()
 
     this.store.dispatch(
-      updateBridgeTxnReceipt({
+      this.actions.updateTxReceipt({
         chainId: this.l1ChainId,
         txHash: txn.hash,
         receipt: l1Receipt,
@@ -488,7 +481,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(
-      addBridgeTxn({
+      this.actions.addTx({
         assetName: 'ETH',
         assetType: BridgeAssetType.ETH,
         type: 'withdraw',
@@ -502,7 +495,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const withdrawReceipt = await txn.wait()
 
     this.store.dispatch(
-      updateBridgeTxnReceipt({
+      this.actions.updateTxReceipt({
         chainId: this.l2ChainId,
         txHash: txn.hash,
         receipt: withdrawReceipt
@@ -538,7 +531,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(
-      addBridgeTxn({
+      this.actions.addTx({
         assetName: tokenData.symbol,
         assetType: BridgeAssetType.ERC20,
         assetAddressL1: erc20L1Address,
@@ -554,7 +547,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const withdrawReceipt = await txn.wait()
 
     this.store.dispatch(
-      updateBridgeTxnReceipt({
+      this.actions.updateTxReceipt({
         chainId: this.l2ChainId,
         txHash: txn.hash,
         receipt: withdrawReceipt

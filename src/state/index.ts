@@ -15,7 +15,7 @@ import claim from './claim/reducer'
 import lists from './lists/reducer'
 import bridge from './bridge/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
-
+import omnibridge from '../services/Omnibridge/store/Omnibridge.reducer'
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions']
 
 const persistenceNamespace = 'swapr'
@@ -33,7 +33,8 @@ const store = configureStore({
     lists,
     claim,
     bridge,
-    bridgeTransactions
+    bridgeTransactions,
+    omnibridge
   },
   middleware: [save({ states: PERSISTED_KEYS, namespace: persistenceNamespace })],
   preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })

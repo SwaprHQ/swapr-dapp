@@ -23,7 +23,7 @@ export class Omnibridge {
     this._activeBridgeId = bridgeId
   }
 
-  // TODO: Should be appreciated later on so no direct interaction with bride is possible
+  // TODO: Should be depreciated later on so no direct interaction with bride is possible
   public activeBridge<T extends OmnibridgeChildBase = OmnibridgeChildBase>() {
     if (!this._initialized || !this._activeBridgeId) return
     return this.bridges[this._activeBridgeId] as T
@@ -33,10 +33,13 @@ export class Omnibridge {
     return this._initialized
   }
 
-  constructor(store: Store<AppState>, config: { [k in BridgeList]: OmnibridgeChildBase }) {
+  constructor(store: Store<AppState>, config: OmnibridgeChildBase[]) {
     this.staticProviders = initiateOmnibridgeProviders()
     this.store = store
-    this.bridges = config
+    this.bridges = config.reduce((list, bridge) => {
+      list[bridge.bridgeId] = bridge
+      return list
+    }, {} as { [k in BridgeList]: OmnibridgeChildBase })
   }
 
   public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {
