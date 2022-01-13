@@ -13,42 +13,6 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 
-// const QUERY = gql`
-//   query($stakeToken: [ID!], $userId: ID) {
-//     singleSidedStakingCampaigns() {
-//       id
-//       owner
-//       startsAt
-//       endsAt
-//       duration
-//       locked
-//       stakeToken {
-//         id
-//         symbol
-//         name
-//         decimals
-//         totalSupply
-//         derivedNativeCurrency
-//       }
-//       rewards {
-//         token {
-//           address: id
-//           name
-//           symbol
-//           decimals
-//           derivedNativeCurrency
-//         }
-//         amount
-//       }
-//       singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
-//         id
-//       }
-//       stakedAmount
-//       stakingCap
-//     }
-//   }
-// `
-
 const QUERY2 = gql`
   query($userId: ID) {
     singleSidedStakingCampaigns {
@@ -139,8 +103,6 @@ export function useAllLiquidtyMiningCampaings(
   loading: boolean
   singleSidedCampaings: any
 } {
-  //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
-
   const token0Address = useMemo(() => (pair ? pair.token0?.address.toLowerCase() : undefined), [pair])
   const token1Address = useMemo(() => (pair ? pair.token1?.address.toLowerCase() : undefined), [pair])
   const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
