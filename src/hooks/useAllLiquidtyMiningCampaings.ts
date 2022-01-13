@@ -179,7 +179,6 @@ export function useAllLiquidtyMiningCampaings(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    console.log('rerender')
     if (singleSidedLoading || chainId === undefined || campaingLoading) {
       return { loading: true, singleSidedCampaings: { active: [], expired: [] } }
     }
@@ -198,7 +197,7 @@ export function useAllLiquidtyMiningCampaings(
     const activeCampaigns = []
     for (let i = 0; i < pairCampaings.liquidityMiningCampaigns.length; i++) {
       const camapaign = pairCampaings.liquidityMiningCampaigns[i]
-      console.log(camapaign)
+
       if (
         (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) ||
         (dataFilter === PairsFilterType.MY && camapaign.liquidityMiningPositions.length === 0)

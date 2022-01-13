@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { SwapPoolTabs } from '../../../components/NavigationTabs'
@@ -72,15 +72,19 @@ export default function RewardsWrapper({
   const token1 = useToken(currencyIdB)
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
-  console.log(wrappedPair)
+
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
-  const currencyExists = wrappedPair[0] !== PairState.NOT_EXISTS && currencyIdA && currencyIdB ? true : false
-  console.log(currencyExists)
-  console.log(filterPair)
+
+  useEffect(() => {
+    console.log('here', wrappedPair)
+    if (wrappedPair[0] === PairState.NOT_EXISTS) setFilterPair(null)
+    else if (wrappedPair[0] === PairState.LOADING) setFilterPair(null)
+    else setFilterPair(wrappedPair[1])
+  }, [wrappedPair])
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
   }, [])
@@ -134,12 +138,13 @@ export default function RewardsWrapper({
                   </TYPE.mediumHeader>
                 </Box>
                 <PointableFlex onClick={handleAllClick}>
-                  {!filterPair && (
-                    <Box mr="6px" height="21px">
-                      <ThreeBlurredCircles />
-                    </Box>
-                  )}
-                  {filterPair && currencyExists && (
+                  {!filterPair ||
+                    (wrappedPair[0] === PairState.LOADING && (
+                      <Box mr="6px" height="21px">
+                        <ThreeBlurredCircles />
+                      </Box>
+                    ))}
+                  {filterPair && (
                     <Box mr="4px">
                       <DoubleCurrencyLogo
                         loading={!filterPair.token0 || !filterPair.token1}
