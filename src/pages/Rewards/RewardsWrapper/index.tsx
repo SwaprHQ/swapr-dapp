@@ -72,12 +72,15 @@ export default function RewardsWrapper({
   const token1 = useToken(currencyIdB)
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
+  console.log(wrappedPair)
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [filterPair, setFilterPair] = useState<Pair | null>(wrappedPair[1])
 
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
-  const currencyExists = wrappedPair[0] !== PairState.NOT_EXISTS && currencyIdA && currencyIdB
+  const currencyExists = wrappedPair[0] !== PairState.NOT_EXISTS && currencyIdA && currencyIdB ? true : false
+  console.log(currencyExists)
+  console.log(filterPair)
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
   }, [])
@@ -155,14 +158,16 @@ export default function RewardsWrapper({
                         : 'ALL'}
                     </Text>
                   </Box>
-                  <Box>
-                    <ChevronDown size={12} />
-                  </Box>
-                  {filterPair && (
+
+                  {aggregatedDataFilter !== PairsFilterType.ALL ? (
                     <Box ml="6px">
                       <ResetFilterIconContainer onClick={handleFilterTokenReset}>
                         <ResetFilterIcon />
                       </ResetFilterIconContainer>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <ChevronDown size={12} />
                     </Box>
                   )}
                 </PointableFlex>

@@ -159,7 +159,7 @@ export function useAllLiquidtyMiningCampaings(
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(QUERY2, {
     variables: {
-      userId: account
+      userId: account?.toLowerCase()
     }
   })
 
@@ -167,7 +167,7 @@ export function useAllLiquidtyMiningCampaings(
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {
-      userId: account
+      userId: account?.toLowerCase()
     }
   })
   const kpiTokenAddresses = useMemo(() => {
@@ -201,7 +201,7 @@ export function useAllLiquidtyMiningCampaings(
       console.log(camapaign)
       if (
         (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) ||
-        camapaign.liquidityMiningPositions.length === 0
+        (dataFilter === PairsFilterType.MY && camapaign.liquidityMiningPositions.length === 0)
       )
         continue
 
@@ -237,7 +237,7 @@ export function useAllLiquidtyMiningCampaings(
         camapaign,
         nativeCurrency
       )
-      const hasStake = pairCampaings.liquidityMiningCampaigns.length > 0
+      const hasStake = camapaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
 
       if (liquditiyCampaing.currentlyActive) {
@@ -251,10 +251,11 @@ export function useAllLiquidtyMiningCampaings(
       const camapaign = singleSidedCampaings.singleSidedStakingCampaigns[i]
 
       if (
-        token0Address &&
-        token1Address &&
-        camapaign.stakeToken.id.toLowerCase() !== token0Address &&
-        camapaign.stakeToken.id.toLowerCase() !== token1Address
+        (token0Address &&
+          token1Address &&
+          camapaign.stakeToken.id.toLowerCase() !== token0Address &&
+          camapaign.stakeToken.id.toLowerCase() !== token1Address) ||
+        (dataFilter === PairsFilterType.MY && camapaign.singleSidedStakingPositions.length === 0)
       )
         continue
       const containsKpiToken = !!camapaign.rewards.find(
@@ -298,6 +299,7 @@ export function useAllLiquidtyMiningCampaings(
       singleSidedCampaings: { active: activeCampaigns, expired: expiredCampaigns }
     }
   }, [
+    dataFilter,
     token1Address,
     token0Address,
     singleSidedCampaings,
