@@ -13,7 +13,7 @@ import { ReactComponent as ThreeBlurredCircles } from '../../../assets/svg/three
 
 import { ChevronDown } from 'react-feather'
 import { useToken } from '../../../hooks/Tokens'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
+//import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { PairState, usePair } from '../../../data/Reserves'
 
@@ -126,11 +126,16 @@ export default function RewardsWrapper({
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <UndecoratedLink to="/rewards">
-                    <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                      Rewards
-                    </TYPE.mediumHeader>
-                  </UndecoratedLink>
+                  <TYPE.mediumHeader
+                    onClick={handleFilterTokenReset}
+                    style={{ cursor: 'pointer' }}
+                    fontWeight="400"
+                    fontSize="26px"
+                    lineHeight="32px"
+                    color="text4"
+                  >
+                    Rewards
+                  </TYPE.mediumHeader>
                 </Box>
                 <Box mr="8px">
                   <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
