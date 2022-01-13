@@ -83,8 +83,8 @@ export default function RewardsWrapper({
     console.log('here', wrappedPair)
     if (wrappedPair[0] === PairState.NOT_EXISTS) setFilterPair(null)
     else if (wrappedPair[0] === PairState.LOADING) setFilterPair(null)
-    else setFilterPair(wrappedPair[1])
-  }, [wrappedPair])
+    else if (wrappedPair[0] === PairState.EXISTS && !filterPair) setFilterPair(wrappedPair[1])
+  }, [wrappedPair, filterPair])
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
   }, [])
@@ -164,7 +164,7 @@ export default function RewardsWrapper({
                     </Text>
                   </Box>
 
-                  {aggregatedDataFilter !== PairsFilterType.ALL ? (
+                  {aggregatedDataFilter !== PairsFilterType.ALL || filterPair ? (
                     <Box ml="6px">
                       <ResetFilterIconContainer onClick={handleFilterTokenReset}>
                         <ResetFilterIcon />
