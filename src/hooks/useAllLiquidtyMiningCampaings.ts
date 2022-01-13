@@ -97,7 +97,7 @@ const REGULAR_CAMPAIGN = gql`
 `
 
 export function useAllLiquidtyMiningCampaings(
-  pair?: any,
+  pair?: Pair,
   dataFilter?: PairsFilterType
 ): {
   loading: boolean
@@ -239,7 +239,7 @@ export function useAllLiquidtyMiningCampaings(
       )
       const hasStake = camapaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
-      //reminder add support for kpi tokens if possbile
+
       if (hasStake || singleSidedStakeCampaign.currentlyActive) {
         activeCampaigns.unshift({
           campaign: singleSidedStakeCampaign,

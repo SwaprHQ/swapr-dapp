@@ -68,10 +68,6 @@ interface SubgraphToken {
   decimals: string
 }
 
-// interface SubgraphLiquidityMiningCampaignWithPositions extends SubgraphLiquidityMiningCampaign {
-//   liquidityMiningPositions: { id: string }[]
-// }
-
 interface SubgraphPair {
   address: string
   reserve0: string
@@ -211,7 +207,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           )
         })
         pair.liquidityMiningCampaigns = campaigns
-        console.log(pair.liquidityMiningCampaigns)
+
         return {
           pair,
           // campaign.liquidityMiningPositions only has length > 0 if the user has staked positions in the campaign itself

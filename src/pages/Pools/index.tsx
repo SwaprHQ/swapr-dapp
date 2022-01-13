@@ -24,13 +24,6 @@ import CurrencyLogo from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import Switch from '../../components/Switch'
 
-/* const VoteCard = styled.div`
-  overflow: hidden;
-  background-color: ${({ theme }) => theme.bg1};
-  border: 1px solid ${({ theme }) => theme.bg2};
-  border-radius: 8px;
-` */
-
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -222,7 +215,6 @@ export default function Pools() {
               onFilteredTokenReset={handleFilterTokenReset}
               onFilterChange={setAggregatedDataFilter}
             />
-            {/* <ListFilter filter={aggregatedDataFilter} onFilterChange={handleFilterChange} /> */}
             {aggregatedDataFilter === PairsFilterType.MY ? (
               <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
             ) : (

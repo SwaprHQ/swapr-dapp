@@ -2,17 +2,18 @@ import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@sw
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import Pagination from '../../../../Pagination'
-import Empty from '../../../Empty'
-import LoadingList from '../../../LoadingList'
-import { usePage } from '../../../../../hooks/usePage'
-import { useWindowSize } from '../../../../../hooks/useWindowSize'
-import { MEDIA_WIDTHS } from '../../../../../theme'
-//import PairCard from '../../../PairsList/Pair'
-import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
-import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
-import { UndecoratedLink } from '../../../../UndercoratedLink'
-import CampaignCard from '../../../PairsList/CampaignCard'
+import Pagination from '../../Pagination'
+
+import Empty from '../../Pool/Empty'
+import LoadingList from '../../Pool/LoadingList'
+import { usePage } from '../../../hooks/usePage'
+import { useWindowSize } from '../../../hooks/useWindowSize'
+import { MEDIA_WIDTHS } from '../../../theme'
+
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
+import { getStakedAmountUSD } from '../../../utils/liquidityMining'
+import { UndecoratedLink } from '../../UndercoratedLink'
+import CampaignCard from '../../Pool/PairsList/CampaignCard'
 
 const ListLayout = styled.div`
   display: grid;

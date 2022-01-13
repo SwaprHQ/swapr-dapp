@@ -26,7 +26,7 @@ import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
 import { useRouter } from '../../hooks/useRouter'
-import RewardsList from './RewardsList'
+import RewardsList from '../../components/LiquidityMiningCampaigns/RewardsList'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

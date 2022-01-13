@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { AutoColumn } from '../../../components/Column'
-import TabBar from '../../../components/TabBar'
-import List from '../../../components/Pool/PairView/LiquidityMiningCampaigns/List'
+import { AutoColumn } from '../../Column'
+import TabBar from '../../TabBar'
+import List from '../List'
 
-import TabTitle from '../../../components/Pool/PairView/LiquidityMiningCampaigns/TabTitle'
+import TabTitle from '../TabTitle'
 import { useAllLiquidtyMiningCampaings } from '../../../hooks/useAllLiquidtyMiningCampaings'
 
-import { PairsFilterType } from '../../../components/Pool/ListFilter'
+import { PairsFilterType } from '../../Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
 import { Flex } from 'rebass'
-import Switch from '../../../components/Switch'
+import Switch from '../../Switch'
 
 const View = styled(AutoColumn)`
   margin-top: 20px;

@@ -63,10 +63,6 @@ const EXPIRED_QUERY = gql`
   }
 `
 
-// interface ExtendedSubgraphLiquidityMiningCampaign extends SubgraphLiquidityMiningCampaign {
-//   liquidityMiningPositions: { id: string }[]
-// }
-
 export function useLiquidityMiningCampaignsForPair(
   pair?: Pair,
   lowerTimeLimit: Date = DateTime.utc()
