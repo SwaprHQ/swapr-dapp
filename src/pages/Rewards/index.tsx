@@ -20,10 +20,14 @@ interface RewardsInterface {
   dataFilter: PairsFilterType
   setDataFiler: any
   pair?: Pair | null
+  loading: boolean
 }
 
-export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInterface) {
-  const { loading, singleSidedCampaings } = useAllLiquidtyMiningCampaings(pair ? pair : undefined, dataFilter)
+export default function Rewards({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
+  const { loading: loadingPairs, singleSidedCampaings } = useAllLiquidtyMiningCampaings(
+    pair ? pair : undefined,
+    dataFilter
+  )
 
   const [activeTab, setActiveTab] = useState(0)
 
@@ -34,7 +38,7 @@ export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInter
           titles={[
             <TabTitle
               key="active"
-              loadingAmount={loading}
+              loadingAmount={loadingPairs || loading}
               itemsAmount={singleSidedCampaings.active.length}
               badgeTheme="orange"
             >
@@ -42,7 +46,7 @@ export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInter
             </TabTitle>,
             <TabTitle
               key="active"
-              loadingAmount={loading}
+              loadingAmount={loadingPairs || loading}
               itemsAmount={singleSidedCampaings.expired.length}
               badgeTheme="red"
             >
@@ -62,10 +66,10 @@ export default function Rewards({ dataFilter, pair, setDataFiler }: RewardsInter
         />
       </Flex>
 
-      {!loading ? (
+      {!loadingPairs && !loading ? (
         <>
-          {activeTab === 0 && <List loading={loading} items={singleSidedCampaings.active} />}
-          {activeTab === 1 && <List loading={loading} items={singleSidedCampaings.expired} />}
+          {activeTab === 0 && <List loading={loadingPairs || loading} items={singleSidedCampaings.active} />}
+          {activeTab === 1 && <List loading={loadingPairs || loading} items={singleSidedCampaings.expired} />}
         </>
       ) : (
         <List loading />

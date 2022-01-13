@@ -81,8 +81,7 @@ export default function RewardsWrapper({
 
   useEffect(() => {
     console.log('here', wrappedPair)
-    if (wrappedPair[0] === PairState.NOT_EXISTS) setFilterPair(null)
-    else if (wrappedPair[0] === PairState.LOADING) setFilterPair(null)
+    if (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.LOADING) setFilterPair(null)
     else if (wrappedPair[0] === PairState.EXISTS && !filterPair) setFilterPair(wrappedPair[1])
   }, [wrappedPair, filterPair])
   const handleAllClick = useCallback(() => {
@@ -165,6 +164,8 @@ export default function RewardsWrapper({
                         ? `${filterPair.token0.symbol}/${filterPair.token1.symbol}`
                         : aggregatedDataFilter === PairsFilterType.MY
                         ? 'MY PAIRS'
+                        : wrappedPair[0] === PairState.LOADING
+                        ? 'LOADING'
                         : 'ALL'}
                     </Text>
                   </Box>
@@ -200,6 +201,7 @@ export default function RewardsWrapper({
               ? filterPair
               : undefined
           }
+          loading={wrappedPair[0] === PairState.LOADING}
           dataFilter={aggregatedDataFilter}
           setDataFiler={setAggregatedDataFilter}
         />
