@@ -24,10 +24,8 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import { Slide, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Bridge from './Bridge'
-//import Rewards from './Rewards'
 
-// import RewardsPair from './Rewards/RewardsPair'
-import RewardsWrapper from './Rewards/RewardsWrapper'
+import Rewards from './Rewards'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -87,8 +85,8 @@ export default function App() {
                   <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                   <Route exact strict path="/pools" component={Pools} />
                   <Route exact strict path="/pools/mine" component={MyPairs} />
-                  <Route exact strict path="/rewards" component={RewardsWrapper} />
-                  <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={RewardsWrapper} />
+                  <Route exact strict path="/rewards" component={Rewards} />
+                  <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
                   <Route
                     exact
                     strict
