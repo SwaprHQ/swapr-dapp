@@ -80,6 +80,7 @@ export default function RewardsWrapper({
   const [openPairsModal, setOpenPairsModal] = useState(false)
 
   useEffect(() => {
+    if (filterPair) return
     if (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.LOADING) setFilterPair(null)
     else if (wrappedPair[0] === PairState.EXISTS && !filterPair) setFilterPair(wrappedPair[1])
   }, [wrappedPair, filterPair])
@@ -141,12 +142,11 @@ export default function RewardsWrapper({
                   </TYPE.mediumHeader>
                 </Box>
                 <PointableFlex onClick={handleAllClick}>
-                  {!filterPair ||
-                    (wrappedPair[0] === PairState.LOADING && (
-                      <Box mr="6px" height="21px">
-                        <ThreeBlurredCircles />
-                      </Box>
-                    ))}
+                  {!filterPair && wrappedPair[0] === PairState.LOADING && (
+                    <Box mr="6px" height="21px">
+                      <ThreeBlurredCircles />
+                    </Box>
+                  )}
                   {filterPair && (
                     <Box mr="4px">
                       <DoubleCurrencyLogo
