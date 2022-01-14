@@ -56,7 +56,6 @@ export function useSwaprSinglelSidedStakeCampaigns(
   data: SingleSidedLiquidityMiningCampaign | undefined
   stakedAmount?: string
 } {
-  //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
@@ -75,7 +74,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
     if (loading || chainId === undefined) {
       return { loading: true, data: undefined, stakedAmount: '0' }
     }
-    if (error || !data) {
+    if (error || !data || data.singleSidedStakingCampaigns.length === 0) {
       return { loading: false, data: undefined, stakedAmount: '0' }
     }
 
