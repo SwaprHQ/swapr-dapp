@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request'
 import { ChainId } from '@swapr/sdk'
 
 export const defaultSubgraphClient = new ApolloClient({
-  uri: 'https://thegraph.com/explorer/subgraph/dxgraphs/swapr-mainnet-v2',
+  uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
   cache: new InMemoryCache()
 })
 
