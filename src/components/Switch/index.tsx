@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Text } from 'rebass'
+import { ThemeContext } from 'styled-components'
+
 import './Switch.css'
 interface SwitchInterface {
   isOn: boolean
@@ -8,6 +10,8 @@ interface SwitchInterface {
   style?: any
 }
 const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
+  const theme = useContext(ThemeContext)
+
   return (
     <>
       <input
@@ -19,7 +23,7 @@ const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
         id={label}
         value={label}
       />
-      <label className="react-switch-label" style={{ background: isOn ? '#2E17F2' : '' }} htmlFor={label}>
+      <label className="react-switch-label" style={{ background: isOn ? theme.mainPurple : '' }} htmlFor={label}>
         <span className="react-switch-button" />
       </label>
       <Text
@@ -27,7 +31,7 @@ const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
         alignSelf={'center'}
         fontSize={'11px'}
         fontWeight={'500'}
-        color={isOn ? '#EBE9F8' : '#C0BAF6'}
+        color={isOn ? theme.text2 : theme.purple2}
       >
         {label}
       </Text>
