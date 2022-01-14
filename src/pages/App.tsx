@@ -90,7 +90,7 @@ export default function App() {
                   <Route
                     exact
                     strict
-                    path="/pools/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
+                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
                     component={LiquidityMiningCampaign}
                   />
                   <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
@@ -98,7 +98,7 @@ export default function App() {
                   <Route
                     exact
                     strict
-                    path="/pools/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
 

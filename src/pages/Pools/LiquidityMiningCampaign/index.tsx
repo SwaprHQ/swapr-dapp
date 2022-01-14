@@ -76,7 +76,7 @@ export default function LiquidityMiningCampaign({
               <Box mr="8px">
                 <UndecoratedLink to="/pools">
                   <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                    Pairs
+                    Rewards
                   </TYPE.mediumHeader>
                 </UndecoratedLink>
               </Box>
