@@ -8,7 +8,7 @@ export const defaultSubgraphClient = new ApolloClient({
 })
 
 export const oldBuildClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/luzzif/swapr-arbitrum-one',
+  uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one',
   cache: new InMemoryCache()
 })
 
