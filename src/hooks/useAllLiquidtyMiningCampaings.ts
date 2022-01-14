@@ -13,7 +13,7 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 
-const QUERY2 = gql`
+const SINGLE_SIDED_CAMPAINGS = gql`
   query($userId: ID) {
     singleSidedStakingCampaigns {
       id
@@ -119,7 +119,7 @@ export function useAllLiquidtyMiningCampaings(
 
   const { data: singleSidedCampaings, loading: singleSidedLoading, error: singleSidedCampaingsError } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
-  }>(QUERY2, {
+  }>(SINGLE_SIDED_CAMPAINGS, {
     variables: {
       userId: account?.toLowerCase()
     }
