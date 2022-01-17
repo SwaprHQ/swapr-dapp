@@ -130,7 +130,7 @@ function PairView({ loading, pair }: PairViewProps) {
           )}
           <RowBetween mt="18px">
             <ButtonGrey
-              id="rewards-campaing-for-pair"
+              id="rewards-campaign-for-pair"
               onClick={() => {
                 history.push(`/rewards/${pair?.token0.address}/${pair?.token1.address}`)
               }}

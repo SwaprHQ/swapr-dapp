@@ -6,7 +6,7 @@ import TabBar from '../../TabBar'
 import List from '../List'
 
 import TabTitle from '../TabTitle'
-import { useAllLiquidtyMiningCampaings } from '../../../hooks/useAllLiquidtyMiningCampaings'
+import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
 
 import { PairsFilterType } from '../../Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
@@ -24,10 +24,7 @@ interface RewardsInterface {
 }
 
 export default function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
-  const { loading: loadingPairs, singleSidedCampaings } = useAllLiquidtyMiningCampaings(
-    pair ? pair : undefined,
-    dataFilter
-  )
+  const { loading: loadingPairs, miningCampaigns } = useAllLiquidtyMiningCampaigns(pair ? pair : undefined, dataFilter)
 
   const [activeTab, setActiveTab] = useState(0)
 
@@ -39,7 +36,7 @@ export default function RewardsList({ dataFilter, pair, setDataFiler, loading }:
             <TabTitle
               key="active"
               loadingAmount={loadingPairs || loading}
-              itemsAmount={singleSidedCampaings.active.length}
+              itemsAmount={miningCampaigns.active.length}
               badgeTheme="orange"
             >
               Campaigns
@@ -47,7 +44,7 @@ export default function RewardsList({ dataFilter, pair, setDataFiler, loading }:
             <TabTitle
               key="active"
               loadingAmount={loadingPairs || loading}
-              itemsAmount={singleSidedCampaings.expired.length}
+              itemsAmount={miningCampaigns.expired.length}
               badgeTheme="red"
             >
               Expired (30 days)
@@ -68,8 +65,8 @@ export default function RewardsList({ dataFilter, pair, setDataFiler, loading }:
 
       {!loadingPairs && !loading ? (
         <>
-          {activeTab === 0 && <List loading={loadingPairs || loading} items={singleSidedCampaings.active} />}
-          {activeTab === 1 && <List loading={loadingPairs || loading} items={singleSidedCampaings.expired} />}
+          {activeTab === 0 && <List loading={loadingPairs || loading} items={miningCampaigns.active} />}
+          {activeTab === 1 && <List loading={loadingPairs || loading} items={miningCampaigns.expired} />}
         </>
       ) : (
         <List loading />

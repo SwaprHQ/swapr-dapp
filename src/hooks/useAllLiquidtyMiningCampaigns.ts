@@ -13,7 +13,7 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 
-const SINGLE_SIDED_CAMPAINGS = gql`
+const SINGLE_SIDED_CAMPAIGNS = gql`
   query($userId: ID) {
     singleSidedStakingCampaigns {
       id
@@ -96,12 +96,12 @@ const REGULAR_CAMPAIGN = gql`
   }
 `
 
-export function useAllLiquidtyMiningCampaings(
+export function useAllLiquidtyMiningCampaigns(
   pair?: Pair,
   dataFilter?: PairsFilterType
 ): {
   loading: boolean
-  singleSidedCampaings: any
+  miningCampaigns: any
 } {
   const token0Address = useMemo(() => (pair ? pair.token0?.address.toLowerCase() : undefined), [pair])
   const token1Address = useMemo(() => (pair ? pair.token1?.address.toLowerCase() : undefined), [pair])
@@ -117,15 +117,15 @@ export function useAllLiquidtyMiningCampaings(
   const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
 
-  const { data: singleSidedCampaings, loading: singleSidedLoading, error: singleSidedCampaingsError } = useQuery<{
+  const { data: singleSidedCampaigns, loading: singleSidedLoading, error: singleSidedCampaignsError } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
-  }>(SINGLE_SIDED_CAMPAINGS, {
+  }>(SINGLE_SIDED_CAMPAIGNS, {
     variables: {
       userId: account?.toLowerCase()
     }
   })
 
-  const { data: pairCampaings, loading: campaingLoading, error: campaingError } = useQuery<{
+  const { data: pairCampaigns, loading: campaignLoading, error: campaignError } = useQuery<{
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {
@@ -133,32 +133,32 @@ export function useAllLiquidtyMiningCampaings(
     }
   })
   const kpiTokenAddresses = useMemo(() => {
-    if (!pairCampaings) return []
-    return pairCampaings.liquidityMiningCampaigns.flatMap(campaign =>
+    if (!pairCampaigns) return []
+    return pairCampaigns.liquidityMiningCampaigns.flatMap(campaign =>
       campaign.rewards.map(reward => reward.token.address.toLowerCase())
     )
-  }, [pairCampaings])
+  }, [pairCampaigns])
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    if (singleSidedLoading || chainId === undefined || campaingLoading) {
-      return { loading: true, singleSidedCampaings: { active: [], expired: [] } }
+    if (singleSidedLoading || chainId === undefined || campaignLoading) {
+      return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
     if (
-      singleSidedCampaingsError ||
-      campaingError ||
-      !singleSidedCampaings ||
-      !singleSidedCampaings.singleSidedStakingCampaigns ||
-      !pairCampaings ||
-      !pairCampaings.liquidityMiningCampaigns ||
+      singleSidedCampaignsError ||
+      campaignError ||
+      !singleSidedCampaigns ||
+      !singleSidedCampaigns.singleSidedStakingCampaigns ||
+      !pairCampaigns ||
+      !pairCampaigns.liquidityMiningCampaigns ||
       loadingKpiTokens
     ) {
-      return { loading: true, singleSidedCampaings: { active: [], expired: [] } }
+      return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
     const expiredCampaigns = []
     const activeCampaigns = []
-    for (let i = 0; i < pairCampaings.liquidityMiningCampaigns.length; i++) {
-      const camapaign = pairCampaings.liquidityMiningCampaigns[i]
+    for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
+      const camapaign = pairCampaigns.liquidityMiningCampaigns[i]
 
       if (
         (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) ||
@@ -189,7 +189,7 @@ export function useAllLiquidtyMiningCampaings(
           : new Token(chainId, token1ChecksummedAddress, parseInt(token1.decimals), token1.symbol, token1.name)
       const tokenAmountB = new TokenAmount(tokenB, parseUnits(reserve1, token1.decimals).toString())
       const pair = new Pair(tokenAmountA, tokenAmountB)
-      const liquditiyCampaing = toLiquidityMiningCampaign(
+      const liquditiyCampaign = toLiquidityMiningCampaign(
         chainId,
         pair,
         totalSupply,
@@ -201,15 +201,15 @@ export function useAllLiquidtyMiningCampaings(
       const hasStake = camapaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
 
-      if (liquditiyCampaing.currentlyActive) {
-        activeCampaigns.push({ campaign: liquditiyCampaing, staked: hasStake, containsKpiToken: containsKpiToken })
+      if (liquditiyCampaign.currentlyActive) {
+        activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
       } else if (isExpired) {
-        expiredCampaigns.push({ campaign: liquditiyCampaing, staked: hasStake, containsKpiToken: containsKpiToken })
+        expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
       }
     }
 
-    for (let i = 0; i < singleSidedCampaings.singleSidedStakingCampaigns.length; i++) {
-      const camapaign = singleSidedCampaings.singleSidedStakingCampaigns[i]
+    for (let i = 0; i < singleSidedCampaigns.singleSidedStakingCampaigns.length; i++) {
+      const camapaign = singleSidedCampaigns.singleSidedStakingCampaigns[i]
 
       if (
         (token0Address &&
@@ -257,15 +257,15 @@ export function useAllLiquidtyMiningCampaings(
 
     return {
       loading: false,
-      singleSidedCampaings: { active: activeCampaigns, expired: expiredCampaigns }
+      miningCampaigns: { active: activeCampaigns, expired: expiredCampaigns }
     }
   }, [
     dataFilter,
     token1Address,
     token0Address,
-    singleSidedCampaings,
+    singleSidedCampaigns,
     singleSidedLoading,
-    singleSidedCampaingsError,
+    singleSidedCampaignsError,
     chainId,
     nativeCurrency,
     timestamp,
@@ -273,9 +273,9 @@ export function useAllLiquidtyMiningCampaings(
     kpiTokens,
     tokensInCurrentChain,
     loadingKpiTokens,
-    campaingLoading,
-    campaingError,
+    campaignLoading,
+    campaignError,
     pairAddress,
-    pairCampaings
+    pairCampaigns
   ])
 }
