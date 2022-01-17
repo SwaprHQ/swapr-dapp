@@ -65,8 +65,8 @@ export default function RewardsList({ dataFilter, pair, setDataFiler, loading }:
 
       {!loadingPairs && !loading ? (
         <>
-          {activeTab === 0 && <List loading={loadingPairs || loading} items={miningCampaigns.active} />}
-          {activeTab === 1 && <List loading={loadingPairs || loading} items={miningCampaigns.expired} />}
+          {activeTab === 0 && <List items={miningCampaigns.active} />}
+          {activeTab === 1 && <List items={miningCampaigns.expired} />}
         </>
       ) : (
         <List loading />
