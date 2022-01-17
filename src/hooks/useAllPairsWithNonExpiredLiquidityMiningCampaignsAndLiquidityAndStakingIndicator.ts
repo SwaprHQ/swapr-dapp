@@ -102,7 +102,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     () =>
       Math.floor(
         DateTime.utc()
-          .minus(Duration.fromObject({ days: 30 }))
+          .minus(Duration.fromObject({ days: 150 }))
           .toSeconds()
       ),
     []

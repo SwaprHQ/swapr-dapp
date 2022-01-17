@@ -111,7 +111,7 @@ export function useAllLiquidtyMiningCampaigns(
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
   const lowerTimeLimit = DateTime.utc()
-    .minus(Duration.fromObject({ days: 30 }))
+    .minus(Duration.fromObject({ days: 150 }))
     .toJSDate()
 
   const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
