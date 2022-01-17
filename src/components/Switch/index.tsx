@@ -7,7 +7,7 @@ interface SwitchInterface {
   isOn: boolean
   handleToggle: () => void
   label: string
-  style?: any
+  style?: React.CSSProperties
 }
 const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
   const theme = useContext(ThemeContext)
