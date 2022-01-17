@@ -8,18 +8,22 @@ import LoadingList from '../../../LoadingList'
 import { usePage } from '../../../../../hooks/usePage'
 import { useWindowSize } from '../../../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../../../theme'
-import PairCard from '../../../PairsList/Pair'
+//import PairCard from '../../../PairsList/Pair'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../../../UndercoratedLink'
+import CampaignCard from '../../../PairsList/CampaignCard'
 
 const ListLayout = styled.div`
   display: grid;
-  grid-gap: 10px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  grid-gap: 12px 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr 1fr;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     grid-template-columns: auto;
-    grid-gap: 10px;
+    grid-gap: 8px;
   `};
 `
 
@@ -27,26 +31,31 @@ interface LiquidityMiningCampaignsListProps {
   stakablePair?: Pair
   items?: { campaign: LiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
   loading?: boolean
-  singleSidedCampaings?: SingleSidedLiquidityMiningCampaign[]
+  singleSidedCampaings?: { campaign: SingleSidedLiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
 }
 
-const { upToSmall, upToMedium } = MEDIA_WIDTHS
+const { upToSmall, upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
 export default function List({
   stakablePair,
   loading,
-  items,
-  singleSidedCampaings
+  items = [],
+  singleSidedCampaings = []
 }: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
-  const itemsPage = usePage(items || [], responsiveItemsPerPage, page, 0)
+  const combinedCampaings = [...singleSidedCampaings, ...items]
+  console.log(responsiveItemsPerPage)
+  const itemsPage = usePage(combinedCampaings, responsiveItemsPerPage, page, 0)
   const { width } = useWindowSize()
+  console.log(width)
+  console.log(upToMedium)
+  console.log(upToSmall)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
     if (!width) return
-    else if (width <= upToSmall) setResponsiveItemsPerPage(1)
+    else if (width <= upToExtraSmall) setResponsiveItemsPerPage(1)
     else if (width <= upToMedium) setResponsiveItemsPerPage(2)
     else setResponsiveItemsPerPage(3)
   }, [width])
@@ -58,33 +67,31 @@ export default function List({
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingList itemsAmount={responsiveItemsPerPage} />
-          ) : itemsPage.length > 0 || (singleSidedCampaings && singleSidedCampaings.length > 0) ? (
+            <LoadingList isMobile={true} itemsAmount={responsiveItemsPerPage} />
+          ) : itemsPage.length > 0 ? (
             <ListLayout>
-              {singleSidedCampaings &&
-                singleSidedCampaings.length > 0 &&
-                singleSidedCampaings.map(singleSidedStake => {
+              {itemsPage.map(item => {
+                if (item.campaign instanceof SingleSidedLiquidityMiningCampaign) {
                   return (
                     <UndecoratedLink
-                      key={singleSidedStake.address}
-                      to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
+                      key={item.campaign.address}
+                      to={`/pools/${item.campaign.stakeToken.address}/${item.campaign.address}/singleSidedStaking`}
                     >
-                      <PairCard
-                        token0={singleSidedStake.stakeToken}
-                        pairOrStakeAddress={singleSidedStake.stakeToken.address}
+                      <CampaignCard
+                        token0={item.campaign.stakeToken}
                         usdLiquidity={getStakedAmountUSD(
-                          singleSidedStake.staked.nativeCurrencyAmount,
+                          item.campaign.staked.nativeCurrencyAmount,
                           nativeCurrencyUSDPrice
                         )}
-                        apy={singleSidedStake.apy}
-                        hasFarming={singleSidedStake.currentlyActive}
+                        apy={item.campaign.apy}
                         isSingleSidedStakingCampaign={true}
+                        usdLiquidityText={item.campaign.locked ? 'LOCKED' : 'STAKED'}
+                        staked={item.staked}
+                        campaign={item.campaign}
                       />
                     </UndecoratedLink>
                   )
-                })}
-              {itemsPage.length > 0 &&
-                itemsPage.map(item => {
+                } else {
                   const token0 = stakablePair?.token0
                   const token1 = stakablePair?.token1
                   return (
@@ -92,21 +99,23 @@ export default function List({
                       key={item.campaign.address}
                       to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
                     >
-                      <PairCard
+                      <CampaignCard
                         token0={token0}
                         token1={token1}
-                        pairOrStakeAddress={stakablePair?.liquidityToken.address}
                         usdLiquidity={getStakedAmountUSD(
                           item.campaign.staked.nativeCurrencyAmount,
                           nativeCurrencyUSDPrice
                         )}
                         apy={item.campaign.apy}
                         containsKpiToken={item.containsKpiToken}
-                        usdLiquidityText="STAKED"
+                        usdLiquidityText={item.campaign.locked ? 'LOCKED' : 'STAKED'}
+                        staked={item.staked}
+                        campaign={item.campaign}
                       />
                     </UndecoratedLink>
                   )
-                })}
+                }
+              })}
             </ListLayout>
           ) : (
             <Empty>
