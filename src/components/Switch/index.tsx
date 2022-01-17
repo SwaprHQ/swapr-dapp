@@ -1,8 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
 
+import styled from 'styled-components'
 import './Switch.css'
+
+const StyledLabel = styled.label<{ isOn: boolean }>`
+  background: ${props => props.isOn && `${props.theme.mainPurple}!important`};
+`
+const StyledText = styled(Text)<{ isOn: boolean }>`
+  color: ${props => (props.isOn ? props.theme.text2 : props.theme.purple2)};
+`
 interface SwitchInterface {
   isOn: boolean
   handleToggle: () => void
@@ -10,8 +17,6 @@ interface SwitchInterface {
   style?: React.CSSProperties
 }
 const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
-  const theme = useContext(ThemeContext)
-
   return (
     <>
       <input
@@ -23,18 +28,12 @@ const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
         id={label}
         value={label}
       />
-      <label className="react-switch-label" style={{ background: isOn ? theme.mainPurple : '' }} htmlFor={label}>
+      <StyledLabel className="react-switch-label" isOn={isOn} htmlFor={label}>
         <span className="react-switch-button" />
-      </label>
-      <Text
-        marginLeft={'8px'}
-        alignSelf={'center'}
-        fontSize={'11px'}
-        fontWeight={'500'}
-        color={isOn ? theme.text2 : theme.purple2}
-      >
+      </StyledLabel>
+      <StyledText isOn={isOn} marginLeft={'8px'} alignSelf={'center'} fontSize={'11px'} fontWeight={'500'}>
         {label}
-      </Text>
+      </StyledText>
     </>
   )
 }
