@@ -150,7 +150,7 @@ export function AccountStatus({
   const [networkSwitchingActive, setNetworkSwitchingActive] = useState(false)
 
   useEffect(() => {
-    setNetworkSwitchingActive(connector instanceof CustomNetworkConnector || connector instanceof InjectedConnector)
+    setNetworkSwitchingActive(connector instanceof CustomNetworkConnector || connector instanceof InjectedConnector || connector instanceof AbstractConnector)
   }, [connector])
 
   if (!networkConnectorChainId) return null
