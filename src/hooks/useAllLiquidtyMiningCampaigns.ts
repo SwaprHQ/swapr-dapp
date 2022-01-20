@@ -158,16 +158,16 @@ export function useAllLiquidtyMiningCampaigns(
     const expiredCampaigns = []
     const activeCampaigns = []
     for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
-      const camapaign = pairCampaigns.liquidityMiningCampaigns[i]
+      const campaign = pairCampaigns.liquidityMiningCampaigns[i]
 
       if (
-        (pairAddress && camapaign.stakablePair.id.toLowerCase() !== pairAddress) ||
-        (dataFilter === PairsFilterType.MY && camapaign.liquidityMiningPositions.length === 0)
+        (pairAddress && campaign.stakablePair.id.toLowerCase() !== pairAddress) ||
+        (dataFilter === PairsFilterType.MY && campaign.liquidityMiningPositions.length === 0)
       )
         continue
 
-      const { reserveNativeCurrency, totalSupply, token0, token1, reserve0, reserve1 } = camapaign.stakablePair
-      const containsKpiToken = !!camapaign.rewards.find(
+      const { reserveNativeCurrency, totalSupply, token0, token1, reserve0, reserve1 } = campaign.stakablePair
+      const containsKpiToken = !!campaign.rewards.find(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
       )
       const token0ChecksummedAddress = getAddress(token0.address)
@@ -195,11 +195,11 @@ export function useAllLiquidtyMiningCampaigns(
         totalSupply,
         reserveNativeCurrency,
         kpiTokens,
-        camapaign,
+        campaign,
         nativeCurrency
       )
-      const hasStake = camapaign.liquidityMiningPositions.length > 0
-      const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
+      const hasStake = campaign.liquidityMiningPositions.length > 0
+      const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
       if (liquditiyCampaign.currentlyActive) {
         activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
@@ -209,36 +209,37 @@ export function useAllLiquidtyMiningCampaigns(
     }
 
     for (let i = 0; i < singleSidedCampaigns.singleSidedStakingCampaigns.length; i++) {
-      const camapaign = singleSidedCampaigns.singleSidedStakingCampaigns[i]
+      const campaign = singleSidedCampaigns.singleSidedStakingCampaigns[i]
 
       if (
         (token0Address &&
           token1Address &&
-          camapaign.stakeToken.id.toLowerCase() !== token0Address &&
-          camapaign.stakeToken.id.toLowerCase() !== token1Address) ||
-        (dataFilter === PairsFilterType.MY && camapaign.singleSidedStakingPositions.length === 0)
+          campaign.stakeToken.id.toLowerCase() !== token0Address &&
+          campaign.stakeToken.id.toLowerCase() !== token1Address) ||
+        (dataFilter === PairsFilterType.MY && campaign.singleSidedStakingPositions.length === 0)
       )
+        // NOTE: if stakeToken is not in the pair or not staked to any SSC return
         continue
-      const containsKpiToken = !!camapaign.rewards.find(
+      const containsKpiToken = !!campaign.rewards.find(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
       )
       const stakeToken = new Token(
         chainId,
-        camapaign.stakeToken.id,
-        parseInt(camapaign.stakeToken.decimals),
-        camapaign.stakeToken.symbol,
-        camapaign.stakeToken.name
+        campaign.stakeToken.id,
+        parseInt(campaign.stakeToken.decimals),
+        campaign.stakeToken.symbol,
+        campaign.stakeToken.name
       )
       const singleSidedStakeCampaign = toSingleSidedStakeCampaign(
         chainId,
-        camapaign,
+        campaign,
         stakeToken,
-        camapaign.stakeToken.totalSupply,
+        campaign.stakeToken.totalSupply,
         nativeCurrency,
-        camapaign.stakeToken.derivedNativeCurrency
+        campaign.stakeToken.derivedNativeCurrency
       )
-      const hasStake = camapaign.singleSidedStakingPositions.length > 0
-      const isExpired = parseInt(camapaign.endsAt) < timestamp || parseInt(camapaign.endsAt) > memoizedLowerTimeLimit
+      const hasStake = campaign.singleSidedStakingPositions.length > 0
+      const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
       if (hasStake || singleSidedStakeCampaign.currentlyActive) {
         activeCampaigns.unshift({
