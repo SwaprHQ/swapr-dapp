@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
-import { useMemo } from 'react'
+import { BigintIsh, Pair, Token, TokenAmount } from '@swapr/sdk'
+import { useCallback, useMemo } from 'react'
 import { useActiveWeb3React } from '.'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -110,6 +110,7 @@ export function useAllLiquidtyMiningCampaigns(
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
+  const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
   const lowerTimeLimit = DateTime.utc()
     .minus(Duration.fromObject({ days: 150 }))
     .toJSDate()
@@ -201,7 +202,7 @@ export function useAllLiquidtyMiningCampaigns(
       const hasStake = campaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
-      if (liquditiyCampaign.currentlyActive) {
+      if (liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
         activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
       } else if (isExpired) {
         expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
@@ -241,7 +242,7 @@ export function useAllLiquidtyMiningCampaigns(
       const hasStake = campaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
-      if (hasStake || singleSidedStakeCampaign.currentlyActive) {
+      if (hasStake || singleSidedStakeCampaign.currentlyActive || isUpcoming(singleSidedStakeCampaign.startsAt)) {
         activeCampaigns.unshift({
           campaign: singleSidedStakeCampaign,
           staked: hasStake,
@@ -261,22 +262,23 @@ export function useAllLiquidtyMiningCampaigns(
       miningCampaigns: { active: activeCampaigns, expired: expiredCampaigns }
     }
   }, [
-    dataFilter,
-    token1Address,
-    token0Address,
-    singleSidedCampaigns,
     singleSidedLoading,
-    singleSidedCampaignsError,
     chainId,
+    campaignLoading,
+    singleSidedCampaignsError,
+    campaignError,
+    singleSidedCampaigns,
+    pairCampaigns,
+    loadingKpiTokens,
+    pairAddress,
+    dataFilter,
+    tokensInCurrentChain,
+    kpiTokens,
     nativeCurrency,
     timestamp,
     memoizedLowerTimeLimit,
-    kpiTokens,
-    tokensInCurrentChain,
-    loadingKpiTokens,
-    campaignLoading,
-    campaignError,
-    pairAddress,
-    pairCampaigns
+    isUpcoming,
+    token0Address,
+    token1Address
   ])
 }
