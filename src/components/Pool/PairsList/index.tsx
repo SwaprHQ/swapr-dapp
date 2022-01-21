@@ -13,6 +13,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
+import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
 
 const ListLayout = styled.div`
   display: grid;
@@ -59,13 +60,14 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-
+  const { address: swprAddress } = useSWPRToken()
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
     setPage(1)
   }, [chainId, filter, aggregatedPairs])
+  const isSWPRSingleSidedStake = singleSidedStake?.stakeToken.address.toLowerCase() === swprAddress.toLowerCase()
 
   return (
     <Flex flexDirection="column">
@@ -77,7 +79,11 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <UndecoratedLink
                 key={singleSidedStake.address}
-                to={`/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`}
+                to={
+                  isSWPRSingleSidedStake
+                    ? () => ({ pathname: '/rewards', state: { showSwpr: true } })
+                    : `/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`
+                }
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}

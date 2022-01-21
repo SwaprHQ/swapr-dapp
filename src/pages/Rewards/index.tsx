@@ -73,7 +73,6 @@ export default function Rewards({
   const token1 = useToken(currencyIdB)
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
-
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [filterPair, setFilterPair] = useState<Pair | null>(null)
 
@@ -85,9 +84,16 @@ export default function Rewards({
     if (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.LOADING) setFilterPair(null)
     else if (wrappedPair[0] === PairState.EXISTS && !filterPair) setFilterPair(wrappedPair[1])
   }, [wrappedPair, filterPair])
+
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
   }, [])
+
+  useEffect(() => {
+    if (router.location.state?.showSwpr) {
+      setAggregatedDataFilter(PairsFilterType.SWPR)
+    }
+  }, [router])
 
   const handleModalClose = useCallback(() => {
     setOpenPairsModal(false)
@@ -166,6 +172,8 @@ export default function Rewards({
                         ? 'LOADING'
                         : aggregatedDataFilter === PairsFilterType.MY
                         ? 'MY PAIRS'
+                        : aggregatedDataFilter === PairsFilterType.SWPR
+                        ? 'SWAPR'
                         : 'ALL'}
                     </Text>
                   </Box>

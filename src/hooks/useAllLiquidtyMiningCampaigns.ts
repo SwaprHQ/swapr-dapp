@@ -12,6 +12,7 @@ import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
+import { useSWPRToken } from './swpr/useSWPRToken'
 
 const SINGLE_SIDED_CAMPAIGNS = gql`
   query($userId: ID) {
@@ -108,6 +109,7 @@ export function useAllLiquidtyMiningCampaigns(
   const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
 
   const { chainId, account } = useActiveWeb3React()
+  const SWPRToken = useSWPRToken()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
   const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
@@ -199,13 +201,16 @@ export function useAllLiquidtyMiningCampaigns(
         campaign,
         nativeCurrency
       )
+
       const hasStake = campaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
-      if (liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
-        activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
-      } else if (isExpired) {
-        expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(tokenA) || SWPRToken.equals(tokenB)) {
+        if (liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
+          activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+        } else if (isExpired) {
+          expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+        }
       }
     }
 
@@ -219,7 +224,6 @@ export function useAllLiquidtyMiningCampaigns(
           campaign.stakeToken.id.toLowerCase() !== token1Address) ||
         (dataFilter === PairsFilterType.MY && campaign.singleSidedStakingPositions.length === 0)
       )
-        // NOTE: if stakeToken is not in the pair or not staked to any SSC return
         continue
       const containsKpiToken = !!campaign.rewards.find(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
@@ -242,18 +246,20 @@ export function useAllLiquidtyMiningCampaigns(
       const hasStake = campaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
-      if (hasStake || singleSidedStakeCampaign.currentlyActive || isUpcoming(singleSidedStakeCampaign.startsAt)) {
-        activeCampaigns.unshift({
-          campaign: singleSidedStakeCampaign,
-          staked: hasStake,
-          containsKpiToken: containsKpiToken
-        })
-      } else if (isExpired) {
-        expiredCampaigns.unshift({
-          campaign: singleSidedStakeCampaign,
-          staked: hasStake,
-          containsKpiToken: containsKpiToken
-        })
+      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(stakeToken)) {
+        if (hasStake || singleSidedStakeCampaign.currentlyActive || isUpcoming(singleSidedStakeCampaign.startsAt)) {
+          activeCampaigns.unshift({
+            campaign: singleSidedStakeCampaign,
+            staked: hasStake,
+            containsKpiToken: containsKpiToken
+          })
+        } else if (isExpired) {
+          expiredCampaigns.unshift({
+            campaign: singleSidedStakeCampaign,
+            staked: hasStake,
+            containsKpiToken: containsKpiToken
+          })
+        }
       }
     }
 
@@ -290,9 +296,19 @@ export function useAllLiquidtyMiningCampaigns(
       return 0
     })
 
+    const sortedExpiredCampaigns = expiredCampaigns.sort((a, b) => {
+      if (a.campaign.endsAt > b.campaign.endsAt) return -1
+      if (a.campaign.endsAt < b.campaign.endsAt) return 1
+
+      if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
+      if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
+
+      return 0
+    })
+
     return {
       loading: false,
-      miningCampaigns: { active: sortedActiveCampaigns, expired: expiredCampaigns }
+      miningCampaigns: { active: sortedActiveCampaigns, expired: sortedExpiredCampaigns }
     }
   }, [
     singleSidedLoading,
@@ -310,6 +326,7 @@ export function useAllLiquidtyMiningCampaigns(
     nativeCurrency,
     timestamp,
     memoizedLowerTimeLimit,
+    SWPRToken,
     isUpcoming,
     token0Address,
     token1Address

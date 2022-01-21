@@ -158,7 +158,7 @@ export default function ClaimModal({
 
   const handleStakeUnstakeClick = () => {
     if (singleSidedCampaignLink) {
-      push('/rewards')
+      push({ pathname: '/rewards', state: { showSwpr: true } })
       wrappedOnDismiss()
     }
   }
