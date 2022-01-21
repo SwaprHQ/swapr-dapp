@@ -34,6 +34,8 @@ export interface OmnibridgeChildBaseConstructor {
     from: ChainId
     reverse: boolean
   }
+  displayName: string
+  bridgeId: BridgeList
 }
 
 export enum BridgeList {
