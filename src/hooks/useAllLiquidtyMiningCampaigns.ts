@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { BigintIsh, Pair, Token, TokenAmount } from '@swapr/sdk'
+import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token, TokenAmount } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useActiveWeb3React } from '.'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
@@ -257,9 +257,42 @@ export function useAllLiquidtyMiningCampaigns(
       }
     }
 
+    const sortedActiveCampaigns = activeCampaigns.sort((a, b) => {
+      if (a.staked && !b.staked) return -1
+      if (!a.staked && b.staked) return 1
+
+      if (!a.campaign.ended && b.campaign.ended) return -1
+      if (a.campaign.ended && !b.campaign.ended) return 1
+
+      if (
+        a.campaign instanceof SingleSidedLiquidityMiningCampaign &&
+        !(b.campaign instanceof SingleSidedLiquidityMiningCampaign)
+      )
+        return -1
+
+      if (
+        !(a.campaign instanceof SingleSidedLiquidityMiningCampaign) &&
+        b.campaign instanceof SingleSidedLiquidityMiningCampaign
+      )
+        return 1
+
+      // Active above upcoming
+      if (a.campaign.currentlyActive && !b.campaign.currentlyActive) return -1
+      if (!a.campaign.currentlyActive && b.campaign.currentlyActive) return 1
+
+      // TV
+      if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
+      if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
+
+      if (a.campaign.apy > b.campaign.apy) return -1
+      if (a.campaign.apy < b.campaign.apy) return 1
+
+      return 0
+    })
+
     return {
       loading: false,
-      miningCampaigns: { active: activeCampaigns, expired: expiredCampaigns }
+      miningCampaigns: { active: sortedActiveCampaigns, expired: expiredCampaigns }
     }
   }, [
     singleSidedLoading,
