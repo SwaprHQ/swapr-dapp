@@ -158,10 +158,8 @@ export default function ClaimModal({
 
   const handleStakeUnstakeClick = () => {
     if (singleSidedCampaignLink) {
-      push(singleSidedCampaignLink)
+      push('/rewards')
       wrappedOnDismiss()
-    } else {
-      return
     }
   }
 
