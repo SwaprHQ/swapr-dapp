@@ -115,7 +115,7 @@ export default function LiquidityMiningCampaign({
                 padding="8px 14px"
                 to={
                   isSingleSidedCampaign && token0
-                    ? `swap/${token0.address}`
+                    ? `/swap/?outputCurrency=${token0.address}`
                     : token0 && token1
                     ? `/add/${token0.address}/${token1.address}`
                     : ''
