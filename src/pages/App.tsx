@@ -53,9 +53,15 @@ const BodyWrapper = styled.div`
   z-index: 10;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    /* [PR#531]: theme.mediaWidth.upToSmall does not cover all the breakpoints smoothly 
     padding: 16px;
+    */
     padding-top: 2rem;
   `};
+
+  /* [PR#531] */
+  padding-left: 16px;
+  padding-right: 16px;
 
   z-index: 1;
 `
