@@ -25,7 +25,7 @@ import { Slide, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Bridge from './Bridge'
 
-import { Rewards } from './Rewards'
+import Rewards from './Rewards'
 
 const AppWrapper = styled.div`
   display: flex;

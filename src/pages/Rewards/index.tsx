@@ -63,7 +63,7 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export function Rewards({
+export default function Rewards({
   match: {
     params: { currencyIdA, currencyIdB }
   }
