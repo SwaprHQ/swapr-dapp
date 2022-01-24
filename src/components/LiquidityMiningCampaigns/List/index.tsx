@@ -2,10 +2,10 @@ import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@sw
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import Pagination from '../../Pagination'
+import { Pagination } from '../../Pagination'
 
-import Empty from '../../Pool/Empty'
-import LoadingList from '../../Pool/LoadingList'
+import { Empty } from '../../Pool/Empty'
+import { LoadingList } from '../../Pool/LoadingList'
 import { usePage } from '../../../hooks/usePage'
 import { useWindowSize } from '../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../theme'
@@ -13,7 +13,7 @@ import { MEDIA_WIDTHS } from '../../../theme'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { UndecoratedLink } from '../../UndercoratedLink'
-import CampaignCard from '../../Pool/PairsList/CampaignCard'
+import { CampaignCard } from '../../Pool/PairsList/CampaignCard'
 
 const ListLayout = styled.div`
   display: grid;
@@ -39,7 +39,7 @@ interface LiquidityMiningCampaignsListProps {
 
 const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export default function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
+export function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
   const [page, setPage] = useState(1)
   const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
 
@@ -50,9 +50,16 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
 
   useEffect(() => {
     if (!width) return
-    else if (width <= upToExtraSmall) setResponsiveItemsPerPage(1)
-    else if (width <= upToMedium) setResponsiveItemsPerPage(2)
-    else setResponsiveItemsPerPage(9)
+
+    let itemsPerPage = 9
+    console.log({ width })
+    if (width <= upToExtraSmall) {
+      itemsPerPage = 1
+    } else if (width <= upToMedium) {
+      itemsPerPage = 6
+    }
+
+    setResponsiveItemsPerPage(itemsPerPage)
   }, [width])
 
   const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items

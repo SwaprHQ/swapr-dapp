@@ -26,7 +26,7 @@ import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
 import { useRouter } from '../../hooks/useRouter'
-import RewardsList from '../../components/LiquidityMiningCampaigns/RewardsList'
+import { RewardsList } from '../../components/LiquidityMiningCampaigns/RewardsList'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -63,7 +63,7 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export default function Rewards({
+export function Rewards({
   match: {
     params: { currencyIdA, currencyIdB }
   }
@@ -114,8 +114,10 @@ export default function Rewards({
     [router]
   )
 
-  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
+  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
     return <Redirect to="/rewards" />
+  }
+
   return (
     <>
       <PageWrapper>
