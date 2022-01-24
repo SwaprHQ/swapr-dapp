@@ -13,9 +13,8 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 
-// Fragments are not possible, they will be resovled
+// Native fragments will not be resovled
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
-
 const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
 
 const SINGLE_SIDED_CAMPAIGNS = gql`
