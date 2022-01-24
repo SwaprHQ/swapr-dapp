@@ -51,7 +51,7 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
     if (!width) return
 
     let itemsPerPage = 9
-    console.log({ width })
+
     if (width <= upToExtraSmall) {
       itemsPerPage = 1
     } else if (width <= upToMedium) {

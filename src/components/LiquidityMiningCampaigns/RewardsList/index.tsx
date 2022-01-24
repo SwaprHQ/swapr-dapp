@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { AutoColumn } from '../../Column'
 import TabBar from '../../TabBar'
-import { List } from '../List'
+import List from '../List'
 
 import TabTitle from '../TabTitle'
 import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
