@@ -21,6 +21,8 @@ import { useActiveWeb3React } from '../../../hooks'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import CurrencyLogo from '../../../components/CurrencyLogo'
 import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
+import { Location } from 'history'
+
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -113,13 +115,23 @@ export default function LiquidityMiningCampaign({
               <AddLiquidityButtonComponent
                 as={Link}
                 padding="8px 14px"
-                to={
-                  isSingleSidedCampaign && token0
-                    ? `swap/${token0.address}`
-                    : token0 && token1
-                    ? `/add/${token0.address}/${token1.address}`
-                    : ''
-                }
+                to={(location: Location) => {
+                  if (isSingleSidedCampaign && token0) {
+                    return {
+                      ...location,
+                      pathname: `/swap/${token0.address}`
+                    }
+                  }
+
+                  if (token0 && token1) {
+                    return {
+                      ...location,
+                      pathname: `/swap/${token0.address}`
+                    }
+                  }
+
+                  return ''
+                }}
               >
                 <Text fontWeight={700} fontSize={12}>
                   {isSingleSidedCampaign ? 'GET SWPR' : 'ADD LIQUIDITY'}
