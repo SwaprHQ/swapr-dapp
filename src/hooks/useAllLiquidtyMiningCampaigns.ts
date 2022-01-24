@@ -191,7 +191,7 @@ export function useAllLiquidtyMiningCampaigns(
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 
       if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(tokenA) || SWPRToken.equals(tokenB)) {
-        if (liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
+        if (hasStake || liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
           activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
         } else if (isExpired) {
           expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
@@ -249,11 +249,11 @@ export function useAllLiquidtyMiningCampaigns(
     }
 
     const sortedActiveCampaigns = activeCampaigns.sort((a, b) => {
+      if (a.campaign.ended && !b.campaign.ended) return -1
+      if (!a.campaign.ended && b.campaign.ended) return 1
+
       if (a.staked && !b.staked) return -1
       if (!a.staked && b.staked) return 1
-
-      if (!a.campaign.ended && b.campaign.ended) return -1
-      if (a.campaign.ended && !b.campaign.ended) return 1
 
       if (
         a.campaign instanceof SingleSidedLiquidityMiningCampaign &&
