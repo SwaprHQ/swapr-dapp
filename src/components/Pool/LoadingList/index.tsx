@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import LoadingCard from './LoadingCard'
 
-const ListLayout = styled.div<{ isMobile: boolean }>`
+export const ListLayout = styled.div<{ isMobile: boolean }>`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: auto;
@@ -19,7 +19,7 @@ interface LoadingListProps {
   isMobile?: boolean
 }
 
-export default function LoadingList({ itemsAmount, isMobile = false }: LoadingListProps) {
+export function LoadingList({ itemsAmount, isMobile = false }: LoadingListProps) {
   const responsiveItemsAmount = useResponsiveItemsPerPage()
 
   return (

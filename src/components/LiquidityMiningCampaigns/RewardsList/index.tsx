@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { AutoColumn } from '../../Column'
 import TabBar from '../../TabBar'
-import List from '../List'
+import { List } from '../List'
 
 import TabTitle from '../TabTitle'
 import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
@@ -11,7 +11,7 @@ import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMini
 import { PairsFilterType } from '../../Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
 import { Flex } from 'rebass'
-import Switch from '../../Switch'
+import { Switch } from '../../Switch'
 
 const View = styled(AutoColumn)`
   margin-top: 20px;
@@ -23,7 +23,7 @@ interface RewardsInterface {
   loading: boolean
 }
 
-export default function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
+export function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
   const { loading: loadingPairs, miningCampaigns } = useAllLiquidtyMiningCampaigns(pair ? pair : undefined, dataFilter)
 
   const [activeTab, setActiveTab] = useState(0)

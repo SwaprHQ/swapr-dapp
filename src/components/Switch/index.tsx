@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Text } from 'rebass'
 
 import styled from 'styled-components'
@@ -10,13 +10,14 @@ const StyledLabel = styled.label<{ isOn: boolean }>`
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${props => (props.isOn ? props.theme.text2 : props.theme.purple2)};
 `
-interface SwitchInterface {
+interface SwitchProps {
   isOn: boolean
   handleToggle: () => void
   label: string
   style?: React.CSSProperties
 }
-const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
+
+export const Switch: FC<SwitchProps> = ({ isOn, handleToggle, label, style }) => {
   return (
     <>
       <input
@@ -37,5 +38,3 @@ const Switch = ({ isOn, handleToggle, label, style }: SwitchInterface) => {
     </>
   )
 }
-
-export default Switch

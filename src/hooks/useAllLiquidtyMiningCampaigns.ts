@@ -14,15 +14,16 @@ import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useSWPRToken } from './swpr/useSWPRToken'
 
+// Native fragments will not be resovled
+const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
+const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
+
 const SINGLE_SIDED_CAMPAIGNS = gql`
   query($userId: ID) {
     singleSidedStakingCampaigns {
       id
       owner
-      startsAt
-      endsAt
-      duration
-      locked
+      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
       stakeToken {
         id
         symbol
@@ -33,19 +34,13 @@ const SINGLE_SIDED_CAMPAIGNS = gql`
       }
       rewards {
         token {
-          address: id
-          name
-          symbol
-          decimals
-          derivedNativeCurrency
+          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
         }
         amount
       }
       singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
         id
       }
-      stakedAmount
-      stakingCap
     }
   }
 `
@@ -53,18 +48,10 @@ const REGULAR_CAMPAIGN = gql`
   query($userId: ID) {
     liquidityMiningCampaigns {
       address: id
-      duration
-      startsAt
-      endsAt
-      locked
-      stakingCap
+      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
       rewards {
         token {
-          derivedNativeCurrency
-          address: id
-          name
-          symbol
-          decimals
+          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
         }
         amount
       }
@@ -88,8 +75,6 @@ const REGULAR_CAMPAIGN = gql`
           decimals
         }
       }
-
-      stakedAmount
       liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
         id
       }

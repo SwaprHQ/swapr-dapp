@@ -106,7 +106,7 @@ interface PairProps {
   campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
 }
 
-export default function CampaignCard({
+export function CampaignCard({
   token0,
   token1,
   usdLiquidity,
