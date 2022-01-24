@@ -1,5 +1,5 @@
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 import { Pagination } from '../../Pagination'
@@ -39,20 +39,19 @@ interface LiquidityMiningCampaignsListProps {
 
 const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
-  const [page, setPage] = useState(1)
-  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
-
-  const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
+export default function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
   const { width } = useWindowSize()
-
+  const [page, setPage] = useState(1)
+  const prevItemsCt = useRef(items.length)
+  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
+  const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
     if (!width) return
 
     let itemsPerPage = 9
-    console.log({ width })
+
     if (width <= upToExtraSmall) {
       itemsPerPage = 1
     } else if (width <= upToMedium) {
@@ -61,6 +60,12 @@ export function List({ loading, items = [] }: LiquidityMiningCampaignsListProps)
 
     setResponsiveItemsPerPage(itemsPerPage)
   }, [width])
+
+  useEffect(() => {
+    if (items.length !== prevItemsCt.current) {
+      setPage(1)
+    }
+  }, [items.length])
 
   const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items
 
@@ -129,12 +134,14 @@ export function List({ loading, items = [] }: LiquidityMiningCampaignsListProps)
           )}
         </Box>
         <Box alignSelf="flex-end" mt="16px">
-          <Pagination
-            page={page}
-            totalItems={items?.length ?? 0}
-            itemsPerPage={responsiveItemsPerPage}
-            onPageChange={setPage}
-          />
+          {!overallLoading && (
+            <Pagination
+              page={page}
+              totalItems={items?.length ?? 0}
+              itemsPerPage={responsiveItemsPerPage}
+              onPageChange={setPage}
+            />
+          )}
         </Box>
       </Flex>
     </>
