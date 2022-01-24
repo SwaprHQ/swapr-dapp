@@ -35,7 +35,7 @@ export const subgraphClients: { [chainId in ChainId]: ApolloClient<NormalizedCac
 
 export const immediateSubgraphClients: { [chainId in ChainId]: GraphQLClient } = {
   [ChainId.MAINNET]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2'),
-  [ChainId.RINKEBY]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby-new'),
+  [ChainId.RINKEBY]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'),
   [ChainId.XDAI]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2'),
   [ChainId.ARBITRUM_ONE]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3'),
   [ChainId.ARBITRUM_RINKEBY]: new GraphQLClient(
