@@ -47,7 +47,7 @@ export function RewardsList({ dataFilter, pair, setDataFiler, loading }: Rewards
               itemsAmount={miningCampaigns.expired.length}
               badgeTheme="red"
             >
-              Expired (30 days)
+              Expired (150 days)
             </TabTitle>
           ]}
           active={activeTab}

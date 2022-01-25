@@ -64,8 +64,12 @@ export default function LiquidityMiningCampaign({
 
   const lpTokenBalance = useTokenBalance(account || undefined, wrappedPair[1]?.liquidityToken)
 
-  if (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
-    return <Redirect to="/pools" />
+  if (
+    (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) ||
+    (wrappedPair[0] === PairState.INVALID && !token0 && !token1)
+  ) {
+    return <Redirect to="/rewards" />
+  }
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
   return (
@@ -76,7 +80,7 @@ export default function LiquidityMiningCampaign({
           <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
             <Flex alignItems="center">
               <Box mr="8px">
-                <UndecoratedLink to="/pools">
+                <UndecoratedLink to="/rewards">
                   <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     Rewards
                   </TYPE.mediumHeader>
