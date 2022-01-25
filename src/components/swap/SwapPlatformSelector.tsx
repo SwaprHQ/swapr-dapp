@@ -126,11 +126,7 @@ export function SwapPlatformSelector({
                         ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)}` ?? '-'
                         : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)}` ?? '-'}
                     </TYPE.subHeader>
-                    <CurrencyLogo
-                      currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}
-                      size="14px"
-                      marginLeft={4}
-                    />
+                    <CurrencyLogo currency={trade.outputAmount.currency} size="14px" marginLeft={4} />
                   </RowFixed>
                 </td>
               </tr>
