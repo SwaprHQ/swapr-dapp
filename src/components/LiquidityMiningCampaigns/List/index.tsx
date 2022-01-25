@@ -1,18 +1,19 @@
-import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign, Pair } from '@swapr/sdk'
-import React, { useEffect, useState } from 'react'
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import Pagination from '../../../../Pagination'
-import Empty from '../../../Empty'
-import LoadingList from '../../../LoadingList'
-import { usePage } from '../../../../../hooks/usePage'
-import { useWindowSize } from '../../../../../hooks/useWindowSize'
-import { MEDIA_WIDTHS } from '../../../../../theme'
-//import PairCard from '../../../PairsList/Pair'
-import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
-import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
-import { UndecoratedLink } from '../../../../UndercoratedLink'
-import CampaignCard from '../../../PairsList/CampaignCard'
+import { Pagination } from '../../Pagination'
+
+import { Empty } from '../../Pool/Empty'
+import { LoadingList } from '../../Pool/LoadingList'
+import { usePage } from '../../../hooks/usePage'
+import { useWindowSize } from '../../../hooks/useWindowSize'
+import { MEDIA_WIDTHS } from '../../../theme'
+
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
+import { getStakedAmountUSD } from '../../../utils/liquidityMining'
+import { UndecoratedLink } from '../../UndercoratedLink'
+import { CampaignCard } from '../../Pool/PairsList/CampaignCard'
 
 const ListLayout = styled.div`
   display: grid;
@@ -28,39 +29,45 @@ const ListLayout = styled.div`
 `
 
 interface LiquidityMiningCampaignsListProps {
-  stakablePair?: Pair
-  items?: { campaign: LiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
+  items?: {
+    campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
+    staked: boolean
+    containsKpiToken: boolean
+  }[]
   loading?: boolean
-  singleSidedCampaings?: { campaign: SingleSidedLiquidityMiningCampaign; staked: boolean; containsKpiToken: boolean }[]
 }
 
-const { upToSmall, upToMedium, upToExtraSmall } = MEDIA_WIDTHS
+const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export default function List({
-  stakablePair,
-  loading,
-  items = [],
-  singleSidedCampaings = []
-}: LiquidityMiningCampaignsListProps) {
-  const [page, setPage] = useState(1)
-  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(3)
-  const combinedCampaings = [...singleSidedCampaings, ...items]
-  console.log(responsiveItemsPerPage)
-  const itemsPage = usePage(combinedCampaings, responsiveItemsPerPage, page, 0)
+export default function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
   const { width } = useWindowSize()
-  console.log(width)
-  console.log(upToMedium)
-  console.log(upToSmall)
+  const [page, setPage] = useState(1)
+  const prevItemsCt = useRef(items.length)
+  const [responsiveItemsPerPage, setResponsiveItemsPerPage] = useState(9)
+  const itemsPage = usePage(items, responsiveItemsPerPage, page, 0)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
     if (!width) return
-    else if (width <= upToExtraSmall) setResponsiveItemsPerPage(1)
-    else if (width <= upToMedium) setResponsiveItemsPerPage(2)
-    else setResponsiveItemsPerPage(3)
+
+    let itemsPerPage = 9
+
+    if (width <= upToExtraSmall) {
+      itemsPerPage = 1
+    } else if (width <= upToMedium) {
+      itemsPerPage = 6
+    }
+
+    setResponsiveItemsPerPage(itemsPerPage)
   }, [width])
 
-  const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items || !stakablePair
+  useEffect(() => {
+    if (items.length !== prevItemsCt.current) {
+      setPage(1)
+    }
+  }, [items.length])
+
+  const overallLoading = loading || loadingNativeCurrencyUsdPrice || !items
 
   return (
     <>
@@ -75,7 +82,7 @@ export default function List({
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}
-                      to={`/pools/${item.campaign.stakeToken.address}/${item.campaign.address}/singleSidedStaking`}
+                      to={`/rewards/${item.campaign.stakeToken.address}/${item.campaign.address}/singleSidedStaking`}
                     >
                       <CampaignCard
                         token0={item.campaign.stakeToken}
@@ -92,12 +99,13 @@ export default function List({
                     </UndecoratedLink>
                   )
                 } else {
-                  const token0 = stakablePair?.token0
-                  const token1 = stakablePair?.token1
+                  const token0 = item.campaign?.targetedPair.token0
+                  const token1 = item.campaign?.targetedPair.token1
+
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}
-                      to={`/pools/${token0?.address}/${token1?.address}/${item.campaign.address}`}
+                      to={`/rewards/${token0?.address}/${token1?.address}/${item.campaign.address}`}
                     >
                       <CampaignCard
                         token0={token0}
@@ -126,12 +134,14 @@ export default function List({
           )}
         </Box>
         <Box alignSelf="flex-end" mt="16px">
-          <Pagination
-            page={page}
-            totalItems={items?.length ?? 0}
-            itemsPerPage={responsiveItemsPerPage}
-            onPageChange={setPage}
-          />
+          {!overallLoading && (
+            <Pagination
+              page={page}
+              totalItems={items?.length ?? 0}
+              itemsPerPage={responsiveItemsPerPage}
+              onPageChange={setPage}
+            />
+          )}
         </Box>
       </Flex>
     </>

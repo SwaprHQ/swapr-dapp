@@ -80,7 +80,7 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
       <RowBetween>
         <GoBackContainer onClick={history.goBack}>
           <StyledChevronLeft />
-          Back to pair
+          Back to rewards
         </GoBackContainer>
         <USDValueSwitcherContainer onClick={handleUSDValueClick}>
           Value in {showUSDValue ? 'crypto' : 'USD'}
