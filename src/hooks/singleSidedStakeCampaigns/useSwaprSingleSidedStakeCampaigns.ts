@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 
-import { SWPR, Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+import { Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
@@ -9,11 +9,12 @@ import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
+import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
   query($address: ID, $userId: ID) {
-    singleSidedStakingCampaigns(first: 100, where: { stakeToken: $address }) {
+    singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
       id
       owner
       startsAt
@@ -60,8 +61,8 @@ export function useSwaprSinglelSidedStakeCampaigns(
   const nativeCurrency = useNativeCurrency()
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
-  //using xeenus as token for rinkeby
-  const swaprAddress = chainId === 4 ? '0x022e292b44b5a146f2e8ee36ff44d3dd863c915c' : SWPR[chainId || 1].address
+
+  const { address: swaprAddress } = useSWPRToken()
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(QUERY, {
