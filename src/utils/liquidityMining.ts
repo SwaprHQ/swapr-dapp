@@ -123,14 +123,11 @@ export function toSingleSidedStakeCampaign(
       parseUnits(new Decimal(reward.amount).toFixed(rewardToken.decimals), rewardToken.decimals).toString()
     )
   })
-  const decimalTotalSupply = new Decimal(totalSupplyStakeToken)
 
   const derivedNative = new Price(
     stakeToken,
     nativeCurrency,
-    decimalTotalSupply.isZero()
-      ? '1'
-      : parseUnits(new Decimal(totalSupplyStakeToken).toFixed(stakeToken.decimals), stakeToken.decimals).toString(),
+    parseUnits('1', nativeCurrency.decimals).toString(),
     parseUnits(new Decimal(derivedNativeCurrency).toFixed(nativeCurrency.decimals), nativeCurrency.decimals).toString()
   )
 

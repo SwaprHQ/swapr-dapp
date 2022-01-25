@@ -183,6 +183,7 @@ function Information({
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
+
   const [upcoming, setUpcoming] = useState(false)
   const [expired, setExpired] = useState(false)
   const [currentPeriodEnded, setCurrentPeriodEnded] = useState(false)
