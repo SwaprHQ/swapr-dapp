@@ -26,6 +26,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import Bridge from './Bridge'
 import Dashboard from './Dashboard/dashboard'
 
+import Rewards from './Rewards'
+
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;
@@ -52,9 +54,15 @@ const BodyWrapper = styled.div`
   z-index: 10;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    /* [PR#531]: theme.mediaWidth.upToSmall does not cover all the breakpoints smoothly 
     padding: 16px;
+    */
     padding-top: 2rem;
   `};
+
+  /* [PR#531] */
+  padding-left: 16px;
+  padding-right: 16px;
 
   z-index: 1;
 `
@@ -85,13 +93,23 @@ export default function App() {
                   <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
                   <Route exact strict path="/pools" component={Pools} />
                   <Route exact strict path="/pools/mine" component={MyPairs} />
-                  <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
+                  <Route exact strict path="/rewards" component={Rewards} />
+                  <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
                   <Route
                     exact
                     strict
-                    path="/pools/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
                     component={LiquidityMiningCampaign}
                   />
+                  <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
+
+                  <Route
+                    exact
+                    strict
+                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    component={LiquidityMiningCampaign}
+                  />
+
                   <Route exact strict path="/create" component={AddLiquidity} />
                   <Route exact path="/add" component={AddLiquidity} />
                   {/* <Route exact strict path="/governance" component={GovPages} /> */}
