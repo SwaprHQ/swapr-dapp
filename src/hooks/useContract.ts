@@ -48,8 +48,32 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
+function useContracts(addresses: (string | undefined)[], ABI: any, withSignerIfPossible = true): (Contract | null)[] {
+  const { library, account } = useActiveWeb3React()
+
+  return useMemo(() => {
+    const contracts = addresses.map(address => {
+      if (!address || !ABI || !library) return null
+      try {
+        return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      } catch (error) {
+        console.error('Failed to get contract', error)
+        return null
+      }
+    })
+    return contracts
+  }, [addresses, ABI, library, withSignerIfPossible, account])
+}
+
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
+}
+
+export function useTokenContracts(
+  tokenAddresses: (string | undefined)[],
+  withSignerIfPossible?: boolean
+): (Contract | null)[] {
+  return useContracts(tokenAddresses, ERC20_ABI, withSignerIfPossible)
 }
 
 export function useWrappingToken(currency?: Currency): Token | undefined {

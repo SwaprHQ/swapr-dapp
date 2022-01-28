@@ -13,10 +13,20 @@ const QUERY = gql`
     }
   }
 `
+const QUERY_MULTIPLE = gql`
+  query($id: [ID!]) {
+    pair(id: $id) {
+      id
+      reserveUSD
+    }
+  }
+`
 
 interface QueryResult {
   pair: { reserveUSD: string }
 }
+
+type QueryResultMultiple = QueryResult[]
 
 export function usePairLiquidityUSD(pair?: Pair | null): { loading: boolean; liquidityUSD: CurrencyAmount } {
   const { loading, data, error } = useQuery<QueryResult>(QUERY, {
@@ -31,6 +41,27 @@ export function usePairLiquidityUSD(pair?: Pair | null): { loading: boolean; liq
       liquidityUSD: CurrencyAmount.usd(
         parseUnits(new Decimal(data.pair.reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
       )
+    }
+  }, [data, error, loading])
+}
+
+export function useMultiplePairLiquidityUSD(
+  pairs?: (Pair | null)[]
+): { loading: boolean; liquidityUSD: CurrencyAmount[] } {
+  const { loading, data, error } = useQuery<QueryResultMultiple>(QUERY_MULTIPLE, {
+    variables: { id: pairs?.map(pair => pair?.liquidityToken.address.toLowerCase()) }
+  })
+
+  return useMemo(() => {
+    if (loading) return { loading: true, liquidityUSD: [] }
+    if (!data || !data.length || error) return { loading, liquidityUSD: [] }
+    return {
+      loading,
+      liquidityUSD: data.map(d => {
+        return CurrencyAmount.usd(
+          parseUnits(new Decimal(d.pair.reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
+        )
+      })
     }
   }, [data, error, loading])
 }

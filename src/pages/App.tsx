@@ -24,6 +24,7 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import { Slide, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Bridge from './Bridge'
+import Dashboard from './Dashboard/dashboard'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -78,6 +79,7 @@ export default function App() {
             <BodyWrapper>
               <Web3ReactManager>
                 <Switch>
+                  <Route exact strict path="/dashboard" component={Dashboard} />
                   <Route exact strict path="/swap" component={Swap} />
                   <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                   <Route exact strict path="/send" component={RedirectPathToSwapOnly} />

@@ -226,6 +226,9 @@ function Header() {
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
+          <StyledNavLink id="dashboard-nav-link" to="/dashboard" activeClassName="active">
+            {t('dashboard')}
+          </StyledNavLink>
           <StyledNavLink id="swap-nav-link" to="/swap" activeClassName="active">
             {t('swap')}
           </StyledNavLink>
