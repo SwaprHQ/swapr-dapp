@@ -14,24 +14,20 @@ export function useTotalSupply(token?: Token): TokenAmount | undefined {
   return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined
 }
 
-export function useTotalSupplies(tokens?: (Token | undefined)[]): (TokenAmount | undefined)[] {
-  const balances = useMultipleContractSingleData(
+export function useTotalSupplies(tokens?: Token[]): (TokenAmount | undefined)[] {
+  const totalSupplies = useMultipleContractSingleData(
     tokens?.map(token => token?.address) || [],
     ERC20_INTERFACE,
     'totalSupply'
-  ).map(r => r.result?.[0])
+  ).map(r => r.result?.[0]) as TokenAmount[]
 
   if (!tokens) return []
 
   const tokenAmounts: (TokenAmount | undefined)[] = []
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
-    const balance = balances[i]
-    if (token && balance) {
-      tokenAmounts[i] = new TokenAmount(token, balance.toString())
-    } else {
-      tokenAmounts[i] = undefined
-    }
+    const balance = totalSupplies[i]
+    tokenAmounts[i] = balance ? new TokenAmount(token, balance.toString()) : undefined
   }
 
   return tokenAmounts

@@ -131,17 +131,19 @@ interface QueryResult {
   liquidityMiningPositions: { pair: SubgraphPair }[]
 }
 
+export interface LiquidityPosition {
+  pair: Pair
+  liquidityUSD: CurrencyAmount
+  maximumApy: Percent
+  staked: boolean
+  containsKpiToken: boolean
+}
+
 export function useLPPairs(
   account?: string
 ): {
   loading: boolean
-  data: {
-    pair: Pair
-    liquidityUSD: CurrencyAmount
-    maximumApy: Percent
-    staked: boolean
-    containsKpiToken: boolean
-  }[]
+  data: LiquidityPosition[]
 } {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
