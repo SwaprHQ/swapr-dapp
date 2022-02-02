@@ -1,7 +1,13 @@
 import React from 'react'
 import { usePortfolio } from '../../hooks/usePortfolio'
-import Pair from '../../components/Pool/PairsList/Pair'
 import PortfolioChart from './PortfolioChart'
+import styled from 'styled-components'
+
+const Position = styled.div`
+  height: 100px;
+  width: 480px;
+  outline: 1px solid blue;
+`
 
 export default function Dashboard() {
   const { portfolio, pairs } = usePortfolio()
@@ -10,17 +16,14 @@ export default function Dashboard() {
     <div>
       <PortfolioChart portfolio={portfolio} />
       <div>
-        {pairs
-          ? pairs.map(pair => {
-              if (!pair) return <></>
+        {pairs && pairs.length
+          ? pairs.map((pair, index) => {
+              if (!pair) return <div key={index}></div>
               return (
-                <Pair
-                  key={pair.position.pair.liquidityToken.address}
-                  token0={pair.userToken0.token}
-                  token1={pair.userToken1.token}
-                  apy={pair.maximumApy}
-                  usdLiquidity={pair.userLiquidityUSD}
-                />
+                <Position key={index}>
+                  {pair.userToken0.token.symbol} - {pair.userToken1.token.symbol}: {pair.maximumApy.toFixed(2)}%, $
+                  {pair.userLiquidityUSD.toFixed(2)}
+                </Position>
               )
             })
           : ''}

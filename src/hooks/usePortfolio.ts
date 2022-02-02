@@ -82,23 +82,31 @@ export const usePortfolio = () => {
       let bals0 = portfolioBalances[t0Address]
       let bals1 = portfolioBalances[t1Address]
 
+      const { parseUnits } = ethers.utils
+
       if (bals0) {
         bals0.token = bals0?.token?.add(userPosition.userToken0) || userPosition.userToken0
-        bals0.usd = bals0.usd?.add(CurrencyAmount.usd(userPosition.userLiquidityUSD.divide('2').toSignificant(5)))
+        bals0.usd = bals0.usd?.add(
+          CurrencyAmount.usd(parseUnits(userPosition.userLiquidityUSD.divide('2').toFixed(5)).toString())
+        )
       } else {
         bals0 = {
           token: userPosition.userToken0,
-          usd: CurrencyAmount.usd(userPosition.userLiquidityUSD.divide('2').toSignificant(5))
+          usd: CurrencyAmount.usd(parseUnits(userPosition.userLiquidityUSD.divide('2').toFixed(5)).toString())
         }
+        portfolioBalances[t0Address] = bals0
       }
       if (bals1) {
         bals1.token = bals1?.token?.add(userPosition.userToken1) || userPosition.userToken1
-        bals1.usd = bals1.usd?.add(CurrencyAmount.usd(userPosition.userLiquidityUSD.divide('2').toSignificant(5)))
+        bals1.usd = bals1.usd?.add(
+          CurrencyAmount.usd(parseUnits(userPosition.userLiquidityUSD.divide('2').toSignificant(5)).toString())
+        )
       } else {
         bals1 = {
           token: userPosition.userToken1,
-          usd: CurrencyAmount.usd(userPosition.userLiquidityUSD.divide('2').toSignificant(5))
+          usd: CurrencyAmount.usd(parseUnits(userPosition.userLiquidityUSD.divide('2').toSignificant(5)).toString())
         }
+        portfolioBalances[t1Address] = bals1
       }
     })
 
