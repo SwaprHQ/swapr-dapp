@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CurrencyAmount } from '@swapr/sdk'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Tabs } from './Tabs'
 import AppBody from '../AppBody'
@@ -14,11 +14,8 @@ import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
-
 import { useActiveWeb3React } from '../../hooks'
-import { useBridgeTransactionsSummary } from '../../state/bridgeTransactions/hooks'
 import { useBridgeInfo, useBridgeActionHandlers, useBridgeModal, useBridgeTxsFilter } from '../../state/bridge/hooks'
-
 import { SHOW_TESTNETS } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeStep, isNetworkDisabled } from './utils'
@@ -29,6 +26,8 @@ import { useChains } from '../../hooks/useChains'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
+import { AppState } from '../../state'
+import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,7 +77,8 @@ export default function Bridge() {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
   const omnibridge = useOmnibridge()
-  const bridgeSummaries = useBridgeTransactionsSummary()
+  const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
+
   const { chainId, partnerChainId, isArbitrum } = useChains()
   const [modalData, setModalStatus, setModalData] = useBridgeModal()
   const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromNetwork, toNetwork } = useBridgeInfo()
