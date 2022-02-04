@@ -148,10 +148,13 @@ export function getLpTokenPrice(
         new Decimal(totalSupply).toFixed(pair.liquidityToken.decimals),
         pair.liquidityToken.decimals
       ).toString()
-  return new Price(
-    pair.liquidityToken,
-    nativeCurrency,
-    priceDenominator,
-    parseUnits(new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals), nativeCurrency.decimals).toString()
-  )
+  return new Price({
+    baseCurrency: pair.liquidityToken,
+    quoteCurrency: nativeCurrency,
+    denominator: priceDenominator,
+    numerator: parseUnits(
+      new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals),
+      nativeCurrency.decimals
+    ).toString()
+  })
 }

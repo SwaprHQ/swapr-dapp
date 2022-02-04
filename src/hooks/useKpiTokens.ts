@@ -100,15 +100,15 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
         const collateralPrice = collateralPrices.tokens.find(
           token => token.address.toLowerCase() === rawKpiToken.collateral.token.address.toLowerCase()
         )
-        const collateralTokenPrice = new Price(
-          collateralToken,
-          nativeCurrency,
-          parseUnits('1', nativeCurrency.decimals).toString(),
-          parseUnits(
+        const collateralTokenPrice = new Price({
+          baseCurrency: collateralToken,
+          quoteCurrency: nativeCurrency,
+          denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+          numerator: parseUnits(
             collateralPrice ? new Decimal(collateralPrice.derivedNativeCurrency).toFixed(nativeCurrency.decimals) : '0',
             nativeCurrency.decimals
           ).toString()
-        )
+        })
         const pricedCollateral = new PricedToken(
           chainId,
           collateralToken.address,

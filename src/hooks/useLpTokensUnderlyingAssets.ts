@@ -55,15 +55,15 @@ export function useLpTokensUnderlyingAssets(
       parseUnits(totalSupply, lpTokenDecimals).toString()
     )
 
-    const token0NativeCurrencyPrice = new Price(
-      pair.token0,
-      nativeCurrency,
-      parseUnits('1', nativeCurrency.decimals).toString(),
-      parseUnits(
+    const token0NativeCurrencyPrice = new Price({
+      baseCurrency: pair.token0,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
         new Decimal(data.pair.token0.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
       ).toString()
-    )
+    })
     const pricedToken0 = new PricedToken(
       chainId,
       pair.token0.address,
@@ -82,15 +82,15 @@ export function useLpTokensUnderlyingAssets(
       JSBI.divide(token0AmountNumerator, userPoolShare.denominator)
     )
 
-    const token1NativeCurrencyPrice = new Price(
-      pair.token1,
-      nativeCurrency,
-      parseUnits('1', nativeCurrency.decimals).toString(),
-      parseUnits(
+    const token1NativeCurrencyPrice = new Price({
+      baseCurrency: pair.token1,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
         new Decimal(data.pair.token1.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
       ).toString()
-    )
+    })
     const pricedToken1 = new PricedToken(
       chainId,
       pair.token1.address,

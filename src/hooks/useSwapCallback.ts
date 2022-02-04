@@ -201,7 +201,6 @@ export function useSwapCallback(
             normalizedGasPrice = mainnetGasPrices[preferredGasPrice as MainnetGasPrice]
           }
         }
-        */
 
         return library
           .getSigner()

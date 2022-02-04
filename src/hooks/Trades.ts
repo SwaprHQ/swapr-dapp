@@ -94,9 +94,15 @@ export function useTradeExactIn(
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0 && chainId && platform.supportsChain(chainId)) {
       return (
-        UniswapV2Trade.bestTradeExactIn(currencyAmountIn, currencyOut, new Percent('3', '100'), allowedPairs, {
-          maxHops: multihop ? 3 : 1,
-          maxNumResults: 1
+        UniswapV2Trade.bestTradeExactIn({
+          currencyAmountIn,
+          currencyOut,
+          maximumSlippage: new Percent('3', '100'),
+          pairs: allowedPairs,
+          maxHops: {
+            maxHops: multihop ? 3 : 1,
+            maxNumResults: 1
+          }
         }) ?? undefined
       )
     }
@@ -119,7 +125,11 @@ export function useTradeExactInCurve(
     if (!library || !currencyAmountIn || !currencyOut || !chainId || !RoutablePlatform.CURVE.supportsChain(chainId))
       return
 
-    CurveTrade.bestTradeExactIn(currencyAmountIn, currencyOut, new Percent('3', '100'))
+    CurveTrade.bestTradeExactIn({
+      currencyAmountIn,
+      currencyOut,
+      maximumSlippage: new Percent('3', '100')
+    })
       .then(async newTrade => {
         // Update if either txs differ
         const prevSwapTx = await trade?.swapTransaction()
@@ -150,9 +160,15 @@ export function useTradeExactOut(
   return useMemo(() => {
     if (currencyIn && currencyAmountOut && allowedPairs.length > 0 && chainId && platform.supportsChain(chainId)) {
       return (
-        UniswapV2Trade.bestTradeExactOut(currencyIn, currencyAmountOut, new Percent('3', '100'), allowedPairs, {
-          maxHops: multihop ? 3 : 1,
-          maxNumResults: 1
+        UniswapV2Trade.bestTradeExactOut({
+          currencyIn,
+          currencyAmountOut,
+          maximumSlippage: new Percent('3', '100'),
+          pairs: allowedPairs,
+          maxHops: {
+            maxHops: multihop ? 3 : 1,
+            maxNumResults: 1
+          }
         }) ?? undefined
       )
     }
