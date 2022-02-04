@@ -1,6 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 import { OutgoingMessageState } from 'arb-ts'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { BridgeList } from '../../services/Omnibridge/Omnibridge.types'
 
 export type BridgeTxnType =
   | 'deposit'
@@ -63,6 +64,7 @@ export type BridgeTransactionSummary = Pick<
   toChainId: ChainId
   log: BridgeTransactionLog[]
   status: BridgeTransactionStatus
+  bridgeId: BridgeList
   pendingReason?: string
 }
 

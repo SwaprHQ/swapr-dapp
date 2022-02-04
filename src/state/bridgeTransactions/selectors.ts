@@ -142,7 +142,8 @@ export const bridgeTxsSummarySelector = createSelector(
           batchNumber: tx.batchNumber,
           pendingReason: tx.receipt?.status ? undefined : PendingReasons.TX_UNCONFIRMED,
           timestampResolved: tx.timestampResolved,
-          log: []
+          log: [],
+          bridgeId: 'arbitrum:testnet'
         }
 
         // DEPOSIT L1
@@ -226,7 +227,8 @@ export const bridgeTxsSummarySelector = createSelector(
           toChainId: to,
           status: getBridgeTxStatus(tx.receipt?.status),
           timestampResolved: tx.timestampResolved,
-          log: []
+          log: [],
+          bridgeId: 'arbitrum:testnet'
         }
 
         // WITHDRAWAL L2
