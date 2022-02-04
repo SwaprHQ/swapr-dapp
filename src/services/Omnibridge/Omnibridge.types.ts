@@ -28,6 +28,10 @@ export interface OmnibridgeChildBaseProps
     Partial<OmnibridgeInitialEnv> {}
 
 export interface OmnibridgeChildBaseInit extends OmnibridgeChangeHandler, OmnibridgeInitialEnv {}
+
+export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
+export type BridgeList = ArbitrumList
+
 export interface OmnibridgeChildBaseConstructor {
   supportedChains: {
     to: ChainId
@@ -36,9 +40,4 @@ export interface OmnibridgeChildBaseConstructor {
   }
   displayName: string
   bridgeId: BridgeList
-}
-
-export enum BridgeList {
-  ARB_TESTNET = 'arbitrum:testnet',
-  ARB_MAINNET = 'arbitrum:mainnet'
 }

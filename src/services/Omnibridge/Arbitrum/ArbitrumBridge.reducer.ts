@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { BridgeList } from '../Omnibridge.types'
+import { ArbitrumList } from '../Omnibridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
@@ -17,7 +17,7 @@ const initialState: ArbitrumBridgeState = {
   tokens: null
 }
 
-export const createArbitrumSlice = (bridgeId: BridgeList) =>
+export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
   createSlice({
     name: bridgeId,
     initialState,
@@ -112,9 +112,9 @@ export const createArbitrumSlice = (bridgeId: BridgeList) =>
     }
   })
 
-const arbitrumSlices = {
-  [BridgeList.ARB_MAINNET]: createArbitrumSlice(BridgeList.ARB_MAINNET),
-  [BridgeList.ARB_TESTNET]: createArbitrumSlice(BridgeList.ARB_TESTNET)
+const arbitrumSlices: { [k in ArbitrumList]: ReturnType<typeof createArbitrumSlice> } = {
+  'arbitrum:mainnet': createArbitrumSlice('arbitrum:mainnet'),
+  'arbitrum:testnet': createArbitrumSlice('arbitrum:testnet')
 }
 
 type ArbitrumReducers = { [k in keyof typeof arbitrumSlices]: ReturnType<typeof createArbitrumSlice>['reducer'] }
@@ -126,7 +126,7 @@ type ArbitrumSliceExtract = {
   arbitrumActions: ArbitrumActions
 }
 
-export const { arbitrumReducers, arbitrumActions } = (Object.keys(arbitrumSlices) as BridgeList[]).reduce(
+export const { arbitrumReducers, arbitrumActions } = (Object.keys(arbitrumSlices) as ArbitrumList[]).reduce(
   (total, key) => {
     total.arbitrumReducers[key] = arbitrumSlices[key].reducer
     total.arbitrumActions[key] = arbitrumSlices[key].actions

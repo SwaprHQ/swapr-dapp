@@ -13,7 +13,12 @@ import { OmnibridgeChildBase } from '../Omnibridge.utils'
 
 import { BridgeModalStatus } from '../../../state/bridge/reducer'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { OmnibridgeChangeHandler, OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit } from '../Omnibridge.types'
+import {
+  OmnibridgeChangeHandler,
+  OmnibridgeChildBaseConstructor,
+  OmnibridgeChildBaseInit,
+  ArbitrumList
+} from '../Omnibridge.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -30,11 +35,11 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   private _listeners: NodeJS.Timeout[] = []
 
   private get actions() {
-    return arbitrumActions[this.bridgeId]
+    return arbitrumActions[this.bridgeId as ArbitrumList]
   }
 
-  private get selectors() {
-    return arbitrumSelectors[this.bridgeId]
+  public get selectors() {
+    return arbitrumSelectors[this.bridgeId as ArbitrumList]
   }
   // Typed setters
   public get bridge() {
@@ -232,6 +237,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
   private pendingTxListener = async () => {
     const pendingTransactions = this.selectors.selectPendingTxs(this.store.getState(), this._account)
+
     if (!pendingTransactions.length) return
 
     const receipts = await Promise.all(pendingTransactions.map(this.getReceipt))
@@ -554,4 +560,5 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       })
     )
   }
+  public validate = () => console.log('to do validate')
 }
