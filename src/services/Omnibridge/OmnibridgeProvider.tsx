@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ChainId } from '@swapr/sdk'
 import { Omnibridge } from './Omnibridge'
-import { BridgeList } from './Omnibridge.types'
 import store from '../../state'
-import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { useActiveWeb3React } from '../../hooks'
+import { omnibridgeConfig } from './Omnibridge.config'
 
 export const OmnibridgeContext = React.createContext<Omnibridge | null>(null)
 
@@ -15,18 +14,7 @@ export const OmnibridgeProvider = ({ children }: { children?: React.ReactNode })
   useEffect(() => {
     const initOmnibridge = async () => {
       if (!omnibridge) {
-        const omniInstance = new Omnibridge(store, [
-          new ArbitrumBridge({
-            bridgeId: BridgeList.ARB_TESTNET,
-            displayName: 'Arbitrum testnet',
-            supportedChains: { from: ChainId.RINKEBY, to: ChainId.ARBITRUM_RINKEBY, reverse: true }
-          }),
-          new ArbitrumBridge({
-            bridgeId: BridgeList.ARB_MAINNET,
-            displayName: 'Arbitrum mainnet',
-            supportedChains: { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE, reverse: true }
-          })
-        ])
+        const omniInstance = new Omnibridge(store, omnibridgeConfig)
         setOmnibridge(omniInstance)
       }
 
@@ -38,12 +26,12 @@ export const OmnibridgeProvider = ({ children }: { children?: React.ReactNode })
         }
         // TODO: Tmp solution, will be handled by bridge selection screen or automatically on collection
         if ([ChainId.ARBITRUM_RINKEBY, ChainId.RINKEBY].includes(chainId)) {
-          omnibridge.setActiveBridge(BridgeList.ARB_TESTNET)
+          omnibridge.setActiveBridge('arbitrum:testnet')
           return
         }
 
         if ([ChainId.ARBITRUM_ONE, ChainId.MAINNET].includes(chainId)) {
-          omnibridge.setActiveBridge(BridgeList.ARB_MAINNET)
+          omnibridge.setActiveBridge('arbitrum:mainnet')
           return
         }
       }
