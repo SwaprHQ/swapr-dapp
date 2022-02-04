@@ -16,7 +16,7 @@ import lists from './lists/reducer'
 import bridge from './bridge/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
 import omnibridge from '../services/Omnibridge/store/Omnibridge.reducer'
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', 'omnibridge']
 
 const persistenceNamespace = 'swapr'
 const store = configureStore({
