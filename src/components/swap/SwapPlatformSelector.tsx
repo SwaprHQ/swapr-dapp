@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { CurrencyAmount, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import { CurrencyAmount, CurveTrade, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
@@ -96,7 +96,14 @@ export function SwapPlatformSelector({
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
-            const { realizedLPFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+
+            let realizedLPFee
+            if (trade instanceof CurveTrade) {
+              realizedLPFee = trade.fee
+            } else {
+              realizedLPFee = computeTradePriceBreakdown(trade as UniswapV2Trade).realizedLPFee
+            }
+
             const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade as UniswapV2Trade, allowedSlippage)
             return (
               <tr key={i} style={{ lineHeight: '22px' }}>
