@@ -2783,10 +2783,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.0.0-beta.1.tgz#2154af04ce06c83a23157b82b21ec9c2cae7ba85"
-  integrity sha512-HudVzu0dnLaug4PdkhumjB2zZqje9F/ZGtiMIuT7FjjFSENP0ogdFZiZATyTcS6GW+/1B+RuvvP8Jbp4ArBUXA==
+"@swapr/sdk@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.0.0-beta.2.tgz#022cae598d1dd720f104a79f44ad721d6eca399b"
+  integrity sha512-165FGeVhEg8AXWEafa3/nhXUpv35dS2Es+Mnb+cTYqUyIzhMHPA7HmEcL4Yjs0TvtDGRy/ScHLSfHHZB3KHmNg==
   dependencies:
     "@makerdao/multicall" "^0.11.0"
     "@swapr/core" "^0.3.18"
