@@ -101,10 +101,10 @@ export function SwapPlatformSelector({
             if (trade instanceof CurveTrade) {
               realizedLPFee = trade.fee
             } else {
-              realizedLPFee = computeTradePriceBreakdown(trade as UniswapV2Trade).realizedLPFee
+              realizedLPFee = computeTradePriceBreakdown(trade).realizedLPFee
             }
 
-            const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade as UniswapV2Trade, allowedSlippage)
+            const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
             return (
               <tr key={i} style={{ lineHeight: '22px' }}>
                 <td colSpan={4}>

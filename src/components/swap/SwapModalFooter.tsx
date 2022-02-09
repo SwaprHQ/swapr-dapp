@@ -31,14 +31,11 @@ export default function SwapModalFooter({
   disabledConfirm: boolean
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
-  const slippageAdjustedAmounts = useMemo(
-    () => computeSlippageAdjustedAmounts(trade as UniswapV2Trade, allowedSlippage),
-    [allowedSlippage, trade]
-  )
-  const { priceImpactWithoutFee, realizedLPFeeAmount } = useMemo(
-    () => computeTradePriceBreakdown(trade as UniswapV2Trade),
-    [trade]
-  )
+  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
+    allowedSlippage,
+    trade
+  ])
+  const { priceImpactWithoutFee, realizedLPFeeAmount } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const severity = trade instanceof UniswapV2Trade ? warningSeverity(priceImpactWithoutFee) : 1
 
   return (

@@ -23,7 +23,7 @@ const Spacer = styled.div`
 `
 
 function TradeSummary({ trade, allowedSlippage }: { trade: UniswapV2Trade | Trade; allowedSlippage: number }) {
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const toggleSettings = useToggleSettingsMenu()
   // Formatting logic: allowedSlippage = 900 shows as 9%, 950 shows as 9.50%
   const formattedSlippage =
