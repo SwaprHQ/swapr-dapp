@@ -149,4 +149,8 @@ export class Omnibridge {
     if (!this._initialized || !l2Tx.bridgeId) return
     return this.bridges[l2Tx.bridgeId].collect(l2Tx)
   }
+  public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
+    if (!this._initialized || !l2Tx.bridgeId) return
+    return this.bridges[l2Tx.bridgeId].triggerCollect(l2Tx)
+  }
 }

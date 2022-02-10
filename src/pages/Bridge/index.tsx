@@ -28,6 +28,7 @@ import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/act
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -109,25 +110,25 @@ export default function Bridge() {
   const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
 
   useEffect(() => {
-    if (!chainId || !partnerChainId) return
-
     if (collectableTx && isCollecting) {
-      const { assetAddressL1, assetAddressL2, fromChainId, toChainId } = collectableTx
-
-      onCurrencySelection(assetAddressL1 && assetAddressL2 ? (isArbitrum ? assetAddressL2 : assetAddressL1) : 'ETH')
+      const { assetAddressL1, assetAddressL2, toChainId, fromChainId } = collectableTx
+      onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : 'ETH')
 
       if (chainId !== fromChainId && chainId !== toChainId) {
         setStep(BridgeStep.Initial)
       }
-
       return
     }
-
     // Reset input on network change
     onUserInput('')
     onCurrencySelection('')
+
+    //TODO: delete old redux stuff
     dispatch(setFromBridgeNetwork({ chainId }))
     dispatch(setToBridgeNetwork({ chainId: partnerChainId }))
+    //Omnibridge UI reducer
+    dispatch(omnibridgeUIActions.setFrom({ chainId: chainId ? chainId : 0 }))
+    dispatch(omnibridgeUIActions.setTo({ chainId: partnerChainId }))
   }, [chainId, collectableTx, dispatch, isArbitrum, isCollecting, onCurrencySelection, onUserInput, partnerChainId])
 
   const handleResetBridge = useCallback(() => {
@@ -174,19 +175,19 @@ export default function Bridge() {
 
   const handleCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
-      onCurrencySelection(
-        tx.assetAddressL1 && tx.assetAddressL2 ? (isArbitrum ? tx.assetAddressL2 : tx.assetAddressL1) : 'ETH'
-      )
+      //FIX tmp solution because collect won't work for all txs
+      if (!partnerChainId || (tx.toChainId !== chainId && tx.fromChainId !== chainId)) return
+
+      onCurrencySelection(tx.assetAddressL1 && tx.assetAddressL2 ? tx.assetAddressL1 : 'ETH')
+      const collectData = omnibridge.triggerCollect(tx)
+
       setStep(BridgeStep.Collect)
       setCollectableTx(tx)
-      setModalData({
-        symbol: tx.assetName,
-        typedValue: tx.value,
-        fromChainId: tx.fromChainId,
-        toChainId: tx.toChainId
-      })
+      if (collectData) {
+        setModalData(collectData)
+      }
     },
-    [isArbitrum, onCurrencySelection, setModalData]
+    [chainId, omnibridge, onCurrencySelection, partnerChainId, setModalData]
   )
 
   const handleCollectConfirm = useCallback(async () => {
@@ -279,6 +280,7 @@ export default function Bridge() {
           disableCurrencySelect={isCollecting}
           disabled={isCollecting}
           id="bridge-currency-input"
+          hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
         />
         <BridgeActionPanel
           account={account}
