@@ -23,6 +23,7 @@ import { useCurrencyBalances } from '../wallet/hooks'
 
 import { currencyId } from '../../utils/currencyId'
 import { getChainPair } from '../../utils/arbitrum'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 
 export function useBridgeState(): AppState['bridge'] {
   return useSelector<AppState, AppState['bridge']>(state => state.bridge)
@@ -43,7 +44,9 @@ export function useBridgeActionHandlers(): {
     (chainId: ChainId) => {
       const { partnerChainId } = getChainPair(chainId)
       if (chainId === toNetwork.chainId) {
+        //TODO: remove old redux
         dispatch(swapBridgeNetworks())
+        dispatch(omnibridgeUIActions.swapBridgeChains())
         return
       }
       dispatch(
@@ -56,6 +59,9 @@ export function useBridgeActionHandlers(): {
           chainId: partnerChainId
         })
       )
+      // new UI reducer
+      dispatch(omnibridgeUIActions.setFrom({ chainId: chainId }))
+      dispatch(omnibridgeUIActions.setTo({ chainId: partnerChainId }))
     },
     [dispatch, toNetwork.chainId]
   )
@@ -66,6 +72,7 @@ export function useBridgeActionHandlers(): {
 
       if (chainId === fromNetwork.chainId) {
         dispatch(swapBridgeNetworks())
+        dispatch(omnibridgeUIActions.swapBridgeChains())
         return
       }
       dispatch(
@@ -78,12 +85,16 @@ export function useBridgeActionHandlers(): {
           chainId: partnerChainId
         })
       )
+      // new UI reducer
+      dispatch(omnibridgeUIActions.setFrom({ chainId: chainId }))
+      dispatch(omnibridgeUIActions.setTo({ chainId: partnerChainId }))
     },
     [dispatch, fromNetwork.chainId]
   )
 
   const onSwapBridgeNetworks = useCallback(() => {
     dispatch(swapBridgeNetworks())
+    dispatch(omnibridgeUIActions.swapBridgeChains())
   }, [dispatch])
 
   const onCurrencySelection = useCallback(
@@ -93,6 +104,8 @@ export function useBridgeActionHandlers(): {
           currencyId: currency instanceof Currency ? currencyId(currency) : currency
         })
       )
+      dispatch(omnibridgeUIActions.setFrom({ address: currency instanceof Currency ? currencyId(currency) : currency }))
+      dispatch(omnibridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))
     },
     [dispatch]
   )
@@ -100,6 +113,8 @@ export function useBridgeActionHandlers(): {
   const onUserInput = useCallback(
     (typedValue: string) => {
       dispatch(typeInput({ typedValue }))
+      dispatch(omnibridgeUIActions.setFrom({ value: typedValue }))
+      dispatch(omnibridgeUIActions.setTo({ value: typedValue }))
     },
     [dispatch]
   )
@@ -146,7 +161,10 @@ export const useBridgeInfo = () => {
 export const useBridgeTxsFilter = (): [BridgeTxsFilter, (filter: BridgeTxsFilter) => void] => {
   const dispatch = useDispatch()
   const filter = useSelector(bridgeTxsFilterSelector)
-  const setFilter = (filter: BridgeTxsFilter) => dispatch(setBridgeTxsFilter(filter))
+  const setFilter = (filter: BridgeTxsFilter) => {
+    dispatch(setBridgeTxsFilter(filter))
+    dispatch(omnibridgeUIActions.setBridgeTxsFilter(filter))
+  }
 
   return [filter, setFilter]
 }
@@ -164,16 +182,22 @@ export const useBridgeModal = (): [
   const dispatch = useDispatch()
   const modalData = useSelector(bridgeModalDataSelector)
 
-  const setModalStatus = (status: BridgeModalStatus, error?: string) =>
+  const setModalStatus = (status: BridgeModalStatus, error?: string) => {
     dispatch(setBridgeModalStatus({ status, error }))
+    dispatch(omnibridgeUIActions.setBridgeModalStatus({ status, error }))
+  }
 
   const setModalData = ({
     symbol,
     typedValue,
     fromChainId,
     toChainId
-  }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) =>
+  }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => {
     dispatch(setBridgeModalData({ symbol, typedValue, fromChainId, toChainId }))
+    dispatch(
+      omnibridgeUIActions.setBridgeModalData({ symbol: symbol ? symbol : '', typedValue, fromChainId, toChainId })
+    )
+  }
 
   return [modalData, setModalStatus, setModalData]
 }
