@@ -1,9 +1,13 @@
-import { CurrencyAmount, TokenAmount, USD } from '@swapr/sdk'
+import { CurrencyAmount, LiquidityMiningCampaign, PricedTokenAmount, TokenAmount, USD } from '@swapr/sdk'
 import { ethers } from 'ethers'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useActiveWeb3React } from '.'
 import { useTotalSupplies } from '../data/TotalSupply'
 import { useTokenBalances } from '../state/wallet/hooks'
+import {
+  useLiquidityMiningCampaignPosition,
+  useLiquidityMiningCampaignPositions
+} from './useLiquidityMiningCampaignPosition'
 import { useLPPairs, LiquidityPosition } from './useLiquidityPositions'
 
 export interface Portfolio {
@@ -15,7 +19,7 @@ interface UserAsset {
   usd: CurrencyAmount
 }
 
-const computePosition = (
+const computeLiquidityPosition = (
   position: LiquidityPosition,
   totalSupply: TokenAmount | undefined,
   userBalance: TokenAmount | undefined
@@ -38,14 +42,19 @@ const computePosition = (
     ethers.utils.parseUnits(position.liquidityUSD.multiply(userShare).toFixed(USD.decimals)).toString()
   )
 
-  // TODO: Use LiquidityUSD to assign value of tokens
   return {
     position,
     userToken0,
     userToken1,
-    userLiquidityUSD,
-    maximumApy: position.maximumApy
+    userLiquidityUSD
   }
+}
+
+interface StakedLiquidityMiningPosition {
+  campaign: LiquidityMiningCampaign
+  userStakedToken0: PricedTokenAmount
+  userStakedToken1: PricedTokenAmount
+  userStakedLiquidityUSD: CurrencyAmount
 }
 
 // Get all LP pairs
@@ -56,23 +65,27 @@ export const usePortfolio = () => {
   const { account } = useActiveWeb3React()
   const { data } = useLPPairs(account || undefined)
 
+  const stakedCampaigns = data ? data.filter(d => d.staked).flatMap(d => d.pair.liquidityMiningCampaigns) : undefined
   const lpTokens = data ? data.map(d => d.pair.liquidityToken) : undefined
 
   const totalSupplies = useTotalSupplies(lpTokens)
   const balances = useTokenBalances(account || undefined, lpTokens)
+  const stakedPositions = useLiquidityMiningCampaignPositions(stakedCampaigns)
 
   const computedPairs = useMemo(() => {
     if (!data || !totalSupplies || !balances) return undefined
 
     return data.map((d, index) => {
-      return computePosition(d, totalSupplies[index], balances[d.pair.liquidityToken.address])
+      return computeLiquidityPosition(d, totalSupplies[index], balances[d.pair.liquidityToken.address])
     })
   }, [data, totalSupplies, balances])
 
   return useMemo(() => {
-    if (!computedPairs) return { portfolio: undefined, pairs: undefined }
+    if (!computedPairs || !stakedPositions) return { portfolio: undefined, pairs: undefined }
 
     const portfolioBalances: Portfolio = {}
+
+    computedPairs.concat()
 
     computedPairs.forEach(userPosition => {
       if (!userPosition) return
@@ -110,6 +123,10 @@ export const usePortfolio = () => {
       }
     })
 
+    stakedPositions.forEach(position => {
+      if (!position) return
+    })
+
     return { portfolio: portfolioBalances, pairs: computedPairs }
-  }, [computedPairs])
+  }, [computedPairs, stakedPositions])
 }
