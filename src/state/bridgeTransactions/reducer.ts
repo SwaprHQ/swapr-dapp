@@ -6,7 +6,8 @@ import {
   updateBridgeTxnReceipt,
   updateBridgeTxnPartnerHash,
   updateBridgeTxnWithdrawalInfo,
-  updateBridgeTxnResolvedTimestamp
+  updateBridgeTxnResolvedTimestamp,
+  clearBridgeTxs
 } from './actions'
 
 import { BridgeTxnsState } from './types'
@@ -81,4 +82,9 @@ export default createReducer<BridgeTxnsState>(initialState, builder =>
         state[chainId][txHash] = tx
       }
     )
+    .addCase(clearBridgeTxs, (state, { payload: chains }) => {
+      chains.forEach(chainId => {
+        if (state[chainId]) delete state[chainId]
+      })
+    })
 )
