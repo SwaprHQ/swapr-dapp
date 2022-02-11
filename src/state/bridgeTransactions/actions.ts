@@ -36,3 +36,5 @@ export const updateBridgeTxnWithdrawalInfo = createAction<{
   batchNumber?: string
   outgoingMessageState: OutgoingMessageState
 }>(PREFIX + 'updateWithdrawalInfo')
+
+export const clearBridgeTxs = createAction<ChainId[]>(PREFIX + 'clearBridgeTxs')
