@@ -6,6 +6,7 @@ import { isMobile } from 'react-device-detect'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { injected } from '../../connectors'
 import MetamaskIcon from '../../assets/images/metamask.png'
+import TallyIcon from '../../assets/images/tally.svg'
 import { ModalView } from '.'
 import Popover from '../Popover'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
@@ -93,6 +94,7 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
 
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
+    const isTally = window.ethereum && window.ethereum.isTally
     return Object.keys(SUPPORTED_WALLETS).map(key => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -130,6 +132,17 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
                 onClick={closeModals}
               />
             )
+          } else if (option.name === 'Tally') {
+            return (
+              <Item
+                key={key}
+                id={`connect-${key}`}
+                name="Install Tally"
+                icon={TallyIcon}
+                link={'https://tally.cash/'}
+                onClick={closeModals}
+              />
+            )
           } else {
             return null //dont want to return install twice
           }
@@ -138,8 +151,12 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
         else if (option.name === 'MetaMask' && !isMetamask) {
           return null
         }
+        // don't return tally if injected provider isn't tally
+        else if (option.name === 'Tally' && !isTally) {
+          return null
+        }
         // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
+        else if (option.name === 'Injected' && (isMetamask || isTally)) {
           return null
         }
       }
