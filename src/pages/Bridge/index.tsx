@@ -29,6 +29,7 @@ import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,6 +79,7 @@ export default function Bridge() {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
   const omnibridge = useOmnibridge()
+
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
@@ -221,6 +223,13 @@ export default function Bridge() {
 
   return (
     <Wrapper>
+      <button
+        onClick={() => {
+          dispatch(omnibridgeUIActions.reset())
+        }}
+      >
+        reset state bo sie zapisuje do local
+      </button>
       <Tabs
         collectableTxAmount={collectableTxAmount}
         isCollecting={isCollecting}
@@ -281,6 +290,21 @@ export default function Bridge() {
           disabled={isCollecting}
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
+          isBridge={true}
+        />
+        <CurrencyInputPanel
+          label="You will receive"
+          value={isCollecting ? collectableTx.value : typedValue}
+          showMaxButton={false}
+          currency={bridgeCurrency}
+          onUserInput={onUserInput}
+          onMax={!isCollecting ? handleMaxInput : undefined}
+          onCurrencySelect={onCurrencySelection}
+          disableCurrencySelect={true}
+          disabled={true}
+          id="bridge-currency-input"
+          hideBalance={true}
+          isBridge={true}
         />
         <BridgeActionPanel
           account={account}
@@ -293,6 +317,7 @@ export default function Bridge() {
           setStep={setStep}
         />
       </AppBody>
+      {!isCollecting && <BridgeSelectionWindow />}
       {step !== BridgeStep.Collect && !!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           transactions={bridgeSummaries}
