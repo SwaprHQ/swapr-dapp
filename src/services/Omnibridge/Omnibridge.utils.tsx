@@ -60,4 +60,5 @@ export abstract class OmnibridgeChildBase {
   abstract triggerCollect(
     l2Tx: BridgeTransactionSummary
   ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId }
+  abstract validate(): void
 }
