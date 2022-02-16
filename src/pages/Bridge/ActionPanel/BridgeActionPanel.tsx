@@ -39,7 +39,9 @@ export const BridgeActionPanel = ({
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { bridgeCurrency, handleApprove } = useBridgeActionPanel()
 
-  const validation = useSelector((state: AppState) => state.omnibridge.UI.statusButton)
+  const { isLoading, approved, isBalanceSufficient, label } = useSelector(
+    (state: AppState) => state.omnibridge.UI.statusButton
+  )
 
   const selectPanel = () => {
     // No wallet
@@ -73,10 +75,10 @@ export const BridgeActionPanel = ({
       )
     }
 
-    if (!validation.isLoading && validation.isBalanceSufficient) {
+    if (!isLoading && isBalanceSufficient) {
       const isNativeCurrency = !isToken(bridgeCurrency)
 
-      if (isNativeCurrency || validation.approved) {
+      if (isNativeCurrency || approved) {
         return (
           <BridgeButton to={toNetworkChainId} from={fromNetworkChainId} onClick={handleModal}>
             {`Bridge to ${networkOptionsPreset.find(network => network.chainId === toNetworkChainId)?.name}`}
@@ -84,12 +86,12 @@ export const BridgeActionPanel = ({
         )
       }
 
-      if (!isNativeCurrency && !validation.approved) {
+      if (!isNativeCurrency && !approved) {
         return (
           <RowBetween style={{ display: 'flex', flexWrap: 'wrap' }}>
             <ButtonConfirmed
               onClick={handleApprove}
-              disabled={validation.approved}
+              disabled={approved}
               width="100%"
               altDisabledStyle={false}
               confirmed={false}
@@ -103,8 +105,8 @@ export const BridgeActionPanel = ({
     // No Amount/Token/Balance/Loading
     return (
       <BridgeButton to={toNetworkChainId} from={fromNetworkChainId} disabled onClick={handleModal}>
-        {validation.label}
-        {validation.isLoading && (
+        {label}
+        {isLoading && (
           <div style={{ marginLeft: '5px' }}>
             <Loader />
           </div>

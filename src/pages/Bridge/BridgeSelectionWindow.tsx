@@ -63,7 +63,6 @@ const BridgeEstimatedTime = styled(BridgeDetails)`
 `
 
 export const BridgeSelectionWindow = () => {
-  //FIX tmp solution
   const omnibridge = useOmnibridge()
   const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
   const dispatch = useDispatch()
@@ -119,10 +118,12 @@ interface BridgeProps {
 }
 
 const Bridge = ({ id, name, selected, handleSelect }: BridgeProps) => {
+  const isSelected = selected === id
+
   return (
     <>
-      <BridgeOption isSelected={selected === id} onClick={() => handleSelect(id)}>
-        <BridgeName isSelected={selected === id}>{name}</BridgeName>
+      <BridgeOption isSelected={isSelected} onClick={() => handleSelect(id)}>
+        <BridgeName isSelected={isSelected}>{name}</BridgeName>
         <BridgeDetails>0.1%</BridgeDetails>
         <BridgeDetails>10$</BridgeDetails>
         <BridgeEstimatedTime>7 days</BridgeEstimatedTime>
