@@ -64,6 +64,7 @@ export const omnibridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
+    //FIX tmp solution (will be removed)
     reset(state) {
       state.statusButton.isError = false
       state.statusButton.isLoading = false
