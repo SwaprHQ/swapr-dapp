@@ -10,7 +10,7 @@ import { RowBetween } from '../../components/Row'
 import ArrowIcon from '../../assets/svg/arrow.svg'
 import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
 import { BridgeModal } from './BridgeModals/BridgeModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
+
 import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
@@ -29,6 +29,8 @@ import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { BridgeSelectionWindow } from './BridgeSelectionWindow'
+import CurrencyInputPanelBridge from '../../components/CurrencyInputPanel/CurrencyInputPanelBridge'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,6 +80,7 @@ export default function Bridge() {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
   const omnibridge = useOmnibridge()
+
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
@@ -221,6 +224,14 @@ export default function Bridge() {
 
   return (
     <Wrapper>
+      {/* FIX tmp solution (helps to test flow) */}
+      <button
+        onClick={() => {
+          dispatch(omnibridgeUIActions.reset())
+        }}
+      >
+        reset state
+      </button>
       <Tabs
         collectableTxAmount={collectableTxAmount}
         isCollecting={isCollecting}
@@ -269,7 +280,8 @@ export default function Bridge() {
             />
           </AssetWrapper>
         </Row>
-        <CurrencyInputPanel
+        {/* New component CurrencyInput for Bridge */}
+        <CurrencyInputPanelBridge
           label="Amount"
           value={isCollecting ? collectableTx.value : typedValue}
           showMaxButton={!isCollecting && !atMaxAmountInput}
@@ -281,6 +293,22 @@ export default function Bridge() {
           disabled={isCollecting}
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
+          isBridge={true}
+        />
+        {/* Here will be created new component e.g OutputCurrency */}
+        <CurrencyInputPanelBridge
+          label="You will receive"
+          value={isCollecting ? collectableTx.value : typedValue}
+          showMaxButton={false}
+          currency={bridgeCurrency}
+          onUserInput={onUserInput}
+          onMax={!isCollecting ? handleMaxInput : undefined}
+          onCurrencySelect={onCurrencySelection}
+          disableCurrencySelect={true}
+          disabled={true}
+          id="bridge-currency-input"
+          hideBalance={true}
+          isBridge={true}
         />
         <BridgeActionPanel
           account={account}
@@ -293,6 +321,7 @@ export default function Bridge() {
           setStep={setStep}
         />
       </AppBody>
+      {!isCollecting && <BridgeSelectionWindow />}
       {step !== BridgeStep.Collect && !!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           transactions={bridgeSummaries}

@@ -1,4 +1,4 @@
-import { Bridge, OutgoingMessageState } from 'arb-ts'
+import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import { BigNumber, utils } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
@@ -20,6 +20,7 @@ import {
   ArbitrumList
 } from '../Omnibridge.types'
 import { omnibridgeUIActions } from '../store/Omnibridge.reducer'
+import { parseUnits } from 'ethers/lib/utils'
 import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 
 const getErrorMsg = (error: any) => {
@@ -200,6 +201,16 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const txn = await this.bridge.approveToken(erc20L1Address)
 
     this.store.dispatch(
+      omnibridgeUIActions.setStatusButton({
+        label: 'Approving',
+        isError: false,
+        isLoading: true,
+        isBalanceSufficient: true,
+        approved: false
+      })
+    )
+
+    this.store.dispatch(
       addTransaction({
         hash: txn.hash,
         from: this._account,
@@ -211,6 +222,19 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         summary: `Approve ${tokenSymbol.toUpperCase()}`
       })
     )
+
+    const receipt = await txn.wait()
+    if (receipt) {
+      this.store.dispatch(
+        omnibridgeUIActions.setStatusButton({
+          label: 'Bridge',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: true,
+          approved: true
+        })
+      )
+    }
   }
 
   private setArbTs = async ({ previousChainId }: { previousChainId?: ChainId } = {}) => {
@@ -620,6 +644,80 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       typedValue: l2Tx.value,
       fromChainId: l2Tx.fromChainId,
       toChainId: l2Tx.toChainId
+    }
+  }
+  public validate = async () => {
+    if (!this._account) return
+    const { from } = this.store.getState().omnibridge.UI
+
+    this.store.dispatch(
+      omnibridgeUIActions.setStatusButton({
+        label: 'Loading',
+        isError: false,
+        isLoading: true,
+        isBalanceSufficient: false,
+        approved: false
+      })
+    )
+
+    if (from.address === 'ETH') {
+      this.store.dispatch(
+        omnibridgeUIActions.setStatusButton({
+          label: 'Bridge',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: true,
+          approved: true
+        })
+      )
+    }
+
+    if (from.address !== 'ETH') {
+      let response: L1TokenData | L2TokenData
+      if (from.chainId === this.l1ChainId) {
+        response = await this.bridge.l1Bridge.getL1TokenData(from.address)
+      } else {
+        response = await this.bridge.l2Bridge.getL2TokenData(from.address)
+      }
+
+      const { contract } = response
+
+      const [decimals] = await Promise.all([contract.decimals()])
+
+      const parsedValue = parseUnits(from.value, decimals)
+
+      //check allowance
+      let gatewayAddress: string
+      if (from.chainId === this.l1ChainId) {
+        gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(from.address)
+      } else {
+        gatewayAddress = await this.bridge.l2Bridge.getGatewayAddress(from.address)
+      }
+
+      const allowance = await contract.allowance(this._account, gatewayAddress)
+
+      if (allowance && parsedValue.gt(allowance)) {
+        this.store.dispatch(
+          omnibridgeUIActions.setStatusButton({
+            label: 'Approve',
+            isError: false,
+            isLoading: false,
+            isBalanceSufficient: true,
+            approved: false
+          })
+        )
+        return
+      } else {
+        this.store.dispatch(
+          omnibridgeUIActions.setStatusButton({
+            label: 'Bridge',
+            isError: false,
+            isLoading: false,
+            isBalanceSufficient: true,
+            approved: true
+          })
+        )
+      }
     }
   }
 }
