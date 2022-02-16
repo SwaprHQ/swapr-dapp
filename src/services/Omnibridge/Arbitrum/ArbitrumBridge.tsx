@@ -21,6 +21,7 @@ import {
 } from '../Omnibridge.types'
 import { omnibridgeUIActions } from '../store/Omnibridge.reducer'
 import { parseUnits } from 'ethers/lib/utils'
+import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -69,6 +70,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
+
+    // run migration
+    migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
 
     await this.setArbTs()
 

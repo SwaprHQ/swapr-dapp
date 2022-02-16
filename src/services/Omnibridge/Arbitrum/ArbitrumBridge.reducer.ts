@@ -108,6 +108,25 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           tx.batchIndex = batchIndex
         }
         state.transactions[chainId][txHash] = tx
+      },
+      migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
+        const { payload } = action
+        const networks = Object.keys(payload)
+
+        networks.forEach(chainIdStr => {
+          const chainId = Number(chainIdStr)
+
+          if (!(chainId in state.transactions)) {
+            state.transactions[chainId] = payload[chainId]
+            return
+          }
+
+          Object.keys(payload[chainId]).forEach(txHash => {
+            if (!state.transactions[chainId][txHash]) {
+              state.transactions[chainId][txHash] = payload[chainId][txHash]
+            }
+          })
+        })
       }
     }
   })
