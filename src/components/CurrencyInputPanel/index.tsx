@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, Pair } from '@swapr/sdk'
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
@@ -12,12 +12,6 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
-import useDebounce from '../../hooks/useDebounce'
-import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
-import { useDispatch, useSelector } from 'react-redux'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
-import { AppState } from '../../state'
-import { useBridgeInfo } from '../../state/bridge/hooks'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -61,18 +55,16 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0 0 5px;
   height: 11px;
   width: 11px;
-
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     stroke-width: 1.5px;
   }
 `
 
-const InputPanel = styled.div<{ hideInput?: boolean; isBridge?: boolean }>`
+const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   z-index: 1;
-  margin: ${({ isBridge }) => (isBridge ? '8px 0' : '0')};
 `
 
 const Container = styled.div<{ focused: boolean }>`
@@ -130,7 +122,6 @@ interface CurrencyInputPanelProps {
   showCommonBases?: boolean
   customBalanceText?: string
   balance?: CurrencyAmount
-  isBridge?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -150,8 +141,7 @@ export default function CurrencyInputPanel({
   id,
   showCommonBases,
   customBalanceText,
-  balance,
-  isBridge = false
+  balance
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -173,80 +163,8 @@ export default function CurrencyInputPanel({
     setFocused(false)
   }, [])
 
-  const debounce = useDebounce(value, 500)
-  const omnibridge = useOmnibridge()
-
-  const dispatch = useDispatch()
-  const activeBridge = useSelector((state: AppState) => state.omnibridge.UI.activeBridge)
-
-  const { isBalanceSufficient } = useBridgeInfo()
-
-  useEffect(() => {
-    const validateInput = (): boolean => {
-      if (Number(value) === 0 || isNaN(Number(value))) {
-        dispatch(
-          omnibridgeUIActions.setStatusButton({
-            label: 'Enter amount',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            approved: false
-          })
-        )
-        return false
-      }
-
-      if (Number(value) > 0 && !currency) {
-        dispatch(
-          omnibridgeUIActions.setStatusButton({
-            label: 'Select token',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            approved: false
-          })
-        )
-        return false
-      }
-
-      //check balance
-      if (!isBalanceSufficient) {
-        dispatch(
-          omnibridgeUIActions.setStatusButton({
-            label: 'Insufficient balance',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            approved: false
-          })
-        )
-        return false
-      }
-
-      if (activeBridge === '') {
-        dispatch(
-          omnibridgeUIActions.setStatusButton({
-            label: 'Select bridge bellow',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            approved: false
-          })
-        )
-        return false
-      }
-
-      return true
-    }
-
-    const isValid = validateInput()
-    if (isValid) {
-      omnibridge.validate() //calls validate function for activeBridge
-    }
-  }, [debounce, currency, omnibridge, activeBridge])
-
   return (
-    <InputPanel isBridge={isBridge} id={id}>
+    <InputPanel id={id}>
       <Container focused={focused}>
         <Content>
           {!hideInput && (
