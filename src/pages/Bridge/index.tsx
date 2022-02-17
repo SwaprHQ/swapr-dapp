@@ -31,7 +31,7 @@ import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridg
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanelBridge from '../../components/CurrencyInputPanel/CurrencyInputPanelBridge'
-import { useModal } from './useModal'
+import { useBridgeModal } from './useBridgeModal'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -87,7 +87,7 @@ export default function Bridge() {
   const { chainId, partnerChainId, isArbitrum } = useChains()
 
   //new modal interface
-  const { modalData, setModalData, setModalState } = useModal()
+  const { modalData, setModalData, setModalState } = useBridgeModal()
   const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromNetwork, toNetwork } = useBridgeInfo()
   const {
     onCurrencySelection,

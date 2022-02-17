@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../state'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
-import { BridgeModalState, BridgeModalStatus } from '../../state/bridge/reducer'
 import { ChainId } from '@swapr/sdk'
+import { BridgeModalState, BridgeModalStatus } from '../../state/bridge/reducer'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 
 //TODO move hook to better place
-export const useModal = (): {
+export const useBridgeModal = (): {
   modalData: BridgeModalState
   setModalState: (status: BridgeModalStatus, error?: string) => void
   setModalData: ({
