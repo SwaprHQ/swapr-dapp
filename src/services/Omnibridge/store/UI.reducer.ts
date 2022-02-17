@@ -14,6 +14,8 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
     isError: boolean
     isLoading: boolean
     label: string
+    isBalanceSufficient: boolean
+    approved: boolean
   }
   modal: {
     status: BridgeModalStatus
@@ -25,6 +27,7 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
   }
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
+  activeBridge: string
   activeLists: BridgeList[]
 }
 
@@ -42,7 +45,9 @@ const initialState: UIInitialState = {
   statusButton: {
     isError: false,
     isLoading: false,
-    label: ''
+    label: 'Enter amount',
+    isBalanceSufficient: false,
+    approved: false
   },
   modal: {
     status: BridgeModalStatus.CLOSED,
@@ -53,6 +58,7 @@ const initialState: UIInitialState = {
   },
   filter: BridgeTxsFilter.RECENT,
   isCheckingWithdrawals: false,
+  activeBridge: '',
   activeLists: []
 }
 
@@ -60,6 +66,18 @@ export const omnibridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
+    //FIX tmp solution (will be removed)
+    reset(state) {
+      state.statusButton.isError = false
+      state.statusButton.isLoading = false
+      state.statusButton.label = 'Enter amount'
+      state.statusButton.isBalanceSufficient = false
+      state.statusButton.approved = false
+      state.from.address = ''
+      state.from.value = ''
+      state.to.address = ''
+      state.activeBridge = ''
+    },
     setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {
       const { address, value, chainId } = action.payload
       if (address !== undefined) {
@@ -120,6 +138,39 @@ export const omnibridgeUISlice = createSlice({
       state.modal.typedValue = action.payload.typedValue
       state.modal.fromNetworkId = action.payload.fromChainId
       state.modal.toNetworkId = action.payload.toChainId
+    },
+    setStatusButton(
+      state,
+      action: PayloadAction<{
+        isError?: boolean
+        isLoading?: boolean
+        label?: string
+        isBalanceSufficient?: boolean
+        approved?: boolean
+      }>
+    ) {
+      const { isError, isLoading, label, isBalanceSufficient, approved } = action.payload
+
+      if (isError !== undefined) {
+        state.statusButton.isError = isError
+      }
+      if (isLoading !== undefined) {
+        state.statusButton.isLoading = isLoading
+      }
+      if (label) {
+        state.statusButton.label = label
+      }
+
+      if (isBalanceSufficient !== undefined) {
+        state.statusButton.isBalanceSufficient = isBalanceSufficient
+      }
+
+      if (approved !== undefined) {
+        state.statusButton.approved = approved
+      }
+    },
+    setSelectedActiveBridge(state, action: PayloadAction<string>) {
+      state.activeBridge = action.payload
     }
   }
 })

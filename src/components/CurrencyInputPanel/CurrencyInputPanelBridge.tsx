@@ -12,6 +12,7 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
+import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -55,16 +56,18 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0 0 5px;
   height: 11px;
   width: 11px;
+
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     stroke-width: 1.5px;
   }
 `
 
-const InputPanel = styled.div<{ hideInput?: boolean }>`
+const InputPanel = styled.div<{ hideInput?: boolean; isBridge?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   z-index: 1;
+  margin: ${({ isBridge }) => (isBridge ? '8px 0' : '0')};
 `
 
 const Container = styled.div<{ focused: boolean }>`
@@ -122,9 +125,10 @@ interface CurrencyInputPanelProps {
   showCommonBases?: boolean
   customBalanceText?: string
   balance?: CurrencyAmount
+  isBridge?: boolean
 }
 
-export default function CurrencyInputPanel({
+export default function CurrencyInputPanelBridge({
   value,
   onUserInput,
   onMax,
@@ -141,7 +145,8 @@ export default function CurrencyInputPanel({
   id,
   showCommonBases,
   customBalanceText,
-  balance
+  balance,
+  isBridge = false
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -163,8 +168,10 @@ export default function CurrencyInputPanel({
     setFocused(false)
   }, [])
 
+  useBridgeInputValidation(value, currency)
+
   return (
-    <InputPanel id={id}>
+    <InputPanel isBridge={isBridge} id={id}>
       <Container focused={focused}>
         <Content>
           {!hideInput && (

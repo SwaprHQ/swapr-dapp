@@ -1,4 +1,4 @@
-import { Bridge, OutgoingMessageState } from 'arb-ts'
+import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import { BigNumber, utils } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
@@ -7,7 +7,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { addTransaction } from '../../../state/transactions/actions'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { setBridgeLoadingWithdrawals, setBridgeModalData, setBridgeModalStatus } from '../../../state/bridge/actions'
+import { setBridgeLoadingWithdrawals } from '../../../state/bridge/actions'
 
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
@@ -21,6 +21,7 @@ import {
   ArbitrumList
 } from '../Omnibridge.types'
 import { omnibridgeUIActions } from '../store/UI.reducer'
+import { parseUnits } from 'ethers/lib/utils'
 import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 import getTokenList from '../../../utils/getTokenList'
 import { ARBITRUM_TOKEN_LISTS } from './ArbitrumBridge.lists'
@@ -100,8 +101,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         await this.depositEth(value)
       }
     } catch (err) {
-      //TODO: remove old redux
-      this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) }))
       this.store.dispatch(
         omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
       )
@@ -116,8 +115,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         await this.withdrawEth(value)
       }
     } catch (err) {
-      //TODO: remove old redux
-      this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) }))
       this.store.dispatch(
         omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
       )
@@ -128,8 +125,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const { batchIndex, batchNumber, value, assetAddressL2 } = l2Tx
     if (!this._account || !batchIndex || !batchNumber || !value) return
 
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
     try {
@@ -137,8 +132,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       const batchIndexBN = BigNumber.from(batchIndex)
 
       const l1Tx = await this.bridge.triggerL2ToL1Transaction(batchNumberBN, batchIndexBN, true)
-      //TODO: remove old redux
-      this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
+
       this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
 
       this.store.dispatch(
@@ -164,8 +158,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
       const l1Receipt = await l1Tx.wait()
 
-      //TODO: remove old redux
-      this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
       this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
 
       this.store.dispatch(
@@ -184,8 +176,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         })
       )
     } catch (err) {
-      //TODO: remove old redux
-      this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) }))
       this.store.dispatch(
         omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
       )
@@ -206,6 +196,16 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const txn = await this.bridge.approveToken(erc20L1Address)
 
     this.store.dispatch(
+      omnibridgeUIActions.setStatusButton({
+        label: 'Approving',
+        isError: false,
+        isLoading: true,
+        isBalanceSufficient: true,
+        approved: false
+      })
+    )
+
+    this.store.dispatch(
       addTransaction({
         hash: txn.hash,
         from: this._account,
@@ -217,6 +217,19 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         summary: `Approve ${tokenSymbol.toUpperCase()}`
       })
     )
+
+    const receipt = await txn.wait()
+    if (receipt) {
+      this.store.dispatch(
+        omnibridgeUIActions.setStatusButton({
+          label: 'Bridge',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: true,
+          approved: true
+        })
+      )
+    }
   }
 
   private setArbTs = async ({ previousChainId }: { previousChainId?: ChainId } = {}) => {
@@ -421,15 +434,11 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   private depositEth = async (value: string) => {
     if (!this._account) return
 
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     const weiValue = utils.parseEther(value)
 
     const txn = await this.bridge.depositETH(weiValue)
 
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
     this.store.dispatch(
@@ -457,8 +466,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
   private depositERC20 = async (erc20L1Address: string, typedValue: string) => {
     if (!this._account) return
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
     const tokenData = await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)
@@ -474,8 +482,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       amount: parsedValue
     })
 
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
-    //TODO: remove old redux
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
     this.store.dispatch(
@@ -509,18 +515,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   private withdrawEth = async (value: string) => {
     if (!this._account) return
 
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-    //TODO: remove old redux
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
-    this.store.dispatch(
-      setBridgeModalData({
-        symbol: 'ETH',
-        typedValue: value,
-        fromChainId: this.l2ChainId,
-        toChainId: this.l1ChainId
-      })
-    )
     this.store.dispatch(
       omnibridgeUIActions.setBridgeModalData({
         symbol: 'ETH',
@@ -532,8 +528,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     const weiValue = utils.parseEther(value)
     const txn = await this.bridge.withdrawETH(weiValue)
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(
       this.actions.addTx({
@@ -570,17 +565,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     if (!tokenData) {
       throw new Error("Can't withdraw; token not found")
     }
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-    this.store.dispatch(
-      setBridgeModalData({
-        symbol: tokenData.symbol,
-        typedValue: value,
-        fromChainId: this.l2ChainId,
-        toChainId: this.l1ChainId
-      })
-    )
+
     this.store.dispatch(
       omnibridgeUIActions.setBridgeModalData({
         symbol: tokenData.symbol,
@@ -593,8 +580,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     const weiValue = utils.parseUnits(value, tokenData.decimals)
     const txn = await this.bridge.withdrawERC20(erc20L1Address, weiValue)
 
-    //TODO: remove old redux
-    this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(
       this.actions.addTx({
@@ -643,5 +628,80 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }, [])
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
+  }
+
+  public validate = async () => {
+    if (!this._account) return
+    const { from } = this.store.getState().omnibridge.UI
+
+    this.store.dispatch(
+      omnibridgeUIActions.setStatusButton({
+        label: 'Loading',
+        isError: false,
+        isLoading: true,
+        isBalanceSufficient: false,
+        approved: false
+      })
+    )
+
+    if (from.address === 'ETH') {
+      this.store.dispatch(
+        omnibridgeUIActions.setStatusButton({
+          label: 'Bridge',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: true,
+          approved: true
+        })
+      )
+    }
+
+    if (from.address !== 'ETH') {
+      let response: L1TokenData | L2TokenData
+      if (from.chainId === this.l1ChainId) {
+        response = await this.bridge.l1Bridge.getL1TokenData(from.address)
+      } else {
+        response = await this.bridge.l2Bridge.getL2TokenData(from.address)
+      }
+
+      const { contract } = response
+
+      const [decimals] = await Promise.all([contract.decimals()])
+
+      const parsedValue = parseUnits(from.value, decimals)
+
+      //check allowance
+      let gatewayAddress: string
+      if (from.chainId === this.l1ChainId) {
+        gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(from.address)
+      } else {
+        gatewayAddress = await this.bridge.l2Bridge.getGatewayAddress(from.address)
+      }
+
+      const allowance = await contract.allowance(this._account, gatewayAddress)
+
+      if (allowance && parsedValue.gt(allowance)) {
+        this.store.dispatch(
+          omnibridgeUIActions.setStatusButton({
+            label: 'Approve',
+            isError: false,
+            isLoading: false,
+            isBalanceSufficient: true,
+            approved: false
+          })
+        )
+        return
+      } else {
+        this.store.dispatch(
+          omnibridgeUIActions.setStatusButton({
+            label: 'Bridge',
+            isError: false,
+            isLoading: false,
+            isBalanceSufficient: true,
+            approved: true
+          })
+        )
+      }
+    }
   }
 }

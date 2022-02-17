@@ -114,7 +114,7 @@ export class Omnibridge {
 
   public getSupportedBridges = (from: ChainId, to: ChainId) => {
     const supportedBridges = (Object.keys(this.bridges) as BridgeList[]).reduce<
-      { id: BridgeList; bridge: OmnibridgeChildBase }[]
+      { id: BridgeList; bridge: OmnibridgeChildBase; name: string }[]
     >((retVal, key) => {
       const supportedChains = this.bridges[key].supportedChains
 
@@ -124,7 +124,8 @@ export class Omnibridge {
       if (match || matchReverse) {
         retVal.push({
           id: key,
-          bridge: this.bridges[key]
+          bridge: this.bridges[key],
+          name: this.bridges[key].displayName
         })
       }
 
@@ -165,5 +166,9 @@ export class Omnibridge {
   public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
     if (!this._initialized || !l2Tx.bridgeId) return
     return this.bridges[l2Tx.bridgeId].triggerCollect(l2Tx)
+  }
+  public validate = async () => {
+    if (!this._initialized || !this._activeBridgeId) return
+    return this.bridges[this._activeBridgeId].validate()
   }
 }

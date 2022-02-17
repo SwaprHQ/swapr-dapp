@@ -10,12 +10,11 @@ import { RowBetween } from '../../components/Row'
 import ArrowIcon from '../../assets/svg/arrow.svg'
 import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
 import { BridgeModal } from './BridgeModals/BridgeModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanelNew'
 import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
 import { useActiveWeb3React } from '../../hooks'
-import { useBridgeInfo, useBridgeActionHandlers, useBridgeModal, useBridgeTxsFilter } from '../../state/bridge/hooks'
+import { useBridgeInfo, useBridgeActionHandlers, useBridgeTxsFilter } from '../../state/bridge/hooks'
 import { SHOW_TESTNETS } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeStep, isNetworkDisabled } from './utils'
@@ -29,6 +28,9 @@ import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
+import { BridgeSelectionWindow } from './BridgeSelectionWindow'
+import CurrencyInputPanelBridge from '../../components/CurrencyInputPanel/CurrencyInputPanelBridge'
+import { useBridgeModal } from './useBridgeModal'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,10 +80,13 @@ export default function Bridge() {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
   const omnibridge = useOmnibridge()
+
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
-  const [modalData, setModalStatus, setModalData] = useBridgeModal()
+
+  //new modal interface
+  const { modalData, setModalData, setModalState } = useBridgeModal()
   const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromNetwork, toNetwork } = useBridgeInfo()
   const {
     onCurrencySelection,
@@ -136,14 +141,14 @@ export default function Bridge() {
     onCurrencySelection('')
     setStep(BridgeStep.Initial)
     setTxsFilter(BridgeTxsFilter.RECENT)
-    setModalStatus(BridgeModalStatus.CLOSED)
+    setModalState(BridgeModalStatus.CLOSED)
     setModalData({
       symbol: '',
       typedValue: '',
       fromChainId: chainId || 1,
       toChainId: partnerChainId || 42161
     })
-  }, [chainId, onCurrencySelection, onUserInput, partnerChainId, setModalData, setModalStatus, setTxsFilter])
+  }, [chainId, onCurrencySelection, onUserInput, partnerChainId, setModalData, setModalState, setTxsFilter])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -170,8 +175,8 @@ export default function Bridge() {
       fromChainId: fromNetwork.chainId,
       toChainId: toNetwork.chainId
     })
-    setModalStatus(BridgeModalStatus.DISCLAIMER)
-  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalStatus])
+    setModalState(BridgeModalStatus.DISCLAIMER)
+  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalState])
 
   const handleCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
@@ -221,6 +226,14 @@ export default function Bridge() {
 
   return (
     <Wrapper>
+      {/* FIX tmp solution (helps to test flow) */}
+      <button
+        onClick={() => {
+          dispatch(omnibridgeUIActions.reset())
+        }}
+      >
+        reset state
+      </button>
       <Tabs
         collectableTxAmount={collectableTxAmount}
         isCollecting={isCollecting}
@@ -269,7 +282,8 @@ export default function Bridge() {
             />
           </AssetWrapper>
         </Row>
-        <CurrencyInputPanel
+        {/* New component CurrencyInput for Bridge */}
+        <CurrencyInputPanelBridge
           label="Amount"
           value={isCollecting ? collectableTx.value : typedValue}
           showMaxButton={!isCollecting && !atMaxAmountInput}
@@ -281,6 +295,22 @@ export default function Bridge() {
           disabled={isCollecting}
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
+          isBridge={true}
+        />
+        {/* Here will be created new component e.g OutputCurrency */}
+        <CurrencyInputPanelBridge
+          label="You will receive"
+          value={isCollecting ? collectableTx.value : typedValue}
+          showMaxButton={false}
+          currency={bridgeCurrency}
+          onUserInput={onUserInput}
+          onMax={!isCollecting ? handleMaxInput : undefined}
+          onCurrencySelect={onCurrencySelection}
+          disableCurrencySelect={true}
+          disabled={true}
+          id="bridge-currency-input"
+          hideBalance={true}
+          isBridge={true}
         />
         <BridgeActionPanel
           account={account}
@@ -293,6 +323,7 @@ export default function Bridge() {
           setStep={setStep}
         />
       </AppBody>
+      {!isCollecting && <BridgeSelectionWindow />}
       {step !== BridgeStep.Collect && !!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           transactions={bridgeSummaries}
@@ -303,7 +334,7 @@ export default function Bridge() {
       <BridgeModal
         handleResetBridge={handleResetBridge}
         setStep={setStep}
-        setStatus={setModalStatus}
+        setStatus={setModalState}
         modalData={modalData}
         handleSubmit={handleSubmit}
       />
