@@ -29,7 +29,7 @@ import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
-import CurrencyInputPanelBridge from '../../components/CurrencyInputPanel/CurrencyInputPanelBridge'
+import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
 import { useBridgeModal } from './useBridgeModal'
 
 const Wrapper = styled.div`
@@ -283,7 +283,7 @@ export default function Bridge() {
           </AssetWrapper>
         </Row>
         {/* New component CurrencyInput for Bridge */}
-        <CurrencyInputPanelBridge
+        <CurrencyInputPanel
           label="Amount"
           value={isCollecting ? collectableTx.value : typedValue}
           showMaxButton={!isCollecting && !atMaxAmountInput}
@@ -298,7 +298,7 @@ export default function Bridge() {
           isBridge={true}
         />
         {/* Here will be created new component e.g OutputCurrency */}
-        <CurrencyInputPanelBridge
+        <CurrencyInputPanel
           label="You will receive"
           value={isCollecting ? collectableTx.value : typedValue}
           showMaxButton={false}

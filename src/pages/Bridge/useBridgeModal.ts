@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../state'
 import { ChainId } from '@swapr/sdk'
 import { BridgeModalState, BridgeModalStatus } from '../../state/bridge/reducer'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 
 //TODO move hook to better place
 export const useBridgeModal = (): {
