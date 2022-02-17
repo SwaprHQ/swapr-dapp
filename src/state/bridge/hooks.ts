@@ -9,12 +9,10 @@ import {
   setFromBridgeNetwork,
   setToBridgeNetwork,
   swapBridgeNetworks,
-  setBridgeTxsFilter,
-  setBridgeModalStatus,
-  setBridgeModalData
+  setBridgeTxsFilter
 } from './actions'
-import { bridgeModalDataSelector, bridgeTxsFilterSelector } from './selectors'
-import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './reducer'
+import { bridgeTxsFilterSelector } from './selectors'
+import { BridgeTxsFilter } from './reducer'
 
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -167,37 +165,4 @@ export const useBridgeTxsFilter = (): [BridgeTxsFilter, (filter: BridgeTxsFilter
   }
 
   return [filter, setFilter]
-}
-
-export const useBridgeModal = (): [
-  BridgeModalState,
-  (status: BridgeModalStatus, error?: string) => void,
-  ({
-    symbol,
-    typedValue,
-    fromChainId,
-    toChainId
-  }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => void
-] => {
-  const dispatch = useDispatch()
-  const modalData = useSelector(bridgeModalDataSelector)
-
-  const setModalStatus = (status: BridgeModalStatus, error?: string) => {
-    dispatch(setBridgeModalStatus({ status, error }))
-    dispatch(omnibridgeUIActions.setBridgeModalStatus({ status, error }))
-  }
-
-  const setModalData = ({
-    symbol,
-    typedValue,
-    fromChainId,
-    toChainId
-  }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => {
-    dispatch(setBridgeModalData({ symbol, typedValue, fromChainId, toChainId }))
-    dispatch(
-      omnibridgeUIActions.setBridgeModalData({ symbol: symbol ? symbol : '', typedValue, fromChainId, toChainId })
-    )
-  }
-
-  return [modalData, setModalStatus, setModalData]
 }
