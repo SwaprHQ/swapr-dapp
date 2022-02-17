@@ -15,7 +15,7 @@ import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
 import { useActiveWeb3React } from '../../hooks'
-import { useBridgeInfo, useBridgeActionHandlers, useBridgeModal, useBridgeTxsFilter } from '../../state/bridge/hooks'
+import { useBridgeInfo, useBridgeActionHandlers, useBridgeTxsFilter } from '../../state/bridge/hooks'
 import { SHOW_TESTNETS } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeStep, isNetworkDisabled } from './utils'
@@ -31,6 +31,7 @@ import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridg
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanelBridge from '../../components/CurrencyInputPanel/CurrencyInputPanelBridge'
+import { useModal } from './useModal'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -84,7 +85,9 @@ export default function Bridge() {
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
-  const [modalData, setModalStatus, setModalData] = useBridgeModal()
+
+  //new modal interface
+  const { modalData, setModalData, setModalState } = useModal()
   const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromNetwork, toNetwork } = useBridgeInfo()
   const {
     onCurrencySelection,
@@ -139,14 +142,14 @@ export default function Bridge() {
     onCurrencySelection('')
     setStep(BridgeStep.Initial)
     setTxsFilter(BridgeTxsFilter.RECENT)
-    setModalStatus(BridgeModalStatus.CLOSED)
+    setModalState(BridgeModalStatus.CLOSED)
     setModalData({
       symbol: '',
       typedValue: '',
       fromChainId: chainId || 1,
       toChainId: partnerChainId || 42161
     })
-  }, [chainId, onCurrencySelection, onUserInput, partnerChainId, setModalData, setModalStatus, setTxsFilter])
+  }, [chainId, onCurrencySelection, onUserInput, partnerChainId, setModalData, setModalState, setTxsFilter])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -173,8 +176,8 @@ export default function Bridge() {
       fromChainId: fromNetwork.chainId,
       toChainId: toNetwork.chainId
     })
-    setModalStatus(BridgeModalStatus.DISCLAIMER)
-  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalStatus])
+    setModalState(BridgeModalStatus.DISCLAIMER)
+  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalState])
 
   const handleCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
@@ -332,7 +335,7 @@ export default function Bridge() {
       <BridgeModal
         handleResetBridge={handleResetBridge}
         setStep={setStep}
-        setStatus={setModalStatus}
+        setStatus={setModalState}
         modalData={modalData}
         handleSubmit={handleSubmit}
       />
