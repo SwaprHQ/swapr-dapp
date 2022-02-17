@@ -82,7 +82,7 @@ export const BridgeSelectionWindow = () => {
   useEffect(() => {
     if (!from.chainId || !to.chainId || !from.address || !to.address) return
     setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
-    console.log(from)
+
     if (Number(from.value) === 0 || modal.status === BridgeModalStatus.ERROR) {
       setIsShow(false)
       dispatch(omnibridgeUIActions.setSelectedActiveBridge(''))
