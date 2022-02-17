@@ -28,7 +28,7 @@ import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/act
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
 import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 
 const Wrapper = styled.div`
   width: 100%;

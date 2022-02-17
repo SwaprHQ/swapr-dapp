@@ -23,7 +23,7 @@ import { useCurrencyBalances } from '../wallet/hooks'
 
 import { currencyId } from '../../utils/currencyId'
 import { getChainPair } from '../../utils/arbitrum'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 
 export function useBridgeState(): AppState['bridge'] {
   return useSelector<AppState, AppState['bridge']>(state => state.bridge)

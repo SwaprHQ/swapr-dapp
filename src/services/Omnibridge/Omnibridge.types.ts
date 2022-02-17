@@ -1,7 +1,9 @@
-import { Store } from '@reduxjs/toolkit'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
+import { Store } from '@reduxjs/toolkit'
+import { TokenList } from '@uniswap/token-lists'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { AppState } from '../../state'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export type OmnibridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
@@ -9,6 +11,12 @@ export type OmnibridgeProviders = {
 
 export interface OmnibridgeConstructorParams {
   store: Store<AppState>
+}
+
+export interface SupportedChainsConfig {
+  to: ChainId
+  from: ChainId
+  reverse: boolean
 }
 
 export interface OmnibridgeChangeHandler {
@@ -33,11 +41,16 @@ export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
 export type BridgeList = ArbitrumList
 
 export interface OmnibridgeChildBaseConstructor {
-  supportedChains: {
-    to: ChainId
-    from: ChainId
-    reverse: boolean
-  }
+  supportedChains: SupportedChainsConfig
   displayName: string
   bridgeId: BridgeList
+}
+
+export interface TokenMap {
+  [chainId: number]: Readonly<{
+    [tokenAddress: string]: {
+      token: WrappedTokenInfo
+      list: TokenList
+    }
+  }>
 }

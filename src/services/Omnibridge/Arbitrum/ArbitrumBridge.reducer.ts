@@ -1,20 +1,21 @@
 import { TransactionReceipt } from '@ethersproject/providers'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
+import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList } from '../Omnibridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
-  tokens: null
+  lists: TokenList[]
 }
 
 const now = () => new Date().getTime()
 
 const initialState: ArbitrumBridgeState = {
   transactions: {},
-  tokens: null
+  lists: []
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
@@ -108,6 +109,10 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           tx.batchIndex = batchIndex
         }
         state.transactions[chainId][txHash] = tx
+      },
+      addTokenLists: (state, action: PayloadAction<TokenList[]>) => {
+        const { payload } = action
+        state.lists = payload
       },
       migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
         const { payload } = action

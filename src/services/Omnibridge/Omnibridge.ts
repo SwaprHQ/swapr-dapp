@@ -6,10 +6,12 @@ import { initiateOmnibridgeProviders } from './Omnibridge.providers'
 import {
   BridgeList,
   OmnibridgeProviders,
+  SupportedChainsConfig,
   OmnibridgeChangeHandler,
   OmnibridgeConstructorParams
 } from './Omnibridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { optionsActions } from './store/Omnibridge.reducer'
 
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
@@ -34,12 +36,22 @@ export class Omnibridge {
   }
 
   constructor(store: Store<AppState>, config: OmnibridgeChildBase[]) {
-    this.staticProviders = initiateOmnibridgeProviders()
+    const { bridges, supportedChains } = config.reduce(
+      (total, bridge) => {
+        total.bridges[bridge.bridgeId] = bridge
+        total.supportedChains[bridge.bridgeId] = bridge.supportedChains
+        return total
+      },
+      { bridges: {}, supportedChains: {} } as {
+        bridges: { [k in BridgeList]: OmnibridgeChildBase }
+        supportedChains: { [k in BridgeList]: SupportedChainsConfig }
+      }
+    )
+
     this.store = store
-    this.bridges = config.reduce((list, bridge) => {
-      list[bridge.bridgeId] = bridge
-      return list
-    }, {} as { [k in BridgeList]: OmnibridgeChildBase })
+    this.bridges = bridges
+    this.staticProviders = initiateOmnibridgeProviders()
+    this.store.dispatch(optionsActions.setSupportedChains(supportedChains))
   }
 
   public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {
@@ -149,6 +161,7 @@ export class Omnibridge {
     if (!this._initialized || !l2Tx.bridgeId) return
     return this.bridges[l2Tx.bridgeId].collect(l2Tx)
   }
+
   public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
     if (!this._initialized || !l2Tx.bridgeId) return
     return this.bridges[l2Tx.bridgeId].triggerCollect(l2Tx)

@@ -2,6 +2,7 @@ import { Bridge, OutgoingMessageState } from 'arb-ts'
 import { BigNumber, utils } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
+import { TokenList } from '@uniswap/token-lists'
 
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { addTransaction } from '../../../state/transactions/actions'
@@ -19,8 +20,10 @@ import {
   OmnibridgeChildBaseInit,
   ArbitrumList
 } from '../Omnibridge.types'
-import { omnibridgeUIActions } from '../store/Omnibridge.reducer'
+import { omnibridgeUIActions } from '../store/UI.reducer'
 import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
+import getTokenList from '../../../utils/getTokenList'
+import { ARBITRUM_TOKEN_LISTS } from './ArbitrumBridge.lists'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -69,6 +72,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
+
+    // download token lists
+    this.fetchTokenLists()
 
     // run migration
     migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
@@ -614,6 +620,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       })
     )
   }
+
   public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
     return {
       symbol: l2Tx.assetName,
@@ -621,5 +628,20 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       fromChainId: l2Tx.fromChainId,
       toChainId: l2Tx.toChainId
     }
+  }
+
+  private fetchTokenLists = async () => {
+    const promises = ARBITRUM_TOKEN_LISTS.filter(config =>
+      [this.l1ChainId.toString(), this.l2ChainId.toString()].includes(config.chainId)
+    ).map(config => getTokenList(config.url, () => null as any))
+
+    const tokenLists = (await Promise.allSettled(promises)).reduce<TokenList[]>((total, list) => {
+      if (list.status === 'fulfilled') {
+        total.push(list.value)
+      }
+      return total
+    }, [])
+
+    this.store.dispatch(this.actions.addTokenLists(tokenLists))
   }
 }
