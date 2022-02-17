@@ -6,6 +6,7 @@ import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
 import { AppState } from '../../state'
+import { BridgeModalStatus } from '../../state/bridge/reducer'
 
 const WrapperBridgeSelectionWindow = styled.div<{ show: boolean }>`
   width: 100%;
@@ -64,7 +65,7 @@ const BridgeEstimatedTime = styled(BridgeDetails)`
 
 export const BridgeSelectionWindow = () => {
   const omnibridge = useOmnibridge()
-  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+  const { from, to, modal } = useSelector((state: AppState) => state.omnibridge.UI)
   const dispatch = useDispatch()
 
   const [isShow, setIsShow] = useState(false)
@@ -82,7 +83,7 @@ export const BridgeSelectionWindow = () => {
     if (!from.chainId || !to.chainId || !from.address || !to.address) return
     setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
 
-    if (Number(from.value) === 0) {
+    if (Number(from.value) === 0 || modal.status === BridgeModalStatus.ERROR) {
       setIsShow(false)
       dispatch(omnibridgeUIActions.setSelectedActiveBridge(''))
       setSelected('')
@@ -93,7 +94,7 @@ export const BridgeSelectionWindow = () => {
       setIsShow(true)
       return
     }
-  }, [from.chainId, to.chainId, omnibridge, from.address, to.address, from.value, dispatch])
+  }, [from.chainId, to.chainId, omnibridge, from.address, to.address, from.value, dispatch, modal.status])
 
   return (
     <WrapperBridgeSelectionWindow show={isShow}>
