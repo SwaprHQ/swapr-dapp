@@ -264,7 +264,7 @@ const createSelectBridgeTxsSummary = (
 const createSelectTokenList = (bridgeId: ArbitrumList) =>
   createSelector(
     (state: AppState) => state.omnibridge[bridgeId].lists,
-    (state: AppState) => state.omnibridge.options.supportedChains?.[bridgeId],
+    (state: AppState) => state.omnibridge.common.supportedChains?.[bridgeId],
     (l2TokenLists, supportedChains) => {
       // Duplicate each list and adjust it to fit L1 addresses
       if (!supportedChains) return {}
