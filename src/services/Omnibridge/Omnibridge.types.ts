@@ -39,6 +39,7 @@ export interface OmnibridgeChildBaseInit extends OmnibridgeChangeHandler, Omnibr
 
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
 export type BridgeList = ArbitrumList
+export type OptionalBridgeList = BridgeList | undefined
 
 export interface OmnibridgeChildBaseConstructor {
   supportedChains: SupportedChainsConfig

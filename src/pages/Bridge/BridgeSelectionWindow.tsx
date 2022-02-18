@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { BridgeList } from '../../services/Omnibridge/Omnibridge.types'
+import { BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
 import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
+import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
 import { AppState } from '../../state'
 import { BridgeModalStatus } from '../../state/bridge/reducer'
 
@@ -69,14 +69,14 @@ export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
 
   const [isShow, setIsShow] = useState(false)
-  const [selected, setSelected] = useState('')
+  const [selected, setSelected] = useState<OptionalBridgeList>(undefined)
   const [availableBridges, setAvailableBridges] = useState<
     { id: BridgeList; bridge: OmnibridgeChildBase; name: string }[]
   >()
 
-  const handleSelect = (id: string) => {
+  const handleSelect = (id: OptionalBridgeList) => {
     setSelected(id)
-    dispatch(omnibridgeUIActions.setSelectedActiveBridge(id))
+    dispatch(commonActions.setActiveBridge(id))
   }
 
   useEffect(() => {
@@ -85,8 +85,8 @@ export const BridgeSelectionWindow = () => {
 
     if (Number(from.value) === 0 || modal.status === BridgeModalStatus.ERROR) {
       setIsShow(false)
-      dispatch(omnibridgeUIActions.setSelectedActiveBridge(''))
-      setSelected('')
+      dispatch(commonActions.setActiveBridge(undefined))
+      setSelected(undefined)
       return
     }
 
@@ -112,10 +112,10 @@ export const BridgeSelectionWindow = () => {
 }
 
 interface BridgeProps {
-  id: string
+  id: OptionalBridgeList
   name: string
-  selected: string
-  handleSelect: (id: string) => void
+  selected: OptionalBridgeList
+  handleSelect: (id: OptionalBridgeList) => void
 }
 
 const Bridge = ({ id, name, selected, handleSelect }: BridgeProps) => {
