@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { BridgeList } from '../../services/Omnibridge/Omnibridge.types'
 import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/Omnibridge.reducer'
+import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { AppState } from '../../state'
 import { BridgeModalStatus } from '../../state/bridge/reducer'
 

@@ -128,7 +128,7 @@ interface CurrencyInputPanelProps {
   isBridge?: boolean
 }
 
-export default function CurrencyInputPanelBridge({
+export default function CurrencyInputPanel({
   value,
   onUserInput,
   onMax,
