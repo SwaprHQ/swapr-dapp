@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ChainId } from '@swapr/sdk'
 import { Omnibridge } from './Omnibridge'
 import store from '../../state'
 import { useActiveWeb3React } from '../../hooks'
@@ -23,16 +22,6 @@ export const OmnibridgeProvider = ({ children }: { children?: React.ReactNode })
           await omnibridge.init({ account, activeChainId: chainId, activeProvider: library })
         } else {
           await omnibridge.updateSigner({ account, activeChainId: chainId, activeProvider: library })
-        }
-        // TODO: Tmp solution, will be handled by bridge selection screen or automatically on collection
-        if ([ChainId.ARBITRUM_RINKEBY, ChainId.RINKEBY].includes(chainId)) {
-          omnibridge.setActiveBridge('arbitrum:testnet')
-          return
-        }
-
-        if ([ChainId.ARBITRUM_ONE, ChainId.MAINNET].includes(chainId)) {
-          omnibridge.setActiveBridge('arbitrum:mainnet')
-          return
         }
       }
     }
