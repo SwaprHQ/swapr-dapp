@@ -1,14 +1,13 @@
-import { Currency } from '@swapr/sdk'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useDebounce from '../../../hooks/useDebounce'
 import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../../services/Omnibridge/store/Common.reducer'
 import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reducer'
-import { AppState } from '../../../state'
 import { useBridgeInfo } from '../../../state/bridge/hooks'
+import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (value: string, currency: Currency | null | undefined) => {
+export const useBridgeInputValidation = (value: string) => {
   const debounce = useDebounce(value, 500)
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
@@ -32,7 +31,7 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
         dispatch(commonActions.setActiveBridge(undefined))
         return false
       }
-      if (Number(debounce) > 0 && !currency && !from.address && !to.address) {
+      if (Number(debounce) > 0 && !from.address && !to.address) {
         dispatch(
           omnibridgeUIActions.setStatusButton({
             label: 'Select token',
@@ -79,5 +78,5 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
     if (isValid) {
       omnibridge.validate()
     }
-  }, [debounce, currency, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address])
+  }, [debounce, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address])
 }
