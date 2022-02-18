@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { Text } from 'rebass'
 import { BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
 import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
 import { AppState } from '../../state'
-import { BridgeModalStatus } from '../../state/bridge/reducer'
 
-const WrapperBridgeSelectionWindow = styled.div<{ show: boolean }>`
+const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
   margin-bottom: 10px;
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  z-index: ${({ show }) => (show ? '1' : '-1')};
 `
 const BridgeWrapperLabel = styled.div`
   margin: 12px 0;
@@ -20,7 +18,7 @@ const BridgeWrapperLabel = styled.div`
   display: grid;
   grid-template-columns: 52% 13% 13% 22%;
 `
-const BridgeLabel = styled.span<{ justify?: boolean }>`
+const BridgeLabel = styled(Text)<{ justify?: boolean }>`
   color: ${({ theme }) => theme.text5}
   font-size: 10px;
   font-weight: 600;
@@ -41,14 +39,14 @@ const BridgeOption = styled.div<{ isSelected: boolean }>`
   align-items: center;
   transition: background 0.4s ease;
 `
-const BridgeName = styled.div<{ isSelected: boolean }>`
+const BridgeName = styled(Text)<{ isSelected: boolean }>`
   margin: 0;
   font-weight: ${({ isSelected }) => (isSelected ? '600' : '500')};
   font-size: 14px;
   color: ${({ isSelected, theme }) => (isSelected ? theme.text1 : theme.text3)};
   padding-left: 10px;
 `
-const BridgeDetails = styled.span`
+const BridgeDetails = styled(Text)`
   font-weight: 500;
   font-size: 10px;
   color: ${({ theme }) => theme.text5};
@@ -65,49 +63,40 @@ const BridgeEstimatedTime = styled(BridgeDetails)`
 
 export const BridgeSelectionWindow = () => {
   const omnibridge = useOmnibridge()
-  const { from, to, modal } = useSelector((state: AppState) => state.omnibridge.UI)
   const dispatch = useDispatch()
-
-  const [isShow, setIsShow] = useState(false)
-  const [selected, setSelected] = useState<OptionalBridgeList>(undefined)
+  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
+  const selected = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
   const [availableBridges, setAvailableBridges] = useState<
     { id: BridgeList; bridge: OmnibridgeChildBase; name: string }[]
   >()
 
   const handleSelect = (id: OptionalBridgeList) => {
-    setSelected(id)
     dispatch(commonActions.setActiveBridge(id))
   }
 
   useEffect(() => {
-    if (!from.chainId || !to.chainId || !from.address || !to.address) return
-    setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
-
-    if (Number(from.value) === 0 || modal.status === BridgeModalStatus.ERROR) {
-      setIsShow(false)
-      dispatch(commonActions.setActiveBridge(undefined))
-      setSelected(undefined)
-      return
+    if (!from.chainId || !to.chainId) return
+    if (showAvailableBridges) {
+      setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
     }
-
-    if (from.address) {
-      setIsShow(true)
-      return
-    }
-  }, [from.chainId, to.chainId, omnibridge, from.address, to.address, from.value, dispatch, modal.status])
+  }, [from.chainId, to.chainId, omnibridge, from.address, to.address, from.value, dispatch, showAvailableBridges])
 
   return (
-    <WrapperBridgeSelectionWindow show={isShow}>
-      <BridgeWrapperLabel>
-        <BridgeLabel justify={true}>Bridge</BridgeLabel>
-        <BridgeLabel>Fee</BridgeLabel>
-        <BridgeLabel>Gas</BridgeLabel>
-        <BridgeLabel>Time</BridgeLabel>
-      </BridgeWrapperLabel>
-      {availableBridges?.map(({ id, name }) => (
-        <Bridge id={id} key={id} name={name} selected={selected} handleSelect={handleSelect} />
-      ))}
-    </WrapperBridgeSelectionWindow>
+    <>
+      {showAvailableBridges && (
+        <WrapperBridgeSelectionWindow>
+          <BridgeWrapperLabel>
+            <BridgeLabel justify={true}>Bridge</BridgeLabel>
+            <BridgeLabel>Fee</BridgeLabel>
+            <BridgeLabel>Gas</BridgeLabel>
+            <BridgeLabel>Time</BridgeLabel>
+          </BridgeWrapperLabel>
+          {availableBridges?.map(({ id, name }) => (
+            <Bridge id={id} key={id} name={name} selected={selected} handleSelect={handleSelect} />
+          ))}
+        </WrapperBridgeSelectionWindow>
+      )}
+    </>
   )
 }
 

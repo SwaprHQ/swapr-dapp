@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useDebounce from '../../../hooks/useDebounce'
 import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
+import { commonActions } from '../../../services/Omnibridge/store/Common.reducer'
 import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reducer'
 import { AppState } from '../../../state'
 import { useBridgeInfo } from '../../../state/bridge/hooks'
@@ -12,6 +13,7 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
+  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
@@ -26,9 +28,11 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
             approved: false
           })
         )
+        dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
+        dispatch(commonActions.setActiveBridge(undefined))
         return false
       }
-      if (Number(debounce) > 0 && !currency) {
+      if (Number(debounce) > 0 && !currency && !from.address && !to.address) {
         dispatch(
           omnibridgeUIActions.setStatusButton({
             label: 'Select token',
@@ -41,6 +45,7 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
         return false
       }
 
+      dispatch(omnibridgeUIActions.setShowAvailableBridges(true))
       //check balance
       if (!isBalanceSufficient) {
         dispatch(
@@ -74,5 +79,5 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
     if (isValid) {
       omnibridge.validate()
     }
-  }, [debounce, currency, omnibridge, activeBridge, isBalanceSufficient, dispatch])
+  }, [debounce, currency, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address])
 }

@@ -1,6 +1,5 @@
 import { Store } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { AppState } from '../../state'
 import { OmnibridgeChildBase } from './Omnibridge.utils'
 import { initiateOmnibridgeProviders } from './Omnibridge.providers'
 import {
@@ -12,6 +11,7 @@ import {
 } from './Omnibridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { commonActions } from './store/Common.reducer'
+import { AppState } from '../../state'
 
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
@@ -19,10 +19,9 @@ export class Omnibridge {
   public readonly bridges: { [k in BridgeList]: OmnibridgeChildBase }
   private _initialized = false
   private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
-  private _activeBridgeId: BridgeList | undefined
 
-  public setActiveBridge = (bridgeId: BridgeList) => {
-    this._activeBridgeId = bridgeId
+  private get _activeBridgeId() {
+    return this.store.getState().omnibridge.common.activeBridge
   }
 
   // TODO: Should be depreciated later on so no direct interaction with bride is possible
@@ -137,10 +136,11 @@ export class Omnibridge {
     return supportedBridges
   }
 
-  public onSelectBridge = (bridgeId: BridgeList) => {
-    if (!Object.keys(this.bridges).includes(bridgeId)) return
-    this._activeBridgeId = bridgeId
-  }
+  //check if we need it
+  // public onSelectBridge = (bridgeId: BridgeList) => {
+  //   if (!Object.keys(this.bridges).includes(bridgeId)) return
+  //   this._activeBridgeId = bridgeId
+  // }
 
   // ADAPTERS
   public withdraw = async (value: string, tokenAddress?: string) => {
