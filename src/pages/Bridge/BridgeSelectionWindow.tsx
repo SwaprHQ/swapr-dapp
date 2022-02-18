@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { BridgeList } from '../../services/Omnibridge/Omnibridge.types'
+import { BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
 import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
