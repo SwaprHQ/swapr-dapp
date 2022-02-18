@@ -11,7 +11,7 @@ import {
   OmnibridgeConstructorParams
 } from './Omnibridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { optionsActions } from './store/Omnibridge.reducer'
+import { commonActions } from './store/Common.reducer'
 
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
@@ -51,7 +51,7 @@ export class Omnibridge {
     this.store = store
     this.bridges = bridges
     this.staticProviders = initiateOmnibridgeProviders()
-    this.store.dispatch(optionsActions.setSupportedChains(supportedChains))
+    this.store.dispatch(commonActions.setSupportedChains(supportedChains))
   }
 
   public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {

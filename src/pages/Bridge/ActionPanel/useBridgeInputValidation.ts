@@ -11,7 +11,7 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
   const debounce = useDebounce(value, 500)
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
-  const activeBridge = useSelector((state: AppState) => state.omnibridge.UI.activeBridge)
+  const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export const useBridgeInputValidation = (value: string, currency: Currency | nul
         return false
       }
 
-      if (activeBridge === '') {
+      if (!activeBridge) {
         dispatch(
           omnibridgeUIActions.setStatusButton({
             label: 'Select bridge bellow',

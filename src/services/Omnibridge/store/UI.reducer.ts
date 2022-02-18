@@ -1,7 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../../state/bridge/reducer'
-import { BridgeList } from '../Omnibridge.types'
 
 type OmnibridgeInput = {
   value: string
@@ -27,8 +26,6 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
   }
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
-  activeBridge: string
-  activeLists: BridgeList[]
 }
 
 const initialState: UIInitialState = {
@@ -57,9 +54,7 @@ const initialState: UIInitialState = {
     toNetworkId: 42161
   },
   filter: BridgeTxsFilter.RECENT,
-  isCheckingWithdrawals: false,
-  activeBridge: '',
-  activeLists: []
+  isCheckingWithdrawals: false
 }
 
 export const omnibridgeUISlice = createSlice({
@@ -76,7 +71,6 @@ export const omnibridgeUISlice = createSlice({
       state.from.address = ''
       state.from.value = ''
       state.to.address = ''
-      state.activeBridge = ''
     },
     setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {
       const { address, value, chainId } = action.payload
@@ -168,9 +162,6 @@ export const omnibridgeUISlice = createSlice({
       if (approved !== undefined) {
         state.statusButton.approved = approved
       }
-    },
-    setSelectedActiveBridge(state, action: PayloadAction<string>) {
-      state.activeBridge = action.payload
     }
   }
 })
