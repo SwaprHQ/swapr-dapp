@@ -143,19 +143,14 @@ export class Omnibridge {
   // }
 
   // ADAPTERS
-  public withdraw = async (value: string, tokenAddress?: string) => {
+  public triggerBridging = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].withdraw(value, tokenAddress)
+    return this.bridges[this._activeBridgeId].triggerBridging()
   }
 
-  public deposit = async (value: string, tokenAddress?: string) => {
+  public approve = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].deposit(value, tokenAddress)
-  }
-
-  public approve = async (erc20L1Address: string, gatewayAddress?: string, tokenSymbol?: string) => {
-    if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].approve(erc20L1Address, gatewayAddress, tokenSymbol)
+    return this.bridges[this._activeBridgeId].approve()
   }
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
