@@ -95,7 +95,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   // TODO: check if it requres signer
   private deposit = async (value: string, tokenAddress: string) => {
     try {
-      if (tokenAddress && tokenAddress !== 'ETH') {
+      if (tokenAddress !== 'ETH') {
         await this.depositERC20(tokenAddress, value)
       } else {
         await this.depositEth(value)
@@ -109,7 +109,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   // TODO: check if it requres signer
   private withdraw = async (value: string, tokenAddress: string) => {
     try {
-      if (tokenAddress && tokenAddress !== 'ETH') {
+      if (tokenAddress !== 'ETH') {
         await this.withdrawERC20(tokenAddress, value)
       } else {
         await this.withdrawEth(value)
