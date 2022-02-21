@@ -93,9 +93,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     await this.updatePendingWithdrawals()
   }
   // TODO: check if it requres signer
-  public deposit = async (value: string, tokenAddress?: string) => {
+  private deposit = async (value: string, tokenAddress: string) => {
     try {
-      if (tokenAddress) {
+      if (tokenAddress !== 'ETH') {
         await this.depositERC20(tokenAddress, value)
       } else {
         await this.depositEth(value)
@@ -107,9 +107,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   // TODO: check if it requres signer
-  public withdraw = async (value: string, tokenAddress?: string) => {
+  private withdraw = async (value: string, tokenAddress: string) => {
     try {
-      if (tokenAddress) {
+      if (tokenAddress !== 'ETH') {
         await this.withdrawERC20(tokenAddress, value)
       } else {
         await this.withdrawEth(value)
@@ -182,16 +182,15 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
 
-  public approve = async (erc20L1Address: string, gatewayAddress?: string, tokenSymbol?: string) => {
+  public approve = async () => {
     if (!this._account) return
 
-    if (!gatewayAddress) {
-      gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(erc20L1Address)
-    }
+    const erc20L1Address = this.store.getState().omnibridge.UI.from.address
+    if (!erc20L1Address) return
 
-    if (!tokenSymbol) {
-      tokenSymbol = (await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)).symbol
-    }
+    const gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(erc20L1Address)
+
+    const tokenSymbol = (await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)).symbol
 
     const txn = await this.bridge.approveToken(erc20L1Address)
 
@@ -702,6 +701,15 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
           })
         )
       }
+    }
+  }
+  public triggerBridging = () => {
+    const { value, address: tokenAddress } = this.store.getState().omnibridge.UI.from
+
+    if (this.l1ChainId === this._activeChainId) {
+      this.deposit(value, tokenAddress)
+    } else {
+      this.withdraw(value, tokenAddress)
     }
   }
 }

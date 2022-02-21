@@ -168,7 +168,7 @@ export default function CurrencyInputPanel({
     setFocused(false)
   }, [])
 
-  useBridgeInputValidation(value, currency)
+  useBridgeInputValidation(value)
 
   return (
     <InputPanel isBridge={isBridge} id={id}>
