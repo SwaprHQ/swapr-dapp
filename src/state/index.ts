@@ -16,7 +16,8 @@ import lists from './lists/reducer'
 import bridge from './bridge/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
 import omnibridge from '../services/Omnibridge/store/Omnibridge.reducer'
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', 'omnibridge']
+import { omnibridgePersistedKeys } from '../services/Omnibridge/Omnibridge.config'
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...omnibridgePersistedKeys]
 
 const persistenceNamespace = 'swapr'
 const store = configureStore({
@@ -36,7 +37,12 @@ const store = configureStore({
     bridgeTransactions,
     omnibridge
   },
-  middleware: [save({ states: PERSISTED_KEYS, namespace: persistenceNamespace })],
+  middleware: [
+    save({
+      states: PERSISTED_KEYS,
+      namespace: persistenceNamespace
+    })
+  ],
   preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })
 })
 
