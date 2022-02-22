@@ -8,14 +8,14 @@ import { ArbitrumList } from '../Omnibridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
-  lists: TokenList[]
+  lists: { [id: string]: TokenList }
 }
 
 const now = () => new Date().getTime()
 
 const initialState: ArbitrumBridgeState = {
   transactions: {},
-  lists: []
+  lists: {}
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
@@ -110,8 +110,9 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         }
         state.transactions[chainId][txHash] = tx
       },
-      addTokenLists: (state, action: PayloadAction<TokenList[]>) => {
+      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
         const { payload } = action
+
         state.lists = payload
       },
       migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
