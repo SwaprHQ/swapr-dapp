@@ -217,14 +217,6 @@ export default function Bridge() {
 
   return (
     <Wrapper>
-      {/* FIX tmp solution (helps to test flow) */}
-      <button
-        onClick={() => {
-          dispatch(omnibridgeUIActions.reset())
-        }}
-      >
-        reset state
-      </button>
       <Tabs
         collectableTxAmount={collectableTxAmount}
         isCollecting={isCollecting}

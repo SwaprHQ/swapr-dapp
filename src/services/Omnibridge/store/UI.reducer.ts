@@ -63,18 +63,6 @@ export const omnibridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
-    //FIX tmp solution (will be removed)
-    reset(state) {
-      state.statusButton.isError = false
-      state.statusButton.isLoading = false
-      state.statusButton.label = 'Enter amount'
-      state.statusButton.isBalanceSufficient = false
-      state.statusButton.approved = false
-      state.showAvailableBridges = false
-      state.from.address = ''
-      state.from.value = ''
-      state.to.address = ''
-    },
     setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {
       const { address, value, chainId } = action.payload
       if (address !== undefined) {

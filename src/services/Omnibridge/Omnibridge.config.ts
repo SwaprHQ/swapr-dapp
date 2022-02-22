@@ -14,3 +14,7 @@ export const omnibridgeConfig: OmnibridgeChildBase[] = [
     supportedChains: { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE, reverse: true }
   })
 ]
+
+export const omnibridgePersistedKeys = omnibridgeConfig.map(
+  bridgeConfig => `omnibridge.${bridgeConfig.bridgeId}.transactions`
+)
