@@ -6,13 +6,13 @@ interface CommonState {
   supportedChains?: {
     [k in BridgeList]: SupportedChainsConfig
   }
-  activeLists: any
+  activeLists: string[]
 }
 
 const initialState: CommonState = {
   activeBridge: undefined,
   supportedChains: undefined,
-  activeLists: undefined
+  activeLists: []
 }
 
 const commonSlice = createSlice({
@@ -24,6 +24,17 @@ const commonSlice = createSlice({
     },
     setSupportedChains: (state, { payload }: PayloadAction<{ [k in BridgeList]: SupportedChainsConfig }>) => {
       state.supportedChains = payload
+    },
+    activateLists: (state, { payload }: PayloadAction<string[]>) => {
+      payload.forEach(id => {
+        if (!state.activeLists.includes(id)) {
+          state.activeLists.push(id)
+        }
+      })
+    },
+    deactivateLists: (state, { payload }: PayloadAction<string[]>) => {
+      const filteredList = state.activeLists.filter(id => !payload.includes(id))
+      state.activeLists = filteredList
     }
   }
 })
