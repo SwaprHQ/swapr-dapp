@@ -14,7 +14,7 @@ import {
   UniswapV2RoutablePlatform,
   RoutablePlatform
 } from '@swapr/sdk'
-import { authereum, injected, walletConnect } from '../connectors'
+import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapLogo from '../assets/svg/sushiswap-logo.svg'
@@ -222,11 +222,11 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true
   },
-  AUTHEREUM: {
-    connector: authereum,
-    name: 'Authereum',
-    iconName: 'authereum.svg',
-    description: 'Connect using Authereum.',
+  COINBASE: {
+    connector: walletLink,
+    name: 'Coinbase',
+    iconName: 'coinbase.svg',
+    description: 'Connect using Coinbase.',
     href: null,
     color: '#4196FC',
     mobile: true
@@ -258,7 +258,7 @@ export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const DEFAULT_TOKEN_LIST = 'ipfs://QmS3GdeaJbmYQzSf28J8JuhAtq5qfJ2qJCAVcqx9cXscXV'
+export const DEFAULT_TOKEN_LIST = 'ipfs://QmSbyVo6Kz5BuqyAHYcN7UkeCk5cALFp6QmPUN6NtPpDWL'
 
 export const ZERO_USD = CurrencyAmount.usd('0')
 
@@ -294,7 +294,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   },
   [ChainId.XDAI]: {
     chainId: `0x${ChainId.XDAI.toString(16)}`,
-    chainName: 'xDAI',
+    chainName: 'Gnosis Chain',
     nativeCurrency: {
       name: Currency.XDAI.name || 'xDAI',
       symbol: Currency.XDAI.symbol || 'xDAI',
@@ -375,7 +375,7 @@ export const ChainLabel: any = {
   [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ARBITRUM_ONE]: 'Arbitrum One',
   [ChainId.ARBITRUM_RINKEBY]: 'Arbitrum Rinkeby',
-  [ChainId.XDAI]: 'xDai'
+  [ChainId.XDAI]: 'Gnosis Chain'
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {
