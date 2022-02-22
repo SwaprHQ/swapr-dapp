@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { AppState } from '../../../state'
 import { BridgeTxsFilter } from '../../../state/bridge/reducer'
@@ -9,10 +8,8 @@ import {
   BridgeTxn,
   BridgeTxnsState
 } from '../../../state/bridgeTransactions/types'
-import { listToTokenMap } from '../../../state/lists/hooks'
 import { getBridgeTxStatus, PendingReasons, txnTypeToOrigin } from '../../../utils/arbitrum'
-import { ArbitrumList, TokenMap } from '../Omnibridge.types'
-import { hasArbitrumMetadata } from './ArbitrumBridge.types'
+import { ArbitrumList } from '../Omnibridge.types'
 
 const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
   createSelector(
@@ -261,67 +258,17 @@ const createSelectBridgeTxsSummary = (
     }
   )
 
-const createSelectTokenList = (bridgeId: ArbitrumList) =>
-  createSelector(
-    (state: AppState) => state.omnibridge[bridgeId].lists,
-    (state: AppState) => state.omnibridge.common.supportedChains?.[bridgeId],
-    (l2TokenLists, supportedChains) => {
-      // Duplicate each list and adjust it to fit L1 addresses
-      if (!supportedChains) return {}
-      const { from, to } = supportedChains
-
-      const l1TokenLists = l2TokenLists.map(list => {
-        const { tokens } = list
-
-        const l1Tokens = tokens
-          .filter(token => token.chainId === Number(to))
-          .reduce((tokens, l2Token) => {
-            if (hasArbitrumMetadata(l2Token, from)) {
-              const castedFrom = Number(from)
-              const l1Token: typeof l2Token = {
-                ...l2Token,
-                chainId: castedFrom,
-                address: l2Token.extensions.bridgeInfo[castedFrom].tokenAddress
-              }
-              tokens.push(l1Token)
-            }
-            return tokens
-          }, [] as TokenInfo[])
-
-        const l1List: typeof list = {
-          ...list,
-          tokens: l1Tokens
-        }
-
-        return l1List
-      })
-
-      const combinedTokenMap = [...l1TokenLists, ...l2TokenLists].reduce((allTokens, list) => {
-        const tokenMap = listToTokenMap((list as unknown) as TokenList, false)
-
-        allTokens[to] = { ...allTokens[to], ...tokenMap[to] }
-        allTokens[from] = { ...allTokens[from], ...tokenMap[from] }
-
-        return allTokens
-      }, {} as TokenMap)
-
-      return combinedTokenMap
-    }
-  )
-
 export interface ArbitrumBridgeSelectors {
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
   selectPendingTxs: ReturnType<typeof createSelectPendingTxs>
   selectL1Deposits: ReturnType<typeof createSelectL1Deposits>
   selectPendingWithdrawals: ReturnType<typeof createSelectPendingWithdrawals>
   selectBridgeTxsSummary: ReturnType<typeof createSelectBridgeTxsSummary>
-  selectTokenList: ReturnType<typeof createSelectTokenList>
 }
 
 export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
   return arbBridges.reduce(
     (total, bridgeId) => {
-      const selectTokenList = createSelectTokenList(bridgeId)
       const selectOwnedTxs = createSelectOwnedTxs(bridgeId)
       const selectPendingTxs = createSelectPendingTxs(selectOwnedTxs)
       const selectL1Deposits = createSelectL1Deposits(selectOwnedTxs)
@@ -333,7 +280,6 @@ export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
         selectOwnedTxs,
         selectPendingTxs,
         selectL1Deposits,
-        selectTokenList,
         selectBridgeTxsSummary,
         selectPendingWithdrawals
       }
