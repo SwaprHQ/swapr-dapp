@@ -4,12 +4,12 @@ import { useBridgeInfo } from '../../../state/bridge/hooks'
 
 export const useBridgeActionPanel = () => {
   const omnibridge = useOmnibridge()
-  const { currencyId, bridgeCurrency } = useBridgeInfo()
+  const { bridgeCurrency } = useBridgeInfo()
 
   const handleApprove = useCallback(async () => {
-    if (!currencyId || !bridgeCurrency || !omnibridge.ready) return
-    await omnibridge.approve(currencyId, bridgeCurrency.symbol)
-  }, [currencyId, bridgeCurrency, omnibridge])
+    if (!omnibridge.ready) return
+    await omnibridge.approve()
+  }, [omnibridge])
 
   return {
     handleApprove,

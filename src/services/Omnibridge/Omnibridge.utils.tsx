@@ -53,10 +53,10 @@ export abstract class OmnibridgeChildBase {
   }: OmnibridgeChangeHandler): Promise<void>
 
   // TODO: Abstract parameters. Currently it's hardcoded to support arbitrum
-  abstract withdraw(value: string, tokenAddress?: string): void
-  abstract deposit(value: string, tokenAddress?: string): void
+
+  abstract triggerBridging(): void
   abstract collect(l2Tx: BridgeTransactionSummary): void
-  abstract approve(erc20L1Address: string, gatewayAddress?: string, tokenSymbol?: string): void
+  abstract approve(): void
   abstract triggerCollect(
     l2Tx: BridgeTransactionSummary
   ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId }

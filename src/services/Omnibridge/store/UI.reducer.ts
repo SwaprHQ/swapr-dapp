@@ -26,6 +26,7 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
   }
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
+  showAvailableBridges: boolean
 }
 
 const initialState: UIInitialState = {
@@ -54,24 +55,14 @@ const initialState: UIInitialState = {
     toNetworkId: 42161
   },
   filter: BridgeTxsFilter.RECENT,
-  isCheckingWithdrawals: false
+  isCheckingWithdrawals: false,
+  showAvailableBridges: false
 }
 
 export const omnibridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
-    //FIX tmp solution (will be removed)
-    reset(state) {
-      state.statusButton.isError = false
-      state.statusButton.isLoading = false
-      state.statusButton.label = 'Enter amount'
-      state.statusButton.isBalanceSufficient = false
-      state.statusButton.approved = false
-      state.from.address = ''
-      state.from.value = ''
-      state.to.address = ''
-    },
     setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {
       const { address, value, chainId } = action.payload
       if (address !== undefined) {
@@ -162,6 +153,9 @@ export const omnibridgeUISlice = createSlice({
       if (approved !== undefined) {
         state.statusButton.approved = approved
       }
+    },
+    setShowAvailableBridges(state, action: PayloadAction<boolean>) {
+      state.showAvailableBridges = action.payload
     }
   }
 })

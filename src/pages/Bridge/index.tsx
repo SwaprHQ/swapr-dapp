@@ -20,7 +20,6 @@ import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeStep, isNetworkDisabled } from './utils'
 import { BridgeTxsFilter } from '../../state/bridge/reducer'
 import { BridgeModalStatus } from '../../state/bridge/reducer'
-import { isToken } from '../../hooks/Tokens'
 import { useChains } from '../../hooks/useChains'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
@@ -156,17 +155,9 @@ export default function Bridge() {
 
   const handleSubmit = useCallback(async () => {
     if (!chainId) return
-    let address: string | undefined = ''
 
-    if (isToken(bridgeCurrency)) {
-      address = bridgeCurrency.address
-    }
-    if (!isArbitrum) {
-      await omnibridge.deposit(typedValue, address)
-    } else {
-      await omnibridge.withdraw(typedValue, address)
-    }
-  }, [bridgeCurrency, chainId, isArbitrum, typedValue, omnibridge])
+    await omnibridge.triggerBridging()
+  }, [chainId, omnibridge])
 
   const handleModal = useCallback(async () => {
     setModalData({
@@ -226,14 +217,6 @@ export default function Bridge() {
 
   return (
     <Wrapper>
-      {/* FIX tmp solution (helps to test flow) */}
-      <button
-        onClick={() => {
-          dispatch(omnibridgeUIActions.reset())
-        }}
-      >
-        reset state
-      </button>
       <Tabs
         collectableTxAmount={collectableTxAmount}
         isCollecting={isCollecting}
