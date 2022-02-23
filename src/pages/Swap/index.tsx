@@ -77,11 +77,11 @@ const AppBodyContainer = styled.section`
   align-items: center;
   z-index: 3;
   min-height: calc(100vh - 340px);
-`;
+`
 
 const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
-`;
+`
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -364,7 +364,7 @@ export default function Swap() {
                         <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
                           Best price found on{' '}
                           <span style={{ color: 'white', fontWeight: 700 }}>{bestPricedTrade?.platform.name}</span>.
-                          {trade.platform.name !== RoutablePlatform.SWAPR.name ? (
+                          {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
                             <>
                               {' '}
                               Swap with <span style={{ color: 'white', fontWeight: 700 }}>NO additional fees</span>

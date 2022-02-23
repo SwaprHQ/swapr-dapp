@@ -61,16 +61,16 @@ export function tokenToPricedTokenAmount(
   nativeCurrency: Currency,
   chainId: ChainId
 ): PricedTokenAmount {
-  const price = new Price(
-    token,
-    nativeCurrency,
-    parseUnits('1', nativeCurrency.decimals).toString(),
-    parseUnits(
+  const price = new Price({
+    baseCurrency: token,
+    quoteCurrency: nativeCurrency,
+    denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+    numerator: parseUnits(
       //chekc urself before u wreck urself
       new Decimal(campaign.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
       nativeCurrency.decimals
     ).toString()
-  )
+  })
   const pricedRewardToken = new PricedToken(
     chainId,
     getAddress(token.address),
@@ -101,15 +101,15 @@ export function toSingleSidedStakeCampaign(
       reward.token.name
     )
 
-    const rewardTokenPriceNativeCurrency = new Price(
-      rewardToken,
-      nativeCurrency,
-      parseUnits('1', nativeCurrency.decimals).toString(),
-      parseUnits(
+    const rewardTokenPriceNativeCurrency = new Price({
+      baseCurrency: rewardToken,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
         new Decimal(reward.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
       ).toString()
-    )
+    })
     const pricedRewardToken = new PricedToken(
       chainId,
       getAddress(rewardToken.address),
@@ -124,12 +124,15 @@ export function toSingleSidedStakeCampaign(
     )
   })
 
-  const derivedNative = new Price(
-    stakeToken,
-    nativeCurrency,
-    parseUnits('1', nativeCurrency.decimals).toString(),
-    parseUnits(new Decimal(derivedNativeCurrency).toFixed(nativeCurrency.decimals), nativeCurrency.decimals).toString()
-  )
+  const derivedNative = new Price({
+    baseCurrency: stakeToken,
+    quoteCurrency: nativeCurrency,
+    denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+    numerator: parseUnits(
+      new Decimal(derivedNativeCurrency).toFixed(nativeCurrency.decimals),
+      nativeCurrency.decimals
+    ).toString()
+  })
 
   const stakedPricedToken = new PricedToken(
     chainId,
