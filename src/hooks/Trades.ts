@@ -238,11 +238,15 @@ export function useTradeExactInAllPlatforms(
   })
 
   useEffect(() => {
+    let isCancelled = false
+
+    console.log('useTradeExactInAllPlatforms: useEffect')
+
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !currencyOut || !chainId) {
-      if (bestTrades.length > 0) {
-        setBesTrades([])
-      }
+      // if (bestTrades.length > 0) {
+      //   setBesTrades([])
+      // }
       return
     }
 
@@ -268,23 +272,40 @@ export function useTradeExactInAllPlatforms(
         )
       })
 
-    const curveTrade = new Promise<CurveTrade | undefined>(resolve => {
+    const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
       CurveTrade.bestTradeExactIn({
         currencyAmountIn,
         currencyOut,
         maximumSlippage: new Percent('3', '100')
       })
         .then(resolve)
-        .catch(console.log) // The next step does not care about the error.
+        .catch(error => {
+          // The next step does not care about the error. Promise.all
+          // is all or nothing. Hence, this Promise must solve as undefined
+          resolve(undefined)
+          console.log(error)
+        })
     })
 
-    Promise.all([...(uniswapV2TradesList as any), curveTrade])
+    const allTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+
+    console.log(allTrades)
+
+    allTrades
       .then(trades => trades.filter(trade => !!trade))
       .then(trades => {
-        console.log({ trades })
-        setBesTrades(trades)
+        // add deep comparsion
+        console.log({ bestTrades, trades })
+        const isNewSet = bestTrades.length !== trades.length
+        if (!isCancelled && isNewSet) {
+          setBesTrades(trades)
+        }
       })
-      .catch()
+      .catch(console.log)
+
+    return () => {
+      isCancelled = true
+    }
   }, [uniswapV2IsMultihop, uniswapV2AllowedPairsList, chainId, currencyAmountIn, currencyOut])
 
   return useMemo(() => sortTradesByExecutionPrice(bestTrades), [bestTrades])
@@ -298,13 +319,88 @@ export function useTradeExactOutAllPlatforms(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount
 ): (Trade | undefined)[] {
-  const bestTrades = [
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SWAPR),
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.UNISWAP),
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SUSHISWAP),
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.HONEYSWAP),
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.BAOSWAP),
-    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.LEVINSWAP)
-  ]
-  return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
+  // All trades including Curve, Unsiwap V2 and CowSwap
+  const [bestTrades, setBesTrades] = useState<(Trade | undefined)[]>([])
+  // Chain Id
+  const { chainId } = useActiveWeb3React()
+  // Uniswap V2 Trade option: using multi-hop option
+  const uniswapV2IsMultihop = useIsMultihop()
+  // List of Uniswap V2 pairs per platform
+  const uniswapV2AllowedPairsList = useUniswapV2PlatformAllowedPairs({
+    currencyA: currencyIn,
+    currencyB: currencyAmountOut?.currency
+  })
+
+  useEffect(() => {
+    let isCancelled = false
+
+    console.log('useTradeExactOutAllPlatforms: useEffect')
+
+    // Early exit and clean state if necessary
+    if (!currencyAmountOut || !currencyIn || !chainId) {
+      // if (bestTrades.length > 0) {
+      //   setBesTrades([])
+      // }
+      return
+    }
+
+    console.log('useTradeExactOutAllPlatforms: Computing trades from UniswapV2 and Curve')
+
+    // Calculate trade output from: Uniswap V2 and its forks, Curve
+
+    // Promisify the Uniswap trade list
+    const uniswapV2TradesList = uniswapV2AllowedPairsList
+      .filter(({ platform, allowedPairs }) => allowedPairs.length > 0 && platform.supportsChain(chainId))
+      .map(async ({ allowedPairs }) => {
+        return (
+          UniswapV2Trade.bestTradeExactOut({
+            currencyIn,
+            currencyAmountOut,
+            maximumSlippage: new Percent('3', '100'),
+            pairs: allowedPairs,
+            maxHops: {
+              maxHops: uniswapV2IsMultihop ? 3 : 1,
+              maxNumResults: 1
+            }
+          }) ?? undefined
+        )
+      })
+
+    const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+      CurveTrade.bestTradeExactOut({
+        currencyAmountOut,
+        currencyIn,
+        maximumSlippage: new Percent('3', '100')
+      })
+        .then(resolve)
+        .catch(error => {
+          // The next step does not care about the error. Promise.all
+          // is all or nothing. Hence, this Promise must solve as undefined
+          resolve(undefined)
+          console.log(error)
+        })
+    })
+
+    const allTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+
+    console.log(allTrades)
+
+    allTrades
+      .then(trades => trades.filter(trade => !!trade))
+      .then(trades => {
+        // add deep comparsion
+        console.log({ bestTrades, trades })
+        const isNewSet = bestTrades.length !== trades.length
+        if (!isCancelled && isNewSet) {
+          setBesTrades(trades)
+        }
+      })
+      .catch(console.log)
+
+    return () => {
+      isCancelled = true
+    }
+  }, [uniswapV2IsMultihop, uniswapV2AllowedPairsList, chainId, currencyAmountOut, currencyIn])
+
+  return useMemo(() => sortTradesByExecutionPrice(bestTrades), [bestTrades])
 }
