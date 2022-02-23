@@ -4,18 +4,20 @@ import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList } from '../Omnibridge.types'
+import { ArbitrumList, AsyncState } from '../Omnibridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
   lists: { [id: string]: TokenList }
+  listsStatus: AsyncState
 }
 
 const now = () => new Date().getTime()
 
 const initialState: ArbitrumBridgeState = {
   transactions: {},
-  lists: {}
+  lists: {},
+  listsStatus: 'idle'
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
@@ -114,6 +116,9 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         const { payload } = action
 
         state.lists = payload
+      },
+      setTokenListsStatus: (state, action: PayloadAction<AsyncState>) => {
+        state.listsStatus = action.payload
       },
       migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
         const { payload } = action

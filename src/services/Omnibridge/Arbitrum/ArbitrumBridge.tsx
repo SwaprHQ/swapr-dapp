@@ -78,8 +78,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    this.fetchTokenLists()
-
     migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
 
     await this.setArbTs()
@@ -616,7 +614,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
 
-  private fetchTokenLists = async () => {
+  public fetchStaticLists = async () => {
+    this.store.dispatch(this.actions.setTokenListsStatus('loading'))
+
     const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
     )
@@ -676,8 +676,12 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     )
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
+    this.store.dispatch(this.actions.setTokenListsStatus('ready'))
     this.store.dispatch(commonActions.activateLists(defaultListsIds))
   }
+
+  // No need to implement
+  public fetchDynamicLists = async () => undefined
 
   public validate = async () => {
     if (!this._account) return
