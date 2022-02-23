@@ -1,30 +1,32 @@
-import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
-import { BigNumber, utils } from 'ethers'
-import { JsonRpcSigner } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
+import { BigNumber, utils } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
+import { JsonRpcSigner } from '@ethersproject/providers'
+import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 
-import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { addTransaction } from '../../../state/transactions/actions'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { setBridgeLoadingWithdrawals } from '../../../state/bridge/actions'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
+import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
+import { omnibridgeUIActions } from '../store/UI.reducer'
+import { commonActions } from '../store/Common.reducer'
 
-import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
-import { OmnibridgeChildBase } from '../Omnibridge.utils'
-
+import { addTransaction } from '../../../state/transactions/actions'
 import { BridgeModalStatus } from '../../../state/bridge/reducer'
+import { setBridgeLoadingWithdrawals } from '../../../state/bridge/actions'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
+
+import getTokenList from '../../../utils/getTokenList'
+import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
+
 import {
+  ArbitrumList,
   OmnibridgeChangeHandler,
   OmnibridgeChildBaseConstructor,
-  OmnibridgeChildBaseInit,
-  ArbitrumList
+  OmnibridgeChildBaseInit
 } from '../Omnibridge.types'
-import { omnibridgeUIActions } from '../store/UI.reducer'
-import { parseUnits } from 'ethers/lib/utils'
-import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
-import getTokenList from '../../../utils/getTokenList'
-import { ARBITRUM_TOKEN_LISTS } from './ArbitrumBridge.lists'
+import { OmnibridgeChildBase } from '../Omnibridge.utils'
+import { hasArbitrumMetadata } from './ArbitrumBridge.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -32,6 +34,8 @@ const getErrorMsg = (error: any) => {
   }
   return `Bridge failed: ${error.message}`
 }
+
+const { parseUnits } = utils
 
 export class ArbitrumBridge extends OmnibridgeChildBase {
   private l1ChainId: ChainId
@@ -74,10 +78,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    // download token lists
     this.fetchTokenLists()
 
-    // run migration
     migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
 
     await this.setArbTs()
@@ -615,22 +617,71 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   }
 
   private fetchTokenLists = async () => {
-    const promises = ARBITRUM_TOKEN_LISTS.filter(config =>
-      [this.l1ChainId.toString(), this.l2ChainId.toString()].includes(config.chainId)
-    ).map(config => getTokenList(config.url, () => null as any))
+    const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
+      [this.l1ChainId, this.l2ChainId].includes(config.chainId)
+    )
 
-    const tokenLists = (await Promise.allSettled(promises)).reduce<TokenList[]>((total, list) => {
-      if (list.status === 'fulfilled') {
-        total.push(list.value)
+    const defaultListsUrls = ownedTokenLists.filter(configList => configList.isDefault)
+
+    const promises = ownedTokenLists.map(config => getTokenList(config.url, () => null as any))
+
+    const fetchedTokenListsWithUrl = (await Promise.allSettled(promises)).map((fulfilledList, index) => {
+      const listWithUrl: { url: string; tokenList?: TokenList } = {
+        url: ownedTokenLists[index].url,
+        tokenList: undefined
       }
-      return total
-    }, [])
+
+      if (fulfilledList.status === 'fulfilled') {
+        listWithUrl.tokenList = fulfilledList.value
+      }
+
+      return listWithUrl
+    })
+
+    const { tokenLists, defaultListsIds } = fetchedTokenListsWithUrl.reduce<{
+      tokenLists: { [id: string]: TokenList }
+      defaultListsIds: string[]
+    }>(
+      (total, listWithUrl) => {
+        if (!listWithUrl.tokenList) return total
+
+        const l2Tokens = listWithUrl.tokenList.tokens.filter(token => token.chainId === this.l2ChainId)
+        const l1Tokens = l2Tokens.reduce<typeof l2Tokens>((tokens, l2Token) => {
+          if (hasArbitrumMetadata(l2Token, this.l1ChainId)) {
+            const castedL1ChainId = Number(this.l1ChainId)
+            const l1Token: typeof l2Token = {
+              ...l2Token,
+              chainId: castedL1ChainId,
+              address: l2Token.extensions.bridgeInfo[castedL1ChainId].tokenAddress
+            }
+            tokens.push(l1Token)
+          }
+          return tokens
+        }, [])
+
+        const listId = `${this.bridgeId}-${listWithUrl.tokenList.name}`
+
+        total.tokenLists[listId] = {
+          ...listWithUrl.tokenList,
+          tokens: [...l1Tokens, ...l2Tokens]
+        }
+
+        if (defaultListsUrls.findIndex(configList => configList.url === listWithUrl.url) > -1) {
+          total.defaultListsIds.push(listId)
+        }
+
+        return total
+      },
+      { tokenLists: {}, defaultListsIds: [] }
+    )
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
+    this.store.dispatch(commonActions.activateLists(defaultListsIds))
   }
 
   public validate = async () => {
     if (!this._account) return
+
     const { from } = this.store.getState().omnibridge.UI
 
     this.store.dispatch(

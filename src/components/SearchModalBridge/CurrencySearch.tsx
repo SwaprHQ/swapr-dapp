@@ -2,7 +2,7 @@ import { Currency, Token } from '@swapr/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { useAllTokens, useToken, useSearchInactiveTokenLists } from '../../hooks/Tokens'
+import { useToken, useSearchInactiveTokenLists } from '../../hooks/Tokens'
 import { CloseIcon, TYPE } from '../../theme'
 import { isAddress } from '../../utils'
 import Column, { AutoColumn } from '../Column'
@@ -19,6 +19,7 @@ import useDebounce from '../../hooks/useDebounce'
 import { useActiveWeb3React } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { ButtonDark2 } from '../Button'
+import { useAllBridgeTokens } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 
 const ContentWrapper = styled(Column)`
   width: 100%;
@@ -81,7 +82,7 @@ export function CurrencySearch({
 
   const [invertSearchOrder] = useState<boolean>(false)
 
-  const allTokens = useAllTokens()
+  const allTokens = useAllBridgeTokens()
 
   // if they input an address, use it
   const isAddressSearch = isAddress(debouncedQuery)

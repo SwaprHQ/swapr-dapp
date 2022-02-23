@@ -1,51 +1,29 @@
-export interface ArbitrumTokenList {
-  id: number
-  chainId: string
-  url: string
-  name: string
-  isDefault: boolean
-  logoURI: string
-}
+// NOTE: List used by official Arbitrum Bridge
 
-export const ARBITRUM_TOKEN_LISTS: ArbitrumTokenList[] = [
+export const ARBITRUM_TOKEN_LISTS_CONFIG = [
   {
-    id: 1,
-    chainId: '42161',
-    url: 'https://bridge.arbitrum.io/token-list-42161.json',
-    name: 'Arbitrum Whitelist Era',
+    chainId: 42161,
     isDefault: true,
-    logoURI: 'https://ipfs.io/ipfs/QmTvWJ4kmzq9koK74WJQ594ov8Es1HHurHZmMmhU8VY68y'
+    url: 'https://bridge.arbitrum.io/token-list-42161.json'
   },
   {
-    id: 2,
-    chainId: '42161',
-    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_uniswap_labs_list.json',
-    name: 'Arbed Uniswap List',
+    chainId: 42161,
     isDefault: true,
-    logoURI: 'https://ipfs.io/ipfs/QmNa8mQkrNKp1WEEeGjFezDmDeodkWRevGFN8JCV7b4Xir'
+    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_uniswap_labs_list.json'
   },
   {
-    id: 3,
-    chainId: '42161',
-    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_gemini_token_list.json',
-    name: 'Arbed Gemini List',
+    chainId: 42161,
     isDefault: false,
-    logoURI: 'https://gemini.com/static/images/loader.png'
+    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_gemini_token_list.json'
   },
   {
-    id: 4,
-    chainId: '421611',
-    url: 'https://bridge.arbitrum.io/token-list-421611.json',
-    name: 'Rinkarby Tokens',
+    chainId: 421611,
     isDefault: true,
-    logoURI: 'https://ipfs.io/ipfs/QmTvWJ4kmzq9koK74WJQ594ov8Es1HHurHZmMmhU8VY68y'
+    url: 'https://bridge.arbitrum.io/token-list-421611.json'
   },
   {
-    id: 5,
-    chainId: '42161',
-    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_coinmarketcap.json',
-    name: 'Arbed CMC List',
+    chainId: 42161,
     isDefault: false,
-    logoURI: 'https://ipfs.io/ipfs/QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx'
+    url: 'https://tokenlist.arbitrum.io/ArbTokenLists/arbed_coinmarketcap.json'
   }
 ]

@@ -13,7 +13,7 @@ import { TokenPickerItem } from './styleds'
 import { Plus, X } from 'react-feather'
 import { FixedSizeList } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { TokenAddressMap, useCombinedActiveList } from '../../state/lists/hooks'
+import { TokenAddressMap } from '../../state/lists/hooks'
 import { isTokenOnList } from '../../utils'
 
 import { TYPE } from '../../theme'
@@ -23,6 +23,7 @@ import { DarkCard } from '../Card'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import TokenListLogo from '../../assets/svg/tokenlist.svg'
 import QuestionHelper from '../QuestionHelper'
+import { useBridgeActiveTokenMap } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 
 function currencyKey(index: number, data: any): string {
   const currency = data[index]
@@ -189,7 +190,7 @@ export default function CurrencyList({
 }) {
   const { account } = useActiveWeb3React()
   const [hasBreakLine, setHasBreakLine] = useState(false)
-  const selectedTokenList = useCombinedActiveList()
+  const selectedTokenList = useBridgeActiveTokenMap()
   const itemData = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
       const foundByAddressAndNotInAnyList =

@@ -10,7 +10,7 @@ import { TokenList } from '@uniswap/token-lists'
 import useToggle from '../../hooks/useToggle'
 import { AppDispatch, AppState } from '../../state'
 import { acceptListUpdate, removeList, disableList, enableList } from '../../state/lists/actions'
-import { useIsListActive, useAllLists } from '../../state/lists/hooks'
+import { useIsListActive } from '../../state/lists/hooks'
 import { ExternalLink, LinkStyledButton, TYPE, IconWrapper } from '../../theme'
 import { parseENSAddress } from '../../utils/parseENSAddress'
 import uriToHttp from '../../utils/uriToHttp'
@@ -25,6 +25,7 @@ import Card from '../Card'
 import { CurrencyModalView } from './CurrencySearchModal'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import { useActiveWeb3React } from '../../hooks'
+import { useAllBridgeLists } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -195,7 +196,7 @@ export function ManageLists({
 
   const [listUrlInput, setListUrlInput] = useState<string>('')
 
-  const lists = useAllLists()
+  const lists = useAllBridgeLists()
 
   const handleInput = useCallback(e => {
     setListUrlInput(e.target.value)
@@ -245,7 +246,7 @@ export function ManageLists({
   const renderableLists = useMemo(() => {
     return Object.keys(lists).filter(listUrl => {
       // only show loaded lists, hide unsupported lists
-      return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+      return Boolean(lists[listUrl]) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
     })
   }, [lists])
 
