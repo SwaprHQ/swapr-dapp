@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useDispatch, useSelector } from 'react-redux'
 import { Text } from 'rebass'
 import { BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
-import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
 import { AppState } from '../../state'
+// import Loader from '../../components/Loader'
+import { OmnibridgeChildBase } from '../../services/Omnibridge/Omnibridge.utils'
+import { AlertTriangle } from 'react-feather'
+// import { formatUnits } from 'ethers/lib/utils'
 
 const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
@@ -26,7 +29,7 @@ const BridgeLabel = styled(Text)<{ justify?: boolean }>`
   flex: 100%;
   justify-self: ${({ justify }) => (justify ? 'start' : 'end')};
 `
-const BridgeOption = styled.div<{ isSelected: boolean }>`
+const BridgeOption = styled.div<{ isSelected: boolean; isError?: boolean }>`
   background: ${({ isSelected }) => (isSelected ? 'rgba(104,110,148,.2)' : 'rgba(104,110,148,.1)')};
   width: 100%;
   border-radius: 8px;
@@ -38,6 +41,7 @@ const BridgeOption = styled.div<{ isSelected: boolean }>`
   grid-template-columns: 52% 13% 13% 22%;
   align-items: center;
   transition: background 0.4s ease;
+  cursor: ${({ isError }) => (isError ? 'not-allowed' : 'pointer')};
 `
 const BridgeName = styled(Text)<{ isSelected: boolean }>`
   margin: 0;
@@ -60,16 +64,25 @@ const BridgeEstimatedTime = styled(BridgeDetails)`
   justify-self: end;
   padding-right: 10px;
 `
+const WrapperError = styled.span`
+  margin-right: 4px;
+`
 
 export const BridgeSelectionWindow = () => {
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
   const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
   const selected = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
+
   const [availableBridges, setAvailableBridges] = useState<
-    { id: BridgeList; bridge: OmnibridgeChildBase; name: string }[]
+    {
+      id: BridgeList
+      name: string
+      bridge: OmnibridgeChildBase
+    }[]
   >()
 
+  console.warn(setAvailableBridges)
   const handleSelect = (id: OptionalBridgeList) => {
     dispatch(commonActions.setActiveBridge(id))
   }
@@ -77,7 +90,7 @@ export const BridgeSelectionWindow = () => {
   useEffect(() => {
     if (!from.chainId || !to.chainId) return
     if (showAvailableBridges) {
-      setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
+      // setAvailableBridges(omnibridge.getSupportedBridges(from.chainId, to.chainId))
     }
   }, [from.chainId, to.chainId, omnibridge, from.address, to.address, from.value, dispatch, showAvailableBridges])
 
@@ -91,9 +104,9 @@ export const BridgeSelectionWindow = () => {
             <BridgeLabel>Gas</BridgeLabel>
             <BridgeLabel>Time</BridgeLabel>
           </BridgeWrapperLabel>
-          {availableBridges?.map(({ id, name }) => (
-            <Bridge id={id} key={id} name={name} selected={selected} handleSelect={handleSelect} />
-          ))}
+          {availableBridges?.map(({ id, name }) => {
+            return <Bridge id={id} key={id} name={name} selected={selected} handleSelect={handleSelect} />
+          })}
         </WrapperBridgeSelectionWindow>
       )}
     </>
@@ -101,23 +114,104 @@ export const BridgeSelectionWindow = () => {
 }
 
 interface BridgeProps {
-  id: OptionalBridgeList
+  id: BridgeList
   name: string
   selected: OptionalBridgeList
   handleSelect: (id: OptionalBridgeList) => void
 }
 
 const Bridge = ({ id, name, selected, handleSelect }: BridgeProps) => {
-  const isSelected = selected === id
+  // const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+  // const omnibridge = useOmnibridge()
 
+  // const [loading, setLoading] = useState(false)
+  // const [metaData, setMetaData] = useState<
+  //   | {
+  //       name: string
+  //       bridgeId: OptionalBridgeList
+  //       errors: {
+  //         message: string
+  //       }
+  //       routes?: [
+  //         {
+  //           chainGasBalances: {
+  //             [n: number]: {
+  //               hasGasBalance: false
+  //               minGasBalance: string
+  //             }
+  //           }
+  //           fromAmount: string
+  //           routeId: string
+  //           sender: string
+  //           serviceTime: number
+  //           toAmount: string
+  //           totalGasFeesInUsd: number
+  //           totalUserTx: number
+  //           usedBridgeNames: string[]
+  //           userTxs: any
+  //         }
+  //       ]
+  //       gas?: string
+  //       fee?: string
+  //       estimatedTime?: number | string
+  //     }
+  //   | undefined
+  // >()
+
+  // const isSelected = selected === id
+  // const isError = metaData && metaData.errors.message.length > 0
+
+  // useEffect(() => {
+  //   setMetaData(undefined)
+
+  //   const getMetaDataBridge = async () => {
+  //     setLoading(true)
+  //     const response = await omnibridge.bridges[id].getBridgingMetadata()
+  //     setMetaData(response)
+  //     setLoading(false)
+  //   }
+  //   getMetaDataBridge()
+  // }, [id, omnibridge.bridges, from.chainId, from.value, from.address, to.address, to.chainId])
+
+  const isSelected = false
+  const isError = false
+  const loading = false
   return (
     <>
-      <BridgeOption isSelected={isSelected} onClick={() => handleSelect(id)}>
-        <BridgeName isSelected={isSelected}>{name}</BridgeName>
-        <BridgeDetails>0.1%</BridgeDetails>
-        <BridgeDetails>10$</BridgeDetails>
-        <BridgeEstimatedTime>7 days</BridgeEstimatedTime>
+      <BridgeOption
+        isSelected={isSelected}
+        isError={isError || loading}
+        onClick={() => {
+          if (!isError && !loading) {
+            handleSelect(id)
+          }
+        }}
+      >
+        <BridgeName isSelected={isSelected}>
+          {isError && (
+            <WrapperError>
+              <AlertTriangle color="#f00" size="16" />
+            </WrapperError>
+          )}
+          {name}
+        </BridgeName>
+        <BridgeDetails></BridgeDetails>
+        <BridgeDetails></BridgeDetails>
+        <BridgeEstimatedTime></BridgeEstimatedTime>
       </BridgeOption>
+
+      {/* <div>
+        {metaData?.routes &&
+          metaData.routes.map(({ toAmount, totalGasFeesInUsd, serviceTime, routeId }) => {
+            return (
+              <div style={{ background: 'red' }} key={routeId}>
+                <p>{formatUnits(toAmount, 6)}</p>
+                <p>{(serviceTime / 60).toFixed(0)}</p>
+                <p>{totalGasFeesInUsd.toFixed(2)}</p>
+              </div>
+            )
+          })}
+      </div> */}
     </>
   )
 }

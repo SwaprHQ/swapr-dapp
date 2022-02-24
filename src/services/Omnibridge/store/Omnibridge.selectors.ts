@@ -3,7 +3,8 @@ import { ChainId, Token } from '@swapr/sdk'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
-import { TokenMap } from '../Omnibridge.types'
+import { BridgeList, TokenMap } from '../Omnibridge.types'
+import { omnibridgeConfig } from '../Omnibridge.config'
 
 export const selectAllTransactions = createSelector(
   [
@@ -61,3 +62,30 @@ export const selectAllTokensPerChain = createSelector(
     return mapWithoutLists
   }
 )
+
+export const selectSupportedBridges = createSelector([(state: AppState) => state.omnibridge.UI], ui => {
+  const supportedBridges = Object.entries(omnibridgeConfig).reduce<
+    { from: ChainId; to: ChainId; bridgeId: BridgeList; name: string }[]
+  >((total, current) => {
+    const bridgeInfo = current[1]
+
+    const match = ui.from.chainId === bridgeInfo.supportedChains.from && ui.to.chainId === bridgeInfo.supportedChains.to
+    const matchReverse =
+      bridgeInfo.supportedChains.reverse &&
+      ui.from.chainId === bridgeInfo.supportedChains.to &&
+      ui.to.chainId === bridgeInfo.supportedChains.from
+
+    if (match || matchReverse) {
+      const bridge = {
+        name: bridgeInfo.displayName,
+        bridgeId: bridgeInfo.bridgeId,
+        from: bridgeInfo.supportedChains.from,
+        to: bridgeInfo.supportedChains.to
+      }
+      total.push(bridge)
+    }
+    return total
+  }, [])
+
+  return supportedBridges
+})

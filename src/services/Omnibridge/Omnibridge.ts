@@ -49,6 +49,7 @@ export class Omnibridge {
 
     this.store = store
     this.bridges = bridges
+
     this.staticProviders = initiateOmnibridgeProviders()
     this.store.dispatch(commonActions.setSupportedChains(supportedChains))
   }
@@ -111,29 +112,18 @@ export class Omnibridge {
     this._initialized = true
   }
 
-  public getSupportedBridges = (from: ChainId, to: ChainId) => {
-    const supportedBridges = (Object.keys(this.bridges) as BridgeList[]).reduce<
-      { id: BridgeList; bridge: OmnibridgeChildBase; name: string }[]
-    >((retVal, key) => {
-      const supportedChains = this.bridges[key].supportedChains
-
-      const match = from === supportedChains.from && to === supportedChains.to
-      const matchReverse = supportedChains.reverse && from === supportedChains.to && to === supportedChains.from
-
-      if (match || matchReverse) {
-        retVal.push({
-          id: key,
-          bridge: this.bridges[key],
-          name: this.bridges[key].displayName
-        })
-      }
-
-      return retVal
-    }, [])
-
-    // filter by supported token
-
-    return supportedBridges
+  public getSupportedBridges = () => {
+    //TODO filter by supported token
+    // const supportedBridges =
+    //1.
+    // supportedBridges.forEach(bridge => {
+    //todo
+    // })
+    //2.
+    // supportedBridges.forEach(bridge => {
+    // bridge.bridge.getBridgingMetadata()
+    // })
+    // return supportedBridges
   }
 
   //check if we need it

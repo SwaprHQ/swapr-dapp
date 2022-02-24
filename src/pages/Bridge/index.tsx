@@ -25,7 +25,7 @@ import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
-import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
+import { selectAllTransactions, selectSupportedBridges } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
@@ -214,6 +214,9 @@ export default function Bridge() {
       }),
     [account, chainId, onToNetworkChange, toNetwork.chainId]
   )
+
+  const dupa = useSelector((state: AppState) => selectSupportedBridges(state))
+  console.log(dupa)
 
   return (
     <Wrapper>

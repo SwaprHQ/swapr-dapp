@@ -23,7 +23,8 @@ import {
   ArbitrumList,
   OmnibridgeChangeHandler,
   OmnibridgeChildBaseConstructor,
-  OmnibridgeChildBaseInit
+  OmnibridgeChildBaseInit,
+  OptionalBridgeList
 } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
@@ -762,5 +763,50 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     } else {
       this.withdraw(value, tokenAddress)
     }
+  }
+  public getBridgingMetadata = async () => {
+    // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
+    // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
+    // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
+    return new Promise<{
+      name: string
+      bridgeId: OptionalBridgeList
+      errors: {
+        message: string
+      }
+      routes?: [
+        {
+          chainGasBalances: {
+            [n in number]: {
+              hasGasBalance: false
+              minGasBalance: string
+            }
+          }
+          fromAmount: string
+          routeId: string
+          sender: string
+          serviceTime: number
+          toAmount: string
+          totalGasFeesInUsd: number
+          totalUserTx: number
+          usedBridgeNames: string[]
+          userTxs: any
+        }
+      ]
+      gas?: string
+      fee?: string
+      estimatedTime?: number | string
+    }>(async resolve => {
+      resolve({
+        name: this.displayName,
+        bridgeId: this.bridgeId,
+        errors: {
+          message: ''
+        },
+        estimatedTime: this._activeChainId === this.l1ChainId ? '10 min' : '7 days',
+        gas: '10',
+        fee: '0.2' //TODO make it dynamically
+      })
+    })
   }
 }

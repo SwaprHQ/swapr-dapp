@@ -46,18 +46,18 @@ export const useBridgeInputValidation = (value: string) => {
 
       dispatch(omnibridgeUIActions.setShowAvailableBridges(true))
       //check balance
-      if (!isBalanceSufficient) {
-        dispatch(
-          omnibridgeUIActions.setStatusButton({
-            label: 'Insufficient balance',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            approved: false
-          })
-        )
-        return false
-      }
+      // if (!isBalanceSufficient) {
+      //   dispatch(
+      //     omnibridgeUIActions.setStatusButton({
+      //       label: 'Insufficient balance',
+      //       isError: false,
+      //       isLoading: false,
+      //       isBalanceSufficient: false,
+      //       approved: false
+      //     })
+      //   )
+      //   return false
+      // }
 
       if (!activeBridge) {
         dispatch(
