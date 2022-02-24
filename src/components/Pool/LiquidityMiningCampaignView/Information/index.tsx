@@ -1,4 +1,4 @@
-import { Pair, Percent, PricedTokenAmount, TokenAmount, KpiToken } from '@swapr/sdk'
+import { Percent, PricedTokenAmount, TokenAmount, KpiToken, Token, Pair } from '@swapr/sdk'
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
@@ -18,6 +18,7 @@ import Row, { AutoRow, RowBetween, RowFixed } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
 import TokenAmountDisplayer from '../TokenAmountDisplayer'
 import { useActiveWeb3React } from '../../../../hooks'
+import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 const KpiTokenInfoContainer = styled.div`
   width: 100%;
@@ -155,7 +156,7 @@ const CarrotSectionContainer = styled(AutoColumn)`
 `
 
 interface InformationProps {
-  targetedPair?: Pair
+  targetedPairOrToken?: Token | Pair
   stakingCap?: TokenAmount
   rewards?: PricedTokenAmount[]
   remainingRewards?: PricedTokenAmount[]
@@ -169,7 +170,7 @@ interface InformationProps {
 }
 
 function Information({
-  targetedPair,
+  targetedPairOrToken: targetedPair,
   stakingCap,
   rewards,
   remainingRewards,
@@ -183,6 +184,7 @@ function Information({
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
+
   const [upcoming, setUpcoming] = useState(false)
   const [expired, setExpired] = useState(false)
   const [currentPeriodEnded, setCurrentPeriodEnded] = useState(false)
@@ -207,19 +209,27 @@ function Information({
             data={
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <DoubleCurrencyLogo
-                    loading={!targetedPair}
-                    size={26}
-                    currency0={targetedPair?.token0}
-                    currency1={targetedPair?.token1}
-                  />
+                  {targetedPair instanceof Pair ? (
+                    <DoubleCurrencyLogo
+                      loading={!targetedPair}
+                      size={26}
+                      currency0={targetedPair?.token0}
+                      currency1={targetedPair?.token1}
+                    />
+                  ) : (
+                    <CurrencyLogo currency={targetedPair} loading={!targetedPair} />
+                  )}
                 </Box>
                 <Box>
                   <Text fontSize="18px" fontWeight="600" lineHeight="20px">
                     {!targetedPair ? (
                       <Skeleton width="60px" height="18px" />
+                    ) : targetedPair instanceof Token ? (
+                      unwrappedToken(targetedPair)?.symbol
+                    ) : targetedPair instanceof Pair ? (
+                      `${unwrappedToken(targetedPair.token0)?.symbol}/${unwrappedToken(targetedPair.token1)?.symbol}`
                     ) : (
-                      `${targetedPair.token0.symbol}/${targetedPair.token1.symbol}`
+                      ''
                     )}
                   </Text>
                 </Box>
@@ -380,7 +390,7 @@ function Information({
                 !startsAt ? (
                   <Skeleton width="80px" height="10.5px" />
                 ) : (
-                  DateTime.fromSeconds(parseInt(startsAt.toString())).toFormat('dd-MM-yyyy hh:mm')
+                  DateTime.fromSeconds(parseInt(startsAt.toString())).toFormat('dd-MM-yyyy HH:mm')
                 )
               }
               dataTextSize={10.5}
@@ -393,7 +403,7 @@ function Information({
                 !endsAt ? (
                   <Skeleton width="80px" height="10.5px" />
                 ) : (
-                  DateTime.fromSeconds(parseInt(endsAt.toString())).toFormat('dd-MM-yyyy hh:mm')
+                  DateTime.fromSeconds(parseInt(endsAt.toString())).toFormat('dd-MM-yyyy HH:mm')
                 )
               }
               dataTextSize={10.5}

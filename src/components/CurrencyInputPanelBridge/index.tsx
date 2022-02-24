@@ -13,13 +13,15 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
+import Loader from '../Loader'
+import { transparentize } from 'polished'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
 `
 
-const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?: boolean }>`
+const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?: boolean; disabled?: boolean }>`
   align-items: center;
   font-size: ${({ selected }) => (selected ? '26px' : '12px')};
   font-weight: ${({ selected }) => (selected ? 600 : 700)};
@@ -35,6 +37,15 @@ const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?
   border: none;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  ${({ disabled, theme }) =>
+    disabled &&
+    `
+    background-color: ${theme.purple5};
+    color: ${transparentize(0.28, theme.purpleBase)};
+    cursor: not-allowed;
+    box-shadow: none;
+    outline: none;
+ `}
 `
 
 const LabelRow = styled.div`
@@ -126,6 +137,7 @@ interface CurrencyInputPanelProps {
   customBalanceText?: string
   balance?: CurrencyAmount
   isBridge?: boolean
+  isLoading?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -146,7 +158,8 @@ export default function CurrencyInputPanel({
   showCommonBases,
   customBalanceText,
   balance,
-  isBridge = false
+  isBridge = false,
+  isLoading = false
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -228,31 +241,38 @@ export default function CurrencyInputPanel({
               className="open-currency-select-button"
               disableCurrencySelect={disableCurrencySelect}
               onClick={() => {
-                if (!disableCurrencySelect) {
+                if (!isLoading && !disableCurrencySelect) {
                   setModalOpen(true)
                 }
               }}
+              disabled={isLoading}
             >
               <Aligner>
-                {pair ? (
-                  <DoubleCurrencyLogo marginRight={4} currency0={pair.token0} currency1={pair.token1} size={20} />
-                ) : currency ? (
-                  <CurrencyLogo currency={currency} size="20px" />
-                ) : null}
-                {pair ? (
-                  <StyledTokenName className="pair-name-container">
-                    {pair?.token0.symbol}/{pair?.token1.symbol}
-                  </StyledTokenName>
+                {isLoading ? (
+                  <Loader style={{ width: '97.25px' }} />
                 ) : (
-                  <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                    {(currency && currency.symbol && currency.symbol.length > 20
-                      ? currency.symbol.slice(0, 4) +
-                        '...' +
-                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : currency?.symbol) || t('select Token')}
-                  </StyledTokenName>
+                  <>
+                    {pair ? (
+                      <DoubleCurrencyLogo marginRight={4} currency0={pair.token0} currency1={pair.token1} size={20} />
+                    ) : currency ? (
+                      <CurrencyLogo currency={currency} size="20px" />
+                    ) : null}
+                    {pair ? (
+                      <StyledTokenName className="pair-name-container">
+                        {pair?.token0.symbol}/{pair?.token1.symbol}
+                      </StyledTokenName>
+                    ) : (
+                      <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                        {(currency && currency.symbol && currency.symbol.length > 20
+                          ? currency.symbol.slice(0, 4) +
+                            '...' +
+                            currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                          : currency?.symbol) || t('select Token')}
+                      </StyledTokenName>
+                    )}
+                    {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}
+                  </>
                 )}
-                {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}
               </Aligner>
             </CurrencySelect>
           </InputRow>

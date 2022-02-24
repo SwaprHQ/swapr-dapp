@@ -24,10 +24,25 @@ export class Omnibridge {
     return this.store.getState().omnibridge.common.activeBridge
   }
 
-  // TODO: Should be depreciated later on so no direct interaction with bride is possible
-  public activeBridge<T extends OmnibridgeChildBase = OmnibridgeChildBase>() {
-    if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId] as T
+  private _callForEachBridge = async (method: (bridgeKey: BridgeList) => Promise<any>, errorText: string) => {
+    const promises = (Object.keys(this.bridges) as BridgeList[]).map(bridgeKey => {
+      return new Promise<BridgeList>(async (res, rej) => {
+        try {
+          await method(bridgeKey)
+          res(bridgeKey)
+        } catch (e) {
+          rej(bridgeKey)
+        }
+      })
+    })
+
+    const callStatuses = await Promise.allSettled(promises)
+
+    callStatuses.forEach(res => {
+      if (res.status === 'rejected') {
+        console.warn(`Omni: ${errorText} ${res.reason}`)
+      }
+    })
   }
 
   public get ready() {
@@ -58,25 +73,10 @@ export class Omnibridge {
     const previousChainId = this._activeChainId
     this._activeChainId = signerData.activeChainId
 
-    const promises = (Object.keys(this.bridges) as BridgeList[]).map(bridgeKey => {
-      return new Promise<string>(async (res, rej) => {
-        try {
-          await this.bridges[bridgeKey].onSignerChange({ previousChainId, ...signerData })
-          res(bridgeKey)
-        } catch (e) {
-          rej(bridgeKey)
-        }
-      })
-    })
+    const signerChangeCall = (bridgeKey: BridgeList) =>
+      this.bridges[bridgeKey].onSignerChange({ previousChainId, ...signerData })
 
-    const updateStatus = await Promise.allSettled(promises)
-
-    // TODO: What if update fails?
-    updateStatus.forEach(res => {
-      if (res.status === 'rejected') {
-        console.warn(`Omni: failed to update ${res.reason}`)
-      }
-    })
+    await this._callForEachBridge(signerChangeCall, 'onSignerChange() failed for')
   }
 
   public init = async ({ account, activeProvider, activeChainId }: OmnibridgeChangeHandler) => {
@@ -84,31 +84,19 @@ export class Omnibridge {
 
     this._activeChainId = activeChainId
 
-    const promises = (Object.keys(this.bridges) as BridgeList[]).map(bridgeKey => {
-      return new Promise<string>(async (res, rej) => {
-        try {
-          await this.bridges[bridgeKey].init({
-            account,
-            activeChainId,
-            activeProvider,
-            staticProviders: this.staticProviders,
-            store: this.store
-          })
-          res(bridgeKey)
-        } catch (e) {
-          rej(bridgeKey)
-        }
+    const initCall = (bridgeKey: BridgeList) =>
+      this.bridges[bridgeKey].init({
+        account,
+        activeChainId,
+        activeProvider,
+        staticProviders: this.staticProviders,
+        store: this.store
       })
-    })
+    await this._callForEachBridge(initCall, 'init() failed for')
 
-    const initStatus = await Promise.allSettled(promises)
+    const staticListsCall = (bridgeKey: BridgeList) => this.bridges[bridgeKey].fetchStaticLists()
+    await this._callForEachBridge(staticListsCall, 'fetchStaticLists() failed for')
 
-    // TODO: What if init fails?
-    initStatus.forEach(res => {
-      if (res.status === 'rejected') {
-        console.warn(`Omni: failed to initiate ${res.reason}`)
-      }
-    })
     this._initialized = true
   }
 
@@ -125,12 +113,6 @@ export class Omnibridge {
     // })
     // return supportedBridges
   }
-
-  //check if we need it
-  // public onSelectBridge = (bridgeId: BridgeList) => {
-  //   if (!Object.keys(this.bridges).includes(bridgeId)) return
-  //   this._activeBridgeId = bridgeId
-  // }
 
   // ADAPTERS
   public triggerBridging = async () => {

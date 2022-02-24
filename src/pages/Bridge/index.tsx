@@ -30,6 +30,7 @@ import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
 import { useBridgeModal } from './useBridgeModal'
+import { useBridgeListsLoadingStatus } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -94,6 +95,7 @@ export default function Bridge() {
     onFromNetworkChange,
     onSwapBridgeNetworks
   } = useBridgeActionHandlers()
+  const listsLoading = useBridgeListsLoadingStatus()
 
   const toPanelRef = useRef(null)
   const fromPanelRef = useRef(null)
@@ -281,7 +283,8 @@ export default function Bridge() {
           disabled={isCollecting}
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
-          isBridge={true}
+          isBridge
+          isLoading={listsLoading}
         />
         {/* Here will be created new component e.g OutputCurrency */}
         <CurrencyInputPanel
@@ -296,7 +299,8 @@ export default function Bridge() {
           disabled={true}
           id="bridge-currency-input"
           hideBalance={true}
-          isBridge={true}
+          isBridge
+          isLoading={listsLoading}
         />
         <BridgeActionPanel
           account={account}

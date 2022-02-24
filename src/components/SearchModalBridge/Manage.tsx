@@ -67,9 +67,7 @@ const AnimatedToggleIndicator = animated(ToggleIndicator)
 export default function Manage({
   onDismiss,
   setModalView,
-  setImportList,
-  setImportToken,
-  setListUrl
+  setImportToken
 }: {
   onDismiss: () => void
   setModalView: (view: CurrencyModalView) => void
@@ -119,7 +117,7 @@ export default function Manage({
       </Box>
       <TabContainer>
         <AnimatedSlide style={styles}>
-          <ManageLists setModalView={setModalView} setImportList={setImportList} setListUrl={setListUrl} />
+          <ManageLists />
         </AnimatedSlide>
         <AnimatedSlide style={styles}>
           <ManageTokens setModalView={setModalView} setImportToken={setImportToken} />

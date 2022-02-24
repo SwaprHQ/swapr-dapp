@@ -25,6 +25,15 @@ export const selectAllLists = createSelector(
   }
 )
 
+export const selectListsLoading = createSelector(
+  [
+    (state: AppState) => state.omnibridge['arbitrum:testnet'].listsStatus,
+    (state: AppState) => state.omnibridge['arbitrum:mainnet'].listsStatus
+  ],
+  // Because of redux-persist initial state is undefined
+  (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
+)
+
 // NOTE: equivalent to useCombinedActiveList hook
 export const selectAllActiveTokens = createSelector(
   [selectAllLists, (state: AppState) => state.omnibridge.common.activeLists],

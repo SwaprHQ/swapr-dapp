@@ -55,6 +55,8 @@ export abstract class OmnibridgeChildBase {
   // TODO: Abstract parameters. Currently it's hardcoded to support arbitrum
 
   abstract triggerBridging(): void
+  abstract fetchStaticLists(): Promise<void>
+  abstract fetchDynamicLists(): Promise<void>
   abstract collect(l2Tx: BridgeTransactionSummary): void
   abstract approve(): void
   abstract triggerCollect(

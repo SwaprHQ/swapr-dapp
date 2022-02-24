@@ -12,6 +12,7 @@ import { isPairOnList } from '../../utils'
 import { useAllPairs } from '../../hooks/useAllPairs'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
+import { unwrappedToken } from '../../utils/wrappedCurrency'
 
 interface PairRowProps {
   pair: Pair
@@ -33,7 +34,7 @@ function PairRow({ pair, onSelect, isSelected, style }: PairRowProps) {
   const removePair = usePairRemover()
   const addPair = usePairAdder()
 
-  const pairText = `${pair.token0.symbol || ''}/${pair.token1.symbol || ''}`
+  const pairText = `${unwrappedToken(pair.token0)?.symbol || ''}/${unwrappedToken(pair.token1)?.symbol || ''}`
 
   // only show add or remove buttons if not on selected list
   return (
@@ -44,7 +45,6 @@ function PairRow({ pair, onSelect, isSelected, style }: PairRowProps) {
       alignItems="center"
       px="20px"
     >
-
       <Box mr="8px">
         <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={20} />
       </Box>
