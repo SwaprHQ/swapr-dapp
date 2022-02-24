@@ -55,3 +55,5 @@ export interface TokenMap {
     }
   }>
 }
+
+export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
