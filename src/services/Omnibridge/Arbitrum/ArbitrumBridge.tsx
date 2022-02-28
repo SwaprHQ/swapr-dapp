@@ -23,8 +23,7 @@ import {
   ArbitrumList,
   OmnibridgeChangeHandler,
   OmnibridgeChildBaseConstructor,
-  OmnibridgeChildBaseInit,
-  OptionalBridgeList
+  OmnibridgeChildBaseInit
 } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
@@ -769,48 +768,22 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
+    //FIX tmp config
     // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
     // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
     // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
-    return new Promise<{
-      name: string
-      bridgeId: OptionalBridgeList
-      errors: {
-        message: string
-      }
-      routes?: [
-        {
-          chainGasBalances: {
-            [n in number]: {
-              hasGasBalance: false
-              minGasBalance: string
-            }
-          }
-          fromAmount: string
-          routeId: string
-          sender: string
-          serviceTime: number
-          toAmount: string
-          totalGasFeesInUsd: number
-          totalUserTx: number
-          usedBridgeNames: string[]
-          userTxs: any
-        }
-      ]
-      gas?: string
-      fee?: string
-      estimatedTime?: number | string
-    }>(async resolve => {
-      resolve({
-        name: this.displayName,
-        bridgeId: this.bridgeId,
-        errors: {
-          message: ''
-        },
-        estimatedTime: this._activeChainId === this.l1ChainId ? '10 min' : '7 days',
+    // this.store.dispatch(this.actions.setBridgeDetails({ detailsStatus: 'loading' }))
+    //TODO get dynamic fees and gas
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    this.store.dispatch(
+      this.actions.setBridgeDetails({
         gas: '10',
-        fee: '0.2' //TODO make it dynamically
+        fee: '0.2',
+        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days'
       })
-    })
+    )
+
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+    this.store.dispatch(this.actions.setBridgingReceiveAmount(this.store.getState().omnibridge.UI.from.value))
   }
 }

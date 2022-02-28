@@ -1,36 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { SocketList, AsyncState } from '../Omnibridge.types'
-
-interface SocketBridgeState {
-  transactions: any
-  routes: {
-    chainGasBalances: {
-      [n in number]: {
-        hasGasBalance: false
-        minGasBalance: string
-      }
-    }
-    fromAmount: string
-    routeId: string
-    sender: string
-    serviceTime: number
-    toAmount: string
-    totalGasFeesInUsd: number
-    totalUserTx: number
-    usedBridgeNames: string[]
-    userTxs: any
-  }[]
-  routesStatus: AsyncState
-  approvalData: any
-  txData: any
-}
+import { ChainId } from '@swapr/sdk'
+import { SocketBridgeState, Route } from './Socket.types'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList } from '../Omnibridge.types'
 
 const initialState: SocketBridgeState = {
-  transactions: {},
-  routes: [],
+  transactions: [],
   approvalData: {},
-  txData: {},
-  routesStatus: 'loading'
+  txBridgingData: {},
+  bridgingDetails: {},
+  bridgingDetailsStatus: 'idle',
+  listStatus: 'idle',
+  lists: {}
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -38,29 +18,70 @@ const createSocketSlice = (bridgeId: SocketList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      setRoute(
+      setBridgeDetails: (
         state,
-        action: PayloadAction<
-          {
-            chainGasBalances: {
-              [n in number]: {
-                hasGasBalance: false
-                minGasBalance: string
-              }
-            }
-            fromAmount: string
-            routeId: string
-            sender: string
-            serviceTime: number
-            toAmount: string
-            totalGasFeesInUsd: number
-            totalUserTx: number
-            usedBridgeNames: string[]
-            userTxs: any //TODO
-          }[]
-        >
-      ) {
-        state.routes = action.payload
+        action: PayloadAction<{
+          routes?: Route[]
+        }>
+      ) => {
+        const { routes } = action.payload
+        if (routes) {
+          state.bridgingDetails.routes = routes
+        }
+      },
+      setBridgeDetailsStatus: (
+        state,
+        action: PayloadAction<{ status: AsyncState; errorMessage?: BridgingDetailsErrorMessage }>
+      ) => {
+        const { status, errorMessage } = action.payload
+        state.bridgingDetailsStatus = status
+        if (errorMessage) {
+          state.bridgingDetailsErrorMessage = errorMessage
+        }
+      },
+      setApprovalData: (
+        state,
+        action: PayloadAction<{
+          chainId: ChainId
+          owner: string
+          allowanceTarget: string
+          tokenAddress: string
+          amount: string
+        }>
+      ) => {
+        state.approvalData = action.payload
+      },
+      setTxBridgingData: (
+        state,
+        action: PayloadAction<{
+          data: string
+          to: string
+        }>
+      ) => {
+        state.txBridgingData = action.payload
+      },
+      setBridgingReceiveAmount: (state, action: PayloadAction<string>) => {
+        state.bridgingReceiveAmount = action.payload
+      },
+      addTx: (
+        state,
+        action: PayloadAction<{
+          txHash: string
+          assetName: string
+          value: string
+          fromChainId: ChainId
+          toChainId: ChainId
+          bridgeId: BridgeList
+        }>
+      ) => {
+        const { payload: txn } = action
+
+        state.transactions.push(txn)
+      },
+      updateTx: (state, action: PayloadAction<{ txHash: string }>) => {
+        const index = state.transactions.findIndex(tx => tx.txHash === action.payload.txHash)
+
+        state.transactions[index].timestampResolved = Date.now()
       }
     }
   })
