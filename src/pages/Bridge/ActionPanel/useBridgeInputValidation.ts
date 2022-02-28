@@ -7,15 +7,24 @@ import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reduc
 import { useBridgeInfo } from '../../../state/bridge/hooks'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (value: string) => {
+export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
   const debounce = useDebounce(value, 500)
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
-  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+  const activeRouteId = useSelector((state: AppState) => state.omnibridge.common.activeRouteId)
+  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
+    if (showAvailableBridges && isBridge) {
+      omnibridge.getSupportedBridges()
+    }
+  }, [showAvailableBridges, omnibridge, debounce, from.address, to.address, isBridge])
+
+  useEffect(() => {
+    if (!isBridge) return
+
     const validateInput = () => {
       if (Number(debounce) === 0 || isNaN(Number(debounce))) {
         dispatch(
@@ -74,9 +83,20 @@ export const useBridgeInputValidation = (value: string) => {
 
       return true
     }
+
     const isValid = validateInput()
     if (isValid) {
       omnibridge.validate()
     }
-  }, [debounce, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address])
+  }, [
+    debounce,
+    omnibridge,
+    activeBridge,
+    isBalanceSufficient,
+    dispatch,
+    from.address,
+    to.address,
+    activeRouteId,
+    isBridge
+  ])
 }
