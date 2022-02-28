@@ -25,7 +25,7 @@ import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/actions'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
-import { selectAllTransactions, selectSupportedBridges } from '../../services/Omnibridge/store/Omnibridge.selectors'
+import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
@@ -82,6 +82,7 @@ export default function Bridge() {
   const omnibridge = useOmnibridge()
 
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
+  const receiveValue = useSelector((state: AppState) => state.omnibridge.UI.to.value)
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
 
@@ -217,9 +218,6 @@ export default function Bridge() {
     [account, chainId, onToNetworkChange, toNetwork.chainId]
   )
 
-  const dupa = useSelector((state: AppState) => selectSupportedBridges(state))
-  console.log(dupa)
-
   return (
     <Wrapper>
       <Tabs
@@ -283,13 +281,13 @@ export default function Bridge() {
           disabled={isCollecting}
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
-          isBridge
+          isBridge={true}
           isLoading={listsLoading}
         />
         {/* Here will be created new component e.g OutputCurrency */}
         <CurrencyInputPanel
           label="You will receive"
-          value={isCollecting ? collectableTx.value : typedValue}
+          value={isCollecting ? collectableTx.value : receiveValue}
           showMaxButton={false}
           currency={bridgeCurrency}
           onUserInput={onUserInput}
@@ -299,7 +297,7 @@ export default function Bridge() {
           disabled={true}
           id="bridge-currency-input"
           hideBalance={true}
-          isBridge
+          isBridge={false}
           isLoading={listsLoading}
         />
         <BridgeActionPanel
