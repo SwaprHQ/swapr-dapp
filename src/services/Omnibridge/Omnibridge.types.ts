@@ -57,3 +57,4 @@ export interface TokenMap {
   }>
 }
 export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
+export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
