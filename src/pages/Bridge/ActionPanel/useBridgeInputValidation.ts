@@ -56,6 +56,8 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
 
       dispatch(omnibridgeUIActions.setShowAvailableBridges(true))
       //check balance
+
+      //tmp comment to test validate method for specific bridge
       // if (!isBalanceSufficient) {
       //   dispatch(
       //     omnibridgeUIActions.setStatusButton({
