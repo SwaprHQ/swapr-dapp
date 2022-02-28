@@ -7,6 +7,7 @@ interface CommonState {
     [k in BridgeList]: SupportedChainsConfig
   }
   activeLists: string[]
+  activeRouteId?: string
 }
 
 const initialState: CommonState = {
@@ -35,6 +36,9 @@ const commonSlice = createSlice({
     deactivateLists: (state, { payload }: PayloadAction<string[]>) => {
       const filteredList = state.activeLists.filter(id => !payload.includes(id))
       state.activeLists = filteredList
+    },
+    setActiveRouteId: (state, action: PayloadAction<string | undefined>) => {
+      state.activeRouteId = action.payload
     }
   }
 })
