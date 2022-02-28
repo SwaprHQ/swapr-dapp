@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { save, load } from 'redux-localstorage-simple'
+import { save } from 'redux-localstorage-simple'
 
 import application from './application/reducer'
 import { updateVersion } from './global/actions'
@@ -40,8 +40,9 @@ const store = configureStore({
       states: PERSISTED_KEYS,
       namespace: persistenceNamespace
     })
-  ],
-  preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })
+  ]
+  //TODO store socket
+  // preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })
 })
 
 store.dispatch(updateVersion())
