@@ -258,12 +258,32 @@ const createSelectBridgeTxsSummary = (
     }
   )
 
+const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
+  createSelector(
+    [
+      (state: AppState) => state.omnibridge[bridgeId].bridgingDetails,
+      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsStatus,
+      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage,
+      (state: AppState) => state.omnibridge[bridgeId].bridgingReceiveAmount
+    ],
+    (details, loading, errorMessage, receiveAmount) => {
+      return {
+        bridgeId,
+        details,
+        loading,
+        errorMessage,
+        receiveAmount
+      }
+    }
+  )
+
 export interface ArbitrumBridgeSelectors {
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
   selectPendingTxs: ReturnType<typeof createSelectPendingTxs>
   selectL1Deposits: ReturnType<typeof createSelectL1Deposits>
   selectPendingWithdrawals: ReturnType<typeof createSelectPendingWithdrawals>
   selectBridgeTxsSummary: ReturnType<typeof createSelectBridgeTxsSummary>
+  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
 }
 
 export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
@@ -276,12 +296,15 @@ export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
 
       const selectBridgeTxsSummary = createSelectBridgeTxsSummary(bridgeId, selectOwnedTxs)
 
+      const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
+
       const selectors = {
         selectOwnedTxs,
         selectPendingTxs,
         selectL1Deposits,
         selectBridgeTxsSummary,
-        selectPendingWithdrawals
+        selectPendingWithdrawals,
+        selectBridgingDetails
       }
 
       total[bridgeId] = selectors

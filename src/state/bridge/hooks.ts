@@ -22,6 +22,7 @@ import { useCurrencyBalances } from '../wallet/hooks'
 import { currencyId } from '../../utils/currencyId'
 import { getChainPair } from '../../utils/arbitrum'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
+import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
 
 export function useBridgeState(): AppState['bridge'] {
   return useSelector<AppState, AppState['bridge']>(state => state.bridge)
@@ -102,7 +103,12 @@ export function useBridgeActionHandlers(): {
           currencyId: currency instanceof Currency ? currencyId(currency) : currency
         })
       )
-      dispatch(omnibridgeUIActions.setFrom({ address: currency instanceof Currency ? currencyId(currency) : currency }))
+      dispatch(
+        omnibridgeUIActions.setFrom({
+          address: currency instanceof Currency ? currencyId(currency) : currency,
+          decimals: currency instanceof Currency ? currency.decimals : undefined
+        })
+      )
       dispatch(omnibridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))
     },
     [dispatch]
@@ -112,7 +118,8 @@ export function useBridgeActionHandlers(): {
     (typedValue: string) => {
       dispatch(typeInput({ typedValue }))
       dispatch(omnibridgeUIActions.setFrom({ value: typedValue }))
-      dispatch(omnibridgeUIActions.setTo({ value: typedValue }))
+      dispatch(commonActions.setActiveBridge(undefined))
+      dispatch(omnibridgeUIActions.setTo({ value: '' }))
     },
     [dispatch]
   )

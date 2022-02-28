@@ -37,8 +37,9 @@ export interface OmnibridgeChildBaseProps
 
 export interface OmnibridgeChildBaseInit extends OmnibridgeChangeHandler, OmnibridgeInitialEnv {}
 
+export type SocketList = 'socket'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
-export type BridgeList = ArbitrumList
+export type BridgeList = ArbitrumList | SocketList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface OmnibridgeChildBaseConstructor {
@@ -55,5 +56,5 @@ export interface TokenMap {
     }
   }>
 }
-
 export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
+export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
