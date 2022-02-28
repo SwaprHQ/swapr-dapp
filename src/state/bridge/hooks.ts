@@ -112,7 +112,6 @@ export function useBridgeActionHandlers(): {
     (typedValue: string) => {
       dispatch(typeInput({ typedValue }))
       dispatch(omnibridgeUIActions.setFrom({ value: typedValue }))
-      dispatch(omnibridgeUIActions.setTo({ value: typedValue }))
     },
     [dispatch]
   )
