@@ -12,6 +12,7 @@ import {
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { commonActions } from './store/Common.reducer'
 import { AppState } from '../../state'
+import { selectSupportedBridges } from './store/Omnibridge.selectors'
 
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
@@ -102,16 +103,12 @@ export class Omnibridge {
 
   public getSupportedBridges = () => {
     //TODO filter by supported token
-    // const supportedBridges =
-    //1.
-    // supportedBridges.forEach(bridge => {
-    //todo
-    // })
-    //2.
-    // supportedBridges.forEach(bridge => {
-    // bridge.bridge.getBridgingMetadata()
-    // })
-    // return supportedBridges
+
+    const supportedBridges = selectSupportedBridges(this.store.getState())
+
+    supportedBridges.forEach(bridge => {
+      this.bridges[bridge.bridgeId].getBridgingMetadata()
+    })
   }
 
   // ADAPTERS

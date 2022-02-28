@@ -5,7 +5,8 @@ import {
   selectAllTokensPerChain,
   selectAllActiveTokens,
   selectAllLists,
-  selectListsLoading
+  selectListsLoading,
+  selectSupportedBridgesForUI
 } from '../store/Omnibridge.selectors'
 import { commonActions } from '../store/Common.reducer'
 import { useCallback } from 'react'
@@ -44,4 +45,27 @@ export const useBridgeListsLoadingStatus = () => {
   const isLoading = useSelector(selectListsLoading)
 
   return isLoading
+}
+
+export const useShowAvailableBridges = () => {
+  const { showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
+
+  return showAvailableBridges
+}
+export const useAvailableBridges = () => {
+  const availableBridges = useSelector(selectSupportedBridgesForUI)
+
+  return availableBridges
+}
+
+export const useActiveBridge = () => {
+  const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
+
+  return activeBridge
+}
+
+export const useActiveRoute = () => {
+  const activeRouteId = useSelector((state: AppState) => state.omnibridge.common.activeRouteId)
+
+  return activeRouteId
 }

@@ -3,8 +3,9 @@ import { ChainId, Token } from '@swapr/sdk'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
-import { BridgeList, TokenMap } from '../Omnibridge.types'
+import { AsyncState, BridgeList, BridgingDetailsErrorMessage, TokenMap } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
+import { socketSelectors } from '../Socket/Socket.selectors'
 
 export const selectAllTransactions = createSelector(
   [
@@ -73,28 +74,71 @@ export const selectAllTokensPerChain = createSelector(
 )
 
 export const selectSupportedBridges = createSelector([(state: AppState) => state.omnibridge.UI], ui => {
-  const supportedBridges = Object.entries(omnibridgeConfig).reduce<
-    { from: ChainId; to: ChainId; bridgeId: BridgeList; name: string }[]
-  >((total, current) => {
-    const bridgeInfo = current[1]
+  const supportedBridges = Object.entries(omnibridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
+    (total, current) => {
+      const [, bridgeInfo] = current
+      const match =
+        ui.from.chainId === bridgeInfo.supportedChains.from && ui.to.chainId === bridgeInfo.supportedChains.to
+      const matchReverse =
+        bridgeInfo.supportedChains.reverse &&
+        ui.from.chainId === bridgeInfo.supportedChains.to &&
+        ui.to.chainId === bridgeInfo.supportedChains.from
 
-    const match = ui.from.chainId === bridgeInfo.supportedChains.from && ui.to.chainId === bridgeInfo.supportedChains.to
-    const matchReverse =
-      bridgeInfo.supportedChains.reverse &&
-      ui.from.chainId === bridgeInfo.supportedChains.to &&
-      ui.to.chainId === bridgeInfo.supportedChains.from
-
-    if (match || matchReverse) {
-      const bridge = {
-        name: bridgeInfo.displayName,
-        bridgeId: bridgeInfo.bridgeId,
-        from: bridgeInfo.supportedChains.from,
-        to: bridgeInfo.supportedChains.to
+      if (match || matchReverse) {
+        const bridge = {
+          name: bridgeInfo.displayName,
+          bridgeId: bridgeInfo.bridgeId
+        }
+        total.push(bridge)
       }
-      total.push(bridge)
-    }
-    return total
-  }, [])
+      return total
+    },
+    []
+  )
 
   return supportedBridges
 })
+
+export const selectSupportedBridgesForUI = createSelector(
+  [
+    selectSupportedBridges,
+    arbitrumSelectors['arbitrum:testnet'].selectBridgingDetails,
+    arbitrumSelectors['arbitrum:mainnet'].selectBridgingDetails,
+    socketSelectors.socket.selectBridgingDetails
+  ],
+  (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, socketDetails) => {
+    type RetValType = {
+      name: string
+      bridgeId: BridgeList
+      status: AsyncState
+      details: {
+        routes?: any[]
+        gas?: string
+        estimateTime?: string
+        fee?: string
+      }
+      errorMessage?: BridgingDetailsErrorMessage
+      receiveAmount?: string
+    }
+
+    const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
+      total[next.bridgeId] = next.name
+      return total
+    }, {})
+
+    const retVal: RetValType[] = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails]
+      .map(bridge => {
+        return {
+          name: bridgeNameMap[bridge.bridgeId],
+          bridgeId: bridge.bridgeId,
+          details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
+          status: bridge.loading,
+          errorMessage: bridge.errorMessage,
+          receiveAmount: bridge.receiveAmount
+        }
+      })
+      .filter(bridge => bridge.name !== undefined)
+
+    return retVal
+  }
+)
