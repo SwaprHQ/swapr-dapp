@@ -140,7 +140,7 @@ export function useTradeExactInCurve(
         }
       })
       .catch((e: Error) => console.log('useTradeExactInCurve: ', e))
-  }, [currencyAmountIn, currencyOut, chainId, library])
+  }, [currencyAmountIn?.currency.address, currencyOut?.address, chainId, library])
 
   return trade
 }
@@ -182,39 +182,9 @@ export interface UseUniswapV2PlatformAllowedPairs {
   chainId?: ChainId
 }
 
-export function useUniswapV2PlatformAllowedPairs({ currencyA, currencyB }: UseUniswapV2PlatformAllowedPairs) {
-  // Todo: DRY
-  const uniswapV2AllowedPairsList: {
-    platform: UniswapV2RoutablePlatform
-    allowedPairs: Pair[]
-  }[] = [
-    {
-      platform: UniswapV2RoutablePlatform.SWAPR,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.SWAPR)
-    },
-    {
-      platform: UniswapV2RoutablePlatform.UNISWAP,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.UNISWAP)
-    },
-    {
-      platform: UniswapV2RoutablePlatform.SUSHISWAP,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.SUSHISWAP)
-    },
-    {
-      platform: UniswapV2RoutablePlatform.HONEYSWAP,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.HONEYSWAP)
-    },
-    {
-      platform: UniswapV2RoutablePlatform.BAOSWAP,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.BAOSWAP)
-    },
-    {
-      platform: UniswapV2RoutablePlatform.LEVINSWAP,
-      allowedPairs: useAllCommonPairs(currencyA, currencyB, UniswapV2RoutablePlatform.LEVINSWAP)
-    }
-  ]
-
-  return uniswapV2AllowedPairsList
+export interface UseTradeExactAllPlatformsResult {
+  loading: boolean
+  trades: Trade[]
 }
 
 /**
@@ -224,46 +194,60 @@ export function useUniswapV2PlatformAllowedPairs({ currencyA, currencyB }: UseUn
 export function useTradeExactInAllPlatforms(
   currencyAmountIn?: CurrencyAmount,
   currencyOut?: Currency
-): (Trade | undefined)[] {
+): UseTradeExactAllPlatformsResult {
+  const [loading, setLoading] = useState(true)
   // All trades including Curve, Unsiwap V2 and CowSwap
-  const [bestTrades, setBesTrades] = useState<(Trade | undefined)[]>([])
+  const [trades, setTrades] = useState<Trade[]>([])
   // Chain Id
   const { chainId } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // List of Uniswap V2 pairs per platform
-  const uniswapV2AllowedPairsList = useUniswapV2PlatformAllowedPairs({
-    currencyA: currencyAmountIn?.currency,
-    currencyB: currencyOut
-  })
+  const uniswapV2AllowedPairsList = [
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.SWAPR),
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.UNISWAP),
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.SUSHISWAP),
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP)
+  ]
+
+  // Array that can re-trigger the loading
+  const useEffectDepsArray = [
+    uniswapV2IsMultihop,
+    uniswapV2AllowedPairsList.filter(pair => pair.length != 0).length,
+    chainId,
+    // Token comparesion list: address, and amount
+    currencyAmountIn?.currency.address,
+    currencyAmountIn?.toSignificant(),
+    currencyOut?.address
+  ]
 
   useEffect(() => {
     let isCancelled = false
 
-    console.log('useTradeExactInAllPlatforms: useEffect')
-
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !currencyOut || !chainId) {
-      // if (bestTrades.length > 0) {
-      //   setBesTrades([])
-      // }
+      // setBesTrades([])
+      setLoading(false)
       return
     }
 
     console.log('useTradeExactInAllPlatforms: Computing trades from UniswapV2 and Curve')
+    setLoading(true)
 
     // Calculate trade output from: Uniswap V2 and its forks, Curve
 
     // Promisify the Uniswap trade list
     const uniswapV2TradesList = uniswapV2AllowedPairsList
-      .filter(({ platform, allowedPairs }) => allowedPairs.length > 0 && platform.supportsChain(chainId))
-      .map(async ({ allowedPairs }) => {
+      .filter(pairs => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
+      .map(async pairs => {
         return (
           UniswapV2Trade.bestTradeExactIn({
             currencyAmountIn,
             currencyOut,
             maximumSlippage: new Percent('3', '100'),
-            pairs: allowedPairs,
+            pairs,
             maxHops: {
               maxHops: uniswapV2IsMultihop ? 3 : 1,
               maxNumResults: 1
@@ -287,28 +271,29 @@ export function useTradeExactInAllPlatforms(
         })
     })
 
-    const allTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
 
-    console.log(allTrades)
-
-    allTrades
-      .then(trades => trades.filter(trade => !!trade))
-      .then(trades => {
+    allNewTrades
+      .then(trades => trades.filter(trade => trade != undefined))
+      .then(newTrades => {
         // add deep comparsion
-        console.log({ bestTrades, trades })
-        const isNewSet = bestTrades.length !== trades.length
-        if (!isCancelled && isNewSet) {
-          setBesTrades(trades)
+        console.log({ trades, newTrades, isCancelled })
+        if (!isCancelled) {
+          setTrades(newTrades)
         }
       })
       .catch(console.log)
+      .finally(() => setLoading(false))
 
     return () => {
       isCancelled = true
     }
-  }, [uniswapV2IsMultihop, uniswapV2AllowedPairsList, chainId, currencyAmountIn, currencyOut])
+  }, useEffectDepsArray)
 
-  return useMemo(() => sortTradesByExecutionPrice(bestTrades), [bestTrades])
+  return {
+    loading,
+    trades: sortTradesByExecutionPrice(trades)
+  }
 }
 
 /**
@@ -318,31 +303,47 @@ export function useTradeExactInAllPlatforms(
 export function useTradeExactOutAllPlatforms(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount
-): (Trade | undefined)[] {
+): UseTradeExactAllPlatformsResult {
+  const [loading, setLoading] = useState(true)
   // All trades including Curve, Unsiwap V2 and CowSwap
-  const [bestTrades, setBesTrades] = useState<(Trade | undefined)[]>([])
+  const [trades, setTrades] = useState<Trade[]>([])
   // Chain Id
   const { chainId } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // List of Uniswap V2 pairs per platform
-  const uniswapV2AllowedPairsList = useUniswapV2PlatformAllowedPairs({
-    currencyA: currencyIn,
-    currencyB: currencyAmountOut?.currency
-  })
+  // List of Uniswap V2 pairs per platform
+  const uniswapV2AllowedPairsList = [
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.SWAPR),
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.UNISWAP),
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.SUSHISWAP),
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.HONEYSWAP),
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.BAOSWAP),
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.LEVINSWAP)
+  ]
+
+  // Array of value that can re-trigger searching for new trades
+  const useEffectDepsArray = [
+    uniswapV2IsMultihop,
+    uniswapV2AllowedPairsList.filter(pair => pair.length != 0).length,
+    chainId,
+    // Token comparesion list: address, and amount
+    currencyAmountOut?.currency.address,
+    currencyAmountOut?.toSignificant(),
+    currencyIn?.address
+  ]
 
   useEffect(() => {
     let isCancelled = false
 
-    console.log('useTradeExactOutAllPlatforms: useEffect')
-
     // Early exit and clean state if necessary
     if (!currencyAmountOut || !currencyIn || !chainId) {
-      // if (bestTrades.length > 0) {
-      //   setBesTrades([])
-      // }
+      // setBesTrades([])
+      setLoading(false)
       return
     }
+
+    setLoading(true)
 
     console.log('useTradeExactOutAllPlatforms: Computing trades from UniswapV2 and Curve')
 
@@ -350,14 +351,14 @@ export function useTradeExactOutAllPlatforms(
 
     // Promisify the Uniswap trade list
     const uniswapV2TradesList = uniswapV2AllowedPairsList
-      .filter(({ platform, allowedPairs }) => allowedPairs.length > 0 && platform.supportsChain(chainId))
-      .map(async ({ allowedPairs }) => {
+      .filter(pairs => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
+      .map(async pairs => {
         return (
           UniswapV2Trade.bestTradeExactOut({
             currencyIn,
             currencyAmountOut,
             maximumSlippage: new Percent('3', '100'),
-            pairs: allowedPairs,
+            pairs,
             maxHops: {
               maxHops: uniswapV2IsMultihop ? 3 : 1,
               maxNumResults: 1
@@ -381,26 +382,27 @@ export function useTradeExactOutAllPlatforms(
         })
     })
 
-    const allTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
 
-    console.log(allTrades)
-
-    allTrades
-      .then(trades => trades.filter(trade => !!trade))
-      .then(trades => {
+    allNewTrades
+      .then(trades => trades.filter(trade => trade != undefined))
+      .then(newTrades => {
         // add deep comparsion
-        console.log({ bestTrades, trades })
-        const isNewSet = bestTrades.length !== trades.length
-        if (!isCancelled && isNewSet) {
-          setBesTrades(trades)
+        console.log({ trades, newTrades, isCancelled })
+        if (!isCancelled) {
+          setTrades(newTrades)
         }
       })
       .catch(console.log)
+      .finally(() => setLoading(false))
 
     return () => {
       isCancelled = true
     }
-  }, [uniswapV2IsMultihop, uniswapV2AllowedPairsList, chainId, currencyAmountOut, currencyIn])
+  }, useEffectDepsArray)
 
-  return useMemo(() => sortTradesByExecutionPrice(bestTrades), [bestTrades])
+  return {
+    loading,
+    trades: sortTradesByExecutionPrice(trades)
+  }
 }
