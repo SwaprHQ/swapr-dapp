@@ -6,6 +6,7 @@ import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { AsyncState, BridgeList, BridgingDetailsErrorMessage, TokenMap } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
 import { socketSelectors } from '../Socket/Socket.selectors'
+import { Route } from '../Socket/Socket.types'
 
 export const selectAllTransactions = createSelector(
   [
@@ -112,7 +113,17 @@ export const selectSupportedBridgesForUI = createSelector(
       bridgeId: BridgeList
       status: AsyncState
       details: {
-        routes?: any[]
+        routes?: {
+          tokenDetails: {
+            chainId: number
+            address: string
+            decimals: number
+            icon: string
+            name: string
+            symbol: string
+          }
+          routes: Route[]
+        }
         gas?: string
         estimateTime?: string
         fee?: string

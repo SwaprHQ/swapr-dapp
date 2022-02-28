@@ -6,6 +6,7 @@ type OmnibridgeInput = {
   value: string
   chainId: ChainId | undefined
   address: string
+  decimals?: number
 }
 
 type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
@@ -33,7 +34,8 @@ const initialState: UIInitialState = {
   from: {
     value: '',
     chainId: 1,
-    address: ''
+    address: '',
+    decimals: 0
   },
   to: {
     value: '',
@@ -63,8 +65,8 @@ export const omnibridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
-    setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {
-      const { address, value, chainId } = action.payload
+    setFrom(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId; decimals?: number }>) {
+      const { address, value, chainId, decimals } = action.payload
       if (address !== undefined) {
         state.from.address = address
       }
@@ -75,6 +77,9 @@ export const omnibridgeUISlice = createSlice({
 
       if (chainId) {
         state.from.chainId = chainId
+      }
+      if (decimals) {
+        state.from.decimals = decimals
       }
     },
     setTo(state, action: PayloadAction<{ address?: string; value?: string; chainId?: ChainId }>) {

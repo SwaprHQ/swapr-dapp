@@ -146,7 +146,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     if (!routeId || !routes) return
 
     //find route
-    const selectedRoute = routes.find(route => route.routeId === routeId)
+    const selectedRoute = routes.routes.find(route => route.routeId === routeId)
 
     //build txn
     try {
@@ -281,18 +281,11 @@ export class SocketBridge extends OmnibridgeChildBase {
       const { from, to } = this.store.getState().omnibridge.UI
       if (!from.address || Number(from.value) === 0) return
 
-      const value = parseUnits(from.value, 18) //TODO get decimals from token list
+      const value = parseUnits(from.value, from.decimals)
 
-      //0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee eth  (1)
-      //0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 usdc (1)
+      //TODO get to token address
       const response = await fetch(
-        `https://backend.movr.network/v2/quote?fromChainId=${
-          from.chainId
-        }&fromTokenAddress=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&toChainId=${
-          to.chainId
-        }&toTokenAddress=0xff970a61a04b1ca14834a43f5de4533ebddb5cc8&fromAmount=${value.toString()}&userAddress=${
-          this._account
-        }&uniqueRoutesPerBridge=false&sort=output`,
+        `https://backend.movr.network/v2/quote?fromChainId=${from.chainId}&fromTokenAddress=${from.address}&toChainId=${to.chainId}&toTokenAddress=0xff970a61a04b1ca14834a43f5de4533ebddb5cc8&fromAmount=${value}&userAddress=${this._account}&uniqueRoutesPerBridge=false&disableSwapping=false&sort=output&singleTxOnly=true`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -303,8 +296,11 @@ export class SocketBridge extends OmnibridgeChildBase {
       )
       const quote: Quote = await response.json()
 
+      const tokenDetails = quote.result.toAsset
+      const routesData = { tokenDetails, routes: quote.result.routes }
+
       if (quote.success) {
-        this.store.dispatch(this.actions.setBridgeDetails({ routes: quote.result.routes }))
+        this.store.dispatch(this.actions.setBridgeDetails(routesData))
         this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
       } else {
         this.store.dispatch(

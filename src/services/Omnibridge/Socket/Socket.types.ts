@@ -55,7 +55,17 @@ export interface SocketBridgeState {
     timestampResolved?: number
   }[]
   bridgingDetails: {
-    routes?: Route[]
+    routes?: {
+      tokenDetails: {
+        chainId: number
+        address: string
+        decimals: number
+        icon: string
+        name: string
+        symbol: string
+      }
+      routes: Route[]
+    }
   }
   bridgingReceiveAmount?: string
   bridgingDetailsStatus: AsyncState

@@ -38,6 +38,7 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
         )
         dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
         dispatch(commonActions.setActiveBridge(undefined))
+        dispatch(omnibridgeUIActions.setTo({ value: '' }))
         return false
       }
       if (Number(debounce) > 0 && !from.address && !to.address) {

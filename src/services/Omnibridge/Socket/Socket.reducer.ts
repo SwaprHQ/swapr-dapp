@@ -21,12 +21,21 @@ const createSocketSlice = (bridgeId: SocketList) =>
       setBridgeDetails: (
         state,
         action: PayloadAction<{
+          tokenDetails: {
+            chainId: number
+            address: string
+            decimals: number
+            icon: string
+            name: string
+            symbol: string
+          }
           routes?: Route[]
         }>
       ) => {
-        const { routes } = action.payload
-        if (routes) {
-          state.bridgingDetails.routes = routes
+        console.log(action.payload)
+        const { routes, tokenDetails } = action.payload
+        if (routes && tokenDetails) {
+          state.bridgingDetails.routes = { tokenDetails, routes }
         }
       },
       setBridgeDetailsStatus: (

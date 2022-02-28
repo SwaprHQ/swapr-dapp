@@ -16,6 +16,7 @@ import {
   useAvailableBridges,
   useShowAvailableBridges
 } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { Route } from '../../services/Omnibridge/Socket/Socket.types'
 
 const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
@@ -130,11 +131,22 @@ interface BridgeProps {
   name?: string
   activeBridge: OptionalBridgeList
   details: {
-    routes?: any[]
+    routes?: {
+      tokenDetails: {
+        chainId: number
+        address: string
+        decimals: number
+        icon: string
+        name: string
+        symbol: string
+      }
+      routes: Route[]
+    }
     gas?: string
     fee?: string
     estimateTime?: string
   }
+
   receiveAmount?: string
   activeRoute?: string
   status: AsyncState
@@ -171,8 +183,8 @@ const Bridge = ({
             handleSelectBridge(id)
 
             if (routes) {
-              handleSelectRoute(routes[0].routeId)
-              handleSelectToAmount(routes[0].toAmount)
+              handleSelectRoute(routes.routes[0].routeId)
+              handleSelectToAmount(routes.routes[0].toAmount)
             } else {
               handleSelectRoute(undefined)
               handleSelectToAmount(receiveAmount)
@@ -201,13 +213,13 @@ const Bridge = ({
       <div>
         {routes &&
           !isLoading &&
-          routes.map(({ toAmount, totalGasFeesInUsd, serviceTime, routeId }) => {
+          routes.routes.map(({ toAmount, totalGasFeesInUsd, serviceTime, routeId }) => {
             return (
               <div
                 onClick={() => {
                   handleSelectRoute(routeId)
                   handleSelectBridge(id)
-                  handleSelectToAmount(toAmount)
+                  handleSelectToAmount(formatUnits(toAmount, routes.tokenDetails.decimals))
                 }}
                 style={
                   activeRoute === routeId
@@ -216,7 +228,7 @@ const Bridge = ({
                 }
                 key={routeId}
               >
-                <p>{formatUnits(toAmount, 18)}</p>
+                <p>{Number(formatUnits(toAmount, routes.tokenDetails.decimals)).toFixed(0)}</p>
                 <p>{(serviceTime / 60).toFixed(0)}</p>
                 <p>{totalGasFeesInUsd.toFixed(2)}</p>
               </div>
