@@ -1,6 +1,6 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, UniswapV2Trade } from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -111,8 +111,8 @@ export function useDerivedSwapInfo(
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  trade: UniswapV2Trade | undefined
-  allPlatformTrades: (UniswapV2Trade | undefined)[] | undefined
+  trade: Trade | undefined
+  allPlatformTrades: (Trade | undefined)[] | undefined
   inputError?: string
 } {
   const { account, chainId } = useActiveWeb3React()
@@ -137,11 +137,11 @@ export function useDerivedSwapInfo(
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const bestTradeExactInAllPlatforms = useTradeExactInAllPlatforms(
+  const { trades: bestTradeExactInAllPlatforms } = useTradeExactInAllPlatforms(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const bestTradeExactOutAllPlatforms = useTradeExactOutAllPlatforms(
+  const { trades: bestTradeExactOutAllPlatforms } = useTradeExactOutAllPlatforms(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )
@@ -211,9 +211,7 @@ export function useDerivedSwapInfo(
     currencies,
     currencyBalances,
     parsedAmount,
-    // @ts-ignore
     trade,
-    // @ts-ignore
     allPlatformTrades,
     inputError
   }

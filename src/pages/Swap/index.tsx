@@ -1,4 +1,12 @@
-import { CurrencyAmount, JSBI, UniswapV2Trade, Token, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import {
+  CurrencyAmount,
+  JSBI,
+  UniswapV2Trade,
+  Token,
+  RoutablePlatform,
+  UniswapV2RoutablePlatform,
+  Trade
+} from '@swapr/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
@@ -169,7 +177,7 @@ export default function Swap() {
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
-    tradeToConfirm: UniswapV2Trade | undefined
+    tradeToConfirm: Trade | undefined
     attemptingTxn: boolean
     swapErrorMessage: string | undefined
     txHash: string | undefined
@@ -188,7 +196,7 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
-  const route = trade?.route
+  const route = trade instanceof UniswapV2Trade && trade?.route
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
