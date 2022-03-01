@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../state'
 import { useActiveWeb3React } from '../../../hooks'
@@ -9,7 +10,7 @@ import {
   selectSupportedBridgesForUI
 } from '../store/Omnibridge.selectors'
 import { commonActions } from '../store/Common.reducer'
-import { useCallback } from 'react'
+import { useOmnibridge } from '../OmnibridgeProvider'
 
 export const useAllBridgeTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -45,6 +46,17 @@ export const useBridgeListsLoadingStatus = () => {
   const isLoading = useSelector(selectListsLoading)
 
   return isLoading
+}
+
+export const useBridgeFetchDynamicLists = () => {
+  const omnibridge = useOmnibridge()
+  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+
+  useEffect(() => {
+    if (from.chainId && to.chainId) {
+      omnibridge.fetchDynamicLists()
+    }
+  }, [from.chainId, omnibridge, to.chainId])
 }
 
 export const useShowAvailableBridges = () => {
