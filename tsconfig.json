@@ -15,7 +15,7 @@
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -33,7 +33,6 @@
   "exclude": [
     "node_modules",
     "cypress",
-    "src/**/api"
   ],
   "include": [
     "./src/**/*.ts",
