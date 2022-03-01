@@ -291,14 +291,12 @@ export class SocketBridge extends OmnibridgeChildBase {
       if (!from.address || Number(from.value) === 0) return
 
       const value = parseUnits(from.value, from.decimals)
-      // 0x2791bca1f2de4661ed88a30c99a7a9449aa84174 137
-      // 0xff970a61a04b1ca14834a43f5de4533ebddb5cc8 42161
-      // to.chainId ? to.chainId.toString() : '42161'
+
       const quote = await QuoteAPI.quoteControllerGetQuote({
         fromChainId: from.chainId ? from.chainId.toString() : '1',
         fromTokenAddress: from.address,
-        toChainId: '137',
-        toTokenAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', //TODO to address
+        toChainId: to.chainId ? to.chainId.toString() : '42161',
+        toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
         fromAmount: value.toString(),
         userAddress: this._account ? this._account : '',
         uniqueRoutesPerBridge: false,
