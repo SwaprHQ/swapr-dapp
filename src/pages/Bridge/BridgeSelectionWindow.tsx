@@ -206,6 +206,7 @@ const Bridge = ({
       {/* TODO style routes for bridge and display error message */}
       <div>
         {routes &&
+          !isError &&
           !isLoading &&
           routes.routes.map(({ toAmount, totalGasFeesInUsd, serviceTime, routeId }) => {
             return (
