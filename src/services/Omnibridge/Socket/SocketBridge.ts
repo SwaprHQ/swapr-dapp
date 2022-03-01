@@ -1,7 +1,6 @@
 import { parseUnits } from '@ethersproject/units'
 import { OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit, OmnibridgeChangeHandler } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
-// import { socketActions } from './Socket.reducer'
 import { SocketList } from '../Omnibridge.types'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
@@ -11,7 +10,10 @@ import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
 import { QuoteControllerGetQuoteSortEnum } from './api/generated'
 import { BridgeModalStatus } from '../../../state/bridge/reducer'
 
-let previousController: AbortController
+import { TokenListsAPI } from './api'
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
+import SocketLogo from '../../../assets/images/socket-logo.png'
+
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
@@ -35,6 +37,8 @@ export class SocketBridge extends OmnibridgeChildBase {
   private get selectors() {
     return socketSelectors[this.bridgeId as SocketList]
   }
+
+  private _abortControllers: { [id: string]: AbortController } = {}
 
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
@@ -153,6 +157,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     return
   }
+
   public validate = async () => {
     const routeId = this.store.getState().omnibridge.common.activeRouteId
     const routes = this.selectors.selectRoutes(this.store.getState())
@@ -275,23 +280,25 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     const health = await ServerAPI.appControllerGetHealth()
 
-    if (previousController) {
-      previousController.abort()
+    if (this._abortControllers.quote) {
+      this._abortControllers.quote.abort()
     }
 
     if (health.ok) {
-      previousController = new AbortController()
+      this._abortControllers.quote = new AbortController()
 
       const { from, to } = this.store.getState().omnibridge.UI
       if (!from.address || Number(from.value) === 0) return
 
       const value = parseUnits(from.value, from.decimals)
-
+      // 0x2791bca1f2de4661ed88a30c99a7a9449aa84174 137
+      // 0xff970a61a04b1ca14834a43f5de4533ebddb5cc8 42161
+      // to.chainId ? to.chainId.toString() : '42161'
       const quote = await QuoteAPI.quoteControllerGetQuote({
         fromChainId: from.chainId ? from.chainId.toString() : '1',
         fromTokenAddress: from.address,
-        toChainId: to.chainId ? to.chainId.toString() : '42161',
-        toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
+        toChainId: '137',
+        toTokenAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', //TODO to address
         fromAmount: value.toString(),
         userAddress: this._account ? this._account : '',
         uniqueRoutesPerBridge: false,
@@ -302,8 +309,14 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const tokenDetails = quote.result.toAsset
       const routesData = { tokenDetails, routes: quote.result.routes }
-
+      console.log(quote)
       if (quote.success) {
+        if (quote.result.routes.length === 0) {
+          this.store.dispatch(
+            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+          )
+          return
+        }
         this.store.dispatch(this.actions.setBridgeDetails(routesData))
         this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
       } else {
@@ -318,9 +331,75 @@ export class SocketBridge extends OmnibridgeChildBase {
     }
   }
 
-  public fetchDynamicLists = () => {
-    return Promise.resolve()
+  public fetchDynamicLists = async () => {
+    const {
+      from: { chainId: fromChainId },
+      to: { chainId: toChainId }
+    } = this.store.getState().omnibridge.UI
+
+    if (!fromChainId || !toChainId) return
+
+    // Abort previous calls
+
+    if (this._abortControllers.tokenListFrom) {
+      this._abortControllers.tokenListFrom.abort()
+    }
+
+    if (this._abortControllers.tokenListTo) {
+      this._abortControllers.tokenListTo.abort()
+    }
+
+    this._abortControllers.tokenListFrom = new AbortController()
+    this._abortControllers.tokenListTo = new AbortController()
+
+    this.store.dispatch(this.actions.setTokenListsStatus('loading'))
+
+    const payload = {
+      fromChainId: fromChainId.toString(),
+      toChainId: toChainId.toString()
+    }
+
+    const tokenListToPromise = TokenListsAPI.tokenListControllerGetToTokenList(payload, {
+      signal: this._abortControllers.tokenListFrom.signal
+    })
+    const tokenListFromPromise = TokenListsAPI.tokenListControllerGetfromTokenList(payload, {
+      signal: this._abortControllers.tokenListTo.signal
+    })
+    const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
+
+    const tokens: TokenInfo[] = [...tokenListFrom.result, ...tokenListTo.result].reduce<TokenInfo[]>((total, token) => {
+      const { address, chainId, symbol, decimals, icon, name } = token
+
+      if (!name || !decimals || !name) return total
+
+      total.push({
+        name,
+        symbol,
+        address,
+        decimals,
+        chainId: Number(chainId),
+        logoURI: icon
+      })
+
+      return total
+    }, [])
+
+    const tokenList: TokenList = {
+      name: 'Socket',
+      timestamp: new Date().toISOString(),
+      version: {
+        major: 1,
+        minor: 0,
+        patch: 0
+      },
+      tokens,
+      logoURI: SocketLogo
+    }
+
+    this.store.dispatch(this.actions.addTokenLists({ socket: tokenList }))
+    this.store.dispatch(this.actions.setTokenListsStatus('ready'))
   }
+
   public fetchStaticLists = () => {
     return Promise.resolve()
   }

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { SocketBridgeState } from './Socket.types'
+import { TokenList } from '@uniswap/token-lists'
 import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList } from '../Omnibridge.types'
 import { TokenAsset, Route } from './api/generated'
 
@@ -10,7 +11,7 @@ const initialState: SocketBridgeState = {
   txBridgingData: {},
   bridgingDetails: {},
   bridgingDetailsStatus: 'idle',
-  listStatus: 'idle',
+  listsStatus: 'idle',
   lists: {}
 }
 
@@ -26,11 +27,18 @@ const createSocketSlice = (bridgeId: SocketList) =>
           routes: Route[]
         }>
       ) => {
-        console.log(action.payload)
         const { routes, tokenDetails } = action.payload
         if (routes && tokenDetails) {
           state.bridgingDetails.routes = { tokenDetails, routes }
         }
+      },
+      setTokenListsStatus: (state, action: PayloadAction<AsyncState>) => {
+        state.listsStatus = action.payload
+      },
+      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
+        const { payload } = action
+
+        state.lists = payload
       },
       setBridgeDetailsStatus: (
         state,

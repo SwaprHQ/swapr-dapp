@@ -24,6 +24,6 @@
     "allowSyntheticDefaultImports": true,
     "types": ["jest"]
   },
-  "exclude": ["node_modules", "cypress", "src/**/api"],
+  "exclude": ["node_modules", "cypress"],
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/components/Confetti/index.js"]
 }

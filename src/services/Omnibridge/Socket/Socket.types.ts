@@ -22,7 +22,7 @@ export interface SocketBridgeState {
   bridgingReceiveAmount?: string
   bridgingDetailsStatus: AsyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  listStatus: AsyncState
+  listsStatus: AsyncState
   lists: { [id: string]: TokenList }
   approvalData: {
     chainId?: ChainId
