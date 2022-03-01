@@ -206,7 +206,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     connector: injected,
     name: 'Tally',
     iconName: 'tally.svg',
-    description: 'Connect using Tally Wallet',
+    description: 'Connect using Tally Wallet.',
     href: null,
     color: '#D59B4B',
     mobile: true
