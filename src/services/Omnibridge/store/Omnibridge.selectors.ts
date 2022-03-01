@@ -20,17 +20,19 @@ export const selectAllTransactions = createSelector(
 export const selectAllLists = createSelector(
   [
     (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists
+    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
+    (state: AppState) => state.omnibridge['socket'].lists
   ],
-  (tokenListTestnet, tokenListMainnet) => {
-    return { ...tokenListTestnet, ...tokenListMainnet }
+  (tokenListTestnet, tokenListMainnet, tokenListSocket) => {
+    return { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
   }
 )
 
 export const selectListsLoading = createSelector(
   [
     (state: AppState) => state.omnibridge['arbitrum:testnet'].listsStatus,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].listsStatus
+    (state: AppState) => state.omnibridge['arbitrum:mainnet'].listsStatus,
+    (state: AppState) => state.omnibridge['socket'].listsStatus
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))

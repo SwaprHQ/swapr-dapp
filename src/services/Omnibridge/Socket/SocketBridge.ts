@@ -8,8 +8,10 @@ import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
+import { TokenListsAPI } from './api'
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
+import SocketLogo from '../../../assets/images/socket-logo.png'
 
-let previousController: AbortController
 export class SocketBridge extends OmnibridgeChildBase {
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
@@ -27,6 +29,8 @@ export class SocketBridge extends OmnibridgeChildBase {
   private get selectors() {
     return socketSelectors[this.bridgeId as SocketList]
   }
+
+  private _abortControllers: { [id: string]: AbortController } = {}
 
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
@@ -138,6 +142,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     return
   }
+
   public validate = async () => {
     const routeId = this.store.getState().omnibridge.common.activeRouteId
     const routes = this.selectors.selectRoutes(this.store.getState())
@@ -271,12 +276,13 @@ export class SocketBridge extends OmnibridgeChildBase {
       }
     })
     const health: { ok: boolean } = await response.json()
-    if (previousController) {
-      previousController.abort()
+
+    if (this._abortControllers.quote) {
+      this._abortControllers.quote.abort()
     }
 
     if (health.ok) {
-      previousController = new AbortController()
+      this._abortControllers.quote = new AbortController()
 
       const { from, to } = this.store.getState().omnibridge.UI
       if (!from.address || Number(from.value) === 0) return
@@ -291,7 +297,7 @@ export class SocketBridge extends OmnibridgeChildBase {
             'Content-Type': 'application/json',
             'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
           },
-          signal: previousController.signal
+          signal: this._abortControllers.quote.signal
         }
       )
       const quote: Quote = await response.json()
@@ -314,9 +320,75 @@ export class SocketBridge extends OmnibridgeChildBase {
     }
   }
 
-  public fetchDynamicLists = () => {
-    return Promise.resolve()
+  public fetchDynamicLists = async () => {
+    const {
+      from: { chainId: fromChainId },
+      to: { chainId: toChainId }
+    } = this.store.getState().omnibridge.UI
+
+    if (!fromChainId || !toChainId) return
+
+    // Abort previous calls
+
+    if (this._abortControllers.tokenListFrom) {
+      this._abortControllers.tokenListFrom.abort()
+    }
+
+    if (this._abortControllers.tokenListTo) {
+      this._abortControllers.tokenListTo.abort()
+    }
+
+    this._abortControllers.tokenListFrom = new AbortController()
+    this._abortControllers.tokenListTo = new AbortController()
+
+    this.store.dispatch(this.actions.setTokenListsStatus('loading'))
+
+    const payload = {
+      fromChainId: fromChainId.toString(),
+      toChainId: toChainId.toString()
+    }
+
+    const tokenListToPromise = TokenListsAPI.tokenListControllerGetToTokenList(payload, {
+      signal: this._abortControllers.tokenListFrom.signal
+    })
+    const tokenListFromPromise = TokenListsAPI.tokenListControllerGetfromTokenList(payload, {
+      signal: this._abortControllers.tokenListTo.signal
+    })
+    const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
+
+    const tokens: TokenInfo[] = [...tokenListFrom.result, ...tokenListTo.result].reduce<TokenInfo[]>((total, token) => {
+      const { address, chainId, symbol, decimals, icon, name } = token
+
+      if (!name || !decimals || !name) return total
+
+      total.push({
+        name,
+        symbol,
+        address,
+        decimals,
+        chainId: Number(chainId),
+        logoURI: icon
+      })
+
+      return total
+    }, [])
+
+    const tokenList: TokenList = {
+      name: 'Socket',
+      timestamp: new Date().toISOString(),
+      version: {
+        major: 1,
+        minor: 0,
+        patch: 0
+      },
+      tokens,
+      logoURI: SocketLogo
+    }
+
+    this.store.dispatch(this.actions.addTokenLists({ socket: tokenList }))
+    this.store.dispatch(this.actions.setTokenListsStatus('ready'))
   }
+
   public fetchStaticLists = () => {
     return Promise.resolve()
   }

@@ -80,6 +80,12 @@ export class Omnibridge {
     await this._callForEachBridge(signerChangeCall, 'onSignerChange() failed for')
   }
 
+  public fetchDynamicLists = async () => {
+    const fetchDynamicListsCall = (bridgeKey: BridgeList) => this.bridges[bridgeKey].fetchDynamicLists()
+
+    await this._callForEachBridge(fetchDynamicListsCall, 'fetchDynamicList() failed for')
+  }
+
   public init = async ({ account, activeProvider, activeChainId }: OmnibridgeChangeHandler) => {
     if (this._initialized) return
 
