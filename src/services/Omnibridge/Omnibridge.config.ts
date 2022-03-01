@@ -18,6 +18,16 @@ export const omnibridgeConfig: OmnibridgeChildBase[] = [
     bridgeId: 'socket',
     displayName: 'Socket',
     supportedChains: { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE, reverse: true }
+  }),
+  new SocketBridge({
+    bridgeId: 'socket',
+    displayName: 'Socket',
+    supportedChains: { from: ChainId.MAINNET, to: ChainId.XDAI, reverse: true }
+  }),
+  new SocketBridge({
+    bridgeId: 'socket',
+    displayName: 'Socket',
+    supportedChains: { from: ChainId.ARBITRUM_ONE, to: ChainId.XDAI, reverse: true }
   })
 ]
 

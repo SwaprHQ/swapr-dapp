@@ -31,7 +31,7 @@ export interface SingleTxOutputDTO {
      * @type {boolean}
      * @memberof SingleTxOutputDTO
      */
-    status: boolean;
+    success: boolean;
     /**
      * 
      * @type {SingleTxResponse}
@@ -50,7 +50,7 @@ export function SingleTxOutputDTOFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'status': json['status'],
+        'success': json['success'],
         'result': SingleTxResponseFromJSON(json['result']),
     };
 }
@@ -64,7 +64,7 @@ export function SingleTxOutputDTOToJSON(value?: SingleTxOutputDTO | null): any {
     }
     return {
         
-        'status': value.status,
+        'success': value.success,
         'result': SingleTxResponseToJSON(value.result),
     };
 }

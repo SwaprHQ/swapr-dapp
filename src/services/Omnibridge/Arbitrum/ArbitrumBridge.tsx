@@ -772,18 +772,20 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
     // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
     // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
-    // this.store.dispatch(this.actions.setBridgeDetails({ detailsStatus: 'loading' }))
-    //TODO get dynamic fees and gas
+
+    //TODO get gas,fee,time
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    const value = this.store.getState().omnibridge.UI.from.value
+
     this.store.dispatch(
       this.actions.setBridgeDetails({
         gas: '10',
-        fee: '0.2',
+        fee: '0',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days'
       })
     )
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-    this.store.dispatch(this.actions.setBridgingReceiveAmount(this.store.getState().omnibridge.UI.from.value))
+    this.store.dispatch(this.actions.setBridgingReceiveAmount(value))
   }
 }
