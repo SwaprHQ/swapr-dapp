@@ -3,10 +3,9 @@ import { ChainId, Token } from '@swapr/sdk'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
-import { AsyncState, BridgeList, BridgingDetailsErrorMessage, TokenMap } from '../Omnibridge.types'
+import { BridgeList, SupportedBridges, TokenMap } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
 import { socketSelectors } from '../Socket/Socket.selectors'
-import { Route, TokenAsset } from '../Socket/api/generated'
 
 export const selectAllTransactions = createSelector(
   [
@@ -112,29 +111,12 @@ export const selectSupportedBridgesForUI = createSelector(
     socketSelectors['socket'].selectBridgingDetails
   ],
   (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, socketDetails) => {
-    type RetValType = {
-      name: string
-      bridgeId: BridgeList
-      status: AsyncState
-      details: {
-        routes?: {
-          tokenDetails: TokenAsset
-          routes: Route[]
-        }
-        gas?: string
-        estimateTime?: string
-        fee?: string
-      }
-      errorMessage?: BridgingDetailsErrorMessage
-      receiveAmount?: string
-    }
-
     const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
       total[next.bridgeId] = next.name
       return total
     }, {})
 
-    const retVal = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails].reduce<RetValType[]>(
+    const supportedBridges = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails].reduce<SupportedBridges[]>(
       (total, bridge) => {
         if (bridgeNameMap[bridge.bridgeId] !== undefined) {
           total.push({
@@ -151,6 +133,6 @@ export const selectSupportedBridgesForUI = createSelector(
       []
     )
 
-    return retVal
+    return supportedBridges
   }
 )
