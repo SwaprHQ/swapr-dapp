@@ -16,7 +16,6 @@ export interface OmnibridgeConstructorParams {
 export interface SupportedChainsConfig {
   to: ChainId
   from: ChainId
-  reverse: boolean
 }
 
 export interface OmnibridgeChangeHandler {
@@ -43,7 +42,7 @@ export type BridgeList = ArbitrumList | SocketList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface OmnibridgeChildBaseConstructor {
-  supportedChains: SupportedChainsConfig
+  supportedChains: SupportedChainsConfig[]
   displayName: string
   bridgeId: BridgeList
 }

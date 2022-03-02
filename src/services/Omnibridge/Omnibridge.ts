@@ -5,12 +5,10 @@ import { initiateOmnibridgeProviders } from './Omnibridge.providers'
 import {
   BridgeList,
   OmnibridgeProviders,
-  SupportedChainsConfig,
   OmnibridgeChangeHandler,
   OmnibridgeConstructorParams
 } from './Omnibridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { commonActions } from './store/Common.reducer'
 import { AppState } from '../../state'
 import { selectSupportedBridges } from './store/Omnibridge.selectors'
 
@@ -51,23 +49,15 @@ export class Omnibridge {
   }
 
   constructor(store: Store<AppState>, config: OmnibridgeChildBase[]) {
-    const { bridges, supportedChains } = config.reduce(
-      (total, bridge) => {
-        total.bridges[bridge.bridgeId] = bridge
-        total.supportedChains[bridge.bridgeId] = bridge.supportedChains
-        return total
-      },
-      { bridges: {}, supportedChains: {} } as {
-        bridges: { [k in BridgeList]: OmnibridgeChildBase }
-        supportedChains: { [k in BridgeList]: SupportedChainsConfig }
-      }
-    )
+    const bridges = config.reduce((total, bridge) => {
+      total[bridge.bridgeId] = bridge
+      return total
+    }, {} as { [k in BridgeList]: OmnibridgeChildBase })
 
     this.store = store
     this.bridges = bridges
 
     this.staticProviders = initiateOmnibridgeProviders()
-    this.store.dispatch(commonActions.setSupportedChains(supportedChains))
   }
 
   public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {
