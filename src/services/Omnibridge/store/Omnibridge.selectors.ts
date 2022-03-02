@@ -99,7 +99,7 @@ export const selectSupportedBridges = createSelector([(state: AppState) => state
     },
     []
   )
-  console.log(supportedBridges)
+
   return supportedBridges
 })
 
