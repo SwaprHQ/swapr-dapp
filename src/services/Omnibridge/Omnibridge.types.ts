@@ -4,6 +4,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { AppState } from '../../state'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { Route, TokenAsset } from './Socket/api/generated'
 
 export type OmnibridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
@@ -16,7 +17,6 @@ export interface OmnibridgeConstructorParams {
 export interface SupportedChainsConfig {
   to: ChainId
   from: ChainId
-  reverse: boolean
 }
 
 export interface OmnibridgeChangeHandler {
@@ -43,7 +43,7 @@ export type BridgeList = ArbitrumList | SocketList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface OmnibridgeChildBaseConstructor {
-  supportedChains: SupportedChainsConfig
+  supportedChains: SupportedChainsConfig[]
   displayName: string
   bridgeId: BridgeList
 }
@@ -58,3 +58,20 @@ export interface TokenMap {
 }
 export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
 export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
+
+export type SupportedBridges = {
+  name: string
+  bridgeId: BridgeList
+  status: AsyncState
+  details: {
+    routes?: {
+      tokenDetails: TokenAsset
+      routes: Route[]
+    }
+    gas?: string
+    estimateTime?: string
+    fee?: string
+  }
+  errorMessage?: BridgingDetailsErrorMessage
+  receiveAmount?: string
+}

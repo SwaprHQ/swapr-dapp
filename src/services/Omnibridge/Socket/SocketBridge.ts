@@ -1,17 +1,25 @@
 import { parseUnits } from '@ethersproject/units'
 import { OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit, OmnibridgeChangeHandler } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
-// import { socketActions } from './Socket.reducer'
-import { Quote } from './Socket.types'
 import { SocketList } from '../Omnibridge.types'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
+import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
+import { QuoteControllerGetQuoteSortEnum } from './api/generated'
+import { BridgeModalStatus } from '../../../state/bridge/reducer'
+
 import { TokenListsAPI } from './api'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 
+const getErrorMsg = (error: any) => {
+  if (error?.code === 4001) {
+    return 'Transaction rejected'
+  }
+  return `Bridge failed: ${error.message}`
+}
 export class SocketBridge extends OmnibridgeChildBase {
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
@@ -54,35 +62,43 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
   public triggerBridging = async () => {
     //get txData from store
+    this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
     const { from, to } = this.store.getState().omnibridge.UI
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
 
     if (!data || !to) return
 
-    const tx = await this._activeProvider?.getSigner().sendTransaction({
-      to: recipient,
-      data
-    })
-
-    const receipt = await tx?.wait()
-
-    this.store.dispatch(
-      this.actions.addTx({
-        txHash: tx?.hash ? tx.hash : '',
-        assetName: from.address.substr(0, 2), //TODO find way to get asset name
-        value: to.value,
-        fromChainId: from.chainId ? from.chainId : 1,
-        toChainId: to.chainId ? to.chainId : 42161,
-        bridgeId: this.bridgeId
+    try {
+      const tx = await this._activeProvider?.getSigner().sendTransaction({
+        to: recipient,
+        data
       })
-    )
 
-    if (receipt) {
+      this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+      const receipt = await tx?.wait()
+
       this.store.dispatch(
-        this.actions.updateTx({
-          txHash: receipt.transactionHash
+        this.actions.addTx({
+          txHash: tx?.hash ? tx.hash : '',
+          assetName: from.address.substr(0, 2), //TODO find way to get asset name
+          value: to.value,
+          fromChainId: from.chainId ? from.chainId : 1,
+          toChainId: to.chainId ? to.chainId : 42161,
+          bridgeId: this.bridgeId
         })
+      )
+
+      if (receipt) {
+        this.store.dispatch(
+          this.actions.updateTx({
+            txHash: receipt.transactionHash
+          })
+        )
+      }
+    } catch (e) {
+      this.store.dispatch(
+        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
       )
     }
   }
@@ -96,16 +112,13 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     //build tx for approve
     try {
-      const response = await fetch(
-        `https://backend.movr.network/v2/approval/build-tx?chainID=${chainId}&owner=${owner}&allowanceTarget=${allowanceTarget}&tokenAddress=${tokenAddress}&amount=${amount}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
-          }
-        }
-      )
-      const transaction = await response.json()
+      const transaction = await ApprovalsAPI.approveControllerFetchApprovalsCalldata({
+        chainID: chainId.toString(),
+        owner,
+        allowanceTarget,
+        tokenAddress,
+        amount
+      })
 
       if (!transaction.success) return
 
@@ -137,7 +150,9 @@ export class SocketBridge extends OmnibridgeChildBase {
         )
       }
     } catch (e) {
-      throw new Error('Cannot build tx ')
+      this.store.dispatch(
+        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+      )
     }
 
     return
@@ -148,25 +163,30 @@ export class SocketBridge extends OmnibridgeChildBase {
     const routes = this.selectors.selectRoutes(this.store.getState())
 
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
-    if (!routeId || !routes) return
+    if (!routeId || !routes?.routes || !routes) return
 
     //find route
     const selectedRoute = routes.routes.find(route => route.routeId === routeId)
 
+    if (!selectedRoute) return
     //build txn
+
+    if (this._abortControllers.singleTx) {
+      this._abortControllers.singleTx.abort()
+    }
+
+    this._abortControllers.singleTx = new AbortController()
+
     try {
       this.store.dispatch(
         omnibridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, approved: false })
       )
-      const response = await fetch('https://backend.movr.network/v2/build-tx', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
+      const transaction = await ServerAPI.appControllerGetSingleTx(
+        {
+          singleTxDTO: { route: selectedRoute }
         },
-        body: JSON.stringify({ route: selectedRoute })
-      })
-      const transaction = await response.json()
+        { signal: this._abortControllers.singleTx.signal }
+      )
 
       if (!transaction.success) {
         this.store.dispatch(
@@ -199,17 +219,22 @@ export class SocketBridge extends OmnibridgeChildBase {
         )
       } else {
         //check allowance
-        const activeChainId = this.store.getState().omnibridge.UI.from.chainId //maybe can use this._activeChainId
-        const response = await fetch(
-          `https://backend.movr.network/v2/approval/check-allowance?chainID=${activeChainId}&owner=${this._account}&allowanceTarget=${transaction.result.approvalData.allowanceTarget}&tokenAddress=${transaction.result.approvalData.approvalTokenAddress}`,
+        if (this._abortControllers.allowance) {
+          this._abortControllers.allowance.abort()
+        }
+
+        this._abortControllers.allowance = new AbortController()
+
+        const activeChainId = this.store.getState().omnibridge.UI.from.chainId
+        const allowance = await ApprovalsAPI.approveControllerFetchApprovals(
           {
-            headers: {
-              'Content-Type': 'application/json',
-              'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
-            }
-          }
+            chainID: activeChainId ? activeChainId?.toString() : '1',
+            owner: this._account ? this._account : '',
+            allowanceTarget: transaction.result.approvalData.allowanceTarget as string,
+            tokenAddress: transaction.result.approvalData.approvalTokenAddress as string
+          },
+          { signal: this._abortControllers.allowance.signal }
         )
-        const allowance = await response.json()
 
         if (allowance.success) {
           if (
@@ -261,7 +286,9 @@ export class SocketBridge extends OmnibridgeChildBase {
         }
       }
     } catch (e) {
-      throw new Error('Cannot build tx')
+      this.store.dispatch(
+        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+      )
     }
   }
 
@@ -269,13 +296,13 @@ export class SocketBridge extends OmnibridgeChildBase {
     //check health socket server
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    const response = await fetch('https://backend.movr.network/v2/health', {
-      headers: {
-        'Content-Type': 'application/json',
-        'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
-      }
-    })
-    const health: { ok: boolean } = await response.json()
+    if (this._abortControllers.health) {
+      this._abortControllers.health.abort()
+    }
+
+    this._abortControllers.health = new AbortController()
+
+    const health = await ServerAPI.appControllerGetHealth({ signal: this._abortControllers.health.signal })
 
     if (this._abortControllers.quote) {
       this._abortControllers.quote.abort()
@@ -289,23 +316,32 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const value = parseUnits(from.value, from.decimals)
 
-      //TODO get to token address
-      const response = await fetch(
-        `https://backend.movr.network/v2/quote?fromChainId=${from.chainId}&fromTokenAddress=${from.address}&toChainId=${to.chainId}&toTokenAddress=0xff970a61a04b1ca14834a43f5de4533ebddb5cc8&fromAmount=${value}&userAddress=${this._account}&uniqueRoutesPerBridge=false&disableSwapping=false&sort=output&singleTxOnly=true`,
+      const quote = await QuoteAPI.quoteControllerGetQuote(
         {
-          headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37'
-          },
-          signal: this._abortControllers.quote.signal
-        }
+          fromChainId: from.chainId ? from.chainId.toString() : '1',
+          fromTokenAddress: from.address,
+          toChainId: to.chainId ? to.chainId.toString() : '42161',
+          toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
+          fromAmount: value.toString(),
+          userAddress: this._account ? this._account : '',
+          uniqueRoutesPerBridge: false,
+          disableSwapping: false,
+          sort: QuoteControllerGetQuoteSortEnum.Output,
+          singleTxOnly: true
+        },
+        { signal: this._abortControllers.quote.signal }
       )
-      const quote: Quote = await response.json()
 
       const tokenDetails = quote.result.toAsset
       const routesData = { tokenDetails, routes: quote.result.routes }
 
       if (quote.success) {
+        if (quote.result.routes.length === 0) {
+          this.store.dispatch(
+            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+          )
+          return
+        }
         this.store.dispatch(this.actions.setBridgeDetails(routesData))
         this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
       } else {
@@ -315,7 +351,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       }
     } else {
       this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'Bridge is not available now' })
       )
     }
   }

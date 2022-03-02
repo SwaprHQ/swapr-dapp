@@ -16,7 +16,8 @@ import {
   useAvailableBridges,
   useShowAvailableBridges
 } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
-import { Route } from '../../services/Omnibridge/Socket/Socket.types'
+import { Route } from '../../services/Omnibridge/Socket/api/generated/models/Route'
+import { TokenAsset } from '../../services/Omnibridge/Socket/api/generated'
 
 const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
@@ -132,14 +133,7 @@ interface BridgeProps {
   activeBridge: OptionalBridgeList
   details: {
     routes?: {
-      tokenDetails: {
-        chainId: number
-        address: string
-        decimals: number
-        icon: string
-        name: string
-        symbol: string
-      }
+      tokenDetails: TokenAsset
       routes: Route[]
     }
     gas?: string
@@ -212,6 +206,7 @@ const Bridge = ({
       {/* TODO style routes for bridge and display error message */}
       <div>
         {routes &&
+          !isError &&
           !isLoading &&
           routes.routes.map(({ toAmount, totalGasFeesInUsd, serviceTime, routeId }) => {
             return (

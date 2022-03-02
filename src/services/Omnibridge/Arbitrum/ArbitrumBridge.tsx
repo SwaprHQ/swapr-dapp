@@ -62,10 +62,18 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     return this._store
   }
 
-  constructor({ supportedChains, bridgeId, displayName = 'Arbitrum' }: OmnibridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({
+    supportedChains: supportedChainsArr,
+    bridgeId,
+    displayName = 'Arbitrum'
+  }: OmnibridgeChildBaseConstructor) {
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
 
-    const { l1ChainId, l2ChainId } = getChainPair(this.supportedChains.from)
+    if (supportedChainsArr.length !== 1) throw new Error('Invalid config')
+
+    const [supportedChains] = supportedChainsArr
+
+    const { l1ChainId, l2ChainId } = getChainPair(supportedChains.from)
 
     if (!l1ChainId || !l2ChainId) throw new Error('ArbBridge: Wrong config')
 
@@ -78,7 +86,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
+    migrateBridgeTransactions(this.store, this.actions, this.supportedChains[0])
 
     await this.setArbTs()
 
@@ -772,18 +780,20 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
     // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
     // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
-    // this.store.dispatch(this.actions.setBridgeDetails({ detailsStatus: 'loading' }))
-    //TODO get dynamic fees and gas
+
+    //TODO get gas,fee,time
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    const value = this.store.getState().omnibridge.UI.from.value
+
     this.store.dispatch(
       this.actions.setBridgeDetails({
         gas: '10',
-        fee: '0.2',
+        fee: '0',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days'
       })
     )
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-    this.store.dispatch(this.actions.setBridgingReceiveAmount(this.store.getState().omnibridge.UI.from.value))
+    this.store.dispatch(this.actions.setBridgingReceiveAmount(value))
   }
 }
