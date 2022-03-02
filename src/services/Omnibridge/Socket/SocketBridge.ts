@@ -225,7 +225,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
         this._abortControllers.allowance = new AbortController()
 
-        const activeChainId = this.store.getState().omnibridge.UI.from.chainId //maybe can use this._activeChainId
+        const activeChainId = this.store.getState().omnibridge.UI.from.chainId
         const allowance = await ApprovalsAPI.approveControllerFetchApprovals(
           {
             chainID: activeChainId ? activeChainId?.toString() : '1',
