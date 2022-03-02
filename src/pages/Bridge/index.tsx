@@ -85,7 +85,6 @@ export default function Bridge() {
   const omnibridge = useOmnibridge()
 
   const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
-  const receiveValue = useSelector((state: AppState) => state.omnibridge.UI.to.value)
 
   const { chainId, partnerChainId, isArbitrum } = useChains()
 
@@ -286,22 +285,6 @@ export default function Bridge() {
           id="bridge-currency-input"
           hideBalance={isCollecting && ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)}
           isBridge={true}
-          isLoading={listsLoading}
-        />
-        {/* Here will be created new component e.g OutputCurrency */}
-        <CurrencyInputPanel
-          label="You will receive"
-          value={isCollecting ? collectableTx.value : receiveValue}
-          showMaxButton={false}
-          currency={bridgeCurrency}
-          onUserInput={onUserInput}
-          onMax={!isCollecting ? handleMaxInput : undefined}
-          onCurrencySelect={onCurrencySelection}
-          disableCurrencySelect={true}
-          disabled={true}
-          id="bridge-currency-input"
-          hideBalance={true}
-          isBridge={false}
           isLoading={listsLoading}
         />
         <BridgeActionPanel
