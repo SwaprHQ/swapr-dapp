@@ -14,6 +14,7 @@ export const omnibridgeConfig: OmnibridgeChildBase[] = [
     displayName: 'Arbitrum mainnet',
     supportedChains: { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE, reverse: true }
   }),
+  //tmp maybe we can use array of supported chains
   new SocketBridge({
     bridgeId: 'socket',
     displayName: 'Socket',
