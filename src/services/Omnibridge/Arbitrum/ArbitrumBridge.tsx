@@ -62,10 +62,18 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     return this._store
   }
 
-  constructor({ supportedChains, bridgeId, displayName = 'Arbitrum' }: OmnibridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({
+    supportedChains: supportedChainsArr,
+    bridgeId,
+    displayName = 'Arbitrum'
+  }: OmnibridgeChildBaseConstructor) {
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
 
-    const { l1ChainId, l2ChainId } = getChainPair(this.supportedChains.from)
+    if (supportedChainsArr.length !== 1) throw new Error('Invalid config')
+
+    const [supportedChains] = supportedChainsArr
+
+    const { l1ChainId, l2ChainId } = getChainPair(supportedChains.from)
 
     if (!l1ChainId || !l2ChainId) throw new Error('ArbBridge: Wrong config')
 
@@ -78,7 +86,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    migrateBridgeTransactions(this.store, this.actions, this.supportedChains)
+    migrateBridgeTransactions(this.store, this.actions, this.supportedChains[0])
 
     await this.setArbTs()
 
