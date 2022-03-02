@@ -38,7 +38,6 @@ export const networkOptionsPreset = [
     chainId: ChainId.XDAI,
     name: 'Gnosis Chain',
     logoSrc: GnosisLogo,
-    color: '#49A9A7',
-    tag: 'coming soon'
+    color: '#49A9A7'
   }
 ]

@@ -8,6 +8,6 @@ export enum BridgeStep {
 }
 
 export const isNetworkDisabled = (optionChainId: ChainId, selectedNetworkChainId: ChainId) => {
-  const { tag, partnerChainId } = getNetworkInfo(optionChainId)
-  return selectedNetworkChainId === optionChainId || tag === 'coming soon' || !partnerChainId
+  const { tag } = getNetworkInfo(optionChainId)
+  return selectedNetworkChainId === optionChainId || tag === 'coming soon'
 }
