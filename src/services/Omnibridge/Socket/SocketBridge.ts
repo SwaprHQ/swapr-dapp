@@ -171,13 +171,22 @@ export class SocketBridge extends OmnibridgeChildBase {
     if (!selectedRoute) return
     //build txn
 
+    if (this._abortControllers.singleTx) {
+      this._abortControllers.singleTx.abort()
+    }
+
+    this._abortControllers.singleTx = new AbortController()
+
     try {
       this.store.dispatch(
         omnibridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, approved: false })
       )
-      const transaction = await ServerAPI.appControllerGetSingleTx({
-        singleTxDTO: { route: selectedRoute }
-      })
+      const transaction = await ServerAPI.appControllerGetSingleTx(
+        {
+          singleTxDTO: { route: selectedRoute }
+        },
+        { signal: this._abortControllers.singleTx.signal }
+      )
 
       if (!transaction.success) {
         this.store.dispatch(
@@ -210,13 +219,22 @@ export class SocketBridge extends OmnibridgeChildBase {
         )
       } else {
         //check allowance
+        if (this._abortControllers.allowance) {
+          this._abortControllers.allowance.abort()
+        }
+
+        this._abortControllers.allowance = new AbortController()
+
         const activeChainId = this.store.getState().omnibridge.UI.from.chainId //maybe can use this._activeChainId
-        const allowance = await ApprovalsAPI.approveControllerFetchApprovals({
-          chainID: activeChainId ? activeChainId?.toString() : '1',
-          owner: this._account ? this._account : '',
-          allowanceTarget: transaction.result.approvalData.allowanceTarget as string,
-          tokenAddress: transaction.result.approvalData.approvalTokenAddress as string
-        })
+        const allowance = await ApprovalsAPI.approveControllerFetchApprovals(
+          {
+            chainID: activeChainId ? activeChainId?.toString() : '1',
+            owner: this._account ? this._account : '',
+            allowanceTarget: transaction.result.approvalData.allowanceTarget as string,
+            tokenAddress: transaction.result.approvalData.approvalTokenAddress as string
+          },
+          { signal: this._abortControllers.allowance.signal }
+        )
 
         if (allowance.success) {
           if (
@@ -278,7 +296,13 @@ export class SocketBridge extends OmnibridgeChildBase {
     //check health socket server
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    const health = await ServerAPI.appControllerGetHealth()
+    if (this._abortControllers.health) {
+      this._abortControllers.health.abort()
+    }
+
+    this._abortControllers.health = new AbortController()
+
+    const health = await ServerAPI.appControllerGetHealth({ signal: this._abortControllers.health.signal })
 
     if (this._abortControllers.quote) {
       this._abortControllers.quote.abort()
@@ -292,22 +316,25 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const value = parseUnits(from.value, from.decimals)
 
-      const quote = await QuoteAPI.quoteControllerGetQuote({
-        fromChainId: from.chainId ? from.chainId.toString() : '1',
-        fromTokenAddress: from.address,
-        toChainId: to.chainId ? to.chainId.toString() : '42161',
-        toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
-        fromAmount: value.toString(),
-        userAddress: this._account ? this._account : '',
-        uniqueRoutesPerBridge: false,
-        disableSwapping: false,
-        sort: QuoteControllerGetQuoteSortEnum.Output,
-        singleTxOnly: true
-      })
+      const quote = await QuoteAPI.quoteControllerGetQuote(
+        {
+          fromChainId: from.chainId ? from.chainId.toString() : '1',
+          fromTokenAddress: from.address,
+          toChainId: to.chainId ? to.chainId.toString() : '42161',
+          toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
+          fromAmount: value.toString(),
+          userAddress: this._account ? this._account : '',
+          uniqueRoutesPerBridge: false,
+          disableSwapping: false,
+          sort: QuoteControllerGetQuoteSortEnum.Output,
+          singleTxOnly: true
+        },
+        { signal: this._abortControllers.quote.signal }
+      )
 
       const tokenDetails = quote.result.toAsset
       const routesData = { tokenDetails, routes: quote.result.routes }
-      console.log(quote)
+
       if (quote.success) {
         if (quote.result.routes.length === 0) {
           this.store.dispatch(
@@ -324,7 +351,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       }
     } else {
       this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'Bridge is not available now' })
       )
     }
   }
