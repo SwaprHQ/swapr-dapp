@@ -146,6 +146,8 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
       },
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
         const { gas, fee, estimateTime, receiveAmount } = action.payload
+
+        //(store persist) crashing page without that code
         if (!state.bridgingDetails) {
           state.bridgingDetails = {}
         }

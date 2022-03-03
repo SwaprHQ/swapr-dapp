@@ -24,6 +24,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
         const { gas, fee, estimateTime, receiveAmount } = action.payload
 
+        //(store persist) crashing page without that code
         if (!state.bridgingDetails) {
           state.bridgingDetails = {}
         }
