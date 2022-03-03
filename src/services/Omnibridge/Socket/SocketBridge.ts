@@ -318,14 +318,16 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const value = parseUnits(from.value, from.decimals)
 
+      if (!from.chainId || !to.chainId || !this._account) return
+
       const quote = await QuoteAPI.quoteControllerGetQuote(
         {
-          fromChainId: from.chainId ? from.chainId.toString() : '1',
+          fromChainId: from.chainId.toString(),
           fromTokenAddress: from.address,
-          toChainId: to.chainId ? to.chainId.toString() : '42161',
+          toChainId: to.chainId.toString(),
           toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
           fromAmount: value.toString(),
-          userAddress: this._account ? this._account : '',
+          userAddress: this._account,
           uniqueRoutesPerBridge: false,
           disableSwapping: false,
           sort: QuoteControllerGetQuoteSortEnum.Output,
@@ -341,17 +343,67 @@ export class SocketBridge extends OmnibridgeChildBase {
         this.store.dispatch(
           this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
         )
+        return
       }
 
       if (success && routes.length > 0) {
         this.store.dispatch(this.actions.setRoutes(routes))
 
-        //TODO find the best route tmp just set first route
-        const [{ toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs }] = routes
+        const tokenData = await ServerAPI.appControllerGetTokenPrice({
+          tokenAddress: toAsset.address,
+          chainId: toAsset.chainId
+        })
 
-        function getBridgeFee(userTxs: any): string {
+        const {
+          result: { tokenPrice } //token price USD
+        } = tokenData
+
+        const bestRoute = routes.reduce<{ amount: number; routeId: string }>(
+          (total, next) => {
+            const amount = (
+              Number(formatUnits(next.toAmount, toAsset.decimals).toString()) * tokenPrice -
+              next.totalGasFeesInUsd
+            ).toFixed(2)
+
+            const route = {
+              amount: Number(amount),
+              routeId: next.routeId
+            }
+
+            if (total.amount <= route.amount) {
+              total = route
+            }
+
+            return total
+          },
+          { amount: 0, routeId: '' } as { amount: number; routeId: string }
+        )
+
+        const indexOfBestRoute = routes.findIndex(route => route.routeId === bestRoute.routeId)
+
+        if (indexOfBestRoute === -1) throw new Error('Route not found')
+
+        const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
+        //set route
+        this.store.dispatch(commonActions.setActiveRouteId(routeId))
+
+        const getBridgeFee = (userTxs: any): string => {
           if (isFee(userTxs)) {
-            return userTxs[0].steps[0].protocolFees.feesInUsd.toFixed(2).toString()
+            //CHECK
+            // protocolFees has two parameters {amount,feesInUsd}
+            // amount - fee but in token representation
+            // feesInUsd - i have not seen this value other than 0
+            //should we use both and sum ? (for now we sum it)
+            const formattedAmount = Number(
+              formatUnits(userTxs[0].steps[0].protocolFees.amount, toAsset.decimals).toString()
+            ) //it's amount of token
+
+            const feesInToken = formattedAmount * tokenPrice
+            const feesInUsd = userTxs[0].steps[0].protocolFees.feesInUsd
+
+            const fee = `${(feesInToken + feesInUsd).toFixed(2).toString()} $`
+
+            return fee
           }
 
           //this shouldn't happen
@@ -361,7 +413,7 @@ export class SocketBridge extends OmnibridgeChildBase {
         const fee = getBridgeFee(userTxs)
 
         const details = {
-          gas: totalGasFeesInUsd.toFixed(2).toString(),
+          gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
           fee,
           estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
           receiveAmount: formatUnits(toAmount, toAsset.decimals)
@@ -369,7 +421,6 @@ export class SocketBridge extends OmnibridgeChildBase {
 
         this.store.dispatch(this.actions.setBridgeDetails(details))
         this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-        this.store.dispatch(commonActions.setActiveRouteId(routeId))
       }
     } else {
       this.store.dispatch(
