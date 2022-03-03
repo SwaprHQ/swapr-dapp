@@ -130,6 +130,8 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
   const isSelected = useMemo(() => id === activeBridge, [id, activeBridge])
   const isLoading = useMemo(() => status === 'loading', [status])
 
+  const show = status !== 'loading' && details
+
   return (
     <BridgeOption
       isSelected={isSelected}
@@ -141,13 +143,11 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       }}
     >
       <BridgeName isSelected={isSelected}>{name}</BridgeName>
-      <BridgeDetails>{isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.fee}</BridgeDetails>
-      <BridgeDetails>{isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.gas}</BridgeDetails>
-      <BridgeDetails>
-        {isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
-      </BridgeDetails>
+      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.fee}</BridgeDetails>
+      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.gas}</BridgeDetails>
+      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}</BridgeDetails>
       <BridgeReceiveAmount>
-        {isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
+        {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
       </BridgeReceiveAmount>
     </BridgeOption>
   )
