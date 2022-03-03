@@ -124,8 +124,7 @@ export const selectSupportedBridgesForUI = createSelector(
             bridgeId: bridge.bridgeId,
             details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
             status: bridge.loading,
-            errorMessage: bridge.errorMessage,
-            receiveAmount: bridge.receiveAmount
+            errorMessage: bridge.errorMessage
           })
         }
         return total

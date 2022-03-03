@@ -4,7 +4,6 @@ import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { AppState } from '../../state'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
-import { Route, TokenAsset } from './Socket/api/generated'
 
 export type OmnibridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
@@ -64,14 +63,10 @@ export type SupportedBridges = {
   bridgeId: BridgeList
   status: AsyncState
   details: {
-    routes?: {
-      tokenDetails: TokenAsset
-      routes: Route[]
-    }
     gas?: string
     estimateTime?: string
     fee?: string
+    receiveAmount?: string
   }
   errorMessage?: BridgingDetailsErrorMessage
-  receiveAmount?: string
 }

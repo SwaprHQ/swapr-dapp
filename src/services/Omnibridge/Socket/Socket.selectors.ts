@@ -7,25 +7,20 @@ const createSelectBridgingDetails = (bridgeId: SocketList) =>
     [
       (state: AppState) => state.omnibridge[bridgeId].bridgingDetails,
       (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingReceiveAmount
+      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage
     ],
-    (details, loading, errorMessage, receiveAmount) => {
+    (details, loading, errorMessage) => {
       return {
         bridgeId,
         details,
         loading,
-        errorMessage,
-        receiveAmount
+        errorMessage
       }
     }
   )
 
 const createSelectRoutes = (bridgeId: SocketList) =>
-  createSelector(
-    [(state: AppState) => state.omnibridge[bridgeId].bridgingDetails],
-    bridgingDetails => bridgingDetails.routes
-  )
+  createSelector([(state: AppState) => state.omnibridge[bridgeId].routes], routes => routes)
 
 const createSelectApprovalData = (bridgeId: SocketList) =>
   createSelector([(state: AppState) => state.omnibridge[bridgeId].approvalData], approvalData => approvalData)
