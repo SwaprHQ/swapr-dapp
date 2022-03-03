@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { SocketBridgeState } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList } from '../Omnibridge.types'
-import { TokenAsset, Route } from './api/generated'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList, BridgeDetails } from '../Omnibridge.types'
+import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
   transactions: [],
@@ -12,7 +12,8 @@ const initialState: SocketBridgeState = {
   bridgingDetails: {},
   bridgingDetailsStatus: 'idle',
   listsStatus: 'idle',
-  lists: {}
+  lists: {},
+  routes: []
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -20,16 +21,25 @@ const createSocketSlice = (bridgeId: SocketList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      setBridgeDetails: (
-        state,
-        action: PayloadAction<{
-          tokenDetails: TokenAsset
-          routes: Route[]
-        }>
-      ) => {
-        const { routes, tokenDetails } = action.payload
-        if (routes && tokenDetails) {
-          state.bridgingDetails.routes = { tokenDetails, routes }
+      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
+        const { gas, fee, estimateTime, receiveAmount } = action.payload
+
+        //(store persist) crashing page without that code
+        if (!state.bridgingDetails) {
+          state.bridgingDetails = {}
+        }
+
+        if (gas) {
+          state.bridgingDetails.gas = gas
+        }
+        if (fee) {
+          state.bridgingDetails.fee = fee
+        }
+        if (estimateTime) {
+          state.bridgingDetails.estimateTime = estimateTime
+        }
+        if (receiveAmount) {
+          state.bridgingDetails.receiveAmount = receiveAmount
         }
       },
       setTokenListsStatus: (state, action: PayloadAction<AsyncState>) => {
@@ -71,9 +81,6 @@ const createSocketSlice = (bridgeId: SocketList) =>
       ) => {
         state.txBridgingData = action.payload
       },
-      setBridgingReceiveAmount: (state, action: PayloadAction<string>) => {
-        state.bridgingReceiveAmount = action.payload
-      },
       addTx: (
         state,
         action: PayloadAction<{
@@ -93,6 +100,9 @@ const createSocketSlice = (bridgeId: SocketList) =>
         const index = state.transactions.findIndex(tx => tx.txHash === action.payload.txHash)
 
         state.transactions[index].timestampResolved = Date.now()
+      },
+      setRoutes: (state, action: PayloadAction<Route[]>) => {
+        state.routes = action.payload
       }
     }
   })

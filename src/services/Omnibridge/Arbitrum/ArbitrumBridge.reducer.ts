@@ -4,18 +4,13 @@ import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, AsyncState, BridgingDetailsErrorMessage } from '../Omnibridge.types'
+import { ArbitrumList, AsyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../Omnibridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
   lists: { [id: string]: TokenList }
   listsStatus: AsyncState
-  bridgingDetails: {
-    gas?: string
-    estimateTime?: string
-    fee?: string
-  }
-  bridgingReceiveAmount?: string
+  bridgingDetails: BridgeDetails
   bridgingDetailsStatus: AsyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
 }
@@ -149,8 +144,13 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           })
         })
       },
-      setBridgeDetails: (state, action: PayloadAction<{ gas?: string; fee?: string; estimateTime?: string }>) => {
-        const { gas, fee, estimateTime } = action.payload
+      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
+        const { gas, fee, estimateTime, receiveAmount } = action.payload
+
+        //(store persist) crashing page without that code
+        if (!state.bridgingDetails) {
+          state.bridgingDetails = {}
+        }
 
         if (gas) {
           state.bridgingDetails.gas = gas
@@ -160,6 +160,9 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         }
         if (estimateTime) {
           state.bridgingDetails.estimateTime = estimateTime
+        }
+        if (receiveAmount) {
+          state.bridgingDetails.receiveAmount = receiveAmount
         }
       },
       setBridgeDetailsStatus: (
@@ -171,9 +174,6 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         if (errorMessage) {
           state.bridgingDetailsErrorMessage = errorMessage
         }
-      },
-      setBridgingReceiveAmount: (state, action: PayloadAction<string>) => {
-        state.bridgingReceiveAmount = action.payload
       }
     }
   })

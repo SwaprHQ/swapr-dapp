@@ -1,4 +1,4 @@
-import { parseUnits } from '@ethersproject/units'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import { OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit, OmnibridgeChangeHandler } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { SocketList } from '../Omnibridge.types'
@@ -13,6 +13,8 @@ import { BridgeModalStatus } from '../../../state/bridge/reducer'
 import { TokenListsAPI } from './api'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
+import { commonActions } from '../store/Common.reducer'
+import { isFee } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -163,10 +165,10 @@ export class SocketBridge extends OmnibridgeChildBase {
     const routes = this.selectors.selectRoutes(this.store.getState())
 
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
-    if (!routeId || !routes?.routes || !routes) return
+    if (!routeId || !routes || !routes) return
 
     //find route
-    const selectedRoute = routes.routes.find(route => route.routeId === routeId)
+    const selectedRoute = routes.find(route => route.routeId === routeId)
 
     if (!selectedRoute) return
     //build txn
@@ -332,22 +334,42 @@ export class SocketBridge extends OmnibridgeChildBase {
         { signal: this._abortControllers.quote.signal }
       )
 
-      const tokenDetails = quote.result.toAsset
-      const routesData = { tokenDetails, routes: quote.result.routes }
+      const { success, result } = quote
+      const { routes, toAsset } = result
 
-      if (quote.success) {
-        if (quote.result.routes.length === 0) {
-          this.store.dispatch(
-            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
-          )
-          return
-        }
-        this.store.dispatch(this.actions.setBridgeDetails(routesData))
-        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-      } else {
+      if (!success || routes.length === 0) {
         this.store.dispatch(
           this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
         )
+      }
+
+      if (success && routes.length > 0) {
+        this.store.dispatch(this.actions.setRoutes(routes))
+
+        //TODO find the best route tmp just set first route
+        const [{ toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs }] = routes
+
+        function getBridgeFee(userTxs: any): string {
+          if (isFee(userTxs)) {
+            return userTxs[0].steps[0].protocolFees.feesInUsd.toFixed(2).toString()
+          }
+
+          //this shouldn't happen
+          return '---'
+        }
+
+        const fee = getBridgeFee(userTxs)
+
+        const details = {
+          gas: totalGasFeesInUsd.toFixed(2).toString(),
+          fee,
+          estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
+          receiveAmount: formatUnits(toAmount, toAsset.decimals)
+        }
+
+        this.store.dispatch(this.actions.setBridgeDetails(details))
+        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+        this.store.dispatch(commonActions.setActiveRouteId(routeId))
       }
     } else {
       this.store.dispatch(

@@ -7,12 +7,12 @@ import { SocketBridge } from './Socket/SocketBridge'
 export const omnibridgeConfig: OmnibridgeChildBase[] = [
   new ArbitrumBridge({
     bridgeId: 'arbitrum:testnet',
-    displayName: 'Arbitrum testnet',
+    displayName: 'Arbitrum',
     supportedChains: [{ from: ChainId.RINKEBY, to: ChainId.ARBITRUM_RINKEBY }]
   }),
   new ArbitrumBridge({
     bridgeId: 'arbitrum:mainnet',
-    displayName: 'Arbitrum mainnet',
+    displayName: 'Arbitrum',
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE }]
   }),
   new SocketBridge({
