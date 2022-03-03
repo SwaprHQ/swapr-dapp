@@ -4,7 +4,13 @@ import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
 
-export const networkOptionsPreset = [
+export const networkOptionsPreset: {
+  chainId: ChainId
+  name: string
+  logoSrc: string
+  color: string
+  tag?: string
+}[] = [
   // no tag - mainnets
   {
     chainId: ChainId.MAINNET,
@@ -33,7 +39,6 @@ export const networkOptionsPreset = [
     color: '#b1a5e6',
     tag: 'testnets'
   },
-  // COMING SOON
   {
     chainId: ChainId.XDAI,
     name: 'Gnosis Chain',
