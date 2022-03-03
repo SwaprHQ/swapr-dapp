@@ -69,15 +69,8 @@ export const useAvailableBridges = () => {
 
   return availableBridges
 }
-
 export const useActiveBridge = () => {
   const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
 
   return activeBridge
-}
-
-export const useActiveRoute = () => {
-  const activeRouteId = useSelector((state: AppState) => state.omnibridge.common.activeRouteId)
-
-  return activeRouteId
 }
