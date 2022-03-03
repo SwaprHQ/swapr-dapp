@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
-import { Text } from 'rebass'
+import { Text, Box } from 'rebass'
 import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
 import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
 import {
@@ -78,7 +78,7 @@ export const BridgeSelectionWindow = () => {
 
   return (
     <>
-      {showAvailableBridges && (
+      {showAvailableBridges && availableBridges.length > 0 && (
         <WrapperBridgeSelectionWindow>
           <BridgeWrapperLabel>
             <BridgeLabel justify={true}>Bridge</BridgeLabel>
@@ -87,22 +87,26 @@ export const BridgeSelectionWindow = () => {
             <BridgeLabel>Time</BridgeLabel>
             <BridgeLabel>Amount</BridgeLabel>
           </BridgeWrapperLabel>
-          {availableBridges
-            ?.filter(bridge => bridge.status !== 'failed')
-            .map(({ bridgeId, name, details, status }) => {
-              return (
-                <Bridge
-                  id={bridgeId}
-                  key={bridgeId}
-                  name={name}
-                  activeBridge={activeBridge}
-                  details={details}
-                  status={status}
-                  handleSelectBridge={handleSelectBridge}
-                />
-              )
-            })}
+          {availableBridges.map(({ bridgeId, name, details, status }) => {
+            return (
+              <Bridge
+                id={bridgeId}
+                key={bridgeId}
+                name={name}
+                activeBridge={activeBridge}
+                details={details}
+                status={status}
+                handleSelectBridge={handleSelectBridge}
+              />
+            )
+          })}
         </WrapperBridgeSelectionWindow>
+      )}
+
+      {availableBridges.length === 0 && (
+        <Box sx={{ marginTop: '15px', width: '100%' }}>
+          <Text sx={{ textAlign: 'center', color: '#464366' }}>No available bridges</Text>
+        </Box>
       )}
     </>
   )
@@ -126,8 +130,6 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
   const isSelected = useMemo(() => id === activeBridge, [id, activeBridge])
   const isLoading = useMemo(() => status === 'loading', [status])
 
-  const { gas, fee, estimateTime, receiveAmount } = details
-
   return (
     <BridgeOption
       isSelected={isSelected}
@@ -139,10 +141,14 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       }}
     >
       <BridgeName isSelected={isSelected}>{name}</BridgeName>
-      <BridgeDetails>{isLoading ? <Skeleton width="25px" height="9px" /> : fee}</BridgeDetails>
-      <BridgeDetails>{isLoading ? <Skeleton width="25px" height="9px" /> : gas}</BridgeDetails>
-      <BridgeDetails>{isLoading ? <Skeleton width="25px" height="9px" /> : estimateTime}</BridgeDetails>
-      <BridgeReceiveAmount>{isLoading ? <Skeleton width="25px" height="9px" /> : receiveAmount}</BridgeReceiveAmount>
+      <BridgeDetails>{isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.fee}</BridgeDetails>
+      <BridgeDetails>{isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.gas}</BridgeDetails>
+      <BridgeDetails>
+        {isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
+      </BridgeDetails>
+      <BridgeReceiveAmount>
+        {isLoading || !details ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
+      </BridgeReceiveAmount>
     </BridgeOption>
   )
 }

@@ -58,15 +58,17 @@ export interface TokenMap {
 export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
 export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
 
+export interface BridgeDetails {
+  gas?: string
+  estimateTime?: string
+  fee?: string
+  receiveAmount?: string
+}
+
 export type SupportedBridges = {
   name: string
   bridgeId: BridgeList
   status: AsyncState
-  details: {
-    gas?: string
-    estimateTime?: string
-    fee?: string
-    receiveAmount?: string
-  }
+  details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage
 }

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { SocketBridgeState } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList } from '../Omnibridge.types'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList, BridgeDetails } from '../Omnibridge.types'
 import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
@@ -21,11 +21,12 @@ const createSocketSlice = (bridgeId: SocketList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      setBridgeDetails: (
-        state,
-        action: PayloadAction<{ gas?: string; fee?: string; estimateTime?: string; receiveAmount?: string }>
-      ) => {
+      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
         const { gas, fee, estimateTime, receiveAmount } = action.payload
+
+        if (!state.bridgingDetails) {
+          state.bridgingDetails = {}
+        }
 
         if (gas) {
           state.bridgingDetails.gas = gas
