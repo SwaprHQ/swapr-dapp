@@ -131,6 +131,7 @@ export default function Swap() {
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const {
+    loading: swapInfoIsLoading,
     trade: potentialTrade,
     allPlatformTrades,
     currencyBalances,
@@ -196,7 +197,7 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
-  const route = trade instanceof UniswapV2Trade && trade?.route
+  const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
@@ -495,11 +496,15 @@ export default function Swap() {
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          <AdvancedSwapDetailsDropdown
-            trade={trade}
-            allPlatformTrades={allPlatformTrades}
-            onSelectedPlatformChange={setPlatformOverride}
-          />
+          {swapInfoIsLoading ? (
+            <>Loading</>
+          ) : (
+            <AdvancedSwapDetailsDropdown
+              trade={trade}
+              allPlatformTrades={allPlatformTrades}
+              onSelectedPlatformChange={setPlatformOverride}
+            />
+          )}
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>

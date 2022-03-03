@@ -56,6 +56,8 @@ export function useSwapsCallArguments(
   return useMemo(() => {
     if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) return []
 
+    console.log(trades)
+
     return trades.map(trade => {
       if (!trade) {
         return []
@@ -72,12 +74,14 @@ export function useSwapsCallArguments(
       }
 
       // Uniswap V2 trade
-      swapMethods.push(
-        trade.swapTransaction({
-          recipient,
-          ttl: deadline.toNumber()
-        })
-      )
+      if (trade instanceof UniswapV2Trade) {
+        swapMethods.push(
+          trade.swapTransaction({
+            recipient,
+            ttl: deadline.toNumber()
+          })
+        )
+      }
 
       /*
       if (trade.tradeType === TradeType.EXACT_INPUT) {

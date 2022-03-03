@@ -104,17 +104,18 @@ function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boo
   )
 }
 
-// from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(
-  platformOverride?: RoutablePlatform
-): {
+export interface UseDerivedSwapInfoResult {
+  loading: boolean
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
   trade: Trade | undefined
   allPlatformTrades: (Trade | undefined)[] | undefined
   inputError?: string
-} {
+}
+
+// from the current swap inputs, compute the best trade and return it.
+export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
   const { account, chainId } = useActiveWeb3React()
   const {
     independentField,
@@ -137,18 +138,19 @@ export function useDerivedSwapInfo(
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const { trades: bestTradeExactInAllPlatforms } = useTradeExactInAllPlatforms(
+  const useTradeExactInAllPlatformsRes = useTradeExactInAllPlatforms(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const { trades: bestTradeExactOutAllPlatforms } = useTradeExactOutAllPlatforms(
+  const useTradeExactOutAllPlatformsRes = useTradeExactOutAllPlatforms(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )
-  const bestTradeExactIn = bestTradeExactInAllPlatforms[0]
-  const bestTradeExactOut = bestTradeExactOutAllPlatforms[0]
 
-  const allPlatformTrades = isExactIn ? bestTradeExactInAllPlatforms : bestTradeExactOutAllPlatforms
+  const bestTradeExactIn = useTradeExactInAllPlatformsRes.trades[0]
+  const bestTradeExactOut = useTradeExactOutAllPlatformsRes.trades[0]
+
+  const allPlatformTrades = isExactIn ? useTradeExactInAllPlatformsRes.trades : useTradeExactOutAllPlatformsRes.trades
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
@@ -208,6 +210,7 @@ export function useDerivedSwapInfo(
   }
 
   return {
+    loading: useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading,
     currencies,
     currencyBalances,
     parsedAmount,
