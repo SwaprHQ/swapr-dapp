@@ -166,14 +166,16 @@ export default function Bridge() {
   }, [chainId, omnibridge])
 
   const handleModal = useCallback(async () => {
+    omnibridge.triggerModalDisclaimerText()
     setModalData({
       symbol: bridgeCurrency?.symbol,
       typedValue: typedValue,
       fromChainId: fromNetwork.chainId,
       toChainId: toNetwork.chainId
     })
+
     setModalState(BridgeModalStatus.DISCLAIMER)
-  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalState])
+  }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalState, omnibridge])
 
   const handleCollect = useCallback(
     (tx: BridgeTransactionSummary) => {

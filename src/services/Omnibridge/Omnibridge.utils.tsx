@@ -64,4 +64,5 @@ export abstract class OmnibridgeChildBase {
   ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId }
   abstract validate(): void
   abstract getBridgingMetadata(): void
+  abstract triggerModalDisclaimerText(): void
 }

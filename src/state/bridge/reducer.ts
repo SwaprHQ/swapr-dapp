@@ -23,6 +23,7 @@ export interface BridgeModalState {
   readonly fromNetwork: BridgeNetworkInput
   readonly toNetwork: BridgeNetworkInput
   readonly error?: string
+  readonly disclaimerText?: string
 }
 export enum BridgeModalStatus {
   PENDING = 'PENDING',
