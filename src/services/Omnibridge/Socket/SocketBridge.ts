@@ -326,24 +326,27 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
 
-      const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
+      let toToken: TokenInfo | undefined = undefined
+      if (from.address !== 'ETH') {
+        //way to find from and toToken
+        const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
 
-      if (!fromToken) return
+        if (!fromToken) throw new Error('Cannot find token')
 
-      const toToken = socketTokens.tokens.find(
-        token => token.symbol === fromToken.symbol && token.chainId === to.chainId
-      )
+        toToken = socketTokens.tokens.find(token => token.symbol === fromToken.symbol && token.chainId === to.chainId)
 
-      if (!toToken) return
+        if (!toToken) throw new Error('Cannot find token')
+      }
 
       const value = parseUnits(from.value, from.decimals)
 
       const quote = await QuoteAPI.quoteControllerGetQuote(
         {
           fromChainId: from.chainId.toString(),
-          fromTokenAddress: from.address,
+          //0xe... is token address of eth (socket implementation)
+          fromTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : from.address,
           toChainId: to.chainId.toString(),
-          toTokenAddress: toToken.address,
+          toTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : toToken!.address, //we are sure that toToken exists - line 338
           fromAmount: value.toString(),
           userAddress: this._account,
           uniqueRoutesPerBridge: false,
@@ -428,7 +431,9 @@ export class SocketBridge extends OmnibridgeChildBase {
         gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
         fee,
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-        receiveAmount: formatUnits(toAmount, toAsset.decimals)
+        receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
+          .toFixed(2)
+          .toString()
       }
 
       this.store.dispatch(this.actions.setBridgeDetails(details))
@@ -478,6 +483,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
 
     //TODO find better way
+    //currently we are paring tokens by symbol (not better option to do it)
     const pairedTokens = tokenListFrom.result.reduce<TokenAsset[]>((total, fromToken) => {
       if (!fromToken.symbol) return total
 
