@@ -358,7 +358,22 @@ export function useTradeExactOutAllPlatforms(
         )
       })
 
-    const allNewTrades = Promise.all([...(uniswapV2TradesList as any)])
+    const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+      CurveTrade.bestTradeExactOut({
+        currencyAmountOut,
+        currencyIn,
+        maximumSlippage: new Percent('3', '100')
+      })
+        .then(resolve)
+        .catch(error => {
+          // The next step does not care about the error. Promise.all
+          // is all or nothing. Hence, this Promise must solve as undefined
+          resolve(undefined)
+          console.log(error)
+        })
+    })
+
+    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
 
     allNewTrades
       .then(trades => trades.filter(trade => trade !== undefined))
