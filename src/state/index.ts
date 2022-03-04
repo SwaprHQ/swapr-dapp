@@ -41,7 +41,6 @@ const store = configureStore({
       namespace: persistenceNamespace
     })
   ],
-  //TODO store socket
   preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })
 })
 
