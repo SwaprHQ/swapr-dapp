@@ -103,7 +103,7 @@ export const BridgeSelectionWindow = () => {
         </WrapperBridgeSelectionWindow>
       )}
 
-      {availableBridges.length === 0 && (
+      {showAvailableBridges && availableBridges.length === 0 && (
         <Box sx={{ marginTop: '15px', width: '100%' }}>
           <Text sx={{ textAlign: 'center', color: '#464366' }}>No available bridges</Text>
         </Box>
