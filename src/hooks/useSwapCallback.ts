@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId } from '@swapr/sdk'
+import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId, TradeType } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -83,18 +83,19 @@ export function useSwapsCallArguments(
         )
       }
 
-      /*
-      if (trade.tradeType === TradeType.EXACT_INPUT) {
-        swapMethods.push(
-          Router.swapCallParameters(trade, {
-            feeOnTransfer: true,
-            allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
-            recipient,
-            ttl: deadline.toNumber()
-          })
-        )
+      /**
+       * @todo implement slippage
+       */
+      if (allowedSlippage > 6 && trade.tradeType === TradeType.EXACT_INPUT) {
+        // swapMethods.push(
+        // Router.swapCallParameters(trade, {
+        //   feeOnTransfer: true,
+        //   allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+        //   recipient,
+        //   ttl: deadline.toNumber()
+        // })
+        // )
       }
-      */
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
@@ -104,7 +105,7 @@ export function useSwapsCallArguments(
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade: UniswapV2Trade | undefined, // trade to execute, required
+  trade: Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {

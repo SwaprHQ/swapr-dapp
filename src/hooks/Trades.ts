@@ -140,6 +140,7 @@ export function useTradeExactInCurve(
         }
       })
       .catch((e: Error) => console.log('useTradeExactInCurve: ', e))
+    // eslint-disable-next-line
   }, [currencyAmountIn?.currency.address, currencyOut?.address, chainId, library])
 
   return trade
@@ -212,12 +213,15 @@ export function useTradeExactInAllPlatforms(
     useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP)
   ].filter(platformPairs => platformPairs.length !== 0)
 
+  // Used to trigger computing trade route
+  const currencyInAndOutAdddress = `${currencyOut?.address}-${currencyAmountIn?.currency.address}`
+
   useEffect(() => {
     let isCancelled = false
 
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !currencyOut || !chainId) {
-      // setBesTrades([])
+      setTrades([])
       setLoading(false)
       return
     }
@@ -266,7 +270,6 @@ export function useTradeExactInAllPlatforms(
       .then(trades => trades.filter(trade => trade !== undefined))
       .then(newTrades => {
         // add deep comparsion
-        console.log({ trades, newTrades, isCancelled })
         if (!isCancelled) {
           setTrades(newTrades)
         }
@@ -281,10 +284,10 @@ export function useTradeExactInAllPlatforms(
   }, [
     chainId,
     uniswapV2IsMultihop,
-    currencyOut?.address,
     uniswapV2AllowedPairsList.length,
+    // eslint-disable-next-line
     currencyAmountIn?.toSignificant(),
-    currencyAmountIn?.currency.address
+    currencyInAndOutAdddress
   ])
 
   return {
@@ -318,7 +321,9 @@ export function useTradeExactOutAllPlatforms(
     useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.LEVINSWAP)
   ].filter(platformPairs => platformPairs.length !== 0)
 
-  // Array of value that can re-trigger searching for new trades
+  // Used to trigger computing trade route
+  const currencyInAndOutAdddress = `${currencyIn?.address}-${currencyAmountOut?.currency.address}`
+
   useEffect(() => {
     let isCancelled = false
 
@@ -373,10 +378,11 @@ export function useTradeExactOutAllPlatforms(
   }, [
     chainId,
     uniswapV2IsMultihop,
-    currencyIn?.address,
+    // eslint-disable-next-line
     uniswapV2AllowedPairsList.length,
+    // eslint-disable-next-line
     currencyAmountOut?.toSignificant(),
-    currencyAmountOut?.currency.address
+    currencyInAndOutAdddress
   ])
 
   return {

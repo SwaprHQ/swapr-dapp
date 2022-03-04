@@ -124,7 +124,7 @@ export function useSwapsGasEstimations(
     }
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, routerAllowances, trades, typedIndependentCurrencyAmount])
+  }, [platformSwapCalls, library, routerAllowances, trades, typedIndependentCurrencyAmount])
 
   useEffect(() => {
     if (!trades || trades.length === 0 || !library || !chainId || !recipient || !account || !calculateGasFees) {
