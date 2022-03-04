@@ -131,4 +131,8 @@ export class Omnibridge {
     if (!this._initialized || !this._activeBridgeId) return
     return this.bridges[this._activeBridgeId].validate()
   }
+  public triggerModalDisclaimerText = () => {
+    if (!this._initialized || !this._activeBridgeId) return
+    return this.bridges[this._activeBridgeId].triggerModalDisclaimerText()
+  }
 }

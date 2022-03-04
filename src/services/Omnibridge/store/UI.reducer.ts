@@ -24,6 +24,7 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
     fromNetworkId: ChainId
     toNetworkId: ChainId
     error?: string
+    disclaimerText?: string
   }
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
@@ -54,7 +55,8 @@ const initialState: UIInitialState = {
     symbol: '',
     typedValue: '',
     fromNetworkId: 1,
-    toNetworkId: 42161
+    toNetworkId: 42161,
+    disclaimerText: ''
   },
   filter: BridgeTxsFilter.RECENT,
   isCheckingWithdrawals: false,
@@ -128,6 +130,9 @@ export const omnibridgeUISlice = createSlice({
       state.modal.typedValue = action.payload.typedValue
       state.modal.fromNetworkId = action.payload.fromChainId
       state.modal.toNetworkId = action.payload.toChainId
+    },
+    setModalDisclaimerText(state, action: PayloadAction<string>) {
+      state.modal.disclaimerText = action.payload
     },
     setStatusButton(
       state,

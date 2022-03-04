@@ -7,7 +7,7 @@ import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
-import { QuoteControllerGetQuoteSortEnum } from './api/generated'
+import { QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
 import { BridgeModalStatus } from '../../../state/bridge/reducer'
 
 import { TokenListsAPI } from './api'
@@ -69,7 +69,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
 
-    if (!data || !to) return
+    if (!data || !recipient) return
 
     try {
       const tx = await this._activeProvider?.getSigner().sendTransaction({
@@ -203,13 +203,15 @@ export class SocketBridge extends OmnibridgeChildBase {
         return
       }
 
-      //push txData to store
-      this.store.dispatch(
-        this.actions.setTxBridgingData({ to: transaction.result.txTarget, data: transaction.result.txData })
-      )
+      const {
+        result: { txTarget, txData, approvalData }
+      } = transaction
 
-      if (!transaction.result.approvalData) {
-        //user can bridge now approvalData === null is same as token
+      //push txData to store
+      this.store.dispatch(this.actions.setTxBridgingData({ to: txTarget, data: txData }))
+
+      if (!approvalData) {
+        //when approvalData === null user can bridge
         this.store.dispatch(
           omnibridgeUIActions.setStatusButton({
             label: 'Bridge',
@@ -228,29 +230,33 @@ export class SocketBridge extends OmnibridgeChildBase {
         this._abortControllers.allowance = new AbortController()
 
         const activeChainId = this.store.getState().omnibridge.UI.from.chainId
+
+        if (!activeChainId || !this._account) return
+
         const allowance = await ApprovalsAPI.approveControllerFetchApprovals(
           {
-            chainID: activeChainId ? activeChainId?.toString() : '1',
-            owner: this._account ? this._account : '',
-            allowanceTarget: transaction.result.approvalData.allowanceTarget as string,
-            tokenAddress: transaction.result.approvalData.approvalTokenAddress as string
+            chainID: activeChainId.toString(),
+            owner: this._account,
+            allowanceTarget: approvalData.allowanceTarget.toString(),
+            tokenAddress: approvalData.approvalTokenAddress.toString()
           },
           { signal: this._abortControllers.allowance.signal }
         )
 
-        if (allowance.success) {
-          if (
-            BigNumber.from(allowance.result.value).lt(
-              BigNumber.from(transaction.result.approvalData.minimumApprovalAmount)
-            )
-          ) {
+        const {
+          result: { value },
+          success
+        } = allowance
+
+        if (success) {
+          if (BigNumber.from(value).lt(BigNumber.from(approvalData.minimumApprovalAmount))) {
             this.store.dispatch(
               this.actions.setApprovalData({
                 chainId: activeChainId ? activeChainId : 1,
-                allowanceTarget: transaction.result.approvalData.allowanceTarget,
-                tokenAddress: transaction.result.approvalData.approvalTokenAddress,
-                amount: transaction.result.approvalData.minimumApprovalAmount,
-                owner: transaction.result.approvalData.owner
+                allowanceTarget: approvalData.allowanceTarget,
+                tokenAddress: approvalData.approvalTokenAddress,
+                amount: approvalData.minimumApprovalAmount,
+                owner: approvalData.owner
               })
             )
 
@@ -318,14 +324,29 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
+      const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
+
+      let toToken: TokenInfo | undefined = undefined
+      if (from.address !== 'ETH') {
+        //way to find from and toToken
+        const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
+
+        if (!fromToken) throw new Error('Cannot find token')
+
+        toToken = socketTokens.tokens.find(token => token.symbol === fromToken.symbol && token.chainId === to.chainId)
+
+        if (!toToken) throw new Error('Cannot find token')
+      }
+
       const value = parseUnits(from.value, from.decimals)
 
       const quote = await QuoteAPI.quoteControllerGetQuote(
         {
           fromChainId: from.chainId.toString(),
-          fromTokenAddress: from.address,
+          //0xe... is token address of eth (socket implementation)
+          fromTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : from.address,
           toChainId: to.chainId.toString(),
-          toTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', //TODO to address
+          toTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : toToken!.address, //we are sure that toToken exists - line 338
           fromAmount: value.toString(),
           userAddress: this._account,
           uniqueRoutesPerBridge: false,
@@ -410,7 +431,9 @@ export class SocketBridge extends OmnibridgeChildBase {
         gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
         fee,
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-        receiveAmount: formatUnits(toAmount, toAsset.decimals)
+        receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
+          .toFixed(2)
+          .toString()
       }
 
       this.store.dispatch(this.actions.setBridgeDetails(details))
@@ -456,9 +479,31 @@ export class SocketBridge extends OmnibridgeChildBase {
     const tokenListFromPromise = TokenListsAPI.tokenListControllerGetfromTokenList(payload, {
       signal: this._abortControllers.tokenListTo.signal
     })
+
     const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
 
-    const tokens: TokenInfo[] = [...tokenListFrom.result, ...tokenListTo.result].reduce<TokenInfo[]>((total, token) => {
+    //TODO find better way
+    //currently we are paring tokens by symbol (not better option to do it)
+    const pairedTokens = tokenListFrom.result.reduce<TokenAsset[]>((total, fromToken) => {
+      if (!fromToken.symbol) return total
+
+      const toToken = tokenListTo.result.find(
+        token =>
+          token.symbol === fromToken.symbol &&
+          fromToken.address.toLowerCase() !== '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
+      )
+
+      if (toToken && toToken.symbol) {
+        total.push(fromToken)
+        total.push(toToken)
+      } else {
+        return total
+      }
+
+      return total
+    }, [])
+
+    const tokens: TokenInfo[] = pairedTokens.reduce<TokenInfo[]>((total, token) => {
       const { address, chainId, symbol, decimals, icon, name } = token
 
       if (!name || !decimals || !name) return total
@@ -493,5 +538,8 @@ export class SocketBridge extends OmnibridgeChildBase {
 
   public fetchStaticLists = () => {
     return Promise.resolve()
+  }
+  public triggerModalDisclaimerText = () => {
+    this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
   }
 }

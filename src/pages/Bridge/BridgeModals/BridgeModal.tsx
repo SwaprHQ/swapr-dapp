@@ -16,18 +16,12 @@ export interface BridgeModalProps {
   handleSubmit: () => void
 }
 
-const setDisclaimerText = (isArbitrum: boolean) => {
-  if (isArbitrum) return 'It will take ~1 week for you to see your balance credited on L1. '
-  return 'It will take 10 minutes for you to see your balance credited on L2. Moving your funds back to L1 Ethereum (if you later wish to do so) takes ~1 week. '
-}
-
 export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, handleSubmit }: BridgeModalProps) => {
-  const { status, symbol, typedValue, fromNetwork, toNetwork, error } = modalData
-  const { name: fromNetworkName, isArbitrum } = getNetworkInfo(fromNetwork.chainId)
+  const { status, symbol, typedValue, fromNetwork, toNetwork, error, disclaimerText } = modalData
+  const { name: fromNetworkName } = getNetworkInfo(fromNetwork.chainId)
   const { name: toNetworkName } = getNetworkInfo(toNetwork.chainId)
 
-  const txType = isArbitrum ? 'Withdraw' : 'Deposit'
-  const disclaimerText = setDisclaimerText(isArbitrum)
+  const txType = 'Bridging'
 
   const selectModal = () => {
     switch (status) {
@@ -91,7 +85,7 @@ export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, 
             onDismiss={handleResetBridge}
             heading={`${txType} ${typedValue} ${symbol ?? ''}`}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}
-            disclaimerText={disclaimerText}
+            disclaimerText={disclaimerText ? disclaimerText : ''}
           />
         )
       default:

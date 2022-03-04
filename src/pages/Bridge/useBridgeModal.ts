@@ -16,9 +16,10 @@ export const useBridgeModal = (): {
     toChainId
   }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => void
 } => {
-  const { fromNetworkId, status, symbol, toNetworkId, typedValue, error } = useSelector(
+  const { fromNetworkId, status, symbol, toNetworkId, typedValue, error, disclaimerText } = useSelector(
     (state: AppState) => state.omnibridge.UI.modal
   )
+
   const dispatch = useDispatch()
 
   const setModalState = useCallback(
@@ -36,7 +37,12 @@ export const useBridgeModal = (): {
       toChainId
     }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => {
       dispatch(
-        omnibridgeUIActions.setBridgeModalData({ symbol: symbol ? symbol : '', typedValue, fromChainId, toChainId })
+        omnibridgeUIActions.setBridgeModalData({
+          symbol: symbol ? symbol : '',
+          typedValue,
+          fromChainId,
+          toChainId
+        })
       )
     },
     [dispatch]
@@ -53,7 +59,8 @@ export const useBridgeModal = (): {
       toNetwork: {
         chainId: toNetworkId
       },
-      error
+      error,
+      disclaimerText
     },
     setModalState,
     setModalData
