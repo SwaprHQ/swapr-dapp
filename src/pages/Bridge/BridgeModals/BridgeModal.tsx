@@ -1,6 +1,5 @@
 import React from 'react'
 import { BridgeModalState, BridgeModalStatus } from '../../../state/bridge/reducer'
-import { BridgeStep } from '../utils'
 import { BridgeErrorModal } from './BridgeErrorModal'
 import { BridgePendingModal } from './BridgePendingModal'
 import { BridgeSuccessModal } from './BridgeSuccesModal'
@@ -10,7 +9,7 @@ import { getNetworkInfo } from '../../../utils/networksList'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
-  setStep: (step: BridgeStep) => void
+  setCollecting: (collecting: boolean) => void
   setStatus: (status: BridgeModalStatus, error?: string) => void
   modalData: BridgeModalState
   handleSubmit: () => void
@@ -21,7 +20,13 @@ const setDisclaimerText = (isArbitrum: boolean) => {
   return 'It will take 10 minutes for you to see your balance credited on L2. Moving your funds back to L1 Ethereum (if you later wish to do so) takes ~1 week. '
 }
 
-export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, handleSubmit }: BridgeModalProps) => {
+export const BridgeModal = ({
+  handleResetBridge,
+  setCollecting,
+  setStatus,
+  modalData,
+  handleSubmit
+}: BridgeModalProps) => {
   const { status, symbol, typedValue, fromNetwork, toNetwork, error } = modalData
   const { name: fromNetworkName, isArbitrum } = getNetworkInfo(fromNetwork.chainId)
   const { name: toNetworkName } = getNetworkInfo(toNetwork.chainId)
@@ -54,7 +59,7 @@ export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, 
             isOpen
             onDismiss={() => {
               setStatus(BridgeModalStatus.CLOSED)
-              setStep(BridgeStep.Initial)
+              setCollecting(true)
             }}
             heading={'Collecting Initiated'}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}

@@ -3,45 +3,60 @@ import styled from 'styled-components'
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
 import { BridgeTxsFilter } from '../../state/bridge/reducer'
+import { BridgeTabs } from './utils'
 
 interface TabsProps {
   collectableTxAmount: number
-  isCollecting: boolean
-  isCollectableFilter: boolean
+  collecting: boolean
   handleResetBridge: () => void
   setTxsFilter: (filter: BridgeTxsFilter) => void
+  activeTab: BridgeTabs
+  setActiveTab: (tab: BridgeTabs) => void
 }
 
 export const Tabs = ({
   collectableTxAmount,
-  isCollecting,
-  isCollectableFilter,
+  collecting,
   handleResetBridge,
-  setTxsFilter
+  setTxsFilter,
+  activeTab,
+  setActiveTab
 }: TabsProps) => {
   return (
     <TabsRow>
       <Button
         onClick={() => {
-          if (isCollecting) {
+          if (collecting) {
             handleResetBridge()
             return
           }
+          setActiveTab('bridge')
           setTxsFilter(BridgeTxsFilter.RECENT)
         }}
-        className={!(isCollecting || isCollectableFilter) ? 'active' : ''}
+        className={activeTab === 'bridge' ? 'active' : ''}
       >
         Bridge
       </Button>
       <Button
         onClick={() => {
           setTxsFilter(BridgeTxsFilter.COLLECTABLE)
+          setActiveTab('collect')
         }}
-        className={isCollecting || isCollectableFilter ? 'active' : ''}
-        disabled={isCollecting}
+        className={activeTab === 'collect' ? 'active' : ''}
+        disabled={collecting}
       >
         Collect
         {<Badge badgeTheme="green">{collectableTxAmount}</Badge>}
+      </Button>
+      <Button
+        onClick={() => {
+          setTxsFilter(BridgeTxsFilter.RECENT)
+          setActiveTab('history')
+        }}
+        className={activeTab === 'history' ? 'active' : ''}
+        disabled={collecting}
+      >
+        History
       </Button>
     </TabsRow>
   )
