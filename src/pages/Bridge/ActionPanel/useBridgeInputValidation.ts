@@ -12,7 +12,7 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
-  const activeRouteId = useSelector((state: AppState) => state.omnibridge.common.activeRouteId)
+
   const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
   const { isBalanceSufficient } = useBridgeInfo()
 
@@ -91,15 +91,5 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
     if (isValid) {
       omnibridge.validate()
     }
-  }, [
-    debounce,
-    omnibridge,
-    activeBridge,
-    isBalanceSufficient,
-    dispatch,
-    from.address,
-    to.address,
-    activeRouteId,
-    isBridge
-  ])
+  }, [debounce, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, isBridge])
 }

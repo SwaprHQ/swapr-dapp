@@ -10,6 +10,13 @@ import {
 } from '../../../state/bridgeTransactions/types'
 import { getBridgeTxStatus, PendingReasons, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ArbitrumList } from '../Omnibridge.types'
+import { omnibridgeConfig } from '../Omnibridge.config'
+
+const getSupportedChains = (bridgeId: string) => {
+  const bridge = omnibridgeConfig.find(config => config.bridgeId === bridgeId)
+  if (!bridge) return [] as number[]
+  return Object.values(bridge.supportedChains[0]).map(Number)
+}
 
 const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
   createSelector(
@@ -19,10 +26,9 @@ const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
     ],
     (txs, account) => {
       const transactions: BridgeTxnsState = {}
+      const chains = getSupportedChains(bridgeId)
 
       if (account) {
-        const chains = Object.keys(txs).map(key => Number(key))
-
         chains.forEach(chainId => {
           const txPerChain: { [hash: string]: BridgeTxn } = {}
 
@@ -263,16 +269,14 @@ const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
     [
       (state: AppState) => state.omnibridge[bridgeId].bridgingDetails,
       (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingReceiveAmount
+      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage
     ],
-    (details, loading, errorMessage, receiveAmount) => {
+    (details, loading, errorMessage) => {
       return {
         bridgeId,
         details,
         loading,
-        errorMessage,
-        receiveAmount
+        errorMessage
       }
     }
   )

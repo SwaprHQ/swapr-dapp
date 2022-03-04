@@ -67,17 +67,10 @@ export const useShowAvailableBridges = () => {
 export const useAvailableBridges = () => {
   const availableBridges = useSelector(selectSupportedBridgesForUI)
 
-  return availableBridges
+  return availableBridges.filter(bridge => bridge.status !== 'failed')
 }
-
 export const useActiveBridge = () => {
   const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
 
   return activeBridge
-}
-
-export const useActiveRoute = () => {
-  const activeRouteId = useSelector((state: AppState) => state.omnibridge.common.activeRouteId)
-
-  return activeRouteId
 }

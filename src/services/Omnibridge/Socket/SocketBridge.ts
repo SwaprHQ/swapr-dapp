@@ -1,4 +1,4 @@
-import { parseUnits } from '@ethersproject/units'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import { OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit, OmnibridgeChangeHandler } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { SocketList } from '../Omnibridge.types'
@@ -13,6 +13,8 @@ import { BridgeModalStatus } from '../../../state/bridge/reducer'
 import { TokenListsAPI } from './api'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
+import { commonActions } from '../store/Common.reducer'
+import { isFee } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -163,10 +165,10 @@ export class SocketBridge extends OmnibridgeChildBase {
     const routes = this.selectors.selectRoutes(this.store.getState())
 
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
-    if (!routeId || !routes?.routes || !routes) return
+    if (!routeId || !routes || !routes) return
 
     //find route
-    const selectedRoute = routes.routes.find(route => route.routeId === routeId)
+    const selectedRoute = routes.find(route => route.routeId === routeId)
 
     if (!selectedRoute) return
     //build txn
@@ -300,25 +302,27 @@ export class SocketBridge extends OmnibridgeChildBase {
 
   public getBridgingMetadata = async () => {
     //check health socket server
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    try {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    if (this._abortControllers.health) {
-      this._abortControllers.health.abort()
-    }
+      if (this._abortControllers.health) {
+        this._abortControllers.health.abort()
+      }
 
-    this._abortControllers.health = new AbortController()
+      this._abortControllers.health = new AbortController()
 
-    const health = await ServerAPI.appControllerGetHealth({ signal: this._abortControllers.health.signal })
+      const health = await ServerAPI.appControllerGetHealth({ signal: this._abortControllers.health.signal })
 
-    if (this._abortControllers.quote) {
-      this._abortControllers.quote.abort()
-    }
+      if (!health.ok) throw new Error('Cannot get response from Socket server')
 
-    if (health.ok) {
+      if (this._abortControllers.quote) {
+        this._abortControllers.quote.abort()
+      }
       this._abortControllers.quote = new AbortController()
 
       const { from, to } = this.store.getState().omnibridge.UI
-      if (!from.address || Number(from.value) === 0) return
+
+      if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
       const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
 
@@ -336,12 +340,12 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const quote = await QuoteAPI.quoteControllerGetQuote(
         {
-          fromChainId: from.chainId ? from.chainId.toString() : '1',
+          fromChainId: from.chainId.toString(),
           fromTokenAddress: from.address,
-          toChainId: to.chainId ? to.chainId.toString() : '42161',
+          toChainId: to.chainId.toString(),
           toTokenAddress: toToken.address,
           fromAmount: value.toString(),
-          userAddress: this._account ? this._account : '',
+          userAddress: this._account,
           uniqueRoutesPerBridge: false,
           disableSwapping: false,
           sort: QuoteControllerGetQuoteSortEnum.Output,
@@ -350,26 +354,88 @@ export class SocketBridge extends OmnibridgeChildBase {
         { signal: this._abortControllers.quote.signal }
       )
 
-      const tokenDetails = quote.result.toAsset
-      const routesData = { tokenDetails, routes: quote.result.routes }
+      const { success, result } = quote
+      const { routes, toAsset } = result
 
-      if (quote.success) {
-        if (quote.result.routes.length === 0) {
-          this.store.dispatch(
-            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
-          )
-          return
+      if (!success || routes.length === 0) throw new Error('No available routes / details')
+
+      this.store.dispatch(this.actions.setRoutes(routes))
+
+      const tokenData = await ServerAPI.appControllerGetTokenPrice({
+        tokenAddress: toAsset.address,
+        chainId: toAsset.chainId
+      })
+
+      const {
+        result: { tokenPrice } //token price in USD
+      } = tokenData
+
+      const bestRoute = routes.reduce<{ amount: number; routeId: string }>(
+        (total, next) => {
+          const amount = (
+            Number(formatUnits(next.toAmount, toAsset.decimals).toString()) * tokenPrice -
+            next.totalGasFeesInUsd
+          ).toFixed(2)
+
+          const route = {
+            amount: Number(amount),
+            routeId: next.routeId
+          }
+
+          if (total.amount <= route.amount) {
+            total = route
+          }
+
+          return total
+        },
+        { amount: 0, routeId: '' } as { amount: number; routeId: string }
+      )
+
+      const indexOfBestRoute = routes.findIndex(route => route.routeId === bestRoute.routeId)
+
+      if (indexOfBestRoute === -1) throw new Error('Route not found')
+
+      const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
+      //set route
+      this.store.dispatch(commonActions.setActiveRouteId(routeId))
+
+      const getBridgeFee = (userTxs: any): string => {
+        if (isFee(userTxs)) {
+          //CHECK
+          // protocolFees has two parameters {amount,feesInUsd}
+          // amount - fee but in token representation
+          // feesInUsd - i have not seen this value other than 0
+          //should we use both and sum ? (for now we sum it)
+          const formattedAmount = Number(
+            formatUnits(userTxs[0].steps[0].protocolFees.amount, toAsset.decimals).toString()
+          ) //it's amount of token
+
+          const feesInToken = formattedAmount * tokenPrice
+          const feesInUsd = userTxs[0].steps[0].protocolFees.feesInUsd
+
+          const fee = `${(feesInToken + feesInUsd).toFixed(2).toString()} $`
+
+          return fee
         }
-        this.store.dispatch(this.actions.setBridgeDetails(routesData))
-        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-      } else {
-        this.store.dispatch(
-          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
-        )
+
+        //this shouldn't happen
+        return '---'
       }
-    } else {
+
+      const fee = getBridgeFee(userTxs)
+
+      const details = {
+        gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
+        fee,
+        estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
+        receiveAmount: formatUnits(toAmount, toAsset.decimals)
+      }
+
+      this.store.dispatch(this.actions.setBridgeDetails(details))
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+    } catch (err) {
       this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'Bridge is not available now' })
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
       )
     }
   }

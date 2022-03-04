@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { BridgeList, AsyncState, BridgingDetailsErrorMessage } from '../Omnibridge.types'
-import { TokenAsset, Route } from './api/generated'
+import { Route } from './api/generated'
 
 export interface SocketBridgeState {
   transactions: {
@@ -14,12 +14,11 @@ export interface SocketBridgeState {
     timestampResolved?: number
   }[]
   bridgingDetails: {
-    routes?: {
-      tokenDetails: TokenAsset
-      routes: Route[]
-    }
+    gas?: string
+    fee?: string
+    estimateTime?: string
+    receiveAmount?: string
   }
-  bridgingReceiveAmount?: string
   bridgingDetailsStatus: AsyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
   listsStatus: AsyncState
@@ -35,4 +34,14 @@ export interface SocketBridgeState {
     data?: string
     to?: string
   }
+  routes: Route[]
+}
+
+type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number } }] }]
+
+export function isFee(userTxs: any): userTxs is UserTxs {
+  if (userTxs.length && userTxs[0].steps.length && userTxs[0].steps) {
+    return true
+  }
+  return false
 }

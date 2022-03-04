@@ -787,14 +787,14 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(
       this.actions.setBridgeDetails({
-        gas: '10',
-        fee: '0',
-        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days'
+        gas: '10.20',
+        fee: '0.00',
+        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
+        receiveAmount: value
       })
     )
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-    this.store.dispatch(this.actions.setBridgingReceiveAmount(value))
   }
   public triggerModalDisclaimerText = () => {
     const setDisclaimerText = (): string => {
