@@ -37,7 +37,7 @@ export interface SocketBridgeState {
   routes: Route[]
 }
 
-type UserTxs = [{ steps: [{ protocolFees: { feesInUsd: number } }] }]
+type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number } }] }]
 
 export function isFee(userTxs: any): userTxs is UserTxs {
   if (userTxs.length && userTxs[0].steps.length && userTxs[0].steps) {

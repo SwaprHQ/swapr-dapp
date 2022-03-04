@@ -796,4 +796,14 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
   }
+  public triggerModalDisclaimerText = () => {
+    const setDisclaimerText = (): string => {
+      if (this._activeChainId === this.l2ChainId) {
+        return 'It will take ~1 week for you to see your balance credited on Ethereum '
+      }
+      return 'It will take 10 minutes for you to see your balance credited on L2. Moving your funds back to L1 Ethereum (if you later wish to do so) takes ~1 week.'
+    }
+
+    this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText(setDisclaimerText()))
+  }
 }
