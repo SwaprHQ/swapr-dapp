@@ -155,8 +155,14 @@ export function useStakingRewardsDistributionContracts(
   addresses: (string | undefined)[],
   withSignerIfPossible?: boolean
 ): { contracts: (Contract | null)[]; iface: Contract['interface'] } {
-  const iface = new Contract('', STAKING_REWARDS_DISTRIBUTION_ABI).interface
-  return { contracts: useContracts(addresses, STAKING_REWARDS_FACTORY_ABI, withSignerIfPossible), iface }
+  const contracts = useContracts(addresses, STAKING_REWARDS_FACTORY_ABI, withSignerIfPossible)
+  let iface: any
+  contracts.some(c => {
+    iface = c?.interface
+    if (iface) return true
+    return false
+  })
+  return { contracts, iface }
 }
 
 export function useStakingRewardsDistributionContract(

@@ -21,8 +21,7 @@ export default function Dashboard() {
               if (!pair) return <div key={index}></div>
               return (
                 <Position key={index}>
-                  {pair.userToken0.token.symbol} - {pair.userToken1.token.symbol}: {pair.maximumApy.toFixed(2)}%, $
-                  {pair.userLiquidityUSD.toFixed(2)}
+                  {pair.userToken0.token.symbol} - {pair.userToken1.token.symbol} ${pair.userLiquidityUSD.toFixed(2)}
                 </Position>
               )
             })

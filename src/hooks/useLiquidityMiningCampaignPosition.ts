@@ -1,9 +1,4 @@
-import {
-  LiquidityMiningCampaign,
-  PricedTokenAmount,
-  SingleSidedLiquidityMiningCampaign,
-  STAKING_REWARDS_DISTRIBUTION_ABI
-} from '@swapr/sdk'
+import { LiquidityMiningCampaign, PricedTokenAmount, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { useStakingRewardsDistributionContract, useStakingRewardsDistributionContracts } from './useContract'
 import { useMultipleContractSingleData, useSingleCallResult } from '../state/multicall/hooks'
@@ -52,7 +47,7 @@ export function useLiquidityMiningCampaignPositions(
     return campaigns.map((camp, i) => {
       const claimedResult = claimedRewardsResult[i]
       const claimableResult = claimableRewardsResult[i]
-      const stakedResult = claimedRewardsResult[i]
+      const stakedResult = stakedTokensOfResult[i]
       if (!claimedResult.result || !claimableResult.result || !stakedResult.result)
         return {
           stakedTokenAmount: null,
@@ -89,7 +84,7 @@ export function useLiquidityMiningCampaignPositions(
         totalRewardedAmounts
       }
     })
-  }, [campaigns, claimableRewardsResult, stakedTokensOfResult, claimedRewardsResult])
+  }, [campaigns, claimableRewardsResult, stakedTokensOfResult, claimedRewardsResult, chainId])
 }
 
 export function useLiquidityMiningCampaignPosition(

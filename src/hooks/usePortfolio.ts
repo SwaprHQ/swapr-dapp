@@ -1,13 +1,10 @@
-import { CurrencyAmount, LiquidityMiningCampaign, PricedTokenAmount, TokenAmount, USD } from '@swapr/sdk'
+import { CurrencyAmount, /* LiquidityMiningCampaign, PricedTokenAmount, */ TokenAmount, USD } from '@swapr/sdk'
 import { ethers } from 'ethers'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
 import { useTotalSupplies } from '../data/TotalSupply'
 import { useTokenBalances } from '../state/wallet/hooks'
-import {
-  useLiquidityMiningCampaignPosition,
-  useLiquidityMiningCampaignPositions
-} from './useLiquidityMiningCampaignPosition'
+import { useLiquidityMiningCampaignPositions } from './useLiquidityMiningCampaignPosition'
 import { useLPPairs, LiquidityPosition } from './useLiquidityPositions'
 
 export interface Portfolio {
@@ -50,12 +47,14 @@ const computeLiquidityPosition = (
   }
 }
 
+/*
 interface StakedLiquidityMiningPosition {
   campaign: LiquidityMiningCampaign
   userStakedToken0: PricedTokenAmount
   userStakedToken1: PricedTokenAmount
   userStakedLiquidityUSD: CurrencyAmount
 }
+*/
 
 // Get all LP pairs
 // Map LP Pairs to corresponding Liquidity Tokens array
