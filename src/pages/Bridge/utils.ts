@@ -1,11 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 import { getNetworkInfo } from '../../utils/networksList'
 
-export enum BridgeStep {
-  Initial,
-  Collect,
-  Success
-}
+export type BridgeTabs = 'bridge' | 'collect' | 'history'
 
 export const isNetworkDisabled = (optionChainId: ChainId, selectedNetworkChainId: ChainId) => {
   const { tag } = getNetworkInfo(optionChainId)

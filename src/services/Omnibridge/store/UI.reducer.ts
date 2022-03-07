@@ -1,10 +1,10 @@
 import { ChainId } from '@swapr/sdk'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BridgeModalStatus, BridgeTxsFilter } from '../../../state/bridge/reducer'
+import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from '../Omnibridge.types'
 
 type OmnibridgeInput = {
   value: string
-  chainId: ChainId | undefined
+  chainId: ChainId
   address: string
   decimals?: number
 }
@@ -17,15 +17,7 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
     isBalanceSufficient: boolean
     approved: boolean
   }
-  modal: {
-    status: BridgeModalStatus
-    symbol: string
-    typedValue: string
-    fromNetworkId: ChainId
-    toNetworkId: ChainId
-    error?: string
-    disclaimerText?: string
-  }
+  modal: BridgeModalState
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
   showAvailableBridges: boolean
@@ -34,14 +26,15 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
 const initialState: UIInitialState = {
   from: {
     value: '',
-    chainId: 1,
+    chainId: ChainId.MAINNET,
     address: '',
     decimals: 0
   },
   to: {
     value: '',
-    chainId: 42161,
-    address: ''
+    chainId: ChainId.ARBITRUM_ONE,
+    address: '',
+    decimals: 0
   },
   statusButton: {
     isError: false,
@@ -54,9 +47,9 @@ const initialState: UIInitialState = {
     status: BridgeModalStatus.CLOSED,
     symbol: '',
     typedValue: '',
-    fromNetworkId: 1,
-    toNetworkId: 42161,
-    disclaimerText: ''
+    disclaimerText: '',
+    fromChainId: ChainId.MAINNET,
+    toChainId: ChainId.ARBITRUM_ONE
   },
   filter: BridgeTxsFilter.RECENT,
   isCheckingWithdrawals: false,
@@ -128,8 +121,8 @@ export const omnibridgeUISlice = createSlice({
 
       state.modal.symbol = action.payload.symbol
       state.modal.typedValue = action.payload.typedValue
-      state.modal.fromNetworkId = action.payload.fromChainId
-      state.modal.toNetworkId = action.payload.toChainId
+      state.modal.fromChainId = action.payload.fromChainId
+      state.modal.toChainId = action.payload.toChainId
     },
     setModalDisclaimerText(state, action: PayloadAction<string>) {
       state.modal.disclaimerText = action.payload

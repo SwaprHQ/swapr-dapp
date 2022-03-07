@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { OutgoingMessageState } from 'arb-ts'
 import { AppState } from '../../../state'
-import { BridgeTxsFilter } from '../../../state/bridge/reducer'
 import {
   BridgeTransactionLog,
   BridgeTransactionSummary,
@@ -9,7 +8,7 @@ import {
   BridgeTxnsState
 } from '../../../state/bridgeTransactions/types'
 import { getBridgeTxStatus, PendingReasons, txnTypeToOrigin } from '../../../utils/arbitrum'
-import { ArbitrumList } from '../Omnibridge.types'
+import { ArbitrumList, BridgeTxsFilter } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
 
 const getSupportedChains = (bridgeId: string) => {
@@ -94,8 +93,8 @@ const createSelectBridgeTxsSummary = (
   createSelector(
     [
       selectOwnedTxs,
-      (state: AppState) => state.bridge.isCheckingWithdrawals,
-      (state: AppState) => state.bridge.txsFilter
+      (state: AppState) => state.omnibridge.UI.isCheckingWithdrawals,
+      (state: AppState) => state.omnibridge.UI.filter
     ],
     (txs, isLoading, txsFilter) => {
       const [l1ChainId, l2ChainId] = Object.keys(txs).map(key => Number(key))

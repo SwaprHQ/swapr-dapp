@@ -1,11 +1,9 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
-import { ButtonPrimary, ShowMoreButton } from '../../components/Button'
+import { ButtonPrimary } from '../../components/Button'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { BridgeStatusTag } from './BridgeStatusTag'
-import { useBridgeTxsFilter } from '../../state/bridge/hooks'
-import { BridgeTxsFilter } from '../../state/bridge/reducer'
 import { getExplorerLink } from '../../utils'
 import { getNetworkInfo } from '../../utils/networksList'
 
@@ -124,57 +122,44 @@ const TextTo = styled(Link)<{ status: BridgeTransactionStatus }>`
 interface BridgeTransactionsSummaryProps {
   transactions: BridgeTransactionSummary[]
   collectableTx: BridgeTransactionSummary
-  onCollect: (tx: BridgeTransactionSummary) => void
+  handleTriggerCollect: (tx: BridgeTransactionSummary) => void
 }
 
 export const BridgeTransactionsSummary = ({
   transactions,
   collectableTx,
-  onCollect
+  handleTriggerCollect
 }: BridgeTransactionsSummaryProps) => {
-  const [txsFilter, setTxsFilter] = useBridgeTxsFilter()
-
-  const toggleFilter = useCallback(() => {
-    if (txsFilter !== BridgeTxsFilter.NONE) setTxsFilter(BridgeTxsFilter.NONE)
-    else setTxsFilter(BridgeTxsFilter.RECENT)
-  }, [setTxsFilter, txsFilter])
-
   return (
-    <>
-      <AdvancedDetailsFooter fullWidth padding="12px">
-        <Container>
-          <Header>
-            <ColumnBridging>Bridging</ColumnBridging>
-            <ColumnFrom>From</ColumnFrom>
-            <ColumnTo>To</ColumnTo>
-            <ColumnStatus>Status</ColumnStatus>
-          </Header>
-          <Body>
-            {Object.values(transactions).map((tx, index) => (
-              <BridgeTransactionsSummaryRow key={index} tx={tx} onCollect={onCollect} />
-            ))}
-          </Body>
-        </Container>
-        {collectableTx && (
-          <ButtonPrimary onClick={() => onCollect(collectableTx)} mt="12px">
-            Collect
-          </ButtonPrimary>
-        )}
-      </AdvancedDetailsFooter>
-
-      <ShowMoreButton isOpen={txsFilter === BridgeTxsFilter.NONE} onClick={toggleFilter}>
-        Past transactions
-      </ShowMoreButton>
-    </>
+    <AdvancedDetailsFooter fullWidth padding="12px">
+      <Container>
+        <Header>
+          <ColumnBridging>Bridging</ColumnBridging>
+          <ColumnFrom>From</ColumnFrom>
+          <ColumnTo>To</ColumnTo>
+          <ColumnStatus>Status</ColumnStatus>
+        </Header>
+        <Body>
+          {Object.values(transactions).map((tx, index) => (
+            <BridgeTransactionsSummaryRow key={index} tx={tx} handleTriggerCollect={handleTriggerCollect} />
+          ))}
+        </Body>
+      </Container>
+      {collectableTx && (
+        <ButtonPrimary onClick={() => handleTriggerCollect(collectableTx)} mt="12px">
+          Collect
+        </ButtonPrimary>
+      )}
+    </AdvancedDetailsFooter>
   )
 }
 
 interface BridgeTransactionsSummaryRow {
   tx: BridgeTransactionSummary
-  onCollect: BridgeTransactionsSummaryProps['onCollect']
+  handleTriggerCollect: BridgeTransactionsSummaryProps['handleTriggerCollect']
 }
 
-const BridgeTransactionsSummaryRow = ({ tx, onCollect }: BridgeTransactionsSummaryRow) => {
+const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRow) => {
   const { assetName, fromChainId, status, toChainId, value, pendingReason, log } = tx
   const fromChainName = getNetworkInfo(fromChainId).name
   const toChainName = getNetworkInfo(toChainId).name
@@ -212,7 +197,11 @@ const BridgeTransactionsSummaryRow = ({ tx, onCollect }: BridgeTransactionsSumma
         </TextTo>
       </ColumnToFlex>
       <ColumnStatus>
-        <BridgeStatusTag status={status} pendingReason={pendingReason} onCollect={() => onCollect(tx)} />
+        <BridgeStatusTag
+          status={status}
+          pendingReason={pendingReason}
+          handleTriggerCollect={() => handleTriggerCollect(tx)}
+        />
       </ColumnStatus>
     </Row>
   )

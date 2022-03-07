@@ -72,3 +72,29 @@ export type SupportedBridges = {
   details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage
 }
+
+export enum BridgeTxsFilter {
+  NONE = 'NONE',
+  COLLECTABLE = 'COLLECTABLE',
+  RECENT = 'RECENT'
+}
+
+export enum BridgeModalStatus {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  CLOSED = 'CLOSED',
+  INITIATED = 'INITIATED',
+  ERROR = 'ERROR',
+  COLLECTING = 'COLLECTING',
+  DISCLAIMER = 'DISCLAIMER'
+}
+
+export interface BridgeModalState {
+  readonly status: BridgeModalStatus
+  readonly symbol: string | undefined
+  readonly typedValue: string
+  readonly fromChainId: ChainId
+  readonly toChainId: ChainId
+  readonly error?: string
+  readonly disclaimerText?: string
+}

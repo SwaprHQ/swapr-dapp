@@ -3,6 +3,8 @@ import { TokenList } from '@uniswap/token-lists'
 import { BridgeList, AsyncState, BridgingDetailsErrorMessage } from '../Omnibridge.types'
 import { Route } from './api/generated'
 
+export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+
 export interface SocketBridgeState {
   transactions: {
     txHash: string

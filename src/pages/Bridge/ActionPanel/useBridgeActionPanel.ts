@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
+import { useBridgeInfo } from '../../../services/Omnibridge/hooks/Omnibrige.hooks'
 import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
-import { useBridgeInfo } from '../../../state/bridge/hooks'
 
 export const useBridgeActionPanel = () => {
   const omnibridge = useOmnibridge()

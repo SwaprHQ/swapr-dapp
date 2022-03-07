@@ -1,17 +1,17 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useDebounce from '../../../hooks/useDebounce'
+import { useBridgeInfo } from '../../../services/Omnibridge/hooks/Omnibrige.hooks'
 import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../../services/Omnibridge/store/Common.reducer'
 import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reducer'
-import { useBridgeInfo } from '../../../state/bridge/hooks'
 import { AppState } from '../../../state'
 
 export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
   const debounce = useDebounce(value, 500)
   const omnibridge = useOmnibridge()
   const dispatch = useDispatch()
-  const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
+  const activeBridge = useSelector<AppState>(state => state.omnibridge.common.activeBridge)
 
   const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
   const { isBalanceSufficient } = useBridgeInfo()
@@ -20,7 +20,7 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
     if (showAvailableBridges && isBridge) {
       omnibridge.getSupportedBridges()
     }
-  }, [showAvailableBridges, omnibridge, debounce, from.address, to.address, isBridge])
+  }, [showAvailableBridges, omnibridge, debounce, from.address, to.address, isBridge, from.chainId, to.chainId])
 
   useEffect(() => {
     if (!isBridge) return
@@ -74,7 +74,7 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
       if (!activeBridge) {
         dispatch(
           omnibridgeUIActions.setStatusButton({
-            label: 'Select bridge bellow',
+            label: 'Select bridge below',
             isError: false,
             isLoading: false,
             isBalanceSufficient: false,
@@ -88,6 +88,7 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
     }
 
     const isValid = validateInput()
+
     if (isValid) {
       omnibridge.validate()
     }

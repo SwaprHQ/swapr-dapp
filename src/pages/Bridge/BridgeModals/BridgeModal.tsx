@@ -1,25 +1,30 @@
 import React from 'react'
-import { BridgeModalState, BridgeModalStatus } from '../../../state/bridge/reducer'
-import { BridgeStep } from '../utils'
 import { BridgeErrorModal } from './BridgeErrorModal'
 import { BridgePendingModal } from './BridgePendingModal'
 import { BridgeSuccessModal } from './BridgeSuccesModal'
 import { BridgingInitiatedModal } from './BridgingInitiatedModal'
 import { BridgeDisclaimerModal } from './BridgeDisclaimerModal'
 import { getNetworkInfo } from '../../../utils/networksList'
+import { BridgeModalState, BridgeModalStatus } from '../../../services/Omnibridge/Omnibridge.types'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
-  setStep: (step: BridgeStep) => void
+  setCollecting: (collecting: boolean) => void
   setStatus: (status: BridgeModalStatus, error?: string) => void
   modalData: BridgeModalState
   handleSubmit: () => void
 }
 
-export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, handleSubmit }: BridgeModalProps) => {
-  const { status, symbol, typedValue, fromNetwork, toNetwork, error, disclaimerText } = modalData
-  const { name: fromNetworkName } = getNetworkInfo(fromNetwork.chainId)
-  const { name: toNetworkName } = getNetworkInfo(toNetwork.chainId)
+export const BridgeModal = ({
+  handleResetBridge,
+  setCollecting,
+  setStatus,
+  modalData,
+  handleSubmit
+}: BridgeModalProps) => {
+  const { status, symbol, typedValue, fromChainId, toChainId, error, disclaimerText } = modalData
+  const { name: fromNetworkName } = getNetworkInfo(fromChainId)
+  const { name: toNetworkName } = getNetworkInfo(toChainId)
 
   const txType = 'Bridging'
 
@@ -48,7 +53,7 @@ export const BridgeModal = ({ handleResetBridge, setStep, setStatus, modalData, 
             isOpen
             onDismiss={() => {
               setStatus(BridgeModalStatus.CLOSED)
-              setStep(BridgeStep.Initial)
+              setCollecting(false)
             }}
             heading={'Collecting Initiated'}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}
