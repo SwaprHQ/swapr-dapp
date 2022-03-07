@@ -85,21 +85,39 @@ const createSocketSlice = (bridgeId: SocketList) =>
         state,
         action: PayloadAction<{
           txHash: string
+          partnerTxHash?: string
           assetName: string
           value: string
           fromChainId: ChainId
           toChainId: ChainId
           bridgeId: BridgeList
+          status?: 'success' | 'pending' | 'error'
+          sender: string
         }>
       ) => {
         const { payload: txn } = action
 
         state.transactions.push(txn)
       },
-      updateTx: (state, action: PayloadAction<{ txHash: string }>) => {
-        const index = state.transactions.findIndex(tx => tx.txHash === action.payload.txHash)
+      updateTx: (
+        state,
+        action: PayloadAction<{ txHash: string; partnerTxHash?: string; status?: 'success' | 'pending' | 'error' }>
+      ) => {
+        const { txHash, partnerTxHash, status } = action.payload
+        const index = state.transactions.findIndex(tx => tx.txHash === txHash)
+        const tx = state.transactions[index]
 
-        state.transactions[index].timestampResolved = Date.now()
+        if (status) {
+          tx.status = status
+
+          if (status === 'success') {
+            tx.timestampResolved = Date.now()
+          }
+        }
+
+        if (partnerTxHash) {
+          tx.partnerTxHash = partnerTxHash
+        }
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload

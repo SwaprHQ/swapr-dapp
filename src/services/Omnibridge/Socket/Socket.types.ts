@@ -5,16 +5,20 @@ import { Route } from './api/generated'
 
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
+export type SocketTx = {
+  txHash: string
+  partnerTxHash?: string
+  assetName: string
+  value: string
+  fromChainId: ChainId
+  toChainId: ChainId
+  bridgeId: BridgeList
+  timestampResolved?: number
+  status?: 'pending' | 'success' | 'error'
+  sender: string
+}
 export interface SocketBridgeState {
-  transactions: {
-    txHash: string
-    assetName: string
-    value: string
-    fromChainId: ChainId
-    toChainId: ChainId
-    bridgeId: BridgeList
-    timestampResolved?: number
-  }[]
+  transactions: SocketTx[]
   bridgingDetails: {
     gas?: string
     fee?: string

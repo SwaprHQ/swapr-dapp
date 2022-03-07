@@ -10,10 +10,15 @@ import { socketSelectors } from '../Socket/Socket.selectors'
 export const selectAllTransactions = createSelector(
   [
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTxsSummary,
-    arbitrumSelectors['arbitrum:mainnet'].selectBridgeTxsSummary
+    arbitrumSelectors['arbitrum:mainnet'].selectBridgeTxsSummary,
+    socketSelectors['socket'].selectBridgeTxsSummary
   ],
 
-  (txsSummaryTestnet, txsSummaryMainnet) => [...txsSummaryTestnet, ...txsSummaryMainnet]
+  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket) => [
+    ...txsSummaryTestnet,
+    ...txsSummaryMainnet,
+    ...txsSummarySocket
+  ]
 )
 
 export const selectAllLists = createSelector(

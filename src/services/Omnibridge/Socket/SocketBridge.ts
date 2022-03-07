@@ -12,7 +12,11 @@ import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
-import { QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
+import {
+  BridgeStatusResponseDestinationTxStatusEnum,
+  QuoteControllerGetQuoteSortEnum,
+  TokenAsset
+} from './api/generated'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
@@ -25,6 +29,8 @@ const getErrorMsg = (error: any) => {
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends OmnibridgeChildBase {
+  private _listeners: NodeJS.Timeout[] = []
+
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
   }
@@ -45,6 +51,8 @@ export class SocketBridge extends OmnibridgeChildBase {
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
+
+    this.startListeners()
   }
 
   public onSignerChange = async ({ ...signerData }: OmnibridgeChangeHandler) => {
@@ -56,12 +64,12 @@ export class SocketBridge extends OmnibridgeChildBase {
   public triggerCollect = () => undefined
 
   public triggerBridging = async () => {
-    //get txData from store
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+
     const { from, to } = this.store.getState().omnibridge.UI
+    if (!this._account || !from.address || !from.chainId || !from.value || !to.chainId || !from.address) return
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
-
     if (!data || !recipient) return
 
     try {
@@ -70,27 +78,21 @@ export class SocketBridge extends OmnibridgeChildBase {
         data
       })
 
+      if (!tx) return
+
       this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
-      const receipt = await tx?.wait()
 
       this.store.dispatch(
         this.actions.addTx({
-          txHash: tx?.hash ? tx.hash : '',
-          assetName: from.address.substr(0, 2), //TODO find way to get asset name
-          value: to.value,
-          fromChainId: from.chainId ? from.chainId : 1,
-          toChainId: to.chainId ? to.chainId : 42161,
+          sender: this._account,
+          txHash: tx.hash,
+          assetName: 'AssetNameToAdd',
+          value: from.value,
+          fromChainId: from.chainId,
+          toChainId: to.chainId,
           bridgeId: this.bridgeId
         })
       )
-
-      if (receipt) {
-        this.store.dispatch(
-          this.actions.updateTx({
-            txHash: receipt.transactionHash
-          })
-        )
-      }
     } catch (e) {
       this.store.dispatch(
         omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
@@ -498,5 +500,41 @@ export class SocketBridge extends OmnibridgeChildBase {
 
   public triggerModalDisclaimerText = () => {
     this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
+  }
+
+  private startListeners = () => {
+    this._listeners.push(setInterval(this.pendingTxListener, 5000))
+  }
+
+  private pendingTxListener = async () => {
+    const pendingTransactions = this.selectors.selectPendingTxs(this.store.getState(), this._account)
+
+    if (!pendingTransactions.length) return
+
+    const promises = pendingTransactions.map(async tx => {
+      try {
+        const status = await ServerAPI.appControllerGetBridgingStatus({
+          fromChainId: tx.fromChainId.toString(),
+          toChainId: tx.toChainId.toString(),
+          transactionHash: tx.txHash
+        })
+        console.log(status)
+
+        if (status.success) {
+          this.store.dispatch(
+            this.actions.updateTx({
+              txHash: tx.txHash,
+              partnerTxHash: status.result.destinationTransactionHash || undefined,
+              status:
+                status.result.destinationTxStatus === BridgeStatusResponseDestinationTxStatusEnum.Completed
+                  ? 'pending'
+                  : 'success'
+            })
+          )
+        }
+      } catch (e) {}
+    })
+
+    await Promise.all(promises)
   }
 }
