@@ -109,7 +109,7 @@ export default function Bridge() {
   const [collectableTx, setCollectableTx] = useState(
     () => bridgeSummaries.filter(tx => tx.status === 'redeem')[0] || undefined
   )
-  const [_, setTxsFilter] = useBridgeTxsFilter()
+  const setTxsFilter = useBridgeTxsFilter()
 
   const collectableTxAmount = bridgeSummaries.filter(tx => tx.status === 'redeem').length
   const isNetworkConnected = fromChainId === chainId

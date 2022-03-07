@@ -187,12 +187,11 @@ export const useBridgeInfo = () => {
   }
 }
 
-export const useBridgeTxsFilter = (): [BridgeTxsFilter, (filter: BridgeTxsFilter) => void] => {
+export const useBridgeTxsFilter = () => {
   const dispatch = useDispatch()
-  const filter = useSelector((state: AppState) => state.omnibridge.UI.filter)
   const setFilter = (filter: BridgeTxsFilter) => {
     dispatch(omnibridgeUIActions.setBridgeTxsFilter(filter))
   }
 
-  return [filter, setFilter]
+  return setFilter
 }
