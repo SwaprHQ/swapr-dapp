@@ -283,68 +283,83 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
-    try {
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-      const { from, to } = this.store.getState().omnibridge.UI
+    const { from, to } = this.store.getState().omnibridge.UI
 
-      if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
+    if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
-      const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
+    const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
 
-      let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
-      let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
+    let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
+    let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
 
-      if (from.address !== 'ETH') {
-        //way to find from and toToken
-        const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
-        if (!fromToken) throw new Error('Cannot find token')
-
-        const toToken = socketTokens.tokens.find(
-          token => token.symbol === fromToken.symbol && token.chainId === to.chainId
+    if (from.address !== 'ETH') {
+      //way to find from and toToken
+      const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
+      if (!fromToken) {
+        this.store.dispatch(
+          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
         )
-        if (!toToken) throw new Error('Cannot find token')
-
-        fromTokenAddress = from.address
-        toTokenAddress = toToken.address
+        return
       }
 
-      const value = parseUnits(from.value, from.decimals)
-
-      const quote = await QuoteAPI.quoteControllerGetQuote(
-        {
-          fromChainId: from.chainId.toString(),
-          fromTokenAddress,
-          toTokenAddress,
-          toChainId: to.chainId.toString(),
-          fromAmount: value.toString(),
-          userAddress: this._account,
-          uniqueRoutesPerBridge: false,
-          disableSwapping: false,
-          sort: QuoteControllerGetQuoteSortEnum.Output,
-          singleTxOnly: true
-        },
-        { signal: this.renewAbortController('quote') }
+      const toToken = socketTokens.tokens.find(
+        token => token.symbol === fromToken.symbol && token.chainId === to.chainId
       )
+      if (!toToken) {
+        this.store.dispatch(
+          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+        )
+        return
+      }
 
-      const { success, result } = quote
-      const { routes, toAsset } = result
+      fromTokenAddress = from.address
+      toTokenAddress = toToken.address
+    }
 
-      if (!success || routes.length === 0) throw new Error('No available routes / details')
+    const value = parseUnits(from.value, from.decimals)
 
-      this.store.dispatch(this.actions.setRoutes(routes))
+    const quote = await QuoteAPI.quoteControllerGetQuote(
+      {
+        fromChainId: from.chainId.toString(),
+        fromTokenAddress,
+        toTokenAddress,
+        toChainId: to.chainId.toString(),
+        fromAmount: value.toString(),
+        userAddress: this._account,
+        uniqueRoutesPerBridge: false,
+        disableSwapping: false,
+        sort: QuoteControllerGetQuoteSortEnum.Output,
+        singleTxOnly: true
+      },
+      { signal: this.renewAbortController('quote') }
+    )
 
-      const tokenData = await ServerAPI.appControllerGetTokenPrice({
-        tokenAddress: toAsset.address,
-        chainId: toAsset.chainId
-      })
+    const { success, result } = quote
+    const { routes, toAsset } = result
 
-      const {
-        result: { tokenPrice } //token price in USD
-      } = tokenData
+    if (!success || routes.length === 0) {
+      this.store.dispatch(
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+      )
+      return
+    }
 
-      const bestRoute = routes.reduce<{ amount: number; routeId: string }>(
-        (total, next) => {
+    this.store.dispatch(this.actions.setRoutes(routes))
+
+    const tokenData = await ServerAPI.appControllerGetTokenPrice({
+      tokenAddress: toAsset.address,
+      chainId: toAsset.chainId
+    })
+
+    const {
+      result: { tokenPrice } //token price in USD
+    } = tokenData
+
+    const bestRoute = routes.reduce<{ amount: number; routeId: string }>(
+      (total, next) => {
+        if (tokenData.success) {
           const amount = (
             Number(formatUnits(next.toAmount, toAsset.decimals).toString()) * tokenPrice -
             next.totalGasFeesInUsd
@@ -360,59 +375,58 @@ export class SocketBridge extends OmnibridgeChildBase {
           }
 
           return total
-        },
-        { amount: 0, routeId: '' } as { amount: number; routeId: string }
-      )
-
-      const indexOfBestRoute = routes.findIndex(route => route.routeId === bestRoute.routeId)
-
-      if (indexOfBestRoute === -1) throw new Error('Route not found')
-
-      const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
-      //set route
-      this.store.dispatch(commonActions.setActiveRouteId(routeId))
-
-      const getBridgeFee = (userTxs: any): string => {
-        if (isFee(userTxs)) {
-          //CHECK
-          // protocolFees has two parameters {amount,feesInUsd}
-          // amount - fee but in token representation
-          // feesInUsd - i have not seen this value other than 0
-          //should we use both and sum ? (for now we sum it)
-          const formattedAmount = Number(
-            formatUnits(userTxs[0].steps[0].protocolFees.amount, toAsset.decimals).toString()
-          ) //it's amount of token
-
-          const feesInToken = formattedAmount * tokenPrice
-          const feesInUsd = userTxs[0].steps[0].protocolFees.feesInUsd
-
-          const fee = `${(feesInToken + feesInUsd).toFixed(2).toString()} $`
-
-          return fee
         }
+        return total
+      },
+      { amount: 0, routeId: '' } as { amount: number; routeId: string }
+    )
 
-        //this shouldn't happen
-        return '---'
-      }
+    const indexOfBestRoute = routes.findIndex(route => route.routeId === bestRoute.routeId)
 
-      const fee = getBridgeFee(userTxs)
-
-      const details = {
-        gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
-        fee,
-        estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-        receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
-          .toFixed(2)
-          .toString()
-      }
-
-      this.store.dispatch(this.actions.setBridgeDetails(details))
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
-    } catch (err) {
-      this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
-      )
+    if (indexOfBestRoute === -1) {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
     }
+
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
+    //set route
+    this.store.dispatch(commonActions.setActiveRouteId(routeId))
+
+    const getBridgeFee = (userTxs: any): string => {
+      if (isFee(userTxs)) {
+        //CHECK
+        // protocolFees has two parameters {amount,feesInUsd}
+        // amount - fee but in token representation
+        // feesInUsd - i have not seen this value other than 0
+        //should we use both and sum ? (for now we sum it)
+        const formattedAmount = Number(
+          formatUnits(userTxs[0].steps[0].protocolFees.amount, toAsset.decimals).toString()
+        ) //it's amount of token
+
+        const feesInToken = formattedAmount * tokenPrice
+        const feesInUsd = userTxs[0].steps[0].protocolFees.feesInUsd
+
+        const fee = `${(feesInToken + feesInUsd).toFixed(2).toString()} $`
+
+        return fee
+      }
+
+      //this shouldn't happen
+      return '---'
+    }
+
+    const fee = getBridgeFee(userTxs)
+
+    const details = {
+      gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
+      fee,
+      estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
+      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
+        .toFixed(2)
+        .toString()
+    }
+
+    this.store.dispatch(this.actions.setBridgeDetails(details))
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
   }
 
   public fetchDynamicLists = async () => {

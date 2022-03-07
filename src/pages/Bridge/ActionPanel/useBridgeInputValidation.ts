@@ -23,6 +23,11 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
   }, [showAvailableBridges, omnibridge, debounce, from.address, to.address, isBridge, from.chainId, to.chainId])
 
   useEffect(() => {
+    //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
+    dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
+  }, [from.chainId, to.chainId, dispatch])
+
+  useEffect(() => {
     if (!isBridge) return
 
     const validateInput = () => {
@@ -53,23 +58,22 @@ export const useBridgeInputValidation = (value: string, isBridge: boolean) => {
         )
         return false
       }
-
+      //show available bridges when first two steps of validation are passed (amount > 0,token is selected)
       dispatch(omnibridgeUIActions.setShowAvailableBridges(true))
-      //check balance
 
-      //tmp comment to test validate method for specific bridge
-      // if (!isBalanceSufficient) {
-      //   dispatch(
-      //     omnibridgeUIActions.setStatusButton({
-      //       label: 'Insufficient balance',
-      //       isError: false,
-      //       isLoading: false,
-      //       isBalanceSufficient: false,
-      //       approved: false
-      //     })
-      //   )
-      //   return false
-      // }
+      //check balance
+      if (!isBalanceSufficient) {
+        dispatch(
+          omnibridgeUIActions.setStatusButton({
+            label: 'Insufficient balance',
+            isError: false,
+            isLoading: false,
+            isBalanceSufficient: false,
+            approved: false
+          })
+        )
+        return false
+      }
 
       if (!activeBridge) {
         dispatch(
