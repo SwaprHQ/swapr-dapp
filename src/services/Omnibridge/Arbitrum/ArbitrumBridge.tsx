@@ -786,10 +786,12 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(
       this.actions.setBridgeDetails({
-        gas: '10.20',
-        fee: '0.00',
+        gas: '10.20$', //estimate gas
+        fee: '0.00$',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: value
+        receiveAmount: Number(value)
+          .toFixed(2)
+          .toString()
       })
     )
 
