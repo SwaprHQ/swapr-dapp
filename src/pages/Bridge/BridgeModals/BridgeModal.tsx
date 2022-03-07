@@ -53,7 +53,7 @@ export const BridgeModal = ({
             isOpen
             onDismiss={() => {
               setStatus(BridgeModalStatus.CLOSED)
-              setCollecting(true)
+              setCollecting(false)
             }}
             heading={'Collecting Initiated'}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}
