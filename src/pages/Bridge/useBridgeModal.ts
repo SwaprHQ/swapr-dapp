@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../state'
-import { ChainId } from '@swapr/sdk'
-import { BridgeModalState, BridgeModalStatus } from '../../state/bridge/reducer'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
+import { BridgeModalState, BridgeModalStatus } from '../../services/Omnibridge/Omnibridge.types'
 
 //TODO move hook to better place
 export const useBridgeModal = (): {
@@ -14,9 +13,9 @@ export const useBridgeModal = (): {
     typedValue,
     fromChainId,
     toChainId
-  }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => void
+  }: Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>) => void
 } => {
-  const { fromNetworkId, status, symbol, toNetworkId, typedValue, error, disclaimerText } = useSelector(
+  const { fromChainId, status, symbol, toChainId, typedValue, error, disclaimerText } = useSelector(
     (state: AppState) => state.omnibridge.UI.modal
   )
 
@@ -35,10 +34,10 @@ export const useBridgeModal = (): {
       typedValue,
       fromChainId,
       toChainId
-    }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => {
+    }: Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>) => {
       dispatch(
         omnibridgeUIActions.setBridgeModalData({
-          symbol: symbol ? symbol : '',
+          symbol: symbol ?? '',
           typedValue,
           fromChainId,
           toChainId
@@ -53,12 +52,8 @@ export const useBridgeModal = (): {
       status,
       symbol,
       typedValue,
-      fromNetwork: {
-        chainId: fromNetworkId
-      },
-      toNetwork: {
-        chainId: toNetworkId
-      },
+      fromChainId,
+      toChainId,
       error,
       disclaimerText
     },

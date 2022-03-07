@@ -1,11 +1,11 @@
 import React from 'react'
-import { BridgeModalState, BridgeModalStatus } from '../../../state/bridge/reducer'
 import { BridgeErrorModal } from './BridgeErrorModal'
 import { BridgePendingModal } from './BridgePendingModal'
 import { BridgeSuccessModal } from './BridgeSuccesModal'
 import { BridgingInitiatedModal } from './BridgingInitiatedModal'
 import { BridgeDisclaimerModal } from './BridgeDisclaimerModal'
 import { getNetworkInfo } from '../../../utils/networksList'
+import { BridgeModalState, BridgeModalStatus } from '../../../services/Omnibridge/Omnibridge.types'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
@@ -22,9 +22,9 @@ export const BridgeModal = ({
   modalData,
   handleSubmit
 }: BridgeModalProps) => {
-  const { status, symbol, typedValue, fromNetwork, toNetwork, error, disclaimerText } = modalData
-  const { name: fromNetworkName } = getNetworkInfo(fromNetwork.chainId)
-  const { name: toNetworkName } = getNetworkInfo(toNetwork.chainId)
+  const { status, symbol, typedValue, fromChainId, toChainId, error, disclaimerText } = modalData
+  const { name: fromNetworkName } = getNetworkInfo(fromChainId)
+  const { name: toNetworkName } = getNetworkInfo(toChainId)
 
   const txType = 'Bridging'
 

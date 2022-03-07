@@ -1,20 +1,22 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { OmnibridgeChildBaseConstructor, OmnibridgeChildBaseInit, OmnibridgeChangeHandler } from '../Omnibridge.types'
+import {
+  OmnibridgeChildBaseConstructor,
+  OmnibridgeChildBaseInit,
+  OmnibridgeChangeHandler,
+  BridgeModalStatus
+} from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { SocketList } from '../Omnibridge.types'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
-import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
+import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
 import { QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
-import { BridgeModalStatus } from '../../../state/bridge/reducer'
-
-import { TokenListsAPI } from './api'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
-import { isFee } from './Socket.types'
+import { isFee, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -40,8 +42,6 @@ export class SocketBridge extends OmnibridgeChildBase {
     return socketSelectors[this.bridgeId as SocketList]
   }
 
-  private _abortControllers: { [id: string]: AbortController } = {}
-
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
@@ -51,17 +51,10 @@ export class SocketBridge extends OmnibridgeChildBase {
     this.setSignerData(signerData)
   }
 
-  public collect = () => {
-    return
-  }
-  public triggerCollect = () => {
-    return {
-      symbol: '',
-      typedValue: '',
-      fromChainId: 1,
-      toChainId: 1
-    }
-  }
+  public collect = () => undefined
+
+  public triggerCollect = () => undefined
+
   public triggerBridging = async () => {
     //get txData from store
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
@@ -173,12 +166,6 @@ export class SocketBridge extends OmnibridgeChildBase {
     if (!selectedRoute) return
     //build txn
 
-    if (this._abortControllers.singleTx) {
-      this._abortControllers.singleTx.abort()
-    }
-
-    this._abortControllers.singleTx = new AbortController()
-
     try {
       this.store.dispatch(
         omnibridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, approved: false })
@@ -187,7 +174,7 @@ export class SocketBridge extends OmnibridgeChildBase {
         {
           singleTxDTO: { route: selectedRoute }
         },
-        { signal: this._abortControllers.singleTx.signal }
+        { signal: this.renewAbortController('singleTx') }
       )
 
       if (!transaction.success) {
@@ -223,11 +210,6 @@ export class SocketBridge extends OmnibridgeChildBase {
         )
       } else {
         //check allowance
-        if (this._abortControllers.allowance) {
-          this._abortControllers.allowance.abort()
-        }
-
-        this._abortControllers.allowance = new AbortController()
 
         const activeChainId = this.store.getState().omnibridge.UI.from.chainId
 
@@ -240,7 +222,7 @@ export class SocketBridge extends OmnibridgeChildBase {
             allowanceTarget: approvalData.allowanceTarget.toString(),
             tokenAddress: approvalData.approvalTokenAddress.toString()
           },
-          { signal: this._abortControllers.allowance.signal }
+          { signal: this.renewAbortController('allowance') }
         )
 
         const {
@@ -301,24 +283,8 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
-    //check health socket server
     try {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
-
-      if (this._abortControllers.health) {
-        this._abortControllers.health.abort()
-      }
-
-      this._abortControllers.health = new AbortController()
-
-      const health = await ServerAPI.appControllerGetHealth({ signal: this._abortControllers.health.signal })
-
-      if (!health.ok) throw new Error('Cannot get response from Socket server')
-
-      if (this._abortControllers.quote) {
-        this._abortControllers.quote.abort()
-      }
-      this._abortControllers.quote = new AbortController()
 
       const { from, to } = this.store.getState().omnibridge.UI
 
@@ -326,16 +292,21 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
 
-      let toToken: TokenInfo | undefined = undefined
+      let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
+      let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
+
       if (from.address !== 'ETH') {
         //way to find from and toToken
         const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
-
         if (!fromToken) throw new Error('Cannot find token')
 
-        toToken = socketTokens.tokens.find(token => token.symbol === fromToken.symbol && token.chainId === to.chainId)
-
+        const toToken = socketTokens.tokens.find(
+          token => token.symbol === fromToken.symbol && token.chainId === to.chainId
+        )
         if (!toToken) throw new Error('Cannot find token')
+
+        fromTokenAddress = from.address
+        toTokenAddress = toToken.address
       }
 
       const value = parseUnits(from.value, from.decimals)
@@ -343,10 +314,9 @@ export class SocketBridge extends OmnibridgeChildBase {
       const quote = await QuoteAPI.quoteControllerGetQuote(
         {
           fromChainId: from.chainId.toString(),
-          //0xe... is token address of eth (socket implementation)
-          fromTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : from.address,
+          fromTokenAddress,
+          toTokenAddress,
           toChainId: to.chainId.toString(),
-          toTokenAddress: from.address === 'ETH' ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' : toToken!.address, //we are sure that toToken exists - line 338
           fromAmount: value.toString(),
           userAddress: this._account,
           uniqueRoutesPerBridge: false,
@@ -354,7 +324,7 @@ export class SocketBridge extends OmnibridgeChildBase {
           sort: QuoteControllerGetQuoteSortEnum.Output,
           singleTxOnly: true
         },
-        { signal: this._abortControllers.quote.signal }
+        { signal: this.renewAbortController('quote') }
       )
 
       const { success, result } = quote
@@ -453,19 +423,6 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     if (!fromChainId || !toChainId) return
 
-    // Abort previous calls
-
-    if (this._abortControllers.tokenListFrom) {
-      this._abortControllers.tokenListFrom.abort()
-    }
-
-    if (this._abortControllers.tokenListTo) {
-      this._abortControllers.tokenListTo.abort()
-    }
-
-    this._abortControllers.tokenListFrom = new AbortController()
-    this._abortControllers.tokenListTo = new AbortController()
-
     this.store.dispatch(this.actions.setTokenListsStatus('loading'))
 
     const payload = {
@@ -473,11 +430,12 @@ export class SocketBridge extends OmnibridgeChildBase {
       toChainId: toChainId.toString()
     }
 
-    const tokenListToPromise = TokenListsAPI.tokenListControllerGetToTokenList(payload, {
-      signal: this._abortControllers.tokenListFrom.signal
-    })
     const tokenListFromPromise = TokenListsAPI.tokenListControllerGetfromTokenList(payload, {
-      signal: this._abortControllers.tokenListTo.signal
+      signal: this.renewAbortController('tokenListFrom')
+    })
+
+    const tokenListToPromise = TokenListsAPI.tokenListControllerGetToTokenList(payload, {
+      signal: this.renewAbortController('tokenListTo')
     })
 
     const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
@@ -490,7 +448,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       const toToken = tokenListTo.result.find(
         token =>
           token.symbol === fromToken.symbol &&
-          fromToken.address.toLowerCase() !== '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'.toLowerCase()
+          fromToken.address.toLowerCase() !== SOCKET_NATIVE_TOKEN_ADDRESS.toLowerCase()
       )
 
       if (toToken && toToken.symbol) {
@@ -536,9 +494,8 @@ export class SocketBridge extends OmnibridgeChildBase {
     this.store.dispatch(this.actions.setTokenListsStatus('ready'))
   }
 
-  public fetchStaticLists = () => {
-    return Promise.resolve()
-  }
+  public fetchStaticLists = async () => undefined
+
   public triggerModalDisclaimerText = () => {
     this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
   }

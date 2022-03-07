@@ -12,8 +12,6 @@ import { omnibridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
 
 import { addTransaction } from '../../../state/transactions/actions'
-import { BridgeModalStatus } from '../../../state/bridge/reducer'
-import { setBridgeLoadingWithdrawals } from '../../../state/bridge/actions'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
 
 import getTokenList from '../../../utils/getTokenList'
@@ -21,6 +19,7 @@ import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 
 import {
   ArbitrumList,
+  BridgeModalStatus,
   OmnibridgeChangeHandler,
   OmnibridgeChildBaseConstructor,
   OmnibridgeChildBaseInit
@@ -100,7 +99,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     await this.setArbTs({ previousChainId })
     await this.updatePendingWithdrawals()
   }
-  // TODO: check if it requres signer
+
   private deposit = async (value: string, tokenAddress: string) => {
     try {
       if (tokenAddress !== 'ETH') {
@@ -114,7 +113,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       )
     }
   }
-  // TODO: check if it requres signer
+
   private withdraw = async (value: string, tokenAddress: string) => {
     try {
       if (tokenAddress !== 'ETH') {
@@ -128,7 +127,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       )
     }
   }
-  // TODO: check if it requres signer
+
   public collect = async (l2Tx: BridgeTransactionSummary) => {
     const { batchIndex, batchNumber, value, assetAddressL2 } = l2Tx
     if (!this._account || !batchIndex || !batchNumber || !value) return
@@ -409,9 +408,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
   private updatePendingWithdrawals = async () => {
     if (this._initialPendingWithdrawalsChecked) return
 
-    const pendingWithdrawals = this.selectors.selectPendingWithdrawals(this.store.getState(), this._account)
+    this.store.dispatch(omnibridgeUIActions.setBridgeLoadingWithdrawals(true))
 
-    this.store.dispatch(setBridgeLoadingWithdrawals(true))
+    const pendingWithdrawals = this.selectors.selectPendingWithdrawals(this.store.getState(), this._account)
 
     const promises = pendingWithdrawals.map(this.getOutgoingMessageState)
 
@@ -426,14 +425,14 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
             chainId: this.l2ChainId,
             outgoingMessageState,
             txHash,
-            batchIndex: batchIndex,
-            batchNumber: batchNumber
+            batchIndex,
+            batchNumber
           })
         )
       }
     })
 
-    this.store.dispatch(setBridgeLoadingWithdrawals(false))
+    this.store.dispatch(omnibridgeUIActions.setBridgeLoadingWithdrawals(false))
     this._initialPendingWithdrawalsChecked = true
   }
 

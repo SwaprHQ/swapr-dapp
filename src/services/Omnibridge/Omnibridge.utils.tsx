@@ -18,6 +18,7 @@ export abstract class OmnibridgeChildBase {
   protected _activeChainId: OmnibridgeChildBaseProps['activeChainId']
   protected _staticProviders: OmnibridgeChildBaseProps['staticProviders']
   protected _activeProvider: OmnibridgeChildBaseProps['activeProvider']
+  protected _abortControllers: { [id: string]: AbortController } = {}
 
   constructor({ supportedChains, bridgeId, displayName }: OmnibridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
@@ -36,6 +37,16 @@ export abstract class OmnibridgeChildBase {
     this._store = store
   }
 
+  protected renewAbortController = (key: string) => {
+    if (this._abortControllers[key]) {
+      this._abortControllers[key].abort()
+    }
+
+    this._abortControllers[key] = new AbortController()
+
+    return this._abortControllers[key].signal
+  }
+
   // To be implemented by bridge
   abstract init({
     account,
@@ -52,17 +63,15 @@ export abstract class OmnibridgeChildBase {
     previousChainId
   }: OmnibridgeChangeHandler): Promise<void>
 
-  // TODO: Abstract parameters. Currently it's hardcoded to support arbitrum
-
+  abstract validate(): void
+  abstract approve(): void
+  abstract collect(l2Tx?: BridgeTransactionSummary): void
+  abstract triggerCollect(
+    l2Tx?: BridgeTransactionSummary
+  ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId } | undefined
   abstract triggerBridging(): void
+  abstract triggerModalDisclaimerText(): void
   abstract fetchStaticLists(): Promise<void>
   abstract fetchDynamicLists(): Promise<void>
-  abstract collect(l2Tx: BridgeTransactionSummary): void
-  abstract approve(): void
-  abstract triggerCollect(
-    l2Tx: BridgeTransactionSummary
-  ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId }
-  abstract validate(): void
   abstract getBridgingMetadata(): void
-  abstract triggerModalDisclaimerText(): void
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
-import { BridgeTxsFilter } from '../../state/bridge/reducer'
+import { BridgeTxsFilter } from '../../services/Omnibridge/Omnibridge.types'
 import { BridgeTabs } from './utils'
 
 interface TabsProps {
