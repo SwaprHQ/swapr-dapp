@@ -34,7 +34,10 @@ export const BridgeModal = ({
         return (
           <BridgingInitiatedModal
             isOpen
-            onDismiss={() => setStatus(BridgeModalStatus.CLOSED)}
+            onDismiss={() => {
+              handleResetBridge()
+              setStatus(BridgeModalStatus.CLOSED)
+            }}
             heading={'Bridging Initiated'}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}
           />
