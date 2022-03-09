@@ -72,18 +72,12 @@ const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof create
     )
   })
 
-type CreateBridgeLogProps = Pick<BridgeTransactionSummary, 'fromChainId' | 'toChainId'> & {
-  transactions: BridgeTxn[]
-}
+type CreateBridgeLogProps = {}
 
-const createBridgeLog = ({ transactions, fromChainId, toChainId }: CreateBridgeLogProps): BridgeTransactionLog[] => {
+const createBridgeLog = (transactions: BridgeTxn[]): BridgeTransactionLog[] => {
   return transactions.map(tx => ({
     txHash: tx.txHash,
-    chainId: tx.chainId,
-    toChainId,
-    fromChainId,
-    type: tx.type,
-    status: getBridgeTxStatus(tx.receipt?.status)
+    chainId: tx.chainId
   }))
 }
 
@@ -137,7 +131,7 @@ const createSelectBridgeTxsSummary = (
             summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
           }
 
-          summary.log = createBridgeLog({ transactions: [tx], fromChainId: from, toChainId: to })
+          summary.log = createBridgeLog([tx])
           processedTxsMap[l1ChainId][tx.txHash] = tx.txHash
 
           total.push(summary)
@@ -151,11 +145,7 @@ const createSelectBridgeTxsSummary = (
           summary.toChainId = from
           summary.status = status === 1 ? 'claimed' : getBridgeTxStatus(status)
           summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
-          summary.log = createBridgeLog({
-            transactions: [l2Txs[tx.partnerTxHash], tx],
-            fromChainId: to,
-            toChainId: from
-          })
+          summary.log = createBridgeLog([l2Txs[tx.partnerTxHash], tx])
 
           processedTxsMap[l1ChainId][tx.txHash] = tx.txHash
           processedTxsMap[l2ChainId][tx.partnerTxHash] = tx.partnerTxHash // skip partner tx in l2Summaries
@@ -174,11 +164,7 @@ const createSelectBridgeTxsSummary = (
             summary.timestampResolved = l2Txs[tx.partnerTxHash].timestampResolved
           }
 
-          summary.log = createBridgeLog({
-            transactions: [tx, l2Txs[tx.partnerTxHash]],
-            fromChainId: from,
-            toChainId: to
-          })
+          summary.log = createBridgeLog([tx, l2Txs[tx.partnerTxHash]])
 
           processedTxsMap[l1ChainId][tx.txHash] = tx.txHash
           processedTxsMap[l2ChainId][tx.partnerTxHash] = tx.partnerTxHash // skip partner tx in l2Summaries
@@ -237,7 +223,7 @@ const createSelectBridgeTxsSummary = (
               summary.timestampResolved = undefined
             }
           }
-          summary.log = createBridgeLog({ transactions: [tx], fromChainId: from, toChainId: to })
+          summary.log = createBridgeLog([tx])
 
           processedTxsMap[l2ChainId][tx.txHash] = tx.txHash
 

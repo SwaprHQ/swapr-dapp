@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
-import { BridgeTransactionLog, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { BridgeTxsFilter, SocketList } from '../Omnibridge.types'
 import { SocketTx, SOCKET_PENDING_REASONS } from './Socket.types'
 
@@ -70,13 +70,6 @@ const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: Retu
           ? SOCKET_PENDING_REASONS.TO_PENDING
           : undefined
 
-      const txLogBase: Omit<BridgeTransactionLog, 'txHash' | 'chainId'> = {
-        toChainId: tx.toChainId,
-        fromChainId: tx.fromChainId,
-        status: 'confirmed',
-        type: 'deposit'
-      }
-
       const summary: BridgeTransactionSummary = {
         assetName: tx.assetName,
         assetAddressL1: '', // not applicable, socket doesn't implement collect flow for now
@@ -90,7 +83,6 @@ const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: Retu
         timestampResolved: tx.timestampResolved,
         log: [
           {
-            ...txLogBase,
             chainId: tx.fromChainId,
             txHash: tx.txHash
           }
@@ -100,7 +92,6 @@ const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: Retu
 
       if (tx.partnerTxHash) {
         summary.log.push({
-          ...txLogBase,
           chainId: tx.toChainId,
           txHash: tx.partnerTxHash
         })
