@@ -7,9 +7,10 @@ import {
   BridgeTxn,
   BridgeTxnsState
 } from '../../../state/bridgeTransactions/types'
-import { getBridgeTxStatus, PendingReasons, txnTypeToOrigin } from '../../../utils/arbitrum'
+import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ArbitrumList, BridgeTxsFilter } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
+import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = omnibridgeConfig.find(config => config.bridgeId === bridgeId)
@@ -125,7 +126,7 @@ const createSelectBridgeTxsSummary = (
           txHash: tx.txHash,
           batchIndex: tx.batchIndex,
           batchNumber: tx.batchNumber,
-          pendingReason: tx.receipt?.status ? undefined : PendingReasons.TX_UNCONFIRMED,
+          pendingReason: tx.receipt?.status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED,
           timestampResolved: tx.timestampResolved,
           log: [],
           bridgeId
@@ -133,7 +134,7 @@ const createSelectBridgeTxsSummary = (
         if (!tx.partnerTxHash || !l2Txs[tx.partnerTxHash]) {
           if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
             summary.status = 'pending' // deposits on l1 should never show confirmed on UI
-            summary.pendingReason = PendingReasons.TX_UNCONFIRMED
+            summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
           }
 
           summary.log = createBridgeLog({ transactions: [tx], fromChainId: from, toChainId: to })
@@ -149,7 +150,7 @@ const createSelectBridgeTxsSummary = (
           summary.fromChainId = to
           summary.toChainId = from
           summary.status = status === 1 ? 'claimed' : getBridgeTxStatus(status)
-          summary.pendingReason = status ? undefined : PendingReasons.TX_UNCONFIRMED
+          summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
           summary.log = createBridgeLog({
             transactions: [l2Txs[tx.partnerTxHash], tx],
             fromChainId: to,
@@ -169,7 +170,7 @@ const createSelectBridgeTxsSummary = (
             summary.status = 'failed'
           } else {
             summary.status = getBridgeTxStatus(statusL2)
-            summary.pendingReason = statusL2 ? undefined : PendingReasons.DESPOSIT
+            summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DESPOSIT
             summary.timestampResolved = l2Txs[tx.partnerTxHash].timestampResolved
           }
 
@@ -225,7 +226,7 @@ const createSelectBridgeTxsSummary = (
                     break
                   default:
                     summary.status = 'pending'
-                    summary.pendingReason = PendingReasons.WITHDRAWAL
+                    summary.pendingReason = ArbitrumPendingReasons.WITHDRAWAL
                     summary.timestampResolved = undefined
                 }
               } else {
