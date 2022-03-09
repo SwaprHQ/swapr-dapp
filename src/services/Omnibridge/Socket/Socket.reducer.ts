@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { SocketBridgeState } from './Socket.types'
+import { SocketBridgeState, SocketTx } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList, BridgeDetails } from '../Omnibridge.types'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../Omnibridge.types'
 import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
@@ -81,42 +81,23 @@ const createSocketSlice = (bridgeId: SocketList) =>
       ) => {
         state.txBridgingData = action.payload
       },
-      addTx: (
-        state,
-        action: PayloadAction<{
-          txHash: string
-          partnerTxHash?: string
-          assetName: string
-          value: string
-          fromChainId: ChainId
-          toChainId: ChainId
-          bridgeId: BridgeList
-          status?: 'success' | 'pending' | 'error'
-          sender: string
-        }>
-      ) => {
+      addTx: (state, action: PayloadAction<Omit<SocketTx, 'partnerTxHash' | 'status' | 'timestampResolved'>>) => {
         const { payload: txn } = action
 
-        state.transactions.push(txn)
+        state.transactions.push({ ...txn, status: 'from-pending' })
       },
-      updateTx: (
-        state,
-        action: PayloadAction<{ txHash: string; partnerTxHash?: string; status?: 'success' | 'pending' | 'error' }>
-      ) => {
+      updateTx: (state, action: PayloadAction<Pick<SocketTx, 'txHash' | 'partnerTxHash' | 'status'>>) => {
         const { txHash, partnerTxHash, status } = action.payload
         const index = state.transactions.findIndex(tx => tx.txHash === txHash)
         const tx = state.transactions[index]
 
-        if (status) {
-          tx.status = status
-
-          if (status === 'success') {
-            tx.timestampResolved = Date.now()
-          }
-        }
-
         if (partnerTxHash) {
           tx.partnerTxHash = partnerTxHash
+          tx.timestampResolved = Date.now()
+        }
+
+        if (status) {
+          tx.status = status
         }
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {

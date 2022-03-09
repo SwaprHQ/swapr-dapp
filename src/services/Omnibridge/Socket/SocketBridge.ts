@@ -12,11 +12,7 @@ import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
-import {
-  BridgeStatusResponseDestinationTxStatusEnum,
-  QuoteControllerGetQuoteSortEnum,
-  TokenAsset
-} from './api/generated'
+import { BridgeStatusResponseSourceTxStatusEnum, QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
@@ -66,11 +62,20 @@ export class SocketBridge extends OmnibridgeChildBase {
   public triggerBridging = async () => {
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
-    const { from, to } = this.store.getState().omnibridge.UI
-    if (!this._account || !from.address || !from.chainId || !from.value || !to.chainId || !from.address) return
-
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
-    if (!data || !recipient) return
+    const { from, to } = this.store.getState().omnibridge.UI
+
+    if (
+      !data ||
+      !recipient ||
+      !this._account ||
+      !from.address ||
+      !from.chainId ||
+      !from.value ||
+      !to.chainId ||
+      !from.address
+    )
+      return
 
     try {
       const tx = await this._activeProvider?.getSigner().sendTransaction({
@@ -532,21 +537,33 @@ export class SocketBridge extends OmnibridgeChildBase {
           toChainId: tx.toChainId.toString(),
           transactionHash: tx.txHash
         })
-        console.log(status)
 
         if (status.success) {
+          const txStatus = status.result.destinationTransactionHash
+            ? 'confirmed'
+            : status.result.sourceTxStatus === BridgeStatusResponseSourceTxStatusEnum.Completed
+            ? 'to-pending'
+            : 'from-pending'
+
           this.store.dispatch(
             this.actions.updateTx({
               txHash: tx.txHash,
-              partnerTxHash: status.result.destinationTransactionHash || undefined,
-              status:
-                status.result.destinationTxStatus === BridgeStatusResponseDestinationTxStatusEnum.Completed
-                  ? 'pending'
-                  : 'success'
+              partnerTxHash: status.result.destinationTransactionHash,
+              status: txStatus
             })
           )
+        } else {
+          this.actions.updateTx({
+            txHash: tx.txHash,
+            status: 'error'
+          })
         }
-      } catch (e) {}
+      } catch (e) {
+        this.actions.updateTx({
+          txHash: tx.txHash,
+          status: 'error'
+        })
+      }
     })
 
     await Promise.all(promises)

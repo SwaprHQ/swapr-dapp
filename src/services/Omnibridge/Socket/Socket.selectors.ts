@@ -1,9 +1,8 @@
 import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
-import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { PendingReasons } from '../../../utils/arbitrum'
+import { BridgeTransactionLog, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { BridgeTxsFilter, SocketList } from '../Omnibridge.types'
-import { SocketTx } from './Socket.types'
+import { SocketTx, SOCKET_PENDING_REASONS } from './Socket.types'
 
 const createSelectBridgingDetails = (bridgeId: SocketList) =>
   createSelector(
@@ -56,7 +55,7 @@ const createSelectOwnedTxs = (bridgeId: SocketList) =>
 
 const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
-    const pendingTxs = ownedTxs.filter(tx => tx.status === 'pending' || !tx.partnerTxHash)
+    const pendingTxs = ownedTxs.filter(tx => tx.status !== 'error' && !tx.partnerTxHash)
 
     return pendingTxs
   })
@@ -64,29 +63,49 @@ const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOw
 const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
   createSelector([selectOwnedTxs, (state: AppState) => state.omnibridge.UI.filter], (txs, txsFilter) => {
     const summaries = txs.map(tx => {
+      const pendingReason =
+        tx.status === 'from-pending'
+          ? SOCKET_PENDING_REASONS.FROM_PENDING
+          : tx.status === 'to-pending'
+          ? SOCKET_PENDING_REASONS.TO_PENDING
+          : undefined
+
+      const txLogBase: Omit<BridgeTransactionLog, 'txHash' | 'chainId'> = {
+        toChainId: tx.toChainId,
+        fromChainId: tx.fromChainId,
+        status: 'confirmed',
+        type: 'deposit'
+      }
+
       const summary: BridgeTransactionSummary = {
         assetName: tx.assetName,
-        assetAddressL1: '', // used by collect
-        assetAddressL2: '', // used by collect
+        assetAddressL1: '', // not applicable, socket doesn't implement collect flow for now
+        assetAddressL2: '', // not applicable, socket doesn't implement collect flow for now
         fromChainId: tx.fromChainId,
         toChainId: tx.toChainId,
-        status: tx.status === 'error' ? 'failed' : tx.status === 'pending' ? 'loading' : 'confirmed',
+        status: tx.partnerTxHash ? 'confirmed' : tx.status === 'error' ? 'failed' : 'pending',
         value: tx.value,
         txHash: tx.txHash,
-        pendingReason: tx.status === 'pending' ? PendingReasons.TX_UNCONFIRMED : undefined,
+        pendingReason,
         timestampResolved: tx.timestampResolved,
         log: [
           {
+            ...txLogBase,
             chainId: tx.fromChainId,
-            fromChainId: tx.fromChainId,
-            status: tx.status === 'error' ? 'failed' : tx.status === 'pending' ? 'loading' : 'confirmed',
-            txHash: tx.txHash,
-            type: 'deposit',
-            toChainId: tx.toChainId
+            txHash: tx.txHash
           }
         ],
         bridgeId
       }
+
+      if (tx.partnerTxHash) {
+        summary.log.push({
+          ...txLogBase,
+          chainId: tx.toChainId,
+          txHash: tx.partnerTxHash
+        })
+      }
+
       return summary
     })
 

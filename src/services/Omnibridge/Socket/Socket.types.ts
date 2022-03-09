@@ -3,7 +3,14 @@ import { TokenList } from '@uniswap/token-lists'
 import { BridgeList, AsyncState, BridgingDetailsErrorMessage } from '../Omnibridge.types'
 import { Route } from './api/generated'
 
+export const SOCKET_PENDING_REASONS = {
+  FROM_PENDING: 'Transaction on source chain has not been confirmed yet',
+  TO_PENDING: 'Transaction on destination chain has not been confirmed yet'
+}
+
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+
+export type SocketTxStatus = 'from-pending' | 'to-pending' | 'error' | 'confirmed'
 
 export type SocketTx = {
   txHash: string
@@ -14,7 +21,7 @@ export type SocketTx = {
   toChainId: ChainId
   bridgeId: BridgeList
   timestampResolved?: number
-  status?: 'pending' | 'success' | 'error'
+  status: SocketTxStatus
   sender: string
 }
 export interface SocketBridgeState {
