@@ -245,7 +245,7 @@ export default function CurrencyInputPanel({
                   setModalOpen(true)
                 }
               }}
-              disabled={isLoading}
+              disabled={isLoading || disableCurrencySelect}
             >
               <Aligner>
                 {isLoading ? (
