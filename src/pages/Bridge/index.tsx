@@ -133,9 +133,6 @@ export default function Bridge() {
     onCurrencySelection('')
 
     dispatch(omnibridgeUIActions.setFrom({ chainId: activeChain }))
-    dispatch(
-      omnibridgeUIActions.setTo({ chainId: activeChain === ChainId.MAINNET ? ChainId.ARBITRUM_ONE : ChainId.MAINNET })
-    )
   }, [chainId, collectableTx, dispatch, collecting, onCurrencySelection, onUserInput])
 
   useEffect(() => {
