@@ -10,10 +10,8 @@ import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
-
 import { addTransaction } from '../../../state/transactions/actions'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
-
 import getTokenList from '../../../utils/getTokenList'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 
@@ -27,6 +25,7 @@ import {
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
 import { formatUnits } from '@ethersproject/units'
+import request, { gql } from 'graphql-request'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -34,6 +33,22 @@ const getErrorMsg = (error: any) => {
   }
   return `Bridge failed: ${error.message}`
 }
+
+const subgraphClients = {
+  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
+  [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
+  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
+  [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
+  [ChainId.XDAI]: ''
+}
+
+const QUERY_ETH_PRICE = gql`
+  query {
+    bundle(id: "1") {
+      nativeCurrencyPrice
+    }
+  }
+`
 
 const { parseUnits } = utils
 
@@ -811,11 +826,23 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         }
       }
 
+      if (!this._activeChainId) throw new Error('Active chain is not set')
+
+      const {
+        bundle: { nativeCurrencyPrice }
+      } = await request(subgraphClients[this._activeChainId], QUERY_ETH_PRICE)
+
       const totalTxnCost = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
 
       const totalTxnCostInEth = formatUnits(totalTxnCost, 18) // format to eth
 
-      const gasCostInUSD = Number(totalTxnCostInEth) * 2751 // mul eth cost * eth price (currently hard codded)
+      let gasCostInUSD: number
+      if (Number(nativeCurrencyPrice) === 0) {
+        //case for testnet (eth has no price on testnet) - that logic will be removed
+        gasCostInUSD = Number(totalTxnCostInEth) * 10000
+      } else {
+        gasCostInUSD = Number(totalTxnCostInEth) * Number(Number(nativeCurrencyPrice).toFixed(2)) // mul eth cost * eth price
+      }
 
       this.store.dispatch(
         this.actions.setBridgeDetails({
