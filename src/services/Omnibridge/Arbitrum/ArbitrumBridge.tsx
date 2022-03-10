@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 import { BigNumber, utils } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcSigner } from '@ethersproject/providers'
-import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
+import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
@@ -26,6 +26,7 @@ import {
 } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
+import { formatUnits } from '@ethersproject/units'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -775,27 +776,62 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    //FIX tmp config
-    // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
-    // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
-    // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
+    try {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    //TODO get gas,fee,time
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
-    const value = this.store.getState().omnibridge.UI.from.value
+      const { value, decimals, address } = this.store.getState().omnibridge.UI.from
+      const formattedValue = parseUnits(value, decimals)
 
-    this.store.dispatch(
-      this.actions.setBridgeDetails({
-        gas: '10.20$', //estimate gas
-        fee: '0.00$',
-        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value)
-          .toFixed(2)
-          .toString()
-      })
-    )
+      let gas = BigNumber.from(0)
+      let gasPrice = BigNumber.from(0)
 
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+      //calculate for deposit
+      if (this._activeChainId === this.l1ChainId) {
+        gasPrice = await this.bridge.l1Provider.getGasPrice()
+        if (address === 'ETH') {
+          const maxSubmissionPricePercentIncrease = BigNumber.from(400) //config
+
+          const maxSubmissionPrice = BridgeHelper.percentIncrease(
+            (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
+            maxSubmissionPricePercentIncrease
+          )
+          gas = await this.bridge.l1Bridge.estimateGasDepositEth(formattedValue, maxSubmissionPrice)
+        } else {
+          gas = await this.bridge.estimateGasDeposit({ erc20L1Address: address, amount: formattedValue }) //this method under the hood calls this.bridge.l1Bridge
+        }
+      }
+
+      //calculate for withdraw
+      if (this._activeChainId === this.l2ChainId) {
+        gasPrice = await this.bridge.l2Provider.getGasPrice()
+        if (address === 'ETH') {
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(formattedValue)
+        } else {
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, formattedValue)
+        }
+      }
+
+      const totalTxnCost = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
+
+      const totalTxnCostInEth = formatUnits(totalTxnCost, 18) // format to eth
+
+      const gasCostInUSD = Number(totalTxnCostInEth) * 2751 // mul eth cost * eth price (currently hard codded)
+
+      this.store.dispatch(
+        this.actions.setBridgeDetails({
+          gas: `${gasCostInUSD.toFixed(2).toString()} $`,
+          fee: '0.00$',
+          estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
+          receiveAmount: Number(value)
+            .toFixed(2)
+            .toString()
+        })
+      )
+
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+    } catch (e) {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+    }
   }
   public triggerModalDisclaimerText = () => {
     const setDisclaimerText = (): string => {
