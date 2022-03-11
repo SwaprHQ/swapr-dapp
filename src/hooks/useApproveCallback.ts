@@ -6,6 +6,7 @@ import {
   CurrencyAmount,
   ChainId,
   CurveTrade,
+  GnosisProtocolTrade,
   UniswapV2Trade,
   UniswapV2RoutablePlatform
 } from '@swapr/sdk'
@@ -116,7 +117,7 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
 
   // Find the approve address for the trade
   let approveAddress
-  if (trade instanceof CurveTrade) {
+  if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade) {
     approveAddress = trade.approveAddress
   } else if (trade instanceof UniswapV2Trade) {
     /**

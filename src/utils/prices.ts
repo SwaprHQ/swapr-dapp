@@ -12,7 +12,8 @@ import {
   _100,
   Trade,
   UniswapV2Trade,
-  CurveTrade
+  CurveTrade,
+  GnosisProtocolTrade
 } from '@swapr/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
@@ -33,7 +34,7 @@ export function computeTradePriceBreakdown(trade?: Trade): ComputeTradePriceBrea
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
   let realizedLPFee: Percent | undefined = undefined
-  let priceImpactWithoutFee: Percent | undefined = undefined
+  const priceImpactWithoutFee: Percent | undefined = undefined
   let realizedLPFeeAmount: CurrencyAmount | undefined = undefined
 
   // early exit
@@ -53,7 +54,7 @@ export function computeTradePriceBreakdown(trade?: Trade): ComputeTradePriceBrea
     }, ONE_HUNDRED_PERCENT)
 
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-  } else if (trade instanceof CurveTrade) {
+  } else if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
   }
 

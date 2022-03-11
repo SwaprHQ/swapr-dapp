@@ -9,7 +9,8 @@ import {
   CurveTrade,
   RoutablePlatform,
   Trade,
-  ChainId
+  ChainId,
+  GnosisProtocolTrade
 } from '@swapr/sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo, useEffect, useState } from 'react'
@@ -200,7 +201,7 @@ export function useTradeExactInAllPlatforms(
   // All trades including Curve, Unsiwap V2 and CowSwap
   const [trades, setTrades] = useState<Trade[]>([])
   // Chain Id
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // List of Uniswap V2 pairs per platform
@@ -264,7 +265,23 @@ export function useTradeExactInAllPlatforms(
         })
     })
 
-    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+    const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+      GnosisProtocolTrade.bestTradeExactIn({
+        currencyAmountIn,
+        currencyOut,
+        maximumSlippage: new Percent('3', '100'),
+        receiver: account ?? undefined
+      })
+        .then(resolve)
+        .catch(error => {
+          // The next step does not care about the error. Promise.all
+          // is all or nothing. Hence, this Promise must solve as undefined
+          resolve(undefined)
+          console.log(error)
+        })
+    })
+
+    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade, gnosisProtocolTrade])
 
     allNewTrades
       .then(trades => trades.filter(trade => trade !== undefined))
@@ -287,7 +304,8 @@ export function useTradeExactInAllPlatforms(
     uniswapV2AllowedPairsList.length,
     // eslint-disable-next-line
     currencyAmountIn?.toSignificant(),
-    currencyInAndOutAdddress
+    currencyInAndOutAdddress,
+    account
   ])
 
   return {
@@ -308,7 +326,7 @@ export function useTradeExactOutAllPlatforms(
   // All trades including Curve, Unsiwap V2 and CowSwap
   const [trades, setTrades] = useState<Trade[]>([])
   // Chain Id
-  const { chainId } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // List of Uniswap V2 pairs per platform
@@ -373,7 +391,23 @@ export function useTradeExactOutAllPlatforms(
         })
     })
 
-    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
+    const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+      GnosisProtocolTrade.bestTradeExactOut({
+        currencyAmountOut,
+        currencyIn,
+        maximumSlippage: new Percent('3', '100'),
+        receiver: account ?? undefined
+      })
+        .then(resolve)
+        .catch(error => {
+          // The next step does not care about the error. Promise.all
+          // is all or nothing. Hence, this Promise must solve as undefined
+          resolve(undefined)
+          console.log(error)
+        })
+    })
+
+    const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade, gnosisProtocolTrade])
 
     allNewTrades
       .then(trades => trades.filter(trade => trade !== undefined))
@@ -397,7 +431,8 @@ export function useTradeExactOutAllPlatforms(
     uniswapV2AllowedPairsList.length,
     // eslint-disable-next-line
     currencyAmountOut?.toSignificant(),
-    currencyInAndOutAdddress
+    currencyInAndOutAdddress,
+    account
   ])
 
   return {
