@@ -379,8 +379,18 @@ export class SocketBridge extends OmnibridgeChildBase {
             routeId: next.routeId
           }
 
-          if (total.amount <= route.amount) {
+          //find better way to do it
+          if (route.amount <= 0) {
+            if (total.amount <= route.amount && total.amount !== 0) {
+              total = route
+              return total
+            }
+
             total = route
+          } else {
+            if (total.amount <= route.amount) {
+              total = route
+            }
           }
 
           return total
@@ -394,6 +404,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     if (indexOfBestRoute === -1) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+      return
     }
 
     const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
