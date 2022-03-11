@@ -1,6 +1,7 @@
 import { PricedTokenAmount, TokenAmount, Token, Pair } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
-import TransactionConfirmationModal, {
+import {
+  TransactionConfirmationModal,
   ConfirmationModalContent,
   TransactionErrorContent
 } from '../../../../TransactionConfirmationModal'

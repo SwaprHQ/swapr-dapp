@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import Modal from '../Modal'
@@ -11,7 +11,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Circle from '../../assets/images/blue-loader.svg'
 
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 
 const Wrapper = styled.div`
@@ -63,10 +63,12 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
 }
 
 function TransactionSubmittedContent({
+  trade,
   onDismiss,
   chainId,
   hash
 }: {
+  trade?: Trade
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
@@ -88,9 +90,15 @@ function TransactionSubmittedContent({
             Transaction Submitted
           </Text>
           {chainId && hash && (
-            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
+            <ExternalLink
+              href={
+                trade instanceof GnosisProtocolTrade
+                  ? getGnosisProtocolExplorerOrderLink(chainId, hash)
+                  : getExplorerLink(chainId, hash, 'transaction')
+              }
+            >
               <Text fontWeight={500} fontSize="13px">
-                View on block explorer
+                View on {trade instanceof GnosisProtocolTrade ? 'Gnosis Protocol Explorer' : 'block explorer'}
               </Text>
             </ExternalLink>
           )}
@@ -162,7 +170,7 @@ interface ConfirmationModalProps {
   pendingText: string
 }
 
-export default function TransactionConfirmationModal({
+export function TransactionConfirmationModal({
   isOpen,
   onDismiss,
   attemptingTxn,
@@ -181,6 +189,41 @@ export default function TransactionConfirmationModal({
         <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
       ) : hash ? (
         <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
+      ) : (
+        content()
+      )}
+    </Modal>
+  )
+}
+
+interface SwapConfirmationModalProps extends ConfirmationModalProps {
+  trade: Trade
+}
+
+export function SwapTransactionConfirmationModal({
+  trade,
+  isOpen,
+  onDismiss,
+  attemptingTxn,
+  hash,
+  pendingText,
+  content
+}: SwapConfirmationModalProps) {
+  const { chainId } = useActiveWeb3React()
+
+  if (!chainId) return null
+
+  console.log({
+    'SwapTransactionConfirmationModal.trade': trade
+  })
+
+  // confirmation screen
+  return (
+    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
+      {attemptingTxn ? (
+        <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
+      ) : hash ? (
+        <TransactionSubmittedContent trade={trade} chainId={chainId} hash={hash} onDismiss={onDismiss} />
       ) : (
         content()
       )}

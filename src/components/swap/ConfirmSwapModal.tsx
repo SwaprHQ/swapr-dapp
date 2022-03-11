@@ -1,6 +1,7 @@
 import { currencyEquals, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import React, { useCallback, useMemo } from 'react'
-import TransactionConfirmationModal, {
+import {
+  SwapTransactionConfirmationModal,
   ConfirmationModalContent,
   TransactionErrorContent
 } from '../TransactionConfirmationModal'
@@ -99,7 +100,8 @@ export default function ConfirmSwapModal({
   )
 
   return (
-    <TransactionConfirmationModal
+    <SwapTransactionConfirmationModal
+      trade={trade as Trade}
       isOpen={isOpen}
       onDismiss={onDismiss}
       attemptingTxn={attemptingTxn}
