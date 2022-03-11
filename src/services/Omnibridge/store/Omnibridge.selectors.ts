@@ -33,17 +33,6 @@ export const selectAllTransactions = createSelector(
   }
 )
 
-export const selectAllLists = createSelector(
-  [
-    (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
-    (state: AppState) => state.omnibridge['socket'].lists
-  ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket) => {
-    return { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
-  }
-)
-
 export const selectListsLoading = createSelector(
   [
     (state: AppState) => state.omnibridge['arbitrum:testnet'].listsStatus,
@@ -52,44 +41,6 @@ export const selectListsLoading = createSelector(
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
-)
-
-// NOTE: equivalent to useCombinedActiveList hook
-export const selectAllActiveTokens = createSelector(
-  [selectAllLists, (state: AppState) => state.omnibridge.common.activeLists],
-  (allLists, activeLists) => {
-    if (!activeLists.length) return {}
-
-    const activeTokensMap = activeLists.reduce((allTokens, activeId) => {
-      const tokenMapByChain = listToTokenMap(allLists[activeId])
-      const supportedChainsByList = Object.keys(tokenMapByChain)
-
-      supportedChainsByList.forEach(chain => {
-        const castedChain = Number(chain)
-        allTokens[castedChain] = { ...allTokens[castedChain], ...tokenMapByChain[castedChain] }
-      })
-
-      return allTokens
-    }, {} as TokenMap)
-
-    return activeTokensMap
-  }
-)
-
-// NOTE: equivalend of useAllTokens()
-export const selectAllTokensPerChain = createSelector(
-  [selectAllActiveTokens, (state: AppState, chainId: ChainId) => chainId],
-  (activeTokens, chainId) => {
-    const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{ [address: string]: Token }>(
-      (newMap, address) => {
-        newMap[address] = activeTokens[chainId][address].token
-        return newMap
-      },
-      {}
-    )
-
-    return mapWithoutLists
-  }
 )
 
 export const selectSupportedBridges = createSelector([(state: AppState) => state.omnibridge.UI], ui => {
@@ -150,5 +101,71 @@ export const selectSupportedBridgesForUI = createSelector(
     )
 
     return supportedBridges
+  }
+)
+
+export const selectAllLists = createSelector(
+  [
+    (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
+    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
+    (state: AppState) => state.omnibridge['socket'].lists,
+    selectSupportedBridges
+  ],
+  (tokenListTestnet, tokenListMainnet, tokenListSocket, supportedBridges) => {
+    const supportedIds = supportedBridges.map(bridge => bridge.bridgeId)
+    const allTokenLists = { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
+
+    const supportedTokenLists = Object.entries(allTokenLists).reduce<typeof tokenListMainnet>(
+      (total, [listId, list]) => {
+        supportedIds.forEach(id => {
+          const pattern = new RegExp(`^${id}[-]?`, 'g')
+          if (pattern.test(listId)) {
+            total[listId] = list
+          }
+        })
+        return total
+      },
+      {}
+    )
+
+    return supportedTokenLists
+  }
+)
+
+// NOTE: equivalent to useCombinedActiveList hook
+export const selectAllActiveTokens = createSelector(
+  [selectAllLists, (state: AppState) => state.omnibridge.common.activeLists],
+  (allLists, activeLists) => {
+    if (!activeLists.length) return {}
+
+    const activeTokensMap = activeLists.reduce((allTokens, activeId) => {
+      const tokenMapByChain = listToTokenMap(allLists[activeId])
+      const supportedChainsByList = Object.keys(tokenMapByChain)
+
+      supportedChainsByList.forEach(chain => {
+        const castedChain = Number(chain)
+        allTokens[castedChain] = { ...allTokens[castedChain], ...tokenMapByChain[castedChain] }
+      })
+
+      return allTokens
+    }, {} as TokenMap)
+
+    return activeTokensMap
+  }
+)
+
+// NOTE: equivalend of useAllTokens()
+export const selectAllTokensPerChain = createSelector(
+  [selectAllActiveTokens, (state: AppState, chainId: ChainId) => chainId],
+  (activeTokens, chainId) => {
+    const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{ [address: string]: Token }>(
+      (newMap, address) => {
+        newMap[address] = activeTokens[chainId][address].token
+        return newMap
+      },
+      {}
+    )
+
+    return mapWithoutLists
   }
 )
