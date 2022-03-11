@@ -2,21 +2,20 @@ import { ChainId } from '@swapr/sdk'
 import { BigNumber, utils } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcSigner } from '@ethersproject/providers'
-import { Bridge, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
+import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
+import request from 'graphql-request'
 
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
+import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
-
 import { addTransaction } from '../../../state/transactions/actions'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
-
 import getTokenList from '../../../utils/getTokenList'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
-
+import { subgraphClientsUris } from '../../../apollo/client'
 import {
   ArbitrumList,
   BridgeModalStatus,
@@ -26,13 +25,8 @@ import {
 } from '../Omnibridge.types'
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-
-const getErrorMsg = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  return `Bridge failed: ${error.message}`
-}
+import { formatUnits } from '@ethersproject/units'
+import { MAX_SUBMISSION_PRICE_PERCENT_INCREASE } from './ArbitrumBridge.utils'
 
 const { parseUnits } = utils
 
@@ -775,27 +769,66 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    //FIX tmp config
-    // const DEFAULT_SUBMISSION_PERCENT_INCREASE = BigNumber.from(400)
-    // const DEFAULT_MAX_GAS_PERCENT_INCREASE = BigNumber.from(50)
-    // const MIN_CUSTOM_DEPOSIT_MAXGAS = BigNumber.from(275000)
+    try {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    //TODO get gas,fee,time
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
-    const value = this.store.getState().omnibridge.UI.from.value
+      const { value, decimals, address } = this.store.getState().omnibridge.UI.from
+      const parsedValue = parseUnits(value, decimals)
 
-    this.store.dispatch(
-      this.actions.setBridgeDetails({
-        gas: '10.20$', //estimate gas
-        fee: '0.00$',
-        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value)
-          .toFixed(2)
-          .toString()
-      })
-    )
+      let gas = BigNumber.from(0)
+      let gasPrice = BigNumber.from(0)
 
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+      //calculate for deposit
+      if (this._activeChainId === this.l1ChainId) {
+        gasPrice = await this.bridge.l1Provider.getGasPrice()
+        if (address === 'ETH') {
+          const maxSubmissionPrice = BridgeHelper.percentIncrease(
+            (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
+            MAX_SUBMISSION_PRICE_PERCENT_INCREASE
+          )
+          gas = await this.bridge.l1Bridge.estimateGasDepositEth(parsedValue, maxSubmissionPrice)
+        } else {
+          gas = await this.bridge.estimateGasDeposit({ erc20L1Address: address, amount: parsedValue }) //this method under the hood calls this.bridge.l1Bridge
+        }
+      }
+
+      //calculate for withdraw
+      if (this._activeChainId === this.l2ChainId) {
+        gasPrice = await this.bridge.l2Provider.getGasPrice()
+        if (address === 'ETH') {
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(parsedValue)
+        } else {
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, parsedValue)
+        }
+      }
+
+      if (!this._activeChainId) throw new Error('Active chain is not set')
+
+      const {
+        bundle: { nativeCurrencyPrice }
+      } = await request(subgraphClientsUris[this._activeChainId], QUERY_ETH_PRICE) //NOTE: price for testnets is 0
+
+      const totalTxnGasCostInWei = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
+
+      const totalTxnGasCostInEth = formatUnits(totalTxnGasCostInWei, 18)
+
+      const totalTxnGasCostInUSD = Number(totalTxnGasCostInEth) * Number(Number(nativeCurrencyPrice).toFixed(2)) // mul eth cost * eth price
+
+      this.store.dispatch(
+        this.actions.setBridgeDetails({
+          gas: `${totalTxnGasCostInUSD.toFixed(2).toString()} $`,
+          fee: '0.00$',
+          estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
+          receiveAmount: Number(value)
+            .toFixed(2)
+            .toString()
+        })
+      )
+
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+    } catch (e) {
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+    }
   }
   public triggerModalDisclaimerText = () => {
     const setDisclaimerText = (): string => {
