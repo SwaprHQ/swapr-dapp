@@ -127,7 +127,9 @@ export function useBridgeActionHandlers(): {
       dispatch(
         omnibridgeUIActions.setFrom({
           address: currency instanceof Currency ? currencyId(currency) : currency,
-          decimals: currency instanceof Currency ? currency.decimals : undefined
+          decimals: currency instanceof Currency ? currency.decimals : undefined,
+          name: currency instanceof Currency ? currency.name : '',
+          symbol: currency instanceof Currency ? currency.symbol : ''
         })
       )
       // dispatch(omnibridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))

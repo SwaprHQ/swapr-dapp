@@ -1,3 +1,4 @@
+import { Currency } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   OmnibridgeChildBaseConstructor,
@@ -72,8 +73,9 @@ export class SocketBridge extends OmnibridgeChildBase {
       !from.address ||
       !from.chainId ||
       !from.value ||
-      !to.chainId ||
-      !from.address
+      !from.address ||
+      !from.symbol ||
+      !to.chainId
     )
       return
 
@@ -91,7 +93,7 @@ export class SocketBridge extends OmnibridgeChildBase {
         this.actions.addTx({
           sender: this._account,
           txHash: tx.hash,
-          assetName: 'AssetNameToAdd',
+          assetName: from.symbol,
           value: from.value,
           fromChainId: from.chainId,
           toChainId: to.chainId,
@@ -301,7 +303,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
     let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
 
-    if (from.address !== 'ETH') {
+    if (from.address !== Currency.getNative(from.chainId).symbol) {
       //way to find from and toToken
       const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
       if (!fromToken) {
