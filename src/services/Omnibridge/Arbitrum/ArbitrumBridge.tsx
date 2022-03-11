@@ -3,10 +3,11 @@ import { BigNumber, utils } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
+import request from 'graphql-request'
 
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
+import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
@@ -14,7 +15,7 @@ import { addTransaction } from '../../../state/transactions/actions'
 import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
 import getTokenList from '../../../utils/getTokenList'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
-
+import { subgraphClientsUris } from '../../../apollo/client'
 import {
   ArbitrumList,
   BridgeModalStatus,
@@ -25,30 +26,7 @@ import {
 import { OmnibridgeChildBase } from '../Omnibridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
 import { formatUnits } from '@ethersproject/units'
-import request, { gql } from 'graphql-request'
-
-const getErrorMsg = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  return `Bridge failed: ${error.message}`
-}
-
-const subgraphClients = {
-  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
-  [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
-  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
-  [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
-  [ChainId.XDAI]: ''
-}
-
-const QUERY_ETH_PRICE = gql`
-  query {
-    bundle(id: "1") {
-      nativeCurrencyPrice
-    }
-  }
-`
+import { MAX_SUBMISSION_PRICE_PERCENT_INCREASE } from './ArbitrumBridge.utils'
 
 const { parseUnits } = utils
 
@@ -795,7 +773,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
       const { value, decimals, address } = this.store.getState().omnibridge.UI.from
-      const formattedValue = parseUnits(value, decimals)
+      const parsedValue = parseUnits(value, decimals)
 
       let gas = BigNumber.from(0)
       let gasPrice = BigNumber.from(0)
@@ -804,15 +782,13 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       if (this._activeChainId === this.l1ChainId) {
         gasPrice = await this.bridge.l1Provider.getGasPrice()
         if (address === 'ETH') {
-          const maxSubmissionPricePercentIncrease = BigNumber.from(400) //config
-
           const maxSubmissionPrice = BridgeHelper.percentIncrease(
             (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
-            maxSubmissionPricePercentIncrease
+            MAX_SUBMISSION_PRICE_PERCENT_INCREASE
           )
-          gas = await this.bridge.l1Bridge.estimateGasDepositEth(formattedValue, maxSubmissionPrice)
+          gas = await this.bridge.l1Bridge.estimateGasDepositEth(parsedValue, maxSubmissionPrice)
         } else {
-          gas = await this.bridge.estimateGasDeposit({ erc20L1Address: address, amount: formattedValue }) //this method under the hood calls this.bridge.l1Bridge
+          gas = await this.bridge.estimateGasDeposit({ erc20L1Address: address, amount: parsedValue }) //this method under the hood calls this.bridge.l1Bridge
         }
       }
 
@@ -820,9 +796,9 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       if (this._activeChainId === this.l2ChainId) {
         gasPrice = await this.bridge.l2Provider.getGasPrice()
         if (address === 'ETH') {
-          gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(formattedValue)
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(parsedValue)
         } else {
-          gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, formattedValue)
+          gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, parsedValue)
         }
       }
 
@@ -830,23 +806,17 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
       const {
         bundle: { nativeCurrencyPrice }
-      } = await request(subgraphClients[this._activeChainId], QUERY_ETH_PRICE)
+      } = await request(subgraphClientsUris[this._activeChainId], QUERY_ETH_PRICE) //NOTE: price for testnets is 0
 
-      const totalTxnCost = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
+      const totalTxnGasCostInWei = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
 
-      const totalTxnCostInEth = formatUnits(totalTxnCost, 18) // format to eth
+      const totalTxnGasCostInEth = formatUnits(totalTxnGasCostInWei, 18)
 
-      let gasCostInUSD: number
-      if (Number(nativeCurrencyPrice) === 0) {
-        //case for testnet (eth has no price on testnet) - that logic will be removed
-        gasCostInUSD = Number(totalTxnCostInEth) * 10000
-      } else {
-        gasCostInUSD = Number(totalTxnCostInEth) * Number(Number(nativeCurrencyPrice).toFixed(2)) // mul eth cost * eth price
-      }
+      const totalTxnGasCostInUSD = Number(totalTxnGasCostInEth) * Number(Number(nativeCurrencyPrice).toFixed(2)) // mul eth cost * eth price
 
       this.store.dispatch(
         this.actions.setBridgeDetails({
-          gas: `${gasCostInUSD.toFixed(2).toString()} $`,
+          gas: `${totalTxnGasCostInUSD.toFixed(2).toString()} $`,
           fee: '0.00$',
           estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
           receiveAmount: Number(value)
