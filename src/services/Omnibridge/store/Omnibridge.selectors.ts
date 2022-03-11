@@ -17,7 +17,7 @@ export const selectAllTransactions = createSelector(
 
   (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsFilter) => {
     const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket]
-    console.log({ txsFilter })
+
     switch (txsFilter) {
       case BridgeTxsFilter.COLLECTABLE:
         return txs.filter(summary => summary.status === 'redeem')
