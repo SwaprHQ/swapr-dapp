@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, GnosisProtocolTrade, GnosisProtocolTradeOrderStatus } from '@swapr/sdk'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
@@ -7,7 +7,7 @@ import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppState } from '../index'
 import { checkedTransaction, finalizeTransaction } from './actions'
-import { TransactionState } from './reducer'
+import { SwapProtocol, TransactionState } from './reducer'
 
 interface TxInterface {
   addedTime: number
@@ -52,7 +52,10 @@ export default function Updater(): null {
   // show popup on confirm
   const addPopup = useAddPopup()
 
-  const getReceipt = useCallback(
+  /**
+   * Returns Transaction Receipt from the RPC
+   */
+  const getTransactionReceipt = useCallback(
     (hash: string) => {
       if (!library || !chainId) throw new Error('No library or chainId')
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
@@ -71,13 +74,81 @@ export default function Updater(): null {
     [chainId, library]
   )
 
+  /**
+   * Returns order from the Gnosis Protocol API
+   */
+  const getGnosisProtocolOrder = useCallback(
+    (orderId: string) => {
+      if (!chainId) throw new Error('No library or chainId')
+      const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
+      return retry(
+        () =>
+          fetch(`${GnosisProtocolTrade.getApi(chainId).baseUrl}/api/v1/orders/${orderId}`).then(res => {
+            if (!res.ok) {
+              console.debug('Retrying for order ', orderId)
+              throw new RetryableError()
+            }
+
+            return res.json()
+          }),
+        retryOptions
+      )
+    },
+    [chainId]
+  )
+
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
 
-    const cancels = Object.keys(transactions)
-      .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
-      .map(hash => {
-        const { promise, cancel } = getReceipt(hash)
+    const cancels = Object.values(transactions)
+      .filter(({ hash }) => shouldCheck(lastBlockNumber, transactions[hash]))
+      .map(({ hash, swapProtocol, summary }) => {
+        // Custom check for Gnosis Protocol v2 trades
+        if (swapProtocol && swapProtocol === SwapProtocol.COW) {
+          const { cancel, promise } = getGnosisProtocolOrder(hash)
+
+          promise
+            .then(orderMetadata => {
+              console.log({ orderMetadata })
+
+              if (orderMetadata.status === 'open') {
+                return
+              }
+
+              const isFulfilled = orderMetadata.status === GnosisProtocolTradeOrderStatus.FULFILLED
+
+              dispatch(
+                finalizeTransaction({
+                  chainId,
+                  hash,
+                  receipt: {
+                    blockHash: '0x0',
+                    blockNumber: 0,
+                    contractAddress: orderMetadata.settlementContract,
+                    from: '0x0',
+                    to: orderMetadata.status.receiver,
+                    transactionHash: '0x0',
+                    transactionIndex: 0,
+                    status: isFulfilled ? 1 : 0
+                  }
+                })
+              )
+
+              addPopup({
+                txn: {
+                  hash,
+                  success: isFulfilled,
+                  summary,
+                  swapProtocol: SwapProtocol.COW
+                }
+              })
+            })
+            .catch()
+
+          return cancel
+        }
+
+        const { promise, cancel } = getTransactionReceipt(hash)
         promise
           .then(receipt => {
             if (receipt) {
@@ -108,10 +179,21 @@ export default function Updater(): null {
 
               // the receipt was fetched before the block, fast forward to that block to trigger balance updates
               if (receipt.blockNumber > lastBlockNumber) {
-                dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+                dispatch(
+                  updateBlockNumber({
+                    chainId,
+                    blockNumber: receipt.blockNumber
+                  })
+                )
               }
             } else {
-              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+              dispatch(
+                checkedTransaction({
+                  chainId,
+                  hash,
+                  blockNumber: lastBlockNumber
+                })
+              )
             }
           })
           .catch(error => {
@@ -125,7 +207,16 @@ export default function Updater(): null {
     return () => {
       cancels.forEach(cancel => cancel())
     }
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt])
+  }, [
+    chainId,
+    library,
+    transactions,
+    lastBlockNumber,
+    dispatch,
+    addPopup,
+    getTransactionReceipt,
+    getGnosisProtocolOrder
+  ])
 
   return null
 }

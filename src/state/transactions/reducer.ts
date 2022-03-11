@@ -9,6 +9,15 @@ import {
 
 const now = () => new Date().getTime()
 
+export enum SwapProtocol {
+  COW = 'COW',
+  SWAPR = 'SWAPR',
+  UNISWAPV2 = 'UNISWAPV2',
+  LEVINSWAP = 'LEVINSWAP',
+  HONEYSWAP = 'HONEYSWAP',
+  CURVE = 'CURVE'
+}
+
 export interface TransactionDetails {
   hash: string
   approval?: { tokenAddress: string; spender: string }
@@ -19,6 +28,7 @@ export interface TransactionDetails {
   addedTime: number
   confirmedTime?: number
   from: string
+  swapProtocol?: SwapProtocol
 }
 
 export interface TransactionState {
@@ -31,14 +41,17 @@ export const initialState: TransactionState = {}
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(addTransaction, (transactions, { payload: { chainId, from, hash, approval, summary, claim } }) => {
-      if (transactions[chainId]?.[hash]) {
-        throw Error('Attempted to add existing transaction.')
+    .addCase(
+      addTransaction,
+      (transactions, { payload: { chainId, from, hash, approval, summary, claim, swapProtocol } }) => {
+        if (transactions[chainId]?.[hash]) {
+          throw Error('Attempted to add existing transaction.')
+        }
+        const txs = transactions[chainId] ?? {}
+        txs[hash] = { hash, approval, summary, claim, from, addedTime: now(), swapProtocol }
+        transactions[chainId] = txs
       }
-      const txs = transactions[chainId] ?? {}
-      txs[hash] = { hash, approval, summary, claim, from, addedTime: now() }
-      transactions[chainId] = txs
-    })
+    )
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {
       if (!transactions[chainId]) return
       transactions[chainId] = {}
