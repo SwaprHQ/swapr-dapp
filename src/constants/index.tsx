@@ -22,9 +22,8 @@ import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import CurveLogo from '../assets/svg/curve-logo.svg'
+import CoWLogo from '../assets/svg/cow-protocol.svg'
 import { providers } from 'ethers'
-
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -367,7 +366,8 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
-  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />
+  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />
 }
 
 export const ChainLabel: any = {
