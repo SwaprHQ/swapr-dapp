@@ -75,6 +75,8 @@ function TransactionSubmittedContent({
 }) {
   const theme = useContext(ThemeContext)
 
+  const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
+
   return (
     <Wrapper>
       <Section>
@@ -92,13 +94,13 @@ function TransactionSubmittedContent({
           {chainId && hash && (
             <ExternalLink
               href={
-                trade instanceof GnosisProtocolTrade
+                isGnosisProtocolTrade
                   ? getGnosisProtocolExplorerOrderLink(chainId, hash)
                   : getExplorerLink(chainId, hash, 'transaction')
               }
             >
               <Text fontWeight={500} fontSize="13px">
-                View on {trade instanceof GnosisProtocolTrade ? 'Gnosis Protocol Explorer' : 'block explorer'}
+                View on {isGnosisProtocolTrade ? 'Gnosis Protocol Explorer' : 'block explorer'}
               </Text>
             </ExternalLink>
           )}
@@ -212,10 +214,6 @@ export function SwapTransactionConfirmationModal({
   const { chainId } = useActiveWeb3React()
 
   if (!chainId) return null
-
-  console.log({
-    'SwapTransactionConfirmationModal.trade': trade
-  })
 
   // confirmation screen
   return (

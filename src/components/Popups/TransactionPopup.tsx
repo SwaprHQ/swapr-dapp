@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
+import { SwapProtocol } from '../../state/transactions/reducer'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
 
@@ -16,15 +17,18 @@ const RowNoFlex = styled(AutoRow)`
 export default function TransactionPopup({
   hash,
   success,
-  summary
+  summary,
+  swapProtocol
 }: {
   hash: string
   success?: boolean
   summary?: string
+  swapProtocol?: SwapProtocol
 }) {
   const { chainId } = useActiveWeb3React()
 
   const theme = useContext(ThemeContext)
+  const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
   return (
     <RowNoFlex>
@@ -34,7 +38,15 @@ export default function TransactionPopup({
       <AutoColumn gap="8px">
         <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
         {chainId && (
-          <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>View on block explorer</ExternalLink>
+          <ExternalLink
+            href={
+              isGnosisProtocolHash
+                ? getGnosisProtocolExplorerOrderLink(chainId, hash)
+                : getExplorerLink(chainId, hash, 'transaction')
+            }
+          >
+            View on {isGnosisProtocolHash ? 'Gnosis Protocol Explorer' : 'block explorer'}
+          </ExternalLink>
         )}
       </AutoColumn>
     </RowNoFlex>
