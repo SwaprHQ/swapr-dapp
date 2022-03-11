@@ -8,7 +8,7 @@ import {
   BridgeTxnsState
 } from '../../../state/bridgeTransactions/types'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
-import { ArbitrumList, BridgeTxsFilter } from '../Omnibridge.types'
+import { ArbitrumList } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 
