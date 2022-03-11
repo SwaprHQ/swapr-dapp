@@ -517,7 +517,9 @@ export class SocketBridge extends OmnibridgeChildBase {
     this.store.dispatch(this.actions.setTokenListsStatus('ready'))
   }
 
-  public fetchStaticLists = async () => undefined
+  public fetchStaticLists = async () => {
+    this.store.dispatch(commonActions.activateLists(['socket']))
+  }
 
   public triggerModalDisclaimerText = () => {
     this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
