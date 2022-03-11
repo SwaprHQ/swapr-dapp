@@ -3,7 +3,7 @@ import { ChainId, Token } from '@swapr/sdk'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
-import { BridgeList, SupportedBridges, TokenMap } from '../Omnibridge.types'
+import { BridgeList, BridgeTxsFilter, SupportedBridges, TokenMap } from '../Omnibridge.types'
 import { omnibridgeConfig } from '../Omnibridge.config'
 import { socketSelectors } from '../Socket/Socket.selectors'
 
@@ -11,14 +11,26 @@ export const selectAllTransactions = createSelector(
   [
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTxsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTxsSummary,
-    socketSelectors['socket'].selectBridgeTxsSummary
+    socketSelectors['socket'].selectBridgeTxsSummary,
+    (state: AppState) => state.omnibridge.UI.filter
   ],
 
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket) => [
-    ...txsSummaryTestnet,
-    ...txsSummaryMainnet,
-    ...txsSummarySocket
-  ]
+  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsFilter) => {
+    const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket]
+    console.log({ txsFilter })
+    switch (txsFilter) {
+      case BridgeTxsFilter.COLLECTABLE:
+        return txs.filter(summary => summary.status === 'redeem')
+      case BridgeTxsFilter.RECENT:
+        const passed24h = new Date().getTime() - 1000 * 60 * 60 * 24
+        return txs.filter(summary => {
+          if (!summary.timestampResolved) return true
+          return summary.timestampResolved >= passed24h
+        })
+      default:
+        return txs
+    }
+  }
 )
 
 export const selectAllLists = createSelector(

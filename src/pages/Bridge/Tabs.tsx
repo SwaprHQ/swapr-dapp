@@ -50,7 +50,7 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
-          setTxsFilter(BridgeTxsFilter.RECENT)
+          setTxsFilter(BridgeTxsFilter.NONE)
           setActiveTab('history')
         }}
         className={activeTab === 'history' ? 'active' : ''}
