@@ -72,8 +72,6 @@ const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof create
     )
   })
 
-type CreateBridgeLogProps = {}
-
 const createBridgeLog = (transactions: BridgeTxn[]): BridgeTransactionLog[] => {
   return transactions.map(tx => ({
     txHash: tx.txHash,
