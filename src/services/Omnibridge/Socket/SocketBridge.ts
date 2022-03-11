@@ -1,3 +1,4 @@
+import { Currency } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   OmnibridgeChildBaseConstructor,
@@ -12,7 +13,7 @@ import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
-import { QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
+import { BridgeStatusResponseSourceTxStatusEnum, QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
@@ -25,6 +26,8 @@ const getErrorMsg = (error: any) => {
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends OmnibridgeChildBase {
+  private _listeners: NodeJS.Timeout[] = []
+
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
   }
@@ -45,6 +48,8 @@ export class SocketBridge extends OmnibridgeChildBase {
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
+
+    this.startListeners()
   }
 
   public onSignerChange = async ({ ...signerData }: OmnibridgeChangeHandler) => {
@@ -56,13 +61,23 @@ export class SocketBridge extends OmnibridgeChildBase {
   public triggerCollect = () => undefined
 
   public triggerBridging = async () => {
-    //get txData from store
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-    const { from, to } = this.store.getState().omnibridge.UI
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
+    const { from, to } = this.store.getState().omnibridge.UI
 
-    if (!data || !recipient) return
+    if (
+      !data ||
+      !recipient ||
+      !this._account ||
+      !from.address ||
+      !from.chainId ||
+      !from.value ||
+      !from.address ||
+      !from.symbol ||
+      !to.chainId
+    )
+      return
 
     try {
       const tx = await this._activeProvider?.getSigner().sendTransaction({
@@ -70,27 +85,21 @@ export class SocketBridge extends OmnibridgeChildBase {
         data
       })
 
+      if (!tx) return
+
       this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
-      const receipt = await tx?.wait()
 
       this.store.dispatch(
         this.actions.addTx({
-          txHash: tx?.hash ? tx.hash : '',
-          assetName: from.address.substr(0, 2), //TODO find way to get asset name
-          value: to.value,
-          fromChainId: from.chainId ? from.chainId : 1,
-          toChainId: to.chainId ? to.chainId : 42161,
+          sender: this._account,
+          txHash: tx.hash,
+          assetName: from.symbol,
+          value: from.value,
+          fromChainId: from.chainId,
+          toChainId: to.chainId,
           bridgeId: this.bridgeId
         })
       )
-
-      if (receipt) {
-        this.store.dispatch(
-          this.actions.updateTx({
-            txHash: receipt.transactionHash
-          })
-        )
-      }
     } catch (e) {
       this.store.dispatch(
         omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
@@ -294,7 +303,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
     let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
 
-    if (from.address !== 'ETH') {
+    if (from.address !== Currency.getNative(from.chainId).symbol) {
       //way to find from and toToken
       const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
       if (!fromToken) {
@@ -519,9 +528,59 @@ export class SocketBridge extends OmnibridgeChildBase {
     this.store.dispatch(this.actions.setTokenListsStatus('ready'))
   }
 
-  public fetchStaticLists = async () => undefined
+  public fetchStaticLists = async () => {
+    this.store.dispatch(commonActions.activateLists(['socket']))
+  }
 
   public triggerModalDisclaimerText = () => {
     this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
+  }
+
+  private startListeners = () => {
+    this._listeners.push(setInterval(this.pendingTxListener, 5000))
+  }
+
+  private pendingTxListener = async () => {
+    const pendingTransactions = this.selectors.selectPendingTxs(this.store.getState(), this._account)
+
+    if (!pendingTransactions.length) return
+
+    const promises = pendingTransactions.map(async tx => {
+      try {
+        const status = await ServerAPI.appControllerGetBridgingStatus({
+          fromChainId: tx.fromChainId.toString(),
+          toChainId: tx.toChainId.toString(),
+          transactionHash: tx.txHash
+        })
+
+        if (status.success) {
+          const txStatus = status.result.destinationTransactionHash
+            ? 'confirmed'
+            : status.result.sourceTxStatus === BridgeStatusResponseSourceTxStatusEnum.Completed
+            ? 'to-pending'
+            : 'from-pending'
+
+          this.store.dispatch(
+            this.actions.updateTx({
+              txHash: tx.txHash,
+              partnerTxHash: status.result.destinationTransactionHash,
+              status: txStatus
+            })
+          )
+        } else {
+          this.actions.updateTx({
+            txHash: tx.txHash,
+            status: 'error'
+          })
+        }
+      } catch (e) {
+        this.actions.updateTx({
+          txHash: tx.txHash,
+          status: 'error'
+        })
+      }
+    })
+
+    await Promise.all(promises)
   }
 }

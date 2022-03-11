@@ -44,12 +44,6 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
   }
 }
 
-export const PendingReasons = {
-  TX_UNCONFIRMED: 'Transaction has not been confirmed yet',
-  DESPOSIT: 'Waiting for deposit to be processed on L2 (~10 minutes)',
-  WITHDRAWAL: 'Waiting for confirmation (~7 days of dispute period)'
-}
-
 export const getBridgeTxStatus = (txStatus: number | undefined): 'failed' | 'confirmed' | 'pending' => {
   switch (txStatus) {
     case 0:

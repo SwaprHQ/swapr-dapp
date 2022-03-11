@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { ChainId, CurrencyAmount } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount } from '@swapr/sdk'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Tabs } from './Tabs'
@@ -121,7 +121,8 @@ export default function Bridge() {
 
     if (collectableTx && collecting) {
       const { assetAddressL1, assetAddressL2, toChainId, fromChainId } = collectableTx
-      onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : 'ETH')
+
+      onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
 
       if (chainId !== fromChainId && chainId !== toChainId) {
         setCollecting(false)
@@ -179,9 +180,11 @@ export default function Bridge() {
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
       //FIX tmp solution because collect won't work for all txs
-      if (tx.toChainId !== chainId && tx.fromChainId !== chainId) return
+      const { assetAddressL1, assetAddressL2, toChainId, fromChainId } = tx
+      if (toChainId !== chainId && fromChainId !== chainId) return
 
-      onCurrencySelection(tx.assetAddressL1 && tx.assetAddressL2 ? tx.assetAddressL1 : 'ETH')
+      onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
+
       const collectData = omnibridge.triggerCollect(tx)
 
       setCollecting(true)

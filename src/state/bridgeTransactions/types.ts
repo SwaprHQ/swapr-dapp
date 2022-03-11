@@ -68,7 +68,4 @@ export type BridgeTransactionSummary = Pick<
   pendingReason?: string
 }
 
-export type BridgeTransactionLog = Pick<BridgeTxn, 'txHash' | 'type' | 'chainId'> &
-  Pick<BridgeTransactionSummary, 'fromChainId' | 'toChainId'> & {
-    status: BridgeTransactionStatus
-  }
+export type BridgeTransactionLog = Pick<BridgeTxn, 'txHash' | 'chainId'>

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { SocketBridgeState } from './Socket.types'
+import { SocketBridgeState, SocketTx } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeList, BridgeDetails } from '../Omnibridge.types'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../Omnibridge.types'
 import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
@@ -81,25 +81,24 @@ const createSocketSlice = (bridgeId: SocketList) =>
       ) => {
         state.txBridgingData = action.payload
       },
-      addTx: (
-        state,
-        action: PayloadAction<{
-          txHash: string
-          assetName: string
-          value: string
-          fromChainId: ChainId
-          toChainId: ChainId
-          bridgeId: BridgeList
-        }>
-      ) => {
+      addTx: (state, action: PayloadAction<Omit<SocketTx, 'partnerTxHash' | 'status' | 'timestampResolved'>>) => {
         const { payload: txn } = action
 
-        state.transactions.push(txn)
+        state.transactions.push({ ...txn, status: 'from-pending' })
       },
-      updateTx: (state, action: PayloadAction<{ txHash: string }>) => {
-        const index = state.transactions.findIndex(tx => tx.txHash === action.payload.txHash)
+      updateTx: (state, action: PayloadAction<Pick<SocketTx, 'txHash' | 'partnerTxHash' | 'status'>>) => {
+        const { txHash, partnerTxHash, status } = action.payload
+        const index = state.transactions.findIndex(tx => tx.txHash === txHash)
+        const tx = state.transactions[index]
 
-        state.transactions[index].timestampResolved = Date.now()
+        if (partnerTxHash) {
+          tx.partnerTxHash = partnerTxHash
+          tx.timestampResolved = Date.now()
+        }
+
+        if (status) {
+          tx.status = status
+        }
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload
