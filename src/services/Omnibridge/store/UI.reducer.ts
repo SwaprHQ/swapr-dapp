@@ -74,10 +74,7 @@ export const omnibridgeUISlice = createSlice({
 
       if (chainId) {
         if (chainId === state.to.chainId) {
-          const previousChain = state.from.chainId
-          state.from.chainId = chainId
-          state.to.chainId = previousChain
-          return
+          state.to.chainId = state.from.chainId
         }
         state.from.chainId = chainId
       }
