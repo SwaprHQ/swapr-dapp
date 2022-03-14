@@ -44,22 +44,26 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
-          handleTriggerCollect(firstTxnToCollect)
-          setTxsFilter(BridgeTxsFilter.COLLECTABLE)
+          if (!collecting) {
+            handleTriggerCollect(firstTxnToCollect)
+            setTxsFilter(BridgeTxsFilter.COLLECTABLE)
+          }
         }}
+        disabled={!firstTxnToCollect}
         className={activeTab === 'collect' ? 'active' : ''}
-        disabled={collecting}
       >
         Collect
         {<Badge badgeTheme="green">{collectableTxAmount}</Badge>}
       </Button>
       <Button
         onClick={() => {
+          if (collecting) {
+            handleResetBridge()
+          }
           setTxsFilter(BridgeTxsFilter.NONE)
           setActiveTab('history')
         }}
         className={activeTab === 'history' ? 'active' : ''}
-        disabled={collecting}
       >
         History
       </Button>
