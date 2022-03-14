@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { ChainId, Currency, CurrencyAmount } from '@swapr/sdk'
+import { Currency, CurrencyAmount } from '@swapr/sdk'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { Tabs } from './Tabs'
 import AppBody from '../AppBody'
 import { AssetSelector } from './AssetsSelector'
@@ -117,43 +116,54 @@ export default function Bridge() {
   const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
 
   useEffect(() => {
-    const activeChain = chainId ?? ChainId.MAINNET
+    if (!chainId) return
 
-    if (collectableTx && collecting) {
-      const { assetAddressL1, assetAddressL2, toChainId, fromChainId } = collectableTx
-
-      onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
-
-      if (chainId !== fromChainId && chainId !== toChainId) {
-        setCollecting(false)
-      }
-      return
-    }
+    if (collectableTx && collecting) return
     // Reset input on network change
     onUserInput('')
     onCurrencySelection('')
 
-    dispatch(omnibridgeUIActions.setFrom({ chainId: activeChain }))
+    dispatch(omnibridgeUIActions.setFrom({ chainId }))
   }, [chainId, collectableTx, dispatch, collecting, onCurrencySelection, onUserInput])
-
-  useEffect(() => {
-    onCurrencySelection('')
-  }, [fromChainId, onCurrencySelection, toChainId])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
     onUserInput('')
     onCurrencySelection('')
-    setCollecting(false)
+    setActiveTab('bridge')
     setTxsFilter(BridgeTxsFilter.RECENT)
     setModalState(BridgeModalStatus.CLOSED)
+    if (collecting) {
+      setCollecting(false)
+      setCollectableTx(() => bridgeSummaries.filter(tx => tx.status === 'redeem')[0] || undefined)
+      //toggle between collect - bridge tab
+      setModalData({
+        symbol: '',
+        typedValue: '',
+        fromChainId: chainId,
+        toChainId: fromChainId
+      })
+      return
+    }
+    //after bridging txn
     setModalData({
       symbol: '',
       typedValue: '',
-      fromChainId: chainId,
-      toChainId: chainId === ChainId.MAINNET ? ChainId.ARBITRUM_ONE : ChainId.MAINNET
+      fromChainId: fromChainId,
+      toChainId: toChainId
     })
-  }, [chainId, onCurrencySelection, onUserInput, setModalData, setModalState, setTxsFilter])
+  }, [
+    bridgeSummaries,
+    chainId,
+    collecting,
+    fromChainId,
+    onCurrencySelection,
+    onUserInput,
+    setModalData,
+    setModalState,
+    setTxsFilter,
+    toChainId
+  ])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -179,22 +189,21 @@ export default function Bridge() {
 
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
-      //FIX tmp solution because collect won't work for all txs
-      const { assetAddressL1, assetAddressL2, toChainId, fromChainId } = tx
-      if (toChainId !== chainId && fromChainId !== chainId) return
+      const { assetAddressL1, assetAddressL2, toChainId } = tx
 
       onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
 
       const collectData = omnibridge.triggerCollect(tx)
 
-      setCollecting(true)
       setCollectableTx(tx)
+      setActiveTab('collect')
+      setCollecting(true)
 
       if (collectData) {
         setModalData(collectData)
       }
     },
-    [chainId, omnibridge, onCurrencySelection, setModalData]
+    [omnibridge, onCurrencySelection, setModalData]
   )
 
   const handleCollect = useCallback(async () => {
@@ -235,6 +244,8 @@ export default function Bridge() {
         collectableTxAmount={collectableTxAmount}
         setTxsFilter={setTxsFilter}
         handleResetBridge={handleResetBridge}
+        handleTriggerCollect={handleTriggerCollect}
+        firstTxnToCollect={collectableTx}
       />
       {activeTab !== 'history' && (
         <AppBody>

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
 import { BridgeTxsFilter } from '../../services/Omnibridge/Omnibridge.types'
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { BridgeTabs } from './utils'
 
 interface TabsProps {
@@ -12,6 +13,8 @@ interface TabsProps {
   setTxsFilter: (filter: BridgeTxsFilter) => void
   activeTab: BridgeTabs
   setActiveTab: (tab: BridgeTabs) => void
+  handleTriggerCollect: (tx: BridgeTransactionSummary) => void
+  firstTxnToCollect: BridgeTransactionSummary
 }
 
 export const Tabs = ({
@@ -20,7 +23,9 @@ export const Tabs = ({
   handleResetBridge,
   setTxsFilter,
   activeTab,
-  setActiveTab
+  setActiveTab,
+  handleTriggerCollect,
+  firstTxnToCollect
 }: TabsProps) => {
   return (
     <TabsRow>
@@ -39,8 +44,8 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
+          handleTriggerCollect(firstTxnToCollect)
           setTxsFilter(BridgeTxsFilter.COLLECTABLE)
-          setActiveTab('collect')
         }}
         className={activeTab === 'collect' ? 'active' : ''}
         disabled={collecting}
