@@ -189,6 +189,7 @@ export default function Bridge() {
 
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
+      if (!tx) return
       const { assetAddressL1, assetAddressL2, toChainId } = tx
 
       onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
