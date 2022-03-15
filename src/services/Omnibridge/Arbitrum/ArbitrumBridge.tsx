@@ -817,7 +817,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       this.store.dispatch(
         this.actions.setBridgeDetails({
           gas: `${totalTxnGasCostInUSD.toFixed(2).toString()} $`,
-          fee: '0.00$',
+          fee: '0%',
           estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
           receiveAmount: Number(value)
             .toFixed(2)

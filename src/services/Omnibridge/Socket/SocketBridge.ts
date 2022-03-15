@@ -407,27 +407,29 @@ export class SocketBridge extends OmnibridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = routes[indexOfBestRoute]
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs, fromAmount } = routes[indexOfBestRoute]
+
     //set route
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
     const getBridgeFee = (userTxs: any): string => {
       if (isFee(userTxs)) {
-        //CHECK
-        // protocolFees has two parameters {amount,feesInUsd}
-        // amount - fee but in token representation
-        // feesInUsd - i have not seen this value other than 0
-        //should we use both and sum ? (for now we sum it)
-        const formattedAmount = Number(
-          formatUnits(userTxs[0].steps[0].protocolFees.amount, toAsset.decimals).toString()
-        ) //it's amount of token
+        const [singleTxBridge] = userTxs
 
-        const feesInToken = formattedAmount * tokenPrice
-        const feesInUsd = userTxs[0].steps[0].protocolFees.feesInUsd
+        //get protocolFee for each step
+        const totalStepsFee = singleTxBridge.steps.reduce((total, step) => {
+          total += Number(step.protocolFees.amount)
+          return total
+        }, 0)
 
-        const fee = `${(feesInToken + feesInUsd).toFixed(2).toString()} $`
+        if (totalStepsFee === 0) return '0%'
 
-        return fee
+        const formattedValue = Number(formatUnits(fromAmount, toAsset.decimals))
+        const formattedFees = Number(formatUnits(totalStepsFee, toAsset.decimals))
+
+        const fee = (formattedFees / formattedValue) * 100
+
+        return `${fee.toFixed(2).toString()}%`
       }
 
       //this shouldn't happen
@@ -437,7 +439,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     const fee = getBridgeFee(userTxs)
 
     const details = {
-      gas: `${totalGasFeesInUsd.toFixed(2).toString()} $`,
+      gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
       fee,
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
       receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
