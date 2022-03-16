@@ -4,7 +4,7 @@ import { Separator } from './styleds'
 import ListToggle from '../Toggle/ListToggle'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import { useActiveWeb3React } from '../../hooks'
-import { useActiveListsHandlers, useAllBridgeLists } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { useActiveListsHandlers, useBridgeSupportedLists } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 import Column, { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
@@ -43,7 +43,7 @@ function listUrlRowHTMLId(listUrl: string) {
 
 function ListRow({ listUrl }: { listUrl: string }) {
   const { chainId } = useActiveWeb3React()
-  const listsByUrl = useAllBridgeLists()
+  const listsByUrl = useBridgeSupportedLists()
   const { activateList, deactivateList, isListActive } = useActiveListsHandlers()
   const list = listsByUrl[listUrl]
   const tokensAmountInCurrentChain = useMemo(() => {
@@ -91,7 +91,7 @@ const ListContainer = styled.div`
 `
 
 export function ManageLists() {
-  const lists = useAllBridgeLists()
+  const lists = useBridgeSupportedLists()
 
   const renderableLists = useMemo(() => {
     return Object.keys(lists).filter(listUrl => {
