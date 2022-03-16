@@ -1,9 +1,10 @@
-import { Currency } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 import { useActiveWeb3React } from '.'
 
-export function useNativeCurrency(): Currency {
-  const { chainId } = useActiveWeb3React()
+export function useNativeCurrency(chainId?: ChainId): Currency {
+  const { chainId: activeChainId } = useActiveWeb3React()
+  const selectedChainId = chainId ?? activeChainId
   // fallback to ether if chain id is not defined
-  if (!chainId) return Currency.ETHER
-  return Currency.getNative(chainId) || Currency.ETHER
+  if (!selectedChainId) return Currency.ETHER
+  return Currency.getNative(selectedChainId) || Currency.ETHER
 }
