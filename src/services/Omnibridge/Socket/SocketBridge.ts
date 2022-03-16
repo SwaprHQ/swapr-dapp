@@ -13,11 +13,17 @@ import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
-import { BridgeStatusResponseSourceTxStatusEnum, QuoteControllerGetQuoteSortEnum, TokenAsset } from './api/generated'
+import {
+  BridgeStatusResponseSourceTxStatusEnum,
+  QuoteControllerGetQuoteSortEnum,
+  TokenAsset,
+  TokenPriceResponseDTO
+} from './api/generated'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
-import { isFee, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
+import { SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
+import { getBridgeFee, getIndexBestRoute } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -357,51 +363,18 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(this.actions.setRoutes(routes))
 
-    const tokenData = await ServerAPI.appControllerGetTokenPrice({
-      tokenAddress: toAsset.address,
-      chainId: toAsset.chainId
-    })
+    let tokenData: TokenPriceResponseDTO | undefined = undefined
 
-    const {
-      result: { tokenPrice } //token price in USD
-    } = tokenData
+    try {
+      tokenData = await ServerAPI.appControllerGetTokenPrice({
+        tokenAddress: toAsset.address,
+        chainId: toAsset.chainId
+      })
+    } catch (e) {}
 
-    const bestRoute = routes.reduce<{ amount: number; routeId: string }>(
-      (total, next) => {
-        if (tokenData.success) {
-          const amount = (
-            Number(formatUnits(next.toAmount, toAsset.decimals).toString()) * tokenPrice -
-            next.totalGasFeesInUsd
-          ).toFixed(2)
+    const indexOfBestRoute = getIndexBestRoute(tokenData, routes, toAsset.decimals)
 
-          const route = {
-            amount: Number(amount),
-            routeId: next.routeId
-          }
-
-          //find better way to do it
-          if (route.amount <= 0) {
-            if (total.amount <= route.amount && total.amount !== 0) {
-              total = route
-              return total
-            }
-
-            total = route
-          } else {
-            if (total.amount <= route.amount) {
-              total = route
-            }
-          }
-
-          return total
-        }
-        return total
-      },
-      { amount: 0, routeId: '' } as { amount: number; routeId: string }
-    )
-
-    const indexOfBestRoute = routes.findIndex(route => route.routeId === bestRoute.routeId)
-
+    //this shouldn't happen
     if (indexOfBestRoute === -1) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
       return
@@ -412,31 +385,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     //set route
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
-    const getBridgeFee = (userTxs: any): string => {
-      if (isFee(userTxs)) {
-        const [singleTxBridge] = userTxs
-
-        //get protocolFee for each step
-        const totalStepsFee = singleTxBridge.steps.reduce((total, step) => {
-          total += Number(step.protocolFees.amount)
-          return total
-        }, 0)
-
-        if (totalStepsFee === 0) return '0%'
-
-        const formattedValue = Number(formatUnits(fromAmount, toAsset.decimals))
-        const formattedFees = Number(formatUnits(totalStepsFee, toAsset.decimals))
-
-        const fee = (formattedFees / formattedValue) * 100
-
-        return `${fee.toFixed(2).toString()}%`
-      }
-
-      //this shouldn't happen
-      return '---'
-    }
-
-    const fee = getBridgeFee(userTxs)
+    const fee = getBridgeFee(userTxs, fromAmount, toAsset.decimals)
 
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
