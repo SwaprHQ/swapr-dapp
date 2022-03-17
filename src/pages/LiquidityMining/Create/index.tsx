@@ -5,7 +5,7 @@ import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
 import PairAndReward from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
 import RewardAmount from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
-import SingleOrMultiStep from '../../../components/LiquidityMining/Create/Steps/SingleOrMulti'
+import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
 import Time from '../../../components/LiquidityMining/Create/Steps/Time'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import { TYPE } from '../../../theme'
@@ -19,7 +19,10 @@ import styled from 'styled-components'
 const LastStep = styled(Step)`
   z-index: 0;
 `
-
+export enum CampaignType {
+  TOKEN,
+  PAIR
+}
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
@@ -27,8 +30,8 @@ export default function CreateLiquidityMining() {
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [singleReward, setSingleReward] = useState<boolean | null>(true)
-  const [targetedPair, setTargetedPair] = useState<Pair | null>(null)
+  const [campaingType, setCampaignType] = useState<CampaignType>(CampaignType.TOKEN)
+  const [targetedPairOrToken, setTargetedPairOrToken] = useState<Pair | Token | null>(null)
   const [reward, setReward] = useState<TokenAmount | null>(null)
   const [unlimitedPool, setUnlimitedPool] = useState(true)
   const [startTime, setStartTime] = useState<Date | null>(null)
@@ -38,7 +41,7 @@ export default function CreateLiquidityMining() {
 
   const memoizedRewardArray = useMemo(() => (reward ? [reward] : []), [reward])
   const campaign = useNewLiquidityMiningCampaign(
-    targetedPair,
+    targetedPairOrToken,
     memoizedRewardArray,
     startTime,
     endTime,
@@ -53,12 +56,12 @@ export default function CreateLiquidityMining() {
     setTimelocked(!timelocked)
   }, [timelocked])
 
-  const handleRewardTokenChange = useCallback(
-    (token: Token) => {
-      setReward(new TokenAmount(token, reward ? reward.raw.toString() : '0'))
-    },
-    [reward]
-  )
+  // const handleRewardTokenChange = useCallback(
+  //   (token: Token) => {
+  //     setReward(new TokenAmount(token, reward ? reward.raw.toString() : '0'))
+  //   },
+  //   [reward]
+  // )
 
   const handleCreateRequest = useCallback(() => {
     if (!createLiquidityMiningCallback) return
@@ -90,7 +93,7 @@ export default function CreateLiquidityMining() {
         setErrorMessage('')
         setTransactionHash(transaction.hash || null)
         addTransaction(transaction, {
-          summary: `Create liquidity mining campaign on ${targetedPair?.token0.symbol}/${targetedPair?.token1.symbol}`
+          summary: `Create liquidity mining campaign on ${targetedPairOrToken?.token0.symbol}/${targetedPairOrToken?.token1.symbol}`
         })
       })
       .catch(error => {
@@ -100,13 +103,13 @@ export default function CreateLiquidityMining() {
       .finally(() => {
         setAttemptingTransaction(false)
       })
-  }, [addTransaction, createLiquidityMiningCallback, targetedPair])
+  }, [addTransaction, createLiquidityMiningCallback, targetedPairOrToken])
 
   const handleCreateDismiss = useCallback(() => {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
-      setSingleReward(null)
-      setTargetedPair(null)
+      setCampaignType(CampaignType.TOKEN)
+      setTargetedPairOrToken(null)
       setReward(null)
       setUnlimitedPool(true)
       setStartTime(null)
@@ -123,25 +126,26 @@ export default function CreateLiquidityMining() {
       <PageWrapper gap="40px">
         <AutoColumn gap="8px">
           <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
-          <TYPE.subHeader color="text5" lineHeight="17px">
-            {t('liquidityMining.create.subtitle')}
-          </TYPE.subHeader>
         </AutoColumn>
-        <Step title="Choose one or multiple rewards" index={0} disabled={false}>
-          <SingleOrMultiStep singleReward={singleReward} onChange={setSingleReward} />
+        <Step title="Choose Campaign" index={0} disabled={false}>
+          <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
         </Step>
-        <Step title="Select pair and reward" index={1} disabled={singleReward === null}>
+        <Step
+          title={`Select ${campaingType === CampaignType.TOKEN ? 'Token' : 'Pair'} to Stake`}
+          index={1}
+          disabled={campaingType === null}
+        >
           <PairAndReward
-            liquidityPair={targetedPair}
+            campaingType={campaingType}
+            liquidityPair={targetedPairOrToken}
             reward={reward}
-            onLiquidityPairChange={setTargetedPair}
-            onRewardTokenChange={handleRewardTokenChange}
+            onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        <Step title="Select reward amount" index={2} disabled={!targetedPair || !reward || !reward.token}>
+        <Step title="Select reward amount" index={2} disabled={!targetedPairOrToken || !reward || !reward.token}>
           <RewardAmount
             reward={reward}
-            stakablePair={targetedPair}
+            stakablePair={targetedPairOrToken}
             unlimitedPool={unlimitedPool}
             onRewardAmountChange={setReward}
             onUnlimitedPoolChange={setUnlimitedPool}
@@ -161,10 +165,10 @@ export default function CreateLiquidityMining() {
         <LastStep
           title="Preview, approve and create mining pool"
           index={4}
-          disabled={!targetedPair || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
+          disabled={!targetedPairOrToken || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
         >
           <PreviewAndCreate
-            liquidityPair={targetedPair}
+            liquidityPair={targetedPairOrToken}
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
@@ -182,7 +186,7 @@ export default function CreateLiquidityMining() {
         attemptingTransaction={attemptingTransaction}
         transactionHash={transactionHash}
         errorMessage={errorMessage}
-        liquidityPair={targetedPair}
+        liquidityPair={targetedPairOrToken}
         startTime={startTime}
         endTime={endTime}
         reward={reward}

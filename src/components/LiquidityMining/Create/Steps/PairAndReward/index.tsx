@@ -1,10 +1,11 @@
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { Pair, Token } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
+import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import PairSearchModal from '../../../../SearchModal/PairSearchModal'
-import { Card, Divider } from '../../../styleds'
+import { Card } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 
 const FlexContainer = styled(Flex)`
@@ -13,30 +14,29 @@ const FlexContainer = styled(Flex)`
   `}
 `
 
-const RewardTokenContainer = styled(Box)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-top: 16px !important;
-  `}
-`
-
 interface PairAndRewardProps {
-  liquidityPair: Pair | null
-  reward: TokenAmount | null
-  onLiquidityPairChange: (liquidityPair: Pair) => void
-  onRewardTokenChange: (token: Token) => void
+  liquidityPair: Pair | Token | undefined
+
+  campaingType: CampaignType
+  onLiquidityPairChange: (liquidityPair: Pair | Token) => void
 }
 
 export default function PairAndReward({
   liquidityPair,
-  reward,
+
   onLiquidityPairChange,
-  onRewardTokenChange
+
+  campaingType
 }: PairAndRewardProps) {
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
 
-  const handleOpenPairSearch = useCallback(() => {
-    setPairSearchOpen(true)
+  const handelOpenPairOrTokenSearch = useCallback(value => {
+    if (value === CampaignType.PAIR) {
+      setPairSearchOpen(true)
+    } else {
+      setCurrencySearchOpen(true)
+    }
   }, [])
 
   const handleDismissPairSearch = useCallback(() => {
@@ -45,25 +45,15 @@ export default function PairAndReward({
 
   const handlePairSelection = useCallback(
     selectedPair => {
-      onLiquidityPairChange(selectedPair)
+      if (campaingType === CampaignType.PAIR) onLiquidityPairChange(selectedPair)
+      else onLiquidityPairChange(selectedPair)
     },
     [onLiquidityPairChange]
   )
 
-  const handleOpenCurrencySearch = useCallback(() => {
-    setCurrencySearchOpen(true)
-  }, [])
-
   const handleDismissCurrencySearch = useCallback(() => {
     setCurrencySearchOpen(false)
   }, [])
-
-  const handleCurrencySelection = useCallback(
-    selectedCurrency => {
-      onRewardTokenChange(selectedCurrency)
-    },
-    [onRewardTokenChange]
-  )
 
   return (
     <>
@@ -71,31 +61,25 @@ export default function PairAndReward({
         <FlexContainer justifyContent="stretch" width="100%">
           <Box flex="1">
             <AssetSelector
-              title="LIQUIDITY PAIR"
-              currency0={liquidityPair?.token0}
-              currency1={liquidityPair?.token1}
-              onClick={handleOpenPairSearch}
+              title={`ADD ${campaingType === CampaignType.PAIR ? 'PAIR' : 'TOKEN'}`}
+              currency0={liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
+              currency1={liquidityPair instanceof Token ? null : liquidityPair?.token1}
+              onClick={() => handelOpenPairOrTokenSearch(campaingType)}
             />
           </Box>
-          <Box mx="18px">
-            <Divider />
-          </Box>
-          <RewardTokenContainer flex="1">
-            <AssetSelector title="REWARD TOKEN" currency0={reward?.token} onClick={handleOpenCurrencySearch} />
-          </RewardTokenContainer>
         </FlexContainer>
       </Card>
       <PairSearchModal
         isOpen={pairSearchOpen}
         onDismiss={handleDismissPairSearch}
         onPairSelect={handlePairSelection}
-        selectedPair={liquidityPair}
+        selectedPair={liquidityPair instanceof Token ? null : liquidityPair}
       />
       <CurrencySearchModal
         isOpen={currencySearchOpen}
         onDismiss={handleDismissCurrencySearch}
-        onCurrencySelect={handleCurrencySelection}
-        selectedCurrency={reward?.token}
+        onCurrencySelect={handlePairSelection}
+        selectedCurrency={liquidityPair instanceof Token ? liquidityPair : null}
         showNativeCurrency={false}
       />
     </>
