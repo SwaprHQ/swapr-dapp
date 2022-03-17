@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
-import { Pair, Percent, TokenAmount } from '@swapr/sdk'
+import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
 import { Card, Divider } from '../../../styleds'
@@ -25,7 +25,7 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
 `
 
 interface PreviewProps {
-  liquidityPair: Pair | null
+  liquidityPair: Pair | Token | null
   apy: Percent
   startTime: Date | null
   endTime: Date | null

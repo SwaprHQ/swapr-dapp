@@ -15,7 +15,7 @@ const FlexContainer = styled(Flex)`
 `
 
 interface PairAndRewardProps {
-  liquidityPair: Pair | Token | undefined
+  liquidityPair: Pair | Token | undefined | null
 
   campaingType: CampaignType
   onLiquidityPairChange: (liquidityPair: Pair | Token) => void
@@ -48,7 +48,7 @@ export default function PairAndReward({
       if (campaingType === CampaignType.PAIR) onLiquidityPairChange(selectedPair)
       else onLiquidityPairChange(selectedPair)
     },
-    [onLiquidityPairChange]
+    [onLiquidityPairChange, campaingType]
   )
 
   const handleDismissCurrencySearch = useCallback(() => {

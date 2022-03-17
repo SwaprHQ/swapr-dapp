@@ -1,4 +1,5 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
+
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Text } from 'rebass'
@@ -9,7 +10,7 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 
 interface StakingRewardsDistributionCreationModalFooterProps {
-  liquidityPair: Pair | null
+  liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
   reward: TokenAmount | null
@@ -29,6 +30,12 @@ export default function StakingRewardsDistributionCreationModalFooter({
   unlimitedPool,
   onConfirm
 }: StakingRewardsDistributionCreationModalFooterProps) {
+  const tokenOrPair =
+    liquidityPair instanceof Pair
+      ? `${liquidityPair.token0.symbol}/${liquidityPair.token1.symbol}`
+      : liquidityPair instanceof Token
+      ? liquidityPair.symbol
+      : '-'
   return (
     <AutoColumn gap="0px">
       <RowBetween align="center" mb="6px">
@@ -47,7 +54,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             paddingLeft: '10px'
           }}
         >
-          {liquidityPair ? `${liquidityPair.token0.symbol}/${liquidityPair.token1.symbol}` : '-'}
+          {tokenOrPair}
         </TYPE.body>
       </RowBetween>
 
@@ -87,9 +94,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             paddingLeft: '10px'
           }}
         >
-          {unlimitedPool
-            ? 'Unlimited'
-            : `${stakingCap?.toSignificant(4)} ${liquidityPair?.token0.symbol}/${liquidityPair?.token1.symbol} LP`}
+          {unlimitedPool ? 'Unlimited' : `${stakingCap?.toSignificant(4)} ${tokenOrPair} LP`}
         </TYPE.body>
       </RowBetween>
 

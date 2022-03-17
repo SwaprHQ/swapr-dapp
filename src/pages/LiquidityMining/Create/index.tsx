@@ -93,7 +93,11 @@ export default function CreateLiquidityMining() {
         setErrorMessage('')
         setTransactionHash(transaction.hash || null)
         addTransaction(transaction, {
-          summary: `Create liquidity mining campaign on ${targetedPairOrToken?.token0.symbol}/${targetedPairOrToken?.token1.symbol}`
+          summary: `Create liquidity mining campaign on ${
+            targetedPairOrToken instanceof Pair
+              ? `${targetedPairOrToken?.token0.symbol}/${targetedPairOrToken?.token1.symbol}`
+              : targetedPairOrToken?.symbol
+          }`
         })
       })
       .catch(error => {
@@ -138,7 +142,6 @@ export default function CreateLiquidityMining() {
           <PairAndReward
             campaingType={campaingType}
             liquidityPair={targetedPairOrToken}
-            reward={reward}
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>

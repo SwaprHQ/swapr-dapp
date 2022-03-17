@@ -1,4 +1,4 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -8,7 +8,7 @@ import NumericalInput from '../../../../Input/NumericalInput'
 import Radio from '../../../../Radio'
 import { Card, Divider } from '../../../styleds'
 import border8pxRadius from '../../../../../assets/images/border-8px-radius.png'
-import DoubleCurrencyLogo from '../../../../DoubleLogo'
+//import DoubleCurrencyLogo from '../../../../DoubleLogo'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { usePrevious } from 'react-use'
 
@@ -60,7 +60,7 @@ const PoolSizeContainer = styled(Box)`
 interface RewardAmountProps {
   reward: TokenAmount | null
   unlimitedPool: boolean
-  stakablePair: Pair | null
+  stakablePair: Pair | Token | null
   onRewardAmountChange: (newAmount: TokenAmount) => void
   onUnlimitedPoolChange: (newValue: boolean) => void
   onStakingCapChange: (newValue: TokenAmount | null) => void
@@ -108,10 +108,11 @@ export default function RewardAmount({
 
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      if (!stakablePair || !stakablePair.liquidityToken) return
+      if (!stakablePair || (stakablePair instanceof Pair && !stakablePair.liquidityToken)) return
       setStakingCapString(rawValue)
-      const parsedAmount = tryParseAmount(rawValue, stakablePair.liquidityToken) as TokenAmount | undefined
-      onStakingCapChange(parsedAmount || new TokenAmount(stakablePair.liquidityToken, '0'))
+      const tokenOrPair = stakablePair instanceof Token ? stakablePair : stakablePair.liquidityToken
+      const parsedAmount = tryParseAmount(rawValue, tokenOrPair) as TokenAmount | undefined
+      onStakingCapChange(parsedAmount || new TokenAmount(tokenOrPair, '0'))
     },
     [onStakingCapChange, stakablePair]
   )
@@ -163,7 +164,7 @@ export default function RewardAmount({
                   onUserInput={handleLocalStakingCapChange}
                 />
                 <StakablePairInputLogoContainer>
-                  <DoubleCurrencyLogo size={16} currency0={stakablePair?.token0} currency1={stakablePair?.token1} />
+                  {/* <DoubleCurrencyLogo size={16} currency0={stakablePair?.token0} currency1={stakablePair?.token1} /> */}
                 </StakablePairInputLogoContainer>
               </RelativeContainer>
             </Box>

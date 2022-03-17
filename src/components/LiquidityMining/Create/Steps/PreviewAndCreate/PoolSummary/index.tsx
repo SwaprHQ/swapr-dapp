@@ -1,6 +1,6 @@
 import React from 'react'
 import { Flex } from 'rebass'
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'
@@ -8,7 +8,7 @@ import { DateTime } from 'luxon'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface PoolSummaryProps {
-  liquidityPair: Pair | null
+  liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
@@ -26,8 +26,10 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
           <DataRow
             name="POOL PAIR"
             value={
-              liquidityPair
+              liquidityPair instanceof Pair
                 ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
+                : liquidityPair instanceof Token
+                ? liquidityPair.symbol
                 : '-'
             }
           />

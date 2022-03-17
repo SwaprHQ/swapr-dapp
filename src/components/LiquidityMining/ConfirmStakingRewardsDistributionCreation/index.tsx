@@ -1,4 +1,4 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import React, { useCallback } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -13,7 +13,7 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   attemptingTransaction: boolean
   transactionHash: string | null
   errorMessage: string | null
-  liquidityPair: Pair | null
+  liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
   reward: TokenAmount | null
