@@ -54,7 +54,9 @@ export function computeTradePriceBreakdown(trade?: Trade): ComputeTradePriceBrea
     }, ONE_HUNDRED_PERCENT)
 
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-  } else if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade) {
+  } else if (trade instanceof GnosisProtocolTrade) {
+    realizedLPFee = trade.feeAmount
+  } else if (trade instanceof CurveTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
   }
 
@@ -68,10 +70,14 @@ export function computeTradePriceBreakdown(trade?: Trade): ComputeTradePriceBrea
 
   // the amount of the input that accrues to LPs
   if (realizedLPFee) {
-    realizedLPFeeAmount =
-      trade.inputAmount instanceof TokenAmount
-        ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+    if (trade instanceof GnosisProtocolTrade) {
+      realizedLPFeeAmount = trade.feeAmount
+    } else {
+      realizedLPFeeAmount =
+        trade.inputAmount instanceof TokenAmount
+          ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
+          : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+    }
   }
 
   return {
