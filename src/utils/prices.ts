@@ -52,10 +52,9 @@ export function computeTradePriceBreakdown(trade?: Trade): ComputeTradePriceBrea
         ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
       )
     }, ONE_HUNDRED_PERCENT)
-
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
   } else if (trade instanceof GnosisProtocolTrade) {
-    realizedLPFee = trade.feeAmount
+    realizedLPFee = trade.fee
   } else if (trade instanceof CurveTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
   }
