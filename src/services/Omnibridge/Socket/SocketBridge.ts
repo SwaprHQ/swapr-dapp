@@ -23,7 +23,7 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
-import { getBridgeFee, getIndexBestRoute } from './Socket.utils'
+import { getBridgeFee, getBestRoute } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -173,7 +173,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     const routes = this.selectors.selectRoutes(this.store.getState())
 
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
-    if (!routeId || !routes || !routes) return
+    if (!routeId || !routes) return
 
     //find route
     const selectedRoute = routes.find(route => route.routeId === routeId)
@@ -372,20 +372,18 @@ export class SocketBridge extends OmnibridgeChildBase {
       })
     } catch (e) {}
 
-    const indexOfBestRoute = getIndexBestRoute(tokenData, routes, toAsset.decimals)
+    const bestRoute = getBestRoute(routes, tokenData, toAsset.decimals)
 
-    //this shouldn't happen
-    if (indexOfBestRoute === -1) {
+    if (!bestRoute) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs, fromAmount } = routes[indexOfBestRoute]
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs, fromAmount } = bestRoute
 
-    //set route
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
-    const fee = getBridgeFee(userTxs, fromAmount, toAsset.decimals)
+    const fee = getBridgeFee(userTxs, { amount: fromAmount, decimals: from.decimals })
 
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
@@ -535,3 +533,4 @@ export class SocketBridge extends OmnibridgeChildBase {
     await Promise.all(promises)
   }
 }
+// f0211573-6dad-4a36-9a3a-f47012921a37
