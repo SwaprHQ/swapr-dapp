@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 import { BigNumber, utils } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
 import { JsonRpcSigner } from '@ethersproject/providers'
@@ -769,19 +769,21 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+
+    const { value, decimals, address, chainId } = this.store.getState().omnibridge.UI.from
+    const parsedValue = parseUnits(value, decimals)
+
+    let totalTxnGasCostInUSD = '-'
+
     try {
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
-
-      const { value, decimals, address } = this.store.getState().omnibridge.UI.from
-      const parsedValue = parseUnits(value, decimals)
-
       let gas = BigNumber.from(0)
       let gasPrice = BigNumber.from(0)
 
       //calculate for deposit
       if (this._activeChainId === this.l1ChainId) {
         gasPrice = await this.bridge.l1Provider.getGasPrice()
-        if (address === 'ETH') {
+        if (address === Currency.getNative(chainId).symbol) {
           const maxSubmissionPrice = BridgeHelper.percentIncrease(
             (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
             MAX_SUBMISSION_PRICE_PERCENT_INCREASE
@@ -795,40 +797,43 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       //calculate for withdraw
       if (this._activeChainId === this.l2ChainId) {
         gasPrice = await this.bridge.l2Provider.getGasPrice()
-        if (address === 'ETH') {
+        if (address === Currency.getNative(chainId).symbol) {
           gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(parsedValue)
         } else {
           gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, parsedValue)
         }
       }
 
-      if (!this._activeChainId) throw new Error('Active chain is not set')
+      if (!this._activeChainId) {
+        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+        return
+      }
 
       const {
         bundle: { nativeCurrencyPrice }
-      } = await request(subgraphClientsUris[this._activeChainId], QUERY_ETH_PRICE) //NOTE: price for testnets is 0
+      } = await request(subgraphClientsUris[this._activeChainId], QUERY_ETH_PRICE)
 
       const totalTxnGasCostInWei = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
 
       const totalTxnGasCostInEth = formatUnits(totalTxnGasCostInWei, 18)
 
-      const totalTxnGasCostInUSD = Number(totalTxnGasCostInEth) * Number(Number(nativeCurrencyPrice).toFixed(2)) // mul eth cost * eth price
-
-      this.store.dispatch(
-        this.actions.setBridgeDetails({
-          gas: `${totalTxnGasCostInUSD.toFixed(2).toString()} $`,
-          fee: '0%',
-          estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-          receiveAmount: Number(value)
-            .toFixed(2)
-            .toString()
-        })
-      )
-
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
+      totalTxnGasCostInUSD = `${(Number(totalTxnGasCostInEth) * Number(nativeCurrencyPrice)).toFixed(2)}$` // mul eth cost * eth price
     } catch (e) {
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+      totalTxnGasCostInUSD = '-' //when Arbitrum cannot estimate gas
     }
+
+    this.store.dispatch(
+      this.actions.setBridgeDetails({
+        gas: totalTxnGasCostInUSD,
+        fee: '0%',
+        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
+        receiveAmount: Number(value)
+          .toFixed(2)
+          .toString()
+      })
+    )
+
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
   }
   public triggerModalDisclaimerText = () => {
     const setDisclaimerText = (): string => {
