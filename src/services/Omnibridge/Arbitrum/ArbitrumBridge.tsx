@@ -777,13 +777,15 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     let totalTxnGasCostInUSD = '-'
 
     try {
+      const nativeCurrency = Currency.getNative(chainId).symbol
+
       let gas = BigNumber.from(0)
       let gasPrice = BigNumber.from(0)
 
       //calculate for deposit
       if (this._activeChainId === this.l1ChainId) {
         gasPrice = await this.bridge.l1Provider.getGasPrice()
-        if (address === Currency.getNative(chainId).symbol) {
+        if (address === nativeCurrency) {
           const maxSubmissionPrice = BridgeHelper.percentIncrease(
             (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
             MAX_SUBMISSION_PRICE_PERCENT_INCREASE
@@ -797,7 +799,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       //calculate for withdraw
       if (this._activeChainId === this.l2ChainId) {
         gasPrice = await this.bridge.l2Provider.getGasPrice()
-        if (address === Currency.getNative(chainId).symbol) {
+        if (address === nativeCurrency) {
           gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(parsedValue)
         } else {
           gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, parsedValue)
