@@ -10,6 +10,9 @@ export const SOCKET_PENDING_REASONS = {
 
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
+export const DAI_ETHEREUM_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
+export const DAI_ARBITRUM_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
+
 export type SocketTxStatus = 'from-pending' | 'to-pending' | 'error' | 'confirmed'
 
 export type SocketTx = {
