@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   OmnibridgeChildBaseConstructor,
@@ -22,7 +22,7 @@ import {
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
-import { SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
+import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
 import { getBridgeFee, getBestRoute } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
@@ -309,6 +309,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
     let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
 
+    //FIX it will be removed when we implemented our Socket List
     if (from.address !== Currency.getNative(from.chainId).symbol) {
       //way to find from and toToken
       const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
@@ -319,18 +320,44 @@ export class SocketBridge extends OmnibridgeChildBase {
         return
       }
 
-      const toToken = socketTokens.tokens.find(
-        token => token.symbol === fromToken.symbol && token.chainId === to.chainId
-      )
-      if (!toToken) {
-        this.store.dispatch(
-          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+      if (
+        (from.address.toLowerCase() === DAI_ETHEREUM_ADDRESS || from.address.toLowerCase() === DAI_ARBITRUM_ADDRESS) &&
+        to.chainId === ChainId.XDAI
+      ) {
+        toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+      } else {
+        const toToken = socketTokens.tokens.find(
+          token => token.symbol === fromToken.symbol && token.chainId === to.chainId
         )
-        return
+        if (!toToken) {
+          this.store.dispatch(
+            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+          )
+          return
+        }
+        toTokenAddress = toToken.address
       }
 
       fromTokenAddress = from.address
-      toTokenAddress = toToken.address
+    }
+
+    //when user select "XDAI" we want to pair it to DAI
+    if (from.chainId === ChainId.XDAI && from.symbol === Currency.getNative(from.chainId).symbol) {
+      if (to.chainId === ChainId.MAINNET) {
+        toTokenAddress = DAI_ETHEREUM_ADDRESS
+      }
+
+      if (to.chainId === ChainId.ARBITRUM_ONE) {
+        toTokenAddress = DAI_ARBITRUM_ADDRESS
+      }
+    }
+
+    //when fromChain === ETH or ARB ONE and selected token is DAI we want to select toToken as XDAI
+    if (
+      (from.address.toLowerCase() === DAI_ETHEREUM_ADDRESS || from.address.toLowerCase() === DAI_ARBITRUM_ADDRESS) &&
+      from.chainId === ChainId.XDAI
+    ) {
+      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
     }
 
     const value = parseUnits(from.value, from.decimals)
