@@ -44,6 +44,8 @@ export default function AssetSelector({ title, currency0, currency1, onClick }: 
       setAssetTitle(`${unwrappedToken(currency0)?.symbol}/${unwrappedToken(currency1)?.symbol}`)
     } else if (currency0) {
       setAssetTitle(unwrappedToken(currency0)?.symbol || null)
+    } else {
+      setAssetTitle(null)
     }
   }, [currency0, currency1])
 

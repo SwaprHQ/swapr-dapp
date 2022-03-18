@@ -1,5 +1,5 @@
 import { Pair, Token } from '@swapr/sdk'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
@@ -18,7 +18,7 @@ interface PairAndRewardProps {
   liquidityPair: Pair | Token | undefined | null
 
   campaingType: CampaignType
-  onLiquidityPairChange: (liquidityPair: Pair | Token) => void
+  onLiquidityPairChange: (liquidityPair: Pair | Token | null) => void
 }
 
 export default function PairAndReward({
@@ -54,6 +54,9 @@ export default function PairAndReward({
   const handleDismissCurrencySearch = useCallback(() => {
     setCurrencySearchOpen(false)
   }, [])
+  useEffect(() => {
+    onLiquidityPairChange(null)
+  }, [campaingType, onLiquidityPairChange])
 
   return (
     <>
@@ -62,8 +65,8 @@ export default function PairAndReward({
           <Box flex="1">
             <AssetSelector
               title={`ADD ${campaingType === CampaignType.PAIR ? 'PAIR' : 'TOKEN'}`}
-              currency0={liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
-              currency1={liquidityPair instanceof Token ? null : liquidityPair?.token1}
+              currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
+              currency1={liquidityPair && liquidityPair instanceof Token ? null : liquidityPair?.token1}
               onClick={() => handelOpenPairOrTokenSearch(campaingType)}
             />
           </Box>

@@ -145,7 +145,7 @@ export default function CreateLiquidityMining() {
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        <Step title="Select reward amount" index={2} disabled={!targetedPairOrToken || !reward || !reward.token}>
+        <Step title="Select reward amount" index={2} disabled={!targetedPairOrToken}>
           <RewardAmount
             reward={reward}
             stakablePair={targetedPairOrToken}
