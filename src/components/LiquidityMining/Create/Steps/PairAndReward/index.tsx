@@ -64,7 +64,8 @@ export default function PairAndReward({
         <FlexContainer justifyContent="stretch" width="100%">
           <Box flex="1">
             <AssetSelector
-              title={`ADD ${campaingType === CampaignType.PAIR ? 'PAIR' : 'TOKEN'}`}
+              campaingType={campaingType}
+              title={`SELECT ${campaingType === CampaignType.PAIR ? 'PAIR' : 'TOKEN'}`}
               currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
               currency1={liquidityPair && liquidityPair instanceof Token ? null : liquidityPair?.token1}
               onClick={() => handelOpenPairOrTokenSearch(campaingType)}

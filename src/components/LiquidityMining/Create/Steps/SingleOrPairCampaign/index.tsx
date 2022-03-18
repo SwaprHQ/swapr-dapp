@@ -40,8 +40,12 @@ const CardText = styled(Text)`
   text-transform: uppercase;
 `
 
-const Diamond = styled.div<{ size: string; active: boolean }>`
+export const Diamond = styled.div<{ size: string; active: boolean }>`
   position: absolute;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
   border: ${props => (props.active ? 'none' : '1px solid #2A2F42')};
