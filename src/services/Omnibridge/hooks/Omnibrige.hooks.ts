@@ -1,41 +1,123 @@
+import { ChainId, Currency, Token } from '@swapr/sdk'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppState } from '../../../state'
-import { useActiveWeb3React } from '../../../hooks'
+
 import {
-  selectAllTokensPerChain,
-  selectAllActiveTokens,
-  selectAllLists,
-  selectListsLoading,
-  selectSupportedBridgesForUI
+  selectBridgeTokens,
+  selectSupportedLists,
+  selectBridgeActiveTokens,
+  selectSupportedBridgesForUI,
+  selectBridgeListsLoadingStatus,
+  selectBridgeSupportedTokensOnChain
 } from '../store/Omnibridge.selectors'
+import { AppState } from '../../../state'
 import { commonActions } from '../store/Common.reducer'
-import { useOmnibridge } from '../OmnibridgeProvider'
-import { ChainId, Currency } from '@swapr/sdk'
-import { omnibridgeUIActions } from '../store/UI.reducer'
-import { currencyId } from '../../../utils/currencyId'
-import { useCurrency } from '../../../hooks/Tokens'
 import { tryParseAmount } from '../../../state/swap/hooks'
+import { omnibridgeUIActions } from '../store/UI.reducer'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
+import { NEVER_RELOAD, useSingleCallResult } from '../../../state/multicall/hooks'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useOmnibridge } from '../OmnibridgeProvider'
+import { parseStringOrBytes32 } from '../../../hooks/Tokens'
+import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
+import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../../hooks/useContract'
+
+import { isAddress } from '../../../utils'
+import { currencyId } from '../../../utils/currencyId'
+
 import { BridgeTxsFilter } from '../Omnibridge.types'
 
-export const useAllBridgeTokens = () => {
+export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
-  const tokens = useSelector((state: AppState) => selectAllTokensPerChain(state, chainId ?? 0))
+  const tokens = useSelector((state: AppState) => selectBridgeSupportedTokensOnChain(state, chainId ?? 0))
 
   return tokens
 }
 
+export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token | undefined | null {
+  const { chainId: activeChainId } = useActiveWeb3React()
+  const selectedChainId = chainId ?? activeChainId
+
+  const allTokens = useSelector(selectBridgeTokens)
+  const tokensOnChain = allTokens[selectedChainId ?? 0]
+  const nativeCurrency = useNativeCurrency(selectedChainId)
+  const nativeCurrencyWrapper = useWrappingToken(nativeCurrency, selectedChainId)
+
+  const address = isAddress(tokenAddress)
+  const token: Token | undefined = address ? tokensOnChain[address] : undefined
+
+  const tokenContract = useTokenContract(address ? address : undefined, false)
+  const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
+
+  const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
+  const tokenNameBytes32 = useSingleCallResult(
+    token ? undefined : tokenContractBytes32,
+    'name',
+    undefined,
+    NEVER_RELOAD
+  )
+  const symbol = useSingleCallResult(token ? undefined : tokenContract, 'symbol', undefined, NEVER_RELOAD)
+  const symbolBytes32 = useSingleCallResult(token ? undefined : tokenContractBytes32, 'symbol', undefined, NEVER_RELOAD)
+  const decimals = useSingleCallResult(token ? undefined : tokenContract, 'decimals', undefined, NEVER_RELOAD)
+
+  return useMemo(() => {
+    if (!nativeCurrencyWrapper) return undefined
+    if (nativeCurrencyWrapper.address === tokenAddress) return nativeCurrencyWrapper
+    if (token) return token
+    if (!chainId || !address) return undefined
+    if (selectedChainId === activeChainId) {
+      if (decimals.result) {
+        return new Token(
+          chainId,
+          address,
+          decimals.result[0],
+          parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
+          parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token')
+        )
+      }
+    }
+
+    return undefined
+  }, [
+    activeChainId,
+    address,
+    chainId,
+    decimals.result,
+    nativeCurrencyWrapper,
+    selectedChainId,
+    symbol.result,
+    symbolBytes32.result,
+    token,
+    tokenAddress,
+    tokenName.result,
+    tokenNameBytes32.result
+  ])
+}
+
+export const useBridgeCurrency = (currencyId: string | undefined, chainId: ChainId): Currency | null | undefined => {
+  const nativeCurrency = useNativeCurrency(chainId)
+  const isNativeCurrency = currencyId?.toUpperCase() === nativeCurrency.symbol
+  const token = useBridgeToken(isNativeCurrency ? undefined : currencyId, chainId)
+  return isNativeCurrency ? nativeCurrency : token
+}
+
 export const useBridgeActiveTokenMap = () => {
-  const tokenMap = useSelector(selectAllActiveTokens)
+  const tokenMap = useSelector(selectBridgeActiveTokens)
 
   return tokenMap
 }
 
-export const useAllBridgeLists = () => {
-  const allLists = useSelector(selectAllLists)
+export const useBridgeSupportedLists = () => {
+  const supportedLists = useSelector(selectSupportedLists)
 
-  return allLists
+  return supportedLists
+}
+
+export const useBridgeListsLoadingStatus = () => {
+  const isLoading = useSelector(selectBridgeListsLoadingStatus)
+
+  return isLoading
 }
 
 export const useActiveListsHandlers = () => {
@@ -47,12 +129,6 @@ export const useActiveListsHandlers = () => {
     deactivateList: useCallback((listId: string) => dispatch(commonActions.deactivateLists([listId])), [dispatch]),
     isListActive: useCallback((listId: string) => activeLists.includes(listId), [activeLists])
   }
-}
-
-export const useBridgeListsLoadingStatus = () => {
-  const isLoading = useSelector(selectListsLoading)
-
-  return isLoading
 }
 
 export const useBridgeFetchDynamicLists = () => {
@@ -163,7 +239,8 @@ export const useBridgeInfo = () => {
 
   const { address: currencyId, value: typedValue, chainId: fromChainId } = fromNetwork
 
-  const bridgeCurrency = useCurrency(currencyId)
+  const bridgeCurrency = useBridgeCurrency(currencyId, fromChainId)
+
   const parsedAmount = useMemo(() => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId), [
     bridgeCurrency,
     chainId,

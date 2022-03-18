@@ -1,13 +1,63 @@
+import { TokenList } from '@uniswap/token-lists'
 import { createSelector } from '@reduxjs/toolkit'
 import { ChainId, Token } from '@swapr/sdk'
+
 import { AppState } from '../../../state'
+import { omnibridgeConfig } from '../Omnibridge.config'
 import { listToTokenMap } from '../../../state/lists/hooks'
+import { socketSelectors } from '../Socket/Socket.selectors'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { BridgeList, BridgeTxsFilter, SupportedBridges, TokenMap } from '../Omnibridge.types'
-import { omnibridgeConfig } from '../Omnibridge.config'
-import { socketSelectors } from '../Socket/Socket.selectors'
 
-export const selectAllTransactions = createSelector(
+/**
+ * Each bridge declares in config which chainId pairs it supports.
+ * SupportedChains are used to filter out bridges that doesn't support pair selected in the UI.
+ *
+ * @example
+ *    // Bridge A supports: 1 - 100, 100-200
+ *    // Bridge B supports: 1 - 100
+ *    // Bridge C supports: 100-200
+ *
+ *    // fromChainId: 100
+ *    // toChainIdId: 200
+ *
+ *    // SupportedBridges gonna be Bridge A, Bridge C
+ *
+ */
+
+export const selectSupportedBridges = createSelector(
+  [(state: AppState) => state.omnibridge.UI.from.chainId, (state: AppState) => state.omnibridge.UI.to.chainId],
+  (fromChainId, toChainId) => {
+    if (!fromChainId || !toChainId) return []
+
+    const supportedBridges = Object.values(omnibridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
+      (total, bridgeInfo) => {
+        const bridge = {
+          name: bridgeInfo.displayName,
+          bridgeId: bridgeInfo.bridgeId
+        }
+
+        bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
+          if (
+            (supportedFrom === fromChainId && supportedTo === toChainId) ||
+            (supportedFrom === toChainId && supportedTo === fromChainId)
+          ) {
+            total.push(bridge)
+          }
+        })
+
+        return total
+      },
+      []
+    )
+
+    return supportedBridges
+  }
+)
+
+// TXS
+
+export const selectBridgeTransactions = createSelector(
   [
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTxsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTxsSummary,
@@ -33,7 +83,9 @@ export const selectAllTransactions = createSelector(
   }
 )
 
-export const selectListsLoading = createSelector(
+// LISTS
+
+export const selectBridgeListsLoadingStatus = createSelector(
   [
     (state: AppState) => state.omnibridge['arbitrum:testnet'].listsStatus,
     (state: AppState) => state.omnibridge['arbitrum:mainnet'].listsStatus,
@@ -43,33 +95,109 @@ export const selectListsLoading = createSelector(
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
 )
 
-export const selectSupportedBridges = createSelector([(state: AppState) => state.omnibridge.UI], ui => {
-  const { from, to } = ui
-  if (!from.chainId || !to.chainId) return []
+export const selectBridgeLists = createSelector(
+  [
+    (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
+    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
+    (state: AppState) => state.omnibridge['socket'].lists
+  ],
+  (tokenListTestnet, tokenListMainnet, tokenListSocket) => {
+    const allTokenLists = { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
 
-  const supportedBridges = Object.values(omnibridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
-    (total, bridgeInfo) => {
-      const bridge = {
-        name: bridgeInfo.displayName,
-        bridgeId: bridgeInfo.bridgeId
-      }
+    return allTokenLists
+  }
+)
 
-      bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
-        if (
-          (supportedFrom === from.chainId && supportedTo === to.chainId) ||
-          (supportedFrom === to.chainId && supportedTo === from.chainId)
-        ) {
-          total.push(bridge)
-        }
+/**
+ * Returns lists that support currently selected fromChainId & toChainId
+ */
+
+export const selectSupportedLists = createSelector(
+  [selectBridgeLists, selectSupportedBridges],
+  (tokenLists, supportedBridges) => {
+    const supportedIds = supportedBridges.map(bridge => bridge.bridgeId)
+    const supportedTokenLists = Object.entries(tokenLists).reduce<{ [id: string]: TokenList }>(
+      (total, [listId, list]) => {
+        supportedIds.forEach(id => {
+          const pattern = new RegExp(`^${id}[-]?`, 'g')
+          if (pattern.test(listId)) {
+            total[listId] = list
+          }
+        })
+        return total
+      },
+      {}
+    )
+
+    return supportedTokenLists
+  }
+)
+
+// TOKENS
+
+/**
+ * Returns {[address: string]: Token} for provided chainId
+ */
+
+export const selectBridgeTokens = createSelector([selectBridgeLists], allLists => {
+  const allTokens = Object.values(allLists).reduce<{ [chainId: number]: { [address: string]: Token } }>(
+    (allTokens, list) => {
+      const tokenMapsByChain = listToTokenMap(list)
+
+      Object.entries(tokenMapsByChain).forEach(([chainId, tokenMapWithUrls]) => {
+        const tokensOnChain = Object.entries(tokenMapWithUrls).reduce<{ [address: string]: Token }>(
+          (mapWithoutUrl, [tokenAddress, tokenObj]) => {
+            mapWithoutUrl[tokenAddress] = tokenObj.token
+            return mapWithoutUrl
+          },
+          {}
+        )
+
+        allTokens[Number(chainId)] = { ...allTokens[Number(chainId)], ...tokensOnChain }
       })
 
-      return total
+      return allTokens
     },
-    []
+    {}
   )
-
-  return supportedBridges
+  return allTokens
 })
+
+export const selectBridgeActiveTokens = createSelector(
+  [selectSupportedLists, (state: AppState) => state.omnibridge.common.activeLists],
+  (supportedLists, activeLists) => {
+    if (!activeLists.length) return {}
+
+    const activeTokensMap = activeLists.reduce((activeTokens, activeId) => {
+      const tokenMapByChain = listToTokenMap(supportedLists[activeId])
+      const supportedChainsByList = Object.keys(tokenMapByChain)
+
+      supportedChainsByList.forEach(chain => {
+        const castedChain = Number(chain)
+        activeTokens[castedChain] = { ...activeTokens[castedChain], ...tokenMapByChain[castedChain] }
+      })
+
+      return activeTokens
+    }, {} as TokenMap)
+
+    return activeTokensMap
+  }
+)
+
+export const selectBridgeSupportedTokensOnChain = createSelector(
+  [selectBridgeActiveTokens, (state: AppState, chainId: ChainId) => chainId],
+  (activeTokens, chainId) => {
+    const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{ [address: string]: Token }>(
+      (newMap, address) => {
+        newMap[address] = activeTokens[chainId][address].token
+        return newMap
+      },
+      {}
+    )
+
+    return mapWithoutLists
+  }
+)
 
 export const selectSupportedBridgesForUI = createSelector(
   [
@@ -101,71 +229,5 @@ export const selectSupportedBridgesForUI = createSelector(
     )
 
     return supportedBridges
-  }
-)
-
-export const selectAllLists = createSelector(
-  [
-    (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
-    (state: AppState) => state.omnibridge['socket'].lists,
-    selectSupportedBridges
-  ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket, supportedBridges) => {
-    const supportedIds = supportedBridges.map(bridge => bridge.bridgeId)
-    const allTokenLists = { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
-
-    const supportedTokenLists = Object.entries(allTokenLists).reduce<typeof tokenListMainnet>(
-      (total, [listId, list]) => {
-        supportedIds.forEach(id => {
-          const pattern = new RegExp(`^${id}[-]?`, 'g')
-          if (pattern.test(listId)) {
-            total[listId] = list
-          }
-        })
-        return total
-      },
-      {}
-    )
-
-    return supportedTokenLists
-  }
-)
-
-// NOTE: equivalent to useCombinedActiveList hook
-export const selectAllActiveTokens = createSelector(
-  [selectAllLists, (state: AppState) => state.omnibridge.common.activeLists],
-  (allLists, activeLists) => {
-    if (!activeLists.length) return {}
-
-    const activeTokensMap = activeLists.reduce((allTokens, activeId) => {
-      const tokenMapByChain = listToTokenMap(allLists[activeId])
-      const supportedChainsByList = Object.keys(tokenMapByChain)
-
-      supportedChainsByList.forEach(chain => {
-        const castedChain = Number(chain)
-        allTokens[castedChain] = { ...allTokens[castedChain], ...tokenMapByChain[castedChain] }
-      })
-
-      return allTokens
-    }, {} as TokenMap)
-
-    return activeTokensMap
-  }
-)
-
-// NOTE: equivalend of useAllTokens()
-export const selectAllTokensPerChain = createSelector(
-  [selectAllActiveTokens, (state: AppState, chainId: ChainId) => chainId],
-  (activeTokens, chainId) => {
-    const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{ [address: string]: Token }>(
-      (newMap, address) => {
-        newMap[address] = activeTokens[chainId][address].token
-        return newMap
-      },
-      {}
-    )
-
-    return mapWithoutLists
   }
 )

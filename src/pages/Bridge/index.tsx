@@ -19,7 +19,7 @@ import { BridgeTabs, isNetworkDisabled } from './utils'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
 import { AppState } from '../../state'
-import { selectAllTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
+import { selectBridgeTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
 import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
@@ -82,7 +82,7 @@ export default function Bridge() {
   const { chainId, account } = useActiveWeb3React()
   const omnibridge = useOmnibridge()
 
-  const bridgeSummaries = useSelector((state: AppState) => selectAllTransactions(state, account ? account : ''))
+  const bridgeSummaries = useSelector((state: AppState) => selectBridgeTransactions(state, account ? account : ''))
 
   useBridgeFetchDynamicLists()
   //new modal interface
