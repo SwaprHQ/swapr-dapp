@@ -79,15 +79,15 @@ export const omnibridgeUISlice = createSlice({
         state.from.chainId = chainId
       }
 
-      if (decimals) {
+      if (decimals !== undefined) {
         state.from.decimals = decimals
       }
 
-      if (name) {
+      if (name !== undefined) {
         state.from.name = name
       }
 
-      if (symbol) {
+      if (symbol !== undefined) {
         state.from.symbol = symbol
       }
     },
