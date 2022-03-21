@@ -772,7 +772,17 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
     const { value, decimals, address, chainId } = this.store.getState().omnibridge.UI.from
-    const parsedValue = parseUnits(value, decimals)
+
+    let parsedValue = BigNumber.from(0)
+    //handling small amounts
+    try {
+      parsedValue = parseUnits(value, decimals)
+    } catch (e) {
+      this.store.dispatch(
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+      )
+      return
+    }
 
     let totalTxnGasCostInUSD = '-'
 
