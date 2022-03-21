@@ -23,7 +23,7 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
-import { getBridgeFee, getBestRoute } from './Socket.utils'
+import { getBestRoute } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -360,7 +360,16 @@ export class SocketBridge extends OmnibridgeChildBase {
       toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
     }
 
-    const value = parseUnits(from.value, from.decimals)
+    let value = BigNumber.from(0)
+    //handling small amounts
+    try {
+      value = parseUnits(from.value, from.decimals)
+    } catch (e) {
+      this.store.dispatch(
+        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+      )
+      return
+    }
 
     const quote = await QuoteAPI.quoteControllerGetQuote(
       {
@@ -379,14 +388,14 @@ export class SocketBridge extends OmnibridgeChildBase {
     )
 
     const { success, result } = quote
-    const { routes, toAsset } = result
 
-    if (!success || routes.length === 0) {
+    if (!success || result.routes.length === 0) {
       this.store.dispatch(
         this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
       )
       return
     }
+    const { routes, toAsset } = result
 
     this.store.dispatch(this.actions.setRoutes(routes))
 
@@ -406,15 +415,13 @@ export class SocketBridge extends OmnibridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs, fromAmount } = bestRoute
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
 
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
-    const fee = getBridgeFee(userTxs, { amount: fromAmount, decimals: from.decimals })
-
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
-      fee,
+      fee: '-', //currently we are not able to get fee
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
       receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
         .toFixed(2)
