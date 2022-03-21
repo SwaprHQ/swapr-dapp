@@ -114,6 +114,7 @@ export default function Bridge() {
   const isNetworkConnected = fromChainId === chainId
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
   const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
+  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
 
   useEffect(() => {
     if (!chainId) return
@@ -125,6 +126,12 @@ export default function Bridge() {
 
     dispatch(omnibridgeUIActions.setFrom({ chainId }))
   }, [chainId, collectableTx, dispatch, collecting, onCurrencySelection, onUserInput])
+
+  useEffect(() => {
+    //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
+    onCurrencySelection('')
+    dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
+  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
