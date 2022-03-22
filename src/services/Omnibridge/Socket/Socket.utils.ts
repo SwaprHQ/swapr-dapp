@@ -75,3 +75,10 @@ export const getBridgeFee = (userTxs: any, fromAsset: { amount: string; decimals
   //this shouldn't happen
   return '---'
 }
+
+export const getStatusOfResponse = (e: any) => {
+  //e.code 20 is status of aborted request
+  if (e.code === 20) return true
+
+  return false
+}

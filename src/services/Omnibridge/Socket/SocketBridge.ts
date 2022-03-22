@@ -16,6 +16,7 @@ import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
   QuoteControllerGetQuoteSortEnum,
+  QuoteOutputDTO,
   TokenAsset,
   TokenPriceResponseDTO
 } from './api/generated'
@@ -23,7 +24,7 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
-import { getBestRoute } from './Socket.utils'
+import { getBestRoute, getStatusOfResponse } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -371,21 +372,35 @@ export class SocketBridge extends OmnibridgeChildBase {
       return
     }
 
-    const quote = await QuoteAPI.quoteControllerGetQuote(
-      {
-        fromChainId: from.chainId.toString(),
-        fromTokenAddress,
-        toTokenAddress,
-        toChainId: to.chainId.toString(),
-        fromAmount: value.toString(),
-        userAddress: this._account,
-        uniqueRoutesPerBridge: false,
-        disableSwapping: false,
-        sort: QuoteControllerGetQuoteSortEnum.Output,
-        singleTxOnly: true
-      },
-      { signal: this.renewAbortController('quote') }
-    )
+    let quote: QuoteOutputDTO | undefined = undefined
+    try {
+      quote = await QuoteAPI.quoteControllerGetQuote(
+        {
+          fromChainId: from.chainId.toString(),
+          fromTokenAddress,
+          toTokenAddress,
+          toChainId: to.chainId.toString(),
+          fromAmount: value.toString(),
+          userAddress: this._account,
+          uniqueRoutesPerBridge: false,
+          disableSwapping: false,
+          sort: QuoteControllerGetQuoteSortEnum.Output,
+          singleTxOnly: true
+        },
+        { signal: this.renewAbortController('quote') }
+      )
+    } catch (e) {
+      //if status of response isn't 20 (aborted) then set socket status to failed
+      const isValid = getStatusOfResponse(e)
+      if (!isValid) {
+        this.store.dispatch(
+          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+        )
+        return
+      }
+    }
+
+    if (!quote) return
 
     const { success, result } = quote
 
