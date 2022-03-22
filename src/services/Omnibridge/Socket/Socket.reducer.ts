@@ -13,7 +13,8 @@ const initialState: SocketBridgeState = {
   bridgingDetailsStatus: 'idle',
   listsStatus: 'idle',
   lists: {},
-  routes: []
+  routes: [],
+  requestCounter: 0
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -22,11 +23,19 @@ const createSocketSlice = (bridgeId: SocketList) =>
     initialState,
     reducers: {
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount } = action.payload
+        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
 
         //(store persist) crashing page without that code
         if (!state.bridgingDetails) {
           state.bridgingDetails = {}
+        }
+
+        if (requestId !== state.requestCounter) {
+          if (state.bridgingDetailsStatus === 'failed') return
+          state.bridgingDetailsStatus = 'loading'
+          return
+        } else {
+          state.bridgingDetailsStatus = 'ready'
         }
 
         if (gas) {
@@ -102,6 +111,9 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload
+      },
+      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
+        state.requestCounter = action.payload.id
       }
     }
   })
