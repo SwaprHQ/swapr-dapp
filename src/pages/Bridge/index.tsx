@@ -129,9 +129,11 @@ export default function Bridge() {
 
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
-    onCurrencySelection('')
+    if (!collecting) {
+      onCurrencySelection('')
+    }
     dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
-  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection])
+  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection, collecting])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
