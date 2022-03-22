@@ -20,7 +20,8 @@ const InsideCirlce = styled.div<{ size: string }>`
   /* BG/Dark/#3 */
   text-align: center;
 
-  border: 0.882051px dashed #3e4259;
+  /* border: 1.10256px dashed #3e4259; */
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%233E4259FF' stroke-width='1' stroke-dasharray='6%25%2c 8%25' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
   box-sizing: border-box;
   backdrop-filter: blur(12.3487px);
   /* Note: backdrop-filter has minimal browser support */
