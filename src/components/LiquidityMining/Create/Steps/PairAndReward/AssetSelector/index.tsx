@@ -4,18 +4,14 @@ import styled from 'styled-components'
 import { TYPE } from '../../../../../../theme'
 import CurrencyLogo from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
-import { Box, Flex } from 'rebass'
-import { GradientCard } from '../../../../../Card'
+import { Flex } from 'rebass'
+import { SmoothGradientCard } from '../../../../styleds'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
 import { Diamond } from '../../SingleOrPairCampaign'
+//import { ReactComponent as TokenSelect } from '../../../../../../assets/svg//token-select.svg'
 
-const Card = styled(GradientCard)`
-  width: 100%;
-  padding: 13px 20px;
-  border: solid 1px ${props => props.theme.bg3};
-`
 const InsideCirlce = styled.div<{ size: string }>`
   position: relative;
   width: ${props => props.size}px;
@@ -41,6 +37,11 @@ const StyledSvg = styled.div`
     display: block;
   }
 `
+const DoubleIconWrapper = styled.div`
+  position: absolute;
+  top: -24px;
+  left: 59px;
+`
 interface AssetLogoProps {
   currency0?: Token | null
   currency1?: Token | null
@@ -50,17 +51,18 @@ interface AssetLogoProps {
 const CrossIcon = (campaingType: CampaignType) => {
   if (campaingType === CampaignType.TOKEN) {
     return (
-      <Diamond size={'100'} active={false}>
+      <Diamond size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
         <InsideCirlce size={'80'}>
           <StyledSvg>
             <Cross></Cross>
           </StyledSvg>
         </InsideCirlce>
       </Diamond>
+      // <TokenSelect />
     )
   } else {
     return (
-      <>
+      <DoubleIconWrapper>
         <Diamond size={'84'} active={false} style={{ left: '-38px' }}>
           <InsideCirlce size={'65'}>
             <StyledSvg>
@@ -75,7 +77,7 @@ const CrossIcon = (campaingType: CampaignType) => {
             </StyledSvg>
           </InsideCirlce>
         </Diamond>
-      </>
+      </DoubleIconWrapper>
     )
   }
 }
@@ -84,21 +86,20 @@ const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps) => {
   if (currency0 && currency1) {
     return <DoubleCurrencyLogo size={84} currency0={currency0} currency1={currency1} />
   } else if (currency0) {
-    return <CurrencyLogo size="98px" currency={currency0} />
+    return <CurrencyLogo style={{ top: '-27px', left: '31px' }} size="98px" currency={currency0} />
   } else {
     return CrossIcon(campaingType)
   }
 }
 
 interface AssetSelectorProps {
-  title: string
   currency0?: Token | null
   currency1?: Token | null
   campaingType: CampaignType
   onClick: (event: React.MouseEvent<HTMLElement>) => void
 }
 
-export default function AssetSelector({ title, currency0, currency1, campaingType, onClick }: AssetSelectorProps) {
+export default function AssetSelector({ currency0, currency1, campaingType, onClick }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
 
   useEffect(() => {
@@ -107,31 +108,25 @@ export default function AssetSelector({ title, currency0, currency1, campaingTyp
     } else if (currency0) {
       setAssetTitle(unwrappedToken(currency0)?.symbol || null)
     } else {
-      setAssetTitle(null)
+      setAssetTitle(`SELECT ${campaingType === CampaignType.TOKEN ? 'TOKEN' : 'PAIR'}`)
     }
   }, [currency0, currency1, campaingType])
 
   return (
-    <Flex flexDirection="column">
-      <Box mb="16px">
-        <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
-          {title}
-        </TYPE.small>
-      </Box>
-      <Box>
-        <Card selectable onClick={onClick}>
-          <Flex height="26px" width="100%" justifyContent="center" alignItems="center">
-            <Box mr={currency0 ? '8px' : '0'}>
-              <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
-            </Box>
-            <Box>
-              <TYPE.body lineHeight="20px" color="white">
-                {assetTitle}
-              </TYPE.body>
-            </Box>
-          </Flex>
-        </Card>
-      </Box>
-    </Flex>
+    <SmoothGradientCard
+      active={currency0 !== undefined}
+      paddingBottom={'34px !important'}
+      width={'162px'}
+      height={'150px'}
+      onClick={onClick}
+    >
+      <Flex width="100%" justifyContent="center" alignSelf="end" flexDirection={'column'}>
+        <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
+
+        <TYPE.largeHeader alignSelf={'end'} lineHeight="22px" color="text5" fontSize={13}>
+          {assetTitle}
+        </TYPE.largeHeader>
+      </Flex>
+    </SmoothGradientCard>
   )
 }

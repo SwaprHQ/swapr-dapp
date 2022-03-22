@@ -5,32 +5,7 @@ import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 
 import { AutoColumn } from '../../../../Column'
 import { AutoRow } from '../../../../Row'
-import { Card as StyleCar } from '../../../styleds'
-
-const Card = styled(StyleCar)<{ active?: boolean }>`
-  width: 218px;
-  height: 138px;
-  justify-content: end;
-  opacity: ${props => (!props.selectable || props.active ? '1' : '0.4')};
-  cursor: pointer;
-  ::before {
-    border: 1px solid #464366;
-    backdrop-filter: blur(20px);
-    border-image-source: ${props =>
-      props.active ? 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)' : 'transperent'};
-    background-blend-mode: Lighten;
-    background: ${props =>
-      props.active
-        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(114.19deg, rgba(90, 12, 255, 0.8) -9%, rgba(17, 8, 35, 0) 113.1%)'
-        : 'transperent'};
-  }
-
-  display: flex;
-  align-items: center;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    width: 100%;
-  `}
-`
+import { SmoothGradientCard } from '../../../styleds'
 
 const CardText = styled(Text)`
   font-weight: 600;
@@ -89,22 +64,32 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
 
   return (
     <AutoRow gap="35px">
-      <Card active={singleReward === CampaignType.TOKEN} onClick={() => handleRewardClick(CampaignType.TOKEN)}>
+      <SmoothGradientCard
+        width={'218px'}
+        height={'138px'}
+        active={singleReward === CampaignType.TOKEN}
+        onClick={() => handleRewardClick(CampaignType.TOKEN)}
+      >
         {adjustableDiamondSize(true, singleReward === CampaignType.TOKEN)}
         <AutoColumn>
           <CardText>Single</CardText>
           <CardText>Token</CardText>
           <CardText>Staking</CardText>
         </AutoColumn>
-      </Card>
-      <Card onClick={() => handleRewardClick(CampaignType.PAIR)} active={singleReward === CampaignType.PAIR}>
+      </SmoothGradientCard>
+      <SmoothGradientCard
+        width={'218px'}
+        height={'138px'}
+        onClick={() => handleRewardClick(CampaignType.PAIR)}
+        active={singleReward === CampaignType.PAIR}
+      >
         {adjustableDiamondSize(false, singleReward === CampaignType.PAIR)}
         <AutoColumn>
           <CardText>LP</CardText>
           <CardText>Token</CardText>
           <CardText>Staking</CardText>
         </AutoColumn>
-      </Card>
+      </SmoothGradientCard>
     </AutoRow>
   )
 }

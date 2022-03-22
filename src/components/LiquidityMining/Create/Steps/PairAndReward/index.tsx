@@ -1,11 +1,10 @@
 import { Pair, Token } from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Flex } from 'rebass'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import PairSearchModal from '../../../../SearchModal/PairSearchModal'
-import { Card } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 
 const FlexContainer = styled(Flex)`
@@ -60,19 +59,17 @@ export default function PairAndReward({
 
   return (
     <>
-      <Card>
-        <FlexContainer justifyContent="stretch" width="100%">
-          <Box flex="1">
-            <AssetSelector
-              campaingType={campaingType}
-              title={`SELECT ${campaingType === CampaignType.PAIR ? 'PAIR' : 'TOKEN'}`}
-              currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
-              currency1={liquidityPair && liquidityPair instanceof Token ? null : liquidityPair?.token1}
-              onClick={() => handelOpenPairOrTokenSearch(campaingType)}
-            />
-          </Box>
-        </FlexContainer>
-      </Card>
+      <FlexContainer justifyContent="stretch" width="100%">
+        <AssetSelector
+          campaingType={campaingType}
+          currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
+          currency1={liquidityPair && liquidityPair instanceof Token ? null : liquidityPair?.token1}
+          onClick={() => handelOpenPairOrTokenSearch(campaingType)}
+        />
+
+        <Flex width="301px">Divcibare</Flex>
+      </FlexContainer>
+
       <PairSearchModal
         isOpen={pairSearchOpen}
         onDismiss={handleDismissPairSearch}
