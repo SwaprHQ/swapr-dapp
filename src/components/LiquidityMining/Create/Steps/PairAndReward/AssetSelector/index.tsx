@@ -43,6 +43,10 @@ const DoubleIconWrapper = styled.div`
   top: -24px;
   left: 59px;
 `
+const StyledCurrencyLogo = styled(CurrencyLogo)`
+  position: absolute;
+  top: -31px;
+`
 interface AssetLogoProps {
   currency0?: Token | null
   currency1?: Token | null
@@ -84,10 +88,19 @@ const CrossIcon = (campaingType: CampaignType) => {
 }
 
 const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps) => {
+  console.log(currency0?.address, currency1?.address)
   if (currency0 && currency1) {
-    return <DoubleCurrencyLogo size={84} currency0={currency0} currency1={currency1} />
+    console.log('here right place')
+    return (
+      <DoubleCurrencyLogo
+        style={{ position: 'absolute', top: '-26px' }}
+        size={84}
+        currency0={currency0}
+        currency1={currency1}
+      />
+    )
   } else if (currency0) {
-    return <CurrencyLogo style={{ top: '-27px', left: '31px' }} size="98px" currency={currency0} />
+    return <StyledCurrencyLogo size="98px" currency={currency0} />
   } else {
     return CrossIcon(campaingType)
   }
@@ -102,13 +115,18 @@ interface AssetSelectorProps {
 
 export default function AssetSelector({ currency0, currency1, campaingType, onClick }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
+  const [tokenName, setTokenName] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     if (currency0 && currency1) {
+      console.log(unwrappedToken(currency0)?.name)
+      setTokenName('LP PAIR')
       setAssetTitle(`${unwrappedToken(currency0)?.symbol}/${unwrappedToken(currency1)?.symbol}`)
     } else if (currency0) {
+      setTokenName(unwrappedToken(currency0)?.name)
       setAssetTitle(unwrappedToken(currency0)?.symbol || null)
     } else {
+      setTokenName(undefined)
       setAssetTitle(`SELECT ${campaingType === CampaignType.TOKEN ? 'TOKEN' : 'PAIR'}`)
     }
   }, [currency0, currency1, campaingType])
@@ -121,12 +139,18 @@ export default function AssetSelector({ currency0, currency1, campaingType, onCl
       height={'150px'}
       onClick={onClick}
     >
-      <Flex width="100%" justifyContent="center" alignSelf="end" flexDirection={'column'}>
+      <Flex width="100%" justifyContent="center" alignSelf="end">
         <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
-
-        <TYPE.largeHeader alignSelf={'end'} lineHeight="22px" color="text5" fontSize={13}>
-          {assetTitle}
-        </TYPE.largeHeader>
+        <Flex flexDirection={'column'}>
+          <TYPE.largeHeader lineHeight="22px" color="text5" fontSize={13}>
+            {assetTitle}
+          </TYPE.largeHeader>
+          {tokenName && (
+            <TYPE.small color="text1" fontSize={11}>
+              {tokenName}
+            </TYPE.small>
+          )}
+        </Flex>
       </Flex>
     </SmoothGradientCard>
   )
