@@ -123,6 +123,7 @@ export default function AssetSelector({ currency0, currency1, campaingType, onCl
       setTokenName('LP PAIR')
       setAssetTitle(`${unwrappedToken(currency0)?.symbol}/${unwrappedToken(currency1)?.symbol}`)
     } else if (currency0) {
+      console.log(unwrappedToken(currency0))
       setTokenName(unwrappedToken(currency0)?.name)
       setAssetTitle(unwrappedToken(currency0)?.symbol || null)
     } else {

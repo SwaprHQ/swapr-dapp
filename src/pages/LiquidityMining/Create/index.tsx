@@ -140,8 +140,11 @@ export default function CreateLiquidityMining() {
           disabled={campaingType === null}
         >
           <PairAndReward
+            unlimitedPool={unlimitedPool}
+            onUnlimitedPoolChange={setUnlimitedPool}
             campaingType={campaingType}
             liquidityPair={targetedPairOrToken}
+            onStakingCapChange={setStakingCap}
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
