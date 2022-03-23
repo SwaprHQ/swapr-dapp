@@ -74,11 +74,11 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 `
 
-const InputPanel = styled.div<{ hideInput?: boolean; isBridge?: boolean }>`
+const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   z-index: 1;
-  margin: ${({ isBridge }) => (isBridge ? '8px 0' : '0')};
+  margin: '8px 0';
 `
 
 const Container = styled.div<{ focused: boolean }>`
@@ -159,7 +159,6 @@ export default function CurrencyInputPanel({
   showCommonBases,
   customBalanceText,
   balance,
-  isBridge = false,
   isLoading = false,
   chainIdOverride
 }: CurrencyInputPanelProps) {
@@ -183,10 +182,10 @@ export default function CurrencyInputPanel({
     setFocused(false)
   }, [])
 
-  useBridgeInputValidation(value, isBridge)
+  useBridgeInputValidation(value)
 
   return (
-    <InputPanel isBridge={isBridge} id={id}>
+    <InputPanel id={id}>
       <Container focused={focused}>
         <Content>
           {!hideInput && (

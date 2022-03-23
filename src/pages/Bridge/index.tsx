@@ -313,7 +313,6 @@ export default function Bridge() {
                   : true
                 : false
             }
-            isBridge={true}
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={collecting ? fromChainId : undefined}
           />
