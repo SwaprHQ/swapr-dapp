@@ -312,7 +312,7 @@ export class SocketBridge extends OmnibridgeChildBase {
   public getBridgingMetadata = async () => {
     const requestId = this.store.getState().omnibridge[this.bridgeId as SocketList].lastMetadataCt
 
-    const helperRequestId = requestId ? requestId + 1 : 1
+    const helperRequestId = (requestId ?? 0) + 1
 
     this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
 
