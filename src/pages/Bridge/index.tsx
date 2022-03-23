@@ -320,6 +320,7 @@ export default function Bridge() {
             }
             isBridge={true}
             isLoading={!!account && isNetworkConnected && listsLoading}
+            chainIdOverride={collecting ? fromChainId : undefined}
           />
           <BridgeActionPanel
             account={account}

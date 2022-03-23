@@ -1,9 +1,9 @@
-import { Currency, CurrencyAmount, Pair } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, Pair } from '@swapr/sdk'
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModalBridge/CurrencySearchModal'
-import CurrencyLogo from '../CurrencyLogo'
+import CurrencyLogo from '../CurrencyLogoBridge'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../theme'
@@ -138,6 +138,7 @@ interface CurrencyInputPanelProps {
   balance?: CurrencyAmount
   isBridge?: boolean
   isLoading?: boolean
+  chainIdOverride?: ChainId
 }
 
 export default function CurrencyInputPanel({
@@ -159,7 +160,8 @@ export default function CurrencyInputPanel({
   customBalanceText,
   balance,
   isBridge = false,
-  isLoading = false
+  isLoading = false,
+  chainIdOverride
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -255,7 +257,7 @@ export default function CurrencyInputPanel({
                     {pair ? (
                       <DoubleCurrencyLogo marginRight={4} currency0={pair.token0} currency1={pair.token1} size={20} />
                     ) : currency ? (
-                      <CurrencyLogo currency={currency} size="20px" />
+                      <CurrencyLogo currency={currency} chainIdOverride={chainIdOverride} size="20px" />
                     ) : null}
                     {pair ? (
                       <StyledTokenName className="pair-name-container">
