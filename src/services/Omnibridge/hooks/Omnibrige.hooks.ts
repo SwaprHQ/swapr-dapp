@@ -41,11 +41,12 @@ export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token 
   const selectedChainId = chainId ?? activeChainId
   const allTokens = useSelector(selectBridgeTokens)
   const tokensOnChain = allTokens[selectedChainId ?? 0]
+
   const nativeCurrency = useNativeCurrency(selectedChainId)
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency, selectedChainId)
 
   const address = isAddress(tokenAddress)
-  const token: Token | undefined = address ? tokensOnChain[address] : undefined
+  const token: Token | undefined = address ? tokensOnChain?.[address] : undefined
 
   const tokenContract = useTokenContract(address ? address : undefined, false)
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
