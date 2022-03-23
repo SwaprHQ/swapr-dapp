@@ -769,7 +769,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    const requestId = this.store.getState().omnibridge[this.bridgeId as ArbitrumList].requestCounter
+    const requestId = this.store.getState().omnibridge[this.bridgeId as ArbitrumList].lastMetadataCt
 
     const helperRequestId = requestId ? requestId + 1 : 1
 

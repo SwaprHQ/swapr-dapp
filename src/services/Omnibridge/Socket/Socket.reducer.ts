@@ -14,7 +14,7 @@ const initialState: SocketBridgeState = {
   listsStatus: 'idle',
   lists: {},
   routes: [],
-  requestCounter: 0
+  lastMetadataCt: 0
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -30,7 +30,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
           state.bridgingDetails = {}
         }
 
-        if (requestId !== state.requestCounter) {
+        if (requestId !== state.lastMetadataCt) {
           if (state.bridgingDetailsStatus === 'failed') return
           state.bridgingDetailsStatus = 'loading'
           return
@@ -113,7 +113,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
         state.routes = action.payload
       },
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.requestCounter = action.payload.id
+        state.lastMetadataCt = action.payload.id
       }
     }
   })

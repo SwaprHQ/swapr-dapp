@@ -13,7 +13,7 @@ interface ArbitrumBridgeState {
   bridgingDetails: BridgeDetails
   bridgingDetailsStatus: AsyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  requestCounter: number
+  lastMetadataCt: number
 }
 
 const now = () => new Date().getTime()
@@ -24,7 +24,7 @@ const initialState: ArbitrumBridgeState = {
   lists: {},
   listsStatus: 'idle',
   bridgingDetailsStatus: 'idle',
-  requestCounter: 0
+  lastMetadataCt: 0
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
@@ -154,7 +154,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           state.bridgingDetails = {}
         }
 
-        if (requestId !== state.requestCounter) {
+        if (requestId !== state.lastMetadataCt) {
           if (state.bridgingDetailsStatus === 'failed') return
           state.bridgingDetailsStatus = 'loading'
           return
@@ -186,7 +186,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         }
       },
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.requestCounter = action.payload.id
+        state.lastMetadataCt = action.payload.id
       }
     }
   })
