@@ -123,10 +123,6 @@ export class Omnibridge {
     return this.bridges[l2Tx.bridgeId].collect(l2Tx)
   }
 
-  public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
-    if (!this._initialized || !l2Tx.bridgeId) return
-    return this.bridges[l2Tx.bridgeId].triggerCollect(l2Tx)
-  }
   public validate = async () => {
     if (!this._initialized || !this._activeBridgeId) return
     return this.bridges[this._activeBridgeId].validate()

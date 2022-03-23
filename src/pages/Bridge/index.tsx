@@ -199,21 +199,16 @@ export default function Bridge() {
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
       if (!tx) return
-      const { assetAddressL1, assetAddressL2, toChainId } = tx
+      const { assetAddressL1, assetAddressL2, toChainId, value, assetName, fromChainId } = tx
 
       onCurrencySelection(assetAddressL1 && assetAddressL2 ? assetAddressL1 : Currency.getNative(toChainId) ?? '')
-
-      const collectData = omnibridge.triggerCollect(tx)
 
       setCollectableTx(tx)
       setActiveTab('collect')
       setCollecting(true)
-
-      if (collectData) {
-        setModalData(collectData)
-      }
+      setModalData({ fromChainId, toChainId, symbol: assetName, typedValue: value })
     },
-    [omnibridge, onCurrencySelection, setModalData]
+    [onCurrencySelection, setModalData]
   )
 
   const handleCollect = useCallback(async () => {
