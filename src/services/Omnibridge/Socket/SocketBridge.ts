@@ -34,6 +34,7 @@ const getErrorMsg = (error: any) => {
 }
 export class SocketBridge extends OmnibridgeChildBase {
   private _listeners: NodeJS.Timeout[] = []
+  private _abortControllers: { [id: string]: AbortController } = {}
 
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
@@ -50,6 +51,16 @@ export class SocketBridge extends OmnibridgeChildBase {
 
   private get selectors() {
     return socketSelectors[this.bridgeId as SocketList]
+  }
+
+  private renewAbortController = (key: string) => {
+    if (this._abortControllers[key]) {
+      this._abortControllers[key].abort()
+    }
+
+    this._abortControllers[key] = new AbortController()
+
+    return this._abortControllers[key].signal
   }
 
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
@@ -299,6 +310,12 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
+    const requestId = this.store.getState().omnibridge[this.bridgeId as SocketList].lastMetadataCt
+
+    const helperRequestId = (requestId ?? 0) + 1
+
+    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
     const { from, to } = this.store.getState().omnibridge.UI
@@ -440,11 +457,11 @@ export class SocketBridge extends OmnibridgeChildBase {
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
       receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
         .toFixed(2)
-        .toString()
+        .toString(),
+      requestId: helperRequestId
     }
 
     this.store.dispatch(this.actions.setBridgeDetails(details))
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
   }
 
   public fetchDynamicLists = async () => {

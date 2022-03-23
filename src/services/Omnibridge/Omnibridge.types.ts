@@ -63,6 +63,7 @@ export interface BridgeDetails {
   estimateTime?: string
   fee?: string
   receiveAmount?: string
+  requestId?: number
 }
 
 export type SupportedBridges = {

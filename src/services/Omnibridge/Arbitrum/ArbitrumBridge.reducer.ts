@@ -13,6 +13,7 @@ interface ArbitrumBridgeState {
   bridgingDetails: BridgeDetails
   bridgingDetailsStatus: AsyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
+  lastMetadataCt: number
 }
 
 const now = () => new Date().getTime()
@@ -22,7 +23,8 @@ const initialState: ArbitrumBridgeState = {
   transactions: {},
   lists: {},
   listsStatus: 'idle',
-  bridgingDetailsStatus: 'idle'
+  bridgingDetailsStatus: 'idle',
+  lastMetadataCt: 0
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
@@ -145,11 +147,19 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         })
       },
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount } = action.payload
+        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
 
         //(store persist) crashing page without that code
         if (!state.bridgingDetails) {
           state.bridgingDetails = {}
+        }
+
+        if (requestId !== state.lastMetadataCt) {
+          if (state.bridgingDetailsStatus === 'failed') return
+          state.bridgingDetailsStatus = 'loading'
+          return
+        } else {
+          state.bridgingDetailsStatus = 'ready'
         }
 
         if (gas) {
@@ -174,6 +184,9 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         if (errorMessage) {
           state.bridgingDetailsErrorMessage = errorMessage
         }
+      },
+      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
+        state.lastMetadataCt = action.payload.id
       }
     }
   })

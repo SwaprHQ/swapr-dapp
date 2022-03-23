@@ -18,7 +18,6 @@ export abstract class OmnibridgeChildBase {
   protected _activeChainId: OmnibridgeChildBaseProps['activeChainId']
   protected _staticProviders: OmnibridgeChildBaseProps['staticProviders']
   protected _activeProvider: OmnibridgeChildBaseProps['activeProvider']
-  protected _abortControllers: { [id: string]: AbortController } = {}
 
   constructor({ supportedChains, bridgeId, displayName }: OmnibridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
@@ -35,16 +34,6 @@ export abstract class OmnibridgeChildBase {
   protected setInitialEnv = ({ staticProviders, store }: OmnibridgeInitialEnv) => {
     this._staticProviders = staticProviders
     this._store = store
-  }
-
-  protected renewAbortController = (key: string) => {
-    if (this._abortControllers[key]) {
-      this._abortControllers[key].abort()
-    }
-
-    this._abortControllers[key] = new AbortController()
-
-    return this._abortControllers[key].signal
   }
 
   // To be implemented by bridge

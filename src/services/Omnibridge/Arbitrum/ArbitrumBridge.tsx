@@ -769,6 +769,12 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
+    const requestId = this.store.getState().omnibridge[this.bridgeId as ArbitrumList].lastMetadataCt
+
+    const helperRequestId = (requestId ?? 0) + 1
+
+    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
     const { value, decimals, address, chainId } = this.store.getState().omnibridge.UI.from
@@ -841,11 +847,10 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
         receiveAmount: Number(value)
           .toFixed(2)
-          .toString()
+          .toString(),
+        requestId: helperRequestId
       })
     )
-
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'ready' }))
   }
   public triggerModalDisclaimerText = () => {
     const setDisclaimerText = (): string => {
