@@ -125,33 +125,28 @@ export default function WalletModal({
 }: WalletModalProps) {
   const { active, account, connector, error } = useWeb3React()
 
-  const closeModal = useCallback(() => setModal(null), [setModal])
+  const closeModal = useCallback(() => {
+    setModal(null)
+    setPendingError(false)
+  }, [setModal, setPendingError])
 
   const isModalVisible = modal !== null
 
   const previousAccount = usePrevious(account)
-
-  // close on connection, when logged out before
-  useEffect(() => {
-    if (account && !previousAccount && isModalVisible) {
-      closeModal()
-    }
-  }, [account, previousAccount, closeModal, isModalVisible])
-
-  // close on wallet change
-  useEffect(() => {
-    if (account && previousAccount && previousAccount !== account && isModalVisible) {
-      closeModal()
-    }
-  }, [account, previousAccount, closeModal, isModalVisible])
-
   const activePrevious = usePrevious(active)
   const connectorPrevious = usePrevious(connector)
+
+  // close on connection, when logged out before or wallet change
   useEffect(() => {
-    if (!!modal && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
-      setModal(null)
+    if (
+      isModalVisible &&
+      ((active && !activePrevious) ||
+        (connector && connector !== connectorPrevious) ||
+        (account && (!previousAccount || (previousAccount && previousAccount !== account))))
+    ) {
+      closeModal()
     }
-  }, [setModal, active, error, connector, modal, activePrevious, connectorPrevious])
+  }, [account, previousAccount, closeModal, isModalVisible, connector, connectorPrevious, active, activePrevious])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {

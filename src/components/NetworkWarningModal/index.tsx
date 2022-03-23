@@ -68,7 +68,7 @@ export default function NetworkWarningModal() {
                 letterSpacing="-0.02em"
                 color="text4"
               >
-                You're currently on the wrong network to correctly visualize this page. Please switch to{' '}
+                You are currently on the wrong network to correctly visualize this page. Please switch to{' '}
                 {urlLoadedChainId && NETWORK_DETAIL[urlLoadedChainId] ? NETWORK_DETAIL[urlLoadedChainId].chainName : ''}{' '}
                 in your connected wallet to continue.
               </TYPE.body>
@@ -88,7 +88,7 @@ export default function NetworkWarningModal() {
                     >
                       To add/switch to the requested network, click the button below.
                     </TYPE.body>
-                    <ButtonPrimary onClick={handleAddClick}>Add</ButtonPrimary>
+                    <ButtonPrimary onClick={handleAddClick}>Add or switch network</ButtonPrimary>
                   </>
                 )}
             </UpperSectionContainer>
