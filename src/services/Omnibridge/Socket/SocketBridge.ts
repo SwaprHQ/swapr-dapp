@@ -12,19 +12,19 @@ import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { omnibridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
-import { QuoteAPI, ServerAPI, ApprovalsAPI, TokenListsAPI } from './api'
+import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
   QuoteControllerGetQuoteSortEnum,
   QuoteOutputDTO,
-  TokenAsset,
   TokenPriceResponseDTO
 } from './api/generated'
-import { TokenInfo, TokenList } from '@uniswap/token-lists'
+import { TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
 import { getBestRoute, getStatusOfResponse } from './Socket.utils'
+import { SOCKET_TOKENS } from './Socket.lists'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -474,58 +474,10 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(this.actions.setTokenListsStatus('loading'))
 
-    const payload = {
-      fromChainId: fromChainId.toString(),
-      toChainId: toChainId.toString()
-    }
-
-    const tokenListFromPromise = TokenListsAPI.tokenListControllerGetfromTokenList(payload, {
-      signal: this.renewAbortController('tokenListFrom')
-    })
-
-    const tokenListToPromise = TokenListsAPI.tokenListControllerGetToTokenList(payload, {
-      signal: this.renewAbortController('tokenListTo')
-    })
-
-    const [tokenListFrom, tokenListTo] = await Promise.all([tokenListFromPromise, tokenListToPromise])
-
-    //TODO find better way
-    //currently we are paring tokens by symbol (not better option to do it)
-    const pairedTokens = tokenListFrom.result.reduce<TokenAsset[]>((total, fromToken) => {
-      if (!fromToken.symbol) return total
-
-      const toToken = tokenListTo.result.find(
-        token =>
-          token.symbol === fromToken.symbol &&
-          fromToken.address.toLowerCase() !== SOCKET_NATIVE_TOKEN_ADDRESS.toLowerCase()
-      )
-
-      if (toToken && toToken.symbol) {
-        total.push(fromToken)
-        total.push(toToken)
-      } else {
-        return total
-      }
-
-      return total
-    }, [])
-
-    const tokens: TokenInfo[] = pairedTokens.reduce<TokenInfo[]>((total, token) => {
-      const { address, chainId, symbol, decimals, icon, name } = token
-
-      if (!name || !decimals || !name) return total
-
-      total.push({
-        name,
-        symbol,
-        address,
-        decimals,
-        chainId: Number(chainId),
-        logoURI: icon
-      })
-
-      return total
-    }, [])
+    const tokenListKey = `${Math.min(Number(fromChainId), Number(toChainId))}-${Math.max(
+      Number(fromChainId),
+      Number(toChainId)
+    )}`
 
     const tokenList: TokenList = {
       name: 'Socket',
@@ -535,7 +487,7 @@ export class SocketBridge extends OmnibridgeChildBase {
         minor: 0,
         patch: 0
       },
-      tokens,
+      tokens: SOCKET_TOKENS[tokenListKey] ?? [],
       logoURI: SocketLogo
     }
 

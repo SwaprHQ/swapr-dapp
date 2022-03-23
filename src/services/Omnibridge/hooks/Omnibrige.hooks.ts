@@ -27,6 +27,7 @@ import { isAddress } from '../../../utils'
 import { currencyId } from '../../../utils/currencyId'
 
 import { BridgeTxsFilter } from '../Omnibridge.types'
+import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -38,14 +39,14 @@ export const useBridgeSupportedTokens = () => {
 export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token | undefined | null {
   const { chainId: activeChainId } = useActiveWeb3React()
   const selectedChainId = chainId ?? activeChainId
-
   const allTokens = useSelector(selectBridgeTokens)
   const tokensOnChain = allTokens[selectedChainId ?? 0]
+
   const nativeCurrency = useNativeCurrency(selectedChainId)
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency, selectedChainId)
 
   const address = isAddress(tokenAddress)
-  const token: Token | undefined = address ? tokensOnChain[address] : undefined
+  const token: Token | undefined = address ? tokensOnChain?.[address] : undefined
 
   const tokenContract = useTokenContract(address ? address : undefined, false)
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
@@ -99,7 +100,22 @@ export const useBridgeCurrency = (currencyId: string | undefined, chainId: Chain
   const nativeCurrency = useNativeCurrency(chainId)
   const isNativeCurrency = currencyId?.toUpperCase() === nativeCurrency.symbol
   const token = useBridgeToken(isNativeCurrency ? undefined : currencyId, chainId)
+
   return isNativeCurrency ? nativeCurrency : token
+}
+
+export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): WrappedTokenInfo | undefined => {
+  const { chainId: activeChainId } = useActiveWeb3React()
+  const allTokens = useSelector(selectBridgeTokens)
+
+  const selectedChainId = chainId || activeChainId
+
+  const retVal = useMemo(() => {
+    if (!currency || !(currency instanceof Token) || !selectedChainId) return undefined
+    return allTokens[selectedChainId][currency.address] as WrappedTokenInfo
+  }, [allTokens, currency, selectedChainId])
+
+  return retVal
 }
 
 export const useBridgeActiveTokenMap = () => {

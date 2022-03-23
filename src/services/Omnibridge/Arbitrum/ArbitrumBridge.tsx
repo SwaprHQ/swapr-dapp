@@ -735,7 +735,8 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
       const allowance = await contract.allowance(this._account, gatewayAddress)
 
-      if (allowance && parsedValue.gt(allowance)) {
+      // Don't check allowance for l2 => l1
+      if (from.chainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
         this.store.dispatch(
           omnibridgeUIActions.setStatusButton({
             label: 'Approve',
