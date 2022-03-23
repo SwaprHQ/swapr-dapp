@@ -1675,7 +1675,7 @@ export const SOCKET_TOKENS: SocketTokenMap = {
       chainId: 1
     }
   ],
-  '42161-100': [
+  '100-42161': [
     {
       decimals: 6,
       name: 'USD Coin Arb1',
