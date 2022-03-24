@@ -306,8 +306,8 @@ export const useBridgeCollectHandlers = () => {
     [dispatch]
   )
 
-  const collectableCurrency = useBridgeToken(collectableTx?.assetAddressL1, collectableTx?.fromChainId ?? 0)
-  const nativeCurrency = useNativeCurrency(collectableTx?.fromChainId)
+  const collectableCurrency = useBridgeToken(collectableTx?.assetAddressL1, collectableTx?.toChainId ?? 0)
+  const nativeCurrency = useNativeCurrency(collectableTx?.toChainId)
 
   return {
     collecting,
