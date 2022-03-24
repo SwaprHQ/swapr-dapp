@@ -162,9 +162,8 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           state.bridgingDetailsStatus = 'ready'
         }
 
-        if (gas) {
-          state.bridgingDetails.gas = gas
-        }
+        state.bridgingDetails.gas = gas
+
         if (fee) {
           state.bridgingDetails.fee = fee
         }

@@ -146,7 +146,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <BridgeDetails>
         {!show ? (
           <Skeleton width="25px" height="9px" />
-        ) : details.fee === 'error' ? (
+        ) : !details.fee ? (
           <QuestionHelperWarning text={'Cannot estimate fee'} />
         ) : (
           details.fee
@@ -155,7 +155,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <BridgeDetails>
         {!show ? (
           <Skeleton width="25px" height="9px" />
-        ) : details.gas === 'error' ? (
+        ) : !details.gas ? (
           <QuestionHelperWarning text={'Cannot estimate gas'} />
         ) : (
           details.gas
