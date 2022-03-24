@@ -2,10 +2,13 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 import { UnsupportedChainIdError, useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
+import { InjectedConnector } from '@web3-react/injected-connector'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
+import { CustomWalletLinkConnector } from '../connectors/CustomWalletLinkConnector'
 import { NetworkContextName } from '../constants'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
@@ -13,13 +16,30 @@ export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & 
   return context.active ? context : contextNetwork
 }
 
+// check if connector type matches to the provider type
+export function isProperConnectorToProvider(connector: AbstractConnector | undefined) {
+  const { ethereum } = window
+  if (!ethereum?.providers || !connector) {
+    return undefined
+  }
+
+  let provider = undefined
+  if (connector instanceof InjectedConnector) {
+    provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask)
+  } else if (connector instanceof CustomWalletLinkConnector) {
+    provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet)
+  }
+
+  return ethereum.selectedProvider === provider
+}
+
 export function useEagerConnect() {
   const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
   const [tried, setTried] = useState(false)
-
   useEffect(() => {
     injected.isAuthorized().then(isAuthorized => {
-      if (isAuthorized) {
+      const isProperConnector = isProperConnectorToProvider(injected)
+      if (isAuthorized && isProperConnector) {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
