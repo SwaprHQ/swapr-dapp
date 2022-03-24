@@ -24,6 +24,9 @@ import Row from '../Row'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import { ApplicationModal } from '../../state/application/actions'
+import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
+import { InjectedConnector } from '@web3-react/injected-connector'
+import usePrevious from '../../hooks/usePrevious'
 
 const SwitchNetworkButton = styled.button`
   display: flex;
@@ -98,9 +101,32 @@ export default function Web3Status() {
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
-  const tryActivation = async (connector: AbstractConnector | undefined) => {
+  const { ethereum } = window
+  const provider = ethereum?.selectedProvider
+  const previousProvider = usePrevious(provider)
+
+  function activateProvider(connector: AbstractConnector | undefined) {
+    if (!ethereum?.providers || !connector) {
+      return undefined
+    }
+
+    let provider = undefined
+    if (connector instanceof InjectedConnector) {
+      provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask)
+    } else if (connector instanceof CustomWalletLinkConnector) {
+      provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet)
+    }
+
+    if (provider && ethereum.setSelectedProvider) {
+      ethereum.setSelectedProvider(provider)
+    }
+    return provider
+  }
+
+  const tryActivation = (connector: AbstractConnector | undefined) => {
     setPendingWallet(connector)
     setModal(ModalView.Pending)
+    activateProvider(connector)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
@@ -113,6 +139,9 @@ export default function Web3Status() {
           activate(connector)
         } else {
           setPendingError(true)
+          if (previousProvider && ethereum && ethereum.setSelectedProvider) {
+            ethereum.setSelectedProvider(previousProvider)
+          }
         }
       })
   }
