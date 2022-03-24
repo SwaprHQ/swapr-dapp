@@ -286,7 +286,7 @@ export default function Bridge() {
             onMax={collecting ? undefined : handleMaxInput}
             onCurrencySelect={onCurrencySelection}
             disableCurrencySelect={!account || collecting || !isNetworkConnected}
-            disabled={!account || collecting}
+            disabled={!account || collecting || !isNetworkConnected}
             id="bridge-currency-input"
             hideBalance={
               collecting && collectableTx

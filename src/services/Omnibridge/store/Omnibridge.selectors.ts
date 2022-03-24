@@ -73,12 +73,18 @@ export const selectBridgeTransactions = createSelector(
 export const selectBridgeFilteredTransactions = createSelector(
   [selectBridgeTransactions, (state: AppState) => state.omnibridge.UI.filter],
   (txs, txsFilter) => {
+    const sortedTxs = txs.sort((firstTx, secondTx) => {
+      if (firstTx.status === 'pending' && secondTx.status !== 'pending') return -1
+      if (firstTx.status === 'redeem' && secondTx.status !== 'redeem') return -1
+      return 0
+    })
+
     switch (txsFilter) {
       case BridgeTxsFilter.COLLECTABLE:
-        return txs.filter(summary => summary.status === 'redeem')
+        return sortedTxs.filter(summary => summary.status === 'redeem')
       case BridgeTxsFilter.RECENT:
         const passed24h = new Date().getTime() - 1000 * 60 * 60 * 24
-        return txs.filter(summary => {
+        return sortedTxs.filter(summary => {
           if (!summary.timestampResolved) return true
           return summary.timestampResolved >= passed24h
         })
