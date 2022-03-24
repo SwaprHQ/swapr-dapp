@@ -8,15 +8,15 @@ import {
   OmnibridgeChangeHandler,
   OmnibridgeConstructorParams
 } from './Omnibridge.types'
-import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { AppState } from '../../state'
-import { selectSupportedBridges } from './store/Omnibridge.selectors'
+import { selectSupportedBridges, selectBridgeCollectableTx } from './store/Omnibridge.selectors'
 
 export class Omnibridge {
   public readonly staticProviders: OmnibridgeProviders
   public readonly store: OmnibridgeConstructorParams['store']
   public readonly bridges: { [k in BridgeList]: OmnibridgeChildBase }
   private _initialized = false
+  private _account: string | undefined
   private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
 
   private get _activeBridgeId() {
@@ -63,6 +63,7 @@ export class Omnibridge {
   public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {
     const previousChainId = this._activeChainId
     this._activeChainId = signerData.activeChainId
+    this._account = signerData.account
 
     const signerChangeCall = (bridgeKey: BridgeList) =>
       this.bridges[bridgeKey].onSignerChange({ previousChainId, ...signerData })
@@ -80,6 +81,7 @@ export class Omnibridge {
     if (this._initialized) return
 
     this._activeChainId = activeChainId
+    this._account = account
 
     const initCall = (bridgeKey: BridgeList) =>
       this.bridges[bridgeKey].init({
@@ -98,8 +100,6 @@ export class Omnibridge {
   }
 
   public getSupportedBridges = () => {
-    //TODO filter by supported token
-
     const supportedBridges = selectSupportedBridges(this.store.getState())
 
     supportedBridges.forEach(bridge => {
@@ -118,15 +118,13 @@ export class Omnibridge {
     return this.bridges[this._activeBridgeId].approve()
   }
 
-  public collect = async (l2Tx: BridgeTransactionSummary) => {
-    if (!this._initialized || !l2Tx.bridgeId) return
+  public collect = async () => {
+    if (!this._account) return
+    const l2Tx = selectBridgeCollectableTx(this.store.getState(), this._account)
+    if (!this._initialized || !l2Tx) return
     return this.bridges[l2Tx.bridgeId].collect(l2Tx)
   }
 
-  public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
-    if (!this._initialized || !l2Tx.bridgeId) return
-    return this.bridges[l2Tx.bridgeId].triggerCollect(l2Tx)
-  }
   public validate = async () => {
     if (!this._initialized || !this._activeBridgeId) return
     return this.bridges[this._activeBridgeId].validate()

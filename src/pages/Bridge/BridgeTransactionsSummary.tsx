@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
-import { ButtonPrimary } from '../../components/Button'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { BridgeStatusTag } from './BridgeStatusTag'
 import { getExplorerLink } from '../../utils'
@@ -121,17 +120,12 @@ const TextTo = styled(Link)<{ status: BridgeTransactionStatus }>`
 `
 interface BridgeTransactionsSummaryProps {
   transactions: BridgeTransactionSummary[]
-  collectableTx: BridgeTransactionSummary
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
 }
 
-export const BridgeTransactionsSummary = ({
-  transactions,
-  collectableTx,
-  handleTriggerCollect
-}: BridgeTransactionsSummaryProps) => {
+export const BridgeTransactionsSummary = ({ transactions, handleTriggerCollect }: BridgeTransactionsSummaryProps) => {
   return (
-    <AdvancedDetailsFooter fullWidth padding="12px">
+    <AdvancedDetailsFooter style={{ marginTop: '10px' }} fullWidth padding="12px">
       <Container>
         <Header>
           <ColumnBridging>Bridging</ColumnBridging>
@@ -145,11 +139,6 @@ export const BridgeTransactionsSummary = ({
           ))}
         </Body>
       </Container>
-      {collectableTx && (
-        <ButtonPrimary onClick={() => handleTriggerCollect(collectableTx)} mt="12px">
-          Collect
-        </ButtonPrimary>
-      )}
     </AdvancedDetailsFooter>
   )
 }

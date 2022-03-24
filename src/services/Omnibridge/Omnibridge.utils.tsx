@@ -7,7 +7,6 @@ import {
   OmnibridgeInitialEnv
 } from './Omnibridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { ChainId } from '@swapr/sdk'
 
 export abstract class OmnibridgeChildBase {
   public readonly bridgeId: BridgeList
@@ -55,9 +54,6 @@ export abstract class OmnibridgeChildBase {
   abstract validate(): void
   abstract approve(): void
   abstract collect(l2Tx?: BridgeTransactionSummary): void
-  abstract triggerCollect(
-    l2Tx?: BridgeTransactionSummary
-  ): { symbol: string; typedValue: string; fromChainId: ChainId; toChainId: ChainId } | undefined
   abstract triggerBridging(): void
   abstract triggerModalDisclaimerText(): void
   abstract fetchStaticLists(): Promise<void>

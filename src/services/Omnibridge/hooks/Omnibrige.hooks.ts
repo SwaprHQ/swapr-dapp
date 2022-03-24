@@ -1,11 +1,12 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
   selectBridgeTokens,
   selectSupportedLists,
   selectBridgeActiveTokens,
+  selectBridgeCollectableTx,
   selectSupportedBridgesForUI,
   selectBridgeListsLoadingStatus,
   selectBridgeSupportedTokensOnChain
@@ -289,4 +290,30 @@ export const useBridgeTxsFilter = () => {
   }
 
   return setFilter
+}
+
+export const useBridgeCollectHandlers = () => {
+  const dispatch = useDispatch()
+  const { account } = useActiveWeb3React()
+  const collectableTx = useSelector((state: AppState) => selectBridgeCollectableTx(state, account ?? undefined))
+
+  const [collecting, setCollecting] = useState(false)
+
+  const setCollectableTx = useCallback(
+    (txHash: string | null) => {
+      dispatch(omnibridgeUIActions.setCollectableTx(txHash))
+    },
+    [dispatch]
+  )
+
+  const collectableCurrency = useBridgeToken(collectableTx?.assetAddressL1, collectableTx?.fromChainId ?? 0)
+  const nativeCurrency = useNativeCurrency(collectableTx?.fromChainId)
+
+  return {
+    collecting,
+    setCollecting,
+    collectableTx,
+    setCollectableTx,
+    collectableCurrency: collectableCurrency ?? nativeCurrency
+  }
 }

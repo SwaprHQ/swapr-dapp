@@ -55,6 +55,7 @@ export const BridgeModal = ({
           <BridgingInitiatedModal
             isOpen
             onDismiss={() => {
+              handleResetBridge()
               setStatus(BridgeModalStatus.CLOSED)
               setCollecting(false)
             }}

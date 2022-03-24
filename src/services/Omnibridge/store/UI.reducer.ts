@@ -19,6 +19,7 @@ type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
     isBalanceSufficient: boolean
     approved: boolean
   }
+  collectableTxHash: string | null
   modal: BridgeModalState
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
@@ -38,6 +39,7 @@ const initialState: UIInitialState = {
     address: '',
     decimals: 0
   },
+  collectableTxHash: null,
   statusButton: {
     isError: false,
     isLoading: false,
@@ -103,6 +105,9 @@ export const omnibridgeUISlice = createSlice({
         state.to.chainId = chainId
       }
     },
+    setCollectableTx(state, action: PayloadAction<string | null>) {
+      state.collectableTxHash = action.payload
+    },
     swapBridgeChains(state) {
       const previous = state.from.chainId
       state.from.chainId = state.to.chainId
@@ -127,12 +132,6 @@ export const omnibridgeUISlice = createSlice({
         toChainId: ChainId
       }>
     ) {
-      state.from.value = action.payload.typedValue
-      state.to.value = action.payload.typedValue
-
-      state.from.chainId = action.payload.fromChainId
-      state.to.chainId = action.payload.toChainId
-
       state.modal.symbol = action.payload.symbol
       state.modal.typedValue = action.payload.typedValue
       state.modal.fromChainId = action.payload.fromChainId

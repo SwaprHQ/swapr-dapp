@@ -76,8 +76,6 @@ export class SocketBridge extends OmnibridgeChildBase {
 
   public collect = () => undefined
 
-  public triggerCollect = () => undefined
-
   public triggerBridging = async () => {
     this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 

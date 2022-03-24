@@ -606,15 +606,6 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
     )
   }
 
-  public triggerCollect = (l2Tx: BridgeTransactionSummary) => {
-    return {
-      symbol: l2Tx.assetName,
-      typedValue: l2Tx.value,
-      fromChainId: l2Tx.fromChainId,
-      toChainId: l2Tx.toChainId
-    }
-  }
-
   public fetchStaticLists = async () => {
     this.store.dispatch(this.actions.setTokenListsStatus('loading'))
 

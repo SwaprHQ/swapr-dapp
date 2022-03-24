@@ -14,7 +14,7 @@ interface TabsProps {
   activeTab: BridgeTabs
   setActiveTab: (tab: BridgeTabs) => void
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
-  firstTxnToCollect: BridgeTransactionSummary
+  firstTxnToCollect?: BridgeTransactionSummary
 }
 
 export const Tabs = ({
@@ -44,7 +44,7 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
-          if (!collecting) {
+          if (!collecting && firstTxnToCollect) {
             handleTriggerCollect(firstTxnToCollect)
             setTxsFilter(BridgeTxsFilter.COLLECTABLE)
           }
