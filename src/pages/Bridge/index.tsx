@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Currency, CurrencyAmount } from '@swapr/sdk'
+import { CurrencyAmount } from '@swapr/sdk'
 import { useDispatch, useSelector } from 'react-redux'
 import { Tabs } from './Tabs'
 import AppBody from '../AppBody'
@@ -26,7 +26,7 @@ import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
 import { useBridgeModal } from './useBridgeModal'
 import {
   useBridgeActionHandlers,
-  useBridgeCollectHanders,
+  useBridgeCollectHandlers,
   useBridgeFetchDynamicLists,
   useBridgeInfo,
   useBridgeListsLoadingStatus,
@@ -98,7 +98,7 @@ export default function Bridge() {
     onFromNetworkChange,
     onSwapBridgeNetworks
   } = useBridgeActionHandlers()
-  const { collectableTx, setCollectableTx, collecting, setCollecting, collectableCurrency } = useBridgeCollectHanders()
+  const { collectableTx, setCollectableTx, collecting, setCollecting, collectableCurrency } = useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
 
   const [activeTab, setActiveTab] = useState<BridgeTabs>('bridge')
@@ -117,29 +117,25 @@ export default function Bridge() {
   const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
   const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
 
-  useEffect(() => {
-    if (!chainId) return
-
-    if (collectableTx && collecting) return
-    // Reset input on network change
-    onUserInput('')
-    onCurrencySelection('')
-
-    dispatch(omnibridgeUIActions.setFrom({ chainId }))
-  }, [chainId, collectableTx, dispatch, collecting, onCurrencySelection, onUserInput])
+  const [displayedValue, setDisplayedValue] = useState('')
 
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
+    dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
     if (!collecting) {
+      onUserInput('')
+      setDisplayedValue('')
       onCurrencySelection('')
     }
-    dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
-  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection, collecting])
+    dispatch(omnibridgeUIActions.setFrom({ chainId }))
+  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection, collecting, onUserInput])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
+    setDisplayedValue('')
     onUserInput('')
     onCurrencySelection('')
+
     setActiveTab('bridge')
     setTxsFilter(BridgeTxsFilter.RECENT)
     setModalState(BridgeModalStatus.CLOSED)
@@ -306,6 +302,8 @@ export default function Bridge() {
           <CurrencyInputPanel
             label="Amount"
             value={activeTab === 'collect' ? (collecting && collectableTx ? collectableTx.value : '') : typedValue}
+            displayedValue={displayedValue}
+            setDisplayedValue={setDisplayedValue}
             showMaxButton={activeTab !== 'collect' && !atMaxAmountInput}
             currency={activeTab === 'collect' ? collectableCurrency : bridgeCurrency}
             onUserInput={onUserInput}
