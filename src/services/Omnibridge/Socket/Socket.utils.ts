@@ -1,6 +1,18 @@
 import { formatUnits } from '@ethersproject/units'
+import { ChainId } from '@swapr/sdk'
 import { Route, TokenPriceResponseDTO } from './api/generated'
-import { isFee } from './Socket.types'
+import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, isFee } from './Socket.types'
+
+export const getDAIAddress = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.ARBITRUM_ONE:
+      return DAI_ARBITRUM_ADDRESS
+    case ChainId.MAINNET:
+      return DAI_ETHEREUM_ADDRESS
+    default:
+      return undefined
+  }
+}
 
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
   if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]

@@ -1,4 +1,4 @@
-import { ChainId, Currency } from '@swapr/sdk'
+import { ChainId, Currency, Token } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   OmnibridgeChildBaseConstructor,
@@ -22,8 +22,13 @@ import {
 import { TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
-import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, SOCKET_NATIVE_TOKEN_ADDRESS } from './Socket.types'
-import { getBestRoute, getStatusOfResponse } from './Socket.utils'
+import {
+  DAI_ARBITRUM_ADDRESS,
+  DAI_ETHEREUM_ADDRESS,
+  SOCKET_NATIVE_TOKEN_ADDRESS,
+  WETH_GNOSIS_ADDRESS
+} from './Socket.types'
+import { getBestRoute, getDAIAddress, getStatusOfResponse } from './Socket.utils'
 import { SOCKET_TOKENS } from './Socket.lists'
 
 const getErrorMsg = (error: any) => {
@@ -321,59 +326,72 @@ export class SocketBridge extends OmnibridgeChildBase {
     if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
     const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
+    const fromNativeCurrency = Currency.getNative(from.chainId)
 
-    let fromTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
-    let toTokenAddress: string = SOCKET_NATIVE_TOKEN_ADDRESS
+    let fromTokenAddress = ''
+    let toTokenAddress = ''
 
-    //FIX it will be removed when we implemented our Socket List
-    if (from.address !== Currency.getNative(from.chainId).symbol) {
-      //way to find from and toToken
-      const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
-      if (!fromToken) {
-        this.store.dispatch(
-          this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
-        )
-        return
-      }
+    const ETHtoWETH = to.chainId === ChainId.XDAI && from.address === fromNativeCurrency.symbol
+    const WETHtoETH = from.chainId === ChainId.XDAI && from.address === WETH_GNOSIS_ADDRESS
+    const XDAItoDAI = from.chainId === ChainId.XDAI && from.address === fromNativeCurrency.symbol
+    const DAItoXDAI =
+      to.chainId === ChainId.XDAI && [DAI_ETHEREUM_ADDRESS, DAI_ARBITRUM_ADDRESS].includes(from.address.toLowerCase())
 
-      if (
-        (from.address.toLowerCase() === DAI_ETHEREUM_ADDRESS || from.address.toLowerCase() === DAI_ARBITRUM_ADDRESS) &&
-        to.chainId === ChainId.XDAI
-      ) {
+    // Overrides
+
+    if (XDAItoDAI) {
+      console.log('XDAI to DAI')
+      fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+      toTokenAddress = getDAIAddress(to.chainId) ?? ''
+    }
+
+    if (DAItoXDAI) {
+      console.log('DAI to XDAI')
+      fromTokenAddress = from.address
+      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+    }
+
+    if (ETHtoWETH) {
+      console.log('ETH to WETH')
+      fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+      toTokenAddress = Token.getNativeWrapper(to.chainId).address
+    }
+
+    if (WETHtoETH) {
+      console.log('WETH to ETH')
+      fromTokenAddress = WETH_GNOSIS_ADDRESS
+      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+    }
+
+    // Default pairing
+    if (!toTokenAddress && !fromTokenAddress) {
+      if (from.address === fromNativeCurrency.symbol) {
+        fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
         toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
       } else {
+        const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
+
+        if (!fromToken) {
+          this.store.dispatch(
+            this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+          )
+          return
+        }
+
         const toToken = socketTokens.tokens.find(
           token => token.symbol === fromToken.symbol && token.chainId === to.chainId
         )
+
         if (!toToken) {
           this.store.dispatch(
             this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
           )
           return
         }
+
+        fromTokenAddress = fromToken.address
         toTokenAddress = toToken.address
       }
-
-      fromTokenAddress = from.address
-    }
-
-    //when user select "XDAI" we want to pair it to DAI
-    if (from.chainId === ChainId.XDAI && from.symbol === Currency.getNative(from.chainId).symbol) {
-      if (to.chainId === ChainId.MAINNET) {
-        toTokenAddress = DAI_ETHEREUM_ADDRESS
-      }
-
-      if (to.chainId === ChainId.ARBITRUM_ONE) {
-        toTokenAddress = DAI_ARBITRUM_ADDRESS
-      }
-    }
-
-    //when fromChain === ETH or ARB ONE and selected token is DAI we want to select toToken as XDAI
-    if (
-      (from.address.toLowerCase() === DAI_ETHEREUM_ADDRESS || from.address.toLowerCase() === DAI_ARBITRUM_ADDRESS) &&
-      from.chainId === ChainId.XDAI
-    ) {
-      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
     }
 
     let value = BigNumber.from(0)
@@ -387,7 +405,8 @@ export class SocketBridge extends OmnibridgeChildBase {
       return
     }
 
-    let quote: QuoteOutputDTO | undefined = undefined
+    let quote: QuoteOutputDTO | undefined
+
     try {
       quote = await QuoteAPI.quoteControllerGetQuote(
         {
@@ -429,7 +448,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(this.actions.setRoutes(routes))
 
-    let tokenData: TokenPriceResponseDTO | undefined = undefined
+    let tokenData: TokenPriceResponseDTO | undefined
 
     try {
       tokenData = await ServerAPI.appControllerGetTokenPrice({
