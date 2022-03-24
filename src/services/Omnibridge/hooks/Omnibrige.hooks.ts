@@ -292,7 +292,7 @@ export const useBridgeTxsFilter = () => {
   return setFilter
 }
 
-export const useBridgeCollectHanders = () => {
+export const useBridgeCollectHandlers = () => {
   const dispatch = useDispatch()
   const { account } = useActiveWeb3React()
   const collectableTx = useSelector((state: AppState) => selectBridgeCollectableTx(state, account ?? undefined))
