@@ -119,6 +119,7 @@ export default function Bridge() {
 
   const [displayedValue, setDisplayedValue] = useState('')
 
+  //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
     dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
@@ -127,8 +128,11 @@ export default function Bridge() {
       setDisplayedValue('')
       onCurrencySelection('')
     }
+  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, collecting, onUserInput])
+
+  useEffect(() => {
     dispatch(omnibridgeUIActions.setFrom({ chainId }))
-  }, [from.chainId, to.chainId, dispatch, chainId, onCurrencySelection, collecting, onUserInput])
+  }, [chainId, dispatch])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
@@ -141,37 +145,8 @@ export default function Bridge() {
     setModalState(BridgeModalStatus.CLOSED)
     if (collecting) {
       setCollecting(false)
-      // setCollectableTx(null)
-      //toggle between collect - bridge tab
-      // NOTE: i dont think its needed anymore
-      setModalData({
-        symbol: '',
-        typedValue: '',
-        fromChainId: chainId,
-        toChainId: fromChainId
-      })
-      return
     }
-
-    //after bridging txn
-    setModalData({
-      symbol: '',
-      typedValue: '',
-      fromChainId: fromChainId,
-      toChainId: toChainId
-    })
-  }, [
-    chainId,
-    collecting,
-    fromChainId,
-    onCurrencySelection,
-    onUserInput,
-    setCollecting,
-    setModalData,
-    setModalState,
-    setTxsFilter,
-    toChainId
-  ])
+  }, [chainId, collecting, onCurrencySelection, onUserInput, setCollecting, setModalState, setTxsFilter])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -309,8 +284,8 @@ export default function Bridge() {
             onUserInput={onUserInput}
             onMax={collecting ? undefined : handleMaxInput}
             onCurrencySelect={onCurrencySelection}
-            disableCurrencySelect={collecting || !isNetworkConnected}
-            disabled={collecting}
+            disableCurrencySelect={!account || collecting || !isNetworkConnected}
+            disabled={!account || collecting}
             id="bridge-currency-input"
             hideBalance={
               collecting && collectableTx
@@ -333,7 +308,7 @@ export default function Bridge() {
         </AppBody>
       )}
       {activeTab === 'bridge' && <BridgeSelectionWindow />}
-      {!collecting && (
+      {!collecting && !!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           transactions={bridgeSummaries}
           collectableTx={collectableTx}
