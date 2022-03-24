@@ -176,11 +176,11 @@ const HeaderSubRow = styled(RowFlat)`
   `};
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
+export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string; hide?: boolean }>`
   padding: 6px 8px;
   margin: 0;
   max-height: 22px;
-  display: inline-flex;
+  display: ${({ hide }) => (hide ? 'none' : 'inline-flex')};
   font-weight: bold;
   font-size: 10px;
   line-height: 11px;
@@ -203,8 +203,8 @@ export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadiu
     margin-left: 7px;
   }
 `
-const GasInfo = styled.div`
-  display: flex;
+const GasInfo = styled.div<{ hide: boolean }>`
+  display: ${({ hide }) => (hide ? 'none' : 'flex')};
   margin-left: 6px;
   padding: 6px 8px;
   border: 1.06481px solid rgba(242, 153, 74, 0.65);
@@ -383,7 +383,7 @@ function Header() {
             {isUnsupportedChainIdError ? (
               <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>
             ) : (
-              <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
+              <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')} hide={!account && !isUnsupportedChainIdError}>
                 {!account ? (
                   '0.000'
                 ) : !userNativeCurrencyBalance ? (
@@ -396,7 +396,7 @@ function Header() {
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}
