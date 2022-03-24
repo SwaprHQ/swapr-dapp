@@ -260,7 +260,7 @@ export default function Bridge() {
               <AssetSelector
                 label="from"
                 onClick={SHOW_TESTNETS ? () => setShowFromList(val => !val) : () => null}
-                disabled={SHOW_TESTNETS ? activeTab === 'collect' : true}
+                disabled={SHOW_TESTNETS ? collecting : true}
                 networkOption={getNetworkOptions({
                   chainId: collecting && collectableTx ? collectableTx.fromChainId : fromChainId,
                   networkList: fromNetworkList
@@ -275,14 +275,14 @@ export default function Bridge() {
                 placement="bottom"
               />
             </AssetWrapper>
-            <SwapButton onClick={onSwapBridgeNetworks} disabled={activeTab === 'collect'}>
+            <SwapButton onClick={onSwapBridgeNetworks} disabled={collecting}>
               <img src={ArrowIcon} alt="arrow" />
             </SwapButton>
             <AssetWrapper ref={toPanelRef}>
               <AssetSelector
                 label="to"
                 onClick={SHOW_TESTNETS ? () => setShowToList(val => !val) : () => null}
-                disabled={SHOW_TESTNETS ? activeTab === 'collect' : true}
+                disabled={SHOW_TESTNETS ? collecting : true}
                 networkOption={getNetworkOptions({
                   chainId: collecting && collectableTx ? collectableTx.toChainId : toChainId,
                   networkList: toNetworkList
@@ -301,22 +301,20 @@ export default function Bridge() {
           {/* New component CurrencyInput for Bridge */}
           <CurrencyInputPanel
             label="Amount"
-            value={activeTab === 'collect' ? (collecting && collectableTx ? collectableTx.value : '') : typedValue}
+            value={collecting && collectableTx ? collectableTx.value : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
-            showMaxButton={activeTab !== 'collect' && !atMaxAmountInput}
-            currency={activeTab === 'collect' ? collectableCurrency : bridgeCurrency}
+            showMaxButton={!collecting && !atMaxAmountInput}
+            currency={collecting ? collectableCurrency : bridgeCurrency}
             onUserInput={onUserInput}
-            onMax={activeTab === 'collect' ? undefined : handleMaxInput}
+            onMax={collecting ? undefined : handleMaxInput}
             onCurrencySelect={onCurrencySelection}
-            disableCurrencySelect={activeTab === 'collect' || !isNetworkConnected}
-            disabled={activeTab === 'collect'}
+            disableCurrencySelect={collecting || !isNetworkConnected}
+            disabled={collecting}
             id="bridge-currency-input"
             hideBalance={
-              activeTab === 'collect'
-                ? collecting && collectableTx
-                  ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)
-                  : true
+              collecting && collectableTx
+                ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)
                 : false
             }
             isLoading={!!account && isNetworkConnected && listsLoading}
