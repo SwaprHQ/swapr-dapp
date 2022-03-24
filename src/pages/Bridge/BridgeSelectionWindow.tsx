@@ -10,10 +10,10 @@ import {
   useShowAvailableBridges
 } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
 import Skeleton from 'react-loading-skeleton'
+import QuestionHelper from '../../components/QuestionHelper'
 
 const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
-  margin-bottom: 10px;
 `
 const BridgeWrapperLabel = styled.div`
   margin: 12px 0;
@@ -143,8 +143,24 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       }}
     >
       <BridgeName isSelected={isSelected}>{name}</BridgeName>
-      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.fee}</BridgeDetails>
-      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.gas}</BridgeDetails>
+      <BridgeDetails>
+        {!show ? (
+          <Skeleton width="25px" height="9px" />
+        ) : details.fee === 'error' ? (
+          <QuestionHelperWarning text={'Cannot estimate fee'} />
+        ) : (
+          details.fee
+        )}
+      </BridgeDetails>
+      <BridgeDetails>
+        {!show ? (
+          <Skeleton width="25px" height="9px" />
+        ) : details.gas === 'error' ? (
+          <QuestionHelperWarning text={'Cannot estimate gas'} />
+        ) : (
+          details.gas
+        )}
+      </BridgeDetails>
       <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}</BridgeDetails>
       <BridgeReceiveAmount>
         {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
@@ -152,3 +168,12 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
     </BridgeOption>
   )
 }
+
+const QuestionHelperWarning = styled(QuestionHelper)`
+  width: 12px;
+  height: 12px;
+
+  svg {
+    stroke: ${({ theme }) => theme.orange1};
+  }
+`

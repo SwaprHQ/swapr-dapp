@@ -453,7 +453,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
-      fee: '-', //currently we are not able to get fee
+      fee: 'error', //currently we are not able to get fee
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
       receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
         .toFixed(2)

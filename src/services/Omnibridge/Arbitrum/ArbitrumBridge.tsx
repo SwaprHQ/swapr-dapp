@@ -790,7 +790,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
       return
     }
 
-    let totalTxnGasCostInUSD = '-'
+    let totalTxnGasCostInUSD = 'error'
 
     try {
       const nativeCurrency = Currency.getNative(chainId).symbol
@@ -837,7 +837,7 @@ export class ArbitrumBridge extends OmnibridgeChildBase {
 
       totalTxnGasCostInUSD = `${(Number(totalTxnGasCostInEth) * Number(nativeCurrencyPrice)).toFixed(2)}$` // mul eth cost * eth price
     } catch (e) {
-      totalTxnGasCostInUSD = '-' //when Arbitrum cannot estimate gas
+      totalTxnGasCostInUSD = 'error' //when Arbitrum cannot estimate gas
     }
 
     this.store.dispatch(
