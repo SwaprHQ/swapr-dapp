@@ -121,7 +121,7 @@ const TextTo = styled(Link)<{ status: BridgeTransactionStatus }>`
 `
 interface BridgeTransactionsSummaryProps {
   transactions: BridgeTransactionSummary[]
-  collectableTx: BridgeTransactionSummary
+  collectableTx?: BridgeTransactionSummary
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
 }
 

@@ -61,13 +61,18 @@ export const selectBridgeTransactions = createSelector(
   [
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTxsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTxsSummary,
-    socketSelectors['socket'].selectBridgeTxsSummary,
-    (state: AppState) => state.omnibridge.UI.filter
+    socketSelectors['socket'].selectBridgeTxsSummary
   ],
-
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsFilter) => {
+  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket) => {
     const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket]
 
+    return txs
+  }
+)
+
+export const selectBridgeFilteredTransactions = createSelector(
+  [selectBridgeTransactions, (state: AppState) => state.omnibridge.UI.filter],
+  (txs, txsFilter) => {
     switch (txsFilter) {
       case BridgeTxsFilter.COLLECTABLE:
         return txs.filter(summary => summary.status === 'redeem')
@@ -80,6 +85,16 @@ export const selectBridgeTransactions = createSelector(
       default:
         return txs
     }
+  }
+)
+
+export const selectBridgeCollectableTx = createSelector(
+  [selectBridgeTransactions, (state: AppState) => state.omnibridge.UI.collectableTxHash],
+  (txs, txHash) => {
+    if (!txHash) {
+      return txs.find(tx => tx.status === 'redeem')
+    }
+    return txs.find(tx => tx.txHash === txHash)
   }
 )
 
