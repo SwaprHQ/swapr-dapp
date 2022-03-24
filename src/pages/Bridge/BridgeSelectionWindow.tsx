@@ -13,7 +13,6 @@ import Skeleton from 'react-loading-skeleton'
 
 const WrapperBridgeSelectionWindow = styled.div`
   width: 100%;
-  margin-bottom: 10px;
 `
 const BridgeWrapperLabel = styled.div`
   margin: 12px 0;
