@@ -338,27 +338,22 @@ export class SocketBridge extends OmnibridgeChildBase {
       to.chainId === ChainId.XDAI && [DAI_ETHEREUM_ADDRESS, DAI_ARBITRUM_ADDRESS].includes(from.address.toLowerCase())
 
     // Overrides
-
     if (XDAItoDAI) {
-      console.log('XDAI to DAI')
       fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
       toTokenAddress = getDAIAddress(to.chainId) ?? ''
     }
 
     if (DAItoXDAI) {
-      console.log('DAI to XDAI')
       fromTokenAddress = from.address
       toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
     }
 
     if (ETHtoWETH) {
-      console.log('ETH to WETH')
       fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
       toTokenAddress = Token.getNativeWrapper(to.chainId).address
     }
 
     if (WETHtoETH) {
-      console.log('WETH to ETH')
       fromTokenAddress = WETH_GNOSIS_ADDRESS
       toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
     }
