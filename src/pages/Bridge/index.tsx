@@ -179,9 +179,10 @@ export default function Bridge() {
       setCollectableTx(txHash)
       setCollecting(true)
       setActiveTab('collect')
+      setTxsFilter(BridgeTxsFilter.COLLECTABLE)
       setModalData({ fromChainId, toChainId, symbol: assetName, typedValue: value })
     },
-    [setCollectableTx, setCollecting, setModalData]
+    [setCollectableTx, setCollecting, setModalData, setTxsFilter]
   )
 
   const handleCollect = useCallback(async () => {
@@ -308,12 +309,8 @@ export default function Bridge() {
         </AppBody>
       )}
       {activeTab === 'bridge' && <BridgeSelectionWindow />}
-      {!collecting && !!bridgeSummaries.length && (
-        <BridgeTransactionsSummary
-          transactions={bridgeSummaries}
-          collectableTx={collectableTx}
-          handleTriggerCollect={handleTriggerCollect}
-        />
+      {!!bridgeSummaries.length && (
+        <BridgeTransactionsSummary transactions={bridgeSummaries} handleTriggerCollect={handleTriggerCollect} />
       )}
       <BridgeModal
         handleResetBridge={handleResetBridge}
