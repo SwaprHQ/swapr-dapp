@@ -1,36 +1,36 @@
 import {
   BridgeList,
-  OmnibridgeChangeHandler,
-  OmnibridgeChildBaseConstructor,
-  OmnibridgeChildBaseInit,
-  OmnibridgeChildBaseProps,
-  OmnibridgeInitialEnv
-} from './Omnibridge.types'
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  EcoBridgeChildBaseProps,
+  EcoBridgeInitialEnv
+} from './EcoBridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 
-export abstract class OmnibridgeChildBase {
+export abstract class EcoBridgeChildBase {
   public readonly bridgeId: BridgeList
   public readonly displayName: string
-  public readonly supportedChains: OmnibridgeChildBaseConstructor['supportedChains']
-  protected _store: OmnibridgeChildBaseProps['store']
-  protected _account: OmnibridgeChildBaseProps['account']
-  protected _activeChainId: OmnibridgeChildBaseProps['activeChainId']
-  protected _staticProviders: OmnibridgeChildBaseProps['staticProviders']
-  protected _activeProvider: OmnibridgeChildBaseProps['activeProvider']
+  public readonly supportedChains: EcoBridgeChildBaseConstructor['supportedChains']
+  protected _store: EcoBridgeChildBaseProps['store']
+  protected _account: EcoBridgeChildBaseProps['account']
+  protected _activeChainId: EcoBridgeChildBaseProps['activeChainId']
+  protected _staticProviders: EcoBridgeChildBaseProps['staticProviders']
+  protected _activeProvider: EcoBridgeChildBaseProps['activeProvider']
 
-  constructor({ supportedChains, bridgeId, displayName }: OmnibridgeChildBaseConstructor) {
+  constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
     this.displayName = displayName
     this.supportedChains = supportedChains
   }
 
-  protected setSignerData = ({ account, activeChainId, activeProvider }: OmnibridgeChangeHandler) => {
+  protected setSignerData = ({ account, activeChainId, activeProvider }: EcoBridgeChangeHandler) => {
     this._account = account
     this._activeChainId = activeChainId
     this._activeProvider = activeProvider
   }
 
-  protected setInitialEnv = ({ staticProviders, store }: OmnibridgeInitialEnv) => {
+  protected setInitialEnv = ({ staticProviders, store }: EcoBridgeInitialEnv) => {
     this._staticProviders = staticProviders
     this._store = store
   }
@@ -42,14 +42,14 @@ export abstract class OmnibridgeChildBase {
     activeProvider,
     staticProviders,
     store
-  }: OmnibridgeChildBaseInit): Promise<void>
+  }: EcoBridgeChildBaseInit): Promise<void>
 
   abstract onSignerChange({
     account,
     activeChainId,
     activeProvider,
     previousChainId
-  }: OmnibridgeChangeHandler): Promise<void>
+  }: EcoBridgeChangeHandler): Promise<void>
 
   abstract validate(): void
   abstract approve(): void

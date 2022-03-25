@@ -10,25 +10,25 @@ import {
   selectSupportedBridgesForUI,
   selectBridgeListsLoadingStatus,
   selectBridgeSupportedTokensOnChain
-} from './store/Omnibridge.selectors'
-import { AppState } from './../../state'
+} from './store/EcoBridge.selectors'
+import { AppState } from '../../state'
 import { commonActions } from './store/Common.reducer'
-import { tryParseAmount } from './../../state/swap/hooks'
-import { omnibridgeUIActions } from './store/UI.reducer'
-import { useCurrencyBalances } from './../../state/wallet/hooks'
-import { NEVER_RELOAD, useSingleCallResult } from './../../state/multicall/hooks'
+import { tryParseAmount } from '../../state/swap/hooks'
+import { ecoBridgeUIActions } from './store/UI.reducer'
+import { useCurrencyBalances } from '../../state/wallet/hooks'
+import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
 
-import { useActiveWeb3React } from './../../hooks'
-import { useOmnibridge } from './OmnibridgeProvider'
-import { parseStringOrBytes32 } from './../../hooks/Tokens'
-import { useNativeCurrency } from './../../hooks/useNativeCurrency'
-import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './../../hooks/useContract'
+import { useActiveWeb3React } from '../../hooks'
+import { useEcoBridge } from './EcoBridgeProvider'
+import { parseStringOrBytes32 } from '../../hooks/Tokens'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
 
-import { isAddress } from './../../utils'
-import { currencyId } from './../../utils/currencyId'
+import { isAddress } from '../../utils'
+import { currencyId } from '../../utils/currencyId'
 
-import { BridgeTxsFilter } from './Omnibridge.types'
-import { WrappedTokenInfo } from './../../state/lists/wrapped-token-info'
+import { BridgeTxsFilter } from './EcoBridge.types'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -139,7 +139,7 @@ export const useBridgeListsLoadingStatus = () => {
 
 export const useActiveListsHandlers = () => {
   const dispatch = useDispatch()
-  const activeLists = useSelector((state: AppState) => state.omnibridge.common.activeLists)
+  const activeLists = useSelector((state: AppState) => state.ecoBridge.common.activeLists)
 
   return {
     activateList: useCallback((listId: string) => dispatch(commonActions.activateLists([listId])), [dispatch]),
@@ -149,18 +149,18 @@ export const useActiveListsHandlers = () => {
 }
 
 export const useBridgeFetchDynamicLists = () => {
-  const omnibridge = useOmnibridge()
-  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+  const ecoBridge = useEcoBridge()
+  const { from, to } = useSelector((state: AppState) => state.ecoBridge.UI)
 
   useEffect(() => {
     if (from.chainId && to.chainId) {
-      omnibridge.fetchDynamicLists()
+      ecoBridge.fetchDynamicLists()
     }
-  }, [from.chainId, omnibridge, to.chainId])
+  }, [from.chainId, ecoBridge, to.chainId])
 }
 
 export const useShowAvailableBridges = () => {
-  const showAvailableBridges = useSelector((state: AppState) => state.omnibridge.UI.showAvailableBridges)
+  const showAvailableBridges = useSelector((state: AppState) => state.ecoBridge.UI.showAvailableBridges)
 
   return showAvailableBridges
 }
@@ -172,7 +172,7 @@ export const useAvailableBridges = () => {
 }
 
 export const useActiveBridge = () => {
-  const activeBridge = useSelector((state: AppState) => state.omnibridge.common.activeBridge)
+  const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
   return activeBridge
 }
@@ -186,16 +186,16 @@ export function useBridgeActionHandlers(): {
 } {
   const dispatch = useDispatch()
 
-  const fromChainId = useSelector((state: AppState) => state.omnibridge.UI.from.chainId)
-  const toChainId = useSelector((state: AppState) => state.omnibridge.UI.to.chainId)
+  const fromChainId = useSelector((state: AppState) => state.ecoBridge.UI.from.chainId)
+  const toChainId = useSelector((state: AppState) => state.ecoBridge.UI.to.chainId)
 
   const onFromNetworkChange = useCallback(
     (chainId: ChainId) => {
       if (chainId === toChainId) {
-        dispatch(omnibridgeUIActions.swapBridgeChains())
+        dispatch(ecoBridgeUIActions.swapBridgeChains())
         return
       }
-      dispatch(omnibridgeUIActions.setFrom({ chainId }))
+      dispatch(ecoBridgeUIActions.setFrom({ chainId }))
     },
     [dispatch, toChainId]
   )
@@ -203,37 +203,37 @@ export function useBridgeActionHandlers(): {
   const onToNetworkChange = useCallback(
     (chainId: ChainId) => {
       if (chainId === fromChainId) {
-        dispatch(omnibridgeUIActions.swapBridgeChains())
+        dispatch(ecoBridgeUIActions.swapBridgeChains())
         return
       }
-      dispatch(omnibridgeUIActions.setTo({ chainId }))
+      dispatch(ecoBridgeUIActions.setTo({ chainId }))
     },
     [dispatch, fromChainId]
   )
 
   const onSwapBridgeNetworks = useCallback(() => {
-    dispatch(omnibridgeUIActions.swapBridgeChains())
+    dispatch(ecoBridgeUIActions.swapBridgeChains())
   }, [dispatch])
 
   const onCurrencySelection = useCallback(
     (currency: Currency | string) => {
       dispatch(
-        omnibridgeUIActions.setFrom({
+        ecoBridgeUIActions.setFrom({
           address: currency instanceof Currency ? currencyId(currency) : currency,
           decimals: currency instanceof Currency ? currency.decimals : undefined,
           name: currency instanceof Currency ? currency.name : '',
           symbol: currency instanceof Currency ? currency.symbol : ''
         })
       )
-      // dispatch(omnibridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))
+      // dispatch(ecoBridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))
     },
     [dispatch]
   )
 
   const onUserInput = useCallback(
     (typedValue: string) => {
-      dispatch(omnibridgeUIActions.setFrom({ value: typedValue }))
-      // dispatch(omnibridgeUIActions.setTo({ value: '' }))
+      dispatch(ecoBridgeUIActions.setFrom({ value: typedValue }))
+      // dispatch(ecoBridgeUIActions.setTo({ value: '' }))
       dispatch(commonActions.setActiveBridge(undefined))
     },
     [dispatch]
@@ -251,8 +251,8 @@ export function useBridgeActionHandlers(): {
 export const useBridgeInfo = () => {
   const { account, chainId } = useActiveWeb3React()
 
-  const fromNetwork = useSelector((state: AppState) => state.omnibridge.UI.from)
-  const toChainId = useSelector((state: AppState) => state.omnibridge.UI.to.chainId)
+  const fromNetwork = useSelector((state: AppState) => state.ecoBridge.UI.from)
+  const toChainId = useSelector((state: AppState) => state.ecoBridge.UI.to.chainId)
 
   const { address: currencyId, value: typedValue, chainId: fromChainId } = fromNetwork
 
@@ -286,7 +286,7 @@ export const useBridgeInfo = () => {
 export const useBridgeTxsFilter = () => {
   const dispatch = useDispatch()
   const setFilter = (filter: BridgeTxsFilter) => {
-    dispatch(omnibridgeUIActions.setBridgeTxsFilter(filter))
+    dispatch(ecoBridgeUIActions.setBridgeTxsFilter(filter))
   }
 
   return setFilter
@@ -301,7 +301,7 @@ export const useBridgeCollectHandlers = () => {
 
   const setCollectableTx = useCallback(
     (txHash: string | null) => {
-      dispatch(omnibridgeUIActions.setCollectableTx(txHash))
+      dispatch(ecoBridgeUIActions.setCollectableTx(txHash))
     },
     [dispatch]
   )

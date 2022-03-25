@@ -1,26 +1,26 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useBridgeInfo } from '../../../services/Omnibridge/Omnibrige.hooks'
-import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
-import { commonActions } from '../../../services/Omnibridge/store/Common.reducer'
-import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reducer'
+import { useBridgeInfo } from '../../../services/EcoBridge/EcoBridge.hooks'
+import { useEcoBridge } from '../../../services/EcoBridge/EcoBridgeProvider'
+import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
+import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
 export const useBridgeInputValidation = (collecting: boolean) => {
-  const value = useSelector((state: AppState) => state.omnibridge.UI.from.value)
+  const value = useSelector((state: AppState) => state.ecoBridge.UI.from.value)
 
-  const omnibridge = useOmnibridge()
+  const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
-  const activeBridge = useSelector<AppState>(state => state.omnibridge.common.activeBridge)
+  const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.omnibridge.UI)
+  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.UI)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
     if (showAvailableBridges) {
-      omnibridge.getSupportedBridges()
+      ecoBridge.getSupportedBridges()
     }
-  }, [showAvailableBridges, omnibridge, value, from.address, to.address, from.chainId, to.chainId])
+  }, [showAvailableBridges, ecoBridge, value, from.address, to.address, from.chainId, to.chainId])
 
   useEffect(() => {
     if (collecting) return
@@ -28,7 +28,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
     const validateInput = () => {
       if (Number(value) === 0 || isNaN(Number(value))) {
         dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Enter amount',
             isError: false,
             isLoading: false,
@@ -36,14 +36,14 @@ export const useBridgeInputValidation = (collecting: boolean) => {
             approved: false
           })
         )
-        dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
+        dispatch(ecoBridgeUIActions.setShowAvailableBridges(false))
         dispatch(commonActions.setActiveBridge(undefined))
-        dispatch(omnibridgeUIActions.setTo({ value: '' }))
+        dispatch(ecoBridgeUIActions.setTo({ value: '' }))
         return false
       }
       if (Number(value) > 0 && !from.address && !to.address) {
         dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Select token',
             isError: false,
             isLoading: false,
@@ -54,12 +54,12 @@ export const useBridgeInputValidation = (collecting: boolean) => {
         return false
       }
       //show available bridges when first two steps of validation are passed (amount > 0,token is selected)
-      dispatch(omnibridgeUIActions.setShowAvailableBridges(true))
+      dispatch(ecoBridgeUIActions.setShowAvailableBridges(true))
 
       //check balance
       if (!isBalanceSufficient) {
         dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Insufficient balance',
             isError: false,
             isLoading: false,
@@ -72,7 +72,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
 
       if (!activeBridge) {
         dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Select bridge below',
             isError: false,
             isLoading: false,
@@ -89,7 +89,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
     const isValid = validateInput()
 
     if (isValid) {
-      omnibridge.validate()
+      ecoBridge.validate()
     }
-  }, [value, omnibridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, collecting])
+  }, [value, ecoBridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, collecting])
 }

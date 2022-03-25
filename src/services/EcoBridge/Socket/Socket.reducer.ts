@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { SocketBridgeState, SocketTx } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../Omnibridge.types'
+import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {

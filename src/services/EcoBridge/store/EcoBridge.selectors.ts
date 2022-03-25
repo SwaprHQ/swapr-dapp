@@ -3,11 +3,11 @@ import { createSelector } from '@reduxjs/toolkit'
 import { ChainId, Token } from '@swapr/sdk'
 
 import { AppState } from '../../../state'
-import { omnibridgeConfig } from '../Omnibridge.config'
+import { ecoBridgeConfig } from '../EcoBridge.config'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
-import { BridgeList, BridgeTxsFilter, SupportedBridges, TokenMap } from '../Omnibridge.types'
+import { BridgeList, BridgeTxsFilter, SupportedBridges, TokenMap } from '../EcoBridge.types'
 import { DEFAULT_TOKEN_LIST } from '../../../constants'
 
 /**
@@ -27,11 +27,11 @@ import { DEFAULT_TOKEN_LIST } from '../../../constants'
  */
 
 export const selectSupportedBridges = createSelector(
-  [(state: AppState) => state.omnibridge.UI.from.chainId, (state: AppState) => state.omnibridge.UI.to.chainId],
+  [(state: AppState) => state.ecoBridge.UI.from.chainId, (state: AppState) => state.ecoBridge.UI.to.chainId],
   (fromChainId, toChainId) => {
     if (!fromChainId || !toChainId) return []
 
-    const supportedBridges = Object.values(omnibridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
+    const supportedBridges = Object.values(ecoBridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
       (total, bridgeInfo) => {
         const bridge = {
           name: bridgeInfo.displayName,
@@ -72,7 +72,7 @@ export const selectBridgeTransactions = createSelector(
 )
 
 export const selectBridgeFilteredTransactions = createSelector(
-  [selectBridgeTransactions, (state: AppState) => state.omnibridge.UI.filter],
+  [selectBridgeTransactions, (state: AppState) => state.ecoBridge.UI.filter],
   (txs, txsFilter) => {
     const sortedTxs = txs.sort((firstTx, secondTx) => {
       if (firstTx.status === 'pending' && secondTx.status !== 'pending') return -1
@@ -96,7 +96,7 @@ export const selectBridgeFilteredTransactions = createSelector(
 )
 
 export const selectBridgeCollectableTx = createSelector(
-  [selectBridgeTransactions, (state: AppState) => state.omnibridge.UI.collectableTxHash],
+  [selectBridgeTransactions, (state: AppState) => state.ecoBridge.UI.collectableTxHash],
   (txs, txHash) => {
     if (!txHash) {
       return txs.find(tx => tx.status === 'redeem')
@@ -109,9 +109,9 @@ export const selectBridgeCollectableTx = createSelector(
 
 export const selectBridgeListsLoadingStatus = createSelector(
   [
-    (state: AppState) => state.omnibridge['arbitrum:testnet'].listsStatus,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].listsStatus,
-    (state: AppState) => state.omnibridge['socket'].listsStatus
+    (state: AppState) => state.ecoBridge['arbitrum:testnet'].listsStatus,
+    (state: AppState) => state.ecoBridge['arbitrum:mainnet'].listsStatus,
+    (state: AppState) => state.ecoBridge['socket'].listsStatus
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
@@ -119,9 +119,9 @@ export const selectBridgeListsLoadingStatus = createSelector(
 
 export const selectBridgeLists = createSelector(
   [
-    (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
-    (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
-    (state: AppState) => state.omnibridge['socket'].lists,
+    (state: AppState) => state.ecoBridge['arbitrum:testnet'].lists,
+    (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
+    (state: AppState) => state.ecoBridge['socket'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current
   ],
   (tokenListTestnet, tokenListMainnet, tokenListSocket, swprDefaultList) => {
@@ -192,7 +192,7 @@ export const selectBridgeTokens = createSelector([selectBridgeLists], allLists =
 })
 
 export const selectBridgeActiveTokens = createSelector(
-  [selectSupportedLists, (state: AppState) => state.omnibridge.common.activeLists],
+  [selectSupportedLists, (state: AppState) => state.ecoBridge.common.activeLists],
   (supportedLists, activeLists) => {
     if (!activeLists.length) return {}
 

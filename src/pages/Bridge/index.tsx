@@ -17,10 +17,10 @@ import { SHOW_TESTNETS } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { BridgeTabs, isNetworkDisabled } from './utils'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
-import { useOmnibridge } from '../../services/Omnibridge/OmnibridgeProvider'
+import { useEcoBridge } from '../../services/EcoBridge/EcoBridgeProvider'
 import { AppState } from '../../state'
-import { selectBridgeFilteredTransactions } from '../../services/Omnibridge/store/Omnibridge.selectors'
-import { omnibridgeUIActions } from '../../services/Omnibridge/store/UI.reducer'
+import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
 import { useBridgeModal } from './useBridgeModal'
@@ -31,8 +31,8 @@ import {
   useBridgeInfo,
   useBridgeListsLoadingStatus,
   useBridgeTxsFilter
-} from '../../services/Omnibridge/Omnibrige.hooks'
-import { BridgeModalStatus, BridgeTxsFilter } from '../../services/Omnibridge/Omnibridge.types'
+} from '../../services/EcoBridge/EcoBridge.hooks'
+import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -81,7 +81,7 @@ const AssetWrapper = styled.div`
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
-  const omnibridge = useOmnibridge()
+  const ecoBridge = useEcoBridge()
 
   const bridgeSummaries = useSelector((state: AppState) =>
     selectBridgeFilteredTransactions(state, account ?? undefined)
@@ -115,14 +115,14 @@ export default function Bridge() {
   const isNetworkConnected = fromChainId === chainId
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
   const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
-  const { from, to } = useSelector((state: AppState) => state.omnibridge.UI)
+  const { from, to } = useSelector((state: AppState) => state.ecoBridge.UI)
 
   const [displayedValue, setDisplayedValue] = useState('')
 
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
-    dispatch(omnibridgeUIActions.setShowAvailableBridges(false))
+    dispatch(ecoBridgeUIActions.setShowAvailableBridges(false))
     if (!collecting) {
       onUserInput('')
       setDisplayedValue('')
@@ -131,7 +131,7 @@ export default function Bridge() {
   }, [from.chainId, to.chainId, dispatch, onCurrencySelection, collecting, onUserInput])
 
   useEffect(() => {
-    dispatch(omnibridgeUIActions.setFrom({ chainId }))
+    dispatch(ecoBridgeUIActions.setFrom({ chainId }))
   }, [chainId, dispatch])
 
   const handleResetBridge = useCallback(() => {
@@ -155,11 +155,11 @@ export default function Bridge() {
   const handleSubmit = useCallback(async () => {
     if (!chainId) return
 
-    await omnibridge.triggerBridging()
-  }, [chainId, omnibridge])
+    await ecoBridge.triggerBridging()
+  }, [chainId, ecoBridge])
 
   const handleModal = useCallback(async () => {
-    omnibridge.triggerModalDisclaimerText()
+    ecoBridge.triggerModalDisclaimerText()
 
     setModalData({
       symbol: bridgeCurrency?.symbol,
@@ -169,7 +169,7 @@ export default function Bridge() {
     })
 
     setModalState(BridgeModalStatus.DISCLAIMER)
-  }, [omnibridge, setModalData, bridgeCurrency, typedValue, fromChainId, toChainId, setModalState])
+  }, [ecoBridge, setModalData, bridgeCurrency, typedValue, fromChainId, toChainId, setModalState])
 
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
@@ -186,9 +186,9 @@ export default function Bridge() {
   )
 
   const handleCollect = useCallback(async () => {
-    await omnibridge.collect()
+    await ecoBridge.collect()
     setCollecting(false)
-  }, [omnibridge, setCollecting])
+  }, [ecoBridge, setCollecting])
 
   const fromNetworkList = useMemo(
     () =>

@@ -2,13 +2,9 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { Text, Box } from 'rebass'
-import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/Omnibridge/Omnibridge.types'
-import { commonActions } from '../../services/Omnibridge/store/Common.reducer'
-import {
-  useActiveBridge,
-  useAvailableBridges,
-  useShowAvailableBridges
-} from '../../services/Omnibridge/Omnibrige.hooks'
+import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
+import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
+import { useActiveBridge, useAvailableBridges, useShowAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
 import Skeleton from 'react-loading-skeleton'
 import QuestionHelper from '../../components/QuestionHelper'
 

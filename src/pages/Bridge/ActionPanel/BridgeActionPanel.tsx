@@ -40,7 +40,7 @@ export const BridgeActionPanel = ({
   const { bridgeCurrency, handleApprove } = useBridgeActionPanel()
 
   const { isLoading, approved, isBalanceSufficient, label } = useSelector(
-    (state: AppState) => state.omnibridge.UI.statusButton
+    (state: AppState) => state.ecoBridge.UI.statusButton
   )
 
   const networkSwitcherPopoverOpen = useModalOpen(ApplicationModal.NETWORK_SWITCHER)

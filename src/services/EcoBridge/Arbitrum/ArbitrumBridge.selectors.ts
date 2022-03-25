@@ -8,12 +8,12 @@ import {
   BridgeTxnsState
 } from '../../../state/bridgeTransactions/types'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
-import { ArbitrumList } from '../Omnibridge.types'
-import { omnibridgeConfig } from '../Omnibridge.config'
+import { ArbitrumList } from '../EcoBridge.types'
+import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 
 const getSupportedChains = (bridgeId: string) => {
-  const bridge = omnibridgeConfig.find(config => config.bridgeId === bridgeId)
+  const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)
   if (!bridge) return [] as number[]
   return Object.values(bridge.supportedChains[0]).map(Number)
 }
@@ -21,7 +21,7 @@ const getSupportedChains = (bridgeId: string) => {
 const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
   createSelector(
     [
-      (state: AppState) => state.omnibridge[bridgeId].transactions,
+      (state: AppState) => state.ecoBridge[bridgeId].transactions,
       (state: AppState, account: string | undefined) => account
     ],
     (txs, account) => {
@@ -83,7 +83,7 @@ const createSelectBridgeTxsSummary = (
   bridgeId: ArbitrumList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
 ) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.omnibridge.UI.isCheckingWithdrawals], (txs, isLoading) => {
+  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.UI.isCheckingWithdrawals], (txs, isLoading) => {
     const [l1ChainId, l2ChainId] = Object.keys(txs).map(key => Number(key))
 
     const l1Txs = txs[l1ChainId]
@@ -232,9 +232,9 @@ const createSelectBridgeTxsSummary = (
 const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
   createSelector(
     [
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage
     ],
     (details, loading, errorMessage) => {
       return {

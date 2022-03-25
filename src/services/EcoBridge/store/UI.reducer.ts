@@ -1,8 +1,8 @@
 import { ChainId } from '@swapr/sdk'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from '../Omnibridge.types'
+import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from '../EcoBridge.types'
 
-type OmnibridgeInput = {
+type EcoBridgeInput = {
   value: string
   chainId: ChainId
   address: string
@@ -11,7 +11,7 @@ type OmnibridgeInput = {
   symbol?: string
 }
 
-type UIInitialState = Record<'from' | 'to', OmnibridgeInput> & {
+type UIInitialState = Record<'from' | 'to', EcoBridgeInput> & {
   statusButton: {
     isError: boolean
     isLoading: boolean
@@ -60,11 +60,11 @@ const initialState: UIInitialState = {
   showAvailableBridges: false
 }
 
-export const omnibridgeUISlice = createSlice({
+export const ecoBridgeUISlice = createSlice({
   name: 'UI',
   initialState,
   reducers: {
-    setFrom(state, action: PayloadAction<Partial<OmnibridgeInput>>) {
+    setFrom(state, action: PayloadAction<Partial<EcoBridgeInput>>) {
       const { address, value, chainId, decimals, name, symbol } = action.payload
       if (address !== undefined) {
         state.from.address = address
@@ -93,7 +93,7 @@ export const omnibridgeUISlice = createSlice({
         state.from.symbol = symbol
       }
     },
-    setTo(state, action: PayloadAction<Partial<OmnibridgeInput>>) {
+    setTo(state, action: PayloadAction<Partial<EcoBridgeInput>>) {
       const { address, value, chainId } = action.payload
       if (address !== undefined) {
         state.to.address = address
@@ -176,4 +176,4 @@ export const omnibridgeUISlice = createSlice({
   }
 })
 
-export const { actions: omnibridgeUIActions, reducer } = omnibridgeUISlice
+export const { actions: ecoBridgeUIActions, reducer } = ecoBridgeUISlice

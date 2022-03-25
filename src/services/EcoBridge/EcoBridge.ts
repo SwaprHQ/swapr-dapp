@@ -1,26 +1,21 @@
 import { Store } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { OmnibridgeChildBase } from './Omnibridge.utils'
-import { initiateOmnibridgeProviders } from './Omnibridge.providers'
-import {
-  BridgeList,
-  OmnibridgeProviders,
-  OmnibridgeChangeHandler,
-  OmnibridgeConstructorParams
-} from './Omnibridge.types'
+import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { initiateEcoBridgeProviders } from './EcoBridge.providers'
+import { BridgeList, EcoBridgeProviders, EcoBridgeChangeHandler, EcoBridgeConstructorParams } from './EcoBridge.types'
 import { AppState } from '../../state'
-import { selectSupportedBridges, selectBridgeCollectableTx } from './store/Omnibridge.selectors'
+import { selectSupportedBridges, selectBridgeCollectableTx } from './store/EcoBridge.selectors'
 
-export class Omnibridge {
-  public readonly staticProviders: OmnibridgeProviders
-  public readonly store: OmnibridgeConstructorParams['store']
-  public readonly bridges: { [k in BridgeList]: OmnibridgeChildBase }
+export class EcoBridge {
+  public readonly staticProviders: EcoBridgeProviders
+  public readonly store: EcoBridgeConstructorParams['store']
+  public readonly bridges: { [k in BridgeList]: EcoBridgeChildBase }
   private _initialized = false
   private _account: string | undefined
   private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
 
   private get _activeBridgeId() {
-    return this.store.getState().omnibridge.common.activeBridge
+    return this.store.getState().ecoBridge.common.activeBridge
   }
 
   private _callForEachBridge = async (method: (bridgeKey: BridgeList) => Promise<any>, errorText: string) => {
@@ -39,7 +34,7 @@ export class Omnibridge {
 
     callStatuses.forEach(res => {
       if (res.status === 'rejected') {
-        console.warn(`Omni: ${errorText} ${res.reason}`)
+        console.warn(`EcoBridge: ${errorText} ${res.reason}`)
       }
     })
   }
@@ -48,19 +43,19 @@ export class Omnibridge {
     return this._initialized
   }
 
-  constructor(store: Store<AppState>, config: OmnibridgeChildBase[]) {
+  constructor(store: Store<AppState>, config: EcoBridgeChildBase[]) {
     const bridges = config.reduce((total, bridge) => {
       total[bridge.bridgeId] = bridge
       return total
-    }, {} as { [k in BridgeList]: OmnibridgeChildBase })
+    }, {} as { [k in BridgeList]: EcoBridgeChildBase })
 
     this.store = store
     this.bridges = bridges
 
-    this.staticProviders = initiateOmnibridgeProviders()
+    this.staticProviders = initiateEcoBridgeProviders()
   }
 
-  public updateSigner = async (signerData: Omit<OmnibridgeChangeHandler, 'previousChainId'>) => {
+  public updateSigner = async (signerData: Omit<EcoBridgeChangeHandler, 'previousChainId'>) => {
     const previousChainId = this._activeChainId
     this._activeChainId = signerData.activeChainId
     this._account = signerData.account
@@ -77,7 +72,7 @@ export class Omnibridge {
     await this._callForEachBridge(fetchDynamicListsCall, 'fetchDynamicList() failed for')
   }
 
-  public init = async ({ account, activeProvider, activeChainId }: OmnibridgeChangeHandler) => {
+  public init = async ({ account, activeProvider, activeChainId }: EcoBridgeChangeHandler) => {
     if (this._initialized) return
 
     this._activeChainId = activeChainId
