@@ -72,7 +72,7 @@ const ListContentItem = styled.div`
   & > *:last-child {
     flex-basis: 80px;
     display: flex;
-    align-items: flex-end;
+    justify-content: flex-end;
   }
 `
 
