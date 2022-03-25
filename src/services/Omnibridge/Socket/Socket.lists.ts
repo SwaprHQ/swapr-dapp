@@ -7,6 +7,14 @@ type SocketTokenMap = {
 export const SOCKET_TOKENS: SocketTokenMap = {
   '1-100': [
     {
+      decimals: 18,
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/dai.svg',
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      chainId: 1
+    },
+    {
       decimals: 6,
       name: 'USD Coin',
       symbol: 'USDC',
@@ -1676,6 +1684,14 @@ export const SOCKET_TOKENS: SocketTokenMap = {
     }
   ],
   '100-42161': [
+    {
+      decimals: 18,
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/dai.svg',
+      address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+      chainId: 42161
+    },
     {
       decimals: 6,
       name: 'USD Coin Arb1',
