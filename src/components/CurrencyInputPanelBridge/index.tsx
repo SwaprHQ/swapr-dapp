@@ -1,5 +1,5 @@
 import { ChainId, Currency, CurrencyAmount, Pair } from '@swapr/sdk'
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModalBridge/CurrencySearchModal'
@@ -192,6 +192,10 @@ export default function CurrencyInputPanel({
   const debounceOnUserInput = useMemo(() => {
     return debounce(onUserInput, 500)
   }, [onUserInput])
+
+  useEffect(() => {
+    debounceOnUserInput.cancel()
+  }, [debounceOnUserInput, disableCurrencySelect])
 
   return (
     <InputPanel id={id}>
