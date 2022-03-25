@@ -15,7 +15,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
-    "@swapr/sdk": "1.0.0-beta.4",
+    "@swapr/sdk": "git+https://github.com//levelkdev/swapr-sdk.git#48f5d47",
     "@types/aos": "^3.0.4",
     "@types/jest": "^25.2.1",
     "@types/lodash.flatmap": "^4.5.6",

@@ -48,6 +48,7 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
+// import Circle from '../../assets/images/blue-loader.svg'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -472,15 +473,12 @@ export default function Swap() {
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          {swapInfoIsLoading ? (
-            <>Loading</>
-          ) : (
-            <AdvancedSwapDetailsDropdown
-              trade={trade}
-              allPlatformTrades={allPlatformTrades}
-              onSelectedPlatformChange={setPlatformOverride}
-            />
-          )}
+          <AdvancedSwapDetailsDropdown
+            isLoading={swapInfoIsLoading}
+            trade={trade}
+            allPlatformTrades={allPlatformTrades}
+            onSelectedPlatformChange={setPlatformOverride}
+          />
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>

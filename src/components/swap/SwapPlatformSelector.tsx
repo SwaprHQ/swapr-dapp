@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
 import { CurrencyAmount, CurveTrade, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import React, { FC, useCallback } from 'react'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
@@ -19,16 +19,12 @@ import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../.
 import { Field } from '../../state/swap/actions'
 import Skeleton from 'react-loading-skeleton'
 import useDebounce from '../../hooks/useDebounce'
-import { Table, Th } from '../Table'
-
-const Spacer = styled.tr`
-  height: 6px;
-`
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined
   selectedTrade?: Trade
   onSelectedPlatformChange: (newPlatform: RoutablePlatform) => void
+  isLoading: boolean
 }
 
 interface GasFeeProps {
@@ -50,7 +46,64 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
   return <WarningHelper text="Could not estimate gas fee. Please make sure you've approved the traded token." />
 }
 
+interface PlatformSelectorLoaderProps {
+  showGasFeeColumn?: boolean
+}
+
+const PlatformList = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const ListContentItem = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 10px;
+  & > *:nth-child(1) {
+    flex-basis: 40%;
+  }
+  & > *:nth-child(2),
+  & > *:nth-child(2) {
+    flex-basis: 25%;
+  }
+  & > *:last-child {
+    flex-basis: 80px;
+    display: flex;
+    align-items: flex-end;
+  }
+`
+
+export const ListHeader = styled(ListContentItem)`
+  font-weight: bold;
+  padding: 0 9px;
+  font-weight: 600;
+  line-height: 12px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: ${props => props.theme.purple3};
+  &:first-child,
+  &:last-child {
+    padding: 0;
+  }
+`
+
+export const PlatformSelectorLoader: FC<PlatformSelectorLoaderProps> = ({ showGasFeeColumn }) => (
+  <>
+    {[0, 1, 2].map(i => (
+      <ListContentItem>
+        <Skeleton width="72px" height="12px" />
+        <Skeleton width="36px" height="12px" />
+        {showGasFeeColumn && <Skeleton width="36px" height="12px" />}
+        <Skeleton width="36px" height="12px" />
+      </ListContentItem>
+    ))}
+  </>
+)
 export function SwapPlatformSelector({
+  isLoading,
   allPlatformTrades,
   selectedTrade,
   onSelectedPlatformChange
@@ -65,10 +118,12 @@ export function SwapPlatformSelector({
   const { loading: loadingGasFeesUSD, gasFeesUSD } = useGasFeesUSD(
     estimations.map(estimation => (estimation && estimation.length > 0 ? estimation[0] : null))
   )
+
+  console.log({ allPlatformTrades, estimations, gasFeesUSD })
   const loadingGasFees = loadingGasFeesUSD || loadingTradesGasEstimates
   const debouncedLoadingGasFees = useDebounce(loadingGasFees, 2000)
 
-  const showGasFees = estimations.length === allPlatformTrades?.length
+  const showGasFeeColumn = estimations.length === allPlatformTrades?.length
 
   const handleSelectedTradeOverride = useCallback(
     event => {
@@ -81,18 +136,17 @@ export function SwapPlatformSelector({
 
   return (
     <AutoColumn gap="18px" style={{ borderBottom: '1px solid #292643', paddingBottom: '12px', marginBottom: '12px' }}>
-      <Table>
-        <thead>
-          <tr>
-            <Th colSpan={4}>EXCHANGE</Th>
-            <Th>FEE</Th>
-            {showGasFees && <Th align="right">GAS</Th>}
-            <Th align="right">{`${independentField === Field.OUTPUT ? 'MAX SENT' : 'MIN. RECEIVED'}`}</Th>
-          </tr>
-        </thead>
-        <tbody>
-          <Spacer />
-          {allPlatformTrades?.map((trade, i) => {
+      <PlatformList>
+        <ListHeader>
+          <div>EXCHANGE</div>
+          <div>FEE</div>
+          {showGasFeeColumn && <div>GAS</div>}
+          <div>{`${independentField === Field.OUTPUT ? 'MAX SENT' : 'MIN. RECEIVED'}`}</div>
+        </ListHeader>
+        {isLoading && allPlatformTrades?.length === 0 ? (
+          <PlatformSelectorLoader showGasFeeColumn={showGasFeeColumn} />
+        ) : (
+          allPlatformTrades?.map((trade, i) => {
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
@@ -106,8 +160,8 @@ export function SwapPlatformSelector({
 
             const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
             return (
-              <tr key={i} style={{ lineHeight: '22px' }}>
-                <td colSpan={4}>
+              <ListContentItem key={i} style={{ lineHeight: '22px' }}>
+                <div>
                   <Radio
                     checked={selectedTrade?.platform.name === trade.platform.name}
                     label={trade.platform.name}
@@ -115,18 +169,12 @@ export function SwapPlatformSelector({
                     value={trade.platform.name.toLowerCase()}
                     onChange={handleSelectedTradeOverride}
                   />
-                </td>
-                <td>
-                  <TYPE.main color="text4" fontSize="10px" lineHeight="12px">
-                    {realizedLPFee ? `${realizedLPFee.toFixed(2)}%` : '-'}
-                  </TYPE.main>
-                </td>
-                {showGasFees && (
-                  <td width="44px" align="right">
-                    <GasFee loading={debouncedLoadingGasFees} gasFeeUSD={gasFeeUSD} />
-                  </td>
-                )}
-                <td align="right">
+                </div>
+                <div>
+                  <TYPE.main color="text4">{realizedLPFee ? `${realizedLPFee.toFixed(2)}%` : '-'}</TYPE.main>
+                </div>
+                <div>{showGasFeeColumn && <GasFee loading={debouncedLoadingGasFees} gasFeeUSD={gasFeeUSD} />}</div>
+                <div>
                   <RowFixed>
                     <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
                       {isExactIn
@@ -139,12 +187,13 @@ export function SwapPlatformSelector({
                       marginLeft={4}
                     />
                   </RowFixed>
-                </td>
-              </tr>
+                </div>
+              </ListContentItem>
             )
-          })}
-        </tbody>
-      </Table>
+          })
+        )}
+      </PlatformList>
+
       {selectedTrade && selectedTrade instanceof UniswapV2Trade && selectedTrade.route.path.length > 2 && (
         <Flex mx="2px" width="100%">
           <Flex>

@@ -75,9 +75,11 @@ interface AdvancedSwapDetailsDropdownProps {
   trade?: Trade
   allPlatformTrades?: (Trade | undefined)[] | undefined
   onSelectedPlatformChange: (newPlatform: RoutablePlatform) => void
+  isLoading: boolean
 }
 
 export default function AdvancedSwapDetailsDropdown({
+  isLoading,
   trade,
   allPlatformTrades,
   onSelectedPlatformChange,
@@ -100,10 +102,18 @@ export default function AdvancedSwapDetailsDropdown({
     }
   }
 
+  // <HideableAutoColumn gap="8px" show={true}>
+
+  // the trade list wrapper will be shown with the skeleton loader
+  // when it's the first time the user initiates a trade search,
+  // or the previous list of trades are available
+  const showTradeListWrapper = isLoading || allPlatformTrades?.length !== 0
+
   return (
-    <HideableAutoColumn gap="8px" show={!!trade}>
+    <HideableAutoColumn gap="8px" show={showTradeListWrapper}>
       <AdvancedDetailsFooter fullWidth padding="12px">
         <SwapPlatformSelector
+          isLoading={isLoading}
           selectedTrade={trade}
           allPlatformTrades={allPlatformTrades}
           onSelectedPlatformChange={onSelectedPlatformChange}
