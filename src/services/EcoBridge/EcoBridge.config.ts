@@ -1,10 +1,10 @@
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { ChainId } from '@swapr/sdk'
-import { OmnibridgeChildBase } from './Omnibridge.utils'
+import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 
 //supported chains are bidirectional
-export const omnibridgeConfig: OmnibridgeChildBase[] = [
+export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
     bridgeId: 'arbitrum:testnet',
     displayName: 'Arbitrum',
@@ -26,6 +26,6 @@ export const omnibridgeConfig: OmnibridgeChildBase[] = [
   })
 ]
 
-export const omnibridgePersistedKeys = omnibridgeConfig.map(
-  bridgeConfig => `omnibridge.${bridgeConfig.bridgeId}.transactions`
+export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
+  bridgeConfig => `ecoBridge.${bridgeConfig.bridgeId}.transactions`
 )

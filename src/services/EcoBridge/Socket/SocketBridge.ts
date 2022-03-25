@@ -1,16 +1,16 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
-  OmnibridgeChildBaseConstructor,
-  OmnibridgeChildBaseInit,
-  OmnibridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  EcoBridgeChangeHandler,
   BridgeModalStatus
-} from '../Omnibridge.types'
-import { OmnibridgeChildBase } from '../Omnibridge.utils'
-import { SocketList } from '../Omnibridge.types'
+} from '../EcoBridge.types'
+import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { SocketList } from '../EcoBridge.types'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
-import { omnibridgeUIActions } from '../store/UI.reducer'
+import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { BigNumber } from 'ethers'
 import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
 import {
@@ -37,11 +37,11 @@ const getErrorMsg = (error: any) => {
   }
   return `Bridge failed: ${error.message}`
 }
-export class SocketBridge extends OmnibridgeChildBase {
+export class SocketBridge extends EcoBridgeChildBase {
   private _listeners: NodeJS.Timeout[] = []
   private _abortControllers: { [id: string]: AbortController } = {}
 
-  constructor({ supportedChains, bridgeId, displayName = 'Socket' }: OmnibridgeChildBaseConstructor) {
+  constructor({ supportedChains, bridgeId, displayName = 'Socket' }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
   }
 
@@ -68,24 +68,24 @@ export class SocketBridge extends OmnibridgeChildBase {
     return this._abortControllers[key].signal
   }
 
-  public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: OmnibridgeChildBaseInit) => {
+  public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: EcoBridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
     this.startListeners()
   }
 
-  public onSignerChange = async ({ ...signerData }: OmnibridgeChangeHandler) => {
+  public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
     this.setSignerData(signerData)
   }
 
   public collect = () => undefined
 
   public triggerBridging = async () => {
-    this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
-    const { from, to } = this.store.getState().omnibridge.UI
+    const { from, to } = this.store.getState().ecoBridge.UI
 
     if (
       !data ||
@@ -108,7 +108,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       if (!tx) return
 
-      this.store.dispatch(omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
       this.store.dispatch(
         this.actions.addTx({
@@ -123,7 +123,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       )
     } catch (e) {
       this.store.dispatch(
-        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
       )
     }
   }
@@ -153,7 +153,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       })
 
       this.store.dispatch(
-        omnibridgeUIActions.setStatusButton({
+        ecoBridgeUIActions.setStatusButton({
           label: 'Approving',
           isError: false,
           isLoading: true,
@@ -165,7 +165,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       const receipt = await txn?.wait()
       if (receipt) {
         this.store.dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Bridge',
             isError: false,
             isLoading: false,
@@ -176,7 +176,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
       )
     }
 
@@ -184,7 +184,7 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
 
   public validate = async () => {
-    const routeId = this.store.getState().omnibridge.common.activeRouteId
+    const routeId = this.store.getState().ecoBridge.common.activeRouteId
     const routes = this.selectors.selectRoutes(this.store.getState())
 
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
@@ -198,7 +198,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     try {
       this.store.dispatch(
-        omnibridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, approved: false })
+        ecoBridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, approved: false })
       )
       const transaction = await ServerAPI.appControllerGetSingleTx(
         {
@@ -209,7 +209,7 @@ export class SocketBridge extends OmnibridgeChildBase {
 
       if (!transaction.success) {
         this.store.dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Something went wrong',
             isLoading: false,
             isError: true,
@@ -230,7 +230,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       if (!approvalData) {
         //when approvalData === null user can bridge
         this.store.dispatch(
-          omnibridgeUIActions.setStatusButton({
+          ecoBridgeUIActions.setStatusButton({
             label: 'Bridge',
             isLoading: false,
             isError: false,
@@ -241,7 +241,7 @@ export class SocketBridge extends OmnibridgeChildBase {
       } else {
         //check allowance
 
-        const activeChainId = this.store.getState().omnibridge.UI.from.chainId
+        const activeChainId = this.store.getState().ecoBridge.UI.from.chainId
 
         if (!activeChainId || !this._account) return
 
@@ -273,7 +273,7 @@ export class SocketBridge extends OmnibridgeChildBase {
             )
 
             this.store.dispatch(
-              omnibridgeUIActions.setStatusButton({
+              ecoBridgeUIActions.setStatusButton({
                 label: 'Approve',
                 isLoading: false,
                 isError: false,
@@ -285,7 +285,7 @@ export class SocketBridge extends OmnibridgeChildBase {
           }
 
           this.store.dispatch(
-            omnibridgeUIActions.setStatusButton({
+            ecoBridgeUIActions.setStatusButton({
               label: 'Bridge',
               isLoading: false,
               isError: false,
@@ -295,7 +295,7 @@ export class SocketBridge extends OmnibridgeChildBase {
           )
         } else {
           this.store.dispatch(
-            omnibridgeUIActions.setStatusButton({
+            ecoBridgeUIActions.setStatusButton({
               label: 'Something went wrong',
               isLoading: false,
               isError: true,
@@ -307,13 +307,13 @@ export class SocketBridge extends OmnibridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        omnibridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
       )
     }
   }
 
   public getBridgingMetadata = async () => {
-    const requestId = this.store.getState().omnibridge[this.bridgeId as SocketList].lastMetadataCt
+    const requestId = this.store.getState().ecoBridge[this.bridgeId as SocketList].lastMetadataCt
 
     const helperRequestId = (requestId ?? 0) + 1
 
@@ -321,11 +321,11 @@ export class SocketBridge extends OmnibridgeChildBase {
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
 
-    const { from, to } = this.store.getState().omnibridge.UI
+    const { from, to } = this.store.getState().ecoBridge.UI
 
     if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
-    const socketTokens = this.store.getState().omnibridge.socket.lists[this.bridgeId]
+    const socketTokens = this.store.getState().ecoBridge.socket.lists[this.bridgeId]
     const fromNativeCurrency = Currency.getNative(from.chainId)
 
     let fromTokenAddress = ''
@@ -479,7 +479,7 @@ export class SocketBridge extends OmnibridgeChildBase {
     const {
       from: { chainId: fromChainId },
       to: { chainId: toChainId }
-    } = this.store.getState().omnibridge.UI
+    } = this.store.getState().ecoBridge.UI
 
     if (!fromChainId || !toChainId) return
 
@@ -511,7 +511,7 @@ export class SocketBridge extends OmnibridgeChildBase {
   }
 
   public triggerModalDisclaimerText = () => {
-    this.store.dispatch(omnibridgeUIActions.setModalDisclaimerText('Content to be discussed'))
+    this.store.dispatch(ecoBridgeUIActions.setModalDisclaimerText('Content to be discussed'))
   }
 
   private startListeners = () => {

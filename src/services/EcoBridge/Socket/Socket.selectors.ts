@@ -1,15 +1,15 @@
 import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { BridgeTxsFilter, SocketList } from '../Omnibridge.types'
+import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
 import { SocketTx, SOCKET_PENDING_REASONS } from './Socket.types'
 
 const createSelectBridgingDetails = (bridgeId: SocketList) =>
   createSelector(
     [
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.omnibridge[bridgeId].bridgingDetailsErrorMessage
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage
     ],
     (details, loading, errorMessage) => {
       return {
@@ -22,18 +22,18 @@ const createSelectBridgingDetails = (bridgeId: SocketList) =>
   )
 
 const createSelectRoutes = (bridgeId: SocketList) =>
-  createSelector([(state: AppState) => state.omnibridge[bridgeId].routes], routes => routes)
+  createSelector([(state: AppState) => state.ecoBridge[bridgeId].routes], routes => routes)
 
 const createSelectApprovalData = (bridgeId: SocketList) =>
-  createSelector([(state: AppState) => state.omnibridge[bridgeId].approvalData], approvalData => approvalData)
+  createSelector([(state: AppState) => state.ecoBridge[bridgeId].approvalData], approvalData => approvalData)
 
 const createSelectTxBridgingData = (bridgeId: SocketList) =>
-  createSelector([(state: AppState) => state.omnibridge[bridgeId].txBridgingData], txBridgingData => txBridgingData)
+  createSelector([(state: AppState) => state.ecoBridge[bridgeId].txBridgingData], txBridgingData => txBridgingData)
 
 const createSelectOwnedTxs = (bridgeId: SocketList) =>
   createSelector(
     [
-      (state: AppState) => state.omnibridge[bridgeId].transactions,
+      (state: AppState) => state.ecoBridge[bridgeId].transactions,
       (state: AppState, account: string | undefined) => account
     ],
     (txs, account) => {
@@ -61,7 +61,7 @@ const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOw
   })
 
 const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.omnibridge.UI.filter], (txs, txsFilter) => {
+  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.UI.filter], (txs, txsFilter) => {
     const summaries = txs.map(tx => {
       const pendingReason =
         tx.status === 'from-pending'

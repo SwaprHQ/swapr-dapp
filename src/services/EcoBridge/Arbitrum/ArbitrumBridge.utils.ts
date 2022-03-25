@@ -2,7 +2,7 @@ import { Store } from '@reduxjs/toolkit'
 import { AppState } from '../../../state'
 import { createArbitrumSlice } from './ArbitrumBridge.reducer'
 import { clearBridgeTxs } from '../../../state/bridgeTransactions/actions'
-import { SupportedChainsConfig } from '../Omnibridge.types'
+import { SupportedChainsConfig } from '../EcoBridge.types'
 import { gql } from 'graphql-request'
 import { BigNumber } from 'ethers'
 

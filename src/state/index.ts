@@ -13,10 +13,10 @@ import multicall from './multicall/reducer'
 import multiChainLinks from './multi-chain-links/reducer'
 import lists from './lists/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
-import omnibridge from '../services/Omnibridge/store/Omnibridge.reducer'
-import { omnibridgePersistedKeys } from '../services/Omnibridge/Omnibridge.config'
+import ecoBridge from '../services/EcoBridge/store/EcoBridge.reducer'
+import { ecoBridgePersistedKeys } from '../services/EcoBridge/EcoBridge.config'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...omnibridgePersistedKeys]
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...ecoBridgePersistedKeys]
 
 const persistenceNamespace = 'swapr'
 const store = configureStore({
@@ -32,7 +32,7 @@ const store = configureStore({
     multiChainLinks,
     lists,
     bridgeTransactions,
-    omnibridge
+    ecoBridge
   },
   middleware: [
     save({

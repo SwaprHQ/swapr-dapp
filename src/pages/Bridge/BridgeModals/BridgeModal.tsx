@@ -5,7 +5,7 @@ import { BridgeSuccessModal } from './BridgeSuccesModal'
 import { BridgingInitiatedModal } from './BridgingInitiatedModal'
 import { BridgeDisclaimerModal } from './BridgeDisclaimerModal'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { BridgeModalState, BridgeModalStatus } from '../../../services/Omnibridge/Omnibridge.types'
+import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void

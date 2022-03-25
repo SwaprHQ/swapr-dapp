@@ -24,7 +24,7 @@ import TokenListUpdater from './state/lists/updater'
 import MultiChainLinksUpdater from './state/multi-chain-links/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
-import { OmnibridgeProvider } from './services/Omnibridge/OmnibridgeProvider'
+import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -55,7 +55,7 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
-          <OmnibridgeProvider>
+          <EcoBridgeProvider>
             <Updaters />
             <ThemeProvider>
               <ThemedGlobalStyle />
@@ -64,7 +64,7 @@ ReactDOM.render(
                 <App />
               </HashRouter>
             </ThemeProvider>
-          </OmnibridgeProvider>
+          </EcoBridgeProvider>
         </Provider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>

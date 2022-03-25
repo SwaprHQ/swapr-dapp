@@ -4,7 +4,7 @@ import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, AsyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../Omnibridge.types'
+import { ArbitrumList, AsyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
