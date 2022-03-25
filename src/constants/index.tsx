@@ -412,6 +412,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     alt: RoutablePlatform.CURVE.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name
+  },
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
+    logo: CoWLogo,
+    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.GNOSIS_PROTOCOL.name
   }
 }
 
