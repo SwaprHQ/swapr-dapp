@@ -9,7 +9,7 @@ interface CommonState {
 
 const initialState: CommonState = {
   activeBridge: undefined,
-  activeLists: []
+  activeLists: ['arbitrum:testnet-swpr', 'arbitrum:mainnet-swpr']
 }
 
 const commonSlice = createSlice({

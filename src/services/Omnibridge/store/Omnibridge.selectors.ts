@@ -8,6 +8,7 @@ import { listToTokenMap } from '../../../state/lists/hooks'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { BridgeList, BridgeTxsFilter, SupportedBridges, TokenMap } from '../Omnibridge.types'
+import { DEFAULT_TOKEN_LIST } from '../../../constants'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.
@@ -120,10 +121,16 @@ export const selectBridgeLists = createSelector(
   [
     (state: AppState) => state.omnibridge['arbitrum:testnet'].lists,
     (state: AppState) => state.omnibridge['arbitrum:mainnet'].lists,
-    (state: AppState) => state.omnibridge['socket'].lists
+    (state: AppState) => state.omnibridge['socket'].lists,
+    (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current
   ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket) => {
-    const allTokenLists = { ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
+  (tokenListTestnet, tokenListMainnet, tokenListSocket, swprDefaultList) => {
+    // Tmp solution to add swpr token list to arbitrum bridges
+    const swprListWithIds = {
+      'arbitrum:testnet-swpr': swprDefaultList as TokenList,
+      'arbitrum:mainnet-swpr': swprDefaultList as TokenList
+    }
+    const allTokenLists = { ...swprListWithIds, ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
 
     return allTokenLists
   }
