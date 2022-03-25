@@ -31,7 +31,7 @@ import {
   useBridgeInfo,
   useBridgeListsLoadingStatus,
   useBridgeTxsFilter
-} from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+} from '../../services/Omnibridge/Omnibrige.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/Omnibridge/Omnibridge.types'
 
 const Wrapper = styled.div`

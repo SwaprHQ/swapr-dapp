@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useBridgeInfo } from '../../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { useBridgeInfo } from '../../../services/Omnibridge/Omnibrige.hooks'
 import { useOmnibridge } from '../../../services/Omnibridge/OmnibridgeProvider'
 import { commonActions } from '../../../services/Omnibridge/store/Common.reducer'
 import { omnibridgeUIActions } from '../../../services/Omnibridge/store/UI.reducer'

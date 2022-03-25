@@ -8,7 +8,7 @@ import {
   useActiveBridge,
   useAvailableBridges,
   useShowAvailableBridges
-} from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+} from '../../services/Omnibridge/Omnibrige.hooks'
 import Skeleton from 'react-loading-skeleton'
 import QuestionHelper from '../../components/QuestionHelper'
 

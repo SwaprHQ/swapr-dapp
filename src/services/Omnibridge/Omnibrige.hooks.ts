@@ -10,25 +10,25 @@ import {
   selectSupportedBridgesForUI,
   selectBridgeListsLoadingStatus,
   selectBridgeSupportedTokensOnChain
-} from '../store/Omnibridge.selectors'
-import { AppState } from '../../../state'
-import { commonActions } from '../store/Common.reducer'
-import { tryParseAmount } from '../../../state/swap/hooks'
-import { omnibridgeUIActions } from '../store/UI.reducer'
-import { useCurrencyBalances } from '../../../state/wallet/hooks'
-import { NEVER_RELOAD, useSingleCallResult } from '../../../state/multicall/hooks'
+} from './store/Omnibridge.selectors'
+import { AppState } from './../../state'
+import { commonActions } from './store/Common.reducer'
+import { tryParseAmount } from './../../state/swap/hooks'
+import { omnibridgeUIActions } from './store/UI.reducer'
+import { useCurrencyBalances } from './../../state/wallet/hooks'
+import { NEVER_RELOAD, useSingleCallResult } from './../../state/multicall/hooks'
 
-import { useActiveWeb3React } from '../../../hooks'
-import { useOmnibridge } from '../OmnibridgeProvider'
-import { parseStringOrBytes32 } from '../../../hooks/Tokens'
-import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
-import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../../hooks/useContract'
+import { useActiveWeb3React } from './../../hooks'
+import { useOmnibridge } from './OmnibridgeProvider'
+import { parseStringOrBytes32 } from './../../hooks/Tokens'
+import { useNativeCurrency } from './../../hooks/useNativeCurrency'
+import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './../../hooks/useContract'
 
-import { isAddress } from '../../../utils'
-import { currencyId } from '../../../utils/currencyId'
+import { isAddress } from './../../utils'
+import { currencyId } from './../../utils/currencyId'
 
-import { BridgeTxsFilter } from '../Omnibridge.types'
-import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
+import { BridgeTxsFilter } from './Omnibridge.types'
+import { WrappedTokenInfo } from './../../state/lists/wrapped-token-info'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()

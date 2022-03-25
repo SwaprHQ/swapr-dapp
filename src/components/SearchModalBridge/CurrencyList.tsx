@@ -23,7 +23,7 @@ import { DarkCard } from '../Card'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import TokenListLogo from '../../assets/svg/tokenlist.svg'
 import QuestionHelper from '../QuestionHelper'
-import { useBridgeActiveTokenMap } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { useBridgeActiveTokenMap } from '../../services/Omnibridge/Omnibrige.hooks'
 
 function currencyKey(index: number, data: any): string {
   const currency = data[index]

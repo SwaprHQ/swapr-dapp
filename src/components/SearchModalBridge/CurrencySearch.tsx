@@ -19,7 +19,7 @@ import useDebounce from '../../hooks/useDebounce'
 import { useActiveWeb3React } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { ButtonDark2 } from '../Button'
-import { useBridgeSupportedTokens, useBridgeToken } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { useBridgeSupportedTokens, useBridgeToken } from '../../services/Omnibridge/Omnibrige.hooks'
 
 const ContentWrapper = styled(Column)`
   width: 100%;

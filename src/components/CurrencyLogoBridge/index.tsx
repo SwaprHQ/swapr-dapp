@@ -12,7 +12,7 @@ import { useActiveWeb3React } from '../../hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import Logo from '../Logo'
-import { useBridgeTokenInfo } from '../../services/Omnibridge/hooks/Omnibrige.hooks'
+import { useBridgeTokenInfo } from '../../services/Omnibridge/Omnibrige.hooks'
 
 const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
