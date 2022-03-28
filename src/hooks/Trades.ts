@@ -254,6 +254,7 @@ export function useTradeExactInAllPlatforms(
       // Ignore mainnnet
       if (chainId === ChainId.MAINNET) {
         resolve(undefined)
+        return
       }
 
       CurveTrade.bestTradeExactIn({
@@ -366,6 +367,7 @@ export function useTradeExactOutAllPlatforms(
       // Ignore mainnnet
       if (chainId === ChainId.MAINNET) {
         resolve(undefined)
+        return
       }
 
       CurveTrade.bestTradeExactOut({
