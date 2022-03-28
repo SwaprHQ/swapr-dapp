@@ -275,7 +275,6 @@ export default function Bridge() {
             </AssetWrapper>
           </Row>
           <CurrencyInputPanel
-            label="Amount"
             value={collecting && collectableTx ? collectableTx.value : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
