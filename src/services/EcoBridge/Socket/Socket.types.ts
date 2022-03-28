@@ -57,9 +57,17 @@ export interface SocketBridgeState {
 
 type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; asset: { decimals: number } } }] }]
 
+type ChainGasBalances = { [chainId: number]: { hasGasBalance: boolean } }
+
 export function isFee(userTxs: any): userTxs is UserTxs {
   if (userTxs.length && userTxs[0].steps.length && userTxs[0].steps) {
     return true
   }
+  return false
+}
+
+export function isChainGasBalances(chainGasBalances: any): chainGasBalances is ChainGasBalances {
+  if (chainGasBalances) return true
+
   return false
 }

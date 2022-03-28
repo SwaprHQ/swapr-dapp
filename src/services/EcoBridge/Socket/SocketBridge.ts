@@ -25,6 +25,7 @@ import { commonActions } from '../store/Common.reducer'
 import {
   DAI_ARBITRUM_ADDRESS,
   DAI_ETHEREUM_ADDRESS,
+  isChainGasBalances,
   SOCKET_NATIVE_TOKEN_ADDRESS,
   WETH_GNOSIS_ADDRESS
 } from './Socket.types'
@@ -439,7 +440,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       )
       return
     }
-    const { routes, toAsset } = result
+    const { routes, toAsset, fromChainId, toChainId } = result
 
     this.store.dispatch(this.actions.setRoutes(routes))
 
@@ -459,7 +460,14 @@ export class SocketBridge extends EcoBridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, chainGasBalances } = bestRoute
+
+    if (isChainGasBalances(chainGasBalances)) {
+      if (!chainGasBalances[fromChainId].hasGasBalance || !chainGasBalances[toChainId].hasGasBalance) {
+        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+        return
+      }
+    }
 
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
