@@ -1,4 +1,4 @@
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   EcoBridgeChildBaseConstructor,
@@ -350,7 +350,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     if (ETHtoWETH) {
       fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-      toTokenAddress = Token.getNativeWrapper(to.chainId).address
+      toTokenAddress = WETH_GNOSIS_ADDRESS
     }
 
     if (WETHtoETH) {
