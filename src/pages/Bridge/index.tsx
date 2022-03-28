@@ -90,7 +90,7 @@ export default function Bridge() {
   useBridgeFetchDynamicLists()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
-  const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromChainId, toChainId } = useBridgeInfo()
+  const { bridgeCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
   const {
     onCurrencySelection,
     onUserInput,
@@ -114,7 +114,6 @@ export default function Bridge() {
   const collectableTxAmount = bridgeSummaries.filter(tx => tx.status === 'redeem').length
   const isNetworkConnected = fromChainId === chainId
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
-  const atMaxAmountInput = Boolean((maxAmountInput && parsedAmount?.equalTo(maxAmountInput)) || !isNetworkConnected)
   const { from, to } = useSelector((state: AppState) => state.ecoBridge.UI)
 
   const [displayedValue, setDisplayedValue] = useState('')
@@ -150,6 +149,7 @@ export default function Bridge() {
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
+    maxAmountInput && setDisplayedValue(isNetworkConnected ? maxAmountInput.toExact() : '')
   }, [maxAmountInput, isNetworkConnected, onUserInput])
 
   const handleSubmit = useCallback(async () => {
@@ -278,7 +278,6 @@ export default function Bridge() {
             value={collecting && collectableTx ? collectableTx.value : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
-            showMaxButton={!collecting && !atMaxAmountInput}
             currency={collecting ? collectableCurrency : bridgeCurrency}
             onUserInput={onUserInput}
             onMax={collecting ? undefined : handleMaxInput}
