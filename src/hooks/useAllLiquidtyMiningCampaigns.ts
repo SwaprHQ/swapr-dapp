@@ -20,7 +20,7 @@ const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'st
 
 const SINGLE_SIDED_CAMPAIGNS = gql`
   query($userId: ID) {
-    singleSidedStakingCampaigns {
+    singleSidedStakingCampaigns(first: 999) {
       id
       owner
       ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
@@ -46,7 +46,7 @@ const SINGLE_SIDED_CAMPAIGNS = gql`
 `
 const REGULAR_CAMPAIGN = gql`
   query($userId: ID) {
-    liquidityMiningCampaigns {
+    liquidityMiningCampaigns(first: 999) {
       address: id
       ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
       rewards {
@@ -94,6 +94,8 @@ export function useAllLiquidtyMiningCampaigns(
   const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
 
   const { chainId, account } = useActiveWeb3React()
+
+  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const SWPRToken = useSWPRToken()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
@@ -109,7 +111,7 @@ export function useAllLiquidtyMiningCampaigns(
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(SINGLE_SIDED_CAMPAIGNS, {
     variables: {
-      userId: account?.toLowerCase()
+      userId: subgraphAccountId
     }
   })
 
@@ -117,7 +119,7 @@ export function useAllLiquidtyMiningCampaigns(
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {
-      userId: account?.toLowerCase()
+      userId: subgraphAccountId
     }
   })
   const kpiTokenAddresses = useMemo(() => {
