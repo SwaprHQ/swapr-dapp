@@ -57,9 +57,7 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
-          if (collecting) {
-            handleResetBridge()
-          }
+          handleResetBridge()
           setTxsFilter(BridgeTxsFilter.NONE)
           setActiveTab('history')
         }}
