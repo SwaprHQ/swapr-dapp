@@ -176,11 +176,11 @@ const HeaderSubRow = styled(RowFlat)`
   `};
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string; hide?: boolean }>`
+export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
   padding: 6px 8px;
   margin: 0;
   max-height: 22px;
-  display: ${({ hide }) => (hide ? 'none' : 'inline-flex')};
+  display: inline-flex;
   font-weight: bold;
   font-size: 10px;
   line-height: 11px;
@@ -380,18 +380,14 @@ function Header() {
             onToggleClaimPopup={toggleClaimPopup}
           />
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError ? (
-              <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>
-            ) : (
-              <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')} hide={!account && !isUnsupportedChainIdError}>
-                {!account ? (
-                  '0.000'
-                ) : !userNativeCurrencyBalance ? (
-                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
+            {isUnsupportedChainIdError && <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>}
+            {account && !isUnsupportedChainIdError && (
+              <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
+                {userNativeCurrencyBalance ? (
+                  `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
                 ) : (
-                  userNativeCurrencyBalance.toFixed(3)
-                )}{' '}
-                {nativeCurrency.symbol}
+                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
+                )}
               </Amount>
             )}
           </UnsupportedNetworkPopover>
