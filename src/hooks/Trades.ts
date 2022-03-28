@@ -9,7 +9,7 @@ import {
   CurveTrade,
   RoutablePlatform,
   Trade,
-  ChainId
+  ChainId,
 } from '@swapr/sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo, useEffect, useState } from 'react'
@@ -30,13 +30,14 @@ function useAllCommonPairs(
 
   const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])
 
-  const [tokenA, tokenB] = chainId
-    ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
-    : [undefined, undefined]
+  const [tokenA, tokenB] =
+    chainId && platform.supportsChain(chainId)
+      ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+      : [undefined, undefined]
 
   const basePairs: [Token, Token][] = useMemo(
     () =>
-      flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])).filter(
+      flatMap(bases, (base): [Token, Token][] => bases.map((otherBase) => [base, otherBase])).filter(
         ([t0, t1]) => t0.address !== t1.address
       ),
     [bases]
@@ -53,7 +54,7 @@ function useAllCommonPairs(
             // token B against all bases
             ...bases.map((base): [Token, Token] => [tokenB, base]),
             // each base against all bases
-            ...basePairs
+            ...basePairs,
           ]
             .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
             .filter(([t0, t1]) => t0.address !== t1.address)
@@ -102,8 +103,8 @@ export function useTradeExactInUniswapV2(
           pairs: allowedPairs,
           maxHops: {
             maxHops: multihop ? 3 : 1,
-            maxNumResults: 1
-          }
+            maxNumResults: 1,
+          },
         }) ?? undefined
       )
     }
@@ -128,9 +129,9 @@ export function useTradeExactInCurve(
     CurveTrade.bestTradeExactIn({
       currencyAmountIn,
       currencyOut,
-      maximumSlippage: new Percent('3', '100')
+      maximumSlippage: new Percent('3', '100'),
     })
-      .then(async newTrade => {
+      .then(async (newTrade) => {
         // Update if either txs differ
         const prevSwapTx = await trade?.swapTransaction()
         const nextSwapTx = await newTrade?.swapTransaction()
@@ -168,8 +169,8 @@ export function useTradeExactOutUniswapV2(
           pairs: allowedPairs,
           maxHops: {
             maxHops: multihop ? 3 : 1,
-            maxNumResults: 1
-          }
+            maxNumResults: 1,
+          },
         }) ?? undefined
       )
     }
@@ -210,8 +211,8 @@ export function useTradeExactInAllPlatforms(
     useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.SUSHISWAP),
     useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
     useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
-    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP)
-  ].filter(platformPairs => platformPairs.length !== 0)
+    useAllCommonPairs(currencyAmountIn?.currency, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP),
+  ].filter((platformPairs) => platformPairs.length !== 0)
 
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyOut?.address}-${currencyAmountIn?.currency.address}`
@@ -233,8 +234,8 @@ export function useTradeExactInAllPlatforms(
 
     // Promisify the Uniswap trade list
     const uniswapV2TradesList = uniswapV2AllowedPairsList
-      .filter(pairs => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
-      .map(async pairs => {
+      .filter((pairs) => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
+      .map(async (pairs) => {
         return (
           UniswapV2Trade.bestTradeExactIn({
             currencyAmountIn,
@@ -243,20 +244,25 @@ export function useTradeExactInAllPlatforms(
             pairs,
             maxHops: {
               maxHops: uniswapV2IsMultihop ? 3 : 1,
-              maxNumResults: 1
-            }
+              maxNumResults: 1,
+            },
           }) ?? undefined
         )
       })
 
-    const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+    const curveTrade = new Promise<CurveTrade | undefined>(async (resolve) => {
+      // Ignore mainnnet
+      if (chainId === ChainId.MAINNET) {
+        resolve(undefined)
+      }
+
       CurveTrade.bestTradeExactIn({
         currencyAmountIn,
         currencyOut,
-        maximumSlippage: new Percent('3', '100')
+        maximumSlippage: new Percent('3', '100'),
       })
         .then(resolve)
-        .catch(error => {
+        .catch((error) => {
           // The next step does not care about the error. Promise.all
           // is all or nothing. Hence, this Promise must solve as undefined
           resolve(undefined)
@@ -267,8 +273,8 @@ export function useTradeExactInAllPlatforms(
     const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
 
     allNewTrades
-      .then(trades => trades.filter(trade => trade !== undefined))
-      .then(newTrades => {
+      .then((trades) => trades.filter((trade) => trade !== undefined))
+      .then((newTrades) => {
         // add deep comparsion
         if (!isCancelled) {
           setTrades(newTrades)
@@ -287,12 +293,12 @@ export function useTradeExactInAllPlatforms(
     uniswapV2AllowedPairsList.length,
     // eslint-disable-next-line
     currencyAmountIn?.toSignificant(),
-    currencyInAndOutAdddress
+    currencyInAndOutAdddress,
   ])
 
   return {
     loading,
-    trades: sortTradesByExecutionPrice(trades)
+    trades: sortTradesByExecutionPrice(trades),
   }
 }
 
@@ -318,8 +324,8 @@ export function useTradeExactOutAllPlatforms(
     useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.SUSHISWAP),
     useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.HONEYSWAP),
     useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.BAOSWAP),
-    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.LEVINSWAP)
-  ].filter(platformPairs => platformPairs.length !== 0)
+    useAllCommonPairs(currencyIn, currencyAmountOut?.currency, UniswapV2RoutablePlatform.LEVINSWAP),
+  ].filter((platformPairs) => platformPairs.length !== 0)
 
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyIn?.address}-${currencyAmountOut?.currency.address}`
@@ -336,14 +342,12 @@ export function useTradeExactOutAllPlatforms(
 
     setLoading(true)
 
-    console.log('useTradeExactOutAllPlatforms: Computing trades from UniswapV2 and Curve')
-
     // Calculate trade output from: Uniswap V2 and its forks, Curve
 
     // Promisify the Uniswap trade list
     const uniswapV2TradesList = uniswapV2AllowedPairsList
-      .filter(pairs => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
-      .map(async pairs => {
+      .filter((pairs) => pairs.length > 0 && pairs[0].platform.supportsChain(chainId))
+      .map(async (pairs) => {
         return (
           UniswapV2Trade.bestTradeExactOut({
             currencyIn,
@@ -352,20 +356,25 @@ export function useTradeExactOutAllPlatforms(
             pairs,
             maxHops: {
               maxHops: uniswapV2IsMultihop ? 3 : 1,
-              maxNumResults: 1
-            }
+              maxNumResults: 1,
+            },
           }) ?? undefined
         )
       })
 
-    const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+    const curveTrade = new Promise<CurveTrade | undefined>(async (resolve) => {
+      // Ignore mainnnet
+      if (chainId === ChainId.MAINNET) {
+        resolve(undefined)
+      }
+
       CurveTrade.bestTradeExactOut({
         currencyAmountOut,
         currencyIn,
-        maximumSlippage: new Percent('3', '100')
+        maximumSlippage: new Percent('3', '100'),
       })
         .then(resolve)
-        .catch(error => {
+        .catch((error) => {
           // The next step does not care about the error. Promise.all
           // is all or nothing. Hence, this Promise must solve as undefined
           resolve(undefined)
@@ -376,8 +385,8 @@ export function useTradeExactOutAllPlatforms(
     const allNewTrades = Promise.all([...(uniswapV2TradesList as any), curveTrade])
 
     allNewTrades
-      .then(trades => trades.filter(trade => trade !== undefined))
-      .then(newTrades => {
+      .then((trades) => trades.filter((trade) => trade !== undefined))
+      .then((newTrades) => {
         // add deep comparsion
         if (!isCancelled) {
           setTrades(newTrades)
@@ -397,11 +406,11 @@ export function useTradeExactOutAllPlatforms(
     uniswapV2AllowedPairsList.length,
     // eslint-disable-next-line
     currencyAmountOut?.toSignificant(),
-    currencyInAndOutAdddress
+    currencyInAndOutAdddress,
   ])
 
   return {
     loading,
-    trades: sortTradesByExecutionPrice(trades)
+    trades: sortTradesByExecutionPrice(trades),
   }
 }

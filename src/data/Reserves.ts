@@ -18,7 +18,7 @@ export enum PairState {
   LOADING,
   NOT_EXISTS,
   EXISTS,
-  INVALID
+  INVALID,
 }
 
 export function usePairs(
@@ -31,7 +31,7 @@ export function usePairs(
     () =>
       currencies.map(([currencyA, currencyB]) => [
         wrappedCurrency(currencyA, chainId),
-        wrappedCurrency(currencyB, chainId)
+        wrappedCurrency(currencyB, chainId),
       ]),
     [chainId, currencies]
   )
@@ -39,7 +39,13 @@ export function usePairs(
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) && chainId && platform.supportsChain(chainId)
+        return tokenA &&
+          tokenB &&
+          !tokenA.equals(tokenB) &&
+          chainId &&
+          tokenA.chainId === chainId &&
+          tokenB.chainId === chainId &&
+          platform.supportsChain(chainId)
           ? Pair.getAddress(tokenA, tokenB, platform)
           : undefined
       }),
@@ -71,7 +77,7 @@ export function usePairs(
           swapFee || platform.defaultSwapFee,
           protocolFeeDenominator ? BigInt(protocolFeeDenominator) : BigInt(0),
           platform
-        )
+        ),
       ]
     })
   }, [protocolFeeDenominator, results, swapFees, tokens, platform])
