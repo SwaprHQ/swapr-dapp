@@ -3,7 +3,6 @@ import { ChainId } from '@swapr/sdk'
 import { useSelector } from 'react-redux'
 import { ButtonPrimary } from '../../../components/Button'
 import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
-import { useModalOpen, useWalletSwitcherPopoverToggle } from '../../../state/application/hooks'
 import { NetworkSwitcher } from './NetworkSwitcher'
 import { BridgeButton } from './BridgeButton'
 import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
@@ -13,7 +12,7 @@ import { RowBetween } from '../../../components/Row'
 import { useBridgeActionPanel } from './useBridgeActionPanel'
 import { AppState } from '../../../state'
 import Loader from '../../../components/Loader'
-import { ApplicationModal } from '../../../state/application/actions'
+import { ButtonConnect } from '../../../components/ButtonConnect'
 
 export type BridgeActionPanelProps = {
   account: string | null | undefined
@@ -36,14 +35,11 @@ export const BridgeActionPanel = ({
   isNetworkConnected
 }: BridgeActionPanelProps) => {
   const { selectNetwork } = useNetworkSwitch()
-  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { bridgeCurrency, handleApprove } = useBridgeActionPanel()
 
   const { isLoading, approved, isBalanceSufficient, label } = useSelector(
     (state: AppState) => state.ecoBridge.UI.statusButton
   )
-
-  const networkSwitcherPopoverOpen = useModalOpen(ApplicationModal.NETWORK_SWITCHER)
 
   const handleSelectFromNetwork = useCallback(() => {
     selectNetwork(fromNetworkChainId)
@@ -56,11 +52,7 @@ export const BridgeActionPanel = ({
   const selectPanel = () => {
     // No wallet
     if (!account) {
-      return (
-        <ButtonPrimary onClick={toggleWalletSwitcherPopover} disabled={networkSwitcherPopoverOpen}>
-          {networkSwitcherPopoverOpen ? 'Switch network' : 'Connect wallet'}
-        </ButtonPrimary>
-      )
+      return <ButtonConnect />
     }
 
     // Change network

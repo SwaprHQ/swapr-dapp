@@ -88,7 +88,7 @@ export default function Bridge() {
   )
 
   useBridgeFetchDynamicLists()
-  //new modal interface
+
   const { modalData, setModalData, setModalState } = useBridgeModal()
   const { bridgeCurrency, currencyBalance, parsedAmount, typedValue, fromChainId, toChainId } = useBridgeInfo()
   const {
@@ -274,7 +274,6 @@ export default function Bridge() {
               />
             </AssetWrapper>
           </Row>
-          {/* New component CurrencyInput for Bridge */}
           <CurrencyInputPanel
             label="Amount"
             value={collecting && collectableTx ? collectableTx.value : typedValue}
