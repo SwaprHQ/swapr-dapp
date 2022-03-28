@@ -116,6 +116,8 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
   function getOptions() {
     const isMetamask = window.ethereum && window.ethereum.isMetaMask
     const isTally = window.ethereum && window.ethereum.isTally
+    const tallyInstalled = window.tally && window.tally.isTally
+
     return Object.keys(SUPPORTED_WALLETS).map(key => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -153,12 +155,12 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
                 onClick={closeModals}
               />
             )
-          } else if (option.name === 'Tally') {
+          } else if (option.name === 'Tally Ho' && !tallyInstalled) {
             return (
               <Item
                 key={key}
                 id={`connect-${key}`}
-                name="Install Tally"
+                name="Install Tally Ho"
                 icon={TallyIcon}
                 link={'https://tally.cash/'}
                 onClick={closeModals}
@@ -173,7 +175,7 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
           return null
         }
         // don't return tally if injected provider isn't tally
-        else if (option.name === 'Tally' && !isTally) {
+        else if (option.name === 'Tally Ho' && !isTally) {
           return null
         }
         // likewise for generic

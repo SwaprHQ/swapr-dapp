@@ -20,6 +20,9 @@ interface Window {
     request?: (args: EthereumProviderRequestArguments) => Promise<unknown>
     isCoinbaseWallet?: boolean
   }
+  tally?: {
+    isTally?: true
+  }
   web3?: {}
 }
 

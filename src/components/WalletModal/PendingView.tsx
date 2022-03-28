@@ -61,6 +61,7 @@ export default function PendingView({
   tryActivation: (connector: AbstractConnector) => void
 }) {
   const isMetamask = window?.ethereum?.isMetaMask
+  const isTally = window?.ethereum?.isTally
 
   return (
     <PendingSection>
@@ -71,7 +72,13 @@ export default function PendingView({
             if (isMetamask && option.name !== 'MetaMask') {
               return null
             }
+            if (isTally && option.name !== 'Tally Ho') {
+              return null
+            }
             if (!isMetamask && option.name === 'MetaMask') {
+              return null
+            }
+            if (!isTally && option.name === 'Tally Ho') {
               return null
             }
           }
