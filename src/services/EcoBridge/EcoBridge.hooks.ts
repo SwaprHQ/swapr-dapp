@@ -267,7 +267,7 @@ export const useBridgeInfo = () => {
   const [currencyBalance] = useCurrencyBalances(account ?? undefined, [bridgeCurrency ?? undefined])
 
   const isBalanceSufficient = useMemo(
-    () => currencyBalance && parsedAmount && currencyBalance.greaterThan(parsedAmount),
+    () => currencyBalance && parsedAmount && !currencyBalance.lessThan(parsedAmount),
     [currencyBalance, parsedAmount]
   )
 
