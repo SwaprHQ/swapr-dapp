@@ -1,4 +1,4 @@
-import { ChainId, Currency, CurrencyAmount, Pair } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, Pair, Percent } from '@swapr/sdk'
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -14,15 +14,17 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 import Loader from '../Loader'
-import { transparentize } from 'polished'
 import { debounce } from 'lodash'
+import { FiatValueDetails } from '../FiatValueDetails'
+import { transparentize } from 'polished'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
+  margin-bottom: 8px;
   align-items: center;
 `
 
-const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?: boolean; disabled?: boolean }>`
+const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?: boolean }>`
   align-items: center;
   font-size: ${({ selected }) => (selected ? '26px' : '12px')};
   font-weight: ${({ selected }) => (selected ? 600 : 700)};
@@ -38,6 +40,7 @@ const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?
   border: none;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+
   ${({ disabled, theme }) =>
     disabled &&
     `
@@ -45,8 +48,7 @@ const CurrencySelect = styled.button<{ selected: boolean; disableCurrencySelect?
     color: ${transparentize(0.28, theme.purpleBase)};
     cursor: not-allowed;
     box-shadow: none;
-    outline: none;
- `}
+    outline: none;`}
 `
 
 const LabelRow = styled.div`
@@ -68,7 +70,6 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0 0 5px;
   height: 11px;
   width: 11px;
-
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     stroke-width: 1.5px;
@@ -79,21 +80,17 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   z-index: 1;
-  margin: '8px 0';
 `
 
 const Container = styled.div<{ focused: boolean }>`
-  height: 80px;
   background-color: ${({ theme }) => theme.bg1And2};
   border: solid 1px ${({ focused, theme }) => (focused ? theme.bg3 : theme.bg1And2)};
   border-radius: 12px;
   transition: border 0.3s ease;
-  padding: 17px 22px;
+  padding: 18px 22px;
 `
 
-const Content = styled.div`
-  height: 46px;
-`
+const Content = styled.div``
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   margin: ${({ active }) => (active ? '0 0 0 6px' : '0')};
@@ -102,22 +99,11 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
   letter-spacing: 0.08em;
 `
 
-const StyledBalanceMax = styled.button`
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  margin-right: 4px;
-  color: ${({ theme }) => theme.purple3};
-  text-decoration: underline;
-  outline: none;
-  background: transparent;
-  border: none;
-`
-
 const UppercaseHelper = styled.span`
   text-transform: uppercase;
 `
+
+const FiatRow = styled.div``
 
 interface CurrencyInputPanelProps {
   value: string
@@ -125,7 +111,6 @@ interface CurrencyInputPanelProps {
   setDisplayedValue: (val: string) => void
   onUserInput: (value: string) => void
   onMax?: () => void
-  showMaxButton: boolean
   label?: string
   onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
@@ -139,6 +124,8 @@ interface CurrencyInputPanelProps {
   showCommonBases?: boolean
   customBalanceText?: string
   balance?: CurrencyAmount
+  fiatValue?: CurrencyAmount | null
+  priceImpact?: Percent
   isLoading?: boolean
   chainIdOverride?: ChainId
 }
@@ -149,8 +136,7 @@ export default function CurrencyInputPanel({
   setDisplayedValue,
   onUserInput,
   onMax,
-  showMaxButton,
-  label = 'Input',
+  label,
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
@@ -164,7 +150,9 @@ export default function CurrencyInputPanel({
   customBalanceText,
   balance,
   isLoading = false,
-  chainIdOverride
+  chainIdOverride,
+  fiatValue,
+  priceImpact
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -200,34 +188,12 @@ export default function CurrencyInputPanel({
     <InputPanel id={id}>
       <Container focused={focused}>
         <Content>
-          {!hideInput && (
+          {!hideInput && label && (
             <LabelRow>
               <RowBetween>
                 <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
                   <UppercaseHelper>{label}</UppercaseHelper>
                 </TYPE.body>
-                {account && (
-                  <TYPE.body
-                    onClick={onMax}
-                    fontWeight="600"
-                    fontSize="11px"
-                    lineHeight="13px"
-                    letterSpacing="0.08em"
-                    style={{
-                      display: 'inline',
-                      cursor:
-                        !hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance)
-                          ? 'pointer'
-                          : 'auto'
-                    }}
-                  >
-                    <UppercaseHelper>
-                      {!hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance)
-                        ? (customBalanceText ?? 'Balance: ') + (balance || selectedCurrencyBalance)?.toSignificant(6)
-                        : '-'}
-                    </UppercaseHelper>
-                  </TYPE.body>
-                )}
               </RowBetween>
             </LabelRow>
           )}
@@ -245,9 +211,6 @@ export default function CurrencyInputPanel({
                   }}
                   disabled={disabled}
                 />
-                {account && (currency || pair) && showMaxButton && label !== 'To' && (
-                  <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
-                )}
               </>
             )}
             <CurrencySelect
@@ -290,6 +253,37 @@ export default function CurrencyInputPanel({
               </Aligner>
             </CurrencySelect>
           </InputRow>
+          <FiatRow>
+            <RowBetween>
+              {fiatValue && <FiatValueDetails fiatValue={fiatValue?.toFixed(2)} priceImpact={priceImpact} />}
+              {account && (
+                <TYPE.body
+                  onClick={onMax}
+                  fontWeight="600"
+                  fontSize="10px"
+                  lineHeight="13px"
+                  letterSpacing="0.08em"
+                  style={{
+                    display: 'inline',
+                    marginLeft: 'auto',
+                    cursor:
+                      !hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) ? 'pointer' : 'auto'
+                  }}
+                >
+                  <UppercaseHelper>
+                    {!hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) && (
+                      <>
+                        {customBalanceText ?? t('balance')}
+                        <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
+                          {(balance || selectedCurrencyBalance)?.toSignificant(6)}
+                        </TYPE.small>
+                      </>
+                    )}
+                  </UppercaseHelper>
+                </TYPE.body>
+              )}
+            </RowBetween>
+          </FiatRow>
         </Content>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (
