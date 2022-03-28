@@ -139,7 +139,6 @@ interface CurrencyInputPanelProps {
   showCommonBases?: boolean
   customBalanceText?: string
   balance?: CurrencyAmount
-  isBridge?: boolean
   isLoading?: boolean
   chainIdOverride?: ChainId
 }
