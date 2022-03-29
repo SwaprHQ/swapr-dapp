@@ -29,7 +29,7 @@ interface PreviewProps {
   endTime: Date | null
   timelocked: boolean
   stakingCap: TokenAmount | null
-  // reward: RewardsObjectsData[] | null
+  approvals: boolean
   reward: TokenAmount[]
   onCreate: () => void
 }
@@ -42,13 +42,14 @@ export default function PreviewAndCreate({
   stakingCap,
   reward,
   apy,
+  approvals,
   onCreate
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   useEffect(() => {
-    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime))
-  }, [account, reward, liquidityPair, startTime, endTime])
+    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || !approvals))
+  }, [account, reward, liquidityPair, startTime, endTime, approvals])
   const getConfirmButtonMessage = () => {
     if (!account) {
       return 'Connect your wallet'

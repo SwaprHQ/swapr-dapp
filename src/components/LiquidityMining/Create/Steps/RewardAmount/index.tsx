@@ -8,14 +8,22 @@ import AssetSelector from '../PairAndReward/AssetSelector'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
+import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 const FlexWrapper = styled(Flex)``
 interface RewardAmountProps {
   rewardsObject: (TokenAmount | undefined)[]
   onRewardsObjectChange: (rewardsObject: (TokenAmount | undefined)[]) => void
+  setApprovals: (approvals: ApprovalState[]) => void
+  approvals: ApprovalState[]
 }
 
-export default function RewardAmount({ rewardsObject, onRewardsObjectChange }: RewardAmountProps) {
+export default function RewardAmount({
+  approvals,
+  rewardsObject,
+  onRewardsObjectChange,
+  setApprovals
+}: RewardAmountProps) {
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
 
   const [currentReward, setCurrentReward] = useState<number | undefined>(undefined)
@@ -80,7 +88,10 @@ export default function RewardAmount({ rewardsObject, onRewardsObjectChange }: R
             handleUserInput={event => {
               handleLocalUserInput(event, index)
             }}
+            setApprovals={setApprovals}
+            approvals={approvals}
             onResetCurrency={() => handleCurrencyReset(index)}
+            index={index}
           />
         ))}
       </FlexWrapper>

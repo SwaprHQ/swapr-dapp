@@ -15,6 +15,7 @@ import ConfirmStakingRewardsDistributionCreation from '../../../components/Liqui
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
 import styled from 'styled-components'
+import { ApprovalState } from '../../../hooks/useApproveCallback'
 
 const LastStep = styled(Step)`
   z-index: 0;
@@ -23,14 +24,17 @@ export enum CampaignType {
   TOKEN,
   PAIR
 }
+
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
   const [rewardsObject, setRewardsObject] = useState<(TokenAmount | undefined)[]>(new Array(4).fill(undefined))
+  const [rewardsApprovals, setRewardsApprovals] = useState<ApprovalState[]>(new Array(4).fill(ApprovalState.UNKNOWN))
 
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+
   const [errorMessage, setErrorMessage] = useState('')
   const [campaingType, setCampaignType] = useState<CampaignType>(CampaignType.TOKEN)
   const [targetedPairOrToken, setTargetedPairOrToken] = useState<Pair | Token | null>(null)
@@ -45,7 +49,15 @@ export default function CreateLiquidityMining() {
     () => (rewardsObject.length ? rewardsObject.filter(item => item?.greaterThan('0')) : new Array(4).fill(undefined)),
     [rewardsObject]
   )
-  console.log(memoizedRewardArray)
+  const memoizedApprovalsArray = useMemo(
+    () =>
+      rewardsApprovals.some((value, i) =>
+        value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? true : false
+      ),
+    [rewardsApprovals]
+  )
+  console.log(memoizedApprovalsArray)
+  console.log(rewardsApprovals)
 
   const campaign = useNewLiquidityMiningCampaign(
     targetedPairOrToken,
@@ -162,7 +174,12 @@ export default function CreateLiquidityMining() {
         </Step>
         {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
         <Step title="Select Reward Amount" index={3} disabled={false}>
-          <RewardAmount rewardsObject={rewardsObject} onRewardsObjectChange={setRewardsObject} />
+          <RewardAmount
+            setApprovals={setRewardsApprovals}
+            approvals={rewardsApprovals}
+            rewardsObject={rewardsObject}
+            onRewardsObjectChange={setRewardsObject}
+          />
         </Step>
 
         <LastStep
@@ -171,6 +188,7 @@ export default function CreateLiquidityMining() {
           disabled={!targetedPairOrToken || !startTime || !endTime || memoizedRewardArray.length === 0}
         >
           <PreviewAndCreate
+            approvals={memoizedApprovalsArray}
             liquidityPair={targetedPairOrToken}
             startTime={startTime}
             endTime={endTime}

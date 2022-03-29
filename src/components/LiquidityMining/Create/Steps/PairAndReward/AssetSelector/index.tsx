@@ -151,9 +151,12 @@ interface AssetSelectorProps {
   campaingType: CampaignType
   customAssetTitle?: string
   amount?: string
+  index?: number
   handleUserInput?: (value: string) => void
   onResetCurrency?: () => void
   onClick: (event: React.MouseEvent<HTMLElement>) => void
+  setApprovals?: (approvals: ApprovalState[]) => void
+  approvals?: ApprovalState[]
 }
 
 export default function AssetSelector({
@@ -163,8 +166,11 @@ export default function AssetSelector({
   campaingType,
   onClick,
   amount,
+  approvals,
   onResetCurrency,
-  handleUserInput
+  handleUserInput,
+  setApprovals,
+  index
 }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
@@ -182,6 +188,19 @@ export default function AssetSelector({
     stakingRewardsDistributionFactoryContract?.address
   )
 
+  // useEffect(() => {
+  //   if (setApprovals && account && approvals) {
+  //     console.log('herer')
+  //     setApprovals(
+  //       [...approvals].map((item, i) =>
+  //         i === key && userBalance && rewardMemo && rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
+  //           ? true
+  //           : item
+  //       )
+  //     )
+  //   }
+  // }, [rewardMemo, userBalance, approvalState, account, approvals])
+
   const getApproveButtonMessage = () => {
     if (!account) {
       return 'Connect your wallet'
@@ -194,6 +213,18 @@ export default function AssetSelector({
   }
 
   useEffect(() => {
+    if (setApprovals && approvals && rewardMemo && userBalance) {
+      setApprovals(
+        [...approvals].map((item, i) =>
+          i === index && rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
+            ? ApprovalState.APPROVED
+            : rewardMemo.greaterThan('0') && userBalance?.lessThan(rewardMemo)
+            ? ApprovalState.NOT_APPROVED
+            : item
+        )
+      )
+    }
+
     setAreButtonsDisabled(!!(!account || !rewardMemo || (userBalance && userBalance.lessThan(rewardMemo))))
   }, [account, rewardMemo, userBalance])
   useEffect(() => {
