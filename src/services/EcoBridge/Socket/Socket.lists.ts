@@ -1322,7 +1322,7 @@ export const SOCKET_TOKENS: SocketTokenMap = {
       decimals: 6,
       name: 'USD Coin (Arb1)',
       symbol: 'USDC',
-      logoURI: 'https://cryptologos.cc/logos/maker-mkr-logo.png',
+      logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/usdc.svg',
       address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
       chainId: 42161
     },
@@ -1330,7 +1330,7 @@ export const SOCKET_TOKENS: SocketTokenMap = {
       decimals: 6,
       name: 'USD Coin (Arb1)',
       symbol: 'USDC',
-      logoURI: 'https://cryptologos.cc/logos/maker-mkr-logo.png',
+      logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/usdc.svg',
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       chainId: 1
     },
