@@ -183,10 +183,10 @@ export function getLpTokenPrice(
 }
 
 /**
- * Returns trimmed fraction value to significantDigits decimal places
+ * Returns trimmed fraction value to limit number of decimal places
  * @param value Fraction value to trim
- * @param significantDigits number of limit decimal places
- * @param rounding rounding mode
+ * @param significantDigits Limit number of decimal places
+ * @param rounding Rounding mode
  */
 export const limitDigitDecimalPlace = (
   value?: Fraction,
