@@ -42,6 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
+  max-height: 100px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
