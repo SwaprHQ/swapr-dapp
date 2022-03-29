@@ -71,10 +71,9 @@ export default function PairAndReward({
 
   const handlePairSelection = useCallback(
     selectedPair => {
-      if (campaingType === CampaignType.PAIR) onLiquidityPairChange(selectedPair)
-      else onLiquidityPairChange(selectedPair)
+      onLiquidityPairChange(selectedPair)
     },
-    [onLiquidityPairChange, campaingType]
+    [onLiquidityPairChange]
   )
 
   const handleDismissCurrencySearch = useCallback(() => {
@@ -85,7 +84,6 @@ export default function PairAndReward({
   }, [campaingType, onLiquidityPairChange])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      console.log(!liquidityPair || (liquidityPair instanceof Pair && !liquidityPair.liquidityToken))
       if (!liquidityPair || (liquidityPair instanceof Pair && !liquidityPair.liquidityToken)) return
       setStakingCapString(rawValue)
       const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair.liquidityToken

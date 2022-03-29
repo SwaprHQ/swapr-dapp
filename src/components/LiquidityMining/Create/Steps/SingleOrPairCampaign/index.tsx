@@ -56,7 +56,6 @@ export const adjustableDiamondSize = (isSingle: boolean, active: boolean) => {
 export default function SingleOrPairCampaign({ singleReward, onChange }: SingleOrPairCampaignProps) {
   const handleRewardClick = useCallback(
     event => {
-      console.log(event)
       onChange(event)
     },
     [onChange]

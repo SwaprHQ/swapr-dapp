@@ -32,7 +32,7 @@ export function useTokenDerivedNativeCurrency(
       return { loading: true, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
     if (!data || data.token === null || error)
       return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
-    console.log(data)
+
     return {
       loading: false,
       derivedNativeCurrency: CurrencyAmount.nativeCurrency(

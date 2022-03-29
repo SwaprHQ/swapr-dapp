@@ -5,11 +5,9 @@ import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
 import { Card, Divider } from '../../../styleds'
 import { ButtonPrimary } from '../../../../Button'
-import { useTokenBalance } from '../../../../../state/wallet/hooks'
-import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
-import { useStakingRewardsDistributionFactoryContract } from '../../../../../hooks/useContract'
-import { useActiveWeb3React } from '../../../../../hooks'
+
 import styled from 'styled-components'
+import { useActiveWeb3React } from '../../../../../hooks'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -31,7 +29,8 @@ interface PreviewProps {
   endTime: Date | null
   timelocked: boolean
   stakingCap: TokenAmount | null
-  reward: TokenAmount | null
+  // reward: RewardsObjectsData[] | null
+  reward: TokenAmount[]
   onCreate: () => void
 }
 
@@ -46,39 +45,19 @@ export default function PreviewAndCreate({
   onCreate
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
-  const userBalance = useTokenBalance(account || undefined, reward?.token)
-  const stakingRewardsDistributionFactoryContract = useStakingRewardsDistributionFactoryContract()
-  const [approvalState, approveCallback] = useApproveCallback(
-    reward ?? undefined,
-    stakingRewardsDistributionFactoryContract?.address
-  )
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
-
-  const getApproveButtonMessage = () => {
-    if (!account) {
-      return 'Connect your wallet'
-    }
-    if (userBalance && reward && reward.greaterThan('0') && userBalance.lessThan(reward)) {
-      return 'Insufficient balance'
-    }
-    return 'Approve reward token'
-  }
-
+  useEffect(() => {
+    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime))
+  }, [account, reward, liquidityPair, startTime, endTime])
   const getConfirmButtonMessage = () => {
     if (!account) {
       return 'Connect your wallet'
     }
-    if (userBalance && reward && reward.greaterThan('0') && userBalance.lessThan(reward)) {
-      return 'Insuffucient balance'
-    }
+    // if (userBalance && reward && reward.greaterThan('0') && userBalance.lessThan(reward)) {
+    //   return 'Insuffucient balance'
+    // }
     return 'Deposit & create'
   }
-
-  useEffect(() => {
-    setAreButtonsDisabled(
-      !!(!account || !reward || !reward.token || reward.equalTo('0') || (userBalance && userBalance.lessThan(reward)))
-    )
-  }, [account, reward, userBalance])
 
   return (
     <Flex flexDirection="column" style={{ zIndex: -1 }}>
@@ -90,13 +69,12 @@ export default function PreviewAndCreate({
               startTime={startTime}
               endTime={endTime}
               timelocked={timelocked}
-              stakingCap={stakingCap}
             />
             <Box mx="18px">
               <Divider />
             </Box>
             <ResponsiveContainer flex1>
-              <RewardSummary reward={reward} apy={apy} />
+              <RewardSummary stakingCap={stakingCap} reward={reward} apy={apy} />
             </ResponsiveContainer>
           </FlexContainer>
         </Card>
@@ -104,22 +82,19 @@ export default function PreviewAndCreate({
       <Box>
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
-            <Box width="100%">
+            {/* <Box width="100%">
               <ButtonPrimary
                 disabled={areButtonsDisabled || approvalState !== ApprovalState.NOT_APPROVED}
                 onClick={approveCallback}
               >
                 {getApproveButtonMessage()}
               </ButtonPrimary>
-            </Box>
-            <Box mx="18px">
+            </Box> */}
+            {/* <Box mx="18px">
               <Divider />
-            </Box>
+            </Box> */}
             <ResponsiveContainer width="100%">
-              <ButtonPrimary
-                disabled={areButtonsDisabled || approvalState !== ApprovalState.APPROVED}
-                onClick={onCreate}
-              >
+              <ButtonPrimary disabled={areButtonsDisabled} onClick={onCreate}>
                 {getConfirmButtonMessage()}
               </ButtonPrimary>
             </ResponsiveContainer>

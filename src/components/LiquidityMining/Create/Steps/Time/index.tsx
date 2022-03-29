@@ -2,28 +2,40 @@ import React from 'react'
 import { Box, Flex } from 'rebass'
 import { TYPE } from '../../../../../theme'
 import TimeSelector from './TimeSelector'
-import Toggle from '../../../../Toggle'
-import { Card, Divider } from '../../../styleds'
+//import Toggle from '../../../../Toggle'
+import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
+import { Switch } from '../../../../Switch'
 
-const FlexContainer = styled(Flex)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: column;
-  `}
+// const FlexContainer = styled(Flex)`
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     flex-direction: column;
+//   `}
+// `
+
+// const ResponsiveBoxContainer = styled(Box)`
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     margin-top: 16px !important;
+//   `}
+// `
+
+// const ResponsiveFlexContainer = styled(Box)`
+//   ${props => props.theme.mediaWidth.upToExtraSmall`
+//     margin-top: 16px !important;
+//   `}
+// `
+const StyledSwitch = styled(Switch)`
+  color: red;
+  label {
+    span {
+      background-color: black !important;
+    }
+  }
 `
-
-const ResponsiveBoxContainer = styled(Box)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-top: 16px !important;
-  `}
+const FlexWrapper = styled(Flex)`
+  height: 150px;
+  align-items: start !important;
 `
-
-const ResponsiveFlexContainer = styled(Box)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-top: 16px !important;
-  `}
-`
-
 interface TimeProps {
   startTime: Date | null
   endTime: Date | null
@@ -42,43 +54,52 @@ export default function Time({
   onTimelockedChange
 }: TimeProps) {
   return (
-    <Card>
-      <FlexContainer justifyContent="stretch" width="100%">
-        <Box flex="1">
-          <TimeSelector
-            title="START DATE AND TIME"
-            placeholder="Start date & time"
-            value={startTime}
-            minimum={new Date()}
-            onChange={onStartTimeChange}
-          />
+    <FlexWrapper>
+      <SmoothGradientCard width="466px" padding={'28px 33.5px'} marginRight={'28px'}>
+        <TimeSelector
+          title="STARTING"
+          placeholder="Start date"
+          value={startTime}
+          minimum={new Date()}
+          onChange={onStartTimeChange}
+        />
+
+        <HorizontalDivider />
+
+        <TimeSelector
+          title="ENDING"
+          placeholder="End date"
+          value={endTime}
+          minimum={startTime || new Date()}
+          onChange={onEndTimeChange}
+        />
+      </SmoothGradientCard>
+
+      <SmoothGradientCard
+        textAlign={'start'}
+        alignItems={'start'}
+        padding={'33.5px 41px '}
+        width={'266px'}
+        flexDirection={'column'}
+      >
+        <Box mb="auto" mt={'8px'}>
+          <TYPE.small
+            fontSize={'11px'}
+            textAlign={'start'}
+            fontWeight="600"
+            lineHeight={'13px'}
+            color="text4"
+            letterSpacing="8%"
+          >
+            TIME LOCKED STAKING
+          </TYPE.small>
         </Box>
-        <Box mx="18px">
-          <Divider />
-        </Box>
-        <ResponsiveBoxContainer flex="1">
-          <TimeSelector
-            title="END DATE AND TIME"
-            placeholder="End date & time"
-            value={endTime}
-            minimum={startTime || new Date()}
-            onChange={onEndTimeChange}
-          />
-        </ResponsiveBoxContainer>
-        <Box mx="18px">
-          <Divider />
-        </Box>
-        <ResponsiveFlexContainer flexDirection="column">
-          <Box mb="16px">
-            <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
-              TIMELOCK
-            </TYPE.small>
-          </Box>
-          <Box>
-            <Toggle isActive={timelocked} toggle={onTimelockedChange} />
-          </Box>
-        </ResponsiveFlexContainer>
-      </FlexContainer>
-    </Card>
+        <Flex alignItems={'start'}>
+          {/* <Toggle isActive={timelocked} toggle={onTimelockedChange} /> */}
+          <TYPE.small>{timelocked ? 'ON' : 'OFF'}</TYPE.small>
+          <StyledSwitch handleToggle={onTimelockedChange} isOn={timelocked} label={'TIME LOCKED'} />
+        </Flex>
+      </SmoothGradientCard>
+    </FlexWrapper>
   )
 }

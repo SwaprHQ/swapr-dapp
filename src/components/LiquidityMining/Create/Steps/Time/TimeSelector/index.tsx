@@ -15,7 +15,7 @@ export default function TimeSelector({ title, placeholder, minimum, value, onCha
   return (
     <Flex flexDirection="column" width="100%">
       <Box mb="16px">
-        <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
+        <TYPE.small textAlign={'start'} fontWeight="600" color="text4" letterSpacing="0.08em">
           {title}
         </TYPE.small>
       </Box>

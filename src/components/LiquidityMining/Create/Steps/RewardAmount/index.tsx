@@ -1,176 +1,96 @@
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
-import { TYPE } from '../../../../../theme'
-import CurrencyLogo from '../../../../CurrencyLogo'
-import NumericalInput from '../../../../Input/NumericalInput'
-import Radio from '../../../../Radio'
-import { Card, Divider } from '../../../styleds'
-import border8pxRadius from '../../../../../assets/images/border-8px-radius.png'
-//import DoubleCurrencyLogo from '../../../../DoubleLogo'
+import { TokenAmount } from '@swapr/sdk'
+import React, { useCallback, useState } from 'react'
+import { Flex } from 'rebass'
+
 import { tryParseAmount } from '../../../../../state/swap/hooks'
-import { usePrevious } from 'react-use'
 
-const RelativeContainer = styled.div<{ disabled?: boolean }>`
-  position: relative;
-  transition: opacity 0.3s ease;
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
-`
+import AssetSelector from '../PairAndReward/AssetSelector'
+import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
+import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
+import styled from 'styled-components'
 
-const StyledNumericalInput = styled(NumericalInput)`
-  border: 8px solid;
-  border-radius: 8px;
-  border-image: url(${border8pxRadius}) 8;
-  width: 100%;
-  height: 33px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 16px;
-  text-transform: uppercase;
-  padding-left: 8px;
-  padding-right: 8px;
-  background-color: ${props => props.theme.dark1};
-`
-
-const RewardInputLogo = styled(CurrencyLogo)`
-  position: absolute;
-  top: 8px;
-  right: 16px;
-`
-
-const StakablePairInputLogoContainer = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 16px;
-`
-
-const FlexContainer = styled(Flex)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    flex-direction: column;
-  `}
-`
-
-const PoolSizeContainer = styled(Box)`
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-top: 16px !important;
-  `}
-`
-
+const FlexWrapper = styled(Flex)``
 interface RewardAmountProps {
-  reward: TokenAmount | null
-  unlimitedPool: boolean
-  stakablePair: Pair | Token | null
-  onRewardAmountChange: (newAmount: TokenAmount) => void
-  onUnlimitedPoolChange: (newValue: boolean) => void
-  onStakingCapChange: (newValue: TokenAmount | null) => void
+  rewardsObject: (TokenAmount | undefined)[]
+  onRewardsObjectChange: (rewardsObject: (TokenAmount | undefined)[]) => void
 }
 
-export default function RewardAmount({
-  reward,
-  unlimitedPool,
-  stakablePair,
-  onRewardAmountChange,
-  onUnlimitedPoolChange,
-  onStakingCapChange
-}: RewardAmountProps) {
-  const previousReward = usePrevious(reward)
-  const [amount, setAmount] = useState('')
-  const [stakingCapString, setStakingCapString] = useState('')
+export default function RewardAmount({ rewardsObject, onRewardsObjectChange }: RewardAmountProps) {
+  const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
 
-  useEffect(() => {
-    if (!reward) setAmount('')
-  }, [reward])
+  const [currentReward, setCurrentReward] = useState<number | undefined>(undefined)
 
-  useEffect(() => {
-    if (unlimitedPool) {
-      setStakingCapString('')
-      onStakingCapChange(null)
-    }
-  }, [onStakingCapChange, stakablePair, unlimitedPool])
+  const handleDismissCurrencySearch = useCallback(() => {
+    setCurrencySearchOpen(false)
+  }, [])
+  const handelOpenPairOrTokenSearch = useCallback(value => {
+    setCurrentReward(value)
+    setCurrencySearchOpen(true)
+  }, [])
 
-  useEffect(() => {
-    if (reward && reward.token && (!previousReward || !previousReward.token.equals(reward.token))) {
-      const parsedAmount = tryParseAmount(amount, reward.token) as TokenAmount | undefined
-      onRewardAmountChange(parsedAmount || new TokenAmount(reward.token, '0'))
-    }
-  }, [onRewardAmountChange, reward, amount, previousReward])
+  const handlePairSelection = useCallback(
+    selectedPair => {
+      if (currentReward !== undefined) {
+        onRewardsObjectChange(
+          [...rewardsObject].map((item, i) => (i === currentReward ? new TokenAmount(selectedPair, '0') : item))
+        )
+      }
+    },
+    [currentReward, rewardsObject, onRewardsObjectChange]
+  )
+
+  const handleCurrencyReset = useCallback(
+    index => {
+      onRewardsObjectChange([...rewardsObject].map((item, i) => (i === index ? undefined : item)))
+    },
+    [rewardsObject, onRewardsObjectChange]
+  )
 
   const handleLocalUserInput = useCallback(
-    rawValue => {
-      if (!reward || !reward.token) return
-      setAmount(rawValue)
-      const parsedAmount = tryParseAmount(rawValue, reward.token) as TokenAmount | undefined
-      onRewardAmountChange(parsedAmount || new TokenAmount(reward.token, '0'))
-    },
-    [onRewardAmountChange, reward]
-  )
+    (rawValue, index) => {
+      const newParsedAmount = tryParseAmount(
+        rawValue,
+        rewardsObject[index]?.token ? rewardsObject[index]?.token : undefined
+      ) as TokenAmount | undefined
 
-  const handleLocalStakingCapChange = useCallback(
-    rawValue => {
-      if (!stakablePair || (stakablePair instanceof Pair && !stakablePair.liquidityToken)) return
-      setStakingCapString(rawValue)
-      const tokenOrPair = stakablePair instanceof Token ? stakablePair : stakablePair.liquidityToken
-      const parsedAmount = tryParseAmount(rawValue, tokenOrPair) as TokenAmount | undefined
-      onStakingCapChange(parsedAmount || new TokenAmount(tokenOrPair, '0'))
+      onRewardsObjectChange(
+        [...rewardsObject].map((item, i) =>
+          i === index && item ? (newParsedAmount ? newParsedAmount : new TokenAmount(item.token, '0')) : item
+        )
+      )
     },
-    [onStakingCapChange, stakablePair]
-  )
-
-  const handleLocalRadioChange = useCallback(
-    event => {
-      onUnlimitedPoolChange(event.target.value === 'unlimited')
-    },
-    [onUnlimitedPoolChange]
+    [onRewardsObjectChange, rewardsObject]
   )
 
   return (
-    <Card>
-      <FlexContainer width="100%">
-        <Flex flex="1" flexDirection="column">
-          <Box mb="16px">
-            <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
-              TOTAL REWARD
-            </TYPE.small>
-          </Box>
-          <Box>
-            <RelativeContainer>
-              <StyledNumericalInput value={amount} onUserInput={handleLocalUserInput} />
-              <RewardInputLogo size="16px" currency={reward?.token} />
-            </RelativeContainer>
-          </Box>
-        </Flex>
-        <Box mx="18px">
-          <Divider />
-        </Box>
-        <PoolSizeContainer flex="1" flexDirection="column">
-          <Box mb="24px">
-            <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
-              POOL SIZE
-            </TYPE.small>
-          </Box>
-          <Flex flexDirection="column">
-            <Box mb="16px">
-              <Radio checked={unlimitedPool} label="Unlimited" value="unlimited" onChange={handleLocalRadioChange} />
-            </Box>
-            <Box mb="16px">
-              <Radio checked={!unlimitedPool} label="Limited" value="limited" onChange={handleLocalRadioChange} />
-            </Box>
-            <Box>
-              <RelativeContainer disabled={unlimitedPool}>
-                <StyledNumericalInput
-                  disabled={unlimitedPool}
-                  value={stakingCapString}
-                  onUserInput={handleLocalStakingCapChange}
-                />
-                <StakablePairInputLogoContainer>
-                  {/* <DoubleCurrencyLogo size={16} currency0={stakablePair?.token0} currency1={stakablePair?.token1} /> */}
-                </StakablePairInputLogoContainer>
-              </RelativeContainer>
-            </Box>
-          </Flex>
-        </PoolSizeContainer>
-      </FlexContainer>
-    </Card>
+    <>
+      <FlexWrapper>
+        {[...rewardsObject].map((item, index) => (
+          <AssetSelector
+            key={index}
+            currency0={rewardsObject[index] !== undefined ? rewardsObject[index]?.token : undefined}
+            campaingType={CampaignType.TOKEN}
+            onClick={() => handelOpenPairOrTokenSearch(index)}
+            customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
+            amount={
+              rewardsObject[index] !== undefined && rewardsObject[index] !== undefined
+                ? rewardsObject[index]?.toExact()
+                : ''
+            }
+            handleUserInput={event => {
+              handleLocalUserInput(event, index)
+            }}
+            onResetCurrency={() => handleCurrencyReset(index)}
+          />
+        ))}
+      </FlexWrapper>
+
+      <CurrencySearchModal
+        isOpen={currencySearchOpen}
+        onDismiss={handleDismissCurrencySearch}
+        onCurrencySelect={handlePairSelection}
+        showNativeCurrency={false}
+      />
+    </>
   )
 }

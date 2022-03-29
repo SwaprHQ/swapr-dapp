@@ -15,11 +15,12 @@ import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { getLpTokenPrice } from '../utils/prices'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
-import { useTotalSupply } from '../data/TotalSupply'
+
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
 import { parseUnits } from 'arb-ts/node_modules/@ethersproject/units'
 
 import { getAddress } from 'ethers/lib/utils'
+import Decimal from 'decimal.js-light'
 
 export function useNewLiquidityMiningCampaign(
   targetedPairOrToken: Pair | Token | null,
@@ -35,13 +36,13 @@ export function useNewLiquidityMiningCampaign(
   const tokenDerivedNative = useTokenDerivedNativeCurrency(
     targetedPairOrToken instanceof Token ? targetedPairOrToken : undefined
   )
+
   const nativeCurrency = useNativeCurrency()
   const { pricedTokenAmounts: pricedRewardAmounts } = useNativeCurrencyPricedTokenAmounts(rewards)
   const lpTokenTotalSupply = usePairLiquidityTokenTotalSupply(
     targetedPairOrToken instanceof Pair ? targetedPairOrToken : undefined
   )
-  const tokenTotalSupply = useTotalSupply(targetedPairOrToken instanceof Token ? targetedPairOrToken : undefined)
-  console.log(tokenTotalSupply)
+
   const { reserveNativeCurrency: targetedPairReserveNativeCurrency } = usePairReserveNativeCurrency()
 
   return useMemo(() => {
@@ -67,18 +68,23 @@ export function useNewLiquidityMiningCampaign(
         locked,
         stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0')
       )
-    } else if (targetedPairOrToken instanceof Token && !tokenDerivedNative.loading) {
+    } else if (targetedPairOrToken instanceof Token && tokenDerivedNative.derivedNativeCurrency) {
       const { address, symbol, name, decimals } = targetedPairOrToken
-      //const stakeToken = new PricedToken(chainId, address, decimals, derivedNative, symbol, name)
+
       const derivedNative = new Price(
         targetedPairOrToken,
         nativeCurrency,
         parseUnits('1', nativeCurrency.decimals).toString(),
-        tokenDerivedNative.derivedNativeCurrency.toString()
+        parseUnits(
+          new Decimal(tokenDerivedNative.derivedNativeCurrency.toFixed()).toFixed(nativeCurrency.decimals),
+          nativeCurrency.decimals
+        ).toString()
       )
+
       const stakeToken = new PricedToken(chainId, getAddress(address), decimals, derivedNative, symbol, name)
 
       const staked = new PricedTokenAmount(stakeToken, '0')
+
       return new SingleSidedLiquidityMiningCampaign(
         formattedStartTime,
         formattedEndTime,

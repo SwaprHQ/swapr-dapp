@@ -1,6 +1,6 @@
 import React from 'react'
 import { Flex } from 'rebass'
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { Pair, Token } from '@swapr/sdk'
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'
@@ -12,10 +12,9 @@ interface PoolSummaryProps {
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
-  stakingCap: TokenAmount | null
 }
 
-export default function PoolSummary({ liquidityPair, startTime, endTime, timelocked, stakingCap }: PoolSummaryProps) {
+export default function PoolSummary({ liquidityPair, startTime, endTime, timelocked }: PoolSummaryProps) {
   return (
     <Flex flexDirection="column" justifyContent="stretch" flex="1">
       <AutoColumn gap="8px">
@@ -24,7 +23,7 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
         </TYPE.small>
         <AutoColumn gap="4px">
           <DataRow
-            name="POOL PAIR"
+            name="CAMPAIGN"
             value={
               liquidityPair instanceof Pair
                 ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
@@ -39,10 +38,6 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
           />
           <DataRow name="ENDS" value={endTime ? DateTime.fromJSDate(endTime).toFormat('dd-MM-yyyy HH:mm') : '-'} />
           <DataRow name="TIMELOCK" value={timelocked ? 'YES' : 'NO'} />
-          <DataRow
-            name="STAKING CAP"
-            value={stakingCap && stakingCap.greaterThan('0') ? stakingCap.toSignificant(4) : '-'}
-          />
         </AutoColumn>
       </AutoColumn>
     </Flex>

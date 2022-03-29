@@ -41,3 +41,11 @@ export const Divider = styled.div`
   width: 1px;
   background: ${props => props.theme.bg5};
 `
+export const HorizontalDivider = styled.div`
+position: relative;
+top:13px
+  height: 1px;
+  width: 37.5px;
+  margin: 0 18px;
+  background: ${props => props.theme.bg5};
+`

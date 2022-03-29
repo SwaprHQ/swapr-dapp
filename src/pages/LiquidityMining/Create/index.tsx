@@ -26,6 +26,8 @@ export enum CampaignType {
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
+  const [rewardsObject, setRewardsObject] = useState<(TokenAmount | undefined)[]>(new Array(4).fill(undefined))
+
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
@@ -39,7 +41,12 @@ export default function CreateLiquidityMining() {
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
 
-  const memoizedRewardArray = useMemo(() => (reward ? [reward] : []), [reward])
+  const memoizedRewardArray = useMemo(
+    () => (rewardsObject.length ? rewardsObject.filter(item => item?.greaterThan('0')) : new Array(4).fill(undefined)),
+    [rewardsObject]
+  )
+  console.log(memoizedRewardArray)
+
   const campaign = useNewLiquidityMiningCampaign(
     targetedPairOrToken,
     memoizedRewardArray,
@@ -55,13 +62,6 @@ export default function CreateLiquidityMining() {
   const handleTimelockedChange = useCallback(() => {
     setTimelocked(!timelocked)
   }, [timelocked])
-
-  // const handleRewardTokenChange = useCallback(
-  //   (token: Token) => {
-  //     setReward(new TokenAmount(token, reward ? reward.raw.toString() : '0'))
-  //   },
-  //   [reward]
-  // )
 
   const handleCreateRequest = useCallback(() => {
     if (!createLiquidityMiningCallback) return
@@ -113,6 +113,7 @@ export default function CreateLiquidityMining() {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
       setCampaignType(CampaignType.TOKEN)
+      setRewardsObject(new Array(4).fill(undefined))
       setTargetedPairOrToken(null)
       setReward(null)
       setUnlimitedPool(true)
@@ -148,17 +149,8 @@ export default function CreateLiquidityMining() {
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        <Step title="Select reward amount" index={2} disabled={!targetedPairOrToken}>
-          <RewardAmount
-            reward={reward}
-            stakablePair={targetedPairOrToken}
-            unlimitedPool={unlimitedPool}
-            onRewardAmountChange={setReward}
-            onUnlimitedPoolChange={setUnlimitedPool}
-            onStakingCapChange={setStakingCap}
-          />
-        </Step>
-        <Step title="Duration and start/end time" index={3} disabled={!reward || reward.equalTo('0')}>
+        {/* <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}> */}
+        <Step title="Campaign Duration" index={2} disabled={false}>
           <Time
             startTime={startTime}
             endTime={endTime}
@@ -168,17 +160,22 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
+        {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
+        <Step title="Select Reward Amount" index={3} disabled={false}>
+          <RewardAmount rewardsObject={rewardsObject} onRewardsObjectChange={setRewardsObject} />
+        </Step>
+
         <LastStep
           title="Preview, approve and create mining pool"
           index={4}
-          disabled={!targetedPairOrToken || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
+          disabled={!targetedPairOrToken || !startTime || !endTime || memoizedRewardArray.length === 0}
         >
           <PreviewAndCreate
             liquidityPair={targetedPairOrToken}
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
-            reward={reward}
+            reward={memoizedRewardArray}
             stakingCap={stakingCap}
             apy={campaign ? campaign.apy : new Percent('0', '100')}
             onCreate={handleCreateRequest}
