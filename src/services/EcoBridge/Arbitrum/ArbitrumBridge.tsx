@@ -810,7 +810,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         if (address === nativeCurrency) {
           gas = await this.bridge.l2Bridge.estimateGasWithdrawETH(parsedValue)
         } else {
-          gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(address, parsedValue)
+          const l1Address = await this.bridge.l2Bridge.getERC20L1Address(address)
+          if (l1Address) {
+            gas = await this.bridge.l2Bridge.estimateGasWithdrawERC20(l1Address, parsedValue)
+          }
         }
       }
 
