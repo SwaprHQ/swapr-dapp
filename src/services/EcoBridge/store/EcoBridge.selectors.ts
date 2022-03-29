@@ -76,7 +76,11 @@ export const selectBridgeFilteredTransactions = createSelector(
   (txs, txsFilter) => {
     const sortedTxs = txs.sort((firstTx, secondTx) => {
       if (firstTx.status === 'pending' && secondTx.status !== 'pending') return -1
-      if (firstTx.status === 'redeem' && secondTx.status !== 'redeem') return -1
+      if (firstTx.status === 'pending' && secondTx.status === 'pending') {
+        if (!firstTx.timestampResolved || !secondTx.timestampResolved) return 0
+        if (firstTx.timestampResolved > secondTx.timestampResolved) return -1
+      }
+      if (firstTx.status === 'redeem' && secondTx.status !== 'pending') return -1
       return 0
     })
 

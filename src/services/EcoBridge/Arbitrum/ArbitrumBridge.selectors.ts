@@ -226,7 +226,7 @@ const createSelectBridgeTxsSummary = (
       return total
     }, [])
 
-    return [...l1Summaries, ...l2Summaries].reverse()
+    return [...l1Summaries, ...l2Summaries]
   })
 
 const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
