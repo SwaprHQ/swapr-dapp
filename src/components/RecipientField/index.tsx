@@ -1,26 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Flex } from 'rebass/styled-components'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { SearchInput } from '../SearchModal/styleds'
-import { RowBetween } from '../Row'
-import { CloseIcon, TYPE } from '../../theme'
+import { TYPE } from '../../theme'
 import useENS from '../../hooks/useENS'
 import { useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-
-const AddRecipientButtonStyled = styled.button`
-  font-size: 11px;
-  line-height: 13px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  color: ${({ theme }) => theme.text4};
-  outline: none;
-  background: transparent;
-  border: none;
-`
-const CloseIconStyled = styled(CloseIcon)`
-  padding: 0;
-`
 
 const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   margin-top: 5px;
@@ -39,7 +23,6 @@ interface RecipientField {
 
 export const RecipientField = ({ recipient, action }: RecipientField) => {
   const { t } = useTranslation()
-  const [showInput, setShowInput] = useState(false)
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
   const error = useMemo(() => Boolean(recipient && recipient.length > 0 && !loading && !address), [
@@ -63,23 +46,11 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
     }
   }, [action, dispatch])
 
-  const handleClose = useCallback(() => {
-    setShowInput(false)
-    dispatch(action({ recipient: null }))
-  }, [action, dispatch])
-
-  return !showInput ? (
-    <Flex justifyContent="center">
-      <AddRecipientButtonStyled onClick={() => setShowInput(true)}>{t('addRecipient')}</AddRecipientButtonStyled>
-    </Flex>
-  ) : (
+  return (
     <div>
-      <RowBetween>
-        <TYPE.subHeader lineHeight={'11px'} color={'purple3'}>
-          {t('recipient')}
-        </TYPE.subHeader>
-        <CloseIconStyled p={0} onClick={handleClose} />
-      </RowBetween>
+      <TYPE.subHeader lineHeight={'11px'} color={'purple3'}>
+        {t('recipient')}
+      </TYPE.subHeader>
       <SearchInputStyled
         type="text"
         placeholder={t('addressOrENS')}
