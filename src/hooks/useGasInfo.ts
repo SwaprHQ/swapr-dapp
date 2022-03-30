@@ -96,7 +96,6 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
           // There is no fast nor slow gas prices
           normal = parseFloat((parseInt(data.result, 16) / 1e9).toFixed(2))
         }
-        console.log(typeof normal, fast, slow)
         // Update state
         setGas({ normal, fast, slow })
       })
