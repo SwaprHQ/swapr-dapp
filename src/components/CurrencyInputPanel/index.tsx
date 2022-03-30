@@ -141,10 +141,6 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     const timeoutUpdate = setTimeout(() => {
-      console.log({
-        value,
-        localValue
-      })
 
       if (localValue !== value) {
         setLocalValue(value)
