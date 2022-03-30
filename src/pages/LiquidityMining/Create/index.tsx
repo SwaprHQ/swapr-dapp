@@ -56,8 +56,6 @@ export default function CreateLiquidityMining() {
       ),
     [rewardsApprovals]
   )
-  console.log(memoizedApprovalsArray)
-  console.log(rewardsApprovals)
 
   const campaign = useNewLiquidityMiningCampaign(
     targetedPairOrToken,
@@ -126,6 +124,7 @@ export default function CreateLiquidityMining() {
       // the creation tx has been submitted, let's empty the creation form
       setCampaignType(CampaignType.TOKEN)
       setRewardsObject(new Array(4).fill(undefined))
+      setRewardsApprovals(new Array(4).fill(ApprovalState.UNKNOWN))
       setTargetedPairOrToken(null)
       setReward(null)
       setUnlimitedPool(true)

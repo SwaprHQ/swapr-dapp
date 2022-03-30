@@ -30,7 +30,7 @@ const StyledNumericalInput = styled(NumericalInput)`
   background-color: ${props => props.theme.dark1};
 `
 
-interface PairAndRewardProps {
+interface TokenAndLimitProps {
   liquidityPair: Pair | Token | undefined | null
   unlimitedPool: boolean
   campaingType: CampaignType
@@ -39,14 +39,14 @@ interface PairAndRewardProps {
   onUnlimitedPoolChange: (newValue: boolean) => void
 }
 
-export default function PairAndReward({
+export default function TokenAndLimit({
   liquidityPair,
   unlimitedPool,
   onLiquidityPairChange,
   campaingType,
   onStakingCapChange,
   onUnlimitedPoolChange
-}: PairAndRewardProps) {
+}: TokenAndLimitProps) {
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')

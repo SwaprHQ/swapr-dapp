@@ -2,58 +2,20 @@ import { Token, TokenAmount } from '@swapr/sdk'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { CloseIcon, TYPE } from '../../../../../../theme'
-import CurrencyLogo from '../../../../../CurrencyLogo'
-import DoubleCurrencyLogo from '../../../../../DoubleLogo'
+
 import { Box, Flex } from 'rebass'
 import { SmoothGradientCard } from '../../../../styleds'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
-import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
-import { Diamond } from '../../SingleOrPairCampaign'
+
 import NumericalInput from '../../../../../Input/NumericalInput'
 import { ButtonPrimary } from '../../../../../Button'
 import { useActiveWeb3React } from '../../../../../../hooks'
 import { useTokenBalance } from '../../../../../../state/wallet/hooks'
 import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
+import { AssetLogo } from './AssetLogo'
 
-//import { ReactComponent as TokenSelect } from '../../../../../../assets/svg//token-select.svg'
-
-const InsideCirlce = styled.div<{ size: string }>`
-  position: relative;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  margin: 0 auto;
-  /* BG/Dark/#3 */
-  text-align: center;
-
-  /* border: 1.10256px dashed #3e4259; */
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%233E4259FF' stroke-width='1' stroke-dasharray='6%25%2c 8%25' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
-  box-sizing: border-box;
-  backdrop-filter: blur(12.3487px);
-  /* Note: backdrop-filter has minimal browser support */
-
-  border-radius: 219.679px;
-`
-const StyledSvg = styled.div`
-  display: flex;
-  align-items: center;
-
-  height: 100%;
-  svg {
-    margin: 0 auto;
-    display: block;
-  }
-`
-const DoubleIconWrapper = styled.div`
-  position: absolute;
-  top: -24px;
-  left: 59px;
-`
-const StyledCurrencyLogo = styled(CurrencyLogo)`
-  position: absolute;
-  top: -31px;
-`
 const StyledNumericalInput = styled(NumericalInput)`
   border: 8px solid;
   border-radius: 8px;
@@ -73,62 +35,7 @@ const RewardInputLogo = styled.div`
   top: 8px;
   right: 16px;
 `
-interface AssetLogoProps {
-  currency0?: Token | null
-  currency1?: Token | null
-  campaingType: CampaignType
-}
 
-const CrossIcon = (campaingType: CampaignType) => {
-  if (campaingType === CampaignType.TOKEN) {
-    return (
-      <Diamond size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
-        <InsideCirlce size={'80'}>
-          <StyledSvg>
-            <Cross></Cross>
-          </StyledSvg>
-        </InsideCirlce>
-      </Diamond>
-      // <TokenSelect />
-    )
-  } else {
-    return (
-      <DoubleIconWrapper>
-        <Diamond size={'84'} active={false} style={{ left: '-38px' }}>
-          <InsideCirlce size={'65'}>
-            <StyledSvg>
-              <Cross></Cross>
-            </StyledSvg>
-          </InsideCirlce>
-        </Diamond>
-        <Diamond size={'84'} active={false} style={{ left: '0px' }}>
-          <InsideCirlce size={'65'}>
-            <StyledSvg>
-              <Cross></Cross>
-            </StyledSvg>
-          </InsideCirlce>
-        </Diamond>
-      </DoubleIconWrapper>
-    )
-  }
-}
-
-const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps) => {
-  if (currency0 && currency1) {
-    return (
-      <DoubleCurrencyLogo
-        style={{ position: 'absolute', top: '-26px' }}
-        size={84}
-        currency0={currency0}
-        currency1={currency1}
-      />
-    )
-  } else if (currency0) {
-    return <StyledCurrencyLogo size="98px" currency={currency0} />
-  } else {
-    return CrossIcon(campaingType)
-  }
-}
 const RelativeContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
   transition: opacity 0.3s ease;
@@ -187,19 +94,6 @@ export default function AssetSelector({
     rewardMemo,
     stakingRewardsDistributionFactoryContract?.address
   )
-
-  // useEffect(() => {
-  //   if (setApprovals && account && approvals) {
-  //     console.log('herer')
-  //     setApprovals(
-  //       [...approvals].map((item, i) =>
-  //         i === key && userBalance && rewardMemo && rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
-  //           ? true
-  //           : item
-  //       )
-  //     )
-  //   }
-  // }, [rewardMemo, userBalance, approvalState, account, approvals])
 
   const getApproveButtonMessage = () => {
     if (!account) {
@@ -268,6 +162,7 @@ export default function AssetSelector({
         )}
 
         <Flex width="100%" justifyContent="center" alignSelf="end">
+          {/* <AssetLogos campaingType={campaingType} currency0={currency0} currency1={currency1} /> */}
           <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
           <Flex flexDirection={'column'}>
             {handleUserInput !== undefined && currency0 ? (

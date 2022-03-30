@@ -12,7 +12,7 @@ export const SmoothGradientCard = styled(Card)<{
 }>`
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
-
+  background-image: unset;
   text-align: center;
   justify-content: end;
   opacity: ${props => (!props.selectable || props.active ? '1' : '0.4')};
@@ -22,7 +22,7 @@ export const SmoothGradientCard = styled(Card)<{
     backdrop-filter: blur(20px);
     border-image-source: ${props =>
       props.active ? 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)' : 'transperent'};
-    background-blend-mode: Lighten;
+    /* background-blend-mode: Lighten; */
     background: ${props =>
       props.active
         ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(114.19deg, rgba(90, 12, 255, 0.8) -9%, rgba(17, 8, 35, 0) 113.1%)'
