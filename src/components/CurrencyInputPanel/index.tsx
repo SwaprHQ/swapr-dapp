@@ -149,12 +149,12 @@ export default function CurrencyInputPanel({
       if (localValue !== value) {
         setLocalValue(value)
       }
-    }, 500)
+    }, 700)
 
     return () => {
       clearTimeout(timeoutUpdate)
     }
-  }, [value])
+  }, [localValue, value])
 
   const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
