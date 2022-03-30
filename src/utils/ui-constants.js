@@ -54,12 +54,6 @@ import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 
-// About Cards
-
-import AboutGovernance from './../assets/images/about-governance.png'
-import AboutFarming from './../assets/images/about-farming.png'
-import AboutEcoRouting from './../assets/images/about-eco-routing.png'
-import AboutBridging from './../assets/images/about-bridging.png'
 import { scrollTo } from './helper-functions'
 
 export const mainNavigation = [
@@ -506,49 +500,3 @@ export const StatsContent = {
         }
     ]
 }
-
-// About
-
-export const AboutHeroContent = {
-    mainText: 'Features Statement',
-    heroParagraph: 'This is a page dedicated to Swapr features, each with an individual highlight and informer. Lorem ipsum dolor sit amet.',
-    heroButtons: [
-        {
-            label: 'FOR THE COMMUNITY',
-            type: 'primary',
-            href: '#'
-        },
-        {
-            label: 'FOR CREATORS',
-            type: 'dark',
-            href: '#'
-        }
-    ]
-}
-
-export const AboutCardsContent = [
-    {
-        title: 'LP GOVERNANCE',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutGovernance
-    },
-    {
-        title: 'DIY FARMING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutFarming
-    },
-    {
-        title: 'ECO-ROUTING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutEcoRouting
-    },
-    {
-        title: 'BRIDGING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutBridging
-    },
-]
