@@ -7,8 +7,6 @@ import {TimelineData} from './../../utils/milestones'
 import Milestone from './Milestone'
 import TimelineControls from './TimelineControls'
 import BottomRail from './BottomRail'
-import BackgroundBlurTop from './../../assets/images/timeline-assets/background-blur-top.png'
-import BackgroundBlur from './../../assets/images/timeline-assets/background-blur.png'
 
 const Timeline = () => {
     const [currentMilestoneGroup, setCurrentMilestoneGroup] = useState([]);
@@ -175,23 +173,23 @@ const StyledTimeline = styled(Layout)`
         }
     }
     .background-blur-top {
-        background-image: url('${BackgroundBlurTop}');
-        width: 961px;
-        height: 821px;
         position: absolute;
-        top: -80px;
-        right: 0;
+        width: 900px;
+        height: 660px;
+        top: 0px;
+        right: -160px;
+        background: radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%);
         @media screen and (max-width: 959px) {
             top: -600px;
         }
     }
     .background-blur-bottom {
-        width: 853px;
-        height: 821px;
-        background-image: url('${BackgroundBlur}');
         position: absolute;
-        top: 400px;
-        left: 0;
+        width: 800px;
+        height: 700px;
+        top: 475px;
+        left: -100px;
+        background: radial-gradient(closest-side,rgba(20,10,55,1) 10%,rgba(20,10,55,0) 100%);
         @media screen and (max-width: 959px) {
             display: none;
         }
