@@ -94,7 +94,7 @@ const StyledFeatures = styled(Layout)`
                 height: 250px;
                 bottom: -100px;
                 z-index: -1;
-                background: radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%);
+                background: ${gradients.glow};
             }
         }
         .features-showcase {
