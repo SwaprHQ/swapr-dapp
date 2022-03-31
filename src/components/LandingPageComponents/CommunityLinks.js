@@ -105,12 +105,12 @@ const StyledCommunityLinks = styled(Layout)`
         @media screen and (max-width: ${breakpoints.md}) {
             .community-gradient {
                 position: absolute;
-                height: 1000px;
-                width: calc(100vw + 500px);
-                top: -140px;
-                left: -260px;
+                height: 1400px;
+                width: calc(100vw + 900px);
+                top: -250px;
+                left: -450px;
                 pointer-events: none;
-                background: radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%);
+                background: ${gradients.glow};
             }
             .pre-header {
                 font-size: 18px;

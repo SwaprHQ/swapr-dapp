@@ -192,7 +192,7 @@ const StyledStats = styled(Layout)`
         top: -150px;
         left: -350px;
         z-index: 0;
-        background: radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%);
+        background: ${gradients.glow};
     }
     h2 {
         position: absolute;

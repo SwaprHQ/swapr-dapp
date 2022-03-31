@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 import Layout from './layout/Layout'
-import {breakpoints} from './../../utils/theme'
+import {breakpoints, gradients} from './../../utils/theme'
 import {TimelineData} from './../../utils/milestones'
 
 import Milestone from './Milestone'
@@ -178,7 +178,7 @@ const StyledTimeline = styled(Layout)`
         height: 660px;
         top: 0px;
         right: -160px;
-        background: radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%);
+        background: ${gradients.glow};
         @media screen and (max-width: 959px) {
             top: -600px;
         }
@@ -189,7 +189,7 @@ const StyledTimeline = styled(Layout)`
         height: 700px;
         top: 475px;
         left: -100px;
-        background: radial-gradient(closest-side,rgba(20,10,55,1) 10%,rgba(20,10,55,0) 100%);
+        background: ${gradients.glow};
         @media screen and (max-width: 959px) {
             display: none;
         }
