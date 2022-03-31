@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { CurrencyAmount, RoutablePlatform, Trade, TradeType } from '@swapr/sdk'
+import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
@@ -13,13 +13,15 @@ import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { useSwapState } from '../../state/swap/hooks'
 import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
 import { RowFixed } from '../Row'
-import { ROUTABLE_PLATFORM_LOGO } from '../../constants'
+import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
 import styled from 'styled-components'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
+import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, simpleWarningSeverity } from '../../utils/prices'
 import { Field } from '../../state/swap/actions'
 import Skeleton from 'react-loading-skeleton'
 import useDebounce from '../../hooks/useDebounce'
 import { Table, Th } from '../Table'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { useTranslation } from 'react-i18next'
 
 const Spacer = styled.tr`
   height: 6px;
@@ -50,11 +52,27 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
   return <WarningHelper text="Could not estimate gas fee. Please make sure you've approved the traded token." />
 }
 
+const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
+  return (
+    <TYPE.main
+      color={simpleWarningSeverity(priceImpact) >= PRICE_IMPACT_MEDIUM ? 'red1' : 'text4'}
+      fontSize="10px"
+      lineHeight="12px"
+      paddingX={'9px'}
+    >
+      {priceImpact ? (priceImpact.lessThan(ONE_BIPS) ? '<0.01%' : `${priceImpact.toFixed(2)}%`) : '-'}
+    </TYPE.main>
+  )
+}
+
 export function SwapPlatformSelector({
   allPlatformTrades,
   selectedTrade,
   onSelectedPlatformChange
 }: SwapPlatformSelectorProps) {
+  const isMobileByMedia = useIsMobileByMedia()
+  const { t } = useTranslation()
+
   const [allowedSlippage] = useUserSlippageTolerance()
   const { recipient, independentField } = useSwapState()
   const { loading: loadingTradesGasEstimates, estimations } = useSwapsGasEstimations(
@@ -80,14 +98,15 @@ export function SwapPlatformSelector({
   )
 
   return (
-    <AutoColumn gap="18px" style={{ borderBottom: '1px solid #292643', paddingBottom: '12px', marginBottom: '12px' }}>
+    <AutoColumn gap="18px">
       <Table>
         <thead>
           <tr>
-            <Th colSpan={4}>EXCHANGE</Th>
-            <Th>FEE</Th>
-            {showGasFees && <Th align="right">GAS</Th>}
-            <Th align="right">{`${independentField === Field.OUTPUT ? 'MAX SENT' : 'MIN. RECEIVED'}`}</Th>
+            <Th colSpan={4}>{t('exchange')}</Th>
+            <Th align="right">{isMobileByMedia ? t('pImp') : t('priceImpact')}</Th>
+            <Th>{t('fee')}</Th>
+            {showGasFees && <Th align="right">{t('gas')}</Th>}
+            <Th align="right">{`${independentField === Field.OUTPUT ? t('maxSent') : t('minReceived')}`}</Th>
           </tr>
         </thead>
         <tbody>
@@ -96,7 +115,7 @@ export function SwapPlatformSelector({
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
-            const { realizedLPFee } = computeTradePriceBreakdown(trade)
+            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
             const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
             return (
               <tr key={i} style={{ lineHeight: '22px' }}>
@@ -108,6 +127,9 @@ export function SwapPlatformSelector({
                     value={trade.platform.name.toLowerCase()}
                     onChange={handleSelectedTradeOverride}
                   />
+                </td>
+                <td align="right">
+                  <PriceImpact priceImpact={priceImpactWithoutFee} />
                 </td>
                 <td>
                   <TYPE.main color="text4" fontSize="10px" lineHeight="12px">

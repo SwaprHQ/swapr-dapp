@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
-import { useLastTruthy } from '../../hooks/useLast'
-import { AdvancedSwapDetails } from './AdvancedSwapDetails'
 import { SwapPlatformSelector } from './SwapPlatformSelector'
 import { AutoColumn } from '../Column'
 import { Settings } from 'react-feather'
@@ -80,15 +78,13 @@ interface AdvancedSwapDetailsDropdownProps {
 export default function AdvancedSwapDetailsDropdown({
   trade,
   allPlatformTrades,
-  onSelectedPlatformChange,
-  ...rest
+  onSelectedPlatformChange
 }: AdvancedSwapDetailsDropdownProps) {
   const { chainId } = useActiveWeb3React()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()
   const [multihopEnabled, toggleMultihop] = useMultihopManager()
   const toggleSettingsMenu = useToggleSettingsMenu()
   const mainnetGasPrices = useMainnetGasPrices()
-  const lastTrade = useLastTruthy(trade)
 
   const getGasPriceClickHandler = (priceVariant: MainnetGasPrice) => () => {
     setUserPreferredMainnetGasPrice(priceVariant)
@@ -108,7 +104,6 @@ export default function AdvancedSwapDetailsDropdown({
           allPlatformTrades={allPlatformTrades}
           onSelectedPlatformChange={onSelectedPlatformChange}
         />
-        <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} />
       </AdvancedDetailsFooter>
       {chainId === ChainId.MAINNET && !!mainnetGasPrices && (
         <SettingsFlex width="100%">
