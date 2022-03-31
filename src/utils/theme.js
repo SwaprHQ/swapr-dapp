@@ -63,7 +63,8 @@ export const gradients = {
     'primary': 'linear-gradient(270deg, #FFFFFF 1.98%, #DCD8FE 95.72%)',
     'primaryLabel': 'linear-gradient(90.22deg, #3C0FEF 0.62%, #B300FF 105.85%)',
     'cta': 'linear-gradient(266.97deg, #D74DFF 5.64%, #8E38FF 53.85%, #4C1DFF 97.29%)',
-    'heroMainText': 'linear-gradient(270deg, #FFFFFF 1.98%, #DCD8FE 95.72%)'
+    'heroMainText': 'linear-gradient(270deg, #FFFFFF 1.98%, #DCD8FE 95.72%)',
+    'glow': 'radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%)'
 }
 
 export default theme;

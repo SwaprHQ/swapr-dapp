@@ -6,9 +6,6 @@ import { breakpoints } from '../../utils/theme'
 import Layout from './layout/Layout'
 import Button from './common/Button'
 
-import CommunityGradient from './../../assets/images/community-gradient.png'
-
-
 const CommunityLinks = () => {
     return (
         <StyledCommunityLinks data-aos={'fade-up'} id={'community-links'} width={'full-width'}>
@@ -107,15 +104,13 @@ const StyledCommunityLinks = styled(Layout)`
         }
         @media screen and (max-width: ${breakpoints.md}) {
             .community-gradient {
-                background: url(${CommunityGradient});
-                width: 100vw;
-                height: 2000px;
-                background-size: 100%;
                 position: absolute;
-                background-repeat: no-repeat;
-                top: -600px;
-                left: 0;
+                height: 1400px;
+                width: calc(100vw + 900px);
+                top: -250px;
+                left: -450px;
                 pointer-events: none;
+                background: ${gradients.glow};
             }
             .pre-header {
                 font-size: 18px;
