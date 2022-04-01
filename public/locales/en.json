@@ -115,7 +115,7 @@
   "enterCurrencyAmount": "Enter {{ currency }} amount",
   "exchange": "Exchange",
   "fee": "Fee",
-  "priceImpact": "Price impact",
+  "pImpact": "P. impact",
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
   "maxSent": "Max Sent"

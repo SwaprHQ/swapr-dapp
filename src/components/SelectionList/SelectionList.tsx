@@ -6,7 +6,7 @@ export const SelectionListWindowWrapper = styled.div`
   margin-bottom: 10px;
 `
 export const SelectionListLabelWrapper = styled.div`
-  margin: 12px 0;
+  margin-bottom: 14px;
   background: transparent;
   display: flex;
 `
