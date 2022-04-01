@@ -42,6 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
+  max-height: 100px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -203,8 +204,8 @@ export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadiu
     margin-left: 7px;
   }
 `
-const GasInfo = styled.div`
-  display: flex;
+const GasInfo = styled.div<{ hide: boolean }>`
+  display: ${({ hide }) => (hide ? 'none' : 'flex')};
   margin-left: 6px;
   padding: 6px 8px;
   border: 1.06481px solid rgba(242, 153, 74, 0.65);
@@ -380,23 +381,19 @@ function Header() {
             onToggleClaimPopup={toggleClaimPopup}
           />
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError ? (
-              <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>
-            ) : (
+            {isUnsupportedChainIdError && <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>}
+            {account && !isUnsupportedChainIdError && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
-                {!account ? (
-                  '0.000'
-                ) : !userNativeCurrencyBalance ? (
-                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
+                {userNativeCurrencyBalance ? (
+                  `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
                 ) : (
-                  userNativeCurrencyBalance.toFixed(3)
-                )}{' '}
-                {nativeCurrency.symbol}
+                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
+                )}
               </Amount>
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}
