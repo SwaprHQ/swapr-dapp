@@ -3,9 +3,10 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
-import PairAndReward from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
+import TokenAndLimit from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
 import RewardAmount from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
+
 import Time from '../../../components/LiquidityMining/Create/Steps/Time'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import { TYPE } from '../../../theme'
@@ -151,11 +152,11 @@ export default function CreateLiquidityMining() {
           index={1}
           disabled={campaingType === null}
         >
-          <PairAndReward
+          <TokenAndLimit
             unlimitedPool={unlimitedPool}
             onUnlimitedPoolChange={setUnlimitedPool}
             campaingType={campaingType}
-            liquidityPair={targetedPairOrToken}
+            targetedPairOrToken={targetedPairOrToken}
             onStakingCapChange={setStakingCap}
             onLiquidityPairChange={setTargetedPairOrToken}
           />

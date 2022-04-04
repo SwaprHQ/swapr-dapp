@@ -10,6 +10,7 @@ export const SmoothGradientCard = styled(Card)<{
   width?: string
   height?: string
 }>`
+  color: ${props => (props.active ? props.theme.text3 : props.theme.text5)};
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
   background-image: unset;

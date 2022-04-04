@@ -1,19 +1,26 @@
 import React, { useCallback } from 'react'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 
-import { AutoColumn } from '../../../../Column'
 import { AutoRow } from '../../../../Row'
 import { SmoothGradientCard } from '../../../styleds'
 import { Circle } from '../PairAndReward/AssetSelector/AssetLogo'
 
 const CardText = styled(Text)`
   font-weight: 600;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 22px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: inherit;
+`
+const StyledAutoColumn = styled(Flex)<{ active: boolean }>`
+  flex-direction: column;
+  position: relative;
+  left: -25px;
+  text-align: start;
+  color: ${props => (props.active ? props.theme.text3 : props.theme.text5)} !important;
 `
 
 interface SingleOrPairCampaignProps {
@@ -49,11 +56,11 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         onClick={() => handleRewardClick(CampaignType.TOKEN)}
       >
         {adjustableDiamondSize(true, singleReward === CampaignType.TOKEN)}
-        <AutoColumn>
+        <StyledAutoColumn active={singleReward === CampaignType.TOKEN}>
           <CardText>Single</CardText>
           <CardText>Token</CardText>
           <CardText>Staking</CardText>
-        </AutoColumn>
+        </StyledAutoColumn>
       </SmoothGradientCard>
       <SmoothGradientCard
         width={'218px'}
@@ -62,11 +69,11 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         active={singleReward === CampaignType.PAIR}
       >
         {adjustableDiamondSize(false, singleReward === CampaignType.PAIR)}
-        <AutoColumn>
+        <StyledAutoColumn active={singleReward === CampaignType.PAIR}>
           <CardText>LP</CardText>
           <CardText>Token</CardText>
           <CardText>Staking</CardText>
-        </AutoColumn>
+        </StyledAutoColumn>
       </SmoothGradientCard>
     </AutoRow>
   )

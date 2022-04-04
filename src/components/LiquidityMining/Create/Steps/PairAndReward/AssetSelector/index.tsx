@@ -162,7 +162,6 @@ export default function AssetSelector({
         )}
 
         <Flex width="100%" justifyContent="center" alignSelf="end">
-          {/* <AssetLogos campaingType={campaingType} currency0={currency0} currency1={currency1} /> */}
           <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
           <Flex flexDirection={'column'}>
             {handleUserInput !== undefined && currency0 ? (

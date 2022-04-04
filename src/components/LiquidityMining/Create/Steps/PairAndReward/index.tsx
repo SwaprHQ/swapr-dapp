@@ -31,7 +31,7 @@ const StyledNumericalInput = styled(NumericalInput)`
 `
 
 interface TokenAndLimitProps {
-  liquidityPair: Pair | Token | undefined | null
+  targetedPairOrToken: Pair | Token | undefined | null
   unlimitedPool: boolean
   campaingType: CampaignType
   onLiquidityPairChange: (liquidityPair: Pair | Token | null) => void
@@ -40,7 +40,7 @@ interface TokenAndLimitProps {
 }
 
 export default function TokenAndLimit({
-  liquidityPair,
+  targetedPairOrToken: liquidityPair,
   unlimitedPool,
   onLiquidityPairChange,
   campaingType,
