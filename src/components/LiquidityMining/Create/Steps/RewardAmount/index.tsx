@@ -11,8 +11,9 @@ import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 const FlexWrapper = styled(Flex)`
-  gap: 69px;
+  gap: 16px;
   margin-top: 32px !important;
+  width: fit-content;
 `
 interface RewardAmountProps {
   rewardsObject: (TokenAmount | undefined)[]

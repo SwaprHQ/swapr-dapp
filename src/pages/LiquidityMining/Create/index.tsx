@@ -161,8 +161,8 @@ export default function CreateLiquidityMining() {
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        {/* <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}> */}
-        <Step title="Campaign Duration" index={2} disabled={false}>
+        <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}>
+          {/* <Step title="Campaign Duration" index={2} disabled={false}> */}
           <Time
             startTime={startTime}
             endTime={endTime}
@@ -172,8 +172,8 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
-        <Step title="Select Reward Amount" index={3} disabled={false}>
+        <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}>
+          {/* <Step title="Select Reward Amount" index={3} disabled={false}> */}
           <RewardAmount
             setApprovals={setRewardsApprovals}
             approvals={rewardsApprovals}
@@ -188,6 +188,7 @@ export default function CreateLiquidityMining() {
           disabled={!targetedPairOrToken || !startTime || !endTime || memoizedRewardArray.length === 0}
         >
           <PreviewAndCreate
+            campaign={campaign}
             approvals={memoizedApprovalsArray}
             liquidityPair={targetedPairOrToken}
             startTime={startTime}

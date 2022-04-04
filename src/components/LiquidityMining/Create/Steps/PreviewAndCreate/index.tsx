@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
-import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
+import {
+  LiquidityMiningCampaign,
+  Pair,
+  Percent,
+  SingleSidedLiquidityMiningCampaign,
+  Token,
+  TokenAmount
+} from '@swapr/sdk'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
 import { Card, Divider } from '../../../styleds'
@@ -8,6 +15,9 @@ import { ButtonPrimary } from '../../../../Button'
 
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../../../../hooks'
+import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
+import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
+import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -23,6 +33,7 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
 `
 
 interface PreviewProps {
+  campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
   liquidityPair: Pair | Token | null
   apy: Percent
   startTime: Date | null
@@ -43,10 +54,13 @@ export default function PreviewAndCreate({
   reward,
   apy,
   approvals,
-  onCreate
+  onCreate,
+  campaign
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
+  const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
+
   useEffect(() => {
     setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || !approvals))
   }, [account, reward, liquidityPair, startTime, endTime, approvals])
@@ -59,9 +73,30 @@ export default function PreviewAndCreate({
     // }
     return 'Deposit & create'
   }
+  const isSingleSided = campaign instanceof SingleSidedLiquidityMiningCampaign
 
   return (
     <Flex flexDirection="column" style={{ zIndex: -1 }}>
+      {campaign !== null && !loadingNativeCurrencyUsdPrice && (
+        <Box mb="32px">
+          <CampaignCard
+            token0={
+              campaign instanceof SingleSidedLiquidityMiningCampaign
+                ? campaign.stakeToken
+                : campaign.targetedPair.token0
+            }
+            usdLiquidity={getStakedAmountUSD(campaign.staked.nativeCurrencyAmount, nativeCurrencyUSDPrice)}
+            token1={campaign instanceof LiquidityMiningCampaign && campaign.targetedPair.token1}
+            // containsKpiToken={campaign instanceof LiquidityMiningCampaign ? campaign.containsKpiToken : false}
+            isSingleSidedStakingCampaign={isSingleSided}
+            apy={apy}
+            usdLiquidityText={campaign.locked ? 'LOCKED' : 'STAKED'}
+            staked={true}
+            campaign={campaign}
+          />
+        </Box>
+      )}
+
       <Box mb="40px">
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
@@ -83,17 +118,6 @@ export default function PreviewAndCreate({
       <Box>
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
-            {/* <Box width="100%">
-              <ButtonPrimary
-                disabled={areButtonsDisabled || approvalState !== ApprovalState.NOT_APPROVED}
-                onClick={approveCallback}
-              >
-                {getApproveButtonMessage()}
-              </ButtonPrimary>
-            </Box> */}
-            {/* <Box mx="18px">
-              <Divider />
-            </Box> */}
             <ResponsiveContainer width="100%">
               <ButtonPrimary disabled={areButtonsDisabled} onClick={onCreate}>
                 {getConfirmButtonMessage()}
