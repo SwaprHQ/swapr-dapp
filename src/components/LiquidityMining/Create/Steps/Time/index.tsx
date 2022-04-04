@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Flex } from 'rebass'
+import { Flex } from 'rebass'
 import { TYPE } from '../../../../../theme'
 import TimeSelector from './TimeSelector'
 //import Toggle from '../../../../Toggle'
@@ -64,25 +64,28 @@ export default function Time({
       <SmoothGradientCard
         textAlign={'start'}
         alignItems={'start'}
-        padding={'33.5px 41px '}
+        padding={'41px'}
         width={'266px'}
         flexDirection={'column'}
       >
-        <Box mb="auto" mt={'8px'}>
-          <TYPE.small
-            fontSize={'11px'}
-            textAlign={'start'}
-            fontWeight="600"
-            lineHeight={'13px'}
-            color="text4"
-            letterSpacing="8%"
-          >
-            TIME LOCKED STAKING
-          </TYPE.small>
-        </Box>
+        <TYPE.small
+          alignSelf={'start'}
+          marginBottom={'auto'}
+          fontSize={'11px'}
+          textAlign={'start'}
+          fontWeight="600"
+          lineHeight={'13px'}
+          color="text3"
+          letterSpacing="0.08em"
+        >
+          TIME LOCKED STAKING
+        </TYPE.small>
+
         <Flex alignItems={'start'}>
           {/* <Toggle isActive={timelocked} toggle={onTimelockedChange} /> */}
-          <TYPE.small>{timelocked ? 'ON' : 'OFF'}</TYPE.small>
+          <TYPE.small fontWeight={'600'} alignSelf="center" color={'purple3'}>
+            {timelocked ? 'ON' : 'OFF'}
+          </TYPE.small>
           <StyledSwitch handleToggle={onTimelockedChange} isOn={timelocked} label={'TIME LOCKED'} />
         </Flex>
       </SmoothGradientCard>
