@@ -162,8 +162,6 @@
     "@web3-react/walletlink-connector": "^6.2.8",
     "aos": "^2.3.4",
     "arb-ts": "^1.0.2",
-    "dotenv": "^16.0.0",
-    "jquery": "^3.6.0",
     "multiformats": "^9.4.10",
     "query-string": "^6.13.8",
     "rc-texty": "^0.2.0",
