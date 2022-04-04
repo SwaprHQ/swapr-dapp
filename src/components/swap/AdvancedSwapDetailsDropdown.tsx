@@ -20,6 +20,7 @@ const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
   z-index: -1;
   max-width: 432px;
   width: 100%;
+  margin-bottom: 30px;
 `
 
 const AdvancedDetailsFooter = styled.div<{
