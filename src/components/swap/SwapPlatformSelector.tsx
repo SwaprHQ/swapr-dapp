@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
@@ -32,6 +32,7 @@ import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../con
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { ChevronsDown } from 'react-feather'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined
@@ -55,6 +56,11 @@ const StyledRouteFlex = styled(Flex)`
   border-radius: 12px;
   padding: 18px 16px;
   margin-bottom: 16px;
+`
+
+const MoreMarketsButton = styled(Flex)`
+  cursor: pointer;
+  text-transform: uppercase;
 `
 
 function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
@@ -92,6 +98,7 @@ export function SwapPlatformSelector({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
 
+  const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
   const [allowedSlippage] = useUserSlippageTolerance()
   const { recipient, independentField } = useSwapState()
   const { loading: loadingTradesGasEstimates, estimations } = useSwapsGasEstimations(
@@ -115,6 +122,8 @@ export function SwapPlatformSelector({
     },
     [allPlatformTrades, onSelectedPlatformChange]
   )
+
+  const displayedPlatformTrade = showAllPlatformsTrades ? allPlatformTrades : allPlatformTrades?.slice(0, 3)
 
   return (
     <AutoColumn>
@@ -141,7 +150,7 @@ export function SwapPlatformSelector({
           </SelectionListLabel>
         </SelectionListLabelWrapper>
 
-        {allPlatformTrades?.map((trade, i) => {
+        {displayedPlatformTrade?.map((trade, i) => {
           if (!trade) return null // some platforms might not be compatible with the currently selected network
           const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
           const gasFeeUSD = gasFeesUSD[i]
@@ -190,6 +199,18 @@ export function SwapPlatformSelector({
           )
         })}
       </SelectionListWindowWrapper>
+      {allPlatformTrades && allPlatformTrades.length > 3 && (
+        <Flex justifyContent="center">
+          {!showAllPlatformsTrades && (
+            <MoreMarketsButton alignItems="center" onClick={() => setShowAllPlatformsTrades(true)}>
+              <TYPE.main fontWeight={600} color={'purple3'} fontSize="10px" mr="8px">
+                {t('showMore')}
+              </TYPE.main>
+              <ChevronsDown size={15} color={theme.purple3} />
+            </MoreMarketsButton>
+          )}
+        </Flex>
+      )}
     </AutoColumn>
   )
 }
