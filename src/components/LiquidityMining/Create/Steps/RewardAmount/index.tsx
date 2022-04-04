@@ -10,7 +10,10 @@ import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
-const FlexWrapper = styled(Flex)``
+const FlexWrapper = styled(Flex)`
+  gap: 69px;
+  margin-top: 32px !important;
+`
 interface RewardAmountProps {
   rewardsObject: (TokenAmount | undefined)[]
   onRewardsObjectChange: (rewardsObject: (TokenAmount | undefined)[]) => void

@@ -95,7 +95,7 @@ export default function TokenAndLimit({
 
   return (
     <>
-      <FlexContainer justifyContent="stretch" width="100%" height={'150px'}>
+      <FlexContainer marginTop={'32px'} justifyContent="stretch" width="100%" height={'150px'}>
         <AssetSelector
           campaingType={campaingType}
           currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
@@ -110,7 +110,14 @@ export default function TokenAndLimit({
           marginLeft={'28px'}
           width="301px"
         >
-          <TYPE.mediumHeader alignSelf={'start'} color="text1" fontSize={13}>
+          <TYPE.mediumHeader
+            alignSelf={'start'}
+            letterSpacing="0.08em"
+            color="text3"
+            fontSize={13}
+            fontWeight="600"
+            lineHeight="22px"
+          >
             MAX STAKED
           </TYPE.mediumHeader>
           <FlexContainer width={'100%'} justifyContent={'space-between '}>
@@ -122,7 +129,9 @@ export default function TokenAndLimit({
               width={'127px'}
               height={'38px'}
             >
-              {unlimitedPool ? 'UNLIMITED' : 'LIMITED'}
+              <TYPE.largeHeader color="lightPurple" fontSize={13} letterSpacing="0.08em">
+                {unlimitedPool ? 'UNLIMITED' : 'LIMITED'}
+              </TYPE.largeHeader>
             </Flex>
             <Flex>
               <StyledNumericalInput
@@ -130,13 +139,19 @@ export default function TokenAndLimit({
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}
               />
-              <Flex alignItems={'center'}>
+              <TYPE.largeHeader
+                alignSelf={'center'}
+                fontSize={13}
+                color={'lightPurple'}
+                letterSpacing="0.08em"
+                alignItems={'center'}
+              >
                 {liquidityPair && liquidityPair instanceof Pair
                   ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
                   : liquidityPair instanceof Token
                   ? unwrappedToken(liquidityPair)?.symbol
                   : ''}
-              </Flex>
+              </TYPE.largeHeader>
             </Flex>
           </FlexContainer>
         </SmoothGradientCard>

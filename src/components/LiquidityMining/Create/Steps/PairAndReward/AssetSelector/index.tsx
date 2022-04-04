@@ -189,7 +189,7 @@ export default function AssetSelector({
           <ButtonPrimary
             height={'32px'}
             marginTop="16px"
-            maxWidth={'162px'}
+            width={'160px'}
             disabled={areButtonsDisabled || approvalState !== ApprovalState.NOT_APPROVED}
             onClick={approveCallback}
           >

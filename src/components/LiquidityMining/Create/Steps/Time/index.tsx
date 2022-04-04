@@ -7,23 +7,9 @@ import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
 import { Switch } from '../../../../Switch'
 
-// const FlexContainer = styled(Flex)`
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     flex-direction: column;
-//   `}
-// `
-
-// const ResponsiveBoxContainer = styled(Box)`
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     margin-top: 16px !important;
-//   `}
-// `
-
-// const ResponsiveFlexContainer = styled(Box)`
-//   ${props => props.theme.mediaWidth.upToExtraSmall`
-//     margin-top: 16px !important;
-//   `}
-// `
+const StyledSmoothGradientCard = styled(SmoothGradientCard)`
+  z-index: 100 !important;
+`
 const StyledSwitch = styled(Switch)`
   color: red;
   label {
@@ -55,7 +41,7 @@ export default function Time({
 }: TimeProps) {
   return (
     <FlexWrapper>
-      <SmoothGradientCard width="466px" padding={'28px 33.5px'} marginRight={'28px'}>
+      <StyledSmoothGradientCard width="466px" padding={'28px 33.5px'} marginRight={'28px'}>
         <TimeSelector
           title="STARTING"
           placeholder="Start date"
@@ -73,7 +59,7 @@ export default function Time({
           minimum={startTime || new Date()}
           onChange={onEndTimeChange}
         />
-      </SmoothGradientCard>
+      </StyledSmoothGradientCard>
 
       <SmoothGradientCard
         textAlign={'start'}
