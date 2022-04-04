@@ -141,11 +141,10 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     const timeoutUpdate = setTimeout(() => {
-
       if (localValue !== value) {
         setLocalValue(value)
       }
-    }, 700)
+    }, 500)
 
     return () => {
       clearTimeout(timeoutUpdate)
@@ -171,7 +170,7 @@ export default function CurrencyInputPanel({
     setFocused(false)
   }, [])
 
-  const debouncedOnUserInput = debounce(onUserInput, 500)
+  const debouncedOnUserInput = debounce(onUserInput, 300)
 
   return (
     <InputPanel id={id}>

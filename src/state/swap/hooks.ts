@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import { useTradeExactInAllPlatforms, useTradeExactOutAllPlatforms } from '../../hooks/Trades'
+import { useEcoRouterExactIn, useEcoRouterExactOut } from '../../lib/eco-router'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -138,11 +138,12 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const useTradeExactInAllPlatformsRes = useTradeExactInAllPlatforms(
+  // Use Eco Router to find the best trade
+  const useTradeExactInAllPlatformsRes = useEcoRouterExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const useTradeExactOutAllPlatformsRes = useTradeExactOutAllPlatforms(
+  const useTradeExactOutAllPlatformsRes = useEcoRouterExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )

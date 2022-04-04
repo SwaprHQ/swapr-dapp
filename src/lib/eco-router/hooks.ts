@@ -31,12 +31,6 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   useEffect(() => {
     let isCancelled = false
 
-    console.log({
-      currencyAmountIn,
-      currencyOut,
-      chainId
-    })
-
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !currencyAmountIn.currency || !currencyOut || !chainId) {
       setTrades([])
@@ -62,14 +56,13 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
       }
     )
       .then(newTrades => {
-        console.log({ newTrades })
-        // add deep comparsion
+        // Only update this invokation is not cancelled
         if (!isCancelled) {
           setTrades(newTrades.trades)
           setErrors(newTrades.errors)
         }
       })
-      .catch(console.log)
+      .catch(error => setErrors([error]))
       .finally(() => setLoading(false))
 
     return () => {
@@ -114,12 +107,6 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   useEffect(() => {
     let isCancelled = false
 
-    console.log({
-      currencyAmountOut,
-      currencyIn,
-      chainId
-    })
-
     // Early exit and clean state if necessary
     if (!currencyAmountOut || !currencyAmountOut.currency || !currencyIn || !chainId) {
       setTrades([])
@@ -145,14 +132,13 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
       }
     )
       .then(newTrades => {
-        console.log({ newTrades })
-        // add deep comparsion
+        // Only update this invokation is not cancelled
         if (!isCancelled) {
           setTrades(newTrades.trades)
           setErrors(newTrades.errors)
         }
       })
-      .catch(console.log)
+      .catch(error => setErrors([error]))
       .finally(() => setLoading(false))
 
     return () => {

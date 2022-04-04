@@ -1,4 +1,4 @@
-import { Trade, ChainId, UniswapV2Trade, CurveTrade, GnosisProtocolTrade, Token } from '@swapr/sdk'
+import { Trade, ChainId, UniswapV2Trade, CurveTrade, GnosisProtocolTrade, Token, RoutablePlatform } from '@swapr/sdk'
 // Low-level API for Uniswap V2
 import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/contracts'
 
@@ -75,6 +75,10 @@ export async function getExactIn(
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.CURVE.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
     CurveTrade.bestTradeExactIn({
       currencyAmountIn,
       currencyOut,
@@ -89,6 +93,10 @@ export async function getExactIn(
 
   // Gnosis Protocol V2
   const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
     GnosisProtocolTrade.bestTradeExactIn({
       currencyAmountIn,
       currencyOut,
@@ -157,6 +165,10 @@ export async function getExactOut(
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.CURVE.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
     CurveTrade.bestTradeExactOut({
       currencyAmountOut,
       currencyIn,
@@ -171,6 +183,10 @@ export async function getExactOut(
 
   // Gnosis Protocol V2
   const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
     GnosisProtocolTrade.bestTradeExactOut({
       currencyAmountOut,
       currencyIn,

@@ -1,5 +1,5 @@
 import { Token, Trade, currencyEquals, Price, CurrencyAmount } from '@swapr/sdk'
-import { useTradeExactInAllPlatforms } from './Trades'
+import { useTradeExactInUniswapV2 } from './Trades'
 import { ChainId } from '@swapr/sdk'
 import { USDC, DAI } from '../constants/index'
 import { useActiveWeb3React } from './index'
@@ -11,11 +11,15 @@ const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.XDAI]: USDC[ChainId.XDAI]
 }
 
+/**
+ * Returns the USD value of a token
+ * @todo add Coingecko API
+ */
 export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
   const { chainId } = useActiveWeb3React()
   const stablecoin = chainId ? STABLECOIN_OUT[chainId] : undefined
 
-  const tradeExactOutAllPlatforms = useTradeExactInAllPlatforms(currencyAmount, stablecoin)
+  const tradeExactOutAllPlatforms = useTradeExactInUniswapV2(currencyAmount, stablecoin)
 
   return useMemo(() => {
     if (!currencyAmount || !chainId || !stablecoin || !tradeExactOutAllPlatforms) return undefined
@@ -47,7 +51,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
       return new Price({ baseCurrency: currency, quoteCurrency: stablecoin, denominator, numerator })
     }
 
-    return calculateBestPrice(tradeExactOutAllPlatforms.trades)
+    return calculateBestPrice(tradeExactOutAllPlatforms as Trade[])
   }, [chainId, currencyAmount, selectedTrade, stablecoin, tradeExactOutAllPlatforms])
 }
 
