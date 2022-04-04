@@ -65,8 +65,6 @@ export function useSwapsCallArguments(
   return useMemo(() => {
     if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) return []
 
-    console.log(trades)
-
     return trades.map(trade => {
       if (!trade) {
         return []

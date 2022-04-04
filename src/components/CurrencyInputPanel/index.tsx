@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, Pair, Percent } from '@swapr/sdk'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
@@ -13,6 +13,8 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { FiatValueDetails } from '../FiatValueDetails'
+
+import debounce from 'lodash.debounce'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -134,8 +136,22 @@ export default function CurrencyInputPanel({
   fiatValue,
   priceImpact
 }: CurrencyInputPanelProps) {
-  const { t } = useTranslation()
+  // Take initial value from the parent component
+  const [localValue, setLocalValue] = useState(value)
 
+  useEffect(() => {
+    const timeoutUpdate = setTimeout(() => {
+      if (localValue !== value) {
+        setLocalValue(value)
+      }
+    }, 500)
+
+    return () => {
+      clearTimeout(timeoutUpdate)
+    }
+  }, [localValue, value])
+
+  const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const { account } = useActiveWeb3React()
@@ -153,6 +169,8 @@ export default function CurrencyInputPanel({
   const handleBlur = useCallback(() => {
     setFocused(false)
   }, [])
+
+  const debouncedOnUserInput = debounce(onUserInput, 300)
 
   return (
     <InputPanel id={id}>
@@ -172,11 +190,13 @@ export default function CurrencyInputPanel({
               <>
                 <NumericalInput
                   className="token-amount-input"
-                  value={value}
+                  value={localValue}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  onUserInput={val => {
-                    onUserInput(val)
+                  onUserInput={newValue => {
+                    // Update local value for UI, but debounced version for actual update
+                    setLocalValue(newValue)
+                    debouncedOnUserInput(newValue)
                   }}
                   disabled={disabled}
                 />

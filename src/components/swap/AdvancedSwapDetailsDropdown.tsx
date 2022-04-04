@@ -118,7 +118,7 @@ export default function AdvancedSwapDetailsDropdown({
           allPlatformTrades={allPlatformTrades}
           onSelectedPlatformChange={onSelectedPlatformChange}
         />
-        <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} />
+        {!isLoading && <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} />}
       </AdvancedDetailsFooter>
       {chainId === ChainId.MAINNET && !!mainnetGasPrices && (
         <SettingsFlex width="100%">
