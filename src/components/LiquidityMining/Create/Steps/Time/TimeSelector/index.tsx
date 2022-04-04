@@ -1,6 +1,6 @@
 import React from 'react'
 import { TYPE } from '../../../../../../theme'
-import { Box, Flex } from 'rebass'
+import { Flex } from 'rebass'
 import DateTimeInput from '../../../../../Input/DateTimeInput'
 
 interface TimeSelectorProps {
@@ -13,13 +13,13 @@ interface TimeSelectorProps {
 
 export default function TimeSelector({ title, placeholder, minimum, value, onChange }: TimeSelectorProps) {
   return (
-    <Flex flexDirection="column" width="100%">
-      <Box mb="16px">
-        <TYPE.small textAlign={'start'} fontWeight="600" color="text4" letterSpacing="0.08em">
+    <Flex flexDirection="column" width="100%" alignSelf={'stretch'} justifyContent="space-between">
+      <Flex>
+        <TYPE.small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
           {title}
         </TYPE.small>
-      </Box>
-      <Box>
+      </Flex>
+      <Flex>
         <DateTimeInput
           value={value}
           placeholder={placeholder}
@@ -27,7 +27,7 @@ export default function TimeSelector({ title, placeholder, minimum, value, onCha
           maximum={new Date(Number.MAX_SAFE_INTEGER)}
           onChange={onChange}
         />
-      </Box>
+      </Flex>
     </Flex>
   )
 }

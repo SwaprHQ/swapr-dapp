@@ -41,7 +41,7 @@ export default function Time({
 }: TimeProps) {
   return (
     <FlexWrapper>
-      <StyledSmoothGradientCard width="466px" padding={'28px 33.5px'} marginRight={'28px'}>
+      <StyledSmoothGradientCard width="466px" padding={'42.5px 28px'} marginRight={'28px'}>
         <TimeSelector
           title="STARTING"
           placeholder="Start date"

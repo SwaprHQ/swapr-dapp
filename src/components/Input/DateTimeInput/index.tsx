@@ -15,7 +15,7 @@ const Input = styled(StyledInput)`
   height: 30px;
   padding-left: 12px;
   padding-right: 12px;
-  color: ${props => props.theme.text5};
+  color: ${props => props.theme.text2};
   text-transform: uppercase;
   font-weight: 600;
   font-size: 11px;
@@ -25,7 +25,12 @@ const Input = styled(StyledInput)`
 const StyledDay = styled.span`
   font-family: Montserrat;
   font-size: 11px;
-  color: ${props => props.theme.text5};
+  color: ${props => props.theme.text2};
+`
+const StyledDatePicker = styled(Datepicker)`
+  ::placeholder {
+    color: ${props => props.theme.text2};
+  }
 `
 
 interface PickerProps {
@@ -38,7 +43,7 @@ interface PickerProps {
 
 export default function DateTimeInput({ value, placeholder, minimum, maximum, onChange }: PickerProps) {
   return (
-    <Datepicker
+    <StyledDatePicker
       customInput={<Input />}
       dateFormat="dd-MM-yyyy HH:mm"
       renderDayContents={(day: number) => {
