@@ -11,6 +11,7 @@ import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import PairSearchModal from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
+import { ReactComponent as CheckMark } from '../../../../../assets/svg/checkmark.svg'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -109,6 +110,9 @@ export default function TokenAndLimit({
           padding={'41px'}
           marginLeft={'28px'}
           width="301px"
+          backgroundColor={
+            'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(155.07deg, rgba(90, 12, 255, 0.1) 9.42%, rgba(17, 8, 35, 0) 92.21%);'
+          }
         >
           <TYPE.mediumHeader
             alignSelf={'start'}
@@ -128,8 +132,11 @@ export default function TokenAndLimit({
               alignItems={'center'}
               width={'127px'}
               height={'38px'}
+              backgroundColor={'#000000A6'}
+              padding={'12px 8px'}
             >
-              <TYPE.largeHeader color="lightPurple" fontSize={13} letterSpacing="0.08em">
+              <CheckMark />
+              <TYPE.largeHeader marginLeft={'8px'} color="lightPurple" fontSize={13} letterSpacing="0.08em">
                 {unlimitedPool ? 'UNLIMITED' : 'LIMITED'}
               </TYPE.largeHeader>
             </Flex>

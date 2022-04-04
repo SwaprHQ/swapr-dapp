@@ -9,6 +9,7 @@ export const SmoothGradientCard = styled(Card)<{
   active?: boolean
   width?: string
   height?: string
+  background?: string
 }>`
   color: ${props => (props.active ? props.theme.text3 : props.theme.text5)};
   width: ${props => props.width || '100%'};
@@ -18,18 +19,23 @@ export const SmoothGradientCard = styled(Card)<{
   justify-content: end;
   background-image: unset;
   opacity: ${props => (!props.selectable || props.active ? '1' : '0.4')};
+
   cursor: pointer;
   ::before {
-    border: 1px solid linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%);
+    border-color: ${props => !props.active && 'rgba(70, 67, 102, 1)'};
+    border-style: solid;
+    border-width: 1px;
+    border-image-source: ${props =>
+      props.active && 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)'};
 
     backdrop-filter: blur(20px);
-    /* border-image-source: ${props =>
-      props.active ? 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)' : 'transperent'}; */
-    /* background-blend-mode: Lighten; */
+
     background: ${props =>
-      props.active
+      props.background
+        ? props.background
+        : props.active
         ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(114.19deg, rgba(90, 12, 255, 0.8) -9%, rgba(17, 8, 35, 0) 113.1%)'
-        : 'transperent'};
+        : 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.1) -9%, rgba(17, 8, 35, 0) 113.1%) '};
   }
 
   display: flex;
