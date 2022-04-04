@@ -56,6 +56,7 @@ export interface Colors {
   purple3: Color
   purple4: Color
   purple5: Color
+  lightPurple: Color
   boxShadow: Color
 
   // darkest // dark1.1

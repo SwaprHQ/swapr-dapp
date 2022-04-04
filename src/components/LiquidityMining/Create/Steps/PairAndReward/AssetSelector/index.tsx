@@ -40,6 +40,7 @@ const RelativeContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
   transition: opacity 0.3s ease;
   opacity: ${props => (props.disabled ? 0.5 : 1)};
+  margin-bottom: 8px;
 `
 const RelativeDismiss = styled(CloseIcon)`
   position: absolute;
@@ -170,13 +171,13 @@ export default function AssetSelector({
                 <RewardInputLogo>{assetTitle}</RewardInputLogo>
               </RelativeContainer>
             ) : (
-              <TYPE.largeHeader lineHeight="22px" color="text5" fontSize={13}>
+              <TYPE.largeHeader marginBottom={'4px'} lineHeight="22px" color="lightPurple" fontSize={13}>
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
             )}
 
             {tokenName && (
-              <TYPE.small color="text1" fontSize={11}>
+              <TYPE.small color="purple3" fontSize={10} fontWeight="600" lineHeight="12px">
                 {tokenName}
               </TYPE.small>
             )}
