@@ -14,7 +14,7 @@ const Root = styled(AutoColumn)<{ disabled: boolean }>`
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
   transition: opacity 0.3s ease;
   opacity: ${({ disabled }) => (disabled ? 0.3 : 1)};
-  z-index: 1;
+  z-index: auto;
   text-transform: capitalize;
 `
 

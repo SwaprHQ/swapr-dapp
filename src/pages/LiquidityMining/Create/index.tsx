@@ -161,8 +161,8 @@ export default function CreateLiquidityMining() {
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}>
-          {/* <Step title="Campaign Duration" index={2} disabled={false}> */}
+        {/* <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}> */}
+        <Step title="Campaign Duration" index={2} disabled={false}>
           <Time
             startTime={startTime}
             endTime={endTime}
