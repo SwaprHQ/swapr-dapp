@@ -4,6 +4,7 @@ import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
 import { Text } from 'rebass'
 import { AutoColumn } from '../Column'
+import { breakpoints } from '../../utils/theme'
 
 export const Wrapper = styled.div`
   position: relative;
@@ -33,6 +34,11 @@ export const SwitchTokensAmountsContainer = styled.div`
   border-radius: 50%;
   border: solid 5px ${props => props.theme.dark1};
   cursor: pointer;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 42px;
+    height: 42px;
+    top: -20px;
+  }
 `
 
 export const SectionBreak = styled.div`

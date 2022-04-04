@@ -122,7 +122,7 @@ export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3
   return NO_PRICE_IMPACT
 }
 
-export function warningFiatSeverity(priceImpact: Percent | undefined): 0 | 3 {
+export function simpleWarningSeverity(priceImpact: Percent | undefined): 0 | 3 {
   if (!priceImpact?.lessThan(ALLOWED_FIAT_PRICE_IMPACT_PERCENTAGE[PRICE_IMPACT_HIGH])) return PRICE_IMPACT_HIGH
   return NO_PRICE_IMPACT
 }
@@ -180,4 +180,21 @@ export function getLpTokenPrice(
     priceDenominator,
     parseUnits(new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals), nativeCurrency.decimals).toString()
   )
+}
+
+/**
+ * Returns trimmed fraction value to limit number of decimal places
+ * @param value Fraction value to trim
+ * @param significantDigits Limit number of decimal places
+ * @param rounding Rounding mode
+ */
+export const limitDigitDecimalPlace = (
+  value?: Fraction,
+  significantDigits = 6,
+  rounding = Decimal.ROUND_DOWN
+): string => {
+  if (!value) return '0'
+  const fixedQuotient = value.toFixed(significantDigits)
+  Decimal.set({ precision: significantDigits + 1, rounding })
+  return new Decimal(fixedQuotient).toSignificantDigits(significantDigits).toString()
 }

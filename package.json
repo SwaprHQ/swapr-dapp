@@ -63,8 +63,6 @@
     "i18next": "^15.0.9",
     "i18next-browser-languagedetector": "^3.0.1",
     "i18next-xhr-backend": "^2.0.1",
-    "inter-ui": "^3.13.1",
-    "jazzicon": "^1.5.0",
     "lodash.flatmap": "^4.5.0",
     "luxon": "^1.25.0",
     "merkletreejs": "^0.2.18",
@@ -86,13 +84,11 @@
     "react-feather": "^2.0.8",
     "react-i18next": "^10.7.0",
     "react-loading-skeleton": "^2.2.0",
-    "react-markdown": "^4.3.1",
     "react-popper": "^2.2.5",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.0.0",
     "react-scripts": "^3.4.1",
     "react-toastify": "^7.0.4",
-    "react-use-gesture": "^6.0.14",
     "react-virtualized-auto-sizer": "^1.0.6",
     "react-window": "^1.8.5",
     "rebass": "^4.0.7",
@@ -102,6 +98,29 @@
     "styled-components": "^4.2.0",
     "typescript": "^3.8.3",
     "wcag-contrast": "^3.0.0"
+  },
+  "resolutions": {
+    "ansi-html": "^0.0.8",
+    "ansi-regex": "^5.0.1",
+    "axios": "^0.21.2",
+    "browserslist": "^4.16.5",
+    "dns-packet": "^1.3.2",
+    "glob-parent": "^5.1.2",
+    "hosted-git-info": "^2.8.9",
+    "immer": "^9.0.6",
+    "is-svg": "^4.3.0",
+    "minimist": "^1.2.6",
+    "node-fetch": "^2.6.7",
+    "node-forge": "^1.3.0",
+    "path-parse": "^1.0.7",
+    "postcss": "^7.0.36",
+    "simple-get": "^2.8.2",
+    "ssri": "^7.1.1",
+    "tmpl": "^1.0.5",
+    "trim": "^0.0.3",
+    "underscore": "^1.12.1",
+    "url-parse": "^1.5.9",
+    "ws": "^7.4.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -149,7 +168,6 @@
     "query-string": "^6.13.8",
     "rc-texty": "^0.2.0",
     "react-fast-marquee": "^1.3.1",
-    "react-use": "^15.3.3",
-    "rss-to-json": "^2.0.2"
+    "react-use": "^15.3.3"
   }
 }

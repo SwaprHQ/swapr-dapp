@@ -277,6 +277,8 @@ export default function Swap() {
     fiatValueOutput
   ])
 
+  const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
+
   return (
     <>
       <TokenWarningModal
@@ -361,7 +363,7 @@ export default function Swap() {
                       <QuestionHelper text="The trade is routed directly to the selected platform, so no swap or network fees are ever added by Swapr." />
                     </RowBetween>
                     <RowBetween>
-                      <SwapSettings />
+                      <SwapSettings showAddRecipient={showAddRecipient} setShowAddRecipient={setShowAddRecipient} />
                       <RowFixed>
                         <TradePrice
                           price={trade?.executionPrice}
@@ -372,7 +374,7 @@ export default function Swap() {
                     </RowBetween>
                   </AutoColumn>
                 )}
-                {isExpertMode && !showWrap && <RecipientField recipient={recipient} action={setRecipient} />}
+                {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
                   {!account ? (
                     <ButtonConnect />
