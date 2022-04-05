@@ -4,7 +4,6 @@ import { FeaturesContent } from './../../utils/ui-constants'
 import { gradients, breakpoints } from './../../utils/theme'
 import Layout from './layout/Layout'
 import FeatureItem from './FeatureItem'
-import BackgroundTitleGradient from './../../assets/images/gradient-features.png'
 
 const Features = () => {
     return (
@@ -92,11 +91,10 @@ const StyledFeatures = styled(Layout)`
             .background-gradient {
                 position: absolute;
                 width: 500px;
-                height: 300px;
-                background-image: url('${BackgroundTitleGradient}');
-                background-size: cover;
+                height: 250px;
                 bottom: -100px;
-                z-index: 0;
+                z-index: -1;
+                background: ${gradients.glow};
             }
         }
         .features-showcase {

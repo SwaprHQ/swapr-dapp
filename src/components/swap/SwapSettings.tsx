@@ -37,7 +37,13 @@ const StyledRowFixed = styled(RowFixed)`
   }
 `
 
-export function SwapSettings() {
+export function SwapSettings({
+  showAddRecipient,
+  setShowAddRecipient
+}: {
+  showAddRecipient: boolean
+  setShowAddRecipient: (value: boolean) => void
+}) {
   const [userSlippageTolerance] = useUserSlippageTolerance()
   const [multihop] = useMultihopManager()
   const theme = useContext(ThemeContext)
@@ -61,7 +67,7 @@ export function SwapSettings() {
         </StyledButton>
       </MouseoverTooltip>
       <MouseoverTooltip content={t('alternateReceiver')} placement="top">
-        <StyledButton active={!!recipient}>
+        <StyledButton active={!!recipient} cursor="pointer" onClick={() => setShowAddRecipient(!showAddRecipient)}>
           <Recipient />
         </StyledButton>
       </MouseoverTooltip>

@@ -4,7 +4,6 @@ import { gradients, breakpoints } from '../../utils/theme'
 import { StatsContent } from '../../utils/ui-constants'
 import { toClassName } from './../../utils/helper-functions'
 import Layout from './layout/Layout'
-import BackgroundTitleGradient from './../../assets/images/gradient-stats.png'
 import TextyAnim from 'rc-texty';
 
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
@@ -188,15 +187,12 @@ const StyledStats = styled(Layout)`
     position: relative;
     .background-gradient {
         position: absolute;
-        width: 400px;
-        height: 400px;
-        background-repeat: no-repeat;
-        background-image: url('${BackgroundTitleGradient}');
-        background-size: contain;
+        width: 350px;
+        height: 340px;
+        top: -150px;
+        left: -350px;
         z-index: 0;
-        top: -180px;
-        left: -300px;
-        background-position: center;
+        background: ${gradients.glow};
     }
     h2 {
         position: absolute;
