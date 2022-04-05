@@ -60,11 +60,12 @@ export default function RewardAmount({
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
+      console.log(rawValue)
       const newParsedAmount = tryParseAmount(
         rawValue,
         rewardsObject[index]?.token ? rewardsObject[index]?.token : undefined
       ) as TokenAmount | undefined
-
+      console.log(newParsedAmount?.toExact())
       onRewardsObjectChange(
         [...rewardsObject].map((item, i) =>
           i === index && item ? (newParsedAmount ? newParsedAmount : new TokenAmount(item.token, '0')) : item
@@ -84,11 +85,7 @@ export default function RewardAmount({
             campaingType={CampaignType.TOKEN}
             onClick={() => handelOpenPairOrTokenSearch(index)}
             customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
-            amount={
-              rewardsObject[index] !== undefined && rewardsObject[index] !== undefined
-                ? rewardsObject[index]?.toExact()
-                : ''
-            }
+            amount={rewardsObject[index]}
             handleUserInput={event => {
               handleLocalUserInput(event, index)
             }}

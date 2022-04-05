@@ -58,7 +58,7 @@ interface AssetSelectorProps {
   currency1?: Token | null
   campaingType: CampaignType
   customAssetTitle?: string
-  amount?: string
+  amount?: TokenAmount
   index?: number
   handleUserInput?: (value: string) => void
   onResetCurrency?: () => void
@@ -84,10 +84,8 @@ export default function AssetSelector({
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
 
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
-  const rewardMemo = useMemo(() => (currency0 && amount ? new TokenAmount(currency0, amount) : undefined), [
-    amount,
-    currency0
-  ])
+
+  const rewardMemo = useMemo(() => (currency0 && amount ? amount : undefined), [currency0, amount])
   const { account } = useActiveWeb3React()
   const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
   const stakingRewardsDistributionFactoryContract = useStakingRewardsDistributionFactoryContract()
@@ -96,16 +94,18 @@ export default function AssetSelector({
     stakingRewardsDistributionFactoryContract?.address
   )
 
-  const getApproveButtonMessage = () => {
+  const getApproveButtonMessage = useMemo(() => {
+    console.log(rewardMemo?.toExact())
     if (!account) {
       return 'Connect your wallet'
-    }
-    if (userBalance && rewardMemo && rewardMemo.greaterThan('0') && userBalance.lessThan(rewardMemo)) {
+    } else if (userBalance && rewardMemo && rewardMemo.greaterThan('0') && userBalance.lessThan(rewardMemo)) {
       return 'Insufficient balance'
+    } else if (approvalState === ApprovalState.APPROVED && rewardMemo && rewardMemo.greaterThan('0')) {
+      return 'Approved'
+    } else {
+      return 'Approve'
     }
-    if (approvalState === ApprovalState.APPROVED) return 'Approved'
-    return 'APPROVE'
-  }
+  }, [approvalState, account, userBalance, rewardMemo])
 
   useEffect(() => {
     if (setApprovals && approvals && rewardMemo && userBalance) {
@@ -167,7 +167,7 @@ export default function AssetSelector({
           <Flex flexDirection={'column'}>
             {handleUserInput !== undefined && currency0 ? (
               <RelativeContainer>
-                <StyledNumericalInput value={amount ? amount : ''} onUserInput={handleUserInput} />
+                <StyledNumericalInput value={amount ? amount.toExact() : ''} onUserInput={handleUserInput} />
                 <RewardInputLogo>{assetTitle}</RewardInputLogo>
               </RelativeContainer>
             ) : (
@@ -193,7 +193,7 @@ export default function AssetSelector({
             disabled={areButtonsDisabled || approvalState !== ApprovalState.NOT_APPROVED}
             onClick={approveCallback}
           >
-            {getApproveButtonMessage()}
+            {getApproveButtonMessage}
           </ButtonPrimary>
         </Box>
       )}

@@ -82,7 +82,6 @@ export default function Time({
         </TYPE.small>
 
         <Flex alignItems={'start'}>
-          {/* <Toggle isActive={timelocked} toggle={onTimelockedChange} /> */}
           <TYPE.small fontWeight={'600'} alignSelf="center" color={'purple3'}>
             {timelocked ? 'ON' : 'OFF'}
           </TYPE.small>

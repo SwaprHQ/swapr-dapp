@@ -172,8 +172,8 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}>
-          {/* <Step title="Select Reward Amount" index={3} disabled={false}> */}
+        {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
+        <Step title="Select Reward Amount" index={3} disabled={false}>
           <RewardAmount
             setApprovals={setRewardsApprovals}
             approvals={rewardsApprovals}
