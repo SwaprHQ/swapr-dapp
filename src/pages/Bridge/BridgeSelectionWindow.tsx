@@ -7,60 +7,15 @@ import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 import { useActiveBridge, useAvailableBridges, useShowAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
 import Skeleton from 'react-loading-skeleton'
 import QuestionHelper from '../../components/QuestionHelper'
-
-const WrapperBridgeSelectionWindow = styled.div`
-  width: 100%;
-`
-const BridgeWrapperLabel = styled.div`
-  margin: 12px 0;
-  background: transparent;
-  display: grid;
-  grid-template-columns: repeat(5, 20%);
-`
-const BridgeLabel = styled(Text)<{ justify?: boolean }>`
-  color: ${({ theme }) => theme.text5}
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  flex: 100%;
-  justify-self: ${({ justify }) => (justify ? 'start' : 'end')};
-`
-const BridgeOption = styled.div<{ isSelected: boolean; isLoading: boolean }>`
-  background: ${({ isSelected }) => (isSelected ? 'rgba(104,110,148,.2)' : 'rgba(104,110,148,.1)')};
-  width: 100%;
-  border-radius: 8px;
-  padding: 8px 0px;
-  border: ${({ isSelected }) => (isSelected ? '1px solid rgba(120, 115, 164, 0.6)' : 'none')};
-  margin-top: 8px;
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: repeat(5, 20%);
-  align-items: center;
-  transition: background 0.4s ease;
-  cursor: ${({ isLoading }) => (isLoading ? 'not-allowed' : 'pointer')};
-`
-const BridgeName = styled(Text)<{ isSelected: boolean }>`
-  margin: 0;
-  font-weight: ${({ isSelected }) => (isSelected ? '600' : '500')};
-  font-size: 14px;
-  color: ${({ isSelected, theme }) => (isSelected ? theme.text1 : theme.text3)};
-  padding-left: 10px;
-`
-const BridgeDetails = styled(Text)`
-  font-weight: 500;
-  font-size: 10px;
-  color: ${({ theme }) => theme.text5};
-  text-transform: uppercase;
-  justify-self: end;
-  min-width: 100%;
-`
-const BridgeReceiveAmount = styled(BridgeDetails)`
-  font-weight: 600;
-  font-size: 12px;
-  color: ${({ theme }) => theme.text1};
-  justify-self: end;
-  padding-right: 10px;
-`
+import {
+  SelectionListWindowWrapper,
+  SelectionListLabelWrapper,
+  SelectionListLabel,
+  SelectionListOption,
+  SelectionListName,
+  SelectionListDetails,
+  SelectionListReceiveAmount
+} from '../../components/SelectionList'
 
 export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
@@ -75,28 +30,28 @@ export const BridgeSelectionWindow = () => {
   return (
     <>
       {showAvailableBridges && availableBridges.length > 0 && (
-        <WrapperBridgeSelectionWindow>
-          <BridgeWrapperLabel>
-            <BridgeLabel justify={true}>Bridge</BridgeLabel>
-            <BridgeLabel>Fee</BridgeLabel>
-            <BridgeLabel>Gas</BridgeLabel>
-            <BridgeLabel>Time</BridgeLabel>
-            <BridgeLabel>Amount</BridgeLabel>
-          </BridgeWrapperLabel>
-          {availableBridges.map(({ bridgeId, name, details, status }) => {
-            return (
-              <Bridge
-                id={bridgeId}
-                key={bridgeId}
-                name={name}
-                activeBridge={activeBridge}
-                details={details}
-                status={status}
-                handleSelectBridge={handleSelectBridge}
-              />
-            )
-          })}
-        </WrapperBridgeSelectionWindow>
+        <SelectionListWindowWrapper>
+          <SelectionListLabelWrapper>
+            <SelectionListLabel flex="30%" justify={true}>
+              Bridge
+            </SelectionListLabel>
+            <SelectionListLabel>Fee</SelectionListLabel>
+            <SelectionListLabel>Gas</SelectionListLabel>
+            <SelectionListLabel>Time</SelectionListLabel>
+            <SelectionListLabel flex="27%">Amount</SelectionListLabel>
+          </SelectionListLabelWrapper>
+          {availableBridges.map(({ bridgeId, name, details, status }) => (
+            <Bridge
+              id={bridgeId}
+              key={bridgeId}
+              name={name}
+              activeBridge={activeBridge}
+              details={details}
+              status={status}
+              handleSelectBridge={handleSelectBridge}
+            />
+          ))}
+        </SelectionListWindowWrapper>
       )}
 
       {showAvailableBridges && availableBridges.length === 0 && (
@@ -129,7 +84,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
   const show = status !== 'loading' && details
 
   return (
-    <BridgeOption
+    <SelectionListOption
       isSelected={isSelected}
       isLoading={isLoading}
       onClick={() => {
@@ -138,8 +93,10 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
         }
       }}
     >
-      <BridgeName isSelected={isSelected}>{name}</BridgeName>
-      <BridgeDetails>
+      <SelectionListName flex="30%" isSelected={isSelected}>
+        {name}
+      </SelectionListName>
+      <SelectionListDetails>
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
@@ -147,8 +104,8 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
         ) : (
           details.fee
         )}
-      </BridgeDetails>
-      <BridgeDetails>
+      </SelectionListDetails>
+      <SelectionListDetails>
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
@@ -156,12 +113,14 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
         ) : (
           details.gas
         )}
-      </BridgeDetails>
-      <BridgeDetails>{!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}</BridgeDetails>
-      <BridgeReceiveAmount>
+      </SelectionListDetails>
+      <SelectionListDetails>
+        {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
+      </SelectionListDetails>
+      <SelectionListReceiveAmount flex="27%">
         {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
-      </BridgeReceiveAmount>
-    </BridgeOption>
+      </SelectionListReceiveAmount>
+    </SelectionListOption>
   )
 }
 
