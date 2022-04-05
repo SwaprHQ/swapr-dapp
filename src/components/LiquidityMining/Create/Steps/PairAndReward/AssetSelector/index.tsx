@@ -65,6 +65,7 @@ interface AssetSelectorProps {
   onClick: (event: React.MouseEvent<HTMLElement>) => void
   setApprovals?: (approvals: ApprovalState[]) => void
   approvals?: ApprovalState[]
+  rawAmount?: string
 }
 
 export default function AssetSelector({
@@ -78,7 +79,8 @@ export default function AssetSelector({
   onResetCurrency,
   handleUserInput,
   setApprovals,
-  index
+  index,
+  rawAmount
 }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
@@ -95,7 +97,6 @@ export default function AssetSelector({
   )
 
   const getApproveButtonMessage = useMemo(() => {
-    console.log(rewardMemo?.toExact())
     if (!account) {
       return 'Connect your wallet'
     } else if (userBalance && rewardMemo && rewardMemo.greaterThan('0') && userBalance.lessThan(rewardMemo)) {
@@ -167,7 +168,7 @@ export default function AssetSelector({
           <Flex flexDirection={'column'}>
             {handleUserInput !== undefined && currency0 ? (
               <RelativeContainer>
-                <StyledNumericalInput value={amount ? amount.toExact() : ''} onUserInput={handleUserInput} />
+                <StyledNumericalInput value={rawAmount ? rawAmount : ''} onUserInput={handleUserInput} />
                 <RewardInputLogo>{assetTitle}</RewardInputLogo>
               </RelativeContainer>
             ) : (

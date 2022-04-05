@@ -32,6 +32,8 @@ export default function RewardAmount({
 
   const [currentReward, setCurrentReward] = useState<number | undefined>(undefined)
 
+  const [rawAmounts, setRawAmounts] = useState<(string | undefined)[]>(new Array(4).fill(undefined))
+
   const handleDismissCurrencySearch = useCallback(() => {
     setCurrencySearchOpen(false)
   }, [])
@@ -53,26 +55,26 @@ export default function RewardAmount({
 
   const handleCurrencyReset = useCallback(
     index => {
+      setRawAmounts([...rawAmounts].map((item, i) => (i === index ? undefined : item)))
       onRewardsObjectChange([...rewardsObject].map((item, i) => (i === index ? undefined : item)))
     },
-    [rewardsObject, onRewardsObjectChange]
+    [rewardsObject, onRewardsObjectChange, rawAmounts]
   )
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
+      setRawAmounts([...rawAmounts].map((item, i) => (i === index ? rawValue : item)))
       console.log(rawValue)
-      const newParsedAmount = tryParseAmount(
-        rawValue,
-        rewardsObject[index]?.token ? rewardsObject[index]?.token : undefined
-      ) as TokenAmount | undefined
+      const newParsedAmount = tryParseAmount(rawValue, rewardsObject[index]?.token) as TokenAmount | undefined
       console.log(newParsedAmount?.toExact())
+
       onRewardsObjectChange(
         [...rewardsObject].map((item, i) =>
           i === index && item ? (newParsedAmount ? newParsedAmount : new TokenAmount(item.token, '0')) : item
         )
       )
     },
-    [onRewardsObjectChange, rewardsObject]
+    [onRewardsObjectChange, rewardsObject, rawAmounts]
   )
 
   return (
@@ -93,6 +95,7 @@ export default function RewardAmount({
             approvals={approvals}
             onResetCurrency={() => handleCurrencyReset(index)}
             index={index}
+            rawAmount={rawAmounts[index]}
           />
         ))}
       </FlexWrapper>
