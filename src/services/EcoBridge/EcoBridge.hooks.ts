@@ -225,7 +225,6 @@ export function useBridgeActionHandlers(): {
           symbol: currency instanceof Currency ? currency.symbol : ''
         })
       )
-      // dispatch(ecoBridgeUIActions.setTo({ address: currency instanceof Currency ? currencyId(currency) : currency }))
     },
     [dispatch]
   )
@@ -233,7 +232,7 @@ export function useBridgeActionHandlers(): {
   const onUserInput = useCallback(
     (typedValue: string) => {
       dispatch(ecoBridgeUIActions.setFrom({ value: typedValue }))
-      // dispatch(ecoBridgeUIActions.setTo({ value: '' }))
+
       dispatch(commonActions.setActiveBridge(undefined))
     },
     [dispatch]
