@@ -225,6 +225,7 @@ export function useBridgeActionHandlers(): {
           symbol: currency instanceof Currency ? currency.symbol : ''
         })
       )
+      dispatch(commonActions.setActiveBridge(undefined))
     },
     [dispatch]
   )
