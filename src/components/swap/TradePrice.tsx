@@ -22,8 +22,7 @@ interface TradePriceProps {
 
 export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
   const isMobileByMedia = useIsMobileByMedia()
-  const significantDigits = isMobileByMedia ? 6 : 14
-  const formattedPrice = limitDigitDecimalPlace(showInverted ? price : price?.invert(), significantDigits)
+  const formattedPrice = limitDigitDecimalPlace(showInverted ? price : price?.invert())
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
   const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 4)
