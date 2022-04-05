@@ -25,7 +25,6 @@ import { commonActions } from '../store/Common.reducer'
 import {
   DAI_ARBITRUM_ADDRESS,
   DAI_ETHEREUM_ADDRESS,
-  isChainGasBalances,
   SOCKET_NATIVE_TOKEN_ADDRESS,
   WETH_GNOSIS_ADDRESS
 } from './Socket.types'
@@ -35,6 +34,9 @@ import { SOCKET_TOKENS } from './Socket.lists'
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
+  }
+  if (error?.code === -32603) {
+    return 'Not enough gas balance on destination chain'
   }
   return `Bridge failed: ${error.message}`
 }
@@ -440,7 +442,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       )
       return
     }
-    const { routes, toAsset, fromChainId, toChainId } = result
+    const { routes, toAsset } = result
 
     this.store.dispatch(this.actions.setRoutes(routes))
 
@@ -460,14 +462,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, chainGasBalances } = bestRoute
-
-    if (isChainGasBalances(chainGasBalances)) {
-      if (!chainGasBalances[fromChainId].hasGasBalance || !chainGasBalances[toChainId].hasGasBalance) {
-        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
-        return
-      }
-    }
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
 
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 

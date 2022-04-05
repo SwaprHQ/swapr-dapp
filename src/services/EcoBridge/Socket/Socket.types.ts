@@ -65,9 +65,3 @@ export function isFee(userTxs: any): userTxs is UserTxs {
   }
   return false
 }
-
-export function isChainGasBalances(chainGasBalances: any): chainGasBalances is ChainGasBalances {
-  if (chainGasBalances) return true
-
-  return false
-}
