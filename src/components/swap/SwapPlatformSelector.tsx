@@ -129,9 +129,11 @@ export function SwapPlatformSelector({
     <AutoColumn>
       {selectedTrade && selectedTrade.route.path.length > 2 && (
         <StyledRouteFlex>
-          <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
-            Route
-          </TYPE.body>
+          {!isMobileByMedia && (
+            <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
+              Route
+            </TYPE.body>
+          )}
           <Box flex="1">
             <SwapRoute trade={selectedTrade} />
           </Box>
