@@ -152,6 +152,8 @@ export const ecoBridgeUISlice = createSlice({
     ) {
       const { isError, isLoading, label, isBalanceSufficient, approved } = action.payload
 
+      if (isBalanceSufficient && approved && Number(state.from.value) === 0 && state.from.address === '') return
+
       if (isError !== undefined) {
         state.statusButton.isError = isError
       }
