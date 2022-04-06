@@ -33,7 +33,7 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: { val: () => string }) => {
+      .then((res: any) => {
         estimatedTransactionOutput = parseFloat(res.val())
       })
 
@@ -54,7 +54,7 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it.only('Should swap dxd to weth', () => {
+  it('Should swap dxd to weth', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       balanceBefore = parseInt(response.body.result)
       console.log("BALANCE BEFORE TEST: ",balanceBefore)
@@ -69,7 +69,7 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: { val: () => string }) => {
+      .then((res: any) => {
         console.log("ESTIMATED OUTPUT: ", res.val())
         estimatedTransactionOutput = parseFloat(res.val())
       })
@@ -80,8 +80,6 @@ describe('SWAP functional tests', () => {
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
     MenuBar.checkToastMessage('Swap')
-
-    cy.wait(10000)
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(

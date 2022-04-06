@@ -36,12 +36,23 @@ export class TransactionHelper {
     expectedToken1Value: number
   ) {
     cy.window().then(() => {
-      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then(res => {
-        console.log('SUBGRAPH RESPONSE', res.body.data)
+      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: any) => {
+        console.log('SUBGRAPH RESPONSE', res.body)
         expect(res.body.data.transactions[0].swaps[0].pair.token0.symbol).to.be.eq(expectedToken0Symbol)
         expect(res.body.data.transactions[0].swaps[0].pair.token1.symbol).to.be.eq(expectedToken1Symbol)
-        expect(res.body.data.transactions[0].swaps[0].amount1In).to.be.eq(expectedToken1Value.toString())
-        expect(parseFloat(res.body.data.transactions[0].swaps[0].amount0Out)).to.be.greaterThan(expectedToken0Value)
+
+        const amountIn: number =
+          parseFloat(res.body.data.transactions[0].swaps[0].amount1In) +
+          parseFloat(res.body.data.transactions[0].swaps[0].amount0In)
+        const amountOut: number =
+          parseFloat(res.body.data.transactions[0].swaps[0].amount1Out) +
+          parseFloat(res.body.data.transactions[0].swaps[0].amount0Out)
+
+        console.log('EXPECTED AMOUNT OUT: ', amountOut)
+        console.log('EXPECTED AMOUNT IN: ', amountIn)
+
+        expect(amountIn).to.be.eq(expectedToken1Value)
+        expect(amountOut).to.be.greaterThan(expectedToken0Value)
       })
     })
   }

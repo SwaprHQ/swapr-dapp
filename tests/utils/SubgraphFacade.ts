@@ -1,17 +1,19 @@
 export class SubgraphFacade {
   private static SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'
-
-  static transaction(txid: string) {
-    return cy.request({
-      method: 'POST',
-      url: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
-      body: {
-        query:
-          `
+  private static retries: number
+  static transaction(txid: string): any {
+    this.retries++
+    return cy
+      .request({
+        method: 'POST',
+        url: this.SUBGRAPH_URL,
+        body: {
+          query:
+            `
 {
  transactions(where:{id:"` +
-          txid +
-          `"}){
+            txid +
+            `"}){
   id
   blockNumber
   timestamp
@@ -32,13 +34,24 @@ export class SubgraphFacade {
 }
 }
 `
-      }
-    })
+        }
+      })
+      .then(resp => {
+        try {
+          expect(resp.body.data.transactions).to.have.length.greaterThan(0)
+        } catch (err) {
+          if (this.retries > 100) {
+            throw new Error('Retried too many times')
+          }
+          return this.transaction(txid)
+        }
+        return resp
+      })
   }
   static tokens() {
     return cy.request({
       method: 'POST',
-      url: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
+      url: this.SUBGRAPH_URL,
       body: {
         query: `
 {
