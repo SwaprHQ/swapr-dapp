@@ -1,9 +1,8 @@
-import 'cypress-localstorage-commands'
-import { MenuBar } from '../../pages/MenuBar'
-import { SwapPage } from '../../pages/SwapPage'
-import { AddressesEnum } from '../../utils/AddressesEnum'
-import { EtherscanFacade } from '../../utils/EtherscanFacade'
-import { TransactionHelper } from '../../utils/TransactionHelper'
+import { MenuBar } from '../../../pages/MenuBar'
+import { SwapPage } from '../../../pages/SwapPage'
+import { AddressesEnum } from '../../../utils/AddressesEnum'
+import { EtherscanFacade } from '../../../utils/EtherscanFacade'
+import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('SWAP functional tests', () => {
   const TRANSACTION_VALUE: number = 0.001
@@ -40,7 +39,7 @@ describe('SWAP functional tests', () => {
 
     MenuBar.checkToastMessage('Wrap')
 
-    TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE)
+    TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE, 0)
   })
 
   it('Should unwrap weth to eth', () => {
@@ -56,6 +55,7 @@ describe('SWAP functional tests', () => {
 
     MenuBar.checkToastMessage('Unwrap')
 
-    TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN,balanceBefore,-(TRANSACTION_VALUE))
+    TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, -TRANSACTION_VALUE, 0)
   })
+
 })

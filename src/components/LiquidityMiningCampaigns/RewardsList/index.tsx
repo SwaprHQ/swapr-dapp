@@ -40,7 +40,7 @@ export function RewardsList({ dataFilter, pair, setDataFiler, loading }: Rewards
               itemsAmount={miningCampaigns.active.length}
               badgeTheme="orange"
             >
-              <div data-testid="active-campaigns" >Campaigns</div> 
+              <div data-testid="active-campaigns">Campaigns</div>
             </TabTitle>,
             <TabTitle
               key="active"
@@ -48,7 +48,7 @@ export function RewardsList({ dataFilter, pair, setDataFiler, loading }: Rewards
               itemsAmount={miningCampaigns.expired.length}
               badgeTheme="red"
             >
-              <div data-testid="expired-campaigns" >Expired (150 days)</div>
+              <div data-testid="expired-campaigns">Expired (150 days)</div>
             </TabTitle>
           ]}
           active={activeTab}
