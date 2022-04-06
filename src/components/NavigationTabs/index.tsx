@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink, useHistory } from 'react-router-dom'
-import SimpleSettings from '../Settings/SimpleSettings'
+import { SimpleSettings } from '../Settings/SimpleSettings'
 
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
