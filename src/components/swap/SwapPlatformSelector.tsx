@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
@@ -111,6 +111,10 @@ export function SwapPlatformSelector({
   )
   const loadingGasFees = loadingGasFeesUSD || loadingTradesGasEstimates
   const debouncedLoadingGasFees = useDebounce(loadingGasFees, 2000)
+
+  useEffect(() => {
+    setShowAllPlatformsTrades(false)
+  }, [allPlatformTrades])
 
   const showGasFees = estimations.length === allPlatformTrades?.length
 
