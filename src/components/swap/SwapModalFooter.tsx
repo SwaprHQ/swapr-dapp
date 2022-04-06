@@ -72,7 +72,7 @@ export default function SwapModalFooter({
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
-            <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+            <TYPE.body fontWeight={500} fontSize="12px" color="text5" data-testid="estimated-output">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
                 : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
