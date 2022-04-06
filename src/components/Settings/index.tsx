@@ -195,7 +195,7 @@ export default function SettingsTab() {
         <ModalContentWrapper>
           <AutoColumn gap="25px">
             <Row style={{ padding: '0 25px', justifyContent: 'center' }}>
-              <TYPE.body fontWeight={500} fontSize="20px" color="text3">
+              <TYPE.body fontWeight={500} fontSize="20px" color="text3" data-testid="expert-mode-confirmation-window">
                 Are you sure?
               </TYPE.body>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
@@ -263,7 +263,7 @@ export default function SettingsTab() {
                 </Text>
                 <RowBetween marginBottom="12px">
                   <RowFixed>
-                    <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px">
+                    <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="toggle-expert-mode-text">
                       Toggle expert mode
                     </TYPE.body>
                     <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
@@ -286,15 +286,15 @@ export default function SettingsTab() {
                 </RowBetween>
                 <Divider />
                 <RowBetween width="100%" marginTop="12px" marginBottom="12px">
-                  <MenuItem href="https://dxdao.eth.link/" rel="noopener noreferrer" target="_blank">
+                  <MenuItem href="https://dxdao.eth.link/" rel="noopener noreferrer" target="_blank" data-testid="about-hyperlink">
                     <Info size={14} />
                     About
                   </MenuItem>
-                  <MenuItem href={CODE_LINK}>
+                  <MenuItem href={CODE_LINK} data-testid="code-hyperlink"> 
                     <Code size={14} />
                     Code
                   </MenuItem>
-                  <MenuItem href="https://discord.com/invite/4QXEJQkvHH">
+                  <MenuItem href="https://discord.com/invite/4QXEJQkvHH" data-testid="discord-hyperlink">
                     <MessageCircle size={14} />
                     Discord
                   </MenuItem>
