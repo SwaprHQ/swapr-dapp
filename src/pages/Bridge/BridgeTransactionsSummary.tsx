@@ -125,7 +125,7 @@ interface BridgeTransactionsSummaryProps {
 
 export const BridgeTransactionsSummary = ({ transactions, handleTriggerCollect }: BridgeTransactionsSummaryProps) => {
   return (
-    <AdvancedDetailsFooter style={{ marginTop: '10px' }} fullWidth padding="12px">
+    <AdvancedDetailsFooter fullWidth padding="12px">
       <Container>
         <Header>
           <ColumnBridging>Bridging</ColumnBridging>

@@ -30,7 +30,8 @@ import {
   useBridgeFetchDynamicLists,
   useBridgeInfo,
   useBridgeListsLoadingStatus,
-  useBridgeTxsFilter
+  useBridgeTxsFilter,
+  useShowAvailableBridges
 } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 
@@ -88,6 +89,8 @@ export default function Bridge() {
   )
 
   useBridgeFetchDynamicLists()
+
+  const showAvailableBridges = useShowAvailableBridges()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
   const { bridgeCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
@@ -305,7 +308,7 @@ export default function Bridge() {
           />
         </AppBody>
       )}
-      {activeTab === 'bridge' && <BridgeSelectionWindow />}
+      {activeTab === 'bridge' && showAvailableBridges && <BridgeSelectionWindow />}
       {!!bridgeSummaries.length && (
         <BridgeTransactionsSummary transactions={bridgeSummaries} handleTriggerCollect={handleTriggerCollect} />
       )}

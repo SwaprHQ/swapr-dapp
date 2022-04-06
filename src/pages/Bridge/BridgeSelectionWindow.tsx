@@ -1,12 +1,12 @@
-import React, { useMemo } from 'react'
+import React from 'react'
+import { Text, Box } from 'rebass'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
-import { Text, Box } from 'rebass'
-import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
-import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
-import { useActiveBridge, useAvailableBridges, useShowAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
 import Skeleton from 'react-loading-skeleton'
 import QuestionHelper from '../../components/QuestionHelper'
+import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
+import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
+import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import {
   SelectionListWindowWrapper,
   SelectionListLabelWrapper,
@@ -21,7 +21,6 @@ export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
-  const showAvailableBridges = useShowAvailableBridges()
 
   const handleSelectBridge = (id: OptionalBridgeList) => {
     dispatch(commonActions.setActiveBridge(id))
@@ -29,16 +28,16 @@ export const BridgeSelectionWindow = () => {
 
   return (
     <>
-      {showAvailableBridges && availableBridges.length > 0 && (
+      {!!availableBridges.length && (
         <SelectionListWindowWrapper>
           <SelectionListLabelWrapper>
-            <SelectionListLabel flex="30%" justify={true}>
+            <SelectionListLabel flex="35%" justify>
               Bridge
             </SelectionListLabel>
             <SelectionListLabel>Fee</SelectionListLabel>
             <SelectionListLabel>Gas</SelectionListLabel>
             <SelectionListLabel>Time</SelectionListLabel>
-            <SelectionListLabel flex="27%">Amount</SelectionListLabel>
+            <SelectionListLabel flex="22%">Amount</SelectionListLabel>
           </SelectionListLabelWrapper>
           {availableBridges.map(({ bridgeId, name, details, status }) => (
             <Bridge
@@ -54,8 +53,8 @@ export const BridgeSelectionWindow = () => {
         </SelectionListWindowWrapper>
       )}
 
-      {showAvailableBridges && availableBridges.length === 0 && (
-        <Box sx={{ marginTop: '15px', width: '100%' }}>
+      {!availableBridges.length && (
+        <Box sx={{ margin: '15px 0', width: '100%' }}>
           <Text sx={{ textAlign: 'center', color: '#464366' }}>No available bridges</Text>
         </Box>
       )}
@@ -64,8 +63,8 @@ export const BridgeSelectionWindow = () => {
 }
 
 interface BridgeProps {
-  id?: BridgeList
-  name?: string
+  id: BridgeList
+  name: string
   activeBridge: OptionalBridgeList
   details: {
     gas?: string
@@ -78,9 +77,8 @@ interface BridgeProps {
 }
 
 const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
-  const isSelected = useMemo(() => id === activeBridge, [id, activeBridge])
-  const isLoading = useMemo(() => status === 'loading', [status])
-
+  const isSelected = id === activeBridge
+  const isLoading = status === 'loading'
   const show = status !== 'loading' && details
 
   return (
@@ -93,14 +91,14 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
         }
       }}
     >
-      <SelectionListName flex="30%" isSelected={isSelected}>
+      <SelectionListName flex="35%" isSelected={isSelected}>
         {name}
       </SelectionListName>
       <SelectionListDetails>
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
-          <QuestionHelperWarning text={'Cannot estimate fee'} />
+          <QuestionHelperWarning text="Cannot estimate fee" />
         ) : (
           details.fee
         )}
@@ -109,7 +107,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
-          <QuestionHelperWarning text={'Cannot estimate gas'} />
+          <QuestionHelperWarning text="Cannot estimate gas" />
         ) : (
           details.gas
         )}
@@ -117,7 +115,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <SelectionListDetails>
         {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
       </SelectionListDetails>
-      <SelectionListReceiveAmount flex="27%">
+      <SelectionListReceiveAmount flex="22%">
         {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
       </SelectionListReceiveAmount>
     </SelectionListOption>
