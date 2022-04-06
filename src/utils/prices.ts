@@ -10,7 +10,8 @@ import {
   Price,
   Currency,
   _10000,
-  _100
+  _100,
+  ZERO
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -25,8 +26,11 @@ import {
 } from '../constants'
 import { Field } from '../state/swap/actions'
 import { basisPointsToPercent } from './index'
-import Decimal from 'decimal.js-light'
+import _Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
+import toFormat from 'toformat'
+
+const Decimal = toFormat(_Decimal)
 
 const ONE_HUNDRED_PERCENT = new Percent(_10000, _10000)
 
@@ -188,13 +192,15 @@ export function getLpTokenPrice(
  * @param significantDigits Limit number of decimal places
  * @param rounding Rounding mode
  */
-export const limitDigitDecimalPlace = (
+export const limitNumberDecimalPlaces = (
   value?: Fraction,
   significantDigits = 6,
+  format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
 ): string => {
-  if (!value) return '0'
+  if (!value || value.equalTo(ZERO)) return '0'
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
-  return new Decimal(fixedQuotient).toSignificantDigits(significantDigits).toString()
+  const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
+  return quotient.toFormat(quotient.decimalPlaces(), format)
 }
