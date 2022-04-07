@@ -32,7 +32,6 @@ import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import QuestionHelper from '../../components/QuestionHelper'
 import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { useUSDValue } from '../../hooks/useUSDValue'
@@ -40,6 +39,9 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
+import { ButtonConnect } from '../../components/ButtonConnect'
+import { useTranslation } from 'react-i18next'
+import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -51,7 +53,6 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import { ButtonConnect } from '../../components/ButtonConnect'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -75,7 +76,8 @@ export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-
+  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useState(true)
+  const { t } = useTranslation()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -351,16 +353,20 @@ export default function Swap() {
                   <AutoColumn gap="8px">
                     <RowBetween alignItems="center">
                       <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
-                        Best price found on{' '}
+                        {t('bestPrice')}{' '}
                         <span style={{ color: 'white', fontWeight: 700 }}>{bestPricedTrade?.platform.name}</span>.
                         {trade.platform.name !== RoutablePlatform.SWAPR.name ? (
                           <>
                             {' '}
-                            Swap with <span style={{ color: 'white', fontWeight: 700 }}>NO additional fees</span>
+                            {t('swapWith')}{' '}
+                            <span style={{ color: 'white', fontWeight: 700 }}>{t('noAdditionalFees')}</span>
                           </>
                         ) : null}
                       </TYPE.body>
-                      <QuestionHelper text="The trade is routed directly to the selected platform, so no swap or network fees are ever added by Swapr." />
+                      <AdvancedSwapDetailsToggle
+                        setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                        showAdvancedSwapDetails={showAdvancedSwapDetails}
+                      />
                     </RowBetween>
                     <RowBetween>
                       <SwapSettings showAddRecipient={showAddRecipient} setShowAddRecipient={setShowAddRecipient} />
@@ -465,11 +471,13 @@ export default function Swap() {
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          <AdvancedSwapDetailsDropdown
-            trade={trade}
-            allPlatformTrades={allPlatformTrades}
-            onSelectedPlatformChange={setPlatformOverride}
-          />
+          {showAdvancedSwapDetails && (
+            <AdvancedSwapDetailsDropdown
+              trade={trade}
+              allPlatformTrades={allPlatformTrades}
+              onSelectedPlatformChange={setPlatformOverride}
+            />
+          )}
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>

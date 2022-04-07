@@ -118,5 +118,7 @@
   "pImpact": "P. impact",
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
-  "maxSent": "Max Sent"
+  "maxSent": "Max Sent",
+  "bestPrice": "Best price found on",
+  "noAdditionalFees": "NO additional fees"
 }
