@@ -3,25 +3,25 @@ export class LiquidityPage {
     cy.visit('/pools?chainId=1')
   }
 
-  static allPairsButton() {
+  static getAllPairsButton() {
     return cy.get('[data-testid=all-token-list]')
   }
-  static createPairButton() {
+  static getCreatePairButton() {
     return cy.get('[data-testid=create-pair]')
   }
-  static campaignsAndMyPairsToggleSwitch() {
+  static getCampaignsAndMyPairsToggleSwitch() {
     return cy.get('[data-testid=campaigns-toggle]')
   }
-  static inputFields() {
+  static getInputFields() {
     return cy.get('[data-testid=transaction-value-input]')
   }
-  static selectTokenButton() {
+  static getSelectTokenButton() {
     return cy.get('[data-testid=select-token-button]')
   }
-  static createAPairInputField() {
+  static getCreateAPairInputField() {
     return cy.get('[data-testid=select-token-button]')
   }
-  static tokenSearchField() {
+  static getTokenSearchField() {
     return cy.get('[id=token-search-input]')
   }
 }
