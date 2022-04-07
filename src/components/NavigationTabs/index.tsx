@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink, useHistory } from 'react-router-dom'
-import { SimpleSettings } from '../Settings/SimpleSettings'
+import { Settings } from '../Settings'
 
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
@@ -95,7 +95,7 @@ export function AddRemoveTabs({ adding, creating }: { adding: boolean; creating:
       <RowBetween mb="16px">
         <StyledArrowLeft onClick={history.goBack} />
         <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>
-        <SimpleSettings />
+        <Settings simple={true} />
       </RowBetween>
     </Tabs>
   )
