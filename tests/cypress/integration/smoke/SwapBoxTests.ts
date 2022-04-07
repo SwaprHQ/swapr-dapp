@@ -1,15 +1,11 @@
 import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
+import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Swap page smoke tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
-    cy.intercept('GET', 'https://ipfs.io/ipfs/*', req => {
-      if (req.hasOwnProperty('body')) {
-        req.alias = 'request'
-      }
-    })
-    cy.wait('@request')
+    TransactionHelper.waitForTokenLists()
   })
   it('Should display swap box with 2 inputs and 2 currency selectors [TC-20]', () => {
     SwapPage.getSwapBox().should('be.visible')
