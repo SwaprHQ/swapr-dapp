@@ -37,7 +37,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
       {show ? (
         <>
           <TYPE.body mr="4px" fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="700">
-            {formattedPrice ?? '-'}
+            {formattedPrice || '-'}
           </TYPE.body>
           <TYPE.body fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="500">
             {label}

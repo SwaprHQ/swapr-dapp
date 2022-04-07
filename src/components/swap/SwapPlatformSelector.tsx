@@ -10,7 +10,12 @@ import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { useSwapState } from '../../state/swap/hooks'
 import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, simpleWarningSeverity } from '../../utils/prices'
+import {
+  computeSlippageAdjustedAmounts,
+  computeTradePriceBreakdown,
+  limitNumberDecimalPlaces,
+  simpleWarningSeverity
+} from '../../utils/prices'
 import { Field } from '../../state/swap/actions'
 import Skeleton from 'react-loading-skeleton'
 import useDebounce from '../../hooks/useDebounce'
@@ -142,6 +147,9 @@ export function SwapPlatformSelector({
           const gasFeeUSD = gasFeesUSD[i]
           const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
           const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+          const tokenAmount = limitNumberDecimalPlaces(
+            isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
+          )
 
           return (
             <SelectionListOption
@@ -170,9 +178,7 @@ export function SwapPlatformSelector({
               )}
               <SelectionListReceiveAmount flex="25%">
                 <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
-                  {isExactIn
-                    ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)}` ?? '-'
-                    : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)}` ?? '-'}
+                  {tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}
                 </TYPE.subHeader>
                 <CurrencyLogo
                   currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}

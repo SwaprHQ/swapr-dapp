@@ -197,8 +197,8 @@ export const limitNumberDecimalPlaces = (
   significantDigits = 6,
   format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
-): string => {
-  if (!value || value.equalTo(ZERO)) return '0'
+): string | undefined => {
+  if (!value || value.equalTo(ZERO)) return undefined
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
   const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)

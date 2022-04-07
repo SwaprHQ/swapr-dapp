@@ -248,7 +248,7 @@ export default function CurrencyInputPanel({
                       <>
                         {customBalanceText ?? t('balance')}
                         <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
-                          {limitNumberDecimalPlaces(balance || selectedCurrencyBalance)}
+                          {limitNumberDecimalPlaces(balance || selectedCurrencyBalance) || '0'}
                         </TYPE.small>
                       </>
                     )}
