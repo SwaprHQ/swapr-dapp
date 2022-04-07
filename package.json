@@ -96,6 +96,7 @@
     "serve": "^11.3.2",
     "start-server-and-test": "^1.11.0",
     "styled-components": "^4.2.0",
+    "toformat": "^2.0.0",
     "typescript": "^3.8.3",
     "wcag-contrast": "^3.0.0"
   },

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { transparentize } from 'polished'
 import { RowFixed } from '../Row'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
-import { limitDigitDecimalPlace } from '../../utils/prices'
+import { limitNumberDecimalPlaces } from '../../utils/prices'
 
 const Wrapper = styled(RowFixed)`
   background: ${props => transparentize(0.9, props.theme.bg4)};
@@ -23,7 +23,7 @@ interface TradePriceProps {
 export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
   const isMobileByMedia = useIsMobileByMedia()
   const significantDigits = isMobileByMedia ? 6 : 14
-  const formattedPrice = limitDigitDecimalPlace(showInverted ? price : price?.invert(), significantDigits)
+  const formattedPrice = limitNumberDecimalPlaces(showInverted ? price : price?.invert(), significantDigits)
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
   const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 4)
