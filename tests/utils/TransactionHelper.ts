@@ -61,4 +61,13 @@ export class TransactionHelper {
     console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0])
     return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
   }
+  static waitForTokenLists() {
+    cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
+    cy.wait('@somere').then(req => {
+      try {
+        expect(req.response).to.not.be.undefined
+        expect(req.response!.body.name).to.be.eq('Swapr token list')
+      } catch (err) {}
+    })
+  }
 }

@@ -1,17 +1,12 @@
 import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
 import { AddressesEnum } from '../../../utils/AddressesEnum'
-import { SubgraphFacade } from '../../../utils/SubgraphFacade'
+import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Token menu smoke tests', () => {
   beforeEach(() => {
     cy.visit('/swap')
-    cy.intercept('GET', 'https://ipfs.io/ipfs/*', req => {
-      if (req.hasOwnProperty('body')) {
-        req.alias = 'request'
-      }
-    })
-    cy.wait('@request')
+    TransactionHelper.waitForTokenLists()
     SwapPage.openTokenToSwapMenu()
   })
   it('Should display token picker which contains token input,manage token lists button, common tokens and token list [TC-39]', () => {
@@ -37,7 +32,9 @@ describe('Token menu smoke tests', () => {
   })
   it('Should add additional token [TC-42]', () => {
     TokenMenu.openTokenManager()
-    TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.STRONG_TOKEN_RINKEBY)
+    TokenMenu.getSingleTokenManagerInput()
+      .type(AddressesEnum.STRONG_TOKEN_RINKEBY, { delay: 30 })
+      .should('have.value', AddressesEnum.STRONG_TOKEN_RINKEBY)
     TokenMenu.getTokenManagerRow('strong').should('be.visible')
     TokenMenu.importToken('strong')
     TokenMenu.getTokenImportWarning().should('be.visible')
@@ -61,7 +58,9 @@ describe('Token menu smoke tests', () => {
       .should('contain.text', 'Enter valid list location')
   })
   it('Should find token by valid address [TC-45]', () => {
-    TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.DXD_TOKEN_MAINNET)
+    TokenMenu.getSingleTokenManagerInput()
+      .type(AddressesEnum.DXD_TOKEN_MAINNET, { delay: 30 })
+      .should('have.value', AddressesEnum.DXD_TOKEN_MAINNET)
     TokenMenu.getTokenRow('dxd').should('be.visible')
   })
   it('Should find token by name [TC-46]', () => {
