@@ -22,3 +22,6 @@ export const Button = styled(ButtonSecondary)`
   font-size: 11px;
   line-height: 13px;
 `
+export const ButtonCancel = styled(ButtonSecondary)`
+  font-size: 13px;
+`

@@ -1,10 +1,10 @@
 import React from 'react'
 import { ArrowRightCircle } from 'react-feather'
 import Modal from '../../../components/Modal'
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
+import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'
-import { Button, ButtonsWrapper, TitleWrapper, Wrapper } from './BridgeModal.styles'
+import { Button, ButtonCancel, ButtonsWrapper, TitleWrapper, Wrapper } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
 
 export const BridgeModalContent = ({
@@ -61,7 +61,7 @@ export const BridgeModalContent = ({
                   >
                     CONFIRM
                   </ButtonPrimary>
-                  <ButtonSecondary onClick={onDismiss}>CANCEL</ButtonSecondary>
+                  <ButtonCancel onClick={onDismiss}>CANCEL</ButtonCancel>
                 </>
               )}
               {modalType === 'success' && (
