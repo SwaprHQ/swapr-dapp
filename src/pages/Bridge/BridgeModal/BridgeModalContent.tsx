@@ -48,8 +48,7 @@ export const BridgeModalContent = ({
                     {text}
                   </TYPE.main>
                   <TYPE.small mb="24px" textAlign="center" fontSize="14px" lineHeight="1.6">
-                    {disclaimerText}
-                    Would you like to proceed?
+                    {disclaimerText} Would you like to proceed?
                   </TYPE.small>
                   <ButtonPrimary
                     mb="12px"
@@ -74,7 +73,9 @@ export const BridgeModalContent = ({
               )}
               {(modalType === 'initiated' || modalType === 'collecting') && (
                 <>
-                  <TYPE.main mb="24px">{text}</TYPE.main>
+                  <TYPE.main textAlign="center" mb="24px">
+                    {text}
+                  </TYPE.main>
                   <ButtonPrimary onClick={onDismiss}>Back to Bridge</ButtonPrimary>
                 </>
               )}

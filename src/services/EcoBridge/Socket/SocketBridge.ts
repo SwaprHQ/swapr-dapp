@@ -35,9 +35,6 @@ const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
   }
-  if (error?.code === -32603) {
-    return 'Not enough gas balance on destination chain'
-  }
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends EcoBridgeChildBase {
@@ -88,6 +85,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
     const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
+
     const { from, to } = this.store.getState().ecoBridge.UI
 
     if (
@@ -104,9 +102,13 @@ export class SocketBridge extends EcoBridgeChildBase {
       return
 
     try {
+      const value =
+        from.address === Currency.getNative(from.chainId).symbol ? parseUnits(from.value, from.decimals) : undefined
+
       const tx = await this._activeProvider?.getSigner().sendTransaction({
         to: recipient,
-        data
+        data,
+        value
       })
 
       if (!tx) return
@@ -514,7 +516,11 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public triggerModalDisclaimerText = () => {
-    this.store.dispatch(ecoBridgeUIActions.setModalDisclaimerText('Content to be discussed'))
+    this.store.dispatch(
+      ecoBridgeUIActions.setModalDisclaimerText(
+        'This transaction is routed through Socket Network. Swapr is not responsible for any transactions outside of its control.'
+      )
+    )
   }
 
   private startListeners = () => {
