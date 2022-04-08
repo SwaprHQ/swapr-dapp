@@ -54,6 +54,7 @@ export class EtherscanFacade {
   static transaction(txhash: string) {
     return cy.request({
       method: 'GET',
+      failOnStatusCode: false,
       url: this.ETHERSCAN_URL,
       qs: {
         module: 'proxy',

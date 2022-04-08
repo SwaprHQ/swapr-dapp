@@ -23,12 +23,7 @@ describe('SWAP functional tests', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
 
-  it('Should display that wallet is connected to rinkeby', () => {
-    MenuBar.getWeb3Status().should('be.visible')
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
-  })
-
-  it('Should wrap eth to weth', () => {
+  it('Should wrap eth to weth [TC-03]', () => {
     SwapPage.openTokenToSwapMenu()
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
@@ -42,7 +37,7 @@ describe('SWAP functional tests', () => {
     TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE, 0)
   })
 
-  it('Should unwrap weth to eth', () => {
+  it('Should unwrap weth to eth [TC-06]', () => {
     SwapPage.openTokenToSwapMenu()
       .chooseToken('eth')
       .openTokenToSwapMenu()

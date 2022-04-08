@@ -20,7 +20,7 @@ export class TransactionHelper {
     tokenAdress: string,
     balanceBefore: number,
     transactionValue: number,
-    assertionAccuracy: number
+    shouldBeEqual: boolean
   ) {
     const expectedTransactionValue: number = transactionValue * Math.pow(10, 18)
     cy.log('Checking token balance from ETHERSCAN API')
@@ -28,7 +28,10 @@ export class TransactionHelper {
       console.log('ACTUAL ERC 20 TOKEN BALANCE FROM ETHERSCAN', res)
       console.log('EXPECTED TRANSACTION VALUE', expectedTransactionValue)
       console.log('EXPECTED BALANCE AFTER', balanceBefore + expectedTransactionValue)
-      expect(parseInt(res.body.result)).to.be.closeTo(balanceBefore + expectedTransactionValue, assertionAccuracy)
+      if (shouldBeEqual) {
+        expect(parseInt(res.body.result)).to.be.eq(balanceBefore + expectedTransactionValue)
+      }
+      expect(parseInt(res.body.result)).to.be.at.least(balanceBefore + expectedTransactionValue)
     })
   }
   static checkSubgraphTransaction(
@@ -62,6 +65,27 @@ export class TransactionHelper {
   static getTxFromStorage() {
     console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0])
     return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
+  }
+
+  static checkEthereumBalanceFromEtherscan(expectedBalance: number) {
+    console.log('EXPECTED BALANCE WITHOU GAS: ', expectedBalance, typeof expectedBalance)
+    expectedBalance -= 0.001936 * Math.pow(10, 18)
+    console.log('EXPECTED BALABCE: ', expectedBalance)
+    cy.window().then(() => {
+      EtherscanFacade.transaction(TransactionHelper.getTxFromStorage()).then(res => {
+        console.log('ETHSC: ', res)
+      })
+    })
+
+    EtherscanFacade.ethBalance().then((response: { body: { result: string } }) => {
+      console.log('ETHERSCAN RESPONSE: ', response)
+      try {
+        expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
+      } catch (err) {
+        cy.wait(1000)
+        return this.checkEthereumBalanceFromEtherscan(expectedBalance)
+      }
+    })
   }
 
   static waitForTokenLists() {

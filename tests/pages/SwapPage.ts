@@ -60,4 +60,7 @@ export class SwapPage {
   static getConfirmButton() {
     return cy.get('[data-testid=switch-connect-button]')
   }
+  static getEstimatedMinimalTransactionValue() {
+    return cy.get('[data-testid=estimated-transaction-output]')
+  }
 }
