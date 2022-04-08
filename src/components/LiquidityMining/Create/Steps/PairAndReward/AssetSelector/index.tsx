@@ -63,9 +63,8 @@ interface AssetSelectorProps {
   handleUserInput?: (value: string) => void
   onResetCurrency?: () => void
   onClick: (event: React.MouseEvent<HTMLElement>) => void
-  setApprovals?: (approvals: ApprovalState[]) => void
-  approvals?: ApprovalState[]
   rawAmount?: string
+  dispatch?: any
 }
 
 export default function AssetSelector({
@@ -75,12 +74,11 @@ export default function AssetSelector({
   campaingType,
   onClick,
   amount,
-  approvals,
   onResetCurrency,
   handleUserInput,
-  setApprovals,
   index,
-  rawAmount
+  rawAmount,
+  dispatch
 }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
@@ -109,20 +107,22 @@ export default function AssetSelector({
   }, [approvalState, account, userBalance, rewardMemo])
 
   useEffect(() => {
-    if (setApprovals && approvals && rewardMemo && userBalance) {
-      setApprovals(
-        [...approvals].map((item, i) =>
-          i === index && rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
+    if (dispatch && rewardMemo && userBalance) {
+      dispatch({
+        type: 'APPROVALS_CHANGE',
+        index: index,
+        approval:
+          rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
             ? ApprovalState.APPROVED
             : rewardMemo.greaterThan('0') && userBalance?.lessThan(rewardMemo)
             ? ApprovalState.NOT_APPROVED
-            : item
-        )
-      )
+            : ApprovalState.UNKNOWN
+      })
     }
 
     setAreButtonsDisabled(!!(!account || !rewardMemo || (userBalance && userBalance.lessThan(rewardMemo))))
-  }, [account, rewardMemo, userBalance])
+  }, [account, rewardMemo, userBalance, dispatch, index])
+
   useEffect(() => {
     if (currency0 && currency1) {
       setTokenName('LP PAIR')

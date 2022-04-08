@@ -1,5 +1,5 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
@@ -25,12 +25,44 @@ export enum CampaignType {
   TOKEN,
   PAIR
 }
+const numbberOfRewarsd = 4
+const initialState = {
+  approvals: new Array(numbberOfRewarsd).fill(ApprovalState.UNKNOWN),
+  rewards: new Array(numbberOfRewarsd).fill(undefined),
+  rawAmounts: new Array(numbberOfRewarsd).fill(undefined)
+}
+const reducer = (state: any, action: any) => {
+  switch (action.type) {
+    case 'APPROVALS_CHANGE':
+      return {
+        ...state,
+        approvals: state.approvals.map((approval: ApprovalState, i: number) =>
+          i === action.index ? action.approval : approval
+        )
+      }
+    case 'REWARDS_CHANGE':
+      return {
+        ...state,
+        rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
+          i === action.index ? action.reward : reward
+        )
+      }
+    case 'RAW_AMOUNTS':
+      return {
+        ...state,
+        rawAmounts: state.rawAmounts.map((rawAmount: string, i: number) =>
+          i === action.index ? action.rawAmount : rawAmount
+        )
+      }
+    case 'RESET':
+      return initialState
+    default:
+      return state
+  }
+}
 
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
-
-  const [rewardsObject, setRewardsObject] = useState<(TokenAmount | undefined)[]>(new Array(4).fill(undefined))
-  const [rewardsApprovals, setRewardsApprovals] = useState<ApprovalState[]>(new Array(4).fill(ApprovalState.UNKNOWN))
 
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
@@ -45,17 +77,25 @@ export default function CreateLiquidityMining() {
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
+  const [newRewardsObject, dispatch] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    console.log(newRewardsObject)
+  }, [newRewardsObject])
 
   const memoizedRewardArray = useMemo(
-    () => (rewardsObject.length ? rewardsObject.filter(item => item?.greaterThan('0')) : new Array(4).fill(undefined)),
-    [rewardsObject]
+    () =>
+      newRewardsObject.rewards.length
+        ? newRewardsObject.rewards.filter((item: TokenAmount | undefined) => item?.greaterThan('0'))
+        : new Array(4).fill(undefined),
+    [newRewardsObject]
   )
   const memoizedApprovalsArray = useMemo(
     () =>
-      rewardsApprovals.some((value, i) =>
+      newRewardsObject.approvals.some((value: ApprovalState) =>
         value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? true : false
       ),
-    [rewardsApprovals]
+    [newRewardsObject]
   )
 
   const campaign = useNewLiquidityMiningCampaign(
@@ -124,8 +164,7 @@ export default function CreateLiquidityMining() {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
       setCampaignType(CampaignType.TOKEN)
-      setRewardsObject(new Array(4).fill(undefined))
-      setRewardsApprovals(new Array(4).fill(ApprovalState.UNKNOWN))
+      dispatch({ type: 'RESET' })
       setTargetedPairOrToken(null)
       setReward(null)
       setUnlimitedPool(true)
@@ -174,12 +213,7 @@ export default function CreateLiquidityMining() {
         </Step>
         {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
         <Step title="Select Reward Amount" index={3} disabled={false}>
-          <RewardAmount
-            setApprovals={setRewardsApprovals}
-            approvals={rewardsApprovals}
-            rewardsObject={rewardsObject}
-            onRewardsObjectChange={setRewardsObject}
-          />
+          <RewardAmount newRewardsObject={newRewardsObject} setRewardsObject={dispatch} />
         </Step>
 
         <LastStep
