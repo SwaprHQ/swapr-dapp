@@ -43,6 +43,12 @@ export class MenuBar {
   static getWeb3Status() {
     return cy.get('#web3-status-connected')
   }
+  static getUnsupportedNetworkWarning() {
+    return cy.get('[data-testid=unsupported-network-warning]')
+  }
+  static getUnsupportedNetworkPopover() {
+    return cy.get('[data-testid=unsupported-network-popover]')
+  }
   static checkHrefs() {
     MenuBar.getRewards().should('be.visible')
     MenuBar.getLiquidity().should('be.visible')

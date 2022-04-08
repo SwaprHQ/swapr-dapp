@@ -40,9 +40,11 @@ export class SubgraphFacade {
         try {
           expect(resp.body.data.transactions).to.have.length.greaterThan(0)
         } catch (err) {
-          if (this.retries > 100) {
+            this.retries++
+          if (this.retries > 200) {
             throw new Error('Retried too many times')
           }
+          cy.wait(1000)
           return this.transaction(txid)
         }
         return resp
