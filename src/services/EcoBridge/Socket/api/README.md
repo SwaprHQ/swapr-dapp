@@ -4,7 +4,7 @@
 2. Run codegen:
 
 ```bash
-yarn run openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o ./src/services/EcoBridge/Socket/api/generated --additional-properties=typescriptThreePlus=true
+yarn run openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o ./src/services/EcoBridge/Socket/api/generated --additional-properties=typescriptThreePlus=true && sed -i "1s;^;// @ts-nocheck\n;" ./src/**/generated/**/*.ts
 ```
 
 3. Keep `openapitools.json` in version control.
