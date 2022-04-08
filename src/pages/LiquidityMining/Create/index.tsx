@@ -1,5 +1,5 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import React, { useCallback, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
@@ -26,35 +26,58 @@ export enum CampaignType {
   PAIR
 }
 const numbberOfRewarsd = 4
-const initialState = {
+export interface RewardsObject {
+  approvals: ApprovalState[]
+  rewards: (TokenAmount | undefined)[]
+  rawAmounts: (string | undefined)[]
+}
+
+export enum ActionType {
+  APPROVALS_CHANGE,
+  REWARDS_CHANGE,
+  RAW_AMOUNTS,
+  RESET
+}
+export interface Actions {
+  type: ActionType
+  payload: {
+    index?: number
+    reward?: TokenAmount
+    rawAmount?: string
+    approval?: ApprovalState
+  }
+}
+const initialState: RewardsObject = {
   approvals: new Array(numbberOfRewarsd).fill(ApprovalState.UNKNOWN),
   rewards: new Array(numbberOfRewarsd).fill(undefined),
   rawAmounts: new Array(numbberOfRewarsd).fill(undefined)
 }
-const reducer = (state: any, action: any) => {
-  switch (action.type) {
-    case 'APPROVALS_CHANGE':
+
+const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
+  const { type, payload } = action
+  switch (type) {
+    case ActionType.APPROVALS_CHANGE:
       return {
         ...state,
         approvals: state.approvals.map((approval: ApprovalState, i: number) =>
-          i === action.index ? action.approval : approval
+          i === payload.index && payload.approval !== undefined ? payload.approval : approval
         )
       }
-    case 'REWARDS_CHANGE':
+    case ActionType.REWARDS_CHANGE:
       return {
         ...state,
         rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
-          i === action.index ? action.reward : reward
+          i === payload.index ? payload.reward : reward
         )
       }
-    case 'RAW_AMOUNTS':
+    case ActionType.RAW_AMOUNTS:
       return {
         ...state,
-        rawAmounts: state.rawAmounts.map((rawAmount: string, i: number) =>
-          i === action.index ? action.rawAmount : rawAmount
+        rawAmounts: state.rawAmounts.map((rawAmount: string | undefined, i: number) =>
+          i === payload.index ? payload.rawAmount : rawAmount
         )
       }
-    case 'RESET':
+    case ActionType.RESET:
       return initialState
     default:
       return state
@@ -77,25 +100,21 @@ export default function CreateLiquidityMining() {
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
-  const [newRewardsObject, dispatch] = useReducer(reducer, initialState)
-
-  useEffect(() => {
-    console.log(newRewardsObject)
-  }, [newRewardsObject])
+  const [rewardsObject, dispatch] = useReducer(reducer, initialState)
 
   const memoizedRewardArray = useMemo(
     () =>
-      newRewardsObject.rewards.length
-        ? newRewardsObject.rewards.filter((item: TokenAmount | undefined) => item?.greaterThan('0'))
+      rewardsObject.rewards.length
+        ? rewardsObject.rewards.filter((item: TokenAmount | undefined) => item?.greaterThan('0'))
         : new Array(4).fill(undefined),
-    [newRewardsObject]
+    [rewardsObject]
   )
   const memoizedApprovalsArray = useMemo(
     () =>
-      newRewardsObject.approvals.some((value: ApprovalState) =>
-        value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? true : false
+      rewardsObject.approvals.some((value: ApprovalState) =>
+        value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? false : true
       ),
-    [newRewardsObject]
+    [rewardsObject.approvals]
   )
 
   const campaign = useNewLiquidityMiningCampaign(
@@ -164,7 +183,7 @@ export default function CreateLiquidityMining() {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
       setCampaignType(CampaignType.TOKEN)
-      dispatch({ type: 'RESET' })
+      dispatch({ type: ActionType.RESET, payload: {} })
       setTargetedPairOrToken(null)
       setReward(null)
       setUnlimitedPool(true)
@@ -213,7 +232,7 @@ export default function CreateLiquidityMining() {
         </Step>
         {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
         <Step title="Select Reward Amount" index={3} disabled={false}>
-          <RewardAmount newRewardsObject={newRewardsObject} setRewardsObject={dispatch} />
+          <RewardAmount rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
         <LastStep

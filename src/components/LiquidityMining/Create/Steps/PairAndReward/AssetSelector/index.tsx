@@ -6,7 +6,7 @@ import { CloseIcon, TYPE } from '../../../../../../theme'
 import { Box, Flex } from 'rebass'
 import { SmoothGradientCard } from '../../../../styleds'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
-import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
+import { Actions, ActionType, CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 
 import NumericalInput from '../../../../../Input/NumericalInput'
 import { ButtonPrimary } from '../../../../../Button'
@@ -64,7 +64,7 @@ interface AssetSelectorProps {
   onResetCurrency?: () => void
   onClick: (event: React.MouseEvent<HTMLElement>) => void
   rawAmount?: string
-  dispatch?: any
+  setRewardsObject?: React.Dispatch<Actions>
 }
 
 export default function AssetSelector({
@@ -78,7 +78,7 @@ export default function AssetSelector({
   handleUserInput,
   index,
   rawAmount,
-  dispatch
+  setRewardsObject
 }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
@@ -107,21 +107,26 @@ export default function AssetSelector({
   }, [approvalState, account, userBalance, rewardMemo])
 
   useEffect(() => {
-    if (dispatch && rewardMemo && userBalance) {
-      dispatch({
-        type: 'APPROVALS_CHANGE',
-        index: index,
-        approval:
-          rewardMemo.greaterThan('0') && userBalance.greaterThan(rewardMemo)
-            ? ApprovalState.APPROVED
-            : rewardMemo.greaterThan('0') && userBalance?.lessThan(rewardMemo)
-            ? ApprovalState.NOT_APPROVED
-            : ApprovalState.UNKNOWN
+    if (setRewardsObject && rewardMemo && userBalance) {
+      setRewardsObject({
+        type: ActionType.APPROVALS_CHANGE,
+        payload: {
+          index: index,
+          approval:
+            rewardMemo.greaterThan('0') &&
+            userBalance.greaterThan(rewardMemo) &&
+            approvalState === ApprovalState.APPROVED
+              ? ApprovalState.APPROVED
+              : (rewardMemo.greaterThan('0') && userBalance?.lessThan(rewardMemo)) ||
+                approvalState === ApprovalState.NOT_APPROVED
+              ? ApprovalState.NOT_APPROVED
+              : ApprovalState.UNKNOWN
+        }
       })
     }
 
     setAreButtonsDisabled(!!(!account || !rewardMemo || (userBalance && userBalance.lessThan(rewardMemo))))
-  }, [account, rewardMemo, userBalance, dispatch, index])
+  }, [account, rewardMemo, userBalance, setRewardsObject, index, approvalState])
 
   useEffect(() => {
     if (currency0 && currency1) {

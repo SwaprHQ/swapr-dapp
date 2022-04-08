@@ -62,15 +62,13 @@ export default function PreviewAndCreate({
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   useEffect(() => {
-    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || !approvals))
+    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals))
   }, [account, reward, liquidityPair, startTime, endTime, approvals])
   const getConfirmButtonMessage = () => {
     if (!account) {
       return 'Connect your wallet'
     }
-    // if (userBalance && reward && reward.greaterThan('0') && userBalance.lessThan(reward)) {
-    //   return 'Insuffucient balance'
-    // }
+
     return 'Deposit & create'
   }
   const isSingleSided = campaign instanceof SingleSidedLiquidityMiningCampaign
