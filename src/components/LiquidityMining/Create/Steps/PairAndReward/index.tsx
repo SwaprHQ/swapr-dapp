@@ -11,28 +11,40 @@ import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import PairSearchModal from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
-import { ReactComponent as CheckMark } from '../../../../../assets/svg/checkmark.svg'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
     flex-direction: column;
   `}
 `
-const StyledNumericalInput = styled(NumericalInput)`
-  border-radius: 8px;
+const AmountFlex = styled(Flex)<{ active: boolean }>`
+  border-bottom: 1px solid ${props => (props.active ? 'white' : 'transparent')};
+  height: 28px;
+  width: max-content;
+  align-self: center;
+`
+const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
+  text-decoration: ${props => (props.active ? 'underline' : 'none')};
+  text-underline-offset: 7px;
 
+  color: ${props => props.theme.text2};
+  font-size: 13px !important;
+  letter-spacing: 0.08em;
+`
+const StyledNumericalInput = styled(NumericalInput)`
+  color: ${props => props.theme.text2};
   width: 36px;
   max-height: 38px;
   font-weight: 600;
   font-size: 16px;
   line-height: 16px;
   text-transform: uppercase;
-
-  background-color: #000000a6;
+  ::placeholder {
+    color: ${props => props.theme.text2};
+  }
 `
 const StyledFlex = styled(Flex)`
   border-radius: 4px;
-  background-color: #000000a6;
 `
 
 interface TokenAndLimitProps {
@@ -55,6 +67,7 @@ export default function TokenAndLimit({
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')
+  const [inputWidth, setInputWidth] = useState(3)
 
   useEffect(() => {
     if (unlimitedPool) {
@@ -89,6 +102,7 @@ export default function TokenAndLimit({
   }, [campaingType, onLiquidityPairChange])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
+      setInputWidth(rawValue.length < 3 ? 3 : rawValue.length)
       if (!liquidityPair || (liquidityPair instanceof Pair && !liquidityPair.liquidityToken)) return
       setStakingCapString(rawValue)
       const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair.liquidityToken
@@ -126,30 +140,21 @@ export default function TokenAndLimit({
             MAX STAKED
           </TYPE.mediumHeader>
           <FlexContainer width={'100%'} justifyContent={'space-between '}>
-            <StyledFlex
-              onClick={() => {
-                onUnlimitedPoolChange(!unlimitedPool)
-              }}
-              alignItems={'center'}
-              width={'127px'}
-              height={'38px'}
-              padding={'12px 8px'}
-            >
-              <CheckMark />
-              <TYPE.largeHeader marginLeft={'8px'} color="lightPurple" fontSize={13} letterSpacing="0.08em">
-                {unlimitedPool ? 'UNLIMITED' : 'LIMITED'}
-              </TYPE.largeHeader>
+            <StyledFlex onClick={() => onUnlimitedPoolChange(true)} alignItems={'center'} height={'38px'}>
+              <StyledUnlimitedText active={unlimitedPool}>UNLIMITED</StyledUnlimitedText>
             </StyledFlex>
-            <StyledFlex padding={'4px 2px'}>
+            <AmountFlex active={!unlimitedPool}>
               <StyledNumericalInput
-                disabled={unlimitedPool}
+                style={{ width: inputWidth + 'ch' }}
+                onClick={() => onUnlimitedPoolChange(false)}
+                disabled={!liquidityPair}
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}
               />
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}
-                color={'lightPurple'}
+                color={'text3'}
                 letterSpacing="0.08em"
                 alignItems={'center'}
               >
@@ -159,7 +164,7 @@ export default function TokenAndLimit({
                   ? unwrappedToken(liquidityPair)?.symbol
                   : ''}
               </TYPE.largeHeader>
-            </StyledFlex>
+            </AmountFlex>
           </FlexContainer>
         </SmoothGradientCard>
       </FlexContainer>
