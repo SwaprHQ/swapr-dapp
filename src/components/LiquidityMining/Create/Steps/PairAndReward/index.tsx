@@ -27,7 +27,7 @@ const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
   text-decoration: ${props => (props.active ? 'underline' : 'none')};
   text-underline-offset: 7px;
 
-  color: ${props => props.theme.text2};
+  color: ${props => (props.active ? props.theme.text2 : props.theme.dark4)};
   font-size: 13px !important;
   letter-spacing: 0.08em;
 `

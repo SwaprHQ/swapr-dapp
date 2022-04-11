@@ -47,6 +47,7 @@ export interface Colors {
   yellow1: Color
   yellow2: Color
   blue1: Color
+  dark4: Color
 
   // new UI refactor colors, taken from ZeroHeight
   mainPurple: Color
