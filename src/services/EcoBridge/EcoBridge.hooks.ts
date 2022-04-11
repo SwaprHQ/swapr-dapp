@@ -27,7 +27,7 @@ import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 
-import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
+import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export const useBridgeSupportedTokens = () => {
@@ -321,15 +321,10 @@ export const useBridgeCollectHandlers = () => {
 export const useBridgeModal = (): {
   modalData: BridgeModalState
   setModalState: (status: BridgeModalStatus, error?: string) => void
-  setModalData: ({
-    symbol,
-    typedValue,
-    fromChainId,
-    toChainId
-  }: Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>) => void
+  setModalData: ({ symbol, typedValue, fromChainId, toChainId }: BridgeModalData) => void
 } => {
   const { fromChainId, status, symbol, toChainId, typedValue, error, disclaimerText } = useSelector(
-    (state: AppState) => state.ecoBridge.UI.modal
+    (state: AppState) => state.ecoBridge.ui.modal
   )
 
   const dispatch = useDispatch()
@@ -342,12 +337,7 @@ export const useBridgeModal = (): {
   )
 
   const setModalData = useCallback(
-    ({
-      symbol,
-      typedValue,
-      fromChainId,
-      toChainId
-    }: Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>) => {
+    ({ symbol, typedValue, fromChainId, toChainId }: BridgeModalData) => {
       dispatch(
         ecoBridgeUIActions.setBridgeModalData({
           symbol: symbol ?? '',
