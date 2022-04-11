@@ -6,7 +6,7 @@ import { BridgeModalType } from './BridgeModal.types'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
-  setCollecting: (collecting: boolean) => void
+  setIsCollecting: (collecting: boolean) => void
   setStatus: (status: BridgeModalStatus, error?: string) => void
   modalData: BridgeModalState
   handleSubmit: () => void
@@ -14,7 +14,7 @@ export interface BridgeModalProps {
 
 export const BridgeModal = ({
   handleResetBridge,
-  setCollecting,
+  setIsCollecting,
   setStatus,
   modalData,
   handleSubmit
@@ -69,7 +69,7 @@ export const BridgeModal = ({
     }
 
     if (modalType === 'collecting') {
-      setCollecting(false)
+      setIsCollecting(false)
     }
   }
 
