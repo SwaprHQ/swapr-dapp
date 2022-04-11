@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
-import { BridgeList, AsyncState, BridgingDetailsErrorMessage } from '../EcoBridge.types'
+import { BridgeList, SyncState, BridgingDetailsErrorMessage } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 export const SOCKET_PENDING_REASONS = {
@@ -8,7 +8,12 @@ export const SOCKET_PENDING_REASONS = {
   TO_PENDING: 'Transaction on destination chain has not been confirmed yet'
 }
 
-export type SocketTxStatus = 'from-pending' | 'to-pending' | 'error' | 'confirmed'
+export enum SocketTxStatus {
+  FROM_PENDING = 'from-pending',
+  TO_PENDING = 'to-pending',
+  ERROR = 'error',
+  CONFIRMED = 'confirmed'
+}
 
 export type SocketTx = {
   txHash: string
@@ -31,9 +36,9 @@ export interface SocketBridgeState {
     estimateTime?: string
     receiveAmount?: string
   }
-  bridgingDetailsStatus: AsyncState
+  bridgingDetailsStatus: SyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  listsStatus: AsyncState
+  listsStatus: SyncState
   lists: { [id: string]: TokenList }
   approvalData: {
     chainId?: ChainId

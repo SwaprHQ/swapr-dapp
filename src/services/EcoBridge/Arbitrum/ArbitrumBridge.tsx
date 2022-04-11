@@ -19,7 +19,7 @@ import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { subgraphClientsUris } from '../../../apollo/client'
 import {
   ArbitrumList,
-  AsyncState,
+  SyncState,
   BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
@@ -607,7 +607,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
-    this.store.dispatch(this.actions.setTokenListsStatus(AsyncState.LOADING))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
     const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
@@ -668,7 +668,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     )
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
-    this.store.dispatch(this.actions.setTokenListsStatus(AsyncState.READY))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
     this.store.dispatch(commonActions.activateLists(defaultListsIds))
   }
 
@@ -767,7 +767,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
 
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: AsyncState.LOADING }))
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
     const { value, decimals, address, chainId } = this.store.getState().ecoBridge.ui.from
 
@@ -778,7 +778,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     } catch (e) {
       this.store.dispatch(
         this.actions.setBridgeDetailsStatus({
-          status: AsyncState.FAILED,
+          status: SyncState.FAILED,
           errorMessage: 'No available routes / details'
         })
       )
@@ -821,7 +821,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
 
       if (!this._activeChainId) {
-        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: AsyncState.FAILED }))
+        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
         return
       }
 

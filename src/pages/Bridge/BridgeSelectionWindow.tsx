@@ -6,7 +6,7 @@ import Skeleton from 'react-loading-skeleton'
 import QuestionHelper from '../../components/QuestionHelper'
 import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { AsyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
+import { SyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import {
   SelectionListWindowWrapper,
   SelectionListLabelWrapper,
@@ -72,7 +72,7 @@ interface BridgeProps {
     estimateTime?: string
     receiveAmount?: string
   }
-  status: AsyncState
+  status: SyncState
   handleSelectBridge: (id: OptionalBridgeList) => void
 }
 

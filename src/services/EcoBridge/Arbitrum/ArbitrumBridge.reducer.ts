@@ -4,14 +4,14 @@ import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, AsyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
+import { ArbitrumList, SyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
 
 interface ArbitrumBridgeState {
   transactions: BridgeTxnsState
   lists: { [id: string]: TokenList }
-  listsStatus: AsyncState
+  listsStatus: SyncState
   bridgingDetails: BridgeDetails
-  bridgingDetailsStatus: AsyncState
+  bridgingDetailsStatus: SyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
   lastMetadataCt: number
 }
@@ -22,8 +22,8 @@ const initialState: ArbitrumBridgeState = {
   bridgingDetails: {},
   transactions: {},
   lists: {},
-  listsStatus: AsyncState.IDLE,
-  bridgingDetailsStatus: AsyncState.IDLE,
+  listsStatus: SyncState.IDLE,
+  bridgingDetailsStatus: SyncState.IDLE,
   lastMetadataCt: 0
 }
 
@@ -124,7 +124,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
 
         state.lists = payload
       },
-      setTokenListsStatus: (state, action: PayloadAction<AsyncState>) => {
+      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
         state.listsStatus = action.payload
       },
       migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
@@ -155,11 +155,11 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         }
 
         if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === AsyncState.FAILED) return
-          state.bridgingDetailsStatus = AsyncState.LOADING
+          if (state.bridgingDetailsStatus === SyncState.FAILED) return
+          state.bridgingDetailsStatus = SyncState.LOADING
           return
         } else {
-          state.bridgingDetailsStatus = AsyncState.READY
+          state.bridgingDetailsStatus = SyncState.READY
         }
 
         state.bridgingDetails.gas = gas
@@ -176,7 +176,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
       },
       setBridgeDetailsStatus: (
         state,
-        action: PayloadAction<{ status: AsyncState; errorMessage?: BridgingDetailsErrorMessage }>
+        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
       ) => {
         const { status, errorMessage } = action.payload
         state.bridgingDetailsStatus = status

@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
-import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
-import { SocketTx, SOCKET_PENDING_REASONS } from './Socket.types'
+import { SocketTx, SocketTxStatus, SOCKET_PENDING_REASONS } from './Socket.types'
 
 const createSelectBridgingDetails = (bridgeId: SocketList) =>
   createSelector(
@@ -55,7 +55,7 @@ const createSelectOwnedTransactions = (bridgeId: SocketList) =>
 
 const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
-    const pendingTxs = ownedTxs.filter(tx => tx.status !== 'error' && !tx.partnerTxHash)
+    const pendingTxs = ownedTxs.filter(tx => tx.status !== SocketTxStatus.ERROR && !tx.partnerTxHash)
 
     return pendingTxs
   })
@@ -67,9 +67,9 @@ const createSelectBridgeTransactionsSummary = (
   createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.filter], (txs, txsFilter) => {
     const summaries = txs.map(tx => {
       const pendingReason =
-        tx.status === 'from-pending'
+        tx.status === SocketTxStatus.FROM_PENDING
           ? SOCKET_PENDING_REASONS.FROM_PENDING
-          : tx.status === 'to-pending'
+          : tx.status === SocketTxStatus.TO_PENDING
           ? SOCKET_PENDING_REASONS.TO_PENDING
           : undefined
 
@@ -79,7 +79,11 @@ const createSelectBridgeTransactionsSummary = (
         assetAddressL2: '', // not applicable, socket doesn't implement collect flow for now
         fromChainId: tx.fromChainId,
         toChainId: tx.toChainId,
-        status: tx.partnerTxHash ? 'confirmed' : tx.status === 'error' ? 'failed' : 'pending',
+        status: tx.partnerTxHash
+          ? BridgeTransactionStatus.CONFIRMED
+          : tx.status === SocketTxStatus.ERROR
+          ? BridgeTransactionStatus.FAILED
+          : BridgeTransactionStatus.PENDING,
         value: tx.value,
         txHash: tx.txHash,
         pendingReason,

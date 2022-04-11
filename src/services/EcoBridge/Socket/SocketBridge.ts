@@ -5,7 +5,7 @@ import {
   EcoBridgeChildBaseInit,
   EcoBridgeChangeHandler,
   BridgeModalStatus,
-  AsyncState
+  SyncState
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
 import { SocketList } from '../EcoBridge.types'
@@ -30,7 +30,8 @@ import {
 } from '../../../constants'
 import { getBestRoute, getDAIAddress, getStatusOfResponse } from './Socket.utils'
 import { SOCKET_TOKENS } from './Socket.lists'
-import { BigNumber } from 'ethers/lib/ethers'
+import { BigNumber } from '@ethersproject/bignumber'
+import { SocketTxStatus } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -324,7 +325,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
 
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: AsyncState.LOADING }))
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
     const { from, to } = this.store.getState().ecoBridge.ui
 
@@ -374,7 +375,7 @@ export class SocketBridge extends EcoBridgeChildBase {
         if (!fromToken) {
           this.store.dispatch(
             this.actions.setBridgeDetailsStatus({
-              status: AsyncState.FAILED,
+              status: SyncState.FAILED,
               errorMessage: 'No available routes / details'
             })
           )
@@ -388,7 +389,7 @@ export class SocketBridge extends EcoBridgeChildBase {
         if (!toToken) {
           this.store.dispatch(
             this.actions.setBridgeDetailsStatus({
-              status: AsyncState.FAILED,
+              status: SyncState.FAILED,
               errorMessage: 'No available routes / details'
             })
           )
@@ -407,7 +408,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     } catch (e) {
       this.store.dispatch(
         this.actions.setBridgeDetailsStatus({
-          status: AsyncState.FAILED,
+          status: SyncState.FAILED,
           errorMessage: 'No available routes / details'
         })
       )
@@ -438,7 +439,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       if (!isValid) {
         this.store.dispatch(
           this.actions.setBridgeDetailsStatus({
-            status: AsyncState.FAILED,
+            status: SyncState.FAILED,
             errorMessage: 'No available routes / details'
           })
         )
@@ -453,7 +454,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     if (!success || result.routes.length === 0) {
       this.store.dispatch(
         this.actions.setBridgeDetailsStatus({
-          status: AsyncState.FAILED,
+          status: SyncState.FAILED,
           errorMessage: 'No available routes / details'
         })
       )
@@ -475,7 +476,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const bestRoute = getBestRoute(routes, tokenData, toAsset.decimals)
 
     if (!bestRoute) {
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: AsyncState.FAILED }))
+      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
       return
     }
 
@@ -503,7 +504,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     if (!fromChainId || !toChainId) return
 
-    this.store.dispatch(this.actions.setTokenListsStatus(AsyncState.LOADING))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
     const tokenListKey = `${Math.min(Number(fromChainId), Number(toChainId))}-${Math.max(
       Number(fromChainId),
@@ -523,7 +524,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     }
 
     this.store.dispatch(this.actions.addTokenLists({ socket: tokenList }))
-    this.store.dispatch(this.actions.setTokenListsStatus(AsyncState.READY))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
   }
 
   public fetchStaticLists = async () => {
@@ -557,10 +558,10 @@ export class SocketBridge extends EcoBridgeChildBase {
 
         if (status.success) {
           const txStatus = status.result.destinationTransactionHash
-            ? 'confirmed'
+            ? SocketTxStatus.CONFIRMED
             : status.result.sourceTxStatus === BridgeStatusResponseSourceTxStatusEnum.Completed
-            ? 'to-pending'
-            : 'from-pending'
+            ? SocketTxStatus.TO_PENDING
+            : SocketTxStatus.FROM_PENDING
 
           this.store.dispatch(
             this.actions.updateTx({
@@ -572,13 +573,13 @@ export class SocketBridge extends EcoBridgeChildBase {
         } else {
           this.actions.updateTx({
             txHash: tx.txHash,
-            status: 'error'
+            status: SocketTxStatus.ERROR
           })
         }
       } catch (e) {
         this.actions.updateTx({
           txHash: tx.txHash,
-          status: 'error'
+          status: SocketTxStatus.ERROR
         })
       }
     })

@@ -3,6 +3,7 @@ import { OutgoingMessageState } from 'arb-ts'
 import { AppState } from '../../../state'
 import {
   BridgeTransactionLog,
+  BridgeTransactionStatus,
   BridgeTransactionSummary,
   BridgeTxn,
   BridgeTxnsState
@@ -119,7 +120,7 @@ const createSelectBridgeTransactionsSummary = (
       }
       if (!tx.partnerTxHash || !l2Txs[tx.partnerTxHash]) {
         if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
-          summary.status = 'pending' // deposits on l1 should never show confirmed on ui
+          summary.status = BridgeTransactionStatus.PENDING // deposits on l1 should never show confirmed on ui
           summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
         }
 
@@ -135,7 +136,7 @@ const createSelectBridgeTransactionsSummary = (
 
         summary.fromChainId = to
         summary.toChainId = from
-        summary.status = status === 1 ? 'claimed' : getBridgeTxStatus(status)
+        summary.status = status === 1 ? BridgeTransactionStatus.CLAIMED : getBridgeTxStatus(status)
         summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
         summary.log = createBridgeLog([l2Txs[tx.partnerTxHash], tx])
 
@@ -149,7 +150,7 @@ const createSelectBridgeTransactionsSummary = (
       if (tx.type === 'deposit-l1' && tx.receipt) {
         const statusL2 = l2Txs[tx.partnerTxHash].receipt?.status
         if (tx.receipt?.status === 0 || statusL2 === 0) {
-          summary.status = 'failed'
+          summary.status = BridgeTransactionStatus.FAILED
         } else {
           summary.status = getBridgeTxStatus(statusL2)
           summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DESPOSIT
@@ -196,22 +197,22 @@ const createSelectBridgeTransactionsSummary = (
             if (tx.receipt?.status !== 0) {
               switch (tx.outgoingMessageState) {
                 case OutgoingMessageState.CONFIRMED:
-                  summary.status = 'redeem'
+                  summary.status = BridgeTransactionStatus.REDEEM
                   summary.timestampResolved = undefined
                   break
                 case OutgoingMessageState.EXECUTED:
-                  summary.status = 'claimed'
+                  summary.status = BridgeTransactionStatus.CLAIMED
                   break
                 default:
-                  summary.status = 'pending'
+                  summary.status = BridgeTransactionStatus.PENDING
                   summary.pendingReason = ArbitrumPendingReasons.WITHDRAWAL
                   summary.timestampResolved = undefined
               }
             } else {
-              summary.status = 'failed'
+              summary.status = BridgeTransactionStatus.FAILED
             }
           } else {
-            summary.status = 'loading'
+            summary.status = BridgeTransactionStatus.LOADING
             summary.timestampResolved = undefined
           }
         }

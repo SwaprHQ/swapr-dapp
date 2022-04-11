@@ -56,7 +56,7 @@ export interface TokenMap {
   }>
 }
 
-export enum AsyncState {
+export enum SyncState {
   IDLE = 'idle',
   LOADING = 'loading',
   READY = 'ready',
@@ -75,7 +75,7 @@ export interface BridgeDetails {
 export type SupportedBridges = {
   name: string
   bridgeId: BridgeList
-  status: AsyncState
+  status: SyncState
   details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage
 }
