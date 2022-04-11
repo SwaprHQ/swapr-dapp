@@ -6,17 +6,24 @@ import TimeSelector from './TimeSelector'
 import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
 import { Switch } from '../../../../Switch'
+import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
 `
 const StyledSwitch = styled(Switch)`
-  color: red;
+  /* color: red;
   label {
     span {
       background-color: black !important;
     }
-  }
+  } */
+`
+const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
+  font-weight: 600 !important;
+  align-self: center;
+  white-space: nowrap;
+  color: ${props => (props.active ? props.theme.white : props.theme.purple3)};
 `
 const FlexWrapper = styled(Flex)`
   height: 150px;
@@ -39,9 +46,10 @@ export default function Time({
   onEndTimeChange,
   onTimelockedChange
 }: TimeProps) {
+  console.log(timelocked)
   return (
     <FlexWrapper>
-      <StyledSmoothGradientCard width="466px" padding={'42.5px 28px'} marginRight={'28px'}>
+      <StyledSmoothGradientCard width="auto" padding={'42.5px 28px'} marginRight={'28px'}>
         <TimeSelector
           title="STARTING"
           placeholder="Start date"
@@ -65,27 +73,32 @@ export default function Time({
         textAlign={'start'}
         alignItems={'start'}
         padding={'41px'}
-        width={'266px'}
+        width={'299px'}
         flexDirection={'column'}
+        justifyContent={'space-around !important'}
       >
-        <TYPE.small
-          alignSelf={'start'}
-          marginBottom={'auto'}
-          fontSize={'11px'}
-          textAlign={'start'}
-          fontWeight="600"
-          lineHeight={'13px'}
-          color="text3"
-          letterSpacing="0.08em"
-        >
-          TIME LOCKED STAKING
-        </TYPE.small>
+        <Flex alignSelf={'start'}>
+          <LockSvg />
+          <TYPE.small
+            marginLeft="4px"
+            fontSize={'11px'}
+            textAlign={'start'}
+            fontWeight="600"
+            lineHeight={'13px'}
+            color="text3"
+            letterSpacing="0.08em"
+          >
+            TIME LOCKED STAKING
+          </TYPE.small>
+        </Flex>
 
         <Flex alignItems={'start'}>
-          <TYPE.small fontWeight={'600'} alignSelf="center" color={'purple3'}>
-            {timelocked ? 'ON' : 'OFF'}
-          </TYPE.small>
-          <StyledSwitch handleToggle={onTimelockedChange} isOn={timelocked} label={'TIME LOCKED'} />
+          <StyledLockText active={!timelocked}>UNLOCKED</StyledLockText>
+
+          <StyledSwitch handleToggle={() => onTimelockedChange()} isOn={timelocked} />
+          <StyledLockText active={timelocked} marginLeft="8px">
+            TIME LOCKED
+          </StyledLockText>
         </Flex>
       </SmoothGradientCard>
     </FlexWrapper>

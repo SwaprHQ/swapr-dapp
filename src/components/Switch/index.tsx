@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Text } from 'rebass'
 
 import styled from 'styled-components'
@@ -13,11 +13,11 @@ const StyledText = styled(Text)<{ isOn: boolean }>`
 interface SwitchProps {
   isOn: boolean
   handleToggle: () => void
-  label: string
+  label?: string
   style?: React.CSSProperties
 }
 
-export const Switch: FC<SwitchProps> = ({ isOn, handleToggle, label, style }) => {
+export const Switch = ({ isOn, handleToggle, label, style }: SwitchProps) => {
   return (
     <>
       <input
@@ -26,15 +26,17 @@ export const Switch: FC<SwitchProps> = ({ isOn, handleToggle, label, style }) =>
         onChange={handleToggle}
         className="react-switch-checkbox"
         type="checkbox"
-        id={label}
-        value={label}
+        id={handleToggle.name}
+        value={handleToggle.name}
       />
-      <StyledLabel className="react-switch-label" isOn={isOn} htmlFor={label}>
+      <StyledLabel className="react-switch-label" isOn={isOn} htmlFor={handleToggle.name}>
         <span className="react-switch-button" />
       </StyledLabel>
-      <StyledText isOn={isOn} marginLeft={'8px'} alignSelf={'center'} fontSize={'11px'} fontWeight={'500'}>
-        {label}
-      </StyledText>
+      {label && (
+        <StyledText isOn={isOn} marginLeft={'8px'} alignSelf={'center'} fontSize={'11px'} fontWeight={'500'}>
+          {label}
+        </StyledText>
+      )}
     </>
   )
 }
