@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -11,7 +15,7 @@
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
@@ -22,8 +26,17 @@
     "jsx": "preserve",
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
-  "exclude": ["node_modules", "cypress"],
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/components/Confetti/index.js"]
+  "exclude": [
+    "node_modules",
+    "cypress"
+  ],
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "src/components/Confetti/index.js"
+  ]
 }
