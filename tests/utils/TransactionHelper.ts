@@ -15,16 +15,15 @@ export class TransactionHelper {
     })
   }
 
-  //Assertion accuracy is +/- value that can be added before check. 0 means that this is 100% accurate
   static checkErc20TokenBalance(
-    tokenAdress: string,
+    tokenAddress: string,
     balanceBefore: number,
     transactionValue: number,
     shouldBeEqual: boolean
   ) {
     const expectedTransactionValue: number = transactionValue * Math.pow(10, 18)
     cy.log('Checking token balance from ETHERSCAN API')
-    EtherscanFacade.erc20TokenBalance(tokenAdress).should(res => {
+    EtherscanFacade.erc20TokenBalance(tokenAddress).should(res => {
       console.log('ACTUAL ERC 20 TOKEN BALANCE FROM ETHERSCAN', res)
       console.log('EXPECTED TRANSACTION VALUE', expectedTransactionValue)
       console.log('EXPECTED BALANCE AFTER', balanceBefore + expectedTransactionValue)
@@ -37,8 +36,8 @@ export class TransactionHelper {
   static checkSubgraphTransaction(
     expectedToken0Symbol: string,
     expectedToken1Symbol: string,
-    expectedToken0Value: number,
-    expectedToken1Value: number
+    expectedValueOut: number,
+    expectedValueIn: number
   ) {
     cy.window().then(() => {
       SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: any) => {
@@ -56,8 +55,8 @@ export class TransactionHelper {
         console.log('EXPECTED AMOUNT OUT: ', amountOut)
         console.log('EXPECTED AMOUNT IN: ', amountIn)
 
-        expect(amountIn).to.be.eq(expectedToken1Value)
-        expect(amountOut).to.be.greaterThan(expectedToken0Value)
+        expect(amountIn).to.be.eq(expectedValueIn)
+        expect(amountOut).to.be.greaterThan(expectedValueOut)
       })
     })
   }
@@ -67,10 +66,10 @@ export class TransactionHelper {
     return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
   }
 
-  static checkEthereumBalanceFromEtherscan(expectedBalance: number) {
-    console.log('EXPECTED BALANCE WITHOU GAS: ', expectedBalance, typeof expectedBalance)
-    expectedBalance -= 0.001936 * Math.pow(10, 18)
-    console.log('EXPECTED BALABCE: ', expectedBalance)
+  static checkEthereumBalanceFromEtherscan(expectedBalance: number, expectedGasCost: number) {
+    console.log('EXPECTED BALANCE WITHOUT GAS: ', expectedBalance, typeof expectedBalance)
+    expectedBalance -= expectedGasCost * Math.pow(10, 18)
+    console.log('EXPECTED BALANCE: ', expectedBalance)
     cy.window().then(() => {
       EtherscanFacade.transaction(TransactionHelper.getTxFromStorage()).then(res => {
         console.log('ETHSC: ', res)
@@ -83,7 +82,7 @@ export class TransactionHelper {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
       } catch (err) {
         cy.wait(1000)
-        return this.checkEthereumBalanceFromEtherscan(expectedBalance)
+        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost)
       }
     })
   }

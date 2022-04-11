@@ -6,7 +6,7 @@ import { TransactionHelper } from '../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../pages/TokenMenu'
 
 describe('SWAP functional tests', () => {
-  const TRANSACTION_VALUE: number = 0.001
+  const TRANSACTION_VALUE: number = 0.0001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number
   let ercBalanceBefore: number
@@ -24,7 +24,7 @@ describe('SWAP functional tests', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(
       (response: { body: { result: string } }) => {
         ercBalanceBefore = parseInt(response.body.result)
-        console.log(ercBalanceBefore)
+        console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
       }
     )
 
@@ -39,7 +39,7 @@ describe('SWAP functional tests', () => {
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -73,12 +73,11 @@ describe('SWAP functional tests', () => {
     SwapPage.getToInput()
       .should('not.have.value', '')
       .then((res: any) => {
-        console.log('ESTIMATED OUTPUT: ', res.val())
         estimatedTransactionOutput = parseFloat(res.val())
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -94,8 +93,8 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it('Should swap dxd to eth [TC-53]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(res=>{
+  it('Should swap XEENUS to eth [TC-53]', () => {
+    EtherscanFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -105,7 +104,7 @@ describe('SWAP functional tests', () => {
     })
 
     SwapPage.openTokenToSwapMenu()
-      .chooseToken('dxd')
+      .chooseToken('xeenus')
       .switchTokens()
     SwapPage.getCurrencySelectors()
       .last()
@@ -116,29 +115,34 @@ describe('SWAP functional tests', () => {
     SwapPage.swap()
       .getEstimatedMinimalTransactionValue()
       .then(value => {
-        console.log("VALUE",value)
-        console.log("VALUE",value.val())
-        console.log("VALUE",value.text())
-        estimatedTransactionOutput = parseFloat(value.text()!
-          .toString()
-          .replace(/[^\d.-]/g, ''))
-        console.log("Estimated output: ", estimatedTransactionOutput)
+        estimatedTransactionOutput = parseFloat(
+          value
+            .text()!
+            .toString()
+            .replace(/[^\d.-]/g, '')
+        )
       })
-      SwapPage.confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    SwapPage.confirmSwap()
+    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
     MenuBar.checkToastMessage('Swap')
 
-    cy.wait(10000)
     cy.wrap(null).then(() => {
-
-      console.log("ESTIMATED VALUE: ",estimatedTransactionOutput * Math.pow(10, 18))
-      console.log("ESTIMATED BALANCE: " ,ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18))
-      TransactionHelper.checkEthereumBalanceFromEtherscan(ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18))
-      TransactionHelper.checkErc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY,ercBalanceBefore, -TRANSACTION_VALUE, true)
-      TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
+      console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
+      console.log('ESTIMATED BALANCE: ', ethBalanceBefore - 0.002 + estimatedTransactionOutput * Math.pow(10, 18))
+      TransactionHelper.checkEthereumBalanceFromEtherscan(
+        ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18),
+        0.001000
+      )
+      TransactionHelper.checkErc20TokenBalance(
+        AddressesEnum.XEENUS_TOKEN_RINKEBY,
+        ercBalanceBefore,
+        -TRANSACTION_VALUE,
+        true
+      )
+      TransactionHelper.checkSubgraphTransaction('XEENUS', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
 })
