@@ -9,7 +9,7 @@ import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
-  setCollecting: (collecting: boolean) => void
+  setIsCollecting: (collecting: boolean) => void
   setStatus: (status: BridgeModalStatus, error?: string) => void
   modalData: BridgeModalState
   handleSubmit: () => void
@@ -17,7 +17,7 @@ export interface BridgeModalProps {
 
 export const BridgeModal = ({
   handleResetBridge,
-  setCollecting,
+  setIsCollecting,
   setStatus,
   modalData,
   handleSubmit
@@ -57,7 +57,7 @@ export const BridgeModal = ({
             onDismiss={() => {
               handleResetBridge()
               setStatus(BridgeModalStatus.CLOSED)
-              setCollecting(false)
+              setIsCollecting(false)
             }}
             heading={'Collecting Initiated'}
             text={`${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`}

@@ -30,7 +30,7 @@ const createSelectApprovalData = (bridgeId: SocketList) =>
 const createSelectTxBridgingData = (bridgeId: SocketList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].txBridgingData], txBridgingData => txBridgingData)
 
-const createSelectOwnedTxs = (bridgeId: SocketList) =>
+const createSelectOwnedTransactions = (bridgeId: SocketList) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].transactions,
@@ -53,15 +53,18 @@ const createSelectOwnedTxs = (bridgeId: SocketList) =>
     }
   )
 
-const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
     const pendingTxs = ownedTxs.filter(tx => tx.status !== 'error' && !tx.partnerTxHash)
 
     return pendingTxs
   })
 
-const createSelectBridgeTxsSummary = (bridgeId: SocketList, selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.UI.filter], (txs, txsFilter) => {
+const createSelectBridgeTransactionsSummary = (
+  bridgeId: SocketList,
+  selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
+) =>
+  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.filter], (txs, txsFilter) => {
     const summaries = txs.map(tx => {
       const pendingReason =
         tx.status === 'from-pending'
@@ -119,28 +122,28 @@ export interface SocketBridgeSelectors {
   selectRoutes: ReturnType<typeof createSelectRoutes>
   selectApprovalData: ReturnType<typeof createSelectApprovalData>
   selectTxBridgingData: ReturnType<typeof createSelectTxBridgingData>
-  selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
-  selectPendingTxs: ReturnType<typeof createSelectPendingTxs>
-  selectBridgeTxsSummary: ReturnType<typeof createSelectBridgeTxsSummary>
+  selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
+  selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
+  selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 }
 export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
   return socketBridges.reduce((total, bridgeId) => {
-    const selectOwnedTxs = createSelectOwnedTxs(bridgeId)
+    const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
     const selectRoutes = createSelectRoutes(bridgeId)
     const selectApprovalData = createSelectApprovalData(bridgeId)
     const selectTxBridgingData = createSelectTxBridgingData(bridgeId)
-    const selectPendingTxs = createSelectPendingTxs(selectOwnedTxs)
-    const selectBridgeTxsSummary = createSelectBridgeTxsSummary(bridgeId, selectOwnedTxs)
+    const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
+    const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
     const selectors = {
       selectBridgingDetails,
       selectRoutes,
       selectApprovalData,
       selectTxBridgingData,
-      selectOwnedTxs,
-      selectPendingTxs,
-      selectBridgeTxsSummary
+      selectOwnedTransactions,
+      selectPendingTransactions,
+      selectBridgeTransactionsSummary
     }
 
     total[bridgeId] = selectors

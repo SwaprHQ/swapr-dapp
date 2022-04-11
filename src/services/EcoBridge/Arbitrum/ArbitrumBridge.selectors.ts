@@ -18,7 +18,7 @@ const getSupportedChains = (bridgeId: string) => {
   return Object.values(bridge.supportedChains[0]).map(Number)
 }
 
-const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
+const createSelectOwnedTransactions = (bridgeId: ArbitrumList) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].transactions,
@@ -45,14 +45,14 @@ const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
     }
   )
 
-const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     return Object.values(txs).reduce((total, txsPerChain) => {
       return [...total, ...Object.values(txsPerChain ?? {}).filter(tx => !tx?.receipt)]
     }, [] as BridgeTxn[])
   })
 
-const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = Object.keys(txs).map(key => Number(key))
     const l1ChainId = Math.min(...chains)
@@ -62,7 +62,7 @@ const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOw
     })
   })
 
-const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = Object.keys(txs).map(key => Number(key))
     const l2ChainId = Math.max(...chains)
@@ -79,11 +79,11 @@ const createBridgeLog = (transactions: BridgeTxn[]): BridgeTransactionLog[] => {
   }))
 }
 
-const createSelectBridgeTxsSummary = (
+const createSelectBridgeTransactionsSummary = (
   bridgeId: ArbitrumList,
-  selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
+  selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.UI.isCheckingWithdrawals], (txs, isLoading) => {
+  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.isCheckingWithdrawals], (txs, isLoading) => {
     const [l1ChainId, l2ChainId] = Object.keys(txs).map(key => Number(key))
 
     const l1Txs = txs[l1ChainId]
@@ -119,7 +119,7 @@ const createSelectBridgeTxsSummary = (
       }
       if (!tx.partnerTxHash || !l2Txs[tx.partnerTxHash]) {
         if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
-          summary.status = 'pending' // deposits on l1 should never show confirmed on UI
+          summary.status = 'pending' // deposits on l1 should never show confirmed on ui
           summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
         }
 
@@ -247,31 +247,31 @@ const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
   )
 
 export interface ArbitrumBridgeSelectors {
-  selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
-  selectPendingTxs: ReturnType<typeof createSelectPendingTxs>
+  selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
+  selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
   selectL1Deposits: ReturnType<typeof createSelectL1Deposits>
   selectPendingWithdrawals: ReturnType<typeof createSelectPendingWithdrawals>
-  selectBridgeTxsSummary: ReturnType<typeof createSelectBridgeTxsSummary>
+  selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
 }
 
 export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
   return arbBridges.reduce(
     (total, bridgeId) => {
-      const selectOwnedTxs = createSelectOwnedTxs(bridgeId)
-      const selectPendingTxs = createSelectPendingTxs(selectOwnedTxs)
-      const selectL1Deposits = createSelectL1Deposits(selectOwnedTxs)
-      const selectPendingWithdrawals = createSelectPendingWithdrawals(selectOwnedTxs)
+      const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
+      const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
+      const selectL1Deposits = createSelectL1Deposits(selectOwnedTransactions)
+      const selectPendingWithdrawals = createSelectPendingWithdrawals(selectOwnedTransactions)
 
-      const selectBridgeTxsSummary = createSelectBridgeTxsSummary(bridgeId, selectOwnedTxs)
+      const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
       const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
 
       const selectors = {
-        selectOwnedTxs,
-        selectPendingTxs,
+        selectOwnedTransactions,
+        selectPendingTransactions,
         selectL1Deposits,
-        selectBridgeTxsSummary,
+        selectBridgeTransactionsSummary,
         selectPendingWithdrawals,
         selectBridgingDetails
       }

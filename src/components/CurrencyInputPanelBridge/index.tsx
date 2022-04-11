@@ -14,7 +14,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 import Loader from '../Loader'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { transparentize } from 'polished'
 

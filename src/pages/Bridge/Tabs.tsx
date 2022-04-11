@@ -4,22 +4,22 @@ import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { BridgeTabs } from './utils'
+import { BridgeTab } from './utils'
 
 interface TabsProps {
   collectableTxAmount: number
-  collecting: boolean
+  isCollecting: boolean
   handleResetBridge: () => void
   setTxsFilter: (filter: BridgeTxsFilter) => void
-  activeTab: BridgeTabs
-  setActiveTab: (tab: BridgeTabs) => void
+  activeTab: BridgeTab
+  setActiveTab: (tab: BridgeTab) => void
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
   firstTxnToCollect?: BridgeTransactionSummary
 }
 
 export const Tabs = ({
   collectableTxAmount,
-  collecting,
+  isCollecting,
   handleResetBridge,
   setTxsFilter,
   activeTab,
@@ -31,11 +31,11 @@ export const Tabs = ({
     <TabsRow>
       <Button
         onClick={() => {
-          if (collecting) {
+          if (isCollecting) {
             handleResetBridge()
             return
           }
-          setActiveTab('bridge')
+          setActiveTab(BridgeTab.BRIDGE)
           setTxsFilter(BridgeTxsFilter.RECENT)
         }}
         className={activeTab === 'bridge' ? 'active' : ''}
@@ -44,7 +44,7 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
-          if (!collecting && firstTxnToCollect) {
+          if (!isCollecting && firstTxnToCollect) {
             handleTriggerCollect(firstTxnToCollect)
             setTxsFilter(BridgeTxsFilter.COLLECTABLE)
           }
@@ -59,7 +59,7 @@ export const Tabs = ({
         onClick={() => {
           handleResetBridge()
           setTxsFilter(BridgeTxsFilter.NONE)
-          setActiveTab('history')
+          setActiveTab(BridgeTab.HISTORY)
         }}
         className={activeTab === 'history' ? 'active' : ''}
       >

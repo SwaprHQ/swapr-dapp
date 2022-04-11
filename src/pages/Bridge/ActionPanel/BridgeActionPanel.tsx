@@ -19,14 +19,14 @@ export type BridgeActionPanelProps = {
   fromNetworkChainId: ChainId
   toNetworkChainId: ChainId
   isNetworkConnected: boolean
-  collecting: boolean
-  setCollecting: (collecting: boolean) => void
+  isCollecting: boolean
+  setIsCollecting: (collecting: boolean) => void
   handleModal: () => void
   handleCollect: () => void
 }
 
 export const BridgeActionPanel = ({
-  collecting,
+  isCollecting,
   account,
   handleModal,
   handleCollect,
@@ -37,8 +37,8 @@ export const BridgeActionPanel = ({
   const { selectNetwork } = useNetworkSwitch()
   const { bridgeCurrency, handleApprove } = useBridgeActionPanel()
 
-  const { isLoading, approved, isBalanceSufficient, label } = useSelector(
-    (state: AppState) => state.ecoBridge.UI.statusButton
+  const { isLoading, isApproved, isBalanceSufficient, label } = useSelector(
+    (state: AppState) => state.ecoBridge.ui.statusButton
   )
 
   const handleSelectFromNetwork = useCallback(() => {
@@ -56,7 +56,7 @@ export const BridgeActionPanel = ({
     }
 
     // Change network
-    if (!isNetworkConnected && !collecting) {
+    if (!isNetworkConnected && !isCollecting) {
       return (
         <ButtonPrimary onClick={handleSelectFromNetwork}>
           Connect to {networkOptionsPreset.find(network => network.chainId === fromNetworkChainId)?.name}
@@ -65,7 +65,7 @@ export const BridgeActionPanel = ({
     }
 
     //Collect
-    if (collecting) {
+    if (isCollecting) {
       return (
         <NetworkSwitcher
           sendToId={toNetworkChainId}
@@ -78,7 +78,7 @@ export const BridgeActionPanel = ({
     if (!isLoading && isBalanceSufficient) {
       const isNativeCurrency = !isToken(bridgeCurrency)
 
-      if (isNativeCurrency || approved) {
+      if (isNativeCurrency || isApproved) {
         return (
           <BridgeButton to={toNetworkChainId} from={fromNetworkChainId} onClick={handleModal}>
             {`Bridge to ${networkOptionsPreset.find(network => network.chainId === toNetworkChainId)?.name}`}
@@ -86,12 +86,12 @@ export const BridgeActionPanel = ({
         )
       }
 
-      if (!isNativeCurrency && !approved) {
+      if (!isNativeCurrency && !isApproved) {
         return (
           <RowBetween style={{ display: 'flex', flexWrap: 'wrap' }}>
             <ButtonConfirmed
               onClick={handleApprove}
-              disabled={approved}
+              disabled={isApproved}
               width="100%"
               altDisabledStyle={false}
               confirmed={false}
@@ -107,8 +107,8 @@ export const BridgeActionPanel = ({
       <BridgeButton to={toNetworkChainId} from={fromNetworkChainId} disabled onClick={handleModal}>
         {label}
         {isLoading && (
-          <div style={{ marginLeft: '5px' }}>
-            <Loader />
+          <div style={{ marginLeft: '5px', color: 'red' }}>
+            <Loader stroke="#C0BAF6" />
           </div>
         )}
       </BridgeButton>

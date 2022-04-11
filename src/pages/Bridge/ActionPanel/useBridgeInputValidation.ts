@@ -6,14 +6,14 @@ import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (collecting: boolean) => {
-  const value = useSelector((state: AppState) => state.ecoBridge.UI.from.value)
+export const useBridgeInputValidation = (isCollecting: boolean) => {
+  const value = useSelector((state: AppState) => state.ecoBridge.ui.from.value)
 
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.UI)
+  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
   }, [showAvailableBridges, ecoBridge, value, from.address, to.address, from.chainId, to.chainId])
 
   useEffect(() => {
-    if (collecting) return
+    if (isCollecting) return
 
     const validateInput = () => {
       if (Number(value) === 0 || isNaN(Number(value))) {
@@ -33,7 +33,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
             isError: false,
             isLoading: false,
             isBalanceSufficient: false,
-            approved: false
+            isApproved: false
           })
         )
         dispatch(ecoBridgeUIActions.setShowAvailableBridges(false))
@@ -48,7 +48,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
             isError: false,
             isLoading: false,
             isBalanceSufficient: false,
-            approved: false
+            isApproved: false
           })
         )
         return false
@@ -64,7 +64,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
             isError: false,
             isLoading: false,
             isBalanceSufficient: false,
-            approved: false
+            isApproved: false
           })
         )
         return false
@@ -77,7 +77,7 @@ export const useBridgeInputValidation = (collecting: boolean) => {
             isError: false,
             isLoading: false,
             isBalanceSufficient: false,
-            approved: false
+            isApproved: false
           })
         )
         return false
@@ -91,5 +91,5 @@ export const useBridgeInputValidation = (collecting: boolean) => {
     if (isValid) {
       ecoBridge.validate()
     }
-  }, [value, ecoBridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, collecting])
+  }, [value, ecoBridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, isCollecting])
 }

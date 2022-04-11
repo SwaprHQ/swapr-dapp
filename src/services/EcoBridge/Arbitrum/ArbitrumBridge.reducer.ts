@@ -22,8 +22,8 @@ const initialState: ArbitrumBridgeState = {
   bridgingDetails: {},
   transactions: {},
   lists: {},
-  listsStatus: 'idle',
-  bridgingDetailsStatus: 'idle',
+  listsStatus: AsyncState.IDLE,
+  bridgingDetailsStatus: AsyncState.IDLE,
   lastMetadataCt: 0
 }
 
@@ -155,11 +155,11 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         }
 
         if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === 'failed') return
-          state.bridgingDetailsStatus = 'loading'
+          if (state.bridgingDetailsStatus === AsyncState.FAILED) return
+          state.bridgingDetailsStatus = AsyncState.LOADING
           return
         } else {
-          state.bridgingDetailsStatus = 'ready'
+          state.bridgingDetailsStatus = AsyncState.READY
         }
 
         state.bridgingDetails.gas = gas

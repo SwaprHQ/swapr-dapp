@@ -10,8 +10,8 @@ const initialState: SocketBridgeState = {
   approvalData: {},
   txBridgingData: {},
   bridgingDetails: {},
-  bridgingDetailsStatus: 'idle',
-  listsStatus: 'idle',
+  bridgingDetailsStatus: AsyncState.IDLE,
+  listsStatus: AsyncState.IDLE,
   lists: {},
   routes: [],
   lastMetadataCt: 0
@@ -31,11 +31,11 @@ const createSocketSlice = (bridgeId: SocketList) =>
         }
 
         if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === 'failed') return
-          state.bridgingDetailsStatus = 'loading'
+          if (state.bridgingDetailsStatus === AsyncState.FAILED) return
+          state.bridgingDetailsStatus = AsyncState.LOADING
           return
         } else {
-          state.bridgingDetailsStatus = 'ready'
+          state.bridgingDetailsStatus = AsyncState.READY
         }
 
         if (gas) {
