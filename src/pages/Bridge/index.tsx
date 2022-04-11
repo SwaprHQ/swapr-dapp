@@ -8,7 +8,7 @@ import { AssetSelector } from './AssetsSelector'
 import { RowBetween } from '../../components/Row'
 import ArrowIcon from '../../assets/svg/arrow.svg'
 import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
-import { BridgeModal } from './BridgeModals/BridgeModal'
+import { BridgeModal } from './BridgeModal/BridgeModal'
 import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
@@ -23,7 +23,7 @@ import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
 import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
-import { useBridgeModal } from './useBridgeModal'
+import { useBridgeModal } from '../../services/EcoBridge/EcoBridge.hooks'
 import {
   useBridgeActionHandlers,
   useBridgeCollectHandlers,

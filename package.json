@@ -124,7 +124,9 @@
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
     "serve": "serve -s ./build",
-    "lint": "eslint --fix ./src/**/*.ts"
+    "lint": "eslint --fix ./src/**/*.ts",
+    "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true && sed -i \"1s;^;// @ts-nocheck\\n;\" $TARGET/**/*.ts",
+    "postinstall": "yarn run codegen:socket"
   },
   "eslintConfig": {
     "extends": "react-app",
