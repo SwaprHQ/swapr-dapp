@@ -25,7 +25,7 @@ export enum CampaignType {
   TOKEN,
   PAIR
 }
-const numbberOfRewarsd = 4
+export const numberOfRewards = 4
 export interface RewardsObject {
   approvals: ApprovalState[]
   rewards: (TokenAmount | undefined)[]
@@ -48,9 +48,9 @@ export interface Actions {
   }
 }
 const initialState: RewardsObject = {
-  approvals: new Array(numbberOfRewarsd).fill(ApprovalState.UNKNOWN),
-  rewards: new Array(numbberOfRewarsd).fill(undefined),
-  rawAmounts: new Array(numbberOfRewarsd).fill(undefined)
+  approvals: new Array(numberOfRewards).fill(ApprovalState.UNKNOWN),
+  rewards: new Array(numberOfRewards).fill(undefined),
+  rawAmounts: new Array(numberOfRewards).fill(undefined)
 }
 
 const reducer = (state: RewardsObject, action: Actions): RewardsObject => {

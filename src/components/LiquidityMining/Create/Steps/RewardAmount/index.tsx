@@ -5,7 +5,13 @@ import { Flex } from 'rebass'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 
 import AssetSelector from '../PairAndReward/AssetSelector'
-import { Actions, ActionType, CampaignType, RewardsObject } from '../../../../../pages/LiquidityMining/Create'
+import {
+  Actions,
+  ActionType,
+  CampaignType,
+  numberOfRewards,
+  RewardsObject
+} from '../../../../../pages/LiquidityMining/Create'
 import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
@@ -84,7 +90,7 @@ export default function RewardAmount({ rewardsObject, setRewardsObject }: Reward
   return (
     <>
       <FlexWrapper>
-        {[...rewardsObject.rewards].map((item, index) => (
+        {[...Array(numberOfRewards)].map((item, index) => (
           <AssetSelector
             key={index}
             currency0={rewardsObject.rewards[index]?.token}
