@@ -4,7 +4,7 @@ import { MenuBar } from '../../../pages/MenuBar'
 
 describe('Rewards Page Smoke Test', () => {
   before(() => {
-    cy.visit('http://localhost:3000/#/rewards?chainId=100')
+    RewardsPage.visitRewardsPage()
   })
   it('Check My pairs toggle switch on Rewards Page', () => {
     RewardsPage.getMyPairsToggleSwitch().should('be.visible')

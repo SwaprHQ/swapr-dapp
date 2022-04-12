@@ -1,8 +1,9 @@
 import { TransactionSettings } from '../../../pages/TransactionSettings'
+import { SwapPage } from '../../../pages/SwapPage'
 
 describe('Transactions Settings Smoke Test', () => {
   before(() => {
-    cy.visit('http://localhost:3000/#/swap?chainId=1')
+    SwapPage.visitSwapPage()
   })
   it('Open Transaction settings modal window', () => {
     TransactionSettings.getSettingsButton().should('be.visible')

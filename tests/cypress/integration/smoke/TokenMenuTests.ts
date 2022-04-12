@@ -6,7 +6,7 @@ import { TransactionHelper } from '../../../utils/TransactionHelper'
 describe('Token menu smoke tests', () => {
   const TYPING_DELAY = 100
   beforeEach(() => {
-    cy.visit('/swap')
+    SwapPage.visitSwapPage()
     TransactionHelper.waitForTokenLists()
     SwapPage.openTokenToSwapMenu()
   })

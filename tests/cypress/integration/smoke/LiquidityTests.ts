@@ -2,7 +2,7 @@ import { LiquidityPage } from '../../../pages/LiquidityPage'
 
 describe('Check Liquidity Page', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/#/pools?chainId=1')
+  LiquidityPage.visitLiquidityPage()
   })
 
   it('Check All Pairs button and campaigns/my pairs toggle switch on Liquidity Page', () => {

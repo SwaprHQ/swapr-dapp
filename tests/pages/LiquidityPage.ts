@@ -1,6 +1,6 @@
 export class LiquidityPage {
-  static visitSwapPage() {
-    cy.visit('/pools?chainId=1')
+  static visitLiquidityPage() {
+    cy.visit('/#/pools')
   }
 
   static getAllPairsButton() {

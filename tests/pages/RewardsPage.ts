@@ -1,6 +1,6 @@
 export class RewardsPage {
-  static visitSwapPage() {
-    cy.visit('/rewards?chainId=100')
+  static visitRewardsPage() {
+    cy.visit('/#/rewards')
   }
   static getActiveCampaignsButton() {
     return cy.get('[data-testid=active-campaigns]')

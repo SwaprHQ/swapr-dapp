@@ -1,6 +1,6 @@
 export class TransactionSettings {
-  static visitSwapPage() {
-    cy.visit('/swap')
+  static visitTransactionSettingsPage() {
+    cy.visit('/#/swap')
   }
   static getSettingsButton() {
     return cy.get('[id=open-settings-dialog-button]')

@@ -2,7 +2,7 @@ import { TokenMenu } from './TokenMenu'
 
 export class SwapPage {
   static visitSwapPage() {
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   }
 
   static openTokenToSwapMenu() {
