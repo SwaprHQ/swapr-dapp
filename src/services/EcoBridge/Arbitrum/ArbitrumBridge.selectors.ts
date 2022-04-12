@@ -12,11 +12,12 @@ import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ArbitrumList } from '../EcoBridge.types'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
+import { ChainId } from '@swapr/sdk'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)
-  if (!bridge) return [] as number[]
-  return Object.values(bridge.supportedChains[0]).map(Number)
+  if (!bridge) return [] as ChainId[]
+  return Object.values(bridge.supportedChains[0]).map(Number) as ChainId[]
 }
 
 const createSelectOwnedTransactions = (bridgeId: ArbitrumList) =>
