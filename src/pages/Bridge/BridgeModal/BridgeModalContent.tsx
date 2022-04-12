@@ -1,10 +1,18 @@
 import React from 'react'
-import { ArrowRightCircle } from 'react-feather'
+import { ArrowRightCircle, AlertCircle } from 'react-feather'
 import Modal from '../../../components/Modal'
 import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'
-import { Button, ButtonCancel, ButtonsWrapper, TitleWrapper, Wrapper } from './BridgeModal.styles'
+import {
+  ButtonAccept,
+  ButtonCancel,
+  ButtonsWrapper,
+  DisclaimerText,
+  DisclaimerTextWrapper,
+  TitleWrapper,
+  Wrapper
+} from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
 
 export const BridgeModalContent = ({
@@ -14,10 +22,11 @@ export const BridgeModalContent = ({
   text,
   error,
   heading,
-  disclaimerText,
   onConfirm,
   disableConfirm,
-  setDisableConfirm
+  setDisableConfirm,
+  isWarning,
+  bridgeName
 }: BridgeModalContentProps) => {
   return (
     <>
@@ -29,7 +38,11 @@ export const BridgeModalContent = ({
 
           {modalType !== 'pending' && modalType !== 'error' && (
             <Wrapper>
-              <ArrowRightCircle strokeWidth={0.5} size={75} color="#0E9F6E" />
+              {isWarning ? (
+                <AlertCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
+              ) : (
+                <ArrowRightCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
+              )}
               <TitleWrapper>
                 <TYPE.body fontSize="22px" fontWeight="500" color="text1" textAlign="center">
                   {heading}
@@ -37,37 +50,41 @@ export const BridgeModalContent = ({
               </TitleWrapper>
               {modalType === 'disclaimer' && (
                 <>
-                  <TYPE.main
-                    mb="16px"
-                    fontSize="16px"
-                    fontWeight="600"
-                    color="#EBE9F8"
-                    textAlign="center"
-                    lineHeight="1.6"
-                  >
+                  <TYPE.main fontSize="14px" fontWeight="500" color="#EBE9F8" textAlign="center" lineHeight="1.6">
                     {text}
                   </TYPE.main>
-                  <TYPE.small mb="24px" textAlign="center" fontSize="14px" lineHeight="1.6">
-                    {disclaimerText} Would you like to proceed?
-                  </TYPE.small>
-                  <ButtonPrimary
+                  <DisclaimerTextWrapper isWarning={isWarning}>
+                    <DisclaimerText>
+                      This transaction is routed through <span>{bridgeName}.</span>
+                    </DisclaimerText>
+                    {isWarning && (
+                      <DisclaimerText>
+                        {bridgeName} asks you to sign a transaction that gives them control to your wallet.
+                      </DisclaimerText>
+                    )}
+                    <DisclaimerText>
+                      Swapr is <span>not</span> responsible for any transactions outside of its control.
+                    </DisclaimerText>
+                  </DisclaimerTextWrapper>
+                  <ButtonAccept
                     mb="12px"
                     disabled={disableConfirm}
                     onClick={() => {
                       setDisableConfirm(true)
                       onConfirm()
                     }}
+                    isWarning={isWarning}
                   >
-                    CONFIRM
-                  </ButtonPrimary>
-                  <ButtonCancel onClick={onDismiss}>CANCEL</ButtonCancel>
+                    Accept &amp; Continue
+                  </ButtonAccept>
+                  <ButtonCancel onClick={onDismiss}>Cancel</ButtonCancel>
                 </>
               )}
               {modalType === 'success' && (
                 <>
                   <TYPE.main>{text}</TYPE.main>{' '}
                   <ButtonsWrapper>
-                    <Button onClick={onDismiss}>Back to bridge</Button>
+                    <ButtonPrimary onClick={onDismiss}>Back to bridge</ButtonPrimary>
                   </ButtonsWrapper>
                 </>
               )}

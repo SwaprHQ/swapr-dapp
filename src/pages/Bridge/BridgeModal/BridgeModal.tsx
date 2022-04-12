@@ -3,6 +3,8 @@ import { BridgeModalContent } from './BridgeModalContent'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { getNetworkInfo } from '../../../utils/networksList'
 import { BridgeModalType } from './BridgeModal.types'
+import { useSelector } from 'react-redux'
+import { AppState } from '../../../state'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
@@ -22,11 +24,15 @@ export const BridgeModal = ({
   const [heading, setHeading] = useState('')
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [modalType, setModalType] = useState<BridgeModalType | null>(null)
+  const [isWarning, setIsWarning] = useState(false)
+  const [bridgeName, setBridgeName] = useState('')
 
-  const { status, symbol, typedValue, fromChainId, toChainId, error, disclaimerText } = modalData
+  const { status, symbol, typedValue, fromChainId, toChainId, error } = modalData
 
   const { name: fromNetworkName } = getNetworkInfo(fromChainId)
   const { name: toNetworkName } = getNetworkInfo(toChainId)
+
+  const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
   const text = `${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`
 
@@ -59,7 +65,17 @@ export const BridgeModal = ({
       default:
         setModalType(null)
     }
-  }, [status, symbol, typedValue])
+
+    if (activeBridge === 'socket') {
+      setIsWarning(true)
+      setBridgeName('Socket Network')
+    }
+
+    if (activeBridge?.includes('arbitrum')) {
+      setIsWarning(false)
+      setBridgeName('Arbitrum One Bridge')
+    }
+  }, [activeBridge, status, symbol, typedValue])
 
   const onDismiss = () => {
     handleResetBridge()
@@ -79,12 +95,13 @@ export const BridgeModal = ({
       modalType={modalType}
       text={text}
       heading={heading}
-      disclaimerText={disclaimerText}
       onDismiss={onDismiss}
       onConfirm={handleSubmit}
       error={error}
       disableConfirm={disableConfirm}
       setDisableConfirm={setDisableConfirm}
+      bridgeName={bridgeName}
+      isWarning={isWarning}
     />
   )
 }
