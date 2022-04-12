@@ -515,14 +515,6 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.store.dispatch(commonActions.activateLists(['socket']))
   }
 
-  public triggerModalDisclaimerText = () => {
-    this.store.dispatch(
-      ecoBridgeUIActions.setModalDisclaimerText(
-        'This transaction is routed through Socket Network. Swapr is not responsible for any transactions outside of its control.'
-      )
-    )
-  }
-
   private startListeners = () => {
     this._listeners.push(setInterval(this.pendingTxListener, 5000))
   }

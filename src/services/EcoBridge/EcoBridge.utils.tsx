@@ -55,7 +55,6 @@ export abstract class EcoBridgeChildBase {
   abstract approve(): void
   abstract collect(l2Tx?: BridgeTransactionSummary): void
   abstract triggerBridging(): void
-  abstract triggerModalDisclaimerText(): void
   abstract fetchStaticLists(): Promise<void>
   abstract fetchDynamicLists(): Promise<void>
   abstract getBridgingMetadata(): void
