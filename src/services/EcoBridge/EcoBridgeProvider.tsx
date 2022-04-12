@@ -6,7 +6,6 @@ import { ecoBridgeConfig } from './EcoBridge.config'
 
 export const EcoBridgeContext = React.createContext<EcoBridge | null>(null)
 
-// eslint-disable-next-line react/prop-types
 export const EcoBridgeProvider: FC = ({ children }) => {
   const { library, account, chainId } = useActiveWeb3React()
   const [ecoBridge, setEcoBridge] = useState<EcoBridge | null>(null)
@@ -37,5 +36,6 @@ export const useEcoBridge = () => {
   if (!ecoBridge) {
     throw new Error('No EcoBridge - this shouldnt happen')
   }
+
   return ecoBridge
 }
