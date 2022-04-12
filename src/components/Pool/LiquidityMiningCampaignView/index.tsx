@@ -22,7 +22,7 @@ const GoBackContainer = styled.div`
   color: ${props => props.theme.text3};
 `
 
-const USDValueSwitcherContainer = styled.div`
+export const USDValueSwitcherContainer = styled.div`
   font-size: 11px;
   font-weight: 600;
   line-height: 11px;
@@ -38,7 +38,7 @@ const StyledChevronLeft = styled(ChevronLeft)`
   margin-right: 4px;
 `
 
-const StyledSwitch = styled(Repeat)`
+export const StyledSwitch = styled(Repeat)`
   width: 12px;
   height: 12px;
   color: ${props => props.theme.purple3};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import {
   LiquidityMiningCampaign,
@@ -10,7 +10,7 @@ import {
 } from '@swapr/sdk'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
-import { Card, Divider } from '../../../styleds'
+import { Card, Divider, SmoothGradientCard } from '../../../styleds'
 import { ButtonPrimary } from '../../../../Button'
 
 import styled from 'styled-components'
@@ -18,6 +18,10 @@ import { useActiveWeb3React } from '../../../../../hooks'
 import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
+import { TYPE } from '../../../../../theme'
+import { Repeat } from 'react-feather'
+import Slider from '../../../../Slider'
+import useDebouncedChangeHandler from '../../../../../utils/useDebouncedChangeHandler'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -30,6 +34,42 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
   ${props => props.theme.mediaWidth.upToExtraSmall`
     margin-top: 16px !important;
   `}
+`
+const StyledCampaignCard = styled(CampaignCard)`
+  width: 50%;
+`
+const CampaignDetailWrapper = styled(Flex)`
+  gap: 32px;
+`
+const SimulatedValue = styled.div`
+  font-family: 'Fira Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  /* identical to box height */
+
+  text-align: right;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+
+  color: ${props => props.theme.text2};
+`
+const StyledSwitch = styled(Repeat)`
+  width: 12px;
+  height: 12px;
+  stroke: ${props => props.theme.text5};
+  margin-left: 4px;
+`
+const SwitchContainer = styled.div`
+  font-size: 10px;
+  display: flex;
+  font-weight: 600;
+  color: ${props => props.theme.text5};
+  line-height: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
 `
 
 interface PreviewProps {
@@ -60,7 +100,19 @@ export default function PreviewAndCreate({
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-
+  const [showUSDValue, setShowUSDValue] = useState(false)
+  const [simulatedValue, setSimulatedValue] = useState(0)
+  const liquidityPercentChangeCallback = useCallback(
+    (value: number) => {
+      console.log(value)
+      setSimulatedValue(value)
+    },
+    [setSimulatedValue]
+  )
+  const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
+    simulatedValue,
+    liquidityPercentChangeCallback
+  )
   useEffect(() => {
     setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals))
   }, [account, reward, liquidityPair, startTime, endTime, approvals])
@@ -72,12 +124,14 @@ export default function PreviewAndCreate({
     return 'Deposit & create'
   }
   const isSingleSided = campaign instanceof SingleSidedLiquidityMiningCampaign
-
+  const handleUSDValueClick = useCallback(() => {
+    setShowUSDValue(!showUSDValue)
+  }, [showUSDValue])
   return (
     <Flex flexDirection="column" style={{ zIndex: -1 }}>
       {campaign !== null && !loadingNativeCurrencyUsdPrice && (
-        <Box mb="32px">
-          <CampaignCard
+        <CampaignDetailWrapper flexDirection={'row'} mb="32px">
+          <StyledCampaignCard
             token0={
               campaign instanceof SingleSidedLiquidityMiningCampaign
                 ? campaign.stakeToken
@@ -92,7 +146,24 @@ export default function PreviewAndCreate({
             staked={true}
             campaign={campaign}
           />
-        </Box>
+          <SmoothGradientCard
+            justifyContent={'space-between !important'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            padding={'24px 28px'}
+            width={'50%'}
+          >
+            <TYPE.largeHeader fontSize={'11px'} letterSpacing="0.08em" color="text3">
+              SIMULATED STAKED AMOUNT
+            </TYPE.largeHeader>
+            <SwitchContainer onClick={handleUSDValueClick}>
+              Value in {showUSDValue ? 'crypto' : 'USD'}
+              <StyledSwitch />
+            </SwitchContainer>
+            <SimulatedValue>5.300.00 {showUSDValue ? 'crypto' : 'USD'}</SimulatedValue>
+            <Slider value={innerLiquidityPercentage} size={16} onChange={setInnerLiquidityPercentage} />
+          </SmoothGradientCard>
+        </CampaignDetailWrapper>
       )}
 
       <Box mb="40px">

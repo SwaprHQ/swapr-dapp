@@ -26,10 +26,10 @@ export const Switch = ({ isOn, handleToggle, label, style }: SwitchProps) => {
         onChange={handleToggle}
         className="react-switch-checkbox"
         type="checkbox"
-        id={handleToggle.name}
-        value={handleToggle.name}
+        id={label ? label : handleToggle.name}
+        value={label ? label : handleToggle.name}
       />
-      <StyledLabel className="react-switch-label" isOn={isOn} htmlFor={handleToggle.name}>
+      <StyledLabel className="react-switch-label" isOn={isOn} htmlFor={label ? label : handleToggle.name}>
         <span className="react-switch-button" />
       </StyledLabel>
       {label && (
