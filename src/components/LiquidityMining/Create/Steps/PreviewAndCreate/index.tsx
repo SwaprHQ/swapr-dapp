@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import {
   LiquidityMiningCampaign,
@@ -22,6 +22,8 @@ import { TYPE } from '../../../../../theme'
 import { Repeat } from 'react-feather'
 import Slider from '../../../../Slider'
 import useDebouncedChangeHandler from '../../../../../utils/useDebouncedChangeHandler'
+import { useTokenDerivedNativeCurrency } from '../../../../../hooks/useTokenDerivedNativeCurrency'
+import Loader from '../../../../Loader'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -100,18 +102,38 @@ export default function PreviewAndCreate({
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-  const [showUSDValue, setShowUSDValue] = useState(false)
-  const [simulatedValue, setSimulatedValue] = useState(0)
-  const liquidityPercentChangeCallback = useCallback(
-    (value: number) => {
-      console.log(value)
-      setSimulatedValue(value)
-    },
-    [setSimulatedValue]
+  const [showUSDValue, setShowUSDValue] = useState(true)
+  const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
+    liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
   )
+  console.log('loading indicator', loadingTokenNativeCurrency)
+  console.log('loadingNativeUsdPrice', loadingNativeCurrencyUsdPrice)
+  console.log('derivedNativeCurrency', derivedNativeCurrency.toFixed())
+  const maxStakedSimulatedAmount = useMemo(() => {
+    const base = stakingCap
+      ? parseInt(stakingCap.multiply(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice)).toFixed(2))
+      : 10000000
+
+    if (showUSDValue) {
+      return base
+    } else {
+      const baseinUsd = parseInt(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice).toFixed(2))
+      return base / baseinUsd
+    }
+  }, [stakingCap, derivedNativeCurrency, nativeCurrencyUSDPrice, showUSDValue])
+  const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
+  const liquidityPercentChangeCallback = useCallback((value: number) => {
+    setSimulatedValuePercentage(value)
+
+    // setSimulatedValue(value)
+  }, [])
+  const memoizedValue = useMemo(() => {
+    return Math.round((simulatedValuePercentage / 100) * maxStakedSimulatedAmount)
+  }, [simulatedValuePercentage, maxStakedSimulatedAmount])
   const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
-    simulatedValue,
-    liquidityPercentChangeCallback
+    simulatedValuePercentage,
+    liquidityPercentChangeCallback,
+    10
   )
   useEffect(() => {
     setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals))
@@ -160,7 +182,19 @@ export default function PreviewAndCreate({
               Value in {showUSDValue ? 'crypto' : 'USD'}
               <StyledSwitch />
             </SwitchContainer>
-            <SimulatedValue>5.300.00 {showUSDValue ? 'crypto' : 'USD'}</SimulatedValue>
+            {loadingTokenNativeCurrency || loadingNativeCurrencyUsdPrice ? (
+              <Loader />
+            ) : (
+              <SimulatedValue>
+                {memoizedValue.toLocaleString('en-us')}{' '}
+                {showUSDValue
+                  ? 'USD'
+                  : liquidityPair instanceof Token
+                  ? liquidityPair.symbol
+                  : liquidityPair?.liquidityToken.symbol}
+              </SimulatedValue>
+            )}
+
             <Slider value={innerLiquidityPercentage} size={16} onChange={setInnerLiquidityPercentage} />
           </SmoothGradientCard>
         </CampaignDetailWrapper>
