@@ -1,4 +1,4 @@
-import { ChainId, Token, Trade } from '@swapr/sdk'
+import { ChainId, Token, Trade, UniswapV2Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '.'
@@ -11,7 +11,6 @@ import { tryParseAmount, useSwapState } from '../state/swap/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { calculateGasMargin } from '../utils'
-import isZero from '../utils/isZero'
 import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
@@ -30,7 +29,7 @@ export function useSwapsGasEstimations(
     independentField,
     typedValue,
     INPUT: { currencyId: inputCurrencyId },
-    OUTPUT: { currencyId: outputCurrencyId }
+    OUTPUT: { currencyId: outputCurrencyId },
   } = useSwapState()
   const isExactIn = independentField === Field.INPUT
   const independentCurrencyId = isExactIn ? inputCurrencyId : outputCurrencyId
@@ -42,7 +41,12 @@ export function useSwapsGasEstimations(
   )
   const routerAddresses = useMemo(() => {
     if (!trades) return undefined
-    const rawRouterAddresses = trades.map(trade => trade?.platform?.routerAddress[chainId || ChainId.MAINNET])
+    const rawRouterAddresses = trades.map(trade => {
+      return (
+        trade instanceof UniswapV2Trade &&
+        (trade.platform as UniswapV2RoutablePlatform).routerAddress[chainId || ChainId.MAINNET]
+      )
+    })
     if (rawRouterAddresses.some(address => !address)) return undefined
     return rawRouterAddresses as string[]
   }, [chainId, trades])
@@ -76,7 +80,7 @@ export function useSwapsGasEstimations(
     preferredGasPrice,
     routerAllowances,
     trades,
-    typedIndependentCurrencyAmount
+    typedIndependentCurrencyAmount,
   ])
 
   const [loading, setLoading] = useState(false)
@@ -100,15 +104,13 @@ export function useSwapsGasEstimations(
         specificCalls = platformCalls.map(() => null)
       } else {
         for (const call of platformCalls) {
-          const {
-            parameters: { methodName, args, value },
-            contract
-          } = call
-          const options = !value || isZero(value) ? {} : { value }
+          const { transactionParameters } = call
+          // const { value } = await transactionParameters
+          // const options = !value || isZero(value as string) ? {} : { value }
 
           let estimatedCall = null
           try {
-            estimatedCall = calculateGasMargin(await contract.estimateGas[methodName](...args, { ...options }))
+            estimatedCall = calculateGasMargin(await library!.estimateGas(transactionParameters as any))
           } catch (error) {
             console.error(error)
             // silent fail
@@ -121,7 +123,7 @@ export function useSwapsGasEstimations(
     }
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, routerAllowances, trades, typedIndependentCurrencyAmount])
+  }, [platformSwapCalls, library, routerAllowances, trades, typedIndependentCurrencyAmount])
 
   useEffect(() => {
     if (!trades || trades.length === 0 || !library || !chainId || !recipient || !account || !calculateGasFees) {
