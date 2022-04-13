@@ -162,8 +162,6 @@ export default function Bridge() {
   }, [chainId, ecoBridge])
 
   const handleModal = useCallback(async () => {
-    ecoBridge.triggerModalDisclaimerText()
-
     setModalData({
       symbol: bridgeCurrency?.symbol,
       typedValue,
@@ -172,7 +170,7 @@ export default function Bridge() {
     })
 
     setModalState(BridgeModalStatus.DISCLAIMER)
-  }, [ecoBridge, setModalData, bridgeCurrency, typedValue, fromChainId, toChainId, setModalState])
+  }, [setModalData, bridgeCurrency, typedValue, fromChainId, toChainId, setModalState])
 
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {

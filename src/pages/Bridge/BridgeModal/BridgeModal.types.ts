@@ -7,8 +7,9 @@ export interface BridgeModalContentProps extends ModalProps {
   onConfirm: () => void
   setDisableConfirm: (val: boolean) => void
   disableConfirm: boolean
-  disclaimerText?: string
+  bridgeName?: string
   heading?: string
   text?: string
   error?: string
+  isWarning: boolean
 }

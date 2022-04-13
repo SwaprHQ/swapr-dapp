@@ -137,9 +137,6 @@ export const ecoBridgeUISlice = createSlice({
       state.modal.fromChainId = action.payload.fromChainId
       state.modal.toChainId = action.payload.toChainId
     },
-    setModalDisclaimerText(state, action: PayloadAction<string>) {
-      state.modal.disclaimerText = action.payload
-    },
     setStatusButton(
       state,
       action: PayloadAction<{

@@ -1,11 +1,20 @@
 import React from 'react'
-import { ArrowRightCircle } from 'react-feather'
+import { ArrowRightCircle, AlertCircle } from 'react-feather'
 import Modal from '../../../components/Modal'
 import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'
-import { Button, ButtonCancel, ButtonsWrapper, TitleWrapper, Wrapper } from './BridgeModal.styles'
+import {
+  ButtonAccept,
+  ButtonCancel,
+  ButtonsWrapper,
+  DisclaimerText,
+  DisclaimerTextWrapper,
+  TitleWrapper,
+  Wrapper
+} from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
+import { Trans, useTranslation } from 'react-i18next'
 
 export const BridgeModalContent = ({
   isOpen,
@@ -14,11 +23,13 @@ export const BridgeModalContent = ({
   text,
   error,
   heading,
-  disclaimerText,
   onConfirm,
   disableConfirm,
-  setDisableConfirm
+  setDisableConfirm,
+  isWarning,
+  bridgeName
 }: BridgeModalContentProps) => {
+  const { t } = useTranslation()
   return (
     <>
       {modalType && (
@@ -29,7 +40,11 @@ export const BridgeModalContent = ({
 
           {modalType !== 'pending' && modalType !== 'error' && (
             <Wrapper>
-              <ArrowRightCircle strokeWidth={0.5} size={75} color="#0E9F6E" />
+              {isWarning ? (
+                <AlertCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
+              ) : (
+                <ArrowRightCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
+              )}
               <TitleWrapper>
                 <TYPE.body fontSize="22px" fontWeight="500" color="text1" textAlign="center">
                   {heading}
@@ -37,37 +52,41 @@ export const BridgeModalContent = ({
               </TitleWrapper>
               {modalType === 'disclaimer' && (
                 <>
-                  <TYPE.main
-                    mb="16px"
-                    fontSize="16px"
-                    fontWeight="600"
-                    color="#EBE9F8"
-                    textAlign="center"
-                    lineHeight="1.6"
-                  >
+                  <TYPE.main fontSize="14px" fontWeight="500" color="#EBE9F8" textAlign="center" lineHeight="1.6">
                     {text}
                   </TYPE.main>
-                  <TYPE.small mb="24px" textAlign="center" fontSize="14px" lineHeight="1.6">
-                    {disclaimerText} Would you like to proceed?
-                  </TYPE.small>
-                  <ButtonPrimary
+                  <DisclaimerTextWrapper isWarning={isWarning}>
+                    <DisclaimerText>
+                      {t('bridgeTxnThrough')} <span>{bridgeName}.</span>
+                    </DisclaimerText>
+                    {isWarning && (
+                      <DisclaimerText>
+                        {bridgeName} {t('bridgeWalletControl')}
+                      </DisclaimerText>
+                    )}
+                    <DisclaimerText>
+                      <Trans i18nKey="bridgeResponsible" components={[<span key="0"></span>]} />
+                    </DisclaimerText>
+                  </DisclaimerTextWrapper>
+                  <ButtonAccept
                     mb="12px"
                     disabled={disableConfirm}
                     onClick={() => {
                       setDisableConfirm(true)
                       onConfirm()
                     }}
+                    isWarning={isWarning}
                   >
-                    CONFIRM
-                  </ButtonPrimary>
-                  <ButtonCancel onClick={onDismiss}>CANCEL</ButtonCancel>
+                    {t('bridgeConfirmText')}
+                  </ButtonAccept>
+                  <ButtonCancel onClick={onDismiss}>{t('bridgeRejectText')}</ButtonCancel>
                 </>
               )}
               {modalType === 'success' && (
                 <>
                   <TYPE.main>{text}</TYPE.main>{' '}
                   <ButtonsWrapper>
-                    <Button onClick={onDismiss}>Back to bridge</Button>
+                    <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                   </ButtonsWrapper>
                 </>
               )}
@@ -76,7 +95,7 @@ export const BridgeModalContent = ({
                   <TYPE.main textAlign="center" mb="24px">
                     {text}
                   </TYPE.main>
-                  <ButtonPrimary onClick={onDismiss}>Back to Bridge</ButtonPrimary>
+                  <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                 </>
               )}
             </Wrapper>
