@@ -12,7 +12,7 @@ export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
 export const network = new CustomNetworkConnector({
   urls: {
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-    [ChainId.XDAI]: 'https://rpc.xdaichain.com/',
+    [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc'
   },
   defaultChainId: ChainId.MAINNET
@@ -25,7 +25,7 @@ export const injected = new InjectedConnector({
 // mainnet only
 export const walletConnect = new CustomWalletConnectConnector({
   rpc: {
-    [ChainId.XDAI]: 'https://rpc.xdaichain.com/',
+    [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
   },
   bridge: 'https://bridge.walletconnect.org',
