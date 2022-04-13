@@ -45,7 +45,7 @@ export function useDerivedMintInfo(
   const currencies: { [field in Field]?: Currency } = useMemo(
     () => ({
       [Field.CURRENCY_A]: currencyA ?? undefined,
-      [Field.CURRENCY_B]: currencyB ?? undefined
+      [Field.CURRENCY_B]: currencyB ?? undefined,
     }),
     [currencyA, currencyB]
   )
@@ -60,11 +60,11 @@ export function useDerivedMintInfo(
   // balances
   const balances = useCurrencyBalances(account ?? undefined, [
     currencies[Field.CURRENCY_A],
-    currencies[Field.CURRENCY_B]
+    currencies[Field.CURRENCY_B],
   ])
   const currencyBalances: { [field in Field]?: CurrencyAmount } = {
     [Field.CURRENCY_A]: balances[0],
-    [Field.CURRENCY_B]: balances[1]
+    [Field.CURRENCY_B]: balances[1],
   }
 
   // amounts
@@ -107,12 +107,12 @@ export function useDerivedMintInfo(
     currencyA,
     currencyB,
     pair,
-    nativeCurrency
+    nativeCurrency,
   ])
   const parsedAmounts: { [field in Field]: CurrencyAmount | undefined } = useMemo(
     () => ({
       [Field.CURRENCY_A]: independentField === Field.CURRENCY_A ? independentAmount : dependentAmount,
-      [Field.CURRENCY_B]: independentField === Field.CURRENCY_A ? dependentAmount : independentAmount
+      [Field.CURRENCY_B]: independentField === Field.CURRENCY_A ? dependentAmount : independentAmount,
     }),
     [dependentAmount, independentAmount, independentField]
   )
@@ -121,7 +121,12 @@ export function useDerivedMintInfo(
     if (noLiquidity) {
       const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
       if (currencyAAmount && currencyBAmount) {
-        return new Price(currencyAAmount.currency, currencyBAmount.currency, currencyAAmount.raw, currencyBAmount.raw)
+        return new Price({
+          baseCurrency: currencyAAmount.currency,
+          quoteCurrency: currencyBAmount.currency,
+          denominator: currencyAAmount.raw,
+          numerator: currencyBAmount.raw,
+        })
       }
       return undefined
     } else {
@@ -135,7 +140,7 @@ export function useDerivedMintInfo(
   const liquidityMinted = useMemo(() => {
     const [tokenAmountA, tokenAmountB] = [
       wrappedCurrencyAmount(currencyAAmount, chainId),
-      wrappedCurrencyAmount(currencyBAmount, chainId)
+      wrappedCurrencyAmount(currencyBAmount, chainId),
     ]
     if (
       pair &&
@@ -195,7 +200,7 @@ export function useDerivedMintInfo(
     noLiquidity,
     liquidityMinted,
     poolTokenPercentage,
-    error
+    error,
   }
 }
 
@@ -222,6 +227,6 @@ export function useMintActionHandlers(
 
   return {
     onFieldAInput,
-    onFieldBInput
+    onFieldBInput,
   }
 }

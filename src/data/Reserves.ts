@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency, RoutablePlatform } from '@swapr/sdk'
+import { TokenAmount, Pair, Currency, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { Interface } from '@ethersproject/abi'
@@ -18,12 +18,12 @@ export enum PairState {
   LOADING,
   NOT_EXISTS,
   EXISTS,
-  INVALID
+  INVALID,
 }
 
 export function usePairs(
   currencies: [Currency | undefined, Currency | undefined][],
-  platform: RoutablePlatform = RoutablePlatform.SWAPR
+  platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): [PairState, Pair | null][] {
   const { chainId } = useActiveWeb3React()
 
@@ -31,7 +31,7 @@ export function usePairs(
     () =>
       currencies.map(([currencyA, currencyB]) => [
         wrappedCurrency(currencyA, chainId),
-        wrappedCurrency(currencyB, chainId)
+        wrappedCurrency(currencyB, chainId),
       ]),
     [chainId, currencies]
   )
@@ -62,7 +62,7 @@ export function usePairs(
       const { reserve0, reserve1 } = reserves
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       const swapFee = swapFees?.[Pair.getAddress(token0, token1, platform)]?.fee
-      if (!swapFee && platform === RoutablePlatform.SWAPR) return [PairState.LOADING, null]
+      if (!swapFee && platform === UniswapV2RoutablePlatform.SWAPR) return [PairState.LOADING, null]
       return [
         PairState.EXISTS,
         new Pair(
@@ -71,13 +71,17 @@ export function usePairs(
           swapFee || platform.defaultSwapFee,
           protocolFeeDenominator ? BigInt(protocolFeeDenominator) : BigInt(0),
           platform
-        )
+        ),
       ]
     })
   }, [protocolFeeDenominator, results, swapFees, tokens, platform])
 }
 
-export function usePair(tokenA?: Currency, tokenB?: Currency, platform?: RoutablePlatform): [PairState, Pair | null] {
+export function usePair(
+  tokenA?: Currency,
+  tokenB?: Currency,
+  platform?: UniswapV2RoutablePlatform
+): [PairState, Pair | null] {
   return usePairs([[tokenA, tokenB]], platform)[0]
 }
 

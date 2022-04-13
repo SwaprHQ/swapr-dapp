@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: DAI,
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE],
-  [ChainId.XDAI]: USDC[ChainId.XDAI]
+  [ChainId.XDAI]: USDC[ChainId.XDAI],
 }
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
@@ -22,7 +22,13 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
 
     const currency = currencyAmount.currency
 
-    if (currencyEquals(currency, stablecoin)) return new Price(currency, currency, '1', '1')
+    if (currencyEquals(currency, stablecoin))
+      return new Price({
+        baseCurrency: currency,
+        quoteCurrency: currency,
+        denominator: '1',
+        numerator: '1',
+      })
 
     const filterSelectedPlataforms = (trade: Trade | undefined) => {
       if (!trade || !selectedTrade) return false
@@ -38,7 +44,12 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
 
       const { numerator, denominator } = selectedPlataformTrade?.executionPrice
 
-      return new Price(currency, stablecoin, denominator, numerator)
+      return new Price({
+        baseCurrency: currency,
+        quoteCurrency: stablecoin,
+        denominator,
+        numerator,
+      })
     }
 
     return calculateBestPrice(tradeExactOutAllPlatforms)

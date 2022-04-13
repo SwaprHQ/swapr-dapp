@@ -33,15 +33,15 @@ export function useNewLiquidityMiningCampaign(
     )
     const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
     const staked = new PricedTokenAmount(lpToken, '0')
-    return new LiquidityMiningCampaign(
-      Math.floor(startTime.getTime() / 1000).toString(),
-      Math.floor(endTime.getTime() / 1000).toString(),
+    return new LiquidityMiningCampaign({
+      startsAt: Math.floor(startTime.getTime() / 1000).toString(),
+      endsAt: Math.floor(endTime.getTime() / 1000).toString(),
       targetedPair,
-      pricedRewardAmounts,
+      rewards: pricedRewardAmounts,
       staked,
       locked,
-      stakingCap || new TokenAmount(targetedPair.liquidityToken, '0')
-    )
+      stakingCap: stakingCap || new TokenAmount(targetedPair.liquidityToken, '0'),
+    })
   }, [
     chainId,
     targetedPair,
@@ -52,6 +52,6 @@ export function useNewLiquidityMiningCampaign(
     stakingCap,
     nativeCurrency,
     targetedPairReserveNativeCurrency.raw,
-    locked
+    locked,
   ])
 }
