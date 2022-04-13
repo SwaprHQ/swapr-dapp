@@ -3,7 +3,7 @@ import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 export enum ArbitrumPendingReasons {
   TX_UNCONFIRMED = 'Transaction has not been confirmed yet',
-  DESPOSIT = 'Waiting for deposit to be processed on L2 (~10 minutes)',
+  DEPOSIT = 'Waiting for deposit to be processed on L2 (~10 minutes)',
   WITHDRAWAL = 'Waiting for confirmation (~7 days of dispute period)'
 }
 

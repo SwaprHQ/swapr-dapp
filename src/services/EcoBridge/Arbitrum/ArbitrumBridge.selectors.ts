@@ -154,7 +154,7 @@ const createSelectBridgeTransactionsSummary = (
           summary.status = BridgeTransactionStatus.FAILED
         } else {
           summary.status = getBridgeTxStatus(statusL2)
-          summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DESPOSIT
+          summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DEPOSIT
           summary.timestampResolved = l2Txs[tx.partnerTxHash].timestampResolved
         }
 
