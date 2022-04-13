@@ -24,6 +24,8 @@ import Slider from '../../../../Slider'
 import useDebouncedChangeHandler from '../../../../../utils/useDebouncedChangeHandler'
 import { useTokenDerivedNativeCurrency } from '../../../../../hooks/useTokenDerivedNativeCurrency'
 import Loader from '../../../../Loader'
+import { parseUnits } from 'ethers/lib/utils'
+import { calculatePercentage } from '../../../../../utils'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -85,6 +87,7 @@ interface PreviewProps {
   approvals: boolean
   reward: TokenAmount[]
   onCreate: () => void
+  setSimulatedStakedAmount: (value: string) => void
 }
 
 export default function PreviewAndCreate({
@@ -97,7 +100,8 @@ export default function PreviewAndCreate({
   apy,
   approvals,
   onCreate,
-  campaign
+  campaign,
+  setSimulatedStakedAmount
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
@@ -106,30 +110,42 @@ export default function PreviewAndCreate({
   const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
     liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
   )
-  console.log('loading indicator', loadingTokenNativeCurrency)
-  console.log('loadingNativeUsdPrice', loadingNativeCurrencyUsdPrice)
-  console.log('derivedNativeCurrency', derivedNativeCurrency.toFixed())
+  const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
+
   const maxStakedSimulatedAmount = useMemo(() => {
     const base = stakingCap
       ? parseInt(stakingCap.multiply(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice)).toFixed(2))
       : 10000000
-
+    const baseinUsd = parseInt(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice).toFixed(2))
+    let baseValue
     if (showUSDValue) {
-      return base
+      baseValue = base
     } else {
-      const baseinUsd = parseInt(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice).toFixed(2))
-      return base / baseinUsd
+      baseValue = base / baseinUsd
     }
-  }, [stakingCap, derivedNativeCurrency, nativeCurrencyUSDPrice, showUSDValue])
-  const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
+    const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
+    if (tokenOrPair && base !== 0 && baseinUsd !== 0)
+      setSimulatedStakedAmount(
+        parseUnits(
+          calculatePercentage(base / baseinUsd, simulatedValuePercentage).toString(),
+          tokenOrPair.decimals
+        ).toString()
+      )
+    return calculatePercentage(baseValue, simulatedValuePercentage)
+  }, [
+    setSimulatedStakedAmount,
+    liquidityPair,
+    simulatedValuePercentage,
+    stakingCap,
+    derivedNativeCurrency,
+    nativeCurrencyUSDPrice,
+    showUSDValue
+  ])
+
   const liquidityPercentChangeCallback = useCallback((value: number) => {
     setSimulatedValuePercentage(value)
-
-    // setSimulatedValue(value)
   }, [])
-  const memoizedValue = useMemo(() => {
-    return Math.round((simulatedValuePercentage / 100) * maxStakedSimulatedAmount)
-  }, [simulatedValuePercentage, maxStakedSimulatedAmount])
+
   const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
     simulatedValuePercentage,
     liquidityPercentChangeCallback,
@@ -186,7 +202,7 @@ export default function PreviewAndCreate({
               <Loader />
             ) : (
               <SimulatedValue>
-                {memoizedValue.toLocaleString('en-us')}{' '}
+                {maxStakedSimulatedAmount.toLocaleString('en-us')}{' '}
                 {showUSDValue
                   ? 'USD'
                   : liquidityPair instanceof Token

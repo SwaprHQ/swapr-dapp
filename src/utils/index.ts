@@ -177,6 +177,10 @@ export const formatCurrencyAmount = (amount: CurrencyAmount, significantDecimalP
   return `${commify(integers)}.${adjustedDecimals}`
 }
 
+export const calculatePercentage = (value: number, percentage: number): number => {
+  return Math.round((percentage / 100) * value)
+}
+
 export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
   if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
   window.ethereum
@@ -200,8 +204,8 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
     })
 }
 
-export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string, padding?: string, margin?: string }>`
-  min-width: ${ props => (props.width ? props.width : "22px")};
-  padding: ${ props => (props.padding ? props.padding : "0")};
-  margin: ${ props => (props.margin ? props.margin : "0")};
+export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; padding?: string; margin?: string }>`
+  min-width: ${props => (props.width ? props.width : '22px')};
+  padding: ${props => (props.padding ? props.padding : '0')};
+  margin: ${props => (props.margin ? props.margin : '0')};
 `

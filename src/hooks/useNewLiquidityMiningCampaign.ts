@@ -28,7 +28,8 @@ export function useNewLiquidityMiningCampaign(
   startTime: Date | null,
   endTime: Date | null,
   locked: boolean,
-  stakingCap: TokenAmount | null
+  stakingCap: TokenAmount | null,
+  simulatedStakedAmount?: string | null
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
   //const isPair = targetedPairOrToken instanceof Pair
@@ -58,7 +59,7 @@ export function useNewLiquidityMiningCampaign(
         targetedPairReserveNativeCurrency.raw.toString()
       )
       const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
-      const staked = new PricedTokenAmount(lpToken, '0')
+      const staked = new PricedTokenAmount(lpToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
       return new LiquidityMiningCampaign(
         formattedStartTime,
         formattedEndTime,
@@ -83,7 +84,7 @@ export function useNewLiquidityMiningCampaign(
 
       const stakeToken = new PricedToken(chainId, getAddress(address), decimals, derivedNative, symbol, name)
 
-      const staked = new PricedTokenAmount(stakeToken, '0')
+      const staked = new PricedTokenAmount(stakeToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
 
       return new SingleSidedLiquidityMiningCampaign(
         formattedStartTime,
@@ -102,6 +103,7 @@ export function useNewLiquidityMiningCampaign(
     chainId,
     targetedPairOrToken,
     lpTokenTotalSupply,
+    simulatedStakedAmount,
     pricedRewardAmounts,
     startTime,
     endTime,
