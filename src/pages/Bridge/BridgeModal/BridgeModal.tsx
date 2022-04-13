@@ -5,6 +5,7 @@ import { getNetworkInfo } from '../../../utils/networksList'
 import { BridgeModalType } from './BridgeModal.types'
 import { useSelector } from 'react-redux'
 import { AppState } from '../../../state'
+import { useTranslation } from 'react-i18next'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
@@ -27,6 +28,7 @@ export const BridgeModal = ({
   const [isWarning, setIsWarning] = useState(false)
   const [bridgeName, setBridgeName] = useState('')
 
+  const { t } = useTranslation()
   const { status, symbol, typedValue, fromChainId, toChainId, error } = modalData
 
   const { name: fromNetworkName } = getNetworkInfo(fromChainId)
@@ -34,31 +36,31 @@ export const BridgeModal = ({
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
-  const text = `${typedValue} ${symbol ?? ''} from ${fromNetworkName} to ${toNetworkName}`
+  const text = t('bridgeModalText', { typedValue, symbol: symbol ?? '', fromNetworkName, toNetworkName })
 
   useEffect(() => {
     setDisableConfirm(false)
     switch (status) {
       case BridgeModalStatus.INITIATED:
         setModalType('initiated')
-        setHeading('Bridging initiated')
+        setHeading(t('bridgeHeadingInitiated'))
         break
       case BridgeModalStatus.PENDING:
         setModalType('pending')
         break
       case BridgeModalStatus.COLLECTING:
         setModalType('collecting')
-        setHeading('Collecting Initiated')
+        setHeading(t('bridgeHeadingCollecting'))
         break
       case BridgeModalStatus.SUCCESS:
         setModalType('success')
-        setHeading('Bridging Successful')
+        setHeading(t('bridgeHeadingSuccess'))
         break
       case BridgeModalStatus.ERROR:
         setModalType('error')
         break
       case BridgeModalStatus.DISCLAIMER:
-        setHeading(`Bridging ${typedValue} ${symbol ?? ''}`)
+        setHeading(t('bridgeHeadingDisclaimer', { typedValue, symbol: symbol ?? '' }))
         setModalType('disclaimer')
         break
 
@@ -75,7 +77,7 @@ export const BridgeModal = ({
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
     }
-  }, [activeBridge, status, symbol, typedValue])
+  }, [activeBridge, status, symbol, t, typedValue])
 
   const onDismiss = () => {
     handleResetBridge()

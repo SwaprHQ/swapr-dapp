@@ -14,6 +14,7 @@ import {
   Wrapper
 } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
+import { Trans, useTranslation } from 'react-i18next'
 
 export const BridgeModalContent = ({
   isOpen,
@@ -28,6 +29,7 @@ export const BridgeModalContent = ({
   isWarning,
   bridgeName
 }: BridgeModalContentProps) => {
+  const { t } = useTranslation()
   return (
     <>
       {modalType && (
@@ -55,15 +57,15 @@ export const BridgeModalContent = ({
                   </TYPE.main>
                   <DisclaimerTextWrapper isWarning={isWarning}>
                     <DisclaimerText>
-                      This transaction is routed through <span>{bridgeName}.</span>
+                      {t('bridgeTxnThrough')} <span>{bridgeName}.</span>
                     </DisclaimerText>
                     {isWarning && (
                       <DisclaimerText>
-                        {bridgeName} asks you to sign a transaction that gives them control to your wallet.
+                        {bridgeName} {t('bridgeWalletControl')}
                       </DisclaimerText>
                     )}
                     <DisclaimerText>
-                      Swapr is <span>not</span> responsible for any transactions outside of its control.
+                      <Trans i18nKey="bridgeResponsible" components={[<span key="0"></span>]} />
                     </DisclaimerText>
                   </DisclaimerTextWrapper>
                   <ButtonAccept
@@ -75,16 +77,16 @@ export const BridgeModalContent = ({
                     }}
                     isWarning={isWarning}
                   >
-                    Accept &amp; Continue
+                    {t('bridgeConfirmText')}
                   </ButtonAccept>
-                  <ButtonCancel onClick={onDismiss}>Cancel</ButtonCancel>
+                  <ButtonCancel onClick={onDismiss}>{t('bridgeRejectText')}</ButtonCancel>
                 </>
               )}
               {modalType === 'success' && (
                 <>
                   <TYPE.main>{text}</TYPE.main>{' '}
                   <ButtonsWrapper>
-                    <ButtonPrimary onClick={onDismiss}>Back to bridge</ButtonPrimary>
+                    <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                   </ButtonsWrapper>
                 </>
               )}
@@ -93,7 +95,7 @@ export const BridgeModalContent = ({
                   <TYPE.main textAlign="center" mb="24px">
                     {text}
                   </TYPE.main>
-                  <ButtonPrimary onClick={onDismiss}>Back to Bridge</ButtonPrimary>
+                  <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                 </>
               )}
             </Wrapper>
