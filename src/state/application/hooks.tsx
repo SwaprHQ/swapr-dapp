@@ -73,6 +73,10 @@ export function useEthereumOptionPopoverToggle(): () => void {
   return useToggleModal(ApplicationModal.ETHEREUM_OPTION)
 }
 
+export function useSimpleSettingsModal(): () => void {
+  return useToggleModal(ApplicationModal.SIMPLE_SETTINGS)
+}
+
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {
   return useCallback((content: PopupContent, autoClose: number | false = 15000) => {
     toast.info(<PopupItem content={content} />, { autoClose })

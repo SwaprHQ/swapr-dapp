@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType } from '@swapr/sdk'
+import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
 import CurrencyLogo from '../CurrencyLogo'
@@ -131,7 +131,7 @@ export function SwapPlatformSelector({
 
   return (
     <AutoColumn>
-      {selectedTrade && selectedTrade.route.path.length > 2 && (
+      {selectedTrade instanceof UniswapV2Trade && selectedTrade.route.path.length > 2 && (
         <StyledRouteFlex>
           {!isMobileByMedia && (
             <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
@@ -160,8 +160,8 @@ export function SwapPlatformSelector({
           if (!trade) return null // some platforms might not be compatible with the currently selected network
           const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
           const gasFeeUSD = gasFeesUSD[i]
-          const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
-          const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+          const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+          const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
           const tokenAmount = limitNumberDecimalPlaces(
             isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
           )

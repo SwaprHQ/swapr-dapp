@@ -1,4 +1,4 @@
-import { Trade } from '@swapr/sdk'
+import { UniswapV2Trade } from '@swapr/sdk'
 import React, { Fragment, memo, useContext } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
@@ -12,7 +12,7 @@ const StyledChevronRight = styled(ChevronRight)`
   color: ${props => props.theme.purple3};
 `
 
-export default memo(function SwapRoute({ trade }: { trade: Trade }) {
+export default memo(function SwapRoute({ trade }: { trade: UniswapV2Trade }) {
   const theme = useContext(ThemeContext)
   const isMobileByMedia = useIsMobileByMedia()
 
