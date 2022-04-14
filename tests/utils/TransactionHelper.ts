@@ -62,19 +62,18 @@ export class TransactionHelper {
     return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
   }
 
-  static waitForTokenLists() {
-    let retries = 0
+  static waitForTokenLists(retries = 0) {
+    let retriesCt = retries
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
-        retries++
         expect(req.response).to.not.be.undefined
         expect(req.response!.body.name).to.be.eq('Swapr token list')
       } catch (err) {
-        if (retries > 100) {
+        if (retriesCt > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
-        this.waitForTokenLists()
+        this.waitForTokenLists(retriesCt++)
       }
     })
   }
