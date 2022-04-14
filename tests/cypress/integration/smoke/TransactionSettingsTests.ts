@@ -12,7 +12,6 @@ describe('Transactions Settings Smoke Test', () => {
   it('Check All ellements and buttons on Transaction settings window [TC-48]', () => {
     TransactionSettings.getMultihopText().should('be.visible')
     TransactionSettings.getSlippageToleranceText().should('be.visible')
-    TransactionSettings.getPreferredGasPriceText().should('be.visible')
     TransactionSettings.getToggleExpertModeText().should('be.visible')
     TransactionSettings.getAboutHyperlink().should('be.visible')
     TransactionSettings.getCodeHyperlink().should('be.visible')
@@ -30,7 +29,6 @@ describe('Transactions Settings Smoke Test', () => {
       .eq(1)
       .should('be.visible')
     TransactionSettings.getSlippageToleranceField().should('be.visible')
-    TransactionSettings.getGasPriceField().should('be.visible')
     TransactionSettings.getTransactionDeadlineField().should('be.visible')
   })
   it('Check About hyperlink [TC-49]', () => {
@@ -50,10 +48,6 @@ describe('Transactions Settings Smoke Test', () => {
   })
   it('Should not allow to type not numbers into Slippage Tolerance Field input [TC-50]', () => {
     TransactionSettings.typeSlippageTolerance('!#$%^&*(*)_qewruip')
-    TransactionSettings.getEnterValiErrorMesssage().should('be.visible')
-  })
-  it('Should not allow to type not numbers into Gas Price Field input [TC-50]', () => {
-    TransactionSettings.typeGasPrice('!#$%^&*(*)_qewruip')
     TransactionSettings.getEnterValiErrorMesssage().should('be.visible')
   })
 })

@@ -11,9 +11,6 @@ export class TransactionSettings {
   static getSlippageToleranceText() {
     return cy.get('[data-testid=slippage-tolerance-text]')
   }
-  static getPreferredGasPriceText() {
-    return cy.get('[data-testid=preferred-gas-price-text]')
-  }
   static getTransactionDeadlineText() {
     return cy.get('[data-testid=transaction-deadline-text]')
   }
@@ -38,9 +35,6 @@ export class TransactionSettings {
   static getSlippageToleranceField() {
     return cy.get('[data-testid=input-slippage-tolerance]')
   }
-  static getGasPriceField() {
-    return cy.get('[data-testid=input-gas-price]')
-  }
   static getTransactionDeadlineField() {
     return cy.get('[data-testid=input-transaction-deadline]')
   }
@@ -52,10 +46,6 @@ export class TransactionSettings {
   }
   static typeSlippageTolerance(value: string) {
     this.getSlippageToleranceField().type(value)
-    return this
-  }
-  static typeGasPrice(value: string) {
-    this.getGasPriceField().type(value)
     return this
   }
 }
