@@ -75,6 +75,7 @@ export class TransactionHelper {
         if (this.retries > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
+        this.waitForTokenLists()
       }
     })
   }
