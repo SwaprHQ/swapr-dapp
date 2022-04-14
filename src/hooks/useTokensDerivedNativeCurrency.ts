@@ -43,15 +43,15 @@ export function useNativeCurrencyPricedTokenAmounts(
         token => token.address.toLowerCase() === rewardTokenAmount.token.address.toLowerCase()
       )
       if (!!priceData) {
-        const price = new Price(
-          rewardTokenAmount.token,
-          nativeCurrency,
-          parseUnits('1', nativeCurrency.decimals).toString(),
-          parseUnits(
+        const price = new Price({
+          baseCurrency: rewardTokenAmount.token,
+          quoteCurrency: nativeCurrency,
+          denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+          numerator: parseUnits(
             new Decimal(priceData.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
             nativeCurrency.decimals
-          ).toString()
-        )
+          ).toString(),
+        })
         pricedTokenAmounts.push(
           new PricedTokenAmount(
             new PricedToken(
@@ -72,7 +72,7 @@ export function useNativeCurrencyPricedTokenAmounts(
     }
     return {
       loading: false,
-      pricedTokenAmounts: pricedTokenAmounts
+      pricedTokenAmounts: pricedTokenAmounts,
     }
   }, [chainId, data, error, kpiTokens, loading, loadingKpiTokens, nativeCurrency, tokenAmounts])
 }
