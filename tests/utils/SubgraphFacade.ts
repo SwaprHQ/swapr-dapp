@@ -1,8 +1,6 @@
 export class SubgraphFacade {
   private static SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'
-  private static retries: number
-  static transaction(txid: string): any {
-    this.retries++
+  static transaction(txid: string, retries = 0): any {
     return cy
       .request({
         method: 'POST',
@@ -40,10 +38,10 @@ export class SubgraphFacade {
         try {
           expect(resp.body.data.transactions).to.have.length.greaterThan(0)
         } catch (err) {
-          if (this.retries > 100) {
+          if (retries > 100) {
             throw new Error('Retried too many times')
           }
-          return this.transaction(txid)
+          return this.transaction(txid, retries++)
         }
         return resp
       })
