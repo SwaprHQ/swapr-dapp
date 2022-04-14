@@ -4,8 +4,6 @@ import { EtherscanFacade } from './EtherscanFacade'
 import { SubgraphFacade } from './SubgraphFacade'
 
 export class TransactionHelper {
-  private static retries = 0
-
   static checkIfTxFromLocalStorageHaveNoError() {
     cy.log('Checking tx status from ETHERSCAN API')
     cy.window().then(() => {
@@ -64,18 +62,17 @@ export class TransactionHelper {
     return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
   }
 
-  static waitForTokenLists() {
-    this.retries++
+  static waitForTokenLists(retries = 0) {
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
         expect(req.response).to.not.be.undefined
         expect(req.response!.body.name).to.be.eq('Swapr token list')
       } catch (err) {
-        if (this.retries > 100) {
+        if (retries > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
-        this.waitForTokenLists()
+        this.waitForTokenLists(retries++)
       }
     })
   }
