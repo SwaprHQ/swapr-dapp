@@ -67,7 +67,6 @@ export class TransactionHelper {
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
-        console.log(retries)
         retries++
         expect(req.response).to.not.be.undefined
         expect(req.response!.body.name).to.be.eq('Swapr token list')
@@ -77,7 +76,6 @@ export class TransactionHelper {
         }
         this.waitForTokenLists()
       }
-      console.log(retries)
     })
   }
 }
