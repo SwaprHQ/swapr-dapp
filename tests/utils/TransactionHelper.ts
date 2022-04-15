@@ -106,23 +106,18 @@ export class TransactionHelper {
     })
   }
 
-  static waitForTokenLists() {
-    let retrie = 0
+  static waitForTokenLists(retries = 0) {
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
-        console.log(retrie)
-        retrie++
         expect(req.response).to.not.be.undefined
         expect(req.response!.body.name).to.be.eq('Swapr token list')
       } catch (err) {
-        if (retrie > 100) {
+        if (retries > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
-        this.waitForTokenLists()
+        this.waitForTokenLists(retries++)
       }
-      console.log(retrie)
-      retrie = 0
     })
   }
 }
