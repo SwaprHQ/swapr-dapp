@@ -50,7 +50,7 @@ export const CurrencyInputPanelComponent = ({
   priceImpact,
   isLoading = false,
   chainIdOverride,
-  currencySearchProps
+  ...passingProps
 }: CurrencyInputPanelComponentProps) => {
   const { t } = useTranslation()
 
@@ -185,7 +185,7 @@ export const CurrencyInputPanelComponent = ({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
-          currencySearchProps={currencySearchProps}
+          {...passingProps}
         />
       )}
     </InputPanel>

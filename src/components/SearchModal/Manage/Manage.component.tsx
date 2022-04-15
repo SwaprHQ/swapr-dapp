@@ -18,7 +18,13 @@ import {
   AnimatedToggleIndicator
 } from './Manage.styles'
 
-export const Manage = ({ onDismiss, setModalView, setImportList, setImportToken, setListUrl }: ManageProps) => {
+export const Manage = ({
+  onDismiss,
+  setModalView,
+  setImportToken,
+  manageListsProps,
+  listRowEntryProps
+}: ManageProps) => {
   const [showLists, setShowLists] = useState(true)
 
   const [ref, { width }] = useMeasure()
@@ -61,7 +67,7 @@ export const Manage = ({ onDismiss, setModalView, setImportList, setImportToken,
       </Box>
       <TabContainer>
         <AnimatedSlide style={styles}>
-          <ManageLists setModalView={setModalView} setImportList={setImportList} setListUrl={setListUrl} />
+          <ManageLists {...manageListsProps} listRowEntryProps={listRowEntryProps} />
         </AnimatedSlide>
         <AnimatedSlide style={styles}>
           <ManageTokens setModalView={setModalView} setImportToken={setImportToken} />

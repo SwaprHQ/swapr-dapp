@@ -1,7 +1,7 @@
 import { Currency, Pair, CurrencyAmount, Percent, ChainId } from '@swapr/sdk'
-import { CurrencySearchCoreProps } from '../SearchModal/CurrencySearch/CurrencySearch.types'
+import { CurrencySearchModalPassingProps } from '../SearchModal/CurrencySearchModal'
 
-export interface CurrencyInputPanelComponentProps {
+export interface CurrencyInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -22,7 +22,6 @@ export interface CurrencyInputPanelComponentProps {
   priceImpact?: Percent
   isLoading?: boolean
   chainIdOverride?: ChainId
-  currencySearchProps: CurrencySearchCoreProps
 }
 
-export type CurrencyInputPanelProps = Omit<CurrencyInputPanelComponentProps, 'currencySearchProps'>
+export type CurrencyInputPanelComponentProps = CurrencyInputPanelProps & CurrencySearchModalPassingProps

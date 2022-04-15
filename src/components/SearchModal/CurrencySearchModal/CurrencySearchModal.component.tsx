@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Currency, Token } from '@swapr/sdk'
-import { TokenList } from '@uniswap/token-lists'
 
 import useLast from '../../../hooks/useLast'
 import usePrevious from '../../../hooks/usePrevious'
@@ -21,16 +20,21 @@ export const CurrencySearchModalComponent = ({
   otherSelectedCurrency,
   showCommonBases = false,
   showNativeCurrency = true,
+  modalView,
+  setModalView,
+  importList,
+  listURL,
+  manageListsProps,
+  listRowEntryProps,
   currencySearchProps
 }: CurrencySearchModalComponentProps) => {
-  const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.MANAGE)
   const lastOpen = useLast(isOpen)
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
       setModalView(CurrencyModalView.SEARCH)
     }
-  }, [isOpen, lastOpen])
+  }, [isOpen, lastOpen, setModalView])
 
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -45,10 +49,6 @@ export const CurrencySearchModalComponent = ({
 
   // used for import token flow
   const [importToken, setImportToken] = useState<Token | undefined>()
-
-  // used for import list
-  const [importList, setImportList] = useState<TokenList | undefined>()
-  const [listURL, setListUrl] = useState<string | undefined>()
 
   return (
     <Modal
@@ -77,11 +77,11 @@ export const CurrencySearchModalComponent = ({
         <ImportToken
           tokens={[importToken]}
           onDismiss={onDismiss}
+          onCurrencySelect={onCurrencySelect}
           list={importToken instanceof WrappedTokenInfo ? importToken.list : undefined}
           onBack={() =>
             setModalView(prevView && prevView !== CurrencyModalView.IMPORT_TOKEN ? prevView : CurrencyModalView.SEARCH)
           }
-          onCurrencySelect={onCurrencySelect}
         />
       ) : modalView === CurrencyModalView.IMPORT_LIST && importList && listURL ? (
         <ImportList
@@ -98,8 +98,8 @@ export const CurrencySearchModalComponent = ({
           onDismiss={onDismiss}
           setModalView={setModalView}
           setImportToken={setImportToken}
-          setImportList={setImportList}
-          setListUrl={setListUrl}
+          manageListsProps={manageListsProps}
+          listRowEntryProps={listRowEntryProps}
         />
       ) : (
         ''
