@@ -1,4 +1,4 @@
-import { AddressesEnum } from './AddressesEnum'
+import { AddressesEnum } from '../enums/AddressesEnum'
 
 export class EtherscanFacade {
   private static ETHERSCAN_URL = 'https://api-rinkeby.etherscan.io/api?'

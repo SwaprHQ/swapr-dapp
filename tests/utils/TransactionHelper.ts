@@ -1,8 +1,8 @@
 import 'etherscan-api/dist/bundle.js'
-import './AddressesEnum'
-import { EtherscanFacade } from './EtherscanFacade'
-import { SubgraphFacade } from './SubgraphFacade'
-import { AddressesEnum } from './AddressesEnum'
+import './enums/AddressesEnum'
+import { EtherscanFacade } from './facades/EtherscanFacade'
+import { SubgraphFacade } from './facades/SubgraphFacade'
+import { AddressesEnum } from './enums/AddressesEnum'
 
 export class TransactionHelper {
   private static retries = 0
@@ -49,8 +49,12 @@ export class TransactionHelper {
     cy.window().then(() => {
       SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: any) => {
         console.log('SUBGRAPH RESPONSE', res.body)
-        expect(res.body.data.transactions[0].swaps[0].pair.token0.symbol).to.be.eq(expectedToken0Symbol || expectedToken1Symbol)
-        expect(res.body.data.transactions[0].swaps[0].pair.token1.symbol).to.be.eq(expectedToken1Symbol || expectedToken0Symbol)
+        expect(res.body.data.transactions[0].swaps[0].pair.token0.symbol).to.be.eq(
+          expectedToken0Symbol || expectedToken1Symbol
+        )
+        expect(res.body.data.transactions[0].swaps[0].pair.token1.symbol).to.be.eq(
+          expectedToken1Symbol || expectedToken0Symbol
+        )
 
         const amountIn: number =
           parseFloat(res.body.data.transactions[0].swaps[0].amount1In) +
@@ -93,8 +97,8 @@ export class TransactionHelper {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
       } catch (err) {
         this.retries++
-        if(this.retries>100){
-          throw new Error("To many retries")
+        if (this.retries > 100) {
+          throw new Error('To many retries')
         }
         cy.wait(1000)
         return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress)
@@ -103,17 +107,22 @@ export class TransactionHelper {
   }
 
   static waitForTokenLists() {
-    this.retries++
+    let retrie = 0
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
+        console.log(retrie)
+        retrie++
         expect(req.response).to.not.be.undefined
         expect(req.response!.body.name).to.be.eq('Swapr token list')
       } catch (err) {
-        if (this.retries > 100) {
+        if (retrie > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
+        this.waitForTokenLists()
       }
+      console.log(retrie)
+      retrie = 0
     })
   }
 }

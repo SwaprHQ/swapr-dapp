@@ -14,6 +14,7 @@ describe('Wallet connection tests', () => {
   })
   after(()=>{
     cy.changeMetamaskNetwork('rinkeby')
+    MenuBar.getWeb3Status().should("not.exist", "Rinkeby")
   })
 
   it('Should display that wallet is connected to rinkeby [TC-01]', () => {
@@ -30,39 +31,11 @@ describe('Wallet connection tests', () => {
     MenuBar.getUnsupportedNetworkWarning().should("be.visible")
     MenuBar.getUnsupportedNetworkPopover().should("be.visible")
   })
-  it('Should switch from  unsupported network to mainet wallet', () => {
+  it('Should switch from unsupported network to mainet wallet', () => {
     cy.changeMetamaskNetwork('ropsten')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
     MenuBar.getNetworkSwitcher().should("contain.text", "Ethereum")
-  })
-  it('Should switch from mainet to a. rinkeby by dapp', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arinkeby().click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Arbitrum Rinkeby")
-  })
-  it('Should switch from mainet to gnosis by dapp', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.gnosis().click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Gnosis")
-  })
-  it('Should switch from mainet to arbitrum by dapp', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arbitrum().click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Arbitrum One")
-  })
-  it('Should switch from mainet to rinkeby by dapp', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Rinkeby")
   })
 })

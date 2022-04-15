@@ -1,13 +1,17 @@
 import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
-import { AddressesEnum } from '../../../utils/AddressesEnum'
-import { EtherscanFacade } from '../../../utils/EtherscanFacade'
+import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
+import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('SWAP functional tests', () => {
   const TRANSACTION_VALUE: number = 0.001
 
   let balanceBefore: number
+
+  before(()=>{
+    cy.changeMetamaskNetwork("rinkeby")
+  })
 
   beforeEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
@@ -20,8 +24,8 @@ describe('SWAP functional tests', () => {
       balanceBefore = parseInt(response.body.result)
     })
   })
-  afterEach(() => {
-
+  after(() => {
+    cy.resetMetamaskAccount()
   })
 
   it('Should wrap eth to weth [TC-03]', () => {
@@ -53,5 +57,4 @@ describe('SWAP functional tests', () => {
 
     TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, -TRANSACTION_VALUE, true)
   })
-
 })

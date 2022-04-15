@@ -1,7 +1,7 @@
 import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
-import { AddressesEnum } from '../../../utils/AddressesEnum'
-import { EtherscanFacade } from '../../../utils/EtherscanFacade'
+import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
+import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../pages/TokenMenu'
 
@@ -11,6 +11,9 @@ describe('SWAP functional tests', () => {
   let ethBalanceBefore: number
   let ercBalanceBefore: number
 
+  before(() => {
+    cy.changeMetamaskNetwork('rinkeby')
+  })
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.clearCookies()
@@ -22,8 +25,8 @@ describe('SWAP functional tests', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    MenuBar.getConnectWalletButton().should("be.visible")
-    cy.wait(100) // Synpress need a moment to disconnect wallet, without this the browser would be closed before that.
+    MenuBar.getConnectWalletButton().should('be.visible')
+    cy.resetMetamaskAccount()
   })
   it('Should swap eth to dxd [TC-51]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(

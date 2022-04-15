@@ -40,7 +40,7 @@ export class SubgraphFacade {
         try {
           expect(resp.body.data.transactions).to.have.length.greaterThan(0)
         } catch (err) {
-            this.retries++
+          this.retries++
           if (this.retries > 200) {
             throw new Error('Retried too many times')
           }
