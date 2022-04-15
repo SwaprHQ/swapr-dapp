@@ -2,7 +2,7 @@ import { Currency } from '@swapr/sdk'
 import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 
 const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: number; top: number }>`
   position: relative;

@@ -4,7 +4,7 @@ import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
 import styled, { ThemeContext } from 'styled-components'
 import { TYPE } from '../../theme'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 
 const StyledChevronRight = styled(ChevronRight)`
   height: 17px;

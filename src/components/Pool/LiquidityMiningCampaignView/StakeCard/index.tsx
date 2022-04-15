@@ -21,7 +21,7 @@ import { ButtonDark } from '../../../Button'
 
 import { GreyCard } from '../../../Card'
 import { AutoColumn } from '../../../Column'
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import Row, { RowBetween } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
 import TokenAmountDisplayer from '../TokenAmountDisplayer'
