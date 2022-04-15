@@ -1,6 +1,5 @@
 import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
-import {NetworkSwitcher} from "../../../pages/NetworkSwitcher";
 
 describe('Wallet connection tests', () => {
   beforeEach(() => {
@@ -25,17 +24,5 @@ describe('Wallet connection tests', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
     SwapPage.getConnectOrSwitchButton().should("be.visible")
     SwapPage.getConnectOrSwitchButton().should("be.visible")
-  })
-  it('Should display that Ropsten network isnt supported', () => {
-    cy.changeMetamaskNetwork('ropsten')
-    MenuBar.getUnsupportedNetworkWarning().should("be.visible")
-    MenuBar.getUnsupportedNetworkPopover().should("be.visible")
-  })
-  it('Should switch from unsupported network to mainet wallet', () => {
-    cy.changeMetamaskNetwork('ropsten')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.ethereum().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Ethereum")
   })
 })

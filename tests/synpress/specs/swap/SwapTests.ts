@@ -157,7 +157,7 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DAI', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it('Should send ether to ens domain address', () => {
+  it('Should send ether to ens domain address [TC-54]', () => {
     EtherscanFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
@@ -185,7 +185,7 @@ describe('SWAP functional tests', () => {
       )
     })
   })
-  it('Should send erc20 token to wallet address', () => {
+  it('Should send erc20 token to wallet address [TC-54]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(
       res => {
         ercBalanceBefore = parseInt(res.body.result)
