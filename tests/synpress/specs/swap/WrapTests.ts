@@ -26,6 +26,7 @@ describe('SWAP functional tests', () => {
   })
   after(() => {
     cy.resetMetamaskAccount()
+    cy.disconnectMetamaskWalletFromAllDapps()
   })
 
   it('Should wrap eth to weth [TC-03]', () => {
