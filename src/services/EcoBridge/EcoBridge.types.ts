@@ -1,9 +1,9 @@
-import { ChainId } from '@swapr/sdk'
-import { Store } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import { AppState } from '../../state'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import type { ChainId } from '@swapr/sdk'
+import type { Store } from '@reduxjs/toolkit'
+import type { TokenList } from '@uniswap/token-lists'
+import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import type { AppState } from '../../state'
+import type { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
@@ -55,7 +55,13 @@ export interface TokenMap {
     }
   }>
 }
-export type AsyncState = 'idle' | 'loading' | 'ready' | 'failed'
+
+export enum SyncState {
+  IDLE = 'idle',
+  LOADING = 'loading',
+  READY = 'ready',
+  FAILED = 'failed'
+}
 export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
 
 export interface BridgeDetails {
@@ -69,7 +75,7 @@ export interface BridgeDetails {
 export type SupportedBridges = {
   name: string
   bridgeId: BridgeList
-  status: AsyncState
+  status: SyncState
   details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage
 }
@@ -99,3 +105,6 @@ export interface BridgeModalState {
   readonly error?: string
   readonly disclaimerText?: string
 }
+
+export type BridgeModalData = Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>
+

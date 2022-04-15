@@ -1,6 +1,7 @@
 import { ChainId, Currency } from '@swapr/sdk'
-import { BigNumber, utils } from 'ethers'
+import { BigNumber } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
+import { parseEther, parseUnits } from '@ethersproject/units'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import request from 'graphql-request'
@@ -18,6 +19,7 @@ import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { subgraphClientsUris } from '../../../apollo/client'
 import {
   ArbitrumList,
+  SyncState,
   BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
@@ -27,8 +29,6 @@ import { EcoBridgeChildBase } from '../EcoBridge.utils'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
 import { formatUnits } from '@ethersproject/units'
 import { MAX_SUBMISSION_PRICE_PERCENT_INCREASE } from './ArbitrumBridge.utils'
-
-const { parseUnits } = utils
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId
@@ -99,7 +99,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       if (tokenAddress !== 'ETH') {
         await this.depositERC20(tokenAddress, value)
       } else {
-        await this.depositEth(value)
+        await this.depositETH(value)
       }
     } catch (err) {
       this.store.dispatch(
@@ -113,7 +113,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       if (tokenAddress !== 'ETH') {
         await this.withdrawERC20(tokenAddress, value)
       } else {
-        await this.withdrawEth(value)
+        await this.withdrawETH(value)
       }
     } catch (err) {
       this.store.dispatch(
@@ -186,7 +186,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   public approve = async () => {
     if (!this._account) return
 
-    const erc20L1Address = this.store.getState().ecoBridge.UI.from.address
+    const erc20L1Address = this.store.getState().ecoBridge.ui.from.address
     if (!erc20L1Address) return
 
     const gatewayAddress = await this.bridge.l1Bridge.getGatewayAddress(erc20L1Address)
@@ -201,7 +201,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         isError: false,
         isLoading: true,
         isBalanceSufficient: true,
-        approved: false
+        isApproved: false
       })
     )
 
@@ -226,7 +226,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
           isError: false,
           isLoading: false,
           isBalanceSufficient: true,
-          approved: true
+          isApproved: true
         })
       )
     }
@@ -278,7 +278,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   private pendingTxListener = async () => {
-    const pendingTransactions = this.selectors.selectPendingTxs(this.store.getState(), this._account)
+    const pendingTransactions = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
 
     if (!pendingTransactions.length) return
 
@@ -325,7 +325,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   private l2DepositsListener = async () => {
-    const allTransactions = this.selectors.selectOwnedTxs(this.store.getState(), this._account)
+    const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
     const depositTransactions = this.selectors.selectL1Deposits(this.store.getState(), this._account)
 
     const depositHashes = await Promise.all(depositTransactions.map(this.getL2TxnHash))
@@ -369,7 +369,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
   // Pending Withdrawals listener
   private getOutgoingMessageState = async (tx: BridgeTxn) => {
-    const retVal: Partial<Pick<BridgeTxn, 'batchIndex' | 'batchNumber'>> &
+    const outbox: Partial<Pick<BridgeTxn, 'batchIndex' | 'batchNumber'>> &
       Pick<BridgeTxn, 'txHash' | 'outgoingMessageState'> = {
       batchNumber: tx.batchNumber,
       batchIndex: tx.batchIndex,
@@ -378,25 +378,25 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     }
 
     if (!tx.receipt) {
-      return retVal
+      return outbox
     }
-    if (!retVal.batchNumber || !retVal.batchIndex) {
+    if (!outbox.batchNumber || !outbox.batchIndex) {
       const l2ToL2EventData = await this.bridge.getWithdrawalsInL2Transaction(tx?.receipt)
       if (l2ToL2EventData.length === 1) {
         const { batchNumber, indexInBatch } = l2ToL2EventData[0]
         const outgoingMessageState = await this.bridge.getOutGoingMessageState(batchNumber, indexInBatch)
-        retVal.batchIndex = indexInBatch.toHexString()
-        retVal.batchNumber = batchNumber.toHexString()
-        retVal.outgoingMessageState = outgoingMessageState
+        outbox.batchIndex = indexInBatch.toHexString()
+        outbox.batchNumber = batchNumber.toHexString()
+        outbox.outgoingMessageState = outgoingMessageState
       }
     } else {
-      const retValbatchNr = BigNumber.from(retVal.batchNumber)
-      const retValbatchIndex = BigNumber.from(retVal.batchIndex)
-      const outgoingMessageState = await this.bridge.getOutGoingMessageState(retValbatchNr, retValbatchIndex)
-      retVal.outgoingMessageState = outgoingMessageState
+      const batchNumber = BigNumber.from(outbox.batchNumber)
+      const batchIndex = BigNumber.from(outbox.batchIndex)
+      const outgoingMessageState = await this.bridge.getOutGoingMessageState(batchNumber, batchIndex)
+      outbox.outgoingMessageState = outgoingMessageState
     }
 
-    return retVal
+    return outbox
   }
 
   private updatePendingWithdrawals = async () => {
@@ -431,11 +431,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // Handlers
-  private depositEth = async (value: string) => {
+  private depositETH = async (value: string) => {
     if (!this._account) return
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-    const weiValue = utils.parseEther(value)
+    const weiValue = parseEther(value)
 
     const txn = await this.bridge.depositETH(weiValue)
 
@@ -475,7 +475,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       throw new Error('Token data not found')
     }
 
-    const parsedValue = utils.parseUnits(typedValue, tokenData.decimals)
+    const parsedValue = parseUnits(typedValue, tokenData.decimals)
 
     const txn = await this.bridge.deposit({
       erc20L1Address,
@@ -512,7 +512,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     )
   }
 
-  private withdrawEth = async (value: string) => {
+  private withdrawETH = async (value: string) => {
     if (!this._account) return
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
@@ -526,7 +526,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       })
     )
 
-    const weiValue = utils.parseEther(value)
+    const weiValue = parseEther(value)
     const txn = await this.bridge.withdrawETH(weiValue)
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
@@ -577,7 +577,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       })
     )
 
-    const weiValue = utils.parseUnits(value, tokenData.decimals)
+    const weiValue = parseUnits(value, tokenData.decimals)
     const txn = await this.bridge.withdrawERC20(erc20L1Address, weiValue)
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
@@ -607,7 +607,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
-    this.store.dispatch(this.actions.setTokenListsStatus('loading'))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
     const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
@@ -668,7 +668,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     )
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
-    this.store.dispatch(this.actions.setTokenListsStatus('ready'))
+    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
     this.store.dispatch(commonActions.activateLists(defaultListsIds))
   }
 
@@ -678,7 +678,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   public validate = async () => {
     if (!this._account) return
 
-    const { from } = this.store.getState().ecoBridge.UI
+    const { from } = this.store.getState().ecoBridge.ui
 
     this.store.dispatch(
       ecoBridgeUIActions.setStatusButton({
@@ -686,7 +686,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         isError: false,
         isLoading: true,
         isBalanceSufficient: false,
-        approved: false
+        isApproved: false
       })
     )
 
@@ -697,7 +697,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
           isError: false,
           isLoading: false,
           isBalanceSufficient: true,
-          approved: true
+          isApproved: true
         })
       )
     }
@@ -734,7 +734,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             isError: false,
             isLoading: false,
             isBalanceSufficient: true,
-            approved: false
+            isApproved: false
           })
         )
         return
@@ -745,14 +745,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             isError: false,
             isLoading: false,
             isBalanceSufficient: true,
-            approved: true
+            isApproved: true
           })
         )
       }
     }
   }
   public triggerBridging = () => {
-    const { value, address: tokenAddress } = this.store.getState().ecoBridge.UI.from
+    const { value, address: tokenAddress } = this.store.getState().ecoBridge.ui.from
 
     if (this.l1ChainId === this._activeChainId) {
       this.deposit(value, tokenAddress)
@@ -767,9 +767,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
 
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'loading' }))
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
-    const { value, decimals, address, chainId } = this.store.getState().ecoBridge.UI.from
+    const { value, decimals, address, chainId } = this.store.getState().ecoBridge.ui.from
 
     let parsedValue = BigNumber.from(0)
     //handling small amounts
@@ -777,7 +777,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       parsedValue = parseUnits(value, decimals)
     } catch (e) {
       this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({ status: 'failed', errorMessage: 'No available routes / details' })
+        this.actions.setBridgeDetailsStatus({
+          status: SyncState.FAILED,
+          errorMessage: 'No available routes / details'
+        })
       )
       return
     }
@@ -818,7 +821,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
 
       if (!this._activeChainId) {
-        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: 'failed' }))
+        this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
         return
       }
 

@@ -1,10 +1,10 @@
-import { ChainId } from '@swapr/sdk'
-import { TokenInfo, TokenList } from '@uniswap/token-lists'
+import type { ChainId } from '@swapr/sdk'
+import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
-export const ArbitrumPendingReasons = {
-  TX_UNCONFIRMED: 'Transaction has not been confirmed yet',
-  DESPOSIT: 'Waiting for deposit to be processed on L2 (~10 minutes)',
-  WITHDRAWAL: 'Waiting for confirmation (~7 days of dispute period)'
+export enum ArbitrumPendingReasons {
+  TX_UNCONFIRMED = 'Transaction has not been confirmed yet',
+  DEPOSIT = 'Waiting for deposit to be processed on L2 (~10 minutes)',
+  WITHDRAWAL = 'Waiting for confirmation (~7 days of dispute period)'
 }
 
 export type ArbitrumTokenInfo = Omit<TokenInfo, 'extensions'> & {

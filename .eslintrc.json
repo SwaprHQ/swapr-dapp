@@ -8,7 +8,11 @@
       "jsx": true
     }
   },
-  "ignorePatterns": ["node_modules/**/*", "scripts/*.js", "config-overrides.js"],
+  "ignorePatterns": [
+    "node_modules/**/*",
+    "scripts/*.js",
+    "config-overrides.js"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -24,6 +28,7 @@
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "prettier/prettier": "error",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "react/prop-types": "off"
   }
 }

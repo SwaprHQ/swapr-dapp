@@ -3,6 +3,7 @@ import { OutgoingMessageState } from 'arb-ts'
 import { AppState } from '../../../state'
 import {
   BridgeTransactionLog,
+  BridgeTransactionStatus,
   BridgeTransactionSummary,
   BridgeTxn,
   BridgeTxnsState
@@ -11,14 +12,15 @@ import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ArbitrumList } from '../EcoBridge.types'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
+import { ChainId } from '@swapr/sdk'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)
-  if (!bridge) return [] as number[]
-  return Object.values(bridge.supportedChains[0]).map(Number)
+  if (!bridge) return [] as ChainId[]
+  return Object.values(bridge.supportedChains[0]).map(Number) as ChainId[]
 }
 
-const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
+const createSelectOwnedTransactions = (bridgeId: ArbitrumList) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].transactions,
@@ -45,14 +47,14 @@ const createSelectOwnedTxs = (bridgeId: ArbitrumList) =>
     }
   )
 
-const createSelectPendingTxs = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     return Object.values(txs).reduce((total, txsPerChain) => {
       return [...total, ...Object.values(txsPerChain ?? {}).filter(tx => !tx?.receipt)]
     }, [] as BridgeTxn[])
   })
 
-const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = Object.keys(txs).map(key => Number(key))
     const l1ChainId = Math.min(...chains)
@@ -62,7 +64,7 @@ const createSelectL1Deposits = (selectOwnedTxs: ReturnType<typeof createSelectOw
     })
   })
 
-const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>) =>
+const createSelectPendingWithdrawals = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = Object.keys(txs).map(key => Number(key))
     const l2ChainId = Math.max(...chains)
@@ -79,11 +81,11 @@ const createBridgeLog = (transactions: BridgeTxn[]): BridgeTransactionLog[] => {
   }))
 }
 
-const createSelectBridgeTxsSummary = (
+const createSelectBridgeTransactionsSummary = (
   bridgeId: ArbitrumList,
-  selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
+  selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.UI.isCheckingWithdrawals], (txs, isLoading) => {
+  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.isCheckingWithdrawals], (txs, isLoading) => {
     const [l1ChainId, l2ChainId] = Object.keys(txs).map(key => Number(key))
 
     const l1Txs = txs[l1ChainId]
@@ -119,7 +121,7 @@ const createSelectBridgeTxsSummary = (
       }
       if (!tx.partnerTxHash || !l2Txs[tx.partnerTxHash]) {
         if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
-          summary.status = 'pending' // deposits on l1 should never show confirmed on UI
+          summary.status = BridgeTransactionStatus.PENDING // deposits on l1 should never show confirmed on ui
           summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
         }
 
@@ -135,7 +137,7 @@ const createSelectBridgeTxsSummary = (
 
         summary.fromChainId = to
         summary.toChainId = from
-        summary.status = status === 1 ? 'claimed' : getBridgeTxStatus(status)
+        summary.status = status === 1 ? BridgeTransactionStatus.CLAIMED : getBridgeTxStatus(status)
         summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
         summary.log = createBridgeLog([l2Txs[tx.partnerTxHash], tx])
 
@@ -149,10 +151,10 @@ const createSelectBridgeTxsSummary = (
       if (tx.type === 'deposit-l1' && tx.receipt) {
         const statusL2 = l2Txs[tx.partnerTxHash].receipt?.status
         if (tx.receipt?.status === 0 || statusL2 === 0) {
-          summary.status = 'failed'
+          summary.status = BridgeTransactionStatus.FAILED
         } else {
           summary.status = getBridgeTxStatus(statusL2)
-          summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DESPOSIT
+          summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DEPOSIT
           summary.timestampResolved = l2Txs[tx.partnerTxHash].timestampResolved
         }
 
@@ -196,22 +198,22 @@ const createSelectBridgeTxsSummary = (
             if (tx.receipt?.status !== 0) {
               switch (tx.outgoingMessageState) {
                 case OutgoingMessageState.CONFIRMED:
-                  summary.status = 'redeem'
+                  summary.status = BridgeTransactionStatus.REDEEM
                   summary.timestampResolved = undefined
                   break
                 case OutgoingMessageState.EXECUTED:
-                  summary.status = 'claimed'
+                  summary.status = BridgeTransactionStatus.CLAIMED
                   break
                 default:
-                  summary.status = 'pending'
+                  summary.status = BridgeTransactionStatus.PENDING
                   summary.pendingReason = ArbitrumPendingReasons.WITHDRAWAL
                   summary.timestampResolved = undefined
               }
             } else {
-              summary.status = 'failed'
+              summary.status = BridgeTransactionStatus.FAILED
             }
           } else {
-            summary.status = 'loading'
+            summary.status = BridgeTransactionStatus.LOADING
             summary.timestampResolved = undefined
           }
         }
@@ -247,31 +249,31 @@ const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
   )
 
 export interface ArbitrumBridgeSelectors {
-  selectOwnedTxs: ReturnType<typeof createSelectOwnedTxs>
-  selectPendingTxs: ReturnType<typeof createSelectPendingTxs>
+  selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
+  selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
   selectL1Deposits: ReturnType<typeof createSelectL1Deposits>
   selectPendingWithdrawals: ReturnType<typeof createSelectPendingWithdrawals>
-  selectBridgeTxsSummary: ReturnType<typeof createSelectBridgeTxsSummary>
+  selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
 }
 
 export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
   return arbBridges.reduce(
     (total, bridgeId) => {
-      const selectOwnedTxs = createSelectOwnedTxs(bridgeId)
-      const selectPendingTxs = createSelectPendingTxs(selectOwnedTxs)
-      const selectL1Deposits = createSelectL1Deposits(selectOwnedTxs)
-      const selectPendingWithdrawals = createSelectPendingWithdrawals(selectOwnedTxs)
+      const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
+      const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
+      const selectL1Deposits = createSelectL1Deposits(selectOwnedTransactions)
+      const selectPendingWithdrawals = createSelectPendingWithdrawals(selectOwnedTransactions)
 
-      const selectBridgeTxsSummary = createSelectBridgeTxsSummary(bridgeId, selectOwnedTxs)
+      const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
       const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
 
       const selectors = {
-        selectOwnedTxs,
-        selectPendingTxs,
+        selectOwnedTransactions,
+        selectPendingTransactions,
         selectL1Deposits,
-        selectBridgeTxsSummary,
+        selectBridgeTransactionsSummary,
         selectPendingWithdrawals,
         selectBridgingDetails
       }

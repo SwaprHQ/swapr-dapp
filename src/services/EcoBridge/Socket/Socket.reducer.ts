@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { SocketBridgeState, SocketTx } from './Socket.types'
+import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 import { TokenList } from '@uniswap/token-lists'
-import { SocketList, AsyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../EcoBridge.types'
+import { SocketList, SyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
@@ -10,8 +10,8 @@ const initialState: SocketBridgeState = {
   approvalData: {},
   txBridgingData: {},
   bridgingDetails: {},
-  bridgingDetailsStatus: 'idle',
-  listsStatus: 'idle',
+  bridgingDetailsStatus: SyncState.IDLE,
+  listsStatus: SyncState.IDLE,
   lists: {},
   routes: [],
   lastMetadataCt: 0
@@ -31,11 +31,11 @@ const createSocketSlice = (bridgeId: SocketList) =>
         }
 
         if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === 'failed') return
-          state.bridgingDetailsStatus = 'loading'
+          if (state.bridgingDetailsStatus === SyncState.FAILED) return
+          state.bridgingDetailsStatus = SyncState.LOADING
           return
         } else {
-          state.bridgingDetailsStatus = 'ready'
+          state.bridgingDetailsStatus = SyncState.READY
         }
 
         if (gas) {
@@ -51,7 +51,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
           state.bridgingDetails.receiveAmount = receiveAmount
         }
       },
-      setTokenListsStatus: (state, action: PayloadAction<AsyncState>) => {
+      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
         state.listsStatus = action.payload
       },
       addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
@@ -61,7 +61,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       setBridgeDetailsStatus: (
         state,
-        action: PayloadAction<{ status: AsyncState; errorMessage?: BridgingDetailsErrorMessage }>
+        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
       ) => {
         const { status, errorMessage } = action.payload
         state.bridgingDetailsStatus = status
@@ -93,7 +93,7 @@ const createSocketSlice = (bridgeId: SocketList) =>
       addTx: (state, action: PayloadAction<Omit<SocketTx, 'partnerTxHash' | 'status' | 'timestampResolved'>>) => {
         const { payload: txn } = action
 
-        state.transactions.push({ ...txn, status: 'from-pending' })
+        state.transactions.push({ ...txn, status: SocketTxStatus.FROM_PENDING })
       },
       updateTx: (state, action: PayloadAction<Pick<SocketTx, 'txHash' | 'partnerTxHash' | 'status'>>) => {
         const { txHash, partnerTxHash, status } = action.payload

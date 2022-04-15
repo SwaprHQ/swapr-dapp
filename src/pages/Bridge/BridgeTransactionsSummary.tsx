@@ -173,7 +173,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
       </ColumnFrom>
       <ColumnToFlex>
         <Filler>
-          <Dots status={'confirmed'} />
+          <Dots status={BridgeTransactionStatus.CONFIRMED} />
           <Dots status={status} />
         </Filler>
         <TextTo

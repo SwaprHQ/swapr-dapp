@@ -1,5 +1,5 @@
 import { ChainId } from '@swapr/sdk'
-import { BridgeTxnType } from '../state/bridgeTransactions/types'
+import { BridgeTransactionStatus, BridgeTxnType } from '../state/bridgeTransactions/types'
 import { getNetworkInfo } from './networksList'
 
 export type ChainIdPair = {
@@ -44,14 +44,14 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
   }
 }
 
-export const getBridgeTxStatus = (txStatus: number | undefined): 'failed' | 'confirmed' | 'pending' => {
+export const getBridgeTxStatus = (txStatus: number | undefined): BridgeTransactionStatus => {
   switch (txStatus) {
     case 0:
-      return 'failed'
+      return BridgeTransactionStatus.FAILED
     case 1:
-      return 'confirmed'
+      return BridgeTransactionStatus.CONFIRMED
     default:
-      return 'pending'
+      return BridgeTransactionStatus.PENDING
   }
 }
 
