@@ -327,7 +327,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private l2DepositsListener = async () => {
     const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
     const depositTransactions = this.selectors.selectL1Deposits(this.store.getState(), this._account)
-
     const depositHashes = await Promise.all(depositTransactions.map(this.getL2TxnHash))
 
     depositTransactions.forEach((txn, index) => {
@@ -339,10 +338,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const { retryableTicketHash, seqNum } = txnHash
 
-      if (
-        !allTransactions[this.l1ChainId]?.[retryableTicketHash] &&
-        !allTransactions[this.l2ChainId]?.[retryableTicketHash]
-      ) {
+      const [l1ChainRetryableTicketHash] = allTransactions.filter(
+        tx => tx.chainId === this.l1ChainId && tx.txHash === retryableTicketHash
+      )
+      const [l2ChainRetryableTicketHash] = allTransactions.filter(
+        tx => tx.chainId === this.l2ChainId && tx.txHash === retryableTicketHash
+      )
+
+      if (!l1ChainRetryableTicketHash && !l2ChainRetryableTicketHash) {
         this.store.dispatch(
           this.actions.addTx({
             ...txn,
@@ -354,7 +357,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             blockNumber: undefined
           })
         )
-
         this.store.dispatch(
           this.actions.updateTxPartnerHash({
             chainId: this.l2ChainId,

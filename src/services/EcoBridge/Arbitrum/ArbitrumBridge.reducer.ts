@@ -1,13 +1,14 @@
 import { TransactionReceipt } from '@ethersproject/providers'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList, SyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 
 interface ArbitrumBridgeState {
-  transactions: BridgeTxnsState
+  transactions: EntityState<BridgeTxn>
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
   bridgingDetails: BridgeDetails
@@ -20,7 +21,7 @@ const now = () => new Date().getTime()
 
 const initialState: ArbitrumBridgeState = {
   bridgingDetails: {},
-  transactions: {},
+  transactions: arbitrumTransactionsAdapter.getInitialState({}),
   lists: {},
   listsStatus: SyncState.IDLE,
   bridgingDetailsStatus: SyncState.IDLE,
@@ -32,24 +33,12 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      addTx: (state, action: PayloadAction<Omit<BridgeTxn, 'timestampCreated' | 'timestampResolved'>>) => {
+      addTx: (state, action: PayloadAction<BridgeTxn>) => {
         const { payload: txn } = action
 
         if (!txn.txHash) return
 
-        const { txHash, chainId } = txn
-
-        if (state.transactions[chainId]?.[txHash]) {
-          throw Error('Attempted to add existing bridge transaction.')
-        }
-        const transactions = state.transactions[chainId] ?? {}
-
-        transactions[txHash] = {
-          ...txn,
-          timestampCreated: now()
-        }
-
-        state.transactions[chainId] = transactions
+        arbitrumTransactionsAdapter.upsertOne(state.transactions, txn)
       },
       updateTxReceipt: (
         state,
@@ -60,21 +49,16 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           seqNum?: number
         }>
       ) => {
-        const { chainId, receipt, txHash, seqNum } = action.payload
+        const { receipt, txHash, seqNum } = action.payload
 
-        if (!state.transactions[chainId]?.[txHash]) {
-          throw Error('Transaction not found ' + txHash)
-        }
-        const txn = state.transactions[chainId][txHash]
-        if (txn.receipt) return
-        txn.receipt = receipt
-
-        if (seqNum) {
-          txn.seqNum = seqNum
-        }
-
-        txn.timestampResolved = now()
-        state.transactions[chainId][txHash] = txn
+        arbitrumTransactionsAdapter.updateOne(state.transactions, {
+          id: txHash,
+          changes: {
+            receipt,
+            seqNum,
+            timestampResolved: now()
+          }
+        })
       },
       updateTxPartnerHash: (
         state,
@@ -85,16 +69,19 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           partnerTxHash: string
         }>
       ) => {
-        const { chainId, txHash, partnerChainId, partnerTxHash } = action.payload
-
-        const tx = state.transactions[chainId][txHash]
-        tx.partnerTxHash = partnerTxHash
-
-        const partnerTx = state.transactions[partnerChainId][partnerTxHash]
-        partnerTx.partnerTxHash = txHash
-
-        state.transactions[chainId][txHash] = tx
-        state.transactions[partnerChainId][partnerTxHash] = partnerTx
+        const { txHash, partnerTxHash } = action.payload
+        arbitrumTransactionsAdapter.updateOne(state.transactions, {
+          id: txHash,
+          changes: {
+            partnerTxHash
+          }
+        })
+        arbitrumTransactionsAdapter.updateOne(state.transactions, {
+          id: partnerTxHash,
+          changes: {
+            partnerTxHash: txHash
+          }
+        })
       },
       updateTxWithdrawal: (
         state,
@@ -106,18 +93,17 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           outgoingMessageState: OutgoingMessageState
         }>
       ) => {
-        const { chainId, outgoingMessageState, txHash, batchIndex, batchNumber } = action.payload
+        const { outgoingMessageState, txHash, batchIndex, batchNumber } = action.payload
 
-        const tx = state.transactions[chainId][txHash]
-        tx.outgoingMessageState = outgoingMessageState
-        if (outgoingMessageState === OutgoingMessageState.EXECUTED) {
-          tx.timestampResolved = now()
-        }
-        if (batchIndex && batchNumber) {
-          tx.batchNumber = batchNumber
-          tx.batchIndex = batchIndex
-        }
-        state.transactions[chainId][txHash] = tx
+        arbitrumTransactionsAdapter.updateOne(state.transactions, {
+          id: txHash,
+          changes: {
+            outgoingMessageState,
+            timestampResolved: outgoingMessageState === OutgoingMessageState.EXECUTED ? now() : undefined,
+            batchIndex,
+            batchNumber
+          }
+        })
       },
       addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
         const { payload } = action
@@ -129,22 +115,11 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
       },
       migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
         const { payload } = action
-        const networks = Object.keys(payload)
+        const networks = Object.values(payload)
+        const [l1Txs, l2Txs] = networks
+        const transactions = [...Object.values(l1Txs), ...Object.values(l2Txs)]
 
-        networks.forEach(chainIdStr => {
-          const chainId = Number(chainIdStr)
-
-          if (!(chainId in state.transactions)) {
-            state.transactions[chainId] = payload[chainId]
-            return
-          }
-
-          Object.keys(payload[chainId]).forEach(txHash => {
-            if (!state.transactions[chainId][txHash]) {
-              state.transactions[chainId][txHash] = payload[chainId][txHash]
-            }
-          })
-        })
+        arbitrumTransactionsAdapter.setAll(state.transactions, transactions)
       },
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
         const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
