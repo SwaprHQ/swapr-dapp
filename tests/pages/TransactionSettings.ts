@@ -1,62 +1,51 @@
-export class TransactionSettings  {
-    static visitSwapPage() {
-        cy.visit('/swap')
-      }
-    static settings_Button() {
-      return  cy.get('[id=open-settings-dialog-button]')
-    }
-    static multihop_Text() {
-        return  cy.get('[data-testid=multihop-text]')
-    }
-    static slippageTolerance_Text() {
-        return  cy.get('[data-testid=slippage-tolerance-text]')
-    }
-    static preferredGasPrice_Text() {
-        return  cy.get('[data-testid=preferred-gas-price-text]')
-    }
-    static transactionDeadline_Text() {
-        return  cy.get('[data-testid=transaction-deadline-text]')
-    }
-    static toggleExpertMode_Text() {
-        return  cy.get('[data-testid=toggle-expert-mode-text]')
-    }
-    static about_Hyperlink() {
-        return  cy.get('[data-testid=about-hyperlink]')
-    }
-    static code_Hyperlink() {
-        return  cy.get('[data-testid=code-hyperlink]')
-    }
-    static discord_Hyperlink() {
-        return  cy.get('[data-testid=discord-hyperlink]')
-    }
-    static on_ToggleButton() {
-        return  cy.get('[data-testid=toggle-on]')
-    }
-    static off_ToggleButton() {
-        return  cy.get('[data-testid=toggle-off]')
-    }
-    static slippageTolerance_Field() {
-        return  cy.get('[data-testid=input-slippage-tolerance]')
-    }
-    static gasPrice_Field() {
-        return  cy.get('[data-testid=input-gas-price]')
-    }
-    static transactionDeadline_Field() {
-        return  cy.get('[data-testid=input-transaction-deadline]')
-    }
-    static expertModeConfirmation_modalWindow() {
-        return  cy.get('[data-testid=expert-mode-confirmation-window]')
-    }
-    static enterValid_errorMesssage() {
-        return  cy.get('[data-testid=slippage-error]')
-    }
-    static typeSlippageTolerance_Field(value: string) {
-        this.slippageTolerance_Field().type(value)
-        return this
-    }
-    static typeGasPrice_Field(value: string) {
-        this.gasPrice_Field().type(value)
-        return this
-      }
-      
-  }  
+export class TransactionSettings {
+  static visitTransactionSettingsPage() {
+    cy.visit('/#/swap')
+  }
+  static getSettingsButton() {
+    return cy.get('[id=open-settings-dialog-button]')
+  }
+  static getMultihopText() {
+    return cy.get('[data-testid=multihop-text]')
+  }
+  static getSlippageToleranceText() {
+    return cy.get('[data-testid=slippage-tolerance-text]')
+  }
+  static getTransactionDeadlineText() {
+    return cy.get('[data-testid=transaction-deadline-text]')
+  }
+  static getToggleExpertModeText() {
+    return cy.get('[data-testid=toggle-expert-mode-text]')
+  }
+  static getAboutHyperlink() {
+    return cy.get('[data-testid=about-hyperlink]')
+  }
+  static getCodeHyperlink() {
+    return cy.get('[data-testid=code-hyperlink]')
+  }
+  static getDiscordHyperlink() {
+    return cy.get('[data-testid=discord-hyperlink]')
+  }
+  static getOnToggleButton() {
+    return cy.get('[data-testid=toggle-on]')
+  }
+  static getOffToggleButton() {
+    return cy.get('[data-testid=toggle-off]')
+  }
+  static getSlippageToleranceField() {
+    return cy.get('[data-testid=input-slippage-tolerance]')
+  }
+  static getTransactionDeadlineField() {
+    return cy.get('[data-testid=input-transaction-deadline]')
+  }
+  static getExpertModeConfirmationModalWindow() {
+    return cy.get('[data-testid=expert-mode-confirmation-window]')
+  }
+  static getEnterValiErrorMesssage() {
+    return cy.get('[data-testid=slippage-error]')
+  }
+  static typeSlippageTolerance(value: string) {
+    this.getSlippageToleranceField().type(value)
+    return this
+  }
+}

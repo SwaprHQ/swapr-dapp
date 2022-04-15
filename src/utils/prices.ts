@@ -10,7 +10,9 @@ import {
   Price,
   Currency,
   _10000,
-  _100
+  _100,
+  ZERO,
+  UniswapV2Trade,
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -21,12 +23,14 @@ import {
   PRICE_IMPACT_HIGH,
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_LOW,
-  NO_PRICE_IMPACT
+  NO_PRICE_IMPACT,
 } from '../constants'
 import { Field } from '../state/swap/actions'
-import { basisPointsToPercent } from './index'
-import Decimal from 'decimal.js-light'
+import _Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
+import toFormat from 'toformat'
+
+const Decimal = toFormat(_Decimal)
 
 const ONE_HUNDRED_PERCENT = new Percent(_10000, _10000)
 
@@ -37,7 +41,7 @@ interface TradePriceBreakdown {
 }
 
 // computes price breakdown for the trade
-export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
+export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBreakdown {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
   const realizedLPFee = !trade
@@ -68,7 +72,7 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,
     realizedLPFee: realizedLPFee ? new Percent(realizedLPFee.numerator, realizedLPFee.denominator) : undefined,
-    realizedLPFeeAmount
+    realizedLPFeeAmount,
   }
 }
 
@@ -92,14 +96,10 @@ export function calculateProtocolFee(
 }
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
-export function computeSlippageAdjustedAmounts(
-  trade: Trade | undefined,
-  allowedSlippage: number
-): { [field in Field]?: CurrencyAmount } {
-  const pct = basisPointsToPercent(allowedSlippage)
+export function computeSlippageAdjustedAmounts(trade: Trade | undefined): { [field in Field]?: CurrencyAmount } {
   return {
-    [Field.INPUT]: trade?.maximumAmountIn(pct),
-    [Field.OUTPUT]: trade?.minimumAmountOut(pct)
+    [Field.INPUT]: trade?.maximumAmountIn(),
+    [Field.OUTPUT]: trade?.minimumAmountOut(),
   }
 }
 
@@ -107,11 +107,11 @@ const ALLOWED_PRICE_IMPACT_PERCENTAGE: { [key: number]: Percent } = {
   [PRICE_IMPACT_NON_EXPERT]: BLOCKED_PRICE_IMPACT_NON_EXPERT,
   [PRICE_IMPACT_HIGH]: ALLOWED_PRICE_IMPACT_HIGH,
   [PRICE_IMPACT_MEDIUM]: ALLOWED_PRICE_IMPACT_MEDIUM,
-  [PRICE_IMPACT_LOW]: ALLOWED_PRICE_IMPACT_LOW
+  [PRICE_IMPACT_LOW]: ALLOWED_PRICE_IMPACT_LOW,
 }
 
 const ALLOWED_FIAT_PRICE_IMPACT_PERCENTAGE: { [key: number]: Percent } = {
-  [PRICE_IMPACT_HIGH]: ALLOWED_FIAT_PRICE_IMPACT_HIGH
+  [PRICE_IMPACT_HIGH]: ALLOWED_FIAT_PRICE_IMPACT_HIGH,
 }
 
 export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3 | 4 {
@@ -174,12 +174,15 @@ export function getLpTokenPrice(
         new Decimal(totalSupply).toFixed(pair.liquidityToken.decimals),
         pair.liquidityToken.decimals
       ).toString()
-  return new Price(
-    pair.liquidityToken,
-    nativeCurrency,
-    priceDenominator,
-    parseUnits(new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals), nativeCurrency.decimals).toString()
-  )
+  return new Price({
+    baseCurrency: pair.liquidityToken,
+    quoteCurrency: nativeCurrency,
+    denominator: priceDenominator,
+    numerator: parseUnits(
+      new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals),
+      nativeCurrency.decimals
+    ).toString(),
+  })
 }
 
 /**
@@ -188,13 +191,15 @@ export function getLpTokenPrice(
  * @param significantDigits Limit number of decimal places
  * @param rounding Rounding mode
  */
-export const limitDigitDecimalPlace = (
+export const limitNumberDecimalPlaces = (
   value?: Fraction,
   significantDigits = 6,
+  format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
 ): string => {
-  if (!value) return '0'
+  if (!value || value.equalTo(ZERO)) return '0'
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
-  return new Decimal(fixedQuotient).toSignificantDigits(significantDigits).toString()
+  const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
+  return quotient.toFormat(quotient.decimalPlaces(), format)
 }
