@@ -38,7 +38,7 @@ const getErrorMsg = (error: any) => {
     return 'Transaction rejected'
   }
   if (error.status === 500 && !error.ok) {
-    return 'Socket API is temporary unavailable'
+    return 'Socket API is temporarily unavailable'
   }
   return `Bridge failed: ${error.message}`
 }
