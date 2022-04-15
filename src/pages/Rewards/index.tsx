@@ -17,7 +17,7 @@ import { useToken } from '../../hooks/Tokens'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { PairState, usePair } from '../../data/Reserves'
 
-import PairSearchModal from '../../components/SearchModal/PairSearchModal'
+import { PairSearchModal } from '../../components/SearchModal/PairSearchModal'
 import { ButtonSecondary } from '../../components/Button'
 import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
 
