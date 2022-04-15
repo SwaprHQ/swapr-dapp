@@ -80,7 +80,8 @@ export class TransactionHelper {
   static checkEthereumBalanceFromEtherscan(
     expectedBalance: number,
     expectedGasCost: number,
-    walletAddress = AddressesEnum.WALLET_PUBLIC
+    walletAddress = AddressesEnum.WALLET_PUBLIC,
+    retries = 0
   ) {
     console.log('EXPECTED BALANCE WITHOUT GAS: ', expectedBalance, typeof expectedBalance)
     expectedBalance -= expectedGasCost * Math.pow(10, 18)
@@ -96,12 +97,11 @@ export class TransactionHelper {
       try {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
       } catch (err) {
-        this.retries++
         if (this.retries > 100) {
           throw new Error('To many retries')
         }
         cy.wait(1000)
-        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress)
+        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, retries++)
       }
     })
   }
