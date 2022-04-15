@@ -2,7 +2,6 @@ import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-import { useCurrencySearchCore } from '../../../../SearchModal/CurrencySearch/CurrencySearch.hooks'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { Card, Divider } from '../../../styleds'
@@ -35,8 +34,6 @@ export default function PairAndReward({
 }: PairAndRewardProps) {
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
-
-  const currencySearchProps = useCurrencySearchCore()
 
   const handleOpenPairSearch = useCallback(() => {
     setPairSearchOpen(true)
@@ -100,7 +97,6 @@ export default function PairAndReward({
         onCurrencySelect={handleCurrencySelection}
         selectedCurrency={reward?.token}
         showNativeCurrency={false}
-        currencySearchProps={currencySearchProps}
       />
     </>
   )

@@ -21,7 +21,7 @@ import { CurrencyLogo } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import NumericalInput from '../Input/NumericalInput'
 import { FiatValueDetails } from '../FiatValueDetails'
-import { CurrencySearchModal } from '../SearchModal/CurrencySearchModal'
+import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -178,7 +178,7 @@ export const CurrencyInputPanelComponent = ({
         </Content>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (
-        <CurrencySearchModal
+        <CurrencySearchModalComponent
           isOpen={isOpen}
           onDismiss={onDismiss}
           onCurrencySelect={onCurrencySelect}

@@ -24,7 +24,6 @@ import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { useCurrencySearchCore } from '../../components/SearchModal/CurrencySearch/CurrencySearch.hooks'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -98,8 +97,6 @@ function Title({
     },
     [onFilteredTokenReset]
   )
-
-  const currencySearchProps = useCurrencySearchCore()
 
   return (
     <>
@@ -180,7 +177,6 @@ function Title({
         onDismiss={handleModalClose}
         onCurrencySelect={onCurrencySelection}
         showNativeCurrency={false}
-        currencySearchProps={currencySearchProps}
       />
     </>
   )

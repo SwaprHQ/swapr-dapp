@@ -57,7 +57,7 @@ export const CurrencyLogo = ({
         }`
       ]
     return []
-  }, [chainId, currency, nativeCurrencyLogo, uriLocations])
+  }, [chainId, currency, nativeCurrencyLogo, selectedChainId, uriLocations])
 
   return <CurrencyLogoComponent sources={sources} currency={currency} {...componentProps} />
 }

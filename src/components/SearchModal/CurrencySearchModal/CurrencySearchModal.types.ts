@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 import { CurrencySearchCoreProps } from '../CurrencySearch/CurrencySearch.types'
 
-export interface CurrencySearchModalProps {
+export interface CurrencySearchModalComponentProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -11,6 +11,8 @@ export interface CurrencySearchModalProps {
   showNativeCurrency?: boolean
   currencySearchProps: CurrencySearchCoreProps
 }
+
+export type CurrencySearchModalProps = Omit<CurrencySearchModalComponentProps, 'currencySearchProps'>
 
 export enum CurrencyModalView {
   SEARCH,

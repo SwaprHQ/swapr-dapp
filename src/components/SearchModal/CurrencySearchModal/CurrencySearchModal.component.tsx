@@ -11,9 +11,9 @@ import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
 import { Manage } from '../Manage'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
-import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
+import { CurrencyModalView, CurrencySearchModalComponentProps } from './CurrencySearchModal.types'
 
-export const CurrencySearchModal = ({
+export const CurrencySearchModalComponent = ({
   isOpen,
   onDismiss,
   onCurrencySelect: onCurrencySelectWithoutDismiss,
@@ -22,7 +22,7 @@ export const CurrencySearchModal = ({
   showCommonBases = false,
   showNativeCurrency = true,
   currencySearchProps
-}: CurrencySearchModalProps) => {
+}: CurrencySearchModalComponentProps) => {
   const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.MANAGE)
   const lastOpen = useLast(isOpen)
 
