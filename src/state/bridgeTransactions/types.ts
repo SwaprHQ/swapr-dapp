@@ -38,7 +38,7 @@ export type BridgeTxn = {
   txHash: string
   blockNumber?: number
   timestampResolved?: number
-  timestampCreated: number
+  timestampCreated?: number
   receipt?: TransactionReceipt
   seqNum?: number
   partnerTxHash?: string
