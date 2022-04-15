@@ -9,7 +9,7 @@ import { ButtonPrimary } from '../Button'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { AutoColumn } from '../Column'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { TruncatedText, SwapShowAcceptChanges } from './styleds'
 

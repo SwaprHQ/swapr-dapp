@@ -6,7 +6,7 @@ import { Text } from 'rebass'
 import { useRouter } from '../../hooks/useRouter'
 import Card from '../../components/Card'
 import { AutoRow } from '../../components/Row'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { CurrencyLogo } from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
 const LightCardWrap = styled(Card)`
