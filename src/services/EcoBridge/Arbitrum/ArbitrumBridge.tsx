@@ -1,7 +1,7 @@
 import { ChainId, Currency } from '@swapr/sdk'
 import { BigNumber } from 'ethers'
 import { TokenList } from '@uniswap/token-lists'
-import { parseEther, parseUnits } from 'ethers/lib/utils'
+import { parseEther, parseUnits } from '@ethersproject/units'
 import { JsonRpcSigner } from '@ethersproject/providers'
 import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import request from 'graphql-request'
