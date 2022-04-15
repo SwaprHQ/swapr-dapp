@@ -37,6 +37,9 @@ const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
   }
+  if (error.status === 500 && !error.ok) {
+    return 'Socket API is temporary unavailable'
+  }
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends EcoBridgeChildBase {
