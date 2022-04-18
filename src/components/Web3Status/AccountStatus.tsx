@@ -175,7 +175,6 @@ export function AccountStatus({
           ) : ENSName ? (
             <>
               {avatar?.image && <Avatar url={avatar.image} />}
-
               <p>{ENSName}</p>
             </>
           ) : (
