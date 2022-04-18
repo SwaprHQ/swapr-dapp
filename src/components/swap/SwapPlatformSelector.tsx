@@ -13,7 +13,7 @@ import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
 import {
   computeSlippageAdjustedAmounts,
   computeTradePriceBreakdown,
-  limitNumberDecimalPlaces,
+  limitNumberOfDecimalPlaces,
   simpleWarningSeverity
 } from '../../utils/prices'
 import { Field } from '../../state/swap/actions'
@@ -162,7 +162,7 @@ export function SwapPlatformSelector({
           const gasFeeUSD = gasFeesUSD[i]
           const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
           const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
-          const tokenAmount = limitNumberDecimalPlaces(
+          const tokenAmount = limitNumberOfDecimalPlaces(
             isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
           )
 
@@ -170,7 +170,6 @@ export function SwapPlatformSelector({
             <SelectionListOption
               key={trade.platform.name}
               isSelected={selectedTrade?.platform.name === trade.platform.name}
-              isLoading={false}
               onClick={() => handleSelectedTradeOverride(trade.platform.name)}
             >
               <SelectionListName

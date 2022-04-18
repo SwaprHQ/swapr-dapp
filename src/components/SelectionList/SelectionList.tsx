@@ -19,7 +19,7 @@ export const SelectionListLabel = styled(Text)<{ justify?: boolean; flex?: strin
   flex: ${({ flex }) => flex || '15%'};
   justify-content: ${({ justify }) => (justify ? 'start' : 'end')};
 `
-export const SelectionListOption = styled.div<{ isSelected: boolean; isLoading: boolean }>`
+export const SelectionListOption = styled.div<{ isSelected: boolean; isLoading?: boolean }>`
   background: ${({ isSelected }) => (isSelected ? 'rgba(104,110,148,.16)' : 'rgba(104,110,148,.1)')};
   width: 100%;
   border-radius: 8px;
