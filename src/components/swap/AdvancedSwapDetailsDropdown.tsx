@@ -18,7 +18,7 @@ const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
   transform: ${({ show }) => (show ? 'translateY(16px)' : 'translateY(-100%)')};
   transition: transform 300ms ease;
   z-index: -1;
-  max-width: 432px;
+  max-width: 457px;
   width: 100%;
   margin-bottom: 30px;
 `

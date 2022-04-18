@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
@@ -10,7 +10,12 @@ import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { useSwapState } from '../../state/swap/hooks'
 import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, simpleWarningSeverity } from '../../utils/prices'
+import {
+  computeSlippageAdjustedAmounts,
+  computeTradePriceBreakdown,
+  limitNumberOfDecimalPlaces,
+  simpleWarningSeverity
+} from '../../utils/prices'
 import { Field } from '../../state/swap/actions'
 import Skeleton from 'react-loading-skeleton'
 import useDebounce from '../../hooks/useDebounce'
@@ -27,6 +32,7 @@ import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../con
 import styled, { ThemeContext } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { ChevronsDown } from 'react-feather'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined
@@ -50,6 +56,11 @@ const StyledRouteFlex = styled(Flex)`
   border-radius: 12px;
   padding: 18px 16px;
   margin-bottom: 16px;
+`
+
+const MoreMarketsButton = styled(Flex)`
+  cursor: pointer;
+  text-transform: uppercase;
 `
 
 function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
@@ -87,6 +98,7 @@ export function SwapPlatformSelector({
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
 
+  const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
   const [allowedSlippage] = useUserSlippageTolerance()
   const { recipient, independentField } = useSwapState()
   const { loading: loadingTradesGasEstimates, estimations } = useSwapsGasEstimations(
@@ -100,6 +112,10 @@ export function SwapPlatformSelector({
   const loadingGasFees = loadingGasFeesUSD || loadingTradesGasEstimates
   const debouncedLoadingGasFees = useDebounce(loadingGasFees, 2000)
 
+  useEffect(() => {
+    setShowAllPlatformsTrades(false)
+  }, [allPlatformTrades])
+
   const showGasFees = estimations.length === allPlatformTrades?.length
 
   const handleSelectedTradeOverride = useCallback(
@@ -111,13 +127,17 @@ export function SwapPlatformSelector({
     [allPlatformTrades, onSelectedPlatformChange]
   )
 
+  const displayedPlatformTrade = showAllPlatformsTrades ? allPlatformTrades : allPlatformTrades?.slice(0, 3)
+
   return (
     <AutoColumn>
       {selectedTrade instanceof UniswapV2Trade && selectedTrade.route.path.length > 2 && (
         <StyledRouteFlex>
-          <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
-            Route
-          </TYPE.body>
+          {!isMobileByMedia && (
+            <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
+              Route
+            </TYPE.body>
+          )}
           <Box flex="1">
             <SwapRoute trade={selectedTrade} />
           </Box>
@@ -136,18 +156,20 @@ export function SwapPlatformSelector({
           </SelectionListLabel>
         </SelectionListLabelWrapper>
 
-        {allPlatformTrades?.map((trade, i) => {
+        {displayedPlatformTrade?.map((trade, i) => {
           if (!trade) return null // some platforms might not be compatible with the currently selected network
           const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
           const gasFeeUSD = gasFeesUSD[i]
           const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
           const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
+          const tokenAmount = limitNumberOfDecimalPlaces(
+            isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
+          )
 
           return (
             <SelectionListOption
               key={trade.platform.name}
               isSelected={selectedTrade?.platform.name === trade.platform.name}
-              isLoading={false}
               onClick={() => handleSelectedTradeOverride(trade.platform.name)}
             >
               <SelectionListName
@@ -170,9 +192,7 @@ export function SwapPlatformSelector({
               )}
               <SelectionListReceiveAmount flex="25%">
                 <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
-                  {isExactIn
-                    ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)}` ?? '-'
-                    : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)}` ?? '-'}
+                  {tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}
                 </TYPE.subHeader>
                 <CurrencyLogo
                   currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}
@@ -184,6 +204,18 @@ export function SwapPlatformSelector({
           )
         })}
       </SelectionListWindowWrapper>
+      {allPlatformTrades && allPlatformTrades.length > 3 && (
+        <Flex justifyContent="center">
+          {!showAllPlatformsTrades && (
+            <MoreMarketsButton alignItems="center" onClick={() => setShowAllPlatformsTrades(true)}>
+              <TYPE.main fontWeight={600} color={'purple3'} fontSize="10px" mr="8px">
+                {t('showMore')}
+              </TYPE.main>
+              <ChevronsDown size={15} color={theme.purple3} />
+            </MoreMarketsButton>
+          )}
+        </Flex>
+      )}
     </AutoColumn>
   )
 }

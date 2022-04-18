@@ -120,5 +120,6 @@
   "minReceived": "Min. Received",
   "maxSent": "Max Sent",
   "bestPrice": "Best price found on",
-  "noAdditionalFees": "NO additional fees"
+  "noAdditionalFees": "No additional fees",
+  "showMore": "Show more"
 }
