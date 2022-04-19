@@ -5,7 +5,7 @@ import {
   BridgeTransactionLog,
   BridgeTransactionStatus,
   BridgeTransactionSummary,
-  BridgeTxn
+  ArbitrumBridgeTxn
 } from '../../../state/bridgeTransactions/types'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ArbitrumList } from '../EcoBridge.types'
@@ -71,7 +71,7 @@ const createSelectPendingWithdrawals = (
     )
   })
 
-const createBridgeLog = (transactions: BridgeTxn[]): BridgeTransactionLog[] => {
+const createBridgeLog = (transactions: ArbitrumBridgeTxn[]): BridgeTransactionLog[] => {
   return transactions.map(tx => ({
     txHash: tx.txHash,
     chainId: tx.chainId
@@ -185,7 +185,10 @@ const createSelectBridgeTransactionsSummary = (
         // WITHDRAWAL L2
         if (!tx.partnerTxHash || !partnerTx) {
           if (tx.type === 'withdraw') {
-            if (!isLoading) {
+            if (isLoading) {
+              summary.timestampResolved = undefined
+              summary.status = BridgeTransactionStatus.LOADING
+            } else {
               if (tx.receipt?.status !== 0) {
                 switch (tx.outgoingMessageState) {
                   case OutgoingMessageState.CONFIRMED:
@@ -203,9 +206,6 @@ const createSelectBridgeTransactionsSummary = (
               } else {
                 summary.status = BridgeTransactionStatus.FAILED
               }
-            } else {
-              summary.status = BridgeTransactionStatus.LOADING
-              summary.timestampResolved = undefined
             }
           }
           summary.log = createBridgeLog([tx])
