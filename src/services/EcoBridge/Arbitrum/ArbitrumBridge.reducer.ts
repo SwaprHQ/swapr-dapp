@@ -3,12 +3,12 @@ import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
-import { BridgeTxnsState, BridgeTxn } from '../../../state/bridgeTransactions/types'
+import { ArbitrumBridgeTxnsState, ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList, SyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 
 interface ArbitrumBridgeState {
-  transactions: EntityState<BridgeTxn>
+  transactions: EntityState<ArbitrumBridgeTxn>
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
   bridgingDetails: BridgeDetails
@@ -33,7 +33,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      addTx: (state, action: PayloadAction<BridgeTxn>) => {
+      addTx: (state, action: PayloadAction<ArbitrumBridgeTxn>) => {
         const { payload: txn } = action
 
         if (!txn.txHash) return
@@ -113,7 +113,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
       setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
         state.listsStatus = action.payload
       },
-      migrateTxs: (state, action: PayloadAction<BridgeTxnsState>) => {
+      migrateTxs: (state, action: PayloadAction<ArbitrumBridgeTxnsState>) => {
         const { payload } = action
         const networks = Object.values(payload)
         const [l1Txs, l2Txs] = networks

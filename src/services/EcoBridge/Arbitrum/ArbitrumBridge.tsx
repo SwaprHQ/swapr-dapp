@@ -13,7 +13,7 @@ import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
 import { addTransaction } from '../../../state/transactions/actions'
-import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
+import { BridgeAssetType, BridgeTransactionSummary, ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 import getTokenList from '../../../utils/getTokenList'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { subgraphClientsUris } from '../../../apollo/client'
@@ -270,7 +270,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // PendingTx Listener
-  private getReceipt = async (tx: BridgeTxn) => {
+  private getReceipt = async (tx: ArbitrumBridgeTxn) => {
     const provider = txnTypeToLayer(tx.type) === 2 ? this.bridge?.l2Provider : this.bridge?.l1Provider
     if (!provider) throw new Error('No provider on bridge')
 
@@ -298,7 +298,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // L1 Deposit Listener
-  private getL2TxnHash = async (txn: BridgeTxn) => {
+  private getL2TxnHash = async (txn: ArbitrumBridgeTxn) => {
     if (!this.bridge || !this.l2ChainId) {
       return null
     }
@@ -370,9 +370,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // Pending Withdrawals listener
-  private getOutgoingMessageState = async (tx: BridgeTxn) => {
-    const outbox: Partial<Pick<BridgeTxn, 'batchIndex' | 'batchNumber'>> &
-      Pick<BridgeTxn, 'txHash' | 'outgoingMessageState'> = {
+  private getOutgoingMessageState = async (tx: ArbitrumBridgeTxn) => {
+    const outbox: Partial<Pick<ArbitrumBridgeTxn, 'batchIndex' | 'batchNumber'>> &
+      Pick<ArbitrumBridgeTxn, 'txHash' | 'outgoingMessageState'> = {
       batchNumber: tx.batchNumber,
       batchIndex: tx.batchIndex,
       outgoingMessageState: undefined,

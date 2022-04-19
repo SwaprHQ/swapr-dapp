@@ -1,6 +1,6 @@
 import { createEntityAdapter } from '@reduxjs/toolkit'
-import { BridgeTxn } from '../../../state/bridgeTransactions/types'
+import { ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 
-export const arbitrumTransactionsAdapter = createEntityAdapter<BridgeTxn>({
+export const arbitrumTransactionsAdapter = createEntityAdapter<ArbitrumBridgeTxn>({
   selectId: transaction => transaction.txHash
 })
