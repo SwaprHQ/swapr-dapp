@@ -58,8 +58,5 @@ export interface SocketBridgeState {
 type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; asset: { decimals: number } } }] }]
 
 export function isFee(userTxs: any): userTxs is UserTxs {
-  if (userTxs.length && userTxs[0].steps.length && userTxs[0].steps) {
-    return true
-  }
-  return false
+  return (userTxs.length && userTxs[0].steps.length && userTxs[0].steps)
 }
