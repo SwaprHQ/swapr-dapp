@@ -1,4 +1,4 @@
-import { ChainId, Currency } from '@swapr/sdk'
+import { Currency } from '@swapr/sdk'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
   EcoBridgeChildBaseConstructor,
@@ -22,13 +22,8 @@ import {
 import { TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
-import {
-  DAI_ARBITRUM_ADDRESS,
-  DAI_ETHEREUM_ADDRESS,
-  SOCKET_NATIVE_TOKEN_ADDRESS,
-  WETH_GNOSIS_ADDRESS
-} from '../../../constants'
-import { getBestRoute, getDAIAddress, getStatusOfResponse } from './Socket.utils'
+import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, version } from './Socket.utils'
 import { SOCKET_TOKENS } from './Socket.lists'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SocketTxStatus } from './Socket.types'
@@ -340,31 +335,13 @@ export class SocketBridge extends EcoBridgeChildBase {
     let fromTokenAddress = ''
     let toTokenAddress = ''
 
-    const ETHtoWETH = to.chainId === ChainId.XDAI && from.address === fromNativeCurrency.symbol
-    const WETHtoETH = from.chainId === ChainId.XDAI && from.address === WETH_GNOSIS_ADDRESS
-    const XDAItoDAI = from.chainId === ChainId.XDAI && from.address === fromNativeCurrency.symbol
-    const DAItoXDAI =
-      to.chainId === ChainId.XDAI && [DAI_ETHEREUM_ADDRESS, DAI_ARBITRUM_ADDRESS].includes(from.address.toLowerCase())
+    const overrideTokens = overrideTokensAddresses(to.chainId, from.chainId, from.address, fromNativeCurrency)
 
-    // Overrides
-    if (XDAItoDAI) {
-      fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-      toTokenAddress = getDAIAddress(to.chainId) ?? ''
-    }
+    if (overrideTokens) {
+      const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
 
-    if (DAItoXDAI) {
-      fromTokenAddress = from.address
-      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-    }
-
-    if (ETHtoWETH) {
-      fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-      toTokenAddress = WETH_GNOSIS_ADDRESS
-    }
-
-    if (WETHtoETH) {
-      fromTokenAddress = WETH_GNOSIS_ADDRESS
-      toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+      fromTokenAddress = fromTokenAddressOverride
+      toTokenAddress = toTokenAddressOverride
     }
 
     // Default pairing
@@ -517,11 +494,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const tokenList: TokenList = {
       name: 'Socket',
       timestamp: new Date().toISOString(),
-      version: {
-        major: 1,
-        minor: 0,
-        patch: 0
-      },
+      version,
       tokens: SOCKET_TOKENS[tokenListKey] ?? [],
       logoURI: SocketLogo
     }
