@@ -26,6 +26,7 @@ import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
+import { SpaceBg } from '../../components/SpaceBg'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -108,16 +109,6 @@ function Title({
     <>
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
         <Flex alignItems="center" justifyContent="space-between">
-          <Box mr="8px">
-            <Text fontSize="26px" lineHeight="32px">
-              Pairs
-            </Text>
-          </Box>
-          <Box mr="8px">
-            <Text fontSize="26px" lineHeight="32px">
-              /
-            </Text>
-          </Box>
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
               <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
@@ -155,7 +146,7 @@ function Title({
           <TransperentButton as={Link} to="/create">
             <Plus size="16" />
             <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
-              CREATE PAIR
+              ADD LIQUIDITY
             </Text>
           </TransperentButton>
         </Flex>
@@ -217,7 +208,7 @@ export default function Pools() {
   }, [])
 
   return (
-    <>
+    <SpaceBg>
       <PageWrapper>
         <SwapPoolTabs active={'pool'} />
         <AutoColumn gap="lg" justify="center">
@@ -251,6 +242,6 @@ export default function Pools() {
           />
         )}
       </PageWrapper>
-    </>
+    </SpaceBg>
   )
 }
