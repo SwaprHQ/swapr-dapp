@@ -164,7 +164,7 @@ describe('SWAP functional tests', () => {
     SwapPage.getAlternateReceiverButton().click()
     SwapPage.switchTokens()
     SwapPage.getAlternateReceiverInput().type('testrf2.eth', { delay: 50 })
-    SwapPage.getAlternateReceiverInput().should('have.value', '0xaE579C6B177EeAF8A7B68653fDDC2A85AFaAD70f')
+    SwapPage.getAlternateReceiverInput().should('have.value', AddressesEnum.SECOND_TEST_WALLET)
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
