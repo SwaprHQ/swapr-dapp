@@ -50,6 +50,8 @@ const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
   } = useListRow({ listUrl, ...listRowEntryProps })
   const theme = useContext(ThemeContext)
 
+  const disableListInfo = true
+
   if (!list || tokensAmountInCurrentChain === 0) return null
 
   return (
@@ -63,22 +65,24 @@ const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
           <StyledListUrlText active={isActive} mr="6px">
             {tokensAmountInCurrentChain} tokens
           </StyledListUrlText>
-          <StyledMenu ref={node as any}>
-            <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
-              <Settings stroke={theme.text1} size={12} />
-            </ButtonEmpty>
-            <PopoverContainer show={open} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
-              <div>{list && `v${list.version.major}.${list.version.minor}.${list.version.patch}`}</div>
-              <SeparatorDark />
-              <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
-              <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
-                Remove list
-              </UnpaddedLinkStyledButton>
-              {pending && (
-                <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
-              )}
-            </PopoverContainer>
-          </StyledMenu>
+          {disableListInfo && (
+            <StyledMenu ref={node as any}>
+              <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
+                <Settings stroke={theme.text1} size={12} />
+              </ButtonEmpty>
+              <PopoverContainer show={open} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
+                <div>{list && `v${list.version.major}.${list.version.minor}.${list.version.patch}`}</div>
+                <SeparatorDark />
+                <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
+                <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
+                  Remove list
+                </UnpaddedLinkStyledButton>
+                {pending && (
+                  <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
+                )}
+              </PopoverContainer>
+            </StyledMenu>
+          )}
         </RowFixed>
       </Column>
       <ListToggle
@@ -103,56 +107,63 @@ export const ManageLists = ({
   listRowEntryProps
 }: ManageListsComponentProps) => {
   const theme = useContext(ThemeContext)
+  const disableListImport = true
 
   return (
     <Wrapper>
-      <PaddedColumn gap="14px">
-        <Row>
-          <SearchInput
-            type="text"
-            id="list-add-input"
-            placeholder="https:// or ipfs:// or ENS name"
-            value={listUrlInput}
-            onChange={handleInput}
-          />
-        </Row>
-        {addError ? (
-          <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
-            {addError}
-          </TYPE.error>
-        ) : null}
-      </PaddedColumn>
-      {tempList && (
-        <PaddedColumn style={{ paddingTop: 0 }}>
-          <Card backgroundColor={theme.bg1And2} padding="12px 20px">
-            <RowBetween>
-              <RowFixed>
-                {tempList.logoURI && <ListLogo logoURI={tempList.logoURI} defaultText={tempList.name} size="40px" />}
-                <AutoColumn gap="4px" style={{ marginLeft: '20px' }}>
-                  <TYPE.body fontWeight={600}>{tempList.name}</TYPE.body>
-                  <TYPE.main fontSize={'12px'}>{tempList.tokens.length} tokens</TYPE.main>
-                </AutoColumn>
-              </RowFixed>
-              {isImported ? (
-                <RowFixed>
-                  <IconWrapper stroke={theme.text2} size="16px" marginRight={'10px'}>
-                    <CheckCircle />
-                  </IconWrapper>
-                  <TYPE.body color={theme.text2}>Loaded</TYPE.body>
-                </RowFixed>
-              ) : (
-                <ButtonPrimary
-                  style={{ fontSize: '14px' }}
-                  padding="6px 8px"
-                  width="fit-content"
-                  onClick={handleImport}
-                >
-                  Import
-                </ButtonPrimary>
-              )}
-            </RowBetween>
-          </Card>
-        </PaddedColumn>
+      {!disableListImport && (
+        <>
+          <PaddedColumn gap="14px">
+            <Row>
+              <SearchInput
+                type="text"
+                id="list-add-input"
+                placeholder="https:// or ipfs:// or ENS name"
+                value={listUrlInput}
+                onChange={handleInput}
+              />
+            </Row>
+            {addError ? (
+              <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
+                {addError}
+              </TYPE.error>
+            ) : null}
+          </PaddedColumn>
+          {tempList && (
+            <PaddedColumn style={{ paddingTop: 0 }}>
+              <Card backgroundColor={theme.bg1And2} padding="12px 20px">
+                <RowBetween>
+                  <RowFixed>
+                    {tempList.logoURI && (
+                      <ListLogo logoURI={tempList.logoURI} defaultText={tempList.name} size="40px" />
+                    )}
+                    <AutoColumn gap="4px" style={{ marginLeft: '20px' }}>
+                      <TYPE.body fontWeight={600}>{tempList.name}</TYPE.body>
+                      <TYPE.main fontSize={'12px'}>{tempList.tokens.length} tokens</TYPE.main>
+                    </AutoColumn>
+                  </RowFixed>
+                  {isImported ? (
+                    <RowFixed>
+                      <IconWrapper stroke={theme.text2} size="16px" marginRight={'10px'}>
+                        <CheckCircle />
+                      </IconWrapper>
+                      <TYPE.body color={theme.text2}>Loaded</TYPE.body>
+                    </RowFixed>
+                  ) : (
+                    <ButtonPrimary
+                      style={{ fontSize: '14px' }}
+                      padding="6px 8px"
+                      width="fit-content"
+                      onClick={handleImport}
+                    >
+                      Import
+                    </ButtonPrimary>
+                  )}
+                </RowBetween>
+              </Card>
+            </PaddedColumn>
+          )}
+        </>
       )}
       <Separator />
       <ListContainer>
