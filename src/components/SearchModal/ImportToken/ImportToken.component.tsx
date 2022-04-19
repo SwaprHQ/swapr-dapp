@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { Token } from '@swapr/sdk'
 import { Text } from 'rebass'
 
 import { RowBetween } from '../../Row'
@@ -10,11 +11,16 @@ import { TokenWarningCard } from '../../TokenWarningModal'
 import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
 
 import { useAddUserToken } from '../../../state/user/hooks'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
 import { ImportTokenProps } from './ImportToken.types'
+import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 
-export const ImportToken = ({ tokens, list, onBack, onDismiss, onCurrencySelect }: ImportTokenProps) => {
+export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportTokenProps) => {
   const addToken = useAddUserToken()
+  const { importToken } = useContext(CurrencySearchModalContext)
+  const list = importToken instanceof WrappedTokenInfo ? importToken.list : undefined
+  const tokens = [importToken] as Token[]
 
   return (
     <Wrapper>

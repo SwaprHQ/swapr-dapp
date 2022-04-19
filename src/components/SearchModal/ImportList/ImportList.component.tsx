@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 
@@ -19,8 +19,10 @@ import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
 import { enableList, removeList } from '../../../state/lists/actions'
 
 import { ImportListProps } from './ImportList.types'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
-export function ImportList({ listURI, list, onBack, onDismiss, setModalView }: ImportListProps) {
+export function ImportList({ onBack, onDismiss }: ImportListProps) {
+  const { listURL: listURI, importList: list, setModalView } = useContext(CurrencySearchModalContext)
   const { chainId } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -28,11 +30,11 @@ export function ImportList({ listURI, list, onBack, onDismiss, setModalView }: I
   const fetchList = useFetchListCallback()
 
   // monitor is list is loading
-  const adding = Boolean(lists[listURI]?.loadingRequestId)
+  const adding = listURI && Boolean(lists[listURI]?.loadingRequestId)
   const [addError, setAddError] = useState<string>('')
 
   const handleAddList = useCallback(() => {
-    if (adding) return
+    if (adding || !listURI) return
     setAddError('')
     fetchList(listURI)
       .then(() => {

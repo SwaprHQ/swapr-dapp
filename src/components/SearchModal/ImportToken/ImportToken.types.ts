@@ -1,9 +1,6 @@
-import { Currency, Token } from '@swapr/sdk'
-import { TokenList } from '@uniswap/token-lists'
+import { Currency } from '@swapr/sdk'
 
 export interface ImportTokenProps {
-  tokens: Token[]
-  list?: TokenList
   onBack: () => void
   onDismiss: () => void
   onCurrencySelect?: (currency: Currency) => void

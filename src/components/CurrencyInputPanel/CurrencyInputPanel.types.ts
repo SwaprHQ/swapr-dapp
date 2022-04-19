@@ -1,5 +1,4 @@
 import { Currency, Pair, CurrencyAmount, Percent, ChainId } from '@swapr/sdk'
-import { CurrencySearchModalPassingProps } from '../SearchModal/CurrencySearchModal'
 
 export interface CurrencyInputPanelProps {
   value: string
@@ -23,5 +22,3 @@ export interface CurrencyInputPanelProps {
   isLoading?: boolean
   chainIdOverride?: ChainId
 }
-
-export type CurrencyInputPanelComponentProps = CurrencyInputPanelProps & CurrencySearchModalPassingProps

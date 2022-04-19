@@ -27,7 +27,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { limitDigitDecimalPlace } from '../../utils/prices'
 
-import { CurrencyInputPanelComponentProps } from './CurrencyInputPanel.types'
+import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
 export const CurrencyInputPanelComponent = ({
   value,
@@ -51,7 +51,7 @@ export const CurrencyInputPanelComponent = ({
   isLoading = false,
   chainIdOverride,
   ...passingProps
-}: CurrencyInputPanelComponentProps) => {
+}: CurrencyInputPanelProps) => {
   const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)

@@ -1,7 +1,7 @@
 import { Currency, Token } from '@swapr/sdk'
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
-export interface CurrencySearchCoreProps {
+export interface CurrencySearchContextType {
   searchQuery: string
   setSearchQuery: (query: string) => void
   debouncedQuery: string
@@ -11,7 +11,7 @@ export interface CurrencySearchCoreProps {
   showFallbackTokens: boolean
 }
 
-export interface CurrencySearchProps extends CurrencySearchCoreProps {
+export interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
@@ -20,6 +20,5 @@ export interface CurrencySearchProps extends CurrencySearchCoreProps {
   showCommonBases?: boolean
   showManageView: () => void
   showImportView: () => void
-  setImportToken: (token: Token) => void
   showNativeCurrency?: boolean
 }
