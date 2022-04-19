@@ -27,9 +27,7 @@ export const CurrencyLogo = ({
   const swapWrappedTokenInfo = useTokenInfoFromActiveListOnCurrentChain(currency)
   const bridgeWrappedTokenInfo = useBridgeTokenInfo(currency, selectedChainId)
   const resolvedWrappedTokenInfo =
-    currencyWrapperSource === CurrencyWrapperSource.SWAP && !chainIdOverride
-      ? swapWrappedTokenInfo
-      : bridgeWrappedTokenInfo
+    currencyWrapperSource === CurrencyWrapperSource.SWAP ? swapWrappedTokenInfo : bridgeWrappedTokenInfo
 
   const uriLocations = useHttpLocations(
     currency instanceof WrappedTokenInfo
@@ -45,8 +43,9 @@ export const CurrencyLogo = ({
     if (currency && Currency.isNative(currency) && !!nativeCurrencyLogo) return [nativeCurrencyLogo]
     if (currency instanceof Token) {
       if (Token.isNativeWrapper(currency)) return [nativeCurrencyLogo]
-      if (chainId && DXD[chainId] && DXD[chainId].address === currency.address) return [DXDLogo]
-      if (chainId && SWPR[chainId] && SWPR[chainId].address === currency.address) return [SWPRLogo]
+      if (selectedChainId && DXD[selectedChainId] && DXD[selectedChainId].address === currency.address) return [DXDLogo]
+      if (selectedChainId && SWPR[selectedChainId] && SWPR[selectedChainId].address === currency.address)
+        return [SWPRLogo]
       return [getTokenLogoURL(currency.address, selectedChainId), ...uriLocations]
     }
 
@@ -57,7 +56,7 @@ export const CurrencyLogo = ({
         }`
       ]
     return []
-  }, [chainId, currency, nativeCurrencyLogo, selectedChainId, uriLocations])
+  }, [currency, nativeCurrencyLogo, selectedChainId, uriLocations])
 
   return <CurrencyLogoComponent sources={sources} currency={currency} {...componentProps} />
 }

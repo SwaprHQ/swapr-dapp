@@ -3,13 +3,14 @@ import { ChainId } from '@swapr/sdk'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
+import { NetworkSwitcherTags } from './NetworkSwitcher.types'
 
 export const networkOptionsPreset: {
   chainId: ChainId
   name: string
   logoSrc: string
   color: string
-  tag?: string
+  tag?: NetworkSwitcherTags
 }[] = [
   // no tag - mainnets
   {
@@ -30,14 +31,14 @@ export const networkOptionsPreset: {
     name: 'Rinkeby',
     logoSrc: EthereumLogo,
     color: '#443780',
-    tag: 'testnets'
+    tag: NetworkSwitcherTags.TESTNETS
   },
   {
     chainId: ChainId.ARBITRUM_RINKEBY,
     name: 'A.\xa0Rinkeby',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
-    tag: 'testnets'
+    tag: NetworkSwitcherTags.TESTNETS
   },
   {
     chainId: ChainId.XDAI,

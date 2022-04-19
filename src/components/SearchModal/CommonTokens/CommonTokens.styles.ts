@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const BaseWrapper = styled.div<{ disable?: boolean }>`
+export const BaseWrapper = styled.div<{ disabled?: boolean }>`
   border-radius: 12px;
   display: flex;
   line-height: 19.5px;
@@ -10,11 +10,11 @@ export const BaseWrapper = styled.div<{ disable?: boolean }>`
   align-items: center;
   transition: background-color 0.3s ease;
   :hover {
-    cursor: ${({ disable }) => !disable && 'pointer'};
-    background-color: ${({ disable }) => !disable && '#555a73'};
+    cursor: ${({ disabled }) => !disabled && 'pointer'};
+    background-color: ${({ disabled }) => !disabled && '#555a73'};
   }
 
-  color: ${({ theme, disable }) => disable && theme.text3};
+  color: ${({ theme, disabled }) => disabled && theme.text3};
   background-color: ${({ theme }) => theme.bg3};
-  opacity: ${({ disable }) => disable && '0.5'};
+  opacity: ${({ disabled }) => disabled && '0.5'};
 `

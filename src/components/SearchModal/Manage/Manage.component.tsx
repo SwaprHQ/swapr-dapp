@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { RowBetween } from '../../Row'
 import { Box, Text } from 'rebass'
 import { ManageLists } from '../ManageLists'
@@ -17,14 +17,10 @@ import {
   AnimatedSlide,
   AnimatedToggleIndicator
 } from './Manage.styles'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
-export const Manage = ({
-  onDismiss,
-  setModalView,
-  setImportToken,
-  manageListsProps,
-  listRowEntryProps
-}: ManageProps) => {
+export const Manage = ({ onDismiss }: ManageProps) => {
+  const { setModalView, setImportToken } = useContext(CurrencySearchModalContext)
   const [showLists, setShowLists] = useState(true)
 
   const [ref, { width }] = useMeasure()
@@ -67,7 +63,7 @@ export const Manage = ({
       </Box>
       <TabContainer>
         <AnimatedSlide style={styles}>
-          <ManageLists {...manageListsProps} listRowEntryProps={listRowEntryProps} />
+          <ManageLists />
         </AnimatedSlide>
         <AnimatedSlide style={styles}>
           <ManageTokens setModalView={setModalView} setImportToken={setImportToken} />

@@ -1,30 +1,29 @@
 import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from '../CurrencySearchModal'
 
-export interface ManageListsEntryProps {
+export interface ManageListsProps {
   setModalView: (view: CurrencyModalView) => void
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }
 
-export interface ManageListsProps {
-  listUrlInput: string
-  handleInput: (e: any) => void
-  addError: string | undefined
-  tempList: TokenList | undefined
-  isImported: boolean
-  handleImport: () => void
+export interface ManageListsContextType {
+  listUrlInput?: string
+  handleInput?: (e: any) => void
+  addError?: string
+  tempList?: TokenList
+  isImported?: boolean
+  handleImport?: () => void
   renderableLists: string[]
+  disableListImport?: boolean
+}
+export interface ListRowProps {
+  listUrl: string
 }
 
-export interface ManageListsPassingProps {
-  listRowEntryProps: ListRowEntryProps
-}
-
-export type ManageListsComponentProps = ManageListsProps & ManageListsPassingProps
-
-export interface ListRowEntryProps {
+export interface ListRowContextType {
   isActiveList: (url: string) => boolean
+  disableListInfo: boolean
   listsByUrl: {
     readonly [url: string]: {
       readonly current: TokenList | null
@@ -37,8 +36,4 @@ export interface ListRowEntryProps {
   handleRemoveList: (url: string) => void
   handleEnableList: (url: string) => void
   handleDisableList: (url: string) => void
-}
-
-export interface ListRowProps extends ListRowEntryProps {
-  listUrl: string
 }

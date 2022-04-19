@@ -22,14 +22,15 @@ import {
 
 import { ExternalLink, TYPE, IconWrapper } from '../../../theme'
 
-import { ListRowProps, ManageListsComponentProps } from './ManageLists.types'
+import { ListRowProps } from './ManageLists.types'
 import { useListRow } from './ManageLists.hooks'
+import { ManageListsContext } from './ManageLists.context'
 
 const listUrlRowHTMLId = (listUrl: string) => {
   return `list-row-${listUrl.replace(/\./g, '-')}`
 }
 
-const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
+const ListRow = ({ listUrl }: ListRowProps) => {
   const {
     attributes,
     handleAcceptListUpdate,
@@ -46,11 +47,10 @@ const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
     pending,
     setPopperElement,
     setReferenceElement,
-    listsByUrl
-  } = useListRow({ listUrl, ...listRowEntryProps })
+    listsByUrl,
+    disableListInfo
+  } = useListRow({ listUrl })
   const theme = useContext(ThemeContext)
-
-  const disableListInfo = true
 
   if (!list || tokensAmountInCurrentChain === 0) return null
 
@@ -71,7 +71,7 @@ const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
           <StyledListUrlText active={isActive} mr="6px">
             {tokensAmountInCurrentChain} tokens
           </StyledListUrlText>
-          {disableListInfo && (
+          {!disableListInfo && (
             <StyledMenu ref={node as any}>
               <ButtonEmpty onClick={toggle} ref={setReferenceElement} padding="0">
                 <Settings stroke={theme.text1} size={12} />
@@ -102,18 +102,18 @@ const ListRow = ({ listUrl, ...listRowEntryProps }: ListRowProps) => {
   )
 }
 
-export const ManageLists = ({
-  addError,
-  handleImport,
-  handleInput,
-  isImported,
-  listUrlInput,
-  renderableLists,
-  tempList,
-  listRowEntryProps
-}: ManageListsComponentProps) => {
+export const ManageLists = () => {
   const theme = useContext(ThemeContext)
-  const disableListImport = true
+  const {
+    addError,
+    handleImport,
+    handleInput,
+    isImported,
+    listUrlInput,
+    renderableLists,
+    tempList,
+    disableListImport
+  } = useContext(ManageListsContext)
 
   return (
     <Wrapper>
@@ -175,7 +175,7 @@ export const ManageLists = ({
       <ListContainer>
         <AutoColumn gap="md">
           {renderableLists.map(listUrl => (
-            <ListRow key={listUrl} listUrl={listUrl} {...listRowEntryProps} />
+            <ListRow key={listUrl} listUrl={listUrl} />
           ))}
         </AutoColumn>
       </ListContainer>

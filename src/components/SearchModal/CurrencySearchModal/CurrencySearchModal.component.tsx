@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Currency, Token } from '@swapr/sdk'
+import React, { useCallback, useContext, useEffect } from 'react'
+import { Currency } from '@swapr/sdk'
 
 import useLast from '../../../hooks/useLast'
 import usePrevious from '../../../hooks/usePrevious'
@@ -9,8 +9,8 @@ import { CurrencySearch } from '../CurrencySearch'
 import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
 import { Manage } from '../Manage'
-import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
-import { CurrencyModalView, CurrencySearchModalComponentProps } from './CurrencySearchModal.types'
+import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
+import { CurrencySearchModalContext } from './CurrencySearchModal.context'
 
 export const CurrencySearchModalComponent = ({
   isOpen,
@@ -19,16 +19,10 @@ export const CurrencySearchModalComponent = ({
   selectedCurrency,
   otherSelectedCurrency,
   showCommonBases = false,
-  showNativeCurrency = true,
-  modalView,
-  setModalView,
-  importList,
-  listURL,
-  manageListsProps,
-  listRowEntryProps,
-  currencySearchProps
-}: CurrencySearchModalComponentProps) => {
+  showNativeCurrency = true
+}: CurrencySearchModalProps) => {
   const lastOpen = useLast(isOpen)
+  const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -46,9 +40,6 @@ export const CurrencySearchModalComponent = ({
 
   // for token import view
   const prevView = usePrevious(modalView)
-
-  // used for import token flow
-  const [importToken, setImportToken] = useState<Token | undefined>()
 
   return (
     <Modal
@@ -68,39 +59,26 @@ export const CurrencySearchModalComponent = ({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={showCommonBases}
           showImportView={() => setModalView(CurrencyModalView.IMPORT_TOKEN)}
-          setImportToken={setImportToken}
           showManageView={() => setModalView(CurrencyModalView.MANAGE)}
           showNativeCurrency={showNativeCurrency}
-          {...currencySearchProps}
         />
       ) : modalView === CurrencyModalView.IMPORT_TOKEN && importToken ? (
         <ImportToken
-          tokens={[importToken]}
           onDismiss={onDismiss}
           onCurrencySelect={onCurrencySelect}
-          list={importToken instanceof WrappedTokenInfo ? importToken.list : undefined}
           onBack={() =>
             setModalView(prevView && prevView !== CurrencyModalView.IMPORT_TOKEN ? prevView : CurrencyModalView.SEARCH)
           }
         />
       ) : modalView === CurrencyModalView.IMPORT_LIST && importList && listURL ? (
         <ImportList
-          list={importList}
-          listURI={listURL}
           onDismiss={onDismiss}
-          setModalView={setModalView}
           onBack={() =>
             setModalView(prevView && prevView !== CurrencyModalView.IMPORT_LIST ? prevView : CurrencyModalView.MANAGE)
           }
         />
       ) : modalView === CurrencyModalView.MANAGE ? (
-        <Manage
-          onDismiss={onDismiss}
-          setModalView={setModalView}
-          setImportToken={setImportToken}
-          manageListsProps={manageListsProps}
-          listRowEntryProps={listRowEntryProps}
-        />
+        <Manage onDismiss={onDismiss} />
       ) : (
         ''
       )}

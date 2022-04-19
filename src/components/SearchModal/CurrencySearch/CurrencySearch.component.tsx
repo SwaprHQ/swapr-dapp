@@ -20,6 +20,8 @@ import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { ButtonDark2 } from '../../Button'
 import { CurrencySearchProps } from './CurrencySearch.types'
 import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
+import { CurrencySearchContext } from './CurrencySearch.context'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
 export const CurrencySearch = ({
   selectedCurrency,
@@ -30,19 +32,21 @@ export const CurrencySearch = ({
   isOpen,
   showManageView,
   showImportView,
-  setImportToken,
-  showNativeCurrency,
-  searchQuery,
-  setSearchQuery,
-  debouncedQuery,
-  allTokens,
-  searchToken,
-  selectedTokenList,
-  showFallbackTokens
+  showNativeCurrency
 }: CurrencySearchProps) => {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
+  const {
+    searchQuery,
+    setSearchQuery,
+    debouncedQuery,
+    allTokens,
+    searchToken,
+    selectedTokenList,
+    showFallbackTokens
+  } = useContext(CurrencySearchContext)
+  const { setImportToken } = useContext(CurrencySearchModalContext)
 
   const fixedList = useRef<FixedSizeList>()
 

@@ -1,27 +1,59 @@
 import { useState } from 'react'
+import { Token } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
-import { useCurrencySearchCore } from '../CurrencySearch/CurrencySearch.hooks'
-import { useManageLists, useListRowEntryPropsSwap } from '../ManageLists/ManageLists.hooks'
+import { useCurrencySearchContextBridge, useCurrencySearchContextSwap } from '../CurrencySearch/CurrencySearch.hooks'
+import {
+  useManageListsContextSwap,
+  useListRowContextSwap,
+  useListRowContextBridge,
+  useManageListsContextBridge
+} from '../ManageLists/ManageLists.hooks'
 
-import { CurrencyModalView } from './CurrencySearchModal.types'
+import { CurrencyModalView, CurrencySearchModalContextType } from './CurrencySearchModal.types'
 
-export const useCurrencySearchModalSwap = () => {
+export const useCurrencySearchModalContext = (): CurrencySearchModalContextType => {
   const [importList, setImportList] = useState<TokenList | undefined>()
+  const [importToken, setImportToken] = useState<Token | undefined>()
   const [listURL, setListUrl] = useState<string | undefined>()
 
   const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.MANAGE)
 
-  const currencySearchProps = useCurrencySearchCore()
-  const manageListsProps = useManageLists({ setImportList, setListUrl, setModalView })
-  const listRowEntryProps = useListRowEntryPropsSwap()
-
   return {
     listURL,
-    importList,
+    setListUrl,
     modalView,
     setModalView,
-    currencySearchProps,
-    listRowEntryProps,
-    manageListsProps
+    importList,
+    setImportList,
+    importToken,
+    setImportToken
+  }
+}
+
+export const useCurrencySearchModalSwap = () => {
+  const currencySearchModalContext = useCurrencySearchModalContext()
+  const { setImportList, setListUrl, setModalView } = currencySearchModalContext
+  const listRowContext = useListRowContextSwap()
+  const currencySearchContext = useCurrencySearchContextSwap()
+  const manageListsContext = useManageListsContextSwap({ setImportList, setListUrl, setModalView })
+
+  return {
+    listRowContext,
+    manageListsContext,
+    currencySearchContext,
+    currencySearchModalContext
+  }
+}
+
+export const useCurrencySearchModalBridge = () => {
+  const currencySearchModalContext = useCurrencySearchModalContext()
+  const listRowContext = useListRowContextBridge()
+  const manageListsContext = useManageListsContextBridge()
+  const currencySearchContext = useCurrencySearchContextBridge()
+  return {
+    listRowContext,
+    manageListsContext,
+    currencySearchContext,
+    currencySearchModalContext
   }
 }

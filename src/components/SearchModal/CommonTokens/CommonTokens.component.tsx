@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Text } from 'rebass'
 import { currencyEquals, Token } from '@swapr/sdk'
 
@@ -14,6 +14,12 @@ import { CommonTokensProps } from './CommonTokens.types'
 export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: CommonTokensProps) => {
   const nativeCurrency = useNativeCurrency()
 
+  const handleClick = useCallback(() => {
+    if (!selectedCurrency || !currencyEquals(selectedCurrency, nativeCurrency)) {
+      onCurrencySelect(nativeCurrency)
+    }
+  }, [nativeCurrency, onCurrencySelect, selectedCurrency])
+
   return (
     <AutoColumn gap="15px" data-testid="common-tokens">
       <AutoRow>
@@ -23,12 +29,8 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
       </AutoRow>
       <AutoRow gap="4px">
         <BaseWrapper
-          onClick={() => {
-            if (!selectedCurrency || !currencyEquals(selectedCurrency, nativeCurrency)) {
-              onCurrencySelect(nativeCurrency)
-            }
-          }}
-          disable={selectedCurrency === nativeCurrency || selectedCurrency === undefined}
+          onClick={handleClick}
+          disabled={selectedCurrency === nativeCurrency || selectedCurrency === undefined}
         >
           <CurrencyLogo size="20px" currency={nativeCurrency} marginRight={8} />
           <Text fontWeight={500} fontSize={16}>
@@ -38,7 +40,7 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
         {(chainId ? SUGGESTED_BASES[chainId] : []).map((token: Token) => {
           const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
           return (
-            <BaseWrapper onClick={() => !selected && onCurrencySelect(token)} disable={selected} key={token.address}>
+            <BaseWrapper onClick={() => !selected && onCurrencySelect(token)} disabled={selected} key={token.address}>
               <CurrencyLogo size="20px" currency={token} marginRight={8} />
               <Text fontWeight={500} fontSize={16}>
                 {token.symbol}

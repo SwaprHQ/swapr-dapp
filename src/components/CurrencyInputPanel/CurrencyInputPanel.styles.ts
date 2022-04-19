@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { breakpoints } from '../../utils/theme'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import transparentize from 'polished/lib/color/transparentize'
 
 export const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -24,6 +25,15 @@ export const CurrencySelect = styled.button<{ selected: boolean; disableCurrency
   border: none;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+
+  ${({ disabled, theme }) =>
+    disabled &&
+    `
+    background-color: ${theme.purple5};
+    color: ${transparentize(0.28, theme.purpleBase)};
+    cursor: not-allowed;
+    box-shadow: none;
+    outline: none;`}
 `
 
 export const LabelRow = styled.div`

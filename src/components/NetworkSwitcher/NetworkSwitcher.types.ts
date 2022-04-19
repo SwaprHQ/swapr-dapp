@@ -31,3 +31,8 @@ export type NetworksList = {
   tag: string
   networks: NetworkOptions[]
 }
+
+export enum NetworkSwitcherTags {
+  TESTNETS = 'testnets',
+  COMING_SOON = 'coming soon'
+}

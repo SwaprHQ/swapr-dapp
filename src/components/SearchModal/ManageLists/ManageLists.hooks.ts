@@ -1,5 +1,5 @@
 import { TokenList } from '@uniswap/token-lists'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from 'react-use'
@@ -13,9 +13,15 @@ import { useActiveListUrls, useAllLists } from '../../../state/lists/hooks'
 import { parseENSAddress } from '../../../utils/parseENSAddress'
 import uriToHttp from '../../../utils/uriToHttp'
 import { CurrencyModalView } from '../CurrencySearchModal'
-import { ListRowEntryProps, ListRowProps, ManageListsEntryProps } from './ManageLists.types'
+import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
+import { ListRowContext } from './ManageLists.context'
+import { useActiveListsHandlers, useBridgeSupportedLists } from '../../../services/EcoBridge/EcoBridge.hooks'
 
-export const useManageLists = ({ setModalView, setImportList, setListUrl }: ManageListsEntryProps) => {
+export const useManageListsContextSwap = ({
+  setModalView,
+  setImportList,
+  setListUrl
+}: ManageListsProps): ManageListsContextType => {
   const [listUrlInput, setListUrlInput] = useState<string>('')
 
   const lists = useAllLists()
@@ -79,11 +85,27 @@ export const useManageLists = ({ setModalView, setImportList, setListUrl }: Mana
     tempList,
     isImported,
     handleImport,
-    renderableLists
+    renderableLists,
+    disableListImport: false
   }
 }
 
-export const useListRowEntryPropsSwap = (): ListRowEntryProps => {
+export const useManageListsContextBridge = (): ManageListsContextType => {
+  const lists = useBridgeSupportedLists()
+
+  const renderableLists = useMemo(() => {
+    return Object.keys(lists).filter(listUrl => {
+      return Boolean(lists[listUrl]) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+    })
+  }, [lists])
+
+  return {
+    renderableLists,
+    disableListImport: true
+  }
+}
+
+export const useListRowContextSwap = (): ListRowContextType => {
   const dispatch = useDispatch<AppDispatch>()
   const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
   const activeListUrls = useActiveListUrls()
@@ -96,6 +118,7 @@ export const useListRowEntryPropsSwap = (): ListRowEntryProps => {
   const handleDisableList = useCallback((listUrl: string) => dispatch(disableList(listUrl)), [dispatch])
 
   return {
+    disableListInfo: false,
     listsByUrl,
     isActiveList,
     handleAcceptListUpdate,
@@ -105,15 +128,38 @@ export const useListRowEntryPropsSwap = (): ListRowEntryProps => {
   }
 }
 
-export const useListRow = ({
-  listUrl,
-  listsByUrl,
-  isActiveList,
-  handleRemoveList: handleRemoveListRaw,
-  handleEnableList: handleEnableListRaw,
-  handleDisableList: handleDisableListRaw,
-  handleAcceptListUpdate: handleAcceptListUpdateRaw
-}: ListRowProps) => {
+export const useListRowContextBridge = (): ListRowContextType => {
+  const listsByUrl = useBridgeSupportedLists()
+
+  const { activateList, deactivateList, isListActive: isActiveList } = useActiveListsHandlers()
+
+  const handleAcceptListUpdate = () => null
+  const handleRemoveList = () => null
+  const handleEnableList = activateList
+  const handleDisableList = deactivateList
+
+  return {
+    disableListInfo: true,
+    listsByUrl,
+    isActiveList,
+    handleAcceptListUpdate,
+    handleRemoveList,
+    handleEnableList,
+    handleDisableList
+  }
+}
+
+export const useListRow = ({ listUrl }: ListRowProps) => {
+  const {
+    listsByUrl,
+    isActiveList,
+    disableListInfo,
+    handleRemoveList: handleRemoveListRaw,
+    handleEnableList: handleEnableListRaw,
+    handleDisableList: handleDisableListRaw,
+    handleAcceptListUpdate: handleAcceptListUpdateRaw
+  } = useContext(ListRowContext)
+
   const { chainId } = useActiveWeb3React()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
 
@@ -166,6 +212,7 @@ export const useListRow = ({
     isActive,
     attributes,
     listsByUrl,
+    disableListInfo,
     setPopperElement,
     setReferenceElement,
     tokensAmountInCurrentChain,
