@@ -9,7 +9,7 @@ import request from 'graphql-request'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
-import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
 import { addTransaction } from '../../../state/transactions/actions'
@@ -609,7 +609,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   public fetchStaticLists = async () => {
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
-    const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
+    const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.lists.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
     )
 
