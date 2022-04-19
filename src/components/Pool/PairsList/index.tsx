@@ -5,7 +5,6 @@ import { LoadingList } from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
 import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import { Empty } from '../Empty'
 import styled from 'styled-components'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
@@ -119,11 +118,14 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
               })}
           </ListLayout>
         ) : (
-          <Empty>
-            <Text fontSize="12px" fontWeight="700" lineHeight="15px" letterSpacing="0.08em">
-              NO PAIRS YET
-            </Text>
-          </Empty>
+          <DimBgContainer>
+            <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
+              <Text fontSize="16px" color="#BCB3F0" mb="24px">
+                No pools found
+              </Text>
+              <BlueButton>Create a pool</BlueButton>
+            </Flex>
+          </DimBgContainer>
         )}
       </Box>
       {aggregatedPairs.length > responsiveItemsPerPage && (
@@ -141,3 +143,39 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
     </Flex>
   )
 }
+
+const DimBgContainer = styled.div`
+  width: 100%;
+
+  padding: 48px;
+  border-radius: 12px;
+  border: 1px solid #464366;
+
+  background: linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%);
+  background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.5) -0.1%, rgba(0, 0, 0, 0) 98.9%);
+  background: #3933584d;
+
+  background-blend-mode: normal, overlay, normal;
+  backdrop-filter: blur(25px);
+`
+
+const BlueButton = styled.button`
+  outline: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+
+  background-color: ${({ theme }) => theme.primary1};
+
+  font-size: 12px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.white};
+  text-transform: uppercase;
+
+  cursor: pointer;
+`
