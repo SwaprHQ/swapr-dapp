@@ -29,6 +29,7 @@ import { currencyId } from '../../utils/currencyId'
 
 import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { TokenList } from '@uniswap/token-lists'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -128,7 +129,28 @@ export const useBridgeActiveTokenMap = () => {
 export const useBridgeSupportedLists = () => {
   const supportedLists = useSelector(selectSupportedLists)
 
-  return supportedLists
+  // satisfy existing interface
+  return useMemo(() => {
+    return Object.entries(supportedLists).reduce(
+      (total, [id, tokenList]) => {
+        total[id] = {
+          current: tokenList,
+          pendingUpdate: null,
+          loadingRequestId: null,
+          error: null
+        }
+        return total
+      },
+      {} as {
+        [url: string]: {
+          readonly current: TokenList | null
+          readonly pendingUpdate: TokenList | null
+          readonly loadingRequestId: string | null
+          readonly error: string | null
+        }
+      }
+    )
+  }, [supportedLists])
 }
 
 export const useBridgeListsLoadingStatus = () => {

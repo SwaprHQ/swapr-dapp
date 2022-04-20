@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import { Token } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
-import { useCurrencySearchContextSwap } from '../CurrencySearch/CurrencySearch.hooks'
-import { useManageListsContextSwap, useListRowContextSwap } from '../ManageLists/ManageLists.hooks'
+import { useCurrencySearchContextBridge, useCurrencySearchContextSwap } from '../CurrencySearch/CurrencySearch.hooks'
+import {
+  useManageListsContextSwap,
+  useListRowContextSwap,
+  useListRowContextBridge,
+  useManageListsContextBridge
+} from '../ManageLists/ManageLists.hooks'
 
 import { CurrencyModalView, CurrencySearchModalContextType } from './CurrencySearchModal.types'
 
@@ -32,6 +37,19 @@ export const useCurrencySearchModalSwap = () => {
   const currencySearchContext = useCurrencySearchContextSwap()
   const manageListsContext = useManageListsContextSwap({ setImportList, setListUrl, setModalView })
 
+  return {
+    listRowContext,
+    manageListsContext,
+    currencySearchContext,
+    currencySearchModalContext
+  }
+}
+
+export const useCurrencySearchModalBridge = () => {
+  const currencySearchModalContext = useCurrencySearchModalContext()
+  const listRowContext = useListRowContextBridge()
+  const manageListsContext = useManageListsContextBridge()
+  const currencySearchContext = useCurrencySearchContextBridge()
   return {
     listRowContext,
     manageListsContext,

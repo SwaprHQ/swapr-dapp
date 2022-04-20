@@ -15,6 +15,7 @@ import uriToHttp from '../../../utils/uriToHttp'
 import { CurrencyModalView } from '../CurrencySearchModal'
 import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
 import { ListRowContext } from './ManageLists.context'
+import { useActiveListsHandlers, useBridgeSupportedLists } from '../../../services/EcoBridge/EcoBridge.hooks'
 
 export const useManageListsContextSwap = ({
   setModalView,
@@ -89,6 +90,21 @@ export const useManageListsContextSwap = ({
   }
 }
 
+export const useManageListsContextBridge = (): ManageListsContextType => {
+  const lists = useBridgeSupportedLists()
+
+  const renderableLists = useMemo(() => {
+    return Object.keys(lists).filter(listUrl => {
+      return Boolean(lists[listUrl]) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+    })
+  }, [lists])
+
+  return {
+    renderableLists,
+    disableListImport: true
+  }
+}
+
 export const useListRowContextSwap = (): ListRowContextType => {
   const dispatch = useDispatch<AppDispatch>()
   const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
@@ -103,6 +119,27 @@ export const useListRowContextSwap = (): ListRowContextType => {
 
   return {
     disableListInfo: false,
+    listsByUrl,
+    isActiveList,
+    handleAcceptListUpdate,
+    handleRemoveList,
+    handleEnableList,
+    handleDisableList
+  }
+}
+
+export const useListRowContextBridge = (): ListRowContextType => {
+  const listsByUrl = useBridgeSupportedLists()
+
+  const { activateList, deactivateList, isListActive: isActiveList } = useActiveListsHandlers()
+
+  const handleAcceptListUpdate = () => null
+  const handleRemoveList = () => null
+  const handleEnableList = activateList
+  const handleDisableList = deactivateList
+
+  return {
+    disableListInfo: true,
     listsByUrl,
     isActiveList,
     handleAcceptListUpdate,

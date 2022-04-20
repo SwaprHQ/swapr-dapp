@@ -8,14 +8,14 @@ export interface ManageListsProps {
 }
 
 export interface ManageListsContextType {
-  listUrlInput: string
-  handleInput: (e: any) => void
-  addError: string | undefined
-  tempList: TokenList | undefined
-  isImported: boolean
-  handleImport: () => void
+  listUrlInput?: string
+  handleInput?: (e: any) => void
+  addError?: string
+  tempList?: TokenList
+  isImported?: boolean
+  handleImport?: () => void
   renderableLists: string[]
-  disableListImport: boolean
+  disableListImport?: boolean
 }
 export interface ListRowProps {
   listUrl: string
