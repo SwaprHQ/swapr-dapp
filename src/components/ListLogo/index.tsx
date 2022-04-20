@@ -20,7 +20,7 @@ export default function ListLogo({
   style?: React.CSSProperties
   defaultText: string
 }) {
-  const srcs: string[] = useHttpLocations(logoURI)
+  const sources: string[] = useHttpLocations(logoURI)
 
-  return <StyledListLogo alt={defaultText} defaultText={defaultText} size={size} srcs={srcs} style={style} />
+  return <StyledListLogo alt={defaultText} defaultText={defaultText} size={size} sources={sources} style={style} />
 }
