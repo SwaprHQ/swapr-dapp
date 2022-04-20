@@ -1,4 +1,12 @@
-import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform } from '@swapr/sdk'
+import {
+  CurrencyAmount,
+  JSBI,
+  Trade,
+  Token,
+  RoutablePlatform,
+  UniswapV2Trade,
+  UniswapV2RoutablePlatform
+} from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
@@ -172,14 +180,14 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
-  const route = trade?.route
+  const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
   const noRoute = !route
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade as UniswapV2Trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -196,7 +204,7 @@ export default function Swap() {
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -330,7 +338,7 @@ export default function Swap() {
                         onSwitchTokens()
                       }}
                     >
-                      <ArrowWrapper clickable>
+                      <ArrowWrapper clickable data-testid="switch-tokens-button">
                         <SwapIcon />
                       </ArrowWrapper>
                     </SwitchTokensAmountsContainer>
@@ -353,7 +361,7 @@ export default function Swap() {
                       <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
                         Best price found on{' '}
                         <span style={{ color: 'white', fontWeight: 700 }}>{bestPricedTrade?.platform.name}</span>.
-                        {trade.platform.name !== RoutablePlatform.SWAPR.name ? (
+                        {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
                           <>
                             {' '}
                             Swap with <span style={{ color: 'white', fontWeight: 700 }}>NO additional fees</span>
@@ -379,7 +387,7 @@ export default function Swap() {
                   {!account ? (
                     <ButtonConnect />
                   ) : showWrap ? (
-                    <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
+                    <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
                       {wrapInputError ??
                         (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                     </ButtonPrimary>

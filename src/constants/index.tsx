@@ -10,8 +10,8 @@ import {
   WXDAI,
   Token,
   Currency,
-  RoutablePlatform,
-  SWPR
+  SWPR,
+  UniswapV2RoutablePlatform
 } from '@swapr/sdk'
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
@@ -311,7 +311,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       symbol: Currency.XDAI.symbol || 'xDAI',
       decimals: Currency.XDAI.decimals || 18
     },
-    rpcUrls: ['https://rpc.xdaichain.com'],
+    rpcUrls: ['https://rpc.gnosischain.com/'],
     blockExplorerUrls: ['https://blockscout.com/xdai/mainnet']
   },
   [ChainId.ARBITRUM_ONE]: {
@@ -374,51 +374,51 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
 export const ROUTABLE_PLATFORM_STYLE: {
   [routablePaltformName: string]: { logo: string; alt: string; gradientColor: string; name: string }
 } = {
-  [RoutablePlatform.UNISWAP.name]: {
+  [UniswapV2RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
-    alt: RoutablePlatform.UNISWAP.name,
+    alt: UniswapV2RoutablePlatform.UNISWAP.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.UNISWAP.name
+    name: UniswapV2RoutablePlatform.UNISWAP.name
   },
-  [RoutablePlatform.SUSHISWAP.name]: {
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
     logo: SushiswapNewLogo,
-    alt: RoutablePlatform.SUSHISWAP.name,
+    alt: UniswapV2RoutablePlatform.SUSHISWAP.name,
     gradientColor: '#FB52A1',
     name: 'Sushi'
   },
-  [RoutablePlatform.SWAPR.name]: {
+  [UniswapV2RoutablePlatform.SWAPR.name]: {
     logo: SwaprLogo,
-    alt: RoutablePlatform.SWAPR.name,
+    alt: UniswapV2RoutablePlatform.SWAPR.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.SWAPR.name
+    name: UniswapV2RoutablePlatform.SWAPR.name
   },
-  [RoutablePlatform.HONEYSWAP.name]: {
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
     logo: HoneyswapLogo,
-    alt: RoutablePlatform.HONEYSWAP.name,
+    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.HONEYSWAP.name
+    name: UniswapV2RoutablePlatform.HONEYSWAP.name
   },
-  [RoutablePlatform.BAOSWAP.name]: {
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: {
     logo: BaoswapLogo,
-    alt: RoutablePlatform.BAOSWAP.name,
+    alt: UniswapV2RoutablePlatform.BAOSWAP.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.BAOSWAP.name
+    name: UniswapV2RoutablePlatform.BAOSWAP.name
   },
-  [RoutablePlatform.LEVINSWAP.name]: {
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
     logo: LevinswapLogo,
-    alt: RoutablePlatform.LEVINSWAP.name,
+    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.LEVINSWAP.name
+    name: UniswapV2RoutablePlatform.LEVINSWAP.name
   }
 }
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
-  [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
-  [RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapLogo} alt="sushiswap" />,
-  [RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
-  [RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
-  [RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
-  [RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />
+  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapLogo} alt="sushiswap" />,
+  [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />
 }
 
 export const ChainLabel: any = {

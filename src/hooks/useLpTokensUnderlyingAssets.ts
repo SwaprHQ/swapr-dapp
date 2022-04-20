@@ -40,8 +40,8 @@ export function useLpTokensUnderlyingAssets(
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useQuery<QueryResult>(QUERY, {
     variables: {
-      pairId: pair ? pair.liquidityToken.address.toLowerCase() : ''
-    }
+      pairId: pair ? pair.liquidityToken.address.toLowerCase() : '',
+    },
   })
 
   return useMemo(() => {
@@ -55,15 +55,15 @@ export function useLpTokensUnderlyingAssets(
       parseUnits(totalSupply, lpTokenDecimals).toString()
     )
 
-    const token0NativeCurrencyPrice = new Price(
-      pair.token0,
-      nativeCurrency,
-      parseUnits('1', nativeCurrency.decimals).toString(),
-      parseUnits(
+    const token0NativeCurrencyPrice = new Price({
+      baseCurrency: pair.token0,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
         new Decimal(data.pair.token0.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
-    )
+      ).toString(),
+    })
     const pricedToken0 = new PricedToken(
       chainId,
       pair.token0.address,
@@ -82,15 +82,15 @@ export function useLpTokensUnderlyingAssets(
       JSBI.divide(token0AmountNumerator, userPoolShare.denominator)
     )
 
-    const token1NativeCurrencyPrice = new Price(
-      pair.token1,
-      nativeCurrency,
-      parseUnits('1', nativeCurrency.decimals).toString(),
-      parseUnits(
+    const token1NativeCurrencyPrice = new Price({
+      baseCurrency: pair.token1,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
         new Decimal(data.pair.token1.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
-    )
+      ).toString(),
+    })
     const pricedToken1 = new PricedToken(
       chainId,
       pair.token1.address,
@@ -113,8 +113,8 @@ export function useLpTokensUnderlyingAssets(
       loading: false,
       underlyingAssets: {
         token0: token0Amount,
-        token1: token1Amount
-      }
+        token1: token1Amount,
+      },
     }
   }, [chainId, data, error, loading, lpTokensBalance, nativeCurrency, pair])
 }
