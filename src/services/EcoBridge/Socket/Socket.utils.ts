@@ -143,7 +143,7 @@ export const overrideTokensAddresses = (
   return undefined
 }
 
-export const version = {
+export const VERSION = {
   major: 1,
   minor: 0,
   patch: 0

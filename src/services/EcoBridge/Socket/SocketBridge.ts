@@ -23,7 +23,7 @@ import { TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, version } from './Socket.utils'
+import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, VERSION } from './Socket.utils'
 import { SOCKET_TOKENS } from './Socket.lists'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SocketTxStatus } from './Socket.types'
@@ -494,7 +494,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const tokenList: TokenList = {
       name: 'Socket',
       timestamp: new Date().toISOString(),
-      version,
+      version: VERSION,
       tokens: SOCKET_TOKENS[tokenListKey] ?? [],
       logoURI: SocketLogo
     }
