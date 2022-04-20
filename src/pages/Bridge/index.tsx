@@ -22,7 +22,6 @@ import { AppState } from '../../state'
 import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { BridgeSelectionWindow } from './BridgeSelectionWindow'
-import CurrencyInputPanel from '../../components/CurrencyInputPanelBridge'
 import { useBridgeModal } from '../../services/EcoBridge/EcoBridge.hooks'
 import {
   useBridgeActionHandlers,
@@ -34,6 +33,7 @@ import {
   useShowAvailableBridges
 } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
+import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -281,7 +281,7 @@ export default function Bridge() {
               />
             </AssetWrapper>
           </Row>
-          <CurrencyInputPanel
+          <CurrencyInputPanelBridge
             value={isCollecting && collectableTx ? collectableTx.value : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}

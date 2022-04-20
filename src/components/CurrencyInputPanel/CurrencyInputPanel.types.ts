@@ -1,4 +1,5 @@
 import { Currency, Pair, CurrencyAmount, Percent, ChainId } from '@swapr/sdk'
+import { CurrencyWrapperSource } from '../CurrencyLogo'
 
 export interface CurrencyInputPanelProps {
   value: string
@@ -21,4 +22,8 @@ export interface CurrencyInputPanelProps {
   priceImpact?: Percent
   isLoading?: boolean
   chainIdOverride?: ChainId
+  currencyWrapperSource?: CurrencyWrapperSource
+  // Used by bridge context. Find better way
+  displayedValue?: string
+  setDisplayedValue?: (val: string) => void
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 
 import { CurrencySearchContext } from '../SearchModal/CurrencySearch/CurrencySearch.context'
@@ -10,6 +10,9 @@ import {
 } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
 
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
+import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
+import debounce from 'lodash.debounce'
+import { CurrencyWrapperSource } from '../CurrencyLogo'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const {
@@ -40,12 +43,50 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
     currencySearchModalContext
   } = useCurrencySearchModalBridge()
 
+  const {
+    value: valueRaw,
+    onUserInput: onUserInputRaw,
+    displayedValue,
+    setDisplayedValue,
+    disableCurrencySelect
+  } = currencyInputPanelProps
+
+  const debounceOnUserInput = useMemo(() => {
+    return debounce(onUserInputRaw, 500)
+  }, [onUserInputRaw])
+
+  const onUserInput = useCallback(
+    (val: string) => {
+      setDisplayedValue && setDisplayedValue(val)
+      debounceOnUserInput(val)
+    },
+    [debounceOnUserInput, setDisplayedValue]
+  )
+
+  const value = useMemo(() => (disableCurrencySelect ? valueRaw : displayedValue ?? ''), [
+    disableCurrencySelect,
+    displayedValue,
+    valueRaw
+  ])
+
+  useEffect(() => {
+    debounceOnUserInput.cancel()
+  }, [debounceOnUserInput, disableCurrencySelect])
+
+  useBridgeInputValidation(!!disableCurrencySelect)
+
   return (
     <CurrencySearchModalContext.Provider value={currencySearchModalContext}>
       <CurrencySearchContext.Provider value={currencySearchContext}>
         <ManageListsContext.Provider value={manageListsContext}>
           <ListRowContext.Provider value={listRowContext}>
-            <CurrencyInputPanelComponent {...currencyInputPanelProps} />
+            <CurrencyInputPanelComponent
+              {...currencyInputPanelProps}
+              onUserInput={onUserInput}
+              displayedValue={displayedValue}
+              value={value}
+              currencyWrapperSource={CurrencyWrapperSource.BRIDGE}
+            />
           </ListRowContext.Provider>
         </ManageListsContext.Provider>
       </CurrencySearchContext.Provider>

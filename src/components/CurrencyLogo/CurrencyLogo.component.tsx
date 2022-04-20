@@ -18,7 +18,7 @@ export const CurrencyLogoComponent = ({
       <Skeleton
         wrapper={({ children }: { children: ReactNode }) => (
           <Wrapper
-            looading={loading}
+            isLoading={loading}
             size={size}
             marginRight={marginRight}
             marginLeft={marginLeft}
@@ -38,7 +38,7 @@ export const CurrencyLogoComponent = ({
       <StyledLogo
         size={size}
         defaultText={currency?.symbol || '?'}
-        srcs={sources}
+        sources={sources}
         alt={`${currency?.symbol ?? 'token'} logo`}
         style={style}
       />

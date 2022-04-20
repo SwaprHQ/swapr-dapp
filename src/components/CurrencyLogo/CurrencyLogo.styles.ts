@@ -11,8 +11,8 @@ export const StyledLogo = styled(Logo)<{ size: string }>`
   height: ${({ size }) => size};
   border-radius: ${({ size }) => size};
 `
-// looading is for purpose, for some reason DevTools screams that 'loading' is expected to be a string
-export const Wrapper = styled.div<{ size: string; marginRight: number; marginLeft: number; looading?: boolean }>`
+
+export const Wrapper = styled.div<{ size: string; marginRight: number; marginLeft: number; isLoading?: boolean }>`
   position: relative;
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -29,7 +29,7 @@ export const Wrapper = styled.div<{ size: string; marginRight: number; marginLef
     transform: translate(-50%, -50%);
     ${({ size }) => `width: calc(${size} - 1px)`};
     ${({ size }) => `height: calc(${size} - 1px)`};
-    background-color: ${props => (props.looading ? 'transparent' : props.theme.white)};
+    background-color: ${props => (props.isLoading ? 'transparent' : props.theme.white)};
     border-radius: 50%;
     z-index: -1;
   }

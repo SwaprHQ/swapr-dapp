@@ -17,7 +17,7 @@ import {
 import Loader from '../Loader'
 import { TYPE } from '../../theme'
 import { RowBetween } from '../Row'
-import { CurrencyLogo } from '../CurrencyLogo'
+import { CurrencyLogo, CurrencyWrapperSource } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import NumericalInput from '../Input/NumericalInput'
 import { FiatValueDetails } from '../FiatValueDetails'
@@ -30,26 +30,27 @@ import { limitDigitDecimalPlace } from '../../utils/prices'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
 export const CurrencyInputPanelComponent = ({
-  value,
-  onUserInput,
-  onMax,
-  label,
-  onCurrencySelect,
-  currency,
-  disableCurrencySelect = false,
-  disabled,
-  hideBalance = false,
-  pair = null, // used for double token logo
-  hideInput = false,
-  otherCurrency,
   id,
-  showCommonBases,
-  customBalanceText,
+  pair = null, // used for double token logo
+  onMax,
+  value,
+  label,
   balance,
-  fiatValue,
-  priceImpact,
+  currency,
+  disabled,
+  hideInput = false,
   isLoading = false,
-  chainIdOverride
+  fiatValue,
+  hideBalance = false,
+  priceImpact,
+  onUserInput,
+  otherCurrency,
+  chainIdOverride,
+  showCommonBases,
+  onCurrencySelect,
+  customBalanceText,
+  currencyWrapperSource = CurrencyWrapperSource.SWAP,
+  disableCurrencySelect = false
 }: CurrencyInputPanelProps) => {
   const { t } = useTranslation()
 
@@ -92,9 +93,7 @@ export const CurrencyInputPanelComponent = ({
                   value={value}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  onUserInput={val => {
-                    onUserInput(val)
-                  }}
+                  onUserInput={onUserInput}
                   disabled={disabled}
                 />
               </>
@@ -104,10 +103,11 @@ export const CurrencyInputPanelComponent = ({
               className="open-currency-select-button"
               disableCurrencySelect={disableCurrencySelect}
               onClick={() => {
-                if (!disableCurrencySelect) {
+                if (!isLoading && !disableCurrencySelect) {
                   setIsOpen(true)
                 }
               }}
+              disabled={(isLoading || disableCurrencySelect) && !currency}
             >
               <Aligner>
                 {isLoading ? (
@@ -117,7 +117,12 @@ export const CurrencyInputPanelComponent = ({
                     {pair ? (
                       <DoubleCurrencyLogo marginRight={4} currency0={pair.token0} currency1={pair.token1} size={20} />
                     ) : currency ? (
-                      <CurrencyLogo currency={currency} chainIdOverride={chainIdOverride} size="20px" />
+                      <CurrencyLogo
+                        size="20px"
+                        currency={currency}
+                        chainIdOverride={chainIdOverride}
+                        currencyWrapperSource={currencyWrapperSource}
+                      />
                     ) : null}
                     {pair ? (
                       <StyledTokenName className="pair-name-container">
