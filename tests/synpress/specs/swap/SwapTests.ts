@@ -61,7 +61,7 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it('Should swap dxd to weth [TC-52]', () => {
+  it('Should swap DXD to WETH [TC-52]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
@@ -97,7 +97,7 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it('Should swap DAI to eth [TC-53]', () => {
+  it('Should swap DAI to ETH [TC-53]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)

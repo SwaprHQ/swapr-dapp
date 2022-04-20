@@ -29,7 +29,7 @@ describe('SWAP functional tests', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
 
-  it('Should wrap eth to weth [TC-03]', () => {
+  it('Should wrap ETH to WETH [TC-03]', () => {
     SwapPage.openTokenToSwapMenu()
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
@@ -43,7 +43,7 @@ describe('SWAP functional tests', () => {
     TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE, true)
   })
 
-  it('Should unwrap weth to eth [TC-06]', () => {
+  it('Should unwrap WETH to ETH [TC-06]', () => {
     SwapPage.openTokenToSwapMenu()
       .chooseToken('eth')
       .openTokenToSwapMenu()
