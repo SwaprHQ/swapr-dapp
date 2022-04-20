@@ -87,14 +87,14 @@ const createSelectBridgeTransactionsSummary = (
     const l1ChainId = Math.min(...chains)
     const l2ChainId = Math.max(...chains)
 
-    const l1SummariesFiltered = txs.filter(tx => tx.chainId === l1ChainId)
-    const l2SummariesFiltered = txs.filter(tx => tx.chainId === l2ChainId)
+    const l1Txs = txs.filter(tx => tx.chainId === l1ChainId)
+    const l2Txs = txs.filter(tx => tx.chainId === l2ChainId)
 
     const processedTxsMap: {
       [txHash: string]: string
     } = {}
 
-    const l1Summaries = l1SummariesFiltered.reduce<BridgeTransactionSummary[]>((total, tx) => {
+    const l1Summaries = l1Txs.reduce<BridgeTransactionSummary[]>((total, tx) => {
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
@@ -127,7 +127,7 @@ const createSelectBridgeTransactionsSummary = (
         bridgeId
       }
 
-      const partnerTx = l2SummariesFiltered.find(l2Txn => l2Txn.txHash === tx.partnerTxHash)
+      const partnerTx = l2Txs.find(l2Txn => l2Txn.txHash === tx.partnerTxHash)
 
       if (!tx.partnerTxHash || !partnerTx) {
         if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
@@ -169,7 +169,7 @@ const createSelectBridgeTransactionsSummary = (
       return total
     }, [])
 
-    const l2Summaries = l2SummariesFiltered.reduce<BridgeTransactionSummary[]>((total, tx) => {
+    const l2Summaries = l2Txs.reduce<BridgeTransactionSummary[]>((total, tx) => {
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
@@ -191,7 +191,7 @@ const createSelectBridgeTransactionsSummary = (
         bridgeId
       }
 
-      const partnerTx = l1SummariesFiltered.find(l1Txn => tx.txHash === l1Txn.partnerTxHash)
+      const partnerTx = l1Txs.find(l1Txn => tx.txHash === l1Txn.partnerTxHash)
       // WITHDRAWAL L2
       if (!tx.partnerTxHash || !partnerTx) {
         if (tx.type === 'withdraw') {
