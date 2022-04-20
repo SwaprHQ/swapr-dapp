@@ -13,11 +13,11 @@ describe('Swap page smoke tests', () => {
     SwapPage.getToInput().should('be.visible')
     SwapPage.getFromInput().should('be.visible')
   })
-  it('Should display token menu after clicking select token', () => {
+  it('Should display token menu after clicking select token [TC-20]', () => {
     SwapPage.openTokenToSwapMenu()
     TokenMenu.getPicker().should('be.visible')
   })
-  it('Should pick only eth as default from value', () => {
+  it('Should pick only eth as default from value [TC-20]', () => {
     SwapPage.getCurrencySelectors()
       .first()
       .should('contain.text', 'ETH')

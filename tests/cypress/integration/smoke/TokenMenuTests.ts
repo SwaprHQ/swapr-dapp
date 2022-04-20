@@ -1,10 +1,10 @@
 import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
-import { AddressesEnum } from '../../../utils/AddressesEnum'
+import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Token menu smoke tests', () => {
-  const TYPING_DELAY = 100
+  const TYPING_DELAY = 110
   beforeEach(() => {
     SwapPage.visitSwapPage()
     TransactionHelper.waitForTokenLists()
