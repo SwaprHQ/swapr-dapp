@@ -338,10 +338,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const { retryableTicketHash, seqNum } = txnHash
 
-      const [l1ChainRetryableTicketHash] = allTransactions.filter(
+      const l1ChainRetryableTicketHash = allTransactions.find(
         tx => tx.chainId === this.l1ChainId && tx.txHash === retryableTicketHash
       )
-      const [l2ChainRetryableTicketHash] = allTransactions.filter(
+      const l2ChainRetryableTicketHash = allTransactions.find(
         tx => tx.chainId === this.l2ChainId && tx.txHash === retryableTicketHash
       )
 

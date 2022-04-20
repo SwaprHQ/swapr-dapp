@@ -115,8 +115,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
       },
       migrateTxs: (state, action: PayloadAction<ArbitrumBridgeTxnsState>) => {
         const { payload } = action
-        const networks = Object.values(payload)
-        const [l1Txs, l2Txs] = networks
+        const [l1Txs, l2Txs] = Object.values(payload)
         const transactions = [...Object.values(l1Txs), ...Object.values(l2Txs)]
 
         arbitrumTransactionsAdapter.setAll(state.transactions, transactions)

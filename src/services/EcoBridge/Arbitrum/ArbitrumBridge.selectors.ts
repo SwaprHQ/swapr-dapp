@@ -87,135 +87,145 @@ const createSelectBridgeTransactionsSummary = (
     const l1ChainId = Math.min(...chains)
     const l2ChainId = Math.max(...chains)
 
+    const l1SummariesFiltered = txs.filter(tx => tx.chainId === l1ChainId)
+    const l2SummariesFiltered = txs.filter(tx => tx.chainId === l2ChainId)
+
     const processedTxsMap: {
       [txHash: string]: string
     } = {}
 
-    const l1Summaries = txs
-      .filter(tx => tx.chainId === l1ChainId)
-      .reduce<BridgeTransactionSummary[]>((total, tx) => {
-        const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
-        const to = from === l1ChainId ? l2ChainId : l1ChainId
+    const l1Summaries = l1SummariesFiltered.reduce<BridgeTransactionSummary[]>((total, tx) => {
+      const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
+      const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-        if (processedTxsMap[tx.txHash]) return total
-        const summary: BridgeTransactionSummary = {
-          assetName: tx.assetName,
-          assetAddressL1: tx.assetAddressL1,
-          assetAddressL2: tx.assetAddressL2,
-          fromChainId: from,
-          toChainId: to,
-          status: getBridgeTxStatus(tx.receipt?.status),
-          value: tx.value,
-          txHash: tx.txHash,
-          batchIndex: tx.batchIndex,
-          batchNumber: tx.batchNumber,
-          pendingReason: tx.receipt?.status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED,
-          timestampResolved: tx.timestampResolved,
-          log: [],
-          bridgeId
-        }
+      const {
+        assetName,
+        assetAddressL1,
+        assetAddressL2,
+        value,
+        txHash,
+        batchIndex,
+        batchNumber,
+        timestampResolved
+      } = tx
 
-        const partnerTx = txs.filter(tx => tx.chainId === l2ChainId).find(l2Txn => l2Txn.txHash === tx.partnerTxHash)
+      if (processedTxsMap[tx.txHash]) return total
+      const summary: BridgeTransactionSummary = {
+        assetName,
+        assetAddressL1,
+        assetAddressL2,
+        fromChainId: from,
+        toChainId: to,
+        status: getBridgeTxStatus(tx.receipt?.status),
+        value,
+        txHash,
+        batchIndex,
+        batchNumber,
+        pendingReason: tx.receipt?.status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED,
+        timestampResolved,
+        log: [],
+        bridgeId
+      }
 
-        if (!tx.partnerTxHash || !partnerTx) {
-          if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
-            summary.status = BridgeTransactionStatus.PENDING // deposits on l1 should never show confirmed on ui
-            summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
-          }
-          summary.log = createBridgeLog([tx])
-          processedTxsMap[tx.txHash] = tx.txHash
-          total.push(summary)
-          return total
+      const partnerTx = l2SummariesFiltered.find(l2Txn => l2Txn.txHash === tx.partnerTxHash)
+
+      if (!tx.partnerTxHash || !partnerTx) {
+        if (tx.type === 'deposit-l1' && tx.receipt?.status !== 0) {
+          summary.status = BridgeTransactionStatus.PENDING // deposits on l1 should never show confirmed on ui
+          summary.pendingReason = ArbitrumPendingReasons.TX_UNCONFIRMED
         }
-        if (tx.type === 'outbox') {
-          const status = tx.receipt?.status
-          summary.fromChainId = to
-          summary.toChainId = from
-          summary.status = status === 1 ? BridgeTransactionStatus.CLAIMED : getBridgeTxStatus(status)
-          summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
-          summary.log = createBridgeLog([partnerTx, tx])
-          processedTxsMap[tx.txHash] = tx.txHash
-          processedTxsMap[tx.partnerTxHash] = tx.partnerTxHash
-          total.push(summary)
-          return total
-        }
-        if (tx.type === 'deposit-l1' && tx.receipt) {
-          const statusL2 = partnerTx.receipt?.status
-          if (tx.receipt?.status === 0 || statusL2 === 0) {
-            summary.status = BridgeTransactionStatus.FAILED
-          } else {
-            summary.status = getBridgeTxStatus(statusL2)
-            summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DEPOSIT
-            summary.timestampResolved = partnerTx.timestampResolved
-          }
-          summary.log = createBridgeLog([tx, partnerTx])
-          processedTxsMap[tx.txHash] = tx.txHash
-          processedTxsMap[tx.partnerTxHash] = tx.partnerTxHash
-          total.push(summary)
-          return total
-        }
+        summary.log = createBridgeLog([tx])
+        processedTxsMap[tx.txHash] = tx.txHash
+        total.push(summary)
         return total
-      }, [])
-
-    const l2Summaries = txs
-      .filter(tx => tx.chainId === l2ChainId)
-      .reduce<BridgeTransactionSummary[]>((total, tx) => {
-        const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
-        const to = from === l1ChainId ? l2ChainId : l1ChainId
-
-        if (processedTxsMap[tx.txHash]) return total
-
-        const summary: BridgeTransactionSummary = {
-          assetName: tx.assetName,
-          assetAddressL1: tx.assetAddressL1,
-          assetAddressL2: tx.assetAddressL2,
-          value: tx.value,
-          txHash: tx.txHash,
-          batchNumber: tx.batchNumber,
-          batchIndex: tx.batchIndex,
-          fromChainId: from,
-          toChainId: to,
-          status: getBridgeTxStatus(tx.receipt?.status),
-          timestampResolved: tx.timestampResolved,
-          log: [],
-          bridgeId
+      }
+      if (tx.type === 'outbox') {
+        const status = tx.receipt?.status
+        summary.fromChainId = to
+        summary.toChainId = from
+        summary.status = status === 1 ? BridgeTransactionStatus.CLAIMED : getBridgeTxStatus(status)
+        summary.pendingReason = status ? undefined : ArbitrumPendingReasons.TX_UNCONFIRMED
+        summary.log = createBridgeLog([partnerTx, tx])
+        processedTxsMap[tx.txHash] = tx.txHash
+        processedTxsMap[tx.partnerTxHash] = tx.partnerTxHash
+        total.push(summary)
+        return total
+      }
+      if (tx.type === 'deposit-l1' && tx.receipt) {
+        const statusL2 = partnerTx.receipt?.status
+        if (tx.receipt?.status === 0 || statusL2 === 0) {
+          summary.status = BridgeTransactionStatus.FAILED
+        } else {
+          summary.status = getBridgeTxStatus(statusL2)
+          summary.pendingReason = statusL2 ? undefined : ArbitrumPendingReasons.DEPOSIT
+          summary.timestampResolved = partnerTx.timestampResolved
         }
+        summary.log = createBridgeLog([tx, partnerTx])
+        processedTxsMap[tx.txHash] = tx.txHash
+        processedTxsMap[tx.partnerTxHash] = tx.partnerTxHash
+        total.push(summary)
+        return total
+      }
+      return total
+    }, [])
 
-        const partnerTx = txs.filter(tx => tx.chainId === l1ChainId).find(l1Txn => tx.txHash === l1Txn.partnerTxHash)
-        // WITHDRAWAL L2
-        if (!tx.partnerTxHash || !partnerTx) {
-          if (tx.type === 'withdraw') {
-            if (isLoading) {
-              summary.timestampResolved = undefined
-              summary.status = BridgeTransactionStatus.LOADING
-            } else {
-              if (tx.receipt?.status !== 0) {
-                switch (tx.outgoingMessageState) {
-                  case OutgoingMessageState.CONFIRMED:
-                    summary.status = BridgeTransactionStatus.REDEEM
-                    summary.timestampResolved = undefined
-                    break
-                  case OutgoingMessageState.EXECUTED:
-                    summary.status = BridgeTransactionStatus.CLAIMED
-                    break
-                  default:
-                    summary.status = BridgeTransactionStatus.PENDING
-                    summary.pendingReason = ArbitrumPendingReasons.WITHDRAWAL
-                    summary.timestampResolved = undefined
-                }
-              } else {
-                summary.status = BridgeTransactionStatus.FAILED
+    const l2Summaries = l2SummariesFiltered.reduce<BridgeTransactionSummary[]>((total, tx) => {
+      const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
+      const to = from === l1ChainId ? l2ChainId : l1ChainId
+
+      if (processedTxsMap[tx.txHash]) return total
+
+      const summary: BridgeTransactionSummary = {
+        assetName: tx.assetName,
+        assetAddressL1: tx.assetAddressL1,
+        assetAddressL2: tx.assetAddressL2,
+        value: tx.value,
+        txHash: tx.txHash,
+        batchNumber: tx.batchNumber,
+        batchIndex: tx.batchIndex,
+        fromChainId: from,
+        toChainId: to,
+        status: getBridgeTxStatus(tx.receipt?.status),
+        timestampResolved: tx.timestampResolved,
+        log: [],
+        bridgeId
+      }
+
+      const partnerTx = l1SummariesFiltered.find(l1Txn => tx.txHash === l1Txn.partnerTxHash)
+      // WITHDRAWAL L2
+      if (!tx.partnerTxHash || !partnerTx) {
+        if (tx.type === 'withdraw') {
+          if (isLoading) {
+            summary.timestampResolved = undefined
+            summary.status = BridgeTransactionStatus.LOADING
+          } else {
+            if (tx.receipt?.status !== 0) {
+              switch (tx.outgoingMessageState) {
+                case OutgoingMessageState.CONFIRMED:
+                  summary.status = BridgeTransactionStatus.REDEEM
+                  summary.timestampResolved = undefined
+                  break
+                case OutgoingMessageState.EXECUTED:
+                  summary.status = BridgeTransactionStatus.CLAIMED
+                  break
+                default:
+                  summary.status = BridgeTransactionStatus.PENDING
+                  summary.pendingReason = ArbitrumPendingReasons.WITHDRAWAL
+                  summary.timestampResolved = undefined
               }
+            } else {
+              summary.status = BridgeTransactionStatus.FAILED
             }
           }
-          summary.log = createBridgeLog([tx])
-
-          processedTxsMap[tx.txHash] = tx.txHash
-          total.push(summary)
-          return total
         }
+        summary.log = createBridgeLog([tx])
+
+        processedTxsMap[tx.txHash] = tx.txHash
+        total.push(summary)
         return total
-      }, [])
+      }
+      return total
+    }, [])
 
     return [...l1Summaries, ...l2Summaries]
   })
