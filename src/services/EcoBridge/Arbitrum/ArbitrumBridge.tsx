@@ -9,11 +9,11 @@ import request from 'graphql-request'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
-import { ARBITRUM_TOKEN_LISTS_CONFIG } from './ArbitrumBridge.lists'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { commonActions } from '../store/Common.reducer'
 import { addTransaction } from '../../../state/transactions/actions'
-import { BridgeAssetType, BridgeTransactionSummary, BridgeTxn } from '../../../state/bridgeTransactions/types'
+import { BridgeAssetType, BridgeTransactionSummary, ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 import getTokenList from '../../../utils/getTokenList'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { subgraphClientsUris } from '../../../apollo/client'
@@ -270,7 +270,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // PendingTx Listener
-  private getReceipt = async (tx: BridgeTxn) => {
+  private getReceipt = async (tx: ArbitrumBridgeTxn) => {
     const provider = txnTypeToLayer(tx.type) === 2 ? this.bridge?.l2Provider : this.bridge?.l1Provider
     if (!provider) throw new Error('No provider on bridge')
 
@@ -298,7 +298,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // L1 Deposit Listener
-  private getL2TxnHash = async (txn: BridgeTxn) => {
+  private getL2TxnHash = async (txn: ArbitrumBridgeTxn) => {
     if (!this.bridge || !this.l2ChainId) {
       return null
     }
@@ -327,7 +327,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private l2DepositsListener = async () => {
     const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
     const depositTransactions = this.selectors.selectL1Deposits(this.store.getState(), this._account)
-
     const depositHashes = await Promise.all(depositTransactions.map(this.getL2TxnHash))
 
     depositTransactions.forEach((txn, index) => {
@@ -339,10 +338,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const { retryableTicketHash, seqNum } = txnHash
 
-      if (
-        !allTransactions[this.l1ChainId]?.[retryableTicketHash] &&
-        !allTransactions[this.l2ChainId]?.[retryableTicketHash]
-      ) {
+      const l1ChainRetryableTicketHash = allTransactions.find(
+        tx => tx.chainId === this.l1ChainId && tx.txHash === retryableTicketHash
+      )
+      const l2ChainRetryableTicketHash = allTransactions.find(
+        tx => tx.chainId === this.l2ChainId && tx.txHash === retryableTicketHash
+      )
+
+      if (!l1ChainRetryableTicketHash && !l2ChainRetryableTicketHash) {
         this.store.dispatch(
           this.actions.addTx({
             ...txn,
@@ -354,7 +357,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             blockNumber: undefined
           })
         )
-
         this.store.dispatch(
           this.actions.updateTxPartnerHash({
             chainId: this.l2ChainId,
@@ -368,9 +370,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   // Pending Withdrawals listener
-  private getOutgoingMessageState = async (tx: BridgeTxn) => {
-    const outbox: Partial<Pick<BridgeTxn, 'batchIndex' | 'batchNumber'>> &
-      Pick<BridgeTxn, 'txHash' | 'outgoingMessageState'> = {
+  private getOutgoingMessageState = async (tx: ArbitrumBridgeTxn) => {
+    const outbox: Partial<Pick<ArbitrumBridgeTxn, 'batchIndex' | 'batchNumber'>> &
+      Pick<ArbitrumBridgeTxn, 'txHash' | 'outgoingMessageState'> = {
       batchNumber: tx.batchNumber,
       batchIndex: tx.batchIndex,
       outgoingMessageState: undefined,
@@ -609,7 +611,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   public fetchStaticLists = async () => {
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
-    const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.filter(config =>
+    const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.lists.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
     )
 

@@ -1,23 +1,23 @@
 import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
-import { Box, Flex, Text } from 'rebass'
-import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
-import { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Plus, X } from 'react-feather'
+import { Box, Flex, Text } from 'rebass'
+import { ThemeContext } from 'styled-components'
+import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
 import { useActiveWeb3React } from '../../../hooks'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
+import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
 
 import Badge from '../../Badge'
 import Loader from '../../Loader'
 import { DarkCard } from '../../Card'
+import { ImportRow } from '../ImportRow'
 import { CurrencyLogo } from '../../CurrencyLogo'
 import QuestionHelper from '../../QuestionHelper'
-import { ImportRow } from '../ImportRow'
-import { AutoRow, RowBetween, RowFixed } from '../../Row'
 import { TokenPickerItem } from '../shared'
+import { AutoRow, RowBetween, RowFixed } from '../../Row'
 import { StyledBalanceText, FixedContentRow, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
@@ -34,13 +34,13 @@ const Balance = ({ balance }: { balance: CurrencyAmount }) => (
 )
 
 const CurrencyRow = ({
-  currency,
+  style,
   balance,
-  selectedTokenList,
   onSelect,
+  currency,
   isSelected,
   otherSelected,
-  style
+  selectedTokenList
 }: CurrencyRowProps) => {
   const { account, chainId } = useActiveWeb3React()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
@@ -58,7 +58,7 @@ const CurrencyRow = ({
       alignItems="center"
       style={style}
     >
-      <Box>
+      <Box data-testid={'select-button-' + currency.symbol?.toLowerCase()}>
         <AutoRow>
           <CurrencyLogo currency={currency} size={'20px'} />
           <Text marginLeft={'6px'} fontWeight={500}>
@@ -121,13 +121,13 @@ const BreakLineComponent = ({ style }: { style: CSSProperties }) => {
 
 export const CurrencyList = ({
   currencies,
+  fixedListRef,
+  otherCurrency,
+  setImportToken,
+  showImportView,
+  otherListTokens,
   selectedCurrency,
   onCurrencySelect,
-  otherCurrency,
-  otherListTokens,
-  fixedListRef,
-  showImportView,
-  setImportToken,
   selectedTokenList
 }: CurrencyListProps) => {
   const { account } = useActiveWeb3React()

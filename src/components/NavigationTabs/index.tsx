@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink, useHistory } from 'react-router-dom'
+import { Settings } from '../Settings'
 
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
@@ -57,6 +58,7 @@ const StyledArrowLeft = styled(ArrowLeft)`
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'bridge' }) {
   const { t } = useTranslation()
+
   return (
     <Tabs style={{ marginBottom: '20px', display: 'none' }}>
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'}>
@@ -87,18 +89,13 @@ export function FindPoolTabs() {
 
 export function AddRemoveTabs({ adding, creating }: { adding: boolean; creating: boolean }) {
   const history = useHistory()
+
   return (
     <Tabs>
       <RowBetween mb="16px">
         <StyledArrowLeft onClick={history.goBack} />
         <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>
-        <QuestionHelper
-          text={
-            adding
-              ? 'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'
-              : 'Removing pool tokens converts your position back into underlying tokens at the current rate, proportional to your share of the pool. Accrued fees are included in the amounts you receive.'
-          }
-        />
+        <Settings simple={true} />
       </RowBetween>
     </Tabs>
   )

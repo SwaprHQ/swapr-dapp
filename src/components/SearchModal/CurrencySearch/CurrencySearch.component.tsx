@@ -2,47 +2,51 @@ import { Currency, Token } from '@swapr/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
-import { TYPE } from '../../../theme'
-import { isAddress } from '../../../utils'
-import Column, { AutoColumn } from '../../Column'
-import Row, { RowBetween } from '../../Row'
-import { CommonTokens } from '../CommonTokens'
-import { CurrencyList } from '../CurrencyList'
-import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
-import { useTokenComparator } from '../utils/sorting'
-import { SearchInput, Separator } from '../shared'
 import { ThemeContext } from 'styled-components/macro'
+
 import useToggle from '../../../hooks/useToggle'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
-import { useActiveWeb3React } from '../../../hooks'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
+import { useActiveWeb3React } from '../../../hooks'
+import { useTokenComparator } from '../utils/sorting'
+import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
+import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
+
+import { TYPE } from '../../../theme'
 import { ButtonDark2 } from '../../Button'
-import { CurrencySearchProps } from './CurrencySearch.types'
+import { CurrencyList } from '../CurrencyList'
+import { CommonTokens } from '../CommonTokens'
+import Row, { RowBetween } from '../../Row'
+import Column, { AutoColumn } from '../../Column'
+import { SearchInput, Separator } from '../shared'
 import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
+
 import { CurrencySearchContext } from './CurrencySearch.context'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
+import { isAddress } from '../../../utils'
+import { CurrencySearchProps } from './CurrencySearch.types'
+
 export const CurrencySearch = ({
-  selectedCurrency,
-  onCurrencySelect,
-  otherSelectedCurrency,
-  showCommonBases,
-  onDismiss,
   isOpen,
+  onDismiss,
   showManageView,
   showImportView,
-  showNativeCurrency
+  showCommonBases,
+  selectedCurrency,
+  onCurrencySelect,
+  showNativeCurrency,
+  otherSelectedCurrency
 }: CurrencySearchProps) => {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
   const {
+    allTokens,
+    searchToken,
     searchQuery,
     setSearchQuery,
     debouncedQuery,
-    allTokens,
-    searchToken,
     selectedTokenList,
     showFallbackTokens
   } = useContext(CurrencySearchContext)
@@ -135,7 +139,7 @@ export const CurrencySearch = ({
   }, [inputRef])
 
   return (
-    <ContentWrapper>
+    <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
           <TYPE.body fontWeight={500}>Select a token</TYPE.body>
@@ -180,7 +184,9 @@ export const CurrencySearch = ({
       )}
       <Footer>
         <Row justify="center">
-          <ButtonDark2 onClick={showManageView}>Manage token lists</ButtonDark2>
+          <ButtonDark2 onClick={showManageView} data-testid="manage-token-lists-button">
+            Manage token lists
+          </ButtonDark2>
         </Row>
       </Footer>
     </ContentWrapper>

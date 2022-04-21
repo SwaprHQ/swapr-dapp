@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
-import { Pair, Token } from '@swapr/sdk'
 import { TokenInfo } from '@uniswap/token-lists'
+import { Pair, Token } from '@swapr/sdk'
+
 import { isAddress } from '../../../utils'
 
 const alwaysTrue = () => true

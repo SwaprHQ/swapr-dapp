@@ -3,9 +3,9 @@ import { Token } from '@swapr/sdk'
 import { Text } from 'rebass'
 
 import { RowBetween } from '../../Row'
-import { PaddedColumn } from '../shared'
 import { AutoColumn } from '../../Column'
 import { GoBackIcon } from '../GoBackIcon'
+import { PaddedColumn } from '../shared'
 import { TYPE, CloseIcon } from '../../../theme'
 import { TokenWarningCard } from '../../TokenWarningModal'
 import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
@@ -23,7 +23,7 @@ export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportToken
   const tokens = [importToken] as Token[]
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="unknown-token-warning">
       <PaddedColumn gap="14px" style={{ width: '100%', flex: '1 1' }}>
         <RowBetween>
           <GoBackIcon onClick={onBack} />
@@ -53,6 +53,7 @@ export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportToken
               return <TokenWarningCard key={token.address} token={token} list={list} />
             })}
             <SpacedButtonError
+              data-testid="confirm-import-button"
               error
               onClick={() => {
                 tokens.map(token => addToken(token))

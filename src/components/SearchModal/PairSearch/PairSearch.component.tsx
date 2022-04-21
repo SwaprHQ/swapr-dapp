@@ -1,20 +1,20 @@
-import { Pair } from '@swapr/sdk'
-import { useTranslation } from 'react-i18next'
-import { FixedSizeList } from 'react-window'
 import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Pair } from '@swapr/sdk'
+import { FixedSizeList } from 'react-window'
+import { useTranslation } from 'react-i18next'
 
 import Column from '../../Column'
+import { Wrapper } from './PairSearch.styles'
 import { PairList } from '../PairList'
 import { RowBetween } from '../../Row'
-import { Wrapper } from './PairSearch.styles'
-import { CloseIcon, TYPE } from '../../../theme'
 import { SortButton } from '../SortButton'
+import { CloseIcon, TYPE } from '../../../theme'
 import { PaddedColumn, SearchInput, Separator } from '../shared'
 
 import { isAddress } from '../../../utils'
-import { usePairsComparator } from '../utils/sorting'
 import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAtAddress } from '../../../data/Reserves'
+import { usePairsComparator } from '../utils/sorting'
 import { filterPairs as filterPairsBySearchQuery } from '../utils/filtering'
 
 import { PairSearchProps } from './PairSearch.types'
@@ -88,16 +88,17 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
   }, [inputRef])
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="select-a-pair">
       <Column style={{ width: '100%', height: '100%', flex: '1 1' }}>
         <PaddedColumn gap="16px">
           <RowBetween>
             <TYPE.body fontWeight={500} fontSize={16}>
               Select a pair
             </TYPE.body>
-            <CloseIcon onClick={onDismiss} />
+            <CloseIcon onClick={onDismiss} data-testid="close-search-pair" />
           </RowBetween>
           <SearchInput
+            data-testid="search-pair"
             type="text"
             placeholder={t('pairSearchPlaceholder')}
             value={searchQuery}

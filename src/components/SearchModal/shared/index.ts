@@ -1,6 +1,7 @@
+import styled from 'styled-components'
 import { Flex } from 'rebass'
 import { transparentize } from 'polished'
-import styled from 'styled-components'
+
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'
 

@@ -1,14 +1,7 @@
-import { Settings, CheckCircle } from 'react-feather'
-import { ThemeContext } from 'styled-components/macro'
 import React, { useContext } from 'react'
+import { ThemeContext } from 'styled-components/macro'
+import { Settings, CheckCircle } from 'react-feather'
 
-import Card from '../../Card'
-import ListLogo from '../../ListLogo'
-import ListToggle from '../../Toggle/ListToggle'
-import Column, { AutoColumn } from '../../Column'
-import Row, { RowFixed, RowBetween } from '../../Row'
-import { ButtonEmpty, ButtonPrimary } from '../../Button'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
 import {
   Wrapper,
   RowWrapper,
@@ -19,12 +12,19 @@ import {
   StyledListUrlText,
   UnpaddedLinkStyledButton
 } from './ManageLists.styles'
-
+import Card from '../../Card'
+import ListLogo from '../../ListLogo'
+import ListToggle from '../../Toggle/ListToggle'
+import Column, { AutoColumn } from '../../Column'
+import Row, { RowFixed, RowBetween } from '../../Row'
+import { ButtonEmpty, ButtonPrimary } from '../../Button'
 import { ExternalLink, TYPE, IconWrapper } from '../../../theme'
+import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
 
-import { ListRowProps } from './ManageLists.types'
 import { useListRow } from './ManageLists.hooks'
+
 import { ManageListsContext } from './ManageLists.context'
+import { ListRowProps } from './ManageLists.types'
 
 const listUrlRowHTMLId = (listUrl: string) => {
   return `list-row-${listUrl.replace(/\./g, '-')}`
@@ -55,7 +55,13 @@ const ListRow = ({ listUrl }: ListRowProps) => {
   if (!list || tokensAmountInCurrentChain === 0) return null
 
   return (
-    <RowWrapper active={isActive} bgColor={theme.primary1} key={listUrl} id={listUrlRowHTMLId(listUrl)}>
+    <RowWrapper
+      active={isActive}
+      bgColor={theme.primary1}
+      key={listUrl}
+      id={listUrlRowHTMLId(listUrl)}
+      data-testid={list.name.toLowerCase().replace(/ /g, '-') + '-row'}
+    >
       <ListLogo size="40px" style={{ marginRight: '1rem' }} logoURI={list.logoURI || ''} defaultText={list.name} />
       <Column style={{ flex: '1' }}>
         <Row>
@@ -124,7 +130,12 @@ export const ManageLists = () => {
               />
             </Row>
             {addError ? (
-              <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
+              <TYPE.error
+                data-testid="token-manager-error-message"
+                title={addError}
+                style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
+                error
+              >
                 {addError}
               </TYPE.error>
             ) : null}

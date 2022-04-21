@@ -1,24 +1,24 @@
+import React, { useRef, RefObject, useCallback, useState, useMemo, useContext } from 'react'
 import { Token } from '@swapr/sdk'
 import { Box, Flex } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import React, { useRef, RefObject, useCallback, useState, useMemo, useContext } from 'react'
 
 import Card from '../../Card'
 import { ImportRow } from '../ImportRow'
+import { CurrencyLogo } from '../../CurrencyLogo'
 import { ButtonOutlined } from '../../Button'
 import { getExplorerLink } from '../../../utils'
-import { CurrencyLogo } from '../../CurrencyLogo'
 import { TYPE, ExternalLink } from '../../../theme'
 import Row, { RowBetween, RowFixed } from '../../Row'
-import { PaddedColumn, Separator, SearchInput } from '../shared'
 import { Wrapper, Footer, TrashIcon } from './ManageTokens.styles'
-import { CurrencyModalView } from '../CurrencySearchModal'
+import { PaddedColumn, Separator, SearchInput } from '../shared'
 
-import { isAddress } from '../../../utils'
 import { useToken } from '../../../hooks/Tokens'
+import { isAddress } from '../../../utils'
 import { useActiveWeb3React } from '../../../hooks'
 import { useUserAddedTokens, useRemoveUserAddedToken } from '../../../state/user/hooks'
 
+import { CurrencyModalView } from '../CurrencySearchModal'
 import { ManageTokensProps } from './ManageTokens.types'
 
 export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps) => {
@@ -89,9 +89,17 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
                 onChange={handleInput}
               />
             </Row>
-            {searchQuery !== '' && !isAddressSearch && <TYPE.error error={true}>Enter valid token address</TYPE.error>}
+            {searchQuery !== '' && !isAddressSearch && (
+              <TYPE.error data-testid="token-manager-error-message" error={true}>
+                Enter valid token address
+              </TYPE.error>
+            )}
             {searchToken && (
-              <Card backgroundColor={theme.bg2} padding="10px 0">
+              <Card
+                backgroundColor={theme.bg2}
+                padding="10px 0"
+                data-testid={searchToken.symbol?.toLowerCase() + '-token-row'}
+              >
                 <ImportRow
                   token={searchToken}
                   showImportView={() => setModalView(CurrencyModalView.IMPORT_TOKEN)}

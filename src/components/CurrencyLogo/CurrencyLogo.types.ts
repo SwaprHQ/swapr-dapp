@@ -6,17 +6,17 @@ export enum CurrencyWrapperSource {
 }
 
 export interface CurrencyLogoComponentProps {
-  currency?: Currency
   size?: string
   style?: React.CSSProperties
-  className?: string
-  loading?: boolean
-  marginRight?: number
-  marginLeft?: number
   sources: string[]
+  loading?: boolean
+  currency?: Currency
+  className?: string
+  marginLeft?: number
+  marginRight?: number
 }
 
 export interface CurrencyLogoContainerProps extends Omit<CurrencyLogoComponentProps, 'sources'> {
-  currencyWrapperSource?: CurrencyWrapperSource
   chainIdOverride?: ChainId
+  currencyWrapperSource?: CurrencyWrapperSource
 }

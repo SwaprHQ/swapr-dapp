@@ -1,8 +1,13 @@
 import { formatUnits } from '@ethersproject/units'
-import { ChainId } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 import { isFee } from './Socket.types'
 import { Route, TokenPriceResponseDTO } from './api/generated'
-import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS } from '../../../constants'
+import {
+  DAI_ARBITRUM_ADDRESS,
+  DAI_ETHEREUM_ADDRESS,
+  SOCKET_NATIVE_TOKEN_ADDRESS,
+  WETH_GNOSIS_ADDRESS
+} from '../../../constants'
 
 export const getDAIAddress = (chainId: ChainId) => {
   switch (chainId) {
@@ -74,8 +79,6 @@ export const getBridgeFee = (userTxs: any, fromAsset: { amount: string; decimals
       return total
     }, 0)
 
-    if (totalStepsFee === 0) return '0%'
-
     const { amount, decimals } = fromAsset
     const formattedValue = Number(formatUnits(amount, decimals))
 
@@ -94,4 +97,54 @@ export const getStatusOfResponse = (e: any) => {
   if (e.code === 20) return true
 
   return false
+}
+
+export const overrideTokensAddresses = (
+  toChainId: ChainId,
+  fromChainId: ChainId,
+  fromAddress: string,
+  fromNativeCurrency: Currency
+) => {
+  const ETHtoWETH = toChainId === ChainId.XDAI && fromAddress === fromNativeCurrency.symbol
+  const WETHtoETH = fromChainId === ChainId.XDAI && fromAddress === WETH_GNOSIS_ADDRESS
+  const XDAItoDAI = fromChainId === ChainId.XDAI && fromAddress === fromNativeCurrency.symbol
+  const DAItoXDAI =
+    toChainId === ChainId.XDAI && [DAI_ETHEREUM_ADDRESS, DAI_ARBITRUM_ADDRESS].includes(fromAddress.toLowerCase())
+
+  // Overrides
+  if (XDAItoDAI) {
+    return {
+      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      toTokenAddressOverride: getDAIAddress(toChainId) ?? ''
+    }
+  }
+
+  if (DAItoXDAI) {
+    return {
+      fromTokenAddressOverride: fromAddress,
+      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS
+    }
+  }
+
+  if (ETHtoWETH) {
+    return {
+      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      toTokenAddressOverride: WETH_GNOSIS_ADDRESS
+    }
+  }
+
+  if (WETHtoETH) {
+    return {
+      fromTokenAddressOverride: WETH_GNOSIS_ADDRESS,
+      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS
+    }
+  }
+
+  return undefined
+}
+
+export const VERSION = {
+  major: 1,
+  minor: 0,
+  patch: 0
 }

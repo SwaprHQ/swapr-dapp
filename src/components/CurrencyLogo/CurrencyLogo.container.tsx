@@ -3,9 +3,9 @@ import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
 import { useActiveWeb3React } from '../../hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
-import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
+import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 
 import DXDLogo from '../../assets/svg/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'

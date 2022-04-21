@@ -1,4 +1,4 @@
 export interface SortButtonProps {
-  toggleSortOrder: () => void
   ascending: boolean
+  toggleSortOrder: () => void
 }

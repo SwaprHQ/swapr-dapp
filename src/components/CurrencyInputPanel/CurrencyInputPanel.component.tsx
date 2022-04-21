@@ -17,15 +17,15 @@ import {
 import Loader from '../Loader'
 import { TYPE } from '../../theme'
 import { RowBetween } from '../Row'
-import { CurrencyLogo, CurrencyWrapperSource } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import NumericalInput from '../Input/NumericalInput'
 import { FiatValueDetails } from '../FiatValueDetails'
+import { CurrencyLogo, CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { limitDigitDecimalPlace } from '../../utils/prices'
+import { limitNumberDecimalPlaces } from '../../utils/prices'
 
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
@@ -170,7 +170,7 @@ export const CurrencyInputPanelComponent = ({
                       <>
                         {customBalanceText ?? t('balance')}
                         <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
-                          {limitDigitDecimalPlace(balance || selectedCurrencyBalance)}
+                          {limitNumberDecimalPlaces(balance || selectedCurrencyBalance)}
                         </TYPE.small>
                       </>
                     )}

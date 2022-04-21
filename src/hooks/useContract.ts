@@ -4,22 +4,22 @@ import {
   Token,
   Currency,
   WETH,
-  MULTICALL_ABI,
-  MULTICALL_ADDRESS,
+  MULTICALL2_ABI,
+  MULTICALL2_ADDRESS,
   WXDAI,
   STAKING_REWARDS_FACTORY_ADDRESS,
   STAKING_REWARDS_FACTORY_ABI,
   STAKING_REWARDS_DISTRIBUTION_ABI,
   SWPR_CLAIMER_ABI,
   SWPR_CLAIMER_ADDRESS,
-  SWPR_CONVERTER_ADDRESS
+  SWPR_CONVERTER_ADDRESS,
 } from '@swapr/sdk'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { useMemo } from 'react'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
-  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
+  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
 } from '../constants/abis/argent-wallet-detector'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -117,7 +117,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 
 export function useMulticallContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && MULTICALL_ADDRESS[chainId], MULTICALL_ABI, false)
+  return useContract(chainId && MULTICALL2_ADDRESS[chainId], MULTICALL2_ABI, false)
 }
 
 export function useStakingRewardsDistributionFactoryContract(withSignerIfPossible?: boolean): Contract | null {

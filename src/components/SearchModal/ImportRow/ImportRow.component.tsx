@@ -1,14 +1,17 @@
 import React, { useContext } from 'react'
-import { AutoRow, RowFixed } from '../../Row'
-import { AutoColumn } from '../../Column'
-import { CurrencyLogo } from '../../CurrencyLogo'
+import { ThemeContext } from 'styled-components/macro'
+
 import { TYPE } from '../../../theme'
 import ListLogo from '../../ListLogo'
+import { AutoColumn } from '../../Column'
+import { CurrencyLogo } from '../../CurrencyLogo'
 import { ButtonPrimary } from '../../Button'
-import { ThemeContext } from 'styled-components/macro'
-import { useIsUserAddedToken, useIsTokenActive } from '../../../hooks/Tokens'
-import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
+import { AutoRow, RowFixed } from '../../Row'
 import { CheckIcon, NameOverflow, TokenSection } from './ImportRow.styles'
+
+import { useIsUserAddedToken, useIsTokenActive } from '../../../hooks/Tokens'
+
+import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 import { ImportRowProps } from './ImportRow.types'
 
 export const ImportRow = ({ token, style, dim, showImportView, setImportToken }: ImportRowProps) => {
@@ -44,6 +47,7 @@ export const ImportRow = ({ token, style, dim, showImportView, setImportToken }:
         <ButtonPrimary
           width="fit-content"
           padding="6px 12px"
+          data-testid="import-button"
           fontWeight={500}
           fontSize="14px"
           onClick={() => {

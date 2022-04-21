@@ -30,6 +30,7 @@ import { currencyId } from '../../utils/currencyId'
 import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { TokenList } from '@uniswap/token-lists'
+import { ListsState } from '../../state/lists/reducer'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -120,19 +121,19 @@ export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): Wrap
   return retVal
 }
 
-export const useBridgeActiveTokenMap = () => {
-  const tokenMap = useSelector(selectBridgeActiveTokens)
+export const useBridgeActiveTokenMap = () => useSelector(selectBridgeActiveTokens)
 
-  return tokenMap
+type WritableListsState = {
+  [url: string]: ListsState['byUrl'][string]
 }
 
 export const useBridgeSupportedLists = () => {
   const supportedLists = useSelector(selectSupportedLists)
 
   // satisfy existing interface
-  return useMemo(() => {
-    return Object.entries(supportedLists).reduce(
-      (total, [id, tokenList]) => {
+  return useMemo(
+    () =>
+      Object.entries(supportedLists).reduce<WritableListsState>((total, [id, tokenList]) => {
         total[id] = {
           current: tokenList,
           pendingUpdate: null,
@@ -140,24 +141,12 @@ export const useBridgeSupportedLists = () => {
           error: null
         }
         return total
-      },
-      {} as {
-        [url: string]: {
-          readonly current: TokenList | null
-          readonly pendingUpdate: TokenList | null
-          readonly loadingRequestId: string | null
-          readonly error: string | null
-        }
-      }
-    )
-  }, [supportedLists])
+      }, {}),
+    [supportedLists]
+  )
 }
 
-export const useBridgeListsLoadingStatus = () => {
-  const isLoading = useSelector(selectBridgeListsLoadingStatus)
-
-  return isLoading
-}
+export const useBridgeListsLoadingStatus = () => useSelector(selectBridgeListsLoadingStatus)
 
 export const useActiveListsHandlers = () => {
   const dispatch = useDispatch()
@@ -181,23 +170,11 @@ export const useBridgeFetchDynamicLists = () => {
   }, [from.chainId, ecoBridge, to.chainId])
 }
 
-export const useShowAvailableBridges = () => {
-  const showAvailableBridges = useSelector((state: AppState) => state.ecoBridge.ui.showAvailableBridges)
+export const useShowAvailableBridges = () => useSelector((state: AppState) => state.ecoBridge.ui.showAvailableBridges)
 
-  return showAvailableBridges
-}
+export const useAvailableBridges = () => useSelector(selectSupportedBridgesForUI)
 
-export const useAvailableBridges = () => {
-  const availableBridges = useSelector(selectSupportedBridgesForUI)
-
-  return availableBridges.filter(bridge => bridge.status !== 'failed')
-}
-
-export const useActiveBridge = () => {
-  const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
-
-  return activeBridge
-}
+export const useActiveBridge = () => useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
 export function useBridgeActionHandlers(): {
   onCurrencySelection: (currency: Currency | string) => void

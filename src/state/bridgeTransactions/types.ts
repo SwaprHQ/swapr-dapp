@@ -20,13 +20,13 @@ export enum BridgeAssetType {
   //ERC721
 }
 
-export type BridgeTxnsState = {
+export type ArbitrumBridgeTxnsState = {
   [chainId: number]: {
-    [txHash: string]: BridgeTxn
+    [txHash: string]: ArbitrumBridgeTxn
   }
 }
 
-export type BridgeTxn = {
+export type ArbitrumBridgeTxn = {
   type: BridgeTxnType
   chainId: ChainId
   sender: string
@@ -38,7 +38,7 @@ export type BridgeTxn = {
   txHash: string
   blockNumber?: number
   timestampResolved?: number
-  timestampCreated: number
+  timestampCreated?: number
   receipt?: TransactionReceipt
   seqNum?: number
   partnerTxHash?: string
@@ -57,7 +57,7 @@ export enum BridgeTransactionStatus {
 }
 
 export type BridgeTransactionSummary = Pick<
-  BridgeTxn,
+  ArbitrumBridgeTxn,
   | 'txHash'
   | 'assetName'
   | 'value'
@@ -75,4 +75,4 @@ export type BridgeTransactionSummary = Pick<
   pendingReason?: string
 }
 
-export type BridgeTransactionLog = Pick<BridgeTxn, 'txHash' | 'chainId'>
+export type BridgeTransactionLog = Pick<ArbitrumBridgeTxn, 'txHash' | 'chainId'>

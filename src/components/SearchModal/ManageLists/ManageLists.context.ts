@@ -2,22 +2,22 @@ import React from 'react'
 import { ListRowContextType, ManageListsContextType } from './ManageLists.types'
 
 export const ListRowContext = React.createContext<ListRowContextType>({
-  handleAcceptListUpdate: () => null,
-  handleDisableList: () => null,
+  listsByUrl: {},
+  disableListInfo: false,
+  isActiveList: () => false,
   handleEnableList: () => null,
   handleRemoveList: () => null,
-  isActiveList: () => false,
-  disableListInfo: false,
-  listsByUrl: {}
+  handleDisableList: () => null,
+  handleAcceptListUpdate: () => null
 })
 
 export const ManageListsContext = React.createContext<ManageListsContextType>({
   addError: 'false',
-  handleImport: () => null,
-  handleInput: () => null,
-  isImported: false,
-  listUrlInput: '',
-  renderableLists: [],
   tempList: undefined,
+  isImported: false,
+  handleInput: () => null,
+  listUrlInput: '',
+  handleImport: () => null,
+  renderableLists: [],
   disableListImport: false
 })
