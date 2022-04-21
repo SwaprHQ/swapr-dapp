@@ -118,5 +118,7 @@
   "priceImpact": "Price impact",
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
-  "maxSent": "Max Sent"
+  "maxSent": "Max Sent",
+  "noPoolsFound": "No pools found",
+  "createAPool": "Create a pool"
 }
