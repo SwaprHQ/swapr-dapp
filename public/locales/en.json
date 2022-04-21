@@ -122,5 +122,7 @@
   "TVL": "TVL",
   "APY": "APY",
   "New": "New",
-  "sortBy": "Sort by: {{ option }}"
+  "sortBy": "Sort by: {{ option }}",
+  "noPoolsFound": "No pools found",
+  "createAPool": "Create a pool"
 }
