@@ -27,6 +27,8 @@ import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 import { SpaceBg } from '../../components/SpaceBg'
+import { SortByDropdown } from '../../components/Pool/SortByDropdown'
+import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

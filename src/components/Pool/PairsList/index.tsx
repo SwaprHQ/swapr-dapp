@@ -27,7 +27,6 @@ export interface AggregatedPairs {
   hasFarming?: boolean
   startsAt?: BigintIsh
 }
-
 interface PairsListProps {
   aggregatedPairs: AggregatedPairs[]
   singleSidedStake?: SingleSidedLiquidityMiningCampaign
