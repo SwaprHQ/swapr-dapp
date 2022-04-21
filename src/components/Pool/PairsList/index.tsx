@@ -1,38 +1,22 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { Box, Flex, Text } from 'rebass'
+import { useTranslation } from 'react-i18next'
+import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
+import { usePage } from '../../../hooks/usePage'
+import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
+import { useActiveWeb3React } from '../../../hooks'
+import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
+
 import { Pagination } from '../../Pagination'
 import { LoadingList } from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import styled from 'styled-components'
-import { usePage } from '../../../hooks/usePage'
-import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
-import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
-import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
-
-const ListLayout = styled.div`
-  display: grid;
-  //this should be toogleble as well to 1fr 1fr 1fr
-  grid-template-columns: auto;
-  grid-gap: 8px;
-`
-
-const PaginationRow = styled(Flex)`
-  width: 100%;
-  justify-content: flex-end;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    justify-content: center;
-  `};
-
-  & ul {
-    margin: 22px 0;
-  }
-`
-
+import { gradients } from '../../../utils/theme'
 interface PairsListProps {
   aggregatedPairs: {
     pair: Pair
@@ -49,11 +33,6 @@ interface PairsListProps {
   hasSingleSidedStake?: boolean
 }
 
-// enum Layout {
-//   LIST,
-//   GRID
-// }
-
 export default function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
   const [page, setPage] = useState(1)
@@ -61,6 +40,8 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
   const { address: swprAddress } = useSWPRToken()
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
+  const { t } = useTranslation()
+
   // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -121,9 +102,9 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
           <DimBgContainer>
             <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
               <Text fontSize="16px" color="#BCB3F0" mb="24px">
-                No pools found
+                {t('noPoolsFound')}
               </Text>
-              <BlueButton>Create a pool</BlueButton>
+              <BlueButton> {t('createAPool')}</BlueButton>
             </Flex>
           </DimBgContainer>
         )}
@@ -144,17 +125,31 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   )
 }
 
+const ListLayout = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 8px;
+`
+
+const PaginationRow = styled(Flex)`
+  width: 100%;
+  justify-content: flex-end;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
+
+  & ul {
+    margin: 22px 0;
+  }
+`
+
 const DimBgContainer = styled.div`
   width: 100%;
-
   padding: 48px;
   border-radius: 12px;
-  border: 1px solid #464366;
+  border: 1px solid ${({ theme }) => theme.purple5};
 
-  background: linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%);
-  background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.5) -0.1%, rgba(0, 0, 0, 0) 98.9%);
-  background: #3933584d;
-
+  background: ${gradients.purpleDim};
   background-blend-mode: normal, overlay, normal;
   backdrop-filter: blur(25px);
 `
