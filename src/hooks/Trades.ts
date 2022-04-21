@@ -6,7 +6,7 @@ import {
   Token,
   Trade,
   UniswapV2Trade,
-  Percent,
+  Percent
 } from '@swapr/sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
@@ -53,7 +53,7 @@ function useAllCommonPairs(
             // token B against all bases
             ...bases.map((base): [Token, Token] => [tokenB, base]),
             // each base against all bases
-            ...basePairs,
+            ...basePairs
           ]
             .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
             .filter(([t0, t1]) => t0.address !== t1.address)
@@ -102,8 +102,8 @@ export function useTradeExactIn(
           maximumSlippage,
           maxHops: {
             maxHops: multihop ? 3 : 1,
-            maxNumResults: 1,
-          },
+            maxNumResults: 1
+          }
         })[0] ?? null
       )
     }
@@ -133,8 +133,8 @@ export function useTradeExactOut(
           maximumSlippage,
           maxHops: {
             maxHops: multihop ? 3 : 1,
-            maxNumResults: 1,
-          },
+            maxNumResults: 1
+          }
         })[0] ?? null
       )
     }
@@ -157,6 +157,7 @@ export function useTradeExactInAllPlatforms(
     useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
     useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
     useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP),
+    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.QUICKSWAP)
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }
@@ -176,6 +177,7 @@ export function useTradeExactOutAllPlatforms(
     useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.HONEYSWAP),
     useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.BAOSWAP),
     useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.LEVINSWAP),
+    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.QUICKSWAP)
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }
