@@ -11,6 +11,7 @@ import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
 import { useKpiTokens } from './useKpiTokens'
+import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const PAGE_SIZE = 1000
 
@@ -124,14 +125,14 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   useEffect(() => {
     let cancelled = false
     const fetchData = async () => {
-      if (!chainId) return
+      if (!chainId || !chainSupportsSWPR(chainId)) return
       const pairs = []
       let lastId = ''
       setLoadingPairs(true)
       setPairs([])
       try {
         while (1) {
-          const result = await immediateSubgraphClients[chainId].request<QueryResult>(QUERY, {
+          const result = await immediateSubgraphClients[chainId as SWPRSupportedChains].request<QueryResult>(QUERY, {
             lowerTimeLimit: memoizedLowerTimeLimit,
             userId: subgraphAccountId,
             lastId,

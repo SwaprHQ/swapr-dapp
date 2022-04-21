@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { GraphQLClient } from 'graphql-request'
 import { ChainId } from '@swapr/sdk'
+import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 export const defaultSubgraphClient = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
@@ -12,7 +13,9 @@ export const oldBuildClient = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-export const subgraphClients: { [chainId in ChainId]: ApolloClient<NormalizedCacheObject> } = {
+export const subgraphClients: {
+  [chainId in SWPRSupportedChains]: ApolloClient<NormalizedCacheObject>
+} = {
   [ChainId.MAINNET]: defaultSubgraphClient,
   [ChainId.RINKEBY]: new ApolloClient({
     // uri: 'https://api.thegraph.com/subgraphs/name/luzzif/swapr-rinkeby-new',
@@ -33,7 +36,7 @@ export const subgraphClients: { [chainId in ChainId]: ApolloClient<NormalizedCac
   })
 }
 
-export const immediateSubgraphClients: { [chainId in ChainId]: GraphQLClient } = {
+export const immediateSubgraphClients: { [chainId in SWPRSupportedChains]: GraphQLClient } = {
   [ChainId.MAINNET]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2'),
   [ChainId.RINKEBY]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'),
   [ChainId.XDAI]: new GraphQLClient('https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2'),
