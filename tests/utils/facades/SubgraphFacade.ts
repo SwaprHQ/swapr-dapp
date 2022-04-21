@@ -41,7 +41,7 @@ export class SubgraphFacade {
           if (retries > 100) {
             throw new Error('Retried too many times')
           }
-          return this.transaction(txid, ++retries)
+          return this.transaction(txid, retries++)
         }
         return resp
       })
@@ -62,61 +62,5 @@ tokens(first:500){
 `
       }
     })
-  }
-  static liquidityCampaign(owner: string, startsAt: number, retries = 0) {
-    return cy
-      .request({
-        method: 'POST',
-        url: this.SUBGRAPH_URL,
-        body: {
-          query:
-            `
-{
-  liquidityMiningCampaigns(where:{
-    owner:"` +
-            owner +
-            `"
-    startsAt: "` +
-            startsAt +
-            `"
-  }, first:1) {
-    owner
-    startsAt
-    endsAt
-    stakablePair{
-      token0{
-        symbol
-      }
-      token1{
-        symbol
-      }
-    }
-    rewards{
-      token{
-        symbol
-      }
-      amount
-    }
-  }
-}
-
-`
-        }
-      })
-      .then(resp => {
-        console.log(resp)
-        console.log(retries)
-        console.log(startsAt)
-        try {
-          expect(resp.body.data.liquidityMiningCampaigns).to.have.length.greaterThan(0)
-        } catch (err) {
-          if (retries > 100) {
-            throw new Error('Retried too many times')
-          }
-          cy.wait(500)
-          return this.liquidityCampaign(owner, startsAt, ++retries)
-        }
-        return resp
-      })
   }
 }
