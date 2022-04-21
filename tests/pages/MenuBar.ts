@@ -10,7 +10,7 @@ export class MenuBar {
     cy.get('.Toastify__close-button').click({ multiple: true, force: true })
   }
   static checkToastMessage(message: string) {
-    cy.get('.Toastify__toast', { timeout: 80000 }).should('contain', message)
+    cy.get('.Toastify__toast', { timeout: 100000 }).should('contain', message)
     this.closeToastAlerts()
   }
   static getSwap() {
@@ -42,6 +42,12 @@ export class MenuBar {
   }
   static getWeb3Status() {
     return cy.get('#web3-status-connected')
+  }
+  static getUnsupportedNetworkWarning() {
+    return cy.get('[data-testid=unsupported-network-warning]')
+  }
+  static getUnsupportedNetworkPopover() {
+    return cy.get('[data-testid=unsupported-network-popover]')
   }
   static checkHrefs() {
     MenuBar.getRewards().should('be.visible')
