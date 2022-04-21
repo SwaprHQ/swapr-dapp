@@ -1,33 +1,53 @@
 import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
-import {RewardsPage} from "../../../pages/RewardsPage";
-import {CreatePoolPage} from "../../../pages/CreatePoolPage";
-import {PairMenu} from "../../../pages/PairMenu";
-import {TokenMenu} from "../../../pages/TokenMenu";
+import { RewardsPage } from '../../../pages/RewardsPage'
+import { CreatePoolPage } from '../../../pages/CreatePoolPage'
+import { PairMenu } from '../../../pages/PairMenu'
+import { TokenMenu } from '../../../pages/TokenMenu'
+import { DateUtils } from '../../../utils/DateUtils'
+import { SubgraphFacade } from '../../../utils/facades/SubgraphFacade'
+import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 
 describe('Wallet connection tests', () => {
-    beforeEach(() => {
-        RewardsPage.visitRewardsPage()
-        MenuBar.connectWallet()
-    })
-    afterEach(() => {
-        cy.disconnectMetamaskWalletFromAllDapps()
-        cy.clearCookies()
-        cy.clearLocalStorage()
-    })
+  const REWARDS_INPUT = 0.001
 
-    it('Should create a single reward pool', () => {
-        RewardsPage.getCreateCampaignButton().click()
-        CreatePoolPage.getLiquidityPairMenuButton().click()
-        PairMenu.choosePair("DAI/USDT")
-        CreatePoolPage.getRewardTokenMenuButton().click()
-        TokenMenu.chooseToken("dxd")
-        CreatePoolPage.getTotalRewardInput().type("0.001")
-        CreatePoolPage.setStartTime("20-04-2022 13:00")
+  beforeEach(() => {
+    RewardsPage.visitRewardsPage()
+    MenuBar.connectWallet()
+  })
+  afterEach(() => {
+    cy.disconnectMetamaskWalletFromAllDapps()
+    cy.clearCookies()
+    cy.clearLocalStorage()
+  })
+  after(() => {
+    cy.resetMetamaskAccount()
+    cy.wait(500)
+  })
 
-        CreatePoolPage.setEndTime("20-04-2022 13:10")
-        const d = new Date()
-        console.log(d.getDay() + "-" + d.get)
-        cy.wait(1000000)
+  it('Should create a single reward pool', () => {
+    RewardsPage.getCreateCampaignButton().click()
+    CreatePoolPage.getLiquidityPairMenuButton().click()
+    PairMenu.choosePair('DAI/USDT')
+    CreatePoolPage.getRewardTokenMenuButton().click()
+    TokenMenu.chooseToken('weenus')
+    CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
+
+    const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
+    const endsAt = DateUtils.getDateTimeAndAppendMinutes(16)
+
+    CreatePoolPage.setStartTime(DateUtils.getFormattedDateTime(startsAt))
+    CreatePoolPage.setEndTime(DateUtils.getFormattedDateTime(endsAt))
+
+    CreatePoolPage.confirmPoolCreation()
+    cy.confirmMetamaskTransaction({})
+    MenuBar.checkToastMessage('campaign')
+    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(startsAt)).then((res: any) => {
+      expect(res.body.data.liquidityMiningCampaigns[0].owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
+      expect(parseInt(res.body.data.liquidityMiningCampaigns[0].endsAt)).to.be.eq(getUnixTime(endsAt))
+      expect(parseFloat(res.body.data.liquidityMiningCampaigns[0].rewards[0].amount)).to.be.eq(REWARDS_INPUT)
+      expect(res.body.data.liquidityMiningCampaigns[0].rewards[0].token.symbol).to.be.eq('WEENUS')
+      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
+      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
     })
+  })
 })

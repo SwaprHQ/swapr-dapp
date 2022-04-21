@@ -101,7 +101,7 @@ export class TransactionHelper {
           throw new Error('To many retries')
         }
         cy.wait(1000)
-        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, retries++)
+        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, ++retries)
       }
     })
   }
@@ -116,7 +116,7 @@ export class TransactionHelper {
         if (retries > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
-        this.waitForTokenLists(retries++)
+        this.waitForTokenLists(++retries)
       }
     })
   }

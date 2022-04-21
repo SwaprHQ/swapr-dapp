@@ -8,6 +8,9 @@ export class CreatePoolPage {
   static getTotalRewardInput() {
     return cy.get('[data-testid=reward-input]')
   }
+  static getConfirmButton() {
+    return cy.get('[data-testid=confirm-button]')
+  }
   static setStartTime(time: string) {
     return cy.get('[data-testid=start-time-selector-box]').within(() => {
       cy.get('.react-datepicker__input-container').type(time)
@@ -17,5 +20,9 @@ export class CreatePoolPage {
     return cy.get('[data-testid=end-time-selector-box]').within(() => {
       cy.get('.react-datepicker__input-container').type(time)
     })
+  }
+  static confirmPoolCreation() {
+    this.getConfirmButton().click()
+    cy.get('[data-testid=modal-confirm-button]').click()
   }
 }
