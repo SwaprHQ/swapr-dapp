@@ -3,14 +3,14 @@ import { Pair } from '@swapr/sdk'
 
 export interface PairRowProps {
   pair: Pair
+  style: CSSProperties
   onSelect: () => void
   isSelected: boolean
-  style: CSSProperties
 }
 
 export interface PairListProps {
   pairs: Pair[]
-  selectedPair?: Pair | null
-  onPairSelect: (pair: Pair) => void
   otherPair?: Pair | null
+  onPairSelect: (pair: Pair) => void
+  selectedPair?: Pair | null
 }

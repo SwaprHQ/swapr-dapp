@@ -9,9 +9,9 @@ import { PairSearchModalProps } from './PairSearchModal.types'
 export const PairSearchModal = ({
   isOpen,
   onDismiss,
+  filterPairs,
   onPairSelect,
-  selectedPair,
-  filterPairs
+  selectedPair
 }: PairSearchModalProps) => {
   const handlePairSelect = useCallback(
     (pair: Pair) => {

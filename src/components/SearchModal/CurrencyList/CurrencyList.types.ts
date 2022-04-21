@@ -12,22 +12,22 @@ export function isBreakLine(x: unknown): x is BreakLine {
 
 export interface CurrencyListProps {
   currencies: Currency[]
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
-  otherCurrency?: Currency | null
-  otherListTokens: Token[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  showImportView: () => void
+  otherCurrency?: Currency | null
   setImportToken: (token: Token) => void
+  showImportView: () => void
+  otherListTokens: Token[]
+  onCurrencySelect: (currency: Currency) => void
+  selectedCurrency?: Currency | null
   selectedTokenList: TokenAddressMap
 }
 
 export interface CurrencyRowProps {
-  currency: Currency
+  style: CSSProperties
   balance: CurrencyAmount | undefined
-  selectedTokenList: TokenAddressMap
   onSelect: () => void
+  currency: Currency
   isSelected: boolean
   otherSelected: boolean
-  style: CSSProperties
+  selectedTokenList: TokenAddressMap
 }

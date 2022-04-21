@@ -2,11 +2,11 @@ import { Currency, Token } from '@swapr/sdk'
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export interface CurrencySearchContextType {
+  allTokens: { [address: string]: Token }
   searchQuery: string
+  searchToken: Token | null | undefined
   setSearchQuery: (query: string) => void
   debouncedQuery: string
-  searchToken: Token | null | undefined
-  allTokens: { [address: string]: Token }
   selectedTokenList: TokenAddressMap
   showFallbackTokens: boolean
 }
@@ -14,11 +14,11 @@ export interface CurrencySearchContextType {
 export interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
-  otherSelectedCurrency?: Currency | null
-  showCommonBases?: boolean
   showManageView: () => void
   showImportView: () => void
+  showCommonBases?: boolean
+  onCurrencySelect: (currency: Currency) => void
+  selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
+  otherSelectedCurrency?: Currency | null
 }

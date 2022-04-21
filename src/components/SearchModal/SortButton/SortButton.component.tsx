@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { CursorText } from './SortButton.styles'
+
 import { SortButtonProps } from './SortButton.types'
 
 export const SortButton = ({ toggleSortOrder, ascending }: SortButtonProps) => {

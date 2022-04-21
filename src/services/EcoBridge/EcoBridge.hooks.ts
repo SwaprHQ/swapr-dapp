@@ -30,6 +30,7 @@ import { currencyId } from '../../utils/currencyId'
 import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { TokenList } from '@uniswap/token-lists'
+import { ListsState } from '../../state/lists/reducer'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -122,13 +123,17 @@ export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): Wrap
 
 export const useBridgeActiveTokenMap = () => useSelector(selectBridgeActiveTokens)
 
+type WritableListsState = {
+  [url: string]: ListsState['byUrl'][string]
+}
+
 export const useBridgeSupportedLists = () => {
   const supportedLists = useSelector(selectSupportedLists)
 
   // satisfy existing interface
-  return useMemo(() => {
-    return Object.entries(supportedLists).reduce(
-      (total, [id, tokenList]) => {
+  return useMemo(
+    () =>
+      Object.entries(supportedLists).reduce<WritableListsState>((total, [id, tokenList]) => {
         total[id] = {
           current: tokenList,
           pendingUpdate: null,
@@ -136,17 +141,9 @@ export const useBridgeSupportedLists = () => {
           error: null
         }
         return total
-      },
-      {} as {
-        [url: string]: {
-          readonly current: TokenList | null
-          readonly pendingUpdate: TokenList | null
-          readonly loadingRequestId: string | null
-          readonly error: string | null
-        }
-      }
-    )
-  }, [supportedLists])
+      }, {}),
+    [supportedLists]
+  )
 }
 
 export const useBridgeListsLoadingStatus = () => useSelector(selectBridgeListsLoadingStatus)

@@ -22,7 +22,7 @@ export interface ListsState {
   readonly activeListUrls: string[] | undefined
 }
 
-type ListState = ListsState['byUrl'][string]
+export type ListState = ListsState['byUrl'][string]
 
 const NEW_LIST_STATE: ListState = {
   error: null,

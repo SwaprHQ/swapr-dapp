@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
+import debounce from 'lodash.debounce'
+
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 
 import { CurrencySearchContext } from '../SearchModal/CurrencySearch/CurrencySearch.context'
 import { ListRowContext, ManageListsContext } from '../SearchModal/ManageLists/ManageLists.context'
 import { CurrencySearchModalContext } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.context'
+
 import {
   useCurrencySearchModalBridge,
   useCurrencySearchModalSwap
 } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
-
-import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
-import debounce from 'lodash.debounce'
+
 import { CurrencyWrapperSource } from '../CurrencyLogo'
+import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const {

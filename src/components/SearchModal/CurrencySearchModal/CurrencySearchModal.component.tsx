@@ -5,12 +5,14 @@ import useLast from '../../../hooks/useLast'
 import usePrevious from '../../../hooks/usePrevious'
 
 import Modal from '../../Modal'
-import { CurrencySearch } from '../CurrencySearch'
+import { Manage } from '../Manage'
 import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
-import { Manage } from '../Manage'
-import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
+import { CurrencySearch } from '../CurrencySearch'
+
 import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+
+import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 
 export const CurrencySearchModalComponent = ({
   isOpen,

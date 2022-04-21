@@ -1,3 +1,3 @@
-export {PairSearchModal} from './PairSearchModal.component'
+export { PairSearchModal } from './PairSearchModal.component'
 //eslint-disable-next-line
-export type {PairSearchModalProps} from './PairSearchModal.types'
+export type { PairSearchModalProps } from './PairSearchModal.types'

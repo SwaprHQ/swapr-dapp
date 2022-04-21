@@ -1,16 +1,19 @@
 import React from 'react'
-import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
-import { ManageListsContext, ListRowContext } from '../ManageLists/ManageLists.context'
-import { CurrencySearchModalComponent } from './CurrencySearchModal.component'
-import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+
 import { useCurrencySearchModalSwap } from './CurrencySearchModal.hooks'
+
+import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
+import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+import { CurrencySearchModalComponent } from './CurrencySearchModal.component'
+import { ManageListsContext, ListRowContext } from '../ManageLists/ManageLists.context'
+
 import { CurrencySearchModalProps } from './CurrencySearchModal.types'
 
 export const CurrencySearchModal = (props: CurrencySearchModalProps) => {
   const {
-    currencySearchContext,
     listRowContext,
     manageListsContext,
+    currencySearchContext,
     currencySearchModalContext
   } = useCurrencySearchModalSwap()
 

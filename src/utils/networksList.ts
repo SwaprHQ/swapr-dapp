@@ -10,7 +10,7 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
     name: network ? network.name : '', //name displayed in swapr
     logoSrc: network ? network.logoSrc : '',
     color: network ? network.color : '',
-    tag: network ? network.tag : '',
+    tag: network ? network.tag : undefined,
     chainName: NETWORK_DETAIL[chainId].chainName, //name used by metamask
     chainId: NETWORK_DETAIL[chainId].chainId,
     rpcUrl: NETWORK_DETAIL[chainId].rpcUrls,
@@ -93,7 +93,7 @@ export const createNetworksList = ({
   if (ignoreTags?.length) {
     networks = networkOptionsPreset.map(item => {
       if (item.tag && ignoreTags?.includes(item.tag)) {
-        return { ...item, tag: '' }
+        return { ...item, tag: undefined }
       }
       return item
     })
@@ -102,7 +102,7 @@ export const createNetworksList = ({
   return networks
     .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId))
     .reduce<NetworksList[]>((taggedList, currentNet) => {
-      const tag = currentNet.tag ? currentNet.tag : ''
+      const tag = currentNet.tag
       const networkPreset = currentNet
       const enhancedNetworkOptions = createNetworkOptions({
         networkPreset,
