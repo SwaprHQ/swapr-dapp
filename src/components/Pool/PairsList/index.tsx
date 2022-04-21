@@ -4,7 +4,7 @@ import { Pagination } from '../../Pagination'
 import { LoadingList } from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+import { BigintIsh, CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 import { Empty } from '../Empty'
 import styled from 'styled-components'
 import { usePage } from '../../../hooks/usePage'
@@ -34,26 +34,24 @@ const PaginationRow = styled(Flex)`
   }
 `
 
+export interface AggregatedPairs {
+  pair: Pair
+  liquidityUSD: CurrencyAmount
+  maximumApy: Percent
+  staked?: boolean
+  containsKpiToken?: boolean
+  hasFarming?: boolean
+  startsAt?: BigintIsh
+}
+
 interface PairsListProps {
-  aggregatedPairs: {
-    pair: Pair
-    liquidityUSD: CurrencyAmount
-    maximumApy: Percent
-    staked?: boolean
-    containsKpiToken?: boolean
-    hasFarming?: boolean
-  }[]
+  aggregatedPairs: AggregatedPairs[]
   singleSidedStake?: SingleSidedLiquidityMiningCampaign
   hasActiveCampaigns?: boolean
   filter?: PairsFilterType
   loading?: boolean
   hasSingleSidedStake?: boolean
 }
-
-// enum Layout {
-//   LIST,
-//   GRID
-// }
 
 export default function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()

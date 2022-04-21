@@ -24,6 +24,8 @@ import CurrencyLogo from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { SortByDropdown } from '../../components/Pool/SortByDropdown'
+import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -70,6 +72,8 @@ interface TitleProps {
   onFilteredTokenReset: () => void
   aggregatedDataFilter: PairsFilterType
   onFilterChange: any
+  onSortByChange: (sortBy: string) => void
+  sortBy: string
 }
 
 // decoupling the title from the rest of the component avoids full-rerender everytime the pair selection modal is opened
@@ -78,7 +82,9 @@ function Title({
   filteredToken,
   onFilteredTokenReset,
   aggregatedDataFilter,
-  onFilterChange
+  onFilterChange,
+  onSortByChange,
+  sortBy
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
 
@@ -170,6 +176,7 @@ function Title({
             }
             isOn={aggregatedDataFilter === PairsFilterType.MY}
           />
+          <SortByDropdown sortBy={sortBy} onSortByChange={onSortByChange} />
         </Flex>
       </TitleRow>
       <CurrencySearchModal
@@ -186,9 +193,11 @@ export default function Pools() {
   const { account, chainId } = useActiveWeb3React()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
+  const [sortBy, setSortBy] = useState(LIQUIDITY_SORTING_TYPES.TVL)
   const { loading: loadingAggregatedData, aggregatedData } = useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     aggregatedDataFilter,
-    filterToken
+    filterToken,
+    sortBy
   )
 
   const { loading: ssLoading, data } = useSwaprSinglelSidedStakeCampaigns(filterToken, aggregatedDataFilter)
@@ -203,6 +212,10 @@ export default function Pools() {
     setFilterToken(undefined)
   }, [])
 
+  const handleSortBy = useCallback(sortBy => {
+    setSortBy(sortBy)
+  }, [])
+
   return (
     <>
       <PageWrapper>
@@ -215,6 +228,8 @@ export default function Pools() {
               filteredToken={filterToken}
               onFilteredTokenReset={handleFilterTokenReset}
               onFilterChange={setAggregatedDataFilter}
+              onSortByChange={handleSortBy}
+              sortBy={sortBy}
             />
             {aggregatedDataFilter === PairsFilterType.MY ? (
               <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
@@ -235,34 +250,6 @@ export default function Pools() {
             style={{ marginTop: '32px' }}
           />
         )}
-        {/* Should not be needed since when we fetch liquidity positions from the subgraph */}
-        {/* <TYPE.body color="text4" textAlign="center" fontWeight="500" fontSize="14px" lineHeight="17px" marginTop="32px">
-          Don't see a pool you joined?{' '}
-          <StyledInternalLink color="text5" id="import-pool-link" to="/find">
-            Import it.
-          </StyledInternalLink>
-        </TYPE.body> */}
-        {/* <VoteCard style={{ marginTop: '32px' }}>
-          <CardSection>
-            <AutoColumn gap="md">
-              <RowBetween>
-                <TYPE.body fontWeight={600} lineHeight="20px">
-                  Liquidity provider rewards
-                </TYPE.body>
-              </RowBetween>
-              <RowBetween>
-                <TYPE.body fontWeight="500" fontSize="12px" lineHeight="20px" letterSpacing="-0.4px">
-                  Liquidity providers earn a swap fee (0.25% by default, of which ~10% taken by the protocol as a fee)
-                  on all trades proportional to their share of the pool.
-                  <br /> Fees are added to the pool, accrue in real time and can be claimed by withdrawing your
-                  liquidity.
-                  <br /> The swap fee value is decided by DXdao and liquidty providers, it can be between 0% and 10% and
-                  it uses 0.25% as default value that is assigned when the pair is created.
-                </TYPE.body>
-              </RowBetween>
-            </AutoColumn>
-          </CardSection>
-        </VoteCard> */}
       </PageWrapper>
     </>
   )

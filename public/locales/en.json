@@ -118,5 +118,9 @@
   "priceImpact": "Price impact",
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
-  "maxSent": "Max Sent"
+  "maxSent": "Max Sent",
+  "TVL": "TVL",
+  "APY": "APY",
+  "New": "New",
+  "sortBy": "Sort by: {{ option }}"
 }
