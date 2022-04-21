@@ -29,7 +29,6 @@ import { currencyId } from '../../utils/currencyId'
 
 import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
-import { TokenList } from '@uniswap/token-lists'
 import { ListsState } from '../../state/lists/reducer'
 
 export const useBridgeSupportedTokens = () => {

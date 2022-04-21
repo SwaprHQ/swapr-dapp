@@ -5,14 +5,21 @@ import reducer, { SwapState } from './reducer'
 describe('swap reducer', () => {
   let store: Store<SwapState>
 
+  const initialState: SwapState = {
+    independentField: Field.INPUT,
+    typedValue: '',
+    [Field.INPUT]: {
+      currencyId: ''
+    },
+    [Field.OUTPUT]: {
+      currencyId: ''
+    },
+    recipient: null,
+    protocolFeeTo: undefined
+  }
+
   beforeEach(() => {
-    store = createStore(reducer, {
-      [Field.OUTPUT]: { currencyId: '' },
-      [Field.INPUT]: { currencyId: '' },
-      typedValue: '',
-      independentField: Field.INPUT,
-      recipient: null
-    })
+    store = createStore(reducer, initialState)
   })
 
   describe('selectToken', () => {

@@ -6,14 +6,19 @@ import reducer, { ApplicationState } from './reducer'
 describe('application reducer', () => {
   let store: Store<ApplicationState>
 
+  const initialState = {
+    blockNumber: {
+      [ChainId.MAINNET]: 3
+    },
+    mainnetGasPrices: null,
+    popupList: [],
+    openModal: null,
+    chainId: undefined,
+    account: null
+  }
+
   beforeEach(() => {
-    store = createStore(reducer, {
-      popupList: [],
-      blockNumber: {
-        [ChainId.MAINNET]: 3
-      },
-      openModal: null
-    })
+    store = createStore(reducer, initialState)
   })
 
   describe('setOpenModal', () => {
