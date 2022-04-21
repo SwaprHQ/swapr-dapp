@@ -19,9 +19,9 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
       symbol: NETWORK_DETAIL[chainId].nativeCurrency.symbol,
       decimals: NETWORK_DETAIL[chainId].nativeCurrency.decimals
     },
-    isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId].isArbitrum,
-    partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId].partnerChainId,
-    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId].iconUrls
+    isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId]?.isArbitrum ?? false,
+    partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId]?.partnerChainId,
+    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined
   }
 }
 

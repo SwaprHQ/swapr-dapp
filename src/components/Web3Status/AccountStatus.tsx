@@ -11,6 +11,7 @@ import { RowBetween } from '../Row'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
+import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import { TriangleIcon } from '../Icons'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
@@ -25,7 +26,8 @@ const ChainLogo: any = {
   [ChainId.RINKEBY]: EthereumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
-  [ChainId.XDAI]: GnosisLogo
+  [ChainId.XDAI]: GnosisLogo,
+  [ChainId.POLYGON]: PolygonMaticLogo
 }
 
 const View = styled.div`
