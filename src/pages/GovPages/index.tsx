@@ -5,7 +5,7 @@ import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
 
 import { TYPE } from '../../theme'
-import { PageWrapper } from '../Pools/styleds'
+import { PageWrapper } from '../../components/PageWrapper'
 
 import { LightCard } from '../../components/Card'
 import { RowBetween } from '../../components/Row'

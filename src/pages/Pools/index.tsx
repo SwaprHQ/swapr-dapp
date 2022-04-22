@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageWrapper } from './styleds'
+import { PageWrapper } from '../../components/PageWrapper'
 
 import { TYPE } from '../../theme'
 import { Box, Button, Flex, Text } from 'rebass'
