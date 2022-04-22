@@ -26,7 +26,10 @@ export class RewardsPage {
   static getMyPairsToggleSwitch() {
     return cy.get('.react-switch-button')
   }
-  static getRewardCard() {
-    return cy.get('[data-testid=ended-campaign]')
+  static getRewardCards() {
+    return cy.get('[data-testid=reward-card]')
+  }
+  static getRewardCardByStartingAt(startingAt: string) {
+    return cy.get('[data-testid=reward-starting-at-' + startingAt + ']')
   }
 }

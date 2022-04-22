@@ -6,9 +6,12 @@ import { TokenMenu } from '../../../pages/TokenMenu'
 import { DateUtils } from '../../../utils/DateUtils'
 import { SubgraphFacade } from '../../../utils/facades/SubgraphFacade'
 import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
+import {getUnixTime} from "date-fns";
 
 describe('Wallet connection tests', () => {
   const REWARDS_INPUT = 0.001
+  const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
+  const endsAt = DateUtils.getDateTimeAndAppendMinutes(4)
 
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
@@ -32,9 +35,6 @@ describe('Wallet connection tests', () => {
     TokenMenu.chooseToken('weenus')
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
-    const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
-    const endsAt = DateUtils.getDateTimeAndAppendMinutes(16)
-
     CreatePoolPage.setStartTime(DateUtils.getFormattedDateTime(startsAt))
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTime(endsAt))
 
@@ -49,5 +49,10 @@ describe('Wallet connection tests', () => {
       expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
       expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
     })
+  })
+  it('Should open a campaign', () => {
+    RewardsPage.getRewardCards().should("be.visible")
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).should("be.visible")
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
   })
 })
