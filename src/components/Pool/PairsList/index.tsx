@@ -46,7 +46,6 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   const { t } = useTranslation()
 
-  // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
   useEffect(() => {
     // reset page when connected chain or selected filter changes
     setPage(1)
