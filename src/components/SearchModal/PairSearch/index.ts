@@ -1,3 +1,4 @@
+import { PairSearchProps as PairSearchProps_ } from './PairSearch.types'
+
+export type PairSearchProps = PairSearchProps_
 export { PairSearch } from './PairSearch.component'
-//eslint-disable-next-line
-export type { PairSearchProps } from './PairSearch.types'

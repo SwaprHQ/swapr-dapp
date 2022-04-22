@@ -1,3 +1,4 @@
+import { CurrencySearchProps as CurrencySearchProps_ } from './CurrencySearch.types'
+
+export type CurrencySearchProps = CurrencySearchProps_
 export { CurrencySearch } from './CurrencySearch.component'
-//eslint-disable-next-line
-export type {CurrencySearchProps} from './CurrencySearch.types' 

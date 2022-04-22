@@ -1,3 +1,4 @@
+import { ImportRowProps as ImportRowProps_ } from './ImportRow.types'
+
+export type ImportRowProps = ImportRowProps_
 export { ImportRow } from './ImportRow.component'
-//eslint-disable-next-line
-export type {ImportRowProps} from './ImportRow.types'
