@@ -53,6 +53,7 @@ describe('Wallet connection tests', () => {
   it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should("be.visible")
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).should("be.visible")
+    cy.wait(10000)
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
   })
 })
