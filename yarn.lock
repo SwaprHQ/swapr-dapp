@@ -3454,10 +3454,8 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.0.1.tgz#462b78926ac2dcfb8f165ef219ffdb49b186a0db"
-  integrity sha512-16xAmAx9KX25jpZFF4IM7F7YFlW5gVc0dUyKj73BqxNq2acOvj9y6JfGp9ugteJC6VqenLy5cPP8tmiT+hfLBA==
+"@swapr/sdk@../swapr-sdk":
+  version "1.0.2"
   dependencies:
     "@ethersproject/abi" "^5.6.0"
     "@ethersproject/address" "^5.6.0"
