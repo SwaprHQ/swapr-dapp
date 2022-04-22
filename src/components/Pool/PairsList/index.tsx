@@ -1,39 +1,22 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { Box, Flex, Text } from 'rebass'
+import { useTranslation } from 'react-i18next'
+import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
+import { usePage } from '../../../hooks/usePage'
+import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
+import { useActiveWeb3React } from '../../../hooks'
+import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
+
 import { Pagination } from '../../Pagination'
 import { LoadingList } from '../LoadingList'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import { Empty } from '../Empty'
-import styled from 'styled-components'
-import { usePage } from '../../../hooks/usePage'
-import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
-import { useActiveWeb3React } from '../../../hooks'
 import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
-import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
-
-const ListLayout = styled.div`
-  display: grid;
-  //this should be toogleble as well to 1fr 1fr 1fr
-  grid-template-columns: auto;
-  grid-gap: 8px;
-`
-
-const PaginationRow = styled(Flex)`
-  width: 100%;
-  justify-content: flex-end;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    justify-content: center;
-  `};
-
-  & ul {
-    margin: 22px 0;
-  }
-`
-
+import { gradients } from '../../../utils/theme'
 interface PairsListProps {
   aggregatedPairs: {
     pair: Pair
@@ -50,11 +33,6 @@ interface PairsListProps {
   hasSingleSidedStake?: boolean
 }
 
-// enum Layout {
-//   LIST,
-//   GRID
-// }
-
 export default function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
   const [page, setPage] = useState(1)
@@ -62,7 +40,8 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
   const { address: swprAddress } = useSWPRToken()
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-  // const [layoutSwitch, setLayoutSwitch] = useState<Layout>(Layout.LIST)
+  const { t } = useTranslation()
+
   useEffect(() => {
     // reset page when connected chain or selected filter changes
     setPage(1)
@@ -119,11 +98,14 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
               })}
           </ListLayout>
         ) : (
-          <Empty>
-            <Text fontSize="12px" fontWeight="700" lineHeight="15px" letterSpacing="0.08em">
-              NO PAIRS YET
-            </Text>
-          </Empty>
+          <DimBgContainer>
+            <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
+              <Text fontSize="16px" color="#BCB3F0" mb="24px">
+                {t('noPoolsFound')}
+              </Text>
+              <BlueButton> {t('createAPool')}</BlueButton>
+            </Flex>
+          </DimBgContainer>
         )}
       </Box>
       {aggregatedPairs.length > responsiveItemsPerPage && (
@@ -141,3 +123,53 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
     </Flex>
   )
 }
+
+const ListLayout = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 8px;
+`
+
+const PaginationRow = styled(Flex)`
+  width: 100%;
+  justify-content: flex-end;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
+
+  & ul {
+    margin: 22px 0;
+  }
+`
+
+const DimBgContainer = styled.div`
+  width: 100%;
+  padding: 48px;
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.purple5};
+
+  background: ${gradients.purpleDim};
+  background-blend-mode: normal, overlay, normal;
+  backdrop-filter: blur(25px);
+`
+
+const BlueButton = styled.button`
+  outline: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+
+  background-color: ${({ theme }) => theme.primary1};
+
+  font-size: 12px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.white};
+  text-transform: uppercase;
+
+  cursor: pointer;
+`

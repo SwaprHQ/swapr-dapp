@@ -6,6 +6,7 @@ import { Box, Flex } from 'rebass'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../../theme'
+import { gradients } from '../../../../utils/theme'
 
 const SizedCard = styled(DarkCard)<{ isMobile: boolean }>`
   width: 100%;
@@ -20,8 +21,7 @@ const SizedCard = styled(DarkCard)<{ isMobile: boolean }>`
 
   ::before {
     background-blend-mode: normal, overlay, normal;
-    background: ${props => `linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%),
-      linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), ${props.theme.bg6}`};
+    background: ${gradients.purpleDim};
   }
 `
 const MobileHidden = styled(Box)<{ isMobile: boolean }>`
