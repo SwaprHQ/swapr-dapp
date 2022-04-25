@@ -13,13 +13,14 @@ import {
   SWPR_CLAIMER_ABI,
   SWPR_CLAIMER_ADDRESS,
   SWPR_CONVERTER_ADDRESS,
+  WMATIC
 } from '@swapr/sdk'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { useMemo } from 'react'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
-  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
+  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
@@ -27,6 +28,7 @@ import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import WXDAI_ABI from '../constants/abis/wxdai.json'
+import WMATIC_ABI from '../constants/abis/wmatic.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -66,6 +68,8 @@ function useWrappingTokenAbi(token?: Token): any | undefined {
       return WETH_ABI
     case WXDAI[chainId]:
       return WXDAI_ABI
+    case WMATIC[chainId]:
+      return WMATIC_ABI
     default:
       return undefined
   }
