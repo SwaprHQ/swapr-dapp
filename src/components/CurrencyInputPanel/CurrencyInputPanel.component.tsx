@@ -95,6 +95,7 @@ export const CurrencyInputPanelComponent = ({
                   onBlur={handleBlur}
                   onUserInput={onUserInput}
                   disabled={disabled}
+                  data-testid={'transaction-value-input'}
                 />
               </>
             )}
@@ -132,9 +133,9 @@ export const CurrencyInputPanelComponent = ({
                       <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                         {(currency && currency.symbol && currency.symbol.length > 20
                           ? currency.symbol.slice(0, 4) +
-                            '...' +
-                            currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                          : currency?.symbol) || t('select Token')}
+                          '...' +
+                          currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                          : currency?.symbol) || <div data-testid="select-token-button"> {t('select Token')}</div>}
                       </StyledTokenName>
                     )}
                     {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}

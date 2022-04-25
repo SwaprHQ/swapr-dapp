@@ -52,6 +52,7 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
         {t('recipient')}
       </TYPE.subHeader>
       <SearchInputStyled
+        data-testid="address-input"
         type="text"
         placeholder={t('addressOrENS')}
         value={(address || recipient) ?? ''}

@@ -182,7 +182,13 @@ export default function SlippageTabs({
           <Toggle isActive={multihop} toggle={onMultihopChange} />
         </RowBetween>
         <RowFixed>
-          <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="slippage-tolerance-text">
+          <TYPE.body
+            color="text4"
+            fontWeight={500}
+            fontSize="12px"
+            lineHeight="15px"
+            data-testid="slippage-tolerance-text"
+          >
             Slippage tolerance
           </TYPE.body>
           <QuestionHelper text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
@@ -226,7 +232,8 @@ export default function SlippageTabs({
                 </SlippageEmojiContainer>
               ) : null}
               {/* https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
-              <Input data-testid="input-slippage-tolerance"
+              <Input
+                data-testid="input-slippage-tolerance"
                 placeholder={(rawSlippage / 100).toFixed(2)}
                 value={slippageInput}
                 onFocus={handleSlippageFocus}
@@ -242,7 +249,8 @@ export default function SlippageTabs({
           </OptionCustom>
         </RowBetween>
         {!!slippageError && (
-          <Text data-testid="slippage-error"
+          <Text
+            data-testid="slippage-error"
             fontWeight={500}
             fontSize="12px"
             lineHeight="15px"
@@ -257,14 +265,21 @@ export default function SlippageTabs({
         )}
         <RowBetween mt="2px">
           <RowFixed>
-            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="transaction-deadline-text">
+            <TYPE.body
+              color="text4"
+              fontWeight={500}
+              fontSize="12px"
+              lineHeight="15px"
+              data-testid="transaction-deadline-text"
+            >
               Transaction deadline
             </TYPE.body>
             <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
           </RowFixed>
           <RowFixed>
             <OptionCustom focused={deadlineFocused} style={{ width: '52px', minWidth: '52px' }} tabIndex={-1}>
-              <Input data-testid="input-transaction-deadline"
+              <Input
+                data-testid="input-transaction-deadline"
                 color={!!deadlineError ? 'red' : undefined}
                 onFocus={handleDeadlineFocus}
                 onBlur={() => {
