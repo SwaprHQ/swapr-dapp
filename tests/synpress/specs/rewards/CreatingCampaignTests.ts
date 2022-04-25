@@ -6,7 +6,7 @@ import { TokenMenu } from '../../../pages/TokenMenu'
 import { DateUtils } from '../../../utils/DateUtils'
 import { SubgraphFacade } from '../../../utils/facades/SubgraphFacade'
 import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
-import {getUnixTime} from "date-fns";
+import { getUnixTime } from 'date-fns'
 
 describe('Wallet connection tests', () => {
   const REWARDS_INPUT = 0.001
@@ -51,9 +51,10 @@ describe('Wallet connection tests', () => {
     })
   })
   it('Should open a campaign', () => {
-    RewardsPage.getRewardCards().should("be.visible")
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).should("be.visible")
-    cy.wait(10000)
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
+    RewardsPage.getRewardCards().should('be.visible')
+
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click({timeout:100000}).should("contain.text", "ACTIVE")
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click().click()
+    cy.get('[data-testid=reward-campaign-information-card]').should('be.visible')
   })
 })

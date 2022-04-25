@@ -30,6 +30,6 @@ export class RewardsPage {
     return cy.get('[data-testid=reward-card]')
   }
   static getRewardCardByStartingAt(startingAt: string) {
-    return cy.get('[data-testid=reward-starting-at-' + startingAt + ']')
+    return cy.get('[data-testid=reward-starting-at-' + startingAt + ']', { timeout: 60000 })
   }
 }
