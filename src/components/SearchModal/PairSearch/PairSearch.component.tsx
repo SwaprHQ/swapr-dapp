@@ -69,15 +69,14 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
 
   const handleEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && filteredSortedPairs.length > 0) {
-        if (
-          (
-            (filteredSortedPairs[0].token0.symbol || '') + (filteredSortedPairs[0].token1.symbol || '')
-          ).toLowerCase() === searchQuery.trim().toLowerCase() ||
-          filteredSortedPairs.length === 1
-        ) {
-          handlePairSelect(filteredSortedPairs[0])
-        }
+      if (
+        e.key === 'Enter' &&
+        filteredSortedPairs.length > 0 &&
+        (((filteredSortedPairs[0].token0.symbol || '') + (filteredSortedPairs[0].token1.symbol || '')).toLowerCase() ===
+          searchQuery.trim().toLowerCase() ||
+          filteredSortedPairs.length === 1)
+      ) {
+        handlePairSelect(filteredSortedPairs[0])
       }
     },
     [filteredSortedPairs, handlePairSelect, searchQuery]
