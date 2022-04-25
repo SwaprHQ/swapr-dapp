@@ -1,5 +1,7 @@
 import { Currency, Token } from '@swapr/sdk'
 import { TokenList } from '@uniswap/token-lists'
+import { CurrencySearchContextType } from '../CurrencySearch/CurrencySearch.types'
+import { ListRowContextType, ManageListsContextType } from '../ManageLists/ManageLists.types'
 
 export interface CurrencySearchModalProps {
   isOpen: boolean
@@ -28,4 +30,11 @@ export interface CurrencySearchModalContextType {
   setModalView: (val: CurrencyModalView) => void
   setImportList: (importList: TokenList | undefined) => void
   setImportToken: (importToken: Token | undefined) => void
+}
+
+export interface CurrencySearchModalProviderProps {
+  listRowContext: ListRowContextType
+  manageListsContext: ManageListsContextType
+  currencySearchContext: CurrencySearchContextType
+  currencySearchModalContext: CurrencySearchModalContextType
 }

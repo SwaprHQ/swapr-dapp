@@ -3,47 +3,29 @@ import debounce from 'lodash.debounce'
 
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 
-import { CurrencySearchContext } from '../SearchModal/CurrencySearch/CurrencySearch.context'
-import { ListRowContext, ManageListsContext } from '../SearchModal/ManageLists/ManageLists.context'
-import { CurrencySearchModalContext } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.context'
-
 import {
-  useCurrencySearchModalBridge,
-  useCurrencySearchModalSwap
+  useCurrencySearchModalSwap,
+  useCurrencySearchModalBridge
 } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
+import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal'
+
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
-  const {
-    manageListsContext,
-    listRowContext,
-    currencySearchContext,
-    currencySearchModalContext
-  } = useCurrencySearchModalSwap()
+  const searchModalContexts = useCurrencySearchModalSwap()
 
   return (
-    <CurrencySearchModalContext.Provider value={currencySearchModalContext}>
-      <CurrencySearchContext.Provider value={currencySearchContext}>
-        <ManageListsContext.Provider value={manageListsContext}>
-          <ListRowContext.Provider value={listRowContext}>
-            <CurrencyInputPanelComponent {...currencyInputPanelProps} />
-          </ListRowContext.Provider>
-        </ManageListsContext.Provider>
-      </CurrencySearchContext.Provider>
-    </CurrencySearchModalContext.Provider>
+    <CurrencySearchModalProvider {...searchModalContexts}>
+      <CurrencyInputPanelComponent {...currencyInputPanelProps} />
+    </CurrencySearchModalProvider>
   )
 }
 
 export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputPanelProps) => {
-  const {
-    manageListsContext,
-    listRowContext,
-    currencySearchContext,
-    currencySearchModalContext
-  } = useCurrencySearchModalBridge()
+  const searchModalContexts = useCurrencySearchModalBridge()
 
   const {
     value: valueRaw,
@@ -78,20 +60,14 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
   useBridgeInputValidation(!!disableCurrencySelect)
 
   return (
-    <CurrencySearchModalContext.Provider value={currencySearchModalContext}>
-      <CurrencySearchContext.Provider value={currencySearchContext}>
-        <ManageListsContext.Provider value={manageListsContext}>
-          <ListRowContext.Provider value={listRowContext}>
-            <CurrencyInputPanelComponent
-              {...currencyInputPanelProps}
-              onUserInput={onUserInput}
-              displayedValue={displayedValue}
-              value={value}
-              currencyWrapperSource={CurrencyWrapperSource.BRIDGE}
-            />
-          </ListRowContext.Provider>
-        </ManageListsContext.Provider>
-      </CurrencySearchContext.Provider>
-    </CurrencySearchModalContext.Provider>
+    <CurrencySearchModalProvider {...searchModalContexts}>
+      <CurrencyInputPanelComponent
+        {...currencyInputPanelProps}
+        value={value}
+        onUserInput={onUserInput}
+        displayedValue={displayedValue}
+        currencyWrapperSource={CurrencyWrapperSource.BRIDGE}
+      />
+    </CurrencySearchModalProvider>
   )
 }
