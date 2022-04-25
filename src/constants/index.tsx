@@ -11,7 +11,8 @@ import {
   Token,
   Currency,
   SWPR,
-  UniswapV2RoutablePlatform
+  UniswapV2RoutablePlatform,
+  WMATIC
 } from '@swapr/sdk'
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
@@ -142,7 +143,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     AGAVE,
     BAO
   ],
-  [ChainId.POLYGON]: [WETH[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -167,7 +168,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [WETH[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
