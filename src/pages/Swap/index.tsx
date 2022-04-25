@@ -200,6 +200,7 @@ export default function Swap() {
   }, [approval, approvalSubmitted])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
+  const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
@@ -266,9 +267,13 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const handleMaxInput = useCallback(() => {
-    maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
-  }, [maxAmountInput, onUserInput])
+  const handleMaxInput = useCallback(
+    fieldInput => () => {
+      maxAmountInput && fieldInput === Field.INPUT && onUserInput(Field.INPUT, maxAmountInput.toExact())
+      maxAmountOutput && fieldInput === Field.OUTPUT && onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
+    },
+    [maxAmountInput, maxAmountOutput, onUserInput]
+  )
 
   const handleOutputSelect = useCallback(
     outputCurrency => {
@@ -324,7 +329,7 @@ export default function Swap() {
                     value={formattedAmounts[Field.INPUT]}
                     currency={currencies[Field.INPUT]}
                     onUserInput={handleTypeInput}
-                    onMax={handleMaxInput}
+                    onMax={handleMaxInput(Field.INPUT)}
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
@@ -346,6 +351,7 @@ export default function Swap() {
                   <CurrencyInputPanel
                     value={formattedAmounts[Field.OUTPUT]}
                     onUserInput={handleTypeOutput}
+                    onMax={handleMaxInput(Field.OUTPUT)}
                     currency={currencies[Field.OUTPUT]}
                     onCurrencySelect={handleOutputSelect}
                     otherCurrency={currencies[Field.INPUT]}
