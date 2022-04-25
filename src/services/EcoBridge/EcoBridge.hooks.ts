@@ -27,9 +27,14 @@ import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 
-import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
+import {
+  BridgeModalData,
+  BridgeModalState,
+  BridgeModalStatus,
+  BridgeTxsFilter,
+  WritableListsState
+} from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
-import { ListsState } from '../../state/lists/reducer'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -121,10 +126,6 @@ export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): Wrap
 }
 
 export const useBridgeActiveTokenMap = () => useSelector(selectBridgeActiveTokens)
-
-type WritableListsState = {
-  [url: string]: ListsState['byUrl'][string]
-}
 
 export const useBridgeSupportedLists = () => {
   const supportedLists = useSelector(selectSupportedLists)
