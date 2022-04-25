@@ -36,7 +36,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     isNetworkDisabled,
     selectedNetworkChainId: activeChainId ? activeChainId : -1,
     activeChainId: !!account ? activeChainId : -1,
-    ignoreTags: [NetworkSwitcherTags.TESTNETS]
+    ignoreTags: [NetworkSwitcherTags.COMING_SOON]
   })
 
   return (
