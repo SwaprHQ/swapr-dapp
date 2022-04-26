@@ -40,7 +40,7 @@ export function useNewLiquidityMiningCampaign(
       rewards: pricedRewardAmounts,
       staked,
       locked,
-      stakingCap: stakingCap || new TokenAmount(targetedPair.liquidityToken, '0'),
+      stakingCap: stakingCap || new TokenAmount(targetedPair.liquidityToken, '0')
     })
   }, [
     chainId,
@@ -52,6 +52,6 @@ export function useNewLiquidityMiningCampaign(
     stakingCap,
     nativeCurrency,
     targetedPairReserveNativeCurrency.raw,
-    locked,
+    locked
   ])
 }

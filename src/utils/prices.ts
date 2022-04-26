@@ -12,7 +12,7 @@ import {
   _10000,
   _100,
   ZERO,
-  UniswapV2Trade,
+  UniswapV2Trade
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -23,7 +23,7 @@ import {
   PRICE_IMPACT_HIGH,
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_LOW,
-  NO_PRICE_IMPACT,
+  NO_PRICE_IMPACT
 } from '../constants'
 import { Field } from '../state/swap/actions'
 import _Decimal from 'decimal.js-light'
@@ -72,7 +72,7 @@ export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBr
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,
     realizedLPFee: realizedLPFee ? new Percent(realizedLPFee.numerator, realizedLPFee.denominator) : undefined,
-    realizedLPFeeAmount,
+    realizedLPFeeAmount
   }
 }
 
@@ -99,7 +99,7 @@ export function calculateProtocolFee(
 export function computeSlippageAdjustedAmounts(trade: Trade | undefined): { [field in Field]?: CurrencyAmount } {
   return {
     [Field.INPUT]: trade?.maximumAmountIn(),
-    [Field.OUTPUT]: trade?.minimumAmountOut(),
+    [Field.OUTPUT]: trade?.minimumAmountOut()
   }
 }
 
@@ -107,11 +107,11 @@ const ALLOWED_PRICE_IMPACT_PERCENTAGE: { [key: number]: Percent } = {
   [PRICE_IMPACT_NON_EXPERT]: BLOCKED_PRICE_IMPACT_NON_EXPERT,
   [PRICE_IMPACT_HIGH]: ALLOWED_PRICE_IMPACT_HIGH,
   [PRICE_IMPACT_MEDIUM]: ALLOWED_PRICE_IMPACT_MEDIUM,
-  [PRICE_IMPACT_LOW]: ALLOWED_PRICE_IMPACT_LOW,
+  [PRICE_IMPACT_LOW]: ALLOWED_PRICE_IMPACT_LOW
 }
 
 const ALLOWED_FIAT_PRICE_IMPACT_PERCENTAGE: { [key: number]: Percent } = {
-  [PRICE_IMPACT_HIGH]: ALLOWED_FIAT_PRICE_IMPACT_HIGH,
+  [PRICE_IMPACT_HIGH]: ALLOWED_FIAT_PRICE_IMPACT_HIGH
 }
 
 export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3 | 4 {
@@ -181,7 +181,7 @@ export function getLpTokenPrice(
     numerator: parseUnits(
       new Decimal(reserveNativeCurrency).toFixed(nativeCurrency.decimals),
       nativeCurrency.decimals
-    ).toString(),
+    ).toString()
   })
 }
 

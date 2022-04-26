@@ -15,7 +15,7 @@ export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
   PENDING,
-  APPROVED,
+  APPROVED
 }
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
@@ -81,12 +81,12 @@ export function useApproveCallback(
 
     return tokenContract
       .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas),
+        gasLimit: calculateGasMargin(estimatedGas)
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
           summary: 'Approve ' + amountToApprove.currency.symbol,
-          approval: { tokenAddress: token.address, spender: spender },
+          approval: { tokenAddress: token.address, spender: spender }
         })
       })
       .catch((error: Error) => {
@@ -102,7 +102,7 @@ export function useApproveCallback(
 export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
   const amountToApprove = useMemo(() => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined), [
-    trade,
+    trade
     // allowedSlippage,
   ])
   return useApproveCallback(

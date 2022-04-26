@@ -29,7 +29,7 @@ export function useSwapsGasEstimations(
     independentField,
     typedValue,
     INPUT: { currencyId: inputCurrencyId },
-    OUTPUT: { currencyId: outputCurrencyId },
+    OUTPUT: { currencyId: outputCurrencyId }
   } = useSwapState()
   const isExactIn = independentField === Field.INPUT
   const independentCurrencyId = isExactIn ? inputCurrencyId : outputCurrencyId
@@ -80,7 +80,7 @@ export function useSwapsGasEstimations(
     preferredGasPrice,
     routerAllowances,
     trades,
-    typedIndependentCurrencyAmount,
+    typedIndependentCurrencyAmount
   ])
 
   const [loading, setLoading] = useState(false)

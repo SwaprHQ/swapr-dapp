@@ -50,7 +50,7 @@ export function useNativeCurrencyPricedTokenAmounts(
           numerator: parseUnits(
             new Decimal(priceData.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
             nativeCurrency.decimals
-          ).toString(),
+          ).toString()
         })
         pricedTokenAmounts.push(
           new PricedTokenAmount(
@@ -72,7 +72,7 @@ export function useNativeCurrencyPricedTokenAmounts(
     }
     return {
       loading: false,
-      pricedTokenAmounts: pricedTokenAmounts,
+      pricedTokenAmounts: pricedTokenAmounts
     }
   }, [chainId, data, error, kpiTokens, loading, loadingKpiTokens, nativeCurrency, tokenAmounts])
 }

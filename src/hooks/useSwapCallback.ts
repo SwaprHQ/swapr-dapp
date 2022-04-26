@@ -16,7 +16,7 @@ import { MainnetGasPrice } from '../state/application/actions'
 export enum SwapCallbackState {
   INVALID,
   LOADING,
-  VALID,
+  VALID
 }
 
 interface SwapCall {
@@ -67,8 +67,8 @@ export function useSwapsCallArguments(
       if (trade instanceof CurveTrade) {
         return [
           {
-            transactionParameters: trade.swapTransaction(),
-          },
+            transactionParameters: trade.swapTransaction()
+          }
         ]
       }
 
@@ -77,7 +77,7 @@ export function useSwapsCallArguments(
         swapMethods.push(
           trade.swapTransaction({
             recipient,
-            ttl: deadline.toNumber(),
+            ttl: deadline.toNumber()
           })
         )
       }
@@ -142,7 +142,7 @@ export function useSwapCallback(
             if (transactionRequest.gasLimit) {
               return {
                 call,
-                gasEstimate: transactionRequest.gasLimit as BigNumber,
+                gasEstimate: transactionRequest.gasLimit as BigNumber
               }
             }
 
@@ -151,7 +151,7 @@ export function useSwapCallback(
               .estimateGas(transactionRequest as any)
               .then(gasEstimate => ({
                 call,
-                gasEstimate,
+                gasEstimate
               }))
               .catch(gasError => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
@@ -194,7 +194,7 @@ export function useSwapCallback(
 
         const {
           call: { transactionParameters },
-          gasEstimate,
+          gasEstimate
         } = successfulEstimation
 
         let normalizedGasPrice = undefined
@@ -211,7 +211,7 @@ export function useSwapCallback(
           .sendTransaction({
             gasLimit: calculateGasMargin(gasEstimate),
             gasPrice: normalizedGasPrice,
-            ...((await transactionParameters) as any),
+            ...((await transactionParameters) as any)
           })
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
@@ -233,7 +233,7 @@ export function useSwapCallback(
                   }`
 
             addTransaction(response, {
-              summary: withRecipient,
+              summary: withRecipient
             })
 
             return response.hash
@@ -249,7 +249,7 @@ export function useSwapCallback(
             }
           })
       },
-      error: null,
+      error: null
     }
   }, [
     trade,
@@ -261,6 +261,6 @@ export function useSwapCallback(
     swapCalls,
     preferredGasPrice,
     mainnetGasPrices,
-    addTransaction,
+    addTransaction
   ])
 }

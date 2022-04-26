@@ -80,7 +80,7 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
   const { loading: loadingCollateralPrices, data: collateralPrices, error: collateralError } = useQuery<
     DerivedNativeCurrencyQueryResult
   >(DERIVED_NATIVE_CURRENCY_QUERY, {
-    variables: { tokenIds: collateralTokenAddresses },
+    variables: { tokenIds: collateralTokenAddresses }
   })
 
   return useMemo(() => {
@@ -107,7 +107,7 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
           numerator: parseUnits(
             collateralPrice ? new Decimal(collateralPrice.derivedNativeCurrency).toFixed(nativeCurrency.decimals) : '0',
             nativeCurrency.decimals
-          ).toString(),
+          ).toString()
         })
         const pricedCollateral = new PricedToken(
           chainId,
@@ -128,7 +128,7 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
           rawKpiToken.name
         )
         return kpiToken
-      }),
+      })
     }
   }, [
     chainId,
@@ -138,6 +138,6 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
     loadingRawKpiTokens,
     nativeCurrency,
     rawKpiTokens,
-    rawKpiTokensError,
+    rawKpiTokensError
   ])
 }

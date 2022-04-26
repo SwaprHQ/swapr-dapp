@@ -12,7 +12,7 @@ export default function Updater() {
     if (library && chainId)
       Promise.all([
         Fetcher.fetchAllSwapFees(chainId, {}, library as any),
-        Fetcher.fetchProtocolFee(chainId, library as any),
+        Fetcher.fetchProtocolFee(chainId, library as any)
       ])
         .then(([swapFees, protocolFee]) => {
           if (swapFees) dispatch(setSwapFees({ swapFees }))
@@ -20,7 +20,7 @@ export default function Updater() {
             dispatch(
               setProtocolFee({
                 protocolFeeDenominator: Number(protocolFee.feeDenominator) + 1,
-                protocolFeeTo: protocolFee.feeReceiver,
+                protocolFeeTo: protocolFee.feeReceiver
               })
             )
         })

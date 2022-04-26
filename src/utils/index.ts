@@ -26,7 +26,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId | number]: string } = {
   4: 'rinkeby.',
   [ChainId.ARBITRUM_ONE]: '',
   [ChainId.ARBITRUM_RINKEBY]: '',
-  [ChainId.XDAI]: '',
+  [ChainId.XDAI]: ''
 }
 
 const getExplorerPrefix = (chainId: ChainId) => {
@@ -96,7 +96,7 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
   }
   return [
     JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)), JSBI.BigInt(10000)),
-    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000)),
+    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000))
   ]
 }
 
@@ -182,7 +182,7 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
   window.ethereum
     .request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: networkDetails.chainId }],
+      params: [{ chainId: networkDetails.chainId }]
     })
     .catch(error => {
       if (error.code !== 4902) {
@@ -192,7 +192,7 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
       window.ethereum
         .request({
           method: 'wallet_addEthereumChain',
-          params: [{ ...networkDetails }, account],
+          params: [{ ...networkDetails }, account]
         })
         .catch(error => {
           console.error('error adding chain with id', networkDetails.chainId, error)
