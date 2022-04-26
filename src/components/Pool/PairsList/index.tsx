@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Box, Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
-import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+import { BigintIsh, CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
@@ -17,15 +17,18 @@ import PairCard from './Pair'
 import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { gradients } from '../../../utils/theme'
+
+export interface AggregatedPairs {
+  pair: Pair
+  liquidityUSD: CurrencyAmount
+  maximumApy: Percent
+  staked?: boolean
+  containsKpiToken?: boolean
+  hasFarming?: boolean
+  startsAt?: BigintIsh
+}
 interface PairsListProps {
-  aggregatedPairs: {
-    pair: Pair
-    liquidityUSD: CurrencyAmount
-    maximumApy: Percent
-    staked?: boolean
-    containsKpiToken?: boolean
-    hasFarming?: boolean
-  }[]
+  aggregatedPairs: AggregatedPairs[]
   singleSidedStake?: SingleSidedLiquidityMiningCampaign
   hasActiveCampaigns?: boolean
   filter?: PairsFilterType
