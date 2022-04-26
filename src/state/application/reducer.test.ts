@@ -1,18 +1,17 @@
 import { ChainId } from '@swapr/sdk'
 import { createStore, Store } from 'redux'
 import { ApplicationModal, setOpenModal, updateBlockNumber } from './actions'
-import reducer, { ApplicationState } from './reducer'
+import reducer, { ApplicationState, initialState } from './reducer'
 
 describe('application reducer', () => {
   let store: Store<ApplicationState>
 
   beforeEach(() => {
     store = createStore(reducer, {
-      popupList: [],
+      ...initialState,
       blockNumber: {
         [ChainId.MAINNET]: 3
-      },
-      openModal: null
+      }
     })
   })
 

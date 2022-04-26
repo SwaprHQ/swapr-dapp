@@ -16,7 +16,7 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   }
 `
 
-interface RecipientField {
+export interface RecipientField {
   recipient: string | null
   action: any
 }

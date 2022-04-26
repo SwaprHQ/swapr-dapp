@@ -76,7 +76,7 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
 
         // Mainnet and xDAI uses external API
         if (chainId === ChainId.MAINNET || chainId === ChainId.XDAI) {
-          const keys = chainGasInfo.keys!
+          const keys = chainGasInfo.keys ?? []
           // Pick the keys
           const gasNormalData = data[keys[0]]
           const gasFastData = data[keys[1]]

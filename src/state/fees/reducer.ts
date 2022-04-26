@@ -1,11 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { BigintIsh } from '@swapr/sdk'
 import { setSwapFees, setProtocolFee } from './actions'
 
 export interface FeesState {
   readonly swapFees:
     | {
         [key: string]: {
-          fee: bigint
+          fee: BigintIsh
           owner: string
         }
       }

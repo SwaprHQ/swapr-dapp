@@ -311,7 +311,7 @@ function Header() {
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   useEffect(() => {
-    window.addEventListener('scroll', e => {
+    window.addEventListener('scroll', () => {
       const headerControls = document.getElementById('header-controls')
       if (headerControls) {
         if (window.scrollY > 0) {

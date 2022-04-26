@@ -374,7 +374,7 @@ export default function AddLiquidity({
                 </RowBetween>
                 <RowBetween align="center">
                   <TYPE.body fontWeight="500" fontSize={12}>
-                    Pool's share
+                    Pool&apos;s share
                   </TYPE.body>
                   <TYPE.body fontWeight="500" fontSize={12}>
                     {poolTokenPercentage ? `${poolTokenPercentage.toSignificant(2)}%` : '-'}

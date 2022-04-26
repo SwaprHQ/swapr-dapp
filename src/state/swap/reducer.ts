@@ -15,7 +15,7 @@ export interface SwapState {
   readonly protocolFeeTo: string | undefined
 }
 
-const initialState: SwapState = {
+export const initialState: SwapState = {
   independentField: Field.INPUT,
   typedValue: '',
   [Field.INPUT]: {

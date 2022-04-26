@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import { ChainId, JSBI, Pair, Percent, Route, Token, TokenAmount, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { computeTradePriceBreakdown } from './prices'
 
 describe('prices', () => {

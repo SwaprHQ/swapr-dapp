@@ -21,7 +21,7 @@ export interface ApplicationState {
   readonly account: string | null | undefined
 }
 
-const initialState: ApplicationState = {
+export const initialState: ApplicationState = {
   blockNumber: {},
   mainnetGasPrices: null,
   popupList: [],
