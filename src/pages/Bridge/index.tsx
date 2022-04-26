@@ -31,7 +31,7 @@ import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/act
 
 const Wrapper = styled.div`
   width: 100%;
-  max-width: 432px;
+  max-width: 457px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
