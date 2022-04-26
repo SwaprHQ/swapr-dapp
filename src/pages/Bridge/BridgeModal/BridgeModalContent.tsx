@@ -57,13 +57,9 @@ export const BridgeModalContent = ({
                   </TYPE.main>
                   <DisclaimerTextWrapper isWarning={isWarning}>
                     <DisclaimerText>
-                      {t('bridgeTxnThrough')} <span>{bridgeName}.</span>
+                      <Trans i18nKey="bridgeTxnThrough" values={{ bridgeName }} components={[<span key="0"></span>]} />
                     </DisclaimerText>
-                    {isWarning && (
-                      <DisclaimerText>
-                        {bridgeName} {t('bridgeWalletControl')}
-                      </DisclaimerText>
-                    )}
+                    {isWarning && <DisclaimerText>{t('bridgeWalletControl', { bridgeName })}</DisclaimerText>}
                     <DisclaimerText>
                       <Trans i18nKey="bridgeResponsible" components={[<span key="0"></span>]} />
                     </DisclaimerText>
