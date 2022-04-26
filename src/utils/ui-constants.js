@@ -16,6 +16,8 @@ import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
 import RoutingLevinSwap from './../assets/images/levinswap.svg'
+import RoutingQuickSwap from './../assets/images/routing-Quick.svg'
+import RoutingDFYNSwap from './../assets/images/routing-Dfyn.svg'
 
 // Features Imports
 
@@ -133,6 +135,14 @@ export const RoutingThroughContent = {
         {
             title: 'Levinswap',
             img: RoutingLevinSwap
+        },
+        {
+            title: 'QuickSwap',
+            img: RoutingQuickSwap
+        },
+        {
+            title: 'DFYN',
+            img: RoutingDFYNSwap
         },
     ]
 }
