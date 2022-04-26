@@ -40,7 +40,7 @@ import { Dots } from '../../components/swap/styleds'
 import { useBurnActionHandlers } from '../../state/burn/hooks'
 import { useDerivedBurnInfo, useBurnState } from '../../state/burn/hooks'
 import { Field } from '../../state/burn/actions'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 import { calculateProtocolFee } from '../../utils/prices'
@@ -71,7 +71,7 @@ export default function RemoveLiquidity({
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useWalletSwitcherPopoverToggle()
 
   // burn state
   const { independentField, typedValue } = useBurnState()
