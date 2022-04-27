@@ -34,7 +34,7 @@ describe('Transactions Settings Smoke Test', () => {
   it('Check About hyperlink [TC-49]', () => {
     TransactionSettings.getAboutHyperlink()
       .should('have.attr', 'href')
-      .and('include', 'https://dxdao.eth.link/')
+      .and('include', 'https://dxdao.eth.limo/')
   })
   it('Check Code hyperlink [TC-49]', () => {
     TransactionSettings.getCodeHyperlink()

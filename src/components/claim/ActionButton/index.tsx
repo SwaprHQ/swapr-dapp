@@ -66,7 +66,7 @@ export function ActionButton({
       const anchor = document.createElement('a')
       Object.assign(anchor, {
         target: '_blank',
-        href: 'https://oldbuild.eth.link/#/pools?chainId=42161',
+        href: 'https://oldbuild.eth.limo/#/pools?chainId=42161',
         rel: 'noopener noreferrer'
       }).click()
       anchor.remove()
