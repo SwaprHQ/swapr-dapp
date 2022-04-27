@@ -415,7 +415,7 @@ export const FooterContent = {
             footerLinks: [
                 {
                     label: 'DXstats',
-                    href: 'https://dxstats.eth.link/#/home'
+                    href: 'https://dxstats.eth.limo/#/home'
                 },
                 // {
                 //     label: 'Roadmap',
