@@ -381,7 +381,11 @@ function Header() {
             onToggleClaimPopup={toggleClaimPopup}
           />
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError && <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>}
+            {isUnsupportedChainIdError && (
+              <Amount data-testid="unsupported-network-warning" zero>
+                {'UNSUPPORTED NETWORK'}
+              </Amount>
+            )}
             {account && !isUnsupportedChainIdError && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
                 {userNativeCurrencyBalance ? (

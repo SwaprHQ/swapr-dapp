@@ -1,16 +1,18 @@
 import { SwapPage } from './SwapPage'
-
 export class TokenMenu {
   static chooseToken(token: string) {
     cy.scrollTo('top')
     this.getSingleTokenManagerInput()
       .should('be.visible')
       .type(token)
+    this.getTokenRow(token).should('be.visible')
+    this.getSingleTokenManagerInput()
       .click()
-      .type('{enter}{enter}')
+      .type('{enter}{enter}', { delay: 50 })
       .should('not.exist')
     return SwapPage
   }
+
   static getOpenTokenManagerButton() {
     return cy.get('[data-testid=manage-token-lists-button]')
   }
