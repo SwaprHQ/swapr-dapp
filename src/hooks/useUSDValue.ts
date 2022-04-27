@@ -12,7 +12,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: DAI,
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE],
-  [ChainId.XDAI]: USDC[ChainId.XDAI],
+  [ChainId.XDAI]: USDC[ChainId.XDAI]
 }
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
@@ -31,7 +31,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         baseCurrency: currency,
         quoteCurrency: currency,
         denominator: '1',
-        numerator: '1',
+        numerator: '1'
       })
 
     const filterSelectedPlataforms = (trade: Trade | undefined) => {
@@ -52,7 +52,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         baseCurrency: currency,
         quoteCurrency: stablecoin,
         denominator,
-        numerator,
+        numerator
       })
     }
 
@@ -93,7 +93,6 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
         // and convert to the same currencyRef.current for both sides (SDK math invariant)
         // in our case we stick to the USDC paradigm
         const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_OUT[chainId], chainId)
-        console.log('pricesx', apiUsdPrice)
 
         // parse failure is unlikely - type safe
         if (!quoteAmount) return
@@ -106,7 +105,12 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
           JSBI.exponentiate(TEN, JSBI.BigInt(quoteAmount.currency.decimals))
         )
         const result = quoteAmount.divide(scalar).divide(baseAmount)
-        const usdPrice = new Price(baseAmount.currency, quoteAmount.currency, result.denominator, result.numerator)
+        const usdPrice = new Price({
+          baseCurrency: baseAmount.currency,
+          quoteCurrency: quoteAmount.currency,
+          denominator: result.denominator,
+          numerator: result.numerator
+        })
 
         console.debug(
           '[useCoingeckoUSDPrice] Best Coingecko USD price amount',

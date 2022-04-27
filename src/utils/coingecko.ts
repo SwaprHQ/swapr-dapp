@@ -5,14 +5,9 @@ interface PriceInformation {
   amount: string | null
 }
 
-function getApiUrl(): string {
-  // it's all the same base url
-  return 'https://api.coingecko.com/api'
-}
-
 // Defaults
 const API_NAME = 'Coingecko'
-const API_BASE_URL = getApiUrl()
+const API_BASE_URL = 'https://api.coingecko.com/api'
 const API_VERSION = 'v3'
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json'
@@ -28,19 +23,12 @@ function _getApiBaseUrl(chainId: ChainId): string {
   }
 }
 
-function _getCoinGeckoAssetPlatform(chainId: ChainId) {
-  switch (chainId) {
-    // Use of asset platforms - supports ethereum and xdai
-    // https://api.coingecko.com/api/v3/asset_platforms
-    case ChainId.MAINNET:
-      return 'ethereum'
-    case ChainId.ARBITRUM_ONE:
-      return 'arbitrum-one'
-    case ChainId.XDAI:
-      return 'xdai'
-    default:
-      return null
-  }
+const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.RINKEBY]: null,
+  [ChainId.ARBITRUM_ONE]: 'arbitrum-one',
+  [ChainId.ARBITRUM_RINKEBY]: null,
+  [ChainId.XDAI]: 'xdai'
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
@@ -70,7 +58,7 @@ interface CoinGeckoUsdQuote {
 export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise<CoinGeckoUsdQuote | null> {
   const { chainId, tokenAddress } = params
 
-  const assetPlatform = _getCoinGeckoAssetPlatform(chainId)
+  const assetPlatform = COINGECKO_ASSET_PLATFORM[chainId]
   if (assetPlatform == null) {
     // Unsupported
     return null
