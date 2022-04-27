@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import styled, {keyframes} from 'styled-components'
+import React, { useState, useEffect } from 'react'
+import styled, { keyframes } from 'styled-components'
 import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
 import { gradients, breakpoints } from '../../../utils/theme'
 import HeroImage from './../../../assets/images/hero-graphic-desktop.png'
@@ -46,145 +46,131 @@ const ArrowIndicator = styled.section`
       animation-delay: 0.8s;
     }
   }
-`;
+`
 
-const Hero = (props) => {
+const Hero = props => {
+  let [isHeroActive, setIsHeroActive] = useState(true)
+  let [logosArrays, setLogosArrays] = useState([])
+  useEffect(() => {
+    let options = {
+      root: null,
+      rootMargin: '0px 0px 0px 0px',
+      threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    }
 
-    let [isHeroActive, setIsHeroActive] = useState(true);
-    let [logosArrays, setLogosArrays] = useState([]);
-    useEffect(() => {
-        let options = {
-            root: null,
-            rootMargin: '0px 0px 0px 0px',
-            threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-        };
+    let callback = (entries, observer) => {
+      entries.forEach(entry => {
+        let elementHeight = entry.boundingClientRect.height
+        let pixelsShown = entry.boundingClientRect.top < 0 ? -entry.boundingClientRect.top : 0
+        let showElement = pixelsShown < elementHeight / 4
+        setIsHeroActive(showElement)
+      })
+    }
 
-        let callback = (entries, observer) => {
-            entries.forEach(entry => {
-                let elementHeight = entry.boundingClientRect.height;
-                let pixelsShown = 
-                    entry.boundingClientRect.top < 0 ?
-                        -entry.boundingClientRect.top :
-                        0
-                let showElement = pixelsShown < elementHeight / 4;
-                setIsHeroActive(showElement);
-            });
-        };
+    let observer = new IntersectionObserver(callback, options)
 
-        let observer = new IntersectionObserver(callback, options);
+    let target = document.querySelector('#index-hero')
+    observer.observe(target)
+  }, [])
 
-        let target = document.querySelector('#index-hero');
-        observer.observe(target);
+  useEffect(() => {
+    let i,
+      j,
+      temporary,
+      chunk = 2
+    let temporaryArray = []
+    for (i = 0, j = HeroContent.heroLogos.length; i < j; i += chunk) {
+      temporary = HeroContent.heroLogos.slice(i, i + chunk)
+      temporaryArray.push(temporary)
+    }
+    setLogosArrays(temporaryArray)
+  }, [])
 
-    }, []);
-
-    useEffect(() => {
-        let i,j, temporary, chunk = 2;
-        let temporaryArray = [];
-        for (i = 0,j = HeroContent.heroLogos.length; i < j; i += chunk) {
-            temporary = HeroContent.heroLogos.slice(i, i + chunk);
-            temporaryArray.push(temporary);
-        }
-        setLogosArrays(temporaryArray);
-    }, [])
-
-
-    return (
-        <StyledHero id={'index-hero'} className={isHeroActive ? 'hero-active' : ''}>
-            <Layout width="main-width" className={'inner-hero'}>
-                {HeroContent ? (
-                    props.children
-                ) : (
-                    <div className="hero-content" data-aos="fade-up">
-                        <h1>{HeroContent.mainText}</h1>
-                        <ul className="hero-logos-list">
-                            {logosArrays.map((item, key) => (
-                                <div 
-                                    key={key} 
-                                    className="hero-logo-group"
-                                >
-                                    {item.map((logo, key) => (
-                                        <li key={key}>
-                                            <img 
-                                                src={logo.img} 
-                                                title={logo.title} 
-                                                alt="Logos"
-                                            />
-                                        </li>
-                                    ))}
-                                </div>
-                            ))}
-                        </ul>
-                        <ul className="hero-button-list">
-                            {HeroContent.heroButtons.map((button, key) => (
-                                <li key={key}>
-                                    <Button type={button.type} label={button.label} to={button.href}/>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-                <div className="hero-background">
-                    <div className="hero-image hero-image-right"></div>
-                    <div className="hero-image hero-image-left"></div>
+  return (
+    <StyledHero id={'index-hero'} className={isHeroActive ? 'hero-active' : ''}>
+      <Layout width="main-width" className={'inner-hero'}>
+        {HeroContent ? (
+          props.children
+        ) : (
+          <div className="hero-content" data-aos="fade-up">
+            <h1>{HeroContent.mainText}</h1>
+            <ul className="hero-logos-list">
+              {logosArrays.map((item, key) => (
+                <div key={key} className="hero-logo-group">
+                  {item.map((logo, key) => (
+                    <li key={key}>
+                      <img src={logo.img} title={logo.title} alt="Logos" />
+                    </li>
+                  ))}
                 </div>
-                <div className="routing-through desktop" data-aos='fade-up'>
-                    <div className="routing-through-header">
-                        <div className="left-line"></div>
-                        <div className="label">{RoutingThroughContent.title}</div>
-                        <div className="right-line"></div>
-                    </div>
-                    <div className="routing-through-body" >
-                        <Marquee speed={50} gradientColor={[12,11,18]}>
-                            <div className="marquee-inner">
-                                {[...Array(3)].map((e, i) => 
-                                    <>{
-                                        RoutingThroughContent.companies.map((company, key) => (
-                                            <img 
-                                                key={key} 
-                                                src={company.img} 
-                                                alt="Routing through..." 
-                                            />
-                                        ))
-                                    }</>
-                                )}
-                            </div>
-                        </Marquee>
-                    </div>
-                </div>
-                <ArrowIndicator>
-                    <div className="arrow" />
-                    <div className="arrow" />
-                    <div className="arrow" />
-                </ArrowIndicator>
-                <div className="routing-through mobile" data-aos='fade-up'>
-                    <div className="routing-through-header">
-                        <div className="left-line"></div>
-                        <div className="label">{RoutingThroughContent.title}</div>
-                        <div className="right-line"></div>
-                    </div>
-                    <div className="routing-through-body" >
-                        <Marquee speed={50} gradientColor={[12,11,18]}>
-                            <div className="marquee-inner">
-                                {RoutingThroughContent.companies.map((company, key) => (
-                                    <img key={key} src={company.img} alt="Routing through..."/>
-                                ))}
-                                {RoutingThroughContent.companies.map((company, key) => (
-                                    <img key={key + '-copy'} src={company.img} alt="Routing through..."/>
-                                ))}
-                            </div>
-                        </Marquee>
-                    </div>
-                </div>
-            </Layout>
-        </StyledHero>
-    )
+              ))}
+            </ul>
+            <ul className="hero-button-list">
+              {HeroContent.heroButtons.map((button, key) => (
+                <li key={key}>
+                  <Button type={button.type} label={button.label} to={button.href} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div className="hero-background">
+          <div className="hero-image hero-image-right"></div>
+          <div className="hero-image hero-image-left"></div>
+        </div>
+        <div className="routing-through desktop" data-aos="fade-up">
+          <div className="routing-through-header">
+            <div className="left-line"></div>
+            <div className="label">{RoutingThroughContent.title}</div>
+            <div className="right-line"></div>
+          </div>
+          <div className="routing-through-body">
+            <Marquee speed={50} gradientColor={[12, 11, 18]}>
+              <div className="marquee-inner">
+                {[...Array(3)].map((e, i) => (
+                  <>
+                    {RoutingThroughContent.companies.map((company, key) => (
+                      <img key={key} src={company.img} alt="Routing through..." />
+                    ))}
+                  </>
+                ))}
+              </div>
+            </Marquee>
+          </div>
+        </div>
+        <ArrowIndicator>
+          <div className="arrow" />
+          <div className="arrow" />
+          <div className="arrow" />
+        </ArrowIndicator>
+        <div className="routing-through mobile" data-aos="fade-up">
+          <div className="routing-through-header">
+            <div className="left-line"></div>
+            <div className="label">{RoutingThroughContent.title}</div>
+            <div className="right-line"></div>
+          </div>
+          <div className="routing-through-body">
+            <Marquee speed={50} gradientColor={[12, 11, 18]}>
+              <div className="marquee-inner">
+                {RoutingThroughContent.companies.map((company, key) => (
+                  <img key={key} src={company.img} alt="Routing through..." />
+                ))}
+                {RoutingThroughContent.companies.map((company, key) => (
+                  <img key={key + '-copy'} src={company.img} alt="Routing through..." />
+                ))}
+              </div>
+            </Marquee>
+          </div>
+        </div>
+      </Layout>
+    </StyledHero>
+  )
 }
 
 const zoomOut = keyframes`
     0% {transform: scale(1.2); opacity: 0;}
     100% {transform: scale(1); opacity: 0.7;}
-`;
+`
 
 const StyledHero = styled(Layout)`
     position: relative;
@@ -470,6 +456,6 @@ const StyledHero = styled(Layout)`
             }
         }
     }}
-`;
+`
 
-export default Hero;
+export default Hero
