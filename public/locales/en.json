@@ -119,7 +119,7 @@
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
   "maxSent": "Max Sent",
-  "bestPrice": "Best price found on",
+  "bestPriceFounOn": "Best price found on <0>{{plataform}}</0>.",
   "noAdditionalFees": "No additional fees",
   "showMore": "Show more"
 }

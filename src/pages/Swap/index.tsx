@@ -48,7 +48,7 @@ import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
 import { ButtonConnect } from '../../components/ButtonConnect'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
 
 // Landing Page Imports
@@ -361,8 +361,11 @@ export default function Swap() {
                   <AutoColumn gap="8px">
                     <RowBetween alignItems="center">
                       <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
-                        {t('bestPrice')}{' '}
-                        <span style={{ color: 'white', fontWeight: 700 }}>{bestPricedTrade?.platform.name}</span>.
+                        <Trans
+                          i18nKey="bestPriceFounOn"
+                          values={{ plataform: bestPricedTrade?.platform.name }}
+                          components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+                        />
                         {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
                           <>
                             {' '}
