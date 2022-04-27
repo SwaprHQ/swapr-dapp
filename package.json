@@ -133,7 +133,7 @@
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
     "serve": "serve -s ./build",
-    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint": "eslint \"./src/**/*.{ts,tsx,js}\"",
     "check-errors": "yarn lint --fix && tsc --noEmit",
     "cypress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' cypress run -r mochawesome -s 'tests/cypress/integration/smoke/*'",
     "cypress:ct": "cross-env start-server-and-test 'yarn start' http-get://localhost:3000 'yarn cypress:run'",

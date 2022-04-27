@@ -12,8 +12,7 @@
     "node_modules/**/*",
     "scripts/*.js",
     "config-overrides.js",
-    "src/**/generated/**/*",
-    "src/**/*.js"
+    "src/**/generated/**/*"
   ],
   "settings": {
     "react": {
