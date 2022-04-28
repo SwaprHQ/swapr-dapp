@@ -79,6 +79,12 @@ const AssetWrapper = styled.div`
   flex: 1 0 35%;
 `
 
+const HistoryMessage = styled(Title)`
+  font-size: 16px;
+  font-weight: 300;
+  margin: 5px;
+`
+
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
@@ -233,7 +239,7 @@ export default function Bridge() {
         handleTriggerCollect={handleTriggerCollect}
         firstTxnToCollect={collectableTx}
       />
-      {activeTab !== 'history' && (
+      {activeTab !== BridgeTab.HISTORY && (
         <AppBody>
           <RowBetween mb="12px">
             <Title>{isCollecting ? 'Collect' : 'Swapr Bridge'}</Title>
@@ -312,9 +318,12 @@ export default function Bridge() {
           />
         </AppBody>
       )}
-      {activeTab === 'bridge' && showAvailableBridges && <BridgeSelectionWindow />}
+      {activeTab === BridgeTab.BRIDGE && showAvailableBridges && <BridgeSelectionWindow />}
       {!!bridgeSummaries.length && (
         <BridgeTransactionsSummary transactions={bridgeSummaries} handleTriggerCollect={handleTriggerCollect} />
+      )}
+      {activeTab === BridgeTab.HISTORY && !bridgeSummaries.length && (
+        <HistoryMessage>Your bridge transactions will appear here.</HistoryMessage>
       )}
       <BridgeModal
         handleResetBridge={handleResetBridge}
