@@ -37,10 +37,6 @@ body::-webkit-scrollbar-thumb {
   overflow: hidden;
 }
 
-* {
-  color: white;
-}
-
 #root {
   color: white;
   background: var(--main-bg-color);

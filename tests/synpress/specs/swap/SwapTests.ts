@@ -49,6 +49,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({  })
 
+
     MenuBar.checkToastMessage('Swap')
 
     cy.wrap(null).then(() => {
