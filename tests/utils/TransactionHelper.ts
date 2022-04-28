@@ -21,7 +21,8 @@ export class TransactionHelper {
     balanceBefore: number,
     transactionValue: number,
     shouldBeEqual: boolean,
-    walletAddress = AddressesEnum.WALLET_PUBLIC
+    walletAddress = AddressesEnum.WALLET_PUBLIC,
+    retries = 0
   ) {
     const expectedTransactionValue: number = transactionValue * Math.pow(10, 18)
     cy.log('Checking token balance from ETHERSCAN API')
@@ -35,8 +36,18 @@ export class TransactionHelper {
         }
         expect(parseInt(res.body.result)).to.be.at.least(balanceBefore + expectedTransactionValue)
       } catch (err) {
+        if (retries > 200) {
+          throw new Error('Retried too many times to check erc20 token balance from etherscan')
+        }
         cy.wait(1000)
-        return this.checkErc20TokenBalance(tokenAddress, balanceBefore, transactionValue, shouldBeEqual, walletAddress)
+        return this.checkErc20TokenBalance(
+          tokenAddress,
+          balanceBefore,
+          transactionValue,
+          shouldBeEqual,
+          walletAddress,
+          ++retries
+        )
       }
     })
   }
