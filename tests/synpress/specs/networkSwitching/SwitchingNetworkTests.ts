@@ -12,7 +12,8 @@ describe('Switching from maintet tests', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.wait(200)
+    cy.resetMetamaskAccount()
+    cy.wait(500)
   })
 
   it('Should display that Ropsten network isnt supported [TC-56]', () => {

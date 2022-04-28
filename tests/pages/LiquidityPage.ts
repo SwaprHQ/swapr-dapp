@@ -24,4 +24,18 @@ export class LiquidityPage {
   static getTokenSearchField() {
     return cy.get('[id=token-search-input]')
   }
+  static getPairCards() {
+    return cy.get('[data-testid=pair-card]')
+  }
+  static getRewardsCampaignButton() {
+    return cy.get('#rewards-campaign-for-pair')
+  }
+  static switchCampaignsToogle() {
+    LiquidityPage.getCampaignsAndMyPairsToggleSwitch().within(() => {
+      return cy
+        .get('label')
+        .first()
+        .click()
+    })
+  }
 }

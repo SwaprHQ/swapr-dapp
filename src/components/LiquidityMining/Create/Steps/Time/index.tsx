@@ -44,7 +44,7 @@ export default function Time({
   return (
     <Card>
       <FlexContainer justifyContent="stretch" width="100%">
-        <Box flex="1">
+        <Box flex="1" data-testid={'start-time-selector-box'}>
           <TimeSelector
             title="START DATE AND TIME"
             placeholder="Start date & time"
@@ -56,7 +56,7 @@ export default function Time({
         <Box mx="18px">
           <Divider />
         </Box>
-        <ResponsiveBoxContainer flex="1">
+        <ResponsiveBoxContainer flex="1" data-testid={'end-time-selector-box'}>
           <TimeSelector
             title="END DATE AND TIME"
             placeholder="End date & time"
