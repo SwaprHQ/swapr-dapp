@@ -27,7 +27,13 @@ import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 
-import { BridgeModalData, BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './EcoBridge.types'
+import {
+  BridgeModalData,
+  BridgeModalState,
+  BridgeModalStatus,
+  BridgeTxsFilter,
+  WritableListsState
+} from './EcoBridge.types'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export const useBridgeSupportedTokens = () => {
@@ -121,7 +127,24 @@ export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): Wrap
 
 export const useBridgeActiveTokenMap = () => useSelector(selectBridgeActiveTokens)
 
-export const useBridgeSupportedLists = () => useSelector(selectSupportedLists)
+export const useBridgeSupportedLists = () => {
+  const supportedLists = useSelector(selectSupportedLists)
+
+  // satisfy existing interface
+  return useMemo(
+    () =>
+      Object.entries(supportedLists).reduce<WritableListsState>((total, [id, tokenList]) => {
+        total[id] = {
+          current: tokenList,
+          pendingUpdate: null,
+          loadingRequestId: null,
+          error: null
+        }
+        return total
+      }, {}),
+    [supportedLists]
+  )
+}
 
 export const useBridgeListsLoadingStatus = () => useSelector(selectBridgeListsLoadingStatus)
 

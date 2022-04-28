@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import { ChainId, JSBI, Pair, Percent, Route, Token, TokenAmount, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { computeTradePriceBreakdown } from './prices'
 
 describe('prices', () => {
@@ -13,7 +13,7 @@ describe('prices', () => {
     it('returns undefined for undefined', () => {
       expect(computeTradePriceBreakdown(undefined)).toEqual({
         priceImpactWithoutFee: undefined,
-        realizedLPFeeAmount: undefined,
+        realizedLPFeeAmount: undefined
       })
     })
 

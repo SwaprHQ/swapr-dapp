@@ -34,7 +34,7 @@ export const EcoBridgeProvider: FC = ({ children }) => {
 export const useEcoBridge = () => {
   const ecoBridge = useContext(EcoBridgeContext)
   if (!ecoBridge) {
-    throw new Error('No EcoBridge - this shouldnt happen')
+    throw new Error('This hook must be used in context of EcoBridge provider')
   }
 
   return ecoBridge

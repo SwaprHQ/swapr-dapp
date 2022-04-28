@@ -16,7 +16,7 @@ import { ButtonDark, ButtonGrey } from '../Button'
 
 import Card, { GreyCard, OutlineCard } from '../Card'
 import { AutoColumn } from '../Column'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'

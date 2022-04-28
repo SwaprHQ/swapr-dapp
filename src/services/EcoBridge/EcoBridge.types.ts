@@ -1,9 +1,10 @@
 import type { ChainId } from '@swapr/sdk'
 import type { Store } from '@reduxjs/toolkit'
-import type { TokenList } from '@uniswap/token-lists'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import type { AppState } from '../../state'
-import type { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { TokenList } from '@uniswap/token-lists'
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { AppState } from '../../state'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { ListsState } from '../../state/lists/reducer'
 
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
@@ -108,3 +109,6 @@ export interface BridgeModalState {
 
 export type BridgeModalData = Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>
 
+export type WritableListsState = {
+  [url: string]: ListsState['byUrl'][string]
+}
