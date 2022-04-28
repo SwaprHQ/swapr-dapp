@@ -121,11 +121,16 @@ const TextTo = styled(Link)<{ status: BridgeTransactionStatus }>`
 interface BridgeTransactionsSummaryProps {
   transactions: BridgeTransactionSummary[]
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
+  isAdditionalMargin: boolean
 }
 
-export const BridgeTransactionsSummary = ({ transactions, handleTriggerCollect }: BridgeTransactionsSummaryProps) => {
+export const BridgeTransactionsSummary = ({
+  transactions,
+  handleTriggerCollect,
+  isAdditionalMargin
+}: BridgeTransactionsSummaryProps) => {
   return (
-    <AdvancedDetailsFooter fullWidth padding="12px">
+    <AdvancedDetailsFooter style={isAdditionalMargin ? { marginTop: '10px' } : {}} fullWidth padding="12px">
       <Container>
         <Header>
           <ColumnBridging>Bridging</ColumnBridging>

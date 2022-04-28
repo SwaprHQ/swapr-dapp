@@ -320,7 +320,11 @@ export default function Bridge() {
       )}
       {activeTab === BridgeTab.BRIDGE && showAvailableBridges && <BridgeSelectionWindow />}
       {!!bridgeSummaries.length && (
-        <BridgeTransactionsSummary transactions={bridgeSummaries} handleTriggerCollect={handleTriggerCollect} />
+        <BridgeTransactionsSummary
+          isAdditionalMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
+          transactions={bridgeSummaries}
+          handleTriggerCollect={handleTriggerCollect}
+        />
       )}
       {activeTab === BridgeTab.HISTORY && !bridgeSummaries.length && (
         <HistoryMessage>Your bridge transactions will appear here.</HistoryMessage>
