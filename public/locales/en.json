@@ -112,5 +112,12 @@
   "alternateReceiver": "Alternate Receiver",
   "MEVProtectionComingSoon": "MEV Protection (coming soon)",
   "insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
-  "enterCurrencyAmount": "Enter {{ currency }} amount"
+  "enterCurrencyAmount": "Enter {{ currency }} amount",
+  "exchange": "Exchange",
+  "fee": "Fee",
+  "pImpact": "P. impact",
+  "pImp": "P. Imp.",
+  "minReceived": "Min. Received",
+  "maxSent": "Max Sent",
+  "showMore": "Show more"
 }

@@ -11,7 +11,7 @@ import { useDarkModeManager } from '../../state/user/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
 
-import Settings from '../Settings'
+import { Settings } from '../Settings'
 
 import Row, { RowFixed, RowFlat } from '../Row'
 import Web3Status from '../Web3Status'
@@ -381,7 +381,11 @@ function Header() {
             onToggleClaimPopup={toggleClaimPopup}
           />
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError && <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>}
+            {isUnsupportedChainIdError && (
+              <Amount data-testid="unsupported-network-warning" zero>
+                {'UNSUPPORTED NETWORK'}
+              </Amount>
+            )}
             {account && !isUnsupportedChainIdError && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
                 {userNativeCurrencyBalance ? (

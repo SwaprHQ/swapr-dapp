@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
-import { useLastTruthy } from '../../hooks/useLast'
-import { AdvancedSwapDetails } from './AdvancedSwapDetails'
 import { SwapPlatformSelector } from './SwapPlatformSelector'
 import { AutoColumn } from '../Column'
 import { Settings } from 'react-feather'
@@ -17,11 +15,12 @@ import { transparentize } from 'polished'
 import { useActiveWeb3React } from '../../hooks'
 
 const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
-  transform: ${({ show }) => (show ? 'translateY(8px)' : 'translateY(-100%)')};
+  transform: ${({ show }) => (show ? 'translateY(16px)' : 'translateY(-100%)')};
   transition: transform 300ms ease;
   z-index: -1;
-  max-width: 420px;
+  max-width: 457px;
   width: 100%;
+  margin-bottom: 30px;
 `
 
 const AdvancedDetailsFooter = styled.div<{
@@ -34,7 +33,7 @@ const AdvancedDetailsFooter = styled.div<{
   padding: ${props => props.padding};
   color: ${({ theme }) => theme.purple3};
   background-color: ${props => transparentize(0.45, props.theme.bg1)};
-  border: solid 1px #292643;
+  border: solid 1px ${({ theme }) => theme.purple6};
   border-radius: 12px;
   backdrop-filter: blur(16px);
   cursor: ${props => (props.clickable ? 'pointer' : 'auto')};
@@ -80,15 +79,13 @@ interface AdvancedSwapDetailsDropdownProps {
 export default function AdvancedSwapDetailsDropdown({
   trade,
   allPlatformTrades,
-  onSelectedPlatformChange,
-  ...rest
+  onSelectedPlatformChange
 }: AdvancedSwapDetailsDropdownProps) {
   const { chainId } = useActiveWeb3React()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()
   const [multihopEnabled, toggleMultihop] = useMultihopManager()
   const toggleSettingsMenu = useToggleSettingsMenu()
   const mainnetGasPrices = useMainnetGasPrices()
-  const lastTrade = useLastTruthy(trade)
 
   const getGasPriceClickHandler = (priceVariant: MainnetGasPrice) => () => {
     setUserPreferredMainnetGasPrice(priceVariant)
@@ -102,14 +99,11 @@ export default function AdvancedSwapDetailsDropdown({
 
   return (
     <HideableAutoColumn gap="8px" show={!!trade}>
-      <AdvancedDetailsFooter fullWidth padding="12px">
-        <SwapPlatformSelector
-          selectedTrade={trade}
-          allPlatformTrades={allPlatformTrades}
-          onSelectedPlatformChange={onSelectedPlatformChange}
-        />
-        <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} />
-      </AdvancedDetailsFooter>
+      <SwapPlatformSelector
+        selectedTrade={trade}
+        allPlatformTrades={allPlatformTrades}
+        onSelectedPlatformChange={onSelectedPlatformChange}
+      />
       {chainId === ChainId.MAINNET && !!mainnetGasPrices && (
         <SettingsFlex width="100%">
           <Box flex="1">

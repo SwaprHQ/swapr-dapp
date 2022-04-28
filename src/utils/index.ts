@@ -4,7 +4,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, Pair, RoutablePlatform } from '@swapr/sdk'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, Pair, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
@@ -26,7 +26,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId | number]: string } = {
   4: 'rinkeby.',
   [ChainId.ARBITRUM_ONE]: '',
   [ChainId.ARBITRUM_RINKEBY]: '',
-  [ChainId.XDAI]: ''
+  [ChainId.XDAI]: '',
 }
 
 const getExplorerPrefix = (chainId: ChainId) => {
@@ -96,7 +96,7 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
   }
   return [
     JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)), JSBI.BigInt(10000)),
-    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000))
+    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000)),
   ]
 }
 
@@ -126,7 +126,7 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 export function getRouterContract(
   chainId: ChainId,
   library: Web3Provider,
-  platform: RoutablePlatform,
+  platform: UniswapV2RoutablePlatform,
   account?: string
 ): Contract {
   return getContract(
@@ -182,7 +182,7 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
   window.ethereum
     .request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: networkDetails.chainId }]
+      params: [{ chainId: networkDetails.chainId }],
     })
     .catch(error => {
       if (error.code !== 4902) {
@@ -192,7 +192,7 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
       window.ethereum
         .request({
           method: 'wallet_addEthereumChain',
-          params: [{ ...networkDetails }, account]
+          params: [{ ...networkDetails }, account],
         })
         .catch(error => {
           console.error('error adding chain with id', networkDetails.chainId, error)
@@ -200,8 +200,8 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
     })
 }
 
-export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string, padding?: string, margin?: string }>`
-  min-width: ${ props => (props.width ? props.width : "22px")};
-  padding: ${ props => (props.padding ? props.padding : "0")};
-  margin: ${ props => (props.margin ? props.margin : "0")};
+export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; padding?: string; margin?: string }>`
+  min-width: ${props => (props.width ? props.width : '22px')};
+  padding: ${props => (props.padding ? props.padding : '0')};
+  margin: ${props => (props.margin ? props.margin : '0')};
 `

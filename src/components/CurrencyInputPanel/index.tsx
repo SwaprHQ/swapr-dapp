@@ -9,10 +9,12 @@ import { RowBetween } from '../Row'
 import { TYPE } from '../../theme'
 import NumericalInput from '../Input/NumericalInput'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import { breakpoints } from '../../utils/theme'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { FiatValueDetails } from '../FiatValueDetails'
+import { limitNumberOfDecimalPlaces } from '../../utils/prices'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -76,6 +78,9 @@ const Container = styled.div<{ focused: boolean }>`
   border-radius: 12px;
   transition: border 0.3s ease;
   padding: 18px 22px;
+  @media screen and (max-width: ${breakpoints.md}) {
+    padding: 18px 16px;
+  }
 `
 
 const Content = styled.div``
@@ -179,6 +184,7 @@ export default function CurrencyInputPanel({
                     onUserInput(val)
                   }}
                   disabled={disabled}
+                  data-testid={'transaction-value-input'}
                 />
               </>
             )}
@@ -208,7 +214,7 @@ export default function CurrencyInputPanel({
                       ? currency.symbol.slice(0, 4) +
                         '...' +
                         currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : currency?.symbol) || t('select Token')}
+                      : currency?.symbol) || <div data-testid="select-token-button"> {t('select Token')}</div>}
                   </StyledTokenName>
                 )}
                 {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}
@@ -217,7 +223,12 @@ export default function CurrencyInputPanel({
           </InputRow>
           <FiatRow>
             <RowBetween>
-              {fiatValue && <FiatValueDetails fiatValue={fiatValue?.toFixed(2)} priceImpact={priceImpact} />}
+              {fiatValue && (
+                <FiatValueDetails
+                  fiatValue={fiatValue?.toFixed(2, { groupSeparator: ',' })}
+                  priceImpact={priceImpact}
+                />
+              )}
               {account && (
                 <TYPE.body
                   onClick={onMax}
@@ -237,7 +248,7 @@ export default function CurrencyInputPanel({
                       <>
                         {customBalanceText ?? t('balance')}
                         <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
-                          {(balance || selectedCurrencyBalance)?.toSignificant(6)}
+                          {limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'}
                         </TYPE.small>
                       </>
                     )}

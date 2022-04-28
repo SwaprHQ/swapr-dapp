@@ -1,6 +1,6 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trade, TokenAmount, CurrencyAmount, ChainId } from '@swapr/sdk'
+import { TokenAmount, CurrencyAmount, ChainId, UniswapV2Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -15,7 +15,7 @@ export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
   PENDING,
-  APPROVED
+  APPROVED,
 }
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
@@ -81,12 +81,12 @@ export function useApproveCallback(
 
     return tokenContract
       .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas)
+        gasLimit: calculateGasMargin(estimatedGas),
       })
       .then((response: TransactionResponse) => {
         addTransaction(response, {
           summary: 'Approve ' + amountToApprove.currency.symbol,
-          approval: { tokenAddress: token.address, spender: spender }
+          approval: { tokenAddress: token.address, spender: spender },
         })
       })
       .catch((error: Error) => {
@@ -99,11 +99,14 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
+export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
-  const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
-    [trade, allowedSlippage]
+  const amountToApprove = useMemo(() => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined), [
+    trade,
+    // allowedSlippage,
+  ])
+  return useApproveCallback(
+    amountToApprove,
+    (trade?.platform as UniswapV2RoutablePlatform)?.routerAddress[chainId || ChainId.MAINNET]
   )
-  return useApproveCallback(amountToApprove, trade?.platform.routerAddress[chainId || ChainId.MAINNET])
 }
