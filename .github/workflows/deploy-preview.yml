@@ -5,21 +5,25 @@ on:
       - develop
   pull_request:
     types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ipfs-preview-build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
     steps:
       - name: Inject slug variables
         uses: rlespinasse/github-slug-action@3.5.1
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Use Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: '16'
+          check-latest: true
+          cache: 'yarn'
       - name: Start Deployment
         uses: bobheadxi/deployments@v0.6.0
         id: deployment
@@ -29,13 +33,10 @@ jobs:
           env: ${{env.GITHUB_HEAD_REF_SLUG_URL || env.GITHUB_REF_SLUG_URL}}
           ref: ${{github.head_ref}}
       - name: Install dependencies
-        uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: install --frozen-lockfile
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
       - name: Build
-        uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: ipfs-build
+        run: yarn ipfs-build
       - name: Deploy to IPFS
         uses: web3-storage/add-to-web3@v1
         id: web3
