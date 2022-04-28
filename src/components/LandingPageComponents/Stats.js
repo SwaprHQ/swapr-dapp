@@ -1,53 +1,48 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { gql } from 'graphql-request'
+import { ChainId } from '@swapr/sdk'
+
 import { gradients, breakpoints } from '../../utils/theme'
 import { StatsContent } from '../../utils/ui-constants'
 import { toClassName } from './../../utils/helper-functions'
 import Layout from './layout/Layout'
 import TextyAnim from 'rc-texty'
+import { immediateSubgraphClients } from '../../apollo/client'
 
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
-
-const apiUrlList = [
-  'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
-  'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
-  'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2'
+const subgraphApiClients = [
+  immediateSubgraphClients[ChainId.ARBITRUM_ONE],
+  immediateSubgraphClients[ChainId.XDAI],
+  immediateSubgraphClients[ChainId.MAINNET]
 ]
 
-const tokensQuery = `{
-    swaprFactories (first:1000) {
-        txCount
-        totalVolumeUSD
+const tokensQuery = gql`
+  {
+    swaprFactories(first: 1000) {
+      txCount
+      totalVolumeUSD
     }
-}`
+  }
+`
 
-const retrieveData = async url => {
-  const client = new ApolloClient({
-    uri: url,
-    cache: new InMemoryCache()
-  })
-
-  let asyncClient = await client
-    .query({
-      query: gql(tokensQuery)
-    })
+const retrieveData = async client => {
+  return await client
+    .request(tokensQuery)
     .then(data => {
-      // console.log('Subgraph data: ', data)
       return data
     })
-    .catch(err => {
-      console.log('Error fetching data: ', err)
-      return err
+    .catch(error => {
+      console.error('Error fetching data from subgraphs: ', error)
     })
-  return asyncClient
 }
 
 const Stats = () => {
-  let [tvl, setTvl] = useState(0)
-  let [swaprPrice, setSwaprPrice] = useState(0)
+  const [failedToUpdate, setFailedToUpdate] = useState(false)
+  const [tvl, setTvl] = useState(0)
+  const [swaprPrice, setSwaprPrice] = useState(0)
   let [tx, setTx] = useState(0)
   let [totalVolumeUSD, setTotalVolumeUSD] = useState(0)
-  let [isChartActive, setIsChartActive] = useState(false)
+  const [isChartActive, setIsChartActive] = useState(false)
 
   useEffect(() => {
     const tvlPromise = fetch('https://api.llama.fi/tvl/swapr')
@@ -58,10 +53,13 @@ const Stats = () => {
       .then(decodedTvl => {
         setTvl((decodedTvl / 1000000).toFixed(1))
       })
+      .catch(error => {
+        console.error('Error fetching Swapr TVL: ', error)
+      })
   }, [])
 
   useEffect(() => {
-    let coinCode = 'arbitrum:0xde903e2712288a1da82942dddf2c20529565ac30'
+    const coinCode = 'arbitrum:0xde903e2712288a1da82942dddf2c20529565ac30'
     const swaprPricePromise = fetch('https://coins.llama.fi/prices', {
       method: 'POST',
       body: JSON.stringify({
@@ -73,42 +71,48 @@ const Stats = () => {
         return data.json()
       })
       .then(decodedPrice => {
-        let swaprPrice = decodedPrice.coins[coinCode].price.toFixed(3).toString()
+        const swaprPrice = decodedPrice.coins[coinCode].price.toFixed(3).toString()
         setSwaprPrice(swaprPrice)
       })
-  }, [])
-
-  useEffect(() => {
-    for (let val in apiUrlList) {
-      // eslint-disable-next-line
-            retrieveData(apiUrlList[val]).then((data) => {
-        let floatTx = parseFloat(data.data.swaprFactories[0].txCount)
-        let floatVolume = parseFloat(data.data.swaprFactories[0].totalVolumeUSD)
-
-        // eslint-disable-next-line
-                setTx(tx += floatTx);
-        // eslint-disable-next-line
-                setTotalVolumeUSD(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0));
+      .catch(error => {
+        console.error('Error fetching Swapr price: ', error)
       })
-    }
   }, [])
 
   useEffect(() => {
-    let options = {
+    subgraphApiClients.forEach(client => {
+      retrieveData(client).then(data => {
+        if (data) {
+          let floatTx = parseFloat(data.swaprFactories[0].txCount)
+          let floatVolume = parseFloat(data.swaprFactories[0].totalVolumeUSD)
+
+          // eslint-disable-next-line
+          setTx((tx += floatTx))
+          // eslint-disable-next-line
+          setTotalVolumeUSD(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0))
+        } else {
+          setFailedToUpdate(true)
+        }
+      })
+    })
+  }, [])
+
+  useEffect(() => {
+    const options = {
       root: null,
       rootMargin: '200px 0px 500px 0px',
       threshold: 0.5
     }
 
-    let callback = entries => {
+    const callback = entries => {
       entries.forEach(entry => {
         setIsChartActive(entry.isIntersecting)
       })
     }
 
-    let observer = new IntersectionObserver(callback, options)
+    const observer = new IntersectionObserver(callback, options)
 
-    let target = document.querySelector('#stats')
+    const target = document.querySelector('#stats')
     observer.observe(target)
   }, [])
 
@@ -122,9 +126,12 @@ const Stats = () => {
   return (
     <StyledStats id={'stats'} width={'main-width'} isChartActive={isChartActive}>
       <div className="background-gradient"></div>
-      <h2>
-        <span>{StatsContent.title}</span>
-      </h2>
+      <div>
+        <h2>
+          <span>{StatsContent.title}</span>
+          {failedToUpdate && <p className="update-status-text">Not updated</p>}
+        </h2>
+      </div>
       <div className="stats-grid">
         {StatsContent.stats.map((statsItem, key) => (
           <div key={key} className={`stats-module ${toClassName(statsItem.title)}`}>
@@ -184,7 +191,7 @@ const StyledStats = styled(Layout)`
     top: 0;
     span {
       font-size: 31px;
-      line-height: 38px;
+      line-height: 48px;
       font-weight: 400;
       background: ${gradients.heroMainText};
       -webkit-background-clip: text;
@@ -192,6 +199,11 @@ const StyledStats = styled(Layout)`
       z-index: 1;
       position: relative;
     }
+  }
+  .update-status-text {
+    color: ${({ theme }) => theme.yellow2};
+    font-size: 12px;
+    font-weight: 400;
   }
   .stats-grid {
     margin-top: 260px;

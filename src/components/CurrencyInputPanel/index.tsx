@@ -14,7 +14,7 @@ import { breakpoints } from '../../utils/theme'
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
 import { FiatValueDetails } from '../FiatValueDetails'
-import { limitNumberDecimalPlaces } from '../../utils/prices'
+import { limitNumberOfDecimalPlaces } from '../../utils/prices'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -248,7 +248,7 @@ export default function CurrencyInputPanel({
                       <>
                         {customBalanceText ?? t('balance')}
                         <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
-                          {limitNumberDecimalPlaces(balance || selectedCurrencyBalance)}
+                          {limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'}
                         </TYPE.small>
                       </>
                     )}

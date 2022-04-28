@@ -23,12 +23,6 @@ const ArrowIndicator = styled.section`
   flex-direction: column;
   align-items: center;
   margin-top: 46px;
-  @media screen and (max-width: ${breakpoints.md}) {
-    position: absolute;
-    top: calc(100vh - 220px);
-    left: 0;
-    margin-top: 80px;
-  }
   .arrow {
     width: 12px;
     height: 5px;
@@ -49,27 +43,27 @@ const ArrowIndicator = styled.section`
 `
 
 const Hero = props => {
-  let [isHeroActive, setIsHeroActive] = useState(true)
-  let [logosArrays, setLogosArrays] = useState([])
+  const [isHeroActive, setIsHeroActive] = useState(true)
+  const [logosArrays, setLogosArrays] = useState([])
   useEffect(() => {
-    let options = {
+    const options = {
       root: null,
       rootMargin: '0px 0px 0px 0px',
       threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
     }
 
-    let callback = entries => {
+    const callback = entries => {
       entries.forEach(entry => {
-        let elementHeight = entry.boundingClientRect.height
-        let pixelsShown = entry.boundingClientRect.top < 0 ? -entry.boundingClientRect.top : 0
-        let showElement = pixelsShown < elementHeight / 4
+        const elementHeight = entry.boundingClientRect.height
+        const pixelsShown = entry.boundingClientRect.top < 0 ? -entry.boundingClientRect.top : 0
+        const showElement = pixelsShown < elementHeight / 4
         setIsHeroActive(showElement)
       })
     }
 
-    let observer = new IntersectionObserver(callback, options)
+    const observer = new IntersectionObserver(callback, options)
 
-    let target = document.querySelector('#index-hero')
+    const target = document.querySelector('#index-hero')
     observer.observe(target)
   }, [])
 
@@ -78,7 +72,7 @@ const Hero = props => {
       j,
       temporary,
       chunk = 2
-    let temporaryArray = []
+    const temporaryArray = []
     for (i = 0, j = HeroContent.heroLogos.length; i < j; i += chunk) {
       temporary = HeroContent.heroLogos.slice(i, i + chunk)
       temporaryArray.push(temporary)
