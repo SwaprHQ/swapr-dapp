@@ -8,9 +8,12 @@ import { SubgraphFacade } from '../../../utils/facades/SubgraphFacade'
 import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { getUnixTime } from 'date-fns'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
+import { CampaignPage } from '../../../pages/CampaignPage'
 
 describe('Wallet connection tests', () => {
   const REWARDS_INPUT = 0.001
+  const TOKENS_PAIR = 'USDC/USDT'
+  const REWARD_TOKEN = 'weenus'
   const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
   const endsAt = DateUtils.getDateTimeAndAppendMinutes(4)
 
@@ -31,9 +34,9 @@ describe('Wallet connection tests', () => {
   it('Should create a single reward pool', () => {
     RewardsPage.getCreateCampaignButton().click()
     CreatePoolPage.getLiquidityPairMenuButton().click()
-    PairMenu.choosePair('USDC/USDT')
+    PairMenu.choosePair(TOKENS_PAIR)
     CreatePoolPage.getRewardTokenMenuButton().click()
-    TokenMenu.chooseToken('weenus')
+    TokenMenu.chooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
     CreatePoolPage.setStartTime(DateUtils.getFormattedDateTime(startsAt))
@@ -51,7 +54,7 @@ describe('Wallet connection tests', () => {
       expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
     })
   })
-  it.skip('Should open a campaign', () => {
+  it('Should open a campaign', () => {
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.switchCampaignsToogle()
     LiquidityPage.getAllPairsButton().click()
@@ -65,20 +68,24 @@ describe('Wallet connection tests', () => {
     LiquidityPage.getRewardsCampaignButton().click()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
 
-    cy.get('[data-testid=reward-campaign-information-card]').should('be.visible')
+    CampaignPage.checkCampaignData(
+      TOKENS_PAIR,
+      REWARDS_INPUT,
+      'ACTIVE',
+      DateUtils.getFormattedDateTime(startsAt),
+      DateUtils.getFormattedDateTime(endsAt)
+    )
   })
   it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should('be.visible')
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt)
 
-    cy.waitUntil(() => {
-      if (Cypress.$('[data-testid=reward-card]').length) {
-        return  RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click().then(() => false)
-      } else {
-        return true
-      }
-    })
-
-    cy.wait(10000)
-    cy.get('[data-testid=reward-campaign-information-card]').should('be.visible')
+    CampaignPage.checkCampaignData(
+      TOKENS_PAIR,
+      REWARDS_INPUT,
+      'ACTIVE',
+      DateUtils.getFormattedDateTime(startsAt),
+      DateUtils.getFormattedDateTime(endsAt)
+    )
   })
 })
