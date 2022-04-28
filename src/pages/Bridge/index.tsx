@@ -321,7 +321,7 @@ export default function Bridge() {
       {activeTab === BridgeTab.BRIDGE && showAvailableBridges && <BridgeSelectionWindow />}
       {!!bridgeSummaries.length && (
         <BridgeTransactionsSummary
-          isAdditionalMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
+          extraMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
           transactions={bridgeSummaries}
           handleTriggerCollect={handleTriggerCollect}
         />
