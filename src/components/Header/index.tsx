@@ -360,7 +360,7 @@ function Header() {
           <StyledExternalLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLink>
-          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗
@@ -431,7 +431,7 @@ function Header() {
           <StyledExternalLinkMobile id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLinkMobile>
-          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗

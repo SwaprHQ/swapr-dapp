@@ -302,7 +302,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                     <Divider />
                     <RowBetween width="100%" marginTop="12px" marginBottom="12px">
                       <MenuItem
-                        href="https://dxdao.eth.link/"
+                        href="https://dxdao.eth.limo/"
                         rel="noopener noreferrer"
                         target="_blank"
                         data-testid="about-hyperlink"
