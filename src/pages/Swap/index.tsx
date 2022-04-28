@@ -48,7 +48,7 @@ import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
 import { ButtonConnect } from '../../components/ButtonConnect'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
 
 // Landing Page Imports
@@ -85,7 +85,6 @@ export default function Swap() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
-  const { t } = useTranslation()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -363,14 +362,16 @@ export default function Swap() {
                       <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
                         <Trans
                           i18nKey="bestPriceFounOn"
-                          values={{ plataform: bestPricedTrade?.platform.name }}
+                          values={{ platform: bestPricedTrade?.platform.name }}
                           components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
                         />
                         {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
                           <>
                             {' '}
-                            {t('swapWith')}{' '}
-                            <span style={{ color: 'white', fontWeight: 700 }}>{t('noAdditionalFees')}</span>
+                            <Trans
+                              i18nKey="swapWithNoAdditionalFees"
+                              components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+                            />
                           </>
                         ) : null}
                       </TYPE.body>
