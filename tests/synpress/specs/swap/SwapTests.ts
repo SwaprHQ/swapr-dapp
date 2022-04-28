@@ -47,7 +47,7 @@ describe('SWAP functional tests', () => {
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({  })
 
     MenuBar.checkToastMessage('Swap')
 
@@ -83,7 +83,7 @@ describe('SWAP functional tests', () => {
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({ })
 
     MenuBar.checkToastMessage('Swap')
 
@@ -131,7 +131,7 @@ describe('SWAP functional tests', () => {
         )
       })
     SwapPage.confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({  })
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
