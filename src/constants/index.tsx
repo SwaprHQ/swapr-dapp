@@ -307,7 +307,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       symbol: Currency.XDAI.symbol || 'xDAI',
       decimals: Currency.XDAI.decimals || 18
     },
-    rpcUrls: ['https://rpc.xdaichain.com'],
+    rpcUrls: ['https://rpc.gnosischain.com/'],
     blockExplorerUrls: ['https://blockscout.com/xdai/mainnet']
   },
   [ChainId.ARBITRUM_ONE]: {

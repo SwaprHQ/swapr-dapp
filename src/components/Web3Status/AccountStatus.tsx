@@ -174,8 +174,8 @@ export function AccountStatus({
             </RowBetween>
           ) : ENSName ? (
             <>
-              {avatar && <Avatar url={avatar.image} />}
-              <>{ENSName}</>
+              {avatar?.image && <Avatar url={avatar.image} />}
+              <p>{ENSName}</p>
             </>
           ) : (
             <>

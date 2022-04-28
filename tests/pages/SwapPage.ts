@@ -2,7 +2,7 @@ import { TokenMenu } from './TokenMenu'
 
 export class SwapPage {
   static visitSwapPage() {
-    cy.visit('/swap')
+    cy.visit('/#/swap')
   }
 
   static openTokenToSwapMenu() {
@@ -33,7 +33,7 @@ export class SwapPage {
     cy.get('#confirm-swap-or-send').click()
   }
 
-  static connectOrSwitchButton() {
+  static getConnectOrSwitchButton() {
     return cy.get('[data-testid=switch-connect-button]')
   }
 
@@ -59,5 +59,14 @@ export class SwapPage {
   }
   static getConfirmButton() {
     return cy.get('[data-testid=switch-connect-button]')
+  }
+  static getEstimatedMinimalTransactionValue() {
+    return cy.get('[data-testid=estimated-transaction-output]')
+  }
+  static getAlternateReceiverButton() {
+    return cy.get('[data-testid=alternate-receiver-button]')
+  }
+  static getAlternateReceiverInput() {
+    return cy.get('[data-testid=address-input]')
   }
 }

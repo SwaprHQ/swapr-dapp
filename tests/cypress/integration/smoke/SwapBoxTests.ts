@@ -1,15 +1,11 @@
 import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
+import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Swap page smoke tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
-    cy.intercept('GET', 'https://ipfs.io/ipfs/*', req => {
-      if (req.hasOwnProperty('body')) {
-        req.alias = 'request'
-      }
-    })
-    cy.wait('@request')
+    TransactionHelper.waitForTokenLists()
   })
   it('Should display swap box with 2 inputs and 2 currency selectors [TC-20]', () => {
     SwapPage.getSwapBox().should('be.visible')
@@ -17,11 +13,11 @@ describe('Swap page smoke tests', () => {
     SwapPage.getToInput().should('be.visible')
     SwapPage.getFromInput().should('be.visible')
   })
-  it('Should display token menu after clicking select token', () => {
+  it('Should display token menu after clicking select token [TC-20]', () => {
     SwapPage.openTokenToSwapMenu()
     TokenMenu.getPicker().should('be.visible')
   })
-  it('Should pick only eth as default from value', () => {
+  it('Should pick only eth as default from value [TC-20]', () => {
     SwapPage.getCurrencySelectors()
       .first()
       .should('contain.text', 'ETH')

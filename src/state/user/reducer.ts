@@ -169,6 +169,5 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserAdvancedSwapDetails, (state, action) => {
       state.userAdvancedSwapDetails = action.payload.userAdvancedSwapDetails
-      state.timestamp = currentTimestamp()
     })
 )

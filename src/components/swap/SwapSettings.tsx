@@ -67,7 +67,12 @@ export function SwapSettings({
         </StyledButton>
       </MouseoverTooltip>
       <MouseoverTooltip content={t('alternateReceiver')} placement="top">
-        <StyledButton active={!!recipient} cursor="pointer" onClick={() => setShowAddRecipient(!showAddRecipient)}>
+        <StyledButton
+          data-testid="alternate-receiver-button"
+          active={!!recipient}
+          cursor="pointer"
+          onClick={() => setShowAddRecipient(!showAddRecipient)}
+        >
           <Recipient />
         </StyledButton>
       </MouseoverTooltip>
