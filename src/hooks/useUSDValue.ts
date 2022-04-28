@@ -3,7 +3,7 @@ import { useTradeExactInAllPlatforms } from './Trades'
 import { ChainId } from '@swapr/sdk'
 import { USDC, DAI } from '../constants/index'
 import { useActiveWeb3React } from './index'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { currencyId } from '../utils/currencyId'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
@@ -34,7 +34,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         numerator: '1'
       })
 
-    const filterSelectedPlataforms = (trade: Trade | undefined) => {
+    const filterSelectedPlataforms = (trade?: Trade) => {
       if (!trade || !selectedTrade) return false
       return selectedTrade.platform.name === trade.platform.name
     }
@@ -63,17 +63,15 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
 export function useCoingeckoUSDPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
-  const [price, setPrice] = useState<Price | null>(null)
-  const [error, setError] = useState<Error | null>(null)
+  const [price, setPrice] = useState<Price | undefined>()
+  const [error, setError] = useState<Error | undefined>()
 
-  // Currency is deep nested and we only really care about token address changing
-  // so we ref it here as to avoid updating useEffect
-  const currencyRef = useRef(wrappedCurrency(currency, chainId) as Currency)
-  currencyRef.current = wrappedCurrency(currency, chainId) as Currency
+  const wrappedCurr = wrappedCurrency(currency, chainId) as Currency
 
-  const tokenAddress = currencyRef.current ? currencyId(currencyRef.current) : undefined
-  useEffect(() => {
-    const baseAmount = tryParseAmount('1', currencyRef.current)
+  const tokenAddress = wrappedCurr ? currencyId(wrappedCurr) : undefined
+
+  const fetchPrice = useCallback(() => {
+    const baseAmount = tryParseAmount('1', wrappedCurr)
 
     if (!chainId || !tokenAddress || !baseAmount) return
 
@@ -83,7 +81,7 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
     })
       .then(toPriceInformation)
       .then(priceResponse => {
-        setError(null)
+        setError(undefined)
 
         if (!priceResponse?.amount) return
 
@@ -118,7 +116,7 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
           usdPrice.invert().toSignificant(12)
         )
 
-        return setPrice(usdPrice)
+        setPrice(usdPrice)
       })
       .catch(error => {
         console.error(
@@ -126,60 +124,64 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
           tokenAddress,
           error
         )
-        return () => {
-          setError(new Error(error))
-          setPrice(null)
-        }
+        setError(new Error(error))
+        setPrice(undefined)
       })
-    // don't depend on Currency (deep nested object)
-  }, [chainId, tokenAddress])
+  }, [chainId, tokenAddress, wrappedCurr])
 
-  return { price, error }
+  useEffect(() => {
+    fetchPrice()
+  }, [fetchPrice])
+
+  return { price, error, refetch: fetchPrice }
 }
 
 interface GetPriceQuoteParams {
   currencyAmount?: CurrencyAmount
-  error: Error | null
-  price: Price | null
+  error?: Error
+  price?: Price
 }
 
 // common logic for returning price quotes
 function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams) {
   return useMemo(() => {
-    if (!price || error || !currencyAmount) return null
+    if (!price || error || !currencyAmount) return
 
     try {
       return price.quote(currencyAmount)
-    } catch (error) {
-      return null
+    } catch {
+      return
     }
   }, [currencyAmount, error, price])
 }
 
-export function useUSDValue(currencyAmount?: CurrencyAmount | null, selectedTrade?: Trade): CurrencyAmount | null {
+export function useUSDValue(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
-  const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount || undefined, chainId)
+  const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
-  const price = useUSDPrice((wrappedCurrencyToken as CurrencyAmount) || undefined, selectedTrade)
+  const price = useUSDPrice(wrappedCurrencyToken as CurrencyAmount, selectedTrade)
 
-  return useGetPriceQuote({ price: price || null, error: null, currencyAmount: wrappedCurrencyToken as CurrencyAmount })
+  return useGetPriceQuote({ price: price, currencyAmount: wrappedCurrencyToken as CurrencyAmount })
 }
 
-export function useCoingeckoUSDValue(currencyAmount: CurrencyAmount | undefined): CurrencyAmount | null {
+export function useCoingeckoUSDValue(currencyAmount?: CurrencyAmount) {
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
-  const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount || undefined, chainId)
+  const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
   const coingeckoUsdPrice = useCoingeckoUSDPrice(wrappedCurrencyToken?.currency)
-
-  return useGetPriceQuote({ ...coingeckoUsdPrice, currencyAmount: wrappedCurrencyToken as CurrencyAmount })
+  return {
+    currencyAmount: useGetPriceQuote({
+      price: coingeckoUsdPrice.price,
+      error: coingeckoUsdPrice.error,
+      currencyAmount: wrappedCurrencyToken as CurrencyAmount
+    }),
+    refetch: coingeckoUsdPrice.refetch
+  }
 }
 
-export function useHigherUSDValue(
-  currencyAmount: CurrencyAmount | undefined,
-  selectedTrade?: Trade
-): CurrencyAmount | null {
+export function useHigherUSDValue(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
   const USDPrice = useUSDValue(currencyAmount, selectedTrade)
   const coingeckoUSDPrice = useCoingeckoUSDValue(currencyAmount)
 
-  return coingeckoUSDPrice || USDPrice
+  return { price: coingeckoUSDPrice?.currencyAmount || USDPrice, refetch: coingeckoUSDPrice?.refetch }
 }
