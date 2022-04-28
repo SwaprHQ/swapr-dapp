@@ -58,7 +58,7 @@ const Hero = props => {
       threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
     }
 
-    let callback = (entries, observer) => {
+    let callback = entries => {
       entries.forEach(entry => {
         let elementHeight = entry.boundingClientRect.height
         let pixelsShown = entry.boundingClientRect.top < 0 ? -entry.boundingClientRect.top : 0
@@ -127,7 +127,7 @@ const Hero = props => {
           <div className="routing-through-body">
             <Marquee speed={50} gradientColor={[12, 11, 18]}>
               <div className="marquee-inner">
-                {[...Array(3)].map((e, i) => (
+                {[...Array(3)].map(() => (
                   <>
                     {RoutingThroughContent.companies.map((company, key) => (
                       <img key={key} src={company.img} alt="Routing through..." />

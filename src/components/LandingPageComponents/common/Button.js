@@ -31,7 +31,7 @@ const Button = props => {
           onClick={onClick && onClick}
           title={title}
           target={external ? '_blank' : ''}
-          rel={external ? '_blank' : 'noopener noreferrer'}
+          rel="noreferrer"
         >
           {type === 'dark' && (
             <>

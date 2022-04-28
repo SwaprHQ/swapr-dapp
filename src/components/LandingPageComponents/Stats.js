@@ -100,7 +100,7 @@ const Stats = () => {
       threshold: 0.5
     }
 
-    let callback = (entries, observer) => {
+    let callback = entries => {
       entries.forEach(entry => {
         setIsChartActive(entry.isIntersecting)
       })

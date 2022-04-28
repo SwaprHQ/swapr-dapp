@@ -33,7 +33,7 @@ const Footer = () => {
         </ul>
         <div className="cta-container">
           <div
-            onClick={e => {
+            onClick={() => {
               scrollTo('app-wrapper')
             }}
             className="timeline-navigation-button up"

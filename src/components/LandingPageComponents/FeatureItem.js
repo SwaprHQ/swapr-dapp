@@ -14,7 +14,7 @@ const FeatureItem = props => {
   }, [])
 
   useEffect(() => {
-    window.addEventListener('scroll', e => {
+    window.addEventListener('scroll', () => {
       let el = document.getElementById(props.id)
       if (el) {
         let elRect = el.getBoundingClientRect().y

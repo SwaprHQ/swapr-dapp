@@ -7,14 +7,14 @@ const TimelineControls = props => {
     <StyledTimelineControls className="timeline-controls">
       <div
         disabled={props.stepNumber <= 1}
-        onClick={e => {
+        onClick={() => {
           props.prevStep()
         }}
         className="timeline-navigation-button left"
       />
       <div
         disabled={props.stepNumber > props.timelineData.length - (!props.isMobileTimeline ? 7 : 4)}
-        onClick={e => {
+        onClick={() => {
           props.nextStep()
         }}
         className="timeline-navigation-button right"
