@@ -5,7 +5,7 @@ import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../pages/TokenMenu'
 
-describe('SWAP functional tests', () => {
+describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number

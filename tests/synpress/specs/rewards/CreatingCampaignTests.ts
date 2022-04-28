@@ -27,6 +27,7 @@ describe('Wallet connection tests', () => {
     cy.clearLocalStorage()
   })
   after(() => {
+    cy.disconnectMetamaskWalletFromAllDapps()
     cy.resetMetamaskAccount()
     cy.wait(500)
   })
