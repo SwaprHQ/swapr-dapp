@@ -8,7 +8,8 @@ import {
   isAddress,
   shortenAddress,
   calculateGasMargin,
-  basisPointsToPercent
+  basisPointsToPercent,
+  normalizedInputValue
 } from '.'
 
 describe('utils', () => {
@@ -94,6 +95,20 @@ describe('utils', () => {
       expect(basisPointsToPercent(100).equalTo(new Percent(JSBI.BigInt(1), JSBI.BigInt(100)))).toBeTruthy()
       expect(basisPointsToPercent(500).equalTo(new Percent(JSBI.BigInt(5), JSBI.BigInt(100)))).toBeTruthy()
       expect(basisPointsToPercent(50).equalTo(new Percent(JSBI.BigInt(5), JSBI.BigInt(1000)))).toBeTruthy()
+    })
+  })
+
+  describe('#normalizedInputValue function', () => {
+    it('should return correct value', () => {
+      expect(normalizedInputValue('0000.00000123')).toEqual('0.00000123')
+      expect(normalizedInputValue('.00000009')).toEqual('0.00000009')
+      expect(normalizedInputValue('0.000002')).toEqual('0.000002')
+      expect(normalizedInputValue('0020034')).toEqual('20034')
+      expect(normalizedInputValue('000.99')).toEqual('0.99')
+      expect(normalizedInputValue('00065')).toEqual('65')
+      expect(normalizedInputValue('200')).toEqual('200')
+      expect(normalizedInputValue('0000')).toEqual('0')
+      expect(normalizedInputValue('.')).toEqual('0.')
     })
   })
 })
