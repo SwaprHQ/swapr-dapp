@@ -10,7 +10,7 @@ import { getUnixTime } from 'date-fns'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../pages/CampaignPage'
 
-describe('Wallet connection tests', () => {
+describe('Wallet connection tests [TC-60]', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'USDC/USDT'
   const REWARD_TOKEN = 'weenus'
@@ -32,7 +32,7 @@ describe('Wallet connection tests', () => {
     cy.wait(500)
   })
 
-  it('Should create a single reward pool', () => {
+  it('Should create a single reward pool [TC-60]', () => {
     RewardsPage.getCreateCampaignButton().click()
     CreatePoolPage.getLiquidityPairMenuButton().click()
     PairMenu.choosePair(TOKENS_PAIR)
@@ -55,7 +55,7 @@ describe('Wallet connection tests', () => {
       expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
     })
   })
-  it('Should open a campaign', () => {
+  it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.switchCampaignsToogle()
     LiquidityPage.getAllPairsButton().click()

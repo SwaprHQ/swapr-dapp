@@ -18,5 +18,6 @@
   },
   "defaultCommandTimeout": 30000,
   "pageLoadTimeout": 30000,
-  "requestTimeout": 30000
+  "requestTimeout": 30000,
+  "pluginsFile": "tests/plugins/index.js"
 }

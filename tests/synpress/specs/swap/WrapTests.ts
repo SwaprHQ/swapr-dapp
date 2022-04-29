@@ -9,8 +9,8 @@ describe('Wrapping tests', () => {
 
   let balanceBefore: number
 
-  before(()=>{
-    cy.changeMetamaskNetwork("rinkeby")
+  before(() => {
+    cy.changeMetamaskNetwork('rinkeby')
   })
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('Wrapping tests', () => {
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .wrap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -50,7 +50,7 @@ describe('Wrapping tests', () => {
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .wrap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
