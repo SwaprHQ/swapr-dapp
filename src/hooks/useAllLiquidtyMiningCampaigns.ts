@@ -222,6 +222,7 @@ export function useAllLiquidtyMiningCampaigns(
         campaign.stakeToken.symbol,
         campaign.stakeToken.name
       )
+
       const singleSidedStakeCampaign = toSingleSidedStakeCampaign(
         chainId,
         campaign,

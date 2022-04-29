@@ -3,11 +3,11 @@ import React, { useCallback, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
-import TokenAndLimit from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
-import RewardAmount from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
+import StakeTokenAndLimit from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
+import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
 
-import Time from '../../../components/LiquidityMining/Create/Steps/Time'
+import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../styleds'
@@ -212,7 +212,7 @@ export default function CreateLiquidityMining() {
           index={1}
           disabled={campaingType === null}
         >
-          <TokenAndLimit
+          <StakeTokenAndLimit
             unlimitedPool={unlimitedPool}
             onUnlimitedPoolChange={setUnlimitedPool}
             campaingType={campaingType}
@@ -223,7 +223,7 @@ export default function CreateLiquidityMining() {
         </Step>
         {/* <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}> */}
         <Step title="Campaign Duration" index={2} disabled={false}>
-          <Time
+          <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
@@ -234,7 +234,7 @@ export default function CreateLiquidityMining() {
         </Step>
         {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
         <Step title="Select Reward Amount" index={3} disabled={false}>
-          <RewardAmount rewardsObject={rewardsObject} setRewardsObject={dispatch} />
+          <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
         <LastStep

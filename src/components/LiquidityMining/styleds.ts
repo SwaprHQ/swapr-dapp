@@ -40,9 +40,6 @@ export const SmoothGradientCard = styled(Card)<{
 
   display: flex;
   align-items: center;
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    width: 100%;
-  `}
 `
 
 export const Divider = styled.div`

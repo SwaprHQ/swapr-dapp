@@ -13,6 +13,10 @@ import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 
 const FlexContainer = styled(Flex)`
+  margin-top: 32px;
+  justify-content: stretch;
+  width: 100%;
+  gap: 28px;
   ${props => props.theme.mediaWidth.upToExtraSmall`
     flex-direction: column;
   `}
@@ -56,7 +60,7 @@ interface TokenAndLimitProps {
   onUnlimitedPoolChange: (newValue: boolean) => void
 }
 
-export default function TokenAndLimit({
+export default function StakeTokenAndLimit({
   targetedPairOrToken: liquidityPair,
   unlimitedPool,
   onLiquidityPairChange,
@@ -67,11 +71,12 @@ export default function TokenAndLimit({
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')
-  const [inputWidth, setInputWidth] = useState(3)
-
+  const [inputWidth, setInputWidth] = useState(18)
+  const inputRef = React.useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (unlimitedPool) {
       setStakingCapString('')
+      setInputWidth(18)
       onStakingCapChange(null)
     }
   }, [onStakingCapChange, liquidityPair, unlimitedPool])
@@ -102,7 +107,9 @@ export default function TokenAndLimit({
   }, [campaingType, onLiquidityPairChange])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      setInputWidth(rawValue.length < 3 ? 3 : rawValue.length)
+      if (rawValue.length === 0) setInputWidth(18)
+      else setInputWidth(inputRef.current?.clientWidth || 4)
+
       if (!liquidityPair || (liquidityPair instanceof Pair && !liquidityPair.liquidityToken)) return
       setStakingCapString(rawValue)
       const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair.liquidityToken
@@ -114,7 +121,7 @@ export default function TokenAndLimit({
 
   return (
     <>
-      <FlexContainer marginTop={'32px'} justifyContent="stretch" width="100%" height={'150px'}>
+      <FlexContainer>
         <AssetSelector
           campaingType={campaingType}
           currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
@@ -126,8 +133,8 @@ export default function TokenAndLimit({
           justifyContent={'space-between !important'}
           flexDirection={'column'}
           padding={'41px'}
-          marginLeft={'28px'}
-          width="301px"
+          height="150px"
+          width="fit-content"
         >
           <TYPE.mediumHeader
             alignSelf={'start'}
@@ -139,18 +146,27 @@ export default function TokenAndLimit({
           >
             MAX STAKED
           </TYPE.mediumHeader>
-          <FlexContainer width={'100%'} justifyContent={'space-between '}>
-            <StyledFlex onClick={() => onUnlimitedPoolChange(true)} alignItems={'center'} height={'38px'}>
+          <FlexContainer flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
+            <StyledFlex
+              marginRight="20px"
+              onClick={() => onUnlimitedPoolChange(true)}
+              alignItems={'center'}
+              height={'38px'}
+            >
               <StyledUnlimitedText active={unlimitedPool}>UNLIMITED</StyledUnlimitedText>
             </StyledFlex>
             <AmountFlex active={!unlimitedPool}>
               <StyledNumericalInput
-                style={{ width: inputWidth + 'ch' }}
+                style={{ width: inputWidth + 12 + 'px' }}
                 onClick={() => onUnlimitedPoolChange(false)}
                 disabled={!liquidityPair}
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}
               />
+              <span style={{ visibility: 'hidden', position: 'absolute' }} ref={inputRef}>
+                {stakingCapString}
+              </span>
+
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}

@@ -11,14 +11,7 @@ import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
 `
-const StyledSwitch = styled(Switch)`
-  /* color: red;
-  label {
-    span {
-      background-color: black !important;
-    }
-  } */
-`
+
 const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
   font-weight: 600 !important;
   align-self: center;
@@ -26,7 +19,8 @@ const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
   color: ${props => (props.active ? props.theme.white : props.theme.purple3)};
 `
 const FlexWrapper = styled(Flex)`
-  height: 150px;
+  flex-wrap: wrap;
+  gap: 28px;
   align-items: start !important;
 `
 interface TimeProps {
@@ -38,7 +32,7 @@ interface TimeProps {
   onTimelockedChange: () => void
 }
 
-export default function Time({
+export default function DurationAndLocking({
   startTime,
   endTime,
   timelocked,
@@ -46,10 +40,9 @@ export default function Time({
   onEndTimeChange,
   onTimelockedChange
 }: TimeProps) {
-  console.log(timelocked)
   return (
     <FlexWrapper>
-      <StyledSmoothGradientCard width="auto" padding={'42.5px 28px'} marginRight={'28px'}>
+      <StyledSmoothGradientCard height="150px" width="413px" padding={'42.5px 28px'}>
         <TimeSelector
           title="STARTING"
           placeholder="Start date"
@@ -74,6 +67,7 @@ export default function Time({
         alignItems={'start'}
         padding={'41px'}
         width={'299px'}
+        height={'150px'}
         flexDirection={'column'}
         justifyContent={'space-around !important'}
       >
@@ -84,7 +78,7 @@ export default function Time({
             fontSize={'11px'}
             textAlign={'start'}
             fontWeight="600"
-            lineHeight={'13px'}
+            lineHeight={'14px'}
             color="text3"
             letterSpacing="0.08em"
           >
@@ -95,7 +89,7 @@ export default function Time({
         <Flex alignItems={'start'}>
           <StyledLockText active={!timelocked}>UNLOCKED</StyledLockText>
 
-          <StyledSwitch handleToggle={() => onTimelockedChange()} isOn={timelocked} />
+          <Switch handleToggle={() => onTimelockedChange()} isOn={timelocked} />
           <StyledLockText active={timelocked} marginLeft="8px">
             TIME LOCKED
           </StyledLockText>

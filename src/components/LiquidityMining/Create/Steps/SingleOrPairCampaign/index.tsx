@@ -22,7 +22,11 @@ const StyledAutoColumn = styled(Flex)<{ active: boolean }>`
   text-align: start;
   color: ${props => (props.active ? props.theme.text3 : props.theme.text5)} !important;
 `
-
+const StyledAutoRow = styled(AutoRow)`
+  ${props => props.theme.mediaWidth.upToSmall`
+    margin:0;
+  `}
+`
 interface SingleOrPairCampaignProps {
   singleReward: CampaignType
   onChange: (newValue: CampaignType) => void
@@ -48,7 +52,7 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
   )
 
   return (
-    <AutoRow gap="35px">
+    <StyledAutoRow gap="35px">
       <SmoothGradientCard
         width={'218px'}
         height={'138px'}
@@ -75,6 +79,6 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
           <CardText>Staking</CardText>
         </StyledAutoColumn>
       </SmoothGradientCard>
-    </AutoRow>
+    </StyledAutoRow>
   )
 }

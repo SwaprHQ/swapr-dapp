@@ -26,6 +26,7 @@ import { useTokenDerivedNativeCurrency } from '../../../../../hooks/useTokenDeri
 import Loader from '../../../../Loader'
 import { parseUnits } from 'ethers/lib/utils'
 import { calculatePercentage } from '../../../../../utils'
+import { useTokenOrPairNativeCurrency } from '../../../../../hooks/useTokenOrPairNativeCurrency'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`
@@ -110,13 +111,21 @@ export default function PreviewAndCreate({
   const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
     liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
   )
+  const { loading: someLoader, derivedNativeCurrency: newDerivedNative } = useTokenOrPairNativeCurrency(
+    liquidityPair ? liquidityPair : undefined
+  )
   const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
-
+  console.log('testingLoader', someLoader)
+  console.log('newNativeDatra', newDerivedNative.toExact())
   const maxStakedSimulatedAmount = useMemo(() => {
     const base = stakingCap
       ? parseInt(stakingCap.multiply(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice)).toFixed(2))
       : 10000000
+
+    console.log('derivedNativeCurrency', derivedNativeCurrency.toExact())
+
     const baseinUsd = parseInt(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice).toFixed(2))
+
     let baseValue
     if (showUSDValue) {
       baseValue = base
@@ -124,13 +133,16 @@ export default function PreviewAndCreate({
       baseValue = base / baseinUsd
     }
     const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
-    if (tokenOrPair && base !== 0 && baseinUsd !== 0)
+
+    if (tokenOrPair && base !== 0 && baseinUsd !== 0) {
       setSimulatedStakedAmount(
         parseUnits(
           calculatePercentage(base / baseinUsd, simulatedValuePercentage).toString(),
           tokenOrPair.decimals
         ).toString()
       )
+    }
+
     return calculatePercentage(baseValue, simulatedValuePercentage)
   }, [
     setSimulatedStakedAmount,
@@ -207,7 +219,7 @@ export default function PreviewAndCreate({
                   ? 'USD'
                   : liquidityPair instanceof Token
                   ? liquidityPair.symbol
-                  : liquidityPair?.liquidityToken.symbol}
+                  : `${liquidityPair?.token0.symbol}/${liquidityPair?.token1.symbol}`}
               </SimulatedValue>
             )}
 

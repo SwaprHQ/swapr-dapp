@@ -17,16 +17,19 @@ import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 const FlexWrapper = styled(Flex)`
-  gap: 16px;
+  gap: 28px;
   margin-top: 32px !important;
   width: fit-content;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap:40px;
+  `}
 `
 interface RewardAmountProps {
   rewardsObject: RewardsObject
   setRewardsObject: React.Dispatch<Actions>
 }
 
-export default function RewardAmount({ rewardsObject, setRewardsObject }: RewardAmountProps) {
+export default function RewardsSelection({ rewardsObject, setRewardsObject }: RewardAmountProps) {
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
 
   const [currentReward, setCurrentReward] = useState<number | undefined>(undefined)
@@ -89,7 +92,7 @@ export default function RewardAmount({ rewardsObject, setRewardsObject }: Reward
 
   return (
     <>
-      <FlexWrapper>
+      <FlexWrapper flexWrap="wrap">
         {[...Array(numberOfRewards)].map((item, index) => (
           <AssetSelector
             key={index}

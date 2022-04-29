@@ -44,7 +44,9 @@ export function useNewLiquidityMiningCampaign(
     targetedPairOrToken instanceof Pair ? targetedPairOrToken : undefined
   )
 
-  const { reserveNativeCurrency: targetedPairReserveNativeCurrency } = usePairReserveNativeCurrency()
+  const { reserveNativeCurrency: targetedPairReserveNativeCurrency } = usePairReserveNativeCurrency(
+    targetedPairOrToken instanceof Pair ? targetedPairOrToken : undefined
+  )
 
   return useMemo(() => {
     if (!chainId || !targetedPairOrToken || pricedRewardAmounts.length === 0 || !startTime || !endTime) return null
@@ -58,8 +60,10 @@ export function useNewLiquidityMiningCampaign(
         lpTokenTotalSupply.raw.toString(),
         targetedPairReserveNativeCurrency.raw.toString()
       )
+      console.log('Native price-NewCampaing', lpTokenNativeCurrencyPrice.toSignificant(10))
       const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
       const staked = new PricedTokenAmount(lpToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
+
       return new LiquidityMiningCampaign(
         formattedStartTime,
         formattedEndTime,
