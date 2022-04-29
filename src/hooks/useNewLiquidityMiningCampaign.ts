@@ -32,8 +32,7 @@ export function useNewLiquidityMiningCampaign(
   simulatedStakedAmount?: string | null
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
-  //const isPair = targetedPairOrToken instanceof Pair
-  //const isToken = targetedPairOrToken instanceof Token
+
   const tokenDerivedNative = useTokenDerivedNativeCurrency(
     targetedPairOrToken instanceof Token ? targetedPairOrToken : undefined
   )

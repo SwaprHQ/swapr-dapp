@@ -96,9 +96,6 @@
   "liquidityMining.create.title": "Create a Rewards Campaign",
   "bridge": "Bridge",
   "vote": "Vote",
-<<<<<<< HEAD
-  "charts": "Charts"
-=======
   "charts": "Charts",
   "limit": "Limit",
   "bridgeSwap": "Bridge Swap",
@@ -122,5 +119,4 @@
   "minReceived": "Min. Received",
   "maxSent": "Max Sent",
   "showMore": "Show more"
->>>>>>> b96351a2117a1420351984af9021c62e854ab2c6
 }
