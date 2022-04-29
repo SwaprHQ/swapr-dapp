@@ -22,7 +22,7 @@ import { TYPE } from '../../../../../theme'
 import { Repeat } from 'react-feather'
 import Slider from '../../../../Slider'
 import useDebouncedChangeHandler from '../../../../../utils/useDebouncedChangeHandler'
-import { useTokenDerivedNativeCurrency } from '../../../../../hooks/useTokenDerivedNativeCurrency'
+
 import Loader from '../../../../Loader'
 import { parseUnits } from 'ethers/lib/utils'
 import { calculatePercentage } from '../../../../../utils'
@@ -108,23 +108,18 @@ export default function PreviewAndCreate({
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   const [showUSDValue, setShowUSDValue] = useState(true)
-  const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
-    liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
-  )
-  const { loading: someLoader, derivedNativeCurrency: newDerivedNative } = useTokenOrPairNativeCurrency(
+
+  const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
     liquidityPair ? liquidityPair : undefined
   )
   const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
-  console.log('testingLoader', someLoader)
-  console.log('newNativeDatra', newDerivedNative.toExact())
+
   const maxStakedSimulatedAmount = useMemo(() => {
     const base = stakingCap
-      ? parseInt(stakingCap.multiply(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice)).toFixed(2))
+      ? parseFloat(stakingCap.multiply(nativeTokenPrice.multiply(nativeCurrencyUSDPrice)).toSignificant(22))
       : 10000000
 
-    console.log('derivedNativeCurrency', derivedNativeCurrency.toExact())
-
-    const baseinUsd = parseInt(derivedNativeCurrency.multiply(nativeCurrencyUSDPrice).toFixed(2))
+    const baseinUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
     let baseValue
     if (showUSDValue) {
@@ -149,7 +144,7 @@ export default function PreviewAndCreate({
     liquidityPair,
     simulatedValuePercentage,
     stakingCap,
-    derivedNativeCurrency,
+    nativeTokenPrice,
     nativeCurrencyUSDPrice,
     showUSDValue
   ])
@@ -210,7 +205,7 @@ export default function PreviewAndCreate({
               Value in {showUSDValue ? 'crypto' : 'USD'}
               <StyledSwitch />
             </SwitchContainer>
-            {loadingTokenNativeCurrency || loadingNativeCurrencyUsdPrice ? (
+            {loadingNativeTokenPrice || loadingNativeCurrencyUsdPrice ? (
               <Loader />
             ) : (
               <SimulatedValue>
