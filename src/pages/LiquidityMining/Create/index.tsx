@@ -221,8 +221,7 @@ export default function CreateLiquidityMining() {
             onLiquidityPairChange={setTargetedPairOrToken}
           />
         </Step>
-        {/* <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}> */}
-        <Step title="Campaign Duration" index={2} disabled={false}>
+        <Step title="Campaign Duration" index={2} disabled={!targetedPairOrToken}>
           <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
@@ -232,8 +231,7 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        {/* <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}> */}
-        <Step title="Select Reward Amount" index={3} disabled={false}>
+        <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime}>
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
