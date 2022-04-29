@@ -3,7 +3,7 @@ import { useTradeExactInAllPlatforms } from './Trades'
 import { ChainId } from '@swapr/sdk'
 import { USDC, DAI } from '../constants/index'
 import { useActiveWeb3React } from './index'
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { currencyId } from '../utils/currencyId'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
@@ -14,6 +14,8 @@ const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE],
   [ChainId.XDAI]: USDC[ChainId.XDAI]
 }
+
+const FETCH_PRICE_INTERVAL = 15000
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
   const { chainId } = useActiveWeb3React()
@@ -66,74 +68,81 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
   const [price, setPrice] = useState<Price | undefined>()
   const [error, setError] = useState<Error | undefined>()
 
-  const wrappedCurr = wrappedCurrency(currency, chainId) as Currency
-
+  const wrappedCurr = wrappedCurrency(currency, chainId)
   const tokenAddress = wrappedCurr ? currencyId(wrappedCurr) : undefined
 
-  const fetchPrice = useCallback(() => {
-    const baseAmount = tryParseAmount('1', wrappedCurr)
+  useEffect(() => {
+    const fetchPrice = () => {
+      const baseAmount = tryParseAmount('1', wrappedCurr)
 
-    if (!chainId || !tokenAddress || !baseAmount) return
+      if (!chainId || !tokenAddress || !baseAmount) return
 
-    getUSDPriceQuote({
-      chainId,
-      tokenAddress
-    })
-      .then(toPriceInformation)
-      .then(priceResponse => {
-        setError(undefined)
+      getUSDPriceQuote({
+        chainId,
+        tokenAddress
+      })
+        .then(toPriceInformation)
+        .then(priceResponse => {
+          setError(undefined)
 
-        if (!priceResponse?.amount) return
+          if (!priceResponse?.amount) return
 
-        const { amount: apiUsdPrice } = priceResponse
-        // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
-        // we need to parse all USD returned amounts
-        // and convert to the same currencyRef.current for both sides (SDK math invariant)
-        // in our case we stick to the USDC paradigm
-        const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_OUT[chainId], chainId)
+          const { amount: apiUsdPrice } = priceResponse
+          // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
+          // we need to parse all USD returned amounts
+          // and convert to the same currencyRef.current for both sides (SDK math invariant)
+          // in our case we stick to the USDC paradigm
+          const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_OUT[chainId], chainId)
 
-        // parse failure is unlikely - type safe
-        if (!quoteAmount) return
-        // create a new Price object
-        // we need to calculate the scalar
-        // to take the different decimal places
-        // between tokens into account
-        const scalar = new Fraction(
-          JSBI.exponentiate(TEN, JSBI.BigInt(baseAmount.currency.decimals)),
-          JSBI.exponentiate(TEN, JSBI.BigInt(quoteAmount.currency.decimals))
-        )
-        const result = quoteAmount.divide(scalar).divide(baseAmount)
-        const usdPrice = new Price({
-          baseCurrency: baseAmount.currency,
-          quoteCurrency: quoteAmount.currency,
-          denominator: result.denominator,
-          numerator: result.numerator
+          // parse failure is unlikely - type safe
+          if (!quoteAmount) return
+          // create a new Price object
+          // we need to calculate the scalar
+          // to take the different decimal places
+          // between tokens into account
+          const scalar = new Fraction(
+            JSBI.exponentiate(TEN, JSBI.BigInt(baseAmount.currency.decimals)),
+            JSBI.exponentiate(TEN, JSBI.BigInt(quoteAmount.currency.decimals))
+          )
+          const result = quoteAmount.divide(scalar).divide(baseAmount)
+          const usdPrice = new Price({
+            baseCurrency: baseAmount.currency,
+            quoteCurrency: quoteAmount.currency,
+            denominator: result.denominator,
+            numerator: result.numerator
+          })
+
+          console.debug(
+            '[useCoingeckoUSDPrice] Best Coingecko USD price amount',
+            usdPrice.toSignificant(12),
+            usdPrice.invert().toSignificant(12)
+          )
+
+          setPrice(usdPrice)
         })
+        .catch(error => {
+          console.error(
+            '[useUSDCPrice::useCoingeckoUSDPrice]::Error getting USD price from Coingecko for token',
+            tokenAddress,
+            error
+          )
+          setError(new Error(error))
+          setPrice(undefined)
+        })
+    }
 
-        console.debug(
-          '[useCoingeckoUSDPrice] Best Coingecko USD price amount',
-          usdPrice.toSignificant(12),
-          usdPrice.invert().toSignificant(12)
-        )
+    fetchPrice()
 
-        setPrice(usdPrice)
-      })
-      .catch(error => {
-        console.error(
-          '[useUSDCPrice::useCoingeckoUSDPrice]::Error getting USD price from Coingecko for token',
-          tokenAddress,
-          error
-        )
-        setError(new Error(error))
-        setPrice(undefined)
-      })
+    const refetchPrices = setInterval(() => {
+      fetchPrice()
+    }, FETCH_PRICE_INTERVAL)
+
+    return () => {
+      clearInterval(refetchPrices)
+    }
   }, [chainId, tokenAddress, wrappedCurr])
 
-  useEffect(() => {
-    fetchPrice()
-  }, [fetchPrice])
-
-  return { price, error, refetch: fetchPrice }
+  return { price, error }
 }
 
 interface GetPriceQuoteParams {
@@ -159,9 +168,9 @@ export function useUSDValue(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
-  const price = useUSDPrice(wrappedCurrencyToken as CurrencyAmount, selectedTrade)
+  const price = useUSDPrice(wrappedCurrencyToken, selectedTrade)
 
-  return useGetPriceQuote({ price: price, currencyAmount: wrappedCurrencyToken as CurrencyAmount })
+  return useGetPriceQuote({ price: price, currencyAmount: wrappedCurrencyToken })
 }
 
 export function useCoingeckoUSDValue(currencyAmount?: CurrencyAmount) {
@@ -169,19 +178,30 @@ export function useCoingeckoUSDValue(currencyAmount?: CurrencyAmount) {
   const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
   const coingeckoUsdPrice = useCoingeckoUSDPrice(wrappedCurrencyToken?.currency)
-  return {
-    currencyAmount: useGetPriceQuote({
-      price: coingeckoUsdPrice.price,
-      error: coingeckoUsdPrice.error,
-      currencyAmount: wrappedCurrencyToken as CurrencyAmount
-    }),
-    refetch: coingeckoUsdPrice.refetch
-  }
+
+  return useGetPriceQuote({
+    ...coingeckoUsdPrice,
+    currencyAmount: wrappedCurrencyToken
+  })
 }
 
-export function useHigherUSDValue(currencyAmount?: CurrencyAmount, selectedTrade?: Trade) {
-  const USDPrice = useUSDValue(currencyAmount, selectedTrade)
-  const coingeckoUSDPrice = useCoingeckoUSDValue(currencyAmount)
+export function useHigherUSDValue({
+  inputCurrencyAmount,
+  outputCurrencyAmount,
+  trade
+}: {
+  inputCurrencyAmount?: CurrencyAmount
+  outputCurrencyAmount?: CurrencyAmount
+  trade?: Trade
+}) {
+  const inputUSDPrice = useUSDValue(inputCurrencyAmount, trade)
+  const outputUSDPrice = useUSDValue(outputCurrencyAmount, trade)
 
-  return { price: coingeckoUSDPrice?.currencyAmount || USDPrice, refetch: coingeckoUSDPrice?.refetch }
+  const inputCoingeckoUSDPrice = useCoingeckoUSDValue(inputCurrencyAmount)
+  const outputCoingeckoUSDPrice = useCoingeckoUSDValue(outputCurrencyAmount)
+
+  return {
+    fiatValueInput: inputCoingeckoUSDPrice || inputUSDPrice,
+    fiatValueOutput: outputCoingeckoUSDPrice || outputUSDPrice
+  }
 }

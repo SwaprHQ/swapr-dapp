@@ -79,8 +79,6 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-const FETCH_PRICE_INTERVAL = 15000
-
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -285,23 +283,15 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const { price: fiatValueInput, refetch: refetchInput } = useHigherUSDValue(parsedAmounts[Field.INPUT], trade)
-  const { price: fiatValueOutput, refetch: refetchOuput } = useHigherUSDValue(parsedAmounts[Field.OUTPUT], trade)
+  const { fiatValueInput, fiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: parsedAmounts[Field.INPUT],
+    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
+    trade
+  })
   const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
     fiatValueInput,
     fiatValueOutput
   ])
-
-  useEffect(() => {
-    // Refetch prices every 15 seconds
-    const refetchPrices = setInterval(() => {
-      refetchInput()
-      refetchOuput()
-    }, FETCH_PRICE_INTERVAL)
-    return () => {
-      clearInterval(refetchPrices)
-    }
-  }, [refetchInput, refetchOuput])
 
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
 
