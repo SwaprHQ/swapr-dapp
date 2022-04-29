@@ -205,4 +205,4 @@ export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; paddin
   padding: ${props => (props.padding ? props.padding : '0')};
   margin: ${props => (props.margin ? props.margin : '0')};
 `
-export const normalizedInputValue = (val: string) => val.replace(/^0+(?=\d+)/, '').replace(/^\./, '0.')
+export const normalizeInputValue = (val: string) => val.replace(/^0+(?=\d+)/, '').replace(/^\./, '0.')

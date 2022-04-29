@@ -9,7 +9,7 @@ import {
   shortenAddress,
   calculateGasMargin,
   basisPointsToPercent,
-  normalizedInputValue
+  normalizeInputValue
 } from '.'
 
 describe('utils', () => {
@@ -98,17 +98,17 @@ describe('utils', () => {
     })
   })
 
-  describe('#normalizedInputValue function', () => {
+  describe('#normalizeInputValue function', () => {
     it('should return correct value', () => {
-      expect(normalizedInputValue('0000.00000123')).toEqual('0.00000123')
-      expect(normalizedInputValue('.00000009')).toEqual('0.00000009')
-      expect(normalizedInputValue('0.000002')).toEqual('0.000002')
-      expect(normalizedInputValue('0020034')).toEqual('20034')
-      expect(normalizedInputValue('000.99')).toEqual('0.99')
-      expect(normalizedInputValue('00065')).toEqual('65')
-      expect(normalizedInputValue('200')).toEqual('200')
-      expect(normalizedInputValue('0000')).toEqual('0')
-      expect(normalizedInputValue('.')).toEqual('0.')
+      expect(normalizeInputValue('0000.00000123')).toEqual('0.00000123')
+      expect(normalizeInputValue('.00000009')).toEqual('0.00000009')
+      expect(normalizeInputValue('0.000002')).toEqual('0.000002')
+      expect(normalizeInputValue('0020034')).toEqual('20034')
+      expect(normalizeInputValue('000.99')).toEqual('0.99')
+      expect(normalizeInputValue('00065')).toEqual('65')
+      expect(normalizeInputValue('200')).toEqual('200')
+      expect(normalizeInputValue('0000')).toEqual('0')
+      expect(normalizeInputValue('.')).toEqual('0.')
     })
   })
 })

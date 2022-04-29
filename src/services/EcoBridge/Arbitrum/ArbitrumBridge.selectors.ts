@@ -13,7 +13,7 @@ import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 import { ChainId } from '@swapr/sdk'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-import { normalizedInputValue } from '../../../utils'
+import { normalizeInputValue } from '../../../utils'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)
@@ -110,7 +110,7 @@ const createSelectBridgeTransactionsSummary = (
         timestampResolved
       } = tx
 
-      const normalizedValue = normalizedInputValue(value)
+      const normalizedValue = normalizeInputValue(value)
 
       if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {
@@ -187,7 +187,7 @@ const createSelectBridgeTransactionsSummary = (
         timestampResolved
       } = tx
 
-      const normalizedValue = normalizedInputValue(value)
+      const normalizedValue = normalizeInputValue(value)
 
       if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {
