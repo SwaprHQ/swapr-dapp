@@ -25,7 +25,7 @@ export default function UnsupportedNetworkPopover({ children, show }: Unsupporte
       placement="bottom-end"
       show={show}
       content={
-        <View ref={popoverRef}>
+        <View ref={popoverRef} data-testid="unsupported-network-popover">
           <Row>
             <Text>Please use our network switcher and switch to a supported network.</Text>
             <CloseIcon onClick={closeModals} />

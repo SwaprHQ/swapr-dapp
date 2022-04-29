@@ -11,7 +11,7 @@ import { useDarkModeManager } from '../../state/user/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
 
-import Settings from '../Settings'
+import { Settings } from '../Settings'
 
 import Row, { RowFixed, RowFlat } from '../Row'
 import Web3Status from '../Web3Status'
@@ -42,6 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
+  max-height: 100px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -177,12 +178,13 @@ const HeaderSubRow = styled(RowFlat)`
 `
 
 export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
-  padding: 8px 12px;
+  padding: 6px 8px;
   margin: 0;
+  max-height: 22px;
   display: inline-flex;
   font-weight: bold;
   font-size: 10px;
-  line-height: 12px;
+  line-height: 11px;
   text-align: center;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -202,15 +204,13 @@ export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadiu
     margin-left: 7px;
   }
 `
-const GasInfo = styled.div`
-  display: flex;
+const GasInfo = styled.div<{ hide: boolean }>`
+  display: ${({ hide }) => (hide ? 'none' : 'flex')};
   margin-left: 6px;
   padding: 6px 8px;
   border: 1.06481px solid rgba(242, 153, 74, 0.65);
   background: rgba(242, 153, 74, 0.08);
   border-radius: 8px;
-  font-size: 10px;
-  font-weight: 600;
 
   div {
     color: ${({ theme }) => theme.orange1};
@@ -249,6 +249,10 @@ const Divider = styled.div`
   width: 1px;
   background-color: ${({ theme }) => theme.purple3};
   margin-left: 40px;
+  @media (max-width: 1080px) and (min-width: 960px) {
+    width: 0;
+    margin-left: 0px;
+  }
 `
 const StyledMobileLink = styled(NavLink)`
   display: none;
@@ -356,6 +360,12 @@ function Header() {
           <StyledExternalLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLink>
+          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
+            {t('charts')}
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
+          </StyledExternalLink>
         </HeaderLinks>
       </HeaderRow>
       <AdditionalDataWrap>
@@ -364,30 +374,30 @@ function Header() {
           <Settings />
         </HeaderSubRow>
 
-        <Flex justifyContent={'end'}>
+        <Flex maxHeight={'22px'} justifyContent={'end'}>
           <SwprInfo
             hasActiveCampaigns={!loading && !!data}
             newSwprBalance={newSwprBalance}
             onToggleClaimPopup={toggleClaimPopup}
           />
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError ? (
-              <Amount zero>{'UNSUPPORTED NETWORK'}</Amount>
-            ) : (
+            {isUnsupportedChainIdError && (
+              <Amount data-testid="unsupported-network-warning" zero>
+                {'UNSUPPORTED NETWORK'}
+              </Amount>
+            )}
+            {account && !isUnsupportedChainIdError && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
-                {!account ? (
-                  '0.000'
-                ) : !userNativeCurrencyBalance ? (
-                  <Skeleton width="40px" />
+                {userNativeCurrencyBalance ? (
+                  `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
                 ) : (
-                  userNativeCurrencyBalance.toFixed(3)
-                )}{' '}
-                {nativeCurrency.symbol}
+                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
+                )}
               </Amount>
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}
@@ -421,7 +431,7 @@ function Header() {
           <StyledExternalLinkMobile id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLinkMobile>
-          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗

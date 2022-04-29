@@ -18,7 +18,7 @@ yarn start
 
 ## Publish
 
-Swapr releases are published to the IPFS at [swapr.eth](https://swapr.eth.link). Before publishing, however, the [IPFS hash](https://docs.ipfs.io/concepts/hashing/) to be verified. To verfiy a release a hash, do the following:
+Swapr releases are published to the IPFS at [swapr.eth](https://swapr.eth.limo). Before publishing, however, the [IPFS hash](https://docs.ipfs.io/concepts/hashing/) to be verified. To verfiy a release a hash, do the following:
 
 Clone the repo
 
@@ -45,3 +45,16 @@ ipfs add -rn build
 ```
 
 The last line of the output will have the IPFS hash. Different machines should output the same hash in order to publish the release.
+
+# Run tests
+### Remember to start server 
+`yarn start`
+
+### Cypress open
+`yarn cypress open`
+
+### Cypress run
+`yarn cypress:run`
+
+### Synpress
+`yarn synpress:run`

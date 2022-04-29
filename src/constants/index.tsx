@@ -10,13 +10,14 @@ import {
   WXDAI,
   Token,
   Currency,
-  RoutablePlatform,
-  SWPR
+  SWPR,
+  UniswapV2RoutablePlatform
 } from '@swapr/sdk'
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapLogo from '../assets/svg/sushiswap-logo.svg'
+import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
@@ -252,11 +253,19 @@ export const ALLOWED_PRICE_IMPACT_HIGH: Percent = new Percent(JSBI.BigInt(500), 
 export const PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN: Percent = new Percent(JSBI.BigInt(1000), BIPS_BASE) // 10%
 // for non expert mode disable swaps above this
 export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(1500), BIPS_BASE) // 15%
+// used for fiat warning states
+export const ALLOWED_FIAT_PRICE_IMPACT_HIGH: Percent = new Percent(JSBI.BigInt(200), BIPS_BASE) // 2%
+// price impact numeric values
+export const PRICE_IMPACT_NON_EXPERT = 4
+export const PRICE_IMPACT_HIGH = 3
+export const PRICE_IMPACT_MEDIUM = 2
+export const PRICE_IMPACT_LOW = 1
+export const NO_PRICE_IMPACT = 0
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const DEFAULT_TOKEN_LIST = 'ipfs://QmSbyVo6Kz5BuqyAHYcN7UkeCk5cALFp6QmPUN6NtPpDWL'
+export const DEFAULT_TOKEN_LIST = 'ipfs://QmUWnK6AFHZ3S1hR7Up1h3Ntax3fP1ZyiTptDNG2cWLTeK'
 
 export const ZERO_USD = CurrencyAmount.usd('0')
 
@@ -298,7 +307,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       symbol: Currency.XDAI.symbol || 'xDAI',
       decimals: Currency.XDAI.decimals || 18
     },
-    rpcUrls: ['https://rpc.xdaichain.com'],
+    rpcUrls: ['https://rpc.gnosischain.com/'],
     blockExplorerUrls: ['https://blockscout.com/xdai/mainnet']
   },
   [ChainId.ARBITRUM_ONE]: {
@@ -358,13 +367,54 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
   }
 }
 
+export const ROUTABLE_PLATFORM_STYLE: {
+  [routablePaltformName: string]: { logo: string; alt: string; gradientColor: string; name: string }
+} = {
+  [UniswapV2RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: UniswapV2RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.UNISWAP.name
+  },
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
+    logo: SushiswapNewLogo,
+    alt: UniswapV2RoutablePlatform.SUSHISWAP.name,
+    gradientColor: '#FB52A1',
+    name: 'Sushi'
+  },
+  [UniswapV2RoutablePlatform.SWAPR.name]: {
+    logo: SwaprLogo,
+    alt: UniswapV2RoutablePlatform.SWAPR.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.SWAPR.name
+  },
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
+    logo: HoneyswapLogo,
+    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.HONEYSWAP.name
+  },
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: {
+    logo: BaoswapLogo,
+    alt: UniswapV2RoutablePlatform.BAOSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.BAOSWAP.name
+  },
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
+    logo: LevinswapLogo,
+    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.LEVINSWAP.name
+  }
+}
+
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
-  [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
-  [RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapLogo} alt="sushiswap" />,
-  [RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
-  [RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
-  [RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
-  [RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />
+  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapLogo} alt="sushiswap" />,
+  [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />
 }
 
 export const ChainLabel: any = {

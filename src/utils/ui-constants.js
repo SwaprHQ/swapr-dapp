@@ -54,12 +54,6 @@ import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 
-// About Cards
-
-import AboutGovernance from './../assets/images/about-governance.png'
-import AboutFarming from './../assets/images/about-farming.png'
-import AboutEcoRouting from './../assets/images/about-eco-routing.png'
-import AboutBridging from './../assets/images/about-bridging.png'
 import { scrollTo } from './helper-functions'
 
 export const mainNavigation = [
@@ -69,7 +63,7 @@ export const mainNavigation = [
     // },
     {
         label: 'Documentation',
-        href: 'http://dxdocs.eth.link.ipns.localhost:8080/docs/Products/swapr/',
+        href: 'http://dxdocs.eth.limo.ipns.localhost:8080/docs/Products/swapr/',
     },
     {
         label: 'Stats',
@@ -168,7 +162,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -187,7 +181,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -207,7 +201,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -226,7 +220,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -245,7 +239,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -264,7 +258,7 @@ export const FeaturesContent = {
                 },
                 {
                     label: 'READ MORE',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/',
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
                     type: 'dark',
                     external: true
                 },
@@ -279,7 +273,7 @@ export const CommunityBannerContent = {
     buttons: [
         {
             label: 'GET INVOLVED',
-            href: 'https://dxdao.eth.link/',
+            href: 'https://dxdao.eth.limo/',
             type: 'primary'
         },
         {
@@ -358,7 +352,7 @@ export const FooterContent = {
             footerLinks: [
                 {
                     label: 'FAQ',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/faq/'
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/faq/'
                 },
                 {
                     label: 'Blog',
@@ -366,11 +360,11 @@ export const FooterContent = {
                 },
                 {
                     label: 'Audits',
-                    href: 'https://dxdocs.eth.link/docs/Technical%20Documentation/Audits/#swapr'
+                    href: 'https://dxdocs.eth.limo/docs/Technical%20Documentation/Audits/#swapr'
                 },
                 {
                     label: 'Brand Assets',
-                    href: 'https://dxdocs.eth.link/docs/BrandingAssets/#swapr-brand-assets'
+                    href: 'https://dxdocs.eth.limo/docs/BrandingAssets/#swapr-brand-assets'
                 },
             ]
         },
@@ -400,19 +394,19 @@ export const FooterContent = {
             footerLinks: [
                 {
                     label: 'DIY Campaigns',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/DIY%20Liquidity%20Mining/'
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/'
                 },
                 {
                     label: 'Roadmap',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/roadmap/'
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/'
                 },
                 {
                     label: 'We\'re hiring',
-                    href: 'https://dxdocs.eth.link/docs/ContributorHub/open-positions-and-bounties/'
+                    href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/'
                 },
                 {
                     label: 'SWPR Token',
-                    href: 'https://dxdocs.eth.link/docs/Products/swapr/tokenomics/'
+                    href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/'
                 },
             ]
         },
@@ -421,7 +415,7 @@ export const FooterContent = {
             footerLinks: [
                 {
                     label: 'DXstats',
-                    href: 'https://dxstats.eth.link/#/home'
+                    href: 'https://dxstats.eth.limo/#/home'
                 },
                 // {
                 //     label: 'Roadmap',
@@ -506,49 +500,3 @@ export const StatsContent = {
         }
     ]
 }
-
-// About
-
-export const AboutHeroContent = {
-    mainText: 'Features Statement',
-    heroParagraph: 'This is a page dedicated to Swapr features, each with an individual highlight and informer. Lorem ipsum dolor sit amet.',
-    heroButtons: [
-        {
-            label: 'FOR THE COMMUNITY',
-            type: 'primary',
-            href: '#'
-        },
-        {
-            label: 'FOR CREATORS',
-            type: 'dark',
-            href: '#'
-        }
-    ]
-}
-
-export const AboutCardsContent = [
-    {
-        title: 'LP GOVERNANCE',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutGovernance
-    },
-    {
-        title: 'DIY FARMING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutFarming
-    },
-    {
-        title: 'ECO-ROUTING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutEcoRouting
-    },
-    {
-        title: 'BRIDGING',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed nibh at odio egestas efficitur. Vivamus tempus finibus elit sed commodo. Praesent tempus felis dui.',
-        buttonLabel: 'LEARN MORE',
-        image: AboutBridging
-    },
-]

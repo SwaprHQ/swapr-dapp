@@ -183,7 +183,7 @@ export default function PreviewAndCreate({
                 : campaign.targetedPair.token0
             }
             usdLiquidity={getStakedAmountUSD(campaign.staked.nativeCurrencyAmount, nativeCurrencyUSDPrice)}
-            token1={campaign instanceof LiquidityMiningCampaign && campaign.targetedPair.token1}
+            token1={campaign instanceof LiquidityMiningCampaign ? campaign.targetedPair.token1 : undefined}
             // containsKpiToken={campaign instanceof LiquidityMiningCampaign ? campaign.containsKpiToken : false}
             isSingleSidedStakingCampaign={isSingleSided}
             apy={apy}

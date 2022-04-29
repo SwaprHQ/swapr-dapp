@@ -47,6 +47,7 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#DDDAF8' : '#8E89C6',
     text4: darkMode ? '#C0BAF6' : '#A7A0E4',
     text5: darkMode ? '#8780BF' : '#C0BAF6',
+    text6: '#504D72',
 
     // backgrounds / greys
     bg1: darkMode ? '#191A24' : '#FFFFFF',
@@ -55,6 +56,9 @@ export function colors(darkMode: boolean): Colors {
     bg3: darkMode ? '#3E4259' : '#DDDAF8',
     bg4: darkMode ? '#686E94' : '#C0BBE9',
     bg5: darkMode ? '#9096BE' : '#7873A4',
+    bg6: '#171621',
+    bg7: '#2D3040',
+    bg8: '#191A24',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -86,6 +90,7 @@ export function colors(darkMode: boolean): Colors {
     blue1: '#2172E5',
     dark4: '#BCB3F0',
 
+    gray1: '#737798',
     // dont wanna forget these blue yet
     // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
     // blue5: darkMode ? '#153d6f70' : '#EBF4FF',
@@ -99,6 +104,7 @@ export function colors(darkMode: boolean): Colors {
     purple4: '#685EC6',
     purple5: '#464366',
     lightPurple: '#C0BAF7',
+    purple6: '#292643',
     boxShadow: '#0A0A0F',
 
     // darkest // dark 1.1
@@ -229,6 +235,10 @@ html {
 
 a {
   text-decoration: none;
+}
+
+body.no-margin {
+  margin: 0 !important;
 }
 `
 

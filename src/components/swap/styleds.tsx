@@ -4,6 +4,7 @@ import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
 import { Text } from 'rebass'
 import { AutoColumn } from '../Column'
+import { breakpoints } from '../../utils/theme'
 
 export const Wrapper = styled.div`
   position: relative;
@@ -23,16 +24,21 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
 
 export const SwitchTokensAmountsContainer = styled.div`
   background-color: ${props => props.theme.bg1And2};
-  width: 37px;
-  height: 37px;
+  width: 51px;
+  height: 51px;
   position: absolute;
   left: 50%;
-  top: -16px;
+  top: -26px;
   transform: translateX(-50%);
   z-index: 2;
   border-radius: 50%;
   border: solid 5px ${props => props.theme.dark1};
   cursor: pointer;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 42px;
+    height: 42px;
+    top: -20px;
+  }
 `
 
 export const SectionBreak = styled.div`

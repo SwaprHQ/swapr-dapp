@@ -1,7 +1,7 @@
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, Percent, CurrencyAmount, JSBI, ChainId, RoutablePlatform } from '@swapr/sdk'
+import { Currency, currencyEquals, Percent, CurrencyAmount, JSBI, ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
@@ -40,7 +40,7 @@ import { Dots } from '../../components/swap/styleds'
 import { useBurnActionHandlers } from '../../state/burn/hooks'
 import { useDerivedBurnInfo, useBurnState } from '../../state/burn/hooks'
 import { Field } from '../../state/burn/actions'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 import { calculateProtocolFee } from '../../utils/prices'
@@ -71,7 +71,7 @@ export default function RemoveLiquidity({
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useWalletSwitcherPopoverToggle()
 
   // burn state
   const { independentField, typedValue } = useBurnState()
@@ -113,14 +113,12 @@ export default function RemoveLiquidity({
   )
   const swapFee = pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)) : undefined
 
-  const atMaxAmount = parsedAmounts[Field.LIQUIDITY_PERCENT]?.equalTo(new Percent('1'))
-
   // pair contract
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
 
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
-  const routerAddress = RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
+  const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], routerAddress)
 
   const isArgentWallet = useIsArgentWallet()
@@ -219,7 +217,7 @@ export default function RemoveLiquidity({
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
-    const router = getRouterContract(chainId, library, RoutablePlatform.SWAPR, account)
+    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
@@ -650,7 +648,6 @@ export default function RemoveLiquidity({
                   onMax={() => {
                     onUserInput(Field.LIQUIDITY_PERCENT, '100')
                   }}
-                  showMaxButton={!atMaxAmount}
                   disableCurrencySelect
                   currency={pair?.liquidityToken}
                   pair={pair}
@@ -664,7 +661,6 @@ export default function RemoveLiquidity({
                   value={formattedAmounts[Field.CURRENCY_A]}
                   onUserInput={onCurrencyAInput}
                   onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-                  showMaxButton={!atMaxAmount}
                   currency={currencyA}
                   label={'Output'}
                   onCurrencySelect={handleSelectCurrencyA}
@@ -678,7 +674,6 @@ export default function RemoveLiquidity({
                   value={formattedAmounts[Field.CURRENCY_B]}
                   onUserInput={onCurrencyBInput}
                   onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-                  showMaxButton={!atMaxAmount}
                   currency={currencyB}
                   label={'Output'}
                   onCurrencySelect={handleSelectCurrencyB}

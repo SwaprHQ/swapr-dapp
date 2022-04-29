@@ -64,27 +64,27 @@ export function useNewLiquidityMiningCampaign(
       const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
       const staked = new PricedTokenAmount(lpToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
 
-      return new LiquidityMiningCampaign(
-        formattedStartTime,
-        formattedEndTime,
-        targetedPairOrToken,
-        pricedRewardAmounts,
+      return new LiquidityMiningCampaign({
+        startsAt: formattedStartTime,
+        endsAt: formattedEndTime,
+        targetedPair: targetedPairOrToken,
+        rewards: pricedRewardAmounts,
         staked,
         locked,
-        stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0')
-      )
+        stakingCap: stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0')
+      })
     } else if (targetedPairOrToken instanceof Token && tokenDerivedNative.derivedNativeCurrency) {
       const { address, symbol, name, decimals } = targetedPairOrToken
 
-      const derivedNative = new Price(
-        targetedPairOrToken,
-        nativeCurrency,
-        parseUnits('1', nativeCurrency.decimals).toString(),
-        parseUnits(
+      const derivedNative = new Price({
+        baseCurrency: targetedPairOrToken,
+        quoteCurrency: nativeCurrency,
+        denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+        numerator: parseUnits(
           new Decimal(tokenDerivedNative.derivedNativeCurrency.toFixed()).toFixed(nativeCurrency.decimals),
           nativeCurrency.decimals
         ).toString()
-      )
+      })
 
       const stakeToken = new PricedToken(chainId, getAddress(address), decimals, derivedNative, symbol, name)
 

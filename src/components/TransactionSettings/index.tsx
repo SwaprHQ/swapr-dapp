@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
+import { Text } from 'rebass'
+import { ChainId } from '@swapr/sdk'
 
 import QuestionHelper from '../QuestionHelper'
 import { TYPE } from '../../theme'
@@ -7,27 +9,15 @@ import { AutoColumn } from '../Column'
 import { RowBetween, RowFixed } from '../Row'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { Text } from 'rebass'
+import { MainnetGasPrice } from '../../state/application/actions'
 import { Option } from '../Option'
 import Toggle from '../Toggle'
-import { useMainnetGasPrices } from '../../state/application/hooks'
-import { MainnetGasPrice } from '../../state/application/actions'
-import { formatUnits } from 'ethers/lib/utils'
-import { GreenGasPriceOption, OrangeGasPriceOption, PurpleGasPriceOption } from '../GasBadges'
-import { BigNumber } from 'ethers'
-import Decimal from 'decimal.js-light'
-import { ChainId } from '@swapr/sdk'
 import { useActiveWeb3React } from '../../hooks'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
   RiskyLow = 'RiskyLow',
   RiskyHigh = 'RiskyHigh'
-}
-
-enum PreferredGasPriceError {
-  InvalidInput = 'InvalidInput',
-  RiskyLow = 'RiskyLow'
 }
 
 enum DeadlineError {
@@ -104,23 +94,17 @@ export default function SlippageTabs({
   onMultihopChange
 }: SlippageTabsProps) {
   const { chainId } = useActiveWeb3React()
-  const mainnetGasPrices = useMainnetGasPrices()
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageFocused, setSlippageFocused] = useState(false)
-  const [preferredGasPriceInput, setPreferredGasPriceInput] = useState('')
-  const [preferredGasPriceFocused, setPreferredGasPriceFocused] = useState(false)
-  const [preferredGasPricePlaceholder, setPreferredGasPricePalceholder] = useState('')
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
   const slippageInputIsValid =
-    slippageInput === '' || (rawSlippage / 100).toFixed(2) === Number.parseFloat(slippageInput).toFixed(2)
-  const preferredGasPriceInputIsValid =
-    preferredGasPriceInput === '' ||
-    (!Number.isNaN(Number(preferredGasPriceInput)) &&
-      rawPreferredGasPrice ===
-        new Decimal(Number.parseFloat(preferredGasPriceInput).toFixed(10)).times('1000000000').toString())
+    slippageInput === '' ||
+    (!Number.isNaN(Number(slippageInput)) &&
+      rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2))
+
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
 
   let slippageError: SlippageError | undefined
@@ -134,21 +118,6 @@ export default function SlippageTabs({
     slippageError = undefined
   }
 
-  let preferredGasPriceError: PreferredGasPriceError | undefined
-  if (preferredGasPriceInput !== '' && !preferredGasPriceInputIsValid) {
-    preferredGasPriceError = PreferredGasPriceError.InvalidInput
-  } else if (
-    mainnetGasPrices &&
-    preferredGasPriceInput !== '' &&
-    preferredGasPriceInputIsValid &&
-    !Number.isNaN(Number(rawPreferredGasPrice)) &&
-    BigNumber.from(rawPreferredGasPrice).lte(mainnetGasPrices[MainnetGasPrice.NORMAL])
-  ) {
-    preferredGasPriceError = PreferredGasPriceError.RiskyLow
-  } else {
-    preferredGasPriceError = undefined
-  }
-
   let deadlineError: DeadlineError | undefined
   if (deadlineInput !== '' && !deadlineInputIsValid) {
     deadlineError = DeadlineError.InvalidInput
@@ -156,38 +125,30 @@ export default function SlippageTabs({
     deadlineError = undefined
   }
 
-  function parseCustomSlippage(value: string) {
-    setSlippageInput(value)
+  function parseCustomSlippage(slippage: string) {
+    setSlippageInput(slippage)
 
     try {
-      const valueAsIntFromRoundedFloat = Number.parseInt((Number.parseFloat(value) * 100).toString())
-      if (!Number.isNaN(valueAsIntFromRoundedFloat) && valueAsIntFromRoundedFloat < 5000) {
-        setRawSlippage(valueAsIntFromRoundedFloat)
+      const slippageAsIntFromRoundedFloat = Number.parseInt(Math.round(Number.parseFloat(slippage) * 100).toString())
+
+      if (
+        !Number.isNaN(slippageAsIntFromRoundedFloat) &&
+        slippageAsIntFromRoundedFloat > 0 &&
+        slippageAsIntFromRoundedFloat < 5000
+      ) {
+        setRawSlippage(slippageAsIntFromRoundedFloat)
       }
     } catch {}
   }
 
-  function parseCustomPreferredGasPrice(value: string) {
-    setPreferredGasPriceInput(value)
+  function parseCustomDeadline(customDeadline: string) {
+    setDeadlineInput(customDeadline)
 
     try {
-      const valueAsFloat = Number.parseFloat(value)
-      if (!Number.isNaN(valueAsFloat) && valueAsFloat > 0) {
-        // converting to wei
-        const rawPreferredGasPriceWei = new Decimal(valueAsFloat.toFixed(10)).times('1000000000').toString()
-        if (Number(rawPreferredGasPriceWei) > Number.MAX_SAFE_INTEGER) throw new Error('Preferred gas price overflow')
-        setRawPreferredGasPrice(rawPreferredGasPriceWei)
-      }
-    } catch {}
-  }
-
-  function parseCustomDeadline(value: string) {
-    setDeadlineInput(value)
-
-    try {
-      const valueAsInt: number = Number.parseInt(value) * 60
-      if (!Number.isNaN(valueAsInt) && valueAsInt > 0) {
-        setDeadline(valueAsInt)
+      const customDeadlineAsInt: number = Number.parseInt(customDeadline) * 60
+      if (!Number.isNaN(customDeadlineAsInt) && customDeadlineAsInt > 0) {
+        if (Number(customDeadlineAsInt) > Number.MAX_SAFE_INTEGER) throw new Error('Deadline overflow')
+        setDeadline(customDeadlineAsInt)
       }
     } catch {}
   }
@@ -200,36 +161,8 @@ export default function SlippageTabs({
     }
   }, [chainId, rawPreferredGasPrice, setRawPreferredGasPrice])
 
-  useEffect(() => {
-    if (rawPreferredGasPrice) {
-      if (chainId !== ChainId.MAINNET && rawPreferredGasPrice in MainnetGasPrice) {
-        setPreferredGasPricePalceholder('')
-      } else if (!(rawPreferredGasPrice in MainnetGasPrice)) {
-        setPreferredGasPricePalceholder(
-          Number.parseFloat(
-            formatUnits(
-              mainnetGasPrices && mainnetGasPrices[rawPreferredGasPrice as MainnetGasPrice]
-                ? mainnetGasPrices[rawPreferredGasPrice as MainnetGasPrice]
-                : rawPreferredGasPrice,
-              'gwei'
-            )
-          ).toFixed(0)
-        )
-      }
-    } else {
-      setPreferredGasPricePalceholder('')
-    }
-    if (chainId !== ChainId.MAINNET && rawPreferredGasPrice && rawPreferredGasPrice in MainnetGasPrice) {
-      setRawPreferredGasPrice(null)
-    }
-  }, [chainId, mainnetGasPrices, rawPreferredGasPrice, setRawPreferredGasPrice])
-
   const handleSlippageFocus = useCallback(() => {
     setSlippageFocused(true)
-  }, [])
-
-  const handlePreferredGasPriceFocus = useCallback(() => {
-    setPreferredGasPriceFocused(true)
   }, [])
 
   const handleDeadlineFocus = useCallback(() => {
@@ -241,7 +174,7 @@ export default function SlippageTabs({
       <AutoColumn gap="12px">
         <RowBetween>
           <RowFixed>
-            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px">
+            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="multihop-text">
               Multihop
             </TYPE.body>
             <QuestionHelper text="If off, forces trades to be performed without routing, considerably reducing gas fees (might result in a worse execution price)." />
@@ -249,7 +182,7 @@ export default function SlippageTabs({
           <Toggle isActive={multihop} toggle={onMultihopChange} />
         </RowBetween>
         <RowFixed>
-          <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px">
+          <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="slippage-tolerance-text">
             Slippage tolerance
           </TYPE.body>
           <QuestionHelper text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
@@ -293,7 +226,7 @@ export default function SlippageTabs({
                 </SlippageEmojiContainer>
               ) : null}
               {/* https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
-              <Input
+              <Input data-testid="input-slippage-tolerance"
                 placeholder={(rawSlippage / 100).toFixed(2)}
                 value={slippageInput}
                 onFocus={handleSlippageFocus}
@@ -308,128 +241,30 @@ export default function SlippageTabs({
             </RowBetween>
           </OptionCustom>
         </RowBetween>
-
-        {chainId === ChainId.MAINNET && (
-          <>
-            <RowFixed>
-              <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px">
-                Preferred gas price
-              </TYPE.body>
-              <QuestionHelper text="The gas price used to show gas fees and to submit transactions on Ethereum mainnet." />
-            </RowFixed>
-            <RowFixed>
-              {mainnetGasPrices && (
-                <>
-                  <PurpleGasPriceOption
-                    onClick={() => {
-                      setPreferredGasPriceInput('')
-                      setRawPreferredGasPrice(MainnetGasPrice.INSTANT)
-                    }}
-                    onDoubleClick={() => {
-                      if (rawPreferredGasPrice === MainnetGasPrice.INSTANT) {
-                        setPreferredGasPriceInput('')
-                        setRawPreferredGasPrice(null)
-                      }
-                    }}
-                    active={rawPreferredGasPrice === MainnetGasPrice.INSTANT}
-                  >
-                    INSTANT
-                    <br />
-                    {Number.parseFloat(formatUnits(mainnetGasPrices[MainnetGasPrice.INSTANT], 'gwei')).toFixed(0)} gwei
-                  </PurpleGasPriceOption>
-                  <OrangeGasPriceOption
-                    onClick={() => {
-                      setPreferredGasPriceInput('')
-                      setRawPreferredGasPrice(MainnetGasPrice.FAST)
-                    }}
-                    onDoubleClick={() => {
-                      if (rawPreferredGasPrice === MainnetGasPrice.FAST) {
-                        setPreferredGasPriceInput('')
-                        setRawPreferredGasPrice(null)
-                      }
-                    }}
-                    active={rawPreferredGasPrice === MainnetGasPrice.FAST}
-                  >
-                    FAST
-                    <br />
-                    {Number.parseFloat(formatUnits(mainnetGasPrices[MainnetGasPrice.FAST], 'gwei')).toFixed(0)} gwei
-                  </OrangeGasPriceOption>
-                  <GreenGasPriceOption
-                    onClick={() => {
-                      setPreferredGasPriceInput('')
-                      setRawPreferredGasPrice(MainnetGasPrice.NORMAL)
-                    }}
-                    onDoubleClick={() => {
-                      if (rawPreferredGasPrice === MainnetGasPrice.NORMAL) {
-                        setPreferredGasPriceInput('')
-                        setRawPreferredGasPrice(null)
-                      }
-                    }}
-                    active={rawPreferredGasPrice === MainnetGasPrice.NORMAL}
-                  >
-                    NORMAL
-                    <br />
-                    {Number.parseFloat(formatUnits(mainnetGasPrices[MainnetGasPrice.NORMAL], 'gwei')).toFixed(0)} gwei
-                  </GreenGasPriceOption>
-                </>
-              )}
-              <OptionCustom
-                focused={preferredGasPriceFocused}
-                style={{ width: '52px', minWidth: '52px' }}
-                tabIndex={-1}
-              >
-                <Input
-                  color={!!!preferredGasPriceInputIsValid ? 'red' : undefined}
-                  onFocus={handlePreferredGasPriceFocus}
-                  onBlur={() => {
-                    setPreferredGasPriceFocused(false)
-                    if (typeof rawPreferredGasPrice === 'string') {
-                      parseCustomPreferredGasPrice(
-                        Number.parseFloat(formatUnits(rawPreferredGasPrice, 'gwei')).toFixed(0)
-                      )
-                    }
-                  }}
-                  placeholder={preferredGasPricePlaceholder}
-                  value={preferredGasPriceInput}
-                  onChange={e => parseCustomPreferredGasPrice(e.target.value)}
-                />
-              </OptionCustom>
-              <TYPE.body color="text4" fontSize={14}>
-                gwei
-              </TYPE.body>
-            </RowFixed>
-          </>
-        )}
-        {(!!slippageError || !!preferredGasPriceError) && (
-          <Text
+        {!!slippageError && (
+          <Text data-testid="slippage-error"
             fontWeight={500}
             fontSize="12px"
             lineHeight="15px"
-            color={
-              slippageError === SlippageError.InvalidInput ||
-              preferredGasPriceError === PreferredGasPriceError.InvalidInput
-                ? 'red'
-                : '#F3841E'
-            }
+            color={slippageError === SlippageError.InvalidInput ? 'red' : '#F3841E'}
           >
-            {slippageError === SlippageError.InvalidInput ||
-            preferredGasPriceError === PreferredGasPriceError.InvalidInput
+            {slippageError === SlippageError.InvalidInput
               ? `Enter a valid ${slippageError === SlippageError.InvalidInput ? 'slippage percentage' : 'gas price'}`
-              : slippageError === SlippageError.RiskyLow || preferredGasPriceError === PreferredGasPriceError.RiskyLow
+              : slippageError === SlippageError.RiskyLow
               ? 'Your transaction may fail'
               : 'Your transaction may be frontrun'}
           </Text>
         )}
         <RowBetween mt="2px">
           <RowFixed>
-            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px">
+            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="transaction-deadline-text">
               Transaction deadline
             </TYPE.body>
             <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
           </RowFixed>
           <RowFixed>
             <OptionCustom focused={deadlineFocused} style={{ width: '52px', minWidth: '52px' }} tabIndex={-1}>
-              <Input
+              <Input data-testid="input-transaction-deadline"
                 color={!!deadlineError ? 'red' : undefined}
                 onFocus={handleDeadlineFocus}
                 onBlur={() => {

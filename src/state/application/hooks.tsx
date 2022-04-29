@@ -37,10 +37,6 @@ export function useCloseModals(): () => void {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-export function useWalletModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
-}
-
 export function useToggleSettingsMenu(): () => void {
   return useToggleModal(ApplicationModal.SETTINGS)
 }
@@ -71,6 +67,10 @@ export function useWalletSwitcherPopoverToggle(): () => void {
 
 export function useEthereumOptionPopoverToggle(): () => void {
   return useToggleModal(ApplicationModal.ETHEREUM_OPTION)
+}
+
+export function useSimpleSettingsModal(): () => void {
+  return useToggleModal(ApplicationModal.SIMPLE_SETTINGS)
 }
 
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {

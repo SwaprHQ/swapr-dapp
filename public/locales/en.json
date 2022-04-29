@@ -96,5 +96,31 @@
   "liquidityMining.create.title": "Create a Rewards Campaign",
   "bridge": "Bridge",
   "vote": "Vote",
+<<<<<<< HEAD
   "charts": "Charts"
+=======
+  "charts": "Charts",
+  "limit": "Limit",
+  "bridgeSwap": "Bridge Swap",
+  "priceImpactTooHigh": "Price Impact Too High",
+  "anyway": "Anyway",
+  "swapWith": "Swap with",
+  "addRecipient": "Add recipient",
+  "recipient": "Recipient",
+  "addressOrENS": "Wallet address or ENS name",
+  "slippagePercentage": "Slippage %",
+  "multihopEnabled": "Multihop enabled",
+  "multihopDisabled": "Multihop disabled",
+  "alternateReceiver": "Alternate Receiver",
+  "MEVProtectionComingSoon": "MEV Protection (coming soon)",
+  "insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
+  "enterCurrencyAmount": "Enter {{ currency }} amount",
+  "exchange": "Exchange",
+  "fee": "Fee",
+  "pImpact": "P. impact",
+  "pImp": "P. Imp.",
+  "minReceived": "Min. Received",
+  "maxSent": "Max Sent",
+  "showMore": "Show more"
+>>>>>>> b96351a2117a1420351984af9021c62e854ab2c6
 }

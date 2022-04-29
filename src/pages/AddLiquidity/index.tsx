@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, TokenAmount, Percent, JSBI, ChainId, RoutablePlatform } from '@swapr/sdk'
+import { Currency, currencyEquals, TokenAmount, Percent, JSBI, ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import { Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router-dom'
@@ -21,7 +21,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { Field } from '../../state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../state/mint/hooks'
 
@@ -61,7 +61,7 @@ export default function AddLiquidity({
         (currencyB && currencyEquals(currencyB, nativeCurrencyWrapper)))
   )
 
-  const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
+  const toggleWalletModal = useWalletSwitcherPopoverToggle() // toggle wallet when disconnected
 
   const expertMode = useIsExpertMode()
 
@@ -114,18 +114,8 @@ export default function AddLiquidity({
     {}
   )
 
-  const atMaxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
-    (accumulator, field) => {
-      return {
-        ...accumulator,
-        [field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0')
-      }
-    },
-    {}
-  )
-
   // check whether the user has approved the router on the tokens
-  const routerAddress = RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
+  const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerAddress)
   const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerAddress)
 
@@ -133,7 +123,7 @@ export default function AddLiquidity({
 
   async function onAdd() {
     if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, RoutablePlatform.SWAPR, account)
+    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
@@ -356,7 +346,6 @@ export default function AddLiquidity({
                 onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
               }}
               onCurrencySelect={handleCurrencyASelect}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
@@ -371,7 +360,6 @@ export default function AddLiquidity({
               onMax={() => {
                 onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
               }}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases

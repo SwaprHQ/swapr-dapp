@@ -172,8 +172,8 @@ const AccountAnalyticsButton = ({
     as={ExternalLink}
     href={
       account
-        ? `https://dxstats.eth.link/#/account/${account}?chainId=${chainId}`
-        : `https://dxstats.eth.link/#/accounts?chainId=${chainId}`
+        ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+        : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
     }
   >
     <Flex alignItems="center">
