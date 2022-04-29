@@ -416,6 +416,10 @@ body {
     background: ${props => props.theme.bg1} !important;
 }
 
+.walletconnect-connect__button__text {
+  font-size: inherit !important;
+}
+
 @media only screen and (max-width: 600px) {
 	.Toastify__toast-container--top-right {
 	    top: auto !important;
@@ -427,6 +431,10 @@ body {
   .Toastify__toast-container {
 	    width: auto !important;
 	}
+
+  .walletconnect-connect__button__text {
+    font-size: 10px !important;
+  }
 }
 
 .rc-pagination-simple-pager {
