@@ -288,6 +288,7 @@ export default function Swap() {
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
     trade
   })
+
   const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
     fiatValueInput,
     fiatValueOutput

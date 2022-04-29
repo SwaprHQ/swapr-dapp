@@ -1,6 +1,5 @@
-import { Token, Trade, currencyEquals, Price, CurrencyAmount, Currency, Fraction, JSBI, TEN } from '@swapr/sdk'
+import { Token, Trade, currencyEquals, Price, CurrencyAmount, Currency, Fraction, JSBI, TEN, ChainId } from '@swapr/sdk'
 import { useTradeExactInAllPlatforms } from './Trades'
-import { ChainId } from '@swapr/sdk'
 import { USDC, DAI } from '../constants/index'
 import { useActiveWeb3React } from './index'
 import { useEffect, useMemo, useState } from 'react'
@@ -36,7 +35,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         numerator: '1'
       })
 
-    const filterSelectedPlataforms = (trade?: Trade) => {
+    const filterSelectedPlataforms = (trade: Trade | undefined) => {
       if (!trade || !selectedTrade) return false
       return selectedTrade.platform.name === trade.platform.name
     }
@@ -133,12 +132,12 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
 
     fetchPrice()
 
-    const refetchPrices = setInterval(() => {
+    const refetchPrice = setInterval(() => {
       fetchPrice()
     }, FETCH_PRICE_INTERVAL)
 
     return () => {
-      clearInterval(refetchPrices)
+      clearInterval(refetchPrice)
     }
   }, [chainId, tokenAddress, wrappedCurr])
 
@@ -154,12 +153,12 @@ interface GetPriceQuoteParams {
 // common logic for returning price quotes
 function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams) {
   return useMemo(() => {
-    if (!price || error || !currencyAmount) return
+    if (!price || error || !currencyAmount) return null
 
     try {
       return price.quote(currencyAmount)
     } catch {
-      return
+      return null
     }
   }, [currencyAmount, error, price])
 }
