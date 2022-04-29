@@ -13,6 +13,7 @@ import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
 import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal'
+import { normalizedInputValue } from '../../utils'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()
@@ -41,8 +42,10 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
 
   const onUserInput = useCallback(
     (val: string) => {
-      setDisplayedValue && setDisplayedValue(val)
-      debounceOnUserInput(val)
+      const normalizedValue = normalizedInputValue(val)
+
+      setDisplayedValue && setDisplayedValue(normalizedValue)
+      debounceOnUserInput(normalizedValue)
     },
     [debounceOnUserInput, setDisplayedValue]
   )

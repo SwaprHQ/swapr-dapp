@@ -13,6 +13,7 @@ import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 import { ChainId } from '@swapr/sdk'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import { normalizedInputValue } from '../../../utils'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)
@@ -109,6 +110,8 @@ const createSelectBridgeTransactionsSummary = (
         timestampResolved
       } = tx
 
+      const normalizedValue = normalizedInputValue(value)
+
       if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {
         assetName,
@@ -117,7 +120,7 @@ const createSelectBridgeTransactionsSummary = (
         fromChainId: from,
         toChainId: to,
         status: getBridgeTxStatus(tx.receipt?.status),
-        value,
+        value: normalizedValue,
         txHash,
         batchIndex,
         batchNumber,
@@ -173,20 +176,32 @@ const createSelectBridgeTransactionsSummary = (
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-      if (processedTxsMap[tx.txHash]) return total
+      const {
+        assetAddressL1,
+        assetAddressL2,
+        assetName,
+        value,
+        txHash,
+        batchIndex,
+        batchNumber,
+        timestampResolved
+      } = tx
 
+      const normalizedValue = normalizedInputValue(value)
+
+      if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {
-        assetName: tx.assetName,
-        assetAddressL1: tx.assetAddressL1,
-        assetAddressL2: tx.assetAddressL2,
-        value: tx.value,
-        txHash: tx.txHash,
-        batchNumber: tx.batchNumber,
-        batchIndex: tx.batchIndex,
+        assetName,
+        assetAddressL1,
+        assetAddressL2,
+        value: normalizedValue,
+        txHash,
+        batchNumber,
+        batchIndex,
         fromChainId: from,
         toChainId: to,
         status: getBridgeTxStatus(tx.receipt?.status),
-        timestampResolved: tx.timestampResolved,
+        timestampResolved,
         log: [],
         bridgeId
       }
