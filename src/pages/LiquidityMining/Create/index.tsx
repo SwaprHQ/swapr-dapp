@@ -1,5 +1,5 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useMemo, useReducer, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
 import Step from '../../../components/LiquidityMining/Create/Steps'
@@ -17,6 +17,7 @@ import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
 import styled from 'styled-components'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { useActiveWeb3React } from '../../../hooks'
 
 const LastStep = styled(Step)`
   z-index: 0;
@@ -87,6 +88,7 @@ const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
+  const { chainId } = useActiveWeb3React()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
@@ -180,23 +182,29 @@ export default function CreateLiquidityMining() {
         setAttemptingTransaction(false)
       })
   }, [addTransaction, createLiquidityMiningCallback, targetedPairOrToken])
-
+  const resetAllFileds = () => {
+    setCampaignType(CampaignType.TOKEN)
+    dispatch({ type: ActionType.RESET, payload: {} })
+    setTargetedPairOrToken(null)
+    setReward(null)
+    setUnlimitedPool(true)
+    setStartTime(null)
+    setEndTime(null)
+    setTimelocked(false)
+  }
   const handleCreateDismiss = useCallback(() => {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
-      setCampaignType(CampaignType.TOKEN)
-      dispatch({ type: ActionType.RESET, payload: {} })
-      setTargetedPairOrToken(null)
-      setReward(null)
-      setUnlimitedPool(true)
-      setStartTime(null)
-      setEndTime(null)
-      setTimelocked(false)
+      resetAllFileds()
     }
     setErrorMessage('')
     setTransactionHash(null)
     setShowConfirmationModal(false)
   }, [transactionHash])
+
+  useEffect(() => {
+    resetAllFileds()
+  }, [chainId, handleCreateDismiss])
 
   return (
     <>
