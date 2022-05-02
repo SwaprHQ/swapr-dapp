@@ -115,8 +115,8 @@ function PairView({ loading, pair }: PairViewProps) {
                 as={ExternalLink}
                 href={
                   pair?.liquidityToken.address
-                    ? `https://dxstats.eth.link/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
-                    : `https://dxstats.eth.link/#/pairs?chainId=${chainId}`
+                    ? `https://dxstats.eth.limo/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
+                    : `https://dxstats.eth.limo/#/pairs?chainId=${chainId}`
                 }
               >
                 <Flex>

@@ -101,6 +101,7 @@ export function colors(darkMode: boolean): Colors {
     purple3: '#8780BF',
     purple4: '#685EC6',
     purple5: '#464366',
+    purple6: '#292643',
     boxShadow: '#0A0A0F',
 
     // darkest // dark 1.1
@@ -415,6 +416,10 @@ body {
     background: ${props => props.theme.bg1} !important;
 }
 
+.walletconnect-connect__button__text {
+  font-size: inherit !important;
+}
+
 @media only screen and (max-width: 600px) {
 	.Toastify__toast-container--top-right {
 	    top: auto !important;
@@ -426,6 +431,10 @@ body {
   .Toastify__toast-container {
 	    width: auto !important;
 	}
+
+  .walletconnect-connect__button__text {
+    font-size: 10px !important;
+  }
 }
 
 .rc-pagination-simple-pager {

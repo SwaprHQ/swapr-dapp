@@ -37,10 +37,6 @@ export function useCloseModals(): () => void {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
-export function useWalletModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
-}
-
 export function useToggleSettingsMenu(): () => void {
   return useToggleModal(ApplicationModal.SETTINGS)
 }

@@ -295,7 +295,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </RowBetween>
                     <Divider />
                     <RowBetween width="100%" marginTop="12px" marginBottom="12px">
-                      <MenuItem href="https://dxdao.eth.link/" rel="noopener noreferrer" target="_blank" data-testid="about-hyperlink">
+                      <MenuItem href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank" data-testid="about-hyperlink">
                         <Info size={14} />
                         About
                       </MenuItem>
