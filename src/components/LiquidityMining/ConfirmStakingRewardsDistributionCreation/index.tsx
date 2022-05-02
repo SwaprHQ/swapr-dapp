@@ -16,7 +16,7 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
-  reward: TokenAmount | null
+  reward: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean

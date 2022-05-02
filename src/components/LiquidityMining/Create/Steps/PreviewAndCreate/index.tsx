@@ -159,16 +159,19 @@ export default function PreviewAndCreate({
     10
   )
   useEffect(() => {
-    setAreButtonsDisabled(!!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals))
-  }, [account, reward, liquidityPair, startTime, endTime, approvals])
+    setAreButtonsDisabled(
+      !!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals || campaign === null)
+    )
+  }, [account, reward, liquidityPair, startTime, endTime, approvals, campaign])
   const getConfirmButtonMessage = () => {
-    if (!account) {
-      return 'Connect your wallet'
-    }
+    if (!account) return 'Connect your wallet'
+    else if (approvals) return 'Rewards not apporoved'
+    else if (campaign === null) return 'One of tokens not priced'
 
     return 'Deposit & create'
   }
   const isSingleSided = campaign instanceof SingleSidedLiquidityMiningCampaign
+
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])

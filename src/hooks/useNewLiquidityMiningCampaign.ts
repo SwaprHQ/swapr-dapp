@@ -29,7 +29,7 @@ export function useNewLiquidityMiningCampaign(
   endTime: Date | null,
   locked: boolean,
   stakingCap: TokenAmount | null,
-  simulatedStakedAmount?: string | null
+  simulatedStakedAmount: string
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
 
@@ -48,7 +48,15 @@ export function useNewLiquidityMiningCampaign(
   )
 
   return useMemo(() => {
-    if (!chainId || !targetedPairOrToken || pricedRewardAmounts.length === 0 || !startTime || !endTime) return null
+    if (
+      !chainId ||
+      !targetedPairOrToken ||
+      pricedRewardAmounts.length === 0 ||
+      !startTime ||
+      !endTime ||
+      pricedRewardAmounts.length !== rewards.length
+    )
+      return null
     const formattedStartTime = Math.floor(startTime.getTime() / 1000).toString()
     const formattedEndTime = Math.floor(endTime.getTime() / 1000).toString()
     if (targetedPairOrToken instanceof Pair && lpTokenTotalSupply) {
@@ -59,9 +67,9 @@ export function useNewLiquidityMiningCampaign(
         lpTokenTotalSupply.raw.toString(),
         targetedPairReserveNativeCurrency.raw.toString()
       )
-      console.log('Native price-NewCampaing', lpTokenNativeCurrencyPrice.toSignificant(10))
+
       const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
-      const staked = new PricedTokenAmount(lpToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
+      const staked = new PricedTokenAmount(lpToken, simulatedStakedAmount)
 
       return new LiquidityMiningCampaign({
         startsAt: formattedStartTime,
@@ -87,7 +95,7 @@ export function useNewLiquidityMiningCampaign(
 
       const stakeToken = new PricedToken(chainId, getAddress(address), decimals, derivedNative, symbol, name)
 
-      const staked = new PricedTokenAmount(stakeToken, simulatedStakedAmount ? simulatedStakedAmount : '0')
+      const staked = new PricedTokenAmount(stakeToken, simulatedStakedAmount)
 
       return new SingleSidedLiquidityMiningCampaign(
         formattedStartTime,
@@ -109,6 +117,7 @@ export function useNewLiquidityMiningCampaign(
     simulatedStakedAmount,
     pricedRewardAmounts,
     startTime,
+    rewards,
     endTime,
     stakingCap,
     nativeCurrency,

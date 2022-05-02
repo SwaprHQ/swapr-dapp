@@ -96,7 +96,7 @@ export default function CreateLiquidityMining() {
   const [errorMessage, setErrorMessage] = useState('')
   const [campaingType, setCampaignType] = useState<CampaignType>(CampaignType.TOKEN)
   const [stakeTokenOrPair, setStakeTokenOrPair] = useState<Pair | Token | null>(null)
-  const [reward, setReward] = useState<TokenAmount | null>(null)
+
   const [unlimitedPool, setUnlimitedPool] = useState(true)
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [endTime, setEndTime] = useState<Date | null>(null)
@@ -169,7 +169,6 @@ export default function CreateLiquidityMining() {
   const resetAllFileds = () => {
     dispatch({ type: ActionType.RESET, payload: {} })
     setStakeTokenOrPair(null)
-    setReward(null)
     setUnlimitedPool(true)
     setStartTime(null)
     setEndTime(null)
@@ -257,7 +256,7 @@ export default function CreateLiquidityMining() {
         liquidityPair={stakeTokenOrPair}
         startTime={startTime}
         endTime={endTime}
-        reward={reward}
+        reward={memoizedRewardArray}
         timelocked={timelocked}
         stakingCap={stakingCap}
         unlimitedPool={unlimitedPool}

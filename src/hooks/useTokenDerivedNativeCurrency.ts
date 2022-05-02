@@ -32,16 +32,7 @@ export function useTokenDerivedNativeCurrency(
       return { loading: true, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
     if (!data || data.token === null || error)
       return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
-    console.log(data.token.derivedNativeCurrency)
-    console.log(
-      'format for currencyAmount',
-      ethers.utils
-        .parseUnits(
-          new Decimal(data.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
-          nativeCurrency.decimals
-        )
-        .toString()
-    )
+
     return {
       loading: false,
       derivedNativeCurrency: CurrencyAmount.nativeCurrency(
