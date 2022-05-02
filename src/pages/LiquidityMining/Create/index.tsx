@@ -9,7 +9,7 @@ import SingleOrMultiStep from '../../../components/LiquidityMining/Create/Steps/
 import Time from '../../../components/LiquidityMining/Create/Steps/Time'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../../components/PageWrapper'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
@@ -120,7 +120,7 @@ export default function CreateLiquidityMining() {
 
   return (
     <>
-      <PageWrapper gap="40px">
+      <PageWrapper>
         <AutoColumn gap="8px">
           <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
           <TYPE.subHeader color="text5" lineHeight="17px">

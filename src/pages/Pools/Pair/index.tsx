@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../../components/PageWrapper'
 import { Link } from 'react-router-dom'
 
 import { TYPE } from '../../../theme'

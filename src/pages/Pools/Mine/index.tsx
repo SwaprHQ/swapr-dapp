@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../../components/PageWrapper'
 
 import { TYPE } from '../../../theme'
 import { Box, Flex, Text } from 'rebass'

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageWrapper } from '../Pools/styleds'
+import { PageWrapper } from '../../components/PageWrapper'
 import { Link } from 'react-router-dom'
 
 import { TYPE } from '../../theme'
@@ -196,7 +196,12 @@ export default function Rewards({
               </Flex>
               <ButtonRow>
                 {liquidityMiningEnabled && (
-                  <ResponsiveButtonSecondary as={Link} padding="8px 14px" to="/liquidity-mining/create" data-testid="create-campaign">
+                  <ResponsiveButtonSecondary
+                    as={Link}
+                    padding="8px 14px"
+                    to="/liquidity-mining/create"
+                    data-testid="create-campaign"
+                  >
                     <Text fontWeight={700} fontSize={12} lineHeight="15px">
                       CREATE CAMPAIGN
                     </Text>
