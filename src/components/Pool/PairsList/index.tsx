@@ -53,11 +53,18 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
 
   return (
     <Flex flexDirection="column">
-      <Box>
+      <DimBgContainer>
         {loading ? (
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
+            <Header>
+              <HeaderText>{t('Pair')}</HeaderText>
+              <HeaderText>{t('Campaigns')}</HeaderText>
+              <HeaderText>{t('TVL')}</HeaderText>
+              <HeaderText>{t('24hVolume')}</HeaderText>
+              <HeaderText>{t('APY')}</HeaderText>
+            </Header>
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <UndecoratedLink
                 key={singleSidedStake.address}
@@ -101,16 +108,14 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
               })}
           </ListLayout>
         ) : (
-          <DimBgContainer>
-            <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
-              <Text fontSize="16px" color="#BCB3F0" mb="24px">
-                {t('noPoolsFound')}
-              </Text>
-              <BlueButton> {t('createAPool')}</BlueButton>
-            </Flex>
-          </DimBgContainer>
+          <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
+            <Text fontSize="16px" color="#BCB3F0" mb="24px">
+              {t('noPoolsFound')}
+            </Text>
+            <BlueButton> {t('createAPool')}</BlueButton>
+          </Flex>
         )}
-      </Box>
+      </DimBgContainer>
       {aggregatedPairs.length > responsiveItemsPerPage && (
         <PaginationRow>
           <Box>
@@ -127,10 +132,22 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
   )
 }
 
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 2fr 1fr;
+  padding: 12px 28px;
+`
+
+const HeaderText = styled(Text)`
+  font-weight: 600;
+  font-size: 10px;
+  color: ${({ theme }) => theme.purple3};
+  text-transform: uppercase;
+`
+
 const ListLayout = styled.div`
   display: grid;
   grid-template-columns: auto;
-  grid-gap: 8px;
 `
 
 const PaginationRow = styled(Flex)`
@@ -147,7 +164,6 @@ const PaginationRow = styled(Flex)`
 
 const DimBgContainer = styled.div`
   width: 100%;
-  padding: 48px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.purple5};
 
