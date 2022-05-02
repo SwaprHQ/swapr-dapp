@@ -52,18 +52,18 @@ const StyledFlex = styled(Flex)`
 `
 
 interface TokenAndLimitProps {
-  targetedPairOrToken: Pair | Token | undefined | null
+  stakeTokenOrPair: Pair | Token | undefined | null
   unlimitedPool: boolean
   campaingType: CampaignType
-  onLiquidityPairChange: (liquidityPair: Pair | Token | null) => void
+  setStakeTokenOrPair: (liquidityPair: Pair | Token | null) => void
   onStakingCapChange: (newValue: TokenAmount | null) => void
   onUnlimitedPoolChange: (newValue: boolean) => void
 }
 
 export default function StakeTokenAndLimit({
-  targetedPairOrToken: liquidityPair,
+  stakeTokenOrPair,
   unlimitedPool,
-  onLiquidityPairChange,
+  setStakeTokenOrPair,
   campaingType,
   onStakingCapChange,
   onUnlimitedPoolChange
@@ -73,13 +73,15 @@ export default function StakeTokenAndLimit({
   const [stakingCapString, setStakingCapString] = useState('')
   const [inputWidth, setInputWidth] = useState(18)
   const inputRef = React.useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     if (unlimitedPool) {
       setStakingCapString('')
       setInputWidth(18)
       onStakingCapChange(null)
     }
-  }, [onStakingCapChange, liquidityPair, unlimitedPool])
+  }, [onStakingCapChange, stakeTokenOrPair, unlimitedPool])
+
   const handelOpenPairOrTokenSearch = useCallback(value => {
     if (value === CampaignType.PAIR) {
       setPairSearchOpen(true)
@@ -88,35 +90,34 @@ export default function StakeTokenAndLimit({
     }
   }, [])
 
-  const handleDismissPairSearch = useCallback(() => {
-    setPairSearchOpen(false)
+  const handleDismissTokenOrPairSelection = useCallback((type: CampaignType) => {
+    if (type === CampaignType.TOKEN) setCurrencySearchOpen(false)
+    else setPairSearchOpen(false)
   }, [])
 
   const handlePairSelection = useCallback(
     selectedPair => {
-      onLiquidityPairChange(selectedPair)
+      setStakeTokenOrPair(selectedPair)
     },
-    [onLiquidityPairChange]
+    [setStakeTokenOrPair]
   )
 
-  const handleDismissCurrencySearch = useCallback(() => {
-    setCurrencySearchOpen(false)
-  }, [])
   useEffect(() => {
-    onLiquidityPairChange(null)
-  }, [campaingType, onLiquidityPairChange])
+    setStakeTokenOrPair(null)
+  }, [campaingType, setStakeTokenOrPair])
+
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
       if (rawValue.length === 0) setInputWidth(18)
       else setInputWidth(inputRef.current?.clientWidth || 4)
 
-      if (!liquidityPair || (liquidityPair instanceof Pair && !liquidityPair.liquidityToken)) return
+      if (!stakeTokenOrPair || (stakeTokenOrPair instanceof Pair && !stakeTokenOrPair.liquidityToken)) return
       setStakingCapString(rawValue)
-      const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair.liquidityToken
+      const tokenOrPair = stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair.liquidityToken
       const parsedAmount = tryParseAmount(rawValue, tokenOrPair) as TokenAmount | undefined
       onStakingCapChange(parsedAmount || new TokenAmount(tokenOrPair, '0'))
     },
-    [onStakingCapChange, liquidityPair]
+    [onStakingCapChange, stakeTokenOrPair]
   )
 
   return (
@@ -124,8 +125,10 @@ export default function StakeTokenAndLimit({
       <FlexContainer>
         <AssetSelector
           campaingType={campaingType}
-          currency0={liquidityPair && liquidityPair instanceof Token ? liquidityPair : liquidityPair?.token0}
-          currency1={liquidityPair && liquidityPair instanceof Token ? null : liquidityPair?.token1}
+          currency0={
+            stakeTokenOrPair && stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair?.token0
+          }
+          currency1={stakeTokenOrPair && stakeTokenOrPair instanceof Token ? null : stakeTokenOrPair?.token1}
           onClick={() => handelOpenPairOrTokenSearch(campaingType)}
         />
 
@@ -159,7 +162,7 @@ export default function StakeTokenAndLimit({
               <StyledNumericalInput
                 style={{ width: inputWidth + 12 + 'px' }}
                 onClick={() => onUnlimitedPoolChange(false)}
-                disabled={!liquidityPair}
+                disabled={!stakeTokenOrPair}
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}
               />
@@ -174,10 +177,12 @@ export default function StakeTokenAndLimit({
                 letterSpacing="0.08em"
                 alignItems={'center'}
               >
-                {liquidityPair && liquidityPair instanceof Pair
-                  ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
-                  : liquidityPair instanceof Token
-                  ? unwrappedToken(liquidityPair)?.symbol
+                {stakeTokenOrPair && stakeTokenOrPair instanceof Pair
+                  ? `${unwrappedToken(stakeTokenOrPair.token0)?.symbol}/${
+                      unwrappedToken(stakeTokenOrPair.token1)?.symbol
+                    }`
+                  : stakeTokenOrPair instanceof Token
+                  ? unwrappedToken(stakeTokenOrPair)?.symbol
                   : ''}
               </TYPE.largeHeader>
             </AmountFlex>
@@ -187,15 +192,15 @@ export default function StakeTokenAndLimit({
 
       <PairSearchModal
         isOpen={pairSearchOpen}
-        onDismiss={handleDismissPairSearch}
+        onDismiss={() => handleDismissTokenOrPairSelection(CampaignType.PAIR)}
         onPairSelect={handlePairSelection}
-        selectedPair={liquidityPair instanceof Token ? null : liquidityPair}
+        selectedPair={stakeTokenOrPair instanceof Token ? null : stakeTokenOrPair}
       />
       <CurrencySearchModal
         isOpen={currencySearchOpen}
-        onDismiss={handleDismissCurrencySearch}
+        onDismiss={() => handleDismissTokenOrPairSelection(CampaignType.TOKEN)}
         onCurrencySelect={handlePairSelection}
-        selectedCurrency={liquidityPair instanceof Token ? liquidityPair : null}
+        selectedCurrency={stakeTokenOrPair instanceof Token ? stakeTokenOrPair : null}
         showNativeCurrency={false}
       />
     </>

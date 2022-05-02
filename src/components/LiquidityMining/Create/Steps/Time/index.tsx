@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
 import { TYPE } from '../../../../../theme'
 import TimeSelector from './TimeSelector'
@@ -27,8 +27,8 @@ interface TimeProps {
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
-  onStartTimeChange: (date: Date) => void
-  onEndTimeChange: (date: Date) => void
+  setStartTime: (date: Date | null) => void
+  setEndTime: (date: Date | null) => void
   onTimelockedChange: () => void
 }
 
@@ -36,10 +36,29 @@ export default function DurationAndLocking({
   startTime,
   endTime,
   timelocked,
-  onStartTimeChange,
-  onEndTimeChange,
+  setStartTime,
+  setEndTime,
   onTimelockedChange
 }: TimeProps) {
+  const handleStartTimeChange = useCallback(
+    (newStartTime: Date) => {
+      if (Date.now() > newStartTime.getTime()) return // date in the past, invalid
+      setStartTime(newStartTime)
+    },
+    [setStartTime]
+  )
+
+  const handleEndTimeChange = useCallback(
+    (newEndTime: Date | null) => {
+      if (!newEndTime) {
+        setEndTime(null)
+        return
+      }
+      if (startTime ? startTime.getTime() >= newEndTime.getTime() : Date.now() > newEndTime.getTime()) return // date in the past, invalid
+      setEndTime(newEndTime)
+    },
+    [startTime, setEndTime]
+  )
   return (
     <FlexWrapper>
       <StyledSmoothGradientCard height="150px" width="413px" padding={'42.5px 28px'}>
@@ -48,7 +67,7 @@ export default function DurationAndLocking({
           placeholder="Start date"
           value={startTime}
           minimum={new Date()}
-          onChange={onStartTimeChange}
+          onChange={handleStartTimeChange}
         />
 
         <HorizontalDivider />
@@ -58,7 +77,7 @@ export default function DurationAndLocking({
           placeholder="End date"
           value={endTime}
           minimum={startTime || new Date()}
-          onChange={onEndTimeChange}
+          onChange={handleEndTimeChange}
         />
       </StyledSmoothGradientCard>
 

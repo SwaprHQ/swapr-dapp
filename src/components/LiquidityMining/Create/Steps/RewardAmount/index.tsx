@@ -59,7 +59,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
 
   const handleCurrencyReset = useCallback(
     index => {
-      setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { rawAmount: undefined, index: index } })
+      setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { index: index, rawAmount: undefined } })
       setRewardsObject({ type: ActionType.REWARDS_CHANGE, payload: { index: index, reward: undefined } })
       setRewardsObject({
         type: ActionType.APPROVALS_CHANGE,
@@ -94,21 +94,23 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     <>
       <FlexWrapper flexWrap="wrap">
         {[...Array(numberOfRewards)].map((item, index) => (
-          <AssetSelector
-            key={index}
-            currency0={rewardsObject.rewards[index]?.token}
-            campaingType={CampaignType.TOKEN}
-            onClick={() => handelOpenPairOrTokenSearch(index)}
-            customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
-            amount={rewardsObject.rewards[index]}
-            handleUserInput={event => {
-              handleLocalUserInput(event, index)
-            }}
-            setRewardsObject={setRewardsObject}
-            onResetCurrency={() => handleCurrencyReset(index)}
-            index={index}
-            rawAmount={rewardsObject.rawAmounts[index]}
-          />
+          <>
+            <AssetSelector
+              key={index}
+              currency0={rewardsObject.rewards[index]?.token}
+              campaingType={CampaignType.TOKEN}
+              onClick={() => handelOpenPairOrTokenSearch(index)}
+              customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
+              amount={rewardsObject.rewards[index]}
+              handleUserInput={event => {
+                handleLocalUserInput(event, index)
+              }}
+              setRewardsObject={setRewardsObject}
+              onResetCurrency={() => handleCurrencyReset(index)}
+              index={index}
+              rawAmount={rewardsObject.rawAmounts[index]}
+            />
+          </>
         ))}
       </FlexWrapper>
 
