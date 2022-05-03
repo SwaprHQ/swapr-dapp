@@ -15,7 +15,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
-    "@swapr/sdk": "^1.0.1",
+    "@swapr/sdk": "^1.1.0",
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
