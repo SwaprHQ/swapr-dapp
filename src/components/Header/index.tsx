@@ -84,7 +84,7 @@ const MoreLinksIcon = styled(HeaderElement)`
     display: flex;
     width:100%;
     justify-content: flex-start;
-   
+
   `};
 `
 
@@ -288,7 +288,7 @@ function Header() {
           <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </HeaderLink>
-          <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗
@@ -365,7 +365,7 @@ function Header() {
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </HeaderMobileLink>
-          <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗

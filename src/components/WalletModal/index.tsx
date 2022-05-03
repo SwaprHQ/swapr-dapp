@@ -230,7 +230,7 @@ export default function WalletModal({
             tryActivation={tryActivation}
           />
         </ContentWrapper>
-        <Blurb as="a" href="https://dxdao.eth.link/" rel="noopener noreferrer" target="_blank">
+        <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
           <TYPE.body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
             A DXDAO PRODUCT
           </TYPE.body>
