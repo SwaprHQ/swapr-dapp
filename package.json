@@ -124,7 +124,7 @@
     "ws": "^7.4.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "yarn && react-scripts start",
     "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "test": "react-scripts test --env=jsdom",

@@ -458,4 +458,8 @@ body {
 .walletconnect-modal__mobile__toggle a {
   color: rgb(64, 153, 255);
 }
+
+#walletconnect-wrapper .walletconnect-connect__button__text{
+  font-size: 16px !important;
+}
 `
