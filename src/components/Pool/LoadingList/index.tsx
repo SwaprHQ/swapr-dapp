@@ -1,31 +1,45 @@
 import React from 'react'
+import { Text } from 'rebass'
 import styled from 'styled-components'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import LoadingCard from './LoadingCard'
 
-export const ListLayout = styled.div<{ isMobile: boolean }>`
+export const ListLayout = styled.div`
   display: grid;
-  grid-gap: 10px;
   grid-template-columns: auto;
-  ${props =>
-    props.isMobile &&
-    `
-    grid-template-columns: 1fr 1fr 1fr;
-  `};
 `
 
 interface LoadingListProps {
   itemsAmount?: number
-  isMobile?: boolean
 }
 
-export function LoadingList({ itemsAmount, isMobile = false }: LoadingListProps) {
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 2fr 1fr;
+  padding: 12px 28px;
+`
+
+const HeaderText = styled(Text)`
+  font-weight: 600;
+  font-size: 10px;
+  color: ${({ theme }) => theme.purple3};
+  text-transform: uppercase;
+`
+
+export function LoadingList({ itemsAmount }: LoadingListProps) {
   const responsiveItemsAmount = useResponsiveItemsPerPage()
 
   return (
-    <ListLayout isMobile={isMobile}>
+    <ListLayout>
+      <Header>
+        <HeaderText>Pair</HeaderText>
+        <HeaderText>Campaigns</HeaderText>
+        <HeaderText>TVL</HeaderText>
+        <HeaderText>24h volume</HeaderText>
+        <HeaderText>APY</HeaderText>
+      </Header>
       {new Array(itemsAmount && itemsAmount !== 0 ? itemsAmount : responsiveItemsAmount).fill(null).map((_, index) => (
-        <LoadingCard isMobile={isMobile} key={index} />
+        <LoadingCard key={index} />
       ))}
     </ListLayout>
   )

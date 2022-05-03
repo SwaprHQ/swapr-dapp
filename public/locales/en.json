@@ -125,5 +125,10 @@
   "sortBy": "Sort by: {{ option }}",
   "noPoolsFound": "No pools found",
   "createAPool": "Create a pool",
-  "showMore": "Show more"
+  "showMore": "Show more",
+  "pair": "Pair",
+  "capmings": "Campings",
+  "24hVolume": "24h Volume",
+  "farming": "Farming",
+  "carrot": "Carrot"
 }
