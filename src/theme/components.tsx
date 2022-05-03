@@ -125,20 +125,22 @@ export function ExternalLink({
   rel = 'noopener noreferrer',
   color,
   underlined,
+  disabled,
   ...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
   href: string
   color?: keyof Colors
   underlined?: boolean
+  disabled?: boolean
 }) {
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       // don't prevent default, don't redirect if it's a new tab
-      if (target !== '_blank' && !event.ctrlKey && !event.metaKey) {
+      if (disabled || (target !== '_blank' && !event.ctrlKey && !event.metaKey)) {
         event.preventDefault()
       }
     },
-    [target]
+    [disabled, target]
   )
   return (
     <StyledLink
