@@ -1,4 +1,2 @@
-import { AggregatedPairs as AggregatedPairs_, PairsListProps as PairsListProps_ } from './PairsList.types'
-export type PairsListProps = PairsListProps_
-export type AggregatedPairs = AggregatedPairs_
+export * from './PairsList.types'
 export { PairsList } from './PairsList.container'

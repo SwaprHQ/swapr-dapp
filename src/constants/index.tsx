@@ -456,5 +456,5 @@ export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {
 export const LIQUIDITY_SORTING_TYPES = {
   TVL: 'TVL',
   APY: 'APY',
-  NEW: 'NEW'
+  NEW: 'NEW',
 }
