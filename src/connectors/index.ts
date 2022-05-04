@@ -28,8 +28,8 @@ export const injected = new InjectedConnector({
     ChainId.ARBITRUM_ONE,
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
-    ChainId.POLYGON
-  ]
+    ChainId.POLYGON,
+  ],
 })
 
 // mainnet only
@@ -60,6 +60,6 @@ export const walletLink = new CustomWalletLinkConnector({
     ChainId.ARBITRUM_ONE,
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
-    ChainId.POLYGON
-  ]
+    ChainId.POLYGON,
+  ],
 })

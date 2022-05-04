@@ -15,7 +15,7 @@ export default function Updater() {
     if (library && chainId && isSWPRSupportedChain)
       Promise.all([
         Fetcher.fetchAllSwapFees(chainId, {}, library as any),
-        Fetcher.fetchProtocolFee(chainId, library as any)
+        Fetcher.fetchProtocolFee(chainId, library as any),
       ])
         .then(([swapFees, protocolFee]) => {
           if (swapFees) dispatch(setSwapFees({ swapFees }))
@@ -23,11 +23,11 @@ export default function Updater() {
             dispatch(
               setProtocolFee({
                 protocolFeeDenominator: Number(protocolFee.feeDenominator) + 1,
-                protocolFeeTo: protocolFee.feeReceiver
+                protocolFeeTo: protocolFee.feeReceiver,
               })
             )
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Cancelled fetch for fees, error:', error)
           return
         })

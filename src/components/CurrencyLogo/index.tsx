@@ -58,7 +58,7 @@ const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
   [ChainId.MAINNET]: EtherLogo,
   [ChainId.RINKEBY]: EtherLogo,
   [ChainId.XDAI]: XDAILogo,
-  [ChainId.POLYGON]: PolygonMaticLogo
+  [ChainId.POLYGON]: PolygonMaticLogo,
 }
 
 export default function CurrencyLogo({

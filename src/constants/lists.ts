@@ -44,7 +44,7 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   KLEROS_LIST,
   GEMINI_LIST,
   DFYN_LIST,
-  ...UNSUPPORTED_LIST_URLS // need to load unsupported tokens as well
+  ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
 ]
 
 // default lists to be 'active' aka searched across

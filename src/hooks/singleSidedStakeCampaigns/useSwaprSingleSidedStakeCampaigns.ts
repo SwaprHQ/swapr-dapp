@@ -69,8 +69,8 @@ export function useSwaprSinglelSidedStakeCampaigns(
   }>(QUERY, {
     variables: {
       address: swaprAddress?.toLowerCase(),
-      userId: subgraphAccountId
-    }
+      userId: subgraphAccountId,
+    },
   })
   return useMemo(() => {
     if (loading || chainId === undefined) {

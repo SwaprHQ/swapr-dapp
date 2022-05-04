@@ -3,7 +3,7 @@ import { NetworkOptions, networkOptionsPreset, NetworkOptionsPreset, NetworksLis
 import { NETWORK_DETAIL, NETWORK_OPTIONAL_DETAIL, SHOW_TESTNETS, TESTNETS } from '../constants'
 
 export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPreset[] = networkOptionsPreset) => {
-  const network = customPreset.find(net => {
+  const network = customPreset.find((net) => {
     return net.chainId === chainId
   })
   return {
@@ -21,7 +21,7 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
     },
     isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId]?.isArbitrum ?? false,
     partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId]?.partnerChainId,
-    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined
+    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined,
   }
 }
 
@@ -91,7 +91,7 @@ export const createNetworksList = ({
   let networks = networkOptionsPreset
 
   if (ignoreTags?.length) {
-    networks = networkOptionsPreset.map(item => {
+    networks = networkOptionsPreset.map((item) => {
       if (item.tag && ignoreTags?.includes(item.tag)) {
         return { ...item, tag: '' }
       }
@@ -100,7 +100,7 @@ export const createNetworksList = ({
   }
 
   return networks
-    .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId))
+    .filter((network) => SHOW_TESTNETS || !TESTNETS.includes(network.chainId))
     .reduce<NetworksList[]>((taggedList, currentNet) => {
       const tag = currentNet.tag ? currentNet.tag : ''
       const networkPreset = currentNet
@@ -113,7 +113,7 @@ export const createNetworksList = ({
       })
 
       // check if tag exist and if not create array
-      const tagArrIndex = taggedList.findIndex(existingTagArr => existingTagArr.tag === tag)
+      const tagArrIndex = taggedList.findIndex((existingTagArr) => existingTagArr.tag === tag)
       if (tagArrIndex > -1) {
         taggedList[tagArrIndex].networks.push(enhancedNetworkOptions)
       } else {

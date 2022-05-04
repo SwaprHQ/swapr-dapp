@@ -23,7 +23,7 @@ export const networkOptionsPreset = [
     chainId: ChainId.POLYGON,
     name: 'Polygon',
     logoSrc: PolygonMaticLogo,
-    color: '#8361DE'
+    color: '#8361DE',
   },
 
   // TESTNETS
