@@ -10,7 +10,7 @@ import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
-import PairsList from '../../../components/Pool/PairsList'
+import { PairsList } from '../../../components/Pool/PairsList'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
 import { useActiveWeb3React } from '../../../hooks'
 
