@@ -13,9 +13,10 @@ export const network = new CustomNetworkConnector({
   urls: {
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
-    [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc'
+    [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
+    [ChainId.POLYGON]: 'https://polygon-rpc.com/',
   },
-  defaultChainId: ChainId.MAINNET
+  defaultChainId: ChainId.MAINNET,
 })
 
 export const injected = new InjectedConnector({
