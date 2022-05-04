@@ -85,7 +85,7 @@ function Title({
   aggregatedDataFilter,
   onFilterChange,
   onSortByChange,
-  sortBy
+  sortBy,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
 

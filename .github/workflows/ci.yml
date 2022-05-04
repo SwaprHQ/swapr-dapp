@@ -26,6 +26,8 @@ jobs:
         run: yarn install
       - name: Lint
         run: yarn lint
+      - name: Check types
+        run: yarn tsc --noEmit
       - name: Test
         run: yarn test
       - name: Build

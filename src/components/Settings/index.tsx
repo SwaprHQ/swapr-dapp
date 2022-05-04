@@ -10,7 +10,7 @@ import {
   useUserTransactionTTL,
   useUserSlippageTolerance,
   useUserPreferredGasPrice,
-  useMultihopManager
+  useMultihopManager,
 } from '../../state/user/hooks'
 import { TYPE, ExternalLink, LinkStyledButton, CloseIcon } from '../../theme'
 import { ButtonError } from '../Button'
@@ -272,7 +272,13 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </Text>
                     <RowBetween marginBottom="12px">
                       <RowFixed>
-                        <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="toggle-expert-mode-text">
+                        <TYPE.body
+                          color="text4"
+                          fontWeight={500}
+                          fontSize="12px"
+                          lineHeight="15px"
+                          data-testid="toggle-expert-mode-text"
+                        >
                           Toggle expert mode
                         </TYPE.body>
                         <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
@@ -295,7 +301,12 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </RowBetween>
                     <Divider />
                     <RowBetween width="100%" marginTop="12px" marginBottom="12px">
-                      <MenuItem href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank" data-testid="about-hyperlink">
+                      <MenuItem
+                        href="https://dxdao.eth.limo/"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        data-testid="about-hyperlink"
+                      >
                         <Info size={14} />
                         About
                       </MenuItem>

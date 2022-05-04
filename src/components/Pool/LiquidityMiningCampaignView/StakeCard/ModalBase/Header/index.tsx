@@ -26,7 +26,7 @@ export default function ConfirmStakingWithdrawingModalHeader({
   maximumAmount,
   timelocked,
   endingTimestamp,
-  onAmountChange
+  onAmountChange,
 }: ConfirmStakeModalHeaderProps) {
   const [typedAmount, setTypedAmount] = useState('')
 

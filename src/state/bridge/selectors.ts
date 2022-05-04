@@ -17,6 +17,6 @@ export const bridgeModalDataSelector = createSelector(bridgeModalStateSelector, 
     typedValue,
     toNetwork,
     fromNetwork,
-    error
+    error,
   }
 })

@@ -39,7 +39,7 @@ export function isCID(hash: string) {
 // Map chainId to network name for fetch request
 const supportedENSNetworks: { [chainId: number]: string } = {
   1: 'mainnet',
-  4: 'rinkeby'
+  4: 'rinkeby',
 }
 // List of chains where ENS is deployed
 const supportedENSChainIds = [1, 4]
@@ -86,6 +86,6 @@ export function useENSAvatar(ensName?: string | null) {
 
   return {
     loading,
-    avatar
+    avatar,
   }
 }

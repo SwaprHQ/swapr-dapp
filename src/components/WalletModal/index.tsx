@@ -121,7 +121,7 @@ export default function WalletModal({
   tryActivation,
   pendingError,
   setPendingError,
-  pendingWallet
+  pendingWallet,
 }: WalletModalProps) {
   const { active, account, connector, error } = useWeb3React()
 
