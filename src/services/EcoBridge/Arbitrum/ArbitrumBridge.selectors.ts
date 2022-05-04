@@ -110,7 +110,7 @@ const createSelectBridgeTransactionsSummary = (
         timestampResolved
       } = tx
 
-      const normalizedValue = normalizeInputValue(value)
+      const normalizedValue = normalizeInputValue(value, true)
 
       if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {
@@ -187,7 +187,7 @@ const createSelectBridgeTransactionsSummary = (
         timestampResolved
       } = tx
 
-      const normalizedValue = normalizeInputValue(value)
+      const normalizedValue = normalizeInputValue(value, true)
 
       if (processedTxsMap[tx.txHash]) return total
       const summary: BridgeTransactionSummary = {

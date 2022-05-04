@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { normalizeInputValue } from '../../../utils'
 import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
 import { SocketTx, SocketTxStatus, SOCKET_PENDING_REASONS } from './Socket.types'
 
@@ -73,6 +74,8 @@ const createSelectBridgeTransactionsSummary = (
           ? SOCKET_PENDING_REASONS.TO_PENDING
           : undefined
 
+      const normalizedValue = normalizeInputValue(tx.value, true)
+
       const summary: BridgeTransactionSummary = {
         assetName: tx.assetName,
         assetAddressL1: '', // not applicable, socket doesn't implement collect flow for now
@@ -84,7 +87,7 @@ const createSelectBridgeTransactionsSummary = (
           : tx.status === SocketTxStatus.ERROR
           ? BridgeTransactionStatus.FAILED
           : BridgeTransactionStatus.PENDING,
-        value: tx.value,
+        value: normalizedValue,
         txHash: tx.txHash,
         pendingReason,
         timestampResolved: tx.timestampResolved,

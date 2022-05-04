@@ -100,6 +100,7 @@ describe('utils', () => {
 
   describe('#normalizeInputValue function', () => {
     it('should return correct value', () => {
+      //checks input value
       expect(normalizeInputValue('0000.00000123')).toEqual('0.00000123')
       expect(normalizeInputValue('.00000009')).toEqual('0.00000009')
       expect(normalizeInputValue('0.000002')).toEqual('0.000002')
@@ -109,6 +110,10 @@ describe('utils', () => {
       expect(normalizeInputValue('200')).toEqual('200')
       expect(normalizeInputValue('0000')).toEqual('0')
       expect(normalizeInputValue('.')).toEqual('0.')
+
+      //transaction history value
+      expect(normalizeInputValue('0.1000002', true)).toEqual('0.1000002')
+      expect(normalizeInputValue('0.10000000000', true)).toEqual('0.1')
     })
   })
 })
