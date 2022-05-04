@@ -13,7 +13,6 @@ import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 
 const FlexContainer = styled(Flex)`
-  margin-top: 32px;
   justify-content: stretch;
   width: 100%;
   gap: 28px;
@@ -122,7 +121,7 @@ export default function StakeTokenAndLimit({
 
   return (
     <>
-      <FlexContainer>
+      <FlexContainer marginTop={'32px'}>
         <AssetSelector
           campaingType={campaingType}
           currency0={

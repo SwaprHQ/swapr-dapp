@@ -195,7 +195,7 @@ export default function CreateLiquidityMining() {
         <AutoColumn gap="8px">
           <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
         </AutoColumn>
-        <Step title="Choose Campaign" index={0} disabled={false}>
+        <Step title="Choose Campaign Type" index={0} disabled={false}>
           <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
         </Step>
         <Step
@@ -222,7 +222,7 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        <Step title="Select Reward Amount" index={3} disabled={!startTime || !endTime || !stakeTokenOrPair}>
+        <Step title="Select Token To Reward" index={3} disabled={!startTime || !endTime || !stakeTokenOrPair}>
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 

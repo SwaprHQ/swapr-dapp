@@ -19,7 +19,7 @@ export default function RewardSummary({ reward, apy, stakingCap }: RewardSummary
         <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
           REWARD SUMMARY
         </TYPE.small>
-        <DataRow name="REWARDS" value={reward.map(ite => `${ite.toSignificant(2)} ${ite.token.symbol}`).join(', ')} />
+        <DataRow name="REWARDS" value={reward.map(ite => `${ite.toExact()} ${ite.token.symbol}`).join(', ')} />
         <DataRow
           name="MAX POOL SIZE"
           value={stakingCap && stakingCap.greaterThan('0') ? stakingCap.toSignificant(4) : '-'}

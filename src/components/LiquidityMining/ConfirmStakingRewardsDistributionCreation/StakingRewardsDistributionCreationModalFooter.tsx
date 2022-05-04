@@ -74,7 +74,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             paddingLeft: '10px'
           }}
         >
-          {reward ? reward.map(ite => `${ite.toSignificant(2)} ${ite.token.symbol}`).join(', ') : '-'}
+          {reward ? reward.map(ite => `${ite.toExact()} ${ite.token.symbol}`).join(', ') : '-'}
         </TYPE.body>
       </RowBetween>
 

@@ -2,12 +2,14 @@ import React from 'react'
 import Datepicker from 'react-datepicker'
 import styled from 'styled-components'
 import { StyledInput } from '../styleds'
+import { ReactComponent as CalenderIcon } from '../../../assets/svg/calender.svg'
+import { Flex } from 'rebass'
 
 const Input = styled(StyledInput)`
   position: relative;
   border: solid 1px ${props => props.theme.bg5};
   border-radius: 8px;
-  width: 100%;
+  min-width: 154px;
   font-size: 11px;
   font-weight: 600;
   line-height: 11px;
@@ -32,6 +34,21 @@ const StyledDatePicker = styled(Datepicker)`
     color: ${props => props.theme.text2};
   }
 `
+const StyledCalenderIcon = styled(CalenderIcon)`
+  position: absolute;
+  top: 7px;
+  right: 8px;
+`
+
+const CustomInput = React.forwardRef(props => {
+  return (
+    <Flex>
+      <Input {...props} />
+      <StyledCalenderIcon />
+    </Flex>
+  )
+})
+CustomInput.displayName = 'CustomInput'
 
 interface PickerProps {
   value: Date | null
@@ -43,25 +60,28 @@ interface PickerProps {
 
 export default function DateTimeInput({ value, placeholder, minimum, maximum, onChange }: PickerProps) {
   return (
-    <StyledDatePicker
-      customInput={<Input />}
-      dateFormat="dd-MM-yyyy HH:mm"
-      renderDayContents={(day: number) => {
-        return <StyledDay>{day}</StyledDay>
-      }}
-      placeholderText={placeholder}
-      selected={value}
-      onChange={onChange}
-      showTimeSelect
-      timeFormat="HH:mm"
-      filterTime={time => {
-        if (!minimum) return true
-        const dateTime = new Date(time)
-        if (dateTime.getMonth() !== minimum.getMonth() || dateTime.getDate() !== minimum.getDate()) return true
-        return dateTime.getTime() >= minimum.getTime()
-      }}
-      minDate={minimum}
-      maxDate={maximum}
-    />
+    <>
+      <StyledDatePicker
+        customInput={<CustomInput />}
+        dateFormat="yyyy-MM-dd HH:mm"
+        renderDayContents={(day: number) => {
+          return <StyledDay>{day}</StyledDay>
+        }}
+        placeholderText={placeholder}
+        selected={value}
+        onChange={onChange}
+        showTimeSelect
+        timeFormat="HH:mm"
+        filterTime={time => {
+          if (!minimum) return true
+          const dateTime = new Date(time)
+          if (dateTime.getMonth() !== minimum.getMonth() || dateTime.getDate() !== minimum.getDate()) return true
+          return dateTime.getTime() >= minimum.getTime()
+        }}
+        minDate={minimum}
+        maxDate={maximum}
+      />
+      {/* <CalenderIcon /> */}
+    </>
   )
 }

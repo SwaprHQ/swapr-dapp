@@ -9,7 +9,7 @@ export const SmoothGradientCard = styled(Card)<{
   active?: boolean
   width?: string
   height?: string
-  background?: string
+  isToken?: boolean
 }>`
   color: ${props => (props.active ? props.theme.text3 : props.theme.text5)};
   width: ${props => props.width || '100%'};
@@ -25,14 +25,14 @@ export const SmoothGradientCard = styled(Card)<{
     border-color: ${props => !props.active && 'rgba(70, 67, 102, 1)'};
     border-style: solid;
     border-width: 1px;
+    border-radius: inherit;
     border-image-source: ${props =>
       props.active && 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)'};
 
     backdrop-filter: blur(20px);
-
     background: ${props =>
-      props.background
-        ? props.background
+      props.isToken && props.active
+        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(180deg, rgba(90, 12, 255, 0.8) -16.28%, rgba(17, 8, 35, 0) 100%);'
         : props.active
         ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(114.19deg, rgba(90, 12, 255, 0.8) -9%, rgba(17, 8, 35, 0) 113.1%)'
         : 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.1) -9%, rgba(17, 8, 35, 0) 113.1%) '};

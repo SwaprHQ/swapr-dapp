@@ -26,14 +26,12 @@
   height: 12px;
   border-radius: 45px;
   transition: 0.2s;
-  background: #c0baf6;
   box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
 }
 
 .react-switch-checkbox:checked + .react-switch-label .react-switch-button {
   left: calc(100% - 4px);
   transform: translateX(-100%);
-  background: #fff;
 }
 
 .react-switch-label:active .react-switch-button {

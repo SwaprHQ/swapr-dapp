@@ -83,7 +83,7 @@ export default function DurationAndLocking({
 
       <SmoothGradientCard
         textAlign={'start'}
-        alignItems={'start'}
+        alignItems={'start !important'}
         padding={'41px'}
         width={'299px'}
         height={'150px'}
@@ -108,7 +108,7 @@ export default function DurationAndLocking({
         <Flex alignItems={'start'}>
           <StyledLockText active={!timelocked}>UNLOCKED</StyledLockText>
 
-          <Switch handleToggle={() => onTimelockedChange()} isOn={timelocked} />
+          <Switch isRed={true} handleToggle={() => onTimelockedChange()} isOn={timelocked} />
           <StyledLockText active={timelocked} marginLeft="8px">
             TIME LOCKED
           </StyledLockText>

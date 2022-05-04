@@ -150,6 +150,7 @@ export default function AssetSelector({
   return (
     <Flex flexDirection={'column'}>
       <SmoothGradientCard
+        isToken={true}
         active={currency0 !== undefined}
         paddingBottom={'34px !important'}
         width={'162px'}

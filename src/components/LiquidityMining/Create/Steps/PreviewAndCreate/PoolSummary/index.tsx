@@ -34,9 +34,9 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
           />
           <DataRow
             name="STARTS"
-            value={startTime ? DateTime.fromJSDate(startTime).toFormat('dd-MM-yyyy HH:mm') : '-'}
+            value={startTime ? DateTime.fromJSDate(startTime).toFormat('yyyy-MM-dd HH:mm') : '-'}
           />
-          <DataRow name="ENDS" value={endTime ? DateTime.fromJSDate(endTime).toFormat('dd-MM-yyyy HH:mm') : '-'} />
+          <DataRow name="ENDS" value={endTime ? DateTime.fromJSDate(endTime).toFormat('yyyy-MM-dd HH:mm') : '-'} />
           <DataRow name="TIMELOCK" value={timelocked ? 'YES' : 'NO'} />
         </AutoColumn>
       </AutoColumn>
