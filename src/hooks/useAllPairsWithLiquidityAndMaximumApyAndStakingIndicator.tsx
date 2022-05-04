@@ -23,7 +23,7 @@ const liquidityPairSorter: {
   [LIQUIDITY_SORTING_TYPES.NEW]: (pairA: { startsAt?: BigintIsh }, pairB: { startsAt?: BigintIsh }): number => {
     if (JSBI.EQ(pairA.startsAt, pairB.startsAt)) return 0
     return JSBI.LT(pairA.startsAt, pairB.startsAt) ? 1 : -1
-  }
+  },
 }
 
 export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
@@ -43,7 +43,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
 } {
   const {
     loading: loadingAllWrappedPairs,
-    wrappedPairs: allWrappedPairs
+    wrappedPairs: allWrappedPairs,
   } = useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
 
   return useMemo(() => {
@@ -63,7 +63,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
         liquidityUSD: wrappedPair.reserveUSD,
         maximumApy: bestCampaign ? bestCampaign.apy : new Percent('0', '100'),
         containsKpiToken: !!bestCampaign?.rewards.some(reward => reward.token instanceof KpiToken),
-        startsAt: bestCampaign?.startsAt || ZERO
+        startsAt: bestCampaign?.startsAt || ZERO,
       })
     }
     let filteredData = aggregation
@@ -76,7 +76,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     }
     return {
       loading: false,
-      aggregatedData: filteredData.sort(sorter)
+      aggregatedData: filteredData.sort(sorter),
     }
   }, [allWrappedPairs, filter, loadingAllWrappedPairs, sortBy])
 }

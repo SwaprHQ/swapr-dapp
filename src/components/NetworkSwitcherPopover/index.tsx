@@ -21,7 +21,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
   const unsupportedChainIdError = useUnsupportedChainIdError()
 
   const { selectNetwork } = useNetworkSwitch({
-    onSelectNetworkCallback: closeModals
+    onSelectNetworkCallback: closeModals,
   })
 
   const isNetworkDisabled = (chainId: ChainId) => {
@@ -36,7 +36,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     isNetworkDisabled,
     selectedNetworkChainId: activeChainId ? activeChainId : -1,
     activeChainId: !!account ? activeChainId : -1,
-    ignoreTags: ['coming soon']
+    ignoreTags: ['coming soon'],
   })
 
   return (

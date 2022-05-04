@@ -127,7 +127,7 @@ export default function SearchInputWithIcon({
   width,
   height,
   fontSize,
-  className
+  className,
 }: {
   fontWeight?: number
   width?: string

@@ -1,18 +1,17 @@
 import { ChainId } from '@swapr/sdk'
 import { createStore, Store } from 'redux'
 import { ApplicationModal, setOpenModal, updateBlockNumber } from './actions'
-import reducer, { ApplicationState } from './reducer'
+import reducer, { ApplicationState, initialState } from './reducer'
 
 describe('application reducer', () => {
   let store: Store<ApplicationState>
 
   beforeEach(() => {
     store = createStore(reducer, {
-      popupList: [],
+      ...initialState,
       blockNumber: {
-        [ChainId.MAINNET]: 3
+        [ChainId.MAINNET]: 3,
       },
-      openModal: null
     })
   })
 
@@ -42,7 +41,7 @@ describe('application reducer', () => {
       store.dispatch(updateBlockNumber({ chainId: ChainId.RINKEBY, blockNumber: 2 }))
       expect(store.getState().blockNumber).toEqual({
         [ChainId.MAINNET]: 3,
-        [ChainId.RINKEBY]: 2
+        [ChainId.RINKEBY]: 2,
       })
     })
   })

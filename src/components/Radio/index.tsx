@@ -64,15 +64,7 @@ interface RadioProps {
 export default function Radio({ checked, label, icon, value, disabled, onChange, name, className }: RadioProps) {
   return (
     <Container disabled={disabled} className={className}>
-      <input
-        type="radio"
-        value={value}
-        checked={checked}
-        onChange={onChange}
-        hidden
-        disabled={disabled}
-        name={name}
-      />
+      <input type="radio" value={value} checked={checked} onChange={onChange} hidden disabled={disabled} name={name} />
       {icon && <Icon>{icon}</Icon>}
       <Label>{label}</Label>
       <OuterCheckmark>

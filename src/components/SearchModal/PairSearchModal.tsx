@@ -16,7 +16,7 @@ export default function PairSearchModal({
   onDismiss,
   onPairSelect,
   selectedPair,
-  filterPairs
+  filterPairs,
 }: PairSearchModalProps) {
   const handlePairSelect = useCallback(
     (pair: Pair) => {

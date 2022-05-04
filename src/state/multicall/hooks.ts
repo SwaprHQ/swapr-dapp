@@ -40,7 +40,7 @@ const INVALID_RESULT: CallResult = { valid: false, blockNumber: undefined, data:
 
 // use this options object
 export const NEVER_RELOAD: ListenerOptions = {
-  blocksPerFetch: Infinity
+  blocksPerFetch: Infinity,
 }
 
 // the lowest level call for subscribing to contract data
@@ -72,7 +72,7 @@ function useCallsData(
       addMulticallListeners({
         chainId,
         calls,
-        options: { blocksPerFetch }
+        options: { blocksPerFetch },
       })
     )
 
@@ -81,7 +81,7 @@ function useCallsData(
         removeMulticallListeners({
           chainId,
           calls,
-          options: { blocksPerFetch }
+          options: { blocksPerFetch },
         })
       )
     }
@@ -143,7 +143,7 @@ function toCallState(
         loading: false,
         error: true,
         syncing,
-        result
+        result,
       }
     }
   }
@@ -152,7 +152,7 @@ function toCallState(
     loading: false,
     syncing,
     result: result,
-    error: !success
+    error: !success,
   }
 }
 
@@ -174,7 +174,7 @@ export function useSingleContractMultipleData(
             return {
               address: contract.address,
               callData: contract.interface.encodeFunctionData(fragment, inputs),
-              ...(gasRequired ? { gasRequired } : {})
+              ...(gasRequired ? { gasRequired } : {}),
             }
           })
         : [],
@@ -218,7 +218,7 @@ export function useMultipleContractSingleData(
               ? {
                   address,
                   callData,
-                  ...(gasRequired ? { gasRequired } : {})
+                  ...(gasRequired ? { gasRequired } : {}),
                 }
               : undefined
           })
@@ -252,8 +252,8 @@ export function useSingleCallResult(
           {
             address: contract.address,
             callData: contract.interface.encodeFunctionData(fragment, inputs),
-            ...(gasRequired ? { gasRequired } : {})
-          }
+            ...(gasRequired ? { gasRequired } : {}),
+          },
         ]
       : []
   }, [contract, fragment, inputs, gasRequired])

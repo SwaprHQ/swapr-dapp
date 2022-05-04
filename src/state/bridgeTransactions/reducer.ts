@@ -6,7 +6,7 @@ import {
   updateBridgeTxnReceipt,
   updateBridgeTxnPartnerHash,
   updateBridgeTxnWithdrawalInfo,
-  updateBridgeTxnResolvedTimestamp
+  updateBridgeTxnResolvedTimestamp,
 } from './actions'
 
 import { BridgeTxnsState } from './types'
@@ -29,7 +29,7 @@ export default createReducer<BridgeTxnsState>(initialState, builder =>
 
       transactions[txHash] = {
         ...txn,
-        timestampCreated: now()
+        timestampCreated: now(),
       }
 
       state[chainId] = transactions

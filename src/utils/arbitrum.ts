@@ -17,7 +17,7 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
       l2ChainId: undefined,
       chainId,
       partnerChainId: undefined,
-      isArbitrum: undefined
+      isArbitrum: undefined,
     }
   }
 
@@ -31,7 +31,7 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
       l2ChainId: Number(l2) as ChainId,
       chainId,
       partnerChainId,
-      isArbitrum
+      isArbitrum,
     }
   }
 
@@ -40,14 +40,14 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
     l2ChainId: undefined,
     chainId,
     partnerChainId: undefined,
-    isArbitrum: false
+    isArbitrum: false,
   }
 }
 
 export const PendingReasons = {
   TX_UNCONFIRMED: 'Transaction has not been confirmed yet',
   DESPOSIT: 'Waiting for deposit to be processed on L2 (~10 minutes)',
-  WITHDRAWAL: 'Waiting for confirmation (~7 days of dispute period)'
+  WITHDRAWAL: 'Waiting for confirmation (~7 days of dispute period)',
 }
 
 export const getBridgeTxStatus = (txStatus: number | undefined): 'failed' | 'confirmed' | 'pending' => {

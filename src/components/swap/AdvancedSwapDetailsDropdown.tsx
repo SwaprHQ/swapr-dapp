@@ -79,7 +79,7 @@ interface AdvancedSwapDetailsDropdownProps {
 export default function AdvancedSwapDetailsDropdown({
   trade,
   allPlatformTrades,
-  onSelectedPlatformChange
+  onSelectedPlatformChange,
 }: AdvancedSwapDetailsDropdownProps) {
   const { chainId } = useActiveWeb3React()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()

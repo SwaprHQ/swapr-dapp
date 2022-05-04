@@ -72,7 +72,7 @@ export default function RewardAmount({
   stakablePair,
   onRewardAmountChange,
   onUnlimitedPoolChange,
-  onStakingCapChange
+  onStakingCapChange,
 }: RewardAmountProps) {
   const previousReward = usePrevious(reward)
   const [amount, setAmount] = useState('')

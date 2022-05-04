@@ -4,7 +4,7 @@ import { getNetworkInfo } from '../../utils/networksList'
 export enum BridgeStep {
   Initial,
   Collect,
-  Success
+  Success,
 }
 
 export const isNetworkDisabled = (optionChainId: ChainId, selectedNetworkChainId: ChainId) => {
