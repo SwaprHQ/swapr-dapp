@@ -53,7 +53,7 @@ export default function Option({
   onClick,
   active = false,
   disabled = false,
-  connected = false
+  connected = false,
 }: NetworkOptions) {
   const { logoSrc, name } = preset
   return (

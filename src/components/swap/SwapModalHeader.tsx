@@ -18,7 +18,7 @@ export default function SwapModalHeader({
   // allowedSlippage,
   recipient,
   showAcceptChanges,
-  onAcceptChanges
+  onAcceptChanges,
 }: {
   trade: Trade
   allowedSlippage: number

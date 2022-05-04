@@ -8,14 +8,14 @@ import {
   bridgeOwnedTxsSelector,
   bridgeL1DepositsSelector,
   bridgePendingTxsSelector,
-  bridgePendingWithdrawalsSelector
+  bridgePendingWithdrawalsSelector,
 } from '../state/bridgeTransactions/selectors'
 import { chainIdSelector } from '../state/application/selectors'
 import {
   addBridgeTxn,
   updateBridgeTxnReceipt,
   updateBridgeTxnPartnerHash,
-  updateBridgeTxnWithdrawalInfo
+  updateBridgeTxnWithdrawalInfo,
 } from '../state/bridgeTransactions/actions'
 import { setBridgeLoadingWithdrawals, setBridgeModalData, setBridgeModalStatus } from '../state/bridge/actions'
 
@@ -64,7 +64,7 @@ export class BridgeService {
           updateBridgeTxnReceipt({
             chainId: pendingTransactions[index].chainId,
             txHash: txReceipt.transactionHash,
-            receipt: txReceipt
+            receipt: txReceipt,
           })
         )
       }
@@ -94,7 +94,7 @@ export class BridgeService {
 
     return {
       retryableTicketHash,
-      seqNum
+      seqNum,
     }
   }
 
@@ -125,7 +125,7 @@ export class BridgeService {
             type: 'deposit-l2',
             txHash: retryableTicketHash,
             seqNum: seqNum.toNumber(),
-            blockNumber: undefined
+            blockNumber: undefined,
           })
         )
 
@@ -134,7 +134,7 @@ export class BridgeService {
             chainId: this.l2ChainId,
             txHash: retryableTicketHash,
             partnerTxHash: txn.txHash,
-            partnerChainId: this.l1ChainId
+            partnerChainId: this.l1ChainId,
           })
         )
       }
@@ -148,7 +148,7 @@ export class BridgeService {
       batchNumber: tx.batchNumber,
       batchIndex: tx.batchIndex,
       outgoingMessageState: undefined,
-      txHash: tx.txHash
+      txHash: tx.txHash,
     }
 
     if (!this.bridge || !this.l2ChainId || !tx.receipt) {
@@ -195,7 +195,7 @@ export class BridgeService {
             outgoingMessageState,
             txHash,
             batchIndex: batchIndex,
-            batchNumber: batchNumber
+            batchNumber: batchNumber,
           })
         )
       }
@@ -249,7 +249,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l1ChainId,
-        sender: this.account
+        sender: this.account,
       })
     )
 
@@ -259,7 +259,7 @@ export class BridgeService {
       updateBridgeTxnReceipt({
         chainId: this.l1ChainId,
         txHash: txn.hash,
-        receipt: l1Receipt
+        receipt: l1Receipt,
       })
     )
   }
@@ -278,7 +278,7 @@ export class BridgeService {
 
     const txn = await this.bridge.deposit({
       erc20L1Address,
-      amount: parsedValue
+      amount: parsedValue,
     })
 
     this.store.dispatch(setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
@@ -291,7 +291,7 @@ export class BridgeService {
         value: typedValue,
         txHash: txn.hash,
         chainId: this.l1ChainId,
-        sender: this.account
+        sender: this.account,
       })
     )
 
@@ -306,7 +306,7 @@ export class BridgeService {
         chainId: this.l1ChainId,
         txHash: txn.hash,
         receipt: l1Receipt,
-        seqNum
+        seqNum,
       })
     )
   }
@@ -320,7 +320,7 @@ export class BridgeService {
         symbol: 'ETH',
         typedValue: value,
         fromChainId: this.l2ChainId,
-        toChainId: this.l1ChainId
+        toChainId: this.l1ChainId,
       })
     )
 
@@ -336,7 +336,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l2ChainId,
-        sender: this.account
+        sender: this.account,
       })
     )
 
@@ -346,7 +346,7 @@ export class BridgeService {
       updateBridgeTxnReceipt({
         chainId: this.l2ChainId,
         txHash: txn.hash,
-        receipt: withdrawReceipt
+        receipt: withdrawReceipt,
       })
     )
   }
@@ -370,7 +370,7 @@ export class BridgeService {
         symbol: tokenData.symbol,
         typedValue: value,
         fromChainId: this.l2ChainId,
-        toChainId: this.l1ChainId
+        toChainId: this.l1ChainId,
       })
     )
 
@@ -388,7 +388,7 @@ export class BridgeService {
         value,
         txHash: txn.hash,
         chainId: this.l2ChainId,
-        sender: this.account
+        sender: this.account,
       })
     )
 
@@ -398,7 +398,7 @@ export class BridgeService {
       updateBridgeTxnReceipt({
         chainId: this.l2ChainId,
         txHash: txn.hash,
-        receipt: withdrawReceipt
+        receipt: withdrawReceipt,
       })
     )
   }
@@ -425,7 +425,7 @@ export class BridgeService {
           value,
           txHash: l1Tx.hash,
           chainId: this.l1ChainId,
-          sender: this.account
+          sender: this.account,
         })
       )
 
@@ -434,7 +434,7 @@ export class BridgeService {
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
           partnerTxHash: l2Tx.txHash,
-          partnerChainId: this.l2ChainId
+          partnerChainId: this.l2ChainId,
         })
       )
 
@@ -446,7 +446,7 @@ export class BridgeService {
         updateBridgeTxnReceipt({
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
-          receipt: l1Receipt
+          receipt: l1Receipt,
         })
       )
 
@@ -454,7 +454,7 @@ export class BridgeService {
         updateBridgeTxnWithdrawalInfo({
           chainId: this.l1ChainId,
           txHash: l1Tx.hash,
-          outgoingMessageState: OutgoingMessageState.EXECUTED
+          outgoingMessageState: OutgoingMessageState.EXECUTED,
         })
       )
     } catch (err) {
@@ -482,9 +482,9 @@ export class BridgeService {
         chainId: this.l1ChainId,
         approval: {
           spender: gatewayAddress,
-          tokenAddress: erc20L1Address
+          tokenAddress: erc20L1Address,
         },
-        summary: `Approve ${tokenSymbol.toUpperCase()}`
+        summary: `Approve ${tokenSymbol.toUpperCase()}`,
       })
     )
   }

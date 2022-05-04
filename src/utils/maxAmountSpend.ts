@@ -5,9 +5,13 @@ import { MIN_ETH } from '../constants'
  * Given some token amount, return the max that can be spent of it
  * @param currencyAmount to return max of
  */
-export function maxAmountSpend(currencyAmount?: CurrencyAmount, chainId?: number): CurrencyAmount | undefined {
+export function maxAmountSpend(
+  currencyAmount?: CurrencyAmount,
+  chainId?: number,
+  minimumETHLeft = true
+): CurrencyAmount | undefined {
   if (!currencyAmount || !chainId) return undefined
-  if (currencyAmount.currency === ETHER) {
+  if (currencyAmount.currency === ETHER && minimumETHLeft) {
     if (JSBI.greaterThan(currencyAmount.raw, MIN_ETH)) {
       return CurrencyAmount.nativeCurrency(JSBI.subtract(currencyAmount.raw, MIN_ETH), chainId)
     } else {

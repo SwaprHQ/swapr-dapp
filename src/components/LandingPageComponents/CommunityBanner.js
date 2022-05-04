@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, {keyframes} from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { gradients, breakpoints } from './../../utils/theme'
 import { CommunityBannerContent } from './../../utils/ui-constants'
 import Layout from './layout/Layout'
@@ -11,45 +11,30 @@ import BannerGraphic2 from './../../assets/images/owned-by-2.png'
 import BannerGraphic3 from './../../assets/images/owned-by-3.png'
 
 const CommunityBanner = () => {
-    return (
-        <StyledCommunityBanner data-aos={'fade-up'} width={'main-width'} id={'community-banner'}>
-            <div className="banner-inner-content">
-                <img 
-                    className="dxdao-logo" 
-                    src={dxDaoLogo} 
-                    title={'dxDao'} 
-                    alt={'dxDao Logo'} 
-                />
-                <span className="pre-header">
-                    {CommunityBannerContent.preHeader}
-                </span>
-                <h2>
-                    {CommunityBannerContent.content}
-                </h2>
-                <div className="banner-footer-buttons">
-                    {CommunityBannerContent.buttons.map((button, key) => (
-                        <Button 
-                            key={key} 
-                            label={button.label} 
-                            type={button.type} 
-                            to={button.href}
-                            external
-                        />
-                    ))}
-                </div>
-            </div>
-            <div className="banner-graphic-1"></div>
-            <div className="banner-graphic-2"></div>
-            <div className="banner-graphic-3"></div>
-        </StyledCommunityBanner>
-    )
+  return (
+    <StyledCommunityBanner data-aos={'fade-up'} width={'main-width'} id={'community-banner'}>
+      <div className="banner-inner-content">
+        <img className="dxdao-logo" src={dxDaoLogo} title={'dxDao'} alt={'dxDao Logo'} />
+        <span className="pre-header">{CommunityBannerContent.preHeader}</span>
+        <h2>{CommunityBannerContent.content}</h2>
+        <div className="banner-footer-buttons">
+          {CommunityBannerContent.buttons.map((button, key) => (
+            <Button key={key} label={button.label} type={button.type} to={button.href} external />
+          ))}
+        </div>
+      </div>
+      <div className="banner-graphic-1"></div>
+      <div className="banner-graphic-2"></div>
+      <div className="banner-graphic-3"></div>
+    </StyledCommunityBanner>
+  )
 }
 
 const rotate = keyframes`
     0% {transform: rotate(0deg) scale(1)};
     50% {transform: rotate(180deg) scale(0.9)};
     100% {transform: rotate(360deg) scale(1)};
-`;
+`
 
 const StyledCommunityBanner = styled(Layout)`
     &#community-banner {
@@ -172,6 +157,6 @@ const StyledCommunityBanner = styled(Layout)`
             }
         }
     }
-`;
+`
 
-export default CommunityBanner;
+export default CommunityBanner

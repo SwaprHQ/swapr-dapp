@@ -47,7 +47,7 @@ export function useGasFeesUSD(
             USD.decimals
           ).toString()
         )
-      })
+      }),
     }
   }, [
     gasEstimations,
@@ -55,6 +55,6 @@ export function useGasFeesUSD(
     mainnetGasPrices,
     nativeCurrencyUSDPrice,
     preferredGasPrice,
-    chainId
+    chainId,
   ])
 }

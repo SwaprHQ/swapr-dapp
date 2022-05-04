@@ -76,7 +76,7 @@ export default function Governance() {
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
         {router.query.asset === undefined && (
-          <ButtonWithLink link={'https://swapr.eth.link'} text={'GOVERNANCE STATISTICS'} />
+          <ButtonWithLink link={'https://swapr.eth.limo'} text={'GOVERNANCE STATISTICS'} />
         )}
         <LightCard>
           <AutoColumn gap="md">

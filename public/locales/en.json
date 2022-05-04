@@ -115,7 +115,7 @@
   "enterCurrencyAmount": "Enter {{ currency }} amount",
   "exchange": "Exchange",
   "fee": "Fee",
-  "priceImpact": "Price impact",
+  "pImpact": "P. impact",
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
   "maxSent": "Max Sent",
@@ -132,5 +132,11 @@
   "accountAnalytics": "Account Analytics",
   "yourLiquidity": "Your liquidity",
   "pooledToken": "Pooled {{ token }}",
-  "poolShare": "Pool share"
+  "poolShare": "Pool share",
+  "showMore": "Show more",
+  "pair": "Pair",
+  "capmings": "Campings",
+  "24hVolume": "24h Volume",
+  "farming": "Farming",
+  "carrot": "Carrot"
 }

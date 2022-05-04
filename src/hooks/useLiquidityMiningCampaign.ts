@@ -44,7 +44,7 @@ export function useLiquidityMiningCampaign(
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
   const { chainId } = useActiveWeb3React()
   const { loading, error, data } = useQuery<QueryResult>(QUERY, {
-    variables: { id: id?.toLowerCase() || '' }
+    variables: { id: id?.toLowerCase() || '' },
   })
   const nativeCurrency = useNativeCurrency()
   const rewardAddresses = useMemo(() => {
@@ -70,7 +70,7 @@ export function useLiquidityMiningCampaign(
         data.liquidityMiningCampaign,
         nativeCurrency
       ),
-      containsKpiToken: kpiTokens.length > 0
+      containsKpiToken: kpiTokens.length > 0,
     }
   }, [
     chainId,
@@ -82,6 +82,6 @@ export function useLiquidityMiningCampaign(
     lpTokenTotalSupply,
     nativeCurrency,
     targetedPair,
-    targetedPairReserveNativeCurrency
+    targetedPairReserveNativeCurrency,
   ])
 }

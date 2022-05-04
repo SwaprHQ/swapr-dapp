@@ -74,7 +74,7 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingList isMobile={true} itemsAmount={responsiveItemsPerPage} />
+            <LoadingList itemsAmount={responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (
             <ListLayout>
               {itemsPage.map(item => {

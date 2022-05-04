@@ -31,7 +31,7 @@ import { setFromBridgeNetwork, setToBridgeNetwork } from '../../state/bridge/act
 
 const Wrapper = styled.div`
   width: 100%;
-  max-width: 432px;
+  max-width: 457px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -86,7 +86,7 @@ export default function Bridge() {
     onUserInput,
     onToNetworkChange,
     onFromNetworkChange,
-    onSwapBridgeNetworks
+    onSwapBridgeNetworks,
   } = useBridgeActionHandlers()
 
   const toPanelRef = useRef(null)
@@ -138,7 +138,7 @@ export default function Bridge() {
       symbol: '',
       typedValue: '',
       fromChainId: chainId || 1,
-      toChainId: partnerChainId || 42161
+      toChainId: partnerChainId || 42161,
     })
   }, [chainId, onCurrencySelection, onUserInput, partnerChainId, setModalData, setModalStatus, setTxsFilter])
 
@@ -165,7 +165,7 @@ export default function Bridge() {
       symbol: bridgeCurrency?.symbol,
       typedValue: typedValue,
       fromChainId: fromNetwork.chainId,
-      toChainId: toNetwork.chainId
+      toChainId: toNetwork.chainId,
     })
     setModalStatus(BridgeModalStatus.DISCLAIMER)
   }, [bridgeCurrency, typedValue, fromNetwork.chainId, toNetwork.chainId, setModalData, setModalStatus])
@@ -181,7 +181,7 @@ export default function Bridge() {
         symbol: tx.assetName,
         typedValue: tx.value,
         fromChainId: tx.fromChainId,
-        toChainId: tx.toChainId
+        toChainId: tx.toChainId,
       })
     },
     [isArbitrum, onCurrencySelection, setModalData]
@@ -200,7 +200,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: fromNetwork.chainId,
-        activeChainId: !!account ? chainId : -1
+        activeChainId: !!account ? chainId : -1,
       }),
     [account, chainId, fromNetwork.chainId, onFromNetworkChange]
   )
@@ -212,7 +212,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: toNetwork.chainId,
-        activeChainId: !!account ? chainId : -1
+        activeChainId: !!account ? chainId : -1,
       }),
     [account, chainId, onToNetworkChange, toNetwork.chainId]
   )

@@ -58,10 +58,22 @@ export interface ToggleProps {
 export default function Toggle({ id, isActive, disabled, toggle }: ToggleProps) {
   return (
     <StyledToggle disabled={disabled} id={id} isActive={isActive} onClick={toggle}>
-      <ToggleElement disabled={disabled} isActive={isActive} isOnSwitch={true} highlightColor="green2" data-testid="toggle-on">
+      <ToggleElement
+        disabled={disabled}
+        isActive={isActive}
+        isOnSwitch={true}
+        highlightColor="green2"
+        data-testid="toggle-on"
+      >
         On
       </ToggleElement>
-      <ToggleElement disabled={disabled} isActive={!isActive} isOnSwitch={false} highlightColor="red1" data-testid="toggle-off">
+      <ToggleElement
+        disabled={disabled}
+        isActive={!isActive}
+        isOnSwitch={false}
+        highlightColor="red1"
+        data-testid="toggle-off"
+      >
         Off
       </ToggleElement>
     </StyledToggle>

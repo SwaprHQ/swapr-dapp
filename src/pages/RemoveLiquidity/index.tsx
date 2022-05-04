@@ -40,7 +40,7 @@ import { Dots } from '../../components/swap/styleds'
 import { useBurnActionHandlers } from '../../state/burn/hooks'
 import { useDerivedBurnInfo, useBurnState } from '../../state/burn/hooks'
 import { Field } from '../../state/burn/actions'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 import { calculateProtocolFee } from '../../utils/prices'
@@ -55,8 +55,8 @@ const StyledInternalLinkText = styled(TYPE.body)`
 export default function RemoveLiquidity({
   history,
   match: {
-    params: { currencyIdA, currencyIdB }
-  }
+    params: { currencyIdA, currencyIdB },
+  },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
@@ -65,13 +65,13 @@ export default function RemoveLiquidity({
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,
     currencyB,
-    chainId
+    chainId,
   ])
 
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useWalletModalToggle()
+  const toggleWalletModal = useWalletSwitcherPopoverToggle()
 
   // burn state
   const { independentField, typedValue } = useBurnState()
@@ -102,7 +102,7 @@ export default function RemoveLiquidity({
     [Field.CURRENCY_A]:
       independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
     [Field.CURRENCY_B]:
-      independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+      independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
   }
 
   const { protocolFee } = calculateProtocolFee(
@@ -139,36 +139,36 @@ export default function RemoveLiquidity({
       { name: 'name', type: 'string' },
       { name: 'version', type: 'string' },
       { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' }
+      { name: 'verifyingContract', type: 'address' },
     ]
     const domain = {
       name: 'DXswap',
       version: '1',
       chainId: chainId,
-      verifyingContract: pair.liquidityToken.address
+      verifyingContract: pair.liquidityToken.address,
     }
     const Permit = [
       { name: 'owner', type: 'address' },
       { name: 'spender', type: 'address' },
       { name: 'value', type: 'uint256' },
       { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' }
+      { name: 'deadline', type: 'uint256' },
     ]
     const message = {
       owner: account,
       spender: routerAddress,
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
-      deadline: deadline.toNumber()
+      deadline: deadline.toNumber(),
     }
     const data = JSON.stringify({
       types: {
         EIP712Domain,
-        Permit
+        Permit,
       },
       domain,
       primaryType: 'Permit',
-      message
+      message,
     })
 
     library
@@ -179,7 +179,7 @@ export default function RemoveLiquidity({
           v: signature.v,
           r: signature.r,
           s: signature.s,
-          deadline: deadline.toNumber()
+          deadline: deadline.toNumber(),
         })
       })
       .catch(error => {
@@ -200,13 +200,13 @@ export default function RemoveLiquidity({
   )
 
   const onLiquidityInput = useCallback((typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue), [
-    onUserInput
+    onUserInput,
   ])
   const onCurrencyAInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue), [
-    onUserInput
+    onUserInput,
   ])
   const onCurrencyBInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue), [
-    onUserInput
+    onUserInput,
   ])
 
   // tx sending
@@ -221,7 +221,7 @@ export default function RemoveLiquidity({
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(currencyAmountB, allowedSlippage)[0]
+      [Field.CURRENCY_B]: calculateSlippageAmount(currencyAmountB, allowedSlippage)[0],
     }
 
     if (!currencyA || !currencyB) throw new Error('missing tokens')
@@ -245,7 +245,7 @@ export default function RemoveLiquidity({
           amountsMin[currencyBIsNative ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
           amountsMin[currencyBIsNative ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
           account,
-          deadline.toHexString()
+          deadline.toHexString(),
         ]
       }
       // removeLiquidity
@@ -258,7 +258,7 @@ export default function RemoveLiquidity({
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
           account,
-          deadline.toHexString()
+          deadline.toHexString(),
         ]
       }
     }
@@ -277,7 +277,7 @@ export default function RemoveLiquidity({
           false,
           signatureData.v,
           signatureData.r,
-          signatureData.s
+          signatureData.s,
         ]
       }
       // removeLiquidityETHWithPermit
@@ -294,7 +294,7 @@ export default function RemoveLiquidity({
           false,
           signatureData.v,
           signatureData.r,
-          signatureData.s
+          signatureData.s,
         ]
       }
     } else {
@@ -325,7 +325,7 @@ export default function RemoveLiquidity({
 
       setAttemptingTxn(true)
       await router[methodName](...args, {
-        gasLimit: safeGasEstimate
+        gasLimit: safeGasEstimate,
       })
         .then((response: TransactionResponse) => {
           setAttemptingTxn(false)
@@ -339,7 +339,7 @@ export default function RemoveLiquidity({
               ' and ' +
               parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
               ' ' +
-              currencyB?.symbol
+              currencyB?.symbol,
           })
 
           setTxHash(response.hash)

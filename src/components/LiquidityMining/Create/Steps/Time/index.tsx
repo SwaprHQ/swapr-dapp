@@ -39,7 +39,7 @@ export default function Time({
   timelocked,
   onStartTimeChange,
   onEndTimeChange,
-  onTimelockedChange
+  onTimelockedChange,
 }: TimeProps) {
   return (
     <Card>

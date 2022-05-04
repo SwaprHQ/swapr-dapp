@@ -10,7 +10,7 @@ import {
   setBridgeModalStatus,
   setBridgeTxsFilter,
   setBridgeLoadingWithdrawals,
-  setBridgeModalData
+  setBridgeModalData,
 } from './actions'
 
 export interface BridgeNetworkInput {
@@ -31,13 +31,13 @@ export enum BridgeModalStatus {
   INITIATED = 'INITIATED',
   ERROR = 'ERROR',
   COLLECTING = 'COLLECTING',
-  DISCLAIMER = 'DISCLAIMER'
+  DISCLAIMER = 'DISCLAIMER',
 }
 
 export enum BridgeTxsFilter {
   NONE = 'NONE',
   COLLECTABLE = 'COLLECTABLE',
-  RECENT = 'RECENT'
+  RECENT = 'RECENT',
 }
 export interface BridgeState {
   readonly typedValue: string
@@ -54,10 +54,10 @@ const initialState: BridgeState = {
   typedValue: '',
   currencyId: '',
   fromNetwork: {
-    chainId: 1
+    chainId: 1,
   },
   toNetwork: {
-    chainId: 42161
+    chainId: 42161,
   },
   txsFilter: BridgeTxsFilter.RECENT,
   modalError: undefined,
@@ -67,12 +67,12 @@ const initialState: BridgeState = {
     symbol: '',
     typedValue: '',
     fromNetwork: {
-      chainId: 1
+      chainId: 1,
     },
     toNetwork: {
-      chainId: 42161
-    }
-  }
+      chainId: 42161,
+    },
+  },
 }
 
 export default createReducer<BridgeState>(initialState, builder =>
@@ -80,13 +80,13 @@ export default createReducer<BridgeState>(initialState, builder =>
     .addCase(selectCurrency, (state, { payload: { currencyId } }) => {
       return {
         ...state,
-        currencyId: currencyId
+        currencyId: currencyId,
       }
     })
     .addCase(typeInput, (state, { payload: { typedValue } }) => {
       return {
         ...state,
-        typedValue
+        typedValue,
       }
     })
     .addCase(setFromBridgeNetwork, (state, { payload: { chainId } }) => {
@@ -94,8 +94,8 @@ export default createReducer<BridgeState>(initialState, builder =>
         ...state,
         fromNetwork: {
           ...state.fromNetwork,
-          chainId: chainId ? chainId : state.fromNetwork.chainId
-        }
+          chainId: chainId ? chainId : state.fromNetwork.chainId,
+        },
       }
     })
     .addCase(setToBridgeNetwork, (state, { payload: { chainId } }) => {
@@ -103,25 +103,25 @@ export default createReducer<BridgeState>(initialState, builder =>
         ...state,
         toNetwork: {
           ...state.fromNetwork,
-          chainId: chainId ? chainId : state.toNetwork.chainId
-        }
+          chainId: chainId ? chainId : state.toNetwork.chainId,
+        },
       }
     })
     .addCase(swapBridgeNetworks, state => {
       const {
         fromNetwork: { chainId: fromChainId },
-        toNetwork: { chainId: toChainId }
+        toNetwork: { chainId: toChainId },
       } = state
       return {
         ...state,
         fromNetwork: {
           ...state.fromNetwork,
-          chainId: toChainId
+          chainId: toChainId,
         },
         toNetwork: {
           ...state.toNetwork,
-          chainId: fromChainId
-        }
+          chainId: fromChainId,
+        },
       }
     })
     .addCase(setBridgeTxsFilter, (state, { payload }) => {
@@ -136,8 +136,8 @@ export default createReducer<BridgeState>(initialState, builder =>
         modal: {
           ...state.modal,
           status,
-          error
-        }
+          error,
+        },
       }
     })
     .addCase(setBridgeModalData, (state, { payload: { symbol, typedValue, fromChainId, toChainId } }) => {
@@ -146,11 +146,11 @@ export default createReducer<BridgeState>(initialState, builder =>
         typedValue,
         fromNetwork: {
           ...state.fromNetwork,
-          chainId: fromChainId
+          chainId: fromChainId,
         },
         toNetwork: {
           ...state.toNetwork,
-          chainId: toChainId
+          chainId: toChainId,
         },
         modal: {
           ...state.modal,
@@ -158,13 +158,13 @@ export default createReducer<BridgeState>(initialState, builder =>
           typedValue,
           fromNetwork: {
             ...state.fromNetwork,
-            chainId: fromChainId
+            chainId: fromChainId,
           },
           toNetwork: {
             ...state.toNetwork,
-            chainId: toChainId
-          }
-        }
+            chainId: toChainId,
+          },
+        },
       }
     })
 )

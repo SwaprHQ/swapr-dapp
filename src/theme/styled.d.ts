@@ -1,4 +1,4 @@
-import { DefaultTheme, FlattenSimpleInterpolation, ThemedCssFunction } from 'styled-components'
+import { FlattenSimpleInterpolation, ThemedCssFunction } from 'styled-components'
 
 export type Color = string
 export interface Colors {
@@ -59,6 +59,7 @@ export interface Colors {
   purple3: Color
   purple4: Color
   purple5: Color
+  purple6: Color
   boxShadow: Color
 
   // darkest // dark1.1

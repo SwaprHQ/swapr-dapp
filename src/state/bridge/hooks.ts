@@ -11,7 +11,7 @@ import {
   swapBridgeNetworks,
   setBridgeTxsFilter,
   setBridgeModalStatus,
-  setBridgeModalData
+  setBridgeModalData,
 } from './actions'
 import { bridgeModalDataSelector, bridgeTxsFilterSelector } from './selectors'
 import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from './reducer'
@@ -48,12 +48,12 @@ export function useBridgeActionHandlers(): {
       }
       dispatch(
         setFromBridgeNetwork({
-          chainId: chainId
+          chainId: chainId,
         })
       )
       dispatch(
         setToBridgeNetwork({
-          chainId: partnerChainId
+          chainId: partnerChainId,
         })
       )
     },
@@ -70,12 +70,12 @@ export function useBridgeActionHandlers(): {
       }
       dispatch(
         setToBridgeNetwork({
-          chainId: chainId
+          chainId: chainId,
         })
       )
       dispatch(
         setFromBridgeNetwork({
-          chainId: partnerChainId
+          chainId: partnerChainId,
         })
       )
     },
@@ -90,7 +90,7 @@ export function useBridgeActionHandlers(): {
     (currency: Currency | string) => {
       dispatch(
         selectCurrency({
-          currencyId: currency instanceof Currency ? currencyId(currency) : currency
+          currencyId: currency instanceof Currency ? currencyId(currency) : currency,
         })
       )
     },
@@ -109,7 +109,7 @@ export function useBridgeActionHandlers(): {
     onUserInput,
     onFromNetworkChange,
     onToNetworkChange,
-    onSwapBridgeNetworks
+    onSwapBridgeNetworks,
   }
 }
 
@@ -121,7 +121,7 @@ export const useBridgeInfo = () => {
   const parsedAmount = useMemo(() => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId), [
     bridgeCurrency,
     chainId,
-    typedValue
+    typedValue,
   ])
 
   const [currencyBalance] = useCurrencyBalances(account ?? undefined, [bridgeCurrency ?? undefined])
@@ -139,7 +139,7 @@ export const useBridgeInfo = () => {
     parsedAmount,
     typedValue,
     fromNetwork,
-    toNetwork
+    toNetwork,
   }
 }
 
@@ -158,7 +158,7 @@ export const useBridgeModal = (): [
     symbol,
     typedValue,
     fromChainId,
-    toChainId
+    toChainId,
   }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) => void
 ] => {
   const dispatch = useDispatch()
@@ -171,7 +171,7 @@ export const useBridgeModal = (): [
     symbol,
     typedValue,
     fromChainId,
-    toChainId
+    toChainId,
   }: Pick<BridgeModalState, 'symbol' | 'typedValue'> & { fromChainId: ChainId; toChainId: ChainId }) =>
     dispatch(setBridgeModalData({ symbol, typedValue, fromChainId, toChainId }))
 

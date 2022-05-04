@@ -221,16 +221,16 @@ const GasInfo = styled.div<{ hide: boolean }>`
 const GasColor = {
   fast: {
     color: '#10B981',
-    backgroundColor: 'rgba(16, 185, 129, 0.3)'
+    backgroundColor: 'rgba(16, 185, 129, 0.3)',
   },
   normal: {
     color: '#F2994A',
-    backgroundColor: 'rgba(242, 153, 74, 0.3);'
+    backgroundColor: 'rgba(242, 153, 74, 0.3);',
   },
   slow: {
     color: '#FF4F84',
-    backgroundColor: 'rgba(255, 79, 132, 0.3);'
-  }
+    backgroundColor: 'rgba(255, 79, 132, 0.3);',
+  },
 }
 const ColoredGas = styled.div<{ color: 'fast' | 'slow' | 'normal' }>`
   display: flex;
@@ -311,7 +311,7 @@ function Header() {
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   useEffect(() => {
-    window.addEventListener('scroll', e => {
+    window.addEventListener('scroll', () => {
       const headerControls = document.getElementById('header-controls')
       if (headerControls) {
         if (window.scrollY > 0) {
@@ -360,7 +360,7 @@ function Header() {
           <StyledExternalLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLink>
-          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗
@@ -431,7 +431,7 @@ function Header() {
           <StyledExternalLinkMobile id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </StyledExternalLinkMobile>
-          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗

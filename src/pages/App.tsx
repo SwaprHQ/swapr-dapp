@@ -79,7 +79,7 @@ export default function App() {
     document.body.classList.add('no-margin')
     setTimeout(function() {
       AOS.init({
-        duration: 500
+        duration: 500,
       })
     }, 1000)
   }, [])

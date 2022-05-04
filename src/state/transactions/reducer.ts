@@ -4,7 +4,7 @@ import {
   checkedTransaction,
   clearAllTransactions,
   finalizeTransaction,
-  SerializableTransactionReceipt
+  SerializableTransactionReceipt,
 } from './actions'
 
 const now = () => new Date().getTime()

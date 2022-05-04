@@ -18,7 +18,7 @@ describe('Menu bar smoke tests', () => {
   it('Charts and Votes should have href to dxstats and snapshot [TC-16]', () => {
     MenuBar.getCharts()
       .should('have.attr', 'href')
-      .and('include', 'dxstats.eth.link')
+      .and('include', 'dxstats.eth.limo')
     MenuBar.getVote()
       .should('have.attr', 'href')
       .and('include', 'snapshot.org/#/swpr.eth')

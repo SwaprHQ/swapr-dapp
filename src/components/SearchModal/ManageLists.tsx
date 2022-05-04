@@ -110,7 +110,7 @@ function ListRow({ listUrl }: { listUrl: string }) {
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'auto',
     strategy: 'fixed',
-    modifiers: [{ name: 'offset', options: { offset: [8, 8] } }]
+    modifiers: [{ name: 'offset', options: { offset: [8, 8] } }],
   })
 
   useOnClickOutside(node, open ? toggle : undefined)
@@ -191,7 +191,7 @@ const ListContainer = styled.div`
 export function ManageLists({
   setModalView,
   setImportList,
-  setListUrl
+  setListUrl,
 }: {
   setModalView: (view: CurrencyModalView) => void
   setImportList: (list: TokenList) => void

@@ -46,14 +46,14 @@ export default function Popover({
   className,
   offsetY = 8,
   offsetX = 0,
-  styled
+  styled,
 }: PopoverProps) {
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     strategy: 'fixed',
-    modifiers: [{ name: 'offset', options: { offset: [offsetX, offsetY] } }]
+    modifiers: [{ name: 'offset', options: { offset: [offsetX, offsetY] } }],
   })
   const updateCallback = useCallback(() => {
     update && update()

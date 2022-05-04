@@ -48,9 +48,9 @@ function PoolStats({ pair }: PairViewProps) {
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
-        <InfoSnippet title="tlv" value={`$${formatCurrencyAmount(liquidityUSD)}`} />
-        <InfoSnippet title="24h volume" value={`$${formatCurrencyAmount(volume24hUSD)}`} />
-        <InfoSnippet title="APY" value="0.1%" big />
+        <InfoSnippet title={t('TLV')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
+        <InfoSnippet title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
+        <InfoSnippet title={t('APY')} value="0.1%" big />
       </Flex>
     </DimBlurBgBox>
   )
