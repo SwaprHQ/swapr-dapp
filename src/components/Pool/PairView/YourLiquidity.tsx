@@ -1,5 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 
@@ -23,6 +24,7 @@ export default function YourLiquidity({ pair }: YourLiquidityProps) {
   const currency1 = unwrappedToken(pair?.token1)
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
   const totalPoolTokens = useTotalSupply(pair?.liquidityToken)
+  const { t } = useTranslation()
 
   const accountAnalyticsLink = account
     ? `https://dxstats.eth.link/#/account/${account}?chainId=${chainId}`
@@ -53,25 +55,25 @@ export default function YourLiquidity({ pair }: YourLiquidityProps) {
     <DimBlurBgBox padding={'24px'}>
       <Flex alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
         <Text fontSize="16px" mb="24px">
-          Your liquidity
+          {t('yourLiquidity')}
         </Text>
         <Box>
-          <ButtonExternalLink link={accountAnalyticsLink}>Account analytics</ButtonExternalLink>
+          <ButtonExternalLink link={accountAnalyticsLink}>{t('accountAnalytics')}</ButtonExternalLink>
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={4}>
-        <InfoSnippet title="Pool share" value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'} />
-        <InfoSnippet title="Pool tokens" value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
+        <InfoSnippet title={t('poolShare')} value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'} />
+        <InfoSnippet title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
         <InfoSnippet
-          title={`Pooled ${currency0?.symbol}`}
+          title={t('pooledToken', { token: currency0?.symbol })}
           value={token0Deposited ? token0Deposited.toSignificant(6) : '-'}
         />
         <InfoSnippet
-          title={`Pooled ${currency1?.symbol}`}
+          title={t('pooledToken', { token: currency1?.symbol })}
           value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
         />
         <InfoSnippet
-          title="Swap fee"
+          title={t('swapFee')}
           value={
             pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%' : '-'
           }
@@ -83,14 +85,14 @@ export default function YourLiquidity({ pair }: YourLiquidityProps) {
           as={Link}
           to={currency0 && currency1 ? `/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
         >
-          Add liquidity
+          {t('addLiquidity')}
         </ButtonPurpleDim>
         <ButtonPurpleDim
           style={{ marginLeft: '4px' }}
           as={Link}
           to={currency0 && currency1 ? `/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
         >
-          Remove liquidity
+          {t('removeLiquidity')}
         </ButtonPurpleDim>
       </Flex>
     </DimBlurBgBox>

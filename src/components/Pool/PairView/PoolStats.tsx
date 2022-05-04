@@ -1,7 +1,9 @@
+import React, { useEffect } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { Pair } from '@swapr/sdk'
 import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
+import { useTranslation } from 'react-i18next'
 
 import { usePair24hVolumeUSD } from '../../../hooks/usePairVolume24hUSD'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
@@ -22,7 +24,7 @@ function PoolStats({ pair }: PairViewProps) {
   const { volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
-
+  const { t } = useTranslation()
   const statsLink = pair?.liquidityToken.address
     ? `https://dxstats.eth.link/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
     : `https://dxstats.eth.link/#/pairs?chainId=${chainId}`
@@ -39,10 +41,10 @@ function PoolStats({ pair }: PairViewProps) {
     <DimBlurBgBox padding={'24px'}>
       <Flex alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
         <Text fontSize="16px" mb="24px">
-          Pool Stats
+          {t('poolStats')}
         </Text>
         <Box>
-          <ButtonExternalLink link={statsLink}>Stats</ButtonExternalLink>
+          <ButtonExternalLink link={statsLink}>{t('stats')}</ButtonExternalLink>
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">

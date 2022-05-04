@@ -124,5 +124,13 @@
   "New": "New",
   "sortBy": "Sort by: {{ option }}",
   "noPoolsFound": "No pools found",
-  "createAPool": "Create a pool"
+  "createAPool": "Create a pool",
+  "trade": "Trade",
+  "poolStats": "Pool stats",
+  "swapFee": "Swap fee",
+  "stats": "Stats",
+  "accountAnalytics": "Account Analytics",
+  "yourLiquidity": "Your liquidity",
+  "pooledToken": "Pooled {{ token }}",
+  "poolShare": "Pool share"
 }

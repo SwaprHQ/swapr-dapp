@@ -6,6 +6,7 @@ import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import { ChevronDown } from 'react-feather'
 import { JSBI, Percent } from '@swapr/sdk'
+import { useTranslation } from 'react-i18next'
 
 import { useToken } from '../../../hooks/Tokens'
 import { useRouter } from '../../../hooks/useRouter'
@@ -30,10 +31,10 @@ export default function Pair({
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const router = useRouter()
   const token0 = useToken(currencyIdA)
-
   const token1 = useToken(currencyIdB)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [openPairsModal, setOpenPairsModal] = useState(false)
+  const { t } = useTranslation()
 
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
@@ -85,7 +86,7 @@ export default function Pair({
             </Flex>
             <ButtonRow>
               <ButtonPurpleDim id="join-pool-button" as={Link} to="/create">
-                Trade
+                {t('trade')}
               </ButtonPurpleDim>
             </ButtonRow>
           </TitleRow>
@@ -96,7 +97,7 @@ export default function Pair({
                 <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
                   <Box mb={2}>
                     <InfoSnippet
-                      title="Swap fee"
+                      title={t('swapFee')}
                       value={
                         wrappedPair[1]
                           ? new Percent(
@@ -110,7 +111,7 @@ export default function Pair({
                     />
                   </Box>
                   <ButtonPurpleDim style={{ padding: '8px 12px' }} disabled>
-                    Governance
+                    {t('governance')}
                   </ButtonPurpleDim>
                 </Flex>
               </DimBlurBgBox>
