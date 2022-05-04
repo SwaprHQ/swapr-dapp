@@ -18,7 +18,7 @@ export default function Updater(): null {
     blockNumber: number | null
   }>({
     chainId,
-    blockNumber: null
+    blockNumber: null,
   })
 
   const blockNumberCallback = useCallback(

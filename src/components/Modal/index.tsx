@@ -26,7 +26,7 @@ const AnimatedDialogContent = animated(DialogContent)
 const StyledDialogContent = styled(({ minHeight, maxHeight, maxWidth, mobile, isOpen, ...rest }) => (
   <AnimatedDialogContent {...rest} />
 )).attrs({
-  'aria-label': 'dialog'
+  'aria-label': 'dialog',
 })`
   overflow-y: ${({ mobile }) => (mobile ? 'scroll' : 'hidden')};
 
@@ -91,13 +91,13 @@ export default function Modal({
   maxWidth = 460,
   initialFocusRef,
   children,
-  className
+  className,
 }: ModalProps) {
   const transition = useTransition(isOpen, {
     config: { ...config.default, duration: 200 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
-    leave: { opacity: 0 }
+    leave: { opacity: 0 },
   })
 
   return (

@@ -15,7 +15,7 @@ import {
   updateUserSlippageTolerance,
   updateUserDeadline,
   toggleURLWarning,
-  updateUserPreferredGasPrice
+  updateUserPreferredGasPrice,
 } from './actions'
 import { MainnetGasPrice } from '../application/actions'
 
@@ -74,7 +74,7 @@ export const initialState: UserState = {
   tokens: {},
   pairs: {},
   timestamp: currentTimestamp(),
-  URLWarningVisible: true
+  URLWarningVisible: true,
 }
 
 export default createReducer(initialState, builder =>

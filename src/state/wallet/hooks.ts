@@ -56,7 +56,7 @@ export function useTokenBalancesWithLoadingIndicator(
         }
         return memo
       }, {}),
-      anyLoading
+      anyLoading,
     ]
   }, [address, anyLoading, balances, validatedTokens])
 }
@@ -84,7 +84,7 @@ export function useCurrencyBalances(
   currencies?: (Currency | undefined)[]
 ): (CurrencyAmount | undefined)[] {
   const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
-    currencies
+    currencies,
   ])
 
   const tokenBalances = useTokenBalances(account, tokens)

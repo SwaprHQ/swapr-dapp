@@ -17,7 +17,7 @@ export const NetworkSwitcher = ({
   placement,
   onOuterClick,
   parentRef,
-  showWalletConnector = true
+  showWalletConnector = true,
 }: NetworkSwitcherProps) => {
   const popoverRef = useRef(null)
   const { account, chainId } = useActiveWeb3React()

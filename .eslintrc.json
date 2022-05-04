@@ -8,7 +8,12 @@
       "jsx": true
     }
   },
-  "ignorePatterns": ["node_modules/**/*", "scripts/*.js", "config-overrides.js"],
+  "ignorePatterns": [
+    "node_modules/**/*",
+    "scripts/*.js",
+    "config-overrides.js",
+    "src/**/generated/**/*"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -18,12 +23,11 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
-    "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
-    "prettier/prettier": "error",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "react/prop-types": "off"
   }
 }

@@ -4,7 +4,7 @@ import {
   bridgeOwnedTxsSelector,
   bridgeL1DepositsSelector,
   bridgePendingWithdrawalsSelector,
-  bridgeTxsSummarySelector
+  bridgeTxsSummarySelector,
 } from './selectors'
 
 export const useBridgeAllTransactions = () => {

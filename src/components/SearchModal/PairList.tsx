@@ -81,7 +81,7 @@ function PairRow({ pair, onSelect, isSelected, style }: PairRowProps) {
 export default function PairList({
   pairs,
   selectedPair,
-  onPairSelect
+  onPairSelect,
 }: {
   pairs: Pair[]
   selectedPair?: Pair | null
