@@ -15,7 +15,7 @@ const FeatureItem = props => {
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
-      let el = document.getElementById(props.id)
+      const el = document.getElementById(props.id)
       if (el) {
         let elRect = el.getBoundingClientRect().y
         if (elRect < 800) {

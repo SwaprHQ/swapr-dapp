@@ -36,7 +36,7 @@ function useAllCommonPairs(
 
   const basePairs: [Token, Token][] = useMemo(
     () =>
-      flatMap(bases, (base): [Token, Token][] => bases.map((otherBase) => [base, otherBase])).filter(
+      flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])).filter(
         ([t0, t1]) => t0.address !== t1.address
       ),
     [bases]
@@ -160,7 +160,7 @@ export function useTradeExactInAllPlatforms(
     useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.QUICKSWAP),
     useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.DFYN),
   ]
-  return sortTradesByExecutionPrice(bestTrades).filter((trade) => !!trade)
+  return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }
 
 /**
@@ -181,5 +181,5 @@ export function useTradeExactOutAllPlatforms(
     useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.QUICKSWAP),
     useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.DFYN),
   ]
-  return sortTradesByExecutionPrice(bestTrades).filter((trade) => !!trade)
+  return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }

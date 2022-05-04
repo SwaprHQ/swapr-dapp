@@ -27,7 +27,7 @@ export default function Updater() {
               })
             )
         })
-        .catch((error) => {
+        .catch(error => {
           console.error('Cancelled fetch for fees, error:', error)
           return
         })
