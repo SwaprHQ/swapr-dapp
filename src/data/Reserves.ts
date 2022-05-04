@@ -18,7 +18,7 @@ export enum PairState {
   LOADING,
   NOT_EXISTS,
   EXISTS,
-  INVALID
+  INVALID,
 }
 
 export function usePairs(
@@ -31,7 +31,7 @@ export function usePairs(
     () =>
       currencies.map(([currencyA, currencyB]) => [
         wrappedCurrency(currencyA, chainId),
-        wrappedCurrency(currencyB, chainId)
+        wrappedCurrency(currencyB, chainId),
       ]),
     [chainId, currencies]
   )
@@ -71,7 +71,7 @@ export function usePairs(
           swapFee || platform.defaultSwapFee,
           protocolFeeDenominator ? BigInt(protocolFeeDenominator) : BigInt(0),
           platform
-        )
+        ),
       ]
     })
   }, [protocolFeeDenominator, results, swapFees, tokens, platform])

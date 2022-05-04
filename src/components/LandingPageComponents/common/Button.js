@@ -16,7 +16,7 @@ const Button = props => {
     className,
     onClick,
     external,
-    elementTag
+    elementTag,
   } = props
 
   return (
@@ -90,14 +90,14 @@ Button.propTypes = {
   iconImage: PropTypes.string,
   title: PropTypes.string,
   className: PropTypes.string,
-  elementTag: PropTypes.oneOf(['a', 'button'])
+  elementTag: PropTypes.oneOf(['a', 'button']),
 }
 
 Button.defaultProps = {
   type: 'primary',
   size: 'regular',
   className: '',
-  elementTag: 'a'
+  elementTag: 'a',
 }
 
 const StyledButtonWrapper = styled.div`

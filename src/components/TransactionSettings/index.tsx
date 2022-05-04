@@ -17,11 +17,11 @@ import { useActiveWeb3React } from '../../hooks'
 enum SlippageError {
   InvalidInput = 'InvalidInput',
   RiskyLow = 'RiskyLow',
-  RiskyHigh = 'RiskyHigh'
+  RiskyHigh = 'RiskyHigh',
 }
 
 enum DeadlineError {
-  InvalidInput = 'InvalidInput'
+  InvalidInput = 'InvalidInput',
 }
 
 const Input = styled.input`
@@ -91,7 +91,7 @@ export default function SlippageTabs({
   deadline,
   setDeadline,
   multihop,
-  onMultihopChange
+  onMultihopChange,
 }: SlippageTabsProps) {
   const { chainId } = useActiveWeb3React()
 

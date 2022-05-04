@@ -66,8 +66,8 @@ const ButtonRow = styled(RowFixed)`
 
 export default function Rewards({
   match: {
-    params: { currencyIdA, currencyIdB }
-  }
+    params: { currencyIdA, currencyIdB },
+  },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const router = useRouter()
   const token0 = useToken(currencyIdA)
@@ -103,7 +103,7 @@ export default function Rewards({
   const handlePairSelect = useCallback(
     pair => {
       router.push({
-        pathname: `/rewards/${pair.token0.address}/${pair.token1.address}`
+        pathname: `/rewards/${pair.token0.address}/${pair.token1.address}`,
       })
       setFilterPair(pair)
     },
@@ -113,7 +113,7 @@ export default function Rewards({
     e => {
       setAggregatedDataFilter(PairsFilterType.ALL)
       router.push({
-        pathname: `/rewards`
+        pathname: `/rewards`,
       })
       setFilterPair(null)
       e.stopPropagation()

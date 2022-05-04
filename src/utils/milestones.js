@@ -3,7 +3,7 @@ export const TimelineData = [
     title: '2020 Q4',
     content: ['Swapr Alpha Launch'],
     releaseTag: 'ALPHA',
-    past: true
+    past: true,
   },
   {
     title: '2021 Q1',
@@ -13,9 +13,9 @@ export const TimelineData = [
       'Eco-Routing Beta',
       'Uniswap, Sushiswap, Honeyswap, LevinSwap Routing',
       'Network Switcher v1',
-      'Swapr redesign'
+      'Swapr redesign',
     ],
-    past: true
+    past: true,
   },
   {
     title: 'Q2-Q4',
@@ -26,16 +26,16 @@ export const TimelineData = [
       'Carrot Integration',
       'Arbitrum Integration',
       'Network Switcher v2',
-      'Swapr L1-L2 Bridge'
+      'Swapr L1-L2 Bridge',
     ],
     releasteTag: 'BETA',
-    past: true
+    past: true,
   },
   {
     title: '2022 Q1',
     content: ['SWPR Staking', 'Movr, Hop', '0x Integration', 'Cowswap', 'Curve Integration', 'Omni & xDai Bridge'],
     releaseTag: 'BETA',
-    current: true
+    current: true,
   },
   {
     title: 'Q2',
@@ -45,14 +45,14 @@ export const TimelineData = [
       'Anyswap/Multichain',
       'User Dashboard',
       'LP Governance',
-      'Landing Page'
+      'Landing Page',
     ],
-    releaseTag: 'V1'
+    releaseTag: 'V1',
   },
   {
     title: 'Q3-Q4',
     content: ['Balancer Integration', 'Uniswap V3 Int.', 'Bridge Swap', 'Advanced Trading Mode', 'Limit Orders'],
-    releaseTag: 'V1.5'
+    releaseTag: 'V1.5',
   },
   {
     title: 'Soon™',
@@ -61,8 +61,8 @@ export const TimelineData = [
       'ZKSync',
       'Eco Routing V2',
       'Sushi Trident Fork',
-      'More Eco Routing markets'
+      'More Eco Routing markets',
     ],
-    releaseTag: 'V1.5'
-  }
+    releaseTag: 'V1.5',
+  },
 ]

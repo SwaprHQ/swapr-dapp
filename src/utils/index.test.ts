@@ -8,7 +8,7 @@ import {
   isAddress,
   shortenAddress,
   calculateGasMargin,
-  basisPointsToPercent
+  basisPointsToPercent,
 } from '.'
 
 describe('utils', () => {

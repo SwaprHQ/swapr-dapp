@@ -10,7 +10,7 @@ import {
   useUserTransactionTTL,
   useUserSlippageTolerance,
   useUserPreferredGasPrice,
-  useMultihopManager
+  useMultihopManager,
 } from '../../state/user/hooks'
 import { TYPE, ExternalLink, LinkStyledButton, CloseIcon } from '../../theme'
 import { ButtonError } from '../Button'

@@ -14,7 +14,7 @@ describe('swap reducer', () => {
       store.dispatch(
         selectCurrency({
           field: Field.OUTPUT,
-          currencyId: '0x0000'
+          currencyId: '0x0000',
         })
       )
 
@@ -23,7 +23,7 @@ describe('swap reducer', () => {
         [Field.INPUT]: { currencyId: '' },
         typedValue: '',
         independentField: Field.INPUT,
-        recipient: null
+        recipient: null,
       })
     })
   })

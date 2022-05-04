@@ -13,7 +13,7 @@ import { immediateSubgraphClients } from '../../apollo/client'
 const subgraphApiClients = [
   immediateSubgraphClients[ChainId.ARBITRUM_ONE],
   immediateSubgraphClients[ChainId.XDAI],
-  immediateSubgraphClients[ChainId.MAINNET]
+  immediateSubgraphClients[ChainId.MAINNET],
 ]
 
 const tokensQuery = gql`
@@ -63,8 +63,8 @@ const Stats = () => {
     const swaprPricePromise = fetch('https://coins.llama.fi/prices', {
       method: 'POST',
       body: JSON.stringify({
-        coins: [coinCode]
-      })
+        coins: [coinCode],
+      }),
     })
     swaprPricePromise
       .then(data => {
@@ -101,7 +101,7 @@ const Stats = () => {
     const options = {
       root: null,
       rootMargin: '200px 0px 500px 0px',
-      threshold: 0.5
+      threshold: 0.5,
     }
 
     const callback = entries => {
@@ -120,7 +120,7 @@ const Stats = () => {
     TVL: '$' + tvl + ' M',
     'SWPR PRICE': swaprPrice,
     'TOTAL VOLUME': '$' + totalVolumeUSD + ' M',
-    TRADES: tx
+    TRADES: tx,
   }
 
   return (

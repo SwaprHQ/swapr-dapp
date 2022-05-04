@@ -15,13 +15,13 @@ const Layout = props => {
 Layout.defaultProps = {
   width: 'full-width',
   id: null,
-  className: null
+  className: null,
 }
 
 Layout.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
-  width: PropTypes.oneOf(['full-width', 'main-width'])
+  width: PropTypes.oneOf(['full-width', 'main-width']),
 }
 
 const StyledLayout = styled.div`

@@ -12,7 +12,7 @@ import {
   PricedTokenAmount,
   TokenAmount,
   KpiToken,
-  SingleSidedLiquidityMiningCampaign
+  SingleSidedLiquidityMiningCampaign,
 } from '@swapr/sdk'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
@@ -69,7 +69,7 @@ export function tokenToPricedTokenAmount(
       //chekc urself before u wreck urself
       new Decimal(campaign.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
       nativeCurrency.decimals
-    ).toString()
+    ).toString(),
   })
   const pricedRewardToken = new PricedToken(
     chainId,
@@ -108,7 +108,7 @@ export function toSingleSidedStakeCampaign(
       numerator: parseUnits(
         new Decimal(reward.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
+      ).toString(),
     })
     const pricedRewardToken = new PricedToken(
       chainId,
@@ -131,7 +131,7 @@ export function toSingleSidedStakeCampaign(
     numerator: parseUnits(
       new Decimal(derivedNativeCurrency).toFixed(nativeCurrency.decimals),
       nativeCurrency.decimals
-    ).toString()
+    ).toString(),
   })
 
   const stakedPricedToken = new PricedToken(
@@ -188,7 +188,7 @@ export function toLiquidityMiningCampaign(
       numerator: parseUnits(
         new Decimal(reward.token.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
+      ).toString(),
     })
     const pricedRewardToken = new PricedToken(
       chainId,
@@ -233,7 +233,7 @@ export function toLiquidityMiningCampaign(
       targetedPair.liquidityToken,
       parseUnits(campaign.stakingCap, targetedPair.liquidityToken.decimals).toString()
     ),
-    address: getAddress(campaign.address)
+    address: getAddress(campaign.address),
   })
 }
 

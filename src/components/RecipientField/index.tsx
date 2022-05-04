@@ -28,7 +28,7 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
   const error = useMemo(() => Boolean(recipient && recipient.length > 0 && !loading && !address), [
     address,
     loading,
-    recipient
+    recipient,
   ])
 
   const handleInput = useCallback(

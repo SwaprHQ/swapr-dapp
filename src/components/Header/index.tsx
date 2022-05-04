@@ -221,16 +221,16 @@ const GasInfo = styled.div<{ hide: boolean }>`
 const GasColor = {
   fast: {
     color: '#10B981',
-    backgroundColor: 'rgba(16, 185, 129, 0.3)'
+    backgroundColor: 'rgba(16, 185, 129, 0.3)',
   },
   normal: {
     color: '#F2994A',
-    backgroundColor: 'rgba(242, 153, 74, 0.3);'
+    backgroundColor: 'rgba(242, 153, 74, 0.3);',
   },
   slow: {
     color: '#FF4F84',
-    backgroundColor: 'rgba(255, 79, 132, 0.3);'
-  }
+    backgroundColor: 'rgba(255, 79, 132, 0.3);',
+  },
 }
 const ColoredGas = styled.div<{ color: 'fast' | 'slow' | 'normal' }>`
   display: flex;

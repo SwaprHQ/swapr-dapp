@@ -100,23 +100,23 @@ export function useFetchCarrotListCallback(): (sendDispatch?: boolean) => Promis
           version: {
             major: 1,
             minor: 0,
-            patch: 0
+            patch: 0,
           },
           tokens: response.kpiTokens.map(kpiToken => ({
             ...kpiToken,
             chainId,
             decimals: 18,
             address: getAddress(kpiToken.address),
-            logoURI: listAndTokensUrl
+            logoURI: listAndTokensUrl,
           })),
-          logoURI: listAndTokensUrl
+          logoURI: listAndTokensUrl,
         }
         sendDispatch &&
           dispatch(
             fetchTokenList.fulfilled({
               url: 'CARROT',
               tokenList,
-              requestId
+              requestId,
             })
           )
         return tokenList
@@ -126,7 +126,7 @@ export function useFetchCarrotListCallback(): (sendDispatch?: boolean) => Promis
             fetchTokenList.rejected({
               url: 'CARROT',
               errorMessage: 'Failed to fetch Carrot token list',
-              requestId
+              requestId,
             })
           )
         throw error

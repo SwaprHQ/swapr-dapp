@@ -63,17 +63,17 @@ export const mainNavigation = [
   // },
   {
     label: 'Documentation',
-    href: 'http://dxdocs.eth.limo.ipns.localhost:8080/docs/Products/swapr/'
+    href: 'http://dxdocs.eth.limo.ipns.localhost:8080/docs/Products/swapr/',
   },
   {
     label: 'Stats',
-    href: '/#stats'
+    href: '/#stats',
   },
   {
     label: 'Launch Swapr',
     href: '#',
-    cta: true
-  }
+    cta: true,
+  },
 ]
 
 export const HeroContent = {
@@ -86,33 +86,33 @@ export const HeroContent = {
   heroLogos: [
     {
       img: EthereumLogo,
-      title: 'Ethereum'
+      title: 'Ethereum',
     },
     {
       img: ArbitrumLogo,
-      title: 'Arbitrum'
+      title: 'Arbitrum',
     },
     {
       img: xDaiLogo,
-      title: 'xDai'
+      title: 'xDai',
     },
     {
       img: PolygonLogo,
-      title: 'Polygon'
-    }
+      title: 'Polygon',
+    },
   ],
   heroButtons: [
     {
       label: 'Launch Swapr',
       type: 'secondary',
-      href: '#'
+      href: '#',
     },
     {
       label: 'Join Our Discord',
       type: 'dark',
-      href: '#'
-    }
-  ]
+      href: '#',
+    },
+  ],
 }
 
 export const RoutingThroughContent = {
@@ -120,31 +120,31 @@ export const RoutingThroughContent = {
   companies: [
     {
       title: 'Uniswap',
-      img: RoutingUniswap
+      img: RoutingUniswap,
     },
     {
       title: 'SushiSwap',
-      img: RoutingSushiSwap
+      img: RoutingSushiSwap,
     },
     {
       title: 'BaoSwap',
-      img: RoutingBaoSwap
+      img: RoutingBaoSwap,
     },
     {
       title: 'HoneySwap',
-      img: RoutingHoneySwap
+      img: RoutingHoneySwap,
     },
     {
       title: 'Levinswap',
-      img: RoutingLevinSwap
-    }
-  ]
+      img: RoutingLevinSwap,
+    },
+  ],
 }
 
 export const FeaturesContent = {
   topBanner: {
     title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
-    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo]
+    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo],
   },
   preHeader: 'Swapr Features',
   sectionTitle: 'Your DeFi Powertool',
@@ -160,15 +160,15 @@ export const FeaturesContent = {
           onClick: () => {
             scrollTo('app-wrapper')
           },
-          type: 'primary'
+          type: 'primary',
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
+          external: true,
+        },
+      ],
     },
     {
       title: 'ECO-ROUTING',
@@ -181,15 +181,15 @@ export const FeaturesContent = {
           onClick: () => {
             scrollTo('app-wrapper')
           },
-          type: 'primary'
+          type: 'primary',
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
+          external: true,
+        },
+      ],
     },
     {
       title: 'VOTE',
@@ -201,15 +201,15 @@ export const FeaturesContent = {
           label: 'VOTE',
           href: 'https://snapshot.org/#/swpr.eth',
           type: 'primary',
-          external: true
+          external: true,
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
+          external: true,
+        },
+      ],
     },
     {
       title: 'FARMING',
@@ -220,15 +220,15 @@ export const FeaturesContent = {
         {
           label: 'FARM',
           href: '/#/rewards',
-          type: 'primary'
+          type: 'primary',
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
+          external: true,
+        },
+      ],
     },
     {
       title: 'DIY FARM',
@@ -239,15 +239,15 @@ export const FeaturesContent = {
         {
           label: 'CREATE CAMPAIGN',
           href: '/#/liquidity-mining/create',
-          type: 'primary'
+          type: 'primary',
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
+          external: true,
+        },
+      ],
     },
     {
       title: 'BRIDGE',
@@ -258,17 +258,17 @@ export const FeaturesContent = {
         {
           label: 'BRIDGE',
           href: '/#/bridge',
-          type: 'primary'
+          type: 'primary',
         },
         {
           label: 'READ MORE',
           href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
           type: 'dark',
-          external: true
-        }
-      ]
-    }
-  ]
+          external: true,
+        },
+      ],
+    },
+  ],
 }
 
 export const CommunityBannerContent = {
@@ -278,14 +278,14 @@ export const CommunityBannerContent = {
     {
       label: 'GET INVOLVED',
       href: 'https://dxdao.eth.limo/',
-      type: 'primary'
+      type: 'primary',
     },
     {
       label: 'FORUM',
       href: 'https://daotalk.org/c/dx-dao/15',
-      type: 'dark'
-    }
-  ]
+      type: 'dark',
+    },
+  ],
 }
 
 export const CommunityLinksContent = {
@@ -304,8 +304,8 @@ export const CommunityLinksContent = {
       content: 'Join in on community discussion on the Swapr Discord.',
       button: {
         label: 'JOIN DISCORD',
-        href: 'https://discord.gg/4QXEJQkvHH'
-      }
+        href: 'https://discord.gg/4QXEJQkvHH',
+      },
     },
     {
       image: Github,
@@ -319,8 +319,8 @@ export const CommunityLinksContent = {
       ),
       button: {
         label: 'VISIT GITHUB',
-        href: 'https://github.com/levelkdev/dxswap-dapp'
-      }
+        href: 'https://github.com/levelkdev/dxswap-dapp',
+      },
     },
     {
       image: Twitter,
@@ -329,10 +329,10 @@ export const CommunityLinksContent = {
       content: 'Get the latest Swapr announcements on the Swapr Twitter.',
       button: {
         label: 'Follow on Twitter',
-        href: 'https://twitter.com/SwaprEth'
-      }
-    }
-  ]
+        href: 'https://twitter.com/SwaprEth',
+      },
+    },
+  ],
 }
 
 export const BlogContent = {
@@ -342,14 +342,14 @@ export const BlogContent = {
       image: Entry1,
       title: 'Announcing SWPR Token',
       content: 'SWPR Token and Liquidity Mining',
-      postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45'
+      postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45',
     },
     {
       image: Entry2,
       title: 'Introducing SWPR Token Farming Rewards',
       content:
         'Introducing SWPR Token Farming RewardsRecently, the DXdao community identified a misconfiguration with ...',
-      postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae'
+      postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae',
     },
     {
       image: Entry3,
@@ -357,9 +357,9 @@ export const BlogContent = {
       content:
         'Both DXdao and BadgerDAO have strong communities that have been building interesting products in the DeFi space.',
       postLink:
-        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b'
-    }
-  ]
+        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
+    },
+  ],
 }
 
 export const FooterContent = {
@@ -369,71 +369,71 @@ export const FooterContent = {
       footerLinks: [
         {
           label: 'FAQ',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/faq/'
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/faq/',
         },
         {
           label: 'Blog',
-          href: 'https://medium.com/swapr'
+          href: 'https://medium.com/swapr',
         },
         {
           label: 'Audits',
-          href: 'https://dxdocs.eth.limo/docs/Technical%20Documentation/Audits/#swapr'
+          href: 'https://dxdocs.eth.limo/docs/Technical%20Documentation/Audits/#swapr',
         },
         {
           label: 'Brand Assets',
-          href: 'https://dxdocs.eth.limo/docs/BrandingAssets/#swapr-brand-assets'
-        }
-      ]
+          href: 'https://dxdocs.eth.limo/docs/BrandingAssets/#swapr-brand-assets',
+        },
+      ],
     },
     {
       title: 'Community',
       footerLinks: [
         {
           label: 'Discord',
-          href: 'https://discord.gg/4QXEJQkvHH'
+          href: 'https://discord.gg/4QXEJQkvHH',
         },
         {
           label: 'Twitter',
-          href: 'https://twitter.com/SwaprEth'
+          href: 'https://twitter.com/SwaprEth',
         },
         {
           label: 'Keybase',
-          href: 'https://keybase.io/team/dx_dao'
+          href: 'https://keybase.io/team/dx_dao',
         },
         {
           label: 'Forum',
-          href: 'https://daotalk.org/c/dx-dao/15'
-        }
-      ]
+          href: 'https://daotalk.org/c/dx-dao/15',
+        },
+      ],
     },
     {
       title: 'Documentation',
       footerLinks: [
         {
           label: 'DIY Campaigns',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/'
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/',
         },
         {
           label: 'Roadmap',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/'
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/',
         },
         {
           label: "We're hiring",
-          href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/'
+          href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/',
         },
         {
           label: 'SWPR Token',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/'
-        }
-      ]
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/',
+        },
+      ],
     },
     {
       title: 'Analytics',
       footerLinks: [
         {
           label: 'DXstats',
-          href: 'https://dxstats.eth.limo/#/home'
-        }
+          href: 'https://dxstats.eth.limo/#/home',
+        },
         // {
         //     label: 'Roadmap',
         //     href: '#'
@@ -446,13 +446,13 @@ export const FooterContent = {
         //     label: 'Token',
         //     href: '#'
         // },
-      ]
-    }
+      ],
+    },
   ],
   footerCta: {
     label: 'GO TO SWAPR',
-    href: '#'
-  }
+    href: '#',
+  },
 }
 
 export const StatsContent = {
@@ -461,7 +461,7 @@ export const StatsContent = {
     {
       title: 'TOTAL VOLUME',
       value: <TextyAnim type="flash">$145,000,000+</TextyAnim>,
-      externalSource: true
+      externalSource: true,
     },
     {
       title: 'TRADES',
@@ -470,7 +470,7 @@ export const StatsContent = {
           <TextyAnim type="flash">570,000+</TextyAnim>
         </>
       ),
-      externalSource: true
+      externalSource: true,
     },
     {
       title: 'TOTAL FEES COLLECTED',
@@ -479,7 +479,7 @@ export const StatsContent = {
           <TextyAnim type="flash">$34,000+</TextyAnim>
           <TextyAnim type="flash" className="dim"></TextyAnim>
         </>
-      )
+      ),
     },
     {
       title: 'SWPR PRICE',
@@ -495,12 +495,12 @@ export const StatsContent = {
         </>
       ),
       externalSource: true,
-      headingDollar: true
+      headingDollar: true,
     },
     {
       title: 'TVL',
       value: <TextyAnim>10,149,321</TextyAnim>,
-      externalSource: true
+      externalSource: true,
     },
     {
       title: 'ROUTING THROUGH',
@@ -508,25 +508,25 @@ export const StatsContent = {
         {
           name: 'UniSwap',
           image: UniSwapStats,
-          href: '#'
+          href: '#',
         },
         {
           name: 'SushiSwap',
           image: SushiSwapStats,
-          href: '#'
+          href: '#',
         },
         {
           name: 'BaoSwap',
           image: BaoSwapStats,
-          href: '#'
+          href: '#',
         },
         {
           name: 'HoneySwap',
           image: HoneySwapStats,
-          href: '#'
-        }
+          href: '#',
+        },
       ],
-      moreLabel: '+ 3 more'
-    }
-  ]
+      moreLabel: '+ 3 more',
+    },
+  ],
 }

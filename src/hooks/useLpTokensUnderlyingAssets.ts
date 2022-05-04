@@ -40,8 +40,8 @@ export function useLpTokensUnderlyingAssets(
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useQuery<QueryResult>(QUERY, {
     variables: {
-      pairId: pair ? pair.liquidityToken.address.toLowerCase() : ''
-    }
+      pairId: pair ? pair.liquidityToken.address.toLowerCase() : '',
+    },
   })
 
   return useMemo(() => {
@@ -62,7 +62,7 @@ export function useLpTokensUnderlyingAssets(
       numerator: parseUnits(
         new Decimal(data.pair.token0.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
+      ).toString(),
     })
     const pricedToken0 = new PricedToken(
       chainId,
@@ -89,7 +89,7 @@ export function useLpTokensUnderlyingAssets(
       numerator: parseUnits(
         new Decimal(data.pair.token1.derivedNativeCurrency).toFixed(nativeCurrency.decimals),
         nativeCurrency.decimals
-      ).toString()
+      ).toString(),
     })
     const pricedToken1 = new PricedToken(
       chainId,
@@ -113,8 +113,8 @@ export function useLpTokensUnderlyingAssets(
       loading: false,
       underlyingAssets: {
         token0: token0Amount,
-        token1: token1Amount
-      }
+        token1: token1Amount,
+      },
     }
   }, [chainId, data, error, loading, lpTokensBalance, nativeCurrency, pair])
 }
