@@ -75,7 +75,7 @@ function CurrencyRow({
   onSelect,
   isSelected,
   otherSelected,
-  style
+  style,
 }: {
   currency: Currency
   balance: CurrencyAmount | undefined
@@ -176,7 +176,7 @@ export default function CurrencyList({
   otherListTokens,
   fixedListRef,
   showImportView,
-  setImportToken
+  setImportToken,
 }: {
   currencies: Currency[]
   selectedCurrency?: Currency | null
@@ -251,7 +251,7 @@ export default function CurrencyList({
       selectedCurrency,
       selectedTokenList,
       setImportToken,
-      showImportView
+      showImportView,
     ]
   )
 

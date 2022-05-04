@@ -31,7 +31,7 @@ export function ActionButton({
   isOldSwaprLp,
   onConnectWallet,
   onSwitchToArbitrum,
-  onClaim
+  onClaim,
 }: ActionButtonProps) {
   const { account, chainId, connector } = useActiveWeb3React()
 
@@ -67,7 +67,7 @@ export function ActionButton({
       Object.assign(anchor, {
         target: '_blank',
         href: 'https://oldbuild.eth.limo/#/pools?chainId=42161',
-        rel: 'noopener noreferrer'
+        rel: 'noopener noreferrer',
       }).click()
       anchor.remove()
     } else if (availableClaim) onClaim()

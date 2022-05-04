@@ -78,7 +78,7 @@ function Title({
   filteredToken,
   onFilteredTokenReset,
   aggregatedDataFilter,
-  onFilterChange
+  onFilterChange,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
 

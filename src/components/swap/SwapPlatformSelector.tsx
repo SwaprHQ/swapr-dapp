@@ -14,7 +14,7 @@ import {
   computeSlippageAdjustedAmounts,
   computeTradePriceBreakdown,
   limitNumberOfDecimalPlaces,
-  simpleWarningSeverity
+  simpleWarningSeverity,
 } from '../../utils/prices'
 import { Field } from '../../state/swap/actions'
 import Skeleton from 'react-loading-skeleton'
@@ -26,7 +26,7 @@ import {
   SelectionListName,
   SelectionListOption,
   SelectionListReceiveAmount,
-  SelectionListWindowWrapper
+  SelectionListWindowWrapper,
 } from '../SelectionList'
 import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
 import styled, { ThemeContext } from 'styled-components'
@@ -92,7 +92,7 @@ const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
 export function SwapPlatformSelector({
   allPlatformTrades,
   selectedTrade,
-  onSelectedPlatformChange
+  onSelectedPlatformChange,
 }: SwapPlatformSelectorProps) {
   const isMobileByMedia = useIsMobileByMedia()
   const { t } = useTranslation()

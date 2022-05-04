@@ -27,7 +27,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
   timelocked,
   stakingCap,
   unlimitedPool,
-  onConfirm
+  onConfirm,
 }: StakingRewardsDistributionCreationModalFooterProps) {
   return (
     <AutoColumn gap="0px">
@@ -44,7 +44,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {liquidityPair ? `${liquidityPair.token0.symbol}/${liquidityPair.token1.symbol}` : '-'}
@@ -64,7 +64,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {reward ? `${reward.toExact()} ${reward.token.symbol}` : '-'}
@@ -84,7 +84,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {unlimitedPool

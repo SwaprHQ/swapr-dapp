@@ -8,7 +8,7 @@ export enum PairsFilterType {
   ALL = 'ALL',
   REWARDS = 'REWARDS',
   MY = 'MY',
-  SWPR = 'SWPR'
+  SWPR = 'SWPR',
 }
 
 const StyledRoot = styled(Flex)<{ disabled?: boolean }>`

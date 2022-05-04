@@ -180,7 +180,7 @@ function Information({
   apy,
   staked,
   containsKpiToken,
-  showUSDValue
+  showUSDValue,
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()

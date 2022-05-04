@@ -23,7 +23,7 @@ export const AutoColumn = styled.div<{
 export default Column
 
 export interface HideableAutoColumnProps {
-  show: boolean,
+  show: boolean
 }
 
 export const HideableAutoColumn = styled(AutoColumn)<HideableAutoColumnProps>`

@@ -14,27 +14,27 @@ interface ChainGasInfo {
 const gasInfoChainUrls: ChainGasInfo = {
   [ChainId.MAINNET]: {
     url: 'http://ethgas.watch/api/gas',
-    keys: ['normal', 'fast', 'slow']
+    keys: ['normal', 'fast', 'slow'],
   },
   [ChainId.XDAI]: {
     url: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
-    keys: ['average', 'fast', 'slow']
+    keys: ['average', 'fast', 'slow'],
   },
   [ChainId.ARBITRUM_ONE]: {
     url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
     requestConfig: {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
         method: 'eth_gasPrice',
         params: [],
-        id: 1
-      })
-    }
-  }
+        id: 1,
+      }),
+    },
+  },
 }
 
 interface Gas {
@@ -46,7 +46,7 @@ interface Gas {
 const defaultGasState: Gas = {
   fast: 0,
   normal: 0,
-  slow: 0
+  slow: 0,
 }
 
 /**
@@ -76,7 +76,7 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
 
         // Mainnet and xDAI uses external API
         if (chainId === ChainId.MAINNET || chainId === ChainId.XDAI) {
-          const keys = chainGasInfo.keys!
+          const keys = chainGasInfo.keys ?? []
           // Pick the keys
           const gasNormalData = data[keys[0]]
           const gasFastData = data[keys[1]]
@@ -108,6 +108,6 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
 
   return {
     loading,
-    gas
+    gas,
   }
 }
