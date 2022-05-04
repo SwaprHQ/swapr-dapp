@@ -33,7 +33,7 @@ const SizedCard = styled(DarkCard)`
   `}
   ::before {
     background-blend-mode: normal, overlay, normal;
-    background: ${gradients.purpleDim};
+    background: ${gradients.purpleDark};
   }
 `
 

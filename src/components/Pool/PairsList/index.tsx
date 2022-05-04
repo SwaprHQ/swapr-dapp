@@ -16,7 +16,8 @@ import { UndecoratedLink } from '../../UndercoratedLink'
 import PairCard from './Pair'
 import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { gradients } from '../../../utils/theme'
+import { DimBlurBgBox } from '../DimBlurBgBox'
+import { ButtonPrimary } from '../../Button'
 
 export interface AggregatedPairs {
   pair: Pair
@@ -101,14 +102,14 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
               })}
           </ListLayout>
         ) : (
-          <DimBgContainer>
+          <DimBlurBgBox>
             <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
               <Text fontSize="16px" color="#BCB3F0" mb="24px">
                 {t('noPoolsFound')}
               </Text>
-              <BlueButton> {t('createAPool')}</BlueButton>
+              <ButtonPrimary> {t('createAPool')}</ButtonPrimary>
             </Flex>
-          </DimBgContainer>
+          </DimBlurBgBox>
         )}
       </Box>
       {aggregatedPairs.length > responsiveItemsPerPage && (
@@ -143,36 +144,4 @@ const PaginationRow = styled(Flex)`
   & ul {
     margin: 22px 0;
   }
-`
-
-const DimBgContainer = styled.div`
-  width: 100%;
-  padding: 48px;
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.purple5};
-
-  background: ${gradients.purpleDim};
-  background-blend-mode: normal, overlay, normal;
-  backdrop-filter: blur(25px);
-`
-
-const BlueButton = styled.button`
-  outline: none;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border: none;
-  border-radius: 12px;
-  padding: 10px 14px;
-
-  background-color: ${({ theme }) => theme.primary1};
-
-  font-size: 12px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.white};
-  text-transform: uppercase;
-
-  cursor: pointer;
 `

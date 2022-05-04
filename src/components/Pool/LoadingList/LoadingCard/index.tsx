@@ -21,7 +21,7 @@ const SizedCard = styled(DarkCard)<{ isMobile: boolean }>`
 
   ::before {
     background-blend-mode: normal, overlay, normal;
-    background: ${gradients.purpleDim};
+    background: ${gradients.purpleDark};
   }
 `
 const MobileHidden = styled(Box)<{ isMobile: boolean }>`
