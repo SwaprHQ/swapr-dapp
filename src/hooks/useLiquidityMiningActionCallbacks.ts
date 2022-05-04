@@ -29,7 +29,7 @@ export function useLiquidityMiningActionCallbacks(
           amounts.map(amount => amount.raw.toString()),
           recipient
         ),
-      exit: async recipient => distributionContract.exit(recipient)
+      exit: async recipient => distributionContract.exit(recipient),
     }
   }, [distributionContract])
 }

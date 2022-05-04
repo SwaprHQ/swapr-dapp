@@ -56,14 +56,14 @@ class CustomMiniRpcProvider implements AsyncSendable {
     const response = await fetch(this.url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,
         method,
-        params
-      })
+        params,
+      }),
     })
     if (!response.ok) throw new RequestError(`${response.status}: ${response.statusText}`, -32000)
     const body = await response.json()
@@ -132,7 +132,7 @@ export class CustomNetworkConnector extends AbstractConnector {
     window.ethereum
       .request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: networkDetails.chainId }]
+        params: [{ chainId: networkDetails.chainId }],
       })
       .catch(error => {
         if (error.code !== 4902) {

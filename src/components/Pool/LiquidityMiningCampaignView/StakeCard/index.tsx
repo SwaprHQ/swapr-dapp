@@ -3,7 +3,7 @@ import {
   parseBigintIsh,
   TokenAmount,
   SingleSidedLiquidityMiningCampaign,
-  LiquidityMiningCampaign
+  LiquidityMiningCampaign,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -117,7 +117,7 @@ export default function StakeCard({
   campaign,
   showUSDValue,
   isSingleSided,
-  targetedPairOrToken: targetedPairOrSingleToken
+  targetedPairOrToken: targetedPairOrSingleToken,
 }: FullPositionCardProps) {
   const { account } = useActiveWeb3React()
   const stakableTokenBalance = useTokenBalance(
@@ -130,7 +130,7 @@ export default function StakeCard({
     stakedTokenAmount,
     claimableRewardAmounts,
     claimedRewardAmounts,
-    totalRewardedAmounts
+    totalRewardedAmounts,
   } = useLiquidityMiningCampaignPosition(campaign, account || undefined)
   const addTransaction = useTransactionAdder()
   const { loading: loadingLpTokensUnderlyingAssets, underlyingAssets } = useLpTokensUnderlyingAssets(
@@ -257,7 +257,7 @@ export default function StakeCard({
           setErrorMessage('')
           setTransactionHash(transaction.hash || '')
           addTransaction(transaction, {
-            summary: `Stake ${amount.toSignificant(4)} ${campaign.staked.token.name}`
+            summary: `Stake ${amount.toSignificant(4)} ${campaign.staked.token.name}`,
           })
         })
         .catch(error => {
@@ -281,7 +281,7 @@ export default function StakeCard({
           setErrorMessage('')
           setTransactionHash(transaction.hash || '')
           addTransaction(transaction, {
-            summary: `Withdraw ${amount.toSignificant(4)} ${campaign.staked.token.name}`
+            summary: `Withdraw ${amount.toSignificant(4)} ${campaign.staked.token.name}`,
           })
         })
         .catch(error => {
@@ -304,7 +304,7 @@ export default function StakeCard({
           setErrorMessage('')
           setTransactionHash(transaction.hash || '')
           addTransaction(transaction, {
-            summary: `Claim ${amounts.map(amount => `${amount.toSignificant(4)} ${amount.token.symbol}`).join(', ')}`
+            summary: `Claim ${amounts.map(amount => `${amount.toSignificant(4)} ${amount.token.symbol}`).join(', ')}`,
           })
         })
         .catch(error => {
@@ -327,7 +327,7 @@ export default function StakeCard({
         setErrorMessage('')
         setTransactionHash(transaction.hash || '')
         addTransaction(transaction, {
-          summary: 'Claim rewards and withdraw stake'
+          summary: 'Claim rewards and withdraw stake',
         })
       })
       .catch(error => {

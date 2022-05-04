@@ -32,13 +32,13 @@ export enum ApplicationModal {
   NETWORK_SWITCHER_FROM,
   NETWORK_SWITCHER_TO,
   UNSUPPORTED_NETWORK,
-  SIMPLE_SETTINGS
+  SIMPLE_SETTINGS,
 }
 
 export enum MainnetGasPrice {
   INSTANT = 'INSTANT',
   FAST = 'FAST',
-  NORMAL = 'NORMAL'
+  NORMAL = 'NORMAL',
 }
 
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')

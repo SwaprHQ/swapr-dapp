@@ -73,8 +73,8 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
     router.push({
       pathname: `/governance/${currency.symbol}/pairs`,
       state: {
-        currency: currency
-      }
+        currency: currency,
+      },
     })
   }
 

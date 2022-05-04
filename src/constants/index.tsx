@@ -120,7 +120,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     DAI,
     USDC[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
-    USDT[ChainId.MAINNET]
+    USDT[ChainId.MAINNET],
   ],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.ARBITRUM_ONE]: [
@@ -128,7 +128,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     DXD[ChainId.ARBITRUM_ONE],
     USDC[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
-    USDT[ChainId.ARBITRUM_ONE]
+    USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [
@@ -155,7 +155,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
-    SWPR[ChainId.MAINNET]
+    SWPR[ChainId.MAINNET],
   ],
   [ChainId.RINKEBY]: [],
   [ChainId.ARBITRUM_ONE]: [
@@ -164,7 +164,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     SWPR[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
     USDC[ChainId.ARBITRUM_ONE],
-    USDT[ChainId.ARBITRUM_ONE]
+    USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
@@ -184,8 +184,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
-    [DAI, USDT[ChainId.MAINNET]]
-  ]
+    [DAI, USDT[ChainId.MAINNET]],
+  ],
 }
 
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
@@ -210,7 +210,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
-    primary: true
+    primary: true,
   },
   METAMASK: {
     connector: injected,
@@ -219,7 +219,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
-    mobile: true
+    mobile: true,
   },
   WALLET_CONNECT: {
     connector: walletConnect,
@@ -228,7 +228,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#4196FC',
-    mobile: true
+    mobile: true,
   },
   COINBASE: {
     connector: walletLink,
@@ -237,8 +237,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Connect using Coinbase.',
     href: null,
     color: '#4196FC',
-    mobile: true
-  }
+    mobile: true,
+  },
 }
 
 export const NetworkContextName = 'NETWORK'
@@ -303,10 +303,10 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18
+      decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://mainnet.infura.io/v3'],
-    blockExplorerUrls: ['https://etherscan.io']
+    blockExplorerUrls: ['https://etherscan.io'],
   },
   [ChainId.XDAI]: {
     chainId: `0x${ChainId.XDAI.toString(16)}`,
@@ -314,10 +314,10 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.XDAI.name || 'xDAI',
       symbol: Currency.XDAI.symbol || 'xDAI',
-      decimals: Currency.XDAI.decimals || 18
+      decimals: Currency.XDAI.decimals || 18,
     },
     rpcUrls: ['https://rpc.gnosischain.com/'],
-    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet']
+    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
   },
   [ChainId.ARBITRUM_ONE]: {
     chainId: `0x${ChainId.ARBITRUM_ONE.toString(16)}`,
@@ -325,10 +325,10 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18
+      decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://arb1.arbitrum.io/rpc'],
-    blockExplorerUrls: ['https://explorer.arbitrum.io']
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
   },
   [ChainId.ARBITRUM_RINKEBY]: {
     chainId: `0x${ChainId.ARBITRUM_RINKEBY.toString(16)}`,
@@ -336,10 +336,10 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18
+      decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
-    blockExplorerUrls: ['https://rinkeby-explorer.arbitrum.io']
+    blockExplorerUrls: ['https://rinkeby-explorer.arbitrum.io'],
   },
   [ChainId.RINKEBY]: {
     chainId: `0x${ChainId.RINKEBY.toString(16)}`,
@@ -347,7 +347,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18
+      decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://rinkeby.infura.io/v3'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io']
@@ -368,23 +368,23 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
 export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetails } = {
   [ChainId.MAINNET]: {
     partnerChainId: ChainId.ARBITRUM_ONE,
-    isArbitrum: false
+    isArbitrum: false,
   },
   [ChainId.XDAI]: {
-    isArbitrum: false
+    isArbitrum: false,
   },
   [ChainId.ARBITRUM_ONE]: {
     partnerChainId: ChainId.MAINNET,
-    isArbitrum: true
+    isArbitrum: true,
   },
   [ChainId.ARBITRUM_RINKEBY]: {
     partnerChainId: ChainId.RINKEBY,
-    isArbitrum: true
+    isArbitrum: true,
   },
   [ChainId.RINKEBY]: {
     partnerChainId: ChainId.ARBITRUM_RINKEBY,
-    isArbitrum: false
-  }
+    isArbitrum: false,
+  },
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
@@ -394,31 +394,31 @@ export const ROUTABLE_PLATFORM_STYLE: {
     logo: UniswapLogo,
     alt: UniswapV2RoutablePlatform.UNISWAP.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.UNISWAP.name
+    name: UniswapV2RoutablePlatform.UNISWAP.name,
   },
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
     logo: SushiswapNewLogo,
     alt: UniswapV2RoutablePlatform.SUSHISWAP.name,
     gradientColor: '#FB52A1',
-    name: 'Sushi'
+    name: 'Sushi',
   },
   [UniswapV2RoutablePlatform.SWAPR.name]: {
     logo: SwaprLogo,
     alt: UniswapV2RoutablePlatform.SWAPR.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.SWAPR.name
+    name: UniswapV2RoutablePlatform.SWAPR.name,
   },
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
     logo: HoneyswapLogo,
     alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.HONEYSWAP.name
+    name: UniswapV2RoutablePlatform.HONEYSWAP.name,
   },
   [UniswapV2RoutablePlatform.BAOSWAP.name]: {
     logo: BaoswapLogo,
     alt: UniswapV2RoutablePlatform.BAOSWAP.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.BAOSWAP.name
+    name: UniswapV2RoutablePlatform.BAOSWAP.name,
   },
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
     logo: LevinswapLogo,
@@ -476,7 +476,7 @@ export const OLD_SWPR: { [key: number]: Token } = {
     18,
     'SWPR',
     'Swapr'
-  )
+  ),
 }
 
 export const TESTNETS = [4, 421611]
@@ -485,5 +485,5 @@ export const SHOW_TESTNETS = true
 // addresses to filter by when querying for verified KPI tokens
 export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {
   [ChainId.XDAI]: ['0xe716ec63c5673b3a4732d22909b38d779fa47c3f', '0x9467dcfd4519287e3878c018c02f5670465a9003'],
-  [ChainId.RINKEBY]: ['0x1A639b50D807ce7e61Dc9eeB091e6Cea8EcB1595', '0xb4124ceb3451635dacedd11767f004d8a28c6ee7']
+  [ChainId.RINKEBY]: ['0x1A639b50D807ce7e61Dc9eeB091e6Cea8EcB1595', '0xb4124ceb3451635dacedd11767f004d8a28c6ee7'],
 }

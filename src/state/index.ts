@@ -31,10 +31,10 @@ const store = configureStore({
     multiChainLinks,
     lists,
     bridge,
-    bridgeTransactions
+    bridgeTransactions,
   },
   middleware: [save({ states: PERSISTED_KEYS, namespace: persistenceNamespace })],
-  preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace })
+  preloadedState: load({ states: PERSISTED_KEYS, namespace: persistenceNamespace }),
 })
 
 store.dispatch(updateVersion())

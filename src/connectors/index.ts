@@ -36,11 +36,11 @@ export const injected = new InjectedConnector({
 export const walletConnect = new CustomWalletConnectConnector({
   rpc: {
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
-    [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
+    [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  pollingInterval: 15000
+  pollingInterval: 15000,
 })
 
 let networkLibrary: providers.Web3Provider | undefined

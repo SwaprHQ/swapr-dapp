@@ -126,7 +126,7 @@ const Avatar = styled.div<StyledAvatarProps>(props => ({
   marginLeft: -14,
   backgroundColor: props.theme.bg1,
   backgroundSize: 'cover',
-  backgroundImage: `url(${props.url})`
+  backgroundImage: `url(${props.url})`,
 }))
 
 interface AccountStatusProps {
@@ -146,7 +146,7 @@ export function AccountStatus({
   connector,
   networkConnectorChainId,
   onAddressClick,
-  avatar
+  avatar,
 }: AccountStatusProps) {
   const hasPendingTransactions = !!pendingTransactions.length
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()

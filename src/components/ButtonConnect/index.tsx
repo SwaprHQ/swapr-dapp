@@ -4,7 +4,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import {
   useModalOpen,
   useNetworkSwitcherPopoverToggle,
-  useWalletSwitcherPopoverToggle
+  useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
 import { ButtonPrimary } from '../Button'
 

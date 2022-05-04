@@ -19,7 +19,7 @@ interface Window {
     request?: (args: EthereumProviderRequestArguments) => Promise<unknown>
     isCoinbaseWallet?: boolean
   }
-  web3?: {}
+  web3?: Record<string, unknown>
 }
 
 declare module 'content-hash' {

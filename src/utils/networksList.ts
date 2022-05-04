@@ -17,7 +17,7 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
     nativeCurrency: {
       name: NETWORK_DETAIL[chainId].nativeCurrency.name,
       symbol: NETWORK_DETAIL[chainId].nativeCurrency.symbol,
-      decimals: NETWORK_DETAIL[chainId].nativeCurrency.decimals
+      decimals: NETWORK_DETAIL[chainId].nativeCurrency.decimals,
     },
     isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId]?.isArbitrum ?? false,
     partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId]?.partnerChainId,
@@ -36,7 +36,7 @@ export const getNetworkById = (chainId: ChainId, networkList: NetworksList[]) =>
 
 export const getNetworkOptions = ({
   chainId,
-  networkList
+  networkList,
 }: {
   chainId: ChainId
   networkList: NetworksList[]
@@ -47,7 +47,7 @@ export const getNetworkOptions = ({
   return {
     preset: { chainId, name, logoSrc, color, tag },
     active: selectedNetwork?.active,
-    disabled: selectedNetwork?.disabled
+    disabled: selectedNetwork?.disabled,
   }
 }
 
@@ -56,7 +56,7 @@ const createNetworkOptions = ({
   onNetworkChange,
   isNetworkDisabled,
   selectedNetworkChainId,
-  activeChainId
+  activeChainId,
 }: {
   networkPreset: NetworkOptionsPreset
   selectedNetworkChainId: ChainId
@@ -69,7 +69,7 @@ const createNetworkOptions = ({
     preset: networkPreset,
     active: selectedNetworkChainId === activeChainId,
     disabled: isNetworkDisabled(networkPreset.chainId, selectedNetworkChainId),
-    onClick: () => onNetworkChange(chainId)
+    onClick: () => onNetworkChange(chainId),
   }
 }
 
@@ -79,7 +79,7 @@ export const createNetworksList = ({
   isNetworkDisabled,
   selectedNetworkChainId,
   activeChainId,
-  ignoreTags
+  ignoreTags,
 }: {
   networkOptionsPreset: NetworkOptionsPreset[]
   onNetworkChange: (chainId: ChainId) => void
@@ -109,7 +109,7 @@ export const createNetworksList = ({
         selectedNetworkChainId,
         activeChainId,
         onNetworkChange,
-        isNetworkDisabled
+        isNetworkDisabled,
       })
 
       // check if tag exist and if not create array

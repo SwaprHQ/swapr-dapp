@@ -39,7 +39,7 @@ const StyledRowFixed = styled(RowFixed)`
 
 export function SwapSettings({
   showAddRecipient,
-  setShowAddRecipient
+  setShowAddRecipient,
 }: {
   showAddRecipient: boolean
   setShowAddRecipient: (value: boolean) => void

@@ -136,7 +136,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
             lowerTimeLimit: memoizedLowerTimeLimit,
             userId: subgraphAccountId,
             lastId,
-            pageSize: PAGE_SIZE
+            pageSize: PAGE_SIZE,
           })
           pairs.push(...result.pairs)
           lastId = result.pairs[result.pairs.length - 1].address
@@ -174,7 +174,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           token1,
           reserve0,
           reserve1,
-          liquidityMiningCampaigns
+          liquidityMiningCampaigns,
         } = rawPair
 
         const token0ChecksummedAddress = getAddress(token0.address)
@@ -216,9 +216,9 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           hasFarming: pair.liquidityMiningCampaigns.some(campaign => campaign.currentlyActive),
           reserveUSD: CurrencyAmount.usd(
             parseUnits(new Decimal(reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
-          )
+          ),
         }
-      }, [])
+      }, []),
     }
   }, [
     chainId,
@@ -228,6 +228,6 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     loadingPairs,
     nativeCurrency,
     pairs,
-    tokensInCurrentChain
+    tokensInCurrentChain,
   ])
 }

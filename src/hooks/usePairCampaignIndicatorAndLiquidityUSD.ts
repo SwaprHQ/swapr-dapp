@@ -27,7 +27,7 @@ export function usePairCampaignIndicatorAndLiquidityUSD(
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
 
   const { loading, data, error } = useQuery<QueryResult>(QUERY, {
-    variables: { id: pair?.liquidityToken.address.toLowerCase(), timestamp: timestamp }
+    variables: { id: pair?.liquidityToken.address.toLowerCase(), timestamp: timestamp },
   })
 
   return useMemo(() => {
@@ -39,7 +39,7 @@ export function usePairCampaignIndicatorAndLiquidityUSD(
       liquidityUSD: CurrencyAmount.usd(
         parseUnits(new Decimal(data.pair.reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
       ),
-      numberOfCampaigns: data.pair.liquidityMiningCampaigns.length
+      numberOfCampaigns: data.pair.liquidityMiningCampaigns.length,
     }
   }, [data, error, loading])
 }

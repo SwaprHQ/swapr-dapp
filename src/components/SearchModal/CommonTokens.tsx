@@ -32,7 +32,7 @@ const BaseWrapper = styled.div<{ disable?: boolean }>`
 export default function CommonTokens({
   chainId,
   onSelect,
-  selectedCurrency
+  selectedCurrency,
 }: {
   chainId?: ChainId
   selectedCurrency?: Currency | null

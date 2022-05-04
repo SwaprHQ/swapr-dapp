@@ -109,7 +109,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
       loading: false,
       data: singleSidedStakeCampaign,
       stakedAmount:
-        wrapped.singleSidedStakingPositions.length > 0 ? wrapped.singleSidedStakingPositions[0].stakedAmount : '0'
+        wrapped.singleSidedStakingPositions.length > 0 ? wrapped.singleSidedStakingPositions[0].stakedAmount : '0',
     }
   }, [filter, data, loading, error, filterToken, swaprAddress, chainId, nativeCurrency, filterTokenAddress])
 }

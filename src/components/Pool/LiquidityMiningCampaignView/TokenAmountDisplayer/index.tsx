@@ -22,7 +22,7 @@ function TokenAmountDisplayer({
   fontSize = '14px',
   alignRight,
   showUSDValue,
-  className
+  className,
 }: TokenAmountDisplayerProps) {
   const theme = useContext(ThemeContext)
   const { nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()

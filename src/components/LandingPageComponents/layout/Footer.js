@@ -2,46 +2,46 @@ import React from 'react'
 import styled from 'styled-components'
 import { FooterContent } from './../../../utils/ui-constants'
 import { breakpoints } from './../../../utils/theme'
-import { scrollTo } from './../../../utils/helper-functions';
+import { scrollTo } from './../../../utils/helper-functions'
 import Layout from './Layout'
 import NavigationButton from './../../../assets/images/timeline-assets/navigation-button.png'
 
 import SwaprLogo from './../../../assets/images/swapr-logo.svg'
 
 const Footer = () => {
-    return (
-        <StyledFooter id="footer" width="main-width">
-            <div className="footer-top">
-                <img src={SwaprLogo} alt="Swapr"/>
-            </div>
-            <div className="footer-content">
-                <ul className="footer-column-list">
-                    {FooterContent.linkColumns.map((column, key) => (
-                        <li key={key} className="footer-column">
-                            <h4>{column.title}</h4>
-                            <ul className="footer-link-list">
-                                {column.footerLinks.map((link, key) => (
-                                    <li key={key}className="footer-link-item">
-                                        <a href={link.href} target="_blank" rel="noopener noreferrer">
-                                            {link.label}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
-                <div className="cta-container">
-                    <div 
-                        onClick={(e) => {
-                            scrollTo('app-wrapper')
-                        }} 
-                        className="timeline-navigation-button up" 
-                    />
-                </div>
-            </div>
-        </StyledFooter>
-    )
+  return (
+    <StyledFooter id="footer" width="main-width">
+      <div className="footer-top">
+        <img src={SwaprLogo} alt="Swapr" />
+      </div>
+      <div className="footer-content">
+        <ul className="footer-column-list">
+          {FooterContent.linkColumns.map((column, key) => (
+            <li key={key} className="footer-column">
+              <h4>{column.title}</h4>
+              <ul className="footer-link-list">
+                {column.footerLinks.map((link, key) => (
+                  <li key={key} className="footer-link-item">
+                    <a href={link.href} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+        <div className="cta-container">
+          <div
+            onClick={() => {
+              scrollTo('app-wrapper')
+            }}
+            className="timeline-navigation-button up"
+          />
+        </div>
+      </div>
+    </StyledFooter>
+  )
 }
 
 const StyledFooter = styled(Layout)`
@@ -155,6 +155,6 @@ const StyledFooter = styled(Layout)`
             }
         }
     }
-`;
+`
 
-export default Footer;
+export default Footer

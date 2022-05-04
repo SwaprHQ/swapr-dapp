@@ -34,7 +34,7 @@ export const BridgeActionPanel = ({
   handleCollect,
   toNetworkChainId,
   fromNetworkChainId,
-  isNetworkConnected
+  isNetworkConnected,
 }: BridgeActionPanelProps) => {
   const { selectNetwork } = useNetworkSwitch()
 
@@ -45,7 +45,7 @@ export const BridgeActionPanel = ({
     showApprovalFlow,
     bridgeCurrency,
     isArbitrum,
-    hasAmount
+    hasAmount,
   } = useBridgeActionPanel()
 
   const handleSelectFromNetwork = useCallback(() => {
