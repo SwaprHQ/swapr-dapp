@@ -102,6 +102,7 @@ export default function App() {
                   <Route exact strict path="/swap" component={Swap} />
                   <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                   <Route exact strict path="/bridge" component={Bridge} />
+                  <Route component={RedirectPathToSwapOnly} />
 
                   {allFeaturesEnabled && (
                     <>
@@ -134,9 +135,9 @@ export default function App() {
                       <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
                       <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                       <Route exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />
+                      <Route component={RedirectPathToSwapOnly} />
                     </>
                   )}
-                  <Route component={RedirectPathToSwapOnly} />
                 </Switch>
               </Web3ReactManager>
               <Marginer />
