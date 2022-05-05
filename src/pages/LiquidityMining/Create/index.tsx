@@ -68,7 +68,7 @@ const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
       return {
         ...state,
         rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
-          i === payload.index && payload.reward ? payload.reward : reward
+          i === payload.index ? payload.reward : reward
         )
       }
     case ActionType.RAW_AMOUNTS:
