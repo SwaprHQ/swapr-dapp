@@ -12,7 +12,7 @@ import { CampaignPage } from '../../../pages/CampaignPage'
 
 describe('Wallet connection tests [TC-60]', () => {
   const REWARDS_INPUT = 0.001
-  const TOKENS_PAIR = 'USDC/USDT'
+  const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
   const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
   const endsAt = DateUtils.getDateTimeAndAppendMinutes(4)
@@ -51,7 +51,7 @@ describe('Wallet connection tests [TC-60]', () => {
       expect(parseInt(res.body.data.liquidityMiningCampaigns[0].endsAt)).to.be.eq(getUnixTime(endsAt))
       expect(parseFloat(res.body.data.liquidityMiningCampaigns[0].rewards[0].amount)).to.be.eq(REWARDS_INPUT)
       expect(res.body.data.liquidityMiningCampaigns[0].rewards[0].token.symbol).to.be.eq('WEENUS')
-      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('USDC')
+      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
       expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
     })
   })
@@ -62,9 +62,9 @@ describe('Wallet connection tests [TC-60]', () => {
     TokenMenu.getOpenTokenManagerButton().click()
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
-    TokenMenu.chooseToken('usdt')
+    TokenMenu.chooseToken('dai')
     LiquidityPage.getPairCards()
-      .contains('USDC')
+      .contains('USDT')
       .click()
     LiquidityPage.getRewardsCampaignButton().click()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
@@ -80,8 +80,8 @@ describe('Wallet connection tests [TC-60]', () => {
   it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
-    PairMenu.choosePair('USDC/USDT')
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt, 'USDC/USDT')
+    PairMenu.choosePair(TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt, TOKENS_PAIR)
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
