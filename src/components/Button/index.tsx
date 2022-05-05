@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react'
-import styled from 'styled-components'
+import React, { ReactNode, useContext } from 'react'
+import styled, { ThemeContext } from 'styled-components'
 import { darken, lighten, transparentize } from 'polished'
 
 import { RowBetween } from '../Row'
@@ -7,10 +7,10 @@ import { ArrowUpRight, ChevronDown } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import arrowIcon from './../../assets/svg/double-angle.svg'
-import { Box, Text } from 'rebass'
+import { Box, Flex, Text } from 'rebass'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 import { gradients } from '../../utils/theme'
-import { ExternalLink, colors } from '../../theme'
+import { ExternalLink } from '../../theme'
 
 interface BaseProps {
   padding?: string
@@ -307,16 +307,79 @@ export function ButtonWithLink({ link, text, style }: { link: string; text: stri
   )
 }
 
-export function ButtonExternalLink({ link, children }: { link: string; children: any }) {
+export function ButtonExternalLink({
+  link,
+  children,
+  disabled = false,
+}: {
+  link: string
+  disabled?: boolean
+  children: ReactNode
+}) {
+  const theme = useContext(ThemeContext)
+  if (disabled)
+    return (
+      <ButtonPurpleDim disabled={disabled}>
+        {children}
+        <Box ml={2}>
+          <ArrowUpRight size="14px" color={theme.purple2} />
+        </Box>
+      </ButtonPurpleDim>
+    )
+
   return (
-    <ButtonPurpleDim as={ExternalLink} href={link}>
+    <ButtonPurpleDim disabled={disabled} as={ExternalLink} href={link}>
       {children}
       <Box ml={2}>
-        <ArrowUpRight size="14px" color={colors(true).purple2} />
+        <ArrowUpRight size="14px" color={theme.purple2} />
       </Box>
     </ButtonPurpleDim>
   )
 }
+
+export function ButtonWithBadge({
+  link,
+  children,
+  number,
+  disabled = false,
+}: {
+  link: string
+  number: number
+  disabled?: boolean
+  children: ReactNode
+}) {
+  if (disabled)
+    return (
+      <ButtonPurpleDim disabled={disabled}>
+        {children}
+        <Box ml={1}>
+          <NumberBadge>{number}</NumberBadge>
+        </Box>
+      </ButtonPurpleDim>
+    )
+
+  return (
+    <ButtonPurpleDim as={ExternalLink} href={link}>
+      <Flex alignItems="center">
+        {children}
+        <Box ml={1}>
+          <NumberBadge>{number}</NumberBadge>
+        </Box>
+      </Flex>
+    </ButtonPurpleDim>
+  )
+}
+
+const NumberBadge = styled.div`
+  min-width: 16px;
+  align-items: center;
+  justufy-content: center;
+  padding 0 3px;
+  border: 1px solid ${({ theme }) => theme.orange1};
+  border-radius: 4px;
+  font-size: 12px;
+  color: ${({ theme }) => theme.orange1};
+`
 
 const CarrotIconWithMargin = styled(CarrotIcon)`
   margin-right: 4px;

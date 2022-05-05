@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import { ChevronDown } from 'react-feather'
@@ -17,7 +16,7 @@ import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { PairState, usePair } from '../../../data/Reserves'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
-import { ButtonPurpleDim } from '../../../components/Button'
+import { ButtonPurpleDim, ButtonWithBadge } from '../../../components/Button'
 import { SpaceBg } from '../../../components/SpaceBg'
 import PoolStats from '../../../components/Pool/PairView/PoolStats'
 import YourLiquidity from '../../../components/Pool/PairView/YourLiquidity'
@@ -85,9 +84,7 @@ export default function Pair({
               </PointableFlex>
             </Flex>
             <ButtonRow>
-              <ButtonPurpleDim id="join-pool-button" as={Link} to="/create">
-                {t('trade')}
-              </ButtonPurpleDim>
+              <ButtonPurpleDim disabled>{t('trade')}</ButtonPurpleDim>
             </ButtonRow>
           </TitleRow>
           <ContentGrid>
@@ -95,7 +92,7 @@ export default function Pair({
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
               <DimBlurBgBox padding={'24px'}>
                 <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
-                  <Box mb={2}>
+                  <Box mb={3}>
                     <InfoSnippet
                       title={t('swapFee')}
                       value={
@@ -110,9 +107,9 @@ export default function Pair({
                       center
                     />
                   </Box>
-                  <ButtonPurpleDim style={{ padding: '8px 12px' }} disabled>
+                  <ButtonWithBadge link={'#'} number={0} disabled={true}>
                     {t('governance')}
-                  </ButtonPurpleDim>
+                  </ButtonWithBadge>
                 </Flex>
               </DimBlurBgBox>
             </TwoColumnsGrid>
