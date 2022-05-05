@@ -46,7 +46,7 @@ export default function YourLiquidity({ pair }: YourLiquidityProps) {
       JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
       ? [
           pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
+          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [new TokenAmount(pair.token0, '0'), new TokenAmount(pair.token1, '0')]
     : [undefined, undefined]

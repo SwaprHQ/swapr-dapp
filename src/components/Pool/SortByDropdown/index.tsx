@@ -31,7 +31,7 @@ const StyledFlex = styled(Flex)`
 
 export function SortByDropdown({
   sortBy,
-  onSortByChange
+  onSortByChange,
 }: {
   sortBy: string
   onSortByChange: (sortBy: string) => void
@@ -45,7 +45,7 @@ export function SortByDropdown({
   const optionsTranslation = {
     [LIQUIDITY_SORTING_TYPES.TVL]: t('TVL'),
     [LIQUIDITY_SORTING_TYPES.APY]: t('APY'),
-    [LIQUIDITY_SORTING_TYPES.NEW]: t('New')
+    [LIQUIDITY_SORTING_TYPES.NEW]: t('New'),
   }
 
   return (

@@ -6,7 +6,7 @@ export const InfoSnippet = ({
   title,
   value,
   big = false,
-  center = false
+  center = false,
 }: {
   title: string
   value: string
