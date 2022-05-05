@@ -1,5 +1,5 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
@@ -70,13 +70,12 @@ export default function StakeTokenAndLimit({
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')
-  const [inputWidth, setInputWidth] = useState(18)
+
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (unlimitedPool) {
       setStakingCapString('')
-      setInputWidth(18)
       onStakingCapChange(null)
     }
   }, [onStakingCapChange, stakeTokenOrPair, unlimitedPool])
@@ -105,11 +104,12 @@ export default function StakeTokenAndLimit({
     setStakeTokenOrPair(null)
   }, [campaingType, setStakeTokenOrPair])
 
+  const widthValue = useMemo(() => {
+    if (stakingCapString.length > 0 && inputRef.current) return inputRef.current.clientWidth
+    else return 18
+  }, [stakingCapString, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      if (rawValue.length === 0) setInputWidth(18)
-      else setInputWidth(inputRef.current?.clientWidth || 4)
-
       if (!stakeTokenOrPair || (stakeTokenOrPair instanceof Pair && !stakeTokenOrPair.liquidityToken)) return
       setStakingCapString(rawValue)
       const tokenOrPair = stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair.liquidityToken
@@ -159,7 +159,7 @@ export default function StakeTokenAndLimit({
             </StyledFlex>
             <AmountFlex active={!unlimitedPool}>
               <StyledNumericalInput
-                style={{ width: inputWidth + 12 + 'px' }}
+                style={{ width: widthValue + 12 + 'px' }}
                 onClick={() => onUnlimitedPoolChange(false)}
                 disabled={!stakeTokenOrPair}
                 value={stakingCapString}

@@ -15,7 +15,7 @@ interface CurrencySearchModalProps {
   onDismiss: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
   showCommonBases?: boolean
   showNativeCurrency?: boolean
 }

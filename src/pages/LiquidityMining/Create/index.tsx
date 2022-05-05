@@ -1,4 +1,4 @@
-import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
+import { Currency, Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../../components/Column'
@@ -29,7 +29,7 @@ export enum CampaignType {
 export const numberOfRewards = 4
 export interface RewardsObject {
   approvals: ApprovalState[]
-  rewards: (TokenAmount | undefined)[]
+  rewards: { tokenAmount: TokenAmount | undefined; currency: Currency | undefined }[]
   rawAmounts: (string | undefined)[]
 }
 
@@ -43,14 +43,14 @@ export interface Actions {
   type: ActionType
   payload: {
     index?: number
-    reward?: TokenAmount
+    reward?: { tokenAmount: TokenAmount | undefined; currency: Currency | undefined }
     rawAmount?: string
     approval?: ApprovalState
   }
 }
 const initialState: RewardsObject = {
   approvals: new Array(numberOfRewards).fill(ApprovalState.UNKNOWN),
-  rewards: new Array(numberOfRewards).fill(undefined),
+  rewards: new Array(numberOfRewards).fill({ tokenAmount: undefined, currency: undefined }),
   rawAmounts: new Array(numberOfRewards).fill(undefined)
 }
 
@@ -67,8 +67,9 @@ const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
     case ActionType.REWARDS_CHANGE:
       return {
         ...state,
-        rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
-          i === payload.index ? payload.reward : reward
+        rewards: state.rewards.map(
+          (reward: { tokenAmount: TokenAmount | undefined; currency: Currency | undefined }, i: number) =>
+            i === payload.index && payload.reward ? payload.reward : reward
         )
       }
     case ActionType.RAW_AMOUNTS:
@@ -108,7 +109,7 @@ export default function CreateLiquidityMining() {
   const memoizedRewardArray = useMemo(
     () =>
       rewardsObject.rewards.length
-        ? rewardsObject.rewards.filter((item: TokenAmount | undefined) => item?.greaterThan('0'))
+        ? rewardsObject.rewards.filter(reward => reward.tokenAmount?.greaterThan('0'))
         : new Array(numberOfRewards).fill(undefined),
     [rewardsObject.rewards]
   )

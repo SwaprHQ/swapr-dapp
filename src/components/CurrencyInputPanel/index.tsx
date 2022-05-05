@@ -265,7 +265,7 @@ export default function CurrencyInputPanel({
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
-          otherSelectedCurrency={otherCurrency}
+          otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
         />
       )}

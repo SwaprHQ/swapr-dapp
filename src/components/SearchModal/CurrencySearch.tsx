@@ -48,7 +48,7 @@ interface CurrencySearchProps {
   onDismiss: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
   showCommonBases?: boolean
   showManageView: () => void
   showImportView: () => void
