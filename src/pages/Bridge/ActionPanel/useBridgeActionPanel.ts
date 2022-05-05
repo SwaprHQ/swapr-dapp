@@ -11,7 +11,7 @@ import { useChains } from '../../../hooks/useChains'
 
 const defaultAddresses = {
   walletAddress: undefined,
-  gatewayAddress: undefined
+  gatewayAddress: undefined,
 }
 
 export const useBridgeActionPanel = () => {
@@ -61,7 +61,7 @@ export const useBridgeActionPanel = () => {
       if (!tmpWalletAddress && !tmpGatewayAddress) {
         ;[tmpWalletAddress, tmpGatewayAddress] = await Promise.all([
           bridge.l1Bridge.getWalletAddress(),
-          bridge.l1Bridge.getGatewayAddress(currencyId)
+          bridge.l1Bridge.getGatewayAddress(currencyId),
         ])
 
         if (active) {
@@ -120,6 +120,6 @@ export const useBridgeActionPanel = () => {
     showApprovalFlow,
     bridgeCurrency,
     isArbitrum,
-    hasAmount
+    hasAmount,
   }
 }

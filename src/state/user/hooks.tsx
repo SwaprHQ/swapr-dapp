@@ -22,7 +22,7 @@ import {
   toggleURLWarning,
   removeSerializedPair,
   updateUserMultihop,
-  updateUserPreferredGasPrice
+  updateUserPreferredGasPrice,
 } from './actions'
 
 function serializeToken(token: Token): SerializedToken {
@@ -31,7 +31,7 @@ function serializeToken(token: Token): SerializedToken {
     address: token.address,
     decimals: token.decimals,
     symbol: token.symbol,
-    name: token.name
+    name: token.name,
   }
 }
 
@@ -48,7 +48,7 @@ function deserializeToken(serializedToken: SerializedToken): Token {
 function serializeSimplifiedPair(pair: Pair): SerializedPair {
   return {
     token0: serializeToken(pair.token0),
-    token1: serializeToken(pair.token1)
+    token1: serializeToken(pair.token1),
   }
 }
 
@@ -63,7 +63,7 @@ export function useIsDarkMode(): boolean {
   >(
     ({ user: { matchesDarkMode, userDarkMode } }) => ({
       userDarkMode,
-      matchesDarkMode
+      matchesDarkMode,
     }),
     shallowEqual
   )
@@ -308,7 +308,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const combinedList = useMemo(() => userPairs.concat(generatedPairs).concat(pinnedPairs), [
     generatedPairs,
     pinnedPairs,
-    userPairs
+    userPairs,
   ])
 
   return useMemo(() => {

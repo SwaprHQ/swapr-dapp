@@ -35,7 +35,7 @@ export function shouldCheck(lastBlockNumber: number, tx: TxInterface): boolean {
 
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
   [ChainId.ARBITRUM_ONE]: { n: 10, minWait: 250, maxWait: 1000 },
-  [ChainId.ARBITRUM_RINKEBY]: { n: 10, minWait: 250, maxWait: 1000 }
+  [ChainId.ARBITRUM_RINKEBY]: { n: 10, minWait: 250, maxWait: 1000 },
 }
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 1, minWait: 0, maxWait: 0 }
 
@@ -93,8 +93,8 @@ export default function Updater(): null {
                     status: receipt.status,
                     to: receipt.to,
                     transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex
-                  }
+                    transactionIndex: receipt.transactionIndex,
+                  },
                 })
               )
 
@@ -102,8 +102,8 @@ export default function Updater(): null {
                 txn: {
                   hash,
                   success: receipt.status === 1,
-                  summary: transactions[hash]?.summary
-                }
+                  summary: transactions[hash]?.summary,
+                },
               })
 
               // the receipt was fetched before the block, fast forward to that block to trigger balance updates

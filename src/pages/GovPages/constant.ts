@@ -8,5 +8,5 @@ export const temporaryCurrencyData: Array<Currency> = [
   DAI,
   USDC[ChainId.MAINNET],
   USDT[ChainId.MAINNET],
-  WBTC[ChainId.MAINNET]
+  WBTC[ChainId.MAINNET],
 ]

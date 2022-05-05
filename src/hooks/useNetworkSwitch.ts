@@ -35,6 +35,6 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
   )
 
   return {
-    selectNetwork
+    selectNetwork,
   }
 }

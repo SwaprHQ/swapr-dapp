@@ -2,7 +2,7 @@ import { Pair, TokenAmount } from '@swapr/sdk'
 import React, { useCallback } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent
+  TransactionErrorContent,
 } from '../../TransactionConfirmationModal'
 import StakingRewardsDistributionCreationModalFooter from './StakingRewardsDistributionCreationModalFooter'
 
@@ -35,7 +35,7 @@ export default function ConfirmStakingRewardsDistributionCreation({
   reward,
   timelocked,
   stakingCap,
-  unlimitedPool
+  unlimitedPool,
 }: ConfirmStakingRewardsDistributionCreationProps) {
   const confirmationContent = useCallback(
     () =>
@@ -70,7 +70,7 @@ export default function ConfirmStakingRewardsDistributionCreation({
       reward,
       timelocked,
       stakingCap,
-      unlimitedPool
+      unlimitedPool,
     ]
   )
 

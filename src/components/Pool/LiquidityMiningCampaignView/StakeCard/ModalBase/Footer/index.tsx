@@ -19,7 +19,7 @@ export default function ConfirmStakingModalFooter({
   text,
   disabledConfirm,
   approvalState,
-  showApprove
+  showApprove,
 }: ConfirmStakingModalFooterProps) {
   return (
     <Flex justifyContent="stretch">

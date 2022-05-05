@@ -68,7 +68,7 @@ const Input = styled.input<{ error?: boolean }>`
 export default function AddressInputPanel({
   id,
   value,
-  onChange
+  onChange,
 }: {
   id?: string
   // the typed string value

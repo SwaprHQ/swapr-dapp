@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
-  UNWRAP
+  UNWRAP,
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
@@ -36,7 +36,7 @@ export default function useWrapCallback(
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency, chainId), [
     inputCurrency,
     typedValue,
-    chainId
+    chainId,
   ])
   const addTransaction = useTransactionAdder()
 
@@ -57,12 +57,12 @@ export default function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await nativeCurrencyWrapperContract.deposit({
-                    value: `0x${inputAmount.raw.toString(16)}`
+                    value: `0x${inputAmount.raw.toString(16)}`,
                   })
                   addTransaction(txReceipt, {
                     summary: `Wrap ${inputAmount.toSignificant(6)} ${nativeCurrency.symbol} to ${
                       nativeCurrencyWrapperToken.symbol
-                    }`
+                    }`,
                   })
                 } catch (error) {
                   console.error('Could not deposit', error)
@@ -73,7 +73,7 @@ export default function useWrapCallback(
           ? undefined
           : !typedValue
           ? t('enterCurrencyAmount', { currency: nativeCurrency.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrency.symbol })
+          : t('insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
       }
     } else if (
       nativeCurrencyWrapperToken &&
@@ -90,7 +90,7 @@ export default function useWrapCallback(
                   addTransaction(txReceipt, {
                     summary: `Unwrap ${inputAmount.toSignificant(6)} ${nativeCurrencyWrapperToken.symbol} to ${
                       nativeCurrency.symbol
-                    }`
+                    }`,
                   })
                 } catch (error) {
                   console.error('Could not withdraw', error)
@@ -101,7 +101,7 @@ export default function useWrapCallback(
           ? undefined
           : !typedValue
           ? t('enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol })
+          : t('insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
       }
     } else {
       return NOT_APPLICABLE
@@ -117,6 +117,6 @@ export default function useWrapCallback(
     nativeCurrency,
     addTransaction,
     typedValue,
-    t
+    t,
   ])
 }

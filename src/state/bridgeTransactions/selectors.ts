@@ -46,7 +46,7 @@ export const bridgePendingTxsSelector = createSelector(
     if (l1ChainId && l2ChainId) {
       transactions = [
         ...Object.values(txs[l1ChainId] ?? {}).filter(tx => !tx?.receipt),
-        ...Object.values(txs[l2ChainId] ?? {}).filter(tx => !tx?.receipt)
+        ...Object.values(txs[l2ChainId] ?? {}).filter(tx => !tx?.receipt),
       ]
     }
 
@@ -64,7 +64,7 @@ export const bridgeL1DepositsSelector = createSelector(
       transactions = [
         ...Object.values(txs[l1ChainId] ?? {}).filter(tx => {
           return (tx.type === 'deposit' || tx.type === 'deposit-l1') && tx?.receipt?.status === 1
-        })
+        }),
       ]
     }
 
@@ -101,7 +101,7 @@ const createBridgeLog = ({ transactions, fromChainId, toChainId }: CreateBridgeL
     toChainId,
     fromChainId,
     type: tx.type,
-    status: getBridgeTxStatus(tx.receipt?.status)
+    status: getBridgeTxStatus(tx.receipt?.status),
   }))
 }
 
@@ -142,7 +142,7 @@ export const bridgeTxsSummarySelector = createSelector(
           batchNumber: tx.batchNumber,
           pendingReason: tx.receipt?.status ? undefined : PendingReasons.TX_UNCONFIRMED,
           timestampResolved: tx.timestampResolved,
-          log: []
+          log: [],
         }
 
         // DEPOSIT L1
@@ -171,7 +171,7 @@ export const bridgeTxsSummarySelector = createSelector(
           summary.log = createBridgeLog({
             transactions: [l2Txs[tx.partnerTxHash], tx],
             fromChainId: to,
-            toChainId: from
+            toChainId: from,
           })
 
           processedTxsMap[l1ChainId][tx.txHash] = tx.txHash
@@ -195,7 +195,7 @@ export const bridgeTxsSummarySelector = createSelector(
           summary.log = createBridgeLog({
             transactions: [tx, l2Txs[tx.partnerTxHash]],
             fromChainId: from,
-            toChainId: to
+            toChainId: to,
           })
 
           processedTxsMap[l1ChainId][tx.txHash] = tx.txHash
@@ -226,7 +226,7 @@ export const bridgeTxsSummarySelector = createSelector(
           toChainId: to,
           status: getBridgeTxStatus(tx.receipt?.status),
           timestampResolved: tx.timestampResolved,
-          log: []
+          log: [],
         }
 
         // WITHDRAWAL L2

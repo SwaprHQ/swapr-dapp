@@ -30,8 +30,8 @@ export function usePair24hVolumeUSD(
       pairOrTokenAddress: pairOrTokenAddress?.toLowerCase(),
       date: DateTime.utc()
         .startOf('day')
-        .toSeconds()
-    }
+        .toSeconds(),
+    },
   })
   return useMemo(() => {
     if (loading) return { loading: true, volume24hUSD: ZERO_USD }
@@ -51,7 +51,7 @@ export function usePair24hVolumeUSD(
           ),
           USD.decimals
         ).toString()
-      )
+      ),
     }
   }, [data, error, loading, isToken])
 }

@@ -45,7 +45,7 @@ const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
 }
 
 Badge.defaultProps = {
-  onIconClick: () => {}
+  onIconClick: () => null,
 }
 
 export default Badge

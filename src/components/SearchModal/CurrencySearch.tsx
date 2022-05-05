@@ -66,7 +66,7 @@ export function CurrencySearch({
   showManageView,
   showImportView,
   setImportToken,
-  showNativeCurrency
+  showNativeCurrency,
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()

@@ -15,7 +15,7 @@ export type BridgeTxnType =
 
 export enum BridgeAssetType {
   ETH = 'ETH',
-  ERC20 = 'ERC20'
+  ERC20 = 'ERC20',
   //ERC721
 }
 

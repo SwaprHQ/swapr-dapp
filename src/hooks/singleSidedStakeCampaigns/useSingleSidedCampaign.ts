@@ -56,8 +56,8 @@ export function useSingleSidedCampaign(
     singleSidedStakingCampaign: SubgraphSingleSidedStakingCampaign
   }>(QUERY, {
     variables: {
-      campaignAddress: campaginAddress.toLowerCase()
-    }
+      campaignAddress: campaginAddress.toLowerCase(),
+    },
   })
   return useMemo(() => {
     if (loading || chainId === undefined) {
@@ -86,7 +86,7 @@ export function useSingleSidedCampaign(
 
     return {
       loading: false,
-      singleSidedStakingCampaign: singleSidedStakeCampaign
+      singleSidedStakingCampaign: singleSidedStakeCampaign,
     }
   }, [data, loading, error, chainId, nativeCurrency])
 }
