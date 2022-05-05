@@ -16,6 +16,23 @@ describe('Wallet connection tests [TC-60]', () => {
   const REWARD_TOKEN = 'weenus'
   const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
   const endsAt = DateUtils.getDateTimeAndAppendMinutes(4)
+  interface liquidityCampaign {
+    body: {
+      data: {
+        liquidityMiningCampaigns: {
+          owner: string
+          endsAt: string
+          rewards: {
+            amount: string
+            token: {
+              symbol: string
+            }
+          }[]
+          stakablePair: { token0: { symbol: string }; token1: { symbol: string } }
+        }[]
+      }
+    }
+  }
 
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
@@ -46,14 +63,16 @@ describe('Wallet connection tests [TC-60]', () => {
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
     MenuBar.checkToastMessage('campaign')
-    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(startsAt)).then((res: any) => {
-      expect(res.body.data.liquidityMiningCampaigns[0].owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
-      expect(parseInt(res.body.data.liquidityMiningCampaigns[0].endsAt)).to.be.eq(getUnixTime(endsAt))
-      expect(parseFloat(res.body.data.liquidityMiningCampaigns[0].rewards[0].amount)).to.be.eq(REWARDS_INPUT)
-      expect(res.body.data.liquidityMiningCampaigns[0].rewards[0].token.symbol).to.be.eq('WEENUS')
-      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
-      expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
-    })
+    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(startsAt)).then(
+      (res: liquidityCampaign) => {
+        expect(res.body.data.liquidityMiningCampaigns[0].owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
+        expect(parseInt(res.body.data.liquidityMiningCampaigns[0].endsAt)).to.be.eq(getUnixTime(endsAt))
+        expect(parseFloat(res.body.data.liquidityMiningCampaigns[0].rewards[0].amount)).to.be.eq(REWARDS_INPUT)
+        expect(res.body.data.liquidityMiningCampaigns[0].rewards[0].token.symbol).to.be.eq('WEENUS')
+        expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
+        expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
+      }
+    )
   })
   it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()

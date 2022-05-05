@@ -220,7 +220,7 @@ function Information({
                     <CurrencyLogo currency={targetedPair} loading={!targetedPair} />
                   )}
                 </Box>
-                <Box data-testid={'campaign-tokens'}>
+                <Box data-testid="campaign-tokens">
                   <Text fontSize="18px" fontWeight="600" lineHeight="20px">
                     {!targetedPair ? (
                       <Skeleton width="60px" height="18px" />
@@ -307,7 +307,7 @@ function Information({
           />
         </MaxPollSizeSection>
         <RewardsSection alignItems="flex-start">
-          <Box mr="24px" data-testid={'rewards-box'}>
+          <Box mr="24px" data-testid="rewards-box">
             <DataDisplayer
               title="REWARDS"
               data={
@@ -383,7 +383,7 @@ function Information({
           />
         </PoolTypeSection>
         <DatesSection>
-          <Box mr="24px" data-testid={'start-date'}>
+          <Box mr="24px" data-testid="start-date">
             <DataDisplayer
               title="START"
               data={
@@ -396,7 +396,7 @@ function Information({
               dataTextSize={10.5}
             />
           </Box>
-          <Box data-testid={'end-date'}>
+          <Box data-testid="end-date">
             <DataDisplayer
               title="END"
               data={

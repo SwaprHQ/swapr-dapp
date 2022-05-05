@@ -137,7 +137,7 @@ export function CampaignCard({
     <SizedCard
       cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'}
       {...rest}
-      data-testid={'reward-card'}
+      data-testid="reward-card"
     >
       <Flex flexDirection="column" height={'100%'} data-testid={'reward-starting-at-' + campaign.startsAt}>
         <Flex justifyContent="space-between" flexGrow={1}>
