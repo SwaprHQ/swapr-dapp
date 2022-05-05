@@ -14,6 +14,7 @@ import { calculateGasMargin } from '../utils'
 import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
+import { Web3Provider } from '@ethersproject/providers'
 
 export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,
@@ -110,7 +111,9 @@ export function useSwapsGasEstimations(
 
           let estimatedCall = null
           try {
-            estimatedCall = calculateGasMargin(await library!.estimateGas(transactionParameters as any))
+            estimatedCall = calculateGasMargin(
+              await (library as Web3Provider).estimateGas(transactionParameters as any)
+            )
           } catch (error) {
             console.error(error)
             // silent fail

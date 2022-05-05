@@ -78,7 +78,7 @@ function Title({
   filteredToken,
   onFilteredTokenReset,
   aggregatedDataFilter,
-  onFilterChange
+  onFilterChange,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
 
@@ -230,7 +230,7 @@ export default function Pools() {
         </AutoColumn>
         {account && (
           <ButtonWithLink
-            link={`https://dxstats.eth.link/#/account/${account}?chainId=${chainId}`}
+            link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
             text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
             style={{ marginTop: '32px' }}
           />

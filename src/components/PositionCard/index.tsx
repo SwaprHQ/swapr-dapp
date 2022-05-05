@@ -73,7 +73,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Min
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
       ? [
           pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
+          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [undefined, undefined]
 
@@ -160,7 +160,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Min
 const AccountAnalyticsButton = ({
   account,
   chainId,
-  fullWidth
+  fullWidth,
 }: {
   account?: string | null
   chainId?: number
@@ -172,8 +172,8 @@ const AccountAnalyticsButton = ({
     as={ExternalLink}
     href={
       account
-        ? `https://dxstats.eth.link/#/account/${account}?chainId=${chainId}`
-        : `https://dxstats.eth.link/#/accounts?chainId=${chainId}`
+        ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+        : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
     }
   >
     <Flex alignItems="center">
@@ -222,7 +222,7 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
       JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
       ? [
           pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
+          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [new TokenAmount(pair.token0, '0'), new TokenAmount(pair.token1, '0')]
     : [undefined, undefined]

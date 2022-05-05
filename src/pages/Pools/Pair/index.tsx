@@ -67,8 +67,8 @@ const ButtonRow = styled(RowFixed)`
 
 export default function Pair({
   match: {
-    params: { currencyIdA, currencyIdB }
-  }
+    params: { currencyIdA, currencyIdB },
+  },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const router = useRouter()
   const token0 = useToken(currencyIdA)
@@ -89,7 +89,7 @@ export default function Pair({
   const handlePairSelect = useCallback(
     pair => {
       router.push({
-        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`
+        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`,
       })
     },
     [router]

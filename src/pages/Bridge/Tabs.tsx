@@ -17,7 +17,7 @@ export const Tabs = ({
   isCollecting,
   isCollectableFilter,
   handleResetBridge,
-  setTxsFilter
+  setTxsFilter,
 }: TabsProps) => {
   return (
     <TabsRow>

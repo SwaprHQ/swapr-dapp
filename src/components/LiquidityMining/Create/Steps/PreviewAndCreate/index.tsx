@@ -43,7 +43,7 @@ export default function PreviewAndCreate({
   stakingCap,
   reward,
   apy,
-  onCreate
+  onCreate,
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const userBalance = useTokenBalance(account || undefined, reward?.token)

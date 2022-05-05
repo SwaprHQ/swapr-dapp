@@ -16,7 +16,7 @@ import {
   updateUserDeadline,
   toggleURLWarning,
   updateUserPreferredGasPrice,
-  updateUserAdvancedSwapDetails
+  updateUserAdvancedSwapDetails,
 } from './actions'
 import { MainnetGasPrice } from '../application/actions'
 
@@ -77,7 +77,7 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
-  userAdvancedSwapDetails: true
+  userAdvancedSwapDetails: true,
 }
 
 export default createReducer(initialState, builder =>

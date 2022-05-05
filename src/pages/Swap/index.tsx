@@ -5,7 +5,7 @@ import {
   Token,
   RoutablePlatform,
   UniswapV2Trade,
-  UniswapV2RoutablePlatform
+  UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -31,7 +31,7 @@ import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
-  useSwapState
+  useSwapState,
 } from '../../state/swap/hooks'
 import { useAdvancedSwapDetails, useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
@@ -88,7 +88,7 @@ export default function Swap() {
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId)
+    useCurrency(loadedUrlParams?.outputCurrencyId),
   ]
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const urlLoadedScammyTokens: Token[] = useMemo(() => {
@@ -121,7 +121,7 @@ export default function Swap() {
     currencyBalances,
     parsedAmount,
     currencies,
-    inputError: swapInputError
+    inputError: swapInputError,
   } = useDerivedSwapInfo(platformOverride || undefined)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
@@ -135,11 +135,11 @@ export default function Swap() {
   const parsedAmounts = showWrap
     ? {
         [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount
+        [Field.OUTPUT]: parsedAmount,
       }
     : {
         [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
@@ -171,14 +171,14 @@ export default function Swap() {
     tradeToConfirm: undefined,
     attemptingTxn: false,
     swapErrorMessage: undefined,
-    txHash: undefined
+    txHash: undefined,
   })
 
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
       ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
@@ -226,7 +226,7 @@ export default function Swap() {
           tradeToConfirm,
           showConfirm,
           swapErrorMessage: error.message,
-          txHash: undefined
+          txHash: undefined,
         })
       })
   }, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback])
@@ -288,7 +288,7 @@ export default function Swap() {
   const fiatValueOutput = useUSDValue(parsedAmounts[Field.OUTPUT], trade)
   const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
     fiatValueInput,
-    fiatValueOutput
+    fiatValueOutput,
   ])
 
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
@@ -440,7 +440,7 @@ export default function Swap() {
                               attemptingTxn: false,
                               swapErrorMessage: undefined,
                               showConfirm: true,
-                              txHash: undefined
+                              txHash: undefined,
                             })
                           }
                         }}
@@ -467,7 +467,7 @@ export default function Swap() {
                             attemptingTxn: false,
                             swapErrorMessage: undefined,
                             showConfirm: true,
-                            txHash: undefined
+                            txHash: undefined,
                           })
                         }
                       }}

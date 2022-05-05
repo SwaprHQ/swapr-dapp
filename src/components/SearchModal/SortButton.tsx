@@ -8,7 +8,7 @@ const CursorText = styled(TYPE.body)`
 
 export default function SortButton({
   toggleSortOrder,
-  ascending
+  ascending,
 }: {
   toggleSortOrder: () => void
   ascending: boolean
