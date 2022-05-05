@@ -64,7 +64,7 @@ describe('Wallet connection tests [TC-60]', () => {
     TokenMenu.goBack()
     TokenMenu.chooseToken('usdt')
     LiquidityPage.getPairCards()
-      .first()
+      .contains('USDC')
       .click()
     LiquidityPage.getRewardsCampaignButton().click()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
@@ -79,8 +79,9 @@ describe('Wallet connection tests [TC-60]', () => {
   })
   it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt)
-
+    RewardsPage.getAllPairsButton().click()
+    PairMenu.choosePair('USDC/USDT')
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt, 'USDC/USDT')
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,

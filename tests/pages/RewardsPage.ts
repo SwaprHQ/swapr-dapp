@@ -1,4 +1,5 @@
 import { getUnixTime } from 'date-fns'
+import { PairMenu } from './PairMenu'
 
 export class RewardsPage {
   static visitRewardsPage() {
@@ -45,15 +46,18 @@ export class RewardsPage {
     return cy.get('[data-testid=reward-starting-at-' + startingAt + ']', { timeout: 60000 })
   }
 
-  static clickOnRewardCardUntilCampaignOpen(startingAt: Date) {
+  static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '') {
     cy.waitUntil(() => {
       if (Cypress.$('[data-testid=reward-card]').length) {
+        //TODO After opening campaign for first time it instead of opening reward card opens all rewards page
+        if (chosenPair != '') {
+          RewardsPage.getAllPairsButton().click()
+          PairMenu.choosePair(chosenPair)
+        }
         return RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString())
           .click()
           .then(() => false)
-      } else {
-        return true
-      }
+      } else return true
     })
   }
 }
