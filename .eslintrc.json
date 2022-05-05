@@ -8,12 +8,7 @@
       "jsx": true
     }
   },
-  "ignorePatterns": [
-    "node_modules/**/*",
-    "scripts/*.js",
-    "config-overrides.js",
-    "src/**/generated/**/*"
-  ],
+  "ignorePatterns": ["node_modules/**/*", "scripts/*.js", "config-overrides.js", "src/**/generated/**/*"],
   "settings": {
     "react": {
       "version": "detect"
@@ -28,6 +23,19 @@
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "multiline": {
+          "delimiter": "none", // 'none' or 'semi' or 'comma'
+          "requireLast": true
+        },
+        "singleline": {
+          "delimiter": "semi", // 'semi' or 'comma'
+          "requireLast": false
+        }
+      }
+    ]
   }
 }
