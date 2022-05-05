@@ -24,7 +24,7 @@ export function usePairReserveNativeCurrency(pair?: Pair): { loading: boolean; r
   const nativeCurrency = useNativeCurrency()
 
   const { loading, data, error } = useQuery<QueryResult>(QUERY, {
-    variables: { pairId: pair?.liquidityToken.address.toLowerCase() }
+    variables: { pairId: pair?.liquidityToken.address.toLowerCase() },
   })
 
   return useMemo(() => {
@@ -40,7 +40,7 @@ export function usePairReserveNativeCurrency(pair?: Pair): { loading: boolean; r
           nativeCurrency.decimals
         ).toString(),
         chainId
-      )
+      ),
     }
   }, [loading, chainId, data, error, nativeCurrency])
 }

@@ -46,9 +46,9 @@ const ButtonRow = styled(RowFixed)`
 
 export default function LiquidityMiningCampaign({
   match: {
-    params: { liquidityMiningCampaignId, currencyIdA, currencyIdB }
+    params: { liquidityMiningCampaignId, currencyIdA, currencyIdB },
   },
-  location
+  location,
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; liquidityMiningCampaignId: string }>) {
   const { account } = useActiveWeb3React()
 
@@ -125,14 +125,14 @@ export default function LiquidityMiningCampaign({
                   if (isSingleSidedCampaign && token0) {
                     return {
                       ...location,
-                      pathname: `/swap/${token0.address}`
+                      pathname: `/swap/${token0.address}`,
                     }
                   }
 
                   if (token0 && token1) {
                     return {
                       ...location,
-                      pathname: `/add/${currencyId(token0)}/${currencyId(token1)}`
+                      pathname: `/add/${currencyId(token0)}/${currencyId(token1)}`,
                     }
                   }
 

@@ -53,7 +53,7 @@ export default function PendingView({
   connector,
   error = false,
   setPendingError,
-  tryActivation
+  tryActivation,
 }: {
   connector?: AbstractConnector
   error?: boolean

@@ -27,7 +27,7 @@ export default function ClaimModal({
   onDismiss,
   newSwprBalance,
   stakedAmount,
-  singleSidedCampaignLink
+  singleSidedCampaignLink,
 }: {
   onDismiss: () => void
   newSwprBalance?: TokenAmount

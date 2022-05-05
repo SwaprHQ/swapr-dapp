@@ -9,7 +9,7 @@ import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
-  useSingleContractMultipleData
+  useSingleContractMultipleData,
 } from '../state/multicall/hooks'
 
 export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
@@ -20,7 +20,7 @@ export function useTokenAllowance(token?: Token, owner?: string, spender?: strin
 
   return useMemo(() => (token && allowance ? new TokenAmount(token, allowance.toString()) : undefined), [
     token,
-    allowance
+    allowance,
   ])
 }
 

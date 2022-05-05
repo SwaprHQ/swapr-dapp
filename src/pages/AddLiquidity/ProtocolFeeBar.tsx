@@ -12,7 +12,7 @@ export function ProtocolFeeBar({
   swapFee,
   protocolFeeDenominator,
   feeAAmount,
-  feeBAmount
+  feeBAmount,
 }: {
   feePercentage?: Percent
   swapFee?: Percent

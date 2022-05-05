@@ -1,31 +1,26 @@
-import React from 'react';
+import React from 'react'
 import styled from 'styled-components'
 import NavigationButton from './../../assets/images/timeline-assets/navigation-button.png'
 
-
-const TimelineControls = (props) => {
-    return (
-        <StyledTimelineControls className="timeline-controls">
-            <div 
-                disabled={props.stepNumber <= 1}
-                onClick={(e) => {
-                    props.prevStep();
-                }} 
-                className="timeline-navigation-button left" 
-            />
-            <div 
-                disabled={props.stepNumber > 
-                    props.timelineData.length - (
-                        !props.isMobileTimeline ? 7 : 4
-                    )
-                }
-                onClick={(e) => {
-                    props.nextStep();
-                }} 
-                className="timeline-navigation-button right" 
-            />
-        </StyledTimelineControls>
-    )
+const TimelineControls = props => {
+  return (
+    <StyledTimelineControls className="timeline-controls">
+      <div
+        disabled={props.stepNumber <= 1}
+        onClick={() => {
+          props.prevStep()
+        }}
+        className="timeline-navigation-button left"
+      />
+      <div
+        disabled={props.stepNumber > props.timelineData.length - (!props.isMobileTimeline ? 7 : 4)}
+        onClick={() => {
+          props.nextStep()
+        }}
+        className="timeline-navigation-button right"
+      />
+    </StyledTimelineControls>
+  )
 }
 
 const StyledTimelineControls = styled.div`
@@ -84,6 +79,6 @@ const StyledTimelineControls = styled.div`
         }
         /* filter: drop-shadow(0px 0px 10px #703FFF); */
     }
-`;
+`
 
-export default TimelineControls;
+export default TimelineControls

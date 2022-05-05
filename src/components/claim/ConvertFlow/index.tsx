@@ -33,7 +33,7 @@ export function ConvertFlow({ oldSwprBalance, disabled, onError }: ConvertFlowPr
     convertSwprCallback()
       .then(transaction => {
         addTransaction(transaction, {
-          summary: `Convert ${oldSwprBalance?.toFixed(3)} old SWPR to new SWPR`
+          summary: `Convert ${oldSwprBalance?.toFixed(3)} old SWPR to new SWPR`,
         })
       })
       .catch(error => {
