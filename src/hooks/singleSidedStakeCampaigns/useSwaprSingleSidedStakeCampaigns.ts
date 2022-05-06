@@ -62,13 +62,12 @@ export function useSwaprSinglelSidedStakeCampaigns(
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
 
-  const SWPRToken = useSWPRToken()
-  const swaprAddress = SWPRToken?.address ?? undefined
+  const { address: swaprAddress } = useSWPRToken()
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(QUERY, {
     variables: {
-      address: swaprAddress?.toLowerCase(),
+      address: swaprAddress.toLowerCase(),
       userId: subgraphAccountId,
     },
   })

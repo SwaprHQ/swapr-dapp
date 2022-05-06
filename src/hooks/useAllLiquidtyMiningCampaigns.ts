@@ -132,7 +132,7 @@ export function useAllLiquidtyMiningCampaigns(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    if (singleSidedLoading || chainId === undefined || campaignLoading || !SWPRToken) {
+    if (singleSidedLoading || chainId === undefined || campaignLoading) {
       return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
     if (

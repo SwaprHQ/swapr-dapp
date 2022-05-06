@@ -315,7 +315,6 @@ const StyledHero = styled(Layout)`
                 min-width: unset;
                 .marquee-inner {
                     padding: 18px 0;
-                    display: flex;
                     img {
                         margin: 0 25px;
                     }
@@ -390,7 +389,6 @@ const StyledHero = styled(Layout)`
             .routing-through-body {
                 .marquee {
                     .marquee-inner {
-                        display: flex
                         img {
                             margin: 0 18px;
                         }
