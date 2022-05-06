@@ -60,6 +60,7 @@ interface AssetSelectorProps {
   customAssetTitle?: string
   amount?: TokenAmount
   index?: number
+  isReward?: boolean
   handleUserInput?: (value: string) => void
   onResetCurrency?: () => void
   onClick: (event: React.MouseEvent<HTMLElement>) => void
@@ -77,17 +78,20 @@ export default function AssetSelector({
   onResetCurrency,
   handleUserInput,
   index,
+  isReward = false,
   rawAmount,
   setRewardsObject,
 }: AssetSelectorProps) {
+  const { account } = useActiveWeb3React()
+  const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
+
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
 
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
 
   const rewardMemo = useMemo(() => (currency0 && amount ? amount : undefined), [currency0, amount])
-  const { account } = useActiveWeb3React()
-  const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
+
   const stakingRewardsDistributionFactoryContract = useStakingRewardsDistributionFactoryContract()
   const [approvalState, approveCallback] = useApproveCallback(
     rewardMemo,
@@ -140,13 +144,13 @@ export default function AssetSelector({
       setAssetTitle(`SELECT ${campaingType === CampaignType.TOKEN ? 'TOKEN' : 'PAIR'}`)
     }
   }, [currency0, currency1, campaingType])
+
   const handleDismiss = () => {
     setAssetTitle(null)
     if (onResetCurrency) onResetCurrency()
     setTokenName(undefined)
   }
 
-  const isReward = handleUserInput !== undefined && currency0
   return (
     <Flex flexDirection={'column'}>
       <SmoothGradientCard
@@ -155,13 +159,13 @@ export default function AssetSelector({
         paddingBottom={'34px !important'}
         width={'162px'}
         flexDirection={'column-reverse'}
-        height={handleUserInput !== undefined ? '192px' : '150px'}
+        height={isReward ? '192px' : '150px'}
         onClick={event => {
-          if (isReward) event.stopPropagation()
+          if (isReward && currency0) event.stopPropagation()
           else onClick(event)
         }}
       >
-        {handleUserInput && (
+        {isReward && (
           <RelativeDismiss
             onClick={event => {
               event.stopPropagation()
@@ -173,7 +177,7 @@ export default function AssetSelector({
         <Flex width="100%" justifyContent="center" alignSelf="end">
           <AssetLogo campaingType={campaingType} currency0={currency0} currency1={currency1} />
           <Flex flexDirection={'column'}>
-            {handleUserInput !== undefined && currency0 ? (
+            {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
                 <StyledNumericalInput value={rawAmount ? rawAmount : ''} onUserInput={handleUserInput} />
                 <RewardInputLogo>{assetTitle}</RewardInputLogo>
@@ -192,7 +196,7 @@ export default function AssetSelector({
           </Flex>
         </Flex>
       </SmoothGradientCard>
-      {handleUserInput && (
+      {isReward && (
         <Box>
           <ButtonPrimary
             height={'32px'}

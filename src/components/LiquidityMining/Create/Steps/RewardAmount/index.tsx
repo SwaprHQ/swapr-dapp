@@ -120,6 +120,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
               handleUserInput={event => {
                 handleLocalUserInput(event, index)
               }}
+              isReward={true}
               setRewardsObject={setRewardsObject}
               onResetCurrency={() => handleCurrencyReset(index)}
               index={index}
