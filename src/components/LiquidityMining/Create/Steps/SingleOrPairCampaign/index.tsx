@@ -17,8 +17,8 @@ const CardText = styled(Text)`
 `
 const StyledAutoColumn = styled(Flex)<{ active: boolean }>`
   flex-direction: column;
-  position: relative;
-  left: -25px;
+  position: absolute;
+  right: 42px;
   text-align: start;
   color: ${props => (props.active ? props.theme.text3 : props.theme.text5)} !important;
 `

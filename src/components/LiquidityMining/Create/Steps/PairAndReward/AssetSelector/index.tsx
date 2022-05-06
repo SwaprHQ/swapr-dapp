@@ -154,6 +154,7 @@ export default function AssetSelector({
         active={currency0 !== undefined}
         paddingBottom={'34px !important'}
         width={'162px'}
+        flexDirection={'column-reverse'}
         height={handleUserInput !== undefined ? '192px' : '150px'}
         onClick={event => {
           if (isReward) event.stopPropagation()
