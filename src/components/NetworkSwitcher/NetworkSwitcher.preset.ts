@@ -3,7 +3,6 @@ import { ChainId } from '@swapr/sdk'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
-import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 
 export const networkOptionsPreset = [
   // no tag - mainnets
@@ -19,13 +18,6 @@ export const networkOptionsPreset = [
     logoSrc: ArbitrumLogo,
     color: '#2C374B',
   },
-  {
-    chainId: ChainId.POLYGON,
-    name: 'Polygon',
-    logoSrc: PolygonMaticLogo,
-    color: '#8361DE',
-  },
-
   // TESTNETS
   {
     chainId: ChainId.RINKEBY,
