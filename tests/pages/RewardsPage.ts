@@ -57,7 +57,8 @@ export class RewardsPage {
         return RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString())
           .click()
           .then(() => false)
-      } else return true
+      }
+      return true
     })
   }
 }

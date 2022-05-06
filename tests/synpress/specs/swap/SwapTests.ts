@@ -79,8 +79,8 @@ describe('Swapping tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: any) => {
-        estimatedTransactionOutput = parseFloat(res.val())
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
       })
 
     SwapPage.swap().confirmSwap()

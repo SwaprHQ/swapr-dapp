@@ -256,7 +256,7 @@ function Information({
                 <Skeleton width="40px" height="14px" />
               ) : (
                 <BadgeRoot expired={expired} upcoming={upcoming}>
-                  <BadgeText expired={expired} upcoming={upcoming} data-testid={'campaign-status'}>
+                  <BadgeText expired={expired} upcoming={upcoming} data-testid="campaign-status">
                     {expired ? 'EXPIRED' : upcoming ? 'UPCOMING' : 'ACTIVE'}
                   </BadgeText>
                 </BadgeRoot>

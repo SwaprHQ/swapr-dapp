@@ -3,6 +3,7 @@ import './enums/AddressesEnum'
 import { EtherscanFacade } from './facades/EtherscanFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
 import { AddressesEnum } from './enums/AddressesEnum'
+import { Transaction } from './TestTypes'
 
 export class TransactionHelper {
   private static retries = 0
@@ -58,21 +59,16 @@ export class TransactionHelper {
     expectedValueIn: number
   ) {
     cy.window().then(() => {
-      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: any) => {
+      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: Transaction) => {
         console.log('SUBGRAPH RESPONSE', res.body)
-        expect(res.body.data.transactions[0].swaps[0].pair.token0.symbol).to.be.eq(
-          expectedToken0Symbol || expectedToken1Symbol
-        )
-        expect(res.body.data.transactions[0].swaps[0].pair.token1.symbol).to.be.eq(
-          expectedToken1Symbol || expectedToken0Symbol
-        )
 
-        const amountIn: number =
-          parseFloat(res.body.data.transactions[0].swaps[0].amount1In) +
-          parseFloat(res.body.data.transactions[0].swaps[0].amount0In)
-        const amountOut: number =
-          parseFloat(res.body.data.transactions[0].swaps[0].amount1Out) +
-          parseFloat(res.body.data.transactions[0].swaps[0].amount0Out)
+        const firstSwap = res.body.data.transactions[0].swaps[0]
+
+        expect(firstSwap.pair.token0.symbol).to.be.eq(expectedToken0Symbol || expectedToken1Symbol)
+        expect(firstSwap.pair.token1.symbol).to.be.eq(expectedToken1Symbol || expectedToken0Symbol)
+
+        const amountIn: number = parseFloat(firstSwap.amount1In) + parseFloat(firstSwap.amount0In)
+        const amountOut: number = parseFloat(firstSwap.amount1Out) + parseFloat(firstSwap.amount0Out)
 
         console.log('EXPECTED AMOUNT OUT: ', amountOut)
         console.log('EXPECTED AMOUNT IN: ', amountIn)
@@ -109,7 +105,7 @@ export class TransactionHelper {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
       } catch (err) {
         if (this.retries > 100) {
-          throw new Error('To many retries')
+          throw new Error('Retried too many times when checking eth balance from etherscan')
         }
         cy.wait(1000)
         return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, ++retries)

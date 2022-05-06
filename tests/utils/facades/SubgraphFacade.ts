@@ -1,38 +1,19 @@
+import { LIQUIDITY_CAMPAIGNS_QUERY, TOKENS_QUERY, TRANSACTIONS_QUERY } from './SubgraphQueries'
+import { LiquidityCampaign, Transaction } from '../TestTypes'
+
 export class SubgraphFacade {
   private static SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'
-  static transaction(txid: string, retries = 0): any {
+  static transaction(txid: string, retries = 0): Transaction | Cypress.Chainable {
     return cy
       .request({
         method: 'POST',
         url: this.SUBGRAPH_URL,
         body: {
-          query:
-            `
-{
- transactions(where:{id:"` +
-            txid +
-            `"}){
-  id
-  blockNumber
-  timestamp
-  swaps{
-    amount0In
-    amount1In
-    amount0Out
-    amount1Out
-    pair{
-      token0{
-        symbol
-      }
-      token1{
-        symbol
-      }
-    }
-  }
-}
-}
-`
-        }
+          query: TRANSACTIONS_QUERY,
+          variables: {
+            txnId: txid,
+          },
+        },
       })
       .then(resp => {
         try {
@@ -41,7 +22,7 @@ export class SubgraphFacade {
           if (retries > 100) {
             throw new Error('Retried too many times')
           }
-          return this.transaction(txid, retries++)
+          return this.transaction(txid, ++retries)
         }
         return resp
       })
@@ -51,62 +32,21 @@ export class SubgraphFacade {
       method: 'POST',
       url: this.SUBGRAPH_URL,
       body: {
-        query: `
-{
-tokens(first:500){
-  id
-  symbol
-  name
-}
-}
-`
-      }
+        query: TOKENS_QUERY,
+      },
     })
   }
-  static liquidityCampaign(owner: string, startsAt: number, retries = 0): any {
+  static liquidityCampaign(owner: string, startsAt: number, retries = 0): LiquidityCampaign | Cypress.Chainable {
     return cy
       .request({
         method: 'POST',
         url: this.SUBGRAPH_URL,
         body: {
-          query:
-            `
-{
-  liquidityMiningCampaigns(where:{
-    owner:"` +
-            owner +
-            `"
-    startsAt: "` +
-            startsAt +
-            `"
-  }, first:1) {
-    owner
-    startsAt
-    endsAt
-    stakablePair{
-      token0{
-        symbol
-      }
-      token1{
-        symbol
-      }
-    }
-    rewards{
-      token{
-        symbol
-      }
-      amount
-    }
-  }
-}
-
-`
-        }
+          query: LIQUIDITY_CAMPAIGNS_QUERY,
+          variables: { owner: owner, startsAt: startsAt },
+        },
       })
       .then(resp => {
-        console.log(resp)
-        console.log(retries)
-        console.log(startsAt)
         try {
           expect(resp.body.data.liquidityMiningCampaigns).to.have.length.greaterThan(0)
         } catch (err) {

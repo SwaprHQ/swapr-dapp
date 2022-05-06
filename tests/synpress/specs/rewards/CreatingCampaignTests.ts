@@ -9,30 +9,14 @@ import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { getUnixTime } from 'date-fns'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../pages/CampaignPage'
+import { LiquidityCampaign } from '../../../utils/TestTypes'
 
 describe('Wallet connection tests [TC-60]', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
-  const startsAt = DateUtils.getDateTimeAndAppendMinutes(2)
-  const endsAt = DateUtils.getDateTimeAndAppendMinutes(4)
-  interface liquidityCampaign {
-    body: {
-      data: {
-        liquidityMiningCampaigns: {
-          owner: string
-          endsAt: string
-          rewards: {
-            amount: string
-            token: {
-              symbol: string
-            }
-          }[]
-          stakablePair: { token0: { symbol: string }; token1: { symbol: string } }
-        }[]
-      }
-    }
-  }
+  const expectedStartsAt = DateUtils.getDateTimeAndAppendMinutes(2)
+  const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
 
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
@@ -57,26 +41,34 @@ describe('Wallet connection tests [TC-60]', () => {
     TokenMenu.chooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
-    CreatePoolPage.setStartTime(DateUtils.getFormattedDateTime(startsAt))
-    CreatePoolPage.setEndTime(DateUtils.getFormattedDateTime(endsAt))
+    CreatePoolPage.setStartTime(DateUtils.getFormattedDateTime(expectedStartsAt))
+    CreatePoolPage.setEndTime(DateUtils.getFormattedDateTime(expectedEndsAt))
 
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
     MenuBar.checkToastMessage('campaign')
-    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(startsAt)).then(
-      (res: liquidityCampaign) => {
-        expect(res.body.data.liquidityMiningCampaigns[0].owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
-        expect(parseInt(res.body.data.liquidityMiningCampaigns[0].endsAt)).to.be.eq(getUnixTime(endsAt))
-        expect(parseFloat(res.body.data.liquidityMiningCampaigns[0].rewards[0].amount)).to.be.eq(REWARDS_INPUT)
-        expect(res.body.data.liquidityMiningCampaigns[0].rewards[0].token.symbol).to.be.eq('WEENUS')
-        expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token0.symbol).to.be.eq('DAI')
-        expect(res.body.data.liquidityMiningCampaigns[0].stakablePair.token1.symbol).to.be.eq('USDT')
+
+    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(expectedStartsAt)).then(
+      (res: LiquidityCampaign) => {
+        const firstLiquidityCampaign = res.body.data.liquidityMiningCampaigns[0]
+        const {
+          owner,
+          rewards,
+          endsAt,
+          stakablePair: { token0, token1 },
+        } = firstLiquidityCampaign
+
+        expect(owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
+        expect(parseInt(endsAt)).to.be.eq(getUnixTime(expectedEndsAt))
+        expect(parseFloat(rewards[0].amount)).to.be.eq(REWARDS_INPUT)
+        expect(rewards[0].token.symbol).to.be.eq('WEENUS')
+        expect(token0.symbol).to.be.eq('DAI')
+        expect(token1.symbol).to.be.eq('USDT')
       }
     )
   })
   it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()
-    LiquidityPage.switchCampaignsToogle()
     LiquidityPage.getAllPairsButton().click()
     TokenMenu.getOpenTokenManagerButton().click()
     TokenMenu.switchTokenList('compound')
@@ -86,27 +78,27 @@ describe('Wallet connection tests [TC-60]', () => {
       .contains('USDT')
       .click()
     LiquidityPage.getRewardsCampaignButton().click()
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(startsAt).toString()).click()
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click()
 
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
       'ACTIVE',
-      DateUtils.getFormattedDateTime(startsAt),
-      DateUtils.getFormattedDateTime(endsAt)
+      DateUtils.getFormattedDateTime(expectedStartsAt),
+      DateUtils.getFormattedDateTime(expectedEndsAt)
     )
   })
   it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
     PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(startsAt, TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
       'ACTIVE',
-      DateUtils.getFormattedDateTime(startsAt),
-      DateUtils.getFormattedDateTime(endsAt)
+      DateUtils.getFormattedDateTime(expectedStartsAt),
+      DateUtils.getFormattedDateTime(expectedEndsAt)
     )
   })
 })
