@@ -49,7 +49,7 @@ export function RewardsList({ dataFilter, pair, setDataFiler, loading }: Rewards
               badgeTheme="red"
             >
               <div data-testid="expired-campaigns">Expired (150 days)</div>
-            </TabTitle>
+            </TabTitle>,
           ]}
           active={activeTab}
           onChange={setActiveTab}

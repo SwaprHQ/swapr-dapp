@@ -6,7 +6,7 @@ import {
   Percent,
   SingleSidedLiquidityMiningCampaign,
   Token,
-  TokenAmount
+  TokenAmount,
 } from '@swapr/sdk'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
@@ -102,7 +102,7 @@ export default function PreviewAndCreate({
   approvals,
   onCreate,
   campaign,
-  setSimulatedStakedAmount
+  setSimulatedStakedAmount,
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
@@ -146,7 +146,7 @@ export default function PreviewAndCreate({
     stakingCap,
     nativeTokenPrice,
     nativeCurrencyUSDPrice,
-    showUSDValue
+    showUSDValue,
   ])
 
   const liquidityPercentChangeCallback = useCallback((value: number) => {

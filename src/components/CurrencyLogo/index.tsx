@@ -56,7 +56,7 @@ const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
   [ChainId.ARBITRUM_RINKEBY]: EtherLogo,
   [ChainId.MAINNET]: EtherLogo,
   [ChainId.RINKEBY]: EtherLogo,
-  [ChainId.XDAI]: XDAILogo
+  [ChainId.XDAI]: XDAILogo,
 }
 
 export default function CurrencyLogo({
@@ -66,7 +66,7 @@ export default function CurrencyLogo({
   className,
   loading,
   marginRight = 0,
-  marginLeft = 0
+  marginLeft = 0,
 }: {
   currency?: Currency
   size?: string
@@ -95,7 +95,7 @@ export default function CurrencyLogo({
       return [
         `${window.location.origin}${
           carrotListLogoUrl.startsWith('.') ? carrotListLogoUrl.substring(1) : carrotListLogoUrl
-        }`
+        }`,
       ]
     return []
   }, [chainId, currency, nativeCurrencyLogo, uriLocations])

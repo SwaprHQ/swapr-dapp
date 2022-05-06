@@ -130,7 +130,7 @@ interface BridgeTransactionsSummaryProps {
 export const BridgeTransactionsSummary = ({
   transactions,
   collectableTx,
-  onCollect
+  onCollect,
 }: BridgeTransactionsSummaryProps) => {
   const [txsFilter, setTxsFilter] = useBridgeTxsFilter()
 

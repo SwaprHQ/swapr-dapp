@@ -137,7 +137,7 @@ export default function CurrencyInputPanel({
   customBalanceText,
   balance,
   fiatValue,
-  priceImpact
+  priceImpact,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -240,7 +240,7 @@ export default function CurrencyInputPanel({
                     display: 'inline',
                     marginLeft: 'auto',
                     cursor:
-                      !hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) ? 'pointer' : 'auto'
+                      !hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) ? 'pointer' : 'auto',
                   }}
                 >
                   <UppercaseHelper>

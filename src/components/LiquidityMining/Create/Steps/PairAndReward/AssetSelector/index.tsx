@@ -78,7 +78,7 @@ export default function AssetSelector({
   handleUserInput,
   index,
   rawAmount,
-  setRewardsObject
+  setRewardsObject,
 }: AssetSelectorProps) {
   const [assetTitle, setAssetTitle] = useState<string | null>(null)
   const [tokenName, setTokenName] = useState<string | undefined>(undefined)
@@ -120,8 +120,8 @@ export default function AssetSelector({
               : (rewardMemo.greaterThan('0') && userBalance?.lessThan(rewardMemo)) ||
                 approvalState === ApprovalState.NOT_APPROVED
               ? ApprovalState.NOT_APPROVED
-              : ApprovalState.UNKNOWN
-        }
+              : ApprovalState.UNKNOWN,
+        },
       })
     }
 

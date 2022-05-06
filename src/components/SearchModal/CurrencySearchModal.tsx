@@ -24,7 +24,7 @@ export enum CurrencyModalView {
   SEARCH,
   MANAGE,
   IMPORT_TOKEN,
-  IMPORT_LIST
+  IMPORT_LIST,
 }
 
 export default function CurrencySearchModal({
@@ -34,7 +34,7 @@ export default function CurrencySearchModal({
   selectedCurrency,
   otherSelectedCurrency,
   showCommonBases = false,
-  showNativeCurrency = true
+  showNativeCurrency = true,
 }: CurrencySearchModalProps) {
   const [modalView, setModalView] = useState<CurrencyModalView>(CurrencyModalView.MANAGE)
   const lastOpen = useLast(isOpen)

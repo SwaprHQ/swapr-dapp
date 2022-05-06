@@ -6,7 +6,7 @@ import {
   PricedTokenAmount,
   SingleSidedLiquidityMiningCampaign,
   Token,
-  TokenAmount
+  TokenAmount,
 } from '@swapr/sdk'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
@@ -78,7 +78,7 @@ export function useNewLiquidityMiningCampaign(
         rewards: pricedRewardAmounts,
         staked,
         locked,
-        stakingCap: stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0')
+        stakingCap: stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0'),
       })
     } else if (targetedPairOrToken instanceof Token && tokenDerivedNative.derivedNativeCurrency) {
       const { address, symbol, name, decimals } = targetedPairOrToken
@@ -90,7 +90,7 @@ export function useNewLiquidityMiningCampaign(
         numerator: parseUnits(
           new Decimal(tokenDerivedNative.derivedNativeCurrency.toFixed()).toFixed(nativeCurrency.decimals),
           nativeCurrency.decimals
-        ).toString()
+        ).toString(),
       })
 
       const stakeToken = new PricedToken(chainId, getAddress(address), decimals, derivedNative, symbol, name)
@@ -122,6 +122,6 @@ export function useNewLiquidityMiningCampaign(
     stakingCap,
     nativeCurrency,
     targetedPairReserveNativeCurrency.raw,
-    locked
+    locked,
   ])
 }

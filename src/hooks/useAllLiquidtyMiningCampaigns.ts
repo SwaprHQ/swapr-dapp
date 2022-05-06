@@ -111,17 +111,18 @@ export function useAllLiquidtyMiningCampaigns(
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(SINGLE_SIDED_CAMPAIGNS, {
     variables: {
-      userId: subgraphAccountId
-    }
+      userId: subgraphAccountId,
+    },
   })
 
   const { data: pairCampaigns, loading: campaignLoading, error: campaignError } = useQuery<{
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {
-      userId: subgraphAccountId
-    }
+      userId: subgraphAccountId,
+    },
   })
+
   const kpiTokenAddresses = useMemo(() => {
     if (!pairCampaigns) return []
     return pairCampaigns.liquidityMiningCampaigns.flatMap(campaign =>
@@ -239,13 +240,13 @@ export function useAllLiquidtyMiningCampaigns(
           activeCampaigns.unshift({
             campaign: singleSidedStakeCampaign,
             staked: hasStake,
-            containsKpiToken: containsKpiToken
+            containsKpiToken: containsKpiToken,
           })
         } else if (isExpired) {
           expiredCampaigns.unshift({
             campaign: singleSidedStakeCampaign,
             staked: hasStake,
-            containsKpiToken: containsKpiToken
+            containsKpiToken: containsKpiToken,
           })
         }
       }
@@ -296,7 +297,7 @@ export function useAllLiquidtyMiningCampaigns(
 
     return {
       loading: false,
-      miningCampaigns: { active: sortedActiveCampaigns, expired: sortedExpiredCampaigns }
+      miningCampaigns: { active: sortedActiveCampaigns, expired: sortedExpiredCampaigns },
     }
   }, [
     singleSidedLoading,
@@ -317,6 +318,6 @@ export function useAllLiquidtyMiningCampaigns(
     SWPRToken,
     isUpcoming,
     token0Address,
-    token1Address
+    token1Address,
   ])
 }

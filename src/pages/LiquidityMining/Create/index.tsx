@@ -24,7 +24,7 @@ const LastStep = styled(Step)`
 `
 export enum CampaignType {
   TOKEN,
-  PAIR
+  PAIR,
 }
 export const numberOfRewards = 4
 export interface RewardsObject {
@@ -37,7 +37,7 @@ export enum ActionType {
   APPROVALS_CHANGE,
   REWARDS_CHANGE,
   RAW_AMOUNTS,
-  RESET
+  RESET,
 }
 export interface Actions {
   type: ActionType
@@ -51,7 +51,7 @@ export interface Actions {
 const initialState: RewardsObject = {
   approvals: new Array(numberOfRewards).fill(ApprovalState.UNKNOWN),
   rewards: new Array(numberOfRewards).fill(undefined),
-  rawAmounts: new Array(numberOfRewards).fill(undefined)
+  rawAmounts: new Array(numberOfRewards).fill(undefined),
 }
 
 const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
@@ -62,21 +62,21 @@ const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
         ...state,
         approvals: state.approvals.map((approval: ApprovalState, i: number) =>
           i === payload.index && payload.approval !== undefined ? payload.approval : approval
-        )
+        ),
       }
     case ActionType.REWARDS_CHANGE:
       return {
         ...state,
         rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
           i === payload.index ? payload.reward : reward
-        )
+        ),
       }
     case ActionType.RAW_AMOUNTS:
       return {
         ...state,
         rawAmounts: state.rawAmounts.map((rawAmount: string | undefined, i: number) =>
           i === payload.index ? payload.rawAmount : rawAmount
-        )
+        ),
       }
     case ActionType.RESET:
       return initialState
@@ -154,7 +154,7 @@ export default function CreateLiquidityMining() {
             stakeTokenOrPair instanceof Pair
               ? `${stakeTokenOrPair?.token0.symbol}/${stakeTokenOrPair?.token1.symbol}`
               : stakeTokenOrPair?.symbol
-          }`
+          }`,
         })
       })
       .catch(error => {

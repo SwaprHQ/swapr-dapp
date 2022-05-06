@@ -21,7 +21,7 @@ export function useTransactionAdder(): (
       {
         summary,
         approval,
-        claim
+        claim,
       }: { summary?: string; claim?: { recipient: string }; approval?: { tokenAddress: string; spender: string } } = {}
     ) => {
       if (!account) return

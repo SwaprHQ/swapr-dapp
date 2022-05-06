@@ -38,7 +38,7 @@ export default function DurationAndLocking({
   timelocked,
   setStartTime,
   setEndTime,
-  onTimelockedChange
+  onTimelockedChange,
 }: TimeProps) {
   const handleStartTimeChange = useCallback(
     (newStartTime: Date) => {

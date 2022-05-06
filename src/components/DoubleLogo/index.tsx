@@ -47,7 +47,7 @@ export default function DoubleCurrencyLogo({
   marginLeft = 0,
   top = 0,
   spaceBetween = 0,
-  style
+  style,
 }: DoubleCurrencyLogoProps) {
   return (
     <Wrapper style={style} top={top} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>

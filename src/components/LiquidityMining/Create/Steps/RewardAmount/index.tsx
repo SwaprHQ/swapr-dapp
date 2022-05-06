@@ -10,7 +10,7 @@ import {
   ActionType,
   CampaignType,
   numberOfRewards,
-  RewardsObject
+  RewardsObject,
 } from '../../../../../pages/LiquidityMining/Create'
 import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
@@ -57,8 +57,8 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
           type: ActionType.REWARDS_CHANGE,
           payload: {
             index: currentReward,
-            reward: new TokenAmount(selectedPair, '0')
-          }
+            reward: new TokenAmount(selectedPair, '0'),
+          },
         })
       }
     },
@@ -70,11 +70,11 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
       setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { index: index, rawAmount: undefined } })
       setRewardsObject({
         type: ActionType.REWARDS_CHANGE,
-        payload: { index: index, reward: undefined }
+        payload: { index: index, reward: undefined },
       })
       setRewardsObject({
         type: ActionType.APPROVALS_CHANGE,
-        payload: { index: index, approval: ApprovalState.UNKNOWN }
+        payload: { index: index, approval: ApprovalState.UNKNOWN },
       })
     },
     [setRewardsObject]
@@ -98,8 +98,8 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
             ? newParsedAmount
             : currentCurrency
             ? new TokenAmount(currentCurrency, '0')
-            : undefined
-        }
+            : undefined,
+        },
       })
     },
     [setRewardsObject, rewardsObject]

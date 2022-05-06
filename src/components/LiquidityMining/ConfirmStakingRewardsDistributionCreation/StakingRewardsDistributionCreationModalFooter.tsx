@@ -28,7 +28,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
   timelocked,
   stakingCap,
   unlimitedPool,
-  onConfirm
+  onConfirm,
 }: StakingRewardsDistributionCreationModalFooterProps) {
   const tokenOrPair =
     liquidityPair instanceof Pair
@@ -51,7 +51,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {tokenOrPair}
@@ -71,7 +71,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {reward ? reward.map(ite => `${ite.toExact()} ${ite.token.symbol}`).join(', ') : '-'}
@@ -91,7 +91,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
           {unlimitedPool ? 'Unlimited' : `${stakingCap?.toSignificant(4)} ${tokenOrPair} LP`}

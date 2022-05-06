@@ -2,7 +2,7 @@ import { PricedTokenAmount, TokenAmount, Token, Pair } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent
+  TransactionErrorContent,
 } from '../../../../TransactionConfirmationModal'
 import ConfirmStakingModalFooter from '../ModalBase/Footer'
 import ConfirmStakingWithdrawingModalHeader from '../ModalBase/Header'
@@ -26,7 +26,7 @@ export default function ConfirmWithdrawalModal({
   errorMessage,
   withdrawablTokenBalance,
   onDismiss,
-  onConfirm
+  onConfirm,
 }: ConfirmWithdrawalModalProps) {
   const [withdrawableAmount, setWithdrawableAmount] = useState<TokenAmount | null>(null)
   const transactionModalText =
@@ -85,7 +85,7 @@ export default function ConfirmWithdrawalModal({
       topContent,
       withdrawablTokenBalance,
       withdrawableAmount,
-      transactionModalText
+      transactionModalText,
     ]
   )
 

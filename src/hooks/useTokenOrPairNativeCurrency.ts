@@ -20,7 +20,7 @@ export function useTokenOrPairNativeCurrency(
 
   const {
     reserveNativeCurrency: targetedPairReserveNativeCurrency,
-    loading: loadingReserveNative
+    loading: loadingReserveNative,
   } = usePairReserveNativeCurrency(tokenOrPair instanceof Pair ? tokenOrPair : undefined)
   const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
     tokenOrPair instanceof Token ? tokenOrPair : undefined
@@ -56,7 +56,7 @@ export function useTokenOrPairNativeCurrency(
     }
     return {
       loading: false,
-      derivedNativeCurrency: derivedNative
+      derivedNativeCurrency: derivedNative,
     }
   }, [
     chainId,
@@ -67,6 +67,6 @@ export function useTokenOrPairNativeCurrency(
     loadingReserveNative,
     loadingTokenNativeCurrency,
     targetedPairReserveNativeCurrency,
-    tokenOrPair
+    tokenOrPair,
   ])
 }

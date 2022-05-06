@@ -17,7 +17,7 @@ import {
   useModalOpen,
   useNetworkSwitcherPopoverToggle,
   useOpenModal,
-  useWalletSwitcherPopoverToggle
+  useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
 import { TriangleIcon } from '../Icons'
 import { useTranslation } from 'react-i18next'
@@ -71,7 +71,7 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 
 export enum ModalView {
   Pending,
-  Account
+  Account,
 }
 
 export default function Web3Status() {
@@ -141,7 +141,7 @@ export default function Web3Status() {
     openUnsupportedNetworkModal,
     isUnsupportedNetworkModal,
     unsupportedChainIdError,
-    closeModals
+    closeModals,
   ])
 
   const clickHandler = useCallback(() => {

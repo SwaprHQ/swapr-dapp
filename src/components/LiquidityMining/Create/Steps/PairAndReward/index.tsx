@@ -65,7 +65,7 @@ export default function StakeTokenAndLimit({
   setStakeTokenOrPair,
   campaingType,
   onStakingCapChange,
-  onUnlimitedPoolChange
+  onUnlimitedPoolChange,
 }: TokenAndLimitProps) {
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)

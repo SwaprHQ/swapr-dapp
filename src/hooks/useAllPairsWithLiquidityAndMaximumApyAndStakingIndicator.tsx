@@ -21,7 +21,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
 } {
   const {
     loading: loadingAllWrappedPairs,
-    wrappedPairs: allWrappedPairs
+    wrappedPairs: allWrappedPairs,
   } = useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
   const sorter = useAggregatedByToken0PairComparator()
 
@@ -39,7 +39,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
         staked: wrappedPair.staked,
         liquidityUSD: wrappedPair.reserveUSD,
         maximumApy: bestCampaign ? bestCampaign.apy : new Percent('0', '100'),
-        containsKpiToken: !!bestCampaign?.rewards.some(reward => reward.token instanceof KpiToken)
+        containsKpiToken: !!bestCampaign?.rewards.some(reward => reward.token instanceof KpiToken),
       })
     }
     let filteredData = aggregation
@@ -52,7 +52,7 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     }
     return {
       loading: false,
-      aggregatedData: filteredData.sort(sorter)
+      aggregatedData: filteredData.sort(sorter),
     }
   }, [allWrappedPairs, filter, loadingAllWrappedPairs, sorter])
 }
