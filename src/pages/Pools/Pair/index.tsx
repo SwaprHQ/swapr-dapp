@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, Link } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import { ChevronDown } from 'react-feather'
@@ -84,7 +84,12 @@ export default function Pair({
               </PointableFlex>
             </Flex>
             <ButtonRow>
-              <ButtonPurpleDim disabled>{t('trade')}</ButtonPurpleDim>
+              <ButtonPurpleDim
+                as={Link}
+                to={token0 && token1 ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}` : ''}
+              >
+                {t('trade')}
+              </ButtonPurpleDim>
             </ButtonRow>
           </TitleRow>
           <ContentGrid>
