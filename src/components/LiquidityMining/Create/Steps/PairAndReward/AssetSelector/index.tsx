@@ -152,7 +152,7 @@ export default function AssetSelector({
   }
 
   return (
-    <Flex flexDirection={'column'}>
+    <Flex flexDirection={'column'} key={index}>
       <SmoothGradientCard
         isToken={true}
         active={currency0 !== undefined}

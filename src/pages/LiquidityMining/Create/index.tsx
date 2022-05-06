@@ -222,7 +222,7 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        <Step title="Select Token To Reward" index={3} disabled={!startTime || !endTime || !stakeTokenOrPair}>
+        <Step title="Select Token To Reward" index={3} key={3} disabled={!startTime || !endTime || !stakeTokenOrPair}>
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
