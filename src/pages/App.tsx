@@ -72,16 +72,12 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-interface AppRouteProps extends RouteProps {
-  isAllFeaturesEnabled: boolean
-}
-
 /**
- * A Route that is only accessible if all features are enabled.
- * @param param0
- * @returns
+ * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
  */
-const FullFeaturesRoute: FC<AppRouteProps> = ({ isAllFeaturesEnabled, ...routeProps }) => {
+const FullFeaturesRoute: FC<RouteProps> = routeProps => {
+  const { chainId } = useActiveWeb3React()
+  const isAllFeaturesEnabled = chainSupportsSWPR(chainId)
   if (isAllFeaturesEnabled) {
     return <Route {...routeProps} />
   }
@@ -91,8 +87,6 @@ const FullFeaturesRoute: FC<AppRouteProps> = ({ isAllFeaturesEnabled, ...routePr
 export default function App() {
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-
-  const allFeaturesEnabled = chainSupportsSWPR(chainId)
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -120,110 +114,47 @@ export default function App() {
                   <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
                   <Route exact strict path="/bridge" component={Bridge} />
 
+                  <FullFeaturesRoute exact strict path="/send" component={RedirectPathToSwapOnly} />
+                  <FullFeaturesRoute exact strict path="/pools" component={Pools} />
+                  <FullFeaturesRoute exact strict path="/pools/mine" component={MyPairs} />
+                  <FullFeaturesRoute exact strict path="/rewards" component={Rewards} />
+                  <FullFeaturesRoute exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
                   <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/send"
-                    component={RedirectPathToSwapOnly}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/pools"
-                    component={Pools}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/pools/mine"
-                    component={MyPairs}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/rewards"
-                    component={Rewards}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:currencyIdB"
-                    component={Rewards}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
                     exact
                     strict
                     path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
                     component={LiquidityMiningCampaign}
                   />
+                  <FullFeaturesRoute exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
                   <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/pools/:currencyIdA/:currencyIdB"
-                    component={Pair}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
                     exact
                     strict
                     path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/create"
-                    component={AddLiquidity}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    path="/add"
-                    component={AddLiquidity}
-                  />
+                  <FullFeaturesRoute exact strict path="/create" component={AddLiquidity} />
+                  <FullFeaturesRoute exact path="/add" component={AddLiquidity} />
                   {/* <Route exact strict path="/governance" component={GovPages} /> */}
                   {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
+                  <FullFeaturesRoute exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    path="/add/:currencyIdA"
-                    component={RedirectOldAddLiquidityPathStructure}
-                  />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
                     exact
                     path="/add/:currencyIdA/:currencyIdB"
                     component={RedirectDuplicateTokenIds}
                   />
                   <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
                     exact
                     strict
                     path="/remove/:tokens"
                     component={RedirectOldRemoveLiquidityPathStructure}
                   />
                   <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
                     exact
                     strict
                     path="/remove/:currencyIdA/:currencyIdB"
                     component={RemoveLiquidity}
                   />
-                  <FullFeaturesRoute
-                    isAllFeaturesEnabled={allFeaturesEnabled}
-                    exact
-                    strict
-                    path="/liquidity-mining/create"
-                    component={CreateLiquidityMining}
-                  />
+                  <FullFeaturesRoute exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />
 
                   <Route component={RedirectPathToSwapOnly} />
                 </Switch>
