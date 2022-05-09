@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Flex } from 'rebass'
+import { Flex } from 'rebass/styled-components'
 import { TYPE } from '../../../../theme'
 
 export const GridCard = styled.div`
@@ -49,13 +49,7 @@ export const EllipsizedText = styled(TYPE.body)`
   overflow: hidden;
   text-overflow: ellipsis;
 `
-export const ValueText = styled.div`
-  color: ${props => props.theme.purple2};
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 16.8px;
-  font-family: 'Fira Code';
-`
+
 export const ItemsWrapper = styled(Flex)`
   justify-content: space-evenly;
   flex-direction: column;

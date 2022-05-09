@@ -48,6 +48,7 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
+import './../../theme/fonts.css'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'

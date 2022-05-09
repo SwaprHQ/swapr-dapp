@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
@@ -12,7 +12,8 @@ import CurrencyLogo from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'
-import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper, ValueText } from './Pari.styles'
+import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper } from './Pari.styles'
+import { ThemeContext } from 'styled-components'
 
 export function Pair({
   token0,
@@ -28,6 +29,7 @@ export function Pair({
 }: PairProps) {
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
 
   return (
     <GridCard {...rest}>
@@ -63,16 +65,18 @@ export function Pair({
         </Flex>
       </Flex>
       <ItemsWrapper>
-        <ValueText> ${formatCurrencyAmount(usdLiquidity).split('.')[0]}</ValueText>
+        <Text fontWeight="500" fontSize="14px" color={theme.purple2}>
+          ${formatCurrencyAmount(usdLiquidity).split('.')[0]}
+        </Text>
       </ItemsWrapper>
       <ItemsWrapper>
-        <ValueText>
+        <Text fontWeight="500" fontSize="14px" color={theme.purple2}>
           ${!loading && volume24hUSD ? formatCurrencyAmount(volume24hUSD).split('.')[0] : dayLiquidity}
           {dayLiquidity && dayLiquidity}
-        </ValueText>
+        </Text>
       </ItemsWrapper>
       <ItemsWrapper>
-        <Text fontWeight="700" fontSize="18px" fontFamily="Fira Code">
+        <Text fontWeight="500" fontSize="18px">
           {apy.toFixed(0)}%
         </Text>
       </ItemsWrapper>

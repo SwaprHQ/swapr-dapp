@@ -202,9 +202,10 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
-  font-family: 'Montserrat', sans-serif;
-  font-display: fallback;
+* {
+  font-family: 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: 'ss01';
 }
 
 html,
@@ -266,7 +267,7 @@ body {
 }
 
 .react-datepicker {
-  font-family: Montserrat !important;
+  font-family: Inter !important;
   border: solid 1px ${props => props.theme.bg5} !important;
   border-radius: 8px !important;
   color: ${props => props.theme.text4} !important;
@@ -393,7 +394,7 @@ body {
 }
 
 .custom-toast-body {
-    font-family: "Montserrat";
+    font-family: "Inter";
     padding: 4px 8px;
 }
 
