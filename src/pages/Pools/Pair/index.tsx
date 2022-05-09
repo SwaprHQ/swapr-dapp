@@ -91,8 +91,8 @@ export default function Pair({
             <TwoColumnsGrid>
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
               <DimBlurBgBox padding={'24px'}>
-                <Flex alignItems="center" justifyContent="center" flexDirection={'column'}>
-                  <Box mb={3}>
+                <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
+                  <Box>
                     <InfoSnippet
                       title={t('swapFee')}
                       value={
