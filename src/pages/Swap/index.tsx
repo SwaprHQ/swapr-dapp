@@ -283,7 +283,7 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const { fiatValueInput, fiatValueOutput } = useHigherUSDValue({
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
     inputCurrencyAmount: parsedAmounts[Field.INPUT],
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
     trade
@@ -337,6 +337,7 @@ export default function Swap() {
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
+                    isFallbackFiatValue={isFallbackFiatValueInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -361,6 +362,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.INPUT]}
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
+                    isFallbackFiatValue={isFallbackFiatValueOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />

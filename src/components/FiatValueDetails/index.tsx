@@ -8,6 +8,7 @@ import { PRICE_IMPACT_HIGH } from '../../constants'
 interface FiatValueDetailsProps {
   fiatValue?: string
   priceImpact?: Percent
+  isFallback?: boolean
 }
 
 const StyledPriceImpact = styled.span<{ warning?: boolean }>`
@@ -15,12 +16,12 @@ const StyledPriceImpact = styled.span<{ warning?: boolean }>`
   margin-left: 8px;
 `
 
-export function FiatValueDetails({ fiatValue = '0', priceImpact }: FiatValueDetailsProps) {
+export function FiatValueDetails({ fiatValue = '0', priceImpact, isFallback }: FiatValueDetailsProps) {
   const fiatPriceImpactSeverity = simpleWarningSeverity(priceImpact)
 
   return (
     <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
-      ${fiatValue}
+      {isFallback && '~'}${fiatValue}
       {priceImpact && (
         <StyledPriceImpact warning={fiatPriceImpactSeverity === PRICE_IMPACT_HIGH}>
           {priceImpact.multiply(JSBI.BigInt(-100)).toSignificant(3)}%

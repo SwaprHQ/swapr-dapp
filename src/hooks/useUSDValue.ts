@@ -201,6 +201,8 @@ export function useHigherUSDValue({
 
   return {
     fiatValueInput: inputCoingeckoUSDPrice || inputUSDPrice,
-    fiatValueOutput: outputCoingeckoUSDPrice || outputUSDPrice
+    fiatValueOutput: outputCoingeckoUSDPrice || outputUSDPrice,
+    isFallbackFiatValueInput: !inputCoingeckoUSDPrice,
+    isFallbackFiatValueOutput: !outputCoingeckoUSDPrice
   }
 }
