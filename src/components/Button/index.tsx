@@ -317,18 +317,8 @@ export function ButtonExternalLink({
   children: ReactNode
 }) {
   const theme = useContext(ThemeContext)
-  if (disabled)
-    return (
-      <ButtonPurpleDim disabled={disabled}>
-        {children}
-        <Box ml={2}>
-          <ArrowUpRight size="14px" color={theme.purple2} />
-        </Box>
-      </ButtonPurpleDim>
-    )
-
   return (
-    <ButtonPurpleDim disabled={disabled} as={ExternalLink} href={link}>
+    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled && link}>
       {children}
       <Box ml={2}>
         <ArrowUpRight size="14px" color={theme.purple2} />
@@ -348,18 +338,8 @@ export function ButtonWithBadge({
   disabled?: boolean
   children: ReactNode
 }) {
-  if (disabled)
-    return (
-      <ButtonPurpleDim disabled={disabled}>
-        {children}
-        <Box ml={1}>
-          <NumberBadge>{number}</NumberBadge>
-        </Box>
-      </ButtonPurpleDim>
-    )
-
   return (
-    <ButtonPurpleDim as={ExternalLink} href={link}>
+    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled && link}>
       <Flex alignItems="center">
         {children}
         <Box ml={1}>
