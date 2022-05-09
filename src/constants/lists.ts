@@ -20,6 +20,7 @@ const LEVINSWAP_LIST =
   'https://ipfs.io/ipfs/QmUWxthidUYXUJ2kiZLLPxkMKYDAinnpA591R3SRN6wufs?filename=levinswap-default.tokenlist.json'
 const BAOSWAP_LIST = 'https://raw.githubusercontent.com/baofinance/tokenlists/main/xdai.json'
 const QUICKSWAP_LIST = 'https://unpkg.com/quickswap-default-token-list@1.2.29/build/quickswap-default.tokenlist.json'
+const DFYN_LIST = 'https://raw.githubusercontent.com/dfyn/new-host/main/list-token.tokenlist.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
@@ -42,7 +43,8 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   CMC_STABLECOIN,
   KLEROS_LIST,
   GEMINI_LIST,
-  ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
+  DFYN_LIST,
+  ...UNSUPPORTED_LIST_URLS // need to load unsupported tokens as well
 ]
 
 // default lists to be 'active' aka searched across

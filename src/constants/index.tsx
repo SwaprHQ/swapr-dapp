@@ -22,6 +22,7 @@ import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import { providers } from 'ethers'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -432,6 +433,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.QUICKSWAP.name
+  },
+  [UniswapV2RoutablePlatform.DFYN.name]: {
+    logo: DFYNLogo,
+    alt: UniswapV2RoutablePlatform.DFYN.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.DFYN.name
   }
 }
 
@@ -442,7 +449,8 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
-  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />
+  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
+  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />
 }
 
 export const ChainLabel: any = {
