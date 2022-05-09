@@ -143,14 +143,7 @@ export function CampaignCard({
             ) : (
               <DoubleCurrencyLogo spaceBetween={-5} currency0={token0} currency1={token1} size={30} />
             )}
-            <EllipsizedText
-              marginTop="10px"
-              marginBottom="6px"
-              color="purple2"
-              fontWeight="700"
-              fontSize="16px"
-              fontFamily="Montserrat"
-            >
+            <EllipsizedText marginTop="10px" marginBottom="6px" color="purple2" fontWeight="700" fontSize="16px">
               {unwrappedToken(token0)?.symbol}
               {!isSingleSidedStakingCampaign && `/${unwrappedToken(token1)?.symbol}`}
             </EllipsizedText>

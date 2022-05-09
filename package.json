@@ -5,9 +5,6 @@
   "devDependencies": {
     "@apollo/client": "^3.4.7",
     "@ethersproject/experimental": "^5.4.0",
-    "@fontsource/fira-code": "^4.5.1",
-    "@fontsource/fira-mono": "^4.5.0",
-    "@fontsource/montserrat": "^4.5.1",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",

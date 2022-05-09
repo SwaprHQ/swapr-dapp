@@ -132,7 +132,6 @@ export const StyledNavLink = styled(NavLink)`
   font-weight: 400;
   font-size: 14px;
   line-height: 19.5px;
-  font-family: 'Montserrat';
   &.active {
     font-weight: 600;
     color: ${({ theme }) => theme.white};
@@ -160,7 +159,6 @@ const StyledExternalLink = styled(ExternalLink)`
   line-height: 19.5px;
   width: fit-content;
   text-decoration: none !important;
-  font-family: 'Montserrat';
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
