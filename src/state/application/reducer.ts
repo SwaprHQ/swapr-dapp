@@ -7,7 +7,7 @@ import {
   setOpenModal,
   updateMainnetGasPrices,
   MainnetGasPrice,
-  setConnectorInfo
+  setConnectorInfo,
 } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
@@ -21,13 +21,13 @@ export interface ApplicationState {
   readonly account: string | null | undefined
 }
 
-const initialState: ApplicationState = {
+export const initialState: ApplicationState = {
   blockNumber: {},
   mainnetGasPrices: null,
   popupList: [],
   openModal: null,
   chainId: undefined,
-  account: null
+  account: null,
 }
 
 export default createReducer(initialState, builder =>

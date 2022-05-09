@@ -30,7 +30,7 @@ export default function PairAndReward({
   liquidityPair,
   reward,
   onLiquidityPairChange,
-  onRewardTokenChange
+  onRewardTokenChange,
 }: PairAndRewardProps) {
   const [pairSearchOpen, setPairSearchOpen] = useState<boolean>(false)
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)

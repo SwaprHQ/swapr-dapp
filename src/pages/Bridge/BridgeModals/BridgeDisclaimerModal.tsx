@@ -16,7 +16,7 @@ export const BridgeDisclaimerModal = ({
   onDismiss,
   heading,
   text,
-  disclaimerText
+  disclaimerText,
 }: BridgeDisclaimerModalProps) => (
   <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
     <Wrapper>

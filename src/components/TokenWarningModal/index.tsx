@@ -105,7 +105,7 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
 export default function TokenWarningModal({
   isOpen,
   tokens,
-  onConfirm
+  onConfirm,
 }: {
   isOpen: boolean
   tokens: Token[]

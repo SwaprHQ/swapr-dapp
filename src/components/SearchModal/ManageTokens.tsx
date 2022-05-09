@@ -41,7 +41,7 @@ const TrashIcon = styled(Trash)`
 
 export default function ManageTokens({
   setModalView,
-  setImportToken
+  setImportToken,
 }: {
   setModalView: (view: CurrencyModalView) => void
   setImportToken: (token: Token) => void

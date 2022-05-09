@@ -13,7 +13,7 @@ export default function ListLogo({
   logoURI,
   style,
   size = '24px',
-  defaultText
+  defaultText,
 }: {
   logoURI: string
   size?: string

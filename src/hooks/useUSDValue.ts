@@ -11,7 +11,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: DAI,
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE],
-  [ChainId.XDAI]: USDC[ChainId.XDAI]
+  [ChainId.XDAI]: USDC[ChainId.XDAI],
 }
 
 const FETCH_PRICE_INTERVAL = 15000
@@ -32,7 +32,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         baseCurrency: currency,
         quoteCurrency: currency,
         denominator: '1',
-        numerator: '1'
+        numerator: '1',
       })
 
     const filterSelectedPlataforms = (trade: Trade | undefined) => {
@@ -53,7 +53,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount, selectedTrade?: Tra
         baseCurrency: currency,
         quoteCurrency: stablecoin,
         denominator,
-        numerator
+        numerator,
       })
     }
 
@@ -78,7 +78,7 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
 
       getUSDPriceQuote({
         chainId,
-        tokenAddress
+        tokenAddress,
       })
         .then(toPriceInformation)
         .then(priceResponse => {
@@ -108,7 +108,7 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
             baseCurrency: baseAmount.currency,
             quoteCurrency: quoteAmount.currency,
             denominator: result.denominator,
-            numerator: result.numerator
+            numerator: result.numerator,
           })
 
           console.debug(
@@ -180,14 +180,14 @@ export function useCoingeckoUSDValue(currencyAmount?: CurrencyAmount) {
 
   return useGetPriceQuote({
     ...coingeckoUsdPrice,
-    currencyAmount: wrappedCurrencyToken
+    currencyAmount: wrappedCurrencyToken,
   })
 }
 
 export function useHigherUSDValue({
   inputCurrencyAmount,
   outputCurrencyAmount,
-  trade
+  trade,
 }: {
   inputCurrencyAmount?: CurrencyAmount
   outputCurrencyAmount?: CurrencyAmount
@@ -203,6 +203,6 @@ export function useHigherUSDValue({
     fiatValueInput: inputCoingeckoUSDPrice || inputUSDPrice,
     fiatValueOutput: outputCoingeckoUSDPrice || outputUSDPrice,
     isFallbackFiatValueInput: !inputCoingeckoUSDPrice,
-    isFallbackFiatValueOutput: !outputCoingeckoUSDPrice
+    isFallbackFiatValueOutput: !outputCoingeckoUSDPrice,
   }
 }

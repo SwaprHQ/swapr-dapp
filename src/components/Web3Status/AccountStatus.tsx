@@ -25,7 +25,7 @@ const ChainLogo: any = {
   [ChainId.RINKEBY]: EthereumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
-  [ChainId.XDAI]: GnosisLogo
+  [ChainId.XDAI]: GnosisLogo,
 }
 
 const View = styled.div`
@@ -124,7 +124,7 @@ const Avatar = styled.div<StyledAvatarProps>(props => ({
   marginLeft: -14,
   backgroundColor: props.theme.bg1,
   backgroundSize: 'cover',
-  backgroundImage: `url(${props.url})`
+  backgroundImage: `url(${props.url})`,
 }))
 
 interface AccountStatusProps {
@@ -144,7 +144,7 @@ export function AccountStatus({
   connector,
   networkConnectorChainId,
   onAddressClick,
-  avatar
+  avatar,
 }: AccountStatusProps) {
   const hasPendingTransactions = !!pendingTransactions.length
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()

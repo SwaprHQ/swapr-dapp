@@ -90,7 +90,7 @@ export default function CreateLiquidityMining() {
         setErrorMessage('')
         setTransactionHash(transaction.hash || null)
         addTransaction(transaction, {
-          summary: `Create liquidity mining campaign on ${targetedPair?.token0.symbol}/${targetedPair?.token1.symbol}`
+          summary: `Create liquidity mining campaign on ${targetedPair?.token0.symbol}/${targetedPair?.token1.symbol}`,
         })
       })
       .catch(error => {

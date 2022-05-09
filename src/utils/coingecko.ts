@@ -10,7 +10,7 @@ const API_NAME = 'Coingecko'
 const API_BASE_URL = 'https://api.coingecko.com/api'
 const API_VERSION = 'v3'
 const DEFAULT_HEADERS = {
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 }
 
 function _getApiBaseUrl(chainId: ChainId): string {
@@ -28,7 +28,7 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.RINKEBY]: null,
   [ChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [ChainId.ARBITRUM_RINKEBY]: null,
-  [ChainId.XDAI]: 'xdai'
+  [ChainId.XDAI]: 'xdai',
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
@@ -36,7 +36,7 @@ function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE'
   return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
-    body: data !== undefined ? JSON.stringify(data) : data
+    body: data !== undefined ? JSON.stringify(data) : data,
   })
 }
 

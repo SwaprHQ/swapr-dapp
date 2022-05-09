@@ -3,7 +3,7 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
   createGlobalStyle,
   css,
-  DefaultTheme
+  DefaultTheme,
 } from 'styled-components'
 import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
@@ -17,7 +17,7 @@ export const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
   upToSmall: 720,
   upToMedium: 960,
-  upToLarge: 1280
+  upToLarge: 1280,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -107,7 +107,7 @@ export function colors(darkMode: boolean): Colors {
     // darkest // dark 1.1
     darkest: '#161721',
     dark1: '#191824',
-    dark2: '#2A2F42'
+    dark2: '#2A2F42',
   }
 }
 
@@ -120,7 +120,7 @@ export function theme(darkMode: boolean): DefaultTheme {
     grids: {
       sm: 8,
       md: 12,
-      lg: 24
+      lg: 24,
     },
 
     //shadows
@@ -137,7 +137,7 @@ export function theme(darkMode: boolean): DefaultTheme {
     flexRowNoWrap: css`
       display: flex;
       flex-flow: row nowrap;
-    `
+    `,
   }
 }
 
@@ -198,7 +198,7 @@ export const TYPE = {
   },
   error({ error, ...props }: { error: boolean } & TextProps) {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
-  }
+  },
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
@@ -416,6 +416,10 @@ body {
     background: ${props => props.theme.bg1} !important;
 }
 
+.walletconnect-connect__button__text {
+  font-size: inherit !important;
+}
+
 @media only screen and (max-width: 600px) {
 	.Toastify__toast-container--top-right {
 	    top: auto !important;
@@ -427,6 +431,10 @@ body {
   .Toastify__toast-container {
 	    width: auto !important;
 	}
+
+  .walletconnect-connect__button__text {
+    font-size: 10px !important;
+  }
 }
 
 .rc-pagination-simple-pager {

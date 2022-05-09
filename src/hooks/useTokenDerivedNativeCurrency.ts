@@ -41,7 +41,7 @@ export function useTokenDerivedNativeCurrency(
           )
           .toString(),
         chainId
-      )
+      ),
     }
   }, [chainId, data, error, loading, nativeCurrency])
 }

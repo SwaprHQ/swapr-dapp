@@ -26,6 +26,8 @@ jobs:
         run: yarn install
       - name: Lint
         run: yarn lint
+      - name: Check types
+        run: yarn tsc --noEmit
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
       - name: Run synpress tests
