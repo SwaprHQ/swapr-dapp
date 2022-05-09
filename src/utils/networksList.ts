@@ -21,7 +21,7 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
     },
     isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId]?.isArbitrum ?? false,
     partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId]?.partnerChainId,
-    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined
+    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined,
   }
 }
 

@@ -27,7 +27,7 @@ const ChainLogo: any = {
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
-  [ChainId.POLYGON]: PolygonMaticLogo
+  [ChainId.POLYGON]: PolygonMaticLogo,
 }
 
 const View = styled.div`

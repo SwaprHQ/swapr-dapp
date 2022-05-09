@@ -27,8 +27,7 @@ import 'aos/dist/aos.css'
 import Bridge from './Bridge'
 
 import Rewards from './Rewards'
-import { chainSupportsSWPR } from '../utils/chainSupportsSWPR'
-import { ChainId } from '@swapr/sdk'
+import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -107,7 +106,7 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <SkeletonTheme color={theme.bg3} highlightColor={theme.bg2}>
-        <ApolloProvider client={subgraphClients[chainId as ChainId] || defaultSubgraphClient}>
+        <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
           <NetworkWarningModal />
           <Route component={DarkModeQueryParamReader} />
           <AppWrapper id="app-wrapper">

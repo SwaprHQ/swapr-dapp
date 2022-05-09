@@ -12,7 +12,7 @@ import {
   Currency,
   SWPR,
   UniswapV2RoutablePlatform,
-  WMATIC
+  WMATIC,
 } from '@swapr/sdk'
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
@@ -51,7 +51,7 @@ export const USDC: { [key: number]: Token } = {
     'USDC',
     'USD//C from Ethereum'
   ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C')
+  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C'),
 }
 
 export const USDT: { [key: number]: Token } = {
@@ -70,7 +70,7 @@ export const USDT: { [key: number]: Token } = {
     'USDT',
     'Tether USD'
   ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD')
+  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD'),
 }
 
 export const WBTC: { [key: number]: Token } = {
@@ -89,7 +89,7 @@ export const WBTC: { [key: number]: Token } = {
     'WBTC',
     'Wrapped BTC from Ethereum'
   ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC')
+  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC'),
 }
 
 export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
@@ -141,9 +141,9 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     HONEY,
     STAKE,
     AGAVE,
-    BAO
+    BAO,
   ],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -168,7 +168,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -178,7 +178,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.ARBITRUM_ONE]: [WETH[ChainId.ARBITRUM_ONE], DXD[ChainId.ARBITRUM_ONE], USDC[ChainId.ARBITRUM_ONE]],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]]
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
@@ -350,7 +350,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://rinkeby.infura.io/v3'],
-    blockExplorerUrls: ['https://rinkeby.etherscan.io']
+    blockExplorerUrls: ['https://rinkeby.etherscan.io'],
   },
   [ChainId.POLYGON]: {
     chainId: `0x${ChainId.POLYGON.toString(16)}`,
@@ -358,11 +358,11 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     nativeCurrency: {
       name: Currency.MATIC.name || 'Matic',
       symbol: Currency.MATIC.symbol || 'MATIC',
-      decimals: Currency.MATIC.decimals || 18
+      decimals: Currency.MATIC.decimals || 18,
     },
     rpcUrls: ['https://polygon-rpc.com/'],
-    blockExplorerUrls: ['https://polygonscan.com/']
-  }
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
 }
 
 export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetails } = {
@@ -383,8 +383,8 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
   },
   [ChainId.RINKEBY]: {
     partnerChainId: ChainId.ARBITRUM_RINKEBY,
-    isArbitrum: false
-  }
+    isArbitrum: false,
+  },
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
@@ -424,20 +424,20 @@ export const ROUTABLE_PLATFORM_STYLE: {
     logo: LevinswapLogo,
     alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.LEVINSWAP.name
+    name: UniswapV2RoutablePlatform.LEVINSWAP.name,
   },
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: {
     logo: QuickswapLogo,
     alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.QUICKSWAP.name
+    name: UniswapV2RoutablePlatform.QUICKSWAP.name,
   },
   [UniswapV2RoutablePlatform.DFYN.name]: {
     logo: DFYNLogo,
     alt: UniswapV2RoutablePlatform.DFYN.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.DFYN.name
-  }
+    name: UniswapV2RoutablePlatform.DFYN.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
@@ -448,7 +448,7 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
-  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />
+  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
 }
 
 export const ChainLabel: any = {
@@ -457,7 +457,7 @@ export const ChainLabel: any = {
   [ChainId.ARBITRUM_ONE]: 'Arbitrum One',
   [ChainId.ARBITRUM_RINKEBY]: 'Arbitrum Rinkeby',
   [ChainId.XDAI]: 'Gnosis Chain',
-  [ChainId.POLYGON]: 'Polygon'
+  [ChainId.POLYGON]: 'Polygon',
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {

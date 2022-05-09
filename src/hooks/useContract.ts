@@ -13,14 +13,14 @@ import {
   SWPR_CLAIMER_ABI,
   SWPR_CLAIMER_ADDRESS,
   SWPR_CONVERTER_ADDRESS,
-  WMATIC
+  WMATIC,
 } from '@swapr/sdk'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { useMemo } from 'react'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
-  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
+  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
 } from '../constants/abis/argent-wallet-detector'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
