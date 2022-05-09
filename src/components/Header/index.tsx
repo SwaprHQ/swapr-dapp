@@ -239,7 +239,7 @@ function Header() {
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
-  const networkWithoutSWPR = !!(account && !newSwpr)
+  const networkWithoutSWPR = !newSwpr
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
