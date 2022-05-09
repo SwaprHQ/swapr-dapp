@@ -43,7 +43,7 @@ import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl
 import QuestionHelper from '../../components/QuestionHelper'
 import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { useUSDValue } from '../../hooks/useUSDValue'
+import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
@@ -283,8 +283,12 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const fiatValueInput = useUSDValue(parsedAmounts[Field.INPUT], trade)
-  const fiatValueOutput = useUSDValue(parsedAmounts[Field.OUTPUT], trade)
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: parsedAmounts[Field.INPUT],
+    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
+    trade,
+  })
+
   const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
     fiatValueInput,
     fiatValueOutput,
@@ -333,6 +337,7 @@ export default function Swap() {
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
+                    isFallbackFiatValue={isFallbackFiatValueInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -357,6 +362,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.INPUT]}
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
+                    isFallbackFiatValue={isFallbackFiatValueOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />
