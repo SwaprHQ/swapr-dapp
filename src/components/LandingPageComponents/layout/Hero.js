@@ -65,6 +65,12 @@ const Hero = props => {
 
     const target = document.querySelector('#index-hero')
     observer.observe(target)
+
+    return () => {
+      if (target) {
+        observer.unobserve(target)
+      }
+    }
   }, [])
 
   useEffect(() => {
