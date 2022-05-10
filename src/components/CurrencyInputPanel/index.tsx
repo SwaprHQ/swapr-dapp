@@ -172,19 +172,17 @@ export default function CurrencyInputPanel({
           )}
           <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
             {!hideInput && (
-              <>
-                <NumericalInput
-                  className="token-amount-input"
-                  value={value}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  onUserInput={val => {
-                    onUserInput(val)
-                  }}
-                  disabled={disabled}
-                  data-testid="transaction-value-input"
-                />
-              </>
+              <NumericalInput
+                className="token-amount-input"
+                value={value}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                onUserInput={val => {
+                  onUserInput(val)
+                }}
+                disabled={disabled}
+                data-testid="transaction-value-input"
+              />
             )}
             <CurrencySelect
               selected={!!(currency || pair)}
