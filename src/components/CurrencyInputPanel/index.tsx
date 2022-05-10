@@ -181,7 +181,7 @@ export default function CurrencyInputPanel({
                   onUserInput(val)
                 }}
                 disabled={disabled}
-                data-testid={'transaction-value-input'}
+                data-testid="transaction-value-input"
               />
             )}
             <CurrencySelect
