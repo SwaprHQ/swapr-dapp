@@ -3,32 +3,200 @@ name: CI
 on:
   push:
     branches:
-      - develop
-      - master
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - feature/parallel-workflow
+  #     - master
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  CI:
-    name: Build
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        node_version: [16]
-
+  install:
+    name: Install
+    runs-on: ubuntu-20.04
     steps:
+      - name: ⬇️  Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '50'
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Install
-        run: yarn install
-      - name: Lint
-        run: yarn lint
-      - name: Check types
-        run: yarn tsc --noEmit
-      - name: Test
+          check-latest: true
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Compress workspace artifact
+        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
+
+      # - name: Install cypress
+      #   run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+
+      - name: Less Compressed workspace artifact for cypress
+        run: tar --create --file=/tmp/cypress.tar .
+
+      - name: Upload workspace artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace
+          path: /tmp/workspace.tar.zst
+          retention-days: 3
+
+      - name: Upload cypress artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress
+          path: /tmp/cypress.tar
+          retention-days: 3
+  lint:
+    name: 🔬 Lint
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        # prettier-ignore
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run linter
+        run: yarn lint --quiet
+  test:
+    name: 🔎  Test
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        # prettier-ignore
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run linter
         run: yarn test
-      - name: Build
-        run: yarn run build
+  typecheck:
+    name: ⬡ Typecheck
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥  Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        # prettier-ignore
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run typescript check
+        run: yarn typecheck
+  build:
+    name: ⚙️  Build
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        # prettier-ignore
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Build app
+        run: yarn build
+  synpress:
+    name: 👘 Synpress
+    needs: install
+    runs-on: ubuntu-20.04
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    env:
+      NODE_ENV: false
+    steps:
+      - name: 📥  Download cypress artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: cypress
+
+      - name: Extract cypress artifact
+        run: tar --extract --file=cypress.tar
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install cypress
+        run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+
+      - name: Run synpress tests
+        run: yarn synpress:ct
+  cypress:
+    name: 🎡 Cypress
+    needs: install
+    runs-on: ubuntu-20.04
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    steps:
+      - name: 📥  Download cypress artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: cypress
+
+      - name: Extract cypress artifact
+        run: tar --extract --file=cypress.tar
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install cypress
+        run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+
+      - name: Run cypress tests
+        run: yarn cypress:ct
+  cleanup:
+    name: 🧹 Cleanup
+    needs: [install, lint, test, typecheck, build, synpress, cypress]
+    runs-on: ubuntu-20.04
+    if: ${{ success() }}
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            workspace
+            cypress
