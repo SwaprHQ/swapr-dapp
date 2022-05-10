@@ -109,7 +109,7 @@ export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...nav
     )
   }
 
-  if (to) {
+  if (to !== undefined && to !== '') {
     return (
       <StyledMobileLink to={to} {...navLinkProps}>
         {children}
@@ -117,5 +117,5 @@ export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...nav
     )
   }
 
-  return null
+  throw new Error('Either to or href props must be provided')
 }
