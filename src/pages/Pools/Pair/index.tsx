@@ -1,69 +1,27 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import { PageWrapper } from '../../../components/PageWrapper'
-import { Link } from 'react-router-dom'
-
-import { TYPE } from '../../../theme'
-import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../../components/Row'
-import { AutoColumn } from '../../../components/Column'
-
-import { ChevronDown } from 'react-feather'
-import { useToken } from '../../../hooks/Tokens'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
-import { PairState, usePair } from '../../../data/Reserves'
-import PairView from '../../../components/Pool/PairView'
-import { useRouter } from '../../../hooks/useRouter'
-import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
 import Skeleton from 'react-loading-skeleton'
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
-import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+import { Box, Flex, Text } from 'rebass'
+import { ChevronDown } from 'react-feather'
+import { JSBI, Percent } from '@swapr/sdk'
+import { useTranslation } from 'react-i18next'
+
+import { useToken } from '../../../hooks/Tokens'
+import { useRouter } from '../../../hooks/useRouter'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 
-const TitleRow = styled(RowBetween)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex-wrap: wrap;
-    gap: 12px;
-    width: 100%;
-    flex-direction: column-reverse;
-  `};
-`
-
-const PointableFlex = styled(Flex)`
-  border: solid 1px ${props => props.theme.bg3};
-  border-radius: 8px;
-  height: 36px;
-  align-items: center;
-  padding: 0 10px;
-  cursor: pointer;
-`
-
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
-const ResponsiveButtonSecondary = styled(ButtonSecondary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
-const ButtonRow = styled(RowFixed)`
-  gap: 12px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  `};
-`
+import { PageWrapper } from '../../../components/PageWrapper'
+import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { RowBetween, RowFixed } from '../../../components/Row'
+import { PairState, usePair } from '../../../data/Reserves'
+import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
+import { ButtonPurpleDim, ButtonWithBadge } from '../../../components/Button'
+import { SpaceBg } from '../../../components/SpaceBg'
+import PoolStats from '../../../components/Pool/PairView/PoolStats'
+import YourLiquidity from '../../../components/Pool/PairView/YourLiquidity'
+import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
+import { InfoSnippet } from '../../../components/Pool/PairView/InfoSnippet'
 
 export default function Pair({
   match: {
@@ -74,9 +32,8 @@ export default function Pair({
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
-
-  const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const [openPairsModal, setOpenPairsModal] = useState(false)
+  const { t } = useTranslation()
 
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
@@ -98,69 +55,115 @@ export default function Pair({
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
   return (
-    <>
+    <SpaceBg>
       <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
-        <AutoColumn gap="lg" justify="center">
-          <AutoColumn gap="lg" style={{ width: '100%' }}>
-            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-              <Flex alignItems="center">
-                <Box mr="8px">
-                  <UndecoratedLink to="/pools">
-                    <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                      Pairs
-                    </TYPE.mediumHeader>
-                  </UndecoratedLink>
+        <Box paddingX={3}>
+          <TitleRow>
+            <Flex alignItems="center">
+              <PointableFlex onClick={handleAllClick}>
+                <Box mr="4px">
+                  <DoubleCurrencyLogo
+                    loading={!token0 || !token1}
+                    currency0={token0 || undefined}
+                    currency1={token1 || undefined}
+                    size={20}
+                  />
                 </Box>
-                <Box mr="8px">
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                    /
-                  </TYPE.mediumHeader>
+                <Box mr="4px">
+                  <Text fontWeight="600" fontSize="16px" lineHeight="20px">
+                    {!token0 || !token1 ? (
+                      <Skeleton width="60px" />
+                    ) : (
+                      `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
+                    )}
+                  </Text>
                 </Box>
-                <PointableFlex onClick={handleAllClick}>
-                  <Box mr="4px">
-                    <DoubleCurrencyLogo
-                      loading={!token0 || !token1}
-                      currency0={token0 || undefined}
-                      currency1={token1 || undefined}
-                      size={20}
+                <Box>
+                  <ChevronDown size={12} />
+                </Box>
+              </PointableFlex>
+            </Flex>
+            <ButtonRow>
+              <ButtonPurpleDim disabled>{t('trade')}</ButtonPurpleDim>
+            </ButtonRow>
+          </TitleRow>
+          <ContentGrid>
+            <TwoColumnsGrid>
+              <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
+              <DimBlurBgBox padding={'24px'}>
+                <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
+                  <Box>
+                    <InfoSnippet
+                      title={t('swapFee')}
+                      value={
+                        wrappedPair[1]
+                          ? new Percent(
+                              JSBI.BigInt(wrappedPair[1].swapFee.toString()),
+                              JSBI.BigInt(10000)
+                            ).toSignificant(3) + '%'
+                          : '-'
+                      }
+                      big
+                      center
                     />
                   </Box>
-                  <Box mr="4px">
-                    <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                      {!token0 || !token1 ? (
-                        <Skeleton width="60px" />
-                      ) : (
-                        `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
-                      )}
-                    </Text>
-                  </Box>
-                  <Box>
-                    <ChevronDown size={12} />
-                  </Box>
-                </PointableFlex>
-              </Flex>
-              <ButtonRow>
-                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/create">
-                  <Text fontWeight={700} fontSize={12}>
-                    CREATE PAIR
-                  </Text>
-                </ResponsiveButtonPrimary>
-                {liquidityMiningEnabled && (
-                  <ResponsiveButtonSecondary as={Link} padding="8px 14px" to="/liquidity-mining/create">
-                    <Text fontWeight={700} fontSize={12} lineHeight="15px">
-                      CREATE REWARDS
-                    </Text>
-                  </ResponsiveButtonSecondary>
-                )}
-              </ButtonRow>
-            </TitleRow>
-            <PairView loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-          </AutoColumn>
-        </AutoColumn>
+                  <ButtonWithBadge link={'#'} number={0} disabled={true}>
+                    {t('governance')}
+                  </ButtonWithBadge>
+                </Flex>
+              </DimBlurBgBox>
+            </TwoColumnsGrid>
+            <YourLiquidity pair={wrappedPair[1] || undefined}></YourLiquidity>
+          </ContentGrid>
+        </Box>
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
-    </>
+    </SpaceBg>
   )
 }
+
+const TitleRow = styled(RowBetween)`
+  margin-bottom: 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    flex-direction: column-reverse;
+  `};
+`
+
+const PointableFlex = styled(Flex)`
+  border: solid 1px ${props => props.theme.bg3};
+  border-radius: 8px;
+  height: 36px;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+`
+
+const ButtonRow = styled(RowFixed)`
+  gap: 12px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  `};
+`
+
+const TwoColumnsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 0.4fr;
+  grid-gap: 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+  `};
+`
+
+const ContentGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 24px;
+`
