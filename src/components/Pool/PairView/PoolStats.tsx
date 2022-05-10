@@ -27,6 +27,13 @@ function PoolStats({ pair }: PairViewProps) {
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const { t } = useTranslation()
+  const { aggregatedData: aggregatedDataToken0 } = useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
+    PairsFilterType.ALL,
+    pair?.token0
+  )
+
+  const bestAPY = pair ? aggregatedDataToken0.find(pairStats => pairStats.pair.equals(pair))?.maximumApy : undefined
+
   const statsLink = pair?.liquidityToken.address
     ? `https://dxstats.eth.link/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
     : `https://dxstats.eth.link/#/pairs?chainId=${chainId}`
@@ -38,12 +45,6 @@ function PoolStats({ pair }: PairViewProps) {
       history.push('/pools')
     }
   }, [chainId, history, previousChainId, switchingToCorrectChain])
-  const { aggregatedData: aggregatedDataToken0 } = useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
-    PairsFilterType.ALL,
-    pair?.token0
-  )
-
-  const bestAPY = pair ? aggregatedDataToken0.find(pairStats => pairStats.pair.equals(pair))?.maximumApy : undefined
 
   return (
     <DimBlurBgBox padding={'24px'}>
