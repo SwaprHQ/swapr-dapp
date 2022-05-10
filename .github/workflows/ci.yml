@@ -8,9 +8,9 @@ on:
   # pull_request:
   #   types: [opened, synchronize, reopened]
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ci-${{ github.ref }}
+#   cancel-in-progress: true
 
 jobs:
   install:
@@ -168,7 +168,9 @@ jobs:
     name: 🎡 Cypress
     needs: install
     runs-on: ubuntu-20.04
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    container:
+      image: cypress/browsers:node12.18.3-chrome87-ff82
+      options: --user 1001
     steps:
       - name: 📥  Download cypress artifact
         uses: actions/download-artifact@v3
