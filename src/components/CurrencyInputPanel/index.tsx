@@ -83,8 +83,6 @@ const Container = styled.div<{ focused: boolean }>`
   }
 `
 
-const Content = styled.div``
-
 const StyledTokenName = styled.span<{ active?: boolean }>`
   margin: ${({ active }) => (active ? '0 0 0 6px' : '0')};
   font-size: ${({ active }) => (active ? '16px' : '11px')};
@@ -95,8 +93,6 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 const UppercaseHelper = styled.span`
   text-transform: uppercase;
 `
-
-const FiatRow = styled.div``
 
 interface CurrencyInputPanelProps {
   value: string
@@ -117,6 +113,7 @@ interface CurrencyInputPanelProps {
   balance?: CurrencyAmount
   fiatValue?: CurrencyAmount | null
   priceImpact?: Percent
+  isFallbackFiatValue?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -138,6 +135,7 @@ export default function CurrencyInputPanel({
   balance,
   fiatValue,
   priceImpact,
+  isFallbackFiatValue,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
@@ -162,7 +160,7 @@ export default function CurrencyInputPanel({
   return (
     <InputPanel id={id}>
       <Container focused={focused}>
-        <Content>
+        <div>
           {!hideInput && label && (
             <LabelRow>
               <RowBetween>
@@ -221,12 +219,13 @@ export default function CurrencyInputPanel({
               </Aligner>
             </CurrencySelect>
           </InputRow>
-          <FiatRow>
+          <div>
             <RowBetween>
               {fiatValue && (
                 <FiatValueDetails
                   fiatValue={fiatValue?.toFixed(2, { groupSeparator: ',' })}
                   priceImpact={priceImpact}
+                  isFallback={isFallbackFiatValue}
                 />
               )}
               {account && (
@@ -256,8 +255,8 @@ export default function CurrencyInputPanel({
                 </TYPE.body>
               )}
             </RowBetween>
-          </FiatRow>
-        </Content>
+          </div>
+        </div>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
