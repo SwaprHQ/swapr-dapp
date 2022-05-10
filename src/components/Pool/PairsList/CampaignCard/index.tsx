@@ -147,13 +147,7 @@ export function CampaignCard({
               {unwrappedToken(token0)?.symbol}
               {!isSingleSidedStakingCampaign && `/${unwrappedToken(token1)?.symbol}`}
             </EllipsizedText>
-            <EllipsizedText
-              fontFamily="Fira Mono"
-              fontWeight="bold"
-              fontSize="18px"
-              color="#EBE9F8"
-              letterSpacing="0.02em"
-            >
+            <EllipsizedText fontWeight="bold" fontSize="18px" color="#EBE9F8" letterSpacing="0.02em">
               {apy.toFixed(2)}% APY
             </EllipsizedText>
           </Flex>
