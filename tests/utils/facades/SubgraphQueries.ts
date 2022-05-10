@@ -1,10 +1,7 @@
 export function TRANSACTIONS_QUERY(txnId: string) {
-  return (
-    `
+  return `
   {
-    transactions(where:{id:"` +
-    txnId +
-    `"}){
+    transactions(where:{id:"${txnId}"}){
   id
   blockNumber
   timestamp
@@ -25,12 +22,11 @@ export function TRANSACTIONS_QUERY(txnId: string) {
 }
 }
 `
-  )
 }
 export function LIQUIDITY_CAMPAIGNS_QUERY(owner: string, startsAt: number) {
   return `
   {
-    liquidityMiningCampaigns(where: { owner: ${owner}, startsAt: ${startsAt} }, first: 1) {
+    liquidityMiningCampaigns(where: { owner: "${owner}", startsAt: "${startsAt}" }, first: 1) {
       owner
       startsAt
       endsAt
