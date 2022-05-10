@@ -37,7 +37,7 @@ export class TransactionHelper {
         }
         expect(parseInt(res.body.result)).to.be.at.least(balanceBefore + expectedTransactionValue)
       } catch (err) {
-        if (retries > 200) {
+        if (retries > 100) {
           throw new Error('Retried too many times to check erc20 token balance from etherscan')
         }
         cy.wait(1000)
