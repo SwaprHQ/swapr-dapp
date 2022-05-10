@@ -14,12 +14,20 @@ export const network = new CustomNetworkConnector({
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
+    [ChainId.POLYGON]: 'https://polygon-rpc.com/',
   },
   defaultChainId: ChainId.MAINNET,
 })
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [ChainId.MAINNET, ChainId.RINKEBY, ChainId.ARBITRUM_ONE, ChainId.ARBITRUM_RINKEBY, ChainId.XDAI],
+  supportedChainIds: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
 })
 
 // mainnet only
@@ -44,5 +52,12 @@ export const walletLink = new CustomWalletLinkConnector({
   url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
   appName: 'Swapr',
   appLogoUrl: swprLogo,
-  supportedChainIds: [ChainId.MAINNET, ChainId.RINKEBY, ChainId.ARBITRUM_ONE, ChainId.ARBITRUM_RINKEBY, ChainId.XDAI],
+  supportedChainIds: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
 })
