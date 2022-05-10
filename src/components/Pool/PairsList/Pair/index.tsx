@@ -128,7 +128,7 @@ export default function Pair({
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
   return (
-    <SizedCard selectable {...rest}>
+    <SizedCard selectable {...rest} data-testid="pair-card">
       <Flex height="100%" justifyContent="space-between">
         <Flex flexDirection={isMobile ? 'column' : 'row'} alignItems={!isMobile ? 'center' : ''}>
           {isSingleSidedStakingCampaign ? (

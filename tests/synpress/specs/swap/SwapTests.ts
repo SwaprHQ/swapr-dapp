@@ -5,7 +5,7 @@ import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../pages/TokenMenu'
 
-describe('SWAP functional tests', () => {
+describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number
@@ -42,12 +42,13 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: any) => {
-        estimatedTransactionOutput = parseFloat(res.val())
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({  })
+
 
     MenuBar.checkToastMessage('Swap')
 
@@ -78,12 +79,12 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: any) => {
-        estimatedTransactionOutput = parseFloat(res.val())
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({ })
 
     MenuBar.checkToastMessage('Swap')
 
@@ -111,6 +112,7 @@ describe('SWAP functional tests', () => {
       .getOpenTokenManagerButton()
       .click()
     TokenMenu.switchTokenList('compound')
+    TokenMenu.switchTokenList('swapr-token-list')
     TokenMenu.goBack()
       .chooseToken('dai')
       .switchTokens()
@@ -131,7 +133,7 @@ describe('SWAP functional tests', () => {
         )
       })
     SwapPage.confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({  })
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
