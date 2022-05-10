@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - feature/parallel-workflow
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - feature/parallel-workflow-test
   #     - master
   # pull_request:
   #   types: [opened, synchronize, reopened]
@@ -38,8 +42,8 @@ jobs:
       # - name: Install cypress
       #   run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
 
-      - name: Less Compressed workspace artifact for cypress
-        run: tar --create --file=/tmp/cypress.tar .
+      # - name: Less Compressed workspace artifact for cypress
+      #   run: tar --create --file=/tmp/cypress.tar .
 
       - name: Upload workspace artifact
         uses: actions/upload-artifact@v3
@@ -48,12 +52,12 @@ jobs:
           path: /tmp/workspace.tar.zst
           retention-days: 3
 
-      - name: Upload cypress artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: cypress
-          path: /tmp/cypress.tar
-          retention-days: 3
+      # - name: Upload cypress artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: cypress
+      #     path: /tmp/cypress.tar
+      #     retention-days: 3
   lint:
     name: 🔬 Lint
     needs: install
@@ -146,21 +150,26 @@ jobs:
     env:
       NODE_ENV: false
     steps:
-      - name: 📥  Download cypress artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: cypress
+      # - name: 📥  Download cypress artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: cypress
 
-      - name: Extract cypress artifact
-        run: tar --extract --file=cypress.tar
-
+      # - name: Extract cypress artifact
+      #   run: tar --extract --file=cypress.tar
+      - uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
+      - name: Install
+        run: yarn install
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+
+      - name: Install cypress
+        run: yarn add -D cypress@9.2.0 && yarn cypress install
 
       - name: Run synpress tests
         run: yarn synpress:ct
@@ -172,19 +181,22 @@ jobs:
       image: cypress/browsers:node12.18.3-chrome87-ff82
       options: --user 1001
     steps:
-      - name: 📥  Download cypress artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: cypress
+      # - name: 📥  Download cypress artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: cypress
 
-      - name: Extract cypress artifact
-        run: tar --extract --file=cypress.tar
+      # - name: Extract cypress artifact
+      #   run: tar --extract --file=cypress.tar
 
+      - uses: actions/checkout@v3
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
+      - name: Install
+        run: yarn install
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
 
@@ -199,6 +211,4 @@ jobs:
       - name: Delete workspace artifact
         uses: geekyeggo/delete-artifact@v1
         with:
-          name: |
-            workspace
-            cypress
+          name: workspace
