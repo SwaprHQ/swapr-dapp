@@ -9,16 +9,15 @@ export class SubgraphFacade {
         method: 'POST',
         url: this.SUBGRAPH_URL,
         body: {
-          query: TRANSACTIONS_QUERY,
-          variables: {
-            txnId: txid,
-          },
+          query: TRANSACTIONS_QUERY(txid),
         },
       })
       .then(resp => {
         try {
           expect(resp.body.data.transactions).to.have.length.greaterThan(0)
         } catch (err) {
+          console.log('Subgraph response: ', resp)
+          cy.wait(500)
           if (retries > 100) {
             throw new Error('Retried too many times')
           }
@@ -42,8 +41,7 @@ export class SubgraphFacade {
         method: 'POST',
         url: this.SUBGRAPH_URL,
         body: {
-          query: LIQUIDITY_CAMPAIGNS_QUERY,
-          variables: { owner: owner, startsAt: startsAt },
+          query: LIQUIDITY_CAMPAIGNS_QUERY(owner, startsAt),
         },
       })
       .then(resp => {

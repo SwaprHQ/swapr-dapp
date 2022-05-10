@@ -59,23 +59,25 @@ export class TransactionHelper {
     expectedValueIn: number
   ) {
     cy.window().then(() => {
-      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: Transaction) => {
-        console.log('SUBGRAPH RESPONSE', res.body)
+      ;(SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()) as Cypress.Chainable).then(
+        (res: Transaction) => {
+          console.log('SUBGRAPH RESPONSE', res.body)
 
-        const firstSwap = res.body.data.transactions[0].swaps[0]
+          const firstSwap = res.body.data.transactions[0].swaps[0]
 
-        expect(firstSwap.pair.token0.symbol).to.be.eq(expectedToken0Symbol || expectedToken1Symbol)
-        expect(firstSwap.pair.token1.symbol).to.be.eq(expectedToken1Symbol || expectedToken0Symbol)
+          expect(firstSwap.pair.token0.symbol).to.be.eq(expectedToken0Symbol || expectedToken1Symbol)
+          expect(firstSwap.pair.token1.symbol).to.be.eq(expectedToken1Symbol || expectedToken0Symbol)
 
-        const amountIn: number = parseFloat(firstSwap.amount1In) + parseFloat(firstSwap.amount0In)
-        const amountOut: number = parseFloat(firstSwap.amount1Out) + parseFloat(firstSwap.amount0Out)
+          const amountIn: number = parseFloat(firstSwap.amount1In) + parseFloat(firstSwap.amount0In)
+          const amountOut: number = parseFloat(firstSwap.amount1Out) + parseFloat(firstSwap.amount0Out)
 
-        console.log('EXPECTED AMOUNT OUT: ', amountOut)
-        console.log('EXPECTED AMOUNT IN: ', amountIn)
+          console.log('EXPECTED AMOUNT OUT: ', amountOut)
+          console.log('EXPECTED AMOUNT IN: ', amountIn)
 
-        expect(amountIn).to.be.eq(expectedValueIn)
-        expect(amountOut).to.be.greaterThan(expectedValueOut)
-      })
+          expect(amountIn).to.be.eq(expectedValueIn)
+          expect(amountOut).to.be.greaterThan(expectedValueOut)
+        }
+      )
     })
   }
 

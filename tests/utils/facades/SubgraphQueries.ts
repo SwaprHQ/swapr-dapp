@@ -1,31 +1,36 @@
-import { gql } from 'graphql-request'
-
-export const TRANSACTIONS_QUERY = gql`
-  query GetTransactions($txnId: String!) {
-    transactions(where: { id: $txnId }) {
-      id
-      blockNumber
-      timestamp
-      swaps {
-        amount0In
-        amount1In
-        amount0Out
-        amount1Out
-        pair {
-          token0 {
-            symbol
-          }
-          token1 {
-            symbol
-          }
-        }
+export function TRANSACTIONS_QUERY(txnId: string) {
+  return (
+    `
+  {
+    transactions(where:{id:"` +
+    txnId +
+    `"}){
+  id
+  blockNumber
+  timestamp
+  swaps{
+    amount0In
+    amount1In
+    amount0Out
+    amount1Out
+    pair{
+      token0{
+        symbol
+      }
+      token1{
+        symbol
       }
     }
   }
+}
+}
 `
-export const LIQUIDITY_CAMPAIGNS_QUERY = gql`
-  query GetLiquidityCampaigns($owner: String!, $startsAt: Int!) {
-    liquidityMiningCampaigns(where: { owner: $owner, startsAt: $startsAt }, first: 1) {
+  )
+}
+export function LIQUIDITY_CAMPAIGNS_QUERY(owner: string, startsAt: number) {
+  return `
+  {
+    liquidityMiningCampaigns(where: { owner: ${owner}, startsAt: ${startsAt} }, first: 1) {
       owner
       startsAt
       endsAt
@@ -46,9 +51,9 @@ export const LIQUIDITY_CAMPAIGNS_QUERY = gql`
     }
   }
 `
-
-export const TOKENS_QUERY = gql`
-  query GetTokens() {
+}
+export const TOKENS_QUERY = `
+  {
     tokens(first: 500) {
       id
       symbol

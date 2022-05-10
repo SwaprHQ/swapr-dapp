@@ -47,25 +47,25 @@ describe('Wallet connection tests [TC-60]', () => {
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
     MenuBar.checkToastMessage('campaign')
+    ;(SubgraphFacade.liquidityCampaign(
+      AddressesEnum.WALLET_PUBLIC,
+      getUnixTime(expectedStartsAt)
+    ) as Cypress.Chainable).then((res: LiquidityCampaign) => {
+      const firstLiquidityCampaign = res.body.data.liquidityMiningCampaigns[0]
+      const {
+        owner,
+        rewards,
+        endsAt,
+        stakablePair: { token0, token1 },
+      } = firstLiquidityCampaign
 
-    SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(expectedStartsAt)).then(
-      (res: LiquidityCampaign) => {
-        const firstLiquidityCampaign = res.body.data.liquidityMiningCampaigns[0]
-        const {
-          owner,
-          rewards,
-          endsAt,
-          stakablePair: { token0, token1 },
-        } = firstLiquidityCampaign
-
-        expect(owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
-        expect(parseInt(endsAt)).to.be.eq(getUnixTime(expectedEndsAt))
-        expect(parseFloat(rewards[0].amount)).to.be.eq(REWARDS_INPUT)
-        expect(rewards[0].token.symbol).to.be.eq('WEENUS')
-        expect(token0.symbol).to.be.eq('DAI')
-        expect(token1.symbol).to.be.eq('USDT')
-      }
-    )
+      expect(owner).to.be.eq(AddressesEnum.WALLET_PUBLIC.toLowerCase())
+      expect(parseInt(endsAt)).to.be.eq(getUnixTime(expectedEndsAt))
+      expect(parseFloat(rewards[0].amount)).to.be.eq(REWARDS_INPUT)
+      expect(rewards[0].token.symbol).to.be.eq('WEENUS')
+      expect(token0.symbol).to.be.eq('DAI')
+      expect(token1.symbol).to.be.eq('USDT')
+    })
   })
   it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()

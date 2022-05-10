@@ -112,6 +112,7 @@ describe('Swapping tests', () => {
       .getOpenTokenManagerButton()
       .click()
     TokenMenu.switchTokenList('compound')
+    TokenMenu.switchTokenList('Swapr token list')
     TokenMenu.goBack()
       .chooseToken('dai')
       .switchTokens()
