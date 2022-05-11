@@ -21,12 +21,12 @@ jobs:
     name: Install
     runs-on: ubuntu-20.04
     steps:
-      - name: ⬇️  Checkout repo
-        uses: actions/checkout@v2
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
         with:
           fetch-depth: '50'
 
-      - name: ⎔ Setup node
+      - name: ⎔・Setup node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
@@ -39,12 +39,6 @@ jobs:
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
-      # - name: Install cypress
-      #   run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
-
-      # - name: Less Compressed workspace artifact for cypress
-      #   run: tar --create --file=/tmp/cypress.tar .
-
       - name: Upload workspace artifact
         uses: actions/upload-artifact@v3
         with:
@@ -52,24 +46,17 @@ jobs:
           path: /tmp/workspace.tar.zst
           retention-days: 3
 
-      # - name: Upload cypress artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: cypress
-      #     path: /tmp/cypress.tar
-      #     retention-days: 3
   lint:
-    name: 🔬 Lint
+    name: 🔬 ・Lint
     needs: install
     runs-on: ubuntu-20.04
     steps:
-      - name: 📥 Download workspace artifact
+      - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
         with:
           name: workspace
 
       - name: Extract workspace artifact
-        # prettier-ignore
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
       - name: Setup Node
@@ -80,17 +67,16 @@ jobs:
       - name: Run linter
         run: yarn lint --quiet
   test:
-    name: 🔎  Test
+    name: 🔎 ・Test
     needs: install
     runs-on: ubuntu-20.04
     steps:
-      - name: 📥 Download workspace artifact
+      - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
         with:
           name: workspace
 
       - name: Extract workspace artifact
-        # prettier-ignore
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
       - name: Setup Node
@@ -105,13 +91,12 @@ jobs:
     needs: install
     runs-on: ubuntu-20.04
     steps:
-      - name: 📥  Download workspace artifact
+      - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
         with:
           name: workspace
 
       - name: Extract workspace artifact
-        # prettier-ignore
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
       - name: Setup Node
@@ -122,7 +107,7 @@ jobs:
       - name: Run typescript check
         run: yarn typecheck
   build:
-    name: ⚙️  Build
+    name: ⚙️ ・Build
     needs: install
     runs-on: ubuntu-20.04
     steps:
@@ -132,7 +117,6 @@ jobs:
           name: workspace
 
       - name: Extract workspace artifact
-        # prettier-ignore
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
       - name: Setup Node
@@ -143,68 +127,100 @@ jobs:
       - name: Build app
         run: yarn build
   synpress:
-    name: 👘 Synpress
+    name: 👘 ・Synpress
     needs: install
     runs-on: ubuntu-20.04
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       NODE_ENV: false
     steps:
-      # - name: 📥  Download cypress artifact
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: cypress
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
 
-      # - name: Extract cypress artifact
-      #   run: tar --extract --file=cypress.tar
-      - uses: actions/checkout@v3
-      - name: Setup Node
+      - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+          check-latest: true
+          cache: 'yarn'
 
-      - name: Install
-        run: yarn install
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Install cypress
-        run: yarn add -D cypress@9.2.0 && yarn cypress install
+        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Run synpress tests
         run: yarn synpress:ct
+
+      - name: Merge test results into one
+        run: npm run report:merge
+
+      - name: Generate HTML report
+        if: ${{ github.event.pull_request.title != '' }}
+        run: npm run report:generate -t "${{ github.event.pull_request.title }}"
+
+      - name: Generate HTML report
+        if: ${{ github.event.pull_request.title == '' }}
+        run: npm run report:generate -t "Commit"
+
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: synpress-coverage-report
+          path: public-report/*
+
   cypress:
-    name: 🎡 Cypress
+    name: 🎡 ・Cypress
     needs: install
     runs-on: ubuntu-20.04
     container:
       image: cypress/browsers:node12.18.3-chrome87-ff82
       options: --user 1001
     steps:
-      # - name: 📥  Download cypress artifact
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: cypress
+      - name: ⬇️  Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
 
-      # - name: Extract cypress artifact
-      #   run: tar --extract --file=cypress.tar
-
-      - uses: actions/checkout@v3
-      - name: Setup Node
+      - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+          check-latest: true
+          cache: 'yarn'
 
-      - name: Install
-        run: yarn install
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
       - name: Install cypress
-        run: yarn add -D cypress@9.2.0 && yarn cypress install && yarn cypress verify
+        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
         run: yarn cypress:ct
+
+      - name: Merge test results into one
+        run: npm run report:merge
+
+      - name: Generate HTML report
+        if: ${{ github.event.pull_request.title != '' }}
+        run: npm run report:generate -t "${{ github.event.pull_request.title }}"
+
+      - name: Generate HTML report
+        if: ${{ github.event.pull_request.title == '' }}
+        run: npm run report:generate -t "Commit"
+
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-coverage-report
+          path: public-report/*
+
   cleanup:
     name: 🧹 Cleanup
-    needs: [install, lint, test, typecheck, build, synpress, cypress]
+    needs: [install, lint, test, typecheck, build]
     runs-on: ubuntu-20.04
     if: ${{ success() }}
     steps:
