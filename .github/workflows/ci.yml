@@ -7,14 +7,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - feature/parallel-workflow-test
-  #     - master
-  # pull_request:
-  #   types: [opened, synchronize, reopened]
+      - develop
+      - master
 
-# concurrency:
-#   group: ci-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   install:
@@ -87,7 +85,7 @@ jobs:
       - name: Run tests
         run: yarn test
   typecheck:
-    name: ⬡ Typecheck
+    name: ⬡・Typecheck
     needs: install
     runs-on: ubuntu-20.04
     steps:
