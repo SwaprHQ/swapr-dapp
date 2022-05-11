@@ -19,5 +19,16 @@
   },
   "defaultCommandTimeout": 30000,
   "pageLoadTimeout": 30000,
-  "requestTimeout": 30000
+  "requestTimeout": 30000,
+  "reporter": "cypress-mochawesome-reporter",
+  "reporterOptions": {
+    "reportDir": "mochawesome-report",
+    "charts": true,
+    "overwrite": false,
+    "html": false,
+    "json": true,
+    "reportPageTitle": "My Test Suite",
+    "embeddedScreenshots": true,
+    "inlineAssets": true
+  }
 }
