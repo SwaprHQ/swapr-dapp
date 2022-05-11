@@ -1,23 +1,20 @@
 import React, { useEffect } from 'react'
 import { Box, Flex, Text } from 'rebass'
-import { Pair } from '@swapr/sdk'
 import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { useTranslation } from 'react-i18next'
 
-import { usePair24hVolumeUSD } from '../../../hooks/usePairVolume24hUSD'
-import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
-import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
-import { useActiveWeb3React } from '../../../hooks'
-import { formatCurrencyAmount } from '../../../utils'
-import { ButtonExternalLink } from '../../Button'
-import { DimBlurBgBox } from '../DimBlurBgBox'
-import { InfoSnippet } from './InfoSnippet'
-interface PairViewProps {
-  loading: boolean
-  pair?: Pair | null
-}
-function PoolStats({ pair }: PairViewProps) {
+import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
+import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
+import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
+import { useActiveWeb3React } from '../../../../hooks'
+import { formatCurrencyAmount } from '../../../../utils'
+import { PairViewProps } from './PoolStats.types'
+import { ButtonExternalLink } from '../../../Button'
+import { DimBlurBgBox } from '../../DimBlurBgBox'
+import { InfoSnippet } from '../InfoSnippet'
+
+export function PoolStats({ pair }: PairViewProps) {
   const { chainId } = useActiveWeb3React()
   const history = useHistory()
   const previousChainId = usePrevious(chainId)
@@ -55,5 +52,3 @@ function PoolStats({ pair }: PairViewProps) {
     </DimBlurBgBox>
   )
 }
-
-export default PoolStats
