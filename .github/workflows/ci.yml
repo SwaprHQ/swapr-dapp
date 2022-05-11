@@ -152,6 +152,7 @@ jobs:
 
       - name: Run synpress tests
         run: yarn synpress:ct
+        continue-on-error: true
 
       - name: Merge test results into one
         run: npm run report:merge
@@ -198,6 +199,7 @@ jobs:
 
       - name: Run cypress tests
         run: yarn cypress:ct
+        continue-on-error: true
 
       - name: Merge test results into one
         run: yarn run report:merge
