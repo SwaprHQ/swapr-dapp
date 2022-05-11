@@ -88,8 +88,7 @@ describe('Wallet connection tests [TC-60]', () => {
       DateUtils.getFormattedDateTime(expectedEndsAt)
     )
   })
-  // TODO: Remove skip once tests are fixed
-  it.skip('Should open a campaign', () => {
+  it('Should open a campaign', () => {
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
     PairMenu.choosePair(TOKENS_PAIR)

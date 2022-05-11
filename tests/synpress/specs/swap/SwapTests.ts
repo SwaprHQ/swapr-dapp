@@ -98,8 +98,7 @@ describe('Swapping tests', () => {
     })
   })
 
-  // TODO: Remove skip once tests are fixed
-  it.skip('Should swap DAI to ETH [TC-53]', () => {
+  it('Should swap DAI to ETH [TC-53]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)

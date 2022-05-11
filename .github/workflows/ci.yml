@@ -200,15 +200,10 @@ jobs:
         run: yarn cypress:ct
 
       - name: Merge test results into one
-        run: npm run report:merge
+        run: yarn run report:merge
 
       - name: Generate HTML report
-        if: ${{ github.event.pull_request.title != '' }}
-        run: npm run report:generate -t "${{ github.event.pull_request.title }}"
-
-      - name: Generate HTML report
-        if: ${{ github.event.pull_request.title == '' }}
-        run: npm run report:generate -t "Commit"
+        run: yarn run report:generate
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
