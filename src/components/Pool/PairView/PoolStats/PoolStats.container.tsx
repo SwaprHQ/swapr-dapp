@@ -7,12 +7,14 @@ import { useTranslation } from 'react-i18next'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
 import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
+import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useActiveWeb3React } from '../../../../hooks'
 import { formatCurrencyAmount } from '../../../../utils'
 import { PairViewProps } from './PoolStats.types'
 import { ButtonExternalLink } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox'
 import { InfoSnippet } from '../InfoSnippet'
+import { PairsFilterType } from '../../ListFilter'
 
 export function PoolStats({ pair }: PairViewProps) {
   const { chainId } = useActiveWeb3React()
@@ -22,6 +24,13 @@ export function PoolStats({ pair }: PairViewProps) {
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const { t } = useTranslation()
+  const { aggregatedData: aggregatedDataToken0 } = useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
+    PairsFilterType.ALL,
+    pair?.token0
+  )
+
+  const bestAPY = pair ? aggregatedDataToken0.find(pairStats => pairStats.pair.equals(pair))?.maximumApy : undefined
+
   const statsLink = pair?.liquidityToken.address
     ? `https://dxstats.eth.link/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
     : `https://dxstats.eth.link/#/pairs?chainId=${chainId}`
@@ -45,9 +54,9 @@ export function PoolStats({ pair }: PairViewProps) {
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
-        <InfoSnippet title={t('TLV')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
+        <InfoSnippet title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
         <InfoSnippet title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
-        <InfoSnippet title={t('APY')} value="0.1%" big />
+        <InfoSnippet title={t('APY')} value={`${bestAPY?.toFixed(1) || 0}%`} big />
       </Flex>
     </DimBlurBgBox>
   )
