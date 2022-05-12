@@ -119,7 +119,7 @@
   "pImp": "P. Imp.",
   "minReceived": "Min. Received",
   "maxSent": "Max Sent",
-  "bestPriceFounOn": "Best price found on <0>{{platform}}</0>.",
+  "bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
   "showMore": "Show more"
 }

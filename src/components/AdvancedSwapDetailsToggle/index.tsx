@@ -14,10 +14,15 @@ const StyledAdvancedSwapDetailsButton = styled(Button)`
   width: 22px;
 `
 
-export const AdvancedSwapDetailsToggle: FC<{
+interface AdvancedSwapDetailsToggleProps {
   showAdvancedSwapDetails: boolean
   setShowAdvancedSwapDetails: (value: boolean) => void
-}> = ({ showAdvancedSwapDetails, setShowAdvancedSwapDetails }) => {
+}
+
+export const AdvancedSwapDetailsToggle: FC<AdvancedSwapDetailsToggleProps> = ({
+  showAdvancedSwapDetails,
+  setShowAdvancedSwapDetails,
+}) => {
   return (
     <StyledAdvancedSwapDetailsButton onClick={() => setShowAdvancedSwapDetails(!showAdvancedSwapDetails)}>
       {showAdvancedSwapDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
