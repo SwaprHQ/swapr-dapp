@@ -158,12 +158,10 @@ jobs:
         run: npm run report:merge
 
       - name: Generate HTML report
-        if: ${{ github.event.pull_request.title != '' }}
         run: yarn run report:generate
 
-      - name: Generate HTML report
-        if: ${{ github.event.pull_request.title == '' }}
-        run: yarn run report:generate
+      - name: Move screenshots to report
+        run: cp -r tests/screenshots public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
@@ -206,6 +204,9 @@ jobs:
 
       - name: Generate HTML report
         run: yarn run report:generate
+
+      - name: Move screenshots to report
+        run: cp -r tests/screenshots public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
