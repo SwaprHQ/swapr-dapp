@@ -159,11 +159,11 @@ jobs:
 
       - name: Generate HTML report
         if: ${{ github.event.pull_request.title != '' }}
-        run: yarn run report:generate"
+        run: yarn run report:generate
 
       - name: Generate HTML report
         if: ${{ github.event.pull_request.title == '' }}
-        run: yarn run report:generate"
+        run: yarn run report:generate
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
