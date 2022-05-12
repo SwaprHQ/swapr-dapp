@@ -48,16 +48,17 @@ export class RewardsPage {
 
   static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '') {
     cy.waitUntil(() => {
-      if (Cypress.$('[data-testid=reward-card]').length == 0) {
-        //TODO After opening campaign for first time it instead of opening reward card opens all rewards page
-        if (chosenPair != '') {
-          RewardsPage.getAllPairsButton().click()
-          PairMenu.choosePair(chosenPair)
-        }
+      cy.get('[data-testid=reward-card]').then(element => {
+        if (element.find('reward-starting-at' + getUnixTime(startingAt).toString()).length == 0)
+          if (chosenPair != '') {
+            //TODO After opening campaign for first time it instead of opening reward card opens all rewards page
+            RewardsPage.getAllPairsButton().click()
+            PairMenu.choosePair(chosenPair)
+          }
         return RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString())
           .click()
           .then(() => false)
-      }
+      })
       return true
     })
   }
