@@ -48,7 +48,7 @@ export class RewardsPage {
 
   static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '') {
     cy.waitUntil(() => {
-      if (Cypress.$('[data-testid=reward-card]').length) {
+      if (Cypress.$('[data-testid=reward-card]').length == 0) {
         //TODO After opening campaign for first time it instead of opening reward card opens all rewards page
         if (chosenPair != '') {
           RewardsPage.getAllPairsButton().click()
