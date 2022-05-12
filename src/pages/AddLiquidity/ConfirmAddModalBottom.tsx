@@ -71,7 +71,7 @@ export function ConfirmAddModalBottom({
           {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
         </TYPE.body>
       </RowBetween>
-      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
+      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd} data-testid="confirm-supply">
         <Text fontWeight={600} fontSize={13}>
           {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
         </Text>
