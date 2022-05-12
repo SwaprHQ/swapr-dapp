@@ -67,6 +67,19 @@ describe('Wallet connection tests [TC-60]', () => {
       expect(token1.symbol).to.be.eq('USDT')
     })
   })
+  it('Should open a campaign through Rewards page [TC-60]', () => {
+    RewardsPage.getRewardCards().should('be.visible')
+    RewardsPage.getAllPairsButton().click()
+    PairMenu.choosePair(TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
+    CampaignPage.checkCampaignData(
+        TOKENS_PAIR,
+        REWARDS_INPUT,
+        'ACTIVE',
+        DateUtils.getFormattedDateTime(expectedStartsAt),
+        DateUtils.getFormattedDateTime(expectedEndsAt)
+    )
+  })
   it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.getAllPairsButton().click()
@@ -80,19 +93,6 @@ describe('Wallet connection tests [TC-60]', () => {
     LiquidityPage.getRewardsCampaignButton().click()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click()
 
-    CampaignPage.checkCampaignData(
-      TOKENS_PAIR,
-      REWARDS_INPUT,
-      'ACTIVE',
-      DateUtils.getFormattedDateTime(expectedStartsAt),
-      DateUtils.getFormattedDateTime(expectedEndsAt)
-    )
-  })
-  it('Should open a campaign', () => {
-    RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click()
-    PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
