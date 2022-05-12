@@ -2,7 +2,7 @@ import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 
-describe('Add liquidity to pool', () => {
+describe('Add liquidity', () => {
   const TRANSACTION_VALUE: number = 0.000001
   let firstTokenBefore: number
   let secondTokenBefore: number
@@ -23,7 +23,7 @@ describe('Add liquidity to pool', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
 
-  it('Should get balance of tokens from liquidity poll [TC-59]', () => {
+  it('Should get balance of tokens from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
     LiquidityPage.getLiquidityPair().click()
     LiquidityPage.getFirstTokenBalance()
@@ -47,7 +47,7 @@ describe('Add liquidity to pool', () => {
       console.log('SECOND TOKEN BALANCE: ', secondTokenBefore)
     })
   })
-  it('Should add tokens to liquidity poll [TC-59]', () => {
+  it('Should add tokens to liquidity pool [TC-59]', () => {
     LiquidityPage.getAddLiquidityButton().click()
     LiquidityPage.typeValueToFirstToken(TRANSACTION_VALUE.toFixed(9).toString())
     console.log('FIST TOKEN ADDED AMOUNT', firstTokenAddedAmount)
@@ -67,7 +67,7 @@ describe('Add liquidity to pool', () => {
     LiquidityPage.getCloseTransactionSubmittedWindowButton().click()
     MenuBar.checkToastMessage('Add')
   })
-  it('Should check if tokens are added to liquidity poll [TC-59]', () => {
+  it('Should check if tokens are added to liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
     LiquidityPage.getLiquidityPair().click()
     LiquidityPage.getFirstTokenBalance()
