@@ -160,9 +160,6 @@ jobs:
       - name: Generate HTML report
         run: yarn run report:generate
 
-      - name: Move screenshots to report
-        run: cp -r tests/screenshots public-report
-
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
@@ -204,9 +201,6 @@ jobs:
 
       - name: Generate HTML report
         run: yarn run report:generate
-
-      - name: Move screenshots to report
-        run: cp -r tests/screenshots public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
