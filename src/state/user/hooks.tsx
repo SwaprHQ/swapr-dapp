@@ -23,6 +23,7 @@ import {
   removeSerializedPair,
   updateUserMultihop,
   updateUserPreferredGasPrice,
+  updateUserAdvancedSwapDetails,
 } from './actions'
 
 function serializeToken(token: Token): SerializedToken {
@@ -243,6 +244,21 @@ export function useURLWarningVisible(): boolean {
 export function useURLWarningToggle(): () => void {
   const dispatch = useDispatch()
   return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
+}
+
+export function useIsOpenAdvancedSwapDetails(): boolean {
+  return useSelector<AppState, AppState['user']['userAdvancedSwapDetails']>(state => state.user.userAdvancedSwapDetails)
+}
+
+export function useAdvancedSwapDetails(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const advancedSwapDetails = useIsOpenAdvancedSwapDetails()
+
+  const toggleSetAdvancedSwapDetails = useCallback(() => {
+    dispatch(updateUserAdvancedSwapDetails({ userAdvancedSwapDetails: !advancedSwapDetails }))
+  }, [advancedSwapDetails, dispatch])
+
+  return [advancedSwapDetails, toggleSetAdvancedSwapDetails]
 }
 
 /**
