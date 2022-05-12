@@ -57,8 +57,7 @@ describe('Add liquidity to pool', () => {
         console.log('SECOND TOKEN ADDED AMOUNT', value)
         secondTokenAddedAmount = parseFloat(value as string)
         firstTokenBalance = firstTokenBefore + firstTokenAddedAmount
-        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)
-        //add logic for decimals on sedond token balance only an then test
+        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)      
         secondTokenBalance = secondTokenBefore + secondTokenAddedAmount
         console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
       })
