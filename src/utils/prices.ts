@@ -13,6 +13,7 @@ import {
   _100,
   ZERO,
   UniswapV2Trade,
+  CurveTrade,
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -41,18 +42,32 @@ interface TradePriceBreakdown {
 }
 
 // computes price breakdown for the trade
-export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBreakdown {
+export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
-  const realizedLPFee = !trade
-    ? undefined
-    : ONE_HUNDRED_PERCENT.subtract(
-        trade.route.pairs.reduce<Fraction>((currentFee: Fraction, currentIndex: Pair): Fraction => {
-          return currentFee.multiply(
-            ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
-          )
-        }, ONE_HUNDRED_PERCENT)
+  let realizedLPFee: Percent | undefined = undefined
+  const priceImpactWithoutFee: Percent | undefined = undefined
+  let realizedLPFeeAmount: CurrencyAmount | undefined = undefined
+
+  // early exit
+  if (!trade) {
+    return {
+      priceImpactWithoutFee,
+      realizedLPFee,
+      realizedLPFeeAmount,
+    }
+  }
+
+  if (trade instanceof UniswapV2Trade) {
+    const totalRoutesFee = trade.route.pairs.reduce<Fraction>((currentFee: Fraction, currentIndex: Pair): Fraction => {
+      return currentFee.multiply(
+        ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
       )
+    }, ONE_HUNDRED_PERCENT)
+    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
+  } else if (trade instanceof CurveTrade) {
+    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+  }
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
@@ -63,12 +78,13 @@ export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBr
     : undefined
 
   // the amount of the input that accrues to LPs
-  const realizedLPFeeAmount = !trade
-    ? undefined
-    : realizedLPFee &&
-      (trade.inputAmount instanceof TokenAmount
+  if (realizedLPFee) {
+    realizedLPFeeAmount =
+      trade.inputAmount instanceof TokenAmount
         ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId))
+        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+  }
+
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,
     realizedLPFee: realizedLPFee ? new Percent(realizedLPFee.numerator, realizedLPFee.denominator) : undefined,

@@ -99,13 +99,49 @@ export function useSwapsCallArguments(
   }, [account, allowedSlippage, chainId, deadline, library, recipient, trades])
 }
 
-// returns a function that will execute a swap, if the parameters are all valid
-// and the user has approved the slippage adjusted input amount for the trade
-export function useSwapCallback(
-  trade: Trade | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+/**
+ * Returns the swap summary for UI components
+ */
+export function getSwapSummary(trade: Trade, recipientAddressOrName?: string): string {
+  const inputSymbol = trade.inputAmount.currency.symbol
+  const outputSymbol = trade.outputAmount.currency.symbol
+  const inputAmount = trade.inputAmount.toSignificant(3)
+  const outputAmount = trade.outputAmount.toSignificant(3)
+  const platformName = trade.platform.name
+
+  const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
+    platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
+  }`
+
+  return recipientAddressOrName != null
+    ? `${base} to ${
+        recipientAddressOrName && isAddress(recipientAddressOrName)
+          ? shortenAddress(recipientAddressOrName)
+          : recipientAddressOrName
+      }`
+    : base
+}
+
+export interface UseSwapCallbackParams {
+  trade: Trade | undefined // trade to execute, required
+  allowedSlippage: number // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+}
+
+export interface UseSwapCallbackReturn {
+  state: SwapCallbackState
+  callback: null | (() => Promise<string>)
+  error: string | null
+}
+/**
+ * Returns a function that will execute a swap, if the parameters are all valid
+ * and the user has approved the slippage adjusted input amount for the trade
+ */
+export function useSwapCallback({
+  trade,
+  allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
+  recipientAddressOrName,
+}: UseSwapCallbackParams): UseSwapCallbackReturn {
   const { account, chainId, library } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
@@ -133,6 +169,8 @@ export function useSwapCallback(
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+        // eslint-disable-next-line
+        // @ts-ignore
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
             const transactionRequest = await call.transactionParameters
@@ -158,7 +196,10 @@ export function useSwapCallback(
                   .call(transactionRequest as any)
                   .then(result => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
-                    return { call, error: new Error('Unexpected issue with estimating the gas. Please try again.') }
+                    return {
+                      call,
+                      error: new Error('Unexpected issue with estimating the gas. Please try again.'),
+                    }
                   })
                   .catch(callError => {
                     console.debug('Call threw error', call, callError)
@@ -212,26 +253,8 @@ export function useSwapCallback(
             ...((await transactionParameters) as any),
           })
           .then((response: any) => {
-            const inputSymbol = trade.inputAmount.currency.symbol
-            const outputSymbol = trade.outputAmount.currency.symbol
-            const inputAmount = trade.inputAmount.toSignificant(3)
-            const outputAmount = trade.outputAmount.toSignificant(3)
-            const platformName = trade.platform.name
-
-            const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
-              platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
-            }`
-            const withRecipient =
-              recipient === account
-                ? base
-                : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
-                      ? shortenAddress(recipientAddressOrName)
-                      : recipientAddressOrName
-                  }`
-
             addTransaction(response, {
-              summary: withRecipient,
+              summary: getSwapSummary(trade, recipient),
             })
 
             return response.hash

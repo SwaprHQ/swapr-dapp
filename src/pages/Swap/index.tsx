@@ -115,6 +115,7 @@ export default function Swap() {
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const {
+    loading: swapInfoIsLoading,
     trade: potentialTrade,
     allPlatformTrades,
     currencyBalances,
@@ -203,7 +204,11 @@ export default function Swap() {
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback({
+    trade,
+    allowedSlippage,
+    recipientAddressOrName: recipient,
+  })
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
 
@@ -486,6 +491,7 @@ export default function Swap() {
             </Wrapper>
           </AppBody>
           <AdvancedSwapDetailsDropdown
+            isLoading={swapInfoIsLoading}
             trade={trade}
             allPlatformTrades={allPlatformTrades}
             onSelectedPlatformChange={setPlatformOverride}
