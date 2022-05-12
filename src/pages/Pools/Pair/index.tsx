@@ -10,16 +10,15 @@ import { useTranslation } from 'react-i18next'
 import { useToken } from '../../../hooks/Tokens'
 import { useRouter } from '../../../hooks/useRouter'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-
+import { PairState, usePair } from '../../../data/Reserves'
 import { PageWrapper } from '../../../components/PageWrapper'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
-import { PairState, usePair } from '../../../data/Reserves'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
 import { ButtonPurpleDim, ButtonWithBadge } from '../../../components/Button'
 import { SpaceBg } from '../../../components/SpaceBg'
-import PoolStats from '../../../components/Pool/PairView/PoolStats'
-import YourLiquidity from '../../../components/Pool/PairView/YourLiquidity'
+import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
+import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
 import { InfoSnippet } from '../../../components/Pool/PairView/InfoSnippet'
 
@@ -113,7 +112,7 @@ export default function Pair({
                 </Flex>
               </DimBlurBgBox>
             </TwoColumnsGrid>
-            <YourLiquidity pair={wrappedPair[1] || undefined}></YourLiquidity>
+            <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
         </Box>
       </PageWrapper>

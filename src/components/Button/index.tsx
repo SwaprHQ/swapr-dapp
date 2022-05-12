@@ -353,7 +353,7 @@ export function ButtonWithBadge({
 const NumberBadge = styled.div`
   min-width: 16px;
   align-items: center;
-  justufy-content: center;
+  justify-content: center;
   padding 0 3px;
   border: 1px solid ${({ theme }) => theme.orange1};
   border-radius: 4px;
