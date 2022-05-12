@@ -17,7 +17,6 @@ import { RowBetween, RowFixed } from '../../../components/Row'
 import { PairState, usePair } from '../../../data/Reserves'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
 import { ButtonPurpleDim, ButtonWithBadge } from '../../../components/Button'
-import { SpaceBg } from '../../../components/SpaceBg'
 import PoolStats from '../../../components/Pool/PairView/PoolStats'
 import YourLiquidity from '../../../components/Pool/PairView/YourLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
@@ -55,7 +54,7 @@ export default function Pair({
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
   return (
-    <SpaceBg>
+    <>
       <PageWrapper>
         <Box paddingX={3}>
           <TitleRow>
@@ -118,7 +117,7 @@ export default function Pair({
         </Box>
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
-    </SpaceBg>
+    </>
   )
 }
 

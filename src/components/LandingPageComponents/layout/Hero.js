@@ -108,10 +108,6 @@ const Hero = props => {
             </ul>
           </div>
         )}
-        <div className="hero-background">
-          <div className="hero-image hero-image-right"></div>
-          <div className="hero-image hero-image-left"></div>
-        </div>
         <div className="routing-through desktop" data-aos="fade-up">
           <div className="routing-through-header">
             <div className="left-line"></div>
