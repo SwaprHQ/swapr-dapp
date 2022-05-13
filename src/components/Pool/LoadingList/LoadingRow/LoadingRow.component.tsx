@@ -2,11 +2,11 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
-import { SizedCard } from './LoadingCard.styles'
+import { Row } from './LoadingRow.styles'
 
-export function LoadingCard() {
+export function LoadingRow() {
   return (
-    <SizedCard>
+    <Row>
       <Flex alignItems="center" flexDirection="row">
         <DoubleCurrencyLogo spaceBetween={0} marginLeft={0} marginRight={14} top={0} loading size={45} />
         <Flex justifyContent="flex-start" flexDirection="column">
@@ -28,6 +28,6 @@ export function LoadingCard() {
       <Flex alignItems="center">
         <Skeleton height="22px" width="48px" />
       </Flex>
-    </SizedCard>
+    </Row>
   )
 }

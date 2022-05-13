@@ -1,24 +1,20 @@
-import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
+import { JSBI, Percent, TokenAmount } from '@swapr/sdk'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 
-import { useTotalSupply } from '../../../data/TotalSupply'
-import { useActiveWeb3React } from '../../../hooks'
-import { useTokenBalance } from '../../../state/wallet/hooks'
-import { currencyId } from '../../../utils/currencyId'
-import { unwrappedToken } from '../../../utils/wrappedCurrency'
+import { useTotalSupply } from '../../../../data/TotalSupply'
+import { useActiveWeb3React } from '../../../../hooks'
+import { useTokenBalance } from '../../../../state/wallet/hooks'
+import { currencyId } from '../../../../utils/currencyId'
+import { unwrappedToken } from '../../../../utils/wrappedCurrency'
+import { UserLiquidityProps } from './UserLiquidity'
+import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
+import { DimBlurBgBox } from '../../DimBlurBgBox'
+import { InfoSnippet } from '../InfoSnippet'
 
-import { ButtonExternalLink, ButtonPurpleDim } from '../../Button'
-import { DimBlurBgBox } from '../DimBlurBgBox'
-import { InfoSnippet } from './InfoSnippet'
-
-interface YourLiquidityProps {
-  pair?: Pair
-}
-
-export default function YourLiquidity({ pair }: YourLiquidityProps) {
+export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()
   const currency0 = unwrappedToken(pair?.token0)
   const currency1 = unwrappedToken(pair?.token1)
