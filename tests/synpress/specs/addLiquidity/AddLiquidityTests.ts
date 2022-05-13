@@ -25,7 +25,10 @@ describe('Add liquidity', () => {
 
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getLiquidityPair().click()
+    LiquidityPage.getPairCards()
+    .contains('DXD')
+    .contains('WEENUS')
+    .click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
@@ -69,7 +72,10 @@ describe('Add liquidity', () => {
   })
   it('Should check if tokens are added to liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getLiquidityPair().click()
+    LiquidityPage.getPairCards()
+    .contains('DXD')
+    .contains('WEENUS')
+    .click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
