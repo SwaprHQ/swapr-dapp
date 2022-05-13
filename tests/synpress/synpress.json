@@ -8,7 +8,7 @@
   "chromeWebSecurity": true,
   "viewportWidth": 1366,
   "viewportHeight": 768,
-  "videoCompression": 10,
+  "videoCompression": 3,
   "video": true,
   "component": {
     "componentFolder": ".",
