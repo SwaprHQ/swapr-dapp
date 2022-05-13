@@ -15,12 +15,14 @@ import { PageWrapper } from '../../../components/PageWrapper'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
-import { ButtonPurpleDim, ButtonWithBadge } from '../../../components/Button'
+import { ButtonPurpleDim, ButtonLinkWithBadge } from '../../../components/Button'
 import { SpaceBg } from '../../../components/SpaceBg'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
 import { InfoSnippet } from '../../../components/Pool/PairView/InfoSnippet'
+import List from '../../../components/LiquidityMiningCampaigns/List'
+import { usePairLiquidityMiningCampaigns } from '../../../hooks/useAllLiquidityMiningCampaigns'
 
 export default function Pair({
   match: {
@@ -30,9 +32,13 @@ export default function Pair({
   const router = useRouter()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
+
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [openPairsModal, setOpenPairsModal] = useState(false)
   const { t } = useTranslation()
+  const { loading: loadingPairs, miningCampaigns } = usePairLiquidityMiningCampaigns(
+    wrappedPair[1] ? wrappedPair[1] : undefined
+  )
 
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
@@ -91,7 +97,7 @@ export default function Pair({
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
               <DimBlurBgBox padding={'24px'}>
                 <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
-                  <Box>
+                  <Box mb={3}>
                     <InfoSnippet
                       title={t('swapFee')}
                       value={
@@ -106,14 +112,20 @@ export default function Pair({
                       center
                     />
                   </Box>
-                  <ButtonWithBadge link={'#'} number={0} disabled={true}>
+                  <ButtonLinkWithBadge link={'#'} number={0} disabled={true}>
                     {t('governance')}
-                  </ButtonWithBadge>
+                  </ButtonLinkWithBadge>
                 </Flex>
               </DimBlurBgBox>
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
+          <Flex my={3}>
+            <ButtonLinkWithBadge fit link={'#'} number={miningCampaigns.active.length} color="green">
+              {t('campaigns')}
+            </ButtonLinkWithBadge>
+          </Flex>
+          {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading />}
         </Box>
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />

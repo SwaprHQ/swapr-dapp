@@ -17,6 +17,7 @@ interface BaseProps {
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
+  fit?: boolean
 }
 
 const Base = styled(RebassButton)<BaseProps>`
@@ -98,6 +99,7 @@ export const ButtonGrey = styled(Base)`
 `
 
 export const ButtonPurpleDim = styled(Base)`
+  width: ${({ fit }) => (fit ? 'fit-content' : '100%')};
   padding: 8px 24px;
   border: 1px solid ${({ theme }) => theme.purple5};
 
@@ -327,23 +329,32 @@ export function ButtonExternalLink({
   )
 }
 
-export function ButtonWithBadge({
+export function ButtonLinkWithBadge({
   link,
   children,
   number,
   disabled = false,
+  color = 'orange',
+  fit = false,
 }: {
   link: string
   number: number
   disabled?: boolean
+  fit?: boolean
   children: ReactNode
+  color?: 'orange' | 'green' | 'red'
 }) {
   return (
-    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled && link}>
+    <ButtonPurpleDim
+      fit={fit}
+      disabled={disabled}
+      as={disabled ? ButtonPurpleDim : ExternalLink}
+      href={!disabled && link}
+    >
       <Flex alignItems="center">
         {children}
         <Box ml={1}>
-          <NumberBadge>{number}</NumberBadge>
+          <NumberBadge color={color}>{number}</NumberBadge>
         </Box>
       </Flex>
     </ButtonPurpleDim>
@@ -355,10 +366,10 @@ const NumberBadge = styled.div`
   align-items: center;
   justify-content: center;
   padding 0 3px;
-  border: 1px solid ${({ theme }) => theme.orange1};
+  border: 1px solid ${({ color }) => color};
   border-radius: 4px;
   font-size: 12px;
-  color: ${({ theme }) => theme.orange1};
+  color: ${({ color }) => color};
 `
 
 const CarrotIconWithMargin = styled(CarrotIcon)`
