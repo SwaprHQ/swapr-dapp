@@ -33,9 +33,6 @@ export class LiquidityPage {
   static getTokenSearchField() {
     return cy.get('[id=token-search-input]')
   }
-  static getLiquidityPair() {
-    return cy.get('[data-testid=pair-card]').eq(2)
-  }
   static getAddLiquidityButton() {
     return cy.get('[data-testid=add-liquidity]')
   }
