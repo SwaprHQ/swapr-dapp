@@ -18,8 +18,7 @@ export const zoomOut = keyframes`
 
 export const StyledHero = styled.div`
     position: relative;
-    padding-bottom: 120px;
-    width: calc(100% + 32px) !important;
+    width: 100% !important;
     .inner-hero {
         display: flex;
         flex-direction: column;
@@ -104,7 +103,7 @@ export const StyledHero = styled.div`
         width: 1198px;
         height: 905px;
         top: -172px;
-        right: 0;
+        right: -32px;
         z-index: 1;
     }
     .hero-image-left {
@@ -112,7 +111,7 @@ export const StyledHero = styled.div`
         width: 1680px;
         height: 1680px;
         top: -172px;
-        right: 0;
+        right: -32px;
         background-position: left top;
         background-size: 100% auto;
         z-index: 1;
