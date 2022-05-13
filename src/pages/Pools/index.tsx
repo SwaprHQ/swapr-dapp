@@ -26,6 +26,7 @@ import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
+import { useTranslation } from 'react-i18next'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -66,6 +67,14 @@ export const ResetFilterIcon = styled(X)`
   color: ${props => props.theme.purple3};
 `
 
+export const StyledMediumHeader = styled(TYPE.mediumHeader)`
+  text-transform: uppercase;
+`
+
+export const StyledText = styled(Text)`
+  text-transform: uppercase;
+`
+
 interface TitleProps {
   filteredToken?: Token
   onCurrencySelection: (currency: Currency) => void
@@ -87,6 +96,7 @@ function Title({
   sortBy,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
+  const { t } = useTranslation()
 
   const handleAllClick = useCallback(() => {
     setOpenTokenModal(true)
@@ -110,9 +120,9 @@ function Title({
         <Flex alignItems="center" justifyContent="space-between">
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
-              <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
-                MY PAIRS
-              </TYPE.mediumHeader>
+              <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">
+                {t('myPairs')}
+              </StyledMediumHeader>
             </Box>
           ) : (
             <PointableFlex onClick={handleAllClick}>
@@ -126,9 +136,9 @@ function Title({
                   <CurrencyLogo currency={filteredToken} size="21px" />
                 </Box>
               )}
-              <Text mr="8px" fontWeight="600" fontSize="16px" lineHeight="20px" data-testid="all-token-list">
-                {filteredToken ? unwrappedToken(filteredToken)?.symbol : 'ALL'}
-              </Text>
+              <StyledText mr="8px" fontWeight="600" fontSize="16px" lineHeight="20px" data-testid="all-token-list">
+                {filteredToken ? unwrappedToken(filteredToken)?.symbol : t('all')}
+              </StyledText>
               <Box>
                 <ChevronDown size={12} />
               </Box>
@@ -144,14 +154,14 @@ function Title({
 
           <TransperentButton as={Link} to="/create">
             <Plus size="16" />
-            <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
-              ADD LIQUIDITY
-            </Text>
+            <StyledText marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
+              {t('addLiquidity')}
+            </StyledText>
           </TransperentButton>
         </Flex>
         <Flex data-testid="campaigns-toggle">
           <Switch
-            label="CAMPAIGNS"
+            label={t('campaings')}
             handleToggle={() =>
               onFilterChange(
                 aggregatedDataFilter === PairsFilterType.REWARDS ? PairsFilterType.ALL : PairsFilterType.REWARDS
@@ -160,7 +170,7 @@ function Title({
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch
-            label="MY PAIRS"
+            label={t('myPairs')}
             handleToggle={() =>
               onFilterChange(aggregatedDataFilter === PairsFilterType.MY ? PairsFilterType.ALL : PairsFilterType.MY)
             }

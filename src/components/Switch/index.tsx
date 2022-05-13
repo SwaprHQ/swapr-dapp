@@ -9,6 +9,7 @@ const StyledLabel = styled.label<{ isOn: boolean }>`
 `
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${props => (props.isOn ? props.theme.text2 : props.theme.purple2)};
+  text-transform: uppercase;
 `
 interface SwitchProps {
   isOn: boolean
