@@ -1,12 +1,11 @@
 import React from 'react'
-import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
-import { LoadingCard } from './LoadingCard'
+import { LoadingRow } from './LoadingRow'
 import { ListLayout, Header, HeaderText } from '../PairsList/PairsList.styles'
-import { LoadingListProps } from './LoadingList.types'
 import { useTranslation } from 'react-i18next'
+import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 
-export function LoadingList({ itemsAmount }: LoadingListProps) {
-  const responsiveItemsAmount = useResponsiveItemsPerPage()
+export function LoadingList() {
+  const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const { t } = useTranslation()
 
   return (
@@ -18,8 +17,8 @@ export function LoadingList({ itemsAmount }: LoadingListProps) {
         <HeaderText>{t('24hVolume')}</HeaderText>
         <HeaderText>{t('APY')}</HeaderText>
       </Header>
-      {new Array(itemsAmount && itemsAmount !== 0 ? itemsAmount : responsiveItemsAmount).fill(null).map((_, index) => (
-        <LoadingCard key={index} />
+      {new Array(responsiveItemsPerPage).fill(null).map((_, index) => (
+        <LoadingRow key={index} />
       ))}
     </ListLayout>
   )

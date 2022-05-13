@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Pagination } from '../../Pagination'
 
 import { Empty } from '../../Pool/Empty'
-import { LoadingList } from '../../Pool/LoadingList'
+import { LoadingGrid } from '../../Pool/LoadingGrid'
 import { usePage } from '../../../hooks/usePage'
 import { useWindowSize } from '../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../theme'
@@ -74,7 +74,7 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingList itemsAmount={responsiveItemsPerPage} />
+            <LoadingGrid itemsAmount={responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (
             <ListLayout>
               {itemsPage.map(item => {
