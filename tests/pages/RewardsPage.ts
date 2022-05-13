@@ -63,6 +63,7 @@ export class RewardsPage {
             PairMenu.choosePair(chosenPair)
             this.clickOnRewardCardUntilCampaignOpen(startingAt, chosenPair, ++retries)
           }
+        cy.wait(1000)
         return RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString())
           .click()
           .then(() => false)
