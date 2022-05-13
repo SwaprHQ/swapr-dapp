@@ -11,7 +11,7 @@ import { LiquidityPage } from '../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../utils/TestTypes'
 
-describe('Wallet connection tests [TC-60]', () => {
+describe('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
