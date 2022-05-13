@@ -52,7 +52,7 @@ export class RewardsPage {
 
   static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '', retries = 0) {
     cy.waitUntil(() => {
-      if (retries > 10) {
+      if (retries > 3) {
         throw new Error('Retried to open campaign to many times')
       }
       cy.get('[data-testid=reward-card]').then(element => {
