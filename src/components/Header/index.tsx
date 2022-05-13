@@ -261,7 +261,7 @@ function Header() {
         newSwprBalance={newSwprBalance}
         stakedAmount={stakedTokenAmount?.toFixed(3)}
         singleSidedCampaignLink={
-          data && !loading ? `/rewards/single-campaign/${data.stakeToken.address}/${data.address}` : undefined
+          data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
       <HeaderRow isDark={isDark}>

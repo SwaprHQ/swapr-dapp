@@ -123,7 +123,7 @@ export default function App() {
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/rewards/single-campaign/:currencyIdA/:liquidityMiningCampaignId"
+                    path="/rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
                   <FullFeaturesRoute

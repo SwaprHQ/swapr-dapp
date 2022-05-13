@@ -82,7 +82,7 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}
-                      to={`/rewards/single-campaign/${item.campaign.stakeToken.address}/${item.campaign.address}`}
+                      to={`/rewards/single-sided-campaign/${item.campaign.stakeToken.address}/${item.campaign.address}`}
                     >
                       <CampaignCard
                         token0={item.campaign.stakeToken}
