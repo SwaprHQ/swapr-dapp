@@ -124,55 +124,53 @@ jobs:
 
       - name: Build app
         run: yarn build
-  # synpress:
-  #   name: 👘 ・Synpress
-  #   needs: install
-  #   runs-on: ubuntu-20.04
-  #   container: cypress/browsers:node12.13.0-chrome78-ff70
-  #   env:
-  #     NODE_ENV: false
-  #   steps:
-  #     - name: ⬇️ ・Checkout repo
-  #       uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: '50'
+  synpress:
+    name: 👘 ・Synpress
+    runs-on: ubuntu-20.04
+    container: swapr/cypress
+    env:
+      NODE_ENV: false
+    steps:
+      - name: 📥 Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
 
-  #     - name: ⎔ Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '16'
-  #         check-latest: true
-  #         cache: 'yarn'
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
-  #     - name: Install dependencies
-  #       run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          check-latest: true
+          cache: 'yarn'
 
-  #     - name: Install cypress
-  #       run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
+      - name: Install cypress
+        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
-  #     - name: Run synpress tests
-  #       run: yarn synpress:ct
-  #       continue-on-error: true
+      - name: Run synpress tests
+        run: yarn synpress:ct
+        continue-on-error: true
 
-  #     - name: Merge test results into one
-  #       run: npm run report:merge
+      - name: Merge test results into one
+        run: npm run report:merge
 
-  #     - name: Generate HTML report
-  #       run: yarn run report:generate
+      - name: Generate HTML report
+        run: yarn run report:generate
 
-  #     - name: Save code coverage results
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: synpress-coverage-report
-  #         path: public-report/*
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: synpress-coverage-report
+          path: public-report/*
+          retention-days: 3
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
     needs: install
     runs-on: ubuntu-20.04
-    container:
-      image: swapr/cypress_browser_sudo:latest
-      options: --user 1001
+    container: swapr/cypress
     strategy:
       fail-fast: false
       matrix:
@@ -199,14 +197,12 @@ jobs:
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
-      # - name: Generate HTML report
-      #   run: yarn run report:generate
-
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: ${{ matrix.containers }}.json
+
   merge-cypress:
     name: ⬡・Merge
     needs: cypress
@@ -214,6 +210,12 @@ jobs:
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
+        with:
+          name: workspace
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - uses: actions/download-artifact@v3
         with:
           name: LiquidityTests
           path: report
@@ -242,6 +244,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Display structure of downloaded files
+        run: tar --extract ~/mochawesome-report/*
 
       - name: Merge test results into one
         run: yarn run report:merge
@@ -255,20 +262,24 @@ jobs:
           name: cypress-report
           path: public-report/*
 
-  cleanup:
-    name: 🧹 Cleanup
-    needs: [install, lint, test, typecheck, build, cypress, merge-cypress]
-    runs-on: ubuntu-20.04
-    if: ${{ success() }}
-    steps:
-      - name: Delete workspace artifact
+      - name: Delete merged artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            workspace
             LiquidityTests
             MenuBarTests
             RewardsPageTests
             SwapBoxTests
             TokenMenuTests
             TransactionSettingsTests
+
+  cleanup:
+    name: 🧹 Cleanup
+    needs: [install, lint, test, typecheck, build, cypress, synpress]
+    runs-on: ubuntu-20.04
+    if: ${{ success() }}
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
