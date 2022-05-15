@@ -127,17 +127,14 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: swapr/cypress
+    container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       NODE_ENV: false
     steps:
-      - name: 📥 Download workspace artifact
-        uses: actions/download-artifact@v3
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
         with:
-          name: workspace
-
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+          fetch-depth: '50'
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -145,6 +142,9 @@ jobs:
           node-version: '16'
           check-latest: true
           cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
@@ -170,7 +170,7 @@ jobs:
     name: 🎡 ・Cypress (${{ matrix.containers }})
     needs: install
     runs-on: ubuntu-20.04
-    container: swapr/cypress
+    container: swapr/cypress:zstd
     strategy:
       fail-fast: false
       matrix:
@@ -203,9 +203,9 @@ jobs:
           name: ${{ matrix.containers }}
           path: ${{ matrix.containers }}.json
 
-  merge-cypress:
-    name: ⬡・Merge
-    needs: cypress
+  cypress-report:
+    name: ⬡・Merge and generate cypress reports
+    needs: [install, cypress]
     runs-on: ubuntu-20.04
     steps:
       - name: 📥 ・Download workspace artifact
@@ -222,23 +222,23 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: MenuBarTests
-          path: ~/mochawesome-report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: RewardsPageTests
-          path: ~/mochawesome-report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: SwapBoxTests
-          path: ~/mochawesome-report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: TokenMenuTests
-          path: ~/mochawesome-report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: TransactionSettingsTests
-          path: ~/mochawesome-report
+          path: mochawesome-report
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -246,9 +246,7 @@ jobs:
           node-version: '16'
       - name: Display structure of downloaded files
         run: ls -R
-
-      - name: Display structure of downloaded files
-        run: tar --extract ~/mochawesome-report/*
+        working-directory: mochawesome-report
 
       - name: Merge test results into one
         run: yarn run report:merge
@@ -261,6 +259,7 @@ jobs:
         with:
           name: cypress-report
           path: public-report/*
+          retention-days: 3
 
       - name: Delete merged artifacts
         uses: geekyeggo/delete-artifact@v1
@@ -275,7 +274,7 @@ jobs:
 
   cleanup:
     name: 🧹 Cleanup
-    needs: [install, lint, test, typecheck, build, cypress, synpress]
+    needs: [install, lint, test, typecheck, build, cypress, cypress-report]
     runs-on: ubuntu-20.04
     if: ${{ success() }}
     steps:
