@@ -124,73 +124,81 @@ jobs:
 
       - name: Build app
         run: yarn build
-  synpress:
-    name: 👘 ・Synpress
-    needs: install
-    runs-on: ubuntu-20.04
-    container: cypress/browsers:node12.13.0-chrome78-ff70
-    env:
-      NODE_ENV: false
-    steps:
-      - name: ⬇️ ・Checkout repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: '50'
+  # synpress:
+  #   name: 👘 ・Synpress
+  #   needs: install
+  #   runs-on: ubuntu-20.04
+  #   container: cypress/browsers:node12.13.0-chrome78-ff70
+  #   env:
+  #     NODE_ENV: false
+  #   steps:
+  #     - name: ⬇️ ・Checkout repo
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: '50'
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          check-latest: true
-          cache: 'yarn'
+  #     - name: ⎔ Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '16'
+  #         check-latest: true
+  #         cache: 'yarn'
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
+  #     - name: Install cypress
+  #       run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
-      - name: Run synpress tests
-        run: yarn synpress:ct
-        continue-on-error: true
+  #     - name: Run synpress tests
+  #       run: yarn synpress:ct
+  #       continue-on-error: true
 
-      - name: Merge test results into one
-        run: npm run report:merge
+  #     - name: Merge test results into one
+  #       run: npm run report:merge
 
-      - name: Generate HTML report
-        run: yarn run report:generate
+  #     - name: Generate HTML report
+  #       run: yarn run report:generate
 
-      - name: Save code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: synpress-coverage-report
-          path: public-report/*
+  #     - name: Save code coverage results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: synpress-coverage-report
+  #         path: public-report/*
 
   cypress:
     name: 🎡 ・Cypress
     needs: install
     runs-on: ubuntu-20.04
     container:
-      image: cypress/browsers:node12.18.3-chrome87-ff82
+      image: swapr/cypress_browser_sudo:latest
       options: --user 1001
     steps:
-      - name: ⬇️  Checkout repo
-        uses: actions/checkout@v3
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
         with:
-          fetch-depth: '50'
+          name: workspace
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          check-latest: true
-          cache: 'yarn'
+      # - name: ⎔ Setup node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16'
+      #     check-latest: true
+      #     cache: 'yarn'
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
+      # - name: Install sudo
+      #   run: apt-get update && apt-get -y install sudo
+      # - name: Install zstd
+      #   run: sudo apt-get install -y zstd
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Verify Cypress
+        run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
         run: yarn cypress:ct
