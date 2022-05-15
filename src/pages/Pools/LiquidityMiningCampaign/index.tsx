@@ -54,9 +54,9 @@ export default function LiquidityMiningCampaign({
 
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
-  const isSingleSidedCampaign = location.pathname.includes('/single-campaign')
+  const isSingleSidedCampaign = location.pathname.includes('/single-sided-campaign')
 
-  const { singleSidedStakingCampaign, loading: SingleSidedCampaignLoader } = useSingleSidedCampaign(
+  const { singleSidedStakingCampaign, loading: singleSidedCampaignLoading } = useSingleSidedCampaign(
     liquidityMiningCampaignId
   )
 
@@ -67,16 +67,19 @@ export default function LiquidityMiningCampaign({
   const lpTokenBalance = useTokenBalance(account || undefined, wrappedPair[1]?.liquidityToken)
 
   if (
-    (token0 && token1 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) ||
-    (wrappedPair[0] === PairState.INVALID && !token0 && !token1)
+    (token0 === undefined &&
+      token1 === undefined &&
+      (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) ||
+    (wrappedPair[0] === PairState.INVALID && token0 === undefined && token1 === undefined)
   ) {
     return <Redirect to="/rewards" />
   }
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
 
-  const showSingleSidedCampaignLoader = isSingleSidedCampaign && !token0
-  const showCampaignLoader = !isSingleSidedCampaign && (!token1 || !token0)
+  const showSingleSidedCampaignLoader = isSingleSidedCampaign && (token0 === null || singleSidedCampaignLoading)
+  const showCampaignLoader = !isSingleSidedCampaign && (token1 === null || token0 === null)
+
   return (
     <PageWrapper>
       <SwapPoolTabs active={'pool'} />
@@ -98,12 +101,12 @@ export default function LiquidityMiningCampaign({
               </Box>
               <Box mr="4px">
                 {isSingleSidedCampaign ? (
-                  <CurrencyLogo currency={token0 || undefined} />
+                  <CurrencyLogo currency={token0 ?? undefined} loading={token0 === null} />
                 ) : (
                   <DoubleCurrencyLogo
-                    loading={!token0 || !token1}
-                    currency0={token0 || undefined}
-                    currency1={token1 || undefined}
+                    loading={token0 === null || token1 === null}
+                    currency0={token0 ?? undefined}
+                    currency1={token1 ?? undefined}
                     size={20}
                   />
                 )}
@@ -148,7 +151,7 @@ export default function LiquidityMiningCampaign({
               </AddLiquidityButtonComponent>
             </ButtonRow>
           </TitleRow>
-          {((!isSingleSidedCampaign && !loading) || (!SingleSidedCampaignLoader && isSingleSidedCampaign)) && (
+          {((!isSingleSidedCampaign && !loading) || (!singleSidedCampaignLoading && isSingleSidedCampaign)) && (
             <LiquidityMiningCampaignView
               isSingleSidedStake={isSingleSidedCampaign}
               campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
