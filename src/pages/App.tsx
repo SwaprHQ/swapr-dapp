@@ -119,17 +119,17 @@ export default function App() {
                   <FullFeaturesRoute exact strict path="/pools/mine" component={MyPairs} />
                   <FullFeaturesRoute exact strict path="/rewards" component={Rewards} />
                   <FullFeaturesRoute exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
-                    component={LiquidityMiningCampaign}
-                  />
                   <FullFeaturesRoute exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    path="/rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
+                    component={LiquidityMiningCampaign}
+                  />
+                  <FullFeaturesRoute
+                    exact
+                    strict
+                    path="/rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
                   <FullFeaturesRoute exact strict path="/create" component={AddLiquidity} />

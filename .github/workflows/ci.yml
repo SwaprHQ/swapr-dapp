@@ -1,9 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - feature/parallel-workflow
   pull_request:
     types: [opened, synchronize, reopened]
     branches:

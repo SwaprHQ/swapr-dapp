@@ -49,12 +49,12 @@ export default function LiquidityMiningCampaign({
     params: { liquidityMiningCampaignId, currencyIdA, currencyIdB },
   },
   location,
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; liquidityMiningCampaignId: string }>) {
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB?: string; liquidityMiningCampaignId: string }>) {
   const { account } = useActiveWeb3React()
 
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
-  const isSingleSidedCampaign = location.pathname.includes('/singleSidedStaking')
+  const isSingleSidedCampaign = location.pathname.includes('/single-campaign')
 
   const { singleSidedStakingCampaign, loading: SingleSidedCampaignLoader } = useSingleSidedCampaign(
     liquidityMiningCampaignId
@@ -74,6 +74,9 @@ export default function LiquidityMiningCampaign({
   }
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
+
+  const showSingleSidedCampaignLoader = isSingleSidedCampaign && !token0
+  const showCampaignLoader = !isSingleSidedCampaign && (!token1 || !token0)
   return (
     <PageWrapper>
       <SwapPoolTabs active={'pool'} />
@@ -107,12 +110,12 @@ export default function LiquidityMiningCampaign({
               </Box>
               <Box>
                 <TYPE.small color="text4" fontWeight="600" fontSize="16px" lineHeight="20px">
-                  {!token0 || !token1 ? (
+                  {showSingleSidedCampaignLoader || showCampaignLoader ? (
                     <Skeleton width="60px" />
                   ) : isSingleSidedCampaign ? (
-                    unwrappedToken(token0)?.symbol
+                    unwrappedToken(token0!)?.symbol
                   ) : (
-                    `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
+                    `${unwrappedToken(token0!)?.symbol}/${unwrappedToken(token1!)?.symbol}`
                   )}
                 </TYPE.small>
               </Box>
