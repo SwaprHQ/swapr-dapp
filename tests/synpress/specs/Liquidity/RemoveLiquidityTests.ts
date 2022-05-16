@@ -69,8 +69,14 @@ describe('Add liquidity', () => {
       console.log('SECOND TOKEN AMOUNT TO REMOVED: ', res)
       secondTokenRemovedAmount = parseFloat(res)
     })
+    .should(value => {
+        firstTokenBalance = firstTokenBefore - firstTokenRemovedAmount
+        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)      
+        secondTokenBalance = secondTokenBefore - secondTokenRemovedAmount
+        console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
+      })
     cy.wrap(null).then(() => {
-        console.log('SECOND TOKEN AMOUNT TO REMOVEd: ', secondTokenRemovedAmount)
+        console.log('SECOND TOKEN AMOUNT TO REMOVED: ', secondTokenRemovedAmount)
       })
     LiquidityPage.getApproveButtonToRemoveLiquidity().click()
     LiquidityPage.getRemoveButton().click()
