@@ -9,7 +9,7 @@ const StyledCurrencyLogo = styled(CurrencyLogo)`
   position: absolute;
   top: -31px;
 `
-const InsideCirlce = styled.div<{ size: string }>`
+const InsideCircle = styled.div<{ size: string }>`
   position: relative;
   width: ${props => props.size}px;
   height: ${props => props.size}px;

@@ -119,7 +119,7 @@ export default function PreviewAndCreate({
       ? parseFloat(stakingCap.multiply(nativeTokenPrice.multiply(nativeCurrencyUSDPrice)).toSignificant(22))
       : 10000000
 
-    const baseinUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
+    const baseInUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
     const baseValue = showUSDValue ? base : base / baseinUsd
 
