@@ -7,7 +7,7 @@ on:
     - cron: '0 0 * * *'
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ct-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
