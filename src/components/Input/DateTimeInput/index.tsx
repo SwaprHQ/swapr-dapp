@@ -2,7 +2,7 @@ import React from 'react'
 import Datepicker from 'react-datepicker'
 import styled from 'styled-components'
 import { StyledInput } from '../styleds'
-import { ReactComponent as CalenderIcon } from '../../../assets/svg/calender.svg'
+import { ReactComponent as CalendarIcon } from '../../../assets/svg/calendar.svg'
 import { Flex } from 'rebass'
 
 const Input = styled(StyledInput)`
@@ -34,21 +34,23 @@ const StyledDatePicker = styled(Datepicker)`
     color: ${props => props.theme.text2};
   }
 `
-const StyledCalenderIcon = styled(CalenderIcon)`
+const StyledCalendarIcon = styled(CalendarIcon)`
   position: absolute;
   top: 7px;
   right: 8px;
+  pointer-events: all;
+  z-index: 100;
 `
 
-const CustomInput = React.forwardRef(props => {
+const CalendarInput = React.forwardRef(props => {
   return (
     <Flex>
       <Input {...props} />
-      <StyledCalenderIcon />
+      <StyledCalendarIcon {...props} />
     </Flex>
   )
 })
-CustomInput.displayName = 'CustomInput'
+CalendarInput.displayName = 'CalendarInput'
 
 interface PickerProps {
   value: Date | null
@@ -62,7 +64,7 @@ export default function DateTimeInput({ value, placeholder, minimum, maximum, on
   return (
     <>
       <StyledDatePicker
-        customInput={<CustomInput />}
+        customInput={<CalendarInput />}
         dateFormat="yyyy-MM-dd HH:mm"
         renderDayContents={(day: number) => {
           return <StyledDay>{day}</StyledDay>
@@ -81,7 +83,6 @@ export default function DateTimeInput({ value, placeholder, minimum, maximum, on
         minDate={minimum}
         maxDate={maximum}
       />
-      {/* <CalenderIcon /> */}
     </>
   )
 }

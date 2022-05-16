@@ -13,7 +13,7 @@ interface StakingRewardsDistributionCreationModalFooterProps {
   liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
-  reward: TokenAmount[] | null
+  rewards: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
@@ -24,7 +24,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
   liquidityPair,
   startTime,
   endTime,
-  reward,
+  rewards,
   timelocked,
   stakingCap,
   unlimitedPool,
@@ -74,7 +74,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
             paddingLeft: '10px',
           }}
         >
-          {reward ? reward.map(ite => `${ite.toExact()} ${ite.token.symbol}`).join(', ') : '-'}
+          {rewards ? rewards.map(reward => `${reward.toExact()} ${reward.token.symbol}`).join(', ') : '-'}
         </TYPE.body>
       </RowBetween>
 

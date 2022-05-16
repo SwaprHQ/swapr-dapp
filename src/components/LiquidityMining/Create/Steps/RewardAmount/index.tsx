@@ -88,8 +88,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
         | TokenAmount
         | undefined
       const currentCurrency = rewardsObject.rewards[index]?.token
-      console.log(currentCurrency)
-      console.log(rewardsObject.rewards[index])
+
       setRewardsObject({
         type: ActionType.REWARDS_CHANGE,
         payload: {

@@ -89,7 +89,7 @@ const CrossIcon = (campaingType: CampaignType) => {
         <Circle size={'84'} active={false} style={{ left: '0px' }}>
           <InsideCirlce size={'65'}>
             <StyledSvg>
-              <Cross></Cross>
+              <Cross />
             </StyledSvg>
           </InsideCirlce>
         </Circle>

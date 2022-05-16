@@ -121,12 +121,8 @@ export default function PreviewAndCreate({
 
     const baseinUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
-    let baseValue
-    if (showUSDValue) {
-      baseValue = base
-    } else {
-      baseValue = base / baseinUsd
-    }
+    const baseValue = showUSDValue ? base : base / baseinUsd
+
     const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
 
     if (tokenOrPair && base !== 0 && baseinUsd !== 0) {
@@ -165,7 +161,7 @@ export default function PreviewAndCreate({
   }, [account, reward, liquidityPair, startTime, endTime, approvals, campaign])
   const getConfirmButtonMessage = () => {
     if (!account) return 'Connect your wallet'
-    else if (approvals) return 'Rewards not apporoved'
+    else if (approvals) return 'Rewards not approved/Insufficient balance'
     else if (campaign === null) return 'One of tokens not priced'
 
     return 'Deposit & create'

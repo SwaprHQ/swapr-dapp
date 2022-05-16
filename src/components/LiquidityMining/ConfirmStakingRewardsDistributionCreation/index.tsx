@@ -16,7 +16,7 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
-  reward: TokenAmount[] | null
+  rewards: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
@@ -32,7 +32,7 @@ export default function ConfirmStakingRewardsDistributionCreation({
   liquidityPair,
   startTime,
   endTime,
-  reward,
+  rewards,
   timelocked,
   stakingCap,
   unlimitedPool,
@@ -52,7 +52,7 @@ export default function ConfirmStakingRewardsDistributionCreation({
               liquidityPair={liquidityPair}
               startTime={startTime}
               endTime={endTime}
-              reward={reward}
+              rewards={rewards}
               timelocked={timelocked}
               stakingCap={stakingCap}
               unlimitedPool={unlimitedPool}
@@ -67,7 +67,7 @@ export default function ConfirmStakingRewardsDistributionCreation({
       liquidityPair,
       startTime,
       endTime,
-      reward,
+      rewards,
       timelocked,
       stakingCap,
       unlimitedPool,

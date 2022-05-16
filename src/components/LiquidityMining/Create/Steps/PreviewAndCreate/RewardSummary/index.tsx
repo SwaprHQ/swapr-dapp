@@ -4,7 +4,6 @@ import { Percent, TokenAmount } from '@swapr/sdk'
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'
-//import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface RewardSummaryProps {
   reward: TokenAmount[]

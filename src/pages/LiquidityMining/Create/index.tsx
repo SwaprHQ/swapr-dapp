@@ -256,7 +256,7 @@ export default function CreateLiquidityMining() {
         liquidityPair={stakeTokenOrPair}
         startTime={startTime}
         endTime={endTime}
-        reward={memoizedRewardArray}
+        rewards={memoizedRewardArray}
         timelocked={timelocked}
         stakingCap={stakingCap}
         unlimitedPool={unlimitedPool}
