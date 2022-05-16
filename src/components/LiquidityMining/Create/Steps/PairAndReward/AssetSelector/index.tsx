@@ -112,8 +112,6 @@ export default function AssetSelector({
 
   useEffect(() => {
     if (setRewardsObject && rewardMemo && userBalance) {
-      console.log('approvalState', approvalState)
-      console.log('isPending', approvalState === ApprovalState.PENDING)
       setRewardsObject({
         type: ActionType.APPROVALS_CHANGE,
         payload: {

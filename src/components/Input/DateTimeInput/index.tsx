@@ -42,10 +42,10 @@ const StyledCalendarIcon = styled(CalendarIcon)`
   z-index: 100;
 `
 
-const CalendarInput = React.forwardRef(props => {
+const CalendarInput = React.forwardRef((props: any) => {
   return (
     <Flex>
-      <Input {...props} />
+      <Input ref={props.ref} {...props} />
       <StyledCalendarIcon {...props} />
     </Flex>
   )
@@ -61,10 +61,11 @@ interface PickerProps {
 }
 
 export default function DateTimeInput({ value, placeholder, minimum, maximum, onChange }: PickerProps) {
+  const ref = React.createRef()
   return (
     <>
       <StyledDatePicker
-        customInput={<CalendarInput />}
+        customInput={<CalendarInput ref={ref} />}
         dateFormat="yyyy-MM-dd HH:mm"
         renderDayContents={(day: number) => {
           return <StyledDay>{day}</StyledDay>

@@ -195,7 +195,6 @@ export default function Swap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    console.log('approvalState', approval)
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }

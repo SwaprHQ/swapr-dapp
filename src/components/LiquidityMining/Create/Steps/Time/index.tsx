@@ -42,7 +42,6 @@ export default function DurationAndLocking({
 }: TimeProps) {
   const handleStartTimeChange = useCallback(
     (newStartTime: Date) => {
-      console.log('here', newStartTime)
       if (endTime ? newStartTime.getTime() > endTime.getTime() : Date.now() > newStartTime.getTime()) return
       // if (Date.now() > newStartTime.getTime() || (endTime && endTime.getTime() <= newStartTime.getTime())) return // date in the past, invalid
       setStartTime(newStartTime)
