@@ -6,6 +6,8 @@ on:
     branches:
       - develop
       - master
+  schedule:
+    - cron: '0 0 * * *'
 
 concurrency:
   group: ci-${{ github.ref }}
