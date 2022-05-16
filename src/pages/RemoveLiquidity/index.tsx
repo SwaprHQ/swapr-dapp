@@ -529,6 +529,7 @@ export default function RemoveLiquidity({
                           <Option
                             active={formattedAmounts[Field.LIQUIDITY_PERCENT] === '25'}
                             onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')}
+                            data-testid="remove-25"
                           >
                             25%
                           </Option>
@@ -537,6 +538,7 @@ export default function RemoveLiquidity({
                           <Option
                             active={formattedAmounts[Field.LIQUIDITY_PERCENT] === '50'}
                             onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')}
+                            data-testid="remove-50"
                           >
                             50%
                           </Option>
@@ -545,6 +547,7 @@ export default function RemoveLiquidity({
                           <Option
                             active={formattedAmounts[Field.LIQUIDITY_PERCENT] === '75'}
                             onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')}
+                            data-testid="remove-75"
                           >
                             75%
                           </Option>
@@ -553,6 +556,7 @@ export default function RemoveLiquidity({
                           <Option
                             active={formattedAmounts[Field.LIQUIDITY_PERCENT] === '100'}
                             onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
+                            data-testid="remove-max"
                           >
                             Max
                           </Option>
@@ -571,7 +575,7 @@ export default function RemoveLiquidity({
                 <LightCard>
                   <AutoColumn gap="10px">
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.white fontSize="22px" lineHeight="27px" data-testid="first-token-amount-to-remove">
                         {formattedAmounts[Field.CURRENCY_A] || '-'}
                       </TYPE.white>
                       <RowFixed>
@@ -582,7 +586,7 @@ export default function RemoveLiquidity({
                       </RowFixed>
                     </RowBetween>
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.white fontSize="22px" lineHeight="27px" data-testid="second-token-amount-to-remove">
                         {formattedAmounts[Field.CURRENCY_B] || '-'}
                       </TYPE.white>
                       <RowFixed>

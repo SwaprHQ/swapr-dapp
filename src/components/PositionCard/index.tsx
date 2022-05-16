@@ -338,6 +338,7 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 width="48%"
                 to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
                 style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+                data-testid="remove-liquidity"
               >
                 REMOVE LIQUIDITY
               </ButtonDark>
