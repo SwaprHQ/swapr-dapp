@@ -121,14 +121,14 @@ export default function PreviewAndCreate({
 
     const baseInUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
-    const baseValue = showUSDValue ? base : base / baseinUsd
+    const baseValue = showUSDValue ? base : base / baseInUsd
 
     const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
 
-    if (tokenOrPair && base !== 0 && baseinUsd !== 0) {
+    if (tokenOrPair && base !== 0 && baseInUsd !== 0) {
       setSimulatedStakedAmount(
         parseUnits(
-          calculatePercentage(base / baseinUsd, simulatedValuePercentage).toString(),
+          calculatePercentage(base / baseInUsd, simulatedValuePercentage).toString(),
           tokenOrPair.decimals
         ).toString()
       )

@@ -69,29 +69,29 @@ const CrossIcon = (campaingType: CampaignType) => {
   if (campaingType === CampaignType.TOKEN) {
     return (
       <Circle size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
-        <InsideCirlce size={'80'}>
+        <InsideCircle size={'80'}>
           <StyledSvg>
             <Cross />
           </StyledSvg>
-        </InsideCirlce>
+        </InsideCircle>
       </Circle>
     )
   } else {
     return (
       <DoubleIconWrapper>
         <Circle size={'84'} active={false} style={{ left: '-38px' }}>
-          <InsideCirlce size={'65'}>
+          <InsideCircle size={'65'}>
             <StyledSvg>
               <Cross />
             </StyledSvg>
-          </InsideCirlce>
+          </InsideCircle>
         </Circle>
         <Circle size={'84'} active={false} style={{ left: '0px' }}>
-          <InsideCirlce size={'65'}>
+          <InsideCircle size={'65'}>
             <StyledSvg>
               <Cross />
             </StyledSvg>
-          </InsideCirlce>
+          </InsideCircle>
         </Circle>
       </DoubleIconWrapper>
     )
