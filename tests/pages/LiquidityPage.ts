@@ -36,6 +36,27 @@ export class LiquidityPage {
   static getAddLiquidityButton() {
     return cy.get('[data-testid=add-liquidity]')
   }
+  static getRemoveLiquidityButton() {
+    return cy.get('[data-testid=remove-liquidity]')
+  }
+  static getRemove25PercentLiquidityButton() {
+    return cy.get('[data-testid=remove-25]')
+  }
+  static getRemove50PercentLiquidityButton() {
+    return cy.get('[data-testid=remove-50]')
+  }
+  static getRemove75PercentLiquidityButton() {
+    return cy.get('[data-testid=remove-75]')
+  }
+  static getRemoveMaxLiquidityButton() {
+    return cy.get('[data-testid=remove-max]')
+  }
+  static getFirstTokenAmountToRemove() {
+    return cy.get('[data-testid=first-token-amount-to-remove]')
+  }
+  static getSecondTokenAmountToRemove() {
+    return cy.get('[data-testid=second-token-amount-to-remove]')
+  }
   static getYourPoolTokens() {
     return cy.get('[data-testid=user-pool-balance]')
   }
