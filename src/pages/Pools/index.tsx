@@ -26,7 +26,6 @@ import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
-import { SpaceBg } from '../../components/SpaceBg'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -208,40 +207,38 @@ export default function Pools() {
   }, [])
 
   return (
-    <SpaceBg>
-      <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-        <AutoColumn gap="lg" justify="center">
-          <AutoColumn gap="27px" style={{ width: '100%' }}>
-            <Title
-              aggregatedDataFilter={aggregatedDataFilter}
-              onCurrencySelection={handleCurrencySelect}
-              filteredToken={filterToken}
-              onFilteredTokenReset={handleFilterTokenReset}
-              onFilterChange={setAggregatedDataFilter}
-              onSortByChange={handleSortBy}
-              sortBy={sortBy}
-            />
-            {aggregatedDataFilter === PairsFilterType.MY ? (
-              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
-            ) : (
-              <PairsList
-                loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
-                aggregatedPairs={aggregatedData}
-                singleSidedStake={data}
-                filter={aggregatedDataFilter}
-              />
-            )}
-          </AutoColumn>
-        </AutoColumn>
-        {account && (
-          <ButtonWithLink
-            link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
-            text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
-            style={{ marginTop: '32px' }}
+    <PageWrapper>
+      <SwapPoolTabs active={'pool'} />
+      <AutoColumn gap="lg" justify="center">
+        <AutoColumn gap="27px" style={{ width: '100%' }}>
+          <Title
+            aggregatedDataFilter={aggregatedDataFilter}
+            onCurrencySelection={handleCurrencySelect}
+            filteredToken={filterToken}
+            onFilteredTokenReset={handleFilterTokenReset}
+            onFilterChange={setAggregatedDataFilter}
+            onSortByChange={handleSortBy}
+            sortBy={sortBy}
           />
-        )}
-      </PageWrapper>
-    </SpaceBg>
+          {aggregatedDataFilter === PairsFilterType.MY ? (
+            <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
+          ) : (
+            <PairsList
+              loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
+              aggregatedPairs={aggregatedData}
+              singleSidedStake={data}
+              filter={aggregatedDataFilter}
+            />
+          )}
+        </AutoColumn>
+      </AutoColumn>
+      {account && (
+        <ButtonWithLink
+          link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
+          text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
+          style={{ marginTop: '32px' }}
+        />
+      )}
+    </PageWrapper>
   )
 }

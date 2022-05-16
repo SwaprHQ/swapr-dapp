@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Pagination } from '../../Pagination'
 
 import { Empty } from '../../Pool/Empty'
-import { LoadingList } from '../../Pool/LoadingList'
+import { LoadingGrid } from '../../Pool/LoadingGrid'
 import { usePage } from '../../../hooks/usePage'
 import { useWindowSize } from '../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../theme'
@@ -35,11 +35,12 @@ interface LiquidityMiningCampaignsListProps {
     containsKpiToken: boolean
   }[]
   loading?: boolean
+  loadingItems?: number
 }
 
 const { upToMedium, upToExtraSmall } = MEDIA_WIDTHS
 
-export default function List({ loading, items = [] }: LiquidityMiningCampaignsListProps) {
+export default function List({ loading, items = [], loadingItems }: LiquidityMiningCampaignsListProps) {
   const { width } = useWindowSize()
   const [page, setPage] = useState(1)
   const prevItemsCt = useRef(items.length)
@@ -74,7 +75,7 @@ export default function List({ loading, items = [] }: LiquidityMiningCampaignsLi
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingList itemsAmount={responsiveItemsPerPage} />
+            <LoadingGrid itemsAmount={loadingItems ? loadingItems : responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (
             <ListLayout>
               {itemsPage.map(item => {

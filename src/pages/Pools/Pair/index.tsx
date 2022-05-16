@@ -16,7 +16,6 @@ import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
 import { ButtonPurpleDim, ButtonLinkWithBadge } from '../../../components/Button'
-import { SpaceBg } from '../../../components/SpaceBg'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
@@ -60,7 +59,7 @@ export default function Pair({
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
     return <Redirect to="/pools" />
   return (
-    <SpaceBg>
+    <>
       <PageWrapper>
         <Box paddingX={3}>
           <TitleRow>
@@ -125,11 +124,11 @@ export default function Pair({
               {t('campaigns')}
             </ButtonLinkWithBadge>
           </Flex>
-          {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading />}
+          {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading loadingItems={3} />}
         </Box>
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
-    </SpaceBg>
+    </>
   )
 }
 

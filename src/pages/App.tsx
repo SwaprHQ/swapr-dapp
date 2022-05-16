@@ -28,6 +28,7 @@ import 'aos/dist/aos.css'
 import Bridge from './Bridge'
 
 import Rewards from './Rewards'
+import { SpaceBg } from '../components/SpaceBg/SpaceBg.component'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -96,41 +97,43 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper>
               <Web3ReactManager>
-                <Switch>
-                  <Route exact strict path="/swap" component={Swap} />
-                  <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-                  <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
-                  <Route exact strict path="/pools" component={Pools} />
-                  <Route exact strict path="/pools/mine" component={MyPairs} />
-                  <Route exact strict path="/rewards" component={Rewards} />
-                  <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
-                  <Route
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
-                    component={LiquidityMiningCampaign}
-                  />
-                  <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
+                <SpaceBg>
+                  <Switch>
+                    <Route exact strict path="/swap" component={Swap} />
+                    <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
+                    <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
+                    <Route exact strict path="/pools" component={Pools} />
+                    <Route exact strict path="/pools/mine" component={MyPairs} />
+                    <Route exact strict path="/rewards" component={Rewards} />
+                    <Route exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
+                    <Route
+                      exact
+                      strict
+                      path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
+                      component={LiquidityMiningCampaign}
+                    />
+                    <Route exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
 
-                  <Route
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
-                    component={LiquidityMiningCampaign}
-                  />
+                    <Route
+                      exact
+                      strict
+                      path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                      component={LiquidityMiningCampaign}
+                    />
 
-                  <Route exact strict path="/create" component={AddLiquidity} />
-                  <Route exact path="/add" component={AddLiquidity} />
-                  {/* <Route exact strict path="/governance" component={GovPages} /> */}
-                  {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
-                  <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
-                  <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
-                  <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
-                  <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
-                  <Route exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />
-                  <Route exact strict path="/bridge" component={Bridge} />
-                  <Route component={RedirectPathToSwapOnly} />
-                </Switch>
+                    <Route exact strict path="/create" component={AddLiquidity} />
+                    <Route exact path="/add" component={AddLiquidity} />
+                    {/* <Route exact strict path="/governance" component={GovPages} /> */}
+                    {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
+                    <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
+                    <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
+                    <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
+                    <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+                    <Route exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />
+                    <Route exact strict path="/bridge" component={Bridge} />
+                    <Route component={RedirectPathToSwapOnly} />
+                  </Switch>
+                </SpaceBg>
               </Web3ReactManager>
               <Marginer />
             </BodyWrapper>
