@@ -122,7 +122,53 @@ jobs:
           node-version: '16'
 
       - name: Build app
-        run: yarn build
+        run: yarn ipfs-build
+
+      - name: Compress build artifact
+        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/build.tar.zst build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: /tmp/build.tar.zst
+          retention-days: 3
+  deploy:
+    name: ⬡・IPFS Deploy
+    needs: build
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name != 'schedule' }}
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=build.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Deploy to IPFS
+        uses: web3-storage/add-to-web3@v1
+        id: web3
+        with:
+          web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
+          path_to_add: 'build'
+
+      - name: Update Deployment Status
+        uses: bobheadxi/deployments@v0.6.0
+        if: always()
+        with:
+          step: finish
+          token: ${{secrets.GITHUB_TOKEN}}
+          status: ${{job.status}}
+          deployment_id: ${{steps.deployment.outputs.deployment_id}}
+          env_url: 'https://${{steps.web3.outputs.cid}}.ipfs.dweb.link'
+
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
