@@ -80,20 +80,14 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-const rotate = keyframes`
+const rotateAnimation = keyframes`
     0% { transform: rotate(0deg) };
     100% { transform: rotate(360deg) };
 `
 
-interface SwapIconWrapperProps {
-  isLoading?: boolean
-}
-
-const SwapIconWrapper = styled(SwapIcon)<SwapIconWrapperProps>(
-  ({ isLoading = false }) => `
-  ${isLoading && `animation: ${rotate} 1s linear infinite;`}
+const SwapIconLoading = styled(SwapIcon)`
+  animation: ${rotateAnimation} 2s linear infinite;
 `
-)
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -478,7 +472,7 @@ export default function Swap() {
                       }}
                     >
                       <ArrowWrapper clickable data-testid="switch-tokens-button">
-                        <SwapIconWrapper isLoading={swapInfoIsLoading} />
+                        {swapInfoIsLoading ? <SwapIconLoading /> : <SwapIcon />}
                       </ArrowWrapper>
                     </SwitchTokensAmountsContainer>
                   </SwitchIconContainer>
