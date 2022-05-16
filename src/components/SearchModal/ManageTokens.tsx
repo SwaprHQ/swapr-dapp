@@ -1,10 +1,10 @@
-import React, { useRef, RefObject, useCallback, useState, useMemo, useContext } from 'react'
+import React, { useRef, RefObject, useCallback, useState, useMemo } from 'react'
 import { getExplorerLink } from '../../utils'
 import { PaddedColumn, Separator, SearchInput } from './styleds'
 import Row, { RowBetween, RowFixed } from '../Row'
 import { TYPE, ExternalLink } from '../../theme'
 import { useToken } from '../../hooks/Tokens'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useUserAddedTokens, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { Token } from '@swapr/sdk'
 import CurrencyLogo from '../CurrencyLogo'
@@ -49,7 +49,7 @@ export default function ManageTokens({
   const { chainId } = useActiveWeb3React()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()

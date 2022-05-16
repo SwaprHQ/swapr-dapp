@@ -1,8 +1,8 @@
 import { Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
@@ -30,7 +30,7 @@ export default function SwapModalHeader({
   const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade as UniswapV2Trade), [trade])
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>

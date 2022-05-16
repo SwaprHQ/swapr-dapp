@@ -1,5 +1,5 @@
 import { Currency, Token } from '@swapr/sdk'
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { useAllTokens, useToken, useSearchInactiveTokenLists } from '../../hooks/Tokens'
@@ -12,7 +12,7 @@ import CurrencyList from './CurrencyList'
 import { filterTokens, useSortedTokensByQuery } from './filtering'
 import { useTokenComparator } from './sorting'
 import { SearchInput, Separator } from './styleds'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import useToggle from '../../hooks/useToggle'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useDebounce from '../../hooks/useDebounce'
@@ -70,7 +70,7 @@ export function CurrencySearch({
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const fixedList = useRef<FixedSizeList>()
 

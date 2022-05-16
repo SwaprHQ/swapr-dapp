@@ -1,10 +1,10 @@
 import { transparentize } from 'polished'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
 import { ButtonProps, Flex } from 'rebass'
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import React, { useContext } from 'react'
+import React from 'react'
 import { ChevronLeft, Search } from 'react-feather'
 import { ButtonInvisbile } from '../Button'
 
@@ -135,7 +135,7 @@ export default function SearchInputWithIcon({
   fontSize?: string
   className?: string
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <SearchInputWrapper className={className} width={width} height={height}>

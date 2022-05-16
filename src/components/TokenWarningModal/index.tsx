@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
-import React, { useCallback, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useCallback } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
@@ -52,7 +52,7 @@ interface TokenWarningCardProps {
 }
 
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { chainId } = useActiveWeb3React()
 
   if (!token) return null
