@@ -6,7 +6,7 @@ import TabBar from '../../TabBar'
 import List from '../List'
 
 import TabTitle from '../TabTitle'
-import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
+import { useAllLiquidityMiningCampaigns } from '../../../hooks/useAllLiquidityMiningCampaigns'
 
 import { PairsFilterType } from '../../Pool/ListFilter'
 import { Pair } from '@swapr/sdk'
@@ -25,7 +25,7 @@ interface RewardsInterface {
 }
 
 export function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
-  const { loading: loadingPairs, miningCampaigns } = useAllLiquidtyMiningCampaigns(pair ? pair : undefined, dataFilter)
+  const { loading: loadingPairs, miningCampaigns } = useAllLiquidityMiningCampaigns(pair ? pair : undefined, dataFilter)
 
   const [activeTab, setActiveTab] = useState(0)
 
