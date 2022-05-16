@@ -89,13 +89,14 @@ export function useAllLiquidtyMiningCampaigns(
   loading: boolean
   miningCampaigns: any
 } {
-  const token0Address = useMemo(() => (pair ? pair.token0?.address.toLowerCase() : undefined), [pair])
-  const token1Address = useMemo(() => (pair ? pair.token1?.address.toLowerCase() : undefined), [pair])
-  const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
+  const token0Address = pair?.token0?.address.toLowerCase()
+  const token1Address = pair?.token1?.address.toLowerCase()
+  const pairAddress = pair?.liquidityToken.address.toLowerCase()
 
   const { chainId, account } = useActiveWeb3React()
 
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
+  const subgraphAccountId = account?.toLowerCase() ?? ''
+
   const SWPRToken = useSWPRToken()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])

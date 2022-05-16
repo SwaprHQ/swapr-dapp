@@ -273,7 +273,7 @@ export default function AccountDetails({
                           <AddressLink
                             hasENS={!!ENSName}
                             isENS={true}
-                            href={chainId && getExplorerLink(chainId, ENSName, 'address')}
+                            href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
                             <span style={{ marginLeft: '4px' }}>View on block explorer</span>
