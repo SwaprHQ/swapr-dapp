@@ -76,7 +76,7 @@ const SwitchContainer = styled.div`
   text-transform: uppercase;
   cursor: pointer;
 `
-
+const dollarAmountMaxSimulation = 10000000
 interface PreviewProps {
   campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
   liquidityPair: Pair | Token | null
@@ -117,7 +117,7 @@ export default function PreviewAndCreate({
   const maxStakedSimulatedAmount = useMemo(() => {
     const base = stakingCap
       ? parseFloat(stakingCap.multiply(nativeTokenPrice.multiply(nativeCurrencyUSDPrice)).toSignificant(22))
-      : 10000000
+      : dollarAmountMaxSimulation
 
     const baseInUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
