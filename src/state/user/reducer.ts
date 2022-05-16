@@ -16,6 +16,7 @@ import {
   updateUserDeadline,
   toggleURLWarning,
   updateUserPreferredGasPrice,
+  updateUserAdvancedSwapDetails,
 } from './actions'
 import { MainnetGasPrice } from '../application/actions'
 
@@ -57,6 +58,7 @@ export interface UserState {
 
   timestamp: number
   URLWarningVisible: boolean
+  userAdvancedSwapDetails: boolean
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -75,6 +77,7 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
+  userAdvancedSwapDetails: true,
 }
 
 export default createReducer(initialState, builder =>
@@ -163,5 +166,8 @@ export default createReducer(initialState, builder =>
     })
     .addCase(toggleURLWarning, state => {
       state.URLWarningVisible = !state.URLWarningVisible
+    })
+    .addCase(updateUserAdvancedSwapDetails, (state, action) => {
+      state.userAdvancedSwapDetails = action.payload.userAdvancedSwapDetails
     })
 )

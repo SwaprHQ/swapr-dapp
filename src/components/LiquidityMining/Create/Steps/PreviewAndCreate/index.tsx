@@ -244,7 +244,7 @@ export default function PreviewAndCreate({
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
             <ResponsiveContainer width="100%">
-              <ButtonPrimary disabled={areButtonsDisabled} onClick={onCreate}>
+              <ButtonPrimary data-testid="confirm-button" disabled={areButtonsDisabled} onClick={onCreate}>
                 {getConfirmButtonMessage()}
               </ButtonPrimary>
             </ResponsiveContainer>

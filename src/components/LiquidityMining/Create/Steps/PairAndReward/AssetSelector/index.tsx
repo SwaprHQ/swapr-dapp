@@ -187,6 +187,7 @@ export default function AssetSelector({
                 <RewardInputLogo>{assetTitle}</RewardInputLogo>
               </RelativeContainer>
             ) : (
+              //deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
               <TYPE.largeHeader marginBottom={'4px'} lineHeight="22px" color="lightPurple" fontSize={13}>
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>

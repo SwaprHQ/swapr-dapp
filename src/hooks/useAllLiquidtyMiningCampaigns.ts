@@ -132,14 +132,14 @@ export function useAllLiquidtyMiningCampaigns(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    if (singleSidedLoading || chainId === undefined || campaignLoading) {
+    if (singleSidedLoading || chainId === undefined || campaignLoading || !SWPRToken) {
       return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
     if (
       singleSidedCampaignsError ||
       campaignError ||
       !singleSidedCampaigns ||
-      !singleSidedCampaigns.singleSidedStakingCampaigns ||
+      !singleSidedCampaigns?.singleSidedStakingCampaigns ||
       !pairCampaigns ||
       !pairCampaigns.liquidityMiningCampaigns ||
       loadingKpiTokens
@@ -224,14 +224,22 @@ export function useAllLiquidtyMiningCampaigns(
         campaign.stakeToken.name
       )
 
-      const singleSidedStakeCampaign = toSingleSidedStakeCampaign(
-        chainId,
-        campaign,
-        stakeToken,
-        campaign.stakeToken.totalSupply,
-        nativeCurrency,
-        campaign.stakeToken.derivedNativeCurrency
-      )
+      let singleSidedStakeCampaign
+      try {
+        singleSidedStakeCampaign = toSingleSidedStakeCampaign(
+          chainId,
+          campaign,
+          stakeToken,
+          campaign.stakeToken.totalSupply,
+          nativeCurrency,
+          campaign.stakeToken.derivedNativeCurrency
+        )
+      } catch (e) {
+        // TODO: Investigate why `derivedNativeCurrency` is zero
+        console.error('Campaign', { campaign })
+        continue
+      }
+
       const hasStake = campaign.singleSidedStakingPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
 

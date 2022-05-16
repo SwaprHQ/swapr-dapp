@@ -3,6 +3,7 @@ import './enums/AddressesEnum'
 import { EtherscanFacade } from './facades/EtherscanFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
 import { AddressesEnum } from './enums/AddressesEnum'
+import { Transaction } from './TestTypes'
 
 export class TransactionHelper {
   private static retries = 0
@@ -21,7 +22,8 @@ export class TransactionHelper {
     balanceBefore: number,
     transactionValue: number,
     shouldBeEqual: boolean,
-    walletAddress = AddressesEnum.WALLET_PUBLIC
+    walletAddress = AddressesEnum.WALLET_PUBLIC,
+    retries = 0
   ) {
     const expectedTransactionValue: number = transactionValue * Math.pow(10, 18)
     cy.log('Checking token balance from ETHERSCAN API')
@@ -35,8 +37,18 @@ export class TransactionHelper {
         }
         expect(parseInt(res.body.result)).to.be.at.least(balanceBefore + expectedTransactionValue)
       } catch (err) {
+        if (retries > 100) {
+          throw new Error('Retried too many times to check erc20 token balance from etherscan')
+        }
         cy.wait(1000)
-        return this.checkErc20TokenBalance(tokenAddress, balanceBefore, transactionValue, shouldBeEqual, walletAddress)
+        return this.checkErc20TokenBalance(
+          tokenAddress,
+          balanceBefore,
+          transactionValue,
+          shouldBeEqual,
+          walletAddress,
+          ++retries
+        )
       }
     })
   }
@@ -47,28 +59,25 @@ export class TransactionHelper {
     expectedValueIn: number
   ) {
     cy.window().then(() => {
-      SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()).then((res: any) => {
-        console.log('SUBGRAPH RESPONSE', res.body)
-        expect(res.body.data.transactions[0].swaps[0].pair.token0.symbol).to.be.eq(
-          expectedToken0Symbol || expectedToken1Symbol
-        )
-        expect(res.body.data.transactions[0].swaps[0].pair.token1.symbol).to.be.eq(
-          expectedToken1Symbol || expectedToken0Symbol
-        )
+      ;(SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()) as Cypress.Chainable).then(
+        (res: Transaction) => {
+          console.log('SUBGRAPH RESPONSE', res.body)
 
-        const amountIn: number =
-          parseFloat(res.body.data.transactions[0].swaps[0].amount1In) +
-          parseFloat(res.body.data.transactions[0].swaps[0].amount0In)
-        const amountOut: number =
-          parseFloat(res.body.data.transactions[0].swaps[0].amount1Out) +
-          parseFloat(res.body.data.transactions[0].swaps[0].amount0Out)
+          const firstSwap = res.body.data.transactions[0].swaps[0]
 
-        console.log('EXPECTED AMOUNT OUT: ', amountOut)
-        console.log('EXPECTED AMOUNT IN: ', amountIn)
+          expect(firstSwap.pair.token0.symbol).to.be.eq(expectedToken0Symbol || expectedToken1Symbol)
+          expect(firstSwap.pair.token1.symbol).to.be.eq(expectedToken1Symbol || expectedToken0Symbol)
 
-        expect(amountIn).to.be.eq(expectedValueIn)
-        expect(amountOut).to.be.greaterThan(expectedValueOut)
-      })
+          const amountIn: number = parseFloat(firstSwap.amount1In) + parseFloat(firstSwap.amount0In)
+          const amountOut: number = parseFloat(firstSwap.amount1Out) + parseFloat(firstSwap.amount0Out)
+
+          console.log('EXPECTED AMOUNT OUT: ', amountOut)
+          console.log('EXPECTED AMOUNT IN: ', amountIn)
+
+          expect(amountIn).to.be.eq(expectedValueIn)
+          expect(amountOut).to.be.greaterThan(expectedValueOut)
+        }
+      )
     })
   }
 
@@ -98,10 +107,10 @@ export class TransactionHelper {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee
       } catch (err) {
         if (this.retries > 100) {
-          throw new Error('To many retries')
+          throw new Error('Retried too many times when checking eth balance from etherscan')
         }
         cy.wait(1000)
-        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, retries++)
+        return this.checkEthereumBalanceFromEtherscan(expectedBalance, expectedGasCost, walletAddress, ++retries)
       }
     })
   }
@@ -116,7 +125,7 @@ export class TransactionHelper {
         if (retries > 100) {
           throw new Error('To many retries when waiting for token lists')
         }
-        this.waitForTokenLists(retries++)
+        this.waitForTokenLists(++retries)
       }
     })
   }

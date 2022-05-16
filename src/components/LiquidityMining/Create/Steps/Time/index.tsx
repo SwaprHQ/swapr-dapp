@@ -65,6 +65,7 @@ export default function DurationAndLocking({
     <FlexWrapper>
       <StyledSmoothGradientCard height="150px" width="413px" padding={'42.5px 28px'}>
         <TimeSelector
+          data-testid="start-time-selector-box"
           title="STARTING"
           placeholder="Start date"
           value={startTime}
@@ -75,6 +76,7 @@ export default function DurationAndLocking({
         <HorizontalDivider />
 
         <TimeSelector
+          data-testid="end-time-selector-box"
           title="ENDING"
           placeholder="End date"
           value={endTime}
