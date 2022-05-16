@@ -205,3 +205,41 @@ export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; paddin
   padding: ${props => (props.padding ? props.padding : '0')};
   margin: ${props => (props.margin ? props.margin : '0')};
 `
+
+/**
+ * Gnosis Protocol Explorer Base URL list
+ */
+const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
+  [ChainId.MAINNET]: 'https://explorer.cow.fi',
+  [ChainId.RINKEBY]: 'https://explorer.cow.fi/rinkeby',
+  [ChainId.XDAI]: 'https://explorer.cow.fi/xdai',
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer Base link
+ * @param chainId the chain Id
+ * @returns
+ */
+export function getGnosisProtocolExplorerLink(chainId: ChainId) {
+  return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param orderId the order ID
+ * @returns the order link
+ */
+export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/orders/${orderId}`
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param address the order address
+ * @returns
+ */
+export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`
+}

@@ -166,7 +166,7 @@ export function SwapPlatformSelector({
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
-            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
             const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
             const tokenAmount = limitNumberOfDecimalPlaces(
               isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]

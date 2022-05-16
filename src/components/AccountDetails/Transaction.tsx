@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { CheckCircle, Triangle } from 'react-feather'
 
+import { SwapProtocol } from '../../state/transactions/reducer'
 import { useActiveWeb3React } from '../../hooks'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ExternalLink } from '../../theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { RowFixed } from '../Row'
@@ -47,9 +48,14 @@ export default function Transaction({ hash }: { hash: string }) {
 
   if (!chainId) return null
 
+  const link =
+    tx.swapProtocol === SwapProtocol.COW
+      ? getGnosisProtocolExplorerOrderLink(chainId, tx.hash)
+      : getExplorerLink(chainId, hash, 'transaction')
+
   return (
     <TransactionWrapper>
-      <TransactionState href={getExplorerLink(chainId, hash, 'transaction')} pending={pending} success={success}>
+      <TransactionState href={link} pending={pending} success={success}>
         <RowFixed>
           <TransactionStatusText>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>

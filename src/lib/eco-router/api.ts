@@ -1,4 +1,4 @@
-import { Trade, ChainId, UniswapV2Trade, CurveTrade, Token, RoutablePlatform } from '@swapr/sdk'
+import { Trade, ChainId, UniswapV2Trade, CurveTrade, GnosisProtocolTrade, Token, RoutablePlatform } from '@swapr/sdk'
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
 // Low-level API for Uniswap V2
@@ -103,9 +103,32 @@ export async function getExactIn(
       })
   })
 
+  // Gnosis Protocol V2
+  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
+    GnosisProtocolTrade.bestTradeExactIn({
+      currencyAmountIn,
+      currencyOut,
+      maximumSlippage,
+      receiver
+    })
+      .then(resolve)
+      .catch(error => {
+        resolve(undefined)
+        console.log(error)
+      })
+  })
+
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([...(uniswapV2TradesList as any), curveTrade]).then(trade =>
+  const unsortedTrades = (await Promise.all([
+    ...(uniswapV2TradesList as any),
+    curveTrade,
+    gnosisProtocolTrade,
+  ]).then(trade =>
     trade.filter(trade => trade !== undefined)
   )) as Trade[]
 
@@ -181,9 +204,34 @@ export async function getExactOut(
       })
   })
 
+
+  // Gnosis Protocol V2
+  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
+    GnosisProtocolTrade.bestTradeExactOut({
+      currencyAmountOut,
+      currencyIn,
+      maximumSlippage,
+      receiver
+    })
+      .then(resolve)
+      .catch(error => {
+        resolve(undefined)
+        console.log(error)
+      })
+  })
+
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([...(uniswapV2TradesList as any), curveTrade]).then(trade =>
+  const unsortedTrades = (await Promise.all([
+    ...(uniswapV2TradesList as any),
+    curveTrade,
+    gnosisProtocolTrade,
+  ])
+    .then(trade =>
     trade.filter(trade => trade !== undefined)
   )) as Trade[]
 

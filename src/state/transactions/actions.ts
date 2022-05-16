@@ -1,7 +1,8 @@
 import { createAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
+import { SwapProtocol } from './reducer'
 
-export interface SerializableTransactionReceipt {
+export interface SerializableGeneralTransactionReceipt {
   to: string
   from: string
   contractAddress: string
@@ -12,6 +13,13 @@ export interface SerializableTransactionReceipt {
   status?: number
 }
 
+export interface SerializableSwapTransactionReceipt {
+  hash: string
+  status?: number
+}
+
+export type SerializableTransactionReceipt = SerializableGeneralTransactionReceipt | SerializableSwapTransactionReceipt
+
 export const addTransaction = createAction<{
   chainId: ChainId
   hash: string
@@ -19,6 +27,7 @@ export const addTransaction = createAction<{
   approval?: { tokenAddress: string; spender: string }
   claim?: { recipient: string }
   summary?: string
+  swapProtocol?: SwapProtocol
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{

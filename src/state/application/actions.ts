@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
+import { SwapProtocol } from '../transactions/reducer'
 import { ApplicationState } from './reducer'
 
 export type PopupContent =
@@ -8,6 +9,7 @@ export type PopupContent =
         hash: string
         success: boolean
         summary?: string
+        swapProtocol?: SwapProtocol
       }
     }
   | {

@@ -1,6 +1,14 @@
 import { MaxUint256, AddressZero } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { TokenAmount, CurrencyAmount, ChainId, UniswapV2Trade, UniswapV2RoutablePlatform, CurveTrade } from '@swapr/sdk'
+import {
+  TokenAmount,
+  CurrencyAmount,
+  ChainId,
+  UniswapV2Trade,
+  UniswapV2RoutablePlatform,
+  CurveTrade,
+  GnosisProtocolTrade,
+} from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -108,7 +116,7 @@ export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSli
 
   // Find the approve address for the trade
   let approveAddress = AddressZero
-  if (trade instanceof CurveTrade) {
+  if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade) {
     approveAddress = trade.approveAddress
   } else if (trade instanceof UniswapV2Trade) {
     /**

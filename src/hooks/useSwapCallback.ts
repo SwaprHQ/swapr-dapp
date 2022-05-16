@@ -1,7 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId, TradeType } from '@swapr/sdk'
+import {
+  UniswapV2Trade,
+  UniswapV2RoutablePlatform,
+  Trade,
+  CurveTrade,
+  ChainId,
+  TradeType,
+  GnosisProtocolTrade,
+} from '@swapr/sdk'
 import { useMemo } from 'react'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -12,6 +20,7 @@ import useENS from './useENS'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { MainnetGasPrice } from '../state/application/actions'
+import { SwapProtocol } from '../state/transactions/reducer'
 
 export enum SwapCallbackState {
   INVALID,
@@ -169,6 +178,26 @@ export function useSwapCallback({
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+        // GPv2 trade
+        if (trade instanceof GnosisProtocolTrade) {
+          const signer = library.getSigner()
+
+          // Sign the order using Metamask
+          // and then submit the order to GPv2
+          const orderId = await trade.signOrder(signer).then(trade => trade.submitOrder())
+
+          addTransaction(
+            {
+              hash: orderId,
+            },
+            {
+              summary: getSwapSummary(trade, recipientAddressOrName ?? undefined),
+              swapProtocol: SwapProtocol.COW,
+            }
+          )
+
+          return orderId
+        }
         // eslint-disable-next-line
         // @ts-ignore
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(

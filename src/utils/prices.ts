@@ -14,6 +14,7 @@ import {
   ZERO,
   UniswapV2Trade,
   CurveTrade,
+  GnosisProtocolTrade,
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -43,32 +44,30 @@ interface TradePriceBreakdown {
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
-  // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
-  // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
-  let realizedLPFee: Percent | undefined = undefined
-  const priceImpactWithoutFee: Percent | undefined = undefined
-  let realizedLPFeeAmount: CurrencyAmount | undefined = undefined
-
   // early exit
   if (!trade) {
-    return {
-      priceImpactWithoutFee,
-      realizedLPFee,
-      realizedLPFeeAmount,
-    }
+    return {}
   }
 
-  if (trade instanceof UniswapV2Trade) {
-    const totalRoutesFee = trade.route.pairs.reduce<Fraction>((currentFee: Fraction, currentIndex: Pair): Fraction => {
-      return currentFee.multiply(
-        ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
+  // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
+  // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
+  const realizedLPFee: Percent | undefined = computeRealizedLPFee(trade)
+
+  function computeRealizedLPFee(trade: Trade) {
+    if (trade instanceof UniswapV2Trade) {
+      const totalRoutesFee = trade.route.pairs.reduce<Fraction>(
+        (currentFee: Fraction, currentIndex: Pair): Fraction => {
+          return currentFee.multiply(
+            ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
+          )
+        },
+        ONE_HUNDRED_PERCENT
       )
-    }, ONE_HUNDRED_PERCENT)
-    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-  } else if (trade instanceof CurveTrade) {
-    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+      return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
+    } else if (trade instanceof GnosisProtocolTrade) return trade.fee
+    else if (trade instanceof CurveTrade) return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+    else return undefined
   }
-
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
 
@@ -77,13 +76,15 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
     ? new Percent(priceImpactWithoutFeeFraction?.numerator, priceImpactWithoutFeeFraction?.denominator)
     : undefined
 
-  // the amount of the input that accrues to LPs
-  if (realizedLPFee) {
-    realizedLPFeeAmount =
-      trade.inputAmount instanceof TokenAmount
-        ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+  function computeRealizedLPFeeAmount(trade: Trade, realizedLPFee?: Fraction) {
+    if (!realizedLPFee) return undefined
+
+    if (trade instanceof GnosisProtocolTrade) return (trade as GnosisProtocolTrade).feeAmount
+    else if (trade.inputAmount instanceof TokenAmount)
+      return new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
+    else return CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
   }
+  const realizedLPFeeAmount = computeRealizedLPFeeAmount(trade, realizedLPFee)
 
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,

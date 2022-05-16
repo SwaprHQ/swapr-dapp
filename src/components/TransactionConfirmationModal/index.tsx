@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import Modal from '../Modal'
@@ -11,7 +11,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Circle from '../../assets/images/blue-loader.svg'
 
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 
 const Wrapper = styled.div`
@@ -63,15 +63,33 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
 }
 
 function TransactionSubmittedContent({
+  trade,
   onDismiss,
   chainId,
   hash,
 }: {
+  trade?: Trade
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
 }) {
   const theme = useContext(ThemeContext)
+
+  const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
+
+  const externalLink = chainId && hash && (
+    <ExternalLink
+      href={
+        isGnosisProtocolTrade
+          ? getGnosisProtocolExplorerOrderLink(chainId, hash)
+          : getExplorerLink(chainId, hash, 'transaction')
+      }
+    >
+      <Text fontWeight={500} fontSize="13px">
+        View on {isGnosisProtocolTrade ? 'Gnosis Protocol Explorer' : 'block explorer'}
+      </Text>
+    </ExternalLink>
+  )
 
   return (
     <Wrapper>
@@ -87,13 +105,7 @@ function TransactionSubmittedContent({
           <Text fontWeight={500} fontSize="22px">
             Transaction Submitted
           </Text>
-          {chainId && hash && (
-            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize="13px">
-                View on block explorer
-              </Text>
-            </ExternalLink>
-          )}
+          {externalLink}
           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }} data-testid="close-modal-button">
             <Text fontWeight={600} fontSize="13px">
               Close
