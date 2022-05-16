@@ -727,6 +727,7 @@ export default function RemoveLiquidity({
                     mr="0.5rem"
                     fontWeight={500}
                     fontSize={16}
+                    data-testid="approve-remove-liquidity"
                   >
                     {approval === ApprovalState.PENDING ? (
                       <Dots>Approving</Dots>
@@ -737,6 +738,7 @@ export default function RemoveLiquidity({
                     )}
                   </ButtonConfirmed>
                   <ButtonError
+                    data-testid="remove-button"
                     onClick={() => {
                       setShowConfirm(true)
                     }}

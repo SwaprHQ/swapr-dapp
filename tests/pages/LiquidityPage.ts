@@ -57,6 +57,12 @@ export class LiquidityPage {
   static getSecondTokenAmountToRemove() {
     return cy.get('[data-testid=second-token-amount-to-remove]')
   }
+  static getApproveButtonToRemoveLiquidity() {
+    return cy.get('[data-testid=approve-remove-liquidity]')
+  }
+  static getRemoveButton() {
+    return cy.get('[data-testid=remove-button]')
+  }
   static getYourPoolTokens() {
     return cy.get('[data-testid=user-pool-balance]')
   }

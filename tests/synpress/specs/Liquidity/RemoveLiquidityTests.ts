@@ -3,12 +3,11 @@ import { SwapPage } from '../../../pages/SwapPage'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 
 describe('Add liquidity', () => {
-  const TRANSACTION_VALUE: number = 0.000001
   let firstTokenBefore: number
   let secondTokenBefore: number
   let firstTokenAfter: number
   let secondTokenAfter: number
-  let firstTokenRemovedAmount: number = TRANSACTION_VALUE
+  let firstTokenRemovedAmount: number 
   let secondTokenRemovedAmount: number
   let firstTokenBalance: number = 0
   let secondTokenBalance: number = 0
@@ -52,23 +51,30 @@ describe('Add liquidity', () => {
   })
   it('Should Remove tokens from liquidity pool [TC-59]', () => {
     LiquidityPage.getRemoveLiquidityButton().click()
-    LiquidityPage.typeValueToFirstToken(TRANSACTION_VALUE.toFixed(9).toString())
-    console.log('FIST TOKEN ADDED AMOUNT', firstTokenRemovedAmount)
-    LiquidityPage.getSecondTokenField()
-      .invoke('val')
-      .should(value => {
-        console.log('SECOND TOKEN ADDED AMOUNT', value)
-        secondTokenRemovedAmount = parseFloat(value as string)
-        firstTokenBalance = firstTokenBefore + firstTokenRemovedAmount
-        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)      
-        secondTokenBalance = secondTokenBefore + secondTokenRemovedAmount
-        console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
+    LiquidityPage.getRemove25PercentLiquidityButton().click()
+    LiquidityPage.getFirstTokenAmountToRemove()
+    .invoke('text')
+    .should(res => {
+      expect(parseFloat(res)).be.greaterThan(0)
+      console.log('FIRST TOKEN AMOUNT TO REMOVED: ', res)
+      firstTokenRemovedAmount = parseFloat(res)
+    })
+  cy.wrap(null).then(() => {
+    console.log('FIRST TOKEN AMOUNT TO REMOVED: ', firstTokenRemovedAmount)
+  })
+  LiquidityPage.getSecondTokenAmountToRemove()
+    .invoke('text')
+    .should(res => {
+      expect(parseFloat(res)).be.greaterThan(0)
+      console.log('SECOND TOKEN AMOUNT TO REMOVED: ', res)
+      secondTokenRemovedAmount = parseFloat(res)
+    })
+    cy.wrap(null).then(() => {
+        console.log('SECOND TOKEN AMOUNT TO REMOVEd: ', secondTokenRemovedAmount)
       })
-    LiquidityPage.getSupplyButton().click()
-    LiquidityPage.getConfirmSupplyButton().click()
+    LiquidityPage.getApproveButtonToRemoveLiquidity().click()
+    LiquidityPage.getRemoveButton().click()
     cy.confirmMetamaskTransaction({})
-    LiquidityPage.getCloseTransactionSubmittedWindowButton().click()
-    MenuBar.checkToastMessage('Add')
   })
   it('Should check if tokens are removed from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
