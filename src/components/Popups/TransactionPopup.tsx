@@ -27,12 +27,8 @@ export default function TransactionPopup({
   swapProtocol?: SwapProtocol
 }) {
   const { chainId } = useActiveWeb3React()
-<<<<<<< HEAD
-  const theme = useContext(ThemeContext)
-=======
 
   const theme = useTheme()
->>>>>>> feature/454-add-curve-to-eco-router
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
