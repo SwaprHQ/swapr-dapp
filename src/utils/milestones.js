@@ -6,7 +6,7 @@ export const TimelineData = [
       'DXdao-supplied liquidity',
       'Swapr on xDai',
       'Eco-Routing Beta',
-      'Uniswap, Sushiswap Honeyswap, LevinSwap Routing',
+      'Uniswap, Sushiswap Honeyswap, LevinSwap',
       'Network Switcher v1',
       'Swapr redesign',
     ],
