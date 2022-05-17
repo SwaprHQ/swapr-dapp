@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { ChevronsDown } from 'react-feather'
 
@@ -100,7 +100,7 @@ export function SwapPlatformSelector({
 }: SwapPlatformSelectorProps) {
   const isMobileByMedia = useIsMobileByMedia()
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
   const [allowedSlippage] = useUserSlippageTolerance()

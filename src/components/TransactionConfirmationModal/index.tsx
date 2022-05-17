@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
+=======
+import { ChainId } from '@swapr/sdk'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
+>>>>>>> feature/454-add-curve-to-eco-router
 import Modal from '../Modal'
 import { ExternalLink, TYPE } from '../../theme'
 import { Text } from 'rebass'
@@ -73,7 +79,7 @@ function TransactionSubmittedContent({
   hash: string | undefined
   chainId: ChainId
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
 
@@ -143,7 +149,7 @@ export function ConfirmationModalContent({
 }
 
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <Wrapper>
       <Section>

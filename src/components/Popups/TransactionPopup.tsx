@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { SwapProtocol } from '../../state/transactions/reducer'
 import { TYPE } from '../../theme'
@@ -27,7 +27,12 @@ export default function TransactionPopup({
   swapProtocol?: SwapProtocol
 }) {
   const { chainId } = useActiveWeb3React()
+<<<<<<< HEAD
   const theme = useContext(ThemeContext)
+=======
+
+  const theme = useTheme()
+>>>>>>> feature/454-add-curve-to-eco-router
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 

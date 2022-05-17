@@ -1,4 +1,4 @@
-import React, { CSSProperties, useContext } from 'react'
+import React, { CSSProperties } from 'react'
 import { Token } from '@swapr/sdk'
 import { AutoRow, RowFixed } from '../Row'
 import { AutoColumn } from '../Column'
@@ -6,7 +6,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import { TYPE } from '../../theme'
 import ListLogo from '../ListLogo'
 import { ButtonPrimary } from '../Button'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { useIsUserAddedToken, useIsTokenActive } from '../../hooks/Tokens'
 import { CheckCircle } from 'react-feather'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
@@ -51,7 +51,7 @@ export default function ImportRow({
   showImportView: () => void
   setImportToken: (token: Token) => void
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // check if already active on list or local storage tokens
   const isAdded = useIsUserAddedToken(token)

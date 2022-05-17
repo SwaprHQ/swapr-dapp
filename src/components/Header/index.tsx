@@ -42,7 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
-  max-height: 100px;
+  height: 100px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -215,9 +215,9 @@ const AdditionalDataWrap = styled.div`
   flex-direction: column;
   justify-content: end;
 `
-const StyledChevron = styled(ChevronUp)<{ isOpen: boolean }>`
+const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(0deg)' : 'rotate(180deg)')};
+  transform: ${({ open }) => (open ? 'rotate(0deg)' : 'rotate(180deg)')};
 `
 
 function Header() {
@@ -241,17 +241,24 @@ function Header() {
 
   const networkWithoutSWPR = !newSwpr
 
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      const headerControls = document.getElementById('header-controls')
-      if (headerControls) {
-        if (window.scrollY > 0) {
-          headerControls.classList.add('hidden')
-        } else {
-          headerControls.classList.remove('hidden')
-        }
+  const onScrollHander = () => {
+    const headerControls = document.getElementById('header-controls')
+    if (headerControls) {
+      if (window.scrollY > 0) {
+        headerControls.classList.add('hidden')
+      } else {
+        headerControls.classList.remove('hidden')
       }
-    })
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHander)
+
+    return () => {
+      console.log('unmounting')
+      window.removeEventListener('scroll', onScrollHander)
+    }
   }, [])
 
   return (
@@ -261,7 +268,7 @@ function Header() {
         newSwprBalance={newSwprBalance}
         stakedAmount={stakedTokenAmount?.toFixed(3)}
         singleSidedCampaignLink={
-          data && !loading ? `/rewards/${data.stakeToken.address}/${data.address}/singleSidedStaking` : undefined
+          data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
       <HeaderRow isDark={isDark}>
@@ -332,7 +339,7 @@ function Header() {
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}
               </Text>
-              {gas.fast === 0 && gas.slow === 0 ? '' : <StyledChevron isOpen={isGasInfoOpen} size={12} />}
+              {gas.fast === 0 && gas.slow === 0 ? '' : <StyledChevron open={isGasInfoOpen} size={12} />}
             </GasInfo>
           )}
         </Flex>

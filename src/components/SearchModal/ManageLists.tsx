@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect, useContext } from 'react'
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { Settings, CheckCircle } from 'react-feather'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
-import styled, { ThemeContext } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { TokenList } from '@uniswap/token-lists'
@@ -99,7 +99,7 @@ function ListRow({ listUrl }: { listUrl: string }) {
     return list.tokens.filter(token => token.chainId === chainId).length
   }, [chainId, list])
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const isActive = useIsListActive(listUrl)
 
   const [open, toggle] = useToggle(false)
@@ -197,7 +197,7 @@ export function ManageLists({
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')
 

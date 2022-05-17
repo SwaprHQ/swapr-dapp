@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client'
-import React, { FC, Suspense, useContext, useEffect } from 'react'
+import React, { FC, Suspense, useEffect } from 'react'
 import { Redirect, Route, RouteProps, Switch } from 'react-router-dom'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import Web3ReactManager from '../components/Web3ReactManager'
@@ -86,7 +86,7 @@ const FullFeaturesRoute: FC<RouteProps> = routeProps => {
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -119,17 +119,17 @@ export default function App() {
                   <FullFeaturesRoute exact strict path="/pools/mine" component={MyPairs} />
                   <FullFeaturesRoute exact strict path="/rewards" component={Rewards} />
                   <FullFeaturesRoute exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
-                    component={LiquidityMiningCampaign}
-                  />
                   <FullFeaturesRoute exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    path="/rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
+                    component={LiquidityMiningCampaign}
+                  />
+                  <FullFeaturesRoute
+                    exact
+                    strict
+                    path="/rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
                   <FullFeaturesRoute exact strict path="/create" component={AddLiquidity} />

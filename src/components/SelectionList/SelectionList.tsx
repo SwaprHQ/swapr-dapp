@@ -11,7 +11,7 @@ export const SelectionListLabelWrapper = styled.div`
   display: flex;
 `
 export const SelectionListLabel = styled(Text)<{ justify?: boolean; flex?: string }>`
-  color: ${({ theme }) => theme.text5}
+  color: ${({ theme }) => theme.text5};
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;

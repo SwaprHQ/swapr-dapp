@@ -8,7 +8,7 @@ import {
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import Column, { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -78,6 +78,15 @@ const AppBodyContainer = styled.section`
 
 const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
+`
+
+const rotateAnimation = keyframes`
+    0% { transform: rotate(0deg) };
+    100% { transform: rotate(360deg) };
+`
+
+const SwapIconLoading = styled(SwapIcon)`
+  animation: ${rotateAnimation} 2s linear infinite;
 `
 
 export default function Swap() {
@@ -463,7 +472,7 @@ export default function Swap() {
                       }}
                     >
                       <ArrowWrapper clickable data-testid="switch-tokens-button">
-                        <SwapIcon />
+                        {swapInfoIsLoading ? <SwapIconLoading /> : <SwapIcon />}
                       </ArrowWrapper>
                     </SwitchTokensAmountsContainer>
                   </SwitchIconContainer>

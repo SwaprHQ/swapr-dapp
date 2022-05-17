@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
-import React, { CSSProperties, MutableRefObject, useCallback, useContext, useMemo, useState } from 'react'
+import React, { CSSProperties, MutableRefObject, useCallback, useMemo, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { useCurrencyBalances } from '../../state/wallet/hooks'
@@ -150,7 +150,7 @@ function isBreakLine(x: unknown): x is BreakLine {
 }
 
 function BreakLineComponent({ style }: { style: CSSProperties }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <FixedContentRow style={style}>
       <DarkCard padding="8px 12px" borderRadius="8px">
