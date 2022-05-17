@@ -6,7 +6,7 @@ export const TimelineData = [
       'DXdao-supplied liquidity',
       'Swapr on xDai',
       'Eco-Routing Beta',
-      'Uniswap, Suishiswap Honeyswap, LevinSwap Routing',
+      'Uniswap, Sushiswap Honeyswap, LevinSwap Routing',
       'Network Switcher v1',
       'Swapr redesign',
     ],
@@ -17,7 +17,7 @@ export const TimelineData = [
     title: 'Q2-Q4',
     content: [
       'DIY Farming',
-      'Farming/Rewards',
+      'Farming / Rewards',
       'SWAPR Token',
       'Carrot Integration',
       'Arbitrum Integration',

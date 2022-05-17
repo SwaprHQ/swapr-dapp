@@ -75,10 +75,8 @@ const Hero = props => {
     const temporaryArray = []
     for (i = 0, j = HeroContent.heroLogos.length; i < j; i += chunk) {
       temporary = HeroContent.heroLogos.slice(i, i + chunk)
-      console.log(HeroContent.heroLogos.slice(i, i + chunk))
       temporaryArray.push(temporary)
     }
-    console.log(temporaryArray)
     setLogosArrays(temporaryArray)
   }, [])
 
@@ -91,8 +89,6 @@ const Hero = props => {
           <div className="hero-content" data-aos="fade-up">
             <h1>{HeroContent.mainText}</h1>
             <ul className="hero-logos-list">
-              <div>hereedeeesssssssee{logosArrays}</div>
-
               {logosArrays.map((item, key) => (
                 <div key={key + '-hero'} className="hero-logo-group">
                   {item.map((logo, key) => (
