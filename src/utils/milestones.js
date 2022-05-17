@@ -36,11 +36,11 @@ export const TimelineData = [
   {
     title: 'Q2',
     content: [
-      'Socket, Omni, Connext  & Xdai Bridge',
-      'Router & Bridge on Polygon',
+      'Socket, Omni, Connext & Xdai Bridge',
+      'Eco Router & Bridge on Polygon',
       'DIY Farming 1.5',
       'Advanced Trading',
-      'Curve, 0x & Cow Protocol integration',
+      'Curve, 0x & CoW Protocol integration',
     ],
     releaseTag: 'BETA',
     current: true,

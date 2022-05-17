@@ -99,7 +99,6 @@ const Hero = props => {
                 </div>
               ))}
             </ul>
-
             <ul className="hero-button-list">
               {HeroContent.heroButtons.map((button, key) => (
                 <li key={`${button.label}-${key}`}>
