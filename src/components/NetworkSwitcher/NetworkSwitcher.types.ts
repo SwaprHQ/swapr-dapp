@@ -16,7 +16,7 @@ export type NetworkOptionsPreset = {
   name: React.ReactNode
   logoSrc: string
   color: string
-  tag?: string
+  tag?: NetworkSwitcherTags
 }
 
 export type NetworkOptions = {
@@ -28,6 +28,11 @@ export type NetworkOptions = {
 }
 
 export type NetworksList = {
-  tag: string
+  tag?: NetworkSwitcherTags
   networks: NetworkOptions[]
+}
+
+export enum NetworkSwitcherTags {
+  TESTNETS = 'testnets',
+  COMING_SOON = 'coming soon',
 }
