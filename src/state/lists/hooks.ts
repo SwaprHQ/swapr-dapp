@@ -16,10 +16,12 @@ export type TokenAddressMap = Readonly<{
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
   typeof WeakMap !== 'undefined' ? new WeakMap<TokenList, TokenAddressMap>() : null
 
-export function listToTokenMap(list: TokenList | null): TokenAddressMap {
+export function listToTokenMap(list: TokenList | null, useCache = true): TokenAddressMap {
   if (!list) return {}
-  const result = listCache?.get(list)
-  if (result) return result
+  if (useCache) {
+    const result = listCache?.get(list)
+    if (result) return result
+  }
 
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
     const token = new WrappedTokenInfo(tokenInfo, list)
@@ -38,7 +40,7 @@ export function listToTokenMap(list: TokenList | null): TokenAddressMap {
       },
     }
   }, {})
-  listCache?.set(list, map)
+  if (useCache) listCache?.set(list, map)
   return map
 }
 
@@ -136,9 +138,4 @@ export function useUnsupportedTokenList(): TokenAddressMap {
     localUnsupportedListMap,
     loadedUnsupportedListMap,
   ])
-}
-
-export function useIsListActive(url: string): boolean {
-  const activeListUrls = useActiveListUrls()
-  return Boolean(activeListUrls?.includes(url))
 }
