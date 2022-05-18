@@ -146,7 +146,7 @@ function Title({
             </PointableFlex>
           )}
 
-          <TransperentButton as={Link} to="/create">
+          <TransperentButton as={Link} to="/pools/create">
             <Plus size="16" />
             <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
               CREATE PAIR

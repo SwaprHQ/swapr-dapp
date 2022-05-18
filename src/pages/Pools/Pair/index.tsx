@@ -142,7 +142,7 @@ export default function Pair({
                 </PointableFlex>
               </Flex>
               <ButtonRow>
-                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/create">
+                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/pools/create">
                   <Text fontWeight={700} fontSize={12}>
                     CREATE PAIR
                   </Text>
