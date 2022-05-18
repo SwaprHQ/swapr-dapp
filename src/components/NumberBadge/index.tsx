@@ -6,8 +6,9 @@ export interface NumberBadgeProps {
 }
 
 export const NumberBadge = styled.div<NumberBadgeProps>`
- 
   display:flex;
+  align-items:center;
+  justify-content:center;
   padding:0 2px;
   height:16px;
   width: auto;
