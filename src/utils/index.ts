@@ -4,27 +4,13 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
-import {
-  ChainId,
-  JSBI,
-  Percent,
-  Token,
-  CurrencyAmount,
-  Currency,
-  Pair,
-  UniswapV2RoutablePlatform,
-  TokenAmount,
-  KpiToken,
-} from '@swapr/sdk'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, Pair, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 import { NetworkDetails } from '../constants'
 import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
-import { parseUnits } from '@ethersproject/units'
-import { SubgraphLiquidityMiningCampaign } from '../apollo/index.d'
-import { toLiquidityMiningCampaign } from './liquidityMining'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -219,59 +205,3 @@ export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; paddin
   padding: ${props => (props.padding ? props.padding : '0')};
   margin: ${props => (props.margin ? props.margin : '0')};
 `
-
-export interface SubgraphToken {
-  address: string
-  symbol: string
-  name: string
-  decimals: string
-}
-interface TokenAmountParams {
-  token: SubgraphToken
-  tokensInCurrentChain: { [address: string]: { token: Token } }
-  chainId: ChainId
-  reserve: string
-}
-
-export const getTokenAmount = ({ token, tokensInCurrentChain, chainId, reserve }: TokenAmountParams) => {
-  const tokenChecksummedAddress = getAddress(token.address)
-  const tokenA =
-    tokensInCurrentChain && tokensInCurrentChain[tokenChecksummedAddress]?.token
-      ? tokensInCurrentChain[tokenChecksummedAddress].token
-      : new Token(chainId, tokenChecksummedAddress, parseInt(token.decimals, 10), token.symbol, token.name)
-  return new TokenAmount(tokenA, parseUnits(reserve, token.decimals).toString())
-}
-
-interface PairWithLiquidityMiningCampaignParams {
-  pair: Pair
-  chainId: ChainId
-  totalSupply: string
-  reserveNativeCurrency: string
-  kpiTokens: KpiToken[]
-  nativeCurrency: Currency
-  liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-}
-
-export const getPairWithLiquidityMiningCampaign = ({
-  pair,
-  chainId,
-  totalSupply,
-  reserveNativeCurrency,
-  kpiTokens,
-  nativeCurrency,
-  liquidityMiningCampaigns,
-}: PairWithLiquidityMiningCampaignParams) => {
-  const campaigns = liquidityMiningCampaigns.map(campaign => {
-    return toLiquidityMiningCampaign(
-      chainId,
-      pair,
-      totalSupply,
-      reserveNativeCurrency,
-      kpiTokens,
-      campaign,
-      nativeCurrency
-    )
-  })
-  pair.liquidityMiningCampaigns = campaigns
-  return pair
-}

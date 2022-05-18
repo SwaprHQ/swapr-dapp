@@ -2,15 +2,18 @@ import { gql } from 'graphql-request'
 import Decimal from 'decimal.js-light'
 import { CurrencyAmount, Pair, Token, USD } from '@swapr/sdk'
 import { parseUnits } from 'ethers/lib/utils'
-import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '.'
-import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
 import { useKpiTokens } from './useKpiTokens'
-import { getTokenAmount, getPairWithLiquidityMiningCampaign, SubgraphToken } from '../utils/index'
+import {
+  getPairWithLiquidityMiningCampaign,
+  getRewardTokenAddressFromPair,
+  SubgraphPair,
+  getLowerTimeLimit,
+} from '../utils/liquidityMining'
 
 const PAGE_SIZE = 1000
 
@@ -61,18 +64,6 @@ const QUERY = gql`
   }
 `
 
-interface SubgraphPair {
-  address: string
-  reserve0: string
-  reserve1: string
-  reserveNativeCurrency: string
-  reserveUSD: string
-  totalSupply: string
-  token0: SubgraphToken
-  token1: SubgraphToken
-  liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-}
-
 interface QueryResult {
   pairs: SubgraphPair[]
 }
@@ -91,27 +82,14 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   const { chainId, account } = useActiveWeb3React()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
-  const memoizedLowerTimeLimit = useMemo(
-    () =>
-      Math.floor(
-        DateTime.utc()
-          .minus(Duration.fromObject({ days: 150 }))
-          .toSeconds()
-      ),
-    []
-  )
+
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const filterTokenAddress = useMemo(() => tokenFilter?.address.toLowerCase(), [tokenFilter])
+  const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
 
   const [loadingPairs, setLoadingPairs] = useState(false)
   const [pairs, setPairs] = useState<SubgraphPair[]>([])
-  const rewardTokenAddresses = useMemo(() => {
-    return pairs.flatMap(pair =>
-      pair.liquidityMiningCampaigns.flatMap(campaign =>
-        campaign.rewards.map(reward => reward.token.address.toLowerCase())
-      )
-    )
-  }, [pairs])
+  const rewardTokenAddresses = useMemo(() => pairs.flatMap(pair => getRewardTokenAddressFromPair(pair)), [pairs])
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
 
   useEffect(() => {
@@ -158,28 +136,13 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     return {
       loading: false,
       wrappedPairs: rawPairs.map(rawPair => {
-        const {
-          reserveNativeCurrency,
-          reserveUSD,
-          totalSupply,
-          token0,
-          token1,
-          reserve0,
-          reserve1,
-          liquidityMiningCampaigns,
-        } = rawPair
-
-        const tokenAmountA = getTokenAmount({ token: token0, tokensInCurrentChain, chainId, reserve: reserve0 })
-        const tokenAmountB = getTokenAmount({ token: token1, tokensInCurrentChain, chainId, reserve: reserve1 })
-
+        const { reserveUSD } = rawPair
         const pair = getPairWithLiquidityMiningCampaign({
-          pair: new Pair(tokenAmountA, tokenAmountB),
+          rawPair,
           chainId,
-          totalSupply,
-          reserveNativeCurrency,
           kpiTokens,
           nativeCurrency,
-          liquidityMiningCampaigns,
+          tokensInCurrentChain,
         })
 
         return {
