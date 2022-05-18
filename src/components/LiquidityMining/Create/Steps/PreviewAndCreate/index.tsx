@@ -183,7 +183,7 @@ export default function PreviewAndCreate({
             }
             usdLiquidity={getStakedAmountUSD(campaign.staked.nativeCurrencyAmount, nativeCurrencyUSDPrice)}
             token1={campaign instanceof LiquidityMiningCampaign ? campaign.targetedPair.token1 : undefined}
-            // containsKpiToken={campaign instanceof LiquidityMiningCampaign ? campaign.containsKpiToken : false}
+            //TODO: add check for kpi token indicator containsKpiToken={campaign instanceof LiquidityMiningCampaign ? campaign.containsKpiToken : false}
             isSingleSidedStakingCampaign={isSingleSided}
             apy={apy}
             usdLiquidityText={campaign.locked ? 'LOCKED' : 'STAKED'}
