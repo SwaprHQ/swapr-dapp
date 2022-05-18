@@ -11,13 +11,15 @@ import { Box, Flex, Text } from 'rebass'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 import { gradients } from '../../utils/theme'
 import { ExternalLink } from '../../theme'
-
+import { NumberBadge } from '../NumberBadge'
+import { Link } from 'react-router-dom'
 interface BaseProps {
   padding?: string
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
   fit?: boolean
+  disabled?: boolean
 }
 
 const Base = styled(RebassButton)<BaseProps>`
@@ -320,11 +322,38 @@ export function ButtonExternalLink({
 }) {
   const theme = useContext(ThemeContext)
   return (
-    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled && link}>
+    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled ? link : ''}>
       {children}
       <Box ml={2}>
         <ArrowUpRight size="14px" color={theme.purple2} />
       </Box>
+    </ButtonPurpleDim>
+  )
+}
+
+export function ButtonBadge({
+  to,
+  children,
+  number,
+  color = 'orange',
+  fit = false,
+  disabled = false,
+}: {
+  to: string
+  number: number
+  fit?: boolean
+  children: ReactNode
+  disabled?: boolean
+  color?: 'orange' | 'green' | 'red'
+}) {
+  return (
+    <ButtonPurpleDim fit={fit} as={disabled ? ButtonPurpleDim : Link} to={to} disabled={disabled}>
+      <Flex alignItems="center">
+        {children}
+        <Box ml={1}>
+          <NumberBadge badgeTheme={color}>{number}</NumberBadge>
+        </Box>
+      </Flex>
     </ButtonPurpleDim>
   )
 }
@@ -354,23 +383,12 @@ export function ButtonLinkWithBadge({
       <Flex alignItems="center">
         {children}
         <Box ml={1}>
-          <NumberBadge color={color}>{number}</NumberBadge>
+          <NumberBadge badgeTheme={color}>{number}</NumberBadge>
         </Box>
       </Flex>
     </ButtonPurpleDim>
   )
 }
-
-const NumberBadge = styled.div`
-  min-width: 16px;
-  align-items: center;
-  justify-content: center;
-  padding 0 3px;
-  border: 1px solid ${({ color }) => color};
-  border-radius: 4px;
-  font-size: 12px;
-  color: ${({ color }) => color};
-`
 
 const CarrotIconWithMargin = styled(CarrotIcon)`
   margin-right: 4px;

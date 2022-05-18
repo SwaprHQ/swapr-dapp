@@ -15,7 +15,7 @@ import { PageWrapper } from '../../../components/PageWrapper'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
-import { ButtonPurpleDim, ButtonLinkWithBadge } from '../../../components/Button'
+import { ButtonPurpleDim, ButtonBadge } from '../../../components/Button'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
@@ -116,18 +116,23 @@ export default function Pair({
                       center
                     />
                   </Box>
-                  <ButtonLinkWithBadge link={'#'} number={0} disabled={true}>
+                  <ButtonBadge to={'#'} number={0} disabled>
                     {t('governance')}
-                  </ButtonLinkWithBadge>
+                  </ButtonBadge>
                 </Flex>
               </DimBlurBgBox>
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
           <Flex my={3}>
-            <ButtonLinkWithBadge fit link={'#'} number={miningCampaigns.active.length} color="green">
+            <ButtonBadge
+              number={miningCampaigns.active.length}
+              color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}
+              to={token0 && token1 ? `/rewards/${token0.address}/${token1.address}` : ''}
+              fit
+            >
               {t('campaigns')}
-            </ButtonLinkWithBadge>
+            </ButtonBadge>
           </Flex>
           {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading loadingItems={3} />}
         </Box>
