@@ -21,6 +21,7 @@ describe('Add liquidity', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
+    //TODO: delete wait after synpress resolve bug 
     cy.wait(1000)
   })
 
