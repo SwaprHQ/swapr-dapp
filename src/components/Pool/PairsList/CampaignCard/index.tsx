@@ -154,7 +154,7 @@ export function CampaignCard({
           <RightSection>
             <Flex width="max-content" alignItems="center" data-testid="ended-campaign">
               <ClockSvg width={'10px'} height={'10px'} />
-              <TYPE.body marginLeft="4px" fontSize="10px" fontFamily="Fira Code" fontWeight="500">
+              <TYPE.body marginLeft="4px" fontSize="10px" fontWeight="500">
                 <Countdown
                   to={
                     status === StatusKeys.UPCOMING
