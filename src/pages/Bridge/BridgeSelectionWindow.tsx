@@ -29,7 +29,7 @@ export const BridgeSelectionWindow = () => {
   return (
     <>
       {!!availableBridges.length && (
-        <SelectionListWindowWrapper>
+        <SelectionListWindowWrapper extraMarginTop="10px">
           <SelectionListLabelWrapper>
             <SelectionListLabel flex="35%" justify>
               Bridge

@@ -37,17 +37,18 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
             {nativeCurrency.symbol}
           </Text>
         </BaseWrapper>
-        {(chainId ? SUGGESTED_BASES[chainId] : []).map((token: Token) => {
-          const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
-          return (
-            <BaseWrapper onClick={() => !selected && onCurrencySelect(token)} disabled={selected} key={token.address}>
-              <CurrencyLogo size="20px" currency={token} marginRight={8} />
-              <Text fontWeight={500} fontSize={16}>
-                {token.symbol}
-              </Text>
-            </BaseWrapper>
-          )
-        })}
+        {chainId &&
+          SUGGESTED_BASES[chainId]?.map((token: Token) => {
+            const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
+            return (
+              <BaseWrapper onClick={() => !selected && onCurrencySelect(token)} disabled={selected} key={token.address}>
+                <CurrencyLogo size="20px" currency={token} marginRight={8} />
+                <Text fontWeight={500} fontSize={16}>
+                  {token.symbol}
+                </Text>
+              </BaseWrapper>
+            )
+          })}
       </AutoRow>
     </AutoColumn>
   )

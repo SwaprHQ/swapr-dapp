@@ -27,3 +27,14 @@ export interface CurrencyInputPanelProps {
   displayedValue?: string
   setDisplayedValue?: (val: string) => void
 }
+
+export type CurrencyViewProps = Pick<
+  CurrencyInputPanelProps,
+  'currency' | 'currency' | 'chainIdOverride' | 'currencyWrapperSource' | 'disableCurrencySelect' | 'pair'
+>
+export type CurrencyUserBalanceProps = Pick<
+  CurrencyInputPanelProps,
+  'hideBalance' | 'currency' | 'pair' | 'balance' | 'customBalanceText' | 'onMax'
+> & {
+  selectedCurrencyBalance: CurrencyAmount | undefined
+}

@@ -4,7 +4,7 @@ import transparentize from 'polished/lib/color/transparentize'
 import { breakpoints } from '../../utils/theme'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
-export const InputRow = styled.div<{ selected: boolean }>`
+export const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   margin-bottom: 8px;
   align-items: center;
@@ -62,7 +62,7 @@ export const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   }
 `
 
-export const InputPanel = styled.div<{ hideInput?: boolean }>`
+export const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
   z-index: 1;

@@ -4,15 +4,9 @@ import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
-import { NetworkSwitcherTags } from './NetworkSwitcher.types'
+import { NetworkOptionsPreset, NetworkSwitcherTags } from './NetworkSwitcher.types'
 
-export const networkOptionsPreset: {
-  chainId: ChainId
-  name: string
-  logoSrc: string
-  color: string
-  tag?: NetworkSwitcherTags
-}[] = [
+export const networkOptionsPreset: NetworkOptionsPreset[] = [
   // no tag - mainnets
   {
     chainId: ChainId.MAINNET,

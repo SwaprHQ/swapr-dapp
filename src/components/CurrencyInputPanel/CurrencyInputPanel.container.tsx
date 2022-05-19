@@ -44,17 +44,13 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
     (val: string) => {
       const normalizedValue = normalizeInputValue(val)
 
-      setDisplayedValue && setDisplayedValue(normalizedValue)
+      setDisplayedValue?.(normalizedValue)
       debounceOnUserInput(normalizedValue)
     },
     [debounceOnUserInput, setDisplayedValue]
   )
 
-  const value = useMemo(() => (disableCurrencySelect ? valueRaw : displayedValue ?? ''), [
-    disableCurrencySelect,
-    displayedValue,
-    valueRaw,
-  ])
+  const value = disableCurrencySelect ? valueRaw : displayedValue ?? ''
 
   useEffect(() => {
     debounceOnUserInput.cancel()
