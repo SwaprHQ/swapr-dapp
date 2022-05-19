@@ -19,7 +19,7 @@ import { ButtonPurpleDim, ButtonBadge } from '../../../components/Button'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
-import { InfoSnippet } from '../../../components/Pool/PairView/InfoSnippet'
+import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel/ValueWithLabel.component'
 import List from '../../../components/LiquidityMiningCampaigns/List'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/useAllLiquidityMiningCampaigns'
 
@@ -102,7 +102,7 @@ export default function Pair({
               <DimBlurBgBox padding={'24px'}>
                 <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
                   <Box mb={3}>
-                    <InfoSnippet
+                    <ValueWithLabel
                       title={t('swapFee')}
                       value={
                         wrappedPair[1]

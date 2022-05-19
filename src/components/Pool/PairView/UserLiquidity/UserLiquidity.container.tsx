@@ -12,7 +12,7 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { UserLiquidityProps } from './UserLiquidity'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox'
-import { InfoSnippet } from '../InfoSnippet'
+import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()
@@ -58,17 +58,20 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={4}>
-        <InfoSnippet title={t('poolShare')} value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'} />
-        <InfoSnippet title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
-        <InfoSnippet
+        <ValueWithLabel
+          title={t('poolShare')}
+          value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
+        />
+        <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
+        <ValueWithLabel
           title={t('pooledToken', { token: currency0?.symbol })}
           value={token0Deposited ? token0Deposited.toSignificant(6) : '-'}
         />
-        <InfoSnippet
+        <ValueWithLabel
           title={t('pooledToken', { token: currency1?.symbol })}
           value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
         />
-        <InfoSnippet
+        <ValueWithLabel
           title={t('swapFee')}
           value={
             pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%' : '-'

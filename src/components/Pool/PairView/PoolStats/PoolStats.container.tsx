@@ -12,7 +12,7 @@ import { formatCurrencyAmount } from '../../../../utils'
 import { PairViewProps } from './PoolStats.types'
 import { ButtonExternalLink } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox'
-import { InfoSnippet } from '../InfoSnippet'
+import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
 import { useBestAPY } from '../../../../hooks/useBestAPY'
 
 export function PoolStats({ pair }: PairViewProps) {
@@ -48,9 +48,9 @@ export function PoolStats({ pair }: PairViewProps) {
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
-        <InfoSnippet title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
-        <InfoSnippet title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
-        <InfoSnippet title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
+        <ValueWithLabel title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
+        <ValueWithLabel title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
+        <ValueWithLabel title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
       </Flex>
     </DimBlurBgBox>
   )
