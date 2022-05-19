@@ -91,7 +91,10 @@ export default function SimulateStaking({
   nativeCurrencyUSDPrice,
   loading,
 }: RewardSummaryProps) {
-  const [simulatedPrice, setSimulatedPrice] = useState('')
+  const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
+    tokenOrPair ? tokenOrPair : undefined
+  )
+  const [simulatedPrice, setSimulatedPrice] = useState(nativeTokenPrice.toSignificant(2))
   const inputRef = React.useRef<HTMLInputElement>(null)
   const widthValue = useMemo(() => {
     if (simulatedPrice.length > 0 && inputRef.current) return inputRef.current.clientWidth
@@ -108,9 +111,6 @@ export default function SimulateStaking({
     [tokenOrPair]
   )
 
-  const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
-    tokenOrPair ? tokenOrPair : undefined
-  )
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
   const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
@@ -124,11 +124,19 @@ export default function SimulateStaking({
   )
   const maxStakedSimulatedAmount = useMemo(() => {
     //TODO : add value from input inside here so we always have a max value
+    console.log('nativePrice', nativeTokenPrice.equalTo('0'))
+    console.log('nativePriceTOFixed', nativeTokenPrice.toSignificant(22))
+    // const tokenOrPairNativePrice = nativeTokenPrice.equalTo('0')
+    //   ? simulatedPrice
+    //   : parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toSignificant(22))
+    // console.log(tokenOrPairNativePrice)
+    const tokenOrPairSimulated = simulatedPrice
+
     const base = stakingCap
-      ? parseFloat(stakingCap.multiply(nativeTokenPrice.multiply(nativeCurrencyUSDPrice)).toSignificant(22))
+      ? parseFloat(stakingCap.multiply(tokenOrPairSimulated).toSignificant(22))
       : dollarAmountMaxSimulation
 
-    const baseInUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
+    const baseInUsd = parseFloat(tokenOrPairSimulated)
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
@@ -147,10 +155,10 @@ export default function SimulateStaking({
   }, [
     setSimulatedStakedAmount,
     tokenOrPair,
+    simulatedPrice,
     simulatedValuePercentage,
     stakingCap,
     nativeTokenPrice,
-    nativeCurrencyUSDPrice,
     showUSDValue,
   ])
   const handleUSDValueClick = useCallback(() => {
