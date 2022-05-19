@@ -111,12 +111,12 @@ export const StyledHero = styled.div`
         width: 1680px;
         height: 1680px;
         top: -172px;
-        right: -32px;
+        right: -15px;
         background-position: left top;
         background-size: 100% auto;
         z-index: 1;
         @media screen and (min-width: 1680px) {
-            width: 100%;
+            width: 102%;
         }
     }
     

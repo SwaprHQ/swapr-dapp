@@ -1,16 +1,19 @@
 import { gql } from 'graphql-request'
 import Decimal from 'decimal.js-light'
-import { CurrencyAmount, Pair, Token, TokenAmount, USD } from '@swapr/sdk'
-import { getAddress, parseUnits } from 'ethers/lib/utils'
-import { DateTime, Duration } from 'luxon'
+import { CurrencyAmount, Pair, Token, USD } from '@swapr/sdk'
+import { parseUnits } from 'ethers/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '.'
-import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
 import { useKpiTokens } from './useKpiTokens'
+import {
+  getPairWithLiquidityMiningCampaign,
+  getRewardTokenAddressFromPair,
+  SubgraphPair,
+  getLowerTimeLimit,
+} from '../utils/liquidityMining'
 
 const PAGE_SIZE = 1000
 
@@ -61,25 +64,6 @@ const QUERY = gql`
   }
 `
 
-interface SubgraphToken {
-  address: string
-  symbol: string
-  name: string
-  decimals: string
-}
-
-interface SubgraphPair {
-  address: string
-  reserve0: string
-  reserve1: string
-  reserveNativeCurrency: string
-  reserveUSD: string
-  totalSupply: string
-  token0: SubgraphToken
-  token1: SubgraphToken
-  liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-}
-
 interface QueryResult {
   pairs: SubgraphPair[]
 }
@@ -98,27 +82,14 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   const { chainId, account } = useActiveWeb3React()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
-  const memoizedLowerTimeLimit = useMemo(
-    () =>
-      Math.floor(
-        DateTime.utc()
-          .minus(Duration.fromObject({ days: 150 }))
-          .toSeconds()
-      ),
-    []
-  )
+
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const filterTokenAddress = useMemo(() => tokenFilter?.address.toLowerCase(), [tokenFilter])
+  const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
 
   const [loadingPairs, setLoadingPairs] = useState(false)
   const [pairs, setPairs] = useState<SubgraphPair[]>([])
-  const rewardTokenAddresses = useMemo(() => {
-    return pairs.flatMap(pair =>
-      pair.liquidityMiningCampaigns.flatMap(campaign =>
-        campaign.rewards.map(reward => reward.token.address.toLowerCase())
-      )
-    )
-  }, [pairs])
+  const rewardTokenAddresses = useMemo(() => pairs.flatMap(pair => getRewardTokenAddressFromPair(pair)), [pairs])
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
 
   useEffect(() => {
@@ -165,48 +136,14 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     return {
       loading: false,
       wrappedPairs: rawPairs.map(rawPair => {
-        const {
-          reserveNativeCurrency,
-          reserveUSD,
-          totalSupply,
-          token0,
-          token1,
-          reserve0,
-          reserve1,
-          liquidityMiningCampaigns,
-        } = rawPair
-
-        const token0ChecksummedAddress = getAddress(token0.address)
-        const tokenA =
-          tokensInCurrentChain &&
-          tokensInCurrentChain[token0ChecksummedAddress] &&
-          tokensInCurrentChain[token0ChecksummedAddress].token
-            ? tokensInCurrentChain[token0ChecksummedAddress].token
-            : new Token(chainId, token0ChecksummedAddress, parseInt(token0.decimals), token0.symbol, token0.name)
-        const tokenAmountA = new TokenAmount(tokenA, parseUnits(reserve0, token0.decimals).toString())
-
-        const token1ChecksummedAddress = getAddress(token1.address)
-        const tokenB =
-          tokensInCurrentChain &&
-          tokensInCurrentChain[token1ChecksummedAddress] &&
-          tokensInCurrentChain[token1ChecksummedAddress].token
-            ? tokensInCurrentChain[token1ChecksummedAddress].token
-            : new Token(chainId, token1ChecksummedAddress, parseInt(token1.decimals), token1.symbol, token1.name)
-        const tokenAmountB = new TokenAmount(tokenB, parseUnits(reserve1, token1.decimals).toString())
-        const pair = new Pair(tokenAmountA, tokenAmountB)
-
-        const campaigns = liquidityMiningCampaigns.map(campaign => {
-          return toLiquidityMiningCampaign(
-            chainId,
-            pair,
-            totalSupply,
-            reserveNativeCurrency,
-            kpiTokens,
-            campaign,
-            nativeCurrency
-          )
+        const { reserveUSD } = rawPair
+        const pair = getPairWithLiquidityMiningCampaign({
+          rawPair,
+          chainId,
+          kpiTokens,
+          nativeCurrency,
+          tokensInCurrentChain,
         })
-        pair.liquidityMiningCampaigns = campaigns
 
         return {
           pair,
