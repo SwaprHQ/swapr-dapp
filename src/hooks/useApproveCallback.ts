@@ -8,7 +8,10 @@ import {
   UniswapV2RoutablePlatform,
   CurveTrade,
   GnosisProtocolTrade,
+  Trade,
+  Currency,
 } from '@swapr/sdk'
+import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -52,6 +55,7 @@ export function useApproveCallback(
       : ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, nativeCurrency, pendingApproval, spender])
 
+  console.info({ amountToApprove, spender, currentAllowance, pendingApproval })
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
@@ -107,12 +111,22 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
+export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
-  const amountToApprove = useMemo(() => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined), [
-    trade,
-    // allowedSlippage,
-  ])
+
+  const amountToApprove = useMemo(() => {
+    if (trade) {
+      // For GPv2 trades, make sure to wrap the currency amount if
+      // the trade input currency is the native one
+      if (trade instanceof GnosisProtocolTrade && Currency.isNative(trade.inputAmount.currency)) {
+        return wrappedAmount(trade.inputAmount, trade.chainId)
+      }
+      // For any other case, return the default
+      return computeSlippageAdjustedAmounts(trade)[Field.INPUT]
+    }
+
+    return undefined
+  }, [trade])
 
   // Find the approve address for the trade
   let approveAddress = AddressZero

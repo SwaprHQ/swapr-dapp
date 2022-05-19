@@ -1,4 +1,5 @@
 import {
+  Currency,
   CurrencyAmount,
   JSBI,
   Trade,
@@ -6,6 +7,7 @@ import {
   RoutablePlatform,
   UniswapV2Trade,
   UniswapV2RoutablePlatform,
+  GnosisProtocolTrade,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
@@ -25,7 +27,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
-import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
+import useTradeWrapCallback, { WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { Field, setRecipient } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -89,6 +91,13 @@ const SwapIconLoading = styled(SwapIcon)`
   animation: ${rotateAnimation} 2s linear infinite;
 `
 
+enum GnosisProtocolTradeStatus {
+  UNKNOWN, // default
+  WRAP,
+  APPROVAL,
+  SWAP,
+}
+
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -133,15 +142,28 @@ export default function Swap() {
     currencies,
     inputError: swapInputError,
   } = useDerivedSwapInfo(platformOverride || undefined)
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
-    currencies[Field.INPUT],
-    currencies[Field.OUTPUT],
+
+  const isInputCurrencyNative =
+    potentialTrade && potentialTrade.inputAmount && Currency.isNative(potentialTrade?.inputAmount?.currency)
+      ? true
+      : false
+
+  // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
+  // wrap status(use useWrapCallback + and a state variable)
+  const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(
+    GnosisProtocolTradeStatus.WRAP
+  )
+  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState } = useTradeWrapCallback(
+    potentialTrade,
     typedValue
   )
   const bestPricedTrade = allPlatformTrades?.[0] // the best trade is always the first
+
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+
   const trade = showWrap ? undefined : potentialTrade
 
+  //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
     ? {
         [Field.INPUT]: parsedAmount,
@@ -155,6 +177,11 @@ export default function Swap() {
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
   const isValid = !swapInputError
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+
+  /**
+   * True when the wallet tries to trade native currency to ERC20
+   */
+  const isGnosisTradeV2RequireWrap = potentialTrade instanceof GnosisProtocolTrade && isInputCurrencyNative && isValid
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -198,7 +225,7 @@ export default function Swap() {
   const noRoute = !route
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade as UniswapV2Trade /* allowedSlippage */)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -229,10 +256,22 @@ export default function Swap() {
     if (!swapCallback) {
       return
     }
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    setSwapState({
+      attemptingTxn: true,
+      tradeToConfirm,
+      showConfirm,
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    })
     swapCallback()
       .then(hash => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        })
       })
       .catch(error => {
         setSwapState({
@@ -261,7 +300,13 @@ export default function Swap() {
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
-    setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
+    setSwapState({
+      showConfirm: false,
+      tradeToConfirm,
+      attemptingTxn,
+      swapErrorMessage,
+      txHash,
+    })
     // if there was a tx hash, we want to clear the input
     if (txHash) {
       onUserInput(Field.INPUT, '')
@@ -270,7 +315,13 @@ export default function Swap() {
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
+    setSwapState({
+      tradeToConfirm: trade,
+      swapErrorMessage,
+      txHash,
+      attemptingTxn,
+      showConfirm,
+    })
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
@@ -326,21 +377,106 @@ export default function Swap() {
       return <ButtonConnect />
     }
 
-    // Wallet is connected
-    // User is trying to un/wrap
-
-    if (showWrap) {
-      return (
-        <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-        </ButtonPrimary>
-      )
-    }
-
     if (noRoute && userHasSpecifiedInputOutput) {
       return (
         <ButtonPrimary style={{ textAlign: 'center' }} disabled>
           Insufficient liquidity
+        </ButtonPrimary>
+      )
+    }
+
+    if (isGnosisTradeV2RequireWrap) {
+      const isApprovalRequired = approval !== ApprovalState.APPROVED
+      const swapDisabled = !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
+      console.info({ isValid, approval, priceImpactSeverity, isExpertMode })
+      console.info({ approvalSubmitted, gnosisProtocolTradeStatus })
+      const width = approval === ApprovalState.APPROVED ? '31%' : '48%'
+      return (
+        <RowBetween>
+          {
+            <ButtonConfirmed
+              onClick={() =>
+                onWrap &&
+                onWrap().then(() => {
+                  console.info('THEN', wrapState)
+                  //It's the previous state here but after the immediate next log it becomes WRAPPED
+                  // we're observing the state before changing it - gotta love race conditions
+                  if (wrapState === WrapState.WRAPPED) {
+                    setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
+                    if (!isApprovalRequired) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
+                  }
+                })
+              }
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP}
+              width={width}
+              altDisabledStyle={wrapState !== WrapState.UNKNOWN} //{approval === ApprovalState.PENDING} // show solid button while waiting
+              confirmed={wrapState === WrapState.WRAPPED}
+            >
+              {wrapState === WrapState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Wrapping <Loader />
+                </AutoRow>
+              ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                'Wrapped'
+              ) : (
+                'Wrap ' + currencies[Field.INPUT]?.symbol
+              )}
+            </ButtonConfirmed>
+          }
+
+          {// If the EOA needs to approve the WXDAI or any ERC20
+          isApprovalRequired && (
+            <ButtonConfirmed
+              onClick={() => approveCallback().then(() => setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP))}
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL}
+              width={width}
+              altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+            >
+              {approval === ApprovalState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Approving <Loader />
+                </AutoRow>
+              ) : approvalSubmitted ? (
+                'Approved'
+              ) : (
+                'Approve ' + currencies[Field.INPUT]?.symbol // Change this to wrapped token
+              )}
+            </ButtonConfirmed>
+          )}
+          <ButtonConfirmed
+            onClick={() => {
+              if (isExpertMode) {
+                handleSwap()
+              } else {
+                setSwapState({
+                  tradeToConfirm: trade,
+                  attemptingTxn: false,
+                  swapErrorMessage: undefined,
+                  showConfirm: true,
+                  txHash: undefined,
+                })
+              }
+              setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+            }}
+            width={width}
+            id="swap-button"
+            disabled={swapDisabled}
+            //error={isValid && priceImpactSeverity > 2}
+          >
+            {priceImpactSeverity > 3 && !isExpertMode
+              ? `Price Impact High`
+              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+          </ButtonConfirmed>
+        </RowBetween>
+      )
+    }
+
+    // Wallet is connected
+    // User is trying to un/wrap
+    if (showWrap) {
+      return (
+        <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
+          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
         </ButtonPrimary>
       )
     }
@@ -419,6 +555,7 @@ export default function Swap() {
     )
   }
 
+  console.info({ approval, wrapState })
   return (
     <>
       <TokenWarningModal

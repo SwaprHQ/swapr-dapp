@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'
