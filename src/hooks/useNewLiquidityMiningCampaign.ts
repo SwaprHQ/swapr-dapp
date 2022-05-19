@@ -29,7 +29,8 @@ export function useNewLiquidityMiningCampaign(
   endTime: Date | null,
   locked: boolean,
   stakingCap: TokenAmount | null,
-  simulatedStakedAmount: string
+  simulatedStakedAmount: string,
+  simulatedPrice: any
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
 
@@ -59,8 +60,10 @@ export function useNewLiquidityMiningCampaign(
       return null
     const formattedStartTime = Math.floor(startTime.getTime() / 1000).toString()
     const formattedEndTime = Math.floor(endTime.getTime() / 1000).toString()
+
     if (targetedPairOrToken instanceof Pair && lpTokenTotalSupply) {
       const { address, symbol, name, decimals } = targetedPairOrToken.liquidityToken
+
       const lpTokenNativeCurrencyPrice = getLpTokenPrice(
         targetedPairOrToken,
         nativeCurrency,
@@ -82,13 +85,14 @@ export function useNewLiquidityMiningCampaign(
       })
     } else if (targetedPairOrToken instanceof Token && tokenDerivedNative.derivedNativeCurrency) {
       const { address, symbol, name, decimals } = targetedPairOrToken
+      const tokenNativePrice = simulatedPrice
 
       const derivedNative = new Price({
         baseCurrency: targetedPairOrToken,
         quoteCurrency: nativeCurrency,
         denominator: parseUnits('1', nativeCurrency.decimals).toString(),
         numerator: parseUnits(
-          new Decimal(tokenDerivedNative.derivedNativeCurrency.toFixed()).toFixed(nativeCurrency.decimals),
+          new Decimal(tokenNativePrice).toFixed(nativeCurrency.decimals),
           nativeCurrency.decimals
         ).toString(),
       })
@@ -110,6 +114,7 @@ export function useNewLiquidityMiningCampaign(
       return null
     }
   }, [
+    simulatedPrice,
     tokenDerivedNative,
     chainId,
     targetedPairOrToken,

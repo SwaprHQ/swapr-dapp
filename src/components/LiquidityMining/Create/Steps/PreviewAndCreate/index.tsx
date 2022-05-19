@@ -43,6 +43,8 @@ const CampaignDetailWrapper = styled(Flex)`
 interface PreviewProps {
   campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
   liquidityPair: Pair | Token | null
+  simulatedPrice: string
+  setSimulatedPrice: (price: string) => void
   apy: Percent
   startTime: Date | null
   endTime: Date | null
@@ -66,6 +68,8 @@ export default function PreviewAndCreate({
   onCreate,
   campaign,
   setSimulatedStakedAmount,
+  setSimulatedPrice,
+  simulatedPrice,
 }: PreviewProps) {
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
@@ -105,6 +109,8 @@ export default function PreviewAndCreate({
             campaign={campaign}
           />
           <SimulateStaking
+            setSimulatedPrice={setSimulatedPrice}
+            simulatedPrice={simulatedPrice}
             nativeCurrencyUSDPrice={nativeCurrencyUSDPrice}
             loading={loadingNativeCurrencyUsdPrice}
             setSimulatedStakedAmount={setSimulatedStakedAmount}

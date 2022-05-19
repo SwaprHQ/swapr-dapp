@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SmoothGradientCard } from '../../../../styleds'
 import styled from 'styled-components'
@@ -77,6 +77,8 @@ interface RewardSummaryProps {
   stakingCap: TokenAmount | null
   nativeCurrencyUSDPrice: Price
   setSimulatedStakedAmount: (value: string) => void
+  setSimulatedPrice: (value: any) => void
+  simulatedPrice: any
   loading: boolean
 }
 enum SimulateOptions {
@@ -88,13 +90,15 @@ export default function SimulateStaking({
   tokenOrPair,
   stakingCap,
   setSimulatedStakedAmount,
+  setSimulatedPrice,
+  simulatedPrice,
   nativeCurrencyUSDPrice,
   loading,
 }: RewardSummaryProps) {
   const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
     tokenOrPair ? tokenOrPair : undefined
   )
-  const [simulatedPrice, setSimulatedPrice] = useState(nativeTokenPrice.toSignificant(2))
+
   const inputRef = React.useRef<HTMLInputElement>(null)
   const widthValue = useMemo(() => {
     if (simulatedPrice.length > 0 && inputRef.current) return inputRef.current.clientWidth
@@ -102,14 +106,14 @@ export default function SimulateStaking({
   }, [simulatedPrice, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      if (!tokenOrPair || (tokenOrPair instanceof Pair && !tokenOrPair.liquidityToken)) return
-      setSimulatedPrice(rawValue)
-      //   const tokenOrPair = stakeTokenOrPair instanceof Token ? tokenOrPair : tokenOrPair.liquidityToken
-      //   const parsedAmount = tryParseAmount(rawValue, tokenOrPair) as TokenAmount | undefined
-      //   onStakingCapChange(parsedAmount || new TokenAmount(tokenOrPair, '0'))
+      setSimulatedPrice(rawValue.length === 0 ? '0' : rawValue)
     },
-    [tokenOrPair]
+    [setSimulatedPrice]
   )
+  useEffect(() => {
+    setSimulatedPrice(parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
@@ -123,20 +127,11 @@ export default function SimulateStaking({
     10
   )
   const maxStakedSimulatedAmount = useMemo(() => {
-    //TODO : add value from input inside here so we always have a max value
-    console.log('nativePrice', nativeTokenPrice.equalTo('0'))
-    console.log('nativePriceTOFixed', nativeTokenPrice.toSignificant(22))
-    // const tokenOrPairNativePrice = nativeTokenPrice.equalTo('0')
-    //   ? simulatedPrice
-    //   : parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toSignificant(22))
-    // console.log(tokenOrPairNativePrice)
-    const tokenOrPairSimulated = simulatedPrice
-
     const base = stakingCap
-      ? parseFloat(stakingCap.multiply(tokenOrPairSimulated).toSignificant(22))
+      ? parseFloat(stakingCap.multiply(simulatedPrice).toSignificant(22))
       : dollarAmountMaxSimulation
 
-    const baseInUsd = parseFloat(tokenOrPairSimulated)
+    const baseInUsd = parseFloat(simulatedPrice)
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
@@ -152,15 +147,7 @@ export default function SimulateStaking({
     }
 
     return calculatePercentage(baseValue, simulatedValuePercentage)
-  }, [
-    setSimulatedStakedAmount,
-    tokenOrPair,
-    simulatedPrice,
-    simulatedValuePercentage,
-    stakingCap,
-    nativeTokenPrice,
-    showUSDValue,
-  ])
+  }, [setSimulatedStakedAmount, tokenOrPair, simulatedPrice, simulatedValuePercentage, stakingCap, showUSDValue])
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])

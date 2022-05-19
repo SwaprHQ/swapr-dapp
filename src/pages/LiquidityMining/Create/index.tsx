@@ -104,6 +104,7 @@ export default function CreateLiquidityMining() {
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
   const [rewardsObject, dispatch] = useReducer(reducer, initialState)
   const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
+  const [simulatedPrice, setSimulatedPrice] = useState('0')
 
   const memoizedRewardArray = useMemo(
     () =>
@@ -127,7 +128,8 @@ export default function CreateLiquidityMining() {
     endTime,
     timelocked,
     stakingCap,
-    simulatedStakedAmount
+    simulatedStakedAmount,
+    simulatedPrice
   )
 
   const addTransaction = useTransactionAdder()
@@ -232,6 +234,8 @@ export default function CreateLiquidityMining() {
           disabled={!stakeTokenOrPair || !startTime || !endTime || memoizedRewardArray.length === 0}
         >
           <PreviewAndCreate
+            simulatedPrice={simulatedPrice}
+            setSimulatedPrice={setSimulatedPrice}
             campaign={campaign}
             approvals={memoizedApprovalsArray}
             liquidityPair={stakeTokenOrPair}
