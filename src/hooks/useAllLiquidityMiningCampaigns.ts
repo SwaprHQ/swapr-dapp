@@ -1,15 +1,17 @@
-import { gql, useQuery } from '@apollo/client'
-
-import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token, TokenAmount } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
-import { useActiveWeb3React } from '.'
+import { gql, useQuery } from '@apollo/client'
+import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
-import { useNativeCurrency } from './useNativeCurrency'
 
-import { toLiquidityMiningCampaign, toSingleSidedStakeCampaign } from '../utils/liquidityMining'
-import { DateTime, Duration } from 'luxon'
+import { useNativeCurrency } from './useNativeCurrency'
+import { useActiveWeb3React } from '.'
+import {
+  getLowerTimeLimit,
+  getTokenAmount,
+  toLiquidityMiningCampaign,
+  toSingleSidedStakeCampaign,
+} from '../utils/liquidityMining'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useSWPRToken } from './swpr/useSWPRToken'
@@ -44,7 +46,7 @@ const SINGLE_SIDED_CAMPAIGNS = gql`
     }
   }
 `
-const REGULAR_CAMPAIGN = gql`
+export const REGULAR_CAMPAIGN = gql`
   query($userId: ID) {
     liquidityMiningCampaigns(first: 999) {
       address: id
@@ -82,7 +84,7 @@ const REGULAR_CAMPAIGN = gql`
   }
 `
 
-const sortActiveCampaings = (activeCampaigns: any) =>
+export const sortActiveCampaings = (activeCampaigns: any) =>
   activeCampaigns.sort((a: any, b: any) => {
     if (a.campaign.ended && !b.campaign.ended) return -1
     if (!a.campaign.ended && b.campaign.ended) return 1
@@ -116,7 +118,7 @@ const sortActiveCampaings = (activeCampaigns: any) =>
     return 0
   })
 
-const sortExpiredCampaigns = (expiredCampaigns: any) =>
+export const sortExpiredCampaigns = (expiredCampaigns: any) =>
   expiredCampaigns.sort((a: any, b: any) => {
     if (a.campaign.endsAt > b.campaign.endsAt) return -1
     if (a.campaign.endsAt < b.campaign.endsAt) return 1
@@ -126,133 +128,6 @@ const sortExpiredCampaigns = (expiredCampaigns: any) =>
 
     return 0
   })
-
-const lowerTimeLimit = DateTime.utc()
-  .minus(Duration.fromObject({ days: 150 }))
-  .toJSDate()
-
-const retrieveOrCreateToken = (chainId: any, tokensInCurrentChain: any, token: any) => {
-  const tokenChecksummedAddress = getAddress(token.address)
-
-  return tokensInCurrentChain[tokenChecksummedAddress]?.token
-    ? tokensInCurrentChain[tokenChecksummedAddress].token
-    : new Token(chainId, tokenChecksummedAddress, parseInt(token.decimals), token.symbol, token.name)
-}
-export function usePairLiquidityMiningCampaigns(
-  pair?: Pair,
-  dataFilter?: PairsFilterType
-): {
-  loading: boolean
-  miningCampaigns: any
-} {
-  const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
-  const { chainId, account } = useActiveWeb3React()
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const SWPRToken = useSWPRToken()
-  const nativeCurrency = useNativeCurrency()
-  const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
-  const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
-  const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [])
-  const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
-
-  const { data: pairCampaigns, loading: campaignLoading, error: campaignError } = useQuery<{
-    liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-  }>(REGULAR_CAMPAIGN, {
-    variables: {
-      userId: subgraphAccountId,
-    },
-  })
-
-  const kpiTokenAddresses = useMemo(() => {
-    if (!pairCampaigns) return []
-    return pairCampaigns.liquidityMiningCampaigns.flatMap(campaign =>
-      campaign.rewards.map(reward => reward.token.address.toLowerCase())
-    )
-  }, [pairCampaigns])
-  const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
-
-  return useMemo(() => {
-    if (chainId === undefined || campaignLoading) {
-      return { loading: true, miningCampaigns: { active: [], expired: [] } }
-    }
-    if (campaignError || !pairCampaigns || !pairCampaigns.liquidityMiningCampaigns || loadingKpiTokens) {
-      return { loading: true, miningCampaigns: { active: [], expired: [] } }
-    }
-
-    const expiredCampaigns = []
-    const activeCampaigns = []
-    for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
-      const campaign = pairCampaigns.liquidityMiningCampaigns[i]
-      if (pairAddress === undefined) {
-        return { loading: true, miningCampaigns: { active: [], expired: [] } }
-      }
-
-      if (
-        (pairAddress && campaign.stakablePair.id.toLowerCase() !== pairAddress) ||
-        (dataFilter === PairsFilterType.MY && campaign.liquidityMiningPositions.length === 0)
-      ) {
-        continue
-      }
-
-      const { reserveNativeCurrency, totalSupply, token0, token1, reserve0, reserve1 } = campaign.stakablePair
-      const containsKpiToken = !!campaign.rewards.find(
-        reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
-      )
-
-      const tokenA = retrieveOrCreateToken(chainId, tokensInCurrentChain, token0)
-      const tokenAmountA = new TokenAmount(tokenA, parseUnits(reserve0, token0.decimals).toString())
-
-      const tokenB = retrieveOrCreateToken(chainId, tokensInCurrentChain, token1)
-      const tokenAmountB = new TokenAmount(tokenB, parseUnits(reserve1, token1.decimals).toString())
-
-      const pair = new Pair(tokenAmountA, tokenAmountB)
-
-      const liquidityCampaign = toLiquidityMiningCampaign(
-        chainId,
-        pair,
-        totalSupply,
-        reserveNativeCurrency,
-        kpiTokens,
-        campaign,
-        nativeCurrency
-      )
-
-      const hasStake = campaign.liquidityMiningPositions.length > 0
-      const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
-      const isActive = hasStake || liquidityCampaign.currentlyActive || isUpcoming(campaign.startsAt)
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(tokenA) || SWPRToken.equals(tokenB)) {
-        if (isActive) {
-          activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
-        } else if (isExpired) {
-          expiredCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
-        }
-      }
-    }
-
-    return {
-      loading: false,
-      miningCampaigns: {
-        active: sortActiveCampaings(activeCampaigns),
-        expired: sortExpiredCampaigns(expiredCampaigns),
-      },
-    }
-  }, [
-    chainId,
-    campaignLoading,
-    campaignError,
-    pairCampaigns,
-    loadingKpiTokens,
-    pairAddress,
-    dataFilter,
-    tokensInCurrentChain,
-    kpiTokens,
-    nativeCurrency,
-    timestamp,
-    memoizedLowerTimeLimit,
-    SWPRToken,
-    isUpcoming,
-  ])
-}
 
 export function useAllLiquidityMiningCampaigns(
   pair?: Pair,
@@ -273,7 +148,7 @@ export function useAllLiquidityMiningCampaigns(
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
   const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
 
-  const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [])
+  const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
 
   const { data: singleSidedCampaigns, loading: singleSidedLoading, error: singleSidedCampaignsError } = useQuery<{
@@ -301,10 +176,10 @@ export function useAllLiquidityMiningCampaigns(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    if (singleSidedLoading || chainId === undefined || campaignLoading) {
-      return { loading: true, miningCampaigns: { active: [], expired: [] } }
-    }
     if (
+      singleSidedLoading ||
+      chainId === undefined ||
+      campaignLoading ||
       singleSidedCampaignsError ||
       campaignError ||
       !singleSidedCampaigns ||
@@ -332,11 +207,8 @@ export function useAllLiquidityMiningCampaigns(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
       )
 
-      const tokenA = retrieveOrCreateToken(chainId, tokensInCurrentChain, token0)
-      const tokenAmountA = new TokenAmount(tokenA, parseUnits(reserve0, token0.decimals).toString())
-
-      const tokenB = retrieveOrCreateToken(chainId, tokensInCurrentChain, token1)
-      const tokenAmountB = new TokenAmount(tokenB, parseUnits(reserve1, token1.decimals).toString())
+      const tokenAmountA = getTokenAmount({ token: token0, tokensInCurrentChain, chainId, reserve: reserve0 })
+      const tokenAmountB = getTokenAmount({ token: token1, tokensInCurrentChain, chainId, reserve: reserve1 })
 
       const pair = new Pair(tokenAmountA, tokenAmountB)
 
@@ -354,7 +226,7 @@ export function useAllLiquidityMiningCampaigns(
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
       const isActive = hasStake || liquidityCampaign.currentlyActive || isUpcoming(campaign.startsAt)
 
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(tokenA) || SWPRToken.equals(tokenB)) {
+      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(token0) || SWPRToken.equals(token1)) {
         if (isActive) {
           activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
         } else if (isExpired) {

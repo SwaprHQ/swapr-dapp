@@ -21,7 +21,7 @@ import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel/ValueWithLabel.component'
 import List from '../../../components/LiquidityMiningCampaigns/List'
-import { usePairLiquidityMiningCampaigns } from '../../../hooks/useAllLiquidityMiningCampaigns'
+import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 
 export default function Pair({
   match: {
