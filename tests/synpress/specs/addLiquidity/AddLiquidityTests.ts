@@ -21,6 +21,7 @@ describe('Add liquidity', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
+    cy.wait(1000)
   })
 
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {
