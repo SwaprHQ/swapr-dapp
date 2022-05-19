@@ -14,8 +14,9 @@ import { UndecoratedLink } from '../../UndercoratedLink'
 import { Pair as PairCard } from './Pair'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { PairsListProps } from './PairsList.types'
-import { BlueButton, DimBgContainer, Header, HeaderText, PaginationRow } from './PairsList.styles'
+import { BlueButton, Header, HeaderText, PaginationRow } from './PairsList.styles'
 import { ListLayout } from '../LoadingList'
+import { DimBlurBgBox } from '../DimBlurBgBox'
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
@@ -34,7 +35,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
 
   return (
     <Flex flexDirection="column">
-      <DimBgContainer>
+      <DimBlurBgBox>
         {loading ? (
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
@@ -96,7 +97,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
             <BlueButton> {t('createAPool')}</BlueButton>
           </Flex>
         )}
-      </DimBgContainer>
+      </DimBlurBgBox>
       {aggregatedPairs.length > responsiveItemsPerPage && (
         <PaginationRow>
           <Box>

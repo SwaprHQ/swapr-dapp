@@ -7,7 +7,7 @@ import { PageWrapper } from '../../components/PageWrapper'
 import { TYPE } from '../../theme'
 import { Box, Button, Flex, Text } from 'rebass'
 import { RowBetween } from '../../components/Row'
-import { ButtonWithLink } from '../../components/Button'
+import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -243,7 +243,7 @@ export default function Pools() {
         </AutoColumn>
       </AutoColumn>
       {account && (
-        <ButtonWithLink
+        <ButtonWithExternalLink
           link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
           text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
           style={{ marginTop: '32px' }}

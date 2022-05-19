@@ -13,7 +13,7 @@ import { AutoColumn } from '../../components/Column'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import SearchInputWithIcon from '../../components/SearchModal/styleds'
 import { useRouter } from '../../hooks/useRouter'
-import { ButtonPrimary, ButtonWithLink } from '../../components/Button'
+import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button'
 
 import Container from './Container'
 import { MainPage, PairPage } from './constant'
@@ -76,7 +76,7 @@ export default function Governance() {
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
         {router.query.asset === undefined && (
-          <ButtonWithLink link={'https://swapr.eth.limo'} text={'GOVERNANCE STATISTICS'} />
+          <ButtonWithExternalLink link={'https://swapr.eth.limo'} text={'GOVERNANCE STATISTICS'} />
         )}
         <LightCard>
           <AutoColumn gap="md">

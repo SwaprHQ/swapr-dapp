@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Flex, Text } from 'rebass'
-import { gradients } from '../../../utils/theme'
 
 export const Header = styled.div`
   display: grid;
@@ -30,16 +29,6 @@ export const PaginationRow = styled(Flex)`
   & ul {
     margin: 22px 0;
   }
-`
-
-export const DimBgContainer = styled.div`
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.purple5};
-
-  background: ${gradients.purpleDim};
-  background-blend-mode: normal, overlay, normal;
-  backdrop-filter: blur(25px);
 `
 
 export const BlueButton = styled.button`

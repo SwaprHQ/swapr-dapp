@@ -58,11 +58,9 @@ export const gradients = {
   cta: 'linear-gradient(266.97deg, #D74DFF 5.64%, #8E38FF 53.85%, #4C1DFF 97.29%)',
   heroMainText: 'linear-gradient(270deg, #FFFFFF 1.98%, #DCD8FE 95.72%)',
   glow: 'radial-gradient(closest-side, rgba(20, 10, 55, 1) 20%, rgba(20, 10, 55, 0) 100%)',
-  purpleDim:
+  purpleDimDark:
     'linear-gradient(143.3deg,rgba(46,23,242,0.5) -185.11%,rgba(46,23,242,0) 49.63%),linear-gradient(113.18deg,#c0baf638 -0.1%,rgba(0,0,0,0) 98.9%),rgba(57,51,88,0.3)',
-  purpleDark:
-    'linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;',
-  purpleDimButton:
+  purpleDim:
     'linear-gradient(118.9deg, rgba(255, 255, 255, 0.2) -0.59%, rgba(0, 0, 0, 0) 132.78%), rgba(61, 55, 88, 0.7);',
 }
 

@@ -109,7 +109,7 @@ export const ButtonPurpleDim = styled(Base)`
   font-weight: 600;
   color: ${({ theme }) => theme.text4};
 
-  background: ${gradients.purpleDimButton};
+  background: ${gradients.purpleDim};
   backdrop-filter: blur(25px);
   background-blend-mode: overlay, normal;
 
@@ -294,7 +294,7 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
   }
 }
 
-export function ButtonWithLink({ link, text, style }: { link: string; text: string; style?: any }) {
+export function ButtonWithExternalLink({ link, text, style }: { link: string; text: string; style?: any }) {
   return (
     <ButtonSecondary
       id="join-pool-button"
