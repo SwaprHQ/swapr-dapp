@@ -6,7 +6,7 @@ import './Switch.css'
 
 const StyledLabel = styled.label<{ isOn: boolean; isRed: boolean }>`
   background: ${props =>
-    props.isOn && props.isRed ? '#F02E51 !important' : props.isOn ? `${props.theme.mainPurple}!important` : ''};
+    props.isOn && props.isRed ? '#F02E51' : props.isOn ? `${props.theme.mainPurple}` : `${props.theme.purple5}`};
 `
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${props => (props.isOn ? props.theme.text2 : props.theme.purple2)};

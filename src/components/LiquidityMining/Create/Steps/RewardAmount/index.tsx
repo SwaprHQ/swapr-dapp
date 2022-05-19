@@ -42,10 +42,11 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     setCurrencySearchOpen(true)
   }, [])
   const disabledRewardsArray = useMemo(() => {
-    const mappedArray = rewardsObject.rewards.map(reward => reward?.currency)
-    const filteredArray = mappedArray.filter(currency => currency && currency !== undefined) as Currency[]
+    const filteredRewardsArray = rewardsObject.rewards
+      .map(reward => reward?.currency)
+      .filter(currency => currency && currency !== undefined) as Currency[]
 
-    if (filteredArray.length !== 0) return filteredArray
+    if (filteredRewardsArray.length !== 0) return filteredRewardsArray
     else return undefined
   }, [rewardsObject])
 

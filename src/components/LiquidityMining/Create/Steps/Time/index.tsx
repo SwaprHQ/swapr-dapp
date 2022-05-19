@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
 import { TYPE } from '../../../../../theme'
 import TimeSelector from './TimeSelector'
-//import Toggle from '../../../../Toggle'
 import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
 import { Switch } from '../../../../Switch'
@@ -43,7 +42,6 @@ export default function DurationAndLocking({
   const handleStartTimeChange = useCallback(
     (newStartTime: Date) => {
       if (endTime ? newStartTime.getTime() > endTime.getTime() : Date.now() > newStartTime.getTime()) return
-      // if (Date.now() > newStartTime.getTime() || (endTime && endTime.getTime() <= newStartTime.getTime())) return // date in the past, invalid
       setStartTime(newStartTime)
     },
     [setStartTime, endTime]
@@ -86,12 +84,12 @@ export default function DurationAndLocking({
 
       <SmoothGradientCard
         textAlign={'start'}
-        alignItems={'start !important'}
+        alignItems={'start'}
         padding={'41px'}
         width={'299px'}
         height={'150px'}
         flexDirection={'column'}
-        justifyContent={'space-around !important'}
+        justifyContent={'space-around'}
       >
         <Flex alignSelf={'start'}>
           <LockSvg />

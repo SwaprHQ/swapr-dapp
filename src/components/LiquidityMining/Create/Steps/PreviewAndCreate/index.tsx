@@ -47,7 +47,6 @@ const CampaignDetailWrapper = styled(Flex)`
   gap: 32px;
 `
 const SimulatedValue = styled.div`
-  font-family: 'Fira Mono';
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
@@ -76,7 +75,7 @@ const SwitchContainer = styled.div`
   text-transform: uppercase;
   cursor: pointer;
 `
-const dollarAmountMaxSimulation = 10000000
+const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 interface PreviewProps {
   campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
   liquidityPair: Pair | Token | null
@@ -117,7 +116,7 @@ export default function PreviewAndCreate({
   const maxStakedSimulatedAmount = useMemo(() => {
     const base = stakingCap
       ? parseFloat(stakingCap.multiply(nativeTokenPrice.multiply(nativeCurrencyUSDPrice)).toSignificant(22))
-      : dollarAmountMaxSimulation
+      : DOLLAR_AMOUNT_MAX_SIMULATION
 
     const baseInUsd = parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(22))
 
@@ -191,7 +190,7 @@ export default function PreviewAndCreate({
             campaign={campaign}
           />
           <SmoothGradientCard
-            justifyContent={'space-between !important'}
+            justifyContent={'space-between'}
             flexDirection={'column'}
             alignItems={'center'}
             padding={'24px 28px'}

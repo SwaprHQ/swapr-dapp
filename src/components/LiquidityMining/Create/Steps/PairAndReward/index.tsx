@@ -132,7 +132,7 @@ export default function StakeTokenAndLimit({
         />
 
         <SmoothGradientCard
-          justifyContent={'space-between !important'}
+          justifyContent={'space-between'}
           flexDirection={'column'}
           padding={'41px'}
           height="150px"
