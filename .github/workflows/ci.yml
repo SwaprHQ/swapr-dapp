@@ -198,6 +198,10 @@ jobs:
           node-version: '16'
           check-latest: true
           cache: 'yarn'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
