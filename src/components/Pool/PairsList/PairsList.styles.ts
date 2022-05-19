@@ -30,24 +30,3 @@ export const PaginationRow = styled(Flex)`
     margin: 22px 0;
   }
 `
-
-export const BlueButton = styled.button`
-  outline: none;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border: none;
-  border-radius: 12px;
-  padding: 10px 14px;
-
-  background-color: ${({ theme }) => theme.primary1};
-
-  font-size: 12px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.white};
-  text-transform: uppercase;
-
-  cursor: pointer;
-`

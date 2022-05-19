@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
@@ -14,9 +15,10 @@ import { UndecoratedLink } from '../../UndercoratedLink'
 import { Pair as PairCard } from './Pair'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { PairsListProps } from './PairsList.types'
-import { BlueButton, Header, HeaderText, PaginationRow } from './PairsList.styles'
+import { Header, HeaderText, PaginationRow } from './PairsList.styles'
 import { ListLayout } from '../LoadingList'
 import { DimBlurBgBox } from '../DimBlurBgBox'
+import { ButtonPrimary } from '../../Button'
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
@@ -94,7 +96,11 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
             <Text fontSize="16px" color="#BCB3F0" mb="24px">
               {t('noPoolsFound')}
             </Text>
-            <BlueButton> {t('createAPool')}</BlueButton>
+            <div>
+              <ButtonPrimary to="/create" as={Link}>
+                {t('createAPool')}
+              </ButtonPrimary>
+            </div>
           </Flex>
         )}
       </DimBlurBgBox>
