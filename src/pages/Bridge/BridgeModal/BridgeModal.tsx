@@ -77,6 +77,11 @@ export const BridgeModal = ({
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
     }
+
+    if (activeBridge === 'connext') {
+      setIsWarning(false)
+      setBridgeName('Connext Network')
+    }
   }, [activeBridge, status, symbol, t, typedValue])
 
   const onDismiss = () => {
