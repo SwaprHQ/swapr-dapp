@@ -65,8 +65,11 @@ const DoubleIconWrapper = styled.div`
   top: -24px;
   left: 59px;
 `
-const CrossIcon = (campaingType: CampaignType) => {
-  if (campaingType === CampaignType.TOKEN) {
+interface CrossProps {
+  campaignType: CampaignType
+}
+const CrossIcon = ({ campaignType }: CrossProps) => {
+  if (campaignType === CampaignType.TOKEN) {
     return (
       <Circle size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
         <InsideCircle size={'80'}>
@@ -109,7 +112,6 @@ export const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps
     )
   } else if (currency0) {
     return <StyledCurrencyLogo size="98px" currency={currency0} />
-  } else {
-    return CrossIcon(campaingType)
   }
+  return <CrossIcon campaignType={campaingType} />
 }
