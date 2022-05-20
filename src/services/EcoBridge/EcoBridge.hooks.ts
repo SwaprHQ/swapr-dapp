@@ -118,7 +118,7 @@ export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): Wrap
   const selectedChainId = chainId || activeChainId
 
   const retVal = useMemo(() => {
-    if (!currency || !(currency instanceof Token) || !selectedChainId) return undefined
+    if (!currency || !(currency instanceof Token) || !selectedChainId || !allTokens[selectedChainId]) return undefined
     return allTokens[selectedChainId][currency.address] as WrappedTokenInfo
   }, [allTokens, currency, selectedChainId])
 
