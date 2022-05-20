@@ -146,7 +146,7 @@ export default function LiquidityMiningCampaign({
                 }}
               >
                 <Text fontWeight={700} fontSize={12}>
-                  {isSingleSidedCampaign ? `GET ${token0?.symbol}` : 'ADD LIQUIDITY'}
+                  {isSingleSidedCampaign ? `GET ${token0?.symbol ?? 'TOKEN' }` : 'ADD LIQUIDITY'}
                 </Text>
               </AddLiquidityButtonComponent>
             </ButtonRow>
