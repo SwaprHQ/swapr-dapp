@@ -54,6 +54,7 @@ export enum BridgeTransactionStatus {
   REDEEM = 'redeem',
   CLAIMED = 'claimed',
   LOADING = 'loading',
+  CANCELLED = 'cancelled',
 }
 
 export type BridgeTransactionSummary = Pick<
