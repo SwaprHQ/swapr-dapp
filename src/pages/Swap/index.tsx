@@ -63,6 +63,7 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
+import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -153,13 +154,14 @@ export default function Swap() {
   const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(
     GnosisProtocolTradeStatus.WRAP
   )
-  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState } = useTradeWrapCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useTradeWrapCallback(
     potentialTrade,
     typedValue
   )
+
   const bestPricedTrade = allPlatformTrades?.[0] // the best trade is always the first
 
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
 
@@ -211,6 +213,8 @@ export default function Swap() {
     txHash: undefined,
   })
 
+  console.info({ showConfirm, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
+
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
@@ -225,7 +229,7 @@ export default function Swap() {
   const noRoute = !route
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(potentialTrade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -237,6 +241,15 @@ export default function Swap() {
     }
   }, [approval, approvalSubmitted])
 
+  // Listen for changes on wrapState
+  useEffect(() => {
+    // watch GPv2
+    if (wrapState === WrapState.WRAPPED) {
+      setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
+    }
+  }, [wrapState, approval, potentialTrade])
+
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
@@ -247,7 +260,7 @@ export default function Swap() {
     recipientAddressOrName: recipient,
   })
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -387,27 +400,22 @@ export default function Swap() {
 
     if (isGnosisTradeV2RequireWrap) {
       const isApprovalRequired = approval !== ApprovalState.APPROVED
-      const swapDisabled = !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
-      console.info({ isValid, approval, priceImpactSeverity, isExpertMode })
-      console.info({ approvalSubmitted, gnosisProtocolTradeStatus })
-      const width = approval === ApprovalState.APPROVED ? '31%' : '48%'
+      const swapDisabled =
+        !isValid ||
+        isApprovalRequired ||
+        (priceImpactSeverity > 3 && !isExpertMode) ||
+        gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
+      const width = isApprovalRequired ? '31%' : '48%'
+
+      const wrappedCurrency =
+        potentialTrade && wrappedAmount(potentialTrade.inputAmount, potentialTrade.chainId).currency
+
       return (
         <RowBetween>
           {
             <ButtonConfirmed
-              onClick={() =>
-                onWrap &&
-                onWrap().then(() => {
-                  console.info('THEN', wrapState)
-                  //It's the previous state here but after the immediate next log it becomes WRAPPED
-                  // we're observing the state before changing it - gotta love race conditions
-                  if (wrapState === WrapState.WRAPPED) {
-                    setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
-                    if (!isApprovalRequired) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
-                  }
-                })
-              }
-              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP}
+              onClick={onWrap}
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP || wrapState === WrapState.PENDING}
               width={width}
               altDisabledStyle={wrapState !== WrapState.UNKNOWN} //{approval === ApprovalState.PENDING} // show solid button while waiting
               confirmed={wrapState === WrapState.WRAPPED}
@@ -416,7 +424,7 @@ export default function Swap() {
                 <AutoRow gap="6px" justify="center">
                   Wrapping <Loader />
                 </AutoRow>
-              ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+              ) : wrapState === WrapState.WRAPPED ? (
                 'Wrapped'
               ) : (
                 'Wrap ' + currencies[Field.INPUT]?.symbol
@@ -428,7 +436,7 @@ export default function Swap() {
           isApprovalRequired && (
             <ButtonConfirmed
               onClick={() => approveCallback().then(() => setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP))}
-              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL}
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL || approvalSubmitted}
               width={width}
               altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
             >
@@ -439,7 +447,7 @@ export default function Swap() {
               ) : approvalSubmitted ? (
                 'Approved'
               ) : (
-                'Approve ' + currencies[Field.INPUT]?.symbol // Change this to wrapped token
+                'Approve ' + wrappedCurrency?.symbol // Change this to wrapped token
               )}
             </ButtonConfirmed>
           )}
@@ -456,7 +464,9 @@ export default function Swap() {
                   txHash: undefined,
                 })
               }
+              //reset statuses, in case we want to operate again
               setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+              setWrapState && setWrapState(WrapState.UNKNOWN)
             }}
             width={width}
             id="swap-button"
@@ -555,7 +565,6 @@ export default function Swap() {
     )
   }
 
-  console.info({ approval, wrapState })
   return (
     <>
       <TokenWarningModal

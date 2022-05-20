@@ -29,6 +29,7 @@ interface UseWrapCallback {
   execute?: undefined | (() => Promise<void>)
   inputError?: string
   wrapState?: WrapState
+  setWrapState?: React.Dispatch<React.SetStateAction<WrapState>>
 }
 
 /**
@@ -65,7 +66,6 @@ function useWrapCallback(
     nativeCurrencyWrapperToken && inputCurrency && currencyEquals(nativeCurrencyWrapperToken, inputCurrency)
 
   const allTransactions = useAllTransactions()
-  console.info(transactionReceipt)
   useEffect(() => {
     const transaction = transactionReceipt && allTransactions[transactionReceipt.transactionHash]
     const success = transaction?.receipt?.status === 1
@@ -87,19 +87,26 @@ function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  // Set state to pending
                   setWrapState(WrapState.PENDING)
-                  const txReceipt = await nativeCurrencyWrapperContract.deposit({
+                  // Submit transaction to signer to sign and broadcast to memepool
+                  const depositTransactions = await nativeCurrencyWrapperContract.deposit({
                     value: `0x${inputAmount.raw.toString(16)}`,
                   })
-                  setTransactionReceipt(txReceipt)
-                  addTransaction(txReceipt, {
+
+                  setTransactionReceipt(depositTransactions)
+                  addTransaction(depositTransactions, {
                     summary: `Wrap ${inputAmount.toSignificant(6)} ${nativeCurrency.symbol} to ${
                       nativeCurrencyWrapperToken.symbol
                     }`,
                   })
-                  txReceipt && setWrapState(WrapState.WRAPPED)
+                  // Wait for the network to mine the transaction
+                  const txReceipt = await depositTransactions.wait(1)
+
+                  if (txReceipt.status === 1) setWrapState(WrapState.WRAPPED)
                 } catch (error) {
                   console.error('Could not deposit', error)
+                  //if something goes wrong, reset status
                   setWrapState(WrapState.UNKNOWN)
                 }
               }
@@ -110,6 +117,7 @@ function useWrapCallback(
           ? t('enterCurrencyAmount', { currency: nativeCurrency.symbol })
           : t('insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
         wrapState,
+        setWrapState,
       }
     } else if (nativeCurrencyWrapperToken && toUnwrap && outputCurrency === nativeCurrency) {
       return {
@@ -137,6 +145,7 @@ function useWrapCallback(
           ? t('enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
           : t('insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
         wrapState,
+        setWrapState,
       }
     } else {
       return NOT_APPLICABLE
