@@ -48,7 +48,7 @@ const SINGLE_SIDED_CAMPAIGNS = gql`
     }
   }
 `
-export const REGULAR_CAMPAIGN = gql`
+const REGULAR_CAMPAIGN = gql`
   query($userId: ID) {
     liquidityMiningCampaigns(first: 999) {
       address: id
@@ -183,7 +183,11 @@ export function useAllLiquidityMiningCampaigns(
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
       const isActive = hasStake || liquidityCampaign.currentlyActive || isUpcoming(campaign.startsAt)
 
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(token0) || SWPRToken.equals(token1)) {
+      if (
+        dataFilter !== PairsFilterType.SWPR ||
+        SWPRToken.address.toLowerCase() === token0.address ||
+        SWPRToken.address.toLowerCase() === token1.address
+      ) {
         if (isActive) {
           activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
         } else if (isExpired) {
