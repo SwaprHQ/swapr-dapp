@@ -4,6 +4,8 @@ An open source decentralized application for Swapr -- a protocol for decentraliz
 
 ## Development
 
+Please mind that `Socket` bridge API is generated on `postinstall` hook. If hooks are disabled, remember to generate it manually.
+
 ### Install Dependencies
 
 ```bash
