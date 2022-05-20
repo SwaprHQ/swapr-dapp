@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import { BigintIsh, Pair } from '@swapr/sdk'
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 
@@ -14,13 +14,50 @@ import {
 } from '../utils/liquidityMining'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { useKpiTokens } from './useKpiTokens'
-import { PairsFilterType } from '../components/Pool/ListFilter'
-import { useSWPRToken } from './swpr/useSWPRToken'
-import { REGULAR_CAMPAIGN } from './useAllLiquidityMiningCampaigns'
+
+const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
+const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
+
+const REGULAR_CAMPAIGN = gql`
+  query($userId: ID) {
+    liquidityMiningCampaigns(first: 999) {
+      address: id
+      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
+      rewards {
+        token {
+          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
+        }
+        amount
+      }
+      stakablePair {
+        id
+        reserveNativeCurrency
+        reserveUSD
+        totalSupply
+        reserve0
+        reserve1
+        token0 {
+          address: id
+          name
+          symbol
+          decimals
+        }
+        token1 {
+          address: id
+          name
+          symbol
+          decimals
+        }
+      }
+      liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+        id
+      }
+    }
+  }
+`
 
 export function usePairLiquidityMiningCampaigns(
-  pair?: Pair,
-  dataFilter?: PairsFilterType
+  pair?: Pair
 ): {
   loading: boolean
   miningCampaigns: any
@@ -28,7 +65,6 @@ export function usePairLiquidityMiningCampaigns(
   const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
   const { chainId, account } = useActiveWeb3React()
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const SWPRToken = useSWPRToken()
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
   const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
@@ -69,10 +105,7 @@ export function usePairLiquidityMiningCampaigns(
     for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
       const campaign = pairCampaigns.liquidityMiningCampaigns[i]
 
-      if (
-        (pairAddress && campaign.stakablePair.id.toLowerCase() !== pairAddress) ||
-        (dataFilter === PairsFilterType.MY && campaign.liquidityMiningPositions.length === 0)
-      ) {
+      if (pairAddress && campaign.stakablePair.id.toLowerCase() !== pairAddress) {
         continue
       }
 
@@ -98,12 +131,11 @@ export function usePairLiquidityMiningCampaigns(
       const hasStake = campaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
       const isActive = hasStake || liquidityCampaign.currentlyActive || isUpcoming(campaign.startsAt)
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(token0) || SWPRToken.equals(token1)) {
-        if (isActive) {
-          activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
-        } else if (isExpired) {
-          expiredCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
-        }
+
+      if (isActive) {
+        activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+      } else if (isExpired) {
+        expiredCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
       }
     }
 
@@ -121,13 +153,11 @@ export function usePairLiquidityMiningCampaigns(
     pairCampaigns,
     loadingKpiTokens,
     pairAddress,
-    dataFilter,
     tokensInCurrentChain,
     kpiTokens,
     nativeCurrency,
     timestamp,
     memoizedLowerTimeLimit,
-    SWPRToken,
     isUpcoming,
   ])
 }
