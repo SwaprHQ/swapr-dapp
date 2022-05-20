@@ -5,12 +5,18 @@ import { SubgraphLiquidityMiningCampaign } from '../apollo'
 
 import { useNativeCurrency } from './useNativeCurrency'
 import { useActiveWeb3React } from '.'
-import { getLowerTimeLimit, getTokenAmount, toLiquidityMiningCampaign } from '../utils/liquidityMining'
+import {
+  getLowerTimeLimit,
+  getTokenAmount,
+  sortActiveCampaigns,
+  sortExpiredCampaigns,
+  toLiquidityMiningCampaign,
+} from '../utils/liquidityMining'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { useKpiTokens } from './useKpiTokens'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useSWPRToken } from './swpr/useSWPRToken'
-import { REGULAR_CAMPAIGN, sortActiveCampaings, sortExpiredCampaigns } from './useAllLiquidityMiningCampaigns'
+import { REGULAR_CAMPAIGN } from './useAllLiquidityMiningCampaigns'
 
 export function usePairLiquidityMiningCampaigns(
   pair?: Pair,
@@ -104,7 +110,7 @@ export function usePairLiquidityMiningCampaigns(
     return {
       loading: false,
       miningCampaigns: {
-        active: sortActiveCampaings(activeCampaigns),
+        active: sortActiveCampaigns(activeCampaigns),
         expired: sortExpiredCampaigns(expiredCampaigns),
       },
     }

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
-import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
+import { BigintIsh, Pair, Token } from '@swapr/sdk'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 
 import { useNativeCurrency } from './useNativeCurrency'
@@ -8,6 +8,8 @@ import { useActiveWeb3React } from '.'
 import {
   getLowerTimeLimit,
   getTokenAmount,
+  sortActiveCampaigns,
+  sortExpiredCampaigns,
   toLiquidityMiningCampaign,
   toSingleSidedStakeCampaign,
 } from '../utils/liquidityMining'
@@ -83,51 +85,6 @@ export const REGULAR_CAMPAIGN = gql`
     }
   }
 `
-
-export const sortActiveCampaings = (activeCampaigns: any) =>
-  activeCampaigns.sort((a: any, b: any) => {
-    if (a.campaign.ended && !b.campaign.ended) return -1
-    if (!a.campaign.ended && b.campaign.ended) return 1
-
-    if (a.staked && !b.staked) return -1
-    if (!a.staked && b.staked) return 1
-
-    if (
-      a.campaign instanceof SingleSidedLiquidityMiningCampaign &&
-      !(b.campaign instanceof SingleSidedLiquidityMiningCampaign)
-    )
-      return -1
-
-    if (
-      !(a.campaign instanceof SingleSidedLiquidityMiningCampaign) &&
-      b.campaign instanceof SingleSidedLiquidityMiningCampaign
-    )
-      return 1
-
-    // Active above upcoming
-    if (a.campaign.currentlyActive && !b.campaign.currentlyActive) return -1
-    if (!a.campaign.currentlyActive && b.campaign.currentlyActive) return 1
-
-    // TV
-    if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
-    if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
-
-    if (a.campaign.apy > b.campaign.apy) return -1
-    if (a.campaign.apy < b.campaign.apy) return 1
-
-    return 0
-  })
-
-export const sortExpiredCampaigns = (expiredCampaigns: any) =>
-  expiredCampaigns.sort((a: any, b: any) => {
-    if (a.campaign.endsAt > b.campaign.endsAt) return -1
-    if (a.campaign.endsAt < b.campaign.endsAt) return 1
-
-    if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
-    if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
-
-    return 0
-  })
 
 export function useAllLiquidityMiningCampaigns(
   pair?: Pair,
@@ -287,7 +244,7 @@ export function useAllLiquidityMiningCampaigns(
     return {
       loading: false,
       miningCampaigns: {
-        active: sortActiveCampaings(activeCampaigns),
+        active: sortActiveCampaigns(activeCampaigns),
         expired: sortExpiredCampaigns(expiredCampaigns),
       },
     }
