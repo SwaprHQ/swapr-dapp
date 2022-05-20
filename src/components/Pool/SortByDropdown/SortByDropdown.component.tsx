@@ -21,7 +21,7 @@ export function SortByDropdown({
   const theme = useContext(ThemeContext)
   useOnClickOutside(popoverRef, () => setIsOpen(false))
 
-  const optionsTranslation = {
+  const sortOptions = {
     [LIQUIDITY_SORTING_TYPES.TVL]: t('TVL'),
     [LIQUIDITY_SORTING_TYPES.APY]: t('APY'),
     [LIQUIDITY_SORTING_TYPES.NEW]: t('New'),
@@ -34,53 +34,27 @@ export function SortByDropdown({
         show={isOpen}
         content={
           <List>
-            <ListItem>
-              <Text
-                fontWeight={600}
-                fontSize={10}
-                color={theme.purple2}
-                onClick={() => {
-                  onSortByChange(LIQUIDITY_SORTING_TYPES.TVL)
-                  setIsOpen(false)
-                }}
-              >
-                {optionsTranslation[LIQUIDITY_SORTING_TYPES.TVL]}
-              </Text>
-            </ListItem>
-
-            <ListItem>
-              <Text
-                fontWeight={600}
-                fontSize={10}
-                color={theme.purple2}
-                onClick={() => {
-                  onSortByChange(LIQUIDITY_SORTING_TYPES.APY)
-                  setIsOpen(false)
-                }}
-              >
-                {optionsTranslation[LIQUIDITY_SORTING_TYPES.APY]}
-              </Text>
-            </ListItem>
-
-            <ListItem>
-              <Text
-                fontWeight={600}
-                fontSize={10}
-                color={theme.purple2}
-                onClick={() => {
-                  onSortByChange(LIQUIDITY_SORTING_TYPES.NEW)
-                  setIsOpen(false)
-                }}
-              >
-                {optionsTranslation[LIQUIDITY_SORTING_TYPES.NEW]}
-              </Text>
-            </ListItem>
+            {Object.entries(sortOptions).map(([option, translation]) => (
+              <ListItem key={option}>
+                <Text
+                  fontWeight={600}
+                  fontSize={10}
+                  color={theme.purple2}
+                  onClick={() => {
+                    onSortByChange(option)
+                    setIsOpen(false)
+                  }}
+                >
+                  {translation}
+                </Text>
+              </ListItem>
+            ))}
           </List>
         }
       >
         <StyledFlex alignItems="center" onClick={() => setIsOpen(!isOpen)}>
           <StyledText fontWeight={600} fontSize={10} color={theme.purple2}>
-            {t('sortBy', { option: optionsTranslation[sortBy] })}
+            {t('sortBy', { option: sortOptions[sortBy] })}
           </StyledText>
           <ChevronDown color={theme.purple2} size={16} />
         </StyledFlex>
