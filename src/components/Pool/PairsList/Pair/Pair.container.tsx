@@ -32,7 +32,7 @@ export function Pair({
   const theme = useContext(ThemeContext)
 
   return (
-    <GridCard {...rest}>
+    <GridCard {...rest} data-testid="pair-card">
       <Flex flexDirection="row" alignItems="center">
         {isSingleSidedStakingCampaign ? (
           <CurrencyLogo size="45px" marginRight={14} currency={token0} />

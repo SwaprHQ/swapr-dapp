@@ -83,7 +83,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}
-                      to={`/rewards/${item.campaign.stakeToken.address}/${item.campaign.address}/singleSidedStaking`}
+                      to={`/rewards/single-sided-campaign/${item.campaign.stakeToken.address}/${item.campaign.address}`}
                     >
                       <CampaignCard
                         token0={item.campaign.stakeToken}
@@ -106,7 +106,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
                   return (
                     <UndecoratedLink
                       key={item.campaign.address}
-                      to={`/rewards/${token0?.address}/${token1?.address}/${item.campaign.address}`}
+                      to={`/rewards/campaign/${token0?.address}/${token1?.address}/${item.campaign.address}`}
                     >
                       <CampaignCard
                         token0={token0}

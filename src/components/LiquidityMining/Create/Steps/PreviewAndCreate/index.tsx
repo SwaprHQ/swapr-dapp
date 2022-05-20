@@ -119,6 +119,7 @@ export default function PreviewAndCreate({
               <ButtonPrimary
                 disabled={areButtonsDisabled || approvalState !== ApprovalState.APPROVED}
                 onClick={onCreate}
+                data-testid="confirm-button"
               >
                 {getConfirmButtonMessage()}
               </ButtonPrimary>

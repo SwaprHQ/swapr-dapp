@@ -26,8 +26,8 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
   const formattedPrice = limitNumberOfDecimalPlaces(showInverted ? price : price?.invert(), significantDigits)
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
-  const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 4)
-  const baseCurrency = price?.baseCurrency.symbol?.slice(0, 4)
+  const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 6)
+  const baseCurrency = price?.baseCurrency.symbol?.slice(0, 6)
   const label = showInverted
     ? `${quoteCurrenxy} ${isMobileByMedia ? `/` : `per`} ${baseCurrency}`
     : `${baseCurrency} ${isMobileByMedia ? `/` : `per`}  ${quoteCurrenxy}`

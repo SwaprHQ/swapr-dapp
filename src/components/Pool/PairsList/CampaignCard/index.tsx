@@ -134,8 +134,12 @@ export function CampaignCard({
   }, [campaign.ended, campaign.startsAt])
 
   return (
-    <SizedCard cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'} {...rest}>
-      <Flex flexDirection="column" height={'100%'}>
+    <SizedCard
+      cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'}
+      {...rest}
+      data-testid="reward-card"
+    >
+      <Flex flexDirection="column" height={'100%'} data-testid={'reward-starting-at-' + campaign.startsAt}>
         <Flex justifyContent="space-between" flexGrow={1}>
           <Flex flexDirection="column">
             {isSingleSidedStakingCampaign ? (
@@ -152,7 +156,7 @@ export function CampaignCard({
             </EllipsizedText>
           </Flex>
           <RightSection>
-            <Flex width="max-content" alignItems="center" data-testid="ended-campaign">
+            <Flex width="max-content" alignItems="center">
               <ClockSvg width={'10px'} height={'10px'} />
               <TYPE.body marginLeft="4px" fontSize="10px" fontWeight="500">
                 <Countdown

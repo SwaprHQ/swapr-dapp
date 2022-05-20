@@ -25,7 +25,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)
-  const { address: swprAddress } = useSWPRToken()
+  const SWPRToken = useSWPRToken()
+  const swprAddress = SWPRToken?.address ?? undefined
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   const { t } = useTranslation()
 
@@ -33,7 +34,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
     // reset page when connected chain or selected filter changes
     setPage(1)
   }, [chainId, filter, aggregatedPairs])
-  const isSWPRSingleSidedStake = singleSidedStake?.stakeToken.address.toLowerCase() === swprAddress.toLowerCase()
+  const isSWPRSingleSidedStake =
+    swprAddress && singleSidedStake?.stakeToken.address.toLowerCase() === swprAddress.toLowerCase()
 
   return (
     <Flex flexDirection="column">

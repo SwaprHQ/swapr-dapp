@@ -134,7 +134,7 @@ export default function RewardAmount({
           </Box>
           <Box>
             <RelativeContainer>
-              <StyledNumericalInput value={amount} onUserInput={handleLocalUserInput} />
+              <StyledNumericalInput value={amount} onUserInput={handleLocalUserInput} data-testid="reward-input" />
               <RewardInputLogo size="16px" currency={reward?.token} />
             </RelativeContainer>
           </Box>
