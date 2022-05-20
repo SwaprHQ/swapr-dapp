@@ -164,7 +164,6 @@ export default function Swap() {
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
-
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
     ? {
@@ -183,7 +182,7 @@ export default function Swap() {
   /**
    * True when the wallet tries to trade native currency to ERC20
    */
-  const isGnosisTradeV2RequireWrap = potentialTrade instanceof GnosisProtocolTrade && isInputCurrencyNative && isValid
+  const isGnosisTradeV2RequireWrap = trade instanceof GnosisProtocolTrade && isInputCurrencyNative && isValid
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -213,8 +212,6 @@ export default function Swap() {
     txHash: undefined,
   })
 
-  console.info({ showConfirm, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
-
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
@@ -229,7 +226,7 @@ export default function Swap() {
   const noRoute = !route
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(potentialTrade /* allowedSlippage */)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -248,7 +245,7 @@ export default function Swap() {
       setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
       if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
     }
-  }, [wrapState, approval, potentialTrade])
+  }, [wrapState, approval, trade])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
@@ -288,8 +285,10 @@ export default function Swap() {
       })
       .then(() => {
         //reset statuses, in case we want to operate again
-        setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
-        setWrapState && setWrapState(WrapState.UNKNOWN)
+        if (trade instanceof GnosisProtocolTrade) {
+          setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+          setWrapState && setWrapState(WrapState.UNKNOWN)
+        }
       })
       .catch(error => {
         setSwapState({
@@ -412,8 +411,7 @@ export default function Swap() {
         gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
       const width = isApprovalRequired ? '31%' : '48%'
 
-      const wrappedCurrency =
-        potentialTrade && wrappedAmount(potentialTrade.inputAmount, potentialTrade.chainId).currency
+      const wrappedCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
 
       return (
         <RowBetween>
@@ -677,7 +675,7 @@ export default function Swap() {
                 {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
                   <SwapBoxButton />
-                  {showApproveFlow && (
+                  {showApproveFlow && !isGnosisTradeV2RequireWrap && (
                     <Column style={{ marginTop: '1rem' }}>
                       <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
                     </Column>
