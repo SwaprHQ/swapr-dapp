@@ -39,7 +39,6 @@ const StyledCalendarIcon = styled(CalendarIcon)`
   top: 7px;
   right: 8px;
   pointer-events: all;
-  z-index: 100;
 `
 
 const CalendarInput = React.forwardRef((props: any) => {

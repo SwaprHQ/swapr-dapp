@@ -57,4 +57,7 @@ export const HorizontalDivider = styled.div`
   width: 37.5px;
   margin: 0 18px;
   background: ${props => props.theme.bg5};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+   display:none;
+  `};
 `

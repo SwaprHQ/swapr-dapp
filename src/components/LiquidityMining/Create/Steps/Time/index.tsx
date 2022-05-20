@@ -9,6 +9,13 @@ import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 21px;
+    flex-wrap: wrap;
+    width: 328px;
+    gap: 12px;
+    justify-content:flex-start;
+  `};
 `
 
 const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
