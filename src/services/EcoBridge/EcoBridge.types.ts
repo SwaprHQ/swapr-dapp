@@ -37,9 +37,10 @@ export interface EcoBridgeChildBaseProps
 
 export interface EcoBridgeChildBaseInit extends EcoBridgeChangeHandler, EcoBridgeInitialEnv {}
 
+export type ConnextList = 'connext'
 export type SocketList = 'socket'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
-export type BridgeList = ArbitrumList | SocketList
+export type BridgeList = ArbitrumList | SocketList | ConnextList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface EcoBridgeChildBaseConstructor {

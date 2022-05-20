@@ -4,11 +4,12 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { AppState } from '../../../state'
 import { ecoBridgeConfig } from '../EcoBridge.config'
+import { DEFAULT_TOKEN_LIST } from '../../../constants'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { socketSelectors } from '../Socket/Socket.selectors'
+import { connextSelectors } from '../Connext/Connext.selectors'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
-import { DEFAULT_TOKEN_LIST } from '../../../constants'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.
@@ -63,9 +64,10 @@ export const selectBridgeTransactions = createSelector(
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTransactionsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTransactionsSummary,
     socketSelectors['socket'].selectBridgeTransactionsSummary,
+    connextSelectors['connext'].selectBridgeTransactionsSummary,
   ],
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket) => {
-    const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket]
+  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsSummaryConnext) => {
+    const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket, ...txsSummaryConnext]
 
     return txs
   }
@@ -116,6 +118,7 @@ export const selectBridgeListsLoadingStatus = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:testnet'].listsStatus,
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].listsStatus,
     (state: AppState) => state.ecoBridge['socket'].listsStatus,
+    (state: AppState) => state.ecoBridge['connext'].listsStatus,
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
@@ -126,15 +129,22 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:testnet'].lists,
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
     (state: AppState) => state.ecoBridge['socket'].lists,
+    (state: AppState) => state.ecoBridge['connext'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket, swprDefaultList) => {
+  (tokenListTestnet, tokenListMainnet, tokenListSocket, tokenListConnext, swprDefaultList) => {
     // Tmp solution to add swpr token list to arbitrum bridges
     const swprListWithIds = {
       'arbitrum:testnet-swpr': swprDefaultList as TokenList,
       'arbitrum:mainnet-swpr': swprDefaultList as TokenList,
     }
-    const allTokenLists = { ...swprListWithIds, ...tokenListTestnet, ...tokenListMainnet, ...tokenListSocket }
+    const allTokenLists = {
+      ...swprListWithIds,
+      ...tokenListTestnet,
+      ...tokenListMainnet,
+      ...tokenListSocket,
+      ...tokenListConnext,
+    }
 
     return allTokenLists
   }
@@ -237,28 +247,28 @@ export const selectSupportedBridgesForUI = createSelector(
     arbitrumSelectors['arbitrum:testnet'].selectBridgingDetails,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgingDetails,
     socketSelectors['socket'].selectBridgingDetails,
+    connextSelectors['connext'].selectBridgingDetails,
   ],
-  (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, socketDetails) => {
+  (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, socketDetails, connextDetails) => {
     const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
       total[next.bridgeId] = next.name
       return total
     }, {})
 
-    const supportedBridges = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails].reduce<SupportedBridges[]>(
-      (total, bridge) => {
-        if (bridgeNameMap[bridge.bridgeId] !== undefined) {
-          total.push({
-            name: bridgeNameMap[bridge.bridgeId],
-            bridgeId: bridge.bridgeId,
-            details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
-            status: bridge.loading,
-            errorMessage: bridge.errorMessage,
-          })
-        }
-        return total
-      },
-      []
-    )
+    const supportedBridges = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails, connextDetails].reduce<
+      SupportedBridges[]
+    >((total, bridge) => {
+      if (bridgeNameMap[bridge.bridgeId] !== undefined) {
+        total.push({
+          name: bridgeNameMap[bridge.bridgeId],
+          bridgeId: bridge.bridgeId,
+          details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
+          status: bridge.loading,
+          errorMessage: bridge.errorMessage,
+        })
+      }
+      return total
+    }, [])
 
     return supportedBridges.filter(bridge => bridge.status !== SyncState.FAILED)
   }
