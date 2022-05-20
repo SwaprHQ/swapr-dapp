@@ -326,3 +326,48 @@ export const getLowerTimeLimit = () =>
 
 export const getRewardTokenAddressFromPair = (pair: SubgraphPair) =>
   pair.liquidityMiningCampaigns.flatMap(campaign => campaign.rewards.map(reward => reward.token.address.toLowerCase()))
+
+export const sortActiveCampaigns = (activeCampaigns: any) =>
+  activeCampaigns.sort((a: any, b: any) => {
+    if (a.campaign.ended && !b.campaign.ended) return -1
+    if (!a.campaign.ended && b.campaign.ended) return 1
+
+    if (a.staked && !b.staked) return -1
+    if (!a.staked && b.staked) return 1
+
+    if (
+      a.campaign instanceof SingleSidedLiquidityMiningCampaign &&
+      !(b.campaign instanceof SingleSidedLiquidityMiningCampaign)
+    )
+      return -1
+
+    if (
+      !(a.campaign instanceof SingleSidedLiquidityMiningCampaign) &&
+      b.campaign instanceof SingleSidedLiquidityMiningCampaign
+    )
+      return 1
+
+    // Active above upcoming
+    if (a.campaign.currentlyActive && !b.campaign.currentlyActive) return -1
+    if (!a.campaign.currentlyActive && b.campaign.currentlyActive) return 1
+
+    // TV
+    if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
+    if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
+
+    if (a.campaign.apy > b.campaign.apy) return -1
+    if (a.campaign.apy < b.campaign.apy) return 1
+
+    return 0
+  })
+
+export const sortExpiredCampaigns = (expiredCampaigns: any) =>
+  expiredCampaigns.sort((a: any, b: any) => {
+    if (a.campaign.endsAt > b.campaign.endsAt) return -1
+    if (a.campaign.endsAt < b.campaign.endsAt) return 1
+
+    if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
+    if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
+
+    return 0
+  })
