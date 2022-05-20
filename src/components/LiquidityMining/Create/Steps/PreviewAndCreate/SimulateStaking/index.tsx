@@ -17,7 +17,7 @@ import { ReactComponent as RefreshIcon } from '../../../../../../assets/svg/refr
 import NumericalInput from '../../../../../Input/NumericalInput'
 import { TYPE } from '../../../../../../theme'
 
-const SwitchContainer = styled.div`
+const SwitchContainer = styled(Flex)`
   font-size: 10px;
   display: flex;
   font-weight: 600;
@@ -127,9 +127,14 @@ export default function SimulateStaking({
     10
   )
   const maxStakedSimulatedAmount = useMemo(() => {
+    console.log('here crash?', simulatedPrice)
+    console.log(stakingCap?.multiply(simulatedPrice).toSignificant(22))
+    console.log('crahs ovr here')
+
     const base = stakingCap
       ? parseFloat(stakingCap.multiply(simulatedPrice).toSignificant(22))
       : dollarAmountMaxSimulation
+    console.log('fuckingBase', base)
 
     const baseInUsd = parseFloat(simulatedPrice)
 
@@ -156,10 +161,10 @@ export default function SimulateStaking({
       justifyContent={'space-between !important'}
       flexDirection={'column'}
       alignItems={'center'}
-      padding={'24px 28px'}
+      padding={'18px 28px'}
       width={'50%'}
     >
-      <Flex width={'100%'} justifyContent={'space-between'}>
+      <Flex width={'100%'} padding={'10px 12px'} justifyContent={'space-between'}>
         <SimulateOption
           onClick={() => setSimulateOption(SimulateOptions.AMOUNT)}
           isActive={simulateOption === SimulateOptions.AMOUNT}
@@ -214,11 +219,14 @@ export default function SimulateStaking({
         </AmountFlex>
       )}
 
-      <Flex width={'100%'} justifyContent={'space-between'}>
-        <SwitchContainer onClick={handleUSDValueClick}>
-          {showUSDValue ? <CashIcon /> : <CryptoIcon />} SHOW IN {showUSDValue ? 'CRYPTO' : 'USD'}
-        </SwitchContainer>
-        <SwitchContainer>
+      <Flex width={'100%'}>
+        {SimulateOptions.AMOUNT === simulateOption && (
+          <SwitchContainer onClick={handleUSDValueClick}>
+            {showUSDValue ? <CashIcon /> : <CryptoIcon />} SHOW IN {showUSDValue ? 'CRYPTO' : 'USD'}
+          </SwitchContainer>
+        )}
+
+        <SwitchContainer marginLeft={'auto'}>
           RESET <RefreshIcon />
         </SwitchContainer>
       </Flex>
