@@ -190,6 +190,7 @@ function Title({
 }
 
 export default function Pools() {
+  const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
@@ -245,8 +246,8 @@ export default function Pools() {
       {account && (
         <ButtonWithExternalLink
           link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
-          text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
-          style={{ marginTop: '32px' }}
+          text={t('accountAnalyticsAndAccruedFees')}
+          style={{ marginTop: '32px', textTransform: 'uppercase' }}
         />
       )}
     </PageWrapper>

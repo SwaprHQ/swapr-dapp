@@ -12,7 +12,7 @@ import CurrencyLogo from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'
-import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper } from './Pari.styles'
+import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper } from './Pair.styles'
 import { ThemeContext } from 'styled-components'
 
 export function Pair({
