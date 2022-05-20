@@ -25,6 +25,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Polygon',
     logoSrc: PolygonMaticLogo,
     color: '#8361DE',
+    tag: NetworkSwitcherTags.COMING_SOON,
   },
 
   // TESTNETS

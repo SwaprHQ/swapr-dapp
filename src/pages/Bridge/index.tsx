@@ -11,7 +11,11 @@ import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
 import { BridgeModal } from './BridgeModal/BridgeModal'
 import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { NetworkSwitcher as NetworkSwitcherPopover, networkOptionsPreset } from '../../components/NetworkSwitcher'
+import {
+  NetworkSwitcher as NetworkSwitcherPopover,
+  networkOptionsPreset,
+  NetworkSwitcherTags,
+} from '../../components/NetworkSwitcher'
 import { useActiveWeb3React } from '../../hooks'
 import { SHOW_TESTNETS } from '../../constants'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -133,6 +137,9 @@ export default function Bridge() {
 
   const [displayedValue, setDisplayedValue] = useState('')
 
+  const isUnsupportedBridgeNetwork =
+    networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
@@ -145,8 +152,10 @@ export default function Bridge() {
   }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput])
 
   useEffect(() => {
+    if (isUnsupportedBridgeNetwork) return
+
     dispatch(ecoBridgeUIActions.setFrom({ chainId }))
-  }, [chainId, dispatch])
+  }, [chainId, dispatch, isUnsupportedBridgeNetwork])
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
