@@ -286,6 +286,11 @@ export default function Swap() {
           txHash: hash,
         })
       })
+      .then(() => {
+        //reset statuses, in case we want to operate again
+        setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+        setWrapState && setWrapState(WrapState.UNKNOWN)
+      })
       .catch(error => {
         setSwapState({
           attemptingTxn: false,
@@ -464,9 +469,6 @@ export default function Swap() {
                   txHash: undefined,
                 })
               }
-              //reset statuses, in case we want to operate again
-              setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
-              setWrapState && setWrapState(WrapState.UNKNOWN)
             }}
             width={width}
             id="swap-button"
