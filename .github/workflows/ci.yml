@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -63,6 +66,7 @@ jobs:
 
       - name: Run linter
         run: yarn lint --quiet
+
   test:
     name: 🔎 ・Test
     needs: install
@@ -83,6 +87,7 @@ jobs:
 
       - name: Run tests
         run: yarn test
+
   typecheck:
     name: ⬡・Typecheck
     needs: install
@@ -103,6 +108,7 @@ jobs:
 
       - name: Run typescript check
         run: yarn typecheck
+
   build:
     name: ⚙️ ・Build
     needs: install
@@ -133,6 +139,7 @@ jobs:
           name: build
           path: /tmp/build.tar.zst
           retention-days: 3
+
   deploy:
     name: ⬡・IPFS Deploy
     needs: build
