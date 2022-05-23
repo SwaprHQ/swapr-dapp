@@ -80,7 +80,7 @@ describe('Add liquidity', () => {
       })
     LiquidityPage.getApproveButtonToRemoveLiquidity().click()
     LiquidityPage.getRemoveButton().click()
-    cy.confirmMetamaskTransaction({})
+    cy.confirmMetamaskSignatureRequest({})
   })
   it('Should check if tokens are removed from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
