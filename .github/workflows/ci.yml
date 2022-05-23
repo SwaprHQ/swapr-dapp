@@ -36,6 +36,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
+      - name: Generate open-api
+        run: yarn codegen:socket
+        continue-on-error: true
+
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
