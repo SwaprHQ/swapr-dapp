@@ -12,7 +12,7 @@ import {
   numberOfRewards,
   RewardsObject,
 } from '../../../../../pages/LiquidityMining/Create'
-import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
+import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 

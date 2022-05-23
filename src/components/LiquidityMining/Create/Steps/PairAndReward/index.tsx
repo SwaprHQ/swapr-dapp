@@ -7,8 +7,9 @@ import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { TYPE } from '../../../../../theme'
 import { unwrappedToken } from '../../../../../utils/wrappedCurrency'
 import NumericalInput from '../../../../Input/NumericalInput'
-import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
-import PairSearchModal from '../../../../SearchModal/PairSearchModal'
+import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
+
+import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 

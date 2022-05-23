@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 import React from 'react'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
-import CurrencyLogo from '../../../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
 const StyledCurrencyLogo = styled(CurrencyLogo)`

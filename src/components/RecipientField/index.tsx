@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { SearchInput } from '../SearchModal/styleds'
+import { SearchInput } from '../SearchModal/shared'
 import { TYPE } from '../../theme'
 import useENS from '../../hooks/useENS'
 import { useDispatch } from 'react-redux'
