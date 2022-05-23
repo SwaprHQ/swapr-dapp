@@ -59,7 +59,7 @@ const SimulateOption = styled.div<{ isActive: boolean }>`
 `
 const StyledNumericalInput = styled(NumericalInput)`
   color: ${props => props.theme.text2};
-  width: 36px;
+  width: auto;
   max-height: 38px;
   font-weight: 600;
   font-size: 16px;
@@ -99,12 +99,6 @@ export default function SimulateStaking({
     tokenOrPair ? tokenOrPair : undefined
   )
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const widthValue = useMemo(() => {
-    console.log('initial inputRef', inputRef.current && inputRef.current.clientWidth)
-    if (simulatedPrice.length > 0 && inputRef.current) return inputRef.current.clientWidth
-    else return 18
-  }, [simulatedPrice, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
       console.log('rawValue', rawValue)
@@ -117,7 +111,7 @@ export default function SimulateStaking({
   useEffect(() => {
     setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenOrPair])
+  }, [loadingNativeTokenPrice])
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
@@ -202,13 +196,10 @@ export default function SimulateStaking({
       {SimulateOptions.PRICE === simulateOption && (
         <AmountFlex>
           <StyledNumericalInput
-            style={{ width: widthValue + 12 + 'px' }}
+            // style={{ width: widthValue + 12 + 'px' }}
             value={simulatedPrice}
             onUserInput={handleLocalStakingCapChange}
           />
-          <span style={{ visibility: 'hidden', position: 'absolute' }} ref={inputRef}>
-            {simulatedPrice}
-          </span>
 
           <TYPE.largeHeader
             alignSelf={'center'}
