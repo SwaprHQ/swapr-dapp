@@ -30,7 +30,7 @@ export function useNewLiquidityMiningCampaign(
   locked: boolean,
   stakingCap: TokenAmount | null,
   simulatedStakedAmount: string,
-  simulatedPrice: any
+  simulatedPrice: string
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
 
@@ -85,7 +85,7 @@ export function useNewLiquidityMiningCampaign(
       })
     } else if (targetedPairOrToken instanceof Token && tokenDerivedNative.derivedNativeCurrency) {
       const { address, symbol, name, decimals } = targetedPairOrToken
-      const tokenNativePrice = simulatedPrice
+      const tokenNativePrice = simulatedPrice.length === 0 ? '0' : simulatedPrice
 
       const derivedNative = new Price({
         baseCurrency: targetedPairOrToken,

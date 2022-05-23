@@ -101,19 +101,23 @@ export default function SimulateStaking({
 
   const inputRef = React.useRef<HTMLInputElement>(null)
   const widthValue = useMemo(() => {
+    console.log('initial inputRef', inputRef.current && inputRef.current.clientWidth)
     if (simulatedPrice.length > 0 && inputRef.current) return inputRef.current.clientWidth
     else return 18
   }, [simulatedPrice, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      setSimulatedPrice(rawValue.length === 0 ? '0' : rawValue)
+      console.log('rawValue', rawValue)
+
+      setSimulatedPrice(rawValue)
+      console.log('rawValueBREAK?', rawValue)
     },
     [setSimulatedPrice]
   )
   useEffect(() => {
-    setSimulatedPrice(parseFloat(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2)))
+    setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [tokenOrPair])
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
@@ -127,16 +131,15 @@ export default function SimulateStaking({
     10
   )
   const maxStakedSimulatedAmount = useMemo(() => {
-    console.log('here crash?', simulatedPrice)
-    console.log(stakingCap?.multiply(simulatedPrice).toSignificant(22))
     console.log('crahs ovr here')
+    const simulatedPrice2 = simulatedPrice || '0'
 
     const base = stakingCap
-      ? parseFloat(stakingCap.multiply(simulatedPrice).toSignificant(22))
+      ? parseFloat(stakingCap.multiply(simulatedPrice2).toSignificant(22))
       : dollarAmountMaxSimulation
     console.log('fuckingBase', base)
 
-    const baseInUsd = parseFloat(simulatedPrice)
+    const baseInUsd = parseFloat(simulatedPrice2)
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
