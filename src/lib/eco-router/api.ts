@@ -52,6 +52,13 @@ export async function getExactIn(
   // Derive the chainId from the token in or out
   const chainId = (currencyAmountIn.currency as Token).chainId ?? (currencyOut as Token).chainId
 
+  if (!chainId) {
+    return {
+      errors: [new Error('Unsupported chain')],
+      trades: [],
+    }
+  }
+
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId as ChainId)
@@ -129,6 +136,13 @@ export async function getExactOut(
   const errors: any[] = []
   // Derive the chainId from the token in or out
   const chainId = (currencyAmountOut.currency as Token).chainId ?? (currencyIn as Token).chainId
+
+  if (!chainId) {
+    return {
+      errors: [new Error('Unsupported chain')],
+      trades: [],
+    }
+  }
 
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
