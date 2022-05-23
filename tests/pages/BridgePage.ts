@@ -23,7 +23,7 @@ export class BridgePage {
   static getBridgedAmount() {
     return cy.get('[data-testid=bridge-amount')
   }
-  static confirmBriding() {
+  static confirmBridging() {
     return cy.get('[data-testid=accept-bridging').click()
   }
 }

@@ -77,6 +77,7 @@
     "arb-ts": "^1.0.2",
     "cids": "^1.1.7",
     "copy-to-clipboard": "^3.2.0",
+    "cypress-ethereum-provider": "^0.1.7",
     "date-fns": "^2.28.0",
     "decimal.js-light": "^2.5.1",
     "ethers": "^5.4.4",
