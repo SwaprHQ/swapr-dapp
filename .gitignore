@@ -38,3 +38,5 @@ mochawesome-report
 .env
 
 .eslintcache
+
+**/generated/**/*

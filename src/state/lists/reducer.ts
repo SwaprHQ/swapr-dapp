@@ -22,7 +22,7 @@ export interface ListsState {
   readonly activeListUrls: string[] | undefined
 }
 
-type ListState = ListsState['byUrl'][string]
+export type ListState = ListsState['byUrl'][string]
 
 const NEW_LIST_STATE: ListState = {
   error: null,
@@ -48,9 +48,9 @@ export default createReducer(initialState, builder =>
   builder
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
+        ...state.byUrl[url],
         current: null,
         pendingUpdate: null,
-        ...state.byUrl[url],
         loadingRequestId: requestId,
         error: null,
       }

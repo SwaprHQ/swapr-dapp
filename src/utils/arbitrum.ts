@@ -1,5 +1,5 @@
 import { ChainId } from '@swapr/sdk'
-import { BridgeTxnType } from '../state/bridgeTransactions/types'
+import { BridgeTransactionStatus, BridgeTxnType } from '../state/bridgeTransactions/types'
 import { getNetworkInfo } from './networksList'
 
 export type ChainIdPair = {
@@ -44,20 +44,14 @@ export const getChainPair = (chainId?: ChainId): ChainIdPair => {
   }
 }
 
-export const PendingReasons = {
-  TX_UNCONFIRMED: 'Transaction has not been confirmed yet',
-  DESPOSIT: 'Waiting for deposit to be processed on L2 (~10 minutes)',
-  WITHDRAWAL: 'Waiting for confirmation (~7 days of dispute period)',
-}
-
-export const getBridgeTxStatus = (txStatus: number | undefined): 'failed' | 'confirmed' | 'pending' => {
+export const getBridgeTxStatus = (txStatus: number | undefined): BridgeTransactionStatus => {
   switch (txStatus) {
     case 0:
-      return 'failed'
+      return BridgeTransactionStatus.FAILED
     case 1:
-      return 'confirmed'
+      return BridgeTransactionStatus.CONFIRMED
     default:
-      return 'pending'
+      return BridgeTransactionStatus.PENDING
   }
 }
 

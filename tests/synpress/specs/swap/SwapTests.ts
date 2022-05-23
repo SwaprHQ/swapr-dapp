@@ -47,8 +47,7 @@ describe('Swapping tests', () => {
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({  })
-
+    cy.confirmMetamaskTransaction({})
 
     MenuBar.checkToastMessage('Swap')
 
@@ -84,7 +83,7 @@ describe('Swapping tests', () => {
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ })
+    cy.confirmMetamaskTransaction({})
 
     MenuBar.checkToastMessage('Swap')
 
@@ -98,6 +97,7 @@ describe('Swapping tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
+
   it('Should swap DAI to ETH [TC-53]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
@@ -133,7 +133,7 @@ describe('Swapping tests', () => {
         )
       })
     SwapPage.confirmSwap()
-    cy.confirmMetamaskTransaction({  })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 

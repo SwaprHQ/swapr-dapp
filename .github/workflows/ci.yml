@@ -4,31 +4,354 @@ on:
   push:
     branches:
       - develop
-      - master
   pull_request:
     types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - master
+  schedule:
+    - cron: '0 0 * * *'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  CI:
-    name: Build
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        node_version: [16]
-
+  install:
+    name: Install
+    runs-on: ubuntu-20.04
     steps:
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: ⎔・Setup node
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Install
-        run: yarn install
-      - name: Lint
-        run: yarn lint
-      - name: Check types
-        run: yarn tsc --noEmit
-      - name: Test
+          check-latest: true
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Generate open-api
+        run: yarn codegen:socket
+
+      - name: Compress workspace artifact
+        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
+
+      - name: Upload workspace artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace
+          path: /tmp/workspace.tar.zst
+          retention-days: 3
+
+  lint:
+    name: 🔬 ・Lint
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run linter
+        run: yarn lint --quiet
+
+  test:
+    name: 🔎 ・Test
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run tests
         run: yarn test
-      - name: Build
-        run: yarn run build
+
+  typecheck:
+    name: ⬡・Typecheck
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Run typescript check
+        run: yarn typecheck
+
+  build:
+    name: ⚙️ ・Build
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Build app
+        run: yarn ipfs-build
+
+      - name: Compress build artifact
+        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/build.tar.zst build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: /tmp/build.tar.zst
+          retention-days: 3
+
+  deploy:
+    name: ⬡・IPFS Deploy
+    needs: build
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name != 'schedule' }}
+    steps:
+      - name: Inject slug variables
+        uses: rlespinasse/github-slug-action@3.5.1
+
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=build.tar.zst
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v0.6.0
+        id: deployment
+        with:
+          step: start
+          token: ${{secrets.GITHUB_TOKEN}}
+          env: ${{env.GITHUB_HEAD_REF_SLUG_URL || env.GITHUB_REF_SLUG_URL}}
+          ref: ${{github.head_ref}}
+
+      - name: Deploy to IPFS
+        uses: web3-storage/add-to-web3@v1
+        id: web3
+        with:
+          web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
+          path_to_add: 'build'
+
+      - name: Update Deployment Status
+        uses: bobheadxi/deployments@v0.6.0
+        if: always()
+        with:
+          step: finish
+          token: ${{secrets.GITHUB_TOKEN}}
+          status: ${{job.status}}
+          deployment_id: ${{steps.deployment.outputs.deployment_id}}
+          env_url: 'https://${{steps.web3.outputs.cid}}.ipfs.dweb.link'
+
+  synpress:
+    name: 👘 ・Synpress
+    runs-on: ubuntu-20.04
+    container: cypress/browsers:node12.13.0-chrome78-ff70
+    env:
+      NODE_ENV: false
+    steps:
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          check-latest: true
+          cache: 'yarn'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Generate open-api
+        run: yarn codegen:socket
+
+      - name: Install cypress
+        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
+
+      - name: Run synpress tests
+        run: yarn synpress:ct
+        continue-on-error: true
+
+      - name: Merge test results into one
+        run: npm run report:merge
+
+      - name: Generate HTML report
+        run: yarn run report:generate
+
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: synpress-coverage-report
+          path: public-report/*
+          retention-days: 3
+
+  cypress:
+    name: 🎡 ・Cypress (${{ matrix.containers }})
+    needs: install
+    runs-on: ubuntu-20.04
+    container: swapr/cypress:zstd
+    strategy:
+      fail-fast: false
+      matrix:
+        containers:
+          [LiquidityTests, MenuBarTests, RewardsPageTests, SwapBoxTests, TokenMenuTests, TransactionSettingsTests]
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - name: Verify Cypress
+        run: yarn cypress install && yarn cypress verify
+
+      - name: Run cypress tests
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
+        continue-on-error: true
+
+      - name: Merge test results into one
+        run: |
+          yarn run report:merge
+          mv index.json ${{ matrix.containers }}.json
+
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.containers }}
+          path: ${{ matrix.containers }}.json
+
+  cypress-report:
+    name: ⬡・Merge and generate cypress reports
+    needs: [install, cypress]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 📥 ・Download workspace artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: workspace
+      - name: Extract workspace artifact
+        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: LiquidityTests
+          path: report
+      - uses: actions/download-artifact@v3
+        with:
+          name: MenuBarTests
+          path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: RewardsPageTests
+          path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: SwapBoxTests
+          path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: TokenMenuTests
+          path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: TransactionSettingsTests
+          path: mochawesome-report
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: mochawesome-report
+
+      - name: Merge test results into one
+        run: yarn run report:merge
+
+      - name: Generate HTML report
+        run: yarn run report:generate
+
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-report
+          path: public-report/*
+          retention-days: 3
+
+      - name: Delete merged artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            LiquidityTests
+            MenuBarTests
+            RewardsPageTests
+            SwapBoxTests
+            TokenMenuTests
+            TransactionSettingsTests
+
+  cleanup:
+    name: 🧹 Cleanup
+    needs: [install, lint, test, typecheck, build, cypress, cypress-report]
+    runs-on: ubuntu-20.04
+    if: ${{ success() }}
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
