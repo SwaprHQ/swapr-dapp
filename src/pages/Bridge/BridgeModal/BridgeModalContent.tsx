@@ -65,6 +65,7 @@ export const BridgeModalContent = ({
                     </DisclaimerText>
                   </DisclaimerTextWrapper>
                   <ButtonAccept
+                    data-testid="accept-bridging"
                     mb="12px"
                     disabled={disableConfirm}
                     onClick={() => {

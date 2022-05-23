@@ -83,6 +83,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
 
   return (
     <SelectionListOption
+      data-testid={name.toLowerCase() + '-bridge'}
       isSelected={isSelected}
       isLoading={isLoading}
       onClick={() => {
@@ -94,7 +95,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <SelectionListName flex="35%" isSelected={isSelected}>
         {name}
       </SelectionListName>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="fee-amount">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
@@ -103,7 +104,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.fee
         )}
       </SelectionListDetails>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="bridge-gas">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
@@ -112,10 +113,10 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.gas
         )}
       </SelectionListDetails>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="estimated-time">
         {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
       </SelectionListDetails>
-      <SelectionListReceiveAmount flex="22%">
+      <SelectionListReceiveAmount flex="22%" data-testid="bridge-amount">
         {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
       </SelectionListReceiveAmount>
     </SelectionListOption>
