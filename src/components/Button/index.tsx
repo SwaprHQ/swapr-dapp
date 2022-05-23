@@ -358,38 +358,6 @@ export function ButtonBadge({
   )
 }
 
-export function ButtonLinkWithBadge({
-  link,
-  children,
-  number,
-  disabled = false,
-  color = 'orange',
-  fit = false,
-}: {
-  link: string
-  number: number
-  disabled?: boolean
-  fit?: boolean
-  children: ReactNode
-  color?: 'orange' | 'green' | 'red'
-}) {
-  return (
-    <ButtonPurpleDim
-      fit={fit}
-      disabled={disabled}
-      as={disabled ? ButtonPurpleDim : ExternalLink}
-      href={!disabled && link}
-    >
-      <Flex alignItems="center">
-        {children}
-        <Box ml={1}>
-          <NumberBadge badgeTheme={color}>{number}</NumberBadge>
-        </Box>
-      </Flex>
-    </ButtonPurpleDim>
-  )
-}
-
 const CarrotIconWithMargin = styled(CarrotIcon)`
   margin-right: 4px;
 `
