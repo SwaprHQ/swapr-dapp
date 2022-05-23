@@ -452,9 +452,9 @@ export default function RemoveLiquidity({
   const handleSelectCurrencyA = useCallback(
     (currency: Currency) => {
       if (currencyIdB && currencyId(currency) === currencyIdB) {
-        history.push(`/remove/${currencyId(currency)}/${currencyIdA}`)
+        history.push(`/pools/remove/${currencyId(currency)}/${currencyIdA}`)
       } else {
-        history.push(`/remove/${currencyId(currency)}/${currencyIdB}`)
+        history.push(`/pools/remove/${currencyId(currency)}/${currencyIdB}`)
       }
     },
     [currencyIdA, currencyIdB, history]
@@ -462,9 +462,9 @@ export default function RemoveLiquidity({
   const handleSelectCurrencyB = useCallback(
     (currency: Currency) => {
       if (currencyIdA && currencyId(currency) === currencyIdA) {
-        history.push(`/remove/${currencyIdB}/${currencyId(currency)}`)
+        history.push(`/pools/remove/${currencyIdB}/${currencyId(currency)}`)
       } else {
-        history.push(`/remove/${currencyIdA}/${currencyId(currency)}`)
+        history.push(`/pools/remove/${currencyIdA}/${currencyId(currency)}`)
       }
     },
     [currencyIdA, currencyIdB, history]
@@ -596,7 +596,7 @@ export default function RemoveLiquidity({
                       <RowBetween style={{ justifyContent: 'flex-end' }}>
                         {oneCurrencyIsNative ? (
                           <StyledInternalLink
-                            to={`/remove/${
+                            to={`/pools/remove/${
                               currencyA === nativeCurrency ? nativeCurrencyWrapper?.address : currencyIdA
                             }/${currencyB === nativeCurrency ? nativeCurrencyWrapper?.address : currencyIdB}`}
                           >
@@ -612,7 +612,7 @@ export default function RemoveLiquidity({
                           </StyledInternalLink>
                         ) : oneCurrencyIsNativeWrapper ? (
                           <StyledInternalLink
-                            to={`/remove/${
+                            to={`/pools/remove/${
                               currencyA && nativeCurrencyWrapper && currencyEquals(currencyA, nativeCurrencyWrapper)
                                 ? nativeCurrency.symbol
                                 : currencyIdA
