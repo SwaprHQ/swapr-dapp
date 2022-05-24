@@ -1,4 +1,4 @@
-import { Trade, ChainId, UniswapV2Trade, CurveTrade, Token, RoutablePlatform } from '@swapr/sdk'
+import { Trade, UniswapV2Trade, CurveTrade, Token, RoutablePlatform } from '@swapr/sdk'
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
 // Low-level API for Uniswap V2
@@ -6,8 +6,7 @@ import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/co
 
 import { getUniswapV2PlatformList } from './platforms'
 // Types
-// eslint-disable-next-line
-import type {
+import {
   EcoRouterBestExactInParams,
   EcoRouterResults,
   EcoRouterSourceOptionsParams,
@@ -40,7 +39,7 @@ export function sortTradesByExecutionPrice(trades: Trade[]) {
 
 /**
  * Low-level function to fetch from Eco Router sources
- * @returns {EcoRouterResults} List of unsorted trade sources
+ * @returns {Promise<EcoRouterResults>} List of unsorted trade sources
  */
 export async function getExactIn(
   { currencyAmountIn, currencyOut, maximumSlippage, receiver = AddressZero }: EcoRouterBestExactInParams,
@@ -61,7 +60,7 @@ export async function getExactIn(
 
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
-  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId as ChainId)
+  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
@@ -90,7 +89,7 @@ export async function getExactIn(
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId as ChainId)) {
+    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
       return resolve(undefined)
     }
 
@@ -112,9 +111,9 @@ export async function getExactIn(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([...(uniswapV2TradesList as any), curveTrade]).then(trade =>
-    trade.filter(trade => trade !== undefined)
-  )) as Trade[]
+  const unsortedTrades: Trade[] = await Promise.all([...(uniswapV2TradesList as any[]), curveTrade]).then(trades =>
+    trades.filter(trade => trade !== undefined)
+  )
 
   // Return the list of sorted trades
   return {
@@ -125,7 +124,7 @@ export async function getExactIn(
 
 /**
  * Low-level function to fetch from Eco Router sources
- * @returns {EcoRouterResults} List of unsorted trade sources
+ * @returns {Promise<EcoRouterResults>} List of unsorted trade sources
  */
 export async function getExactOut(
   { currencyAmountOut, currencyIn, maximumSlippage, receiver = AddressZero }: EcoRouterBestExactOutParams,
@@ -146,7 +145,7 @@ export async function getExactOut(
 
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
-  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId as ChainId)
+  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
@@ -175,7 +174,7 @@ export async function getExactOut(
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId as ChainId)) {
+    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
       return resolve(undefined)
     }
 
@@ -197,9 +196,9 @@ export async function getExactOut(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([...(uniswapV2TradesList as any), curveTrade]).then(trade =>
-    trade.filter(trade => trade !== undefined)
-  )) as Trade[]
+  const unsortedTrades: Trade[] = await Promise.all([...(uniswapV2TradesList as any[]), curveTrade]).then(trades =>
+    trades.filter(trade => trade !== undefined)
+  )
 
   // Return the list of sorted trades
   return {
