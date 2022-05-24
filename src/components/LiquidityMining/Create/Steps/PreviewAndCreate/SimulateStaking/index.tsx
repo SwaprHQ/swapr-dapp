@@ -115,7 +115,7 @@ export default function SimulateStaking({
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
-  const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
+  const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(10)
   const liquidityPercentChangeCallback = useCallback((value: number) => {
     setSimulatedValuePercentage(value)
   }, [])
@@ -153,6 +153,10 @@ export default function SimulateStaking({
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
+  const handleResetClick = useCallback(() => {
+    setSimulatedValuePercentage(10)
+    setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2) || '0')
+  }, [nativeCurrencyUSDPrice, nativeTokenPrice, setSimulatedPrice])
   return (
     <SmoothGradientCard
       justifyContent={'space-between !important'}
@@ -220,7 +224,7 @@ export default function SimulateStaking({
           </SwitchContainer>
         )}
 
-        <SwitchContainer marginLeft={'auto'}>
+        <SwitchContainer onClick={handleResetClick} marginLeft={'auto'}>
           RESET <RefreshIcon />
         </SwitchContainer>
       </Flex>
