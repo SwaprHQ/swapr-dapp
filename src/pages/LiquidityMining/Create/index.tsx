@@ -195,11 +195,15 @@ export default function CreateLiquidityMining() {
         <AutoColumn gap="8px">
           <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
         </AutoColumn>
-        <Step title="Choose Campaign Type" index={0} disabled={false}>
+        <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
           <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
         </Step>
         <Step
-          title={`Select ${campaingType === CampaignType.TOKEN ? 'Token' : 'Pair'} to Stake`}
+          title={
+            campaingType === CampaignType.TOKEN
+              ? t('liquidityMining.create.selectToken')
+              : t('liquidityMining.create.selectPair')
+          }
           index={1}
           disabled={false}
         >
@@ -212,7 +216,7 @@ export default function CreateLiquidityMining() {
             setStakeTokenOrPair={setStakeTokenOrPair}
           />
         </Step>
-        <Step title="Campaign Duration" index={2} disabled={!stakeTokenOrPair}>
+        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeTokenOrPair}>
           <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
@@ -222,12 +226,17 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        <Step title="Select Token To Reward" index={3} key={3} disabled={!startTime || !endTime || !stakeTokenOrPair}>
+        <Step
+          title={t('liquidityMining.create.reward')}
+          index={3}
+          key={3}
+          disabled={!startTime || !endTime || !stakeTokenOrPair}
+        >
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
         <LastStep
-          title="Preview, approve and create mining pool"
+          title={t('liquidityMining.create.preview')}
           index={4}
           disabled={!stakeTokenOrPair || !startTime || !endTime || memoizedRewardArray.length === 0}
         >
