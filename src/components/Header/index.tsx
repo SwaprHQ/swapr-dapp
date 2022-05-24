@@ -277,18 +277,30 @@ function Header() {
         </Title>
         <HeaderLinks>
           <Divider />
-          <HeaderLink id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap" activeClassName="active">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink id="pool-nav-link" to="/pools" activeClassName="active" disabled={networkWithoutSWPR}>
+          <HeaderLink
+            data-testid="pool-nav-link"
+            id="pool-nav-link"
+            to="/pools"
+            activeClassName="active"
+            disabled={networkWithoutSWPR}
+          >
             Liquidity
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink id="rewards-nav-link" to="/rewards" activeClassName="active" disabled={networkWithoutSWPR}>
+          <HeaderLink
+            data-testid="rewards-nav-link"
+            id="rewards-nav-link"
+            to="/rewards"
+            activeClassName="active"
+            disabled={networkWithoutSWPR}
+          >
             Rewards
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink id="bridge-nav-link" to="/bridge" activeClassName="active">
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" activeClassName="active">
             {t('bridge')}
             <HeaderLinkBadge label="BETA" />
           </HeaderLink>

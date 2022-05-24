@@ -4,10 +4,10 @@ import { TagFailed, TagPending, TagSuccess, TagSuccessArrow } from '../../compon
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 
 export type BridgeStatusTagProps = Pick<BridgeTransactionSummary, 'status' | 'pendingReason'> & {
-  onCollect: () => void
+  handleTriggerCollect: () => void
 }
 
-export const BridgeStatusTag = ({ status, pendingReason, onCollect }: BridgeStatusTagProps) => {
+export const BridgeStatusTag = ({ status, pendingReason, handleTriggerCollect }: BridgeStatusTagProps) => {
   switch (status) {
     case 'confirmed':
       return <TagSuccess style={{ width: '67px' }}>Confirmed</TagSuccess>
@@ -15,7 +15,7 @@ export const BridgeStatusTag = ({ status, pendingReason, onCollect }: BridgeStat
       return <TagPending text={pendingReason} />
     case 'redeem':
       return (
-        <TagSuccessArrow style={{ width: '67px' }} onClick={onCollect}>
+        <TagSuccessArrow style={{ width: '67px' }} onClick={handleTriggerCollect}>
           Collect
         </TagSuccessArrow>
       )

@@ -54,10 +54,12 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
 
-export function useWrappingToken(currency?: Currency): Token | undefined {
-  const { chainId } = useActiveWeb3React()
-  if (!chainId || !currency || !Currency.isNative(currency)) return undefined
-  return Token.getNativeWrapper(chainId)
+export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token | undefined {
+  const { chainId: activeChainId } = useActiveWeb3React()
+
+  const selectedChainId = chainId ?? activeChainId
+  if (!selectedChainId || !currency || !Currency.isNative(currency)) return undefined
+  return Token.getNativeWrapper(selectedChainId)
 }
 
 function useWrappingTokenAbi(token?: Token): any | undefined {

@@ -6,8 +6,8 @@ import { ChevronsDown } from 'react-feather'
 
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
-import CurrencyLogo from '../CurrencyLogo'
-import { Box, Flex } from 'rebass/styled-components'
+import { CurrencyLogo } from '../CurrencyLogo'
+import { Box, Flex } from 'rebass'
 import WarningHelper from '../WarningHelper'
 import SwapRoute from './SwapRoute'
 import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
@@ -174,6 +174,7 @@ export function SwapPlatformSelector({
 
             return (
               <SelectionListOption
+                role="button"
                 key={trade.platform.name}
                 isSelected={selectedTrade?.platform.name === trade.platform.name}
                 onClick={() => handleSelectedTradeOverride(trade.platform.name)}
