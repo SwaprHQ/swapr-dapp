@@ -1,7 +1,6 @@
 import { SwapPage } from './SwapPage'
 export class TokenMenu {
   static chooseToken(token: string) {
-    cy.scrollTo('top')
     this.getSingleTokenManagerInput()
       .should('be.visible')
       .type(token)

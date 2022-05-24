@@ -1,0 +1,28 @@
+
+{
+  "lists": [{
+    "chainId": 42161,
+    "isDefault": true,
+    "url": "https://bridge.arbitrum.io/token-list-42161.json"
+  },
+  {
+    "chainId": 42161,
+    "isDefault": true,
+    "url": "https://tokenlist.arbitrum.io/ArbTokenLists/arbed_uniswap_labs_list.json"
+  },
+  {
+    "chainId": 42161,
+    "isDefault": false,
+    "url": "https://tokenlist.arbitrum.io/ArbTokenLists/arbed_gemini_token_list.json"
+  },
+  {
+    "chainId": 421611,
+    "isDefault": true,
+    "url": "https://bridge.arbitrum.io/token-list-421611.json"
+  },
+  {
+    "chainId": 42161,
+    "isDefault": false,
+    "url": "https://tokenlist.arbitrum.io/ArbTokenLists/arbed_coinmarketcap.json"
+  }]
+}

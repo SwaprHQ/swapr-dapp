@@ -16,6 +16,8 @@ import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
 import RoutingLevinSwap from './../assets/images/levinswap.svg'
+import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
+import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 
 // Features Imports
 
@@ -138,13 +140,15 @@ export const RoutingThroughContent = {
       title: 'Levinswap',
       img: RoutingLevinSwap,
     },
+    { title: 'QuickSwap', img: RoutingQuickSwap },
+    { title: 'DFYN', img: RoutingDFYN },
   ],
 }
 
 export const FeaturesContent = {
   topBanner: {
     title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
-    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo],
+    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo],
   },
   preHeader: 'Swapr Features',
   sectionTitle: 'Your DeFi Powertool',

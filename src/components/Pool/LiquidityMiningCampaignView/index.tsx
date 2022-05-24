@@ -76,7 +76,7 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
   return (
-    <AutoColumn gap="18px">
+    <AutoColumn gap="18px" data-testid="reward-campaign-information-card">
       <RowBetween>
         <GoBackContainer onClick={history.goBack}>
           <StyledChevronLeft />

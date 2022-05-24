@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   CurrencyAmount,
   JSBI,
@@ -7,12 +8,13 @@ import {
   UniswapV2Trade,
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { Trans } from 'react-i18next'
+
 import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import Column, { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
+import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { AutoRow, RowBetween, RowFixed } from '../../components/Row'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
@@ -33,22 +35,23 @@ import {
   useSwapActionHandlers,
   useSwapState,
 } from '../../state/swap/hooks'
-import { useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useAdvancedSwapDetails, useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import QuestionHelper from '../../components/QuestionHelper'
 import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { useUSDValue } from '../../hooks/useUSDValue'
+import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
 import './../../theme/fonts.css'
+import { ButtonConnect } from '../../components/ButtonConnect'
+import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -60,7 +63,6 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import { ButtonConnect } from '../../components/ButtonConnect'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -84,7 +86,7 @@ export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-
+  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -284,8 +286,12 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const fiatValueInput = useUSDValue(parsedAmounts[Field.INPUT], trade)
-  const fiatValueOutput = useUSDValue(parsedAmounts[Field.OUTPUT], trade)
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: parsedAmounts[Field.INPUT],
+    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
+    trade,
+  })
+
   const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
     fiatValueInput,
     fiatValueOutput,
@@ -334,6 +340,7 @@ export default function Swap() {
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
+                    isFallbackFiatValue={isFallbackFiatValueInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -358,6 +365,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.INPUT]}
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
+                    isFallbackFiatValue={isFallbackFiatValueOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />
@@ -366,16 +374,25 @@ export default function Swap() {
                   <AutoColumn gap="8px">
                     <RowBetween alignItems="center">
                       <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
-                        Best price found on{' '}
-                        <span style={{ color: 'white', fontWeight: 700 }}>{bestPricedTrade?.platform.name}</span>.
+                        <Trans
+                          i18nKey="bestPriceFoundOn"
+                          values={{ platform: bestPricedTrade?.platform.name }}
+                          components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+                        />
                         {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
                           <>
                             {' '}
-                            Swap with <span style={{ color: 'white', fontWeight: 700 }}>NO additional fees</span>
+                            <Trans
+                              i18nKey="swapWithNoAdditionalFees"
+                              components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+                            />
                           </>
                         ) : null}
                       </TYPE.body>
-                      <QuestionHelper text="The trade is routed directly to the selected platform, so no swap or network fees are ever added by Swapr." />
+                      <AdvancedSwapDetailsToggle
+                        setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                        showAdvancedSwapDetails={showAdvancedSwapDetails}
+                      />
                     </RowBetween>
                     <RowBetween>
                       <SwapSettings showAddRecipient={showAddRecipient} setShowAddRecipient={setShowAddRecipient} />
@@ -480,11 +497,13 @@ export default function Swap() {
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          <AdvancedSwapDetailsDropdown
-            trade={trade}
-            allPlatformTrades={allPlatformTrades}
-            onSelectedPlatformChange={setPlatformOverride}
-          />
+          {showAdvancedSwapDetails && (
+            <AdvancedSwapDetailsDropdown
+              trade={trade}
+              allPlatformTrades={allPlatformTrades}
+              onSelectedPlatformChange={setPlatformOverride}
+            />
+          )}
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>

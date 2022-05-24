@@ -8,12 +8,12 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 import { Flex, Text } from 'rebass'
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
-import CurrencyLogo from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'
 import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper } from './Pari.styles'
 import { ThemeContext } from 'styled-components'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 
 export function Pair({
   token0,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
 import { gradients, breakpoints } from '../../../utils/theme'
@@ -90,9 +90,9 @@ const Hero = props => {
             <h1>{HeroContent.mainText}</h1>
             <ul className="hero-logos-list">
               {logosArrays.map((item, key) => (
-                <div key={key} className="hero-logo-group">
+                <div key={key + '-hero'} className="hero-logo-group">
                   {item.map((logo, key) => (
-                    <li key={key}>
+                    <li key={`${logo.title}-${key}`}>
                       <img src={logo.img} title={logo.title} alt="Logos" />
                     </li>
                   ))}
@@ -101,7 +101,7 @@ const Hero = props => {
             </ul>
             <ul className="hero-button-list">
               {HeroContent.heroButtons.map((button, key) => (
-                <li key={key}>
+                <li key={`${button.label}-${key}`}>
                   <Button type={button.type} label={button.label} to={button.href} />
                 </li>
               ))}
@@ -117,12 +117,12 @@ const Hero = props => {
           <div className="routing-through-body">
             <Marquee speed={50} gradientColor={[12, 11, 18]}>
               <div className="marquee-inner">
-                {[...Array(3)].map(() => (
-                  <>
+                {[...Array(3)].map((_, index) => (
+                  <Fragment key={index}>
                     {RoutingThroughContent.companies.map((company, key) => (
-                      <img key={key} src={company.img} alt="Routing through..." />
+                      <img key={`${key}-${company.title}`} src={company.img} alt={`Routing through...`} />
                     ))}
-                  </>
+                  </Fragment>
                 ))}
               </div>
             </Marquee>

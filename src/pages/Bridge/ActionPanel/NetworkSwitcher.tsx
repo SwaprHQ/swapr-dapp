@@ -13,22 +13,22 @@ interface NetworkSwitcherProps {
 }
 
 export const NetworkSwitcher = ({ sendToId, onCollectClick, onSwitchClick }: NetworkSwitcherProps) => {
-  const { chainId: networkConnectorChainId } = useActiveWeb3React()
-  if (!networkConnectorChainId) return null
+  const { chainId } = useActiveWeb3React()
+  if (!chainId) return null
 
   return (
     <>
       <RowBetween>
-        <SwitchButton onClick={onSwitchClick} disabled={networkConnectorChainId === sendToId}>
+        <SwitchButton onClick={onSwitchClick} disabled={chainId === sendToId}>
           Switch to {ChainLabel[sendToId]}
         </SwitchButton>
-        <CollectButton onClick={onCollectClick} disabled={networkConnectorChainId !== sendToId}>
+        <CollectButton onClick={onCollectClick} disabled={chainId !== sendToId}>
           Collect
         </CollectButton>
       </RowBetween>
       <Row>
-        <Number className={networkConnectorChainId === sendToId ? 'active' : ''}>1</Number>
-        <Number className={networkConnectorChainId === sendToId ? '' : 'disabled'}>2</Number>
+        <Number className={chainId === sendToId ? 'active' : ''}>1</Number>
+        <Number className={chainId === sendToId ? '' : 'disabled'}>2</Number>
       </Row>
     </>
   )

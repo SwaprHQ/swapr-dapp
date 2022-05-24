@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { TYPE } from '../../../../../../theme'
-import CurrencyLogo from '../../../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
 import { Box, Flex } from 'rebass'
 import { GradientCard } from '../../../../../Card'
@@ -61,7 +61,11 @@ export default function AssetSelector({ title, currency0, currency1, onClick }: 
               <AssetLogo currency0={currency0} currency1={currency1} />
             </Box>
             <Box>
-              <TYPE.body lineHeight="20px" color="white">
+              <TYPE.body
+                lineHeight="20px"
+                color="white"
+                data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
+              >
                 {assetTitle || 'Click to select'}
               </TYPE.body>
             </Box>

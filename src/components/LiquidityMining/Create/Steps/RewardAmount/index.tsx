@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 import { TYPE } from '../../../../../theme'
-import CurrencyLogo from '../../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../../CurrencyLogo'
 import NumericalInput from '../../../../Input/NumericalInput'
 import Radio from '../../../../Radio'
 import { Card, Divider } from '../../../styleds'
@@ -134,7 +134,7 @@ export default function RewardAmount({
           </Box>
           <Box>
             <RelativeContainer>
-              <StyledNumericalInput value={amount} onUserInput={handleLocalUserInput} />
+              <StyledNumericalInput value={amount} onUserInput={handleLocalUserInput} data-testid="reward-input" />
               <RewardInputLogo size="16px" currency={reward?.token} />
             </RelativeContainer>
           </Box>
