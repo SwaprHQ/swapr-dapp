@@ -25,6 +25,7 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { CurrencyView } from './CurrencyView'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
+import { Currency } from '@swapr/sdk'
 
 export const CurrencyInputPanelComponent = ({
   id,
@@ -53,6 +54,7 @@ export const CurrencyInputPanelComponent = ({
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const { account } = useActiveWeb3React()
+  const [isMaxAmount, setIsMaxAmount] = useState(false)
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
@@ -73,6 +75,28 @@ export const CurrencyInputPanelComponent = ({
       setIsOpen(true)
     }
   }, [disableCurrencySelect, isLoading])
+
+  const handleOnMax = useCallback(() => {
+    if (onMax && setIsMaxAmount) {
+      onMax()
+      setIsMaxAmount(true)
+    }
+  }, [onMax, setIsMaxAmount])
+
+  const handleOnCurrencySelect = useCallback(
+    (currency: Currency) => {
+      if (onCurrencySelect && currency) onCurrencySelect(currency, isMaxAmount)
+    },
+    [isMaxAmount, onCurrencySelect]
+  )
+
+  const handleOnUserInput = useCallback(
+    (value: string) => {
+      setIsMaxAmount(false)
+      if (onUserInput) onUserInput(value)
+    },
+    [onUserInput]
+  )
 
   return (
     <InputPanel id={id}>
@@ -95,7 +119,7 @@ export const CurrencyInputPanelComponent = ({
                   value={value}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  onUserInput={onUserInput}
+                  onUserInput={handleOnUserInput}
                   disabled={disabled}
                   data-testid={'transaction-value-input'}
                 />
@@ -132,7 +156,7 @@ export const CurrencyInputPanelComponent = ({
                 balance={balance}
                 selectedCurrencyBalance={selectedCurrencyBalance}
                 customBalanceText={customBalanceText}
-                onMax={onMax}
+                onMax={handleOnMax}
               />
             </RowBetween>
           </FiatRow>
@@ -142,7 +166,7 @@ export const CurrencyInputPanelComponent = ({
         <CurrencySearchModalComponent
           isOpen={isOpen}
           onDismiss={onDismiss}
-          onCurrencySelect={onCurrencySelect}
+          onCurrencySelect={handleOnCurrencySelect}
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}

@@ -19,7 +19,7 @@ export interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   chainIdOverride?: ChainId
   showCommonBases?: boolean
-  onCurrencySelect?: (currency: Currency) => void
+  onCurrencySelect?: (currency: Currency, isMaxAmount: boolean) => void
   customBalanceText?: string
   isFallbackFiatValue?: boolean
   disableCurrencySelect?: boolean

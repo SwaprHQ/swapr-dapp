@@ -260,10 +260,11 @@ export default function Swap() {
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
-    inputCurrency => {
+    (inputCurrency, isMaxAmount) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
+      setIsMaxAmountInput(isMaxAmount)
     },
     [onCurrencySelection]
   )
@@ -277,9 +278,10 @@ export default function Swap() {
   )
 
   const handleOutputSelect = useCallback(
-    outputCurrency => {
+    (outputCurrency, isMaxAmount) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(Field.OUTPUT, outputCurrency)
+      setIsMaxAmountOutput(isMaxAmount)
     },
     [onCurrencySelection]
   )
@@ -296,6 +298,20 @@ export default function Swap() {
   ])
 
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
+  const [isMaxAmountInput, setIsMaxAmountInput] = useState<boolean>(false)
+  const [isMaxAmountOutput, setIsMaxAmountOutput] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (isMaxAmountInput && maxAmountInput) {
+      setIsMaxAmountInput(false)
+      onUserInput(Field.INPUT, maxAmountInput.toExact())
+    }
+
+    if (isMaxAmountOutput && maxAmountOutput) {
+      setIsMaxAmountOutput(false)
+      onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
+    }
+  }, [isMaxAmountInput, isMaxAmountOutput, maxAmountInput, maxAmountOutput, onUserInput])
 
   return (
     <>
