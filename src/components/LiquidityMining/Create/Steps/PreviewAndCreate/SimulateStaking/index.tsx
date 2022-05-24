@@ -101,17 +101,18 @@ export default function SimulateStaking({
 
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      console.log('rawValue', rawValue)
-
       setSimulatedPrice(rawValue)
-      console.log('rawValueBREAK?', rawValue)
     },
     [setSimulatedPrice]
   )
   useEffect(() => {
-    setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
+    console.log('this mofo TOken', nativeTokenPrice && nativeTokenPrice)
+    console.log('usd', nativeCurrencyUSDPrice)
+    if (nativeTokenPrice && nativeCurrencyUSDPrice)
+      setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingNativeTokenPrice])
+  }, [loadingNativeTokenPrice, nativeTokenPrice])
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
@@ -125,15 +126,13 @@ export default function SimulateStaking({
     10
   )
   const maxStakedSimulatedAmount = useMemo(() => {
-    console.log('crahs ovr here')
-    const simulatedPrice2 = simulatedPrice || '0'
+    const simulatedPriceCorrected = simulatedPrice || '0'
 
     const base = stakingCap
-      ? parseFloat(stakingCap.multiply(simulatedPrice2).toSignificant(22))
+      ? parseFloat(stakingCap.multiply(simulatedPriceCorrected).toSignificant(22))
       : dollarAmountMaxSimulation
-    console.log('fuckingBase', base)
 
-    const baseInUsd = parseFloat(simulatedPrice2)
+    const baseInUsd = parseFloat(simulatedPriceCorrected)
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
@@ -155,7 +154,9 @@ export default function SimulateStaking({
   }, [showUSDValue])
   const handleResetClick = useCallback(() => {
     setSimulatedValuePercentage(10)
-    setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2) || '0')
+    setSimulatedPrice(
+      nativeTokenPrice && nativeCurrencyUSDPrice ? nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2) : '0'
+    )
   }, [nativeCurrencyUSDPrice, nativeTokenPrice, setSimulatedPrice])
   return (
     <SmoothGradientCard
@@ -179,42 +180,38 @@ export default function SimulateStaking({
           SIMULATED PRICE
         </SimulateOption>
       </Flex>
-
-      {SimulateOptions.AMOUNT === simulateOption && (
+      {loading || loadingNativeTokenPrice ? (
+        <Loader />
+      ) : (
         <>
-          {loading || loadingNativeTokenPrice ? (
-            <Loader />
-          ) : (
-            <SimulatedValue>
-              {maxStakedSimulatedAmount.toLocaleString('en-us')}{' '}
-              {showUSDValue
-                ? 'USD'
-                : tokenOrPair instanceof Token
-                ? tokenOrPair.symbol
-                : `${tokenOrPair?.token0.symbol}/${tokenOrPair?.token1.symbol}`}
-            </SimulatedValue>
+          {SimulateOptions.AMOUNT === simulateOption && (
+            <>
+              <SimulatedValue>
+                {maxStakedSimulatedAmount.toLocaleString('en-us')}{' '}
+                {showUSDValue
+                  ? 'USD'
+                  : tokenOrPair instanceof Token
+                  ? tokenOrPair.symbol
+                  : `${tokenOrPair?.token0.symbol}/${tokenOrPair?.token1.symbol}`}
+              </SimulatedValue>
+              <Slider value={innerLiquidityPercentage} size={16} onChange={setInnerLiquidityPercentage} />
+            </>
           )}
-          <Slider value={innerLiquidityPercentage} size={16} onChange={setInnerLiquidityPercentage} />
+          {SimulateOptions.PRICE === simulateOption && (
+            <AmountFlex>
+              <StyledNumericalInput value={simulatedPrice} onUserInput={handleLocalStakingCapChange} />
+              <TYPE.largeHeader
+                alignSelf={'center'}
+                fontSize={13}
+                color={'text3'}
+                letterSpacing="0.08em"
+                alignItems={'center'}
+              >
+                USD
+              </TYPE.largeHeader>
+            </AmountFlex>
+          )}
         </>
-      )}
-      {SimulateOptions.PRICE === simulateOption && (
-        <AmountFlex>
-          <StyledNumericalInput
-            // style={{ width: widthValue + 12 + 'px' }}
-            value={simulatedPrice}
-            onUserInput={handleLocalStakingCapChange}
-          />
-
-          <TYPE.largeHeader
-            alignSelf={'center'}
-            fontSize={13}
-            color={'text3'}
-            letterSpacing="0.08em"
-            alignItems={'center'}
-          >
-            USD
-          </TYPE.largeHeader>
-        </AmountFlex>
       )}
 
       <Flex width={'100%'}>
