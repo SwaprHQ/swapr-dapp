@@ -119,7 +119,7 @@ export async function getExactIn(
       currencyAmountIn,
       currencyOut,
       maximumSlippage,
-      receiver
+      receiver,
     })
       .then(resolve)
       .catch(error => {
@@ -134,9 +134,7 @@ export async function getExactIn(
     ...(uniswapV2TradesList as any),
     curveTrade,
     gnosisProtocolTrade,
-  ]).then(trade =>
-    trade.filter(trade => trade !== undefined)
-  )) as Trade[]
+  ]).then(trade => trade.filter(trade => trade !== undefined))) as Trade[]
 
   // Return the list of sorted trades
   return {
@@ -217,7 +215,6 @@ export async function getExactOut(
       })
   })
 
-
   // Gnosis Protocol V2
   const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
     if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
@@ -228,7 +225,7 @@ export async function getExactOut(
       currencyAmountOut,
       currencyIn,
       maximumSlippage,
-      receiver
+      receiver,
     })
       .then(resolve)
       .catch(error => {
@@ -243,10 +240,7 @@ export async function getExactOut(
     ...(uniswapV2TradesList as any),
     curveTrade,
     gnosisProtocolTrade,
-  ])
-    .then(trade =>
-    trade.filter(trade => trade !== undefined)
-  )) as Trade[]
+  ]).then(trade => trade.filter(trade => trade !== undefined))) as Trade[]
 
   // Return the list of sorted trades
   return {

@@ -149,6 +149,8 @@ export default function Swap() {
       ? true
       : false
 
+  console.info({ potentialTrade, isInputCurrencyNative })
+
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback + and a state variable)
   const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(

@@ -8,7 +8,6 @@ import { ExternalLink } from '../../theme/components'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
-//import { ChainId } from '@swapr/sdk'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -34,7 +33,7 @@ export default function TransactionPopup({
 
   const explorer = 'View on ' + (isGnosisProtocolHash ? 'Gnosis Protocol Explorer' : 'block explorer')
 
-  const body = chainId && (
+  const EXTERNALLINK = chainId && (
     <ExternalLink
       href={
         isGnosisProtocolHash
@@ -53,7 +52,7 @@ export default function TransactionPopup({
       </div>
       <AutoColumn gap="8px">
         <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
-        {body}
+        {EXTERNALLINK}
       </AutoColumn>
     </RowNoFlex>
   )
