@@ -41,7 +41,7 @@ export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: s
     const entry = window.localStorage.getItem(fullKey)
 
     if (entry && !isEntityAdapter.test(entry)) {
-      console.warn(`${fullKey} uses legacy store interface. It was cleared to perserve compatibility.`)
+      console.warn(`${fullKey} uses legacy store interface. It was cleared to preserve compatibility.`)
       window.localStorage.removeItem(fullKey)
     }
   })
