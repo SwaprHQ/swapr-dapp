@@ -282,8 +282,6 @@ export default function Swap() {
           swapErrorMessage: undefined,
           txHash: hash,
         })
-      })
-      .then(() => {
         //reset statuses, in case we want to operate again
         if (trade instanceof GnosisProtocolTrade) {
           setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
@@ -299,7 +297,7 @@ export default function Swap() {
           txHash: undefined,
         })
       })
-  }, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback])
+  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
 
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -381,7 +379,8 @@ export default function Swap() {
 
   const SwapBoxButton = () => {
     // Eco Router is computing the best route for the user, so we need to show a loading indicator
-    if (swapInfoIsLoading) {
+    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && isGnosisTradeV2RequireWrap
+    if (swapInfoIsLoading || isGnosisStatusComputed) {
       return (
         <ButtonPrimary style={{ textAlign: 'center' }} disabled>
           Loading
@@ -409,7 +408,7 @@ export default function Swap() {
         isApprovalRequired ||
         (priceImpactSeverity > 3 && !isExpertMode) ||
         gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
-      const width = isApprovalRequired ? '31%' : '48%'
+      const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
       const wrappedCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
 
@@ -436,7 +435,7 @@ export default function Swap() {
           }
 
           {// If the EOA needs to approve the WXDAI or any ERC20
-          isApprovalRequired && (
+          showApproveFlow && isApprovalRequired && (
             <ButtonConfirmed
               onClick={() => approveCallback().then(() => setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP))}
               disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL || approvalSubmitted}
@@ -454,7 +453,7 @@ export default function Swap() {
               )}
             </ButtonConfirmed>
           )}
-          <ButtonConfirmed
+          <SwapButton
             onClick={() => {
               if (isExpertMode) {
                 handleSwap()
@@ -471,12 +470,15 @@ export default function Swap() {
             width={width}
             id="swap-button"
             disabled={swapDisabled}
+            platformName={trade?.platform.name}
             //error={isValid && priceImpactSeverity > 2}
+            priceImpactSeverity={priceImpactSeverity}
+            isExpertMode={isExpertMode}
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? `Price Impact High`
               : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-          </ButtonConfirmed>
+          </SwapButton>
         </RowBetween>
       )
     }
