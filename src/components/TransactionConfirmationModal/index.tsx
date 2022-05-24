@@ -77,7 +77,7 @@ function TransactionSubmittedContent({
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
 
-  const EXTERNALLINK = chainId && hash && (
+  const explorerExternalLink = chainId && hash && (
     <ExternalLink
       href={
         isGnosisProtocolTrade
@@ -105,7 +105,7 @@ function TransactionSubmittedContent({
           <Text fontWeight={500} fontSize="22px">
             Transaction Submitted
           </Text>
-          {EXTERNALLINK}
+          {explorerExternalLink}
           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }} data-testid="close-modal-button">
             <Text fontWeight={600} fontSize="13px">
               Close

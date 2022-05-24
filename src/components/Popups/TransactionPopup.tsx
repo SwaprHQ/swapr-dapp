@@ -33,7 +33,7 @@ export default function TransactionPopup({
 
   const explorer = 'View on ' + (isGnosisProtocolHash ? 'Gnosis Protocol Explorer' : 'block explorer')
 
-  const EXTERNALLINK = chainId && (
+  const explorerExternalLink = chainId && (
     <ExternalLink
       href={
         isGnosisProtocolHash
@@ -52,7 +52,7 @@ export default function TransactionPopup({
       </div>
       <AutoColumn gap="8px">
         <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
-        {EXTERNALLINK}
+        {explorerExternalLink}
       </AutoColumn>
     </RowNoFlex>
   )
