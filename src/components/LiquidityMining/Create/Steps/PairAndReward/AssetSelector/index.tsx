@@ -16,24 +16,24 @@ import { useStakingRewardsDistributionFactoryContract } from '../../../../../../
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
 import { AssetLogo } from './AssetLogo'
 
-const StyledNumericalInput = styled(NumericalInput)`
+const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
   border-radius: 8px;
   border: none;
   width: 100%;
   height: 33px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: ${props =>
+    props.value.length > 18
+      ? '8'
+      : props.value.length > 11
+      ? props.value.length + (props.value.length - (props.value.length - 9 - (props.value.length - 12) * -3))
+      : '16'}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
   padding-right: 8px;
   background-color: ${props => props.theme.dark1};
-`
-const RewardInputLogo = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 16px;
 `
 
 const RelativeContainer = styled.div<{ disabled?: boolean }>`
@@ -182,7 +182,6 @@ export default function AssetSelector({
             {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
                 <StyledNumericalInput value={rawAmount ? rawAmount : ''} onUserInput={handleUserInput} />
-                <RewardInputLogo>{assetTitle}</RewardInputLogo>
               </RelativeContainer>
             ) : (
               //deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
