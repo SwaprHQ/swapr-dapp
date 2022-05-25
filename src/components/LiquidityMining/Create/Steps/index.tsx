@@ -16,7 +16,6 @@ const Root = styled(AutoColumn)<{ disabled: boolean }>`
   opacity: ${({ disabled }) => (disabled ? 0.3 : 1)};
   z-index: auto;
   text-transform: capitalize;
-  font-family: 'Inter';
 `
 
 export default function Step({ disabled, index, title, children, ...rest }: StepProps) {
