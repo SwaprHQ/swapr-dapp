@@ -23,8 +23,8 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { t } = useTranslation()
 
   const accountAnalyticsLink = account
-    ? `https://dxstats.eth.link/#/account/${account}?chainId=${chainId}`
-    : `https://dxstats.eth.link/#/accounts?chainId=${chainId}`
+    ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
 
   const poolTokenPercentage =
     !!userPoolBalance && !!totalPoolTokens

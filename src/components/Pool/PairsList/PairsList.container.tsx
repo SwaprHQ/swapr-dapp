@@ -99,7 +99,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
               {t('noPoolsFound')}
             </Text>
             <div>
-              <ButtonPrimary to="/create" as={Link}>
+              <ButtonPrimary to="/pools/create" as={Link}>
                 {t('createAPool')}
               </ButtonPrimary>
             </div>

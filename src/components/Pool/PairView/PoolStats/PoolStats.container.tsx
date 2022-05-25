@@ -26,8 +26,8 @@ export function PoolStats({ pair }: PairViewProps) {
   const { t } = useTranslation()
 
   const statsLink = pair?.liquidityToken.address
-    ? `https://dxstats.eth.link/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
-    : `https://dxstats.eth.link/#/pairs?chainId=${chainId}`
+    ? `https://dxstats.eth.limo/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/pairs?chainId=${chainId}`
 
   useEffect(() => {
     // when the chain is switched, and not as a reaction to following a multi chain link
