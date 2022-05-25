@@ -26,4 +26,25 @@ export class BridgePage {
   static confirmBridging() {
     return cy.get('[data-testid=accept-bridging').click()
   }
+  static getStatusTag(timeoutValue: number) {
+    return cy.get('[data-testid=status-tag', { timeout: timeoutValue })
+  }
+  static getBridgingInitiatedModal() {
+    return cy.get('[data-testid=bridge-initiated-modal]')
+  }
+  static closeBridgeInitiatedModal() {
+    return cy.get('[data-testid=close-bridge-initiated-button]').click()
+  }
+  static getBridgedAssetName() {
+    return cy.get('[data-testid=bridged-asset-name]')
+  }
+  static getBridgedFromChain() {
+    return cy.get('[data-testid=bridged-from-chain]')
+  }
+  static getBridgedToChain() {
+    return cy.get('[data-testid=bridged-to-chain]')
+  }
+  static getTokenSymbol() {
+    return cy.get('[data-testid=token-symbol]')
+  }
 }

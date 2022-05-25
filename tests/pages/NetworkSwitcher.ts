@@ -14,4 +14,7 @@ export class NetworkSwitcher {
   static arinkeby() {
     return cy.get('[data-testid=a-rinkeby-network-button]').filter(':visible')
   }
+  static getNetworkSwitcher() {
+    return cy.get('[data-testid=network-switcher]').filter(':visible')
+  }
 }
