@@ -106,8 +106,6 @@ export default function SimulateStaking({
     [setSimulatedPrice]
   )
   useEffect(() => {
-    console.log('this mofo TOken', nativeTokenPrice && nativeTokenPrice)
-    console.log('usd', nativeCurrencyUSDPrice)
     if (nativeTokenPrice && nativeCurrencyUSDPrice)
       setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
 
@@ -126,13 +124,13 @@ export default function SimulateStaking({
     10
   )
   const maxStakedSimulatedAmount = useMemo(() => {
-    const simulatedPriceCorrected = simulatedPrice || '0'
+    const simulatedPriceAdjusted = simulatedPrice || '0'
 
     const base = stakingCap
-      ? parseFloat(stakingCap.multiply(simulatedPriceCorrected).toSignificant(22))
+      ? parseFloat(stakingCap.multiply(simulatedPriceAdjusted).toSignificant(22))
       : dollarAmountMaxSimulation
 
-    const baseInUsd = parseFloat(simulatedPriceCorrected)
+    const baseInUsd = parseFloat(simulatedPriceAdjusted)
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
@@ -149,15 +147,18 @@ export default function SimulateStaking({
 
     return calculatePercentage(baseValue, simulatedValuePercentage)
   }, [setSimulatedStakedAmount, tokenOrPair, simulatedPrice, simulatedValuePercentage, stakingCap, showUSDValue])
+
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
+
   const handleResetClick = useCallback(() => {
     setSimulatedValuePercentage(10)
     setSimulatedPrice(
       nativeTokenPrice && nativeCurrencyUSDPrice ? nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2) : '0'
     )
   }, [nativeCurrencyUSDPrice, nativeTokenPrice, setSimulatedPrice])
+
   return (
     <SmoothGradientCard
       justifyContent={'space-between !important'}
