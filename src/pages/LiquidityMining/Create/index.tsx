@@ -121,59 +121,61 @@ export default function CreateLiquidityMining() {
   return (
     <>
       <PageWrapper>
-        <AutoColumn gap="8px">
-          <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
-          <TYPE.subHeader color="text5" lineHeight="17px">
-            {t('liquidityMining.create.subtitle')}
-          </TYPE.subHeader>
+        <AutoColumn gap="40px">
+          <AutoColumn gap="8px">
+            <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
+            <TYPE.subHeader color="text5" lineHeight="17px">
+              {t('liquidityMining.create.subtitle')}
+            </TYPE.subHeader>
+          </AutoColumn>
+          <Step title="Choose one or multiple rewards" index={0} disabled={false}>
+            <SingleOrMultiStep singleReward={singleReward} onChange={setSingleReward} />
+          </Step>
+          <Step title="Select pair and reward" index={1} disabled={singleReward === null}>
+            <PairAndReward
+              liquidityPair={targetedPair}
+              reward={reward}
+              onLiquidityPairChange={setTargetedPair}
+              onRewardTokenChange={handleRewardTokenChange}
+            />
+          </Step>
+          <Step title="Select reward amount" index={2} disabled={!targetedPair || !reward || !reward.token}>
+            <RewardAmount
+              reward={reward}
+              stakablePair={targetedPair}
+              unlimitedPool={unlimitedPool}
+              onRewardAmountChange={setReward}
+              onUnlimitedPoolChange={setUnlimitedPool}
+              onStakingCapChange={setStakingCap}
+            />
+          </Step>
+          <Step title="Duration and start/end time" index={3} disabled={!reward || reward.equalTo('0')}>
+            <Time
+              startTime={startTime}
+              endTime={endTime}
+              timelocked={timelocked}
+              onStartTimeChange={handleStartTimeChange}
+              onEndTimeChange={handleEndTimeChange}
+              onTimelockedChange={handleTimelockedChange}
+            />
+          </Step>
+          <LastStep
+            title="Preview, approve and create mining pool"
+            index={4}
+            disabled={!targetedPair || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
+          >
+            <PreviewAndCreate
+              liquidityPair={targetedPair}
+              startTime={startTime}
+              endTime={endTime}
+              timelocked={timelocked}
+              reward={reward}
+              stakingCap={stakingCap}
+              apy={campaign ? campaign.apy : new Percent('0', '100')}
+              onCreate={handleCreateRequest}
+            />
+          </LastStep>
         </AutoColumn>
-        <Step title="Choose one or multiple rewards" index={0} disabled={false}>
-          <SingleOrMultiStep singleReward={singleReward} onChange={setSingleReward} />
-        </Step>
-        <Step title="Select pair and reward" index={1} disabled={singleReward === null}>
-          <PairAndReward
-            liquidityPair={targetedPair}
-            reward={reward}
-            onLiquidityPairChange={setTargetedPair}
-            onRewardTokenChange={handleRewardTokenChange}
-          />
-        </Step>
-        <Step title="Select reward amount" index={2} disabled={!targetedPair || !reward || !reward.token}>
-          <RewardAmount
-            reward={reward}
-            stakablePair={targetedPair}
-            unlimitedPool={unlimitedPool}
-            onRewardAmountChange={setReward}
-            onUnlimitedPoolChange={setUnlimitedPool}
-            onStakingCapChange={setStakingCap}
-          />
-        </Step>
-        <Step title="Duration and start/end time" index={3} disabled={!reward || reward.equalTo('0')}>
-          <Time
-            startTime={startTime}
-            endTime={endTime}
-            timelocked={timelocked}
-            onStartTimeChange={handleStartTimeChange}
-            onEndTimeChange={handleEndTimeChange}
-            onTimelockedChange={handleTimelockedChange}
-          />
-        </Step>
-        <LastStep
-          title="Preview, approve and create mining pool"
-          index={4}
-          disabled={!targetedPair || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
-        >
-          <PreviewAndCreate
-            liquidityPair={targetedPair}
-            startTime={startTime}
-            endTime={endTime}
-            timelocked={timelocked}
-            reward={reward}
-            stakingCap={stakingCap}
-            apy={campaign ? campaign.apy : new Percent('0', '100')}
-            onCreate={handleCreateRequest}
-          />
-        </LastStep>
       </PageWrapper>
       <ConfirmStakingRewardsDistributionCreation
         onConfirm={handleCreateConfirmation}
