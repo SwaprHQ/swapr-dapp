@@ -82,14 +82,14 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         <ButtonPurpleDim
           style={{ marginRight: '4px' }}
           as={Link}
-          to={currency0 && currency1 ? `/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
+          to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
         >
           {t('addLiquidity')}
         </ButtonPurpleDim>
         <ButtonPurpleDim
           style={{ marginLeft: '4px' }}
           as={Link}
-          to={currency0 && currency1 ? `/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
+          to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
         >
           {t('removeLiquidity')}
         </ButtonPurpleDim>

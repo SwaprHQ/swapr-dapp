@@ -142,5 +142,16 @@
   "farming": "Farming",
   "carrot": "Carrot",
   "myPairs": "My Pairs",
-  "accountAnalyticsAndAccruedFees": "Account analytics and accrued fees"
+  "accountAnalyticsAndAccruedFees": "Account analytics and accrued fees",
+  "bridgeTxnThrough": "This transaction is routed through <0>{{bridgeName}}</0>",
+  "bridgeWalletControl": "{{bridgeName}} asks you to sign a transaction that gives them control to your wallet.",
+  "bridgeResponsible": "Swapr is <0>not</0> responsible for any transactions outside of its control.",
+  "bridgeConfirmText": "Accept & Continue",
+  "bridgeBackText": "Back to Bridge",
+  "bridgeRejectText": "Cancel",
+  "bridgeModalText": "{{typedValue}} {{symbol}} from {{fromNetworkName}} to {{toNetworkName}}",
+  "bridgeHeadingInitiated": "Bridging Initiated",
+  "bridgeHeadingCollecting": "Bridging Collecting",
+  "bridgeHeadingSuccess": "Bridging Successful",
+  "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}"
 }

@@ -8,7 +8,7 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 import { Flex, Text } from 'rebass'
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'

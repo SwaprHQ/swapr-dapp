@@ -1,13 +1,10 @@
-import { createSelector } from 'reselect'
+import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from '..'
 import { getChainPair } from '../../utils/arbitrum'
 
-export const applicationSelector = (state: AppState) => state.application
+export const accountSelector = (state: AppState) => state.application.account
 
-export const chainIdSelector = createSelector(applicationSelector, app => {
-  return getChainPair(app.chainId)
-})
-
-export const accountSelector = createSelector(applicationSelector, app => {
-  return app.account
-})
+export const chainIdSelector = createSelector(
+  (state: AppState) => state.application.chainId,
+  chainId => getChainPair(chainId)
+)

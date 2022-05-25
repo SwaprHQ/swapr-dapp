@@ -14,7 +14,6 @@ import { PairState, usePair } from '../../../data/Reserves'
 import { PageWrapper } from '../../../components/PageWrapper'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../../components/Row'
-import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
 import { ButtonPurpleDim, ButtonBadge } from '../../../components/Button'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
@@ -22,6 +21,7 @@ import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel/ValueWithLabel.component'
 import List from '../../../components/LiquidityMiningCampaigns/List'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
+import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 
 export default function Pair({
   match: {
