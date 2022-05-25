@@ -189,7 +189,7 @@ export default function AssetSelector({
                 {tokenName}
                 {isReward && (
                   <span style={{ color: 'white' }}>
-                    {tokenName.length <= 20 ? (
+                    {tokenName.length <= 21 ? (
                       <>
                         <br></br>
                         {assetTitle}
