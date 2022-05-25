@@ -25,7 +25,6 @@ const Input = styled(StyledInput)`
 `
 
 const StyledDay = styled.span`
-  font-family: Montserrat;
   font-size: 11px;
   color: ${props => props.theme.text2};
 `
