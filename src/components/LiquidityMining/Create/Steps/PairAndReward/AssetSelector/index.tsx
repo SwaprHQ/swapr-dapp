@@ -22,13 +22,8 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: none;
   width: 100%;
   height: 33px;
-  font-weight: 600;
-  font-size: ${props =>
-    props.value.length > 18
-      ? '8'
-      : props.value.length > 11
-      ? props.value.length + (props.value.length - (props.value.length - 9 - (props.value.length - 12) * -3))
-      : '16'}px;
+  font-weight: 400;
+  font-size: ${props => (props.value.length > 18 ? '8' : props.value.length > 11 ? '12' : '14')}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
