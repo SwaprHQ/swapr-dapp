@@ -189,10 +189,21 @@ export default function AssetSelector({
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
             )}
-
             {tokenName && (
               <TYPE.small color="purple3" fontSize={10} fontWeight="600" lineHeight="12px">
                 {tokenName}
+                {isReward && (
+                  <span style={{ color: 'white' }}>
+                    {tokenName.length <= 20 ? (
+                      <>
+                        <br></br>
+                        {assetTitle}
+                      </>
+                    ) : (
+                      `-${assetTitle}`
+                    )}
+                  </span>
+                )}
               </TYPE.small>
             )}
           </Flex>
