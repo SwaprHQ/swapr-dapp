@@ -256,7 +256,6 @@ function Header() {
     window.addEventListener('scroll', onScrollHander)
 
     return () => {
-      console.log('unmounting')
       window.removeEventListener('scroll', onScrollHander)
     }
   }, [])
