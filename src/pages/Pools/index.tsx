@@ -27,6 +27,7 @@ import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 import { useTranslation } from 'react-i18next'
+import { getAccountAnalyticsLink } from '../../utils'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -245,7 +246,7 @@ export default function Pools() {
       </AutoColumn>
       {account && (
         <ButtonWithExternalLink
-          link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
+          link={getAccountAnalyticsLink(account || '', chainId)}
           text={t('accountAnalyticsAndAccruedFees')}
           style={{ marginTop: '32px', textTransform: 'uppercase' }}
         />

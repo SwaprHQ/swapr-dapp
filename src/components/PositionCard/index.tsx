@@ -12,8 +12,9 @@ import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { ButtonDark, ButtonGrey } from '../Button'
+import { getAccountAnalyticsLink } from '../../utils'
 
+import { ButtonDark, ButtonGrey } from '../Button'
 import Card, { GreyCard, OutlineCard } from '../Card'
 import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
@@ -170,11 +171,7 @@ const AccountAnalyticsButton = ({
     width={fullWidth ? undefined : 'auto'}
     style={{ padding: '8px 12px' }}
     as={ExternalLink}
-    href={
-      account
-        ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
-        : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
-    }
+    href={getAccountAnalyticsLink(account || '', chainId)}
   >
     <Flex alignItems="center">
       <Box mr="4px">

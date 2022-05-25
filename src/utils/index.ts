@@ -71,6 +71,12 @@ export function getExplorerLink(
   }
 }
 
+export function getAccountAnalyticsLink(account: string, chainId: ChainId | undefined): string {
+  return account
+    ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
+}
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, charsBefore = 4, charsAfter = 4): string {
   const parsed = isAddress(address)

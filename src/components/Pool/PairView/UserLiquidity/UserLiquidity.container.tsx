@@ -13,6 +13,7 @@ import { UserLiquidityProps } from './UserLiquidity'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox'
 import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
+import { getAccountAnalyticsLink } from '../../../../utils'
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()
@@ -21,10 +22,6 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
   const totalPoolTokens = useTotalSupply(pair?.liquidityToken)
   const { t } = useTranslation()
-
-  const accountAnalyticsLink = account
-    ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
-    : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
 
   const poolTokenPercentage =
     !!userPoolBalance && !!totalPoolTokens
@@ -54,7 +51,9 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           {t('yourLiquidity')}
         </Text>
         <Box>
-          <ButtonExternalLink link={accountAnalyticsLink}>{t('accountAnalytics')}</ButtonExternalLink>
+          <ButtonExternalLink link={getAccountAnalyticsLink(account || '', chainId)}>
+            {t('accountAnalytics')}
+          </ButtonExternalLink>
         </Box>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={4}>
