@@ -14,4 +14,7 @@ export class NetworkSwitcher {
   static arinkeby() {
     return cy.get('[data-testid=a-rinkeby-network-button]')
   }
+  static polygon() {
+    return cy.get('[data-testid=polygon-network-button]')
+  }
 }
