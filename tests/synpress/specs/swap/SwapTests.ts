@@ -119,7 +119,6 @@ describe('Swapping tests', () => {
     SwapPage.getCurrencySelectors()
       .last()
       .click()
-    TokenMenu.chooseToken('eth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
