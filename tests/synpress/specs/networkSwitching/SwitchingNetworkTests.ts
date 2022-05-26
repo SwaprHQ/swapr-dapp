@@ -11,7 +11,6 @@ describe('Switching from maintet tests', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
   after(() => {
-    cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
     cy.resetMetamaskAccount()
     cy.wait(500)
@@ -219,18 +218,18 @@ describe('Switching from maintet tests', () => {
     cy.allowMetamaskToSwitchNetwork()
     MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
   })
-  it('Should switch from polygon to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('polygon mainnet')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
-  })
   it('Should switch from polygon to a. rinkeby by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arinkeby().click()
     cy.allowMetamaskToSwitchNetwork()
     MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
+  })
+  it('Should switch from polygon to rinkeby by dapp [TC-55]', () => {
+    cy.changeMetamaskNetwork('polygon mainnet')
+    MenuBar.getNetworkSwitcher().click()
+    NetworkSwitcher.rinkeby().click()
+    cy.allowMetamaskToSwitchNetwork()
+    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
   })
 })
