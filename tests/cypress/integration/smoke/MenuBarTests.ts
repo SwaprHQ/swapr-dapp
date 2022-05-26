@@ -45,6 +45,7 @@ describe('Menu bar smoke tests', () => {
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().should('be.visible')
     NetworkSwitcher.rinkeby().should('be.visible')
+    NetworkSwitcher.polygon().should('be.visible')
     NetworkSwitcher.arbitrum().should('be.visible')
     NetworkSwitcher.gnosis().should('be.visible')
     NetworkSwitcher.arinkeby().should('be.visible')
