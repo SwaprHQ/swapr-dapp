@@ -67,8 +67,7 @@ describe('Campaign creation tests', () => {
       expect(token1.symbol).to.be.eq('USDT')
     })
   })
-  //TODO remove skip after bug #979 is fixed
-  it.skip('Should open a campaign through Rewards page [TC-60]', () => {
+  it('Should open a campaign through Rewards page [TC-60]', () => {
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
     PairMenu.choosePair(TOKENS_PAIR)
