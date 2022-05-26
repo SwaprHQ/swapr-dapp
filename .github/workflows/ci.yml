@@ -186,11 +186,6 @@ jobs:
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       NODE_ENV: false
-    strategy:
-      fail-fast: false
-      matrix:
-        containers:
-          [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -215,19 +210,21 @@ jobs:
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Run synpress tests
-        run: yarn synpress:ct -s 'tests/synpress/specs/${{ matrix.containers }}/*'
+        run: yarn synpress:ct
         continue-on-error: true
 
       - name: Merge test results into one
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
+        run: npm run report:merge
+
+      - name: Generate HTML report
+        run: yarn run report:generate
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.containers }}
-          path: ${{ matrix.containers }}.json
+          name: synpress-coverage-report
+          path: public-report/*
+          retention-days: 3
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
@@ -268,7 +265,7 @@ jobs:
 
   cypress-report:
     name: ⬡・Merge and generate cypress reports
-    needs: [install, cypress, synpress]
+    needs: [install, cypress]
     runs-on: ubuntu-20.04
     steps:
       - name: 📥 ・Download workspace artifact
@@ -301,14 +298,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: TransactionSettingsTests
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionless
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionfull
           path: mochawesome-report
 
       - name: Setup Node
