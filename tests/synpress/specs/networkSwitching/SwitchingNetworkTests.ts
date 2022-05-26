@@ -11,6 +11,7 @@ describe('Switching from maintet tests', () => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
   after(() => {
+    cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
     cy.resetMetamaskAccount()
     cy.wait(500)
@@ -18,15 +19,15 @@ describe('Switching from maintet tests', () => {
 
   it('Should display that Ropsten network isnt supported [TC-56]', () => {
     cy.changeMetamaskNetwork('ropsten')
-    MenuBar.getUnsupportedNetworkWarning().should("be.visible")
-    MenuBar.getUnsupportedNetworkPopover().should("be.visible")
+    MenuBar.getUnsupportedNetworkWarning().should('be.visible')
+    MenuBar.getUnsupportedNetworkPopover().should('be.visible')
   })
   it('Should switch from unsupported network to mainnet wallet [TC-57]', () => {
     cy.changeMetamaskNetwork('ropsten')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should("contain.text", "Ethereum")
+    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
   })
   it('Should switch from mainnet to a. rinkeby by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('ethereum')
