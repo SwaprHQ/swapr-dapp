@@ -77,11 +77,11 @@ export const CurrencyInputPanelComponent = ({
   }, [disableCurrencySelect, isLoading])
 
   const handleOnMax = useCallback(() => {
-    if (onMax && setIsMaxAmount) {
+    if (onMax) {
       onMax()
       setIsMaxAmount(true)
     }
-  }, [onMax, setIsMaxAmount])
+  }, [onMax])
 
   const handleOnCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -93,7 +93,7 @@ export const CurrencyInputPanelComponent = ({
   const handleOnUserInput = useCallback(
     (value: string) => {
       setIsMaxAmount(false)
-      if (onUserInput) onUserInput(value)
+      onUserInput(value)
     },
     [onUserInput]
   )
