@@ -57,7 +57,7 @@ export const Circle = styled.div<{ size: string; active: boolean }>`
 
   filter: drop-shadow(18px 0px 60px rgba(175, 135, 255, 0.3));
   backdrop-filter: ${props => (props.active ? 'blur(22.4144px)' : 'blur(14px)')};
-
+  background-color: ${props => props.active && '#000000f5'};
   border-radius: 255.031px;
 `
 const DoubleIconWrapper = styled.div`

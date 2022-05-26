@@ -38,7 +38,7 @@ export const SmoothGradientCard = styled(Card)<{
       props.isToken && props.active
         ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(180deg, rgba(90, 12, 255, 0.8) -16.28%, rgba(17, 8, 35, 0) 100%);'
         : props.active
-        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(114.19deg, rgba(90, 12, 255, 0.8) -9%, rgba(17, 8, 35, 0) 113.1%)'
+        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.9) -50%, rgba(17, 8, 35, 0) 80.1%)'
         : 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.1) -9%, rgba(17, 8, 35, 0) 113.1%) '};
   }
 

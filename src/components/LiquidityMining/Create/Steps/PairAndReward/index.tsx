@@ -158,10 +158,9 @@ export default function StakeTokenAndLimit({
             >
               <StyledUnlimitedText active={unlimitedPool}>UNLIMITED</StyledUnlimitedText>
             </StyledFlex>
-            <AmountFlex active={!unlimitedPool}>
+            <AmountFlex onClick={() => onUnlimitedPoolChange(false)} active={!unlimitedPool}>
               <StyledNumericalInput
                 style={{ width: widthValue + 12 + 'px' }}
-                onClick={() => onUnlimitedPoolChange(false)}
                 disabled={!stakeTokenOrPair}
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}

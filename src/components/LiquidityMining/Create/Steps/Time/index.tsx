@@ -6,6 +6,7 @@ import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
 import { Switch } from '../../../../Switch'
 import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
+import { ReactComponent as LockOpenSvg } from '../../../../../assets/svg/lock-open.svg'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
@@ -35,7 +36,7 @@ interface TimeProps {
   timelocked: boolean
   setStartTime: (date: Date | null) => void
   setEndTime: (date: Date | null) => void
-  onTimelockedChange: () => void
+  onTimelockedChange: (value?: boolean) => void
 }
 
 export default function DurationAndLocking({
@@ -99,7 +100,7 @@ export default function DurationAndLocking({
         justifyContent={'space-around'}
       >
         <Flex alignSelf={'start'}>
-          <LockSvg />
+          {timelocked ? <LockSvg /> : <LockOpenSvg />}
           <TYPE.small
             marginLeft="4px"
             fontSize={'11px'}
@@ -114,10 +115,11 @@ export default function DurationAndLocking({
         </Flex>
 
         <Flex alignItems={'start'}>
-          <StyledLockText active={!timelocked}>UNLOCKED</StyledLockText>
-
+          <StyledLockText onClick={() => onTimelockedChange(false)} active={!timelocked}>
+            OFF
+          </StyledLockText>
           <Switch isRed={true} handleToggle={() => onTimelockedChange()} isOn={timelocked} />
-          <StyledLockText active={timelocked} marginLeft="8px">
+          <StyledLockText onClick={() => onTimelockedChange(true)} active={timelocked} marginLeft="8px">
             TIME LOCKED
           </StyledLockText>
         </Flex>

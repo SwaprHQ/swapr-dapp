@@ -133,9 +133,12 @@ export default function CreateLiquidityMining() {
   const addTransaction = useTransactionAdder()
   const createLiquidityMiningCallback = useCreateLiquidityMiningCallback(campaign)
 
-  const handleTimelockedChange = useCallback(() => {
-    setTimelocked(!timelocked)
-  }, [timelocked])
+  const handleTimelockedChange = useCallback(
+    (value?: boolean) => {
+      setTimelocked(value !== undefined ? value : !timelocked)
+    },
+    [timelocked]
+  )
 
   const handleCreateRequest = useCallback(() => {
     if (!createLiquidityMiningCallback) return
