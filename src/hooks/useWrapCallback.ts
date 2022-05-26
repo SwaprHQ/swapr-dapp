@@ -38,7 +38,7 @@ interface UseWrapCallback {
  * @param outputCurrency the selected output currency
  * @param typedValue the user input value
  */
-export default function useWrapCallback(
+export function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
