@@ -116,9 +116,6 @@ describe('Swapping tests', () => {
     TokenMenu.goBack()
       .chooseToken('dai')
       .switchTokens()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .click()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
