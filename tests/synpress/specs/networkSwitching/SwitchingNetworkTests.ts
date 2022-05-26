@@ -2,7 +2,7 @@ import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 
-describe('Switching from maintet tests', () => {
+describe('Switching from mainnet tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
