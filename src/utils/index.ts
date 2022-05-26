@@ -245,7 +245,7 @@ export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: st
  * Returns the Gnosis Protocol Explorer order link
  * @param chainId the chain Id
  * @param address the order address
- * @returns
+ * @returns the order link
  */
 export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
   return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`
