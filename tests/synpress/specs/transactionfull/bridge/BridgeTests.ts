@@ -185,5 +185,52 @@ describe('Bridge tests', () => {
   it('Should display history of bridge', () => {
     cy.changeMetamaskNetwork('rinkeby')
     BridgePage.getStatusTag(600000).should('contain.text', 'Confirmed')
+    BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
+    BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
+    BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
+      console.log(res)
+    })
+    cy.wait(10000)
   })
 })
