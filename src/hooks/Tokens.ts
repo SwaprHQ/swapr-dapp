@@ -3,7 +3,7 @@ import { Currency, Pair, Token } from '@swapr/sdk'
 import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '.'
-import { createTokenFilterFunction } from '../components/SearchModal/filtering'
+import { createTokenFilterFunction } from '../components/SearchModal/utils/filtering'
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from '../state/lists/hooks'
 import { WrappedTokenInfo } from '../state/lists/wrapped-token-info'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -72,7 +72,7 @@ export function useSearchInactiveTokenLists(search: string | undefined, minResul
       if (!list) continue
       for (const tokenInfo of list.tokens) {
         if (tokenInfo.chainId === chainId && tokenFilter(tokenInfo)) {
-          const wrapped = new WrappedTokenInfo(tokenInfo, list)
+          const wrapped: WrappedTokenInfo = new WrappedTokenInfo(tokenInfo, list)
           if (!(wrapped.address in activeTokens) && !addressSet[wrapped.address]) {
             addressSet[wrapped.address] = true
             result.push(wrapped)
@@ -106,7 +106,11 @@ export function useIsUserAddedPair(pair: Pair): boolean {
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
 
-function parseStringOrBytes32(str: string | undefined, bytes32: string | undefined, defaultValue: string): string {
+export function parseStringOrBytes32(
+  str: string | undefined,
+  bytes32: string | undefined,
+  defaultValue: string
+): string {
   return str && str.length > 0
     ? str
     : // need to check for proper bytes string and valid terminator

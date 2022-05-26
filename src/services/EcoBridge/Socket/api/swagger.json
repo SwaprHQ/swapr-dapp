@@ -1,0 +1,2405 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Movr Aggregator API",
+    "description": "The Movr Aggregator API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "HealthResponseDTO": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "required": ["ok"]
+      },
+      "GasPriceResponseDTO": {
+        "type": "object",
+        "required": ["success", "result"],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object",
+            "required": ["chainId", "txType"],
+            "properties": {
+              "chainId": {
+                "type": "number"
+              },
+              "txType": {
+                "type": "number"
+              },
+              "fast": {
+                "type": "object",
+                "required": ["gasPrice", "estimatedSeconds"],
+                "properties": {
+                  "gasPrice": {
+                    "type": "number"
+                  },
+                  "estimatedSeconds": {
+                    "type": "number"
+                  }
+                }
+              },
+              "normal": {
+                "type": "object",
+                "required": ["gasPrice", "estimatedSeconds"],
+                "properties": {
+                  "gasPrice": {
+                    "type": "number"
+                  },
+                  "estimatedSeconds": {
+                    "type": "number"
+                  }
+                }
+              },
+              "slow": {
+                "type": "object",
+                "required": ["gasPrice", "estimatedSeconds"],
+                "properties": {
+                  "gasPrice": {
+                    "type": "number"
+                  },
+                  "estimatedSeconds": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TokenPriceResponseDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object",
+            "required": ["chainId", "tokenAddress", "tokenPrice", "currency"],
+            "properties": {
+              "chainId": {
+                "type": "number"
+              },
+              "tokenAddress": {
+                "type": "string"
+              },
+              "tokenPrice": {
+                "type": "number"
+              },
+              "currency": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "BridgeSwapInputDTO": {
+        "type": "object",
+        "properties": {
+          "bridgeName": {
+            "type": "string"
+          },
+          "fromChainId": {
+            "type": "number"
+          },
+          "toChainId": {
+            "type": "number"
+          },
+          "fromTokenAddress": {
+            "type": "string"
+          },
+          "toTokenAddress": {
+            "type": "string"
+          },
+          "adminKey": {
+            "type": "string"
+          }
+        },
+        "required": ["adminKey"]
+      },
+      "DexSwapInputDTO": {
+        "type": "object",
+        "properties": {
+          "dexId": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "number"
+          },
+          "fromTokenAddress": {
+            "type": "string"
+          },
+          "toTokenAddress": {
+            "type": "string"
+          },
+          "adminKey": {
+            "type": "string"
+          }
+        },
+        "required": ["adminKey"]
+      },
+      "ChainGasBalances": {
+        "type": "object",
+        "properties": {}
+      },
+      "Route": {
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "description": "Unique id for each route.",
+            "example": "6a4c26b6-b008-431d-a37c-028e0b30482b"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Sending token amount.",
+            "example": "100000000000000000000"
+          },
+          "chainGasBalances": {
+            "$ref": "#/components/schemas/ChainGasBalances"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Approximate receiving token amount.",
+            "example": "100000000000000000000"
+          },
+          "usedBridgeNames": {
+            "description": "Array of bridges used in the route",
+            "example": "[anyswap-router-v4]",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+            }
+          },
+          "totalUserTx": {
+            "type": "number",
+            "description": "Total number of transactions for the route.",
+            "example": 3
+          },
+          "totalGasFeesInUsd": {
+            "type": "number",
+            "description": "Combined USD gas fees for all transactions in the route.",
+            "example": 125.4
+          },
+          "sender": {
+            "type": "string",
+            "description": "Address of user making the transactions.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b"
+          },
+          "userTxs": {
+            "description": "Array of user transactions.",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "serviceTime": {
+            "type": "number",
+            "description": "Estimate of total time in seconds, excluding the transaction time.",
+            "example": 600
+          }
+        },
+        "required": [
+          "routeId",
+          "fromAmount",
+          "chainGasBalances",
+          "toAmount",
+          "usedBridgeNames",
+          "totalUserTx",
+          "totalGasFeesInUsd",
+          "sender",
+          "userTxs",
+          "serviceTime"
+        ]
+      },
+      "SingleTxDTO": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "$ref": "#/components/schemas/Route"
+          }
+        },
+        "required": ["route"]
+      },
+      "ApprovalData": {
+        "type": "object",
+        "properties": {
+          "minimumApprovalAmount": {
+            "type": "string",
+            "description": "Minimum amount of approval needed.",
+            "example": "10000000000000000"
+          },
+          "approvalTokenAddress": {
+            "type": "string",
+            "description": "Address of token for which approval is required.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          },
+          "allowanceTarget": {
+            "type": "string",
+            "description": "Contract address that needs approval.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Address of owner.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b"
+          }
+        },
+        "required": ["minimumApprovalAmount", "approvalTokenAddress", "allowanceTarget", "owner"]
+      },
+      "SingleTxResponse": {
+        "type": "object",
+        "properties": {
+          "userTxType": {
+            "type": "string",
+            "description": "Type of user transaction.",
+            "example": "dex-swap",
+            "enum": ["approve", "fund-movr", "claim", "dex-swap", "sign"]
+          },
+          "txTarget": {
+            "type": "string",
+            "description": "Address to which transaction has to be sent.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b"
+          },
+          "chainId": {
+            "type": "string",
+            "description": "Id of chain where transaction has to be sent.",
+            "example": 137,
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"]
+          },
+          "txData": {
+            "type": "string",
+            "description": "Calldata for transaction.",
+            "example": "0xasjajfbalkfajfalalglaglagbalga"
+          },
+          "txType": {
+            "type": "string",
+            "description": "Type of transaction.",
+            "example": "eth_sendTransaction",
+            "enum": ["eth_sendTransaction", "eth_signMessage"]
+          },
+          "value": {
+            "type": "string",
+            "description": "Native token amount to be sent with transaction.",
+            "example": "10000000000000000"
+          },
+          "totalUserTx": {
+            "type": "number",
+            "description": "Total number of transactions in Active Route.",
+            "example": 2
+          },
+          "approvalData": {
+            "$ref": "#/components/schemas/ApprovalData"
+          }
+        },
+        "required": ["userTxType", "txTarget", "chainId", "txData", "txType", "value", "totalUserTx", "approvalData"]
+      },
+      "SingleTxOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "$ref": "#/components/schemas/SingleTxResponse"
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "BridgeStatusResponse": {
+        "type": "object",
+        "properties": {
+          "sourceTx": {
+            "type": "string",
+            "description": "Source Transaction.",
+            "example": "0xa6574b28b36dceb147a7ff3ca06839f1f0835bcfd5f0409406fbc524412e281a"
+          },
+          "sourceTxStatus": {
+            "type": "string",
+            "description": "Status of source transaction while bridging.",
+            "example": "COMPLETED",
+            "enum": ["PENDING", "COMPLETED"]
+          },
+          "destinationTransactionHash": {
+            "type": "string",
+            "description": "Destination Transaction hash.",
+            "example": "0xa6574b28b36dceb147a7ff3ca06839f1f0835bcfd5f0409406fbc524412e281a"
+          },
+          "destinationTxStatus": {
+            "type": "string",
+            "description": "Status of destination transaction while bridging.",
+            "example": "COMPLETED",
+            "enum": ["PENDING", "COMPLETED"]
+          },
+          "fromChainId": {
+            "type": "number",
+            "description": "Source Chain Id",
+            "example": 1
+          },
+          "toChainId": {
+            "type": "number",
+            "description": "Destination Chain Id.",
+            "example": 137
+          }
+        },
+        "required": [
+          "sourceTx",
+          "sourceTxStatus",
+          "destinationTransactionHash",
+          "destinationTxStatus",
+          "fromChainId",
+          "toChainId"
+        ]
+      },
+      "BridgeStatusResponseDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "$ref": "#/components/schemas/BridgeStatusResponse"
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "TransactionReceiptResponseDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "object"
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "ApprovalOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object",
+            "required": ["value", "tokenAddress"],
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "tokenAddress": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "ApprovalTxOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object",
+            "required": ["data", "to", "from"],
+            "properties": {
+              "data": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "from": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "TokenAsset": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of token.",
+            "example": "USD Coin"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of token.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          },
+          "icon": {
+            "type": "string",
+            "description": "URL for icon of token.",
+            "example": "https://maticnetwork.github.io/polygon-token-assets/assets/usdc.svg"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Decimal used for token.",
+            "example": 6
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Symbol of token.",
+            "example": "USDC"
+          },
+          "chainId": {
+            "description": "Chain id of the token",
+            "example": 137,
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"],
+            "type": "string"
+          }
+        },
+        "required": ["address", "symbol", "chainId"]
+      },
+      "QuoteOutputDTO": {
+        "type": "object",
+        "required": ["success", "result"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "object",
+            "required": ["routes", "fromChainId", "fromAsset", "toChainId", "toAsset"],
+            "properties": {
+              "routes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Route"
+                }
+              },
+              "fromChainId": {
+                "type": "number"
+              },
+              "fromAsset": {
+                "$ref": "#/components/schemas/TokenAsset"
+              },
+              "toChainId": {
+                "type": "number"
+              },
+              "toAsset": {
+                "$ref": "#/components/schemas/TokenAsset"
+              }
+            }
+          }
+        }
+      },
+      "BridgeDetails": {
+        "type": "object",
+        "properties": {
+          "bridgeName": {
+            "type": "string",
+            "description": "Name of bridge.",
+            "example": "anyswap-router-v4",
+            "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+          },
+          "icon": {
+            "type": "string",
+            "description": "URL for icon of bridge.",
+            "example": "https://bridgelogos.s3.ap-south-1.amazonaws.com/anyswap.png"
+          },
+          "serviceTime": {
+            "type": "number",
+            "description": "Approx time for bridging in seconds.",
+            "example": 600
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Display name of bridge.",
+            "example": "Anyswap"
+          }
+        },
+        "required": ["bridgeName", "serviceTime", "displayName"]
+      },
+      "SupportedBridgesOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BridgeDetails"
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "GasTokenDetails": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Address of gas token.",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "icon": {
+            "type": "string",
+            "description": "URL for icon of gas token.",
+            "example": "https://maticnetwork.github.io/polygon-token-assets/assets/matic.svg"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of gas token.",
+            "example": "Matic"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Symbol of gas token.",
+            "example": "MATIC"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Decimals of gas token.",
+            "example": 18
+          },
+          "minNativeCurrencyForGas": {
+            "type": "string",
+            "description": "Minimum amount to be left for gas while using max amount.",
+            "example": "100000000000000000"
+          }
+        },
+        "required": ["address", "icon", "name", "symbol", "decimals", "minNativeCurrencyForGas"]
+      },
+      "ChainDetails": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "number",
+            "description": "Id of chain.",
+            "example": 137
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of chain.",
+            "example": "Polygon"
+          },
+          "icon": {
+            "type": "string",
+            "description": "URL for icon of chain.",
+            "example": "https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg"
+          },
+          "isL1": {
+            "type": "boolean",
+            "description": "Flag indicating whether the chain is L1.",
+            "example": false
+          },
+          "sendingEnabled": {
+            "type": "boolean",
+            "description": "Flag indicating whether sending of tokens is supported from chain.",
+            "example": true
+          },
+          "receivingEnabled": {
+            "type": "boolean",
+            "description": "Flag indicating whether receiving of tokens is supported to chain.",
+            "example": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/GasTokenDetails"
+          },
+          "rpcs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explorers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "chainId",
+          "name",
+          "icon",
+          "isL1",
+          "sendingEnabled",
+          "receivingEnabled",
+          "currency",
+          "rpcs",
+          "explorers"
+        ]
+      },
+      "SupportedChainsOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDetails"
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "BalanceResult": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "decimals": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        },
+        "required": ["chainId", "address", "name", "symbol", "decimals", "price", "amount", "currency"]
+      },
+      "Balance": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BalanceResult"
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "TokenBalanceReponseDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object",
+            "required": ["chainId", "tokenAddress", "userAddress", "balance", "decimals", "icon", "symbol", "name"],
+            "properties": {
+              "chainId": {
+                "type": "number"
+              },
+              "tokenAddress": {
+                "type": "string"
+              },
+              "userAddress": {
+                "type": "string"
+              },
+              "balance": {
+                "type": "string"
+              },
+              "decimals": {
+                "type": "number"
+              },
+              "icon": {
+                "type": "string"
+              },
+              "symbol": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "StartActiveRouteInputDTO": {
+        "type": "object",
+        "properties": {
+          "fromChainId": {
+            "type": "string",
+            "description": "Chain id of source chain.",
+            "example": 137,
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"]
+          },
+          "toChainId": {
+            "type": "string",
+            "description": "Chain id of destination chain.",
+            "example": 56,
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"]
+          },
+          "fromAssetAddress": {
+            "type": "string",
+            "description": "Token address on source chain.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          },
+          "toAssetAddress": {
+            "type": "string",
+            "description": "Token address on destination chain.",
+            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+          },
+          "includeFirstTxDetails": {
+            "type": "boolean",
+            "description": "Include the tx details for the first user transaction. If true it will return the txData txType etc.\nIf false, it will only return the active route Id of the selected route.",
+            "example": true
+          },
+          "route": {
+            "description": "Selected route by the user to bridge tokens from one chain to another.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Route"
+              }
+            ]
+          }
+        },
+        "required": ["fromChainId", "toChainId", "fromAssetAddress", "toAssetAddress", "route"]
+      },
+      "StartActiveRouteResponseDTO": {
+        "type": "object",
+        "properties": {
+          "userTxType": {
+            "type": "string",
+            "enum": ["approve", "fund-movr", "claim", "dex-swap", "sign"]
+          },
+          "txTarget": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "string",
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"]
+          },
+          "activeRouteId": {
+            "type": "number"
+          },
+          "txData": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string",
+            "enum": ["eth_sendTransaction", "eth_signMessage"]
+          },
+          "value": {
+            "type": "string"
+          },
+          "userTxIndex": {
+            "type": "number"
+          },
+          "totalUserTx": {
+            "type": "number"
+          },
+          "approvalData": {
+            "$ref": "#/components/schemas/ApprovalData"
+          }
+        },
+        "required": ["activeRouteId", "totalUserTx"]
+      },
+      "ActiveRouteResponse": {
+        "type": "object",
+        "properties": {
+          "activeRouteId": {
+            "type": "number",
+            "description": "Id of the Active Route.",
+            "example": 420
+          },
+          "userAddress": {
+            "type": "string",
+            "description": "Address of user doing the Active Route.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b"
+          },
+          "totalUserTx": {
+            "type": "number",
+            "description": "Total number of txs required in Active Route.",
+            "example": 3
+          },
+          "userTxs": {
+            "description": "Array of user txs.",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "fromChainId": {
+            "type": "number",
+            "description": "Id of source chain.",
+            "example": 137
+          },
+          "toChainId": {
+            "type": "number",
+            "description": "Id of destination chain.",
+            "example": 56
+          },
+          "fromAssetAddress": {
+            "type": "string",
+            "description": "Address of token on source chain.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          },
+          "toAssetAddress": {
+            "type": "string",
+            "description": "Address of token on destination chain.",
+            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+          },
+          "fromAmount": {
+            "type": "string",
+            "description": "Amount of sending tokens.",
+            "example": "100000000"
+          },
+          "toAmount": {
+            "type": "string",
+            "description": "Approximate amount of receiving tokens.",
+            "example": "100000000"
+          },
+          "routeStatus": {
+            "type": "string",
+            "description": "Status of the Active Route.",
+            "example": "PENDING"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp of Route start.",
+            "example": 1642009930239
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp of last route update.",
+            "example": 1642009930239
+          },
+          "currentUserTxIndex": {
+            "type": "number",
+            "description": "Index of current tx in userTxs array.",
+            "example": 1642009930239
+          },
+          "fromAsset": {
+            "$ref": "#/components/schemas/TokenAsset"
+          },
+          "toAsset": {
+            "$ref": "#/components/schemas/TokenAsset"
+          }
+        },
+        "required": [
+          "activeRouteId",
+          "userAddress",
+          "totalUserTx",
+          "userTxs",
+          "fromChainId",
+          "toChainId",
+          "fromAssetAddress",
+          "toAssetAddress",
+          "fromAmount",
+          "toAmount",
+          "routeStatus",
+          "createdAt",
+          "updatedAt",
+          "currentUserTxIndex",
+          "fromAsset",
+          "toAsset"
+        ]
+      },
+      "ActiveRoutesOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API response.",
+            "example": true
+          },
+          "result": {
+            "$ref": "#/components/schemas/ActiveRouteResponse"
+          }
+        },
+        "required": ["success", "result"]
+      },
+      "NextTxResponse": {
+        "type": "object",
+        "properties": {
+          "userTxType": {
+            "type": "string",
+            "description": "Type of user transaction.",
+            "example": "dex-swap",
+            "enum": ["approve", "fund-movr", "claim", "dex-swap", "sign"]
+          },
+          "txTarget": {
+            "type": "string",
+            "description": "Address to which transaction has to be sent.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b"
+          },
+          "chainId": {
+            "type": "string",
+            "description": "Id of chain where transaction has to be sent.",
+            "example": 137,
+            "enum": ["ETHEREUM", "OPTIMISM", "BSC", "XDAI", "POLYGON", "FANTOM", "ARBITRUM", "AVALANCHE"]
+          },
+          "txData": {
+            "type": "string",
+            "description": "Calldata for transaction.",
+            "example": "0xaajlafnalfnal"
+          },
+          "txType": {
+            "type": "string",
+            "description": "Type of transaction.",
+            "example": "eth_sendTransaction",
+            "enum": ["eth_sendTransaction", "eth_signMessage"]
+          },
+          "activeRouteId": {
+            "type": "number",
+            "description": "Id of Active Route.",
+            "example": 420
+          },
+          "value": {
+            "type": "string",
+            "description": "Native token amount to be sent with transaction.",
+            "example": "10000000000000000"
+          },
+          "userTxIndex": {
+            "type": "number",
+            "description": "Index of transaction in Active Route. Index of the object in the userTxs array.",
+            "example": 2
+          },
+          "totalUserTx": {
+            "type": "number",
+            "description": "Total number of transactions in Active Route.",
+            "example": 2
+          },
+          "approvalData": {
+            "$ref": "#/components/schemas/ApprovalData"
+          }
+        },
+        "required": [
+          "userTxType",
+          "txTarget",
+          "chainId",
+          "txData",
+          "txType",
+          "activeRouteId",
+          "value",
+          "userTxIndex",
+          "totalUserTx",
+          "approvalData"
+        ]
+      },
+      "NextTxOutputDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "$ref": "#/components/schemas/NextTxResponse"
+          }
+        },
+        "required": ["status", "result"]
+      },
+      "RouteStatusOutputDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "string",
+            "enum": ["PENDING", "COMPLETED"]
+          }
+        },
+        "required": ["status", "result"]
+      },
+      "TokenListOutputDTO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Status of API.",
+            "example": true
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenAsset"
+            }
+          }
+        },
+        "required": ["success", "result"]
+      }
+    }
+  },
+  "paths": {
+    "/v2/health": {
+      "get": {
+        "operationId": "AppController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Health Check for Fund Movr API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/gas-price": {
+      "get": {
+        "operationId": "AppController_getGasPrice",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current gas prices for a chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GasPriceResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/token-price": {
+      "get": {
+        "operationId": "AppController_getTokenPrice",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Token contract address on network, e.g USDC on Ethereum Mainnet",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns price of token for a given chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenPriceResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/enable-bridge-swap": {
+      "post": {
+        "operationId": "AppController_enableBridgeSwap",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BridgeSwapInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/disable-bridge-swap": {
+      "post": {
+        "operationId": "AppController_disableBridgeSwap",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BridgeSwapInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/enable-dex-swap": {
+      "post": {
+        "operationId": "AppController_enableDexSwap",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DexSwapInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/disable-dex-swap": {
+      "post": {
+        "operationId": "AppController_disableDexSwap",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DexSwapInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/build-tx": {
+      "post": {
+        "operationId": "AppController_getSingleTx",
+        "parameters": [
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SingleTxDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Get the tx details for the route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleTxOutputDTO"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/bridge-status": {
+      "get": {
+        "operationId": "AppController_getBridgingStatus",
+        "parameters": [
+          {
+            "name": "transactionHash",
+            "required": true,
+            "in": "query",
+            "description": "Transaction hash originating from the source chain while bridging assets.",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromChainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of source chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toChainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of destination chain, e.g Ethereum Mainnet = 1",
+            "example": "137",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bridgeName",
+            "required": false,
+            "in": "query",
+            "description": "Name of the bridge used while bridging.",
+            "example": "hop",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the status of the bridging transaction if completed or pending.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BridgeStatusResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/tx-receipt": {
+      "get": {
+        "operationId": "AppController_getTransactionReceipt",
+        "parameters": [
+          {
+            "name": "transactionHash",
+            "required": true,
+            "in": "query",
+            "description": "Transaction hash originating from the source chain while bridging assets.",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of source chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the receipt of the transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionReceiptResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Server"]
+      }
+    },
+    "/v2/approval/check-allowance": {
+      "get": {
+        "operationId": "ApproveController_fetchApprovals",
+        "parameters": [
+          {
+            "name": "chainID",
+            "required": true,
+            "in": "query",
+            "description": "ID of chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner",
+            "required": true,
+            "in": "query",
+            "description": "Wallet address of token holder",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowanceTarget",
+            "required": true,
+            "in": "query",
+            "description": "Address whose spending allowance is to be checked",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Contract address of token",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gives approval values of given tokens for a given owner & chainId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Approvals"]
+      }
+    },
+    "/v2/approval/build-tx": {
+      "get": {
+        "operationId": "ApproveController_fetchApprovalsCalldata",
+        "parameters": [
+          {
+            "name": "chainID",
+            "required": true,
+            "in": "query",
+            "description": "ID of chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner",
+            "required": true,
+            "in": "query",
+            "description": "Wallet address of token holder",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allowanceTarget",
+            "required": true,
+            "in": "query",
+            "description": "Address whose spending allowance is to be checked",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Contract address of token",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
+            "required": true,
+            "in": "query",
+            "description": "Amount of tokens to approve, e.g 10 USDC (6 decimals)",
+            "example": "10000000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the Approval Tx Data for the given params.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalTxOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Approvals"]
+      }
+    },
+    "/v2/quote": {
+      "get": {
+        "operationId": "QuoteController_getQuote",
+        "parameters": [
+          {
+            "name": "fromChainId",
+            "required": true,
+            "in": "query",
+            "description": "Chain id of source chain.",
+            "example": "137",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromTokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Token address on source chain.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toChainId",
+            "required": true,
+            "in": "query",
+            "description": "Chain id of destination chain.",
+            "example": "56",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toTokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Token address on destination chain.",
+            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromAmount",
+            "required": true,
+            "in": "query",
+            "description": "Amount of sending tokens.",
+            "example": "100000000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userAddress",
+            "required": true,
+            "in": "query",
+            "description": "Address of user. This will be used to check approvals.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uniqueRoutesPerBridge",
+            "required": true,
+            "in": "query",
+            "description": "Flag to return only best route per bridge using the sort criteria",
+            "example": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "disableSwapping",
+            "required": false,
+            "in": "query",
+            "description": "Flag to specify if routes that have dex swap should be ignored.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be included in routes.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "excludeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be excluded in routes.\nThis option will be ignored if includeDexes is specified.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be included in routes.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "excludeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be excluded in routes.\nThis option will be ignored if includeBridges is specified.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "required": true,
+            "in": "query",
+            "description": "Param to sort routes based on.",
+            "schema": {
+              "enum": ["output", "gas", "time"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxUserTxs",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of transactions.\nThis option will be ignored if singleTxOnly is marked as true.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "singleTxOnly",
+            "required": false,
+            "in": "query",
+            "description": "Only get quotes with one user transaction to bridge.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all the possible routes for bridging tokens from one chain to another. One of the routes can be selected and passed in to start the route.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Quote"]
+      }
+    },
+    "/v2/supported/bridges": {
+      "get": {
+        "operationId": "SupportedController_getAllBridges",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All Supported Bridges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedBridgesOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Supported"]
+      }
+    },
+    "/v2/supported/chains": {
+      "get": {
+        "operationId": "SupportedController_getAllSupportedRoutes",
+        "parameters": [
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All Supported Chains by Movr",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportedChainsOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Supported"]
+      }
+    },
+    "/v2/balances": {
+      "get": {
+        "operationId": "BalancesController_getBalances",
+        "parameters": [
+          {
+            "name": "userAddress",
+            "required": true,
+            "in": "query",
+            "example": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the balance of all tokens for a user address on all supported chains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Balance"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Balances"]
+      }
+    },
+    "/v2/balances/token-balance": {
+      "get": {
+        "operationId": "BalancesController_getBalance",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "required": true,
+            "in": "query",
+            "description": "Token contract address on network, e.g USDC on Ethereum Mainnet",
+            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "query",
+            "description": "ID of chain, e.g Ethereum Mainnet = 1",
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userAddress",
+            "required": true,
+            "in": "query",
+            "description": "Address of the user",
+            "example": "0x0E1B5AB67aF1c99F8c7Ebc71f41f75D4D6211e53",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the balance of the token on any given chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenBalanceReponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Balances"]
+      }
+    },
+    "/v2/route/start": {
+      "post": {
+        "operationId": "ActiveRoutesController_startActiveRoute",
+        "summary": "",
+        "description": "Function that takes in a route and starts the selected route.\n  Function is responsible for\n  - Saving the selected route to bridge tokens from one chain to another.\n  - Saving the fromChain, toChain, and fromAsssetAddress and toAssetAddress\n  - Returns the Active Route Id, Current Tx, Total number of txs, txType",
+        "parameters": [
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartActiveRouteInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Starts the Active Route and gives back the data to start the route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartActiveRouteResponseDTO"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["Routes"]
+      }
+    },
+    "/v2/route/active-routes": {
+      "get": {
+        "operationId": "ActiveRoutesController_getActiveRoutes",
+        "parameters": [
+          {
+            "name": "activeRouteId",
+            "required": true,
+            "in": "query",
+            "description": "Id of the Active Route.",
+            "example": "420",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get active route details using active route id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveRoutesOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Routes"]
+      }
+    },
+    "/v2/route/active-routes/users": {
+      "get": {
+        "operationId": "ActiveRoutesController_getActiveRoutesForUser",
+        "parameters": [
+          {
+            "name": "userAddress",
+            "required": true,
+            "in": "query",
+            "description": "Address of user starting the route.",
+            "example": "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort param for routes.",
+            "schema": {
+              "enum": ["updatedAt", "createdAt"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Offset for fetching active routes.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of active routes to return in one API call.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "routeStatus",
+            "required": false,
+            "in": "query",
+            "description": "Status of the route. The route will only be marked completed if all the user txs have been completed.",
+            "schema": {
+              "enum": ["PENDING", "COMPLETED"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromChainId",
+            "required": false,
+            "in": "query",
+            "description": "Id of sending chain",
+            "example": "137",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toChainId",
+            "required": false,
+            "in": "query",
+            "description": "Id of destination chain.",
+            "example": "56",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromTokenAddress",
+            "required": false,
+            "in": "query",
+            "description": "Address of token on source chain.",
+            "example": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toTokenAddress",
+            "required": false,
+            "in": "query",
+            "description": "Token address on destination chain.",
+            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all the active routes from a user address. Filters like fromChainId, toChainId and token addresses can be used to get back specific active routes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveRoutesOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Routes"]
+      }
+    },
+    "/v2/route/build-next-tx": {
+      "get": {
+        "operationId": "ActiveRoutesController_nextTx",
+        "parameters": [
+          {
+            "name": "activeRouteId",
+            "required": true,
+            "in": "query",
+            "description": "Id of Active Route.",
+            "example": "420",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get next tx details of an active route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NextTxOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Routes"]
+      }
+    },
+    "/v2/route/prepare": {
+      "get": {
+        "operationId": "ActiveRoutesController_getActiveRouteStatus",
+        "parameters": [
+          {
+            "name": "activeRouteId",
+            "required": true,
+            "in": "query",
+            "description": "Id of Active Route.",
+            "example": "420",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userTxIndex",
+            "required": true,
+            "in": "query",
+            "description": "Index of the userTxs in the Active Route. Every active route will have a userTxs array. userTxIndex is the index of the object in the userTxs array.",
+            "example": "2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "txHash",
+            "required": false,
+            "in": "query",
+            "description": "Transaction hash that relates to the userTxIndex. Each object in the userTxs is a transaction that has to be done by the user to progress in the route. If all the transactions are completed in the route, it will be marked complete.",
+            "example": "0x66b41ab61c3fd3a20649b9a722e69bdab58706c0",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "signature",
+            "required": false,
+            "in": "query",
+            "description": "Signature to be sent in case the next transaction is dependant on the signature.",
+            "example": "xyz",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get status of an active route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteStatusOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Routes"]
+      }
+    },
+    "/v2/token-lists/from-token-list": {
+      "get": {
+        "operationId": "TokenListController_getfromTokenList",
+        "parameters": [
+          {
+            "name": "fromChainId",
+            "required": true,
+            "in": "query",
+            "description": "Id of source chain, e.g Optimism = 10",
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toChainId",
+            "required": true,
+            "in": "query",
+            "description": "Id of destination chain, e.g xDAI = 100",
+            "example": "100",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "disableSwapping",
+            "required": false,
+            "in": "query",
+            "description": "Flag to specify if tokens that need dex swap should be ignored.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be included for token support.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "excludeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be excluded for token support.\nThis option will be ignored if includeDexes is specified.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be included for token support.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "excludeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be excluded for token support.\nThis option will be ignored if includeBridges is specified.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "singleTxOnly",
+            "required": false,
+            "in": "query",
+            "description": "To be Marked true if you want the token list that needs only a single transaction from the user to bridge.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All Supported token by a given chainId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenListOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Token Lists"]
+      }
+    },
+    "/v2/token-lists/to-token-list": {
+      "get": {
+        "operationId": "TokenListController_getToTokenList",
+        "parameters": [
+          {
+            "name": "fromChainId",
+            "required": true,
+            "in": "query",
+            "description": "Id of source chain, e.g Optimism = 10",
+            "example": "10",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toChainId",
+            "required": true,
+            "in": "query",
+            "description": "Id of destination chain, e.g xDAI = 100",
+            "example": "100",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "disableSwapping",
+            "required": false,
+            "in": "query",
+            "description": "Flag to specify if tokens that need dex swap should be ignored.\nThis option will be ignored if singleTxOnly is marked true.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be included for token support.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "excludeDexes",
+            "required": false,
+            "in": "query",
+            "description": "Specify Dexes that should be excluded for token support.\nThis option will be ignored if includeDexes is specified.",
+            "schema": {
+              "enum": ["oneinch"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be included for token support.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "excludeBridges",
+            "required": false,
+            "in": "query",
+            "description": "Specify Bridges that should be excluded for token support.\nThis option will be ignored if includeBridges is specified.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["polygon-bridge", "hop", "anyswap-router-v4", "hyphen", "arbitrum-bridge", "connext"]
+              }
+            }
+          },
+          {
+            "name": "singleTxOnly",
+            "required": false,
+            "in": "query",
+            "description": "To be Marked true if you want the token list that needs only a single transaction from the user to bridge.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "API-KEY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All Supported token by a given route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenListOutputDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Token Lists"]
+      }
+    }
+  }
+}

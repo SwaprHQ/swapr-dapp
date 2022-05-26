@@ -11,7 +11,7 @@ import { LiquidityPage } from '../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../utils/TestTypes'
 
-describe('Wallet connection tests [TC-60]', () => {
+describe('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
@@ -67,6 +67,20 @@ describe('Wallet connection tests [TC-60]', () => {
       expect(token1.symbol).to.be.eq('USDT')
     })
   })
+  //TODO remove skip after bug #979 is fixed
+  it.skip('Should open a campaign through Rewards page [TC-60]', () => {
+    RewardsPage.getRewardCards().should('be.visible')
+    RewardsPage.getAllPairsButton().click()
+    PairMenu.choosePair(TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
+    CampaignPage.checkCampaignData(
+        TOKENS_PAIR,
+        REWARDS_INPUT,
+        'ACTIVE',
+        DateUtils.getFormattedDateTime(expectedStartsAt),
+        DateUtils.getFormattedDateTime(expectedEndsAt)
+    )
+  })
   it('Should open a campaign through liquidity pair [TC-60]', () => {
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.getAllPairsButton().click()
@@ -80,19 +94,6 @@ describe('Wallet connection tests [TC-60]', () => {
     LiquidityPage.getRewardsCampaignButton().click()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click()
 
-    CampaignPage.checkCampaignData(
-      TOKENS_PAIR,
-      REWARDS_INPUT,
-      'ACTIVE',
-      DateUtils.getFormattedDateTime(expectedStartsAt),
-      DateUtils.getFormattedDateTime(expectedEndsAt)
-    )
-  })
-  it('Should open a campaign', () => {
-    RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click()
-    PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,

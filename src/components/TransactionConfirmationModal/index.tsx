@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `
 
 const Section = styled(AutoColumn)`
-  background-color: ${({ theme }) => theme.bg1And2};
+  background-color: ${({ theme }) => theme.bg2};
   padding: 24px;
 `
 

@@ -119,39 +119,43 @@ export default function App() {
                   <FullFeaturesRoute exact strict path="/pools/mine" component={MyPairs} />
                   <FullFeaturesRoute exact strict path="/rewards" component={Rewards} />
                   <FullFeaturesRoute exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/rewards/:currencyIdA/:liquidityMiningCampaignId/singleSidedStaking"
-                    component={LiquidityMiningCampaign}
-                  />
                   <FullFeaturesRoute exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/rewards/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    path="/rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
-                  <FullFeaturesRoute exact strict path="/create" component={AddLiquidity} />
-                  <FullFeaturesRoute exact path="/add" component={AddLiquidity} />
-                  {/* <Route exact strict path="/governance" component={GovPages} /> */}
-                  {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
-                  <FullFeaturesRoute exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <FullFeaturesRoute
                     exact
-                    path="/add/:currencyIdA/:currencyIdB"
+                    strict
+                    path="/rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                    component={LiquidityMiningCampaign}
+                  />
+                  <FullFeaturesRoute exact strict path="/pools/create" component={AddLiquidity} />
+                  <FullFeaturesRoute exact path="/pools/add" component={AddLiquidity} />
+                  {/* <Route exact strict path="/governance" component={GovPages} /> */}
+                  {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
+                  <FullFeaturesRoute
+                    exact
+                    path="/pools/add/:currencyIdA"
+                    component={RedirectOldAddLiquidityPathStructure}
+                  />
+                  <FullFeaturesRoute
+                    exact
+                    path="/pools/add/:currencyIdA/:currencyIdB"
                     component={RedirectDuplicateTokenIds}
                   />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/remove/:tokens"
+                    path="/pools/remove/:tokens"
                     component={RedirectOldRemoveLiquidityPathStructure}
                   />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/remove/:currencyIdA/:currencyIdB"
+                    path="/pools/remove/:currencyIdA/:currencyIdB"
                     component={RemoveLiquidity}
                   />
                   <FullFeaturesRoute exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />

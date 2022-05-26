@@ -13,7 +13,7 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 import { Card, Flex } from 'rebass'
 
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 
 import Countdown from '../../../Countdown'
 import CarrotBadge from '../../../Badge/Carrot'

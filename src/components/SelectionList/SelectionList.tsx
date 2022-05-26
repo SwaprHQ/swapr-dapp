@@ -1,9 +1,10 @@
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
-export const SelectionListWindowWrapper = styled.div`
+export const SelectionListWindowWrapper = styled.div<{ extraMarginTop?: string }>`
   width: 100%;
   margin-bottom: 10px;
+  margin-top: ${({ extraMarginTop }) => (extraMarginTop ? extraMarginTop : '0')};
 `
 export const SelectionListLabelWrapper = styled.div`
   margin-bottom: 14px;

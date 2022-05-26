@@ -2,22 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
-import { BridgeTxsFilter } from '../../state/bridge/reducer'
+import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { BridgeTab } from './utils'
 
 interface TabsProps {
   collectableTxAmount: number
   isCollecting: boolean
-  isCollectableFilter: boolean
   handleResetBridge: () => void
   setTxsFilter: (filter: BridgeTxsFilter) => void
+  activeTab: BridgeTab
+  setActiveTab: (tab: BridgeTab) => void
+  handleTriggerCollect: (tx: BridgeTransactionSummary) => void
+  firstTxnToCollect?: BridgeTransactionSummary
 }
 
 export const Tabs = ({
   collectableTxAmount,
   isCollecting,
-  isCollectableFilter,
   handleResetBridge,
   setTxsFilter,
+  activeTab,
+  setActiveTab,
+  handleTriggerCollect,
+  firstTxnToCollect,
 }: TabsProps) => {
   return (
     <TabsRow>
@@ -27,21 +35,35 @@ export const Tabs = ({
             handleResetBridge()
             return
           }
+          setActiveTab(BridgeTab.BRIDGE)
           setTxsFilter(BridgeTxsFilter.RECENT)
         }}
-        className={!(isCollecting || isCollectableFilter) ? 'active' : ''}
+        className={activeTab === 'bridge' ? 'active' : ''}
       >
         Bridge
       </Button>
       <Button
         onClick={() => {
-          setTxsFilter(BridgeTxsFilter.COLLECTABLE)
+          if (!isCollecting && firstTxnToCollect) {
+            handleTriggerCollect(firstTxnToCollect)
+            setTxsFilter(BridgeTxsFilter.COLLECTABLE)
+          }
         }}
-        className={isCollecting || isCollectableFilter ? 'active' : ''}
-        disabled={isCollecting}
+        disabled={!firstTxnToCollect}
+        className={activeTab === 'collect' ? 'active' : ''}
       >
         Collect
         {<Badge badgeTheme="green">{collectableTxAmount}</Badge>}
+      </Button>
+      <Button
+        onClick={() => {
+          handleResetBridge()
+          setTxsFilter(BridgeTxsFilter.NONE)
+          setActiveTab(BridgeTab.HISTORY)
+        }}
+        className={activeTab === 'history' ? 'active' : ''}
+      >
+        History
       </Button>
     </TabsRow>
   )
