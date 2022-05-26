@@ -175,7 +175,8 @@ export default function Swap() {
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   // True when the wallet tries to trade native currency to ERC20
-  const GnosisProtocolTradeRequireWrap = trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
+  const isGnosisProtocolTradeRequireWrap =
+    trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -372,7 +373,7 @@ export default function Swap() {
 
   const SwapBoxButton = () => {
     // Eco Router is computing the best route for the user, so we need to show a loading indicator
-    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && GnosisProtocolTradeRequireWrap
+    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && isGnosisProtocolTradeRequireWrap
     if (swapInfoIsLoading || isGnosisStatusComputed) {
       return (
         <ButtonPrimary style={{ textAlign: 'center' }} disabled>
@@ -394,7 +395,7 @@ export default function Swap() {
       )
     }
 
-    if (GnosisProtocolTradeRequireWrap) {
+    if (isGnosisProtocolTradeRequireWrap) {
       const isApprovalRequired = approval !== ApprovalState.APPROVED
       const swapDisabled =
         !isValid ||
@@ -670,7 +671,7 @@ export default function Swap() {
                 {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
                   <SwapBoxButton />
-                  {showApproveFlow && !GnosisProtocolTradeRequireWrap && (
+                  {showApproveFlow && !isGnosisProtocolTradeRequireWrap && (
                     <Column style={{ marginTop: '1rem' }}>
                       <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
                     </Column>
