@@ -62,7 +62,7 @@ describe('Bridge tests', () => {
 
     BridgePage.getSelectTokenButton().click()
     TokenMenu.chooseToken('eth')
-    BridgePage.getTokenSymbol().should("contain.text", "ETH")
+    BridgePage.getTokenSymbol().should('contain.text', 'ETH')
 
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.gnosis().click()
@@ -192,8 +192,8 @@ describe('Bridge tests', () => {
       console.log(res)
     })
     cy.wait(10000)
-    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
-      console.log(res)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should(res => {
+      expect(res.body.result).to.be.eq(balanceBefore + TRANSACTION_VALUE * (10 ^ 6))
     })
     cy.wait(10000)
     ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
@@ -231,6 +231,6 @@ describe('Bridge tests', () => {
     ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
       console.log(res)
     })
-    cy.wait(10000)
+    cy.wait(1000000000)
   })
 })
