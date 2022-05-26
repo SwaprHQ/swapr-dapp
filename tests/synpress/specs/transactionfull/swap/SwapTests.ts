@@ -1,9 +1,9 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
-import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
-import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
-import { TransactionHelper } from '../../../utils/TransactionHelper'
-import { TokenMenu } from '../../../pages/TokenMenu'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { SwapPage } from '../../../../pages/SwapPage'
+import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
+import { EtherscanFacade } from '../../../../utils/facades/EtherscanFacade'
+import { TransactionHelper } from '../../../../utils/TransactionHelper'
+import { TokenMenu } from '../../../../pages/TokenMenu'
 
 describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.0001

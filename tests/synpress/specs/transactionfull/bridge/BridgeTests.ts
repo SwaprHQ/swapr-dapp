@@ -1,9 +1,9 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { TokenMenu } from '../../../pages/TokenMenu'
-import { BridgePage } from '../../../pages/BridgePage'
-import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
-import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
-import { ArbiscanFacade } from '../../../utils/facades/ArbiscanFacade'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { TokenMenu } from '../../../../pages/TokenMenu'
+import { BridgePage } from '../../../../pages/BridgePage'
+import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
+import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
+import { ArbiscanFacade } from '../../../../utils/facades/ArbiscanFacade'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
