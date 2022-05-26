@@ -573,7 +573,7 @@ export class OmniBridge extends EcoBridgeChildBase {
         (Number(formatUnits(feeAmount.toString(), toToken.decimals)) /
           Number(formatUnits(parsedFromAmount.toString(), decimals))) *
         100
-      ).toString()}%`
+      ).toFixed(2)}%`
     }
 
     this._tokensPair = {
@@ -602,17 +602,17 @@ export class OmniBridge extends EcoBridgeChildBase {
     try {
       const GAS_COST = 260000
 
-      const gasPrice = await this._staticProviders[this._foreignChainId]?.getGasPrice()
+      const gasPrice = await this._staticProviders[this._activeChainId]?.getGasPrice()
 
       if (!gasPrice) throw new Error('Cannot get gas price')
 
       const {
         bundle: { nativeCurrencyPrice },
-      } = await request(subgraphClientsUris[this._foreignChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
+      } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
 
-      const gasCostInEth = formatEther(gasPrice.mul(GAS_COST))
+      const gasCostInNativeCurrency = formatEther(gasPrice.mul(GAS_COST))
 
-      gas = `${(Number(gasCostInEth) * Number(nativeCurrencyPrice)).toFixed(2)}$`
+      gas = `${(Number(gasCostInNativeCurrency) * Number(nativeCurrencyPrice)).toFixed(2)}$`
     } catch (e) {
       gas = undefined
     }
