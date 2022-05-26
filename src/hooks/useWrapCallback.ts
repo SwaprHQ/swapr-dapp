@@ -38,7 +38,7 @@ interface UseWrapCallback {
  * @param outputCurrency the selected output currency
  * @param typedValue the user input value
  */
-function useWrapCallback(
+export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
@@ -169,12 +169,12 @@ function useWrapCallback(
   ])
 }
 
-export default function useTradeWrapCallback(
+export function useTradeWrapCallback(
   trade?: Trade | undefined,
   typedValue?: string // can be also obtained from the SwapState
 ): UseWrapCallback {
   const isInputCurrencyNative =
-    trade && trade.inputAmount && Currency.isNative(trade?.inputAmount?.currency) ? true : false
+    trade && trade.inputAmount && Currency.isNative(trade.inputAmount.currency) ? true : false
 
   const inputCurrency = trade ? trade.inputAmount.currency : undefined
   const outputCurrency =
