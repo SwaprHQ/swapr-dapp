@@ -17,4 +17,7 @@ export class NetworkSwitcher {
   static getNetworkSwitcher() {
     return cy.get('[data-testid=network-switcher]').filter(':visible')
   }
+  static polygon() {
+    return cy.get('[data-testid=polygon-network-button]')
+  }
 }

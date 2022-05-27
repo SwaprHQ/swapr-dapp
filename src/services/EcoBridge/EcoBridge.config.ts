@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 
+const socketBridgeId = 'socket'
 //supported chains are bidirectional
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
@@ -29,3 +30,19 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
 export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
   bridgeConfig => `ecoBridge.${bridgeConfig.bridgeId}.transactions`
 )
+
+export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: string) => {
+  const isEntityAdapter = /^{"ids":\[/g
+
+  const keysWithoutSocket = ecoBridgePersistedKeys.filter(key => !key.includes(socketBridgeId))
+
+  keysWithoutSocket.forEach(key => {
+    const fullKey = `${persistenceNamespace}_${key}`
+    const entry = window.localStorage.getItem(fullKey)
+
+    if (entry && !isEntityAdapter.test(entry)) {
+      console.warn(`${fullKey} uses legacy store interface. It was cleared to preserve compatibility.`)
+      window.localStorage.removeItem(fullKey)
+    }
+  })
+}

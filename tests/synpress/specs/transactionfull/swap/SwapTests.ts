@@ -49,7 +49,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap',String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -85,7 +85,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DXD", "WETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -116,10 +116,6 @@ describe('Swapping tests', () => {
     TokenMenu.goBack()
       .chooseToken('dai')
       .switchTokens()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .click()
-    TokenMenu.chooseToken('eth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
@@ -137,7 +133,7 @@ describe('Swapping tests', () => {
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DAI", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -171,7 +167,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DXD", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log(ethBalanceBefore, TRANSACTION_VALUE * Math.pow(10, 18))
@@ -200,7 +196,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "XEENUS", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
