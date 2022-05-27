@@ -1,8 +1,11 @@
 import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
+import { TokenMenu } from '../../../pages/TokenMenu'
 import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 
 describe('Switching from maintet tests', () => {
+  const TRANSACTION_VALUE: number = 0.0001
+
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
@@ -227,6 +230,21 @@ describe('Switching from maintet tests', () => {
   })
   it('Should switch from polygon to rinkeby by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
+    MenuBar.getNetworkSwitcher().click()
+    NetworkSwitcher.rinkeby().click()
+    cy.allowMetamaskToSwitchNetwork()
+    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+  })
+  it('Should switch from mainnet to rinkeby by dapp [TC-55]', () => {
+    cy.changeMetamaskNetwork('ethereum')
+    SwapPage.openTokenToSwapMenu()
+      .chooseToken('dxd')
+      .switchTokens()
+    SwapPage.getCurrencySelectors()
+      .last()
+      .click()
+    TokenMenu.chooseToken('weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.rinkeby().click()
     cy.allowMetamaskToSwitchNetwork()
