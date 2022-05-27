@@ -331,7 +331,7 @@ jobs:
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: cypress-report
+          name: test-report
           path: public-report/*
           retention-days: 3
 
