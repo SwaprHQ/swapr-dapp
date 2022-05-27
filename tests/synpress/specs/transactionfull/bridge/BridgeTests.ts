@@ -39,7 +39,7 @@ describe('Bridge tests', () => {
       .should('contain.text', 'Bridge to')
       .click()
     BridgePage.confirmBridging()
-    cy.wait(5000)
+    cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
     cy.confirmMetamaskTransaction({})
     BridgePage.getBridgingInitiatedModal().should('contain.text', 'Bridging Initiated')
     BridgePage.closeBridgeInitiatedModal()
@@ -188,7 +188,6 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
-    cy.wait(10000)
     ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should((res: { body: { result: string } }) => {
       expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
     })

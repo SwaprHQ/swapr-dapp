@@ -345,8 +345,8 @@ jobs:
             SwapBoxTests
             TokenMenuTests
             TransactionSettingsTests
-            transactionLess
-            transactionFull
+            transactionless
+            transactionfull
 
   cleanup:
     name: 🧹 Cleanup
