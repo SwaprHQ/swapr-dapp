@@ -2,7 +2,7 @@ import { LiquidityPage } from '../../../pages/LiquidityPage'
 
 describe('Check Liquidity Page', () => {
   beforeEach(() => {
-  LiquidityPage.visitLiquidityPage()
+    LiquidityPage.visitLiquidityPage()
   })
 
   it('Check All Pairs button and campaigns/my pairs toggle switch on Liquidity Page', () => {

@@ -438,6 +438,7 @@ export default function AddLiquidity({
                     </RowBetween>
                   )}
                 <ButtonPrimary
+                  data-testid="supply-button"
                   onClick={() => {
                     expertMode ? onAdd() : setShowConfirm(true)
                   }}
