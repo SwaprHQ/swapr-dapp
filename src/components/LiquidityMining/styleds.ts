@@ -13,6 +13,7 @@ export const SmoothGradientCard = styled(DefaultCard)<{
   isToken?: boolean
   justifyContent?: string
   alignItems?: string
+  disabled?: boolean
   onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }>`
   position: relative;
@@ -23,8 +24,8 @@ export const SmoothGradientCard = styled(DefaultCard)<{
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
   text-align: center;
-  border: 1px solid #282167;
-  opacity: ${props => (!props.selectable || props.active ? '1' : '0.4')};
+  border: 1.5px solid ${props => (props.active ? '#3A1D75' : '#464366')};
+  opacity: ${({ selectable, active, disabled }) => (disabled ? '0.3' : !selectable || active ? '1' : '0.4')};
   border-radius: 12px;
 
   background: ${props =>

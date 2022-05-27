@@ -35,8 +35,8 @@ const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
   font-size: 13px !important;
   letter-spacing: 0.08em;
 `
-const StyledNumericalInput = styled(NumericalInput)`
-  color: ${props => props.theme.text2};
+const StyledNumericalInput = styled(NumericalInput)<{ selected: boolean }>`
+  color: ${({ theme, selected }) => (selected ? theme.text2 : theme.bg2)};
   width: 36px;
   max-height: 38px;
   font-weight: 600;
@@ -44,7 +44,7 @@ const StyledNumericalInput = styled(NumericalInput)`
   line-height: 16px;
   text-transform: uppercase;
   ::placeholder {
-    color: ${props => props.theme.text2};
+    color: ${({ theme, selected }) => (selected ? theme.text2 : theme.bg2)};
   }
 `
 const StyledFlex = styled(Flex)`
@@ -138,6 +138,7 @@ export default function StakeTokenAndLimit({
           padding={'41px'}
           height="150px"
           width="fit-content"
+          disabled={!stakeTokenOrPair}
         >
           <TYPE.mediumHeader
             alignSelf={'start'}
@@ -161,6 +162,8 @@ export default function StakeTokenAndLimit({
             <AmountFlex onClick={() => onUnlimitedPoolChange(false)} active={!unlimitedPool}>
               <StyledNumericalInput
                 style={{ width: widthValue + 12 + 'px' }}
+                placeholder="0"
+                selected={!unlimitedPool}
                 disabled={!stakeTokenOrPair}
                 value={stakingCapString}
                 onUserInput={handleLocalStakingCapChange}
@@ -172,7 +175,7 @@ export default function StakeTokenAndLimit({
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}
-                color={'text3'}
+                color={unlimitedPool ? 'bg2' : 'text3'}
                 letterSpacing="0.08em"
                 alignItems={'center'}
               >

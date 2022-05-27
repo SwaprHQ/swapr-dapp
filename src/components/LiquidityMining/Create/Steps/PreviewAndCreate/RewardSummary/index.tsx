@@ -7,11 +7,11 @@ import DataRow from '../DataRow'
 
 interface RewardSummaryProps {
   reward: TokenAmount[]
-  apy: Percent
+  apr: Percent
   stakingCap: TokenAmount | null
 }
 
-export default function RewardSummary({ reward, apy, stakingCap }: RewardSummaryProps) {
+export default function RewardSummary({ reward, apr, stakingCap }: RewardSummaryProps) {
   return (
     <Flex flexDirection="column" justifyContent="stretch" width="100%">
       <AutoColumn gap="8px">
@@ -23,7 +23,7 @@ export default function RewardSummary({ reward, apy, stakingCap }: RewardSummary
           name="MAX POOL SIZE"
           value={stakingCap && stakingCap.greaterThan('0') ? stakingCap.toSignificant(4) : '-'}
         />
-        <DataRow name="APY" value={`${apy.toSignificant(2)}%`} />
+        <DataRow name="APR" value={`${apr.toSignificant(2)}%`} />
       </AutoColumn>
     </Flex>
   )

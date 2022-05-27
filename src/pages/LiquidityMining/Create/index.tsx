@@ -252,7 +252,7 @@ export default function CreateLiquidityMining() {
             timelocked={timelocked}
             reward={memoizedRewardArray}
             stakingCap={stakingCap}
-            apy={campaign ? campaign.apy : new Percent('0', '100')}
+            apr={campaign ? campaign.apy : new Percent('0', '100')}
             onCreate={handleCreateRequest}
             setSimulatedStakedAmount={setSimulatedStakedAmount}
           />

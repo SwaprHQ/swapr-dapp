@@ -5,9 +5,9 @@ import { StyledInput } from '../styleds'
 import { ReactComponent as CalendarIcon } from '../../../assets/svg/calendar.svg'
 import { Flex } from 'rebass'
 
-const Input = styled(StyledInput)`
+const Input = styled(StyledInput)<{ selected: boolean }>`
   position: relative;
-  border: solid 1px ${props => props.theme.bg5};
+  border: solid 1px ${({ selected, theme }) => (!selected ? '#3A1D75' : theme.bg5)};
   border-radius: 8px;
   min-width: 154px;
   font-size: 11px;
@@ -63,7 +63,7 @@ export default function DateTimeInput({ value, placeholder, minimum, maximum, on
   return (
     <>
       <StyledDatePicker
-        customInput={<CalendarInput ref={ref} />}
+        customInput={<CalendarInput selected={value || value === false} ref={ref} />}
         dateFormat="yyyy-MM-dd HH:mm"
         renderDayContents={(day: number) => {
           return <StyledDay>{day}</StyledDay>
