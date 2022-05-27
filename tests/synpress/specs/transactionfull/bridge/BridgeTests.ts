@@ -192,8 +192,8 @@ describe('Bridge tests', () => {
       console.log(res)
     })
     cy.wait(10000)
-    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should(res => {
-      expect(res.body.result).to.be.eq(balanceBefore + 10000000)
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should((res: { body: { result: string } }) => {
+      expect(res.body.result).to.be.at.least((balanceBefore + 10000000))
     })
     cy.wait(10000)
     ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then(res => {
