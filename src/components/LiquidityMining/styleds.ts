@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { DarkCard } from '../Card'
+import { Card as DefaultCard } from 'rebass'
 
 export const Card = styled(DarkCard)`
   width: 100%;
 `
-export const SmoothGradientCard = styled(Card)<{
+export const SmoothGradientCard = styled(DefaultCard)<{
   selectable?: boolean
   active?: boolean
   width?: string
@@ -13,36 +14,24 @@ export const SmoothGradientCard = styled(Card)<{
   justifyContent?: string
   alignItems?: string
 }>`
+  position: relative;
+  display: flex;
   justify-content: ${props => (props.justifyContent ? props.justifyContent : 'end')};
   align-items: ${props => (props.alignItems ? props.alignItems : 'center')};
   color: ${props => (props.active ? props.theme.text3 : props.theme.text5)};
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
-  background-image: unset;
   text-align: center;
-
-  background-image: unset;
+  border: 1px solid #282167;
   opacity: ${props => (!props.selectable || props.active ? '1' : '0.4')};
+  border-radius: 12px;
 
-  cursor: pointer;
-  ::before {
-    border-color: ${props => !props.active && 'rgba(70, 67, 102, 1)'};
-    border-style: solid;
-    border-width: 1px;
-    border-radius: inherit;
-    border-image-source: ${props =>
-      props.active && 'linear-gradient(114.28deg, rgba(36, 23, 137, 0.2) 0%, #282167 91.9%)'};
-
-    backdrop-filter: blur(20px);
-    background: ${props =>
-      props.isToken && props.active
-        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(180deg, rgba(90, 12, 255, 0.8) -16.28%, rgba(17, 8, 35, 0) 100%);'
-        : props.active
-        ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.9) -50%, rgba(17, 8, 35, 0) 80.1%)'
-        : 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.1) -9%, rgba(17, 8, 35, 0) 113.1%) '};
-  }
-
-  display: flex;
+  background: ${props =>
+    props.isToken && props.active
+      ? ' linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),linear-gradient(180deg, rgba(90, 12, 255, 0.8) -16.28%, rgba(17, 8, 35, 0) 100%)'
+      : props.active
+      ? 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.9) -50%, rgba(17, 8, 35, 0) 80.1%);'
+      : 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(114.19deg, rgba(90, 12, 255, 0.1) -9%, rgba(17, 8, 35, 0) 113.1%)'};
 `
 
 export const Divider = styled.div`
