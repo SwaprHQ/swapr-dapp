@@ -64,6 +64,8 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
+import { useTokenBalance } from '../../state/wallet/hooks'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -178,6 +180,9 @@ export default function Swap() {
   const isGnosisProtocolTradeRequireWrap =
     trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
 
+  const wrappedToken = useTokenBalance(account as string, wrappedCurrency(trade?.inputAmount?.currency, chainId))
+  console.info({ wrappedToken })
+
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(Field.INPUT, value)
@@ -236,8 +241,8 @@ export default function Swap() {
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
       if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
+      else setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
     }
   }, [wrapState, approval, trade])
 

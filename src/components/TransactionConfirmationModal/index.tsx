@@ -13,6 +13,7 @@ import Circle from '../../assets/images/blue-loader.svg'
 
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
+import { useTranslation } from 'react-i18next'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -74,9 +75,10 @@ function TransactionSubmittedContent({
   chainId: ChainId
 }) {
   const theme = useTheme()
+  const { t } = useTranslation()
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
-
+  const explorer = isGnosisProtocolTrade ? t('GnosisProtocolExplorer') : t('BlockExplorer')
   const explorerExternalLink = chainId && hash && (
     <ExternalLink
       href={
@@ -86,7 +88,7 @@ function TransactionSubmittedContent({
       }
     >
       <Text fontWeight={500} fontSize="13px">
-        View on {isGnosisProtocolTrade ? 'Gnosis Protocol Explorer' : 'block explorer'}
+        View on {explorer}
       </Text>
     </ExternalLink>
   )
