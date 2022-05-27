@@ -1,3 +1,4 @@
+import { ChainId } from '@swapr/sdk'
 import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
@@ -33,12 +34,12 @@ export default function TransactionPopup({
 
   const explorer = 'View on ' + (isGnosisProtocolHash ? 'Gnosis Protocol Explorer' : 'block explorer')
 
-  const explorerExternalLink = chainId && (
+  const explorerExternalLink = (
     <ExternalLink
       href={
         isGnosisProtocolHash
-          ? getGnosisProtocolExplorerOrderLink(chainId, hash)
-          : getExplorerLink(chainId, hash, 'transaction')
+          ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
+          : getExplorerLink(chainId as ChainId, hash, 'transaction')
       }
     >
       {explorer}
