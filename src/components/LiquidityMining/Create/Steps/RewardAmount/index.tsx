@@ -114,7 +114,15 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
             currency0={rewardsObject.rewards[index]?.token}
             campaingType={CampaignType.TOKEN}
             onClick={() => handelOpenPairOrTokenSearch(index)}
-            customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
+            customAssetTitle={
+              index === 0 ? (
+                <div>ADD REWARD</div>
+              ) : (
+                <div>
+                  ADDITIONAL<br></br> REWARDS
+                </div>
+              )
+            }
             amount={rewardsObject.rewards[index]}
             handleUserInput={event => {
               handleLocalUserInput(event, index)

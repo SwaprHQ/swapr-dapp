@@ -52,7 +52,7 @@ interface AssetSelectorProps {
   currency0?: Token | null
   currency1?: Token | null
   campaingType: CampaignType
-  customAssetTitle?: string
+  customAssetTitle?: React.HTMLProps<HTMLDivElement>['children']
   amount?: TokenAmount
   index?: number
   isReward?: boolean
@@ -147,6 +147,10 @@ export default function AssetSelector({
     if (onResetCurrency) onResetCurrency()
     setTokenName(undefined)
   }
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (isReward && currency0) event.stopPropagation()
+    else onClick(event)
+  }
 
   return (
     <Flex flexDirection={'column'} key={index}>
@@ -157,10 +161,7 @@ export default function AssetSelector({
         width={'162px'}
         flexDirection={'column-reverse'}
         height={isReward ? '192px' : '150px'}
-        onClick={event => {
-          if (isReward && currency0) event.stopPropagation()
-          else onClick(event)
-        }}
+        onClick={handleClick}
       >
         {isReward && (
           <RelativeDismiss

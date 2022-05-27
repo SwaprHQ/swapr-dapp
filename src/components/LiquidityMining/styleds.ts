@@ -13,6 +13,7 @@ export const SmoothGradientCard = styled(DefaultCard)<{
   isToken?: boolean
   justifyContent?: string
   alignItems?: string
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }>`
   position: relative;
   display: flex;
