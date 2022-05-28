@@ -137,5 +137,6 @@
   "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
   "bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
-  "showMore": "Show more"
+  "showMore": "Show more",
+  "loading": "loading"
 }

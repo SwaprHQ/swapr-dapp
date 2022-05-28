@@ -460,4 +460,18 @@ body {
 .walletconnect-modal__mobile__toggle a {
   color: rgb(64, 153, 255);
 }
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.rotate {
+  animation: rotation 2s infinite linear;
+}
+
 `

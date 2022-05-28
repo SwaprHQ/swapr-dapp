@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -37,7 +38,7 @@ jobs:
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Generate open-api
-        run: yarn codegen:socket
+        run: yarn codegen
 
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
@@ -217,7 +218,7 @@ jobs:
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Generate open-api
-        run: yarn codegen:socket
+        run: yarn codegen
 
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify

@@ -175,7 +175,7 @@ export default function Updater(): null {
             )
 
             // dispatch any new results
-            if (Object.keys(results).length > 0)
+            if (Object.keys(results).length > 0) {
               dispatch(
                 updateMulticallResults({
                   chainId,
@@ -183,6 +183,7 @@ export default function Updater(): null {
                   blockNumber: latestBlockNumber,
                 })
               )
+            }
 
             // dispatch any errored calls
             if (erroredCalls.length > 0) {

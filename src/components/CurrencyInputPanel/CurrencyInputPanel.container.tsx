@@ -28,33 +28,7 @@ export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelPr
 export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalBridge()
 
-  const {
-    value: valueRaw,
-    onUserInput: onUserInputRaw,
-    displayedValue,
-    setDisplayedValue,
-    disableCurrencySelect,
-  } = currencyInputPanelProps
-
-  const debounceOnUserInput = useMemo(() => {
-    return debounce(onUserInputRaw, 500)
-  }, [onUserInputRaw])
-
-  const onUserInput = useCallback(
-    (val: string) => {
-      const normalizedValue = normalizeInputValue(val)
-
-      setDisplayedValue?.(normalizedValue)
-      debounceOnUserInput(normalizedValue)
-    },
-    [debounceOnUserInput, setDisplayedValue]
-  )
-
-  const value = disableCurrencySelect ? valueRaw : displayedValue ?? ''
-
-  useEffect(() => {
-    debounceOnUserInput.cancel()
-  }, [debounceOnUserInput, disableCurrencySelect])
+  const { value, onUserInput, displayedValue, disableCurrencySelect } = currencyInputPanelProps
 
   useBridgeInputValidation(!!disableCurrencySelect)
 
