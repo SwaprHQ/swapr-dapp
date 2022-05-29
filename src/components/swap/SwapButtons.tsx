@@ -56,6 +56,7 @@ export function SwapButtons({
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
+
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const noRoute = !route

@@ -7,10 +7,14 @@ import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM } from '../../constants'
 import { useTranslation } from 'react-i18next'
 
-const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string; loader?: boolean }>`
+const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
     !disabled && gradientColor && `linear-gradient(90deg, #2E17F2 19.74%, ${gradientColor} 120.26%)`};
-  cursor: ${({ loader }) => (loader ? 'wait' : 'pointer')};
+`
+
+const StyledSwapLoadingButton = styled(ButtonPrimary)`
+  background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
+  cursor: 'wait';
 `
 
 const StyledPlataformImage = styled.img`
@@ -25,10 +29,7 @@ const StyledSwapButtonText = styled(Text)<{ width?: string }>`
   width: ${({ width }) => (width ? `${width}px` : 'auto')};
 `
 
-const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)<{ width?: string }>`
-  display: flex;
-  height: 16px;
-  white-space: pre-wrap;
+const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)`
   justify-content: end;
   flex: 1.1;
 `
@@ -87,7 +88,7 @@ export const SwapButton = ({
 export const SwapLoadingButton = () => {
   const { t } = useTranslation()
   return (
-    <StyledSwapButton gradientColor={'#FB52A1'} loader>
+    <StyledSwapLoadingButton>
       <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
       <div className="loading-rotation">
         {Object.keys(ROUTABLE_PLATFORM_STYLE).map(key => (
@@ -102,6 +103,6 @@ export const SwapLoadingButton = () => {
           </div>
         ))}
       </div>
-    </StyledSwapButton>
+    </StyledSwapLoadingButton>
   )
 }
