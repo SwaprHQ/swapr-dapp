@@ -58,7 +58,7 @@ const StyledRouteFlex = styled(Flex)`
   boarder: 1px solid ${({ theme }) => theme.purple6};
   border-radius: 12px;
   padding: 18px 16px;
-  margin-bottom: 16px;
+  margin-bottom: 16px !important;
 `
 
 const MoreMarketsButton = styled(Flex)`

@@ -7,9 +7,10 @@ import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM } from '../../constants'
 import { useTranslation } from 'react-i18next'
 
-const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
+const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string; loader?: boolean }>`
   background-image: ${({ gradientColor, disabled }) =>
     !disabled && gradientColor && `linear-gradient(90deg, #2E17F2 19.74%, ${gradientColor} 120.26%)`};
+  cursor: ${({ loader }) => (loader ? 'wait' : 'pointer')};
 `
 
 const StyledPlataformImage = styled.img`
@@ -17,10 +18,19 @@ const StyledPlataformImage = styled.img`
   margin-right: 6px;
 `
 
-const StyledSwapButtonText = styled(Text)`
+const StyledSwapButtonText = styled(Text)<{ width?: string }>`
   display: flex;
   height: 16px;
   white-space: pre-wrap;
+  width: ${({ width }) => (width ? `${width}px` : 'auto')};
+`
+
+const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)<{ width?: string }>`
+  display: flex;
+  height: 16px;
+  white-space: pre-wrap;
+  justify-content: end;
+  flex: 1.1;
 `
 
 const StyledPlataformText = styled(Text)`
@@ -70,6 +80,28 @@ export const SwapButton = ({
           </>
         )}
       </StyledSwapButtonText>
+    </StyledSwapButton>
+  )
+}
+
+export const SwapLoadingButton = () => {
+  const { t } = useTranslation()
+  return (
+    <StyledSwapButton gradientColor={'#FB52A1'} loader>
+      <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
+      <div className="loading-rotation">
+        {Object.keys(ROUTABLE_PLATFORM_STYLE).map(key => (
+          <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
+            <StyledPlataformImage
+              width={21}
+              height={21}
+              src={ROUTABLE_PLATFORM_STYLE[key].logo}
+              alt={ROUTABLE_PLATFORM_STYLE[key].alt}
+            />
+            <StyledSwapButtonText width={'120'}>{ROUTABLE_PLATFORM_STYLE[key].name}</StyledSwapButtonText>
+          </div>
+        ))}
+      </div>
     </StyledSwapButton>
   )
 }

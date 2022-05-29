@@ -474,4 +474,117 @@ body {
   animation: rotation 2s infinite linear;
 }
 
+@keyframes loading-rotations {
+  0% {
+    opacity:1;
+  }
+  6.25% {
+    opacity:1;
+  }
+  12.5% {
+    opacity:0;
+  }
+  93.75% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+.loading-rotation{
+  position:relative;
+  display: flex;
+  flex:1
+  justify-content: start;
+  align-items: flex-end;
+  height:20px
+  margin-left:11px;
+}
+
+
+.loading-rotation>div {
+  position:absolute;
+  opacity:0;
+  display: flex;
+  
+}
+.loading-rotation>div>div{
+  padding: 0px 5px;
+}
+
+.loading-rotation>div {
+  -webkit-animation-name: loading-rotations;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 16s;
+
+  -moz-animation-name: loading-rotations;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-duration: 16s;
+
+  -o-animation-name: loading-rotations;
+  -o-animation-timing-function: ease-in-out;
+  -o-animation-iteration-count: infinite;
+  -o-animation-duration: 16s;
+
+  animation-name: loading-rotations;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 16s;
+}
+.loading-rotation>div:nth-of-type(1) {
+  -webkit-animation-delay: 14s;
+  -moz-animation-delay: 14s;
+  -o-animation-delay: 14s;
+  animation-delay: 14s;
+  
+}
+.loading-rotation>div:nth-of-type(2) {
+  -webkit-animation-delay: 12s;
+  -moz-animation-delay: 12s;
+  -o-animation-delay: 12s;
+  animation-delay: 12s;
+  
+}
+.loading-rotation>div:nth-of-type(3) {
+  -webkit-animation-delay: 10s;
+  -moz-animation-delay: 10s;
+  -o-animation-delay: 10s;
+  animation-delay: 10s;
+  
+}
+.loading-rotation>div:nth-of-type(4) {
+  -webkit-animation-delay: 8s;
+  -moz-animation-delay: 8s;
+  -o-animation-delay: 8s;
+  animation-delay: 8s;
+  
+}
+.loading-rotation>div:nth-of-type(5) {
+  -webkit-animation-delay: 6s;
+  -moz-animation-delay: 6s;
+  -o-animation-delay: 6s;
+  animation-delay: 6s;
+  
+}
+.loading-rotation>div:nth-of-type(6) {
+  -webkit-animation-delay: 4s;
+  -moz-animation-delay: 4s;
+  -o-animation-delay: 4s;
+  animation-delay: 4s;
+}
+.loading-rotation>div:nth-of-type(7) {
+  -webkit-animation-delay: 2s;
+  -moz-animation-delay: 2s;
+  -o-animation-delay: 2s;
+  animation-delay: 2s;
+}
+.loading-rotation>div:nth-of-type(8) {
+  -webkit-animation-delay: 0s;
+  -moz-animation-delay: 0s;
+  -o-animation-delay: 0s;
+  animation-delay: 0s;
+}
 `

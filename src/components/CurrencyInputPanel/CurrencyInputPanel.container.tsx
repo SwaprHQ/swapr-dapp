@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
-import debounce from 'lodash.debounce'
+import React from 'react'
 
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 
@@ -12,7 +11,6 @@ import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBrid
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
-import { normalizeInputValue } from '../../utils'
 import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
