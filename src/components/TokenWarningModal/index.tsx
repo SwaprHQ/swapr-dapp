@@ -13,6 +13,7 @@ import { ButtonError } from '../Button'
 import { TokenList } from '@uniswap/token-lists'
 import ListLogo from '../ListLogo'
 import { transparentize } from 'polished'
+import { useTranslation } from 'react-i18next'
 
 const WarningContainer = styled.div`
   width: 100%;
@@ -53,6 +54,7 @@ interface TokenWarningCardProps {
 
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
   const theme = useTheme()
+  const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
 
   if (!token) return null
@@ -76,7 +78,7 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
             href={getExplorerLink(chainId, token.address, 'token')}
           >
             <TYPE.main color="purple4" fontSize="14px" lineHeight="17px" title={token.address}>
-              {shortenAddress(token.address)} (View on block explorer)
+              {shortenAddress(token.address)} (View on {t('BlockExplorer')})
             </TYPE.main>
           </ExternalLink>
         )}

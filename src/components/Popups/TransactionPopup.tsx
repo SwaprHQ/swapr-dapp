@@ -1,5 +1,7 @@
+import { ChainId } from '@swapr/sdk'
 import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { SwapProtocol } from '../../state/transactions/reducer'
@@ -27,18 +29,19 @@ export default function TransactionPopup({
 }) {
   const { chainId } = useActiveWeb3React()
 
+  const { t } = useTranslation()
   const theme = useTheme()
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
-  const explorer = 'View on ' + (isGnosisProtocolHash ? 'Gnosis Protocol Explorer' : 'block explorer')
+  const explorer = 'View on ' + (isGnosisProtocolHash ? t('GnosisProtocolExplorer') : t('BlockExplorer'))
 
-  const explorerExternalLink = chainId && (
+  const explorerExternalLink = (
     <ExternalLink
       href={
         isGnosisProtocolHash
-          ? getGnosisProtocolExplorerOrderLink(chainId, hash)
-          : getExplorerLink(chainId, hash, 'transaction')
+          ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
+          : getExplorerLink(chainId as ChainId, hash, 'transaction')
       }
     >
       {explorer}

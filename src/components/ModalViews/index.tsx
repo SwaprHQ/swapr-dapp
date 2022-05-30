@@ -10,6 +10,7 @@ import { ArrowUpCircle } from 'react-feather'
 import Circle from '../../assets/images/blue-loader.svg'
 import { getExplorerLink } from '../../utils'
 import { ExternalLink } from '../../theme/components'
+import { useTranslation } from 'react-i18next'
 
 const ConfirmOrLoadingWrapper = styled.div`
   width: 100%;
@@ -49,6 +50,7 @@ export function SubmittedView({
 }) {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
+  const { t } = useTranslation()
 
   return (
     <ConfirmOrLoadingWrapper>
@@ -63,7 +65,7 @@ export function SubmittedView({
         {children}
         {chainId && hash && (
           <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')} style={{ marginLeft: '4px' }}>
-            <TYPE.subHeader>View transaction on block explorer</TYPE.subHeader>
+            <TYPE.subHeader>View transaction on {t('BlockExplorer')}</TYPE.subHeader>
           </ExternalLink>
         )}
       </AutoColumn>

@@ -225,9 +225,9 @@ const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
 /**
  * Returns the Gnosis Protocol Explorer Base link
  * @param chainId the chain Id
- * @returns
+ * @returnsthe explorer URL for given chain Id
  */
-export function getGnosisProtocolExplorerLink(chainId: ChainId) {
+export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
   return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
 }
 
@@ -245,7 +245,7 @@ export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: st
  * Returns the Gnosis Protocol Explorer order link
  * @param chainId the chain Id
  * @param address the order address
- * @returns
+ * @returns the order link
  */
 export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
   return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`

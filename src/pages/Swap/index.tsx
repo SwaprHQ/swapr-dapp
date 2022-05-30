@@ -27,7 +27,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
-import useTradeWrapCallback, { WrapState, WrapType } from '../../hooks/useWrapCallback'
+import { useTradeWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { Field, setRecipient } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -52,6 +52,9 @@ import { RecipientField } from '../../components/RecipientField'
 import { ButtonConnect } from '../../components/ButtonConnect'
 import { Trans } from 'react-i18next'
 import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
+import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -63,7 +66,6 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -144,13 +146,6 @@ export default function Swap() {
     inputError: swapInputError,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
-  const isInputCurrencyNative =
-    potentialTrade && potentialTrade.inputAmount && Currency.isNative(potentialTrade?.inputAmount?.currency)
-      ? true
-      : false
-
-  console.info({ potentialTrade, isInputCurrencyNative })
-
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback + and a state variable)
   const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(
@@ -181,10 +176,12 @@ export default function Swap() {
   const isValid = !swapInputError
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
-  /**
-   * True when the wallet tries to trade native currency to ERC20
-   */
-  const isGnosisTradeV2RequireWrap = trade instanceof GnosisProtocolTrade && isInputCurrencyNative && isValid
+  const isGnosisTradeRequireWrap = trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
+
+  console.info({ trade, isNative: isInputCurrencyNative(trade) })
+
+  const wrappedToken = useTokenBalance(account as string, wrappedCurrency(trade?.inputAmount?.currency, chainId))
+  console.info({ wrappedToken })
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -244,8 +241,8 @@ export default function Swap() {
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
       if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
+      else setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
     }
   }, [wrapState, approval, trade])
 
@@ -284,7 +281,7 @@ export default function Swap() {
           swapErrorMessage: undefined,
           txHash: hash,
         })
-        //reset statuses, in case we want to operate again
+        //reset states, in case we want to operate again
         if (trade instanceof GnosisProtocolTrade) {
           setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
           setWrapState && setWrapState(WrapState.UNKNOWN)
@@ -381,7 +378,7 @@ export default function Swap() {
 
   const SwapBoxButton = () => {
     // Eco Router is computing the best route for the user, so we need to show a loading indicator
-    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && isGnosisTradeV2RequireWrap
+    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && isGnosisTradeRequireWrap
     if (swapInfoIsLoading || isGnosisStatusComputed) {
       return (
         <ButtonPrimary style={{ textAlign: 'center' }} disabled>
@@ -403,7 +400,7 @@ export default function Swap() {
       )
     }
 
-    if (isGnosisTradeV2RequireWrap) {
+    if (isGnosisTradeRequireWrap) {
       const isApprovalRequired = approval !== ApprovalState.APPROVED
       const swapDisabled =
         !isValid ||
@@ -679,7 +676,7 @@ export default function Swap() {
                 {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
                   <SwapBoxButton />
-                  {showApproveFlow && !isGnosisTradeV2RequireWrap && (
+                  {showApproveFlow && !isGnosisTradeRequireWrap && (
                     <Column style={{ marginTop: '1rem' }}>
                       <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
                     </Column>
@@ -710,4 +707,14 @@ export default function Swap() {
       <Footer />
     </>
   )
+}
+
+/**
+ * @param trade - the whole trade class, whatever it may contain
+ * @returns boolean - if the input currency exists and is native
+ */
+function isInputCurrencyNative(potentialTrade: Trade | undefined) {
+  return potentialTrade && potentialTrade.inputAmount && Currency.isNative(potentialTrade?.inputAmount?.currency)
+    ? true
+    : false
 }

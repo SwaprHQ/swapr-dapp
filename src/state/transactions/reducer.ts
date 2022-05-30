@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import {
   addTransaction,
   checkedTransaction,
@@ -16,6 +17,28 @@ export enum SwapProtocol {
   LEVINSWAP = 'LEVINSWAP',
   HONEYSWAP = 'HONEYSWAP',
   CURVE = 'CURVE',
+}
+
+export function getMapOfExchanges(arg: any): Record<string, string> {
+  const isPrototypeOf = Function.call.bind(Object.prototype.isPrototypeOf)
+  if (!(isPrototypeOf(RoutablePlatform, arg) || arg === RoutablePlatform)) return {}
+  const listOfProperties = Object.getOwnPropertyDescriptors(arg)
+  const ofMap = Object.values(listOfProperties)
+    //there is a 'prototype' property in this list of entries that is not writable, enumerable nor configurable
+    .filter(el => el['value'] instanceof RoutablePlatform && el['enumerable'])
+    // make it uppercase and get 1st word only
+    .map(el => el.value.name.toUpperCase().replace(/ .*/, ''))
+    .reduce<Record<string, string>>((accumulator, current) => ({ ...accumulator, [current]: current }), {})
+  //console.info(Object.values(listOfProperties))
+  return ofMap
+}
+
+export function createSwapProtocol(): Readonly<Record<string, string>> {
+  const completeMap: Record<string, string> = {
+    ...getMapOfExchanges(UniswapV2RoutablePlatform),
+    ...getMapOfExchanges(RoutablePlatform),
+  }
+  return Object.freeze(completeMap)
 }
 
 export interface TransactionDetails {
