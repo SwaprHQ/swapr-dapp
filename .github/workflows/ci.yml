@@ -349,19 +349,6 @@ jobs:
           path: public-report/*
           retention-days: 3
 
-      - name: Delete merged artifacts
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: |
-            LiquidityTests
-            MenuBarTests
-            RewardsPageTests
-            SwapBoxTests
-            TokenMenuTests
-            TransactionSettingsTests
-            transactionless
-            transactionfull
-
   cleanup:
     name: 🧹 Cleanup
     needs: [install, lint, test, typecheck, build, cypress, cypress-report]
