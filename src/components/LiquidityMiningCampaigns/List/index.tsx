@@ -75,7 +75,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
       <Flex flexDirection="column">
         <Box mb="8px">
           {overallLoading ? (
-            <LoadingGrid itemsAmount={loadingItems ? loadingItems : responsiveItemsPerPage} />
+            <LoadingGrid itemsAmount={loadingItems || responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (
             <ListLayout>
               {itemsPage.map(item => {

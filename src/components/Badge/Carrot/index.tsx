@@ -43,7 +43,7 @@ const CarrotBadge = ({ isGreyed = false }: { isGreyed?: boolean }) => {
     <MouseoverTooltip content="Rewards at least a Carrot KPI token">
       <KpiBadge isGreyed={isGreyed}>
         <StyledCarrotLogo />
-        {t('Carrot')}
+        CARROT
       </KpiBadge>
     </MouseoverTooltip>
   )

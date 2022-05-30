@@ -140,7 +140,6 @@
   "campaigns": "Campaigns",
   "24hVolume": "24h Volume",
   "farming": "Farming",
-  "carrot": "Carrot",
   "myPairs": "My Pairs",
   "accountAnalyticsAndAccruedFees": "Account analytics and accrued fees",
   "bridgeTxnThrough": "This transaction is routed through <0>{{bridgeName}}</0>",
