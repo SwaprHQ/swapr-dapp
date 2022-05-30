@@ -17,6 +17,7 @@ describe('Campaign creation tests', () => {
   const REWARD_TOKEN = 'weenus'
   const expectedStartsAt = DateUtils.getDateTimeAndAppendMinutes(2)
   const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
+  let isCampaignCreated = false
 
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
@@ -65,9 +66,13 @@ describe('Campaign creation tests', () => {
       expect(rewards[0].token.symbol).to.be.eq('WEENUS')
       expect(token0.symbol).to.be.eq('DAI')
       expect(token1.symbol).to.be.eq('USDT')
+      isCampaignCreated = true
     })
   })
-  it('Should open a campaign through liquidity pair [TC-60]', () => {
+  it('Should open a campaign through liquidity pair [TC-60]', function () {
+    if(isCampaignCreated){
+      this.skip()
+    }
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.getAllPairsButton().click()
     TokenMenu.getOpenTokenManagerButton().click()
@@ -88,7 +93,10 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTime(expectedEndsAt)
     )
   })
-  it('Should open a campaign through Rewards page [TC-60]', () => {
+  it('Should open a campaign through Rewards page [TC-60]', function () {
+    if(isCampaignCreated){
+      this.skip()
+    }
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
     PairMenu.choosePair(TOKENS_PAIR)
