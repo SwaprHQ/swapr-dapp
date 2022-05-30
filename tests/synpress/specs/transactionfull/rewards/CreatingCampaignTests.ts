@@ -70,7 +70,7 @@ describe('Campaign creation tests', () => {
     })
   })
   it('Should open a campaign through liquidity pair [TC-60]', function () {
-    if(isCampaignCreated){
+    if(!isCampaignCreated){
       this.skip()
     }
     LiquidityPage.visitLiquidityPage()
@@ -94,7 +94,7 @@ describe('Campaign creation tests', () => {
     )
   })
   it('Should open a campaign through Rewards page [TC-60]', function () {
-    if(isCampaignCreated){
+    if(!isCampaignCreated){
       this.skip()
     }
     RewardsPage.getRewardCards().should('be.visible')
