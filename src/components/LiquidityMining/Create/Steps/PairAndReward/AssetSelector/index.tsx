@@ -155,6 +155,7 @@ export default function AssetSelector({
   return (
     <Flex flexDirection={'column'} key={index}>
       <SmoothGradientCard
+        selectable
         isToken={true}
         active={currency0 !== undefined}
         paddingBottom={'34px !important'}

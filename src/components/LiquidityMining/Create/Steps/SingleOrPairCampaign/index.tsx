@@ -57,6 +57,7 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
   return (
     <StyledAutoRow gap="35px">
       <SmoothGradientCard
+        selectable
         width={'218px'}
         height={'138px'}
         active={singleReward === CampaignType.TOKEN}
@@ -70,6 +71,7 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         </StyledAutoColumn>
       </SmoothGradientCard>
       <SmoothGradientCard
+        selectable
         width={'218px'}
         height={'138px'}
         onClick={() => handleRewardClick(CampaignType.PAIR)}

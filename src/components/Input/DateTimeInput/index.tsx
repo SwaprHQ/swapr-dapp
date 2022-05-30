@@ -7,7 +7,7 @@ import { Flex } from 'rebass'
 
 const Input = styled(StyledInput)<{ selected: boolean }>`
   position: relative;
-  border: solid 1px ${({ selected, theme }) => (!selected ? '#3A1D75' : theme.bg5)};
+  border: ${({ selected, theme }) => (!selected ? '1.5px solid #3A1D75' : `1px solid ${theme.bg5}`)};
   border-radius: 8px;
   min-width: 154px;
   font-size: 11px;

@@ -24,8 +24,9 @@ export const SmoothGradientCard = styled(DefaultCard)<{
   width: ${props => props.width || '100%'};
   height: ${props => props.height || '100%'};
   text-align: center;
+  cursor: ${props => props.selectable && 'pointer'};
   border: 1.5px solid ${props => (props.active ? '#3A1D75' : '#464366')};
-  opacity: ${({ selectable, active, disabled }) => (disabled ? '0.3' : !selectable || active ? '1' : '0.4')};
+  opacity: ${({ disabled }) => (disabled ? '0.3' : '1')};
   border-radius: 12px;
 
   background: ${props =>

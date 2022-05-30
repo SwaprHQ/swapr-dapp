@@ -175,7 +175,8 @@ export default function StakeTokenAndLimit({
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}
-                color={unlimitedPool ? 'bg2' : 'text3'}
+                marginLeft={'9px'}
+                color={unlimitedPool ? 'dark4' : 'text2'}
                 letterSpacing="0.08em"
                 alignItems={'center'}
               >
