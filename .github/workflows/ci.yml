@@ -242,7 +242,7 @@ jobs:
           name: ${{ matrix.containers }}
           path: |
             ${{ matrix.containers }}.json
-            tests/screenshots
+            public-report/screenshots
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
