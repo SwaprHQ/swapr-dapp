@@ -83,7 +83,6 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
-      console.log('rawvakue', rawValue)
       setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { rawAmount: rawValue, index: index } })
 
       const newParsedAmount = tryParseAmount(rawValue, rewardsObject.rewards[index]?.currency) as
