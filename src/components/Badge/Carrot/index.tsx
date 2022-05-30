@@ -3,7 +3,6 @@ import { ReactComponent as CarrotLogo } from '../../../assets/svg/carrot.svg'
 import styled from 'styled-components'
 
 import { MouseoverTooltip } from '../../Tooltip'
-import { useTranslation } from 'react-i18next'
 
 const KpiBadge = styled.div<{ isGreyed: boolean }>`
   height: 16px;
@@ -36,17 +35,13 @@ const StyledCarrotLogo = styled(CarrotLogo)`
   }
 `
 
-const CarrotBadge = ({ isGreyed = false }: { isGreyed?: boolean }) => {
-  const { t } = useTranslation()
-
-  return (
-    <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-      <KpiBadge isGreyed={isGreyed}>
-        <StyledCarrotLogo />
-        CARROT
-      </KpiBadge>
-    </MouseoverTooltip>
-  )
-}
+const CarrotBadge = ({ isGreyed = false }: { isGreyed?: boolean }) => (
+  <MouseoverTooltip content="Rewards at least a Carrot KPI token">
+    <KpiBadge isGreyed={isGreyed}>
+      <StyledCarrotLogo />
+      CARROT
+    </KpiBadge>
+  </MouseoverTooltip>
+)
 
 export default CarrotBadge

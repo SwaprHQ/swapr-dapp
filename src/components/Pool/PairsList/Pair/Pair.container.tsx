@@ -31,7 +31,6 @@ export function Pair({
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  console.log('dayLiquidity:', dayLiquidity)
 
   const correctLogo = () =>
     isSingleSidedStakingCampaign ? (
