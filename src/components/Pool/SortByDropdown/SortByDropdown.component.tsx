@@ -24,7 +24,7 @@ export function SortByDropdown({
   const sortOptions = {
     [LIQUIDITY_SORTING_TYPES.TVL]: t('TVL'),
     [LIQUIDITY_SORTING_TYPES.APY]: t('APY'),
-    [LIQUIDITY_SORTING_TYPES.NEW]: t('New'),
+    [LIQUIDITY_SORTING_TYPES.NEW]: t('NEW'),
   }
 
   return (

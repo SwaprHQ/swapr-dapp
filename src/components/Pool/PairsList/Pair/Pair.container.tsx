@@ -71,14 +71,17 @@ export function Pair({
         </Flex>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between">
-        <ValueWithLabel value={usdLiquidity && `${formatCurrencyAmount(usdLiquidity).split('.')[0]}`} title="TVL" />
+        <ValueWithLabel
+          value={usdLiquidity && `${formatCurrencyAmount(usdLiquidity).split('.')[0]}`}
+          title={t('TVL')}
+        />
         <ValueWithLabel
           value={
             volume24hUSD ? `${formatCurrencyAmount(volume24hUSD).split('.')[0]}` : dayLiquidity ? dayLiquidity : '-'
           }
-          title="24h volume"
+          title={t('24hVolume')}
         />
-        <ValueWithLabel value={`${apy.toFixed(0)}%`} title="APY" />
+        <ValueWithLabel value={`${apy.toFixed(0)}%`} title={t('APY')} />
       </Flex>
     </MobileBox>
   ) : (
