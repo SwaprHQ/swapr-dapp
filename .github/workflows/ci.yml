@@ -241,8 +241,8 @@ jobs:
         with:
           name: ${{ matrix.containers }}
           path: |
-          ${{ matrix.containers }}.json
-          tests/screenshots
+            ${{ matrix.containers }}.json
+            tests/screenshots
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
