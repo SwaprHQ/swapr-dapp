@@ -15,6 +15,7 @@ import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { ButtonProps } from 'rebass'
 import { ButtonInvisbile } from '../Button'
+import { useTranslation } from 'react-i18next'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -215,6 +216,7 @@ export default function AccountDetails({
 }: AccountDetailsProps) {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
+  const { t } = useTranslation()
 
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) dispatch(clearAllTransactions({ chainId }))
@@ -276,7 +278,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>View on {t('BlockExplorer')}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -298,7 +300,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>View on {t('BlockExplorer')}</span>
                           </AddressLink>
                         )}
                       </div>

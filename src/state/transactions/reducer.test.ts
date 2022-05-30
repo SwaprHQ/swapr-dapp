@@ -1,8 +1,7 @@
 import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
-import { filter } from 'lodash'
 import { createStore, Store } from 'redux'
 import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTransaction } from './actions'
-import reducer, { getMapOfExchanges, initialState, createSwapProtocol, SwapProtocol, TransactionState } from './reducer'
+import reducer, { createSwapProtocol, getMapOfExchanges, initialState, TransactionState } from './reducer'
 
 describe('transaction reducer', () => {
   let store: Store<TransactionState>
@@ -218,6 +217,7 @@ describe('createSwapProtocol', () => {
   it('create SwapProtocol', () => {
     const actualProtocol = createSwapProtocol()
     console.info(typeof actualProtocol.SWAPR)
-    expect(false).toBeTruthy()
+    expect(actualProtocol.SWAPR).toBeDefined()
+    expect(actualProtocol.notDefined).toBeUndefined()
   })
 })

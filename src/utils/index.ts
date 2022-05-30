@@ -227,7 +227,7 @@ const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
  * @param chainId the chain Id
  * @returns the explorer URL for given chain ID
  */
-export function getGnosisProtocolExplorerLink(chainId: ChainId) {
+export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
   return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
 }
 

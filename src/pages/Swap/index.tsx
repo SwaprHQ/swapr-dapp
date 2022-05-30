@@ -52,6 +52,8 @@ import { RecipientField } from '../../components/RecipientField'
 import { ButtonConnect } from '../../components/ButtonConnect'
 import { Trans } from 'react-i18next'
 import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 // Landing Page Imports
@@ -64,8 +66,6 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import { useTokenBalance } from '../../state/wallet/hooks'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -714,11 +714,5 @@ export default function Swap() {
  * @returns boolean - if the input currency exists and is native
  */
 function isInputCurrencyNative(trade: Trade | undefined) {
-  return
-  trade &&
-  trade?.inputAmount &&
-  trade?.inputAmount?.currency &&
-  Currency.isNative(trade?.inputAmount?.currency as Currency)
-    ? true
-    : false
+  return trade && trade.inputAmount && Currency.isNative(trade?.inputAmount?.currency) ? true : false
 }

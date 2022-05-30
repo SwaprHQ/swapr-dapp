@@ -24,7 +24,7 @@ export enum SwapProtocol {
  * @param arg class to retrieve the Protocols from
  * @returns map of protocols
  */
-export function getMapOfExchanges(arg: typeof RoutablePlatform) {
+export function getMapOfExchanges(arg: any): Record<string, string> {
   const isPrototypeOf = Function.call.bind(Object.prototype.isPrototypeOf)
   if (!(isPrototypeOf(RoutablePlatform, arg) || arg === RoutablePlatform)) return {}
   const listOfProperties = Object.getOwnPropertyDescriptors(arg)
@@ -33,32 +33,18 @@ export function getMapOfExchanges(arg: typeof RoutablePlatform) {
     .filter(el => el['value'] instanceof RoutablePlatform && el['enumerable'])
     // make it uppercase and get 1st word only
     .map(el => el.value.name.toUpperCase().replace(/ .*/, ''))
-    //transform keys into the proper form to make the enum
-    .map(el => [el, el])
+    .reduce<Record<string, string>>((accumulator, current) => ({ ...accumulator, [current]: current }), {})
   //console.info(Object.values(listOfProperties))
-  const filteredEntries = Object.fromEntries(ofMap)
-  return filteredEntries
+  return ofMap
 }
 
-export function createSwapProtocol() {
-  const completeMap = { ...getMapOfExchanges(UniswapV2RoutablePlatform), ...getMapOfExchanges(RoutablePlatform) }
-  // the elements in keys and values coincide
-  const result = Object.values(completeMap).reduce<Record<string, string>>(
-    (accumulator, current) => {
-      return { ...accumulator, [current]: current }
-    },
-    {} // 👈️ initial value
-  )
-  console.info(result)
-  return Object.freeze(result)
+export function createSwapProtocol(): Readonly<Record<string, string>> {
+  const completeMap: Record<string, string> = {
+    ...getMapOfExchanges(UniswapV2RoutablePlatform),
+    ...getMapOfExchanges(RoutablePlatform),
+  }
+  return Object.freeze(completeMap)
 }
-
-//function createSwapProtocolRecord():
-
-//const myVar = ['abc'] as const
-//type SwapP = typeof myVar[number]
-
-//export const SwapProtocol: Readonly<Map<string, string>> = createSwapProtocol()
 
 export interface TransactionDetails {
   hash: string
