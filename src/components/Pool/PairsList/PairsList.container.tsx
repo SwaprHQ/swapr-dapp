@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
@@ -44,13 +45,15 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
-            <Header>
-              <HeaderText>{t('Pair')}</HeaderText>
-              <HeaderText>{t('Campaigns')}</HeaderText>
-              <HeaderText>{t('TVL')}</HeaderText>
-              <HeaderText>{t('24hVolume')}</HeaderText>
-              <HeaderText>{t('APY')}</HeaderText>
-            </Header>
+            {!isMobile && (
+              <Header>
+                <HeaderText>{t('Pair')}</HeaderText>
+                <HeaderText>{t('Campaigns')}</HeaderText>
+                <HeaderText>{t('TVL')}</HeaderText>
+                <HeaderText>{t('24hVolume')}</HeaderText>
+                <HeaderText>{t('APY')}</HeaderText>
+              </Header>
+            )}
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <UndecoratedLink
                 key={singleSidedStake.address}

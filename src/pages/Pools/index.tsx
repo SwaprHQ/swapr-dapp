@@ -118,7 +118,7 @@ function Title({
   return (
     <>
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-        <Flex alignItems="center" justifyContent="space-between">
+        <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
               <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">

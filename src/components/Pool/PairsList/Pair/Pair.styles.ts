@@ -1,6 +1,11 @@
 import styled from 'styled-components'
-import { Flex } from 'rebass/styled-components'
+import { Flex, Box } from 'rebass/styled-components'
 import { TYPE } from '../../../../theme'
+
+export const MobileBox = styled(Box)`
+  padding-bottom: 24px;
+  border-bottom: 1px solid ${props => props.theme.bg3};
+`
 
 export const GridCard = styled.div`
   display: grid;

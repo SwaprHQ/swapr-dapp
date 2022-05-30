@@ -17,6 +17,12 @@ export const HeaderText = styled(Text)`
 export const ListLayout = styled.div`
   display: grid;
   grid-template-columns: auto;
+  grid-gap: 0;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-gap: 20px;
+    padding: 16px;
+  `};
 `
 
 export const PaginationRow = styled(Flex)`
