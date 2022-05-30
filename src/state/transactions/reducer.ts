@@ -28,13 +28,13 @@ export function getMapOfExchanges(arg: any): Record<string, string> {
   const isPrototypeOf = Function.call.bind(Object.prototype.isPrototypeOf)
   if (!(isPrototypeOf(RoutablePlatform, arg) || arg === RoutablePlatform)) return {}
   const listOfProperties = Object.getOwnPropertyDescriptors(arg)
-  const ofMap = Object.values(listOfProperties)
+  const ofMap: Record<string, string> = Object.values(listOfProperties)
     //there is a 'prototype' property in this list of entries that is not writable, enumerable nor configurable
     .filter(el => el['value'] instanceof RoutablePlatform && el['enumerable'])
     // make it uppercase and get 1st word only
     .map(el => el.value.name.toUpperCase().replace(/ .*/, ''))
+    //convert array to collection of records
     .reduce<Record<string, string>>((accumulator, current) => ({ ...accumulator, [current]: current }), {})
-  //console.info(Object.values(listOfProperties))
   return ofMap
 }
 
