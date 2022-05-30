@@ -42,8 +42,6 @@ import Loader from '../../components/Loader'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { SwapSettings } from './../../components/swap/SwapSettings'
 import { SwapButton } from '../../components/swap/SwapButton'
 import { RecipientField } from '../../components/RecipientField'
@@ -284,17 +282,6 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
-    inputCurrencyAmount: parsedAmounts[Field.INPUT],
-    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
-    trade,
-  })
-
-  const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
-    fiatValueInput,
-    fiatValueOutput,
-  ])
-
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
 
   return (
@@ -337,8 +324,6 @@ export default function Swap() {
                     onMax={handleMaxInput(Field.INPUT)}
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
-                    fiatValue={fiatValueInput}
-                    isFallbackFiatValue={isFallbackFiatValueInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -361,9 +346,6 @@ export default function Swap() {
                     currency={currencies[Field.OUTPUT]}
                     onCurrencySelect={handleOutputSelect}
                     otherCurrency={currencies[Field.INPUT]}
-                    fiatValue={fiatValueOutput}
-                    priceImpact={priceImpact}
-                    isFallbackFiatValue={isFallbackFiatValueOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />
