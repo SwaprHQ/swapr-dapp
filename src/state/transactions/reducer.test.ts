@@ -1,7 +1,8 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { filter } from 'lodash'
 import { createStore, Store } from 'redux'
 import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTransaction } from './actions'
-import reducer, { initialState, TransactionState } from './reducer'
+import reducer, { getMapOfExchanges, initialState, createSwapProtocol, SwapProtocol, TransactionState } from './reducer'
 
 describe('transaction reducer', () => {
   let store: Store<TransactionState>
@@ -188,5 +189,35 @@ describe('transaction reducer', () => {
       expect(Object.keys(store.getState()[ChainId.MAINNET] ?? {})).toEqual([])
       expect(Object.keys(store.getState()[ChainId.RINKEBY] ?? {})).toEqual(['0x1'])
     })
+  })
+})
+
+describe('createSwapProtocol', () => {
+  it('matches the actual list of protocols from an platform to their expected values', () => {
+    const expectedUniswapNames = [
+      'SWAPR',
+      'UNISWAP',
+      'SUSHISWAP',
+      'HONEYSWAP',
+      'BAOSWAP',
+      'LEVINSWAP',
+      'QUICKSWAP',
+      'DFYN',
+    ]
+
+    const expectedRoutableNames = ['0X', 'CURVE', 'COW']
+
+    // the filtered entries can grow, if that happens we don't want the tests to break
+    // we are checking if the expected list is a subset of the actual list
+    const uniswapFilteredEntries = getMapOfExchanges(UniswapV2RoutablePlatform)
+    expect(expectedUniswapNames.every(el => Array.from(Object.keys(uniswapFilteredEntries)).includes(el))).toBeTruthy()
+
+    const genericFilteredEntries = getMapOfExchanges(RoutablePlatform)
+    expect(expectedRoutableNames.every(el => Array.from(Object.keys(genericFilteredEntries)).includes(el))).toBeTruthy()
+  })
+  it('create SwapProtocol', () => {
+    const actualProtocol = createSwapProtocol()
+    console.info(typeof actualProtocol.SWAPR)
+    expect(false).toBeTruthy()
   })
 })

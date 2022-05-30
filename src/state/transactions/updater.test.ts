@@ -1,3 +1,5 @@
+import { UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { SwapProtocol } from './reducer'
 import { shouldCheck } from './updater'
 
 describe('transactions updater', () => {
