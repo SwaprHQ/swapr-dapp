@@ -18,17 +18,22 @@ import { AssetLogo } from './AssetLogo'
 
 const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
-  border-radius: 8px;
+  border-radius: 4px;
   border: none;
   width: 150px;
   height: 33px;
   font-weight: 400;
-  font-size: ${props => (props.value.length > 18 ? '8' : props.value.length > 11 ? '12' : '14')}px;
+  font-size: ${props => (props.value.length > 18 ? '9' : props.value.length > 11 ? '12' : '14')}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
   padding-right: 8px;
-  background-color: ${props => props.theme.dark1};
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(20px);
+  letter-spacing: 0.02em;
+  ::placeholder {
+    color: ${props => props.theme.dark4};
+  }
 `
 
 const RelativeContainer = styled.div<{ disabled?: boolean }>`
@@ -147,10 +152,6 @@ export default function AssetSelector({
     if (onResetCurrency) onResetCurrency()
     setTokenName(undefined)
   }
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (isReward && currency0) event.stopPropagation()
-    else onClick(event)
-  }
 
   return (
     <Flex flexDirection={'column'} key={index}>
@@ -158,11 +159,13 @@ export default function AssetSelector({
         selectable
         isToken={true}
         active={currency0 !== undefined}
-        paddingBottom={'34px !important'}
+        paddingBottom={
+          isReward && index === 0 && currency0 === undefined ? '45px' : isReward ? '30px' : '28px' + '!important'
+        }
         width={'162px'}
         flexDirection={'column-reverse'}
         height={isReward ? '192px' : '150px'}
-        onClick={handleClick}
+        onClick={onClick}
       >
         {isReward && (
           <RelativeDismiss
@@ -178,16 +181,38 @@ export default function AssetSelector({
           <Flex flexDirection={'column'}>
             {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
-                <StyledNumericalInput value={rawAmount ? rawAmount : ''} onUserInput={handleUserInput} />
+                <StyledNumericalInput
+                  style={{
+                    width: `${
+                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 17 + rawAmount?.length * 8 : 25
+                    }px`,
+                  }}
+                  onClick={event => event.stopPropagation()}
+                  placeholder="0"
+                  value={rawAmount ? rawAmount : ''}
+                  onUserInput={handleUserInput}
+                />
               </RelativeContainer>
             ) : (
               //deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
-              <TYPE.largeHeader marginBottom={'4px'} lineHeight="22px" color="lightPurple" fontSize={13}>
+              <TYPE.largeHeader
+                letterSpacing={'0.08em'}
+                marginBottom={'4px'}
+                lineHeight="22px"
+                color="lightPurple"
+                fontSize={13}
+              >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
             )}
             {tokenName && (
-              <TYPE.small color="purple3" fontSize={10} fontWeight="600" lineHeight="12px">
+              <TYPE.small
+                letterSpacing={'0.05em'}
+                color="purple3"
+                fontSize={10}
+                fontWeight="600"
+                lineHeight={isReward ? '16px' : '12px'}
+              >
                 {tokenName}
                 {isReward && (
                   <span style={{ color: 'white' }}>
