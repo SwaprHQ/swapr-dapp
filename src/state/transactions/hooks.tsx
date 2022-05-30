@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
-import { TransactionDetails, SwapProtocol } from './reducer'
+import { TransactionDetails } from './reducer'
 
 export type SwaprTransactionResponse =
   | TransactionResponse
@@ -22,7 +22,7 @@ interface UseTransactionAdderCustomData {
     tokenAddress: string
     spender: string
   }
-  swapProtocol?: SwapProtocol
+  swapProtocol?: string
 }
 
 // helper that can take a ethers library transaction response and add it to the list of transactions

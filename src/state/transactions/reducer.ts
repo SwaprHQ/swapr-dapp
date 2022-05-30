@@ -10,15 +10,6 @@ import {
 
 const now = () => new Date().getTime()
 
-export enum SwapProtocol {
-  COW = 'COW',
-  SWAPR = 'SWAPR',
-  UNISWAPV2 = 'UNISWAPV2',
-  LEVINSWAP = 'LEVINSWAP',
-  HONEYSWAP = 'HONEYSWAP',
-  CURVE = 'CURVE',
-}
-
 /**
  * Receives a routing platform and returns the protocols in pairs of key/value
  * @param arg class to retrieve the Protocols from
@@ -46,6 +37,8 @@ export function createSwapProtocol(): Readonly<Record<string, string>> {
   return Object.freeze(completeMap)
 }
 
+export const SwapProtocol = createSwapProtocol()
+
 export interface TransactionDetails {
   hash: string
   approval?: { tokenAddress: string; spender: string }
@@ -56,7 +49,7 @@ export interface TransactionDetails {
   addedTime: number
   confirmedTime?: number
   from: string
-  swapProtocol?: SwapProtocol
+  swapProtocol?: string
 }
 
 export interface TransactionState {

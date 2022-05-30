@@ -181,7 +181,6 @@ export default function Swap() {
     trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
 
   const wrappedToken = useTokenBalance(account as string, wrappedCurrency(trade?.inputAmount?.currency, chainId))
-  console.info({ wrappedToken })
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -408,6 +407,11 @@ export default function Swap() {
         (priceImpactSeverity > 3 && !isExpertMode) ||
         gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
       const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
+
+      // const needBalanceWarning =
+      //   parsedAmounts[Field.INPUT] &&
+      //   wrappedToken &&
+      //   (parsedAmounts[Field.INPUT] as CurrencyAmount).toExact() > wrappedToken.toExact()
 
       const wrappedCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
 

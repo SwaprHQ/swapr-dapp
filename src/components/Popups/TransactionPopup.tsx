@@ -25,7 +25,7 @@ export default function TransactionPopup({
   hash: string
   success?: boolean
   summary?: string
-  swapProtocol?: SwapProtocol
+  swapProtocol?: string
 }) {
   const { chainId } = useActiveWeb3React()
 
