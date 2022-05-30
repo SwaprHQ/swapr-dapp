@@ -10,8 +10,8 @@ describe('Bridge tests', () => {
   const TRANSACTION_VALUE = 1
 
   before(() => {
-    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then((res: { body: { result: number } }) => {
-      balanceBefore = res.body.result
+    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then((res: { body: { result: string } }) => {
+      balanceBefore = parseFloat(res.body.result)
       console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
     })
     BridgePage.visitBridgePage()
@@ -22,7 +22,10 @@ describe('Bridge tests', () => {
     cy.resetMetamaskAccount()
     cy.wait(500)
   })
-  it('Should initiate a bridging ', () => {
+  it('Should initiate a bridging ', function() {
+    if (isNaN(balanceBefore)) {
+      this.skip() // Skipping test if Arbiscan is down
+    }
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
     BridgePage.getNetworkToSelector().click()
@@ -182,12 +185,16 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
-  it('Should display history of bridge', () => {
+  it('Should display history of bridge', function() {
+    if (isNaN(balanceBefore)) {
+      this.skip()
+    }
     cy.changeMetamaskNetwork('rinkeby')
     BridgePage.getStatusTag(600000).should('contain.text', 'Confirmed')
     BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
+
     ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should((res: { body: { result: string } }) => {
       expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
     })
