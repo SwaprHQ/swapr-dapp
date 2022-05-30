@@ -240,7 +240,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
-          path: ${{ matrix.containers }}.json
+          path: |
+          ${{ matrix.containers }}.json
+          tests/screenshots
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
@@ -294,7 +296,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: LiquidityTests
-          path: report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: MenuBarTests
