@@ -20,7 +20,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
   border-radius: 8px;
   border: none;
-  width: 100%;
+  width: 150px;
   height: 33px;
   font-weight: 400;
   font-size: ${props => (props.value.length > 18 ? '8' : props.value.length > 11 ? '12' : '14')}px;
