@@ -14,6 +14,7 @@ import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox'
 import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
 import { getAccountAnalyticsLink } from '../../../../utils'
+import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()
@@ -46,8 +47,8 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
 
   return (
     <DimBlurBgBox padding={'24px'}>
-      <Flex alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
-        <Text fontSize="16px" mb="24px">
+      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
+        <Text fontSize="16px" mb={['12px', '24px']}>
           {t('yourLiquidity')}
         </Text>
         <Box>
@@ -56,27 +57,29 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           </ButtonExternalLink>
         </Box>
       </Flex>
-      <Flex alignItems="center" justifyContent="space-between" mb={4}>
-        <ValueWithLabel
-          title={t('poolShare')}
-          value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
-        />
-        <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
-        <ValueWithLabel
-          title={t('pooledToken', { token: currency0?.symbol })}
-          value={token0Deposited ? token0Deposited.toSignificant(6) : '-'}
-        />
-        <ValueWithLabel
-          title={t('pooledToken', { token: currency1?.symbol })}
-          value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
-        />
-        <ValueWithLabel
-          title={t('swapFee')}
-          value={
-            pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%' : '-'
-          }
-        />
-      </Flex>
+      <Box marginBottom={3}>
+        <InfoGrid>
+          <ValueWithLabel
+            title={t('poolShare')}
+            value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
+          />
+          <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
+          <ValueWithLabel
+            title={t('pooledToken', { token: currency0?.symbol })}
+            value={token0Deposited ? token0Deposited.toSignificant(6) : '-'}
+          />
+          <ValueWithLabel
+            title={t('pooledToken', { token: currency1?.symbol })}
+            value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
+          />
+          <ValueWithLabel
+            title={t('swapFee')}
+            value={
+              pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%' : '-'
+            }
+          />
+        </InfoGrid>
+      </Box>
       <Flex flexDirection={['column', 'row']} alignItems="center">
         <Box marginBottom={[3, 0]} width="100%">
           <ButtonPurpleDim
