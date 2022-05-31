@@ -10,10 +10,14 @@ import { ReactComponent as LockOpenSvg } from '../../../../../assets/svg/lock-op
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
+  padding: 42.5px 28px;
+  height: 150px;
+  width: 413px;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     padding: 21px;
+    width:331px;
+    height:272px;
     flex-wrap: wrap;
-    width: 328px;
     gap: 12px;
     justify-content:flex-start;
   `};
@@ -68,7 +72,7 @@ export default function DurationAndLocking({
   )
   return (
     <FlexWrapper>
-      <StyledSmoothGradientCard height="150px" width="413px" padding={'42.5px 28px'}>
+      <StyledSmoothGradientCard>
         <TimeSelector
           data-testid="start-time-selector-box"
           title="STARTING"

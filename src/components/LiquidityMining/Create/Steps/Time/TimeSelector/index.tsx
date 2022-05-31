@@ -6,8 +6,10 @@ import styled from 'styled-components'
 
 const TimeSelectorWrapper = styled(Flex)`
   width: 100%;
+  justify-content: space-between;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    width:53%
+    gap: 22px;
+    justify-content: space-evenly;
   `};
 `
 
@@ -21,13 +23,13 @@ interface TimeSelectorProps {
 
 export default function TimeSelector({ title, placeholder, minimum, value, onChange }: TimeSelectorProps) {
   return (
-    <TimeSelectorWrapper flexDirection="column" alignSelf={'stretch'} justifyContent="space-between">
+    <TimeSelectorWrapper flexDirection="column" alignSelf={'stretch'}>
       <Flex>
         <TYPE.small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
           {title}
         </TYPE.small>
       </Flex>
-      <Flex>
+      <Flex maxWidth={'154px'}>
         <DateTimeInput
           value={value}
           placeholder={placeholder}

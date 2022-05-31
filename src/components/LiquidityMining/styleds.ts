@@ -50,6 +50,6 @@ export const HorizontalDivider = styled.div`
   margin: 0 18px;
   background: ${props => props.theme.bg5};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-   display:none;
+    display:none;
   `};
 `
