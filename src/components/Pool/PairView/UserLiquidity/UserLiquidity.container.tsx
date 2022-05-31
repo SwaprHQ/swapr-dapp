@@ -86,8 +86,9 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           {t('addLiquidity')}
         </ButtonPurpleDim>
         <ButtonPurpleDim
+          disabled={token0Deposited?.equalTo('0')}
+          as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
           style={{ marginLeft: '4px' }}
-          as={Link}
           to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
         >
           {t('removeLiquidity')}
