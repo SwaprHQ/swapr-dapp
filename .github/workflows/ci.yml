@@ -236,6 +236,9 @@ jobs:
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
@@ -348,6 +351,19 @@ jobs:
           name: test-report
           path: public-report/*
           retention-days: 3
+
+      - name: Delete merged artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            LiquidityTests
+            MenuBarTests
+            RewardsPageTests
+            SwapBoxTests
+            TokenMenuTests
+            TransactionSettingsTests
+            transactionless
+            transactionfull
 
   cleanup:
     name: 🧹 Cleanup
