@@ -24,6 +24,7 @@ const FlexContainer = styled(Flex)`
 const AmountFlex = styled(Flex)`
   width: max-content;
   align-self: center;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
   padding: 12px;
@@ -53,7 +54,6 @@ const StyledFlex = styled(Flex)<{ active: boolean }>`
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
-  border-radius: 4px;
   padding: 12px;
   padding-top: ${props => props.active && '8px'};
 `
