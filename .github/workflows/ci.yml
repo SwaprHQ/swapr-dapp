@@ -339,6 +339,9 @@ jobs:
         run: ls -R
         working-directory: mochawesome-report
 
+      - name: Move screenshots
+        run: mv mochawesome-report/public-report/screenshots public-report/screenshots
+
       - name: Merge test results into one
         run: yarn run report:merge
 
@@ -348,9 +351,6 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: public-report
-
-      - name: Move screenshots
-        run: mv tests/synpress/screenshots public-report/screenshots
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
