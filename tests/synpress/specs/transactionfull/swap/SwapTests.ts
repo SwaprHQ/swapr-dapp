@@ -49,7 +49,11 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap',String(TRANSACTION_VALUE), 'ETH', 'DXD')
+    SwapPage.getTransactionConfirmedModal()
+        .should('be.visible')
+        .should('contain.text', 'Transaction Submitted')
+
+    MenuBar.checkToastMessage('Swap', String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -85,7 +89,11 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "DXD", "WETH", String(TRANSACTION_VALUE))
+    SwapPage.getTransactionConfirmedModal()
+        .should('be.visible')
+        .should('contain.text', 'Transaction Submitted')
+
+    MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -113,9 +121,11 @@ describe('Swapping tests', () => {
       .click()
     TokenMenu.switchTokenList('compound')
     TokenMenu.switchTokenList('swapr-token-list')
-    TokenMenu.goBack()
-      .chooseToken('dai')
-      .switchTokens()
+    TokenMenu.goBack().chooseToken('dai')
+    SwapPage.getCurrencySelectors()
+      .last()
+      .should('contain.text', 'DAI')
+    SwapPage.switchTokens()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
@@ -131,9 +141,13 @@ describe('Swapping tests', () => {
     SwapPage.confirmSwap()
     cy.confirmMetamaskTransaction({})
 
+    SwapPage.getTransactionConfirmedModal()
+        .should('be.visible')
+        .should('contain.text', 'Transaction Submitted')
+
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-    MenuBar.checkToastMessage('Swap', "DAI", "ETH", String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -167,7 +181,11 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "DXD", "ETH", String(TRANSACTION_VALUE))
+    SwapPage.getTransactionConfirmedModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
+
+    MenuBar.checkToastMessage('Swap', 'DXD', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log(ethBalanceBefore, TRANSACTION_VALUE * Math.pow(10, 18))
@@ -196,7 +214,11 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "XEENUS", "ETH", String(TRANSACTION_VALUE))
+    SwapPage.getTransactionConfirmedModal()
+        .should('be.visible')
+        .should('contain.text', 'Transaction Submitted')
+
+    MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
