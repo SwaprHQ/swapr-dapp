@@ -21,17 +21,16 @@ const FlexContainer = styled(Flex)`
     flex-direction: column;
   `}
 `
-const AmountFlex = styled(Flex)<{ active: boolean }>`
+const AmountFlex = styled(Flex)`
   width: max-content;
   align-self: center;
-  opacity: ${({ active }) => !active && '0.7'};
   background: rgba(0, 0, 0, 0.65);
-  opacity: 0.7;
   backdrop-filter: blur(20px);
   padding: 12px;
 `
 const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
   text-decoration: ${props => (props.active ? 'underline' : 'none')};
+  opacity: ${({ active }) => !active && '0.7'};
   text-underline-offset: 6px;
   line-height: 22px;
   color: ${props => (props.active ? props.theme.text2 : props.theme.dark4)};
@@ -47,12 +46,11 @@ const StyledNumericalInput = styled(NumericalInput)<{ selected: boolean }>`
   line-height: 26px;
   text-transform: uppercase;
   ::placeholder {
-    color: ${({ theme }) => theme.bg2};
+    color: ${({ theme, selected }) => (selected ? theme.text2 : theme.bg2)};
   }
 `
 const StyledFlex = styled(Flex)<{ active: boolean }>`
   border-radius: 4px;
-  opacity: ${({ active }) => !active && '0.7'};
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
   border-radius: 4px;
@@ -61,6 +59,7 @@ const StyledFlex = styled(Flex)<{ active: boolean }>`
 `
 const BorderContainer = styled(Flex)<{ active: boolean }>`
   border-bottom: 1px solid ${({ active }) => (active ? 'white' : 'transparent')};
+  opacity: ${({ active }) => !active && '0.7'};
 `
 
 interface TokenAndLimitProps {
@@ -119,7 +118,7 @@ export default function StakeTokenAndLimit({
 
   const widthValue = useMemo(() => {
     if (stakingCapString.length > 0 && inputRef.current) return inputRef.current.clientWidth
-    else return 18
+    else return 0
   }, [stakingCapString, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
@@ -147,7 +146,7 @@ export default function StakeTokenAndLimit({
         <SmoothGradientCard
           justifyContent={'space-between'}
           flexDirection={'column'}
-          padding={'41px'}
+          padding={'33.45px 41px'}
           height="150px"
           width="fit-content"
           disabled={!stakeTokenOrPair}
@@ -162,7 +161,7 @@ export default function StakeTokenAndLimit({
           >
             MAX STAKED
           </TYPE.mediumHeader>
-          <FlexContainer flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
+          <FlexContainer marginTop="16px" flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
             <StyledFlex
               marginRight="20px"
               onClick={() => onUnlimitedPoolChange(true)}
@@ -171,7 +170,7 @@ export default function StakeTokenAndLimit({
             >
               <StyledUnlimitedText active={unlimitedPool}>UNLIMITED</StyledUnlimitedText>
             </StyledFlex>
-            <AmountFlex onClick={() => onUnlimitedPoolChange(false)} active={!unlimitedPool}>
+            <AmountFlex onClick={() => onUnlimitedPoolChange(false)}>
               <BorderContainer active={!unlimitedPool}>
                 <StyledNumericalInput
                   style={{ width: widthValue + 12 + 'px' }}
