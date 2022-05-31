@@ -77,22 +77,24 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           }
         />
       </Flex>
-      <Flex>
-        <ButtonPurpleDim
-          style={{ marginRight: '4px' }}
-          as={Link}
-          to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-        >
-          {t('addLiquidity')}
-        </ButtonPurpleDim>
-        <ButtonPurpleDim
-          disabled={token0Deposited?.equalTo('0')}
-          as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
-          style={{ marginLeft: '4px' }}
-          to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-        >
-          {t('removeLiquidity')}
-        </ButtonPurpleDim>
+      <Flex flexDirection={['column', 'row']} alignItems="center">
+        <Box marginBottom={[3, 0]} width="100%">
+          <ButtonPurpleDim
+            as={Link}
+            to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
+          >
+            {t('addLiquidity')}
+          </ButtonPurpleDim>
+        </Box>
+        <Box marginLeft={[0, 3]} width="100%">
+          <ButtonPurpleDim
+            disabled={token0Deposited?.equalTo('0')}
+            as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
+            to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
+          >
+            {t('removeLiquidity')}
+          </ButtonPurpleDim>
+        </Box>
       </Flex>
     </DimBlurBgBox>
   )
