@@ -31,7 +31,10 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     supportedChains: [
       { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE },
       { from: ChainId.MAINNET, to: ChainId.XDAI },
+      { from: ChainId.MAINNET, to: ChainId.POLYGON },
       { from: ChainId.XDAI, to: ChainId.ARBITRUM_ONE },
+      { from: ChainId.XDAI, to: ChainId.POLYGON },
+      { from: ChainId.POLYGON, to: ChainId.ARBITRUM_ONE },
     ],
   }),
 ]
