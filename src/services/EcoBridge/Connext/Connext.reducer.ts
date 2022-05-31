@@ -35,18 +35,13 @@ const createConnextSlice = (bridgeId: ConnextList) =>
           state.bridgingDetailsStatus = SyncState.READY
         }
 
-        if (gas) {
-          state.bridgingDetails.gas = gas
-        }
-        if (fee) {
-          state.bridgingDetails.fee = fee
-        }
-        if (estimateTime) {
-          state.bridgingDetails.estimateTime = estimateTime
-        }
-        if (receiveAmount) {
-          state.bridgingDetails.receiveAmount = receiveAmount
-        }
+        state.bridgingDetails.gas = gas
+
+        state.bridgingDetails.fee = fee
+
+        state.bridgingDetails.estimateTime = estimateTime
+
+        state.bridgingDetails.receiveAmount = receiveAmount
       },
       setBridgeDetailsStatus: (
         state,
