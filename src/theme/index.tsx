@@ -172,7 +172,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} color={'white'} {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text5'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={16} lineHeight="20px" color={'text5'} {...props} />
   },
   largeHeader(props: TextProps) {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
@@ -390,6 +390,7 @@ body {
 
 .custom-toast-root {
     margin-top: 86px;
+    width:350px !important;
 }
 
 .custom-toast-container {
@@ -404,16 +405,6 @@ body {
 .Toastify__toast {
     min-height: auto !important;
     padding: 16px;
-}
-
-.Toastify__toast-body {
-    margin: 0 !important;
-}
-
-.Toastify__close-button {
-  position: absolute;
-  right: 12px;
-  top: 12px;
 }
 
 .Toastify__toast--info {

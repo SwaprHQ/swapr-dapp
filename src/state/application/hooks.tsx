@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import PopupItem from '../../components/Popups/PopupItem'
+import TransactionPopup from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
@@ -76,6 +76,6 @@ export function useSimpleSettingsModal(): () => void {
 
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {
   return useCallback((content: PopupContent, autoClose: number | false = 15000) => {
-    toast.info(<PopupItem content={content} />, { autoClose })
+    toast.info(<TransactionPopup {...content} />, { autoClose })
   }, [])
 }

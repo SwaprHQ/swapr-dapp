@@ -47,6 +47,7 @@ export default function Updater(): null {
   const lastBlockNumber = useBlockNumber()
 
   const dispatch = useDispatch()
+
   const state = useSelector<AppState, TransactionState>(state => state.transactions)
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [chainId, state])
@@ -76,57 +77,54 @@ export default function Updater(): null {
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
 
-    const cancels = Object.keys(transactions)
-      .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
-      .map(hash => {
-        const { promise, cancel } = getReceipt(hash)
-        promise
-          .then(receipt => {
-            if (receipt) {
-              dispatch(
-                finalizeTransaction({
-                  chainId,
-                  hash,
-                  receipt: {
-                    blockHash: receipt.blockHash,
-                    blockNumber: receipt.blockNumber,
-                    contractAddress: receipt.contractAddress,
-                    from: receipt.from,
-                    status: receipt.status,
-                    to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex,
-                  },
-                })
-              )
+    const hash = Object.keys(transactions).find(hash => shouldCheck(lastBlockNumber, transactions[hash]))
 
-              addPopup({
-                txn: {
-                  hash,
-                  success: receipt.status === 1,
-                  summary: transactions[hash]?.summary,
+    if (hash) {
+      const { promise, cancel } = getReceipt(hash)
+      promise
+        .then(receipt => {
+          if (receipt) {
+            dispatch(
+              finalizeTransaction({
+                chainId,
+                hash,
+                receipt: {
+                  blockHash: receipt.blockHash,
+                  blockNumber: receipt.blockNumber,
+                  contractAddress: receipt.contractAddress,
+                  from: receipt.from,
+                  status: receipt.status,
+                  to: receipt.to,
+                  transactionHash: receipt.transactionHash,
+                  transactionIndex: receipt.transactionIndex,
                 },
               })
+            )
 
-              // the receipt was fetched before the block, fast forward to that block to trigger balance updates
-              if (receipt.blockNumber > lastBlockNumber) {
-                dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
-              }
-            } else {
-              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
-            }
-          })
-          .catch(error => {
-            if (!error.isCancelledError) {
-              console.error(`Failed to check transaction hash: ${hash}`, error)
-            }
-          })
-        return cancel
-      })
+            addPopup({
+              hash,
+              success: receipt.status === 1,
+              summary: transactions[hash]?.summary,
+            })
 
-    return () => {
-      cancels.forEach(cancel => cancel())
+            // the receipt was fetched before the block, fast forward to that block to trigger balance updates
+            if (receipt.blockNumber > lastBlockNumber) {
+              dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+            }
+          } else {
+            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+          }
+        })
+        .catch(error => {
+          if (!error.isCancelledError) {
+            console.error(`Failed to check transaction hash: ${hash}`, error)
+          }
+        })
+      return () => {
+        cancel()
+      }
     }
+    return undefined
   }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt])
 
   return null
