@@ -353,7 +353,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: public-report/*
+          path: public-report
           retention-days: 3
 
       - name: Delete merged artifacts
