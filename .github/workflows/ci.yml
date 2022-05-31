@@ -345,6 +345,10 @@ jobs:
       - name: Generate HTML report
         run: yarn run report:generate
 
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: public-report
+
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
