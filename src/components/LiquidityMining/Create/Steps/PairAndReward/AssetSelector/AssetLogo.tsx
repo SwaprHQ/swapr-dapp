@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 import React from 'react'
 import styled from 'styled-components'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
-import CurrencyLogo from '../../../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
 const StyledCurrencyLogo = styled(CurrencyLogo)`
@@ -57,7 +57,7 @@ export const Circle = styled.div<{ size: string; active: boolean }>`
 
   filter: drop-shadow(18px 0px 60px rgba(175, 135, 255, 0.3));
   backdrop-filter: ${props => (props.active ? 'blur(22.4144px)' : 'blur(14px)')};
-
+  background-color: ${props => props.active && '#000000f5'};
   border-radius: 255.031px;
 `
 const DoubleIconWrapper = styled.div`
@@ -65,8 +65,11 @@ const DoubleIconWrapper = styled.div`
   top: -24px;
   left: 59px;
 `
-const CrossIcon = (campaingType: CampaignType) => {
-  if (campaingType === CampaignType.TOKEN) {
+interface CrossProps {
+  campaignType: CampaignType
+}
+const CrossIcon = ({ campaignType }: CrossProps) => {
+  if (campaignType === CampaignType.TOKEN) {
     return (
       <Circle size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
         <InsideCircle size={'80'}>
@@ -109,7 +112,6 @@ export const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps
     )
   } else if (currency0) {
     return <StyledCurrencyLogo size="98px" currency={currency0} />
-  } else {
-    return CrossIcon(campaingType)
   }
+  return <CrossIcon campaignType={campaingType} />
 }

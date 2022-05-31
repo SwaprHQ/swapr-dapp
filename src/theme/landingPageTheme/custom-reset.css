@@ -1,9 +1,9 @@
 * {
-    font-family: 'Montserrat';
-    box-sizing: border-box;
+  font-family: 'Inter', Arial, Helvetica;
+  box-sizing: border-box;
 }
 
 a {
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 }

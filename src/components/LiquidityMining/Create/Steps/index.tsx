@@ -21,7 +21,7 @@ const Root = styled(AutoColumn)<{ disabled: boolean }>`
 export default function Step({ disabled, index, title, children, ...rest }: StepProps) {
   return (
     <Root gap="31px" disabled={disabled} {...rest}>
-      <TYPE.subHeader fontSize={18} lineHeight="22px" color="#EBE9F8">
+      <TYPE.subHeader fontSize={18} lineHeight="22px" color="text2">
         {index + 1}. {title}
       </TYPE.subHeader>
       {children}

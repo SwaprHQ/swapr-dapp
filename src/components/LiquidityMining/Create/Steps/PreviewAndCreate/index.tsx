@@ -45,7 +45,7 @@ interface PreviewProps {
   liquidityPair: Pair | Token | null
   simulatedPrice: string
   setSimulatedPrice: (price: string) => void
-  apy: Percent
+  apr: Percent
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
@@ -63,7 +63,7 @@ export default function PreviewAndCreate({
   timelocked,
   stakingCap,
   reward,
-  apy,
+  apr,
   approvals,
   onCreate,
   campaign,
@@ -103,7 +103,7 @@ export default function PreviewAndCreate({
             token1={campaign instanceof LiquidityMiningCampaign ? campaign.targetedPair.token1 : undefined}
             //TODO: add check for kpi token indicator containsKpiToken={campaign instanceof LiquidityMiningCampaign ? campaign.containsKpiToken : false}
             isSingleSidedStakingCampaign={isSingleSided}
-            apy={apy}
+            apy={apr}
             usdLiquidityText={campaign.locked ? 'LOCKED' : 'STAKED'}
             staked={true}
             campaign={campaign}
@@ -133,7 +133,7 @@ export default function PreviewAndCreate({
               <Divider />
             </Box>
             <ResponsiveContainer flex1>
-              <RewardSummary stakingCap={stakingCap} reward={reward} apy={apy} />
+              <RewardSummary stakingCap={stakingCap} reward={reward} apr={apr} />
             </ResponsiveContainer>
           </FlexContainer>
         </Card>

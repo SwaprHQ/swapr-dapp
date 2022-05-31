@@ -19,7 +19,7 @@ import Skeleton from 'react-loading-skeleton'
 import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'
 import { useActiveWeb3React } from '../../../hooks'
 import { useTokenBalance } from '../../../state/wallet/hooks'
-import CurrencyLogo from '../../../components/CurrencyLogo'
+import { CurrencyLogo } from '../../../components/CurrencyLogo'
 import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { Location } from 'history'
 import { currencyId } from '../../../utils/currencyId'
@@ -138,7 +138,7 @@ export default function LiquidityMiningCampaign({
                   if (token0 && token1) {
                     return {
                       ...location,
-                      pathname: `/add/${currencyId(token0)}/${currencyId(token1)}`,
+                      pathname: `/pools/add/${currencyId(token0)}/${currencyId(token1)}`,
                     }
                   }
 
@@ -146,7 +146,7 @@ export default function LiquidityMiningCampaign({
                 }}
               >
                 <Text fontWeight={700} fontSize={12}>
-                  {isSingleSidedCampaign ? 'GET SWPR' : 'ADD LIQUIDITY'}
+                  {isSingleSidedCampaign ? `GET ${token0?.symbol ?? 'TOKEN'}` : 'ADD LIQUIDITY'}
                 </Text>
               </AddLiquidityButtonComponent>
             </ButtonRow>

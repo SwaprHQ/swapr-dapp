@@ -5,8 +5,15 @@ import styled from 'styled-components'
 import './Switch.css'
 
 const StyledLabel = styled.label<{ isOn: boolean; isRed: boolean }>`
+  ${props => props.isRed && !props.isOn && 'outline: 1px solid #464366;outline-offset: -1px;'};
   background: ${props =>
-    props.isOn && props.isRed ? '#F02E51 !important' : props.isOn ? `${props.theme.mainPurple}!important` : ''};
+    props.isOn && props.isRed
+      ? '#F02E51'
+      : !props.isOn && props.isRed
+      ? '#3933584D'
+      : props.isOn
+      ? `${props.theme.mainPurple}`
+      : `${props.theme.purple5}`};
 `
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${props => (props.isOn ? props.theme.text2 : props.theme.purple2)};

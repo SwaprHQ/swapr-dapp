@@ -5,9 +5,9 @@ import { StyledInput } from '../styleds'
 import { ReactComponent as CalendarIcon } from '../../../assets/svg/calendar.svg'
 import { Flex } from 'rebass'
 
-const Input = styled(StyledInput)`
+const Input = styled(StyledInput)<{ selected: boolean }>`
   position: relative;
-  border: solid 1px ${props => props.theme.bg5};
+  border: ${({ selected, theme }) => (!selected ? '2px solid #6322E4' : `1px solid ${theme.purple5}`)};
   border-radius: 8px;
   min-width: 154px;
   font-size: 11px;
@@ -17,7 +17,7 @@ const Input = styled(StyledInput)`
   height: 30px;
   padding-left: 12px;
   padding-right: 12px;
-  color: ${props => props.theme.text2};
+  color: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
   text-transform: uppercase;
   font-weight: 600;
   font-size: 11px;
@@ -25,7 +25,6 @@ const Input = styled(StyledInput)`
 `
 
 const StyledDay = styled.span`
-  font-family: Montserrat;
   font-size: 11px;
   color: ${props => props.theme.text2};
 `
@@ -34,12 +33,14 @@ const StyledDatePicker = styled(Datepicker)`
     color: ${props => props.theme.text2};
   }
 `
-const StyledCalendarIcon = styled(CalendarIcon)`
+const StyledCalendarIcon = styled(CalendarIcon)<{ selected: boolean }>`
   position: absolute;
   top: 7px;
   right: 8px;
   pointer-events: all;
-  z-index: 100;
+  path {
+    fill: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
+  }
 `
 
 const CalendarInput = React.forwardRef((props: any) => {
@@ -65,7 +66,7 @@ export default function DateTimeInput({ value, placeholder, minimum, maximum, on
   return (
     <>
       <StyledDatePicker
-        customInput={<CalendarInput ref={ref} />}
+        customInput={<CalendarInput selected={value || value === false} ref={ref} />}
         dateFormat="yyyy-MM-dd HH:mm"
         renderDayContents={(day: number) => {
           return <StyledDay>{day}</StyledDay>

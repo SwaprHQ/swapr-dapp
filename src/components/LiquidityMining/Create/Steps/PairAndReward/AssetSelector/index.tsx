@@ -16,24 +16,24 @@ import { useStakingRewardsDistributionFactoryContract } from '../../../../../../
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
 import { AssetLogo } from './AssetLogo'
 
-const StyledNumericalInput = styled(NumericalInput)`
+const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
-  border-radius: 8px;
+  border-radius: 4px;
   border: none;
-  width: 100%;
+  width: 150px;
   height: 33px;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: ${props => (props.value.length > 18 ? '9' : props.value.length > 11 ? '12' : '14')}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
   padding-right: 8px;
-  background-color: ${props => props.theme.dark1};
-`
-const RewardInputLogo = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 16px;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(20px);
+  letter-spacing: 0.02em;
+  ::placeholder {
+    color: ${props => props.theme.dark4};
+  }
 `
 
 const RelativeContainer = styled.div<{ disabled?: boolean }>`
@@ -57,7 +57,7 @@ interface AssetSelectorProps {
   currency0?: Token | null
   currency1?: Token | null
   campaingType: CampaignType
-  customAssetTitle?: string
+  customAssetTitle?: React.HTMLProps<HTMLDivElement>['children']
   amount?: TokenAmount
   index?: number
   isReward?: boolean
@@ -156,18 +156,18 @@ export default function AssetSelector({
   return (
     <Flex flexDirection={'column'} key={index}>
       <SmoothGradientCard
+        selectable
         isToken={true}
         active={currency0 !== undefined}
-        paddingBottom={'34px !important'}
+        paddingBottom={
+          isReward && index === 0 && currency0 === undefined ? '45px' : isReward ? '30px' : '28px' + '!important'
+        }
         width={'162px'}
         flexDirection={'column-reverse'}
         height={isReward ? '192px' : '150px'}
-        onClick={event => {
-          if (isReward && currency0) event.stopPropagation()
-          else onClick(event)
-        }}
+        onClick={onClick}
       >
-        {isReward && (
+        {isReward && currency0 && (
           <RelativeDismiss
             onClick={event => {
               event.stopPropagation()
@@ -181,19 +181,51 @@ export default function AssetSelector({
           <Flex flexDirection={'column'}>
             {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
-                <StyledNumericalInput value={rawAmount ? rawAmount : ''} onUserInput={handleUserInput} />
-                <RewardInputLogo>{assetTitle}</RewardInputLogo>
+                <StyledNumericalInput
+                  style={{
+                    width: `${
+                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 17 + rawAmount?.length * 8 : 25
+                    }px`,
+                  }}
+                  onClick={event => event.stopPropagation()}
+                  placeholder="0"
+                  value={rawAmount ? rawAmount : ''}
+                  onUserInput={handleUserInput}
+                />
               </RelativeContainer>
             ) : (
               //deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
-              <TYPE.largeHeader marginBottom={'4px'} lineHeight="22px" color="lightPurple" fontSize={13}>
+              <TYPE.largeHeader
+                letterSpacing={'0.08em'}
+                marginBottom={'4px'}
+                lineHeight="22px"
+                color={customAssetTitle || !tokenName ? '#8C83C0' : 'lightPurple'}
+                fontSize={13}
+              >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
             )}
-
             {tokenName && (
-              <TYPE.small color="purple3" fontSize={10} fontWeight="600" lineHeight="12px">
+              <TYPE.small
+                letterSpacing={'0.05em'}
+                color="purple3"
+                fontSize={10}
+                fontWeight="600"
+                lineHeight={isReward ? '16px' : '12px'}
+              >
                 {tokenName}
+                {isReward && (
+                  <span style={{ color: 'white' }}>
+                    {tokenName.length <= 21 ? (
+                      <>
+                        <br></br>
+                        {assetTitle}
+                      </>
+                    ) : (
+                      `-${assetTitle}`
+                    )}
+                  </span>
+                )}
               </TYPE.small>
             )}
           </Flex>

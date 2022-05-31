@@ -13,17 +13,18 @@ import { AutoColumn } from '../../components/Column'
 import { useActiveWeb3React } from '../../hooks'
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
 import { ChevronDown, Plus, X } from 'react-feather'
-import CurrencySearchModal from '../../components/SearchModal/CurrencySearchModal'
+
 import { Currency, Token } from '@swapr/sdk'
 
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import PairsList from '../../components/Pool/PairsList'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -146,7 +147,7 @@ function Title({
             </PointableFlex>
           )}
 
-          <TransperentButton as={Link} to="/create">
+          <TransperentButton as={Link} to="/pools/create">
             <Plus size="16" />
             <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
               CREATE PAIR

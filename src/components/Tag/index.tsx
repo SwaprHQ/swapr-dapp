@@ -65,6 +65,10 @@ const QuestionHelperWarning = styled(QuestionHelper)`
   height: 10px;
   color: #a86e3f;
   margin-left: 3px;
+
+  svg {
+    stroke: #a86e3f;
+  }
 `
 
 export const TagPending = ({ text }: { text?: string }) => (

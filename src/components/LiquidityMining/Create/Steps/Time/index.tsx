@@ -2,14 +2,25 @@ import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
 import { TYPE } from '../../../../../theme'
 import TimeSelector from './TimeSelector'
-//import Toggle from '../../../../Toggle'
 import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
 import { Switch } from '../../../../Switch'
 import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
+import { ReactComponent as LockOpenSvg } from '../../../../../assets/svg/lock-open.svg'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
+  padding: 42.5px 28px;
+  height: 150px;
+  width: 413px;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 21px;
+    width:331px;
+    height:272px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content:flex-start;
+  `};
 `
 
 const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
@@ -29,7 +40,7 @@ interface TimeProps {
   timelocked: boolean
   setStartTime: (date: Date | null) => void
   setEndTime: (date: Date | null) => void
-  onTimelockedChange: () => void
+  onTimelockedChange: (value?: boolean) => void
 }
 
 export default function DurationAndLocking({
@@ -43,7 +54,6 @@ export default function DurationAndLocking({
   const handleStartTimeChange = useCallback(
     (newStartTime: Date) => {
       if (endTime ? newStartTime.getTime() > endTime.getTime() : Date.now() > newStartTime.getTime()) return
-      // if (Date.now() > newStartTime.getTime() || (endTime && endTime.getTime() <= newStartTime.getTime())) return // date in the past, invalid
       setStartTime(newStartTime)
     },
     [setStartTime, endTime]
@@ -62,7 +72,7 @@ export default function DurationAndLocking({
   )
   return (
     <FlexWrapper>
-      <StyledSmoothGradientCard height="150px" width="413px" padding={'42.5px 28px'}>
+      <StyledSmoothGradientCard>
         <TimeSelector
           data-testid="start-time-selector-box"
           title="STARTING"
@@ -86,15 +96,15 @@ export default function DurationAndLocking({
 
       <SmoothGradientCard
         textAlign={'start'}
-        alignItems={'start !important'}
+        alignItems={'start'}
         padding={'41px'}
         width={'299px'}
         height={'150px'}
         flexDirection={'column'}
-        justifyContent={'space-around !important'}
+        justifyContent={'space-around'}
       >
         <Flex alignSelf={'start'}>
-          <LockSvg />
+          {timelocked ? <LockSvg /> : <LockOpenSvg />}
           <TYPE.small
             marginLeft="4px"
             fontSize={'11px'}
@@ -109,10 +119,11 @@ export default function DurationAndLocking({
         </Flex>
 
         <Flex alignItems={'start'}>
-          <StyledLockText active={!timelocked}>UNLOCKED</StyledLockText>
-
+          <StyledLockText onClick={() => onTimelockedChange(false)} active={!timelocked}>
+            OFF
+          </StyledLockText>
           <Switch isRed={true} handleToggle={() => onTimelockedChange()} isOn={timelocked} />
-          <StyledLockText active={timelocked} marginLeft="8px">
+          <StyledLockText onClick={() => onTimelockedChange(true)} active={timelocked} marginLeft="8px">
             TIME LOCKED
           </StyledLockText>
         </Flex>

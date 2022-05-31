@@ -7,8 +7,9 @@ import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { TYPE } from '../../../../../theme'
 import { unwrappedToken } from '../../../../../utils/wrappedCurrency'
 import NumericalInput from '../../../../Input/NumericalInput'
-import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
-import PairSearchModal from '../../../../SearchModal/PairSearchModal'
+import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
+
+import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
 
@@ -20,34 +21,45 @@ const FlexContainer = styled(Flex)`
     flex-direction: column;
   `}
 `
-const AmountFlex = styled(Flex)<{ active: boolean }>`
-  border-bottom: 1px solid ${props => (props.active ? 'white' : 'transparent')};
-  height: 28px;
+const AmountFlex = styled(Flex)`
   width: max-content;
   align-self: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(20px);
+  padding: 12px;
 `
 const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
   text-decoration: ${props => (props.active ? 'underline' : 'none')};
-  text-underline-offset: 7px;
-
+  opacity: ${({ active }) => !active && '0.7'};
+  text-underline-offset: 6px;
+  line-height: 22px;
   color: ${props => (props.active ? props.theme.text2 : props.theme.dark4)};
   font-size: 13px !important;
   letter-spacing: 0.08em;
 `
-const StyledNumericalInput = styled(NumericalInput)`
-  color: ${props => props.theme.text2};
+const StyledNumericalInput = styled(NumericalInput)<{ selected: boolean }>`
+  color: ${({ theme, selected }) => (selected ? theme.text2 : theme.bg2)};
   width: 36px;
   max-height: 38px;
   font-weight: 600;
   font-size: 16px;
-  line-height: 16px;
+  line-height: 26px;
   text-transform: uppercase;
   ::placeholder {
-    color: ${props => props.theme.text2};
+    color: ${({ theme, selected }) => (selected ? theme.text2 : theme.bg2)};
   }
 `
-const StyledFlex = styled(Flex)`
+const StyledFlex = styled(Flex)<{ active: boolean }>`
   border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(20px);
+  padding: 12px;
+  padding-top: ${props => props.active && '8px'};
+`
+const BorderContainer = styled(Flex)<{ active: boolean }>`
+  border-bottom: 1px solid ${({ active }) => (active ? 'white' : 'transparent')};
+  opacity: ${({ active }) => !active && '0.7'};
 `
 
 interface TokenAndLimitProps {
@@ -106,7 +118,7 @@ export default function StakeTokenAndLimit({
 
   const widthValue = useMemo(() => {
     if (stakingCapString.length > 0 && inputRef.current) return inputRef.current.clientWidth
-    else return 18
+    else return 0
   }, [stakingCapString, inputRef])
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
@@ -132,11 +144,12 @@ export default function StakeTokenAndLimit({
         />
 
         <SmoothGradientCard
-          justifyContent={'space-between !important'}
+          justifyContent={'space-between'}
           flexDirection={'column'}
-          padding={'41px'}
+          padding={'33.45px 41px'}
           height="150px"
           width="fit-content"
+          disabled={!stakeTokenOrPair}
         >
           <TYPE.mediumHeader
             alignSelf={'start'}
@@ -148,42 +161,47 @@ export default function StakeTokenAndLimit({
           >
             MAX STAKED
           </TYPE.mediumHeader>
-          <FlexContainer flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
+          <FlexContainer marginTop="16px" flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
             <StyledFlex
               marginRight="20px"
               onClick={() => onUnlimitedPoolChange(true)}
               alignItems={'center'}
-              height={'38px'}
+              active={unlimitedPool}
             >
               <StyledUnlimitedText active={unlimitedPool}>UNLIMITED</StyledUnlimitedText>
             </StyledFlex>
-            <AmountFlex active={!unlimitedPool}>
-              <StyledNumericalInput
-                style={{ width: widthValue + 12 + 'px' }}
-                onClick={() => onUnlimitedPoolChange(false)}
-                disabled={!stakeTokenOrPair}
-                value={stakingCapString}
-                onUserInput={handleLocalStakingCapChange}
-              />
-              <span style={{ visibility: 'hidden', position: 'absolute' }} ref={inputRef}>
-                {stakingCapString}
-              </span>
+            <AmountFlex onClick={() => onUnlimitedPoolChange(false)}>
+              <BorderContainer active={!unlimitedPool}>
+                <StyledNumericalInput
+                  style={{ width: widthValue + 12 + 'px' }}
+                  placeholder="0"
+                  selected={!unlimitedPool}
+                  disabled={!stakeTokenOrPair}
+                  value={stakingCapString}
+                  onUserInput={handleLocalStakingCapChange}
+                />
+                <span style={{ visibility: 'hidden', position: 'absolute' }} ref={inputRef}>
+                  {stakingCapString}
+                </span>
 
-              <TYPE.largeHeader
-                alignSelf={'center'}
-                fontSize={13}
-                color={'text3'}
-                letterSpacing="0.08em"
-                alignItems={'center'}
-              >
-                {stakeTokenOrPair && stakeTokenOrPair instanceof Pair
-                  ? `${unwrappedToken(stakeTokenOrPair.token0)?.symbol}/${
-                      unwrappedToken(stakeTokenOrPair.token1)?.symbol
-                    }`
-                  : stakeTokenOrPair instanceof Token
-                  ? unwrappedToken(stakeTokenOrPair)?.symbol
-                  : ''}
-              </TYPE.largeHeader>
+                <TYPE.largeHeader
+                  alignSelf={'center'}
+                  fontSize={13}
+                  marginLeft={'9px'}
+                  color={unlimitedPool ? 'dark4' : 'text2'}
+                  letterSpacing="0.08em"
+                  alignItems={'center'}
+                  lineHeight="22px"
+                >
+                  {stakeTokenOrPair && stakeTokenOrPair instanceof Pair
+                    ? `${unwrappedToken(stakeTokenOrPair.token0)?.symbol}/${
+                        unwrappedToken(stakeTokenOrPair.token1)?.symbol
+                      }`
+                    : stakeTokenOrPair instanceof Token
+                    ? unwrappedToken(stakeTokenOrPair)?.symbol
+                    : ''}
+                </TYPE.largeHeader>
+              </BorderContainer>
             </AmountFlex>
           </FlexContainer>
         </SmoothGradientCard>

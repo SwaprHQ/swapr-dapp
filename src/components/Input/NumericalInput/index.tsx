@@ -13,7 +13,6 @@ export const NumericalInput = React.memo(function InnerInput({
   value: string | number
   onUserInput: (input: string) => void
   error?: boolean
-
   fontSize?: string
   align?: 'right' | 'left'
 } & Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'onChange' | 'as'>) {

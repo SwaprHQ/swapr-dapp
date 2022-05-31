@@ -31,8 +31,11 @@ interface SingleOrPairCampaignProps {
   singleReward: CampaignType
   onChange: (newValue: CampaignType) => void
 }
-
-export const adjustableDiamondSize = (pairOrToken: boolean, active: boolean) => {
+interface CircleProps {
+  pairOrToken: boolean
+  active: boolean
+}
+export function AdjustableDiamondSize({ pairOrToken, active }: CircleProps) {
   if (pairOrToken) return <Circle active={active} size={'98'} style={{ top: '21px', left: '-27px' }} />
   else
     return (
@@ -54,12 +57,13 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
   return (
     <StyledAutoRow gap="35px">
       <SmoothGradientCard
+        selectable
         width={'218px'}
         height={'138px'}
         active={singleReward === CampaignType.TOKEN}
         onClick={() => handleRewardClick(CampaignType.TOKEN)}
       >
-        {adjustableDiamondSize(true, singleReward === CampaignType.TOKEN)}
+        <AdjustableDiamondSize pairOrToken={true} active={singleReward === CampaignType.TOKEN} />
         <StyledAutoColumn active={singleReward === CampaignType.TOKEN}>
           <CardText>Single</CardText>
           <CardText>Token</CardText>
@@ -67,12 +71,13 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         </StyledAutoColumn>
       </SmoothGradientCard>
       <SmoothGradientCard
+        selectable
         width={'218px'}
         height={'138px'}
         onClick={() => handleRewardClick(CampaignType.PAIR)}
         active={singleReward === CampaignType.PAIR}
       >
-        {adjustableDiamondSize(false, singleReward === CampaignType.PAIR)}
+        <AdjustableDiamondSize pairOrToken={false} active={singleReward === CampaignType.PAIR} />
         <StyledAutoColumn active={singleReward === CampaignType.PAIR}>
           <CardText>LP</CardText>
           <CardText>Token</CardText>

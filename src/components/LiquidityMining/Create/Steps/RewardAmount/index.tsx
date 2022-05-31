@@ -12,7 +12,7 @@ import {
   numberOfRewards,
   RewardsObject,
 } from '../../../../../pages/LiquidityMining/Create'
-import CurrencySearchModal from '../../../../SearchModal/CurrencySearchModal'
+import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import styled from 'styled-components'
 import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
@@ -42,10 +42,11 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     setCurrencySearchOpen(true)
   }, [])
   const disabledRewardsArray = useMemo(() => {
-    const mappedArray = rewardsObject.rewards.map(reward => reward?.currency)
-    const filteredArray = mappedArray.filter(currency => currency && currency !== undefined) as Currency[]
+    const filteredRewardsArray = rewardsObject.rewards
+      .map(reward => reward?.currency)
+      .filter(currency => currency && currency !== undefined) as Currency[]
 
-    if (filteredArray.length !== 0) return filteredArray
+    if (filteredRewardsArray.length !== 0) return filteredRewardsArray
     else return undefined
   }, [rewardsObject])
 
@@ -113,7 +114,15 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
             currency0={rewardsObject.rewards[index]?.token}
             campaingType={CampaignType.TOKEN}
             onClick={() => handelOpenPairOrTokenSearch(index)}
-            customAssetTitle={index === 0 ? 'ADD REWARD' : 'ADDITIONAL REWARDS'}
+            customAssetTitle={
+              index === 0 ? (
+                <div>ADD REWARD</div>
+              ) : (
+                <div>
+                  ADDITIONAL<br></br> REWARDS
+                </div>
+              )
+            }
             amount={rewardsObject.rewards[index]}
             handleUserInput={event => {
               handleLocalUserInput(event, index)
