@@ -349,6 +349,9 @@ jobs:
         run: ls -R
         working-directory: public-report
 
+      - name: Move screenshots
+        run: mv tests/synpress/screenshots public-report/screenshots
+
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
