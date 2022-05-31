@@ -3,7 +3,7 @@ import { formatUnits } from '@ethersproject/units'
 
 import { AppState } from '../../../state'
 import { connextTransactionsAdapter } from './Connext.adapter'
-import { CONNEXT_TOKENS } from './Connext.config'
+import { CONNEXT_TOKENS } from './Connext.lists'
 
 import { ConnextList } from '../EcoBridge.types'
 import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'

@@ -11,7 +11,8 @@ import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { getDeployedTransactionManagerContract } from '@connext/nxtp-sdk'
 import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
 
-import { connextSdkChainConfig, CONNEXT_TOKENS } from './Connext.config'
+import { connextSdkChainConfig } from './Connext.config'
+import { CONNEXT_TOKENS } from './Connext.lists'
 import { connextActions } from './Connext.reducer'
 import { connextSelectors } from './Connext.selectors'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
@@ -35,6 +36,7 @@ import {
   ConnextTransactionStatus,
   ConnextTransactionsSubgraph,
 } from './Connext.types'
+import { commonActions } from '../store/Common.reducer'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -289,7 +291,9 @@ export class Connext extends EcoBridgeChildBase {
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
   }
 
-  public fetchStaticLists = async () => undefined
+  public fetchStaticLists = async () => {
+    this.store.dispatch(commonActions.activateLists(['connext']))
+  }
 
   public triggerBridging = async () => {
     try {
