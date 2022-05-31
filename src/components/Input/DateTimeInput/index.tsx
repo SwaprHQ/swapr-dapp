@@ -7,7 +7,7 @@ import { Flex } from 'rebass'
 
 const Input = styled(StyledInput)<{ selected: boolean }>`
   position: relative;
-  border: ${({ selected, theme }) => (!selected ? '1.5px solid #3A1D75' : `1px solid ${theme.bg5}`)};
+  border: ${({ selected, theme }) => (!selected ? '2px solid #6322E4' : `1px solid ${theme.purple5}`)};
   border-radius: 8px;
   min-width: 154px;
   font-size: 11px;
@@ -17,7 +17,7 @@ const Input = styled(StyledInput)<{ selected: boolean }>`
   height: 30px;
   padding-left: 12px;
   padding-right: 12px;
-  color: ${props => props.theme.text2};
+  color: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
   text-transform: uppercase;
   font-weight: 600;
   font-size: 11px;
@@ -33,11 +33,14 @@ const StyledDatePicker = styled(Datepicker)`
     color: ${props => props.theme.text2};
   }
 `
-const StyledCalendarIcon = styled(CalendarIcon)`
+const StyledCalendarIcon = styled(CalendarIcon)<{ selected: boolean }>`
   position: absolute;
   top: 7px;
   right: 8px;
   pointer-events: all;
+  path {
+    fill: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
+  }
 `
 
 const CalendarInput = React.forwardRef((props: any) => {

@@ -167,7 +167,7 @@ export default function AssetSelector({
         height={isReward ? '192px' : '150px'}
         onClick={onClick}
       >
-        {isReward && (
+        {isReward && currency0 && (
           <RelativeDismiss
             onClick={event => {
               event.stopPropagation()
@@ -199,7 +199,7 @@ export default function AssetSelector({
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}
                 lineHeight="22px"
-                color="lightPurple"
+                color={customAssetTitle || !tokenName ? '#8C83C0' : 'lightPurple'}
                 fontSize={13}
               >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
