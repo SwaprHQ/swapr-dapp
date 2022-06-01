@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { BigintIsh, Pair, Token } from '@swapr/sdk'
-import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 
+import { MiningCampaign } from '../utils/liquidityMining'
+import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { useNativeCurrency } from './useNativeCurrency'
 import { useActiveWeb3React } from '.'
 import {
@@ -86,13 +87,7 @@ const REGULAR_CAMPAIGN = gql`
   }
 `
 
-export function useAllLiquidityMiningCampaigns(
-  pair?: Pair,
-  dataFilter?: PairsFilterType
-): {
-  loading: boolean
-  miningCampaigns: any
-} {
+export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFilterType) {
   const token0Address = pair?.token0?.address.toLowerCase()
   const token1Address = pair?.token1?.address.toLowerCase()
   const pairAddress = pair?.liquidityToken.address.toLowerCase()
@@ -149,8 +144,8 @@ export function useAllLiquidityMiningCampaigns(
     ) {
       return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
-    const expiredCampaigns = []
-    const activeCampaigns = []
+    const expiredCampaigns: MiningCampaign[] = []
+    const activeCampaigns: MiningCampaign[] = []
 
     for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
       const campaign = pairCampaigns.liquidityMiningCampaigns[i]

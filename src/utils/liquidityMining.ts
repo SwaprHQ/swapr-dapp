@@ -327,7 +327,13 @@ export const getLowerTimeLimit = () =>
 export const getRewardTokenAddressFromPair = (pair: SubgraphPair) =>
   pair.liquidityMiningCampaigns.flatMap(campaign => campaign.rewards.map(reward => reward.token.address.toLowerCase()))
 
-export const sortActiveCampaigns = (activeCampaigns: any) =>
+export interface MiningCampaign {
+  campaign: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign
+  staked: boolean
+  containsKpiToken: boolean
+}
+
+export const sortActiveCampaigns = (activeCampaigns: MiningCampaign[]) =>
   activeCampaigns.sort((a: any, b: any) => {
     if (a.campaign.ended && !b.campaign.ended) return -1
     if (!a.campaign.ended && b.campaign.ended) return 1
@@ -361,7 +367,7 @@ export const sortActiveCampaigns = (activeCampaigns: any) =>
     return 0
   })
 
-export const sortExpiredCampaigns = (expiredCampaigns: any) =>
+export const sortExpiredCampaigns = (expiredCampaigns: MiningCampaign[]) =>
   expiredCampaigns.sort((a: any, b: any) => {
     if (a.campaign.endsAt > b.campaign.endsAt) return -1
     if (a.campaign.endsAt < b.campaign.endsAt) return 1
