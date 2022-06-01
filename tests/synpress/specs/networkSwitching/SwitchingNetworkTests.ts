@@ -3,8 +3,8 @@ import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
 import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 
-describe('Switching from maintet tests', () => {
-  const TRANSACTION_VALUE: number = 0.0001
+describe('Switching from mainnet tests', () => 
+const TRANSACTION_VALUE: number = 0.0001
 
   beforeEach(() => {
     SwapPage.visitSwapPage()
