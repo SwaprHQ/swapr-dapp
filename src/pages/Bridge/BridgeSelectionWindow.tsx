@@ -83,7 +83,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
 
   return (
     <SelectionListOption
-      data-testid={name.toLowerCase() + '-bridge'}
+      data-testid={`${name.toLowerCase()}-bridge`}
       isSelected={isSelected}
       isLoading={isLoading}
       onClick={() => {
