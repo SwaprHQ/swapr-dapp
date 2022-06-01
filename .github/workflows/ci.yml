@@ -339,6 +339,13 @@ jobs:
         run: ls -R
         working-directory: mochawesome-report
 
+      - name: Save code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report-screenshots
+          path: screenshots
+          retention-days: 3
+
       - name: Merge test results into one
         run: yarn run report:merge
 
@@ -354,13 +361,6 @@ jobs:
         with:
           name: test-report
           path: public-report
-          retention-days: 3
-
-      - name: Save code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report-screenshots
-          path: screenshots
           retention-days: 3
 
       - name: Delete merged artifacts
