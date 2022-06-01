@@ -47,4 +47,13 @@ export class BridgePage {
   static getTokenSymbol() {
     return cy.get('[data-testid=token-symbol]')
   }
+  static getTransactionErrorModal() {
+    return cy.get('[data-testid=transaction-error-modal]')
+  }
+  static closeTransactionErrorModal() {
+    return cy
+      .get('[data-testid=close-icon]')
+      .filter(':visible')
+      .click()
+  }
 }
