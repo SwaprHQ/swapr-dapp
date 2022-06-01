@@ -1,8 +1,8 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
-import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
-import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
-import { TransactionHelper } from '../../../utils/TransactionHelper'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { SwapPage } from '../../../../pages/SwapPage'
+import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
+import { EtherscanFacade } from '../../../../utils/facades/EtherscanFacade'
+import { TransactionHelper } from '../../../../utils/TransactionHelper'
 
 describe('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001

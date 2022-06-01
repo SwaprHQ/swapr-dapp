@@ -1,15 +1,15 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { RewardsPage } from '../../../pages/RewardsPage'
-import { CreatePoolPage } from '../../../pages/CreatePoolPage'
-import { PairMenu } from '../../../pages/PairMenu'
-import { TokenMenu } from '../../../pages/TokenMenu'
-import { DateUtils } from '../../../utils/DateUtils'
-import { SubgraphFacade } from '../../../utils/facades/SubgraphFacade'
-import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { RewardsPage } from '../../../../pages/RewardsPage'
+import { CreatePoolPage } from '../../../../pages/CreatePoolPage'
+import { PairMenu } from '../../../../pages/PairMenu'
+import { TokenMenu } from '../../../../pages/TokenMenu'
+import { DateUtils } from '../../../../utils/DateUtils'
+import { SubgraphFacade } from '../../../../utils/facades/SubgraphFacade'
+import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { getUnixTime } from 'date-fns'
-import { LiquidityPage } from '../../../pages/LiquidityPage'
-import { CampaignPage } from '../../../pages/CampaignPage'
-import { LiquidityCampaign } from '../../../utils/TestTypes'
+import { LiquidityPage } from '../../../../pages/LiquidityPage'
+import { CampaignPage } from '../../../../pages/CampaignPage'
+import { LiquidityCampaign } from '../../../../utils/TestTypes'
 
 describe('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
@@ -17,6 +17,7 @@ describe('Campaign creation tests', () => {
   const REWARD_TOKEN = 'weenus'
   const expectedStartsAt = DateUtils.getDateTimeAndAppendMinutes(2)
   const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
+  let isCampaignCreated = false
 
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
@@ -65,22 +66,13 @@ describe('Campaign creation tests', () => {
       expect(rewards[0].token.symbol).to.be.eq('WEENUS')
       expect(token0.symbol).to.be.eq('DAI')
       expect(token1.symbol).to.be.eq('USDT')
+      isCampaignCreated = true
     })
   })
-  it('Should open a campaign through Rewards page [TC-60]', () => {
-    RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click()
-    PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
-    CampaignPage.checkCampaignData(
-        TOKENS_PAIR,
-        REWARDS_INPUT,
-        'ACTIVE',
-        DateUtils.getFormattedDateTime(expectedStartsAt),
-        DateUtils.getFormattedDateTime(expectedEndsAt)
-    )
-  })
-  it('Should open a campaign through liquidity pair [TC-60]', () => {
+  it('Should open a campaign through liquidity pair [TC-60]', function () {
+    if(!isCampaignCreated){
+      this.skip()
+    }
     LiquidityPage.visitLiquidityPage()
     LiquidityPage.getAllPairsButton().click()
     TokenMenu.getOpenTokenManagerButton().click()
@@ -99,6 +91,22 @@ describe('Campaign creation tests', () => {
       'ACTIVE',
       DateUtils.getFormattedDateTime(expectedStartsAt),
       DateUtils.getFormattedDateTime(expectedEndsAt)
+    )
+  })
+  it('Should open a campaign through Rewards page [TC-60]', function () {
+    if(!isCampaignCreated){
+      this.skip()
+    }
+    RewardsPage.getRewardCards().should('be.visible')
+    RewardsPage.getAllPairsButton().click()
+    PairMenu.choosePair(TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
+    CampaignPage.checkCampaignData(
+        TOKENS_PAIR,
+        REWARDS_INPUT,
+        'ACTIVE',
+        DateUtils.getFormattedDateTime(expectedStartsAt),
+        DateUtils.getFormattedDateTime(expectedEndsAt)
     )
   })
 })

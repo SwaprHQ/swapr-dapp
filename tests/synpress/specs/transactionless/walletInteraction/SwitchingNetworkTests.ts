@@ -1,11 +1,10 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
-import { TokenMenu } from '../../../pages/TokenMenu'
-import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { SwapPage } from '../../../../pages/SwapPage'
+import { TokenMenu } from '../../../../pages/TokenMenu'
+import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 
-describe('Switching from maintet tests', () => {
+describe('Switching from mainnet tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
-
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
@@ -239,7 +238,6 @@ describe('Switching from maintet tests', () => {
     cy.changeMetamaskNetwork('ethereum')
     SwapPage.openTokenToSwapMenu()
       .chooseToken('dxd')
-      .switchTokens()
     SwapPage.getCurrencySelectors()
       .last()
       .click()

@@ -74,7 +74,7 @@ function TransactionSubmittedContent({
   const theme = useContext(ThemeContext)
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-confirmed-modal">
       <Section>
         <RowBetween>
           <div />
