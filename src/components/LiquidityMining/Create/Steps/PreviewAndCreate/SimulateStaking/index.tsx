@@ -45,8 +45,11 @@ const SimulatedValue = styled.div`
   color: ${props => props.theme.text2};
 `
 const AmountFlex = styled(Flex)`
-  height: 28px;
   width: max-content;
+  background: #000000;
+  backdrop-filter: blur(20px);
+  border-radius: 4px;
+  padding: 8px 12px;
   align-self: center;
 `
 
@@ -204,7 +207,7 @@ export default function SimulateStaking({
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}
-                color={'text3'}
+                color={'dark4'}
                 letterSpacing="0.08em"
                 alignItems={'center'}
               >
@@ -215,14 +218,14 @@ export default function SimulateStaking({
         </>
       )}
 
-      <Flex width={'100%'}>
+      <Flex justifyContent={SimulateOptions.AMOUNT === simulateOption ? 'space-between' : 'center'} width={'100%'}>
         {SimulateOptions.AMOUNT === simulateOption && (
           <SwitchContainer onClick={handleUSDValueClick}>
             {showUSDValue ? <CashIcon /> : <CryptoIcon />} SHOW IN {showUSDValue ? 'CRYPTO' : 'USD'}
           </SwitchContainer>
         )}
 
-        <SwitchContainer onClick={handleResetClick} marginLeft={'auto'}>
+        <SwitchContainer onClick={handleResetClick}>
           RESET <RefreshIcon />
         </SwitchContainer>
       </Flex>
