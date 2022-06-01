@@ -400,20 +400,24 @@ export default function Swap() {
     }
 
     if (isGnosisProtocolTradeRequireWrap) {
+      const midCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
       const isApprovalRequired = approval !== ApprovalState.APPROVED
+      const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
+
       const swapDisabled =
         !isValid ||
         isApprovalRequired ||
         (priceImpactSeverity > 3 && !isExpertMode) ||
         gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
-      const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
-      // const needBalanceWarning =
-      //   parsedAmounts[Field.INPUT] &&
-      //   wrappedToken &&
-      //   (parsedAmounts[Field.INPUT] as CurrencyAmount).toExact() > wrappedToken.toExact()
-
-      const wrappedCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
+      const errorMessage =
+        swapErrorMessage ??
+        (parsedAmounts[Field.INPUT] &&
+          wrappedToken &&
+          (parsedAmounts[Field.INPUT] as CurrencyAmount).toExact() > wrappedToken.toExact() &&
+          !swapDisabled)
+          ? 'Insufficient ' + wrappedToken?.currency.symbol + ' Balance'
+          : undefined
 
       return (
         <RowBetween>
@@ -452,7 +456,7 @@ export default function Swap() {
               ) : approvalSubmitted ? (
                 'Approved'
               ) : (
-                'Approve ' + wrappedCurrency?.symbol // Change this to wrapped token
+                'Approve ' + midCurrency?.symbol // Change this to wrapped token
               )}
             </ButtonConfirmed>
           )}
@@ -472,11 +476,15 @@ export default function Swap() {
             }}
             width={width}
             id="swap-button"
-            disabled={swapDisabled}
+            // swapDisabled depends on the step of the process
+            // errorMessage depends on the specific details in the swap step
+            // standard disable or if there is some kind of problem
+            disabled={swapDisabled || errorMessage != null}
             platformName={trade?.platform.name}
             //error={isValid && priceImpactSeverity > 2}
             priceImpactSeverity={priceImpactSeverity}
             isExpertMode={isExpertMode}
+            swapInputError={errorMessage}
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? `Price Impact High`
