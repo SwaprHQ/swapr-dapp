@@ -168,7 +168,8 @@ export default function SimulateStaking({
       flexDirection={'column'}
       alignItems={'center'}
       padding={'18px 28px'}
-      width={'50%'}
+      height={'162px'}
+      width={'354px'}
     >
       <Flex width={'100%'} padding={'10px 12px'} justifyContent={'space-between'}>
         <SimulateOption
@@ -203,7 +204,20 @@ export default function SimulateStaking({
           )}
           {SimulateOptions.PRICE === simulateOption && (
             <AmountFlex>
-              <StyledNumericalInput value={simulatedPrice} onUserInput={handleLocalStakingCapChange} />
+              <StyledNumericalInput
+                style={{
+                  width: `${
+                    simulatedPrice && simulatedPrice.length > 24
+                      ? '250'
+                      : simulatedPrice
+                      ? 17 + simulatedPrice?.length * 8
+                      : 20
+                  }px`,
+                }}
+                placeholder="0"
+                value={simulatedPrice}
+                onUserInput={handleLocalStakingCapChange}
+              />
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}

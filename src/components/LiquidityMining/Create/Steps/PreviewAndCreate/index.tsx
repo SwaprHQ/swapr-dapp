@@ -34,7 +34,8 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
   `}
 `
 const StyledCampaignCard = styled(CampaignCard)`
-  width: 50%;
+  width: 354px;
+  height: 162px;
 `
 const CampaignDetailWrapper = styled(Flex)`
   gap: 32px;
@@ -92,7 +93,7 @@ export default function PreviewAndCreate({
   return (
     <Flex flexDirection="column" style={{ zIndex: -1 }}>
       {campaign !== null && !loadingNativeCurrencyUsdPrice && (
-        <CampaignDetailWrapper flexDirection={'row'} mb="32px">
+        <CampaignDetailWrapper flexWrap="wrap" flexDirection={'row'} mb="32px">
           <StyledCampaignCard
             token0={
               campaign instanceof SingleSidedLiquidityMiningCampaign
