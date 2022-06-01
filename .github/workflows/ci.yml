@@ -360,7 +360,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: public-report
+          path: |
+            public-report
+            mochawesome-report/public-report/screenshots/**
           retention-days: 3
 
       - name: Delete merged artifacts
