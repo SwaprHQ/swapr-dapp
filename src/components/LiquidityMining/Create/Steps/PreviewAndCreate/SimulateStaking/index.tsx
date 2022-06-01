@@ -60,9 +60,9 @@ const SimulateOption = styled.div<{ isActive: boolean }>`
   color: ${props => (props.isActive ? props.theme.text2 : props.theme.lightPurple2)};
   ${props => props.isActive && 'text-decoration: underline; text-underline-offset: 7px;'};
 `
-const StyledNumericalInput = styled(NumericalInput)`
+const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   color: ${props => props.theme.text2};
-  width: auto;
+  width: ${({ value }) => (value && value.length > 24 ? '250' : value ? 17 + value?.length * 8 : 20)}px;
   max-height: 38px;
   font-weight: 600;
   font-size: 16px;
@@ -73,7 +73,7 @@ const StyledNumericalInput = styled(NumericalInput)`
   }
 `
 
-const dollarAmountMaxSimulation = 10000000
+const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 
 interface RewardSummaryProps {
   tokenOrPair: Token | Pair | null
@@ -131,7 +131,7 @@ export default function SimulateStaking({
 
     const base = stakingCap
       ? parseFloat(stakingCap.multiply(simulatedPriceAdjusted).toSignificant(22))
-      : dollarAmountMaxSimulation
+      : DOLLAR_AMOUNT_MAX_SIMULATION
 
     const baseInUsd = parseFloat(simulatedPriceAdjusted)
 
@@ -204,20 +204,7 @@ export default function SimulateStaking({
           )}
           {SimulateOptions.PRICE === simulateOption && (
             <AmountFlex>
-              <StyledNumericalInput
-                style={{
-                  width: `${
-                    simulatedPrice && simulatedPrice.length > 24
-                      ? '250'
-                      : simulatedPrice
-                      ? 17 + simulatedPrice?.length * 8
-                      : 20
-                  }px`,
-                }}
-                placeholder="0"
-                value={simulatedPrice}
-                onUserInput={handleLocalStakingCapChange}
-              />
+              <StyledNumericalInput placeholder="0" value={simulatedPrice} onUserInput={handleLocalStakingCapChange} />
               <TYPE.largeHeader
                 alignSelf={'center'}
                 fontSize={13}

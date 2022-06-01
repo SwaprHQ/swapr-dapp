@@ -20,10 +20,10 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
   border-radius: 4px;
   border: none;
-  width: 150px;
+  width: ${({ value }) => (value && value.length > 16 ? '150' : value ? 17 + value?.length * 8 : 25)}px;
   height: 33px;
   font-weight: 400;
-  font-size: ${props => (props.value.length > 18 ? '9' : props.value.length > 11 ? '12' : '14')}px;
+  font-size: ${({ value }) => (value.length > 18 ? '9' : value.length > 11 ? '12' : '14')}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
@@ -182,11 +182,6 @@ export default function AssetSelector({
             {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
                 <StyledNumericalInput
-                  style={{
-                    width: `${
-                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 17 + rawAmount?.length * 8 : 25
-                    }px`,
-                  }}
                   onClick={event => event.stopPropagation()}
                   placeholder="0"
                   value={rawAmount ? rawAmount : ''}
