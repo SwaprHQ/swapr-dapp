@@ -69,4 +69,7 @@ export class SwapPage {
   static getAlternateReceiverInput() {
     return cy.get('[data-testid=address-input]')
   }
+  static getExchangeOption() {
+    return cy.get('[data-testid=exchange-option]')
+  }
 }

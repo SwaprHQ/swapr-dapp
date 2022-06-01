@@ -235,7 +235,7 @@ describe('Switching from maintet tests', () => {
     cy.allowMetamaskToSwitchNetwork()
     MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
   })
-  it('Should switch from mainnet to rinkeby by dapp [TC-55]', () => {
+  it('Should switch from mainnet to rinkeby after starting the swap process [regression-test] [TC-61]', () => {
     cy.changeMetamaskNetwork('ethereum')
     SwapPage.openTokenToSwapMenu()
       .chooseToken('dxd')
@@ -245,6 +245,9 @@ describe('Switching from maintet tests', () => {
       .click()
     TokenMenu.chooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.getExchangeOption()
+    .first()
+    .click()
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.rinkeby().click()
     cy.allowMetamaskToSwitchNetwork()
