@@ -102,7 +102,7 @@ export function useSwapsCallArguments(
 /**
  * Returns the swap summary for UI components
  */
-export function getSwapSummary(trade: Trade, recipientAddressOrName?: string): string {
+export function getSwapSummary(trade: Trade, recipientAddressOrName: string | null): string {
   const inputSymbol = trade.inputAmount.currency.symbol
   const outputSymbol = trade.outputAmount.currency.symbol
   const inputAmount = trade.inputAmount.toSignificant(3)
@@ -123,7 +123,7 @@ export function getSwapSummary(trade: Trade, recipientAddressOrName?: string): s
 }
 
 export interface UseSwapCallbackParams {
-  trade: Trade | undefined // trade to execute, required
+  trade: Trade | undefined // trade to execute
   allowedSlippage: number // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 }
@@ -169,8 +169,6 @@ export function useSwapCallback({
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
-        // eslint-disable-next-line
-        // @ts-ignore
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
             const transactionRequest = await call.transactionParameters
