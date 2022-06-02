@@ -50,8 +50,8 @@ describe('Swapping tests', () => {
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
@@ -89,11 +89,14 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-
+    SwapPage.getTransactionConfirmedModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
     MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
+        AddressesEnum.WETH_TOKEN,
         ercBalanceBefore,
         estimatedTransactionOutput,
         false
@@ -138,12 +141,16 @@ describe('Swapping tests', () => {
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
+    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
 
+    cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
+      console.log('ESTIMATED BALANCE: ', ethBalanceBefore - 0.002 + estimatedTransactionOutput * Math.pow(10, 18))
+
       TransactionHelper.checkEthereumBalanceFromEtherscan(
         ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18),
         0.001
@@ -205,12 +212,15 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
-
+    SwapPage.getTransactionConfirmedModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
+        AddressesEnum.XEENUS_TOKEN_RINKEBY,
         ercBalanceBefore,
         TRANSACTION_VALUE,
         true,

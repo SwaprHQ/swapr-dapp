@@ -239,7 +239,7 @@ describe('Switching from mainnet tests', () => {
     SwapPage.openTokenToSwapMenu()
       .chooseToken('dxd')
     SwapPage.getCurrencySelectors()
-      .last()
+      .first()
       .click()
     TokenMenu.chooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
