@@ -80,7 +80,7 @@ interface RewardSummaryProps {
   nativeCurrencyUSDPrice: Price
   setSimulatedStakedAmount: (value: string) => void
   setSimulatedPrice: (value: string) => void
-  simulatedPrice: any
+  simulatedPrice: string
   loading: boolean
 }
 enum SimulateOptions {
@@ -107,6 +107,7 @@ export default function SimulateStaking({
     },
     [setSimulatedPrice]
   )
+
   useEffect(() => {
     if (nativeTokenPrice && !nativeCurrencyUSDPrice.equalTo('0'))
       setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
@@ -114,10 +115,12 @@ export default function SimulateStaking({
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
+
   const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(10)
   const liquidityPercentChangeCallback = useCallback((value: number) => {
     setSimulatedValuePercentage(value)
   }, [])
+
   const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
     simulatedValuePercentage,
     liquidityPercentChangeCallback,
@@ -161,12 +164,12 @@ export default function SimulateStaking({
 
   return (
     <SmoothGradientCard
-      justifyContent={'space-between !important'}
-      flexDirection={'column'}
-      alignItems={'center'}
-      padding={'18px 28px'}
-      height={'162px'}
-      width={'354px'}
+      justifyContent="space-between"
+      flexDirection="column"
+      alignItems="center"
+      padding="18px 28px"
+      height="162px"
+      width="354px"
     >
       <Flex width={'100%'} padding={'10px 12px'} justifyContent={'space-between'}>
         <SimulateOption
