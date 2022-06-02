@@ -23,7 +23,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   width: 150px;
   height: 33px;
   font-weight: 400;
-  font-size: ${props => (props.value.length > 18 ? '9' : props.value.length > 11 ? '12' : '14')}px;
+  font-size: ${({ value }) => (value.length > 18 ? '9' : value.length > 11 ? '12' : '14')}px;
   line-height: 16px;
   text-transform: uppercase;
   padding-left: 8px;
@@ -39,7 +39,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
 const RelativeContainer = styled.div<{ disabled?: boolean }>`
   position: relative;
   transition: opacity 0.3s ease;
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   margin-bottom: 8px;
 `
 const RelativeDismiss = styled(CloseIcon)`
@@ -159,9 +159,7 @@ export default function AssetSelector({
         selectable
         isToken={true}
         active={currency0 !== undefined}
-        paddingBottom={
-          isReward && index === 0 && currency0 === undefined ? '45px' : isReward ? '30px' : '28px' + '!important'
-        }
+        paddingBottom={isReward && index === 0 && currency0 === undefined ? '45px' : isReward ? '30px' : '28px'}
         width={'162px'}
         flexDirection={'column-reverse'}
         height={isReward ? '192px' : '150px'}
@@ -194,7 +192,7 @@ export default function AssetSelector({
                 />
               </RelativeContainer>
             ) : (
-              //deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
+              //TODO: re add this test related property to appropriate field-> deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
               <TYPE.largeHeader
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}

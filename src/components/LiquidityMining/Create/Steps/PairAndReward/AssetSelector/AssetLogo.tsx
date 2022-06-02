@@ -5,14 +5,15 @@ import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
+
 const StyledCurrencyLogo = styled(CurrencyLogo)`
   position: absolute;
   top: -31px;
 `
 const InsideCircle = styled.div<{ size: string }>`
   position: relative;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   margin: 0 auto;
   /* BG/Dark/#3 */
   text-align: center;
@@ -39,25 +40,27 @@ interface AssetLogoProps {
   campaingType: CampaignType
 }
 
-export const Circle = styled.div<{ size: string; active: boolean }>`
+export const Circle = styled.div<{ size: string; active: boolean; top?: string; left?: string }>`
   position: absolute;
   display: flex;
   align-items: center;
   text-align: center;
   margin: 0 auto;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  border: ${props => (props.active ? 'none' : '1px solid #2A2F42')};
-  background: ${props =>
-    props.active ? 'linear-gradient(135deg, rgba(118, 52, 255, 0.7) 16.33%, rgba(35, 0, 102, 0) 95.92%)' : '#3C38641A'};
-  box-shadow: ${props =>
-    props.active
+  left: ${({ left }) => left && left}px;
+  top: ${({ top }) => top && top}px;
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
+  border: ${({ active }) => (active ? 'none' : '1px solid #2A2F42')};
+  background: ${({ active }) =>
+    active ? 'linear-gradient(135deg, rgba(118, 52, 255, 0.7) 16.33%, rgba(35, 0, 102, 0) 95.92%)' : '#3C38641A'};
+  box-shadow: ${({ active }) =>
+    active
       ? 'inset 5.17256px 8.62093px 25.8628px rgba(255, 255, 255, 0.16), inset 9.56367px 3.18789px 15.9394px rgba(255, 255, 255, 0.1);'
       : 'inset 0px 1.55659px 9.33954px rgba(165, 164, 255, 0.08),  inset 9.33954px 3.11318px 15.5659px rgba(143, 141, 255, 0.1);'};
 
   filter: drop-shadow(18px 0px 60px rgba(175, 135, 255, 0.3));
-  backdrop-filter: ${props => (props.active ? 'blur(22.4144px)' : 'blur(14px)')};
-  background-color: ${props => props.active && '#000000f5'};
+  backdrop-filter: ${({ active }) => (active ? 'blur(22.4144px)' : 'blur(14px)')};
+  background-color: ${({ active }) => active && '#000000f5'};
   border-radius: 255.031px;
 `
 const DoubleIconWrapper = styled.div`
@@ -71,7 +74,7 @@ interface CrossProps {
 const CrossIcon = ({ campaignType }: CrossProps) => {
   if (campaignType === CampaignType.TOKEN) {
     return (
-      <Circle size={'100'} style={{ top: '-27px', left: '31px' }} active={false}>
+      <Circle size={'100'} top="-27" left="31" active={false}>
         <InsideCircle size={'80'}>
           <StyledSvg>
             <Cross />
@@ -82,14 +85,14 @@ const CrossIcon = ({ campaignType }: CrossProps) => {
   } else {
     return (
       <DoubleIconWrapper>
-        <Circle size={'84'} active={false} style={{ left: '-38px' }}>
+        <Circle size={'84'} active={false} left="-38" style={{ left: '-38px' }}>
           <InsideCircle size={'65'}>
             <StyledSvg>
               <Cross />
             </StyledSvg>
           </InsideCircle>
         </Circle>
-        <Circle size={'84'} active={false} style={{ left: '0px' }}>
+        <Circle size={'84'} active={false} left="0">
           <InsideCircle size={'65'}>
             <StyledSvg>
               <Cross />
@@ -104,8 +107,9 @@ export const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps
   if (currency0 && currency1) {
     return (
       <DoubleCurrencyLogo
-        style={{ position: 'absolute', top: '-26px' }}
+        style={{ position: 'absolute' }}
         size={84}
+        top={-26}
         currency0={currency0}
         currency1={currency1}
       />
