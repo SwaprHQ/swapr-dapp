@@ -334,7 +334,7 @@ export interface MiningCampaign {
 }
 
 export const sortActiveCampaigns = (activeCampaigns: MiningCampaign[]) =>
-  activeCampaigns.sort((a: any, b: any) => {
+  activeCampaigns.sort((a, b) => {
     if (a.campaign.ended && !b.campaign.ended) return -1
     if (!a.campaign.ended && b.campaign.ended) return 1
 
@@ -368,7 +368,7 @@ export const sortActiveCampaigns = (activeCampaigns: MiningCampaign[]) =>
   })
 
 export const sortExpiredCampaigns = (expiredCampaigns: MiningCampaign[]) =>
-  expiredCampaigns.sort((a: any, b: any) => {
+  expiredCampaigns.sort((a, b) => {
     if (a.campaign.endsAt > b.campaign.endsAt) return -1
     if (a.campaign.endsAt < b.campaign.endsAt) return 1
 
