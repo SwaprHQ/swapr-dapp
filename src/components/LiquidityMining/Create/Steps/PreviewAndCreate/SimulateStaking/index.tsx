@@ -16,6 +16,7 @@ import { ReactComponent as CryptoIcon } from '../../../../../../assets/svg/crypt
 import { ReactComponent as RefreshIcon } from '../../../../../../assets/svg/refresh-icon.svg'
 import NumericalInput from '../../../../../Input/NumericalInput'
 import { TYPE } from '../../../../../../theme'
+import { DOLLAR_AMOUNT_MAX_SIMULATION } from '../../../../../../constants'
 
 const SwitchContainer = styled(Flex)`
   font-size: 10px;
@@ -73,14 +74,12 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   }
 `
 
-const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
-
 interface RewardSummaryProps {
   tokenOrPair: Token | Pair | null
   stakingCap: TokenAmount | null
   nativeCurrencyUSDPrice: Price
   setSimulatedStakedAmount: (value: string) => void
-  setSimulatedPrice: (value: any) => void
+  setSimulatedPrice: (value: string) => void
   simulatedPrice: any
   loading: boolean
 }
@@ -109,11 +108,9 @@ export default function SimulateStaking({
     [setSimulatedPrice]
   )
   useEffect(() => {
-    if (nativeTokenPrice && nativeCurrencyUSDPrice)
+    if (nativeTokenPrice && !nativeCurrencyUSDPrice.equalTo('0'))
       setSimulatedPrice(nativeTokenPrice.multiply(nativeCurrencyUSDPrice).toFixed(2))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingNativeTokenPrice, nativeTokenPrice])
+  }, [loadingNativeTokenPrice, nativeTokenPrice, nativeCurrencyUSDPrice, setSimulatedPrice])
 
   const [simulateOption, setSimulateOption] = useState<SimulateOptions>(SimulateOptions.AMOUNT)
   const [showUSDValue, setShowUSDValue] = useState(true)
