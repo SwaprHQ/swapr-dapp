@@ -1,25 +1,17 @@
 import styled from 'styled-components'
-import { Flex, Box } from 'rebass/styled-components'
+import { Flex } from 'rebass/styled-components'
 import { TYPE } from '../../../../theme'
 
-export const MobileBox = styled(Box)`
-  padding-bottom: 24px;
-  border-bottom: 1px solid ${props => props.theme.bg3};
-`
-
-export const GridCard = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 3fr 2fr 2fr 1fr;
-  border-top: 1px solid ${props => props.theme.bg3};
-  padding: 22px;
+export const GridCard = styled(Flex)`
+  row-gap: 15px;
 `
 
 export const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
   height: 16px;
   border: solid 1px;
-  border-color: ${props => (props.isGreyed ? `transparent` : `${props.theme.green2}`)};
+  border-color: ${({ isGreyed, theme }) => (isGreyed ? `transparent` : `${theme.green2}`)};
   div {
-    color: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.green2)};
+    color: ${({ isGreyed, theme }) => (isGreyed ? theme.purple2 : theme.green2)};
   }
   border-radius: 6px;
   width: fit-content;
@@ -28,12 +20,12 @@ export const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
   align-items: center;
   border-radius: 4px;
   padding: 0 2px;
-  background-color: ${props => props.isGreyed && props.theme.bg3};
-  opacity: ${props => props.isGreyed && '0.5'};
+  background-color: ${({ isGreyed, theme }) => isGreyed && theme.bg3};
+  opacity: ${({ isGreyed }) => isGreyed && '0.5'};
   gap: 4px;
   svg {
     > path {
-      fill: ${props => (props.isGreyed ? props.theme.purple2 : props.theme.green2)};
+      fill: ${({ isGreyed, theme }) => (isGreyed ? theme.purple2 : theme.green2)};
     }
   }
   font-weight: 700;
@@ -53,9 +45,4 @@ export const BadgeText = styled.div`
 export const EllipsizedText = styled(TYPE.body)`
   overflow: hidden;
   text-overflow: ellipsis;
-`
-
-export const ItemsWrapper = styled(Flex)`
-  justify-content: space-evenly;
-  flex-direction: column;
 `

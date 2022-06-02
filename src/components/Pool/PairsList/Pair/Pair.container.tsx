@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { isMobile } from 'react-device-detect'
-import { Flex, Text } from 'rebass'
+import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
+import { Flex } from 'rebass/styled-components'
 
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
@@ -12,9 +12,9 @@ import { CurrencyLogo } from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'
-import { EllipsizedText, FarmingBadge, GridCard, BadgeText, ItemsWrapper, MobileBox } from './Pair.styles'
+import { EllipsizedText, FarmingBadge, GridCard, BadgeText } from './Pair.styles'
 import { ThemeContext } from 'styled-components'
-import { ValueWithLabel } from '../../PairView/ValueWithLabel/ValueWithLabel.component'
+import { ResponsiveValueWithLabel } from './Pair.components'
 
 export function Pair({
   token0,
@@ -31,6 +31,7 @@ export function Pair({
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const isMobile = useIsMobileByMedia()
 
   const correctLogo = () =>
     isSingleSidedStakingCampaign ? (
@@ -47,46 +48,15 @@ export function Pair({
       />
     )
 
-  return isMobile ? (
-    <MobileBox>
-      <Flex flexDirection="row" alignItems="center" justifyContent="space-between" paddingBottom={3}>
-        <Flex>
-          {correctLogo()}
-          <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
-            {unwrappedToken(token0)?.symbol}
-
-            {!isSingleSidedStakingCampaign && <br></br>}
-
-            {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
-          </EllipsizedText>
-        </Flex>
-        <Flex flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
-          <Flex style={{ gap: '6px' }} flexDirection="row" alignItems="flex-start" flexWrap="wrap">
-            <FarmingBadge isGreyed={!hasFarming}>
-              <FarmingLogo />
-              <BadgeText>{t('farming')}</BadgeText>
-            </FarmingBadge>
-            <CarrotBadge isGreyed={!containsKpiToken} />
-          </Flex>
-        </Flex>
-      </Flex>
-      <Flex alignItems="center" justifyContent="space-between">
-        <ValueWithLabel
-          value={usdLiquidity && `${formatCurrencyAmount(usdLiquidity).split('.')[0]}`}
-          title={t('TVL')}
-        />
-        <ValueWithLabel
-          value={
-            volume24hUSD ? `${formatCurrencyAmount(volume24hUSD).split('.')[0]}` : dayLiquidity ? dayLiquidity : '-'
-          }
-          title={t('24hVolume')}
-        />
-        <ValueWithLabel value={`${apy.toFixed(0)}%`} title={t('APY')} />
-      </Flex>
-    </MobileBox>
-  ) : (
-    <GridCard {...rest} data-testid="pair-card">
-      <Flex flexDirection="row" alignItems="center">
+  return (
+    <GridCard
+      {...rest}
+      data-testid="pair-card"
+      flexWrap="wrap"
+      justifyContent="space-between"
+      padding={isMobile ? '22px 10px' : '22px'}
+    >
+      <Flex flex={isMobile ? '' : '25%'} flexDirection="row" alignItems="center">
         {correctLogo()}
         <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
           {unwrappedToken(token0)?.symbol}
@@ -96,7 +66,7 @@ export function Pair({
           {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
         </EllipsizedText>
       </Flex>
-      <Flex flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
+      <Flex flex={isMobile ? '' : '25%'} flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
         <Flex style={{ gap: '6px' }} flexDirection="row" alignItems="flex-start" flexWrap="wrap">
           <FarmingBadge isGreyed={!hasFarming}>
             <FarmingLogo />
@@ -105,22 +75,26 @@ export function Pair({
           <CarrotBadge isGreyed={!containsKpiToken} />
         </Flex>
       </Flex>
-      <ItemsWrapper>
-        <Text fontWeight="500" fontSize="14px" color={theme.purple2}>
-          ${formatCurrencyAmount(usdLiquidity).split('.')[0]}
-        </Text>
-      </ItemsWrapper>
-      <ItemsWrapper>
-        <Text fontWeight="500" fontSize="14px" color={theme.purple2}>
-          ${!loading && volume24hUSD ? formatCurrencyAmount(volume24hUSD).split('.')[0] : dayLiquidity}
-          {dayLiquidity && dayLiquidity}
-        </Text>
-      </ItemsWrapper>
-      <ItemsWrapper>
-        <Text fontWeight="500" fontSize="18px">
-          {apy.toFixed(0)}%
-        </Text>
-      </ItemsWrapper>
+      <Flex flex={isMobile ? '100%' : '45%'} justifyContent="space-between">
+        <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
+          <ResponsiveValueWithLabel title="TVL" value={`$${formatCurrencyAmount(usdLiquidity).split('.')[0]}`} />
+        </Flex>
+        <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
+          <ResponsiveValueWithLabel
+            title="24h Volume"
+            value={`$${
+              !loading && volume24hUSD
+                ? formatCurrencyAmount(volume24hUSD).split('.')[0]
+                : dayLiquidity
+                ? dayLiquidity
+                : '-'
+            }`}
+          />
+        </Flex>
+        <Flex alignItems="center" flex={isMobile ? '' : '10%'}>
+          <ResponsiveValueWithLabel title="APY" value={`${apy.toFixed(0)}%`} fontSize="18px" color={theme.white} big />
+        </Flex>
+      </Flex>
     </GridCard>
   )
 }

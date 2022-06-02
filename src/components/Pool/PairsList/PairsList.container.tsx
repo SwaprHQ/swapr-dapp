@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { isMobile } from 'react-device-detect'
+import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
@@ -11,13 +11,12 @@ import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 
 import { Pagination } from '../../Pagination'
-import { LoadingList } from '../LoadingList'
-import { UndecoratedLink } from '../../UndercoratedLink'
+import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { PairsListProps } from './PairsList.types'
-import { Header, HeaderText, PaginationRow } from './PairsList.styles'
-import { ListLayout } from '../LoadingList'
+import { Header, HeaderText, PaginationRow, StyledUndecoratedLink } from './PairsList.styles'
+import { ListLayout } from './LoadingList'
 import { DimBlurBgBox } from '../DimBlurBgBox'
 import { ButtonPrimary } from '../../Button'
 
@@ -30,6 +29,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
   const swprAddress = SWPRToken?.address ?? undefined
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   const { t } = useTranslation()
+  const isMobile = useIsMobileByMedia()
 
   useEffect(() => {
     // reset page when connected chain or selected filter changes
@@ -46,16 +46,20 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
             {!isMobile && (
-              <Header>
-                <HeaderText>{t('Pair')}</HeaderText>
-                <HeaderText>{t('Campaigns')}</HeaderText>
-                <HeaderText>{t('TVL')}</HeaderText>
-                <HeaderText>{t('24hVolume')}</HeaderText>
-                <HeaderText>{t('APY')}</HeaderText>
-              </Header>
+              <HeaderText>
+                <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
+                  <Flex flex="25%">{t('Pair')}</Flex>
+                  <Flex flex="25%">{t('Campaigns')}</Flex>
+                  <Flex flex="45%">
+                    <Flex flex="30%">{t('TVL')}</Flex>
+                    <Flex flex="30%">{t('24hVolume')}</Flex>
+                    <Flex flex="10%">{t('APY')}</Flex>
+                  </Flex>
+                </Header>
+              </HeaderText>
             )}
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
-              <UndecoratedLink
+              <StyledUndecoratedLink
                 key={singleSidedStake.address}
                 to={
                   isSWPRSingleSidedStake
@@ -74,12 +78,12 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                   hasFarming={true}
                   isSingleSidedStakingCampaign={true}
                 />
-              </UndecoratedLink>
+              </StyledUndecoratedLink>
             )}
             {itemsPage.length > 0 &&
               itemsPage.map(aggregatedPair => {
                 return (
-                  <UndecoratedLink
+                  <StyledUndecoratedLink
                     key={aggregatedPair.pair.liquidityToken.address}
                     to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
                   >
@@ -92,7 +96,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                       containsKpiToken={aggregatedPair.containsKpiToken}
                       hasFarming={aggregatedPair.hasFarming}
                     />
-                  </UndecoratedLink>
+                  </StyledUndecoratedLink>
                 )
               })}
           </ListLayout>
