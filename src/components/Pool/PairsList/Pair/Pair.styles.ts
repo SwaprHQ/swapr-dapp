@@ -3,7 +3,7 @@ import { Flex } from 'rebass/styled-components'
 import { TYPE } from '../../../../theme'
 
 export const GridCard = styled(Flex)`
-  row-gap: 15px;
+  row-gap: 24px;
 `
 
 export const FarmingBadge = styled.div<{ isGreyed?: boolean }>`

@@ -6,8 +6,7 @@ export const InfoGrid = styled.div`
   justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 24px;
+  flex-wrap: wrap;
+  gap: 24px;
 `}
 `

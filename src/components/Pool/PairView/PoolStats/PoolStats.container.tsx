@@ -40,19 +40,21 @@ export function PoolStats({ pair }: PairViewProps) {
 
   return (
     <DimBlurBgBox padding={'24px'}>
-      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
-        <Text fontSize="16px" mb={['12px', '24px']}>
+      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
+        <Text fontSize="16px" mb="16px">
           {t('poolStats')}
         </Text>
         <Box>
           <ButtonExternalLink link={statsLink}>{t('stats')}</ButtonExternalLink>
         </Box>
       </Flex>
-      <InfoGrid>
-        <ValueWithLabel title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
-        <ValueWithLabel title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
-        <ValueWithLabel title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
-      </InfoGrid>
+      <Box marginTop={4}>
+        <InfoGrid>
+          <ValueWithLabel title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
+          <ValueWithLabel title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
+          <ValueWithLabel title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
+        </InfoGrid>
+      </Box>
     </DimBlurBgBox>
   )
 }

@@ -60,7 +60,7 @@ export function Pair({
   return (
     <>
       <PageWrapper>
-        <Box paddingX={3}>
+        <Box paddingX={2}>
           <TitleRow>
             <Flex alignItems="center">
               <PointableFlex onClick={handleAllClick}>

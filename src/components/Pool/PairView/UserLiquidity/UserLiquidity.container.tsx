@@ -47,8 +47,8 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
 
   return (
     <DimBlurBgBox padding={'24px'}>
-      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between" paddingBottom={'24px'}>
-        <Text fontSize="16px" mb={['12px', '24px']}>
+      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
+        <Text fontSize="16px" mb="16px">
           {t('yourLiquidity')}
         </Text>
         <Box>
@@ -57,7 +57,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           </ButtonExternalLink>
         </Box>
       </Flex>
-      <Box marginBottom={3}>
+      <Box marginY={4}>
         <InfoGrid>
           <ValueWithLabel
             title={t('poolShare')}
@@ -71,12 +71,6 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           <ValueWithLabel
             title={t('pooledToken', { token: currency1?.symbol })}
             value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
-          />
-          <ValueWithLabel
-            title={t('swapFee')}
-            value={
-              pair ? new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%' : '-'
-            }
           />
         </InfoGrid>
       </Box>
