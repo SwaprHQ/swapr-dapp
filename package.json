@@ -4,8 +4,8 @@
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn && react-scripts start",
-    "build": "yarn codegen && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "start": "yarn && yarn codegen:socket && react-scripts start",
+    "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint src --ext js,jsx,ts,tsx",
@@ -17,7 +17,7 @@
     "synpress:ct": "cross-env start-server-and-test 'react-scripts start' http-get://localhost:3000 'yarn synpress:run $TEST_PARAMS'",
     "synpress:open": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='true' FAIL_ON_ERROR='0' PRIVATE_KEY='367f6baeb27b33408c85040e13d1ba3e2a173a9112eb3b103f79df0729ddda72' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.json",
     "synpress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='true' FAIL_ON_ERROR='0' PRIVATE_KEY='367f6baeb27b33408c85040e13d1ba3e2a173a9112eb3b103f79df0729ddda72' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.json --config supportFile='tests/support/index.js',pluginsFile='tests/plugins/index.js' -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'",
-    "codegen": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
+    "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom"
