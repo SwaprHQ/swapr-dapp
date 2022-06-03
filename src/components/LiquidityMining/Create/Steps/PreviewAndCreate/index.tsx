@@ -75,7 +75,6 @@ const SwitchContainer = styled.div`
 const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 interface PreviewProps {
   campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
-  liquidityPair: Pair | Token | null
   apr: Percent
   startTime: Date | null
   endTime: Date | null
@@ -85,10 +84,13 @@ interface PreviewProps {
   rewards: TokenAmount[]
   onCreate: () => void
   setSimulatedStakedAmount: (value: string) => void
+  stakeToken?: Token
+  stakePair?: Pair
 }
 
 export default function PreviewAndCreate({
-  liquidityPair,
+  stakeToken,
+  stakePair,
   startTime,
   endTime,
   timelocked,
@@ -106,7 +108,7 @@ export default function PreviewAndCreate({
   const [showUSDValue, setShowUSDValue] = useState(true)
 
   const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
-    liquidityPair ? liquidityPair : undefined
+    stakeToken || stakePair
   )
   const [simulatedValuePercentage, setSimulatedValuePercentage] = useState(0)
 
@@ -119,7 +121,7 @@ export default function PreviewAndCreate({
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
-    const tokenOrPair = liquidityPair instanceof Token ? liquidityPair : liquidityPair?.liquidityToken
+    const tokenOrPair = stakeToken ? stakeToken : stakePair?.liquidityToken
 
     if (tokenOrPair && base !== 0 && baseInUsd !== 0) {
       setSimulatedStakedAmount(
@@ -133,7 +135,8 @@ export default function PreviewAndCreate({
     return calculatePercentage(baseValue, simulatedValuePercentage)
   }, [
     setSimulatedStakedAmount,
-    liquidityPair,
+    stakeToken,
+    stakePair,
     simulatedValuePercentage,
     stakingCap,
     nativeTokenPrice,
@@ -152,9 +155,17 @@ export default function PreviewAndCreate({
   )
   useEffect(() => {
     setAreButtonsDisabled(
-      !!(!account || !rewards || !liquidityPair || !startTime || !endTime || approvals || campaign === null)
+      !!(
+        !account ||
+        !rewards ||
+        (!stakeToken && !stakePair) ||
+        !startTime ||
+        !endTime ||
+        approvals ||
+        campaign === null
+      )
     )
-  }, [account, rewards, liquidityPair, startTime, endTime, approvals, campaign])
+  }, [account, rewards, stakeToken, stakePair, startTime, endTime, approvals, campaign])
 
   const getConfirmButtonMessage = () => {
     if (!account) return 'Connect your wallet'
@@ -208,9 +219,9 @@ export default function PreviewAndCreate({
                 {maxStakedSimulatedAmount.toLocaleString('en-us')}{' '}
                 {showUSDValue
                   ? 'USD'
-                  : liquidityPair instanceof Token
-                  ? liquidityPair.symbol
-                  : `${liquidityPair?.token0.symbol}/${liquidityPair?.token1.symbol}`}
+                  : stakeToken
+                  ? stakeToken.symbol
+                  : `${stakePair?.token0.symbol}/${stakePair?.token1.symbol}`}
               </SimulatedValue>
             )}
 
@@ -223,7 +234,7 @@ export default function PreviewAndCreate({
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
             <PoolSummary
-              liquidityPair={liquidityPair}
+              liquidityPair={stakePair || stakeToken}
               startTime={startTime}
               endTime={endTime}
               timelocked={timelocked}
