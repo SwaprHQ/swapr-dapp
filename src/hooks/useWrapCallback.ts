@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, GnosisProtocolTrade, Trade } from '@swapr/sdk'
+import { ChainId, Currency, currencyEquals } from '@swapr/sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useAllTransactions, useTransactionAdder } from '../state/transactions/hooks'
@@ -7,7 +7,7 @@ import { useActiveWeb3React } from './index'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 import { useTranslation } from 'react-i18next'
-import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
+import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 export enum WrapType {
@@ -57,13 +57,17 @@ export function useWrapCallback(
     chainId,
   ])
 
+  const outputAmount = useMemo(() => tryParseAmount(typedValue, outputCurrency, chainId), [
+    outputCurrency,
+    typedValue,
+    chainId,
+  ])
+
   // Watch the transaction from transaction reducer
   const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt | undefined>()
 
-  const toWrap =
-    nativeCurrencyWrapperToken && outputCurrency && currencyEquals(nativeCurrencyWrapperToken, outputCurrency)
-  const toUnwrap =
-    nativeCurrencyWrapperToken && inputCurrency && currencyEquals(nativeCurrencyWrapperToken, inputCurrency)
+  const toWrap = nativeCurrency && inputCurrency && currencyEquals(nativeCurrency, inputCurrency)
+  const toUnwrap = nativeCurrency && outputCurrency && currencyEquals(nativeCurrency, outputCurrency)
 
   const allTransactions = useAllTransactions()
   useEffect(() => {
@@ -74,6 +78,19 @@ export function useWrapCallback(
   }, [toWrap, toUnwrap, transactionReceipt, allTransactions])
 
   const addTransaction = useTransactionAdder()
+
+  console.info({
+    nativeCurrency,
+    toUnwrap,
+    outputCurrency,
+    isOutputNative: currencyEquals(nativeCurrency, outputCurrency as Currency),
+  })
+  console.info({
+    nativeCurrency,
+    toWrap,
+    inputCurrency,
+    isInputNative: currencyEquals(nativeCurrency, inputCurrency as Currency),
+  })
 
   return useMemo(() => {
     if (!nativeCurrencyWrapperContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
@@ -123,14 +140,14 @@ export function useWrapCallback(
       return {
         wrapType: WrapType.UNWRAP,
         execute:
-          sufficientBalance && inputAmount
+          sufficientBalance && outputAmount
             ? async () => {
                 try {
                   setWrapState(WrapState.PENDING)
-                  const txReceipt = await nativeCurrencyWrapperContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
+                  const txReceipt = await nativeCurrencyWrapperContract.withdraw(`0x${outputAmount.raw.toString(16)}`)
                   setTransactionReceipt(transactionReceipt)
                   addTransaction(txReceipt, {
-                    summary: `Unwrap ${inputAmount.toSignificant(6)} ${nativeCurrencyWrapperToken.symbol} to ${
+                    summary: `Unwrap ${outputAmount.toSignificant(6)} ${nativeCurrencyWrapperToken.symbol} to ${
                       nativeCurrency.symbol
                     }`,
                   })
@@ -156,6 +173,7 @@ export function useWrapCallback(
     inputCurrency,
     outputCurrency,
     inputAmount,
+    outputAmount,
     balance,
     nativeCurrencyWrapperToken,
     nativeCurrency,
@@ -170,17 +188,24 @@ export function useWrapCallback(
 }
 
 export function useTradeWrapCallback(
-  trade?: Trade | undefined,
+  currencies: { INPUT?: Currency | undefined; OUTPUT?: Currency | undefined },
+  isGnosisTrade = false,
+  chainId?: ChainId,
   typedValue?: string // can be also obtained from the SwapState
 ): UseWrapCallback {
-  const isInputCurrencyNative =
-    trade && trade.inputAmount && Currency.isNative(trade.inputAmount.currency) ? true : false
+  const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies?.INPUT) ? true : false
+  const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT) ? true : false
 
-  const inputCurrency = trade ? trade.inputAmount.currency : undefined
+  console.info({ input: currencies.INPUT, output: currencies.OUTPUT })
+  // const inputCurrency = trade ? trade.inputAmount.currency : undefined
+  const inputCurrency =
+    isGnosisTrade && isOutputCurrencyNative
+      ? wrappedCurrency(currencies.OUTPUT as Currency, chainId as ChainId)
+      : currencies.INPUT
   const outputCurrency =
-    trade instanceof GnosisProtocolTrade && isInputCurrencyNative
-      ? wrappedAmount(trade.inputAmount, trade.chainId).currency
-      : trade?.outputAmount.currency
+    isGnosisTrade && isInputCurrencyNative
+      ? wrappedCurrency(currencies.INPUT as Currency, chainId as ChainId)
+      : currencies.OUTPUT
 
   return useWrapCallback(inputCurrency, outputCurrency, typedValue)
 }

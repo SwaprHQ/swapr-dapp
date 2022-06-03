@@ -8,6 +8,7 @@ import {
   UniswapV2Trade,
   UniswapV2RoutablePlatform,
   GnosisProtocolTrade,
+  ChainId,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
@@ -149,12 +150,15 @@ export default function Swap() {
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback + and a state variable)
   const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(
-    GnosisProtocolTradeStatus.WRAP
+    GnosisProtocolTradeStatus.UNKNOWN
   )
   const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useTradeWrapCallback(
-    potentialTrade,
+    currencies,
+    potentialTrade instanceof GnosisProtocolTrade,
+    potentialTrade?.chainId as ChainId,
     typedValue
   )
+  console.info({ wrapType })
 
   const bestPricedTrade = allPlatformTrades?.[0] // the best trade is always the first
 
@@ -178,7 +182,10 @@ export default function Swap() {
 
   // True when the wallet tries to trade native currency to ERC20
   const isGnosisProtocolTradeRequireWrap =
-    trade instanceof GnosisProtocolTrade && isInputCurrencyNative(trade) && isValid
+    trade instanceof GnosisProtocolTrade && isCurrencyNative(currencies?.INPUT as Currency, trade?.chainId) && isValid
+
+  const isGnosisProtocolTradeRequireUnwrap =
+    trade instanceof GnosisProtocolTrade && isCurrencyNative(currencies?.OUTPUT as Currency, trade?.chainId) && isValid
 
   const wrappedToken = useTokenBalance(account as string, wrappedCurrency(trade?.inputAmount?.currency, chainId))
 
@@ -377,7 +384,8 @@ export default function Swap() {
 
   const SwapBoxButton = () => {
     // Eco Router is computing the best route for the user, so we need to show a loading indicator
-    const isGnosisStatusComputed = approval === ApprovalState.UNKNOWN && isGnosisProtocolTradeRequireWrap
+    const isGnosisStatusComputed =
+      approval === ApprovalState.UNKNOWN && (isGnosisProtocolTradeRequireWrap || isGnosisProtocolTradeRequireUnwrap)
     if (swapInfoIsLoading || isGnosisStatusComputed) {
       return (
         <ButtonPrimary style={{ textAlign: 'center' }} disabled>
@@ -399,8 +407,20 @@ export default function Swap() {
       )
     }
 
+    // Wallet is connected
+    // User is trying to un/wrap
+    if (showWrap) {
+      return (
+        <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
+          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+        </ButtonPrimary>
+      )
+    }
+
     if (isGnosisProtocolTradeRequireWrap) {
       const midCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
+      if (gnosisProtocolTradeStatus === GnosisProtocolTradeStatus.UNKNOWN)
+        setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
       const isApprovalRequired = approval !== ApprovalState.APPROVED
       const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
@@ -456,7 +476,7 @@ export default function Swap() {
               ) : approvalSubmitted ? (
                 'Approved'
               ) : (
-                'Approve ' + midCurrency?.symbol // Change this to wrapped token
+                'Approve ' + midCurrency?.symbol
               )}
             </ButtonConfirmed>
           )}
@@ -494,13 +514,106 @@ export default function Swap() {
       )
     }
 
-    // Wallet is connected
-    // User is trying to un/wrap
-    if (showWrap) {
+    if (isGnosisProtocolTradeRequireUnwrap) {
+      const midCurrency = trade && wrappedAmount(trade.outputAmount as CurrencyAmount, trade.chainId).currency
+      const isApprovalRequired = approval !== ApprovalState.APPROVED
+      if (gnosisProtocolTradeStatus === GnosisProtocolTradeStatus.UNKNOWN)
+        if (isApprovalRequired) setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
+        else setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
+
+      const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
+
+      const swapDisabled =
+        !isValid ||
+        isApprovalRequired ||
+        (priceImpactSeverity > 3 && !isExpertMode) ||
+        gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
+
+      const errorMessage =
+        swapErrorMessage ??
+        (parsedAmounts[Field.INPUT] &&
+          wrappedToken &&
+          (parsedAmounts[Field.INPUT] as CurrencyAmount).toExact() > wrappedToken.toExact() &&
+          !swapDisabled)
+          ? 'Insufficient ' + wrappedToken?.currency.symbol + ' Balance'
+          : undefined
+
+      console.info({
+        isApprovalRequired,
+        swapDisabled,
+        gnosisProtocolTradeStatus,
+      })
       return (
-        <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-        </ButtonPrimary>
+        <RowBetween>
+          {// If the EOA needs to approve the WXDAI or any ERC20
+          showApproveFlow && isApprovalRequired && (
+            <ButtonConfirmed
+              onClick={() => approveCallback().then(() => setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP))}
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL || approvalSubmitted}
+              width={width}
+              altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+            >
+              {approval === ApprovalState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Approving <Loader />
+                </AutoRow>
+              ) : approvalSubmitted ? (
+                'Approved'
+              ) : (
+                'Approve ' + trade?.inputAmount?.currency.symbol
+              )}
+            </ButtonConfirmed>
+          )}
+          <SwapButton
+            onClick={() => {
+              if (isExpertMode) {
+                handleSwap()
+              } else {
+                setSwapState({
+                  tradeToConfirm: trade,
+                  attemptingTxn: false,
+                  swapErrorMessage: undefined,
+                  showConfirm: true,
+                  txHash: undefined,
+                })
+              }
+            }}
+            width={width}
+            id="swap-button"
+            // swapDisabled depends on the step of the process
+            // errorMessage depends on the specific details in the swap step
+            // standard disable or if there is some kind of problem
+            disabled={swapDisabled || errorMessage != null}
+            platformName={trade?.platform.name}
+            //error={isValid && priceImpactSeverity > 2}
+            priceImpactSeverity={priceImpactSeverity}
+            isExpertMode={isExpertMode}
+            swapInputError={errorMessage}
+          >
+            {priceImpactSeverity > 3 && !isExpertMode
+              ? `Price Impact High`
+              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+          </SwapButton>
+          {
+            <ButtonConfirmed
+              onClick={onWrap}
+              disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP || wrapState === WrapState.PENDING}
+              width={width}
+              altDisabledStyle={wrapState !== WrapState.UNKNOWN} //{approval === ApprovalState.PENDING} // show solid button while waiting
+              confirmed={wrapState === WrapState.WRAPPED}
+            >
+              {wrapState === WrapState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Unwrapping <Loader />
+                </AutoRow>
+              ) : wrapState === WrapState.WRAPPED ? (
+                'Unwrapped'
+              ) : (
+                'Unwrap ' + midCurrency?.symbol
+              )}
+            </ButtonConfirmed>
+          }
+        </RowBetween>
       )
     }
 
@@ -725,6 +838,6 @@ export default function Swap() {
  * @param trade - the whole trade class, whatever it may contain
  * @returns boolean - if the input currency exists and is native
  */
-function isInputCurrencyNative(trade: Trade | undefined) {
-  return trade && trade.inputAmount && Currency.isNative(trade?.inputAmount?.currency) ? true : false
+function isCurrencyNative(currency: Currency, chainId: ChainId) {
+  return Currency.getNative(chainId) == currency ? true : false
 }
