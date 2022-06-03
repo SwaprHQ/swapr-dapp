@@ -18,7 +18,6 @@ import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 const FlexWrapper = styled(Flex)`
   gap: 28px;
-  margin-top: 32px !important;
   width: fit-content;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap:40px;
@@ -37,7 +36,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
   const handleDismissCurrencySearch = useCallback(() => {
     setCurrencySearchOpen(false)
   }, [])
-  const handelOpenPairOrTokenSearch = useCallback(value => {
+  const handleOpenPairOrTokenSearch = useCallback(value => {
     setCurrentReward(value)
     setCurrencySearchOpen(true)
   }, [])
@@ -107,13 +106,13 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
 
   return (
     <>
-      <FlexWrapper flexWrap="wrap">
+      <FlexWrapper marginTop="32px" flexWrap="wrap">
         {[...Array(numberOfRewards)].map((item, index) => (
           <AssetSelector
             key={index}
             currency0={rewardsObject.rewards[index]?.token}
             campaingType={CampaignType.TOKEN}
-            onClick={() => handelOpenPairOrTokenSearch(index)}
+            onClick={() => handleOpenPairOrTokenSearch(index)}
             customAssetTitle={
               index === 0 ? (
                 <div>ADD REWARD</div>

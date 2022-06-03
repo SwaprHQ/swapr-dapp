@@ -106,7 +106,7 @@ export default function CreateLiquidityMining() {
   const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
   const [simulatedPrice, setSimulatedPrice] = useState('0')
 
-  const memoizedRewardArray = useMemo(
+  const memoizedRewardsArray = useMemo(
     () =>
       rewardsObject.rewards.length
         ? rewardsObject.rewards.filter(reward => reward?.greaterThan('0'))
@@ -123,7 +123,7 @@ export default function CreateLiquidityMining() {
 
   const campaign = useNewLiquidityMiningCampaign(
     stakeTokenOrPair,
-    memoizedRewardArray,
+    memoizedRewardsArray,
     startTime,
     endTime,
     timelocked,
@@ -243,7 +243,7 @@ export default function CreateLiquidityMining() {
         <LastStep
           title={t('liquidityMining.create.preview')}
           index={4}
-          disabled={!stakeTokenOrPair || !startTime || !endTime || memoizedRewardArray.length === 0}
+          disabled={!stakeTokenOrPair || !startTime || !endTime || memoizedRewardsArray.length === 0}
         >
           <PreviewAndCreate
             simulatedPrice={simulatedPrice}
@@ -254,7 +254,7 @@ export default function CreateLiquidityMining() {
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
-            reward={memoizedRewardArray}
+            rewards={memoizedRewardsArray}
             stakingCap={stakingCap}
             apr={campaign ? campaign.apy : new Percent('0', '100')}
             onCreate={handleCreateRequest}
@@ -272,7 +272,7 @@ export default function CreateLiquidityMining() {
         liquidityPair={stakeTokenOrPair}
         startTime={startTime}
         endTime={endTime}
-        rewards={memoizedRewardArray}
+        rewards={memoizedRewardsArray}
         timelocked={timelocked}
         stakingCap={stakingCap}
         unlimitedPool={unlimitedPool}

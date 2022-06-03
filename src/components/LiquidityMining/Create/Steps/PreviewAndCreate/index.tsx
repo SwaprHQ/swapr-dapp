@@ -28,10 +28,7 @@ const FlexContainer = styled(Flex)`
 `
 
 const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
-  flex: ${props => (props.flex1 ? 1 : 'auto')};
-  ${props => props.theme.mediaWidth.upToExtraSmall`
-    margin-top: 16px !important;
-  `}
+  flex: ${({ flex1 }) => (flex1 ? 1 : 'auto')};
 `
 const StyledCampaignCard = styled(CampaignCard)`
   width: 354px;
@@ -52,7 +49,7 @@ interface PreviewProps {
   timelocked: boolean
   stakingCap: TokenAmount | null
   approvals: boolean
-  reward: TokenAmount[]
+  rewards: TokenAmount[]
   onCreate: () => void
   setSimulatedStakedAmount: (value: string) => void
 }
@@ -63,7 +60,7 @@ export default function PreviewAndCreate({
   endTime,
   timelocked,
   stakingCap,
-  reward,
+  rewards,
   apr,
   approvals,
   onCreate,
@@ -78,9 +75,10 @@ export default function PreviewAndCreate({
 
   useEffect(() => {
     setAreButtonsDisabled(
-      !!(!account || !reward || !liquidityPair || !startTime || !endTime || approvals || campaign === null)
+      !!(!account || !rewards || !liquidityPair || !startTime || !endTime || approvals || campaign === null)
     )
-  }, [account, reward, liquidityPair, startTime, endTime, approvals, campaign])
+  }, [account, rewards, liquidityPair, startTime, endTime, approvals, campaign])
+
   const getConfirmButtonMessage = () => {
     if (!account) return 'Connect your wallet'
     else if (approvals) return 'Rewards not approved/Insufficient balance'
@@ -134,7 +132,7 @@ export default function PreviewAndCreate({
               <Divider />
             </Box>
             <ResponsiveContainer flex1>
-              <RewardSummary stakingCap={stakingCap} reward={reward} apr={apr} />
+              <RewardSummary stakingCap={stakingCap} rewards={rewards} apr={apr} />
             </ResponsiveContainer>
           </FlexContainer>
         </Card>

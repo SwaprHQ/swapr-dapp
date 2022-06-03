@@ -36,12 +36,12 @@ interface CircleProps {
   active: boolean
 }
 export function AdjustableDiamondSize({ pairOrToken, active }: CircleProps) {
-  if (pairOrToken) return <Circle active={active} size={'98'} style={{ top: '21px', left: '-27px' }} />
+  if (pairOrToken) return <Circle active={active} size={'98'} top="21" left="-27" />
   else
     return (
       <>
-        <Circle active={active} style={{ top: '26px', left: '-38px' }} size={'84'} />
-        <Circle active={active} style={{ top: '26px', left: '0px' }} size={'84'} />
+        <Circle active={active} top="26" left="-38" size={'84'} />
+        <Circle active={active} top="26" left="0" size={'84'} />
       </>
     )
 }

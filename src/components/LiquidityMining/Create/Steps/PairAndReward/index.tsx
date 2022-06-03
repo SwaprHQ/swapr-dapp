@@ -30,11 +30,11 @@ const AmountFlex = styled(Flex)`
   padding: 12px;
 `
 const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
-  text-decoration: ${props => (props.active ? 'underline' : 'none')};
+  text-decoration: ${({ active }) => (active ? 'underline' : 'none')};
   opacity: ${({ active }) => !active && '0.7'};
   text-underline-offset: 6px;
   line-height: 22px;
-  color: ${props => (props.active ? props.theme.text2 : props.theme.dark4)};
+  color: ${({ active, theme }) => (active ? theme.text2 : theme.dark4)};
   font-size: 13px !important;
   letter-spacing: 0.08em;
 `
@@ -55,7 +55,7 @@ const StyledFlex = styled(Flex)<{ active: boolean }>`
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
   padding: 12px;
-  padding-top: ${props => props.active && '8px'};
+  padding-top: ${({ active }) => active && '8px'};
 `
 const BorderContainer = styled(Flex)<{ active: boolean }>`
   border-bottom: 1px solid ${({ active }) => (active ? 'white' : 'transparent')};
@@ -92,7 +92,7 @@ export default function StakeTokenAndLimit({
     }
   }, [onStakingCapChange, stakeTokenOrPair, unlimitedPool])
 
-  const handelOpenPairOrTokenSearch = useCallback(value => {
+  const handleOpenPairOrTokenSearch = useCallback(value => {
     if (value === CampaignType.PAIR) {
       setPairSearchOpen(true)
     } else {
@@ -120,6 +120,7 @@ export default function StakeTokenAndLimit({
     if (stakingCapString.length > 0 && inputRef.current) return inputRef.current.clientWidth
     else return 0
   }, [stakingCapString, inputRef])
+
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
       if (!stakeTokenOrPair || (stakeTokenOrPair instanceof Pair && !stakeTokenOrPair.liquidityToken)) return
@@ -140,7 +141,7 @@ export default function StakeTokenAndLimit({
             stakeTokenOrPair && stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair?.token0
           }
           currency1={stakeTokenOrPair && stakeTokenOrPair instanceof Token ? null : stakeTokenOrPair?.token1}
-          onClick={() => handelOpenPairOrTokenSearch(campaingType)}
+          onClick={() => handleOpenPairOrTokenSearch(campaingType)}
         />
 
         <SmoothGradientCard

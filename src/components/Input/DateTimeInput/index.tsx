@@ -17,7 +17,7 @@ const Input = styled(StyledInput)<{ selected: boolean }>`
   height: 30px;
   padding-left: 12px;
   padding-right: 12px;
-  color: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
+  color: ${({ theme, selected }) => (!selected ? theme.text2 : theme.dark4)};
   text-transform: uppercase;
   font-weight: 600;
   font-size: 11px;
@@ -26,11 +26,11 @@ const Input = styled(StyledInput)<{ selected: boolean }>`
 
 const StyledDay = styled.span`
   font-size: 11px;
-  color: ${props => props.theme.text2};
+  color: ${({ theme }) => theme.text2};
 `
 const StyledDatePicker = styled(Datepicker)`
   ::placeholder {
-    color: ${props => props.theme.text2};
+    color: ${({ theme }) => theme.text2};
   }
 `
 const StyledCalendarIcon = styled(CalendarIcon)<{ selected: boolean }>`
@@ -39,7 +39,7 @@ const StyledCalendarIcon = styled(CalendarIcon)<{ selected: boolean }>`
   right: 8px;
   pointer-events: all;
   path {
-    fill: ${props => (!props.selected ? props.theme.text2 : props.theme.dark4)};
+    fill: ${({ theme, selected }) => (!selected ? theme.text2 : theme.dark4)};
   }
 `
 
