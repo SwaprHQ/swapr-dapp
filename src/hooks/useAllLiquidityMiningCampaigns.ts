@@ -131,7 +131,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
   return useMemo(() => {
     if (
       singleSidedLoading ||
-      chainId === undefined ||
+      !chainId ||
       campaignLoading ||
       !SWPRToken ||
       singleSidedCampaignsError ||

@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from 'react'
+import React, { FC } from 'react'
 import { StyledHero, AppBodyContainer } from './SpaceBg.styles'
 
-export const SpaceBg: FC<{ children: ReactNode }> = ({ children }) => (
+export const SpaceBg: FC = ({ children }) => (
   <StyledHero id="liquidity-hero" className="hero-active">
     <div className="inner-hero">
       <AppBodyContainer>{children}</AppBodyContainer>

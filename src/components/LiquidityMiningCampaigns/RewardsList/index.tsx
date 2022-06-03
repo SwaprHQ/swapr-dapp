@@ -25,7 +25,7 @@ interface RewardsInterface {
 }
 
 export function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
-  const { loading: loadingPairs, miningCampaigns } = useAllLiquidityMiningCampaigns(pair ? pair : undefined, dataFilter)
+  const { loading: loadingPairs, miningCampaigns } = useAllLiquidityMiningCampaigns(pair ?? undefined, dataFilter)
 
   const [activeTab, setActiveTab] = useState(0)
 

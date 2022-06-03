@@ -89,8 +89,8 @@ export function usePairLiquidityMiningCampaigns(
 
   return useMemo(() => {
     if (
-      chainId === undefined ||
-      pairAddress === undefined ||
+      !chainId ||
+      !pairAddress ||
       campaignError ||
       !pairCampaigns ||
       !pairCampaigns.liquidityMiningCampaigns ||

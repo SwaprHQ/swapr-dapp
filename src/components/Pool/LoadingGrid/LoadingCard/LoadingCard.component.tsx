@@ -7,7 +7,7 @@ import { Card } from './LoadingCard.styles'
 export function LoadingCard() {
   return (
     <Card>
-      <Flex alignItems="center" flexDirection="row" justifyContent={'space-between'}>
+      <Flex alignItems="center" flexDirection="row" justifyContent="space-between">
         <Flex style={{ gap: '8px' }} flexDirection="column">
           <DoubleCurrencyLogo spaceBetween={0} marginLeft={0} marginRight={14} top={0} loading size={30} />
           <Skeleton height="18px" width="90px" />

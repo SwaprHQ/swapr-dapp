@@ -61,9 +61,10 @@ export function Pair({
         <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
           {unwrappedToken(token0)?.symbol}
 
-          {!isSingleSidedStakingCampaign && <br></br>}
-
-          {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
+          <Flex flexDirection="column">
+            {!isSingleSidedStakingCampaign}
+            {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
+          </Flex>
         </EllipsizedText>
       </Flex>
       <Flex flex={isMobile ? '' : '25%'} flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
