@@ -1,20 +1,21 @@
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../components/Button'
-import { ButtonConnect } from '../../components/ButtonConnect'
-import Loader from '../../components/Loader'
-import { AutoRow, RowBetween } from '../../components/Row'
-import { ApprovalState } from '../../hooks/useApproveCallback'
-import { WrapType } from '../../hooks/useWrapCallback'
-import React, { useEffect } from 'react'
-import { Field } from '../../state/swap/actions'
-import { SwapButton, SwapLoadingButton } from '../../components/swap/SwapButton'
-import Column from '../../components/Column'
-import ProgressSteps from '../../components/ProgressSteps'
-import { SwapCallbackError } from '../../components/swap/styleds'
-import { useIsExpertMode } from '../../state/user/hooks'
-import { useActiveWeb3React } from '../../hooks'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
+import { ButtonConnect } from '../../../components/ButtonConnect'
+import Loader from '../../../components/Loader'
+import { AutoRow, RowBetween } from '../../../components/Row'
+import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { WrapType } from '../../../hooks/useWrapCallback'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import { Field } from '../../../state/swap/actions'
+import { SwapButton, SwapLoadingButton } from './SwapButton'
+import Column from '../../../components/Column'
+import ProgressSteps from '../../../components/ProgressSteps'
+import { SwapCallbackError } from '../../../components/swap/styleds'
+import { useIsExpertMode } from '../../../state/user/hooks'
+import { useActiveWeb3React } from '../../../hooks'
 import { Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
-import { warningSeverity } from '../../utils/prices'
-import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
+import { warningSeverity } from '../../../utils/prices'
+import { ROUTABLE_PLATFORM_STYLE } from '../../../constants'
+import { SwapData } from '../../../pages/Swap'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
 
@@ -23,39 +24,39 @@ interface SwapButtonsProps {
   showApproveFlow: boolean
   userHasSpecifiedInputOutput: boolean
   approval: ApprovalState
-  handleSwap: () => void
-  setSwapState: any
+  setSwapState: Dispatch<SetStateAction<SwapData>>
   priceImpactSeverity: ReturnType<typeof warningSeverity>
   swapCallbackError: string | null
-  onWrap: (() => Promise<void>) | undefined
   wrapType: WrapType
-  approveCallback: () => Promise<void>
   approvalSubmitted: boolean
   currencies: { [field in Field]?: Currency }
   trade: Trade | undefined
   swapInputError: string | undefined
   swapErrorMessage: string | undefined
   loading: boolean
+  handleSwap: () => void
+  approveCallback: () => Promise<void>
+  onWrap: (() => Promise<void>) | undefined
 }
 
-export function SwapButtons({
+export default function SwapButtons({
   wrapInputError,
   showApproveFlow,
   userHasSpecifiedInputOutput,
   approval,
-  handleSwap,
   setSwapState,
   priceImpactSeverity,
   swapCallbackError,
-  onWrap,
   wrapType,
-  approveCallback,
   approvalSubmitted,
   currencies,
   trade,
   swapInputError,
   swapErrorMessage,
   loading,
+  handleSwap,
+  approveCallback,
+  onWrap,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()

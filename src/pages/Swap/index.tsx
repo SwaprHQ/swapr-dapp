@@ -58,7 +58,16 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import { SwapButtons } from '../../components/swap/SwapButtons'
+import SwapButtons from '../../components/swap/SwapButtons'
+import Skeleton from 'react-loading-skeleton'
+
+export type SwapData = {
+  showConfirm: boolean
+  tradeToConfirm: Trade | undefined
+  attemptingTxn: boolean
+  swapErrorMessage: string | undefined
+  txHash: string | undefined
+}
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -160,13 +169,7 @@ export default function Swap() {
   )
 
   // modal and loading
-  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
-    showConfirm: boolean
-    tradeToConfirm: Trade | undefined
-    attemptingTxn: boolean
-    swapErrorMessage: string | undefined
-    txHash: string | undefined
-  }>({
+  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<SwapData>({
     showConfirm: false,
     tradeToConfirm: undefined,
     attemptingTxn: false,
@@ -410,6 +413,7 @@ export default function Swap() {
                     </RowBetween>
                   </AutoColumn>
                 )}
+                {loading && <Skeleton width="100%" height="46px" />}
                 {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
                   <SwapButtons
@@ -417,19 +421,19 @@ export default function Swap() {
                     showApproveFlow={showApproveFlow}
                     userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
                     approval={approval}
-                    handleSwap={handleSwap}
                     setSwapState={setSwapState}
                     priceImpactSeverity={priceImpactSeverity}
                     swapCallbackError={swapCallbackError}
-                    onWrap={onWrap}
                     wrapType={wrapType}
-                    approveCallback={approveCallback}
                     approvalSubmitted={approvalSubmitted}
                     currencies={currencies}
                     trade={trade}
                     swapInputError={swapInputError}
                     swapErrorMessage={swapErrorMessage}
                     loading={loading}
+                    onWrap={onWrap}
+                    approveCallback={approveCallback}
+                    handleSwap={handleSwap}
                   />
                 </div>
               </AutoColumn>
