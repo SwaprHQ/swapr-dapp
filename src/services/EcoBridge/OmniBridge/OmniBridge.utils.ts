@@ -7,7 +7,7 @@ import { BigNumber, Contract, ContractTransaction, ethers, Signer, utils } from 
 import { BRIDGE_CONFIG, OVERRIDES } from './OmniBridge.config'
 import { EcoBridgeProviders } from '../EcoBridge.types'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { TokenWithAddressAndChain, Token, Request, Execution } from './OmniBridge.types'
+import { TokenWithAddressAndChain, Token, Request, Execution, Mode } from './OmniBridge.types'
 
 //constants
 export const defaultTokensUrl: { [chainId: number]: string } = {
@@ -67,7 +67,7 @@ const isOverridden = (bridgeDirection: string, token: TokenWithAddressAndChain) 
   return override !== undefined && override[chainId] !== undefined
 }
 
-const getOverriddenMode = (bridgeDirection: string, token: TokenWithAddressAndChain): string | undefined => {
+const getOverriddenMode = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return
 
   const { address, chainId } = token
@@ -76,7 +76,7 @@ const getOverriddenMode = (bridgeDirection: string, token: TokenWithAddressAndCh
 
   const overrides = OVERRIDES[bridgeDirection]
 
-  return overrides[address.toLowerCase()][chainId].mode
+  return overrides[address.toLowerCase()][chainId].mode as Mode
 }
 
 const getOverriddenMediator = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
@@ -112,11 +112,7 @@ export const getOverriddenToToken = (bridgeDirection: string, token: TokenWithAd
 }
 
 //get mode
-export const fetchMode = async (
-  bridgeDirection: string,
-  token: TokenWithAddressAndChain,
-  provider?: Provider
-): Promise<string | undefined> => {
+export const fetchMode = async (bridgeDirection: string, token: TokenWithAddressAndChain, provider?: Provider) => {
   if (!provider) return
 
   if (isOverridden(bridgeDirection, token)) {
@@ -125,7 +121,7 @@ export const fetchMode = async (
   const { enableReversedBridge, homeChainId } = BRIDGE_CONFIG[bridgeDirection]
 
   if (!enableReversedBridge) {
-    return token.chainId === homeChainId ? 'erc677' : 'erc20'
+    return token.chainId === homeChainId ? Mode.ERC677 : Mode.ERC20
   }
 
   const { chainId, address } = token
@@ -138,9 +134,9 @@ export const fetchMode = async (
   const mediatorContract = new Contract(mediatorAddress, abi, provider)
   const nativeTokenAddress = await mediatorContract.nativeTokenAddress(address)
 
-  if (nativeTokenAddress === ADDRESS_ZERO) return 'erc20'
+  if (nativeTokenAddress === ADDRESS_ZERO) return Mode.ERC20
 
-  return 'erc677'
+  return Mode.ERC677
 }
 
 //get name
@@ -259,7 +255,7 @@ export const fetchTokenDetails = async (
 
 const fetchToTokenDetails = async (
   bridgeDirection: string,
-  fromToken: TokenWithAddressAndChain & { mode: string; name: string },
+  fromToken: TokenWithAddressAndChain & { mode: Mode; name: string },
   toChainId: ChainId,
   providers?: EcoBridgeProviders
 ) => {
@@ -285,7 +281,7 @@ const fetchToTokenDetails = async (
   const fromEthersProvider = providers[chainId]
   const toEthersProvider = providers[toChainId]
 
-  if (address === ADDRESS_ZERO && mode === 'NATIVE') {
+  if (address === ADDRESS_ZERO && mode === Mode.NATIVE) {
     const toAddress = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'
     return fetchTokenDetails(
       bridgeDirection,
@@ -321,7 +317,7 @@ const fetchToTokenDetails = async (
       name: toName,
       chainId: toChainId,
       address: toAddress,
-      mode: 'erc677',
+      mode: Mode.ERC677,
       mediator: toMediatorAddress,
       decimals: decimals.toString(),
     }
@@ -338,7 +334,7 @@ const fetchToTokenDetails = async (
     name: toName,
     chainId: toChainId,
     address: toAddress,
-    mode: 'erc20',
+    mode: Mode.ERC20,
     mediator: toMediatorAddress,
     decimals: decimals.toString(),
   }
@@ -346,7 +342,7 @@ const fetchToTokenDetails = async (
 
 export const fetchToToken = async (
   bridgeDirection: string,
-  fromToken: TokenWithAddressAndChain & { mode: string; name: string },
+  fromToken: TokenWithAddressAndChain & { mode: Mode; name: string },
   toChainId: ChainId,
   providers?: EcoBridgeProviders
 ) => {
@@ -545,7 +541,7 @@ export const fetchTokenLimits = async (
 //bridge transfer
 export const relayTokens = async (
   signer: Signer,
-  token: { address: string; mode: string; mediator: string },
+  token: { address: string; mode: Mode; mediator: string },
   receiver: string,
   amount: string,
   { shouldReceiveNativeCur, foreignChainId }: { shouldReceiveNativeCur: boolean; foreignChainId: ChainId }
@@ -555,12 +551,12 @@ export const relayTokens = async (
   const helperContractAddress = nativeCurrencyMediators[foreignChainId || 1]
 
   switch (mode) {
-    case 'NATIVE': {
+    case Mode.NATIVE: {
       const abi = ['function wrapAndRelayTokens(address _receiver) public payable']
       const helperContract = new Contract(helperContractAddress, abi, signer)
       return helperContract.wrapAndRelayTokens(receiver, { value: amount })
     }
-    case 'erc677': {
+    case Mode.ERC677: {
       const abi = ['function transferAndCall(address, uint256, bytes)']
       const tokenContract = new Contract(address, abi, signer)
       const foreignHelperContract = nativeCurrencyMediators[foreignChainId || 1]
@@ -570,12 +566,12 @@ export const relayTokens = async (
           : receiver
       return tokenContract.transferAndCall(mediator, amount, bytesData)
     }
-    case 'dedicated-erc20': {
+    case Mode.DEDICATED_ERC20: {
       const abi = ['function relayTokens(address, uint256)']
       const mediatorContract = new Contract(mediator, abi, signer)
       return mediatorContract.relayTokens(receiver, amount)
     }
-    case 'erc20':
+    case Mode.ERC20:
     default: {
       const abi = ['function relayTokens(address, address, uint256)']
       const mediatorContract = new Contract(mediator, abi, signer)

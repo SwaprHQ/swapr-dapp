@@ -50,7 +50,7 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { PairTokens, SubgraphExecutionsData, SubgraphRequestsData, SubgraphResponse } from './OmniBridge.types'
+import { Mode, PairTokens, SubgraphExecutionsData, SubgraphRequestsData, SubgraphResponse } from './OmniBridge.types'
 
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
@@ -113,7 +113,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       if (
         toToken.chainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
         toToken.address === ethers.constants.AddressZero &&
-        toToken.mode === 'NATIVE'
+        toToken.mode === Mode.NATIVE
       ) {
         shouldReceiveNativeCur = true
       }
@@ -498,7 +498,7 @@ export class OmniBridge extends EcoBridgeChildBase {
 
     const fromTokenMode =
       fromTokenAddress === ethers.constants.AddressZero
-        ? 'NATIVE'
+        ? Mode.NATIVE
         : await fetchMode(this.bridgeId, { address: fromTokenAddress, chainId }, this._staticProviders[chainId])
 
     const fromTokenMediator = getMediatorAddress(this.bridgeId, { address, chainId })

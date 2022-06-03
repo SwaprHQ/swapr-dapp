@@ -5,6 +5,13 @@ import { EntityState } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
+export enum Mode {
+  DEDICATED_ERC20 = 'dedicated-erc20',
+  ERC677 = 'erc677',
+  ERC20 = 'erc20',
+  NATIVE = 'NATIVE',
+}
+
 export type TokenWithAddressAndChain = {
   chainId: ChainId
   address: string
@@ -22,7 +29,7 @@ export type SubgraphResponse = {
   tokens: TokenSubgraph[]
 }
 export type Token = Pick<TokenSubgraph, 'address' | 'chainId' | 'name' | 'decimals'> & {
-  mode?: string
+  mode?: Mode
   mediator?: string
 }
 
@@ -110,7 +117,7 @@ export type BridgeOverrides = {
       mediator: string
       from: string
       to: string
-      mode: string
+      mode: Mode
     }
   }
 }
