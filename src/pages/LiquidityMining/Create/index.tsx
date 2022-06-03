@@ -95,7 +95,9 @@ export default function CreateLiquidityMining() {
 
   const [errorMessage, setErrorMessage] = useState('')
   const [campaingType, setCampaignType] = useState<CampaignType>(CampaignType.TOKEN)
-  const [stakeTokenOrPair, setStakeTokenOrPair] = useState<Pair | Token | null>(null)
+
+  const [stakeToken, setStakeToken] = useState<Token | undefined>(undefined)
+  const [stakePair, setStakePair] = useState<Pair | undefined>(undefined)
 
   const [unlimitedPool, setUnlimitedPool] = useState(true)
   const [startTime, setStartTime] = useState<Date | null>(null)
@@ -122,14 +124,15 @@ export default function CreateLiquidityMining() {
   )
 
   const campaign = useNewLiquidityMiningCampaign(
-    stakeTokenOrPair,
     memoizedRewardsArray,
     startTime,
     endTime,
     timelocked,
     stakingCap,
     simulatedStakedAmount,
-    simulatedPrice
+    simulatedPrice,
+    stakeToken,
+    stakePair
   )
 
   const addTransaction = useTransactionAdder()
@@ -156,9 +159,8 @@ export default function CreateLiquidityMining() {
         setTransactionHash(transaction.hash || null)
         addTransaction(transaction, {
           summary: `Create liquidity mining campaign on ${
-            stakeTokenOrPair instanceof Pair
-              ? `${stakeTokenOrPair?.token0.symbol}/${stakeTokenOrPair?.token1.symbol}`
-              : stakeTokenOrPair?.symbol
+            stakePair ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}` : stakeToken ? stakeToken.symbol : ''
+          }
           }`,
         })
       })
@@ -169,11 +171,12 @@ export default function CreateLiquidityMining() {
       .finally(() => {
         setAttemptingTransaction(false)
       })
-  }, [addTransaction, createLiquidityMiningCallback, stakeTokenOrPair])
+  }, [addTransaction, createLiquidityMiningCallback, stakeToken, stakePair])
 
   const resetAllFileds = () => {
     dispatch({ type: ActionType.RESET, payload: {} })
-    setStakeTokenOrPair(null)
+    setStakePair(undefined)
+    setStakeToken(undefined)
     setUnlimitedPool(true)
     setStartTime(null)
     setEndTime(null)
@@ -216,12 +219,14 @@ export default function CreateLiquidityMining() {
             unlimitedPool={unlimitedPool}
             onUnlimitedPoolChange={setUnlimitedPool}
             campaingType={campaingType}
-            stakeTokenOrPair={stakeTokenOrPair}
+            stakeToken={stakeToken}
+            stakePair={stakePair}
+            setStakeToken={setStakeToken}
+            setStakePair={setStakePair}
             onStakingCapChange={setStakingCap}
-            setStakeTokenOrPair={setStakeTokenOrPair}
           />
         </Step>
-        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeTokenOrPair}>
+        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}>
           <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
@@ -235,7 +240,7 @@ export default function CreateLiquidityMining() {
           title={t('liquidityMining.create.reward')}
           index={3}
           key={3}
-          disabled={!startTime || !endTime || !stakeTokenOrPair}
+          disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
         >
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
@@ -243,14 +248,15 @@ export default function CreateLiquidityMining() {
         <LastStep
           title={t('liquidityMining.create.preview')}
           index={4}
-          disabled={!stakeTokenOrPair || !startTime || !endTime || memoizedRewardsArray.length === 0}
+          disabled={(!stakeToken && !stakePair) || !startTime || !endTime || memoizedRewardsArray.length === 0}
         >
           <PreviewAndCreate
             simulatedPrice={simulatedPrice}
             setSimulatedPrice={setSimulatedPrice}
             campaign={campaign}
             approvals={memoizedApprovalsArray}
-            liquidityPair={stakeTokenOrPair}
+            stakePair={stakePair}
+            stakeToken={stakeToken}
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
@@ -269,7 +275,7 @@ export default function CreateLiquidityMining() {
         attemptingTransaction={attemptingTransaction}
         transactionHash={transactionHash}
         errorMessage={errorMessage}
-        liquidityPair={stakeTokenOrPair}
+        liquidityPair={stakeToken || stakePair}
         startTime={startTime}
         endTime={endTime}
         rewards={memoizedRewardsArray}

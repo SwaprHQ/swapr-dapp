@@ -19,14 +19,15 @@ import { parseUnits } from 'arb-ts/node_modules/@ethersproject/units'
 import Decimal from 'decimal.js-light'
 
 export function useNewLiquidityMiningCampaign(
-  targetedPairOrToken: Pair | Token | null,
   rewards: TokenAmount[],
   startTime: Date | null,
   endTime: Date | null,
   locked: boolean,
   stakingCap: TokenAmount | null,
   simulatedStakedAmount: string,
-  simulatedPrice: string
+  simulatedPrice: string,
+  stakeToken?: Token,
+  stakePair?: Pair
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
 
@@ -36,7 +37,7 @@ export function useNewLiquidityMiningCampaign(
   return useMemo(() => {
     if (
       !chainId ||
-      !targetedPairOrToken ||
+      !(stakeToken && stakePair) ||
       pricedRewardAmounts.length === 0 ||
       !startTime ||
       !endTime ||
@@ -45,7 +46,8 @@ export function useNewLiquidityMiningCampaign(
       return null
     const formattedStartTime = Math.floor(startTime.getTime() / 1000).toString()
     const formattedEndTime = Math.floor(endTime.getTime() / 1000).toString()
-    const derivedToken = targetedPairOrToken instanceof Pair ? targetedPairOrToken.liquidityToken : targetedPairOrToken
+
+    const derivedToken = stakeToken || stakePair.liquidityToken
     const { address, symbol, name, decimals } = derivedToken
 
     const tokenNativePrice = simulatedPrice.length === 0 ? '0' : simulatedPrice
@@ -58,28 +60,28 @@ export function useNewLiquidityMiningCampaign(
         nativeCurrency.decimals
       ).toString(),
     })
-    const stakeToken = new PricedToken(chainId, address, decimals, derivedNative, symbol, name)
-    const staked = new PricedTokenAmount(stakeToken, simulatedStakedAmount)
+    const pricedToken = new PricedToken(chainId, address, decimals, derivedNative, symbol, name)
+    const staked = new PricedTokenAmount(pricedToken, simulatedStakedAmount)
 
-    if (targetedPairOrToken instanceof Pair) {
+    if (stakePair) {
       return new LiquidityMiningCampaign({
         startsAt: formattedStartTime,
         endsAt: formattedEndTime,
-        targetedPair: targetedPairOrToken,
+        targetedPair: stakePair,
         rewards: pricedRewardAmounts,
         staked,
         locked,
-        stakingCap: stakingCap || new TokenAmount(targetedPairOrToken.liquidityToken, '0'),
+        stakingCap: stakingCap || new TokenAmount(stakePair.liquidityToken, '0'),
       })
-    } else if (targetedPairOrToken instanceof Token) {
+    } else if (stakeToken) {
       return new SingleSidedLiquidityMiningCampaign(
         formattedStartTime,
         formattedEndTime,
-        targetedPairOrToken,
+        stakeToken,
         pricedRewardAmounts,
         staked,
         locked,
-        stakingCap || new TokenAmount(targetedPairOrToken, '0')
+        stakingCap || new TokenAmount(stakeToken, '0')
       )
     } else {
       return null
@@ -87,7 +89,9 @@ export function useNewLiquidityMiningCampaign(
   }, [
     simulatedPrice,
     chainId,
-    targetedPairOrToken,
+    stakeToken,
+    stakePair,
+
     simulatedStakedAmount,
     pricedRewardAmounts,
     startTime,

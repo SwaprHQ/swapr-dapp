@@ -8,7 +8,7 @@ import { DateTime } from 'luxon'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface PoolSummaryProps {
-  liquidityPair: Pair | Token | null
+  liquidityPair?: Pair | Token
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean

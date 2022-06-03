@@ -10,7 +10,7 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 
 interface StakingRewardsDistributionCreationModalFooterProps {
-  liquidityPair: Pair | Token | null
+  liquidityPair?: Pair | Token
   startTime: Date | null
   endTime: Date | null
   rewards: TokenAmount[] | null

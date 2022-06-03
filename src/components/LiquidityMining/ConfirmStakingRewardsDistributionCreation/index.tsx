@@ -13,13 +13,13 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   attemptingTransaction: boolean
   transactionHash: string | null
   errorMessage: string | null
-  liquidityPair: Pair | Token | null
   startTime: Date | null
   endTime: Date | null
   rewards: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
+  liquidityPair?: Pair | Token
 }
 
 export default function ConfirmStakingRewardsDistributionCreation({

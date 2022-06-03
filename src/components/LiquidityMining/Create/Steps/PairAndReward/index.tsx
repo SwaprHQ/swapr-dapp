@@ -63,18 +63,23 @@ const BorderContainer = styled(Flex)<{ active: boolean }>`
 `
 
 interface TokenAndLimitProps {
-  stakeTokenOrPair: Pair | Token | undefined | null
   unlimitedPool: boolean
   campaingType: CampaignType
-  setStakeTokenOrPair: (liquidityPair: Pair | Token | null) => void
+
   onStakingCapChange: (newValue: TokenAmount | null) => void
   onUnlimitedPoolChange: (newValue: boolean) => void
+  stakeToken?: Token
+  stakePair?: Pair
+  setStakeToken: (token: Token | undefined) => void
+  setStakePair: (pair: Pair | undefined) => void
 }
 
 export default function StakeTokenAndLimit({
-  stakeTokenOrPair,
+  stakeToken,
+  stakePair,
+  setStakeToken,
+  setStakePair,
   unlimitedPool,
-  setStakeTokenOrPair,
   campaingType,
   onStakingCapChange,
   onUnlimitedPoolChange,
@@ -90,7 +95,7 @@ export default function StakeTokenAndLimit({
       setStakingCapString('')
       onStakingCapChange(null)
     }
-  }, [onStakingCapChange, stakeTokenOrPair, unlimitedPool])
+  }, [onStakingCapChange, stakeToken, stakePair, unlimitedPool])
 
   const handleOpenPairOrTokenSearch = useCallback(value => {
     if (value === CampaignType.PAIR) {
@@ -107,14 +112,21 @@ export default function StakeTokenAndLimit({
 
   const handlePairSelection = useCallback(
     selectedPair => {
-      setStakeTokenOrPair(selectedPair)
+      setStakePair(selectedPair)
     },
-    [setStakeTokenOrPair]
+    [setStakePair]
+  )
+  const handleTokenSelection = useCallback(
+    selectedToken => {
+      setStakeToken(selectedToken)
+    },
+    [setStakeToken]
   )
 
   useEffect(() => {
-    setStakeTokenOrPair(null)
-  }, [campaingType, setStakeTokenOrPair])
+    setStakePair(undefined)
+    setStakeToken(undefined)
+  }, [campaingType, setStakeToken, setStakePair])
 
   const widthValue = useMemo(() => {
     if (stakingCapString.length > 0 && inputRef.current) return inputRef.current.clientWidth
@@ -123,13 +135,16 @@ export default function StakeTokenAndLimit({
 
   const handleLocalStakingCapChange = useCallback(
     rawValue => {
-      if (!stakeTokenOrPair || (stakeTokenOrPair instanceof Pair && !stakeTokenOrPair.liquidityToken)) return
+      let tokenOrPair: Token
+      if (stakeToken) tokenOrPair = stakeToken
+      else if (stakePair?.liquidityToken) tokenOrPair = stakePair.liquidityToken
+      else return
       setStakingCapString(rawValue)
-      const tokenOrPair = stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair.liquidityToken
+
       const parsedAmount = tryParseAmount(rawValue, tokenOrPair) as TokenAmount | undefined
       onStakingCapChange(parsedAmount || new TokenAmount(tokenOrPair, '0'))
     },
-    [onStakingCapChange, stakeTokenOrPair]
+    [onStakingCapChange, stakeToken, stakePair]
   )
 
   return (
@@ -137,10 +152,8 @@ export default function StakeTokenAndLimit({
       <FlexContainer marginTop={'32px'}>
         <AssetSelector
           campaingType={campaingType}
-          currency0={
-            stakeTokenOrPair && stakeTokenOrPair instanceof Token ? stakeTokenOrPair : stakeTokenOrPair?.token0
-          }
-          currency1={stakeTokenOrPair && stakeTokenOrPair instanceof Token ? null : stakeTokenOrPair?.token1}
+          currency0={stakeToken || stakePair?.token0}
+          currency1={stakePair?.token1}
           onClick={() => handleOpenPairOrTokenSearch(campaingType)}
         />
 
@@ -150,7 +163,7 @@ export default function StakeTokenAndLimit({
           padding={'33.45px 41px'}
           height="150px"
           width="fit-content"
-          disabled={!stakeTokenOrPair}
+          disabled={!stakeToken && !stakePair}
         >
           <TYPE.mediumHeader
             alignSelf={'start'}
@@ -177,7 +190,7 @@ export default function StakeTokenAndLimit({
                   style={{ width: widthValue + 12 + 'px' }}
                   placeholder="0"
                   selected={!unlimitedPool}
-                  disabled={!stakeTokenOrPair}
+                  disabled={!stakeToken && !stakePair}
                   value={stakingCapString}
                   onUserInput={handleLocalStakingCapChange}
                 />
@@ -194,12 +207,10 @@ export default function StakeTokenAndLimit({
                   alignItems={'center'}
                   lineHeight="22px"
                 >
-                  {stakeTokenOrPair && stakeTokenOrPair instanceof Pair
-                    ? `${unwrappedToken(stakeTokenOrPair.token0)?.symbol}/${
-                        unwrappedToken(stakeTokenOrPair.token1)?.symbol
-                      }`
-                    : stakeTokenOrPair instanceof Token
-                    ? unwrappedToken(stakeTokenOrPair)?.symbol
+                  {stakePair
+                    ? `${unwrappedToken(stakePair.token0)?.symbol}/${unwrappedToken(stakePair.token1)?.symbol}`
+                    : stakeToken
+                    ? unwrappedToken(stakeToken)?.symbol
                     : ''}
                 </TYPE.largeHeader>
               </BorderContainer>
@@ -212,13 +223,13 @@ export default function StakeTokenAndLimit({
         isOpen={pairSearchOpen}
         onDismiss={() => handleDismissTokenOrPairSelection(CampaignType.PAIR)}
         onPairSelect={handlePairSelection}
-        selectedPair={stakeTokenOrPair instanceof Token ? null : stakeTokenOrPair}
+        selectedPair={stakePair}
       />
       <CurrencySearchModal
         isOpen={currencySearchOpen}
         onDismiss={() => handleDismissTokenOrPairSelection(CampaignType.TOKEN)}
-        onCurrencySelect={handlePairSelection}
-        selectedCurrency={stakeTokenOrPair instanceof Token ? stakeTokenOrPair : null}
+        onCurrencySelect={handleTokenSelection}
+        selectedCurrency={stakeToken}
         showNativeCurrency={false}
       />
     </>

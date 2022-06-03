@@ -75,7 +75,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
 `
 
 interface RewardSummaryProps {
-  tokenOrPair: Token | Pair | null
+  tokenOrPair?: Token | Pair
   stakingCap: TokenAmount | null
   nativeCurrencyUSDPrice: Price
   setSimulatedStakedAmount: (value: string) => void

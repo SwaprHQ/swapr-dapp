@@ -40,7 +40,7 @@ const CampaignDetailWrapper = styled(Flex)`
 
 interface PreviewProps {
   campaign: SingleSidedLiquidityMiningCampaign | LiquidityMiningCampaign | null
-  liquidityPair: Pair | Token | null
+  liquidityPair?: Pair | Token
   simulatedPrice: string
   setSimulatedPrice: (price: string) => void
   apr: Percent
@@ -52,10 +52,13 @@ interface PreviewProps {
   rewards: TokenAmount[]
   onCreate: () => void
   setSimulatedStakedAmount: (value: string) => void
+  stakeToken?: Token
+  stakePair?: Pair
 }
 
 export default function PreviewAndCreate({
-  liquidityPair,
+  stakeToken,
+  stakePair,
   startTime,
   endTime,
   timelocked,
@@ -72,12 +75,19 @@ export default function PreviewAndCreate({
   const { account } = useActiveWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-
   useEffect(() => {
     setAreButtonsDisabled(
-      !!(!account || !rewards || !liquidityPair || !startTime || !endTime || approvals || campaign === null)
+      !!(
+        !account ||
+        !rewards ||
+        (!stakeToken && !stakePair) ||
+        !startTime ||
+        !endTime ||
+        approvals ||
+        campaign === null
+      )
     )
-  }, [account, rewards, liquidityPair, startTime, endTime, approvals, campaign])
+  }, [account, rewards, stakeToken, stakePair, startTime, endTime, approvals, campaign])
 
   const getConfirmButtonMessage = () => {
     if (!account) return 'Connect your wallet'
@@ -113,7 +123,7 @@ export default function PreviewAndCreate({
             nativeCurrencyUSDPrice={nativeCurrencyUSDPrice}
             loading={loadingNativeCurrencyUsdPrice}
             setSimulatedStakedAmount={setSimulatedStakedAmount}
-            tokenOrPair={liquidityPair}
+            tokenOrPair={stakeToken || stakePair}
             stakingCap={stakingCap}
           />
         </CampaignDetailWrapper>
@@ -123,7 +133,7 @@ export default function PreviewAndCreate({
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
             <PoolSummary
-              liquidityPair={liquidityPair}
+              liquidityPair={stakePair || stakeToken}
               startTime={startTime}
               endTime={endTime}
               timelocked={timelocked}
