@@ -234,7 +234,8 @@ export default function PreviewAndCreate({
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
             <PoolSummary
-              liquidityPair={stakePair || stakeToken}
+              stakeToken={stakeToken}
+              stakePair={stakePair}
               startTime={startTime}
               endTime={endTime}
               timelocked={timelocked}
