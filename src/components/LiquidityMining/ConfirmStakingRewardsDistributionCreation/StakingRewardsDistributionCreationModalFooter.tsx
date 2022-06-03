@@ -10,7 +10,8 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 
 interface StakingRewardsDistributionCreationModalFooterProps {
-  liquidityPair?: Pair | Token
+  stakeToken?: Token
+  stakePair?: Pair
   startTime: Date | null
   endTime: Date | null
   rewards: TokenAmount[] | null
@@ -21,7 +22,8 @@ interface StakingRewardsDistributionCreationModalFooterProps {
 }
 
 export default function StakingRewardsDistributionCreationModalFooter({
-  liquidityPair,
+  stakePair,
+  stakeToken,
   startTime,
   endTime,
   rewards,
@@ -30,17 +32,16 @@ export default function StakingRewardsDistributionCreationModalFooter({
   unlimitedPool,
   onConfirm,
 }: StakingRewardsDistributionCreationModalFooterProps) {
-  const tokenOrPair =
-    liquidityPair instanceof Pair
-      ? `${liquidityPair.token0.symbol}/${liquidityPair.token1.symbol}`
-      : liquidityPair instanceof Token
-      ? liquidityPair.symbol
-      : '-'
+  const tokenOrPair = stakePair
+    ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}`
+    : stakeToken
+    ? stakeToken.symbol
+    : '-'
   return (
     <AutoColumn gap="0px">
       <RowBetween align="center" mb="6px">
         <TYPE.body fontWeight={400} fontSize="13px" color="text5">
-          Pool {liquidityPair instanceof Pair ? 'Pair' : 'Token'}
+          Pool {stakePair ? 'Pair' : 'Token'}
         </TYPE.body>
         <TYPE.body
           fontWeight={500}

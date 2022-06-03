@@ -8,13 +8,14 @@ import { DateTime } from 'luxon'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface PoolSummaryProps {
-  liquidityPair?: Pair | Token
+  stakePair?: Pair
+  stakeToken?: Token
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
 }
 
-export default function PoolSummary({ liquidityPair, startTime, endTime, timelocked }: PoolSummaryProps) {
+export default function PoolSummary({ stakePair, stakeToken, startTime, endTime, timelocked }: PoolSummaryProps) {
   return (
     <Flex flexDirection="column" justifyContent="stretch" flex="1">
       <AutoColumn gap="8px">
@@ -25,10 +26,10 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
           <DataRow
             name="CAMPAIGN"
             value={
-              liquidityPair instanceof Pair
-                ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
-                : liquidityPair instanceof Token
-                ? liquidityPair.symbol
+              stakePair
+                ? `${unwrappedToken(stakePair.token0)?.symbol}/${unwrappedToken(stakePair.token1)?.symbol}`
+                : stakeToken
+                ? stakeToken.symbol
                 : '-'
             }
           />

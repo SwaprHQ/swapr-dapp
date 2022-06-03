@@ -1,7 +1,5 @@
 import { Token, Pair, Price } from '@swapr/sdk'
-
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
@@ -10,6 +8,7 @@ import { getLpTokenPrice } from '../utils/prices'
 
 import Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
+import { useActiveWeb3React } from '.'
 
 export function useTokenOrPairNativeCurrency(
   tokenOrPair?: Token | Pair

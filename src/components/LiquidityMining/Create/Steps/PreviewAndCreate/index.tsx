@@ -31,8 +31,7 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
   flex: ${({ flex1 }) => (flex1 ? 1 : 'auto')};
 `
 const StyledCampaignCard = styled(CampaignCard)`
-  width: 354px;
-  height: 162px;
+  width: 50%;
 `
 const CampaignDetailWrapper = styled(Flex)`
   gap: 32px;
@@ -134,7 +133,8 @@ export default function PreviewAndCreate({
         <Card>
           <FlexContainer justifyContent="stretch" width="100%">
             <PoolSummary
-              liquidityPair={stakePair || stakeToken}
+              stakeToken={stakeToken}
+              stakePair={stakePair}
               startTime={startTime}
               endTime={endTime}
               timelocked={timelocked}

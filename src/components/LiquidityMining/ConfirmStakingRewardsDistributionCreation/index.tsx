@@ -19,7 +19,8 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
-  liquidityPair?: Pair | Token
+  stakeToken?: Token
+  stakePair?: Pair
 }
 
 export default function ConfirmStakingRewardsDistributionCreation({
@@ -29,7 +30,8 @@ export default function ConfirmStakingRewardsDistributionCreation({
   attemptingTransaction,
   transactionHash,
   errorMessage,
-  liquidityPair,
+  stakeToken,
+  stakePair,
   startTime,
   endTime,
   rewards,
@@ -49,7 +51,8 @@ export default function ConfirmStakingRewardsDistributionCreation({
           bottomContent={() => (
             <StakingRewardsDistributionCreationModalFooter
               onConfirm={onConfirm}
-              liquidityPair={liquidityPair}
+              stakeToken={stakeToken}
+              stakePair={stakePair}
               startTime={startTime}
               endTime={endTime}
               rewards={rewards}
@@ -64,7 +67,8 @@ export default function ConfirmStakingRewardsDistributionCreation({
       errorMessage,
       onDismiss,
       onConfirm,
-      liquidityPair,
+      stakeToken,
+      stakePair,
       startTime,
       endTime,
       rewards,

@@ -275,7 +275,8 @@ export default function CreateLiquidityMining() {
         attemptingTransaction={attemptingTransaction}
         transactionHash={transactionHash}
         errorMessage={errorMessage}
-        liquidityPair={stakeToken || stakePair}
+        stakeToken={stakeToken}
+        stakePair={stakePair}
         startTime={startTime}
         endTime={endTime}
         rewards={memoizedRewardsArray}
