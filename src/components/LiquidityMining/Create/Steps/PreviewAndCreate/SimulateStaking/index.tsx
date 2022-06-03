@@ -75,7 +75,8 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
 `
 
 interface RewardSummaryProps {
-  tokenOrPair?: Token | Pair
+  stakeToken?: Token
+  stakePair?: Pair
   stakingCap: TokenAmount | null
   nativeCurrencyUSDPrice: Price
   setSimulatedStakedAmount: (value: string) => void
@@ -89,7 +90,8 @@ enum SimulateOptions {
 }
 
 export default function SimulateStaking({
-  tokenOrPair,
+  stakeToken,
+  stakePair,
   stakingCap,
   setSimulatedStakedAmount,
   setSimulatedPrice,
@@ -98,7 +100,7 @@ export default function SimulateStaking({
   loading,
 }: RewardSummaryProps) {
   const { loading: loadingNativeTokenPrice, derivedNativeCurrency: nativeTokenPrice } = useTokenOrPairNativeCurrency(
-    tokenOrPair ? tokenOrPair : undefined
+    stakeToken || stakePair
   )
 
   const handleLocalStakingCapChange = useCallback(
@@ -137,7 +139,7 @@ export default function SimulateStaking({
 
     const baseValue = showUSDValue ? base : base / baseInUsd
 
-    const baseCurrency = tokenOrPair instanceof Token ? tokenOrPair : tokenOrPair?.liquidityToken
+    const baseCurrency = stakeToken ? stakeToken : stakePair?.liquidityToken
 
     if (baseCurrency && base !== 0 && baseInUsd !== 0) {
       setSimulatedStakedAmount(
@@ -149,7 +151,15 @@ export default function SimulateStaking({
     }
 
     return calculatePercentage(baseValue, simulatedValuePercentage)
-  }, [setSimulatedStakedAmount, tokenOrPair, simulatedPrice, simulatedValuePercentage, stakingCap, showUSDValue])
+  }, [
+    setSimulatedStakedAmount,
+    stakeToken,
+    stakePair,
+    simulatedPrice,
+    simulatedValuePercentage,
+    stakingCap,
+    showUSDValue,
+  ])
 
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
@@ -195,9 +205,9 @@ export default function SimulateStaking({
                 {maxStakedSimulatedAmount.toLocaleString('en-us')}{' '}
                 {showUSDValue
                   ? 'USD'
-                  : tokenOrPair instanceof Token
-                  ? tokenOrPair.symbol
-                  : `${tokenOrPair?.token0.symbol}/${tokenOrPair?.token1.symbol}`}
+                  : stakeToken
+                  ? stakeToken.symbol
+                  : `${stakePair?.token0.symbol}/${stakePair?.token1.symbol}`}
               </SimulatedValue>
               <Slider value={innerLiquidityPercentage} size={16} onChange={setInnerLiquidityPercentage} />
             </>

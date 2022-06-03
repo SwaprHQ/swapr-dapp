@@ -123,7 +123,8 @@ export default function PreviewAndCreate({
             nativeCurrencyUSDPrice={nativeCurrencyUSDPrice}
             loading={loadingNativeCurrencyUsdPrice}
             setSimulatedStakedAmount={setSimulatedStakedAmount}
-            tokenOrPair={stakeToken || stakePair}
+            stakeToken={stakeToken}
+            stakePair={stakePair}
             stakingCap={stakingCap}
           />
         </CampaignDetailWrapper>

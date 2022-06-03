@@ -35,19 +35,21 @@ export function useNewLiquidityMiningCampaign(
   const { pricedTokenAmounts: pricedRewardAmounts } = useNativeCurrencyPricedTokenAmounts(rewards)
 
   return useMemo(() => {
+    const derivedToken = stakeToken ? stakeToken : stakePair?.liquidityToken
     if (
       !chainId ||
-      !(stakeToken && stakePair) ||
+      derivedToken === undefined ||
       pricedRewardAmounts.length === 0 ||
       !startTime ||
       !endTime ||
       pricedRewardAmounts.length !== rewards.length
-    )
+    ) {
       return null
+    }
+
     const formattedStartTime = Math.floor(startTime.getTime() / 1000).toString()
     const formattedEndTime = Math.floor(endTime.getTime() / 1000).toString()
 
-    const derivedToken = stakeToken || stakePair.liquidityToken
     const { address, symbol, name, decimals } = derivedToken
 
     const tokenNativePrice = simulatedPrice.length === 0 ? '0' : simulatedPrice
