@@ -9,6 +9,7 @@ import { useBlockNumber } from '../application/hooks'
 import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
 import { MulticallState } from './reducer'
 import { Call, parseCallKey, toCallKey } from './utils'
+import debounce from 'lodash.debounce'
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any
@@ -63,20 +64,20 @@ function useCallsData(
     [calls]
   )
 
-  // update listeners when there is an actual change that persists for at least 100ms
-  useEffect(() => {
-    const callKeys: string[] = JSON.parse(serializedCallKeys)
-    if (!chainId || callKeys.length === 0) return undefined
-    const calls = callKeys.map(key => parseCallKey(key))
-    dispatch(
-      addMulticallListeners({
-        chainId,
-        calls,
-        options: { blocksPerFetch },
-      })
-    )
+  const debouncedAddMultiCall = useMemo(() => {
+    return debounce((chainId, calls) => {
+      dispatch(
+        addMulticallListeners({
+          chainId,
+          calls,
+          options: { blocksPerFetch },
+        })
+      )
+    }, 250)
+  }, [dispatch, blocksPerFetch])
 
-    return () => {
+  const debouncedRemoveMultiCall = useMemo(() => {
+    return debounce((chainId, calls) => {
       dispatch(
         removeMulticallListeners({
           chainId,
@@ -84,8 +85,20 @@ function useCallsData(
           options: { blocksPerFetch },
         })
       )
+    }, 250)
+  }, [dispatch, blocksPerFetch])
+
+  // update listeners when there is an actual change that persists for at least 100ms
+  useEffect(() => {
+    const callKeys: string[] = JSON.parse(serializedCallKeys)
+    if (!chainId || callKeys.length === 0) return undefined
+    const calls = callKeys.map(key => parseCallKey(key))
+    debouncedAddMultiCall(chainId, calls)
+
+    return () => {
+      debouncedRemoveMultiCall(chainId, calls)
     }
-  }, [chainId, dispatch, blocksPerFetch, serializedCallKeys])
+  }, [chainId, dispatch, blocksPerFetch, serializedCallKeys, debouncedAddMultiCall, debouncedRemoveMultiCall])
 
   return useMemo(
     () =>

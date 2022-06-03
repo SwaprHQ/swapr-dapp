@@ -111,12 +111,6 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
             numerator: result.numerator,
           })
 
-          console.debug(
-            '[useCoingeckoUSDPrice] Best Coingecko USD price amount',
-            usdPrice.toSignificant(12),
-            usdPrice.invert().toSignificant(12)
-          )
-
           setPrice(usdPrice)
         })
         .catch(error => {
