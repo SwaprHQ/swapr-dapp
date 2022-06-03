@@ -177,6 +177,10 @@ export const formatCurrencyAmount = (amount: CurrencyAmount, significantDecimalP
   return `${commify(integers)}.${adjustedDecimals}`
 }
 
+export const calculatePercentage = (value: number, percentage: number): number => {
+  return Math.round((percentage / 100) * value)
+}
+
 export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
   if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
   window.ethereum

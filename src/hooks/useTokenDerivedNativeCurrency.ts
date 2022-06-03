@@ -30,7 +30,9 @@ export function useTokenDerivedNativeCurrency(
   return useMemo(() => {
     if (loading || !chainId)
       return { loading: true, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
-    if (!data || error) return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
+    if (!data || data.token === null || error)
+      return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
+
     return {
       loading: false,
       derivedNativeCurrency: CurrencyAmount.nativeCurrency(
