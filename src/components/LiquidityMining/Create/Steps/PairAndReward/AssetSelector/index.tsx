@@ -182,7 +182,7 @@ export default function AssetSelector({
                 <StyledNumericalInput
                   style={{
                     width: `${
-                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 17 + rawAmount?.length * 8 : 25
+                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 28 + rawAmount?.length * 8 : 25
                     }px`,
                   }}
                   onClick={event => event.stopPropagation()}
