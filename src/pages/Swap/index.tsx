@@ -1,30 +1,20 @@
-import {
-  CurrencyAmount,
-  JSBI,
-  Trade,
-  Token,
-  RoutablePlatform,
-  UniswapV2Trade,
-  UniswapV2RoutablePlatform,
-} from '@swapr/sdk'
+import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { RowBetween, RowFixed } from '../../components/Row'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
-import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { Field, setRecipient } from '../../state/swap/actions'
+import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
@@ -33,7 +23,6 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
-import { TYPE } from '../../theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
@@ -42,10 +31,6 @@ import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
-import { SwapSettings } from './../../components/swap/SwapSettings'
-import { RecipientField } from '../../components/RecipientField'
-import { Trans } from 'react-i18next'
-import { AdvancedSwapDetailsToggle } from '../../components/AdvancedSwapDetailsToggle'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -58,7 +43,7 @@ import BlogNavigation from './../../components/LandingPageComponents/BlogNavigat
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
 import SwapButtons from '../../components/swap/SwapButtons'
-import Skeleton from 'react-loading-skeleton'
+import { TradeDetails } from '../../components/swap/TradeDetails'
 
 export type SwapData = {
   showConfirm: boolean
@@ -235,9 +220,6 @@ export default function Swap() {
       })
   }, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback])
 
-  // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
-
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
@@ -298,8 +280,6 @@ export default function Swap() {
     fiatValueInput,
     fiatValueOutput,
   ])
-
-  const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
 
   return (
     <>
@@ -376,65 +356,35 @@ export default function Swap() {
                     id="swap-currency-output"
                   />
                 </AutoColumn>
-                {!showWrap && !!trade && (
-                  <AutoColumn gap="8px">
-                    <RowBetween alignItems="center">
-                      <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
-                        <Trans
-                          i18nKey="bestPriceFoundOn"
-                          values={{ platform: bestPricedTrade?.platform.name }}
-                          components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
-                        />
-                        {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
-                          <>
-                            {' '}
-                            <Trans
-                              i18nKey="swapWithNoAdditionalFees"
-                              components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
-                            />
-                          </>
-                        ) : null}
-                      </TYPE.body>
-                      <AdvancedSwapDetailsToggle
-                        setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-                        showAdvancedSwapDetails={showAdvancedSwapDetails}
-                      />
-                    </RowBetween>
-                    <RowBetween>
-                      <SwapSettings showAddRecipient={showAddRecipient} setShowAddRecipient={setShowAddRecipient} />
-                      <RowFixed>
-                        <TradePrice
-                          price={trade?.executionPrice}
-                          showInverted={showInverted}
-                          setShowInverted={setShowInverted}
-                        />
-                      </RowFixed>
-                    </RowBetween>
-                  </AutoColumn>
-                )}
-                {loading && <Skeleton width="100%" height="46px" />}
-                {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
-                <div>
-                  <SwapButtons
-                    wrapInputError={wrapInputError}
-                    showApproveFlow={showApproveFlow}
-                    userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
-                    approval={approval}
-                    setSwapState={setSwapState}
-                    priceImpactSeverity={priceImpactSeverity}
-                    swapCallbackError={swapCallbackError}
-                    wrapType={wrapType}
-                    approvalSubmitted={approvalSubmitted}
-                    currencies={currencies}
-                    trade={trade}
-                    swapInputError={swapInputError}
-                    swapErrorMessage={swapErrorMessage}
-                    loading={loading}
-                    onWrap={onWrap}
-                    approveCallback={approveCallback}
-                    handleSwap={handleSwap}
-                  />
-                </div>
+                <TradeDetails
+                  show={!showWrap}
+                  loading={loading}
+                  trade={trade}
+                  bestPricedTrade={bestPricedTrade}
+                  showAdvancedSwapDetails={showAdvancedSwapDetails}
+                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                  recipient={recipient}
+                />
+
+                <SwapButtons
+                  wrapInputError={wrapInputError}
+                  showApproveFlow={showApproveFlow}
+                  userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
+                  approval={approval}
+                  setSwapState={setSwapState}
+                  priceImpactSeverity={priceImpactSeverity}
+                  swapCallbackError={swapCallbackError}
+                  wrapType={wrapType}
+                  approvalSubmitted={approvalSubmitted}
+                  currencies={currencies}
+                  trade={trade}
+                  swapInputError={swapInputError}
+                  swapErrorMessage={swapErrorMessage}
+                  loading={loading}
+                  onWrap={onWrap}
+                  approveCallback={approveCallback}
+                  handleSwap={handleSwap}
+                />
               </AutoColumn>
             </Wrapper>
           </AppBody>
