@@ -106,8 +106,8 @@ describe('Swapping tests', () => {
     })
   })
 
-  it('Should swap DAI to ETH [TC-53]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
+  it.only('Should swap LINK to ETH [TC-53]', () => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.LINK_ADDRESS_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -119,12 +119,13 @@ describe('Swapping tests', () => {
     SwapPage.openTokenToSwapMenu()
       .getOpenTokenManagerButton()
       .click()
-    TokenMenu.switchTokenList('compound')
-    TokenMenu.switchTokenList('swapr-token-list')
-    TokenMenu.goBack().chooseToken('dai')
+    TokenMenu.getSwitchTokenManagerToTokens().click()
+    TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.LINK_ADDRESS_RINKEBY)
+    TokenMenu.importToken('link')
+    TokenMenu.confirmTokenImport()
     SwapPage.getCurrencySelectors()
       .last()
-      .should('contain.text', 'DAI')
+      .should('contain.text', 'LINK')
     SwapPage.switchTokens()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
@@ -147,7 +148,7 @@ describe('Swapping tests', () => {
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'LINK', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -157,12 +158,12 @@ describe('Swapping tests', () => {
         0.001
       )
       TransactionHelper.checkErc20TokenBalance(
-        AddressesEnum.DAI_TOKEN_RINKEBY,
+        AddressesEnum.LINK_ADDRESS_RINKEBY,
         ercBalanceBefore,
         -TRANSACTION_VALUE,
         true
       )
-      TransactionHelper.checkSubgraphTransaction('DAI', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
+      TransactionHelper.checkSubgraphTransaction('LINK', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
   it('Should send ether to ens domain address [TC-54]', () => {
