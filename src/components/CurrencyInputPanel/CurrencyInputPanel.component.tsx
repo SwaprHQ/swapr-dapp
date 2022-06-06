@@ -112,7 +112,7 @@ export const CurrencyInputPanelComponent = ({
                   onBlur={handleBlur}
                   onUserInput={value => {
                     setLocalValue(normalizeInputValue(value))
-                    debouncedUserInput(value)
+                    debouncedUserInput(normalizeInputValue(value))
                   }}
                   disabled={disabled}
                   data-testid={'transaction-value-input'}

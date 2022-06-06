@@ -19,7 +19,6 @@ import { Call, parseCallKey } from './utils'
  * @param blockNumber block number passed as the block tag in the eth_call
  */
 async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: number): Promise<string[]> {
-  console.debug('Fetching chunk', chunk, blockNumber)
   try {
     const { returnData } = await multicall.callStatic.aggregate(
       chunk.map(obj => ({

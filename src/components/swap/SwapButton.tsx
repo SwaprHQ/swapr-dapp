@@ -3,9 +3,10 @@ import { Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
 import { ButtonPrimary } from '../Button/index'
 import styled from 'styled-components'
-import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
+import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../constants'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM } from '../../constants'
 import { useTranslation } from 'react-i18next'
+import { useActiveWeb3React } from '../../hooks'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
@@ -87,11 +88,13 @@ export const SwapButton = ({
 
 export const SwapLoadingButton = () => {
   const { t } = useTranslation()
+  const { chainId } = useActiveWeb3React()
+  const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>
       <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
-      <div className="loading-rotation">
-        {Object.keys(ROUTABLE_PLATFORM_STYLE).map(key => (
+      <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
+        {routablePlatforms.map(key => (
           <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
             <StyledPlataformImage
               width={21}

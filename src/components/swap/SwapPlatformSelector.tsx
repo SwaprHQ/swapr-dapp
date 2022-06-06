@@ -118,7 +118,7 @@ export function SwapPlatformSelector({
 
   useEffect(() => {
     setShowAllPlatformsTrades(false)
-  }, [allPlatformTrades])
+  }, [allPlatformTrades?.length])
 
   const showGasFees = estimations.length === allPlatformTrades?.length
 

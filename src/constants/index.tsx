@@ -23,9 +23,9 @@ import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
-import CurveLogo from '../assets/svg/curve-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
+import CurveLogo from '../assets/images/curve-logo.svg'
 import { providers } from 'ethers'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -391,6 +391,52 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
     partnerChainId: ChainId.ARBITRUM_RINKEBY,
     isArbitrum: false,
   },
+}
+
+export const RoutablePlatformKeysByNetwork = {
+  [ChainId.MAINNET]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+  ],
+  [ChainId.ARBITRUM_ONE]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+  ],
+  [ChainId.XDAI]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.POLYGON]: [
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.QUICKSWAP.name,
+    UniswapV2RoutablePlatform.DFYN.name,
+  ],
+  // TEST NETS WITH ALL DEXES
+  [ChainId.RINKEBY]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.ARBITRUM_RINKEBY]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {

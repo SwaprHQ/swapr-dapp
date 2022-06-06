@@ -4,7 +4,7 @@ import Loader from '../../components/Loader'
 import { AutoRow, RowBetween } from '../../components/Row'
 import { ApprovalState } from '../../hooks/useApproveCallback'
 import { WrapType } from '../../hooks/useWrapCallback'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Field } from '../../state/swap/actions'
 import { SwapButton, SwapLoadingButton } from '../../components/swap/SwapButton'
 import Column from '../../components/Column'
@@ -14,6 +14,9 @@ import { useIsExpertMode } from '../../state/user/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
 import { warningSeverity } from '../../utils/prices'
+import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
+
+const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
 
 interface SwapButtonsProps {
   wrapInputError: string | undefined
@@ -61,6 +64,12 @@ export function SwapButtons({
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const noRoute = !route
   const isValid = !swapInputError
+
+  useEffect(() => {
+    RoutablePlatformKeys.forEach(key => {
+      new Image().src = ROUTABLE_PLATFORM_STYLE[key].logo
+    })
+  }, [])
 
   if (loading) {
     return <SwapLoadingButton />
