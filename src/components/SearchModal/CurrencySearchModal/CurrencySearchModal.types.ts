@@ -10,7 +10,7 @@ export interface CurrencySearchModalProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
 }
 
 export enum CurrencyModalView {

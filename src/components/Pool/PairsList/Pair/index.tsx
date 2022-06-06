@@ -89,7 +89,6 @@ const ValueText = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 16.8px;
-  font-family: 'Fira Code';
 `
 const ItemsWrapper = styled(Flex)`
   justify-content: space-evenly;

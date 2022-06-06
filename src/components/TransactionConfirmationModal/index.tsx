@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'
 import { ExternalLink, TYPE } from '../../theme'
 import { Text } from 'rebass'
@@ -71,7 +71,7 @@ function TransactionSubmittedContent({
   hash: string | undefined
   chainId: ChainId
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
@@ -131,7 +131,7 @@ export function ConfirmationModalContent({
 }
 
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <Wrapper data-testid="transaction-error-modal">
       <Section>

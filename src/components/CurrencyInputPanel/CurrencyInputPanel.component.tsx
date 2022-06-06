@@ -17,7 +17,6 @@ import { RowBetween } from '../Row'
 import NumericalInput from '../Input/NumericalInput'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
-import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -25,6 +24,7 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { CurrencyView } from './CurrencyView'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
+import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 
 export const CurrencyInputPanelComponent = ({
   id,
@@ -144,7 +144,7 @@ export const CurrencyInputPanelComponent = ({
           onDismiss={onDismiss}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
-          otherSelectedCurrency={otherCurrency}
+          otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
         />
       )}

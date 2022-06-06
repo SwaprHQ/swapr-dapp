@@ -12,8 +12,8 @@ import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBrid
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
-import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal'
 import { normalizeInputValue } from '../../utils'
+import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()

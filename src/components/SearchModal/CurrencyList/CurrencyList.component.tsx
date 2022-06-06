@@ -156,7 +156,7 @@ export const CurrencyList = ({
       const currency: Currency = data[index]
       if (isBreakLine(currency)) return <BreakLineComponent style={style} />
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-      const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
+      const otherSelected = Boolean(otherCurrency && otherCurrency.some(c => currencyEquals(c, currency)))
       const showImport = index >= currencies.length
       const handleSelect = () => onCurrencySelect(currency)
       if (showImport && currency && currency instanceof Token) {
