@@ -8,9 +8,8 @@ import {
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
-import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
-import Column, { AutoColumn } from '../../components/Column'
+import styled from 'styled-components'
+import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'

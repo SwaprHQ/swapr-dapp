@@ -39,7 +39,7 @@ interface SwapButtonsProps {
   onWrap: (() => Promise<void>) | undefined
 }
 
-export default function SwapButtons({
+export function SwapButtons({
   wrapInputError,
   showApproveFlow,
   userHasSpecifiedInputOutput,
@@ -74,6 +74,26 @@ export default function SwapButtons({
 
   if (loading) {
     return <SwapLoadingButton />
+  }
+
+  if (!account) {
+    return <ButtonConnect />
+  }
+
+  if (showWrap) {
+    return (
+      <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
+        {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+      </ButtonPrimary>
+    )
+  }
+
+  if (noRoute && userHasSpecifiedInputOutput) {
+    return (
+      <ButtonPrimary style={{ textAlign: 'center' }} disabled>
+        Insufficient liquidity
+      </ButtonPrimary>
+    )
   }
 
   if (showApproveFlow) {
@@ -130,24 +150,6 @@ export default function SwapButtons({
 
   if (isExpertMode && swapErrorMessage) {
     return <SwapCallbackError error={swapErrorMessage} />
-  }
-
-  if (!account) {
-    return <ButtonConnect />
-  }
-  if (showWrap) {
-    return (
-      <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-        {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-      </ButtonPrimary>
-    )
-  }
-  if (noRoute && userHasSpecifiedInputOutput) {
-    return (
-      <ButtonPrimary style={{ textAlign: 'center' }} disabled>
-        Insufficient liquidity
-      </ButtonPrimary>
-    )
   }
 
   return (

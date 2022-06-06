@@ -118,7 +118,7 @@ const BAD_RECIPIENT_ADDRESSES: string[] = [
  * @param trade to check for the given address
  * @param checksummedAddress address to check in the pairs and tokens
  */
-export function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boolean {
+function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boolean {
   return (
     trade.route.path.some(token => token.address === checksummedAddress) ||
     trade.route.pairs.some(pair => pair.liquidityToken.address === checksummedAddress)
@@ -231,10 +231,12 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
   }
 
-  if (
-    (!useTradeExactInAllPlatformsRes.loading && !useTradeExactOutAllPlatformsRes.loading) ||
-    inputError !== undefined
-  ) {
+  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
+    dispatch(setLoading(true))
+  } else {
+    dispatch(setLoading(false))
+  }
+  if (inputError !== undefined) {
     dispatch(setLoading(false))
   }
 

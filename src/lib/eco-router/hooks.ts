@@ -1,5 +1,6 @@
 import { Trade, CurrencyAmount, Currency, Percent } from '@swapr/sdk'
 import { useState, useEffect } from 'react'
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 // Eco Router modules
 import { getExactIn, getExactOut } from './api'
 // Web3 hooks
@@ -34,14 +35,18 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
 
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !currencyAmountIn.currency || !currencyOut || !chainId) {
-      setTrades([])
-      setLoading(false)
+      batchedUpdates(() => {
+        setTrades([])
+        setLoading(false)
+      })
       return
     }
 
     // Reset state
-    setTrades([])
-    setLoading(true)
+    batchedUpdates(() => {
+      setTrades([])
+      setLoading(true)
+    })
 
     getExactIn(
       {
@@ -60,8 +65,10 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
       .then(newTrades => {
         // Only update this invokation is not cancelled
         if (!isCancelled) {
-          setTrades(newTrades.trades)
-          setErrors(newTrades.errors)
+          batchedUpdates(() => {
+            setTrades(newTrades.trades)
+            setErrors(newTrades.errors)
+          })
         }
       })
       .catch(error => setErrors([error]))
@@ -111,14 +118,18 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
 
     // Early exit and clean state if necessary
     if (!currencyAmountOut || !currencyAmountOut.currency || !currencyIn || !chainId) {
-      setTrades([])
-      setLoading(false)
+      batchedUpdates(() => {
+        setTrades([])
+        setLoading(false)
+      })
       return
     }
 
     // Reset state
-    setTrades([])
-    setLoading(true)
+    batchedUpdates(() => {
+      setTrades([])
+      setLoading(true)
+    })
 
     getExactOut(
       {

@@ -21,7 +21,7 @@ git clone https://github.com/levelkdev/dxswap-dapp.git
 Install dependencies using Yarn
 
 ```bash
-yarn ci
+yarn install --frozen-lockfile
 ```
 
 Build the app

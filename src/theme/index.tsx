@@ -533,16 +533,16 @@ body {
 .loading-button{
   position:relative;
   display: flex;
-  flex:1
+  flex: 1;
   justify-content: start;
   align-items: flex-end;
-  height:20px
-  margin-left:11px;
+  height: 20px;
+  margin-left: 11px;
 }
 
 .loading-button>div {
-  position:absolute;
-  opacity:0;
+  position: absolute;
+  opacity: 0;
   display: flex;
 }
 
