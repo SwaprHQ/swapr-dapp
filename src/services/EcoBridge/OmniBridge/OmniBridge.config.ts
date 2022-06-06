@@ -1,4 +1,4 @@
-import { BridgeConfig, BridgeOverrides, Mode } from './OmniBridge.types'
+import { OmnibridgeConfig, OmnibridgeOverrides, Mode } from './OmniBridge.types'
 
 //official OmniBridge config
 export const ETH_XDAI_BRIDGE_CONFIG = {
@@ -191,9 +191,9 @@ const ETH_XDAI_OVERRIDES = {
   ['0x8c84142c4a716a16a89d0e61707164d6107a9811']: UDTTokenOverride,
 }
 
-export const OVERRIDES: { [direction: string]: BridgeOverrides } = {
+export const OVERRIDES: { [direction: string]: OmnibridgeOverrides } = {
   'omnibridge:eth-xdai': ETH_XDAI_OVERRIDES,
 }
-export const BRIDGE_CONFIG: { [direction: string]: BridgeConfig } = {
+export const BRIDGE_CONFIG: { [direction: string]: OmnibridgeConfig } = {
   'omnibridge:eth-xdai': ETH_XDAI_BRIDGE_CONFIG,
 }

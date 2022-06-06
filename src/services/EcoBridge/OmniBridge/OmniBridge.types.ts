@@ -5,6 +5,8 @@ import { EntityState } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
+export type ConfigPerChain = { [chainId: number]: string }
+
 export enum Mode {
   DEDICATED_ERC20 = 'dedicated-erc20',
   ERC677 = 'erc677',
@@ -12,12 +14,12 @@ export enum Mode {
   NATIVE = 'NATIVE',
 }
 
-export type TokenWithAddressAndChain = {
+export type OmnibridgeTokenWithAddressAndChain = {
   chainId: ChainId
   address: string
 }
 
-export type TokenSubgraph = {
+export type OmnibridgeTokenSubgraph = {
   address: string
   chainId: ChainId
   decimals: number
@@ -25,20 +27,20 @@ export type TokenSubgraph = {
   symbol: string
 }
 
-export type SubgraphResponse = {
-  tokens: TokenSubgraph[]
+export type OmnibridgeSubgraphResponse = {
+  tokens: OmnibridgeTokenSubgraph[]
 }
-export type Token = Pick<TokenSubgraph, 'address' | 'chainId' | 'name' | 'decimals'> & {
+export type OmnibridgeToken = Pick<OmnibridgeTokenSubgraph, 'address' | 'chainId' | 'name' | 'decimals'> & {
   mode?: Mode
   mediator?: string
 }
 
-export type PairTokens = {
-  fromToken: Token & { amount: BigNumber; symbol?: string }
-  toToken: Token
+export type OmnibridgePairTokens = {
+  fromToken: OmnibridgeToken & { amount: BigNumber; symbol?: string }
+  toToken: OmnibridgeToken
 }
 
-export type TransactionMessage = {
+export type OmnibridgeTransactionMessage = {
   messageData: string | null
   messageId: string
   signatures: string[] | null
@@ -56,12 +58,12 @@ export type OmniBridgeTxn = {
   sender: string
   status: boolean | undefined | string
   timestampResolved?: number
-  message?: TransactionMessage
+  message?: OmnibridgeTransactionMessage
   receipt?: TransactionReceipt
   needsClaiming?: boolean
   partnerTxHash?: string
 }
-export type Request = {
+export type OmnibridgeRequest = {
   amount: string
   decimals: number
   message: { txHash: string; messageId: string; signatures: string[]; messageData: string }
@@ -72,17 +74,17 @@ export type Request = {
   txHash: string
   user: string
 }
-export type Execution = {
+export type OmnibridgeExecution = {
   messageId: string
   status: boolean | undefined
   token: string
   txHash: string
 }
-export type SubgraphRequestsData = {
-  requests: Request[]
+export type OmnibridgeSubgraphRequests = {
+  requests: OmnibridgeRequest[]
 }
-export type SubgraphExecutionsData = {
-  executions: Execution[]
+export type OmnibridgeSubgraphExecutions = {
+  executions: OmnibridgeExecution[]
 }
 
 export type InitialState = {
@@ -95,7 +97,7 @@ export type InitialState = {
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
 }
 
-export type BridgeConfig = {
+export type OmnibridgeConfig = {
   label: string
   homeChainId: number
   foreignChainId: number
@@ -111,7 +113,7 @@ export type BridgeConfig = {
   claimDisabled: boolean
   tokensClaimDisabled: string[]
 }
-export type BridgeOverrides = {
+export type OmnibridgeOverrides = {
   [key: string]: {
     [chain: number]: {
       mediator: string

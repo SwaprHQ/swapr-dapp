@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
-import { InitialState, OmniBridgeTxn, TransactionMessage } from './OmniBridge.types'
+import { InitialState, OmniBridgeTxn, OmnibridgeTransactionMessage } from './OmniBridge.types'
 import { SyncState, BridgeDetails, BridgingDetailsErrorMessage, OmniBridgeList } from '../EcoBridge.types'
 
 const initialState: InitialState = {
@@ -93,7 +93,7 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
         action: PayloadAction<{
           txHash?: string
           partnerTxHash?: string
-          message?: TransactionMessage
+          message?: OmnibridgeTransactionMessage
           status?: string | boolean
         }>
       ) => {
