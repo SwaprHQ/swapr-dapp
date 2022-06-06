@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import { Currency } from '@swapr/sdk'
 import { Text } from 'rebass'
 
@@ -66,7 +66,7 @@ interface CardProps {
 export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   const doubleCurrencyLogoSize = 26.88
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const router = useRouter()
 
   const onClick = () => {

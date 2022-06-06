@@ -1,5 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import styled, { useTheme } from 'styled-components'
+import { useTranslation } from 'react-i18next'
+import { ChevronsDown } from 'react-feather'
+
 import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
 import { CurrencyLogo } from '../CurrencyLogo'
@@ -29,15 +33,14 @@ import {
   SelectionListWindowWrapper,
 } from '../SelectionList'
 import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
-import styled, { ThemeContext } from 'styled-components'
-import { useTranslation } from 'react-i18next'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
-import { ChevronsDown } from 'react-feather'
+import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined
   selectedTrade?: Trade
   onSelectedPlatformChange: (newPlatform: RoutablePlatform) => void
+  isLoading: boolean
 }
 
 interface GasFeeProps {
@@ -90,13 +93,14 @@ const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
 }
 
 export function SwapPlatformSelector({
+  isLoading,
   allPlatformTrades,
   selectedTrade,
   onSelectedPlatformChange,
 }: SwapPlatformSelectorProps) {
   const isMobileByMedia = useIsMobileByMedia()
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
   const [allowedSlippage] = useUserSlippageTolerance()
@@ -155,54 +159,58 @@ export function SwapPlatformSelector({
             {independentField === Field.OUTPUT ? t('maxSent') : t('minReceived')}
           </SelectionListLabel>
         </SelectionListLabelWrapper>
+        {isLoading && allPlatformTrades?.length === 0 ? (
+          <PlatformSelectorLoader showGasFeeColumn={showGasFees} />
+        ) : (
+          displayedPlatformTrade?.map((trade, i) => {
+            if (!trade) return null // some platforms might not be compatible with the currently selected network
+            const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
+            const gasFeeUSD = gasFeesUSD[i]
+            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+            const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
+            const tokenAmount = limitNumberOfDecimalPlaces(
+              isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
+            )
 
-        {displayedPlatformTrade?.map((trade, i) => {
-          if (!trade) return null // some platforms might not be compatible with the currently selected network
-          const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
-          const gasFeeUSD = gasFeesUSD[i]
-          const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
-          const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
-          const tokenAmount = limitNumberOfDecimalPlaces(
-            isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
-          )
-
-          return (
-            <SelectionListOption
-              key={trade.platform.name}
-              isSelected={selectedTrade?.platform.name === trade.platform.name}
-              onClick={() => handleSelectedTradeOverride(trade.platform.name)}
-            >
-              <SelectionListName
-                flex={showGasFees ? '30%' : '45%'}
+            return (
+              <SelectionListOption
+                role="button"
+                key={trade.platform.name}
                 isSelected={selectedTrade?.platform.name === trade.platform.name}
+                onClick={() => handleSelectedTradeOverride(trade.platform.name)}
               >
-                <StyledFlex alignItems="center">
-                  {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
-                  {trade.platform.name}
-                </StyledFlex>
-              </SelectionListName>
-              <SelectionListDetails>
-                <PriceImpact priceImpact={priceImpactWithoutFee} />
-              </SelectionListDetails>
-              <SelectionListDetails>{realizedLPFee ? `${realizedLPFee.toFixed(2)}%` : '-'}</SelectionListDetails>
-              {showGasFees && (
+                <SelectionListName
+                  flex={showGasFees ? '30%' : '45%'}
+                  isSelected={selectedTrade?.platform.name === trade.platform.name}
+                >
+                  <StyledFlex alignItems="center">
+                    {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
+                    {trade.platform.name}
+                  </StyledFlex>
+                </SelectionListName>
                 <SelectionListDetails>
-                  <GasFee loading={debouncedLoadingGasFees} gasFeeUSD={gasFeeUSD} />
+                  <PriceImpact priceImpact={priceImpactWithoutFee} />
                 </SelectionListDetails>
-              )}
-              <SelectionListReceiveAmount flex="25%">
-                <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
-                  {tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}
-                </TYPE.subHeader>
-                <CurrencyLogo
-                  currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}
-                  size="14px"
-                  marginLeft={4}
-                />
-              </SelectionListReceiveAmount>
-            </SelectionListOption>
-          )
-        })}
+                <SelectionListDetails>{realizedLPFee ? `${realizedLPFee.toFixed(2)}%` : '-'}</SelectionListDetails>
+                {showGasFees && (
+                  <SelectionListDetails>
+                    <GasFee loading={debouncedLoadingGasFees} gasFeeUSD={gasFeeUSD} />
+                  </SelectionListDetails>
+                )}
+                <SelectionListReceiveAmount flex="25%">
+                  <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
+                    {tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}
+                  </TYPE.subHeader>
+                  <CurrencyLogo
+                    currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}
+                    size="14px"
+                    marginLeft={4}
+                  />
+                </SelectionListReceiveAmount>
+              </SelectionListOption>
+            )
+          })
+        )}
       </SelectionListWindowWrapper>
       {allPlatformTrades && allPlatformTrades.length > 3 && (
         <Flex justifyContent="center">

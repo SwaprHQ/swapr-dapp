@@ -1,5 +1,5 @@
-import React, { useContext, useCallback } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { useCallback } from 'react'
+import styled, { useTheme } from 'styled-components'
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink, TYPE } from '../../theme'
@@ -77,7 +77,7 @@ export default function AddressInputPanel({
   onChange: (value: string) => void
 }) {
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   const { address, loading, name } = useENS(value)
 
