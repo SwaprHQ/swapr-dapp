@@ -390,7 +390,6 @@ body {
 
 .custom-toast-root {
     margin-top: 86px;
-    width:350px !important;
 }
 
 .custom-toast-container {
