@@ -281,6 +281,7 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 
 export const DEFAULT_TOKEN_LIST = 'ipfs://QmUWnK6AFHZ3S1hR7Up1h3Ntax3fP1ZyiTptDNG2cWLTeK'
 
+export const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 export const ZERO_USD = CurrencyAmount.usd('0')
 
 export interface NetworkDetails {
