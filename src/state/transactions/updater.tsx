@@ -77,54 +77,55 @@ export default function Updater(): null {
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
 
-    const hash = Object.keys(transactions).find(hash => shouldCheck(lastBlockNumber, transactions[hash]))
+    const cancels = Object.keys(transactions)
+      .filter(hash => shouldCheck(lastBlockNumber, transactions[hash]))
+      .map(hash => {
+        const { promise, cancel } = getReceipt(hash)
+        promise
+          .then(receipt => {
+            if (receipt) {
+              dispatch(
+                finalizeTransaction({
+                  chainId,
+                  hash,
+                  receipt: {
+                    blockHash: receipt.blockHash,
+                    blockNumber: receipt.blockNumber,
+                    contractAddress: receipt.contractAddress,
+                    from: receipt.from,
+                    status: receipt.status,
+                    to: receipt.to,
+                    transactionHash: receipt.transactionHash,
+                    transactionIndex: receipt.transactionIndex,
+                  },
+                })
+              )
 
-    if (hash) {
-      const { promise, cancel } = getReceipt(hash)
-      promise
-        .then(receipt => {
-          if (receipt) {
-            dispatch(
-              finalizeTransaction({
-                chainId,
+              addPopup({
                 hash,
-                receipt: {
-                  blockHash: receipt.blockHash,
-                  blockNumber: receipt.blockNumber,
-                  contractAddress: receipt.contractAddress,
-                  from: receipt.from,
-                  status: receipt.status,
-                  to: receipt.to,
-                  transactionHash: receipt.transactionHash,
-                  transactionIndex: receipt.transactionIndex,
-                },
+                success: receipt.status === 1,
+                summary: transactions[hash]?.summary,
               })
-            )
 
-            addPopup({
-              hash,
-              success: receipt.status === 1,
-              summary: transactions[hash]?.summary,
-            })
-
-            // the receipt was fetched before the block, fast forward to that block to trigger balance updates
-            if (receipt.blockNumber > lastBlockNumber) {
-              dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+              // the receipt was fetched before the block, fast forward to that block to trigger balance updates
+              if (receipt.blockNumber > lastBlockNumber) {
+                dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+              }
+            } else {
+              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
             }
-          } else {
-            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
-          }
-        })
-        .catch(error => {
-          if (!error.isCancelledError) {
-            console.error(`Failed to check transaction hash: ${hash}`, error)
-          }
-        })
-      return () => {
-        cancel()
-      }
+          })
+          .catch(error => {
+            if (!error.isCancelledError) {
+              console.error(`Failed to check transaction hash: ${hash}`, error)
+            }
+          })
+        return cancel
+      })
+
+    return () => {
+      cancels.forEach(cancel => cancel())
     }
-    return undefined
   }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup, getReceipt])
 
   return null
