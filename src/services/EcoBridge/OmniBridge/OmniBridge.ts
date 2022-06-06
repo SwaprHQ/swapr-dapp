@@ -1,10 +1,10 @@
 import Ajv from 'ajv'
 import { request } from 'graphql-request'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { ChainId, Currency } from '@swapr/sdk'
 import { formatEther, parseUnits } from '@ethersproject/units'
-import { schema, TokenInfo, TokenList } from '@uniswap/token-lists'
+import { schema, TokenList } from '@uniswap/token-lists'
 
 import { BRIDGE_CONFIG } from './OmniBridge.config'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
@@ -50,13 +50,20 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { Mode, PairTokens, SubgraphExecutionsData, SubgraphRequestsData, SubgraphResponse } from './OmniBridge.types'
+import {
+  Mode,
+  OmnibridgePairTokens,
+  OmnibridgeSubgraphExecutions,
+  OmnibridgeSubgraphRequests,
+  OmnibridgeSubgraphResponse,
+} from './OmniBridge.types'
+import { ZERO_ADDRESS } from '../../../constants'
 
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
   private _foreignChainId: ChainId
   private _listeners: NodeJS.Timeout[] = []
-  private _tokensPair: PairTokens | undefined
+  private _tokensPair: OmnibridgePairTokens | undefined
   private _currentDay: BigNumber | undefined
 
   private get store() {
@@ -103,17 +110,24 @@ export class OmniBridge extends EcoBridgeChildBase {
       if (!this._account || !this._activeProvider || !this._tokensPair) return
 
       const { fromToken, toToken } = this._tokensPair
-      const { address, mode, mediator, amount, chainId: fromChainId, decimals } = fromToken
+      const {
+        address: fromTokenAddress,
+        mode: fromTokenMode,
+        mediator: fromMediator,
+        amount: fromAmount,
+        chainId: fromChainId,
+        decimals: fromTokenDecimals,
+      } = fromToken
 
-      const { chainId: toChainId } = toToken
+      const { chainId: toChainId, address: toTokenAddress, mode: toTokenMode } = toToken
 
-      if (!mode || !mediator || !toToken.mode) return
+      if (!fromTokenMode || !fromMediator || !toTokenMode) return
 
       let shouldReceiveNativeCur = false
       if (
-        toToken.chainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
-        toToken.address === ethers.constants.AddressZero &&
-        toToken.mode === Mode.NATIVE
+        toChainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
+        toTokenAddress === ZERO_ADDRESS &&
+        toTokenMode === Mode.NATIVE
       ) {
         shouldReceiveNativeCur = true
       }
@@ -124,15 +138,15 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       //check is withdraw
       const needsClaiming =
-        isHome && !claimDisabled && !(tokensClaimDisabled || []).includes(fromToken.address.toLowerCase())
+        isHome && !claimDisabled && !(tokensClaimDisabled || []).includes(fromTokenAddress.toLowerCase())
 
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
       const tx = await relayTokens(
         this._activeProvider.getSigner(),
-        { address, mode, mediator },
+        { address: fromTokenAddress, mode: fromTokenMode, mediator: fromMediator },
         this._account,
-        amount.toString(),
+        fromAmount.toString(),
         { shouldReceiveNativeCur, foreignChainId: this._foreignChainId }
       )
 
@@ -147,7 +161,7 @@ export class OmniBridge extends EcoBridgeChildBase {
           toChainId,
           sender: this._account,
           txHash: tx.hash,
-          value: formatUnits(amount.toString(), decimals),
+          value: formatUnits(fromAmount.toString(), fromTokenDecimals),
           needsClaiming,
           status: BridgeTransactionStatus.PENDING,
         })
@@ -169,13 +183,17 @@ export class OmniBridge extends EcoBridgeChildBase {
     try {
       if (!this._account || !this._activeProvider || !this._tokensPair) throw new Error('Cannot execute approve method')
 
-      const { fromToken } = this._tokensPair
+      const {
+        fromToken: { address: fromTokenAddress, mediator: fromMediator, amount: fromAmount },
+      } = this._tokensPair
 
-      const { address, mediator, amount } = fromToken
+      if (!fromMediator) throw new Error('Mediator not found')
 
-      if (!mediator) throw new Error('Mediator not found')
-
-      const tx = await approveToken({ address, mediator }, amount.toString(), this._activeProvider.getSigner())
+      const tx = await approveToken(
+        { address: fromTokenAddress, mediator: fromMediator },
+        fromAmount.toString(),
+        this._activeProvider.getSigner()
+      )
 
       this.store.dispatch(
         ecoBridgeUIActions.setStatusButton({
@@ -315,9 +333,9 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       const { maxPerTx, minPerTx } = limits
 
-      const { amount } = fromToken
+      const { amount: fromAmount, mode: fromTokenMode, address: fromTokenAddress, mediator: fromMediator } = fromToken
 
-      if (amount.lt(minPerTx)) {
+      if (fromAmount.lt(minPerTx)) {
         this.store.dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: `Specify more than ${minPerTx.toString()}`,
@@ -330,7 +348,7 @@ export class OmniBridge extends EcoBridgeChildBase {
         return
       }
 
-      if (amount.gt(maxPerTx)) {
+      if (fromAmount.gt(maxPerTx)) {
         this.store.dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: `Specify less than ${maxPerTx.toString()}`,
@@ -344,12 +362,12 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
 
       const allowance = await fetchAllowance(
-        { address: fromToken.address, mediator: fromToken.mediator },
+        { address: fromTokenAddress, mediator: fromMediator },
         this._account,
         this._staticProviders[fromToken.chainId]
       )
 
-      if (!allowance || !fromToken.mode) {
+      if (!allowance || !fromTokenMode) {
         this.store.dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: 'Cannot fetch allowance. Try later',
@@ -362,7 +380,7 @@ export class OmniBridge extends EcoBridgeChildBase {
         return
       }
 
-      if (['NATIVE', 'erc677'].includes(fromToken.mode) || allowance.gte(fromToken.amount)) {
+      if ([Mode.NATIVE, Mode.ERC677].includes(fromTokenMode) || allowance.gte(fromAmount)) {
         this.store.dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: 'Bridge',
@@ -429,14 +447,13 @@ export class OmniBridge extends EcoBridgeChildBase {
         return []
       }
 
-      const [homeData, foreignData, defaultTokens] = await Promise.all<SubgraphResponse, SubgraphResponse, TokenInfo[]>(
-        [request(homeEndpoint, homeTokensQuery), request(foreignEndpoint, foreignTokensQuery), fetchDefaultTokens()]
-      )
+      const [homeData, foreignData, defaultTokens] = await Promise.all([
+        request<OmnibridgeSubgraphResponse>(homeEndpoint, homeTokensQuery),
+        request<OmnibridgeSubgraphResponse>(foreignEndpoint, foreignTokensQuery),
+        fetchDefaultTokens(),
+      ])
 
-      const homeTokens = homeData && homeData.tokens ? homeData.tokens : []
-      const foreignTokens = foreignData && foreignData.tokens ? foreignData.tokens : []
-
-      const allTokens = homeTokens.concat(foreignTokens, defaultTokens)
+      const allTokens = homeData.tokens.concat(foreignData.tokens, defaultTokens)
 
       const uniqueTokens = () => {
         const seen: { [address: string]: boolean } = {}
@@ -473,9 +490,17 @@ export class OmniBridge extends EcoBridgeChildBase {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
       return
     }
-    const { address, chainId, name, value, decimals, symbol } = this.store.getState().ecoBridge.ui.from
 
-    if (Number(value) === 0) {
+    const {
+      address: fromTokenAddressUI,
+      chainId: fromChainId,
+      name: fromTokenName,
+      value: fromAmount,
+      decimals: fromTokenDecimals,
+      symbol: fromTokenSymbol,
+    } = this.store.getState().ecoBridge.ui.from
+
+    if (Number(fromAmount) === 0) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.IDLE }))
       return
     }
@@ -488,29 +513,33 @@ export class OmniBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
-    if (address === Currency.getNative(this._homeChainId).symbol) {
+    if (fromTokenAddressUI === Currency.getNative(this._homeChainId).symbol) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
       return
     }
 
     const fromTokenAddress =
-      address === Currency.getNative(this._foreignChainId).symbol ? ethers.constants.AddressZero : address
+      fromTokenAddressUI === Currency.getNative(this._foreignChainId).symbol ? ZERO_ADDRESS : fromTokenAddressUI
 
     const fromTokenMode =
-      fromTokenAddress === ethers.constants.AddressZero
+      fromTokenAddress === ZERO_ADDRESS
         ? Mode.NATIVE
-        : await fetchMode(this.bridgeId, { address: fromTokenAddress, chainId }, this._staticProviders[chainId])
+        : await fetchMode(
+            this.bridgeId,
+            { address: fromTokenAddress, chainId: fromChainId },
+            this._staticProviders[fromChainId]
+          )
 
-    const fromTokenMediator = getMediatorAddress(this.bridgeId, { address, chainId })
+    const fromTokenMediator = getMediatorAddress(this.bridgeId, { address: fromTokenAddress, chainId: fromChainId })
 
-    if (!fromTokenMediator || !fromTokenMode || !name) {
+    if (!fromTokenMediator || !fromTokenMode || !fromTokenName) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
       return
     }
 
     const toToken = await fetchToToken(
       this.bridgeId,
-      { address: fromTokenAddress, chainId, mode: fromTokenMode, name },
+      { address: fromTokenAddress, chainId: fromChainId, mode: fromTokenMode, name: fromTokenName },
       this._activeChainId === this._homeChainId ? this._foreignChainId : this._homeChainId,
       this._staticProviders
     )
@@ -520,9 +549,18 @@ export class OmniBridge extends EcoBridgeChildBase {
       return
     }
 
+    const {
+      address: toTokenAddress,
+      chainId: toChainId,
+      decimals: toTokenDecimals,
+      mediator: toMediator,
+      mode: toTokenMode,
+      name: toTokenName,
+    } = toToken
+
     let parsedFromAmount = BigNumber.from(0)
     try {
-      parsedFromAmount = parseUnits(value, decimals)
+      parsedFromAmount = parseUnits(fromAmount, fromTokenDecimals)
     } catch (e) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
       return
@@ -552,12 +590,12 @@ export class OmniBridge extends EcoBridgeChildBase {
       : await fetchToAmount(
           this.bridgeId,
           feeType,
-          { address, chainId, name, mediator: fromTokenMediator },
+          { address: fromTokenAddress, chainId: fromChainId, name: fromTokenName, mediator: fromTokenMediator },
           {
-            address: toToken.address,
-            chainId: toToken.chainId,
-            name: toToken.name,
-            mediator: toToken.mediator ?? '',
+            address: toTokenAddress,
+            chainId: toChainId,
+            name: toTokenName,
+            mediator: toMediator ?? '',
           },
           parsedFromAmount,
           feeManagerAddress,
@@ -570,30 +608,30 @@ export class OmniBridge extends EcoBridgeChildBase {
 
     if (feeAmount.gt(0)) {
       fee = `${(
-        (Number(formatUnits(feeAmount.toString(), toToken.decimals)) /
-          Number(formatUnits(parsedFromAmount.toString(), decimals))) *
+        (Number(formatUnits(feeAmount.toString(), toTokenDecimals)) /
+          Number(formatUnits(parsedFromAmount.toString(), fromTokenDecimals))) *
         100
       ).toFixed(2)}%`
     }
 
     this._tokensPair = {
       fromToken: {
-        address,
-        chainId,
-        name,
+        address: fromTokenAddress,
+        chainId: fromChainId,
+        name: fromTokenName,
         mode: fromTokenMode,
         mediator: fromTokenMediator,
-        decimals: decimals ?? 0,
+        decimals: fromTokenDecimals ?? 0,
         amount: parsedFromAmount,
-        symbol,
+        symbol: fromTokenSymbol,
       },
       toToken: {
-        address: toToken.address,
-        chainId: toToken.chainId,
-        name: toToken.name,
-        decimals: toToken.decimals,
-        mode: toToken.mode,
-        mediator: toToken.mediator,
+        address: toTokenAddress,
+        chainId: toChainId,
+        name: toTokenName,
+        decimals: toTokenDecimals,
+        mode: toTokenMode,
+        mediator: toMediator,
       },
     }
 
@@ -620,7 +658,7 @@ export class OmniBridge extends EcoBridgeChildBase {
     const details = {
       fee,
       gas,
-      receiveAmount: Number(formatUnits(toAmount.toString(), decimals)).toFixed(2),
+      receiveAmount: Number(formatUnits(toAmount.toString(), toTokenDecimals)).toFixed(2),
       estimateTime: '5 min',
       requestId: helperRequestId,
     }
@@ -631,24 +669,22 @@ export class OmniBridge extends EcoBridgeChildBase {
     try {
       if (!this._account || !this._activeChainId) return
 
-      const [{ requests: homeRequests }, { requests: foreignRequests }] = await Promise.all<
-        SubgraphRequestsData,
-        SubgraphRequestsData
-      >([
-        request(getGraphEndpoint(this._homeChainId, this.bridgeId), requestsUserQuery, {
-          user: this._account,
-        }),
-        request(getGraphEndpoint(this._foreignChainId, this.bridgeId), requestsUserQuery, {
-          user: this._account,
-        }),
-      ])
+      const [{ requests: homeRequests }, { requests: foreignRequests }] = await Promise.all<OmnibridgeSubgraphRequests>(
+        [
+          request(getGraphEndpoint(this._homeChainId, this.bridgeId), requestsUserQuery, {
+            user: this._account,
+          }),
+          request(getGraphEndpoint(this._foreignChainId, this.bridgeId), requestsUserQuery, {
+            user: this._account,
+          }),
+        ]
+      )
 
       const homeRequestsIds = homeRequests.map(request => request.messageId)
       const foreignRequestsIds = foreignRequests.map(request => request.messageId)
 
       const [{ executions: homeExecutions }, { executions: foreignExecutions }] = await Promise.all<
-        SubgraphExecutionsData,
-        SubgraphExecutionsData
+        OmnibridgeSubgraphExecutions
       >([
         request(getGraphEndpoint(this._homeChainId, this.bridgeId), executionsQuery, {
           messageIds: foreignRequestsIds,

@@ -2,20 +2,28 @@ import { ChainId } from '@swapr/sdk'
 import { gql } from 'graphql-request'
 import { formatUnits } from 'ethers/lib/utils'
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
-import { BigNumber, Contract, ContractTransaction, ethers, Signer, utils } from 'ethers'
+import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
 
 import { BRIDGE_CONFIG, OVERRIDES } from './OmniBridge.config'
 import { EcoBridgeProviders } from '../EcoBridge.types'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { TokenWithAddressAndChain, Token, Request, Execution, Mode } from './OmniBridge.types'
+import {
+  OmnibridgeTokenWithAddressAndChain,
+  OmnibridgeToken,
+  OmnibridgeRequest,
+  OmnibridgeExecution,
+  Mode,
+  ConfigPerChain,
+} from './OmniBridge.types'
+import { WETH_GNOSIS_ADDRESS, ZERO_ADDRESS } from '../../../constants'
 
 //constants
-export const defaultTokensUrl: { [chainId: number]: string } = {
+export const defaultTokensUrl: ConfigPerChain = {
   100: 'https://tokens.honeyswap.org',
   1: 'https://tokens.uniswap.org',
 }
 
-export const nativeCurrencyMediators: { [chainId: number]: string } = {
+export const nativeCurrencyMediators: ConfigPerChain = {
   1: '0xa6439ca0fcba1d0f80df0be6a17220fed9c9038a'.toLowerCase(),
 }
 
@@ -24,8 +32,6 @@ export const VERSION = {
   minor: 0,
   patch: 0,
 }
-
-const ADDRESS_ZERO = ethers.constants.AddressZero
 
 //subgraph
 export const getGraphEndpoint = (chainId: ChainId, direction: string) => {
@@ -54,7 +60,7 @@ export const getErrorMsg = (error: any) => {
 }
 
 //overrides
-const isOverridden = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
+const isOverridden = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return false
 
   const { address, chainId } = token
@@ -67,28 +73,24 @@ const isOverridden = (bridgeDirection: string, token: TokenWithAddressAndChain) 
   return override !== undefined && override[chainId] !== undefined
 }
 
-const getOverriddenMode = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
+const getOverriddenMode = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return
 
   const { address, chainId } = token
-
-  if (!address || !chainId) return
 
   const overrides = OVERRIDES[bridgeDirection]
 
   return overrides[address.toLowerCase()][chainId].mode as Mode
 }
 
-const getOverriddenMediator = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
+const getOverriddenMediator = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return
 
   const { address, chainId } = token
 
-  if (!address || !chainId) return
-
   const overrides = OVERRIDES[bridgeDirection]
 
-  return overrides[token.address.toLowerCase()][chainId].mediator.toLowerCase()
+  return overrides[address.toLowerCase()][chainId].mediator.toLowerCase()
 }
 
 const getMediatorAddressWithoutOverride = (bridgeDirection: string, chainId: ChainId) => {
@@ -99,12 +101,10 @@ const getMediatorAddressWithoutOverride = (bridgeDirection: string, chainId: Cha
   return homeChainId === chainId ? homeMediatorAddress.toLowerCase() : foreignMediatorAddress.toLowerCase()
 }
 
-export const getOverriddenToToken = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
+export const getOverriddenToToken = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return
 
   const { address, chainId } = token
-
-  if (!address || !chainId) return
 
   const overrides = OVERRIDES[bridgeDirection]
 
@@ -112,7 +112,11 @@ export const getOverriddenToToken = (bridgeDirection: string, token: TokenWithAd
 }
 
 //get mode
-export const fetchMode = async (bridgeDirection: string, token: TokenWithAddressAndChain, provider?: Provider) => {
+export const fetchMode = async (
+  bridgeDirection: string,
+  token: OmnibridgeTokenWithAddressAndChain,
+  provider?: Provider
+) => {
   if (!provider) return
 
   if (isOverridden(bridgeDirection, token)) {
@@ -134,13 +138,16 @@ export const fetchMode = async (bridgeDirection: string, token: TokenWithAddress
   const mediatorContract = new Contract(mediatorAddress, abi, provider)
   const nativeTokenAddress = await mediatorContract.nativeTokenAddress(address)
 
-  if (nativeTokenAddress === ADDRESS_ZERO) return Mode.ERC20
+  if (nativeTokenAddress === ZERO_ADDRESS) return Mode.ERC20
 
   return Mode.ERC677
 }
 
 //get name
-export const fetchTokenName = async (token: TokenWithAddressAndChain & { name: string }, provider?: Provider) => {
+export const fetchTokenName = async (
+  token: OmnibridgeTokenWithAddressAndChain & { name: string },
+  provider?: Provider
+) => {
   let tokenName = token.name || ''
 
   try {
@@ -156,22 +163,22 @@ export const fetchTokenName = async (token: TokenWithAddressAndChain & { name: s
 }
 
 const getToName = async (
-  fromToken: TokenWithAddressAndChain & { name: string },
+  fromToken: OmnibridgeTokenWithAddressAndChain & { name: string },
   toChainId: ChainId,
   toAddress: string,
   provider?: Provider
 ) => {
-  const { name } = fromToken
-  if (toAddress === ADDRESS_ZERO) {
-    const fromName = name || (await fetchTokenName(fromToken))
-    return fromName
+  const { name: fromTokenName } = fromToken
+
+  if (toAddress === ZERO_ADDRESS) {
+    return fromTokenName || (await fetchTokenName(fromToken))
   }
 
-  return fetchTokenName({ chainId: toChainId, address: toAddress, name }, provider)
+  return fetchTokenName({ chainId: toChainId, address: toAddress, name: fromTokenName }, provider)
 }
 
 //get mediator
-export const getMediatorAddress = (bridgeDirection: string, token: TokenWithAddressAndChain) => {
+export const getMediatorAddress = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !token.chainId || !token.address) return
 
   if (isOverridden(bridgeDirection, token)) {
@@ -182,7 +189,7 @@ export const getMediatorAddress = (bridgeDirection: string, token: TokenWithAddr
 }
 
 //fetch toToken details
-const fetchTokenDetailsString = async (token: TokenWithAddressAndChain, provider?: Provider) => {
+const fetchTokenDetailsString = async (token: OmnibridgeTokenWithAddressAndChain, provider?: Provider) => {
   const abi = [
     'function decimals() view returns (uint8)',
     'function symbol() view returns (string)',
@@ -190,27 +197,30 @@ const fetchTokenDetailsString = async (token: TokenWithAddressAndChain, provider
   ]
   const tokenContract = new Contract(token.address, abi, provider)
 
-  const [name, symbol, decimals] = await Promise.all<string, string, number>([
-    tokenContract.name(),
-    tokenContract.symbol(),
-    tokenContract.decimals(),
+  const [name, symbol, decimals] = await Promise.all([
+    tokenContract.name() as string,
+    tokenContract.symbol() as string,
+    tokenContract.decimals() as number,
   ])
 
   return { name, symbol, decimals }
 }
 
-const fetchTokenDetailsBytes32 = async (token: TokenWithAddressAndChain, provider?: Provider) => {
+const fetchTokenDetailsBytes32 = async (token: OmnibridgeTokenWithAddressAndChain, provider?: Provider) => {
   const abi = [
     'function decimals() view returns (uint8)',
     'function symbol() view returns (bytes32)',
     'function name() view returns (bytes32)',
   ]
+
   const tokenContract = new Contract(token.address, abi, provider)
-  const [name, symbol, decimals] = await Promise.all<string, string, number>([
-    tokenContract.name(),
-    tokenContract.symbol(),
-    tokenContract.decimals(),
+
+  const [name, symbol, decimals] = await Promise.all([
+    tokenContract.name() as string,
+    tokenContract.symbol() as string,
+    tokenContract.decimals() as number,
   ])
+
   return {
     name: utils.parseBytes32String(name),
     symbol: utils.parseBytes32String(symbol),
@@ -219,7 +229,7 @@ const fetchTokenDetailsBytes32 = async (token: TokenWithAddressAndChain, provide
 }
 
 const fetchTokenDetailsFromContract = async (
-  token: TokenWithAddressAndChain,
+  token: OmnibridgeTokenWithAddressAndChain,
   provider?: Provider
 ): Promise<{ name: string; symbol: string; decimals: number }> => {
   let details = { name: '', symbol: '', decimals: 0 }
@@ -233,7 +243,7 @@ const fetchTokenDetailsFromContract = async (
 
 export const fetchTokenDetails = async (
   bridgeDirection: string,
-  token: TokenWithAddressAndChain,
+  token: OmnibridgeTokenWithAddressAndChain,
   provider?: Provider
 ) => {
   const mediatorAddress = getMediatorAddress(bridgeDirection, token)
@@ -255,16 +265,19 @@ export const fetchTokenDetails = async (
 
 const fetchToTokenDetails = async (
   bridgeDirection: string,
-  fromToken: TokenWithAddressAndChain & { mode: Mode; name: string },
+  fromToken: OmnibridgeTokenWithAddressAndChain & { mode: Mode; name: string },
   toChainId: ChainId,
   providers?: EcoBridgeProviders
 ) => {
   if (!providers) return
 
-  const { address, chainId, mode } = fromToken
+  const { address: fromTokenAddress, chainId: fromChainId, mode: fromTokenMode } = fromToken
 
-  if (isOverridden(bridgeDirection, { address, chainId })) {
-    const overriddenToTokenAddress = getOverriddenToToken(bridgeDirection, { address, chainId })
+  if (isOverridden(bridgeDirection, { address: fromTokenAddress, chainId: fromChainId })) {
+    const overriddenToTokenAddress = getOverriddenToToken(bridgeDirection, {
+      address: fromTokenAddress,
+      chainId: fromChainId,
+    })
 
     if (!overriddenToTokenAddress) return
 
@@ -275,14 +288,14 @@ const fetchToTokenDetails = async (
     )
   }
 
-  const fromMediatorAddress = getMediatorAddressWithoutOverride(bridgeDirection, chainId)
+  const fromMediatorAddress = getMediatorAddressWithoutOverride(bridgeDirection, fromChainId)
   const toMediatorAddress = getMediatorAddressWithoutOverride(bridgeDirection, toChainId)
 
-  const fromEthersProvider = providers[chainId]
+  const fromEthersProvider = providers[fromChainId]
   const toEthersProvider = providers[toChainId]
 
-  if (address === ADDRESS_ZERO && mode === Mode.NATIVE) {
-    const toAddress = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'
+  if (fromTokenAddress === ZERO_ADDRESS && fromTokenMode === Mode.NATIVE) {
+    const toAddress = WETH_GNOSIS_ADDRESS
     return fetchTokenDetails(
       bridgeDirection,
       {
@@ -301,12 +314,12 @@ const fetchToTokenDetails = async (
     'function nativeTokenAddress(address) view returns (address)',
   ]
   const fromMediatorContract = new Contract(fromMediatorAddress, abi, fromEthersProvider)
-  const isNativeToken = await fromMediatorContract.isRegisteredAsNativeToken(address)
+  const isNativeToken = await fromMediatorContract.isRegisteredAsNativeToken(fromTokenAddress)
 
   if (isNativeToken) {
     const toMediatorContract = new Contract(toMediatorAddress, abi, toEthersProvider)
 
-    const toAddress = await toMediatorContract.bridgedTokenAddress(address)
+    const toAddress = await toMediatorContract.bridgedTokenAddress(fromTokenAddress)
 
     const toName = await getToName(fromToken, toChainId, toAddress, toEthersProvider)
 
@@ -323,7 +336,7 @@ const fetchToTokenDetails = async (
     }
   }
 
-  const toAddress = await fromMediatorContract.nativeTokenAddress(address)
+  const toAddress = await fromMediatorContract.nativeTokenAddress(fromTokenAddress)
 
   const toName = await getToName(fromToken, toChainId, toAddress, toEthersProvider)
 
@@ -342,7 +355,7 @@ const fetchToTokenDetails = async (
 
 export const fetchToToken = async (
   bridgeDirection: string,
-  fromToken: TokenWithAddressAndChain & { mode: Mode; name: string },
+  fromToken: OmnibridgeTokenWithAddressAndChain & { mode: Mode; name: string },
   toChainId: ChainId,
   providers?: EcoBridgeProviders
 ) => {
@@ -368,9 +381,9 @@ const processMediatorData = async (
 
   const mediatorContract = new Contract(homeMediatorAddress, abi, provider)
 
-  const [interfaceVersion, currentDay] = await Promise.all<BigNumber[], BigNumber>([
-    mediatorContract.getBridgeInterfacesVersion(),
-    mediatorContract.getCurrentDay(),
+  const [interfaceVersion, currentDay] = await Promise.all([
+    mediatorContract.getBridgeInterfacesVersion() as BigNumber[],
+    mediatorContract.getCurrentDay() as BigNumber,
   ])
 
   if (!interfaceVersion || !currentDay) return
@@ -411,7 +424,7 @@ export const calculateFees = async (direction: string, provider?: Provider) => {
 
     const feeManagerContract = new Contract(feeManagerAddress, abi, provider)
 
-    const [foreignToHomeFee, homeToForeignFee] = await Promise.all<string, string>([
+    const [foreignToHomeFee, homeToForeignFee] = await Promise.all<string>([
       feeManagerContract.FOREIGN_TO_HOME_FEE(),
       feeManagerContract.HOME_TO_FOREIGN_FEE(),
     ])
@@ -425,8 +438,8 @@ export const calculateFees = async (direction: string, provider?: Provider) => {
 export const fetchToAmount = async (
   direction: string,
   feeType: string,
-  fromToken: TokenWithAddressAndChain & { name: string; mediator: string },
-  toToken: TokenWithAddressAndChain & { name: string; mediator: string },
+  fromToken: OmnibridgeTokenWithAddressAndChain & { name: string; mediator: string },
+  toToken: OmnibridgeTokenWithAddressAndChain & { name: string; mediator: string },
   fromAmount: BigNumber,
   feeManagerAddress: string,
   provider?: Provider
@@ -461,7 +474,7 @@ export const fetchAllowance = async (
   account: string,
   provider?: Provider
 ): Promise<BigNumber | undefined> => {
-  if (!account || !address || address === ADDRESS_ZERO || !mediator || mediator === ADDRESS_ZERO || !provider) return
+  if (address === ZERO_ADDRESS || !mediator || mediator === ZERO_ADDRESS || !provider) return
 
   try {
     const abi = ['function allowance(address, address) view returns (uint256)']
@@ -485,8 +498,8 @@ export const approveToken = async (
 //tx limits
 export const fetchTokenLimits = async (
   direction: string,
-  token: Token,
-  toToken: Token,
+  token: OmnibridgeToken,
+  toToken: OmnibridgeToken,
   currentDay: BigNumber,
   staticProviders: EcoBridgeProviders
 ) => {
@@ -515,13 +528,13 @@ export const fetchTokenLimits = async (
     const toMediatorContract = new Contract(toToken.mediator, abi, toProvider)
 
     const [minPerTx, executionMaxPerTx, executionDailyLimit, totalExecutedPerDay] = isDedicatedMediatorToken
-      ? await Promise.all<BigNumber, BigNumber, BigNumber, BigNumber>([
+      ? await Promise.all<BigNumber>([
           mediatorContract.minPerTx(),
           toMediatorContract.executionMaxPerTx(),
           mediatorContract.executionDailyLimit(),
           toMediatorContract.totalExecutedPerDay(currentDay),
         ])
-      : await Promise.all<BigNumber, BigNumber, BigNumber, BigNumber>([
+      : await Promise.all<BigNumber>([
           mediatorContract.minPerTx(token.address),
           toMediatorContract.executionMaxPerTx(toToken.address),
           mediatorContract.executionDailyLimit(token.address),
@@ -582,8 +595,8 @@ export const relayTokens = async (
 
 //txs history
 export const combineTransactions = (
-  requests: Request[],
-  executions: Execution[],
+  requests: OmnibridgeRequest[],
+  executions: OmnibridgeExecution[],
   chainId: ChainId,
   bridgeChainId: ChainId
 ) =>
