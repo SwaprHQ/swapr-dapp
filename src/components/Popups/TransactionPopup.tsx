@@ -15,7 +15,7 @@ const RowNoFlex = styled(AutoRow)`
   margin-right: 16px;
 `
 
-export default function TransactionPopup({ hash, success, summary }: PopupContent) {
+export function TransactionPopup({ hash, success, summary }: PopupContent) {
   const { chainId } = useActiveWeb3React()
 
   const theme = useTheme()
