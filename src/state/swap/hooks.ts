@@ -237,7 +237,9 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     dispatch(setLoading(false))
   }
   if (inputError !== undefined) {
-    dispatch(setLoading(false))
+    setTimeout(() => {
+      dispatch(setLoading(false))
+    }, 500)
   }
 
   return {
