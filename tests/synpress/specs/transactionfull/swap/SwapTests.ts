@@ -1,7 +1,7 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { EtherscanFacade } from '../../../../utils/facades/EtherscanFacade'
+import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 
@@ -29,7 +29,7 @@ describe('Swapping tests', () => {
     cy.resetMetamaskAccount()
   })
   it('Should swap eth to dxd [TC-51]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(
+    ScannerFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(
       (response: { body: { result: string } }) => {
         ercBalanceBefore = parseInt(response.body.result)
         console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
@@ -66,7 +66,7 @@ describe('Swapping tests', () => {
     })
   })
   it('Should swap DXD to WETH [TC-52]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -107,11 +107,11 @@ describe('Swapping tests', () => {
   })
 
   it('Should swap DAI to ETH [TC-53]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
-    EtherscanFacade.ethBalance().then((response: { body: { result: string } }) => {
+    ScannerFacade.ethBalance().then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
@@ -166,7 +166,7 @@ describe('Swapping tests', () => {
     })
   })
   it('Should send ether to ens domain address [TC-54]', () => {
-    EtherscanFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
+    ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
@@ -198,7 +198,7 @@ describe('Swapping tests', () => {
     })
   })
   it('Should send erc20 token to wallet address [TC-54]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(
+    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(
       res => {
         ercBalanceBefore = parseInt(res.body.result)
         console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)

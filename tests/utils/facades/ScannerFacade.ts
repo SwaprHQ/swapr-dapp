@@ -1,6 +1,6 @@
 import { AddressesEnum } from '../enums/AddressesEnum'
 
-export class EtherscanFacade {
+export class ScannerFacade {
   static ethBalance(walletAddress = AddressesEnum.WALLET_PUBLIC, scanner = ETHERSCAN) {
     return cy.request({
       method: 'GET',
