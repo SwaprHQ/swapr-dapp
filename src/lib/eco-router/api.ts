@@ -130,11 +130,12 @@ export async function getExactIn(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([
-    ...(uniswapV2TradesList as any),
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
+    ...uniswapV2TradesList,
     curveTrade,
     gnosisProtocolTrade,
-  ]).then(trade => trade.filter(trade => trade !== undefined))) as Trade[]
+  ])
+  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
   return {
@@ -234,13 +235,16 @@ export async function getExactOut(
       })
   })
 
+  console.info({ gnosisProtocolTrade })
+
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTrades = (await Promise.all([
-    ...(uniswapV2TradesList as any),
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
+    ...uniswapV2TradesList,
     curveTrade,
     gnosisProtocolTrade,
-  ]).then(trade => trade.filter(trade => trade !== undefined))) as Trade[]
+  ])
+  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
   return {

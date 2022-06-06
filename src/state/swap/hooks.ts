@@ -68,7 +68,6 @@ export function useSwapActionHandlers(): {
 
 // try to parse a user entered amount for a given token
 export function tryParseAmount(value?: string, currency?: Currency, chainId?: number): CurrencyAmount | undefined {
-  //console.info({ value, currency, chainId })
   if (!value || !currency) {
     return undefined
   }
@@ -131,8 +130,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
-  console.info({ outputCurrency })
-
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
@@ -161,6 +158,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   }
   const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
 
+  console.info({ inputCurrency, outputCurrency })
   console.info({
     allPlatformTrades,
     bestTradeExactIn,

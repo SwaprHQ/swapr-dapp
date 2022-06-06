@@ -17,7 +17,7 @@ import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
-import { parseUnits } from 'arb-ts/node_modules/@ethersproject/units'
+import { parseUnits } from '@ethersproject/units'
 
 import { getAddress } from 'ethers/lib/utils'
 import Decimal from 'decimal.js-light'

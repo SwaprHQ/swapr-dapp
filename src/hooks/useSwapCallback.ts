@@ -111,7 +111,7 @@ export function useSwapsCallArguments(
 /**
  * Returns the swap summary for UI components
  */
-export function getSwapSummary(trade: Trade, recipientAddressOrName?: string): string {
+export function getSwapSummary(trade: Trade, recipientAddressOrName: string | null): string {
   const inputSymbol = trade.inputAmount.currency.symbol
   const outputSymbol = trade.outputAmount.currency.symbol
   const inputAmount = trade.inputAmount.toSignificant(3)
@@ -132,7 +132,7 @@ export function getSwapSummary(trade: Trade, recipientAddressOrName?: string): s
 }
 
 export interface UseSwapCallbackParams {
-  trade: Trade | undefined // trade to execute, required
+  trade: Trade | undefined // trade to execute
   allowedSlippage: number // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 }
@@ -184,14 +184,14 @@ export function useSwapCallback({
 
           // Sign the order using Metamask
           // and then submit the order to GPv2
-          const orderId = await trade.signOrder(signer).then(trade => trade.submitOrder())
+          const orderId = await trade.signOrder(signer).then((trade: { submitOrder: () => any }) => trade.submitOrder())
 
           addTransaction(
             {
               hash: orderId,
             },
             {
-              summary: getSwapSummary(trade, recipientAddressOrName ?? undefined),
+              summary: getSwapSummary(trade, recipientAddressOrName ?? null),
               swapProtocol: SwapProtocol.COW,
             }
           )
@@ -214,23 +214,23 @@ export function useSwapCallback({
             return library
               .getSigner()
               .estimateGas(transactionRequest as any)
-              .then(gasEstimate => ({
+              .then((gasEstimate: any) => ({
                 call,
                 gasEstimate,
               }))
-              .catch(gasError => {
+              .catch((gasError: any) => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
                 return library
                   .call(transactionRequest as any)
-                  .then(result => {
+                  .then((result: any) => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
                     return {
                       call,
                       error: new Error('Unexpected issue with estimating the gas. Please try again.'),
                     }
                   })
-                  .catch(callError => {
+                  .catch((callError: { reason: any }) => {
                     console.debug('Call threw error', call, callError)
                     let errorMessage: string
                     switch (callError.reason) {
