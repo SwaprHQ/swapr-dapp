@@ -131,6 +131,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
+  console.info({ outputCurrency })
+
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
@@ -158,6 +160,15 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
   }
   const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
+
+  console.info({
+    allPlatformTrades,
+    bestTradeExactIn,
+    bestTradeExactOut,
+    isExactIn,
+    parsedAmount,
+    useTradeExactOutAllPlatformsRes,
+  })
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],

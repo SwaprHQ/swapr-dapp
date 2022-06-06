@@ -88,6 +88,8 @@ export function colors(darkMode: boolean): Colors {
     yellow1: '#FFE270',
     yellow2: '#F3841E',
     blue1: '#2172E5',
+    dark4: '#BCB3F0',
+
     gray1: '#737798',
     // dont wanna forget these blue yet
     // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
@@ -101,6 +103,7 @@ export function colors(darkMode: boolean): Colors {
     purple3: '#8780BF',
     purple4: '#685EC6',
     purple5: '#464366',
+    lightPurple: '#C0BAF7',
     purple6: '#292643',
     boxShadow: '#0A0A0F',
 
@@ -203,7 +206,8 @@ export const TYPE = {
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', Arial, Helvetica;
+  font-feature-settings: 'zero' on;
   font-display: fallback;
 }
 
@@ -266,7 +270,6 @@ body {
 }
 
 .react-datepicker {
-  font-family: Montserrat !important;
   border: solid 1px ${props => props.theme.bg5} !important;
   border-radius: 8px !important;
   color: ${props => props.theme.text4} !important;
@@ -393,7 +396,6 @@ body {
 }
 
 .custom-toast-body {
-    font-family: "Montserrat";
     padding: 4px 8px;
 }
 

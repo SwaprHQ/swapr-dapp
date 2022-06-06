@@ -79,18 +79,18 @@ export function useWrapCallback(
 
   const addTransaction = useTransactionAdder()
 
-  console.info({
-    nativeCurrency,
-    toUnwrap,
-    outputCurrency,
-    isOutputNative: currencyEquals(nativeCurrency, outputCurrency as Currency),
-  })
-  console.info({
-    nativeCurrency,
-    toWrap,
-    inputCurrency,
-    isInputNative: currencyEquals(nativeCurrency, inputCurrency as Currency),
-  })
+  // console.info({
+  //   nativeCurrency,
+  //   toUnwrap,
+  //   outputCurrency,
+  //   isOutputNative: currencyEquals(nativeCurrency, outputCurrency as Currency),
+  // })
+  // console.info({
+  //   nativeCurrency,
+  //   toWrap,
+  //   inputCurrency,
+  //   isInputNative: currencyEquals(nativeCurrency, inputCurrency as Currency),
+  // })
 
   return useMemo(() => {
     if (!nativeCurrencyWrapperContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
@@ -196,7 +196,6 @@ export function useTradeWrapCallback(
   const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies?.INPUT) ? true : false
   const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT) ? true : false
 
-  console.info({ input: currencies.INPUT, output: currencies.OUTPUT })
   // const inputCurrency = trade ? trade.inputAmount.currency : undefined
   const inputCurrency =
     isGnosisTrade && isOutputCurrencyNative

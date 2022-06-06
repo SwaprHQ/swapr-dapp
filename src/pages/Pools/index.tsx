@@ -13,7 +13,7 @@ import { AutoColumn } from '../../components/Column'
 import { useActiveWeb3React } from '../../hooks'
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
 import { ChevronDown, Plus, X } from 'react-feather'
-import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
+
 import { Currency, Token } from '@swapr/sdk'
 
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
@@ -24,6 +24,7 @@ import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { Switch } from '../../components/Switch'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

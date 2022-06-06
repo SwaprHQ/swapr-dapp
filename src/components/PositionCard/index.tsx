@@ -244,7 +244,14 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               Your pool tokens:
             </TYPE.body>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="user-pool-balance"
+              >
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : <Skeleton width="50px" />}
               </TYPE.body>
               <DoubleCurrencyLogo loading={!!!userPoolBalance} size={16} currency0={currency0} currency1={currency1} />
@@ -257,7 +264,14 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               </TYPE.body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="first-token-balance"
+              >
                 {token0Deposited ? token0Deposited.toSignificant(6) : <Skeleton width="50px" />}
               </TYPE.body>
               <CurrencyLogo loading={!!!currency0} size="16px" currency={currency0} />
@@ -271,7 +285,14 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               </TYPE.body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="second-token-balance"
+              >
                 {token1Deposited ? token1Deposited.toSignificant(6) : <Skeleton width="50px" />}
               </TYPE.body>
               <CurrencyLogo loading={!!!currency1} size="16px" currency={currency1} />
@@ -306,6 +327,7 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
               style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
               width={showRemoveButton ? '48%' : '100%'}
+              data-testid="add-liquidity"
             >
               ADD LIQUIDITY
             </ButtonDark>
