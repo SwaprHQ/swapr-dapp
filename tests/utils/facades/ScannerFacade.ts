@@ -1,7 +1,13 @@
 import { AddressesEnum } from '../enums/AddressesEnum'
 
 export class ScannerFacade {
-  static ethBalance(walletAddress = AddressesEnum.WALLET_PUBLIC, scanner = ETHERSCAN) {
+  private url: string
+  private apiKey: string
+  constructor(url: string, apiKey: string) {
+    this.url = url
+    this.apiKey = apiKey
+  }
+  static ethBalance(walletAddress = AddressesEnum.WALLET_PUBLIC, scanner = SCANNERS.ETHERSCAN) {
     return cy.request({
       method: 'GET',
       url: scanner.URL,
@@ -18,7 +24,11 @@ export class ScannerFacade {
       },
     })
   }
-  static erc20TokenBalance(tokenAddress: string, walletAddress = AddressesEnum.WALLET_PUBLIC, scanner = ETHERSCAN) {
+  static erc20TokenBalance(
+    tokenAddress: string,
+    walletAddress = AddressesEnum.WALLET_PUBLIC,
+    scanner = SCANNERS.ETHERSCAN
+  ) {
     return cy.request({
       method: 'GET',
       url: scanner.URL,
@@ -36,7 +46,7 @@ export class ScannerFacade {
       },
     })
   }
-  static transactionStatus(txhash: string, scanner = ETHERSCAN) {
+  static transactionStatus(txhash: string, scanner = SCANNERS.ETHERSCAN) {
     return cy.request({
       method: 'GET',
       url: scanner.URL,
@@ -52,7 +62,7 @@ export class ScannerFacade {
       },
     })
   }
-  static transaction(txhash: string, scanner = ETHERSCAN) {
+  static transaction(txhash: string, scanner = SCANNERS.ETHERSCAN) {
     return cy.request({
       method: 'GET',
       failOnStatusCode: false,
@@ -68,7 +78,7 @@ export class ScannerFacade {
       },
     })
   }
-  static balance(scanner = ETHERSCAN) {
+  static balance(scanner = SCANNERS.ETHERSCAN) {
     return cy.request({
       method: 'GET',
       url: scanner.URL,
@@ -86,16 +96,13 @@ export class ScannerFacade {
     })
   }
 }
-
-interface EtherscanService {
-  URL: string
-  API_KEY: string
-}
-export const ETHERSCAN: EtherscanService = {
-  URL: 'https://api-rinkeby.etherscan.io/api?',
-  API_KEY: 'RFPAWDXJ663UURXEU6QZJ9P435TY96UQIQ',
-}
-export const ARBISCAN: EtherscanService = {
-  URL: 'https://api-testnet.arbiscan.io/api?',
-  API_KEY: 'KHBZR4P9RSQXXCMZXRXHCA9AQPQY5MUDS7',
+export const SCANNERS = {
+  ETHERSCAN: {
+    URL: 'https://api-rinkeby.etherscan.io/api?',
+    API_KEY: 'RFPAWDXJ663UURXEU6QZJ9P435TY96UQIQ',
+  },
+  ARBISCAN: {
+    URL: 'https://api-testnet.arbiscan.io/api?',
+    API_KEY: 'KHBZR4P9RSQXXCMZXRXHCA9AQPQY5MUDS7',
+  },
 }

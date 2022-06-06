@@ -3,14 +3,14 @@ import { TokenMenu } from '../../../../pages/TokenMenu'
 import { BridgePage } from '../../../../pages/BridgePage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { ARBISCAN, ScannerFacade } from '../../../../utils/facades/ScannerFacade'
+import {ScannerFacade, SCANNERS} from '../../../../utils/facades/ScannerFacade'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
   before(() => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, ARBISCAN).then(
+    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).then(
       (res: { body: { result: string } }) => {
         balanceBefore = parseFloat(res.body.result)
         console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
@@ -222,7 +222,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
 
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, ARBISCAN).should(
+    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).should(
       (res: { body: { result: string } }) => {
         expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
       }
