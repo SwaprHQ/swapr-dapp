@@ -58,14 +58,14 @@ export function Pair({
     >
       <Flex flex={isMobile ? '' : '25%'} flexDirection="row" alignItems="center">
         {correctLogo()}
-        <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
-          {unwrappedToken(token0)?.symbol}
-
-          <Flex flexDirection="column">
-            {!isSingleSidedStakingCampaign}
+        <Flex flexDirection="column">
+          <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
+            {unwrappedToken(token0)?.symbol}
+          </EllipsizedText>
+          <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
             {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
-          </Flex>
-        </EllipsizedText>
+          </EllipsizedText>
+        </Flex>
       </Flex>
       <Flex flex={isMobile ? '' : '25%'} flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
         <Flex style={{ gap: '6px' }} flexDirection="row" alignItems="flex-start" flexWrap="wrap">

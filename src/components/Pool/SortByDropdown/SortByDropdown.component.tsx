@@ -21,12 +21,6 @@ export function SortByDropdown({
   const theme = useContext(ThemeContext)
   useOnClickOutside(popoverRef, () => setIsOpen(false))
 
-  const sortOptions = {
-    [LIQUIDITY_SORTING_TYPES.TVL]: t('TVL'),
-    [LIQUIDITY_SORTING_TYPES.APY]: t('APY'),
-    [LIQUIDITY_SORTING_TYPES.NEW]: t('NEW'),
-  }
-
   return (
     <Flex alignItems="center" ml="18px" ref={popoverRef}>
       <Popover
@@ -34,18 +28,18 @@ export function SortByDropdown({
         show={isOpen}
         content={
           <List>
-            {Object.entries(sortOptions).map(([option, translation]) => (
-              <ListItem key={option}>
+            {Object.entries(LIQUIDITY_SORTING_TYPES).map(([key, value]) => (
+              <ListItem key={key}>
                 <Text
                   fontWeight={600}
                   fontSize={10}
                   color={theme.purple2}
                   onClick={() => {
-                    onSortByChange(option)
+                    onSortByChange(key)
                     setIsOpen(false)
                   }}
                 >
-                  {translation}
+                  {value}
                 </Text>
               </ListItem>
             ))}
@@ -54,7 +48,7 @@ export function SortByDropdown({
       >
         <StyledFlex alignItems="center" onClick={() => setIsOpen(!isOpen)}>
           <StyledText fontWeight={600} fontSize={10} color={theme.purple2}>
-            {t('sortBy', { option: sortOptions[sortBy] })}
+            {t('sortBy', { option: LIQUIDITY_SORTING_TYPES[sortBy] })}
           </StyledText>
           <ChevronDown color={theme.purple2} size={16} />
         </StyledFlex>
