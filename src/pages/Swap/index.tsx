@@ -8,7 +8,7 @@ import {
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
 import Column, { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -80,6 +80,15 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
+const rotateAnimation = keyframes`
+    0% { transform: rotate(0deg) };
+    100% { transform: rotate(360deg) };
+`
+
+const SwapIconLoading = styled(SwapIcon)`
+  animation: ${rotateAnimation} 2s linear infinite;
+`
+
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -116,6 +125,7 @@ export default function Swap() {
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const {
+    loading: swapInfoIsLoading,
     trade: potentialTrade,
     allPlatformTrades,
     currencyBalances,
@@ -204,7 +214,11 @@ export default function Swap() {
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback({
+    trade,
+    allowedSlippage,
+    recipientAddressOrName: recipient,
+  })
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
 
@@ -297,6 +311,114 @@ export default function Swap() {
 
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
 
+  const SwapBoxButton = () => {
+    // Eco Router is computing the best route for the user, so we need to show a loading indicator
+    if (swapInfoIsLoading) {
+      return (
+        <ButtonPrimary style={{ textAlign: 'center' }} disabled>
+          Loading
+        </ButtonPrimary>
+      )
+    }
+
+    // Wallet is not connected, show connect button
+    if (!account) {
+      return <ButtonConnect />
+    }
+
+    // Wallet is connected
+    // User is trying to un/wrap
+
+    if (showWrap) {
+      return (
+        <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
+          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+        </ButtonPrimary>
+      )
+    }
+
+    if (noRoute && userHasSpecifiedInputOutput) {
+      return (
+        <ButtonPrimary style={{ textAlign: 'center' }} disabled>
+          Insufficient liquidity
+        </ButtonPrimary>
+      )
+    }
+
+    if (showApproveFlow) {
+      return (
+        <RowBetween>
+          <ButtonConfirmed
+            onClick={approveCallback}
+            disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+            width="48%"
+            altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+            confirmed={approval === ApprovalState.APPROVED}
+          >
+            {approval === ApprovalState.PENDING ? (
+              <AutoRow gap="6px" justify="center">
+                Approving <Loader />
+              </AutoRow>
+            ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+              'Approved'
+            ) : (
+              'Approve ' + currencies[Field.INPUT]?.symbol
+            )}
+          </ButtonConfirmed>
+          <ButtonError
+            onClick={() => {
+              if (isExpertMode) {
+                handleSwap()
+              } else {
+                setSwapState({
+                  tradeToConfirm: trade,
+                  attemptingTxn: false,
+                  swapErrorMessage: undefined,
+                  showConfirm: true,
+                  txHash: undefined,
+                })
+              }
+            }}
+            width="48%"
+            id="swap-button"
+            disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
+            error={isValid && priceImpactSeverity > 2}
+          >
+            {priceImpactSeverity > 3 && !isExpertMode
+              ? `Price Impact High`
+              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+          </ButtonError>
+        </RowBetween>
+      )
+    }
+
+    // Show swap button
+
+    return (
+      <SwapButton
+        onClick={() => {
+          if (isExpertMode) {
+            handleSwap()
+          } else {
+            setSwapState({
+              tradeToConfirm: trade,
+              attemptingTxn: false,
+              swapErrorMessage: undefined,
+              showConfirm: true,
+              txHash: undefined,
+            })
+          }
+        }}
+        id="swap-button"
+        disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+        platformName={trade?.platform.name}
+        swapInputError={swapInputError}
+        priceImpactSeverity={priceImpactSeverity}
+        isExpertMode={isExpertMode}
+      ></SwapButton>
+    )
+  }
+
   return (
     <>
       <TokenWarningModal
@@ -350,7 +472,7 @@ export default function Swap() {
                       }}
                     >
                       <ArrowWrapper clickable data-testid="switch-tokens-button">
-                        <SwapIcon />
+                        {swapInfoIsLoading ? <SwapIconLoading /> : <SwapIcon />}
                       </ArrowWrapper>
                     </SwitchTokensAmountsContainer>
                   </SwitchIconContainer>
@@ -406,85 +528,7 @@ export default function Swap() {
                 )}
                 {!showWrap && showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
                 <div>
-                  {!account ? (
-                    <ButtonConnect />
-                  ) : showWrap ? (
-                    <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-                      {wrapInputError ??
-                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-                    </ButtonPrimary>
-                  ) : noRoute && userHasSpecifiedInputOutput ? (
-                    <ButtonPrimary style={{ textAlign: 'center' }} disabled>
-                      Insufficient liquidity
-                    </ButtonPrimary>
-                  ) : showApproveFlow ? (
-                    <RowBetween>
-                      <ButtonConfirmed
-                        onClick={approveCallback}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                        width="48%"
-                        altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-                        confirmed={approval === ApprovalState.APPROVED}
-                      >
-                        {approval === ApprovalState.PENDING ? (
-                          <AutoRow gap="6px" justify="center">
-                            Approving <Loader />
-                          </AutoRow>
-                        ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                          'Approved'
-                        ) : (
-                          'Approve ' + currencies[Field.INPUT]?.symbol
-                        )}
-                      </ButtonConfirmed>
-                      <ButtonError
-                        onClick={() => {
-                          if (isExpertMode) {
-                            handleSwap()
-                          } else {
-                            setSwapState({
-                              tradeToConfirm: trade,
-                              attemptingTxn: false,
-                              swapErrorMessage: undefined,
-                              showConfirm: true,
-                              txHash: undefined,
-                            })
-                          }
-                        }}
-                        width="48%"
-                        id="swap-button"
-                        disabled={
-                          !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
-                        }
-                        error={isValid && priceImpactSeverity > 2}
-                      >
-                        {priceImpactSeverity > 3 && !isExpertMode
-                          ? `Price Impact High`
-                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                      </ButtonError>
-                    </RowBetween>
-                  ) : (
-                    <SwapButton
-                      onClick={() => {
-                        if (isExpertMode) {
-                          handleSwap()
-                        } else {
-                          setSwapState({
-                            tradeToConfirm: trade,
-                            attemptingTxn: false,
-                            swapErrorMessage: undefined,
-                            showConfirm: true,
-                            txHash: undefined,
-                          })
-                        }
-                      }}
-                      id="swap-button"
-                      disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-                      platformName={trade?.platform.name}
-                      swapInputError={swapInputError}
-                      priceImpactSeverity={priceImpactSeverity}
-                      isExpertMode={isExpertMode}
-                    ></SwapButton>
-                  )}
+                  <SwapBoxButton />
                   {showApproveFlow && (
                     <Column style={{ marginTop: '1rem' }}>
                       <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
@@ -497,6 +541,7 @@ export default function Swap() {
           </AppBody>
           {showAdvancedSwapDetails && (
             <AdvancedSwapDetailsDropdown
+              isLoading={swapInfoIsLoading}
               trade={trade}
               allPlatformTrades={allPlatformTrades}
               onSelectedPlatformChange={setPlatformOverride}

@@ -13,6 +13,7 @@ import {
   SWPR,
   UniswapV2RoutablePlatform,
   WMATIC,
+  RoutablePlatform,
 } from '@swapr/sdk'
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
@@ -22,6 +23,7 @@ import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
+import CurveLogo from '../assets/svg/curve-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import { providers } from 'ethers'
@@ -443,6 +445,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.DFYN.name,
   },
+  [RoutablePlatform.CURVE.name]: {
+    logo: CurveLogo,
+    alt: RoutablePlatform.CURVE.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.CURVE.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
@@ -454,6 +462,7 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
+  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
 }
 
 export const ChainLabel: any = {

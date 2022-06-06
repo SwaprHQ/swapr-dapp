@@ -14,7 +14,7 @@ import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCur
 
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { parseUnits } from 'arb-ts/node_modules/@ethersproject/units'
+import { parseUnits } from '@ethersproject/units'
 
 import Decimal from 'decimal.js-light'
 
