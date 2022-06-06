@@ -1,12 +1,6 @@
 import { AddressesEnum } from '../enums/AddressesEnum'
 
 export class ScannerFacade {
-  private url: string
-  private apiKey: string
-  constructor(url: string, apiKey: string) {
-    this.url = url
-    this.apiKey = apiKey
-  }
   static ethBalance(walletAddress = AddressesEnum.WALLET_PUBLIC, scanner = SCANNERS.ETHERSCAN) {
     return cy.request({
       method: 'GET',
