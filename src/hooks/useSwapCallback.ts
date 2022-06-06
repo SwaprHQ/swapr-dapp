@@ -1,7 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId, TradeType } from '@swapr/sdk'
+import {
+  UniswapV2Trade,
+  UniswapV2RoutablePlatform,
+  Trade,
+  CurveTrade,
+  ChainId,
+  TradeType,
+  UniswapTrade,
+} from '@swapr/sdk'
 import { useMemo } from 'react'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -61,8 +69,8 @@ export function useSwapsCallArguments(
       }
 
       const swapMethods = []
-      // Curve trade
-      if (trade instanceof CurveTrade) {
+      // Curve and Uniswap v3
+      if (trade instanceof CurveTrade || trade instanceof UniswapTrade) {
         return [
           {
             transactionParameters: trade.swapTransaction(),

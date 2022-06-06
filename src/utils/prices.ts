@@ -14,6 +14,7 @@ import {
   ZERO,
   UniswapV2Trade,
   CurveTrade,
+  UniswapTrade,
 } from '@swapr/sdk'
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -67,6 +68,8 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
   } else if (trade instanceof CurveTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+  } else if (trade instanceof UniswapTrade) {
+    realizedLPFee = trade.fee
   }
 
   // remove lp fees from price impact

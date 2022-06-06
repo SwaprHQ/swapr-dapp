@@ -450,6 +450,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
+  [RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.UNISWAP.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
