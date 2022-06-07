@@ -20,7 +20,15 @@ export class SwapPage {
   }
 
   static wrap() {
-    cy.get('[data-testid=wrap-button]').click()
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Wrap')
+      .click()
+    return this
+  }
+  static unwrap() {
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Unwrap')
+      .click({ force: true })
     return this
   }
 

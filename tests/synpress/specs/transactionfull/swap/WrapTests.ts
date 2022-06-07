@@ -50,7 +50,7 @@ describe('Wrapping tests', () => {
       .openTokenToSwapMenu()
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-      .wrap()
+      .unwrap()
     cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
