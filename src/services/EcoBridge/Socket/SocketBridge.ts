@@ -23,10 +23,9 @@ import { TokenList } from '@uniswap/token-lists'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { commonActions } from '../store/Common.reducer'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, VERSION } from './Socket.utils'
-import { SOCKET_TOKENS } from './Socket.lists'
+import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 import { BigNumber } from '@ethersproject/bignumber'
-import { SocketTxStatus } from './Socket.types'
+import { SocketTokenMap, SocketTxStatus } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -38,6 +37,7 @@ const getErrorMsg = (error: any) => {
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends EcoBridgeChildBase {
+  private _tokenLists: SocketTokenMap = {}
   private _listeners: NodeJS.Timeout[] = []
   private _abortControllers: { [id: string]: AbortController } = {}
 
@@ -335,7 +335,11 @@ export class SocketBridge extends EcoBridgeChildBase {
     let fromTokenAddress = ''
     let toTokenAddress = ''
 
-    const overrideTokens = overrideTokensAddresses(to.chainId, from.chainId, from.address, fromNativeCurrency)
+    const overrideTokens = overrideTokensAddresses({
+      toChainId: to.chainId,
+      fromChainId: from.chainId,
+      fromAddress: from.address,
+    })
 
     if (overrideTokens) {
       const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
@@ -495,7 +499,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       name: 'Socket',
       timestamp: new Date().toISOString(),
       version: VERSION,
-      tokens: SOCKET_TOKENS[tokenListKey] ?? [],
+      tokens: this._tokenLists[tokenListKey] ?? [],
       logoURI: SocketLogo,
     }
 
@@ -504,6 +508,14 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
+    try {
+      const socketListsResponse = await fetch(SOCKET_LISTS_URL)
+      const socketLists: { data: SocketTokenMap } = await socketListsResponse.json()
+      this._tokenLists = socketLists.data
+    } catch (e) {
+      throw new Error('Failed to fetch Socket token lists')
+    }
+
     this.store.dispatch(commonActions.activateLists(['socket']))
   }
 

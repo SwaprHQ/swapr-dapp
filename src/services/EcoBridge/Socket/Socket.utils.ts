@@ -1,24 +1,9 @@
 import { formatUnits } from '@ethersproject/units'
-import { ChainId, Currency } from '@swapr/sdk'
-import { isFee } from './Socket.types'
+import { ChainId, Currency, WETH } from '@swapr/sdk'
+import { isFee, SocketWrapDirection } from './Socket.types'
 import { Route, TokenPriceResponseDTO } from './api/generated'
-import {
-  DAI_ARBITRUM_ADDRESS,
-  DAI_ETHEREUM_ADDRESS,
-  SOCKET_NATIVE_TOKEN_ADDRESS,
-  WETH_GNOSIS_ADDRESS,
-} from '../../../constants'
-
-export const getDAIAddress = (chainId: ChainId) => {
-  switch (chainId) {
-    case ChainId.ARBITRUM_ONE:
-      return DAI_ARBITRUM_ADDRESS
-    case ChainId.MAINNET:
-      return DAI_ETHEREUM_ADDRESS
-    default:
-      return undefined
-  }
-}
+import { DAI, MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { SupportedChainsConfig } from '../EcoBridge.types'
 
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
   if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]
@@ -99,45 +84,160 @@ export const getStatusOfResponse = (e: any) => {
   return false
 }
 
-export const overrideTokensAddresses = (
-  toChainId: ChainId,
-  fromChainId: ChainId,
-  fromAddress: string,
+const getOverridesForChainPair = ({
+  fromAddress,
+  fromNativeCurrency,
+  chainA,
+  chainB,
+  ANativeWrapperAddressOnB,
+  fromChainId,
+  toChainId,
+  BNativeWrapperAddressOnA,
+}: {
   fromNativeCurrency: Currency
-) => {
-  const ETHtoWETH = toChainId === ChainId.XDAI && fromAddress === fromNativeCurrency.symbol
-  const WETHtoETH = fromChainId === ChainId.XDAI && fromAddress === WETH_GNOSIS_ADDRESS
-  const XDAItoDAI = fromChainId === ChainId.XDAI && fromAddress === fromNativeCurrency.symbol
-  const DAItoXDAI =
-    toChainId === ChainId.XDAI && [DAI_ETHEREUM_ADDRESS, DAI_ARBITRUM_ADDRESS].includes(fromAddress.toLowerCase())
+  fromAddress: string
+  chainA: ChainId
+  chainB: ChainId
+  fromChainId: ChainId
+  ANativeWrapperAddressOnB: string
+  toChainId: ChainId
+  BNativeWrapperAddressOnA: string
+}) => {
+  // Ex: A - Mainnet B - Gnosis
+  const supportedPair = [chainA, chainB]
 
-  // Overrides
-  if (XDAItoDAI) {
-    return {
-      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-      toTokenAddressOverride: getDAIAddress(toChainId) ?? '',
-    }
+  if (!(supportedPair.includes(fromChainId) && supportedPair.includes(toChainId))) return undefined
+  const getWrapDirection = () => {
+    // Ex: Mainnet ETH => WETH Gnosis
+    if (toChainId === chainB && fromAddress === fromNativeCurrency.symbol?.toLowerCase())
+      return SocketWrapDirection.FROM_A_NATIVE_TO_B_WRAPPED
+
+    // Ex: Gnosis WETH => ETH Mainnet
+    if (fromChainId === chainB && fromAddress === ANativeWrapperAddressOnB.toLowerCase())
+      return SocketWrapDirection.FROM_B_WRAPPED_TO_A_NATIVE
+
+    // Ex: Gnosis XDAI => Mainnet DAI
+    if (fromChainId === chainB && fromAddress === fromNativeCurrency.symbol?.toLowerCase())
+      return SocketWrapDirection.FROM_B_NATIVE_TO_A_WRAPPED
+
+    // Ex: Mainnet DAI => XDAI Gnosis
+    if (toChainId === chainB && BNativeWrapperAddressOnA.toLowerCase() === fromAddress.toLowerCase())
+      return SocketWrapDirection.FROM_A_WRAPPED_TO_B_NATIVE
+
+    return undefined
   }
 
-  if (DAItoXDAI) {
-    return {
-      fromTokenAddressOverride: fromAddress,
-      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-    }
+  const wrapDirection = getWrapDirection()
+
+  switch (wrapDirection) {
+    case SocketWrapDirection.FROM_A_NATIVE_TO_B_WRAPPED:
+      return {
+        fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+        toTokenAddressOverride: ANativeWrapperAddressOnB,
+      }
+    case SocketWrapDirection.FROM_B_WRAPPED_TO_A_NATIVE:
+      return {
+        fromTokenAddressOverride: ANativeWrapperAddressOnB,
+        toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      }
+    case SocketWrapDirection.FROM_B_NATIVE_TO_A_WRAPPED:
+      return {
+        fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+        toTokenAddressOverride: BNativeWrapperAddressOnA,
+      }
+    case SocketWrapDirection.FROM_A_WRAPPED_TO_B_NATIVE:
+      return {
+        fromTokenAddressOverride: BNativeWrapperAddressOnA,
+        toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      }
+    default:
+      return undefined
+  }
+}
+
+export const overrideTokensAddresses = ({
+  toChainId,
+  fromChainId,
+  fromAddress,
+}: {
+  toChainId: ChainId
+  fromChainId: ChainId
+  fromAddress: string
+}) => {
+  // No need to substitute on mainnet-arbitrum
+  const MAINNET_XDAI = [ChainId.MAINNET, ChainId.XDAI]
+  const MAINNET_POLYGON = [ChainId.MAINNET, ChainId.POLYGON]
+  const XDAI_ARBITRUM = [ChainId.XDAI, ChainId.ARBITRUM_ONE]
+  const XDAI_POLYGON = [ChainId.XDAI, ChainId.POLYGON]
+  const POLYGON_ARBITRUM = [ChainId.POLYGON, ChainId.ARBITRUM_ONE]
+
+  const onSelectedChainPair = (chainPair: ChainId[]) => chainPair.includes(fromChainId) && chainPair.includes(toChainId)
+
+  const overrideBaseParams = {
+    toChainId,
+    fromChainId,
+    fromAddress: fromAddress.toLowerCase(),
+    fromNativeCurrency: Currency.getNative(fromChainId),
   }
 
-  if (ETHtoWETH) {
-    return {
-      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-      toTokenAddressOverride: WETH_GNOSIS_ADDRESS,
-    }
+  if (onSelectedChainPair(MAINNET_XDAI)) {
+    const [chainA, chainB] = MAINNET_XDAI
+
+    return getOverridesForChainPair({
+      ...overrideBaseParams,
+      chainA,
+      chainB,
+      BNativeWrapperAddressOnA: DAI[chainA]?.address ?? '',
+      ANativeWrapperAddressOnB: WETH[chainB]?.address ?? '',
+    })
   }
 
-  if (WETHtoETH) {
-    return {
-      fromTokenAddressOverride: WETH_GNOSIS_ADDRESS,
-      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-    }
+  if (onSelectedChainPair(MAINNET_POLYGON)) {
+    const [chainA, chainB] = MAINNET_POLYGON
+
+    return getOverridesForChainPair({
+      ...overrideBaseParams,
+      chainA,
+      chainB,
+      BNativeWrapperAddressOnA: MATIC[chainA]?.address,
+      ANativeWrapperAddressOnB: WETH[chainB]?.address,
+    })
+  }
+
+  if (onSelectedChainPair(XDAI_ARBITRUM)) {
+    const [chainA, chainB] = XDAI_ARBITRUM
+
+    return getOverridesForChainPair({
+      ...overrideBaseParams,
+      chainA,
+      chainB,
+      BNativeWrapperAddressOnA: WETH[chainA]?.address ?? '',
+      ANativeWrapperAddressOnB: DAI[chainB]?.address ?? '',
+    })
+  }
+
+  if (onSelectedChainPair(XDAI_POLYGON)) {
+    const [chainA, chainB] = XDAI_POLYGON
+
+    return getOverridesForChainPair({
+      ...overrideBaseParams,
+      chainA,
+      chainB,
+      BNativeWrapperAddressOnA: MATIC[chainA]?.address ?? '',
+      ANativeWrapperAddressOnB: DAI[chainB]?.address ?? '',
+    })
+  }
+
+  if (onSelectedChainPair(POLYGON_ARBITRUM)) {
+    const [chainA, chainB] = POLYGON_ARBITRUM
+
+    return getOverridesForChainPair({
+      ...overrideBaseParams,
+      chainA,
+      chainB,
+      BNativeWrapperAddressOnA: WETH[chainA]?.address ?? '',
+      ANativeWrapperAddressOnB: MATIC[chainB]?.address ?? '',
+    })
   }
 
   return undefined
@@ -148,3 +248,16 @@ export const VERSION = {
   minor: 0,
   patch: 0,
 }
+
+export const SOCKET_LISTS_URL =
+  'https://raw.githubusercontent.com/SwaprDAO/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
+
+// Pairs all provided chains
+export const socketSupportedChains = (supportedChains: ChainId[]) =>
+  supportedChains
+    .map((v, i) => supportedChains.slice(i + 1).map(w => [v, w]))
+    .flat()
+    .map<SupportedChainsConfig>(([from, to]) => ({
+      from,
+      to,
+    }))
