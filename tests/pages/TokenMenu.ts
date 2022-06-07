@@ -4,11 +4,14 @@ export class TokenMenu {
     this.getSingleTokenManagerInput()
       .should('be.visible')
       .type(token)
-    this.getTokenRow(token).should('be.visible')
-    this.getSingleTokenManagerInput()
-      .click()
-      .type('{enter}{enter}', { delay: 50 })
-      .should('not.exist')
+    this.getTokenRow(token)
+      .should('be.visible')
+      .click({ force: true })
+    cy.get('body').then(body => {
+      if (body.find('[data-testid=token-picker]').length > 0) {
+        this.getTokenRow(token).click({ force: true })
+      }
+    })
     return SwapPage
   }
 

@@ -9,8 +9,10 @@ export class MenuBar {
   static closeToastAlerts() {
     cy.get('.Toastify__close-button').click({ multiple: true, force: true })
   }
-  static checkToastMessage(message: string) {
-    cy.get('.Toastify__toast', { timeout: 600000 }).should('contain', message)
+  static checkToastMessage(...messages: string[]) {
+    messages.forEach(message => {
+      cy.get('.Toastify__toast', { timeout: 300000 }).should('contain', message)
+    })
     this.closeToastAlerts()
   }
   static getSwap() {

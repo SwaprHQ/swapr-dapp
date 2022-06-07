@@ -192,14 +192,18 @@ export function getLpTokenPrice(
  * @param rounding Rounding mode
  */
 export const limitNumberOfDecimalPlaces = (
-  value?: Fraction,
+  value?: CurrencyAmount | Fraction,
   significantDigits = 6,
   format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
 ): string | undefined => {
   if (!value || value.equalTo(ZERO)) return undefined
+  if (value instanceof CurrencyAmount && value.currency.decimals < significantDigits)
+    significantDigits = value.currency.decimals
+
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
   const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
+
   return quotient.toFormat(quotient.decimalPlaces(), format)
 }
