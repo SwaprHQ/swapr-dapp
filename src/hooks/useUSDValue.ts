@@ -9,7 +9,7 @@ import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency'
 
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
-  [ChainId.MAINNET]: DAI,
+  [ChainId.MAINNET]: DAI[ChainId.MAINNET],
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE],
   [ChainId.XDAI]: USDC[ChainId.XDAI],
 }
