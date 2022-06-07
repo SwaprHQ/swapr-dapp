@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { ChainId, Pair, Token } from '@swapr/sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
@@ -83,13 +84,12 @@ export function useDarkModeManager(): [boolean, () => void] {
   return [darkMode, toggleSetDarkMode]
 }
 
+const selectMultiHop = createSelector(
+  (state: AppState) => state.user.userMultihop,
+  userMultihop => userMultihop
+)
 export function useIsMultihop(): boolean {
-  const { userMultihop } = useSelector<AppState, { userMultihop: boolean }>(
-    ({ user: { userMultihop } }) => ({ userMultihop }),
-    shallowEqual
-  )
-
-  return userMultihop
+  return useSelector(selectMultiHop)
 }
 
 export function useMultihopManager(): [boolean, () => void] {
@@ -103,8 +103,12 @@ export function useMultihopManager(): [boolean, () => void] {
   return [userMultihop, toggleMultihop]
 }
 
-export function useIsExpertMode(): boolean {
-  return useSelector<AppState, AppState['user']['userExpertMode']>(state => state.user.userExpertMode)
+const selectExpertMode = createSelector(
+  (state: AppState) => state.user.userExpertMode,
+  userExpertMode => userExpertMode
+)
+export function useIsExpertMode() {
+  return useSelector<AppState, AppState['user']['userExpertMode']>(selectExpertMode)
 }
 
 export function useExpertModeManager(): [boolean, () => void] {
@@ -118,11 +122,17 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
+const selectUserSlippageTolerance = createSelector(
+  (state: AppState) => state.user.userSlippageTolerance,
+  userSlippageTolerance => userSlippageTolerance
+)
+export function useUserSlippageTolerance() {
+  return useSelector<AppState, AppState['user']['userSlippageTolerance']>(selectUserSlippageTolerance)
+}
+
+export function useUserSlippageToleranceManager(): [number, (slippage: number) => void] {
   const dispatch = useDispatch<AppDispatch>()
-  const userSlippageTolerance = useSelector<AppState, AppState['user']['userSlippageTolerance']>(state => {
-    return state.user.userSlippageTolerance
-  })
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   const setUserSlippageTolerance = useCallback(
     (userSlippageTolerance: number) => {

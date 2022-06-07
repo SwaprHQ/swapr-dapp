@@ -1,4 +1,4 @@
-import { PricedTokenAmount } from '@swapr/sdk'
+import { PricedToken, PricedTokenAmount } from '@swapr/sdk'
 import React from 'react'
 import { Box, Flex } from 'rebass'
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
@@ -27,7 +27,7 @@ function TokenAmountDisplayer({
   const theme = useTheme()
   const { nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
-  const tooltipIcons = (token: any) => {
+  const tooltipIcons = (token: PricedToken) => {
     return (
       <AutoRow>
         <CurrencyLogo currency={token} size={'22px'} />

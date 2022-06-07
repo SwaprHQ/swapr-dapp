@@ -39,6 +39,7 @@
     "path-parse": "^1.0.7",
     "postcss": "^7.0.36",
     "postcss-safe-parser": "^4.0.2",
+    "react-error-overlay": "6.0.9",
     "simple-get": "^2.8.2",
     "ssri": "^7.1.1",
     "tmpl": "^1.0.5",
