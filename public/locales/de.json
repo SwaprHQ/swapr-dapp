@@ -86,5 +86,6 @@
   "priceChange": "Geschätzter Wechselkursrutsch",
   "forAtLeast": "für mindestens ",
   "brokenToken": "Der ausgewählte Token ist nicht kompatibel mit Swapr. Liquidität hinzufügen wird zu nicht mehr zugänglichen Token führen!",
-  "bridge": "Bridge"
+  "bridge": "Bridge",
+  "findingBestPrice": "Bestpreis finden"
 }

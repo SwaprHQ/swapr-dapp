@@ -64,7 +64,7 @@ export function useAllPairs(): { loading: boolean; pairs: Pair[] } {
         )
         pairs.push(new Pair(tokenAmountA, tokenAmountB))
         return pairs
-      }, [])
+      }, []),
     }
   }, [chainId, data, error, loading])
 }

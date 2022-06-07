@@ -68,7 +68,7 @@ export default function NetworkWarningModal() {
                 letterSpacing="-0.02em"
                 color="text4"
               >
-                You're currently on the wrong network to correctly visualize this page. Please switch to{' '}
+                You&apos;re currently on the wrong network to correctly visualize this page. Please switch to{' '}
                 {urlLoadedChainId && NETWORK_DETAIL[urlLoadedChainId] ? NETWORK_DETAIL[urlLoadedChainId].chainName : ''}{' '}
                 in your connected wallet to continue.
               </TYPE.body>

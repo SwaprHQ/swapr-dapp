@@ -14,7 +14,7 @@ import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { Flex, Text } from 'rebass'
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import ApyBadge from '../../ApyBadge'
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
 
 const SizedCard = styled(DarkCard)`
@@ -89,7 +89,6 @@ const ValueText = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 16.8px;
-  font-family: 'Fira Code';
 `
 const ItemsWrapper = styled(Flex)`
   justify-content: space-evenly;
@@ -128,7 +127,7 @@ export default function Pair({
   const isMobile = width ? width < MEDIA_WIDTHS.upToExtraSmall : false
 
   return (
-    <SizedCard selectable {...rest}>
+    <SizedCard selectable {...rest} data-testid="pair-card">
       <Flex height="100%" justifyContent="space-between">
         <Flex flexDirection={isMobile ? 'column' : 'row'} alignItems={!isMobile ? 'center' : ''}>
           {isSingleSidedStakingCampaign ? (

@@ -35,7 +35,7 @@ export class WrappedTokenInfo extends Token {
     return (this._tags = this.tokenInfo.tags.map(tagId => {
       return {
         ...listTags[tagId],
-        id: tagId
+        id: tagId,
       }
     }))
   }

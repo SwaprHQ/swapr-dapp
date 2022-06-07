@@ -4,13 +4,13 @@ import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
-describe('SWAP functional tests', () => {
+describe('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
 
   let balanceBefore: number
 
-  before(()=>{
-    cy.changeMetamaskNetwork("rinkeby")
+  before(() => {
+    cy.changeMetamaskNetwork('rinkeby')
   })
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('SWAP functional tests', () => {
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .wrap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -50,7 +50,7 @@ describe('SWAP functional tests', () => {
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .wrap()
-    cy.confirmMetamaskTransaction({ gasFee: 11 })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 

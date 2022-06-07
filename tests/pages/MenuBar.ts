@@ -9,24 +9,26 @@ export class MenuBar {
   static closeToastAlerts() {
     cy.get('.Toastify__close-button').click({ multiple: true, force: true })
   }
-  static checkToastMessage(message: string) {
-    cy.get('.Toastify__toast', { timeout: 100000 }).should('contain', message)
+  static checkToastMessage(...messages: string[]) {
+    messages.forEach(message => {
+      cy.get('.Toastify__toast', { timeout: 300000 }).should('contain', message)
+    })
     this.closeToastAlerts()
   }
   static getSwap() {
-    return cy.get('#swap-nav-link')
+    return cy.get('[data-testid=swap-nav-link]')
   }
   static getLiquidity() {
-    return cy.get('#pool-nav-link')
+    return cy.get('[data-testid=pool-nav-link]')
   }
   static getRewards() {
-    return cy.get('#rewards-nav-link')
+    return cy.get('[data-testid=rewards-nav-link]')
   }
   static getVote() {
     return cy.get('#vote-nav-link')
   }
   static getBridge() {
-    return cy.get('#bridge-nav-link')
+    return cy.get('[data-testid=bridge-nav-link]')
   }
   static getCharts() {
     return cy.get('#charts-nav-link')

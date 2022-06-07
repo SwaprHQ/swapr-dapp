@@ -13,6 +13,7 @@ import {
   SWPR_CLAIMER_ABI,
   SWPR_CLAIMER_ADDRESS,
   SWPR_CONVERTER_ADDRESS,
+  WMATIC,
 } from '@swapr/sdk'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
@@ -27,6 +28,7 @@ import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import WXDAI_ABI from '../constants/abis/wxdai.json'
+import WMATIC_ABI from '../constants/abis/wmatic.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -52,10 +54,12 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
 
-export function useWrappingToken(currency?: Currency): Token | undefined {
-  const { chainId } = useActiveWeb3React()
-  if (!chainId || !currency || !Currency.isNative(currency)) return undefined
-  return Token.getNativeWrapper(chainId)
+export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token | undefined {
+  const { chainId: activeChainId } = useActiveWeb3React()
+
+  const selectedChainId = chainId ?? activeChainId
+  if (!selectedChainId || !currency || !Currency.isNative(currency)) return undefined
+  return Token.getNativeWrapper(selectedChainId)
 }
 
 function useWrappingTokenAbi(token?: Token): any | undefined {
@@ -66,6 +70,8 @@ function useWrappingTokenAbi(token?: Token): any | undefined {
       return WETH_ABI
     case WXDAI[chainId]:
       return WXDAI_ABI
+    case WMATIC[chainId]:
+      return WMATIC_ABI
     default:
       return undefined
   }

@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { RowFixed } from '../Row/index'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { useMultihopManager, useUserSlippageTolerance } from '../../state/user/hooks'
 import { Text } from 'rebass'
 import { Button } from 'rebass/styled-components'
@@ -39,14 +39,14 @@ const StyledRowFixed = styled(RowFixed)`
 
 export function SwapSettings({
   showAddRecipient,
-  setShowAddRecipient
+  setShowAddRecipient,
 }: {
   showAddRecipient: boolean
   setShowAddRecipient: (value: boolean) => void
 }) {
-  const [userSlippageTolerance] = useUserSlippageTolerance()
+  const userSlippageTolerance = useUserSlippageTolerance()
   const [multihop] = useMultihopManager()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { recipient } = useSwapState()
   const toggle = useToggleSettingsMenu()
   const { t } = useTranslation()

@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
@@ -10,8 +10,8 @@ import { PageWrapper } from '../Pools/styleds'
 import { LightCard } from '../../components/Card'
 import { RowBetween } from '../../components/Row'
 import { AutoColumn } from '../../components/Column'
-import CurrencyLogo from '../../components/CurrencyLogo'
-import SearchInputWithIcon from '../../components/SearchModal/styleds'
+import { CurrencyLogo } from '../../components/CurrencyLogo'
+import { SearchInputWithIcon } from '../../components/SearchInputWithIcon'
 import { useRouter } from '../../hooks/useRouter'
 import { ButtonPrimary, ButtonWithLink } from '../../components/Button'
 
@@ -24,7 +24,7 @@ const TitleRow = styled(RowBetween)`
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
-    
+
   `};
 `
 const StyledSearchInput = styled(SearchInputWithIcon)`
@@ -40,7 +40,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 
 export default function Governance() {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const router = useRouter()
   const nativeCurrency = useNativeCurrency()
 
@@ -76,7 +76,7 @@ export default function Governance() {
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
         {router.query.asset === undefined && (
-          <ButtonWithLink link={'https://swapr.eth.link'} text={'GOVERNANCE STATISTICS'} />
+          <ButtonWithLink link={'https://swapr.eth.limo'} text={'GOVERNANCE STATISTICS'} />
         )}
         <LightCard>
           <AutoColumn gap="md">

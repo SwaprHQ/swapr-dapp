@@ -17,7 +17,7 @@ import {
   useModalOpen,
   useNetworkSwitcherPopoverToggle,
   useOpenModal,
-  useWalletSwitcherPopoverToggle
+  useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
 import { TriangleIcon } from '../Icons'
 import { useTranslation } from 'react-i18next'
@@ -71,7 +71,7 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 
 export enum ModalView {
   Pending,
-  Account
+  Account,
 }
 
 export default function Web3Status() {
@@ -104,6 +104,8 @@ export default function Web3Status() {
     setModal(ModalView.Pending)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+    // eslint-disable-next-line
+    // @ts-ignore
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
       connector.walletConnectProvider = undefined
     }
@@ -141,7 +143,7 @@ export default function Web3Status() {
     openUnsupportedNetworkModal,
     isUnsupportedNetworkModal,
     unsupportedChainIdError,
-    closeModals
+    closeModals,
   ])
 
   const clickHandler = useCallback(() => {

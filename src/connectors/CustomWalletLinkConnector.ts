@@ -45,13 +45,13 @@ export class CustomWalletLinkConnector extends AbstractConnector {
       this.walletLink = new WalletLink({
         appName: this.appName,
         darkMode: this.darkMode,
-        ...(this.appLogoUrl ? { appLogoUrl: this.appLogoUrl } : {})
+        ...(this.appLogoUrl ? { appLogoUrl: this.appLogoUrl } : {}),
       })
       this.provider = this.walletLink.makeWeb3Provider(this.url, CHAIN_ID)
     }
 
     const accounts = await this.provider.request({
-      method: 'eth_requestAccounts'
+      method: 'eth_requestAccounts',
     })
     const account = accounts[0]
 
@@ -71,7 +71,7 @@ export class CustomWalletLinkConnector extends AbstractConnector {
 
   public async getAccount(): Promise<null | string> {
     const accounts = await this.provider.request({
-      method: 'eth_requestAccounts'
+      method: 'eth_requestAccounts',
     })
     return accounts[0]
   }
@@ -90,7 +90,7 @@ export class CustomWalletLinkConnector extends AbstractConnector {
     this.provider
       .request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: networkDetails.chainId }]
+        params: [{ chainId: networkDetails.chainId }],
       })
       .catch((error: any) => {
         if (error.code !== 4902) {
@@ -99,7 +99,7 @@ export class CustomWalletLinkConnector extends AbstractConnector {
         this.provider
           .request({
             method: 'wallet_addEthereumChain',
-            params: [{ ...networkDetails }, account]
+            params: [{ ...networkDetails }, account],
           })
           .catch((error: any) => {
             console.error('error adding chain with id', networkDetails.chainId, error)

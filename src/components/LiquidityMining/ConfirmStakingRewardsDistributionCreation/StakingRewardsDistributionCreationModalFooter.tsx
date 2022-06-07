@@ -1,4 +1,5 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
+
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Text } from 'rebass'
@@ -9,10 +10,11 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 
 interface StakingRewardsDistributionCreationModalFooterProps {
-  liquidityPair: Pair | null
+  stakeToken?: Token
+  stakePair?: Pair
   startTime: Date | null
   endTime: Date | null
-  reward: TokenAmount | null
+  rewards: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
@@ -20,20 +22,26 @@ interface StakingRewardsDistributionCreationModalFooterProps {
 }
 
 export default function StakingRewardsDistributionCreationModalFooter({
-  liquidityPair,
+  stakePair,
+  stakeToken,
   startTime,
   endTime,
-  reward,
+  rewards,
   timelocked,
   stakingCap,
   unlimitedPool,
-  onConfirm
+  onConfirm,
 }: StakingRewardsDistributionCreationModalFooterProps) {
+  const tokenOrPair = stakePair
+    ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}`
+    : stakeToken
+    ? stakeToken.symbol
+    : '-'
   return (
     <AutoColumn gap="0px">
       <RowBetween align="center" mb="6px">
         <TYPE.body fontWeight={400} fontSize="13px" color="text5">
-          Pool pair
+          Pool {stakePair ? 'Pair' : 'Token'}
         </TYPE.body>
         <TYPE.body
           fontWeight={500}
@@ -44,10 +52,10 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
-          {liquidityPair ? `${liquidityPair.token0.symbol}/${liquidityPair.token1.symbol}` : '-'}
+          {tokenOrPair}
         </TYPE.body>
       </RowBetween>
 
@@ -64,10 +72,10 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
-          {reward ? `${reward.toExact()} ${reward.token.symbol}` : '-'}
+          {rewards ? rewards.map(reward => `${reward.toExact()} ${reward.token.symbol}`).join(', ') : '-'}
         </TYPE.body>
       </RowBetween>
 
@@ -84,12 +92,10 @@ export default function StakingRewardsDistributionCreationModalFooter({
             alignItems: 'center',
             display: 'flex',
             textAlign: 'right',
-            paddingLeft: '10px'
+            paddingLeft: '10px',
           }}
         >
-          {unlimitedPool
-            ? 'Unlimited'
-            : `${stakingCap?.toSignificant(4)} ${liquidityPair?.token0.symbol}/${liquidityPair?.token1.symbol} LP`}
+          {unlimitedPool ? 'Unlimited' : `${stakingCap?.toSignificant(4)} ${tokenOrPair} LP`}
         </TYPE.body>
       </RowBetween>
 
@@ -135,7 +141,7 @@ export default function StakingRewardsDistributionCreationModalFooter({
       </RowBetween>
 
       <AutoRow>
-        <ButtonError onClick={onConfirm} style={{ margin: '10px 0 0 0' }}>
+        <ButtonError onClick={onConfirm} style={{ margin: '10px 0 0 0' }} data-testid="modal-confirm-button">
           <Text fontSize={13} fontWeight={600}>
             Confirm
           </Text>

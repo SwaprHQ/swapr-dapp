@@ -11,6 +11,7 @@ import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
 import { useKpiTokens } from './useKpiTokens'
+import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const PAGE_SIZE = 1000
 
@@ -124,18 +125,18 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   useEffect(() => {
     let cancelled = false
     const fetchData = async () => {
-      if (!chainId) return
+      if (!chainId || !chainSupportsSWPR(chainId)) return
       const pairs = []
       let lastId = ''
       setLoadingPairs(true)
       setPairs([])
       try {
         while (1) {
-          const result = await immediateSubgraphClients[chainId].request<QueryResult>(QUERY, {
+          const result = await immediateSubgraphClients[chainId as SWPRSupportedChains].request<QueryResult>(QUERY, {
             lowerTimeLimit: memoizedLowerTimeLimit,
             userId: subgraphAccountId,
             lastId,
-            pageSize: PAGE_SIZE
+            pageSize: PAGE_SIZE,
           })
           pairs.push(...result.pairs)
           lastId = result.pairs[result.pairs.length - 1].address
@@ -173,7 +174,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           token1,
           reserve0,
           reserve1,
-          liquidityMiningCampaigns
+          liquidityMiningCampaigns,
         } = rawPair
 
         const token0ChecksummedAddress = getAddress(token0.address)
@@ -215,9 +216,9 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
           hasFarming: pair.liquidityMiningCampaigns.some(campaign => campaign.currentlyActive),
           reserveUSD: CurrencyAmount.usd(
             parseUnits(new Decimal(reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
-          )
+          ),
         }
-      }, [])
+      }, []),
     }
   }, [
     chainId,
@@ -227,6 +228,6 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     loadingPairs,
     nativeCurrency,
     pairs,
-    tokensInCurrentChain
+    tokensInCurrentChain,
   ])
 }

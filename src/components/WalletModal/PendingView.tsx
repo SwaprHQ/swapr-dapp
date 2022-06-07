@@ -53,7 +53,7 @@ export default function PendingView({
   connector,
   error = false,
   setPendingError,
-  tryActivation
+  tryActivation,
 }: {
   connector?: AbstractConnector
   error?: boolean
@@ -85,7 +85,13 @@ export default function PendingView({
           return (
             <Flex key={key} mb="28px" justifyContent="center">
               <Box mr="10px">
-                <img src={require('../../assets/images/' + option.iconName)} alt="logo" width="24px" height="24px" />
+                <img
+                  // eslint-disable-next-line
+                  src={require('../../assets/images/' + option.iconName).default}
+                  alt="logo"
+                  width="24px"
+                  height="24px"
+                />
               </Box>
               <Box>
                 <TYPE.body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">

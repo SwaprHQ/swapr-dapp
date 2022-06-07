@@ -5,7 +5,7 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useCloseModals } from '../../state/application/hooks'
-import { NetworkSwitcher, networkOptionsPreset } from '../NetworkSwitcher'
+import { NetworkSwitcher, networkOptionsPreset, NetworkSwitcherTags } from '../NetworkSwitcher'
 import { createNetworksList } from '../../utils/networksList'
 
 interface NetworkSwitcherPopoverProps {
@@ -21,7 +21,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
   const unsupportedChainIdError = useUnsupportedChainIdError()
 
   const { selectNetwork } = useNetworkSwitch({
-    onSelectNetworkCallback: closeModals
+    onSelectNetworkCallback: closeModals,
   })
 
   const isNetworkDisabled = (chainId: ChainId) => {
@@ -36,7 +36,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     isNetworkDisabled,
     selectedNetworkChainId: activeChainId ? activeChainId : -1,
     activeChainId: !!account ? activeChainId : -1,
-    ignoreTags: ['coming soon']
+    ignoreTags: [NetworkSwitcherTags.COMING_SOON],
   })
 
   return (

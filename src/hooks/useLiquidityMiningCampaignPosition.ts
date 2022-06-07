@@ -47,7 +47,7 @@ export function useLiquidityMiningCampaignPosition(
         stakedTokenAmount: null,
         claimedRewardAmounts: [],
         claimableRewardAmounts: [],
-        totalRewardedAmounts: []
+        totalRewardedAmounts: [],
       }
 
     const rewardTokenAddresses = rewardsResults.map(wrappedResult => wrappedResult?.result?.[0])
@@ -77,7 +77,7 @@ export function useLiquidityMiningCampaignPosition(
       stakedTokenAmount: new PricedTokenAmount(campaign.staked.token, stakedTokensOf.toString()),
       claimedRewardAmounts,
       claimableRewardAmounts,
-      totalRewardedAmounts
+      totalRewardedAmounts,
     }
   }, [
     campaign,
@@ -85,6 +85,6 @@ export function useLiquidityMiningCampaignPosition(
     claimableRewardsResult.result,
     claimedRewardsResult.result,
     rewardsResults,
-    stakedTokensOfResult.result
+    stakedTokensOfResult.result,
   ])
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Flex } from 'rebass'
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token } from '@swapr/sdk'
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'
@@ -8,14 +8,14 @@ import { DateTime } from 'luxon'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface PoolSummaryProps {
-  liquidityPair: Pair | null
+  stakePair?: Pair
+  stakeToken?: Token
   startTime: Date | null
   endTime: Date | null
   timelocked: boolean
-  stakingCap: TokenAmount | null
 }
 
-export default function PoolSummary({ liquidityPair, startTime, endTime, timelocked, stakingCap }: PoolSummaryProps) {
+export default function PoolSummary({ stakePair, stakeToken, startTime, endTime, timelocked }: PoolSummaryProps) {
   return (
     <Flex flexDirection="column" justifyContent="stretch" flex="1">
       <AutoColumn gap="8px">
@@ -24,23 +24,21 @@ export default function PoolSummary({ liquidityPair, startTime, endTime, timeloc
         </TYPE.small>
         <AutoColumn gap="4px">
           <DataRow
-            name="POOL PAIR"
+            name="CAMPAIGN"
             value={
-              liquidityPair
-                ? `${unwrappedToken(liquidityPair.token0)?.symbol}/${unwrappedToken(liquidityPair.token1)?.symbol}`
+              stakePair
+                ? `${unwrappedToken(stakePair.token0)?.symbol}/${unwrappedToken(stakePair.token1)?.symbol}`
+                : stakeToken
+                ? stakeToken.symbol
                 : '-'
             }
           />
           <DataRow
             name="STARTS"
-            value={startTime ? DateTime.fromJSDate(startTime).toFormat('dd-MM-yyyy HH:mm') : '-'}
+            value={startTime ? DateTime.fromJSDate(startTime).toFormat('yyyy-MM-dd HH:mm') : '-'}
           />
-          <DataRow name="ENDS" value={endTime ? DateTime.fromJSDate(endTime).toFormat('dd-MM-yyyy HH:mm') : '-'} />
+          <DataRow name="ENDS" value={endTime ? DateTime.fromJSDate(endTime).toFormat('yyyy-MM-dd HH:mm') : '-'} />
           <DataRow name="TIMELOCK" value={timelocked ? 'YES' : 'NO'} />
-          <DataRow
-            name="STAKING CAP"
-            value={stakingCap && stakingCap.greaterThan('0') ? stakingCap.toSignificant(4) : '-'}
-          />
         </AutoColumn>
       </AutoColumn>
     </Flex>

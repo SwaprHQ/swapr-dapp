@@ -62,14 +62,15 @@ export function useSwaprSinglelSidedStakeCampaigns(
   const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
   const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
 
-  const { address: swaprAddress } = useSWPRToken()
+  const SWPRToken = useSWPRToken()
+  const swaprAddress = SWPRToken?.address ?? undefined
   const { data, loading, error } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(QUERY, {
     variables: {
-      address: swaprAddress.toLowerCase(),
-      userId: subgraphAccountId
-    }
+      address: swaprAddress?.toLowerCase(),
+      userId: subgraphAccountId,
+    },
   })
   return useMemo(() => {
     if (loading || chainId === undefined) {
@@ -108,7 +109,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
       loading: false,
       data: singleSidedStakeCampaign,
       stakedAmount:
-        wrapped.singleSidedStakingPositions.length > 0 ? wrapped.singleSidedStakingPositions[0].stakedAmount : '0'
+        wrapped.singleSidedStakingPositions.length > 0 ? wrapped.singleSidedStakingPositions[0].stakedAmount : '0',
     }
   }, [filter, data, loading, error, filterToken, swaprAddress, chainId, nativeCurrency, filterTokenAddress])
 }

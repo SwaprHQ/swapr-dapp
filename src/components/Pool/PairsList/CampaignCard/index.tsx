@@ -13,7 +13,7 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 import { Card, Flex } from 'rebass'
 
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 
 import Countdown from '../../../Countdown'
 import CarrotBadge from '../../../Badge/Carrot'
@@ -73,25 +73,25 @@ const RightSection = styled(Flex)`
 enum StatusKeys {
   ACTIVE,
   UPCOMING,
-  ENDED
+  ENDED,
 }
 
 const STATUS = {
   [StatusKeys.ACTIVE]: {
     key: 'ACTIVE',
     color: '#0E9F6E',
-    cardColor: 'linear-gradient(226.13deg, rgba(15, 152, 106, 0.2) -7.71%, rgba(15, 152, 106, 0) 85.36%)'
+    cardColor: 'linear-gradient(226.13deg, rgba(15, 152, 106, 0.2) -7.71%, rgba(15, 152, 106, 0) 85.36%)',
   },
   [StatusKeys.UPCOMING]: {
     key: 'UPCOMING',
     color: '#F2994A',
-    cardColor: 'linear-gradient(226.13deg, rgba(191, 125, 65, 0.2) -7.71%, rgba(191, 125, 65, 0) 85.36%)'
+    cardColor: 'linear-gradient(226.13deg, rgba(191, 125, 65, 0.2) -7.71%, rgba(191, 125, 65, 0) 85.36%)',
   },
   [StatusKeys.ENDED]: {
     key: 'ENDED',
     color: '#F02E51',
-    cardColor: 'linear-gradient(226.13deg, rgba(190, 42, 70, 0.2) -7.71%, rgba(190, 42, 70, 0) 85.36%)'
-  }
+    cardColor: 'linear-gradient(226.13deg, rgba(190, 42, 70, 0.2) -7.71%, rgba(190, 42, 70, 0) 85.36%)',
+  },
 }
 
 interface PairProps {
@@ -134,8 +134,12 @@ export function CampaignCard({
   }, [campaign.ended, campaign.startsAt])
 
   return (
-    <SizedCard cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'} {...rest}>
-      <Flex flexDirection="column" height={'100%'}>
+    <SizedCard
+      cardColor={status !== undefined ? STATUS[status].cardColor : 'transperent'}
+      {...rest}
+      data-testid="reward-card"
+    >
+      <Flex flexDirection="column" height={'100%'} data-testid={'reward-starting-at-' + campaign.startsAt}>
         <Flex justifyContent="space-between" flexGrow={1}>
           <Flex flexDirection="column">
             {isSingleSidedStakingCampaign ? (
@@ -165,7 +169,7 @@ export function CampaignCard({
             </EllipsizedText>
           </Flex>
           <RightSection>
-            <Flex width="max-content" alignItems="center" data-testid="ended-campaign">
+            <Flex width="max-content" alignItems="center">
               <ClockSvg width={'10px'} height={'10px'} />
               <TYPE.body marginLeft="4px" fontSize="10px" fontFamily="Fira Code" fontWeight="500">
                 <Countdown

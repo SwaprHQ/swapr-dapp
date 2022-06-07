@@ -15,11 +15,11 @@ export function useRouter(): any {
       pathname: location.pathname,
       query: {
         ...queryString.parse(location.search),
-        ...params
+        ...params,
       },
       match,
       location,
-      history
+      history,
     }
   }, [params, match, location, history])
 }

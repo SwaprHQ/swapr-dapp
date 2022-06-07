@@ -3,7 +3,7 @@ import React from 'react'
 import { Text } from 'rebass'
 import { ButtonPrimary } from '../../components/Button'
 import { RowBetween, RowFixed } from '../../components/Row'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
 
@@ -13,7 +13,7 @@ export function ConfirmAddModalBottom({
   currencies,
   parsedAmounts,
   poolTokenPercentage,
-  onAdd
+  onAdd,
 }: {
   noLiquidity?: boolean
   price?: Fraction
@@ -71,7 +71,7 @@ export function ConfirmAddModalBottom({
           {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
         </TYPE.body>
       </RowBetween>
-      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
+      <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd} data-testid="confirm-supply">
         <Text fontWeight={600} fontSize={13}>
           {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
         </Text>

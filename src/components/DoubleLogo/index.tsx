@@ -2,7 +2,7 @@ import { Currency } from '@swapr/sdk'
 import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
-import CurrencyLogo from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 
 const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: number; top: number }>`
   position: relative;
@@ -25,6 +25,7 @@ interface DoubleCurrencyLogoProps {
   currency1?: Currency
   top?: number
   spaceBetween?: number
+  style?: React.CSSProperties
 }
 
 const HigherLogo = styled(CurrencyLogo)<{ loading?: boolean }>`
@@ -45,10 +46,11 @@ export default function DoubleCurrencyLogo({
   marginRight = 0,
   marginLeft = 0,
   top = 0,
-  spaceBetween = 0
+  spaceBetween = 0,
+  style,
 }: DoubleCurrencyLogoProps) {
   return (
-    <Wrapper top={top} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
+    <Wrapper style={style} top={top} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
       <CoveredLogo loading={loading} currency={currency0} size={size.toString() + 'px'} />
       <HigherLogo marginRight={spaceBetween} loading={loading} currency={currency1} size={size.toString() + 'px'} />
     </Wrapper>

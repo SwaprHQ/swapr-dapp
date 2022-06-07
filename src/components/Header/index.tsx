@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { Box, Flex, Text } from 'rebass'
-import { NavLink, withRouter } from 'react-router-dom'
+import { Flex, Text } from 'rebass'
+import { withRouter } from 'react-router-dom'
 import { SWPR } from '@swapr/sdk'
 import { ChevronUp } from 'react-feather'
 
@@ -16,9 +16,7 @@ import { Settings } from '../Settings'
 import Row, { RowFixed, RowFlat } from '../Row'
 import Web3Status from '../Web3Status'
 import { useTranslation } from 'react-i18next'
-import { ExternalLink } from '../../theme'
 import MobileOptions from './MobileOptions'
-import Badge from '../Badge'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import SwaprVersionLogo from '../SwaprVersionLogo'
 import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
@@ -30,6 +28,8 @@ import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMini
 import UnsupportedNetworkPopover from '../NetworkUnsupportedPopover'
 import { ApplicationModal } from '../../state/application/actions'
 import { useGasInfo } from '../../hooks/useGasInfo'
+import { HeaderLink, HeaderMobileLink } from './HeaderLink'
+import { HeaderLinkBadge } from './HeaderLinkBadge'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -42,7 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
-  max-height: 100px;
+  height: 100px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -84,13 +84,23 @@ const MoreLinksIcon = styled(HeaderElement)`
     display: flex;
     width:100%;
     justify-content: flex-start;
-   
+
   `};
 `
 
 const HeaderRow = styled(RowFixed)<{ isDark: boolean }>`
   ${({ theme }) => theme.mediaWidth.upToLarge`
     width: 100%;
+  `};
+`
+
+const HeaderSubRow = styled(RowFlat)`
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+     margin-top: 0px;
   `};
 `
 
@@ -118,63 +128,6 @@ const Title = styled.a`
   :hover {
     cursor: pointer;
   }
-`
-
-export const StyledNavLink = styled(NavLink)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: left;
-  border-radius: 3rem;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text5};
-  width: fit-content;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 19.5px;
-  font-family: 'Montserrat';
-  &.active {
-    font-weight: 600;
-    color: ${({ theme }) => theme.white};
-  }
-`
-
-const StyledActiveNavLinkWithBadge = styled(StyledNavLink)`
-  position: relative;
-`
-
-const AbsoluteBadgeFlex = styled(Flex)`
-  position: absolute;
-  top: 20px;
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: left;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text5};
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 19.5px;
-  width: fit-content;
-  text-decoration: none !important;
-  font-family: 'Montserrat';
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-`
-
-const HeaderSubRow = styled(RowFlat)`
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 10px;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-     margin-top: 0px;
-  `};
 `
 
 export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
@@ -221,16 +174,16 @@ const GasInfo = styled.div<{ hide: boolean }>`
 const GasColor = {
   fast: {
     color: '#10B981',
-    backgroundColor: 'rgba(16, 185, 129, 0.3)'
+    backgroundColor: 'rgba(16, 185, 129, 0.3)',
   },
   normal: {
     color: '#F2994A',
-    backgroundColor: 'rgba(242, 153, 74, 0.3);'
+    backgroundColor: 'rgba(242, 153, 74, 0.3);',
   },
   slow: {
     color: '#FF4F84',
-    backgroundColor: 'rgba(255, 79, 132, 0.3);'
-  }
+    backgroundColor: 'rgba(255, 79, 132, 0.3);',
+  },
 }
 const ColoredGas = styled.div<{ color: 'fast' | 'slow' | 'normal' }>`
   display: flex;
@@ -254,31 +207,7 @@ const Divider = styled.div`
     margin-left: 0px;
   }
 `
-const StyledMobileLink = styled(NavLink)`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: flex;
-    font-weight:400;
-    font-size: 14px;
-    color:#C9C7DB;
-    &.active {
-      font-weight: 600;
-      color: ${({ theme }) => theme.white};
-    }
-  `};
-`
-const StyledExternalLinkMobile = styled(ExternalLink)`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: flex;
-    font-weight:600;
-    font-size: 14px;
-    color:#C9C7DB;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-   `};
-`
+
 const AdditionalDataWrap = styled.div`
   margin-left: auto;
   gap: 10px;
@@ -286,9 +215,9 @@ const AdditionalDataWrap = styled.div`
   flex-direction: column;
   justify-content: end;
 `
-const StyledChevron = styled(ChevronUp)<{ isOpen: boolean }>`
+const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(0deg)' : 'rotate(180deg)')};
+  transform: ${({ open }) => (open ? 'rotate(0deg)' : 'rotate(180deg)')};
 `
 
 function Header() {
@@ -310,17 +239,25 @@ function Header() {
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
-  useEffect(() => {
-    window.addEventListener('scroll', e => {
-      const headerControls = document.getElementById('header-controls')
-      if (headerControls) {
-        if (window.scrollY > 0) {
-          headerControls.classList.add('hidden')
-        } else {
-          headerControls.classList.remove('hidden')
-        }
+  const networkWithoutSWPR = !newSwpr
+
+  const onScrollHander = () => {
+    const headerControls = document.getElementById('header-controls')
+    if (headerControls) {
+      if (window.scrollY > 0) {
+        headerControls.classList.add('hidden')
+      } else {
+        headerControls.classList.remove('hidden')
       }
-    })
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHander)
+
+    return () => {
+      window.removeEventListener('scroll', onScrollHander)
+    }
   }, [])
 
   return (
@@ -330,7 +267,7 @@ function Header() {
         newSwprBalance={newSwprBalance}
         stakedAmount={stakedTokenAmount?.toFixed(3)}
         singleSidedCampaignLink={
-          data && !loading ? `/rewards/${data.stakeToken.address}/${data.address}/singleSidedStaking` : undefined
+          data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
       <HeaderRow isDark={isDark}>
@@ -339,33 +276,42 @@ function Header() {
         </Title>
         <HeaderLinks>
           <Divider />
-          <StyledNavLink id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap" activeClassName="active">
             {t('swap')}
-          </StyledNavLink>
-
-          <StyledNavLink id="pool-nav-link" to="/pools" activeClassName="active">
+          </HeaderLink>
+          <HeaderLink
+            data-testid="pool-nav-link"
+            id="pool-nav-link"
+            to="/pools"
+            activeClassName="active"
+            disabled={networkWithoutSWPR}
+          >
             Liquidity
-          </StyledNavLink>
-          <StyledNavLink id="rewards-nav-link" to="/rewards" activeClassName="active">
+            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
+          </HeaderLink>
+          <HeaderLink
+            data-testid="rewards-nav-link"
+            id="rewards-nav-link"
+            to="/rewards"
+            activeClassName="active"
+            disabled={networkWithoutSWPR}
+          >
             Rewards
-          </StyledNavLink>
-          <StyledActiveNavLinkWithBadge id="bridge-nav-link" to="/bridge" activeClassName="active">
+            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
+          </HeaderLink>
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" activeClassName="active">
             {t('bridge')}
-            <AbsoluteBadgeFlex justifyContent="center" width="100%">
-              <Box>
-                <Badge label="BETA" />
-              </Box>
-            </AbsoluteBadgeFlex>
-          </StyledActiveNavLinkWithBadge>
-          <StyledExternalLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
+            <HeaderLinkBadge label="BETA" />
+          </HeaderLink>
+          <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
-          </StyledExternalLink>
-          <StyledExternalLink id="charts-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          </HeaderLink>
+          <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗
             </Text>
-          </StyledExternalLink>
+          </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
       <AdditionalDataWrap>
@@ -375,11 +321,13 @@ function Header() {
         </HeaderSubRow>
 
         <Flex maxHeight={'22px'} justifyContent={'end'}>
-          <SwprInfo
-            hasActiveCampaigns={!loading && !!data}
-            newSwprBalance={newSwprBalance}
-            onToggleClaimPopup={toggleClaimPopup}
-          />
+          {!networkWithoutSWPR && (
+            <SwprInfo
+              hasActiveCampaigns={!loading && !!data}
+              newSwprBalance={newSwprBalance}
+              onToggleClaimPopup={toggleClaimPopup}
+            />
+          )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
             {isUnsupportedChainIdError && (
               <Amount data-testid="unsupported-network-warning" zero>
@@ -402,7 +350,7 @@ function Header() {
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}
               </Text>
-              {gas.fast === 0 && gas.slow === 0 ? '' : <StyledChevron isOpen={isGasInfoOpen} size={12} />}
+              {gas.fast === 0 && gas.slow === 0 ? '' : <StyledChevron open={isGasInfoOpen} size={12} />}
             </GasInfo>
           )}
         </Flex>
@@ -416,27 +364,31 @@ function Header() {
       </AdditionalDataWrap>
       <HeaderControls isConnected={!!account}>
         <Flex style={{ gap: '26px' }} minWidth={'unset'}>
-          <StyledMobileLink id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderMobileLink id="swap-nav-link" to="/swap" activeClassName="active">
             {t('swap')}
-          </StyledMobileLink>
-          <StyledMobileLink id="pool-nav-link" to="/pools" activeClassName="active">
-            Pools
-          </StyledMobileLink>
-          <StyledMobileLink id="rewards-nav-link" to="/rewards" activeClassName="active">
-            Rewards
-          </StyledMobileLink>
-          <StyledMobileLink id="bridge-nav-link" to="/bridge" activeClassName="active">
+          </HeaderMobileLink>
+          {!networkWithoutSWPR && (
+            <HeaderMobileLink id="pool-nav-link" to="/pools" activeClassName="active">
+              Pools
+            </HeaderMobileLink>
+          )}
+          {!networkWithoutSWPR && (
+            <HeaderMobileLink id="rewards-nav-link" to="/rewards" activeClassName="active">
+              Rewards
+            </HeaderMobileLink>
+          )}
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge" activeClassName="active">
             {t('bridge')}
-          </StyledMobileLink>
-          <StyledExternalLinkMobile id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
+          </HeaderMobileLink>
+          <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
-          </StyledExternalLinkMobile>
-          <StyledExternalLinkMobile id="stake-nav-link" href={`https://dxstats.eth.link/#/?chainId=${chainId}`}>
+          </HeaderMobileLink>
+          <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
             {t('charts')}
             <Text ml="4px" fontSize="11px">
               ↗
             </Text>
-          </StyledExternalLinkMobile>
+          </HeaderMobileLink>
         </Flex>
 
         <MoreLinksIcon>

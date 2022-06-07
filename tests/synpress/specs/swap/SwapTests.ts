@@ -5,7 +5,7 @@ import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../pages/TokenMenu'
 
-describe('SWAP functional tests', () => {
+describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number
@@ -42,14 +42,14 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: any) => {
-        estimatedTransactionOutput = parseFloat(res.val())
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap',String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -78,14 +78,14 @@ describe('SWAP functional tests', () => {
 
     SwapPage.getToInput()
       .should('not.have.value', '')
-      .then((res: any) => {
-        estimatedTransactionOutput = parseFloat(res.val())
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
       })
 
     SwapPage.swap().confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DXD", "WETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -97,6 +97,7 @@ describe('SWAP functional tests', () => {
       TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
+
   it('Should swap DAI to ETH [TC-53]', () => {
     EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
@@ -111,13 +112,10 @@ describe('SWAP functional tests', () => {
       .getOpenTokenManagerButton()
       .click()
     TokenMenu.switchTokenList('compound')
+    TokenMenu.switchTokenList('swapr-token-list')
     TokenMenu.goBack()
       .chooseToken('dai')
       .switchTokens()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .click()
-    TokenMenu.chooseToken('eth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
@@ -131,11 +129,11 @@ describe('SWAP functional tests', () => {
         )
       })
     SwapPage.confirmSwap()
-    cy.confirmMetamaskTransaction({ gasFee: 10, gasLimit: 200000 })
+    cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DAI", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -169,7 +167,7 @@ describe('SWAP functional tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "DXD", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log(ethBalanceBefore, TRANSACTION_VALUE * Math.pow(10, 18))
@@ -198,7 +196,7 @@ describe('SWAP functional tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap')
+    MenuBar.checkToastMessage('Swap', "XEENUS", "ETH", String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(

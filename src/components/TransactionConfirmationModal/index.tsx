@@ -1,10 +1,10 @@
 import { ChainId } from '@swapr/sdk'
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'
 import { ExternalLink, TYPE } from '../../theme'
 import { Text } from 'rebass'
-import { CloseIcon, CustomLightSpinner } from '../../theme/components'
+import { CloseIcon, CustomLightSpinner } from '../../theme'
 import { RowBetween } from '../Row'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { ButtonPrimary } from '../Button'
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `
 
 const Section = styled(AutoColumn)`
-  background-color: ${({ theme }) => theme.bg1And2};
+  background-color: ${({ theme }) => theme.bg2};
   padding: 24px;
 `
 
@@ -65,13 +65,13 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
 function TransactionSubmittedContent({
   onDismiss,
   chainId,
-  hash
+  hash,
 }: {
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <Wrapper>
@@ -94,7 +94,7 @@ function TransactionSubmittedContent({
               </Text>
             </ExternalLink>
           )}
-          <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
+          <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }} data-testid="close-modal-button">
             <Text fontWeight={600} fontSize="13px">
               Close
             </Text>
@@ -109,7 +109,7 @@ export function ConfirmationModalContent({
   title,
   bottomContent,
   onDismiss,
-  topContent
+  topContent,
 }: {
   title: string
   onDismiss: () => void
@@ -131,7 +131,7 @@ export function ConfirmationModalContent({
 }
 
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <Wrapper>
       <Section>
@@ -168,7 +168,7 @@ export default function TransactionConfirmationModal({
   attemptingTxn,
   hash,
   pendingText,
-  content
+  content,
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 

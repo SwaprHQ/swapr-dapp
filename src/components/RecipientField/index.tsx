@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { SearchInput } from '../SearchModal/styleds'
+import { SearchInput } from '../SearchModal/shared'
 import { TYPE } from '../../theme'
 import useENS from '../../hooks/useENS'
 import { useDispatch } from 'react-redux'
@@ -16,7 +16,7 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   }
 `
 
-interface RecipientField {
+export interface RecipientField {
   recipient: string | null
   action: any
 }
@@ -28,7 +28,7 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
   const error = useMemo(() => Boolean(recipient && recipient.length > 0 && !loading && !address), [
     address,
     loading,
-    recipient
+    recipient,
   ])
 
   const handleInput = useCallback(

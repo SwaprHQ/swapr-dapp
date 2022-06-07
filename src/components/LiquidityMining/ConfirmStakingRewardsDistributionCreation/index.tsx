@@ -1,8 +1,8 @@
-import { Pair, TokenAmount } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import React, { useCallback } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent
+  TransactionErrorContent,
 } from '../../TransactionConfirmationModal'
 import StakingRewardsDistributionCreationModalFooter from './StakingRewardsDistributionCreationModalFooter'
 
@@ -13,13 +13,14 @@ interface ConfirmStakingRewardsDistributionCreationProps {
   attemptingTransaction: boolean
   transactionHash: string | null
   errorMessage: string | null
-  liquidityPair: Pair | null
   startTime: Date | null
   endTime: Date | null
-  reward: TokenAmount | null
+  rewards: TokenAmount[] | null
   timelocked: boolean
   stakingCap: TokenAmount | null
   unlimitedPool: boolean
+  stakeToken?: Token
+  stakePair?: Pair
 }
 
 export default function ConfirmStakingRewardsDistributionCreation({
@@ -29,13 +30,14 @@ export default function ConfirmStakingRewardsDistributionCreation({
   attemptingTransaction,
   transactionHash,
   errorMessage,
-  liquidityPair,
+  stakeToken,
+  stakePair,
   startTime,
   endTime,
-  reward,
+  rewards,
   timelocked,
   stakingCap,
-  unlimitedPool
+  unlimitedPool,
 }: ConfirmStakingRewardsDistributionCreationProps) {
   const confirmationContent = useCallback(
     () =>
@@ -49,10 +51,11 @@ export default function ConfirmStakingRewardsDistributionCreation({
           bottomContent={() => (
             <StakingRewardsDistributionCreationModalFooter
               onConfirm={onConfirm}
-              liquidityPair={liquidityPair}
+              stakeToken={stakeToken}
+              stakePair={stakePair}
               startTime={startTime}
               endTime={endTime}
-              reward={reward}
+              rewards={rewards}
               timelocked={timelocked}
               stakingCap={stakingCap}
               unlimitedPool={unlimitedPool}
@@ -64,13 +67,14 @@ export default function ConfirmStakingRewardsDistributionCreation({
       errorMessage,
       onDismiss,
       onConfirm,
-      liquidityPair,
+      stakeToken,
+      stakePair,
       startTime,
       endTime,
-      reward,
+      rewards,
       timelocked,
       stakingCap,
-      unlimitedPool
+      unlimitedPool,
     ]
   )
 

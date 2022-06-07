@@ -177,6 +177,10 @@ export const formatCurrencyAmount = (amount: CurrencyAmount, significantDecimalP
   return `${commify(integers)}.${adjustedDecimals}`
 }
 
+export const calculatePercentage = (value: number, percentage: number): number => {
+  return Math.round((percentage / 100) * value)
+}
+
 export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
   if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
   window.ethereum
@@ -205,3 +209,10 @@ export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; paddin
   padding: ${props => (props.padding ? props.padding : '0')};
   margin: ${props => (props.margin ? props.margin : '0')};
 `
+export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
+  const normalizedValue = val.replace(/^0+(?=\d+)/, '').replace(/^\./, '0.')
+
+  return strictFormat
+    ? normalizedValue.replace(/^([\d,]+)$|^([\d,]+)\.0*$|^([\d,]+\.[0-9]*?)0*$/, '$1$2$3')
+    : normalizedValue
+}

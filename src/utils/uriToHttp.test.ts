@@ -1,7 +1,7 @@
 import uriToHttp from './uriToHttp'
 
 describe('uriToHttp', () => {
-  it('returns .eth.link for ens names', () => {
+  it('returns .eth.limo for ens names', () => {
     expect(uriToHttp('t2crtokens.eth')).toEqual([])
   })
   it('returns https first for http', () => {
@@ -13,7 +13,7 @@ describe('uriToHttp', () => {
   it('returns ipfs gateways for ipfs:// urls', () => {
     expect(uriToHttp('ipfs://QmV8AfDE8GFSGQvt3vck8EwAzsPuNTmtP8VcQJE3qxRPaZ')).toEqual([
       'https://ipfs.io/ipfs/QmV8AfDE8GFSGQvt3vck8EwAzsPuNTmtP8VcQJE3qxRPaZ/',
-      'https://ipfs.io/ipfs/QmV8AfDE8GFSGQvt3vck8EwAzsPuNTmtP8VcQJE3qxRPaZ/'
+      'https://ipfs.io/ipfs/QmV8AfDE8GFSGQvt3vck8EwAzsPuNTmtP8VcQJE3qxRPaZ/',
     ])
   })
   it('returns empty array for invalid scheme', () => {

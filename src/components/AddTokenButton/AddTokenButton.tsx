@@ -20,9 +20,9 @@ export const AddTokenButton = ({ active }: { active?: boolean }) => {
             address: swpr?.address,
             symbol: swpr?.symbol,
             decimals: swpr?.decimals,
-            image: swprLogo
-          }
-        }
+            image: swprLogo,
+          },
+        },
       })
       .catch(console.error)
   }, [swpr])

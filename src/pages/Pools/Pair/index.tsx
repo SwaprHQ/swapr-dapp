@@ -17,7 +17,7 @@ import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { PairState, usePair } from '../../../data/Reserves'
 import PairView from '../../../components/Pool/PairView'
 import { useRouter } from '../../../hooks/useRouter'
-import PairSearchModal from '../../../components/SearchModal/PairSearchModal'
+import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 import Skeleton from 'react-loading-skeleton'
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
@@ -67,8 +67,8 @@ const ButtonRow = styled(RowFixed)`
 
 export default function Pair({
   match: {
-    params: { currencyIdA, currencyIdB }
-  }
+    params: { currencyIdA, currencyIdB },
+  },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const router = useRouter()
   const token0 = useToken(currencyIdA)
@@ -89,7 +89,7 @@ export default function Pair({
   const handlePairSelect = useCallback(
     pair => {
       router.push({
-        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`
+        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`,
       })
     },
     [router]
@@ -142,7 +142,7 @@ export default function Pair({
                 </PointableFlex>
               </Flex>
               <ButtonRow>
-                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/create">
+                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/pools/create">
                   <Text fontWeight={700} fontSize={12}>
                     CREATE PAIR
                   </Text>

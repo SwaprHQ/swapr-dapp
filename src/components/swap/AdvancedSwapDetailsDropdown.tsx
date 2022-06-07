@@ -74,12 +74,14 @@ interface AdvancedSwapDetailsDropdownProps {
   trade?: Trade
   allPlatformTrades?: (Trade | undefined)[] | undefined
   onSelectedPlatformChange: (newPlatform: RoutablePlatform) => void
+  isLoading: boolean
 }
 
 export default function AdvancedSwapDetailsDropdown({
+  isLoading,
   trade,
   allPlatformTrades,
-  onSelectedPlatformChange
+  onSelectedPlatformChange,
 }: AdvancedSwapDetailsDropdownProps) {
   const { chainId } = useActiveWeb3React()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()
@@ -97,9 +99,12 @@ export default function AdvancedSwapDetailsDropdown({
     }
   }
 
+  const showTradeListWrapper = isLoading || allPlatformTrades?.length !== 0
+
   return (
-    <HideableAutoColumn gap="8px" show={!!trade}>
+    <HideableAutoColumn gap="8px" show={showTradeListWrapper}>
       <SwapPlatformSelector
+        isLoading={isLoading}
         selectedTrade={trade}
         allPlatformTrades={allPlatformTrades}
         onSelectedPlatformChange={onSelectedPlatformChange}

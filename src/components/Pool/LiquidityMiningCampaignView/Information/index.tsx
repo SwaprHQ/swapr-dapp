@@ -12,7 +12,7 @@ import { ExternalLink, TYPE } from '../../../../theme'
 import { CarrotButton } from '../../../Button'
 import { AutoColumn } from '../../../Column'
 import Countdown from '../../../Countdown'
-import CurrencyLogo from '../../../CurrencyLogo'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import Row, { AutoRow, RowBetween, RowFixed } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
@@ -180,7 +180,7 @@ function Information({
   apy,
   staked,
   containsKpiToken,
-  showUSDValue
+  showUSDValue,
 }: InformationProps) {
   const { chainId } = useActiveWeb3React()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
@@ -220,7 +220,7 @@ function Information({
                     <CurrencyLogo currency={targetedPair} loading={!targetedPair} />
                   )}
                 </Box>
-                <Box>
+                <Box data-testid="campaign-tokens">
                   <Text fontSize="18px" fontWeight="600" lineHeight="20px">
                     {!targetedPair ? (
                       <Skeleton width="60px" height="18px" />
@@ -256,7 +256,7 @@ function Information({
                 <Skeleton width="40px" height="14px" />
               ) : (
                 <BadgeRoot expired={expired} upcoming={upcoming}>
-                  <BadgeText expired={expired} upcoming={upcoming}>
+                  <BadgeText expired={expired} upcoming={upcoming} data-testid="campaign-status">
                     {expired ? 'EXPIRED' : upcoming ? 'UPCOMING' : 'ACTIVE'}
                   </BadgeText>
                 </BadgeRoot>
@@ -307,7 +307,7 @@ function Information({
           />
         </MaxPollSizeSection>
         <RewardsSection alignItems="flex-start">
-          <Box mr="24px">
+          <Box mr="24px" data-testid="rewards-box">
             <DataDisplayer
               title="REWARDS"
               data={
@@ -383,7 +383,7 @@ function Information({
           />
         </PoolTypeSection>
         <DatesSection>
-          <Box mr="24px">
+          <Box mr="24px" data-testid="start-date">
             <DataDisplayer
               title="START"
               data={
@@ -396,7 +396,7 @@ function Information({
               dataTextSize={10.5}
             />
           </Box>
-          <Box>
+          <Box data-testid="end-date">
             <DataDisplayer
               title="END"
               data={
@@ -432,7 +432,7 @@ function Information({
                   </AutoColumn>
                 </AutoRow>
                 <CarrotButton
-                  link={`https://carrot.eth.link/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}
+                  link={`https://carrot.eth.limo/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}
                   text="Go to campaign"
                 />
               </RowBetween>

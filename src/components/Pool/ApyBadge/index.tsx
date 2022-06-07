@@ -15,7 +15,6 @@ const Text = styled.div`
   letter-spacing: 0.08em;
   color: ${props => props.theme.white};
   text-align: center;
-  font-family: 'Fira Code';
   line-height: 9px;
 `
 

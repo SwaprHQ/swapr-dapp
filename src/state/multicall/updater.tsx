@@ -19,12 +19,11 @@ import { Call, parseCallKey } from './utils'
  * @param blockNumber block number passed as the block tag in the eth_call
  */
 async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: number): Promise<string[]> {
-  console.debug('Fetching chunk', chunk, blockNumber)
   try {
     const { returnData } = await multicall.callStatic.aggregate(
       chunk.map(obj => ({
         target: obj.address,
-        callData: obj.callData
+        callData: obj.callData,
       })),
       { blockTag: blockNumber }
     )
@@ -122,7 +121,7 @@ export default function Updater(): null {
   }, [chainId, state.callResults, listeningKeys, latestBlockNumber])
 
   const serializedOutdatedCallKeys = useMemo(() => JSON.stringify(unserializedOutdatedCallKeys.sort()), [
-    unserializedOutdatedCallKeys
+    unserializedOutdatedCallKeys,
   ])
 
   useEffect(() => {
@@ -142,7 +141,7 @@ export default function Updater(): null {
       fetchingMulticallResults({
         calls,
         chainId,
-        fetchingBlockNumber: latestBlockNumber
+        fetchingBlockNumber: latestBlockNumber,
       })
     )
 
@@ -152,7 +151,7 @@ export default function Updater(): null {
         const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, latestBlockNumber), {
           n: Infinity,
           minWait: 1000,
-          maxWait: 2500
+          maxWait: 2500,
         })
         promise
           .then(returnData => {
@@ -175,14 +174,15 @@ export default function Updater(): null {
             )
 
             // dispatch any new results
-            if (Object.keys(results).length > 0)
+            if (Object.keys(results).length > 0) {
               dispatch(
                 updateMulticallResults({
                   chainId,
                   results,
-                  blockNumber: latestBlockNumber
+                  blockNumber: latestBlockNumber,
                 })
               )
+            }
 
             // dispatch any errored calls
             if (erroredCalls.length > 0) {
@@ -191,7 +191,7 @@ export default function Updater(): null {
                 errorFetchingMulticallResults({
                   calls: erroredCalls,
                   chainId,
-                  fetchingBlockNumber: latestBlockNumber
+                  fetchingBlockNumber: latestBlockNumber,
                 })
               )
             }
@@ -206,12 +206,12 @@ export default function Updater(): null {
               errorFetchingMulticallResults({
                 calls: chunk,
                 chainId,
-                fetchingBlockNumber: latestBlockNumber
+                fetchingBlockNumber: latestBlockNumber,
               })
             )
           })
         return cancel
-      })
+      }),
     }
   }, [chainId, multicallContract, dispatch, serializedOutdatedCallKeys, latestBlockNumber])
 
