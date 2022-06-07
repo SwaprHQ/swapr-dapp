@@ -1,21 +1,22 @@
 import React from 'react'
-import { Text, Box } from 'rebass'
-import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
 import Skeleton from 'react-loading-skeleton'
+import { useDispatch } from 'react-redux'
+import { Box, Text } from 'rebass'
+import styled from 'styled-components'
+
 import QuestionHelper from '../../components/QuestionHelper'
-import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
-import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { SyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import {
-  SelectionListWindowWrapper,
-  SelectionListLabelWrapper,
-  SelectionListLabel,
-  SelectionListOption,
-  SelectionListName,
   SelectionListDetails,
+  SelectionListLabel,
+  SelectionListLabelWrapper,
+  SelectionListName,
+  SelectionListOption,
   SelectionListReceiveAmount,
+  SelectionListWindowWrapper,
 } from '../../components/SelectionList'
+import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
+import { BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
+import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 
 export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()

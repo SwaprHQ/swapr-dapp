@@ -1,4 +1,5 @@
-import { Currency, Pair, CurrencyAmount, Percent, ChainId } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, Pair, Percent } from '@swapr/sdk'
+
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 
 export interface CurrencyInputPanelProps {

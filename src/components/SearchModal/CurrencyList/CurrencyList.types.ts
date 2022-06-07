@@ -1,6 +1,8 @@
-import { CSSProperties, MutableRefObject } from 'react'
 import { Currency, CurrencyAmount, Token } from '@swapr/sdk'
+
+import { CSSProperties, MutableRefObject } from 'react'
 import { FixedSizeList } from 'react-window'
+
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export const BREAK_LINE = 'BREAK'

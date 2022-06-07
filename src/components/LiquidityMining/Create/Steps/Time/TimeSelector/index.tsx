@@ -1,8 +1,9 @@
 import React from 'react'
-import { TYPE } from '../../../../../../theme'
 import { Flex } from 'rebass'
-import DateTimeInput from '../../../../../Input/DateTimeInput'
 import styled from 'styled-components'
+
+import { TYPE } from '../../../../../../theme'
+import DateTimeInput from '../../../../../Input/DateTimeInput'
 
 const TimeSelectorWrapper = styled(Flex)`
   width: 100%;

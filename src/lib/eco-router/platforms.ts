@@ -1,4 +1,4 @@
-import { UniswapV2RoutablePlatform, ChainId } from '@swapr/sdk'
+import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 /**
  * List of Uniswap V2 platform that support current chain

@@ -1,11 +1,14 @@
+import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
-import { useNativeCurrency } from './useNativeCurrency'
+
 import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 interface DerivedNativeCurrencyQueryResult {
   tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
@@ -42,7 +45,7 @@ export function useNativeCurrencyPricedTokenAmounts(
       const priceData = data.tokens.find(
         token => token.address.toLowerCase() === rewardTokenAmount.token.address.toLowerCase()
       )
-      if (!!priceData) {
+      if (priceData) {
         const price = new Price({
           baseCurrency: rewardTokenAmount.token,
           quoteCurrency: nativeCurrency,
@@ -65,7 +68,7 @@ export function useNativeCurrencyPricedTokenAmounts(
             rewardTokenAmount.raw
           )
         )
-      } else if (!!kpiToken) {
+      } else if (kpiToken) {
         // the reward token is a kpi token, we need to price it by looking at the collateral
         pricedTokenAmounts.push(new PricedTokenAmount(kpiToken, rewardTokenAmount.raw))
       }

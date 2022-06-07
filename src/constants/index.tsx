@@ -1,31 +1,33 @@
-import React, { ReactNode } from 'react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import {
   ChainId,
+  Currency,
+  CurrencyAmount,
+  DXD,
   JSBI,
   Percent,
-  CurrencyAmount,
-  WETH,
-  DXD,
-  WXDAI,
-  Token,
-  Currency,
-  SWPR,
-  UniswapV2RoutablePlatform,
-  WMATIC,
   RoutablePlatform,
+  SWPR,
+  Token,
+  UniswapV2RoutablePlatform,
+  WETH,
+  WMATIC,
+  WXDAI,
 } from '@swapr/sdk'
-import { injected, walletConnect, walletLink } from '../connectors'
-import UniswapLogo from '../assets/svg/uniswap-logo.svg'
-import SwaprLogo from '../assets/svg/logo.svg'
-import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
-import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
+
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { providers } from 'ethers'
+import React, { ReactNode } from 'react'
+
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import CurveLogo from '../assets/images/curve-logo.svg'
+import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
-import DFYNLogo from '../assets/images/dfyn-logo.svg'
-import CurveLogo from '../assets/images/curve-logo.svg'
-import { providers } from 'ethers'
+import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
+import SwaprLogo from '../assets/svg/logo.svg'
+import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
+import UniswapLogo from '../assets/svg/uniswap-logo.svg'
+import { injected, walletConnect, walletLink } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'

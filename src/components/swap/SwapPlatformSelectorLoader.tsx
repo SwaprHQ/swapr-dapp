@@ -1,6 +1,6 @@
+import React, { FC } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
-import React, { FC } from 'react'
 
 const ListContentItem = styled.div`
   width: 100%;

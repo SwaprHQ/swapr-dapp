@@ -1,18 +1,18 @@
 import { ChainId } from '@swapr/sdk'
+
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
-import Modal from '../Modal'
-import { ExternalLink, TYPE } from '../../theme'
-import { Text } from 'rebass'
-import { CloseIcon, CustomLightSpinner } from '../../theme'
-import { RowBetween } from '../Row'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
+
+import Circle from '../../assets/images/blue-loader.svg'
+import { useActiveWeb3React } from '../../hooks'
+import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
+import { getExplorerLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Circle from '../../assets/images/blue-loader.svg'
-
-import { getExplorerLink } from '../../utils'
-import { useActiveWeb3React } from '../../hooks'
+import Modal from '../Modal'
+import { RowBetween } from '../Row'
 
 const Wrapper = styled.div`
   width: 100%;

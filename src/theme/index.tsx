@@ -1,15 +1,16 @@
+import { transparentize } from 'polished'
 import React, { useMemo } from 'react'
+import 'react-datepicker/dist/react-datepicker.min.css'
+import { Text, TextProps } from 'rebass'
 import styled, {
-  ThemeProvider as StyledComponentsThemeProvider,
   createGlobalStyle,
   css,
   DefaultTheme,
+  ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
+
 import { useIsDarkMode } from '../state/user/hooks'
-import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
-import 'react-datepicker/dist/react-datepicker.min.css'
-import { transparentize } from 'polished'
 
 export * from './components'
 

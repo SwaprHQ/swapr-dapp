@@ -1,10 +1,13 @@
+import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
+
 import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 const QUERY = gql`
   query($pairId: ID) {

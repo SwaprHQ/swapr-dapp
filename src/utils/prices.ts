@@ -1,35 +1,37 @@
-import { BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
 import {
+  _100,
+  _10000,
+  Currency,
   CurrencyAmount,
+  CurveTrade,
   Fraction,
   JSBI,
+  Pair,
   Percent,
+  Price,
   TokenAmount,
   Trade,
-  Pair,
-  Price,
-  Currency,
-  _10000,
-  _100,
-  ZERO,
   UniswapV2Trade,
-  CurveTrade,
+  ZERO,
 } from '@swapr/sdk'
-import {
-  ALLOWED_PRICE_IMPACT_HIGH,
-  ALLOWED_PRICE_IMPACT_LOW,
-  ALLOWED_PRICE_IMPACT_MEDIUM,
-  ALLOWED_FIAT_PRICE_IMPACT_HIGH,
-  PRICE_IMPACT_NON_EXPERT,
-  PRICE_IMPACT_HIGH,
-  PRICE_IMPACT_MEDIUM,
-  PRICE_IMPACT_LOW,
-  NO_PRICE_IMPACT,
-} from '../constants'
-import { Field } from '../state/swap/actions'
+
 import _Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
 import toFormat from 'toformat'
+
+import {
+  ALLOWED_FIAT_PRICE_IMPACT_HIGH,
+  ALLOWED_PRICE_IMPACT_HIGH,
+  ALLOWED_PRICE_IMPACT_LOW,
+  ALLOWED_PRICE_IMPACT_MEDIUM,
+  BLOCKED_PRICE_IMPACT_NON_EXPERT,
+  NO_PRICE_IMPACT,
+  PRICE_IMPACT_HIGH,
+  PRICE_IMPACT_LOW,
+  PRICE_IMPACT_MEDIUM,
+  PRICE_IMPACT_NON_EXPERT,
+} from '../constants'
+import { Field } from '../state/swap/actions'
 
 const Decimal = toFormat(_Decimal)
 

@@ -149,6 +149,7 @@
     "cypress-mochawesome-reporter": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
@@ -160,5 +161,17 @@
     "react-scripts": "4.0.3",
     "serve": "^11.3.2",
     "typescript": "^3.8.3"
+  },
+  "importSort": {
+    ".js, .jsx, .es6, .es": {
+      "parser": "babylon",
+      "style": "eslint",
+      "options": {}
+    },
+    ".ts, .tsx": {
+      "parser": "typescript",
+      "style": "eslint",
+      "options": {}
+    }
   }
 }

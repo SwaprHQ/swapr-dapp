@@ -1,6 +1,7 @@
 import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
+
 import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'

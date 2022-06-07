@@ -1,7 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import DoubleCurrencyLogo from '../DoubleLogo'
+
 import { CurrencyLogo } from '../CurrencyLogo'
+import DoubleCurrencyLogo from '../DoubleLogo'
 import { StyledDropDown, StyledTokenName } from './CurrencyInputPanel.styles'
 import { CurrencyViewProps } from './CurrencyInputPanel.types'
 

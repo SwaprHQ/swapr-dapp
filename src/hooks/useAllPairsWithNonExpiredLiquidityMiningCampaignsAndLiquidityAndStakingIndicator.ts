@@ -1,17 +1,20 @@
-import { gql } from 'graphql-request'
-import Decimal from 'decimal.js-light'
 import { CurrencyAmount, Pair, Token, TokenAmount, USD } from '@swapr/sdk'
+
+import Decimal from 'decimal.js-light'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
+import { gql } from 'graphql-request'
 import { DateTime, Duration } from 'luxon'
 import { useEffect, useMemo, useState } from 'react'
-import { useActiveWeb3React } from '.'
+
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
-import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
-import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
-import { useKpiTokens } from './useKpiTokens'
+import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 const PAGE_SIZE = 1000
 

@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { escapeRegExp } from '../../../utils'
 import { StyledInput } from '../styleds'
 

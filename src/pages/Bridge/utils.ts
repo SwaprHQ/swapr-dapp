@@ -1,4 +1,5 @@
 import { ChainId } from '@swapr/sdk'
+
 import { getNetworkInfo } from '../../utils/networksList'
 
 export enum BridgeTab {

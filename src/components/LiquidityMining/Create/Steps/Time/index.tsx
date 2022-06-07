@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
-import { TYPE } from '../../../../../theme'
-import TimeSelector from './TimeSelector'
-import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
 import styled from 'styled-components'
-import { Switch } from '../../../../Switch'
-import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
+
 import { ReactComponent as LockOpenSvg } from '../../../../../assets/svg/lock-open.svg'
+import { ReactComponent as LockSvg } from '../../../../../assets/svg/lock.svg'
+import { TYPE } from '../../../../../theme'
+import { Switch } from '../../../../Switch'
+import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
+import TimeSelector from './TimeSelector'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;
