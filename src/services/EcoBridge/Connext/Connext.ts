@@ -259,18 +259,25 @@ export class Connext extends EcoBridgeChildBase {
       const toToken = token.contracts[toChainId]
 
       if (fromToken && toToken) {
-        const { contract_address, contract_decimals } = fromToken
+        const { contract_address: fromTokenAddress, contract_decimals: fromTokenDecimals } = fromToken
+        const { contract_address: toTokenAddress, contract_decimals: toTokenDecimals } = toToken
 
-        const supportedToken: TokenInfo = {
-          decimals: contract_decimals,
-          address: contract_address,
+        const supportedFromToken: TokenInfo = {
+          address: fromTokenAddress,
+          decimals: fromTokenDecimals,
           chainId: fromChainId,
           symbol: token.symbol,
           name: token.name,
           logoURI: token.logoURI,
         }
+        const supportedToToken: TokenInfo = {
+          ...supportedFromToken,
+          decimals: toTokenDecimals,
+          address: toTokenAddress,
+          chainId: toChainId,
+        }
 
-        allTokens.push(supportedToken)
+        allTokens.push(supportedFromToken, supportedToToken)
       }
 
       return allTokens
