@@ -68,6 +68,7 @@ export async function getExactIn(
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
         platform,
+        provider,
       })
       return (
         UniswapV2Trade.computeTradesExactIn({
@@ -152,6 +153,7 @@ export async function getExactOut(
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
         platform,
+        provider,
       })
       return (
         UniswapV2Trade.computeTradesExactOut({
