@@ -106,7 +106,7 @@ describe('Swapping tests', () => {
     })
   })
 
-  it.only('Should swap LINK to ETH [TC-53]', () => {
+  it('Should swap LINK to ETH [TC-53]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.LINK_ADDRESS_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)

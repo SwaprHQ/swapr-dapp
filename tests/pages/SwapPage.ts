@@ -25,12 +25,12 @@ export class SwapPage {
   }
 
   static swap() {
-    cy.get('#swap-button').click()
+    cy.get('#swap-button').click({ force: true })
     return this
   }
 
   static confirmSwap() {
-    cy.get('#confirm-swap-or-send').click()
+    cy.get('#confirm-swap-or-send').click({ force: true })
   }
 
   static getConnectOrSwitchButton() {
