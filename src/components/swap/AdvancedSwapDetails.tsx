@@ -67,7 +67,7 @@ export interface AdvancedSwapDetailsProps {
 }
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
 
   return trade ? <TradeSummary trade={trade} allowedSlippage={allowedSlippage} /> : null
 }

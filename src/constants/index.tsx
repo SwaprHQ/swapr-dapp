@@ -18,7 +18,6 @@ import {
 import { injected, walletConnect, walletLink } from '../connectors'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
-import SushiswapLogo from '../assets/svg/sushiswap-logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
@@ -283,6 +282,7 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 
 export const DEFAULT_TOKEN_LIST = 'ipfs://QmUWnK6AFHZ3S1hR7Up1h3Ntax3fP1ZyiTptDNG2cWLTeK'
 
+export const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 export const ZERO_USD = CurrencyAmount.usd('0')
 
 export interface NetworkDetails {
@@ -394,6 +394,52 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
   },
 }
 
+export const RoutablePlatformKeysByNetwork = {
+  [ChainId.MAINNET]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+  ],
+  [ChainId.ARBITRUM_ONE]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+  ],
+  [ChainId.XDAI]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.POLYGON]: [
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.QUICKSWAP.name,
+    UniswapV2RoutablePlatform.DFYN.name,
+  ],
+  // TEST NETS WITH ALL DEXES
+  [ChainId.RINKEBY]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.ARBITRUM_RINKEBY]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    UniswapV2RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    UniswapV2RoutablePlatform.CURVE.name,
+  ],
+}
+
 export const ROUTABLE_PLATFORM_STYLE: {
   [routablePaltformName: string]: { logo: string; alt: string; gradientColor: string; name: string }
 } = {
@@ -461,7 +507,7 @@ export const ROUTABLE_PLATFORM_STYLE: {
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
   [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
-  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapLogo} alt="sushiswap" />,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
   [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,

@@ -139,5 +139,6 @@
   "swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
   "showMore": "Show more",
   "GnosisProtocolExplorer": "Gnosis Protocol Explorer",
-  "BlockExplorer": "Block Explorer"
+  "BlockExplorer": "Block Explorer",
+  "findingBestPrice": "Finding best price"
 }

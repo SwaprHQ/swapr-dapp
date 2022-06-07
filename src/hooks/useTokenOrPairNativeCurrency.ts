@@ -1,18 +1,18 @@
-import { ChainId, Token, CurrencyAmount, Pair } from '@swapr/sdk'
-
+import { Token, Pair, Price } from '@swapr/sdk'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
 import { getLpTokenPrice } from '../utils/prices'
-import { ethers } from 'ethers'
+
 import Decimal from 'decimal.js-light'
+import { parseUnits } from 'ethers/lib/utils'
+import { useActiveWeb3React } from '.'
 
 export function useTokenOrPairNativeCurrency(
   tokenOrPair?: Token | Pair
-): { loading: boolean; derivedNativeCurrency: CurrencyAmount } {
+): { loading: boolean; derivedNativeCurrency?: Price } {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const isToken = tokenOrPair instanceof Token
@@ -28,30 +28,28 @@ export function useTokenOrPairNativeCurrency(
 
   return useMemo(() => {
     if (!tokenOrPair || !chainId || (isToken ? loadingTokenNativeCurrency : loadingReserveNative))
-      return { loading: true, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
+      return { loading: true, derivedNativeCurrency: undefined }
 
     if ((isToken && !derivedNativeCurrency) || (!isToken && lpTokenTotalSupply === null))
-      return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
+      return { loading: false, derivedNativeCurrency: undefined }
 
-    let derivedNative: CurrencyAmount = CurrencyAmount.nativeCurrency('0', chainId)
-    if (isToken) {
-      derivedNative = derivedNativeCurrency
+    let derivedNative: Price | undefined
+    if (tokenOrPair instanceof Token) {
+      derivedNative = new Price({
+        baseCurrency: tokenOrPair,
+        quoteCurrency: nativeCurrency,
+        denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+        numerator: parseUnits(
+          new Decimal(derivedNativeCurrency.toSignificant(22)).toFixed(nativeCurrency.decimals),
+          nativeCurrency.decimals
+        ).toString(),
+      })
     } else if (lpTokenTotalSupply && tokenOrPair instanceof Pair) {
-      const lpTokenNativeCurrencyPrice = getLpTokenPrice(
+      derivedNative = getLpTokenPrice(
         tokenOrPair,
         nativeCurrency,
         lpTokenTotalSupply.raw.toString(),
         targetedPairReserveNativeCurrency.raw.toString()
-      )
-
-      derivedNative = CurrencyAmount.nativeCurrency(
-        ethers.utils
-          .parseUnits(
-            new Decimal(lpTokenNativeCurrencyPrice.toSignificant(20)).toFixed(tokenOrPair.liquidityToken.decimals),
-            nativeCurrency.decimals
-          )
-          .toString(),
-        chainId
       )
     }
     return {

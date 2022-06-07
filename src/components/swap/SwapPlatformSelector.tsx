@@ -58,7 +58,7 @@ const StyledRouteFlex = styled(Flex)`
   boarder: 1px solid ${({ theme }) => theme.purple6};
   border-radius: 12px;
   padding: 18px 16px;
-  margin-bottom: 16px;
+  margin-bottom: 16px !important;
 `
 
 const MoreMarketsButton = styled(Flex)`
@@ -103,7 +103,7 @@ export function SwapPlatformSelector({
   const theme = useTheme()
 
   const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
   const { recipient, independentField } = useSwapState()
   const { loading: loadingTradesGasEstimates, estimations } = useSwapsGasEstimations(
     allowedSlippage,
@@ -118,7 +118,7 @@ export function SwapPlatformSelector({
 
   useEffect(() => {
     setShowAllPlatformsTrades(false)
-  }, [allPlatformTrades])
+  }, [allPlatformTrades?.length])
 
   const showGasFees = estimations.length === allPlatformTrades?.length
 

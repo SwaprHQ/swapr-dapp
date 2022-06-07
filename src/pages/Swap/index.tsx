@@ -12,18 +12,14 @@ import {
 } from '@swapr/sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
-import { ButtonError, ButtonPrimary, ButtonConfirmed } from '../../components/Button'
-import Column, { AutoColumn } from '../../components/Column'
+import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { AutoRow, RowBetween, RowFixed } from '../../components/Row'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
-import { ArrowWrapper, SwapCallbackError, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
-import TradePrice from '../../components/swap/TradePrice'
+import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import ProgressSteps from '../../components/ProgressSteps'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -34,14 +30,13 @@ import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
+  useSwapLoading,
   useSwapState,
 } from '../../state/swap/hooks'
-import { useAdvancedSwapDetails, useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
-import { TYPE } from '../../theme'
+import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
-import Loader from '../../components/Loader'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { Tabs } from '../../components/swap/Tabs'
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
@@ -67,6 +62,16 @@ import CommunityLinks from './../../components/LandingPageComponents/CommunityLi
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
+import SwapButtons from '../../components/swap/SwapButtons'
+import { TradeDetails } from '../../components/swap/TradeDetails'
+
+export type SwapData = {
+  showConfirm: boolean
+  tradeToConfirm: Trade | undefined
+  attemptingTxn: boolean
+  swapErrorMessage: string | undefined
+  txHash: string | undefined
+}
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -103,6 +108,7 @@ enum GnosisProtocolTradeStatus {
 }
 
 export default function Swap() {
+  const loading = useSwapLoading()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -130,15 +136,14 @@ export default function Swap() {
   const { account, chainId } = useActiveWeb3React()
 
   // for expert mode
-  const [isExpertMode] = useExpertModeManager()
+  const isExpertMode = useIsExpertMode()
 
   // get custom setting values for user
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const {
-    loading: swapInfoIsLoading,
     trade: potentialTrade,
     allPlatformTrades,
     currencyBalances,
@@ -176,12 +181,14 @@ export default function Swap() {
       }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
-  const isValid = !swapInputError
+
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   // True when the wallet tries to trade native currency to ERC20
   const isGnosisProtocolTradeRequireWrap =
-    trade instanceof GnosisProtocolTrade && isCurrencyNative(currencies?.INPUT as Currency, trade?.chainId) && isValid
+    trade instanceof GnosisProtocolTrade &&
+    isCurrencyNative(currencies?.INPUT as Currency, trade?.chainId) &&
+    !swapInputError
 
   const wrappedToken = useTokenBalance(account as string, wrappedCurrency(trade?.inputAmount?.currency, chainId))
 
@@ -199,13 +206,7 @@ export default function Swap() {
   )
 
   // modal and loading
-  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
-    showConfirm: boolean
-    tradeToConfirm: Trade | undefined
-    attemptingTxn: boolean
-    swapErrorMessage: string | undefined
-    txHash: string | undefined
-  }>({
+  const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<SwapData>({
     showConfirm: false,
     tradeToConfirm: undefined,
     attemptingTxn: false,
@@ -220,11 +221,9 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
-  const noRoute = !route
 
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
@@ -299,9 +298,6 @@ export default function Swap() {
         })
       })
   }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
-
-  // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
@@ -635,8 +631,12 @@ export default function Swap() {
                         onSwitchTokens()
                       }}
                     >
-                      <ArrowWrapper clickable data-testid="switch-tokens-button">
-                        {swapInfoIsLoading ? <SwapIconLoading /> : <SwapIcon />}
+                      <ArrowWrapper
+                        clickable={!loading}
+                        data-testid="switch-tokens-button"
+                        className={loading ? 'rotate' : ''}
+                      >
+                        <SwapIcon />
                       </ArrowWrapper>
                     </SwitchTokensAmountsContainer>
                   </SwitchIconContainer>
@@ -700,12 +700,41 @@ export default function Swap() {
                   )}
                   {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
                 </div>
+                <TradeDetails
+                  show={!showWrap}
+                  loading={loading}
+                  trade={trade}
+                  bestPricedTrade={bestPricedTrade}
+                  showAdvancedSwapDetails={showAdvancedSwapDetails}
+                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                  recipient={recipient}
+                />
+
+                <SwapButtons
+                  wrapInputError={wrapInputError}
+                  showApproveFlow={showApproveFlow}
+                  userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
+                  approval={approval}
+                  setSwapState={setSwapState}
+                  priceImpactSeverity={priceImpactSeverity}
+                  swapCallbackError={swapCallbackError}
+                  wrapType={wrapType}
+                  approvalSubmitted={approvalSubmitted}
+                  currencies={currencies}
+                  trade={trade}
+                  swapInputError={swapInputError}
+                  swapErrorMessage={swapErrorMessage}
+                  loading={loading}
+                  onWrap={onWrap}
+                  approveCallback={approveCallback}
+                  handleSwap={handleSwap}
+                />
               </AutoColumn>
             </Wrapper>
           </AppBody>
           {showAdvancedSwapDetails && (
             <AdvancedSwapDetailsDropdown
-              isLoading={swapInfoIsLoading}
+              isLoading={loading}
               trade={trade}
               allPlatformTrades={allPlatformTrades}
               onSelectedPlatformChange={setPlatformOverride}
