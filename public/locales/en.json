@@ -157,5 +157,6 @@
   "bridgeHeadingInitiated": "Bridging Initiated",
   "bridgeHeadingCollecting": "Bridging Collecting",
   "bridgeHeadingSuccess": "Bridging Successful",
-  "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}"
+  "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
+  "findingBestPrice": "Finding best price"
 }

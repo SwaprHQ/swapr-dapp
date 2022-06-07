@@ -104,6 +104,8 @@ export default function Web3Status() {
     setModal(ModalView.Pending)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+    // eslint-disable-next-line
+    // @ts-ignore
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
       connector.walletConnectProvider = undefined
     }

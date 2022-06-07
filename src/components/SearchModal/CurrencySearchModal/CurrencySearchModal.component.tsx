@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useLayoutEffect } from 'react'
 import { Currency } from '@swapr/sdk'
 
 import useLast from '../../../hooks/useLast'
@@ -26,7 +26,7 @@ export const CurrencySearchModalComponent = ({
   const lastOpen = useLast(isOpen)
   const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen && !lastOpen) {
       setModalView(CurrencyModalView.SEARCH)
     }

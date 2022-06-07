@@ -2,11 +2,11 @@ import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, Percent, CurrencyAmount, JSBI, ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { Box, Flex, Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { ButtonPrimary, ButtonError, ButtonConfirmed } from '../../components/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -68,7 +68,7 @@ export default function RemoveLiquidity({
     chainId,
   ])
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletSwitcherPopoverToggle()
@@ -89,7 +89,7 @@ export default function RemoveLiquidity({
   // txn values
   const [txHash, setTxHash] = useState<string>('')
   const deadline = useTransactionDeadline()
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
