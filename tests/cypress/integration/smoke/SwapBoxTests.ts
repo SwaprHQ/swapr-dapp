@@ -101,7 +101,7 @@ describe('Swap page smoke tests', () => {
     SwapPage.getConfirmButton()
       .should('be.visible')
       .should('contain.text', 'Connect wallet')
-      .click()
+    SwapPage.getConfirmButton().click({ force: true })
     SwapPage.getWalletConnectList()
       .scrollIntoView()
       .should('be.visible')
@@ -109,9 +109,8 @@ describe('Swap page smoke tests', () => {
   it('Should display connect button when transaction data is filled [TC-32]', () => {
     SwapPage.openTokenToSwapMenu().chooseToken('usdc')
     SwapPage.typeValueFrom('100')
-    SwapPage.getConfirmButton()
-      .should('contain.text', 'Connect wallet')
-      .click()
+    SwapPage.getConfirmButton().should('contain.text', 'Connect wallet')
+    SwapPage.getConfirmButton().click({ force: true })
 
     SwapPage.getWalletConnectList()
       .scrollIntoView()

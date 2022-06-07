@@ -58,7 +58,7 @@ export class SwapPage {
     return cy.get('[data-testid=wallet-connect-list]')
   }
   static getConfirmButton() {
-    return cy.get('[data-testid=switch-connect-button]')
+    return cy.get('[data-testid=switch-connect-button]', { timeout: 60000 })
   }
   static getEstimatedMinimalTransactionValue() {
     return cy.get('[data-testid=estimated-transaction-output]')
