@@ -437,7 +437,7 @@ export class Connext extends EcoBridgeChildBase {
 
       let gasInUSD: string | undefined = undefined
 
-      if (gasPrice) {
+      if (gasPrice && fromChainId !== ChainId.POLYGON) {
         const gasInGwei = BigNumber.from(gasPrice).mul(prepare)
         const totalGas = formatUnits(gasInGwei)
 
