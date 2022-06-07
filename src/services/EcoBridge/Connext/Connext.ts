@@ -20,7 +20,13 @@ import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { subgraphClientsUris } from '../../../apollo/client'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE } from './Connext.utils'
-import { DAI_ARBITRUM_ADDRESS, DAI_ETHEREUM_ADDRESS, WETH_GNOSIS_ADDRESS } from '../../../constants'
+import {
+  DAI_ARBITRUM_ADDRESS,
+  DAI_ETHEREUM_ADDRESS,
+  DAI_POLYGON_ADDRESS,
+  WETH_GNOSIS_ADDRESS,
+  WETH_POLYGON_ADDRESS,
+} from '../../../constants'
 
 import {
   SyncState,
@@ -392,12 +398,21 @@ export class Connext extends EcoBridgeChildBase {
         if ((fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) && toChainId === ChainId.XDAI) {
           toTokenAddress = WETH_GNOSIS_ADDRESS
         }
+        if (
+          (fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) &&
+          toChainId === ChainId.POLYGON
+        ) {
+          toTokenAddress = WETH_POLYGON_ADDRESS
+        }
         //xdai - dai
         if (fromChainId === ChainId.XDAI && toChainId === ChainId.MAINNET) {
           toTokenAddress = DAI_ETHEREUM_ADDRESS
         }
         if (fromChainId === ChainId.XDAI && toChainId === ChainId.ARBITRUM_ONE) {
           toTokenAddress = DAI_ARBITRUM_ADDRESS
+        }
+        if (fromChainId === ChainId.XDAI && toChainId === ChainId.POLYGON) {
+          toTokenAddress = DAI_POLYGON_ADDRESS
         }
       } else {
         toTokenAddress = CONNEXT_TOKENS.reduce<string | undefined>((tokenAddressOnDestinationChain, token) => {
@@ -469,6 +484,7 @@ export class Connext extends EcoBridgeChildBase {
 
       this.store.dispatch(this.actions.setBridgeDetails(details))
     } catch (e) {
+      console.log(e)
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
     }
   }
