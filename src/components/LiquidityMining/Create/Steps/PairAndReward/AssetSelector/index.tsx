@@ -189,16 +189,19 @@ export default function AssetSelector({
                   placeholder="0"
                   value={rawAmount ? rawAmount : ''}
                   onUserInput={handleUserInput}
+                  data-testid="reward-input"
                 />
               </RelativeContainer>
             ) : (
-              //TODO: re add this test related property to appropriate field-> deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
               <TYPE.largeHeader
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}
                 lineHeight="22px"
                 color={customAssetTitle || !tokenName ? '#8C83C0' : 'lightPurple'}
                 fontSize={13}
+                data-testid={`${campaingType === CampaignType.TOKEN ? 'token' : 'pair'}${
+                  isReward ? '-reward' : ''
+                }-asset-selector`}
               >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
