@@ -44,7 +44,7 @@ export function SwapSettings({
   showAddRecipient: boolean
   setShowAddRecipient: (value: boolean) => void
 }) {
-  const [userSlippageTolerance] = useUserSlippageTolerance()
+  const userSlippageTolerance = useUserSlippageTolerance()
   const [multihop] = useMultihopManager()
   const theme = useTheme()
   const { recipient } = useSwapState()

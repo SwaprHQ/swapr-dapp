@@ -11,14 +11,35 @@ import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setLoading,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+} from './actions'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { currencyId } from '../../utils/currencyId'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { createSelector } from '@reduxjs/toolkit'
 
-export function useSwapState(): AppState['swap'] {
-  return useSelector<AppState, AppState['swap']>(state => state.swap)
+const selectSwap = createSelector(
+  (state: AppState) => state.swap,
+  swap => swap
+)
+export function useSwapState() {
+  return useSelector<AppState, AppState['swap']>(selectSwap)
+}
+
+const selectSwapLoading = createSelector(
+  (state: AppState) => state.swap.loading,
+  loading => loading
+)
+export function useSwapLoading() {
+  return useSelector<AppState, AppState['swap']['loading']>(selectSwapLoading)
 }
 
 export function useSwapActionHandlers(): {
@@ -105,7 +126,6 @@ function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boo
 }
 
 export interface UseDerivedSwapInfoResult {
-  loading: boolean
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
@@ -116,6 +136,7 @@ export interface UseDerivedSwapInfoResult {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
+  const dispatch = useDispatch()
   const { account, chainId } = useActiveWeb3React()
   const {
     independentField,
@@ -127,8 +148,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-  const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -154,7 +173,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   // Otherwise, use the best trade
   let platformTrade
   if (platformOverride) {
-    platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
+    platformTrade = allPlatformTrades?.filter(t => t?.platform === platformOverride)[0]
   }
   const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
 
@@ -181,6 +200,9 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     inputError = inputError ?? 'Select a token'
   }
 
+  const recipientLookup = useENS(recipient ?? undefined)
+  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
+
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient'
@@ -194,7 +216,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     }
   }
 
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
 
   const slippageAdjustedAmounts =
     trade && allowedSlippage && computeSlippageAdjustedAmounts(trade /* allowedSlippage */)
@@ -209,10 +231,20 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
   }
 
+  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
+    dispatch(setLoading(true))
+  } else {
+    dispatch(setLoading(false))
+  }
+  if (inputError !== undefined) {
+    setTimeout(() => {
+      dispatch(setLoading(false))
+    }, 500)
+  }
+
   return {
     currencies,
     currencyBalances,
-    loading: useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading,
     parsedAmount,
     trade,
     allPlatformTrades,

@@ -1,5 +1,13 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  setLoading,
+} from './actions'
 
 export interface SwapState {
   readonly independentField: Field
@@ -13,6 +21,7 @@ export interface SwapState {
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly recipient: string | null
   readonly protocolFeeTo: string | undefined
+  readonly loading: boolean
 }
 
 export const initialState: SwapState = {
@@ -26,6 +35,7 @@ export const initialState: SwapState = {
   },
   recipient: null,
   protocolFeeTo: undefined,
+  loading: false,
 }
 
 export default createReducer<SwapState>(initialState, builder =>
@@ -49,6 +59,7 @@ export default createReducer<SwapState>(initialState, builder =>
     )
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
+
       if (currencyId === state[otherField].currencyId) {
         // the case where we have to swap the order
         return {
@@ -56,12 +67,14 @@ export default createReducer<SwapState>(initialState, builder =>
           independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
           [field]: { currencyId: currencyId },
           [otherField]: { currencyId: state[field].currencyId },
+          loading: true,
         }
       } else {
         // the normal case
         return {
           ...state,
           [field]: { currencyId: currencyId },
+          loading: true,
         }
       }
     })
@@ -74,13 +87,26 @@ export default createReducer<SwapState>(initialState, builder =>
       }
     })
     .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
+      let loading = false
+      if (
+        state[Field.INPUT].currencyId !== '' &&
+        state[Field.OUTPUT].currencyId !== '' &&
+        state.typedValue !== typedValue &&
+        Number(typedValue ?? 0) > 0
+      ) {
+        loading = true
+      }
       return {
         ...state,
         independentField: field,
         typedValue,
+        loading,
       }
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient
+    })
+    .addCase(setLoading, (state, { payload: loading }) => {
+      state.loading = loading
     })
 )
