@@ -25,7 +25,9 @@ export class SwapPage {
   }
 
   static swap() {
-    cy.get('#swap-button').click({ force: true })
+    cy.get('#swap-button')
+      .should('contain.text', 'Swap')
+      .click({ force: true })
     return this
   }
 

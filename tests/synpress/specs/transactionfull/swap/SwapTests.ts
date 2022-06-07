@@ -29,12 +29,10 @@ describe('Swapping tests', () => {
     cy.resetMetamaskAccount()
   })
   it('Should swap eth to dxd [TC-51]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(
-      (response: { body: { result: string } }) => {
-        ercBalanceBefore = parseInt(response.body.result)
-        console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then((response: { body: { result: string } }) => {
+      ercBalanceBefore = parseInt(response.body.result)
+      console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
+    })
 
     SwapPage.openTokenToSwapMenu()
       .chooseToken('dxd')
@@ -50,8 +48,8 @@ describe('Swapping tests', () => {
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
@@ -90,8 +88,8 @@ describe('Swapping tests', () => {
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
@@ -130,21 +128,20 @@ describe('Swapping tests', () => {
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
-      .getEstimatedMinimalTransactionValue()
-      .then(value => {
-        estimatedTransactionOutput = parseFloat(
-          value
-            .text()!
-            .toString()
-            .replace(/[^\d.-]/g, '')
-        )
-      })
+    SwapPage.getEstimatedMinimalTransactionValue().then(value => {
+      estimatedTransactionOutput = parseFloat(
+        value
+          .text()!
+          .toString()
+          .replace(/[^\d.-]/g, '')
+      )
+    })
     SwapPage.confirmSwap()
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -199,12 +196,10 @@ describe('Swapping tests', () => {
     })
   })
   it('Should send erc20 token to wallet address [TC-54]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(
-      res => {
-        ercBalanceBefore = parseInt(res.body.result)
-        console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
+      ercBalanceBefore = parseInt(res.body.result)
+      console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
+    })
 
     SwapPage.openTokenToSwapMenu().chooseToken('xeenus')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
@@ -216,8 +211,8 @@ describe('Swapping tests', () => {
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', String(TRANSACTION_VALUE))
 
