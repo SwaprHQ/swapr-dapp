@@ -88,7 +88,7 @@ function TransactionSubmittedContent({
       }
     >
       <Text fontWeight={500} fontSize="13px">
-        View on {explorer}
+        {t('viewOn')} {explorer}
       </Text>
     </ExternalLink>
   )

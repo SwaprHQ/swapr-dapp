@@ -74,6 +74,7 @@ export function SwapButtons({
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
+  const { t } = useTranslation()
 
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(trade instanceof GnosisProtocolTrade)
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
@@ -177,8 +178,8 @@ export function SwapButtons({
           isExpertMode={isExpertMode}
         >
           {priceImpactSeverity > 3 && !isExpertMode
-            ? `Price Impact High`
-            : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+            ? t('PriceImpactHigh')
+            : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
         </SwapButton>
       </RowBetween>
     )
@@ -241,8 +242,8 @@ export function SwapButtons({
             error={isValid && priceImpactSeverity > 2}
           >
             {priceImpactSeverity > 3 && !isExpertMode
-              ? `Price Impact High`
-              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+              ? t('PriceImpactHigh')
+              : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>

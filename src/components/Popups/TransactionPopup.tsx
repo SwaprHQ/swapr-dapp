@@ -34,7 +34,7 @@ export default function TransactionPopup({
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
-  const explorer = 'View on ' + (isGnosisProtocolHash ? t('gnosisProtocolExplorer') : t('blockExplorer'))
+  const explorer = isGnosisProtocolHash ? t('gnosisProtocolExplorer') : t('blockExplorer')
 
   const explorerExternalLink = (
     <ExternalLink
@@ -44,7 +44,7 @@ export default function TransactionPopup({
           : getExplorerLink(chainId as ChainId, hash, 'transaction')
       }
     >
-      {explorer}
+      {t('viewOn')} {explorer}
     </ExternalLink>
   )
 
