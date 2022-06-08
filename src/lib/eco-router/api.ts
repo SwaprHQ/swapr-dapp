@@ -235,8 +235,6 @@ export async function getExactOut(
       })
   })
 
-  console.info({ gnosisProtocolTrade })
-
   // Wait for all promises to resolve, and
   // remove undefined values
   const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
