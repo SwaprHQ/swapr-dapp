@@ -217,6 +217,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#010101',
     primary: true,
   },
+  TALLY: {
+    connector: injected,
+    name: 'Tally Ho',
+    iconName: 'tally.svg',
+    description: 'Connect using Tally Ho Wallet.',
+    href: null,
+    color: '#D59B4B',
+  },
   METAMASK: {
     connector: injected,
     name: 'MetaMask',

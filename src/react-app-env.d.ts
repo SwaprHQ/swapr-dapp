@@ -14,10 +14,14 @@ interface EthereumProviderRequestArguments {
 interface Window {
   ethereum?: {
     isMetaMask?: true
+    isTally?: true
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void
     request?: (args: EthereumProviderRequestArguments) => Promise<unknown>
     isCoinbaseWallet?: boolean
+  }
+  tally?: {
+    isTally?: true
   }
   web3?: Record<string, unknown>
 }
