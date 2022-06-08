@@ -78,18 +78,14 @@ export default function Updater(): null {
     (orderId: string) => {
       if (!chainId) throw new Error('No library or chainId')
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
-      return retry(
-        () =>
-          fetch(`${GnosisProtocolTrade.getApi(chainId).baseUrl}/api/v1/orders/${orderId}`).then(res => {
-            if (!res.ok) {
-              console.debug('Retrying for order ', orderId)
-              throw new RetryableError()
-            }
-
-            return res.json()
-          }),
-        retryOptions
-      )
+    return retry(async () => {
+        const res = await fetch(`${GnosisProtocolTrade.getApi(chainId).baseUrl}/api/v1/orders/${orderId}`)
+        if (!res.ok) {
+          console.debug('Retrying for order ', orderId)
+          throw new RetryableError()
+        }
+        return res.json()
+      }, retryOptions)
     },
     [chainId]
   )
