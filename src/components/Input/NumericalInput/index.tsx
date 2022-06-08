@@ -48,6 +48,4 @@ export const NumericalInput = React.memo(function InnerInput({
   )
 })
 
-export default NumericalInput
-
 // const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group

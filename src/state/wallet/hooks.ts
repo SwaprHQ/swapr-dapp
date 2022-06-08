@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
-import ERC20_INTERFACE from '../../constants/abis/erc20'
+import { ERC20_INTERFACE } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useMulticallContract } from '../../hooks/useContract'

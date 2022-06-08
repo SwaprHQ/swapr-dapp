@@ -13,7 +13,7 @@ import { useTokenOrPairNativeCurrency } from '../../../../../../hooks/useTokenOr
 import { TYPE } from '../../../../../../theme'
 import { calculatePercentage } from '../../../../../../utils'
 import useDebouncedChangeHandler from '../../../../../../utils/useDebouncedChangeHandler'
-import NumericalInput from '../../../../../Input/NumericalInput'
+import { NumericalInput } from '../../../../../Input/NumericalInput'
 import Loader from '../../../../../Loader'
 import Slider from '../../../../../Slider'
 import { SmoothGradientCard } from '../../../../styleds'

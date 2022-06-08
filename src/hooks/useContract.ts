@@ -27,7 +27,7 @@ import {
 } from '../constants/abis/argent-wallet-detector'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
-import ERC20_ABI, { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
+import { ERC20_ABI, ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import WMATIC_ABI from '../constants/abis/wmatic.json'
