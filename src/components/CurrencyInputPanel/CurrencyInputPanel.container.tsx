@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
-import debounce from 'lodash.debounce'
+import React from 'react'
 
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 
@@ -12,8 +11,7 @@ import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBrid
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
-import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal'
-import { normalizeInputValue } from '../../utils'
+import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()
@@ -28,33 +26,7 @@ export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelPr
 export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalBridge()
 
-  const {
-    value: valueRaw,
-    onUserInput: onUserInputRaw,
-    displayedValue,
-    setDisplayedValue,
-    disableCurrencySelect,
-  } = currencyInputPanelProps
-
-  const debounceOnUserInput = useMemo(() => {
-    return debounce(onUserInputRaw, 500)
-  }, [onUserInputRaw])
-
-  const onUserInput = useCallback(
-    (val: string) => {
-      const normalizedValue = normalizeInputValue(val)
-
-      setDisplayedValue?.(normalizedValue)
-      debounceOnUserInput(normalizedValue)
-    },
-    [debounceOnUserInput, setDisplayedValue]
-  )
-
-  const value = disableCurrencySelect ? valueRaw : displayedValue ?? ''
-
-  useEffect(() => {
-    debounceOnUserInput.cancel()
-  }, [debounceOnUserInput, disableCurrencySelect])
+  const { value, onUserInput, displayedValue, disableCurrencySelect } = currencyInputPanelProps
 
   useBridgeInputValidation(!!disableCurrencySelect)
 

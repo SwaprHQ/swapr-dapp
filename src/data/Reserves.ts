@@ -39,7 +39,13 @@ export function usePairs(
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) && chainId && platform.supportsChain(chainId)
+        return tokenA &&
+          tokenB &&
+          !tokenA.equals(tokenB) &&
+          chainId &&
+          platform.supportsChain(chainId) &&
+          platform.supportsChain(tokenA.chainId) &&
+          platform.supportsChain(tokenB.chainId)
           ? Pair.getAddress(tokenA, tokenB, platform)
           : undefined
       }),

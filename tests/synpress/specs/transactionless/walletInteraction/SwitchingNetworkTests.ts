@@ -1,6 +1,6 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
-import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { SwapPage } from '../../../../pages/SwapPage'
+import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 
 describe('Switching from mainnet tests', () => {
   beforeEach(() => {

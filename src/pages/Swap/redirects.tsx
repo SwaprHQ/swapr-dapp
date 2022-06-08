@@ -32,6 +32,7 @@ export function RedirectToSwap(props: RouteComponentProps<{ outputCurrency: stri
   )
 }
 
+// TODO: Remove unused function OpenClaimAddressModalAndRedirectToSwap
 export function OpenClaimAddressModalAndRedirectToSwap(props: RouteComponentProps) {
   const dispatch = useDispatch<AppDispatch>()
   useEffect(() => {

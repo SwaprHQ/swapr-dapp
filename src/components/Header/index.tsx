@@ -241,17 +241,23 @@ function Header() {
 
   const networkWithoutSWPR = !newSwpr
 
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      const headerControls = document.getElementById('header-controls')
-      if (headerControls) {
-        if (window.scrollY > 0) {
-          headerControls.classList.add('hidden')
-        } else {
-          headerControls.classList.remove('hidden')
-        }
+  const onScrollHander = () => {
+    const headerControls = document.getElementById('header-controls')
+    if (headerControls) {
+      if (window.scrollY > 0) {
+        headerControls.classList.add('hidden')
+      } else {
+        headerControls.classList.remove('hidden')
       }
-    })
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScrollHander)
+
+    return () => {
+      window.removeEventListener('scroll', onScrollHander)
+    }
   }, [])
 
   return (
