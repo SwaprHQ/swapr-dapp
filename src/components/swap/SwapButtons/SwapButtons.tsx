@@ -124,7 +124,7 @@ export function SwapButtons({
             onClick={onWrap}
             disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP || wrapState === WrapState.PENDING}
             width={width}
-            altDisabledStyle={wrapState !== WrapState.UNKNOWN} //{approval === ApprovalState.PENDING} // show solid button while waiting
+            altDisabledStyle={wrapState !== WrapState.UNKNOWN}
             confirmed={wrapState === WrapState.WRAPPED}
           >
             {wrapState === WrapState.PENDING ? (
