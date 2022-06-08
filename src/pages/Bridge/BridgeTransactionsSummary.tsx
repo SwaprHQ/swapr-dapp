@@ -160,12 +160,12 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
 
   return (
     <Row>
-      <ColumnBridging>
+      <ColumnBridging data-testid="bridged-asset-name">
         <TextBridging>
           {value} {assetName}
         </TextBridging>
       </ColumnBridging>
-      <ColumnFrom>
+      <ColumnFrom data-testid="bridged-from-chain">
         <TextFrom>
           <Link
             href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction')}
@@ -176,7 +176,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
           </Link>
         </TextFrom>
       </ColumnFrom>
-      <ColumnToFlex>
+      <ColumnToFlex data-testid="bridged-to-chain">
         <Filler>
           <Dots status={BridgeTransactionStatus.CONFIRMED} />
           <Dots status={status} />
@@ -190,7 +190,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
           {toChainName}
         </TextTo>
       </ColumnToFlex>
-      <ColumnStatus>
+      <ColumnStatus data-testid="status-tag">
         <BridgeStatusTag
           status={status}
           pendingReason={pendingReason}

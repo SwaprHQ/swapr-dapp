@@ -105,7 +105,7 @@ export default function SwapModalHeader({
         ) : (
           <TYPE.body fontSize="13px" color="text4" textAlign="left" style={{ width: '100%' }}>
             {`Input is estimated. You will sell at most `}
-            <b>
+            <b data-testid="estimated-transaction-output">
               {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
             </b>
             {' or the transaction will revert.'}

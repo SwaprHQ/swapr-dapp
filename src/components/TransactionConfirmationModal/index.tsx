@@ -74,7 +74,7 @@ function TransactionSubmittedContent({
   const theme = useTheme()
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-confirmed-modal">
       <Section>
         <RowBetween>
           <div />
@@ -133,11 +133,11 @@ export function ConfirmationModalContent({
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
   const theme = useTheme()
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
           <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
-          <CloseIcon onClick={onDismiss} />
+          <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
