@@ -105,7 +105,7 @@ export default function AddressInputPanel({
               </TYPE.black>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  (View on {t('BlockExplorer')})
+                  (View on {t('blockExplorer')})
                 </ExternalLink>
               )}
             </RowBetween>

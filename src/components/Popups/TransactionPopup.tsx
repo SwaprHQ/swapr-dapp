@@ -34,7 +34,7 @@ export default function TransactionPopup({
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
-  const explorer = 'View on ' + (isGnosisProtocolHash ? t('GnosisProtocolExplorer') : t('BlockExplorer'))
+  const explorer = 'View on ' + (isGnosisProtocolHash ? t('gnosisProtocolExplorer') : t('blockExplorer'))
 
   const explorerExternalLink = (
     <ExternalLink

@@ -278,7 +278,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on {t('BlockExplorer')}</span>
+                            <span style={{ marginLeft: '4px' }}>View on {t('blockExplorer')}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -300,7 +300,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on {t('BlockExplorer')}</span>
+                            <span style={{ marginLeft: '4px' }}>View on {t('blockExplorer')}</span>
                           </AddressLink>
                         )}
                       </div>

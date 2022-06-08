@@ -65,7 +65,7 @@ export function SubmittedView({
         {children}
         {chainId && hash && (
           <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')} style={{ marginLeft: '4px' }}>
-            <TYPE.subHeader>View transaction on {t('BlockExplorer')}</TYPE.subHeader>
+            <TYPE.subHeader>View transaction on {t('blockExplorer')}</TYPE.subHeader>
           </ExternalLink>
         )}
       </AutoColumn>
