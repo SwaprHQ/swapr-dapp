@@ -11,10 +11,10 @@ import { useActiveWeb3React } from '../../../../hooks'
 import { formatCurrencyAmount } from '../../../../utils'
 import { PairViewProps } from './PoolStats.types'
 import { ButtonExternalLink } from '../../../Button'
-import { DimBlurBgBox } from '../../DimBlurBgBox'
 import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
 import { useBestAPY } from '../../../../hooks/useBestAPY'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
+import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 
 export function PoolStats({ pair }: PairViewProps) {
   const { chainId } = useActiveWeb3React()

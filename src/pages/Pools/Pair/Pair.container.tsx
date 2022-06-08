@@ -14,13 +14,13 @@ import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { ButtonPurpleDim, ButtonBadge } from '../../../components/Button'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
-import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel/ValueWithLabel.component'
 import List from '../../../components/LiquidityMiningCampaigns/List'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 import { ButtonRow, ContentGrid, PointableFlex, TitleRow, TwoColumnsGrid } from './Pair.styles'
 import { PageWrapper } from '../../PageWrapper'
+import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'
 
 export function Pair({
   match: {

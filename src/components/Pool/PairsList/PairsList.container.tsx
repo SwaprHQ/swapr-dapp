@@ -17,8 +17,8 @@ import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { PairsListProps } from './PairsList.types'
 import { Header, HeaderText, PaginationRow, StyledUndecoratedLink } from './PairsList.styles'
 import { ListLayout } from './LoadingList'
-import { DimBlurBgBox } from '../DimBlurBgBox'
 import { ButtonPrimary } from '../../Button'
+import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
