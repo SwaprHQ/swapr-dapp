@@ -184,7 +184,6 @@ export function useTradeWrapCallback(
   const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies?.INPUT) ? true : false
   const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT) ? true : false
 
-  // const inputCurrency = trade ? trade.inputAmount.currency : undefined
   const inputCurrency =
     isGnosisTrade && isOutputCurrencyNative
       ? wrappedCurrency(currencies.OUTPUT as Currency, chainId as ChainId)
