@@ -116,14 +116,6 @@ export function SwapButtons({
       (priceImpactSeverity > 3 && !isExpertMode) ||
       gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
 
-    // const errorMessage =
-    //   swapErrorMessage ??
-    //   (parsedAmounts[Field.INPUT] &&
-    //     wrappedToken &&
-    //     (parsedAmounts[Field.INPUT] as CurrencyAmount).toExact() > wrappedToken.toExact() &&
-    //     !swapDisabled)
-    //     ? 'Insufficient ' + wrappedToken?.currency.symbol + ' Balance'
-    //     : undefined
 
     return (
       <RowBetween>
