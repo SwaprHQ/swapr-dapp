@@ -88,9 +88,7 @@ export function SwapButtons({
 
   // True when the wallet tries to trade native currency to ERC20
   const isGnosisProtocolTradeRequireWrap =
-    trade instanceof GnosisProtocolTrade &&
-    isCurrencyNative(currencies?.INPUT as Currency, trade?.chainId) &&
-    !swapInputError
+    trade instanceof GnosisProtocolTrade && Currency.getNative(trade?.chainId) == currencies?.INPUT && !swapInputError
 
   if (loading) {
     return <SwapLoadingButton />
@@ -281,12 +279,4 @@ export function SwapButtons({
       isExpertMode={isExpertMode}
     ></SwapButton>
   )
-}
-
-/**
- * @param trade - the whole trade class, whatever it may contain
- * @returns boolean - if the input currency exists and is native
- */
-function isCurrencyNative(currency: Currency, chainId: ChainId) {
-  return Currency.getNative(chainId) == currency ? true : false
 }
