@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
@@ -24,7 +24,7 @@ const TitleRow = styled(RowBetween)`
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
-    
+
   `};
 `
 const StyledSearchInput = styled(SearchInputWithIcon)`
@@ -40,7 +40,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 
 export default function Governance() {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const router = useRouter()
   const nativeCurrency = useNativeCurrency()
 

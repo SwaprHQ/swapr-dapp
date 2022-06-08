@@ -8,9 +8,9 @@ import { useModalOpen, useToggleSettingsMenu, useSimpleSettingsModal } from '../
 import {
   useExpertModeManager,
   useUserTransactionTTL,
-  useUserSlippageTolerance,
   useUserPreferredGasPrice,
   useMultihopManager,
+  useUserSlippageToleranceManager,
 } from '../../state/user/hooks'
 import { TYPE, ExternalLink, LinkStyledButton, CloseIcon } from '../../theme'
 import { ButtonError } from '../Button'
@@ -183,7 +183,7 @@ export function Settings({ simple }: { simple?: boolean }) {
   const toggleSimpleSettings = useSimpleSettingsModal()
   const toggle = simple ? toggleSimpleSettings : toggleSettings
 
-  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
+  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageToleranceManager()
   const [userPreferredGasPrice, setUserPreferredGasPrice] = useUserPreferredGasPrice()
   const [ttl, setTtl] = useUserTransactionTTL()
   const [expertMode, toggleExpertMode] = useExpertModeManager()

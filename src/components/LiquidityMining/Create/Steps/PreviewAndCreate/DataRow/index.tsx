@@ -16,7 +16,7 @@ export default function DataRow({ name, value }: DataRowProps) {
         </TYPE.small>
       </Box>
       <Box>
-        <TYPE.small fontWeight="600" lineHeight="13px" color="text4">
+        <TYPE.small textAlign={'end'} fontWeight="600" lineHeight="13px" color="text4">
           {value}
         </TYPE.small>
       </Box>

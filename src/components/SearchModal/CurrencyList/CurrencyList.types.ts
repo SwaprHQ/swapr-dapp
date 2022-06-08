@@ -13,7 +13,7 @@ export function isBreakLine(x: unknown): x is BreakLine {
 export interface CurrencyListProps {
   currencies: Currency[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  otherCurrency?: Currency | null
+  otherCurrency?: Currency[] | null
   setImportToken: (token: Token) => void
   showImportView: () => void
   otherListTokens: Token[]

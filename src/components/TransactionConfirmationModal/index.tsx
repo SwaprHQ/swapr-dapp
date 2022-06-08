@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
 import Modal from '../Modal'
 import { ExternalLink, TYPE } from '../../theme'
 import { Text } from 'rebass'
@@ -71,7 +71,7 @@ function TransactionSubmittedContent({
   hash: string | undefined
   chainId: ChainId
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
@@ -131,13 +131,13 @@ export function ConfirmationModalContent({
 }
 
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
           <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
-          <CloseIcon onClick={onDismiss} />
+          <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />

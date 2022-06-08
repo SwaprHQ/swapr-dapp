@@ -1,7 +1,7 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { EtherscanFacade } from '../../../../utils/facades/EtherscanFacade'
+import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 
@@ -29,12 +29,10 @@ describe('Swapping tests', () => {
     cy.resetMetamaskAccount()
   })
   it('Should swap eth to dxd [TC-51]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then(
-      (response: { body: { result: string } }) => {
-        ercBalanceBefore = parseInt(response.body.result)
-        console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then((response: { body: { result: string } }) => {
+      ercBalanceBefore = parseInt(response.body.result)
+      console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
+    })
 
     SwapPage.openTokenToSwapMenu()
       .chooseToken('dxd')
@@ -66,7 +64,7 @@ describe('Swapping tests', () => {
     })
   })
   it('Should swap DXD to WETH [TC-52]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -92,6 +90,10 @@ describe('Swapping tests', () => {
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
+<<<<<<< HEAD
+=======
+
+>>>>>>> automation-tests-ecobridge
     MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
@@ -105,12 +107,12 @@ describe('Swapping tests', () => {
     })
   })
 
-  it('Should swap DAI to ETH [TC-53]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.DAI_TOKEN_RINKEBY).then(res => {
+  it('Should swap LINK to ETH [TC-53]', () => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.LINK_ADDRESS_RINKEBY).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
-    EtherscanFacade.ethBalance().then((response: { body: { result: string } }) => {
+    ScannerFacade.ethBalance().then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
@@ -118,25 +120,25 @@ describe('Swapping tests', () => {
     SwapPage.openTokenToSwapMenu()
       .getOpenTokenManagerButton()
       .click()
-    TokenMenu.switchTokenList('compound')
-    TokenMenu.switchTokenList('swapr-token-list')
-    TokenMenu.goBack().chooseToken('dai')
+    TokenMenu.getSwitchTokenManagerToTokens().click()
+    TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.LINK_ADDRESS_RINKEBY)
+    TokenMenu.importToken('link')
+    TokenMenu.confirmTokenImport()
     SwapPage.getCurrencySelectors()
       .last()
-      .should('contain.text', 'DAI')
+      .should('contain.text', 'LINK')
     SwapPage.switchTokens()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
-      .getEstimatedMinimalTransactionValue()
-      .then(value => {
-        estimatedTransactionOutput = parseFloat(
-          value
-            .text()!
-            .toString()
-            .replace(/[^\d.-]/g, '')
-        )
-      })
+    SwapPage.getEstimatedMinimalTransactionValue().then(value => {
+      estimatedTransactionOutput = parseFloat(
+        value
+          .text()!
+          .toString()
+          .replace(/[^\d.-]/g, '')
+      )
+    })
     SwapPage.confirmSwap()
     cy.confirmMetamaskTransaction({})
 
@@ -145,7 +147,8 @@ describe('Swapping tests', () => {
       .should('contain.text', 'Transaction Submitted')
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
-    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
+
+    MenuBar.checkToastMessage('Swap', 'LINK', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -156,16 +159,16 @@ describe('Swapping tests', () => {
         0.001
       )
       TransactionHelper.checkErc20TokenBalance(
-        AddressesEnum.DAI_TOKEN_RINKEBY,
+        AddressesEnum.LINK_ADDRESS_RINKEBY,
         ercBalanceBefore,
         -TRANSACTION_VALUE,
         true
       )
-      TransactionHelper.checkSubgraphTransaction('DAI', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
+      TransactionHelper.checkSubgraphTransaction('LINK', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
   it('Should send ether to ens domain address [TC-54]', () => {
-    EtherscanFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
+    ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
@@ -197,12 +200,10 @@ describe('Swapping tests', () => {
     })
   })
   it('Should send erc20 token to wallet address [TC-54]', () => {
-    EtherscanFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(
-      res => {
-        ercBalanceBefore = parseInt(res.body.result)
-        console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
+      ercBalanceBefore = parseInt(res.body.result)
+      console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
+    })
 
     SwapPage.openTokenToSwapMenu().chooseToken('xeenus')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())

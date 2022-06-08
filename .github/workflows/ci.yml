@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -335,6 +336,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: mochawesome-report
@@ -353,14 +355,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: public-report
-          retention-days: 3
-
-      - name: Save code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report-screenshots
-          path: screenshots
+          path: |
+            public-report
+            mochawesome-report/public-report/screenshots/**
           retention-days: 3
 
       - name: Delete merged artifacts

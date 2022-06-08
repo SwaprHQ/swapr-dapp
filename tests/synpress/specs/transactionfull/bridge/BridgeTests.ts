@@ -3,17 +3,20 @@ import { TokenMenu } from '../../../../pages/TokenMenu'
 import { BridgePage } from '../../../../pages/BridgePage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { ArbiscanFacade } from '../../../../utils/facades/ArbiscanFacade'
+import {ScannerFacade, SCANNERS} from '../../../../utils/facades/ScannerFacade'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
   before(() => {
-    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).then((res: { body: { result: string } }) => {
-      balanceBefore = parseFloat(res.body.result)
-      console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
-    })
+    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).then(
+      (res: { body: { result: string } }) => {
+        balanceBefore = parseFloat(res.body.result)
+        console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
+        console.log('ERC20 BALANCE BEFORE: ', res)
+      }
+    )
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
   })
@@ -50,6 +53,30 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
+  })
+  it('Should display transaction rejected when rejecting bridging in wallet ', () => {
+    BridgePage.getNetworkFromSelector().click()
+    NetworkSwitcher.rinkeby().click()
+    BridgePage.getNetworkToSelector().click()
+    NetworkSwitcher.arinkeby().click()
+    BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
+    BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
+    BridgePage.getSelectTokenButton().click()
+    TokenMenu.chooseToken('usdc')
+    BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
+    BridgePage.getBridgeSelector('arbitrum').should('be.visible')
+    BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
+    BridgePage.getBridgeSelector('arbitrum').click()
+    BridgePage.getBridgeButton().click()
+    BridgePage.confirmBridging()
+    cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
+    cy.rejectMetamaskTransaction()
+    BridgePage.getTransactionErrorModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction rejected')
+    BridgePage.closeTransactionErrorModal()
+    BridgePage.getNetworkFromSelector().should('be.visible')
+    BridgePage.getNetworkToSelector().should('be.visible')
   })
   it('Should select ethereum and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
@@ -195,8 +222,10 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
 
-    ArbiscanFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY).should((res: { body: { result: string } }) => {
-      expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
-    })
+    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).should(
+      (res: { body: { result: string } }) => {
+        expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
+      }
+    )
   })
 })

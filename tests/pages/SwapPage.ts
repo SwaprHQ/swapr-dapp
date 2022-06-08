@@ -17,15 +17,25 @@ export class SwapPage {
     return this
   }
   static wrap() {
-    cy.get('[data-testid=wrap-button]').click()
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Wrap')
+      .click()
+    return this
+  }
+  static unwrap() {
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Unwrap')
+      .click({ force: true })
     return this
   }
   static swap() {
-    cy.get('#swap-button').click()
+    cy.get('#swap-button')
+      .should('contain.text', 'Swap')
+      .click({ force: true })
     return this
   }
   static confirmSwap() {
-    cy.get('#confirm-swap-or-send').click()
+    cy.get('#confirm-swap-or-send').click({ force: true })
   }
   static getConnectOrSwitchButton() {
     return cy.get('[data-testid=switch-connect-button]')
@@ -49,7 +59,7 @@ export class SwapPage {
     return cy.get('[data-testid=wallet-connect-list]')
   }
   static getConfirmButton() {
-    return cy.get('[data-testid=switch-connect-button]')
+    return cy.get('[data-testid=switch-connect-button]', { timeout: 60000 })
   }
   static getEstimatedMinimalTransactionValue() {
     return cy.get('[data-testid=estimated-transaction-output]')

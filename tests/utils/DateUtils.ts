@@ -1,7 +1,10 @@
 import { format, addMinutes, setSeconds } from 'date-fns'
 
 export class DateUtils {
-  static getFormattedDateTime(date: Date) {
+  static getFormattedDateTimeForInput(date: Date) {
+    return format(date, 'MM-dd-yyyy HH:mm')
+  }
+  static getFormattedDateTimeForValidation(date: Date) {
     return format(date, 'dd-MM-yyyy HH:mm')
   }
   static getDateTimeAndAppendMinutes(appendedMinutes: number) {

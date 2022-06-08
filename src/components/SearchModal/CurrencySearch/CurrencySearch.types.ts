@@ -20,5 +20,5 @@ export interface CurrencySearchProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
 }

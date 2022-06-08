@@ -88,6 +88,8 @@ export function colors(darkMode: boolean): Colors {
     yellow1: '#FFE270',
     yellow2: '#F3841E',
     blue1: '#2172E5',
+    dark4: '#BCB3F0',
+
     gray1: '#737798',
     // dont wanna forget these blue yet
     // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
@@ -101,6 +103,8 @@ export function colors(darkMode: boolean): Colors {
     purple3: '#8780BF',
     purple4: '#685EC6',
     purple5: '#464366',
+    lightPurple: '#C0BAF7',
+    lightPurple2: '##8C83C0',
     purple6: '#292643',
     boxShadow: '#0A0A0F',
 
@@ -203,7 +207,8 @@ export const TYPE = {
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', Arial, Helvetica;
+  font-feature-settings: 'zero' on;
   font-display: fallback;
 }
 
@@ -266,7 +271,6 @@ body {
 }
 
 .react-datepicker {
-  font-family: Montserrat !important;
   border: solid 1px ${props => props.theme.bg5} !important;
   border-radius: 8px !important;
   color: ${props => props.theme.text4} !important;
@@ -393,7 +397,6 @@ body {
 }
 
 .custom-toast-body {
-    font-family: "Montserrat";
     padding: 4px 8px;
 }
 
@@ -457,5 +460,140 @@ body {
 
 .walletconnect-modal__mobile__toggle a {
   color: rgb(64, 153, 255);
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.rotate {
+  animation: rotation 2s infinite linear;
+}
+
+@keyframes loading-rotations {
+  0% {
+    opacity:1;
+  }
+  6.25% {
+    opacity:1;
+  }
+  12.5% {
+    opacity:0;
+  }
+  93.75% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+
+
+@keyframes loading-rotations-7 {
+  0% {
+    opacity:1;
+  }
+  6.25% {
+    opacity:1;
+  }
+  12.5% {
+    opacity:0;
+  }
+  93.75% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes loading-rotations-3 {
+  0% {
+    opacity:1;
+  }
+  17% {
+    opacity:1;
+  }
+  34% {
+    opacity:0;
+  }
+  84% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+.loading-button{
+  position:relative;
+  display: flex;
+  flex: 1;
+  justify-content: start;
+  align-items: flex-end;
+  height: 20px;
+  margin-left: 11px;
+}
+
+.loading-button>div {
+  position: absolute;
+  opacity: 0;
+  display: flex;
+}
+
+.loading-button>div>div{
+  padding: 0px 5px;
+}
+
+.loading-rotation-7>div {
+  animation-name: loading-rotations-7;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 14s;
+}
+
+.loading-rotation-7>div:nth-of-type(1) {
+  animation-delay: 12s;  
+}
+.loading-rotation-7>div:nth-of-type(2) {
+  animation-delay: 10s;  
+}
+.loading-rotation-7>div:nth-of-type(3) {
+  animation-delay: 8s;  
+}
+.loading-rotation-7>div:nth-of-type(4) {
+  animation-delay: 6s;  
+}
+.loading-rotation-7>div:nth-of-type(5) {
+  animation-delay: 4s;
+}
+.loading-rotation-7>div:nth-of-type(6) {
+  animation-delay: 2s;
+}
+.loading-rotation-7>div:nth-of-type(7) {
+  animation-delay: 0s;
+}
+
+.loading-rotation-3>div {
+  animation-name: loading-rotations-3;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 6s;
+}
+
+.loading-rotation-3>div:nth-of-type(1) {
+  animation-delay: 4s;
+}
+.loading-rotation-3>div:nth-of-type(2) {
+  animation-delay: 2s;
+}
+.loading-rotation-3>div:nth-of-type(3) {
+  animation-delay: 0s;
 }
 `

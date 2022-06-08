@@ -4,7 +4,7 @@ import { AutoColumn } from '../../components/Column'
 import { RowBetween } from '../../components/Row'
 
 export const PageWrapper = styled(AutoColumn)`
-  max-width: 640px;
+  max-width: 740px;
   width: 100%;
   margin-top: -30px;
 `

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 
 import {
   Content,
@@ -18,6 +18,7 @@ import NumericalInput from '../Input/NumericalInput'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+import debounce from 'lodash.debounce'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -25,6 +26,8 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { CurrencyView } from './CurrencyView'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
+
+import { normalizeInputValue } from '../../utils'
 
 export const CurrencyInputPanelComponent = ({
   id,
@@ -52,6 +55,7 @@ export const CurrencyInputPanelComponent = ({
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
+  const [localValue, setLocalValue] = useState(value)
   const { account } = useActiveWeb3React()
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -74,6 +78,17 @@ export const CurrencyInputPanelComponent = ({
     }
   }, [disableCurrencySelect, isLoading])
 
+  const debouncedUserInput = useMemo(() => {
+    return debounce(onUserInput, 250)
+  }, [onUserInput])
+
+  useEffect(() => {
+    if (localValue !== value) {
+      setLocalValue(value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
   return (
     <InputPanel id={id}>
       <Container focused={focused}>
@@ -92,10 +107,13 @@ export const CurrencyInputPanelComponent = ({
               <>
                 <NumericalInput
                   className="token-amount-input"
-                  value={value}
+                  value={localValue}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  onUserInput={onUserInput}
+                  onUserInput={value => {
+                    setLocalValue(normalizeInputValue(value))
+                    debouncedUserInput(normalizeInputValue(value))
+                  }}
                   disabled={disabled}
                   data-testid={'transaction-value-input'}
                 />
@@ -144,7 +162,7 @@ export const CurrencyInputPanelComponent = ({
           onDismiss={onDismiss}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
-          otherSelectedCurrency={otherCurrency}
+          otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
         />
       )}
