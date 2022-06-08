@@ -9,12 +9,12 @@ import { useActiveWeb3React } from '../../../../hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { currencyId } from '../../../../utils/currencyId'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import { UserLiquidityProps } from './UserLiquidity'
+import { UserLiquidityProps } from './UserLiquidity.types'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
-import { DimBlurBgBox } from '../../DimBlurBgBox'
 import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
 import { getAccountAnalyticsLink } from '../../../../utils'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
+import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()
