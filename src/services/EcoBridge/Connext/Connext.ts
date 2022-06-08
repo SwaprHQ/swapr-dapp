@@ -395,24 +395,14 @@ export class Connext extends EcoBridgeChildBase {
 
       if (isNative) {
         //eth to weth
-        if ((fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) && toChainId === ChainId.XDAI) {
-          toTokenAddress = WETH_GNOSIS_ADDRESS
+        if (fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) {
+          if (toChainId === ChainId.XDAI) toTokenAddress = WETH_GNOSIS_ADDRESS
+          if (toChainId === ChainId.POLYGON) toTokenAddress = WETH_POLYGON_ADDRESS
         }
-        if (
-          (fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) &&
-          toChainId === ChainId.POLYGON
-        ) {
-          toTokenAddress = WETH_POLYGON_ADDRESS
-        }
-        //xdai - dai
-        if (fromChainId === ChainId.XDAI && toChainId === ChainId.MAINNET) {
-          toTokenAddress = DAI_ETHEREUM_ADDRESS
-        }
-        if (fromChainId === ChainId.XDAI && toChainId === ChainId.ARBITRUM_ONE) {
-          toTokenAddress = DAI_ARBITRUM_ADDRESS
-        }
-        if (fromChainId === ChainId.XDAI && toChainId === ChainId.POLYGON) {
-          toTokenAddress = DAI_POLYGON_ADDRESS
+        if (fromChainId === ChainId.XDAI) {
+          if (toChainId === ChainId.MAINNET) toTokenAddress = DAI_ETHEREUM_ADDRESS
+          if (toChainId === ChainId.ARBITRUM_ONE) toTokenAddress = DAI_ARBITRUM_ADDRESS
+          if (toChainId === ChainId.POLYGON) toTokenAddress = DAI_POLYGON_ADDRESS
         }
       } else {
         toTokenAddress = CONNEXT_TOKENS.reduce<string | undefined>((tokenAddressOnDestinationChain, token) => {
@@ -427,6 +417,7 @@ export class Connext extends EcoBridgeChildBase {
         }, undefined)
       }
 
+      console.log(toTokenAddress)
       if (!toTokenAddress || !this._account || !this._connextSdk)
         throw new Error('Not enough information to find quote')
 

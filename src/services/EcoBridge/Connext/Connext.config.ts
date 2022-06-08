@@ -6,7 +6,7 @@ export const connextSdkChainConfig = {
     transactionManagerAddress: '0x31eFc4AeAA7c39e54A33FDc3C46ee2Bd70ae0A09',
   },
   [ChainId.XDAI]: {
-    providers: ['https://rpc.gnosischain.com'],
+    providers: ['https://rpc.ankr.com/gnosis'],
     transactionMangerAddress: '0x115909BDcbaB21954bEb4ab65FC2aBEE9866fa93',
   },
   [ChainId.ARBITRUM_ONE]: {
