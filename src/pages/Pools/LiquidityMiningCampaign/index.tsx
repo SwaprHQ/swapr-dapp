@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
 import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import { PageWrapper } from '../../../components/PageWrapper'
 
 import { TYPE } from '../../../theme'
 import { Box, Flex, Text } from 'rebass'
@@ -24,6 +23,7 @@ import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns
 import { Location } from 'history'
 import { currencyId } from '../../../utils/currencyId'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
+import { PageWrapper } from '../../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

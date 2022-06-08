@@ -10,7 +10,6 @@ import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Ste
 import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../../components/PageWrapper'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
@@ -18,6 +17,7 @@ import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMin
 import styled from 'styled-components'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useActiveWeb3React } from '../../../hooks'
+import { PageWrapper } from '../../PageWrapper'
 
 const LastStep = styled(Step)`
   z-index: 0;

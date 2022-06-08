@@ -5,7 +5,6 @@ import { Info } from 'react-feather'
 import { Flex, Text } from 'rebass'
 
 import { TYPE } from '../../theme'
-import { PageWrapper } from '../../components/PageWrapper'
 
 import { LightCard } from '../../components/Card'
 import { RowBetween } from '../../components/Row'
@@ -14,6 +13,7 @@ import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { SearchInputWithIcon } from '../../components/SearchInputWithIcon'
 import { useRouter } from '../../hooks/useRouter'
 import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button'
+import { PageWrapper } from '../PageWrapper'
 
 import Container from './Container'
 import { MainPage, PairPage } from './constant'

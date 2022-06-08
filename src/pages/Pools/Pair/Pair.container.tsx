@@ -10,7 +10,6 @@ import { useToken } from '../../../hooks/Tokens'
 import { useRouter } from '../../../hooks/useRouter'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { PairState, usePair } from '../../../data/Reserves'
-import { PageWrapper } from '../../../components/PageWrapper'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import { ButtonPurpleDim, ButtonBadge } from '../../../components/Button'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
@@ -21,6 +20,7 @@ import List from '../../../components/LiquidityMiningCampaigns/List'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 import { ButtonRow, ContentGrid, PointableFlex, TitleRow, TwoColumnsGrid } from './Pair.styles'
+import { PageWrapper } from '../../PageWrapper'
 
 export function Pair({
   match: {

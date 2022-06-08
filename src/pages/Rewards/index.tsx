@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageWrapper } from '../../components/PageWrapper'
 import { Link } from 'react-router-dom'
+import { Pair } from '@swapr/sdk'
 
 import { TYPE } from '../../theme'
 import { Box, Flex, Text } from 'rebass'
@@ -23,11 +23,11 @@ import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFea
 
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 
-import { Pair } from '@swapr/sdk'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
 import { useRouter } from '../../hooks/useRouter'
 import { RewardsList } from '../../components/LiquidityMiningCampaigns/RewardsList'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

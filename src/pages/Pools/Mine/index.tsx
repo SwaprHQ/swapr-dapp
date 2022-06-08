@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { PageWrapper } from '../../../components/PageWrapper'
 
 import { TYPE } from '../../../theme'
 import { Box, Flex, Text } from 'rebass'
@@ -13,6 +12,7 @@ import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMining
 import { PairsList } from '../../../components/Pool/PairsList'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
 import { useActiveWeb3React } from '../../../hooks'
+import { PageWrapper } from '../../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
