@@ -166,7 +166,7 @@ export function SwapButtons({
           // swapDisabled depends on the step of the process
           // errorMessage depends on the specific details in the swap step
           // standard disable or if there is some kind of problem
-          disabled={swapDisabled} // || errorMessage != null}
+          disabled={swapDisabled}
           platformName={trade?.platform.name}
           priceImpactSeverity={priceImpactSeverity}
           isExpertMode={isExpertMode}
