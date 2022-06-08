@@ -62,7 +62,6 @@ export function SwapButtons({
   approvalSubmitted,
   currencies,
   trade,
-  //parsedAmounts,
   swapInputError,
   swapErrorMessage,
   loading,
