@@ -42,6 +42,8 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
 import SwapButtons from '../../components/swap/SwapButtons'
 import { TradeDetails } from '../../components/swap/TradeDetails'
+import { useHigherUSDValue } from '../../hooks/useUSDValue'
+import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 
 export type SwapData = {
   showConfirm: boolean
@@ -268,6 +270,17 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: parsedAmounts[Field.INPUT],
+    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
+    trade,
+  })
+
+  const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
+    fiatValueInput,
+    fiatValueOutput,
+  ])
+
   return (
     <>
       <TokenWarningModal
@@ -308,6 +321,8 @@ export default function Swap() {
                     onMax={handleMaxInput(Field.INPUT)}
                     onCurrencySelect={handleInputSelect}
                     otherCurrency={currencies[Field.OUTPUT]}
+                    fiatValue={fiatValueInput}
+                    isFallbackFiatValue={isFallbackFiatValueInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -334,6 +349,9 @@ export default function Swap() {
                     currency={currencies[Field.OUTPUT]}
                     onCurrencySelect={handleOutputSelect}
                     otherCurrency={currencies[Field.INPUT]}
+                    fiatValue={fiatValueOutput}
+                    isFallbackFiatValue={isFallbackFiatValueOutput}
+                    priceImpact={priceImpact}
                     showCommonBases
                     id="swap-currency-output"
                   />
