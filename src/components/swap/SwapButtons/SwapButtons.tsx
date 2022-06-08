@@ -179,10 +179,8 @@ export function SwapButtons({
           // standard disable or if there is some kind of problem
           disabled={swapDisabled} // || errorMessage != null}
           platformName={trade?.platform.name}
-          //error={isValid && priceImpactSeverity > 2}
           priceImpactSeverity={priceImpactSeverity}
           isExpertMode={isExpertMode}
-          //swapInputError={errorMessage}
         >
           {priceImpactSeverity > 3 && !isExpertMode
             ? `Price Impact High`
