@@ -24,7 +24,7 @@ export enum WrapState {
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
-interface UseWrapCallback {
+interface UseWrapCallbackReturn {
   wrapType: WrapType
   execute?: undefined | (() => Promise<void>)
   inputError?: string
