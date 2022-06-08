@@ -15,18 +15,11 @@ import { useActiveWeb3React } from '../../../hooks'
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 import { warningSeverity } from '../../../utils/prices'
 import { ROUTABLE_PLATFORM_STYLE } from '../../../constants'
-import { SwapData } from '../../../pages/Swap'
+import { GnosisProtocolTradeState, SwapData } from '../../../pages/Swap'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 import { useTranslation } from 'react-i18next'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
-
-enum GnosisProtocolTradeStatus {
-  UNKNOWN, // default
-  WRAP,
-  APPROVAL,
-  SWAP,
-}
 
 interface SwapButtonsProps {
   wrapInputError: string | undefined
@@ -47,8 +40,8 @@ interface SwapButtonsProps {
   approveCallback: () => Promise<void>
   onWrap: (() => Promise<void>) | undefined
   wrapState: WrapState | undefined
-  gnosisProtocolTradeStatus: GnosisProtocolTradeStatus
-  setGnosisProtocolStatus: React.Dispatch<React.SetStateAction<GnosisProtocolTradeStatus>>
+  gnosisProtocolTradeState: GnosisProtocolTradeState
+  setGnosisProtocolState: (gnosisProtocolTradeState: GnosisProtocolTradeState) => void
 }
 
 export function SwapButtons({
@@ -70,8 +63,8 @@ export function SwapButtons({
   approveCallback,
   onWrap,
   wrapState,
-  gnosisProtocolTradeStatus,
-  setGnosisProtocolStatus,
+  gnosisProtocolTradeState,
+  setGnosisProtocolState,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -102,8 +95,8 @@ export function SwapButtons({
 
   if (isGnosisProtocolTradeRequireWrap) {
     const midCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
-    if (gnosisProtocolTradeStatus === GnosisProtocolTradeStatus.UNKNOWN)
-      setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+    if (gnosisProtocolTradeState === GnosisProtocolTradeState.UNKNOWN)
+      setGnosisProtocolState(GnosisProtocolTradeState.WRAP)
     const isApprovalRequired = approval !== ApprovalState.APPROVED
     const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
@@ -111,14 +104,14 @@ export function SwapButtons({
       !isValid ||
       isApprovalRequired ||
       (priceImpactSeverity > 3 && !isExpertMode) ||
-      gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
+      gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP
 
     return (
       <RowBetween>
         {
           <ButtonConfirmed
             onClick={onWrap}
-            disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.WRAP || wrapState === WrapState.PENDING}
+            disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP || wrapState === WrapState.PENDING}
             width={width}
             altDisabledStyle={wrapState !== WrapState.UNKNOWN}
             confirmed={wrapState === WrapState.WRAPPED}
@@ -138,8 +131,8 @@ export function SwapButtons({
         {// If the EOA needs to approve the WXDAI or any ERC20
         showApproveFlow && isApprovalRequired && (
           <ButtonConfirmed
-            onClick={() => approveCallback().then(() => setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP))}
-            disabled={gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.APPROVAL || approvalSubmitted}
+            onClick={() => approveCallback().then(() => setGnosisProtocolState(GnosisProtocolTradeState.SWAP))}
+            disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.APPROVAL || approvalSubmitted}
             width={width}
             altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
           >

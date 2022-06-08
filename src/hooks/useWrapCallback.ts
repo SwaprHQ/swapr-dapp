@@ -26,10 +26,10 @@ export enum WrapState {
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 interface UseWrapCallbackReturn {
   wrapType: WrapType
-  execute?: undefined | (() => Promise<void>)
+  execute?: () => Promise<void>
   inputError?: string
   wrapState?: WrapState
-  setWrapState?: React.Dispatch<React.SetStateAction<WrapState>>
+  setWrapState?: (wrapState: WrapState) => void
 }
 
 /**
@@ -49,7 +49,7 @@ export function useWrapCallback(
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   const { t } = useTranslation()
-  const [wrapState, setWrapState] = useState<WrapState>(WrapState.UNKNOWN)
+  const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency, chainId), [
     inputCurrency,
@@ -72,9 +72,9 @@ export function useWrapCallback(
   const allTransactions = useAllTransactions()
   useEffect(() => {
     const transaction = transactionReceipt && allTransactions[transactionReceipt.transactionHash]
-    const success = transaction?.receipt?.status === 1
-    toWrap && success && setWrapState(WrapState.WRAPPED)
-    toUnwrap && success && setWrapState(WrapState.UNWRAPPED)
+    const isTransactionSuccessful = transaction?.receipt?.status === 1
+    toWrap && isTransactionSuccessful && setWrapState(WrapState.WRAPPED)
+    toUnwrap && isTransactionSuccessful && setWrapState(WrapState.UNWRAPPED)
   }, [toWrap, toUnwrap, transactionReceipt, allTransactions])
 
   const addTransaction = useTransactionAdder()
@@ -179,7 +179,7 @@ export function useTradeWrapCallback(
   isGnosisTrade = false,
   chainId?: ChainId,
   typedValue?: string // can be also obtained from the SwapState
-): UseWrapCallback {
+): UseWrapCallbackReturn {
   const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies?.INPUT) ? true : false
   const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT) ? true : false
 

@@ -70,7 +70,7 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-enum GnosisProtocolTradeState {
+export enum GnosisProtocolTradeState {
   UNKNOWN, // default
   WRAP,
   APPROVAL,
@@ -124,7 +124,7 @@ export default function Swap() {
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
-  const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeState>(
+  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState<GnosisProtocolTradeState>(
     GnosisProtocolTradeState.UNKNOWN
   )
   const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useTradeWrapCallback(
@@ -202,8 +202,8 @@ export default function Swap() {
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeState.SWAP)
-      else setGnosisProtocolStatus(GnosisProtocolTradeState.APPROVAL)
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
+      else setGnosisProtocolState(GnosisProtocolTradeState.APPROVAL)
     }
   }, [wrapState, approval, trade])
 
@@ -244,7 +244,7 @@ export default function Swap() {
         })
         //reset states, in case we want to operate again
         if (trade instanceof GnosisProtocolTrade) {
-          setGnosisProtocolStatus(GnosisProtocolTradeState.WRAP)
+          setGnosisProtocolState(GnosisProtocolTradeState.WRAP)
           setWrapState && setWrapState(WrapState.UNKNOWN)
         }
       })
@@ -426,8 +426,8 @@ export default function Swap() {
                   approveCallback={approveCallback}
                   handleSwap={handleSwap}
                   wrapState={wrapState}
-                  gnosisProtocolTradeStatus={gnosisProtocolTradeStatus}
-                  setGnosisProtocolStatus={setGnosisProtocolStatus}
+                  gnosisProtocolTradeState={gnosisProtocolTradeState}
+                  setGnosisProtocolState={setGnosisProtocolState}
                 />
               </AutoColumn>
             </Wrapper>
