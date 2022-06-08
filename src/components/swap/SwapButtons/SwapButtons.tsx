@@ -82,10 +82,6 @@ export function SwapButtons({
 
   console.info(wrapType)
 
-  // const wrappedToken = useTokenBalance(
-  //   account as string,
-  //   wrappedCurrency(currencies.INPUT as Currency, trade?.chainId as ChainId)
-  // )
 
   useEffect(() => {
     RoutablePlatformKeys.forEach(key => {
