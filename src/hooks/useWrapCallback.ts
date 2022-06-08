@@ -71,8 +71,8 @@ export function useWrapCallback(
 
   const allTransactions = useAllTransactions()
   useEffect(() => {
-    const transaction = transactionReceipt && allTransactions[transactionReceipt.transactionHash]
-    const isTransactionSuccessful = transaction?.receipt?.status === 1
+    const isTransactionSuccessful =
+      transactionReceipt && allTransactions[transactionReceipt.transactionHash]?.receipt?.status === 1
     toWrap && isTransactionSuccessful && setWrapState(WrapState.WRAPPED)
     toUnwrap && isTransactionSuccessful && setWrapState(WrapState.UNWRAPPED)
   }, [toWrap, toUnwrap, transactionReceipt, allTransactions])
