@@ -20,7 +20,4 @@ export class NetworkSwitcher {
   static polygon() {
     return cy.get('[data-testid=polygon-network-button]')
   }
-  static polygon() {
-    return cy.get('[data-testid=polygon-network-button]')
-  }
 }
