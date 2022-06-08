@@ -39,10 +39,6 @@ interface SwapButtonsProps {
   approvalSubmitted: boolean
   currencies: { [field in Field]?: Currency }
   trade: Trade | undefined
-  // parsedAmounts: {
-  //   INPUT: CurrencyAmount | undefined
-  //   OUTPUT: CurrencyAmount | undefined
-  // }
   swapInputError: string | undefined
   swapErrorMessage: string | undefined
   loading: boolean
