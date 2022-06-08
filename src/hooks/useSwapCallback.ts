@@ -200,8 +200,7 @@ export function useSwapCallback({
 
           return orderId
         }
-        // eslint-disable-next-line
-        // @ts-ignore
+
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
             const transactionRequest = await call.transactionParameters

@@ -17,6 +17,7 @@ import { warningSeverity } from '../../../utils/prices'
 import { ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { SwapData } from '../../../pages/Swap'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
+import { useTranslation } from 'react-i18next'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
 
