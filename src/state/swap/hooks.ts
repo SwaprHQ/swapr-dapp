@@ -177,16 +177,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   }
   const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
 
-  console.info({ inputCurrency, outputCurrency })
-  console.info({
-    allPlatformTrades,
-    bestTradeExactIn,
-    bestTradeExactOut,
-    isExactIn,
-    parsedAmount,
-    useTradeExactOutAllPlatformsRes,
-  })
-
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
     [Field.OUTPUT]: relevantTokenBalances[1],

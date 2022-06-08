@@ -42,7 +42,7 @@ export function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
-): UseWrapCallback {
+): UseWrapCallbackReturn {
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapperToken = useWrappingToken(nativeCurrency)
@@ -79,7 +79,6 @@ export function useWrapCallback(
 
   const addTransaction = useTransactionAdder()
 
-
   return useMemo(() => {
     if (!nativeCurrencyWrapperContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
 
@@ -95,20 +94,20 @@ export function useWrapCallback(
                   // Set state to pending
                   setWrapState(WrapState.PENDING)
                   // Submit transaction to signer to sign and broadcast to memepool
-                  const depositTransactions = await nativeCurrencyWrapperContract.deposit({
+                  const depositTransaction = await nativeCurrencyWrapperContract.deposit({
                     value: `0x${inputAmount.raw.toString(16)}`,
                   })
 
-                  setTransactionReceipt(depositTransactions)
-                  addTransaction(depositTransactions, {
+                  setTransactionReceipt(depositTransaction)
+                  addTransaction(depositTransaction, {
                     summary: `Wrap ${inputAmount.toSignificant(6)} ${nativeCurrency.symbol} to ${
                       nativeCurrencyWrapperToken.symbol
                     }`,
                   })
                   // Wait for the network to mine the transaction
-                  const txReceipt = await depositTransactions.wait(1)
+                  const depositTransactionReceipt = await depositTransaction.wait(1)
 
-                  if (txReceipt.status === 1) setWrapState(WrapState.WRAPPED)
+                  if (depositTransactionReceipt.status === 1) setWrapState(WrapState.WRAPPED)
                 } catch (error) {
                   console.error('Could not deposit', error)
                   //if something goes wrong, reset status

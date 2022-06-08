@@ -70,7 +70,7 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-enum GnosisProtocolTradeStatus {
+enum GnosisProtocolTradeState {
   UNKNOWN, // default
   WRAP,
   APPROVAL,
@@ -123,9 +123,9 @@ export default function Swap() {
   } = useDerivedSwapInfo(platformOverride || undefined)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
-  // wrap status(use useWrapCallback + and a state variable)
-  const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeStatus>(
-    GnosisProtocolTradeStatus.UNKNOWN
+  // wrap status(use useWrapCallback and a state variable)
+  const [gnosisProtocolTradeStatus, setGnosisProtocolStatus] = useState<GnosisProtocolTradeState>(
+    GnosisProtocolTradeState.UNKNOWN
   )
   const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useTradeWrapCallback(
     currencies,
@@ -202,8 +202,8 @@ export default function Swap() {
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeStatus.SWAP)
-      else setGnosisProtocolStatus(GnosisProtocolTradeStatus.APPROVAL)
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolStatus(GnosisProtocolTradeState.SWAP)
+      else setGnosisProtocolStatus(GnosisProtocolTradeState.APPROVAL)
     }
   }, [wrapState, approval, trade])
 
@@ -244,7 +244,7 @@ export default function Swap() {
         })
         //reset states, in case we want to operate again
         if (trade instanceof GnosisProtocolTrade) {
-          setGnosisProtocolStatus(GnosisProtocolTradeStatus.WRAP)
+          setGnosisProtocolStatus(GnosisProtocolTradeState.WRAP)
           setWrapState && setWrapState(WrapState.UNKNOWN)
         }
       })
