@@ -11,5 +11,7 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
     UniswapV2RoutablePlatform.HONEYSWAP,
     UniswapV2RoutablePlatform.BAOSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
-  ].filter(platform => platform.supportsChain(chainId as ChainId))
+    UniswapV2RoutablePlatform.DFYN,
+    UniswapV2RoutablePlatform.QUICKSWAP,
+  ].filter(platform => platform.supportsChain(chainId))
 }
