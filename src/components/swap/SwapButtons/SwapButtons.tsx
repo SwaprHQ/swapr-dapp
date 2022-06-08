@@ -80,9 +80,6 @@ export function SwapButtons({
   const noRoute = !route
   const isValid = !swapInputError
 
-  console.info(wrapType)
-
-
   useEffect(() => {
     RoutablePlatformKeys.forEach(key => {
       new Image().src = ROUTABLE_PLATFORM_STYLE[key].logo
@@ -115,7 +112,6 @@ export function SwapButtons({
       isApprovalRequired ||
       (priceImpactSeverity > 3 && !isExpertMode) ||
       gnosisProtocolTradeStatus !== GnosisProtocolTradeStatus.SWAP
-
 
     return (
       <RowBetween>

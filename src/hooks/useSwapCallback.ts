@@ -184,7 +184,9 @@ export function useSwapCallback({
 
           // Sign the order using Metamask
           // and then submit the order to GPv2
-          const orderId = await trade.signOrder(signer).then((trade: { submitOrder: () => any }) => trade.submitOrder())
+          const orderId = await trade
+            .signOrder(signer)
+            .then((trade: { submitOrder: () => Promise<string> }) => trade.submitOrder())
 
           addTransaction(
             {
@@ -214,23 +216,23 @@ export function useSwapCallback({
             return library
               .getSigner()
               .estimateGas(transactionRequest as any)
-              .then((gasEstimate: any) => ({
+              .then(gasEstimate => ({
                 call,
                 gasEstimate,
               }))
-              .catch((gasError: any) => {
+              .catch((gasError: string) => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
                 return library
                   .call(transactionRequest as any)
-                  .then((result: any) => {
+                  .then((result: string) => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
                     return {
                       call,
                       error: new Error('Unexpected issue with estimating the gas. Please try again.'),
                     }
                   })
-                  .catch((callError: { reason: any }) => {
+                  .catch((callError: { reason: string }) => {
                     console.debug('Call threw error', call, callError)
                     let errorMessage: string
                     switch (callError.reason) {
@@ -281,14 +283,14 @@ export function useSwapCallback({
             gasPrice: normalizedGasPrice,
             ...((await transactionParameters) as any),
           })
-          .then((response: any) => {
+          .then(response => {
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
 
             return response.hash
           })
-          .catch((error: any) => {
+          .catch(error => {
             // if the user rejected the tx, pass this along
             if (error?.code === 4001) {
               throw new Error('Transaction rejected.')
