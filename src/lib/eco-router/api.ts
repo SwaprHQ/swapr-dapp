@@ -124,7 +124,7 @@ export async function getExactIn(
       .then(resolve)
       .catch(error => {
         resolve(undefined)
-        console.log(error)
+        console.error(error)
       })
   })
 
@@ -231,7 +231,7 @@ export async function getExactOut(
       .then(resolve)
       .catch(error => {
         resolve(undefined)
-        console.log(error)
+        console.error(error)
       })
   })
 

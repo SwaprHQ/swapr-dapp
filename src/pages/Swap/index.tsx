@@ -419,7 +419,6 @@ export default function Swap() {
                   approvalSubmitted={approvalSubmitted}
                   currencies={currencies}
                   trade={trade}
-                  //parsedAmounts={parsedAmounts}
                   swapInputError={swapInputError}
                   swapErrorMessage={swapErrorMessage}
                   loading={loading}

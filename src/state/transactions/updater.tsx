@@ -106,8 +106,6 @@ export default function Updater(): null {
 
           promise
             .then(orderMetadata => {
-              console.log({ orderMetadata })
-
               if (orderMetadata.status === 'open') {
                 return
               }
