@@ -3,6 +3,8 @@ import { Provider } from '@ethersproject/providers'
 import {
   CurveTrade,
   getAllCommonUniswapV2Pairs,
+  getAllCommonUniswapV2PairsFromSubgraph,
+  Pair,
   RoutablePlatform,
   Token,
   Trade,
@@ -72,12 +74,21 @@ export async function getExactIn(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonUniswapV2Pairs({
+      let pairs: Pair[] = []
+
+      const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
         platform,
         provider,
-      })
+      }
+
+      if (platform.subgraphEndpoint[chainId] !== undefined) {
+        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
+      } else {
+        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+      }
+
       return (
         UniswapV2Trade.computeTradesExactIn({
           currencyAmountIn,
@@ -181,12 +192,21 @@ export async function getExactOut(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonUniswapV2Pairs({
+      let pairs: Pair[] = []
+
+      const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
         platform,
         provider,
-      })
+      }
+
+      if (platform.subgraphEndpoint[chainId] !== undefined) {
+        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
+      } else {
+        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+      }
+
       return (
         UniswapV2Trade.computeTradesExactOut({
           currencyAmountOut,
