@@ -90,12 +90,7 @@ describe('Swapping tests', () => {
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
-<<<<<<< HEAD
-=======
-
->>>>>>> automation-tests-ecobridge
     MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
-
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
         AddressesEnum.WETH_TOKEN,
