@@ -142,6 +142,5 @@
   "gnosisProtocolExplorer": "Gnosis Protocol Explorer",
   "blockExplorer": "Block Explorer",
   "findingBestPrice": "Finding best price",
-  "viewOn": "View on",
-  "viewTransactionOn": "View Transaction on"
+  "viewOn": "View on"
 }
