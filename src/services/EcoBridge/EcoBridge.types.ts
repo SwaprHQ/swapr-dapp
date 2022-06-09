@@ -1,10 +1,12 @@
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
+
 import { Store } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+
 import { AppState } from '../../state'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { ListsState } from '../../state/lists/reducer'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider

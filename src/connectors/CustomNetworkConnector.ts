@@ -1,6 +1,8 @@
-import { ConnectorUpdate } from '@web3-react/types'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+// eslint-disable-next-line import/named
+import { ConnectorUpdate } from '@web3-react/types'
 import invariant from 'tiny-invariant'
+
 import { NetworkDetails } from '../constants'
 
 // taken from ethers.js, compatible interface with web3 provider

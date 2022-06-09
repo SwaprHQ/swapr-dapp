@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useAllTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
-import { useActiveWeb3React } from './index'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 import { useTranslation } from 'react-i18next'
 import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { useActiveWeb3React } from './index'
 
 export enum WrapType {
   NOT_APPLICABLE,

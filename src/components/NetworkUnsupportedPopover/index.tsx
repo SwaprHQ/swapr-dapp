@@ -1,11 +1,11 @@
-import React, { ReactNode, RefObject, useRef } from 'react'
 import { Placement } from '@popperjs/core'
-import { useCloseModals } from '../../state/application/hooks'
-import { StyledPopover, Row, View, Text, Image } from '../NetworkSwitcher/NetworkSwitcher.styles'
-import { CloseIcon } from '../../theme'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import React, { ReactNode, RefObject, useRef } from 'react'
 
 import unsupportedNetworkHintImage1x from '../../assets/images/unsupported-network-hint.png'
+import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import { useCloseModals } from '../../state/application/hooks'
+import { CloseIcon } from '../../theme'
+import { Image, Row, StyledPopover, Text, View } from '../NetworkSwitcher/NetworkSwitcher.styles'
 
 interface UnsupportedNetworkPopoverProps {
   children?: ReactNode

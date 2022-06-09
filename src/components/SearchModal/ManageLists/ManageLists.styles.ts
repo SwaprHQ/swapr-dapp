@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import Row from '../../Row'
-import Column from '../../Column'
 import { LinkStyledButton, TYPE } from '../../../theme'
+import Column from '../../Column'
+import Row from '../../Row'
 
 export const Wrapper = styled(Column)`
   width: 100%;

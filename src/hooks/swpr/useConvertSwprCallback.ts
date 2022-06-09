@@ -1,6 +1,8 @@
-import { useMemo } from 'react'
-import { useSWPRConverterContract } from '../useContract'
 import { TransactionResponse } from '@ethersproject/providers'
+
+import { useMemo } from 'react'
+
+import { useSWPRConverterContract } from '../useContract'
 
 /**
  * Returns a function that creates a liquidity mining distribution with the given parameters.

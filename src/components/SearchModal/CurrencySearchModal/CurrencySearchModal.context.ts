@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { CurrencyModalView, CurrencySearchModalContextType } from './CurrencySearchModal.types'
 
 export const CurrencySearchModalContext = React.createContext<CurrencySearchModalContextType>({

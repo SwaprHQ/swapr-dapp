@@ -1,4 +1,5 @@
 import { ChainId } from '@swapr/sdk'
+
 import { BridgeTransactionStatus, BridgeTxnType } from '../state/bridgeTransactions/types'
 import { getNetworkInfo } from './networksList'
 

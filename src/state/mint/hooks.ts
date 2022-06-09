@@ -1,9 +1,10 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, Price, TokenAmount } from '@swapr/sdk'
+
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
-
 import { useActiveWeb3React } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'

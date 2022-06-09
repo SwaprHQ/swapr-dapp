@@ -1,19 +1,19 @@
 import { Token, TokenAmount } from '@swapr/sdk'
+
 import React, { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { CloseIcon, TYPE } from '../../../../../../theme'
-
 import { Box, Flex } from 'rebass'
-import { SmoothGradientCard } from '../../../../styleds'
-import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
-import { Actions, ActionType, CampaignType } from '../../../../../../pages/LiquidityMining/Create'
+import styled from 'styled-components'
 
-import NumericalInput from '../../../../../Input/NumericalInput'
-import { ButtonPrimary } from '../../../../../Button'
 import { useActiveWeb3React } from '../../../../../../hooks'
-import { useTokenBalance } from '../../../../../../state/wallet/hooks'
-import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
+import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
+import { Actions, ActionType, CampaignType } from '../../../../../../pages/LiquidityMining/Create'
+import { useTokenBalance } from '../../../../../../state/wallet/hooks'
+import { CloseIcon, TYPE } from '../../../../../../theme'
+import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
+import { ButtonPrimary } from '../../../../../Button'
+import { NumericalInput } from '../../../../../Input/NumericalInput'
+import { SmoothGradientCard } from '../../../../styleds'
 import { AssetLogo } from './AssetLogo'
 
 const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
@@ -184,16 +184,19 @@ export default function AssetSelector({
                   placeholder="0"
                   value={rawAmount ? rawAmount : ''}
                   onUserInput={handleUserInput}
+                  data-testid="reward-input"
                 />
               </RelativeContainer>
             ) : (
-              //TODO: re add this test related property to appropriate field-> deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
               <TYPE.largeHeader
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}
                 lineHeight="22px"
                 color={customAssetTitle || !tokenName ? '#8C83C0' : 'lightPurple'}
                 fontSize={13}
+                data-testid={`${campaingType === CampaignType.TOKEN ? 'token' : 'pair'}${
+                  isReward ? '-reward' : ''
+                }-asset-selector`}
               >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>
