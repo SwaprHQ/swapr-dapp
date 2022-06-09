@@ -4,7 +4,7 @@ import Loader from '../../../components/Loader'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { Field } from '../../../state/swap/actions'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 import Column from '../../../components/Column'
@@ -85,6 +85,25 @@ export function SwapButtons({
   const isGnosisProtocolTradeRequireWrap =
     trade instanceof GnosisProtocolTrade && Currency.getNative(trade?.chainId) == currencies?.INPUT && !swapInputError
 
+  const onSwapClick = useCallback(() => {
+    if (isExpertMode) {
+      handleSwap()
+    } else {
+      setSwapState({
+        tradeToConfirm: trade,
+        attemptingTxn: false,
+        swapErrorMessage: undefined,
+        showConfirm: true,
+        txHash: undefined,
+      })
+    }
+  }, [isExpertMode, handleSwap, setSwapState, trade])
+
+  const handleGPApproveClick = useCallback(async () => {
+    await approveCallback()
+    setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
+  }, [approveCallback, setGnosisProtocolState])
+
   if (loading) {
     return <SwapLoadingButton />
   }
@@ -131,7 +150,7 @@ export function SwapButtons({
         {// If the EOA needs to approve the WXDAI or any ERC20
         showApproveFlow && isApprovalRequired && (
           <ButtonConfirmed
-            onClick={() => approveCallback().then(() => setGnosisProtocolState(GnosisProtocolTradeState.SWAP))}
+            onClick={handleGPApproveClick}
             disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.APPROVAL || approvalSubmitted}
             width={width}
             altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
@@ -148,19 +167,7 @@ export function SwapButtons({
           </ButtonConfirmed>
         )}
         <SwapButton
-          onClick={() => {
-            if (isExpertMode) {
-              handleSwap()
-            } else {
-              setSwapState({
-                tradeToConfirm: trade,
-                attemptingTxn: false,
-                swapErrorMessage: undefined,
-                showConfirm: true,
-                txHash: undefined,
-              })
-            }
-          }}
+          onClick={onSwapClick}
           width={width}
           id="swap-button"
           // swapDisabled depends on the step of the process
@@ -217,19 +224,7 @@ export function SwapButtons({
             )}
           </ButtonConfirmed>
           <ButtonError
-            onClick={() => {
-              if (isExpertMode) {
-                handleSwap()
-              } else {
-                setSwapState({
-                  tradeToConfirm: trade,
-                  attemptingTxn: false,
-                  swapErrorMessage: undefined,
-                  showConfirm: true,
-                  txHash: undefined,
-                })
-              }
-            }}
+            onClick={onSwapClick}
             width="48%"
             id="swap-button"
             disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
@@ -253,19 +248,7 @@ export function SwapButtons({
 
   return (
     <SwapButton
-      onClick={() => {
-        if (isExpertMode) {
-          handleSwap()
-        } else {
-          setSwapState({
-            tradeToConfirm: trade,
-            attemptingTxn: false,
-            swapErrorMessage: undefined,
-            showConfirm: true,
-            txHash: undefined,
-          })
-        }
-      }}
+      onClick={onSwapClick}
       id="swap-button"
       disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
       platformName={trade?.platform.name}
