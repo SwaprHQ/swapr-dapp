@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'

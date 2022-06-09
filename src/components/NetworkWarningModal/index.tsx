@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { TYPE } from '../../theme'
-import Modal from '../Modal'
-import { AutoRow } from '../Row'
-import { AutoColumn } from '../Column'
+import { isMobile } from 'react-device-detect'
 import { AlertTriangle } from 'react-feather'
+import styled from 'styled-components'
+
 import { NETWORK_DETAIL } from '../../constants'
-import { ButtonPrimary } from '../Button'
+import { useActiveWeb3React } from '../../hooks'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
-import { useActiveWeb3React } from '../../hooks'
+import { TYPE } from '../../theme'
 import { switchOrAddNetwork } from '../../utils'
-import { isMobile } from 'react-device-detect'
+import { ButtonPrimary } from '../Button'
+import { AutoColumn } from '../Column'
+import Modal from '../Modal'
+import { AutoRow } from '../Row'
 
 const WarningContainer = styled.div`
   width: 100%;

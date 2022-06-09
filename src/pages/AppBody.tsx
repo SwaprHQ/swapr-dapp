@@ -1,6 +1,7 @@
 import { transparentize } from 'polished'
 import React from 'react'
 import styled, { useTheme } from 'styled-components'
+
 import { DarkCard } from '../components/Card'
 
 export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`

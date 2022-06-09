@@ -1,7 +1,9 @@
 import { TokenAmount } from '@swapr/sdk'
+
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
+
 import { useActiveWeb3React } from '../../../hooks'
 import { Amount } from '../index'
 

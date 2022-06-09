@@ -1,9 +1,10 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { TYPE } from '../../theme'
+
 import { useActiveWeb3React } from '../../hooks'
-import { UppercaseHelper } from './CurrencyInputPanel.styles'
+import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
+import { UppercaseHelper } from './CurrencyInputPanel.styles'
 import { CurrencyUserBalanceProps } from './CurrencyInputPanel.types'
 
 export const CurrencyUserBalance = ({

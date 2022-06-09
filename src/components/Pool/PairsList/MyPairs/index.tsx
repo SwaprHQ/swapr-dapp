@@ -1,10 +1,11 @@
 import React from 'react'
 import { Box, Flex } from 'rebass'
-import { TYPE } from '../../../../theme'
 import styled from 'styled-components'
+
 import blurredCircle from '../../../../assets/svg/blurred-circle.svg'
-import { UndecoratedLink } from '../../../UndercoratedLink'
+import { TYPE } from '../../../../theme'
 import { DarkCard } from '../../../Card'
+import { UndecoratedLink } from '../../../UndercoratedLink'
 
 const SizedCard = styled(DarkCard)`
   width: 210px;

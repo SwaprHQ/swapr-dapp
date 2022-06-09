@@ -1,10 +1,11 @@
-import { useCallback, useMemo } from 'react'
-import { CurrencyAmount } from '@swapr/sdk/dist/entities/fractions/currencyAmount'
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { CurrencyAmount } from '@swapr/sdk/dist/entities/fractions/currencyAmount'
+
+import { useCallback, useMemo } from 'react'
 
 import { useActiveWeb3React } from '../../../hooks'
-import { useAllTokenBalances, useTokenBalances } from '../../../state/wallet/hooks'
 import { toDXSwapLiquidityToken, useTrackedTokenPairs } from '../../../state/user/hooks'
+import { useAllTokenBalances, useTokenBalances } from '../../../state/wallet/hooks'
 
 // compare two token amounts with highest one coming first
 const balanceComparator = (balanceA?: TokenAmount, balanceB?: TokenAmount) => {

@@ -1,10 +1,12 @@
 import { TransactionReceipt } from '@ethersproject/providers'
-import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
+
+import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
-import { ArbitrumBridgeTxnsState, ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, SyncState, BridgeDetails, BridgingDetailsErrorMessage } from '../EcoBridge.types'
+
+import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
+import { ArbitrumList, BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 
 interface ArbitrumBridgeState {

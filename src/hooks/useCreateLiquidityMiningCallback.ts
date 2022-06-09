@@ -1,8 +1,10 @@
-import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import { useMemo } from 'react'
-import { useStakingRewardsDistributionFactoryContract } from './useContract'
 import { TransactionResponse } from '@ethersproject/providers'
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
+import { useMemo } from 'react'
+
+import { useStakingRewardsDistributionFactoryContract } from './useContract'
 
 /**
  * Returns a function that creates a liquidity mining distribution with the given parameters.

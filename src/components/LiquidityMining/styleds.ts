@@ -1,6 +1,7 @@
-import styled from 'styled-components'
-import { DarkCard } from '../Card'
 import { Card as DefaultCard } from 'rebass'
+import styled from 'styled-components'
+
+import { DarkCard } from '../Card'
 
 export const Card = styled(DarkCard)`
   width: 100%;

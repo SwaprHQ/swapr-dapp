@@ -1,14 +1,14 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { gradients, breakpoints } from './../../utils/theme'
-import { CommunityBannerContent } from './../../utils/ui-constants'
-import Layout from './layout/Layout'
-import Button from './common/Button'
 
 import dxDaoLogo from './../../assets/images/logo-dxdao.svg'
 import BannerGraphic1 from './../../assets/images/owned-by-1.png'
 import BannerGraphic2 from './../../assets/images/owned-by-2.png'
 import BannerGraphic3 from './../../assets/images/owned-by-3.png'
+import { breakpoints, gradients } from './../../utils/theme'
+import { CommunityBannerContent } from './../../utils/ui-constants'
+import Button from './common/Button'
+import Layout from './layout/Layout'
 
 const CommunityBanner = () => {
   return (
