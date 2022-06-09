@@ -1,24 +1,27 @@
 import {
-  Token,
-  Trade,
-  currencyEquals,
-  Price,
-  CurrencyAmount,
+  ChainId,
   Currency,
+  CurrencyAmount,
+  currencyEquals,
   Fraction,
   JSBI,
+  Price,
   TEN,
-  ChainId,
+  Token,
+  Trade,
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
-import { useTradeExactInUniswapV2 } from './Trades'
-import { USDC, DAI } from '../constants/index'
-import { useActiveWeb3React } from './index'
+
 import { useEffect, useMemo, useState } from 'react'
-import { currencyId } from '../utils/currencyId'
+
+import { DAI, USDC } from '../constants/index'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
+import { currencyId } from '../utils/currencyId'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency'
+import { useTradeExactInUniswapV2 } from './Trades'
+
+import { useActiveWeb3React } from './index'
 
 const STABLECOIN_AND_PLATFOM_BY_CHAIN: { [chainId: number]: { token: Token; platform: UniswapV2RoutablePlatform } } = {
   [ChainId.MAINNET]: { token: DAI, platform: UniswapV2RoutablePlatform.UNISWAP },

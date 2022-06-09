@@ -1,19 +1,21 @@
+import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
-import { Pagination } from '../../Pagination'
-import { LoadingList } from '../LoadingList'
-import { UndecoratedLink } from '../../UndercoratedLink'
-import PairCard from './Pair'
-import { CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import { Empty } from '../Empty'
 import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
-import { useActiveWeb3React } from '../../../hooks'
-import { PairsFilterType } from '../ListFilter'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
-import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { Pagination } from '../../Pagination'
+import { UndecoratedLink } from '../../UndercoratedLink'
+import { Empty } from '../Empty'
+import { PairsFilterType } from '../ListFilter'
+import { LoadingList } from '../LoadingList'
+import PairCard from './Pair'
 
 const ListLayout = styled.div`
   display: grid;

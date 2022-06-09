@@ -1,19 +1,18 @@
-import React, { useMemo } from 'react'
 import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
+import React, { useMemo } from 'react'
+
+import carrotListLogoUrl from '../../assets/images/carrot.png'
+import SWPRLogo from '../../assets/images/swpr-logo.png'
+import DXDLogo from '../../assets/svg/dxd.svg'
 import { useActiveWeb3React } from '../../hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
 import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
-
-import DXDLogo from '../../assets/svg/dxd.svg'
-import SWPRLogo from '../../assets/images/swpr-logo.png'
-import carrotListLogoUrl from '../../assets/images/carrot.png'
-
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { CurrencyLogoComponent } from './CurrencyLogo.component'
-import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 import { CurrencyLogoContainerProps, CurrencyWrapperSource } from './CurrencyLogo.types'
+import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 
 export const CurrencyLogo = ({
   currency,
@@ -32,7 +31,7 @@ export const CurrencyLogo = ({
   const uriLocations = useHttpLocations(
     currency instanceof WrappedTokenInfo
       ? currency.logoURI
-      : !!resolvedWrappedTokenInfo
+      : resolvedWrappedTokenInfo
       ? resolvedWrappedTokenInfo.logoURI
       : undefined
   )

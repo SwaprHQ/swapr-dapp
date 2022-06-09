@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { transparentize } from 'polished'
+import styled from 'styled-components'
 
 export const AdvancedDetailsFooter = styled.div<{
   clickable?: boolean

@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 
+import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import { AutoRow } from '../../../../Row'
 import { SmoothGradientCard } from '../../../styleds'
 import { Circle } from '../PairAndReward/AssetSelector/AssetLogo'

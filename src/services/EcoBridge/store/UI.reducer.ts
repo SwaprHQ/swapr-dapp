@@ -1,5 +1,7 @@
 import { ChainId } from '@swapr/sdk'
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { BridgeModalState, BridgeModalStatus, BridgeTxsFilter } from '../EcoBridge.types'
 
 type EcoBridgeInput = {

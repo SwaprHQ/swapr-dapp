@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, _10000, JSBI, currencyEquals, ZERO } from '@swapr/sdk'
+import { _10000, CurrencyAmount, currencyEquals, JSBI, Percent, ZERO } from '@swapr/sdk'
 
 const ONE_HUNDRED_PERCENT = new Percent(_10000, _10000)
 

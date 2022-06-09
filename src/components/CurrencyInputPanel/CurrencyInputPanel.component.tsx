@@ -1,33 +1,30 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react'
-
-import {
-  Content,
-  FiatRow,
-  Aligner,
-  InputRow,
-  LabelRow,
-  Container,
-  InputPanel,
-  CurrencySelect,
-  UppercaseHelper,
-} from './CurrencyInputPanel.styles'
-import Loader from '../Loader'
-import { TYPE } from '../../theme'
-import { RowBetween } from '../Row'
-import NumericalInput from '../Input/NumericalInput'
-import { FiatValueDetails } from '../FiatValueDetails'
-import { CurrencyWrapperSource } from '../CurrencyLogo'
-import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import debounce from 'lodash.debounce'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-
-import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
-import { CurrencyView } from './CurrencyView'
-import { CurrencyUserBalance } from './CurrencyUserBalance'
-
+import { TYPE } from '../../theme'
 import { normalizeInputValue } from '../../utils'
+import { CurrencyWrapperSource } from '../CurrencyLogo'
+import { FiatValueDetails } from '../FiatValueDetails'
+import { NumericalInput } from '../Input/NumericalInput'
+import Loader from '../Loader'
+import { RowBetween } from '../Row'
+import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+import {
+  Aligner,
+  Container,
+  Content,
+  CurrencySelect,
+  FiatRow,
+  InputPanel,
+  InputRow,
+  LabelRow,
+  UppercaseHelper,
+} from './CurrencyInputPanel.styles'
+import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
+import { CurrencyUserBalance } from './CurrencyUserBalance'
+import { CurrencyView } from './CurrencyView'
 
 export const CurrencyInputPanelComponent = ({
   id,

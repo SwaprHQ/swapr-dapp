@@ -1,18 +1,18 @@
 import React from 'react'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { PageWrapper } from '../styleds'
-
-import { TYPE } from '../../../theme'
 import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../../components/Row'
+import styled from 'styled-components'
+
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
-import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
 import PairsList from '../../../components/Pool/PairsList'
-import { useLPPairs } from '../../../hooks/useLiquidityPositions'
+import { RowBetween, RowFixed } from '../../../components/Row'
+import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { useActiveWeb3React } from '../../../hooks'
+import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+import { useLPPairs } from '../../../hooks/useLiquidityPositions'
+import { TYPE } from '../../../theme'
+import { PageWrapper } from '../styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

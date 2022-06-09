@@ -1,8 +1,10 @@
-import { TokenAmount } from '@swapr/sdk'
-import { useMemo } from 'react'
-import { useStakingRewardsDistributionContract } from './useContract'
 import { TransactionResponse } from '@ethersproject/providers'
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
+import { TokenAmount } from '@swapr/sdk'
+
+import { useMemo } from 'react'
+
+import { useStakingRewardsDistributionContract } from './useContract'
 
 /**
  * Returns functions that let a given account stake/withdraw/claim on a specific liquidity mining contract.

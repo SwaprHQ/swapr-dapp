@@ -1,12 +1,10 @@
 import React from 'react'
 
-import { useCurrencySearchModalSwap } from './CurrencySearchModal.hooks'
-
 import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
-import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+import { ListRowContext, ManageListsContext } from '../ManageLists/ManageLists.context'
 import { CurrencySearchModalComponent } from './CurrencySearchModal.component'
-import { ManageListsContext, ListRowContext } from '../ManageLists/ManageLists.context'
-
+import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+import { useCurrencySearchModalSwap } from './CurrencySearchModal.hooks'
 import { CurrencySearchModalProps, CurrencySearchModalProviderProps } from './CurrencySearchModal.types'
 
 export const CurrencySearchModalProvider: React.FC<CurrencySearchModalProviderProps> = ({

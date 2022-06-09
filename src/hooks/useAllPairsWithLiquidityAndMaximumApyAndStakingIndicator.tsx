@@ -1,5 +1,7 @@
-import { Pair, CurrencyAmount, Percent, Token, KpiToken } from '@swapr/sdk'
+import { CurrencyAmount, KpiToken, Pair, Percent, Token } from '@swapr/sdk'
+
 import { useMemo } from 'react'
+
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useAggregatedByToken0PairComparator } from '../components/SearchModal/utils/sorting'
 import { getBestApyPairCampaign } from '../utils/liquidityMining'
