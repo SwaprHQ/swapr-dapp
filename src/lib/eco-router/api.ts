@@ -87,7 +87,7 @@ export async function getExactIn(
     }
   })
 
-  const uniswapTrade = new Promise<UniswapTrade | undefined>(async resolve => {
+  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
     if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -196,7 +196,7 @@ export async function getExactOut(
   })
 
   // Uniswap v2 and v3
-  const uniswapTrade = new Promise<UniswapTrade | undefined>(async resolve => {
+  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
     if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
       return resolve(undefined)
     }
