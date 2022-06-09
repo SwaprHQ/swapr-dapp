@@ -1,23 +1,25 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
+import { useDispatch } from 'react-redux'
 
+import ListLogo from '../../ListLogo'
+import { AutoColumn } from '../../Column'
+import { GoBackIcon } from '../GoBackIcon'
+import { ButtonError } from '../../Button'
+import { PaddedColumn } from '../shared'
+import { CurrencyModalView } from '../CurrencySearchModal'
+import { RowBetween, RowFixed } from '../../Row'
+import { TYPE, CloseIcon, ExternalLink } from '../../../theme'
+import { BottomSectionContainer, Wrapper } from './ImportList.styles'
+
+import { AppDispatch } from '../../../state'
+import { useAllLists } from '../../../state/lists/hooks'
 import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
-import { AppDispatch } from '../../../state'
 import { enableList, removeList } from '../../../state/lists/actions'
-import { useAllLists } from '../../../state/lists/hooks'
-import { CloseIcon, ExternalLink, TYPE } from '../../../theme'
-import { ButtonError } from '../../Button'
-import { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import { RowBetween, RowFixed } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-import { GoBackIcon } from '../GoBackIcon'
-import { PaddedColumn } from '../shared'
-import { BottomSectionContainer, Wrapper } from './ImportList.styles'
+
 import { ImportListProps } from './ImportList.types'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 
 export function ImportList({ onBack, onDismiss }: ImportListProps) {
   const { listURL: listURI, importList: list, setModalView } = useContext(CurrencySearchModalContext)

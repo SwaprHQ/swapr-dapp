@@ -1,11 +1,10 @@
 import { transparentize } from 'polished'
 import React from 'react'
 import { AlertTriangle } from 'react-feather'
-import { Text } from 'rebass'
 import styled from 'styled-components'
-
-import { breakpoints } from '../../utils/theme'
+import { Text } from 'rebass'
 import { AutoColumn } from '../Column'
+import { breakpoints } from '../../utils/theme'
 
 export const Wrapper = styled.div`
   position: relative;

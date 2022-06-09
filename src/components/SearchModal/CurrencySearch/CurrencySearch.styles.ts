@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-
-import { CloseIcon } from '../../../theme'
 import Column from '../../Column'
+import { CloseIcon } from '../../../theme'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;

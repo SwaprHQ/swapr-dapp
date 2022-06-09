@@ -1,13 +1,11 @@
-import { Price } from '@swapr/sdk'
-
-import { transparentize } from 'polished'
 import React from 'react'
-import styled from 'styled-components'
-
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { Price } from '@swapr/sdk'
 import { TYPE } from '../../theme'
-import { limitNumberOfDecimalPlaces } from '../../utils/prices'
+import styled from 'styled-components'
+import { transparentize } from 'polished'
 import { RowFixed } from '../Row'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { limitNumberOfDecimalPlaces } from '../../utils/prices'
 
 const Wrapper = styled(RowFixed)`
   background: ${props => transparentize(0.9, props.theme.bg4)};

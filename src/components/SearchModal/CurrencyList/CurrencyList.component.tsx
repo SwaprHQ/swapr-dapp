@@ -1,30 +1,33 @@
-import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
-
 import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
-import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { Plus, X } from 'react-feather'
 import { Box, Flex, Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
+import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useCurrencyBalances } from '../../../state/wallet/hooks'
+import { useIsUserAddedToken } from '../../../hooks/Tokens'
+import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
+
+import Badge from '../../Badge'
+import Loader from '../../Loader'
+import { DarkCard } from '../../Card'
+import { ImportRow } from '../ImportRow'
+import { CurrencyLogo } from '../../CurrencyLogo'
+import QuestionHelper from '../../QuestionHelper'
+import { TokenPickerItem } from '../shared'
+import { AutoRow, RowBetween, RowFixed } from '../../Row'
+import { StyledBalanceText, FixedContentRow, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
-import { useActiveWeb3React } from '../../../hooks'
-import { useIsUserAddedToken } from '../../../hooks/Tokens'
-import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
-import { useCurrencyBalances } from '../../../state/wallet/hooks'
+
 import { TYPE } from '../../../theme'
 import { isTokenOnList } from '../../../utils'
-import Badge from '../../Badge'
-import { DarkCard } from '../../Card'
-import { CurrencyLogo } from '../../CurrencyLogo'
-import Loader from '../../Loader'
-import QuestionHelper from '../../QuestionHelper'
-import { AutoRow, RowBetween, RowFixed } from '../../Row'
-import { ImportRow } from '../ImportRow'
-import { TokenPickerItem } from '../shared'
-import { FixedContentRow, StyledBalanceText, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
-import { BREAK_LINE, CurrencyListProps, CurrencyRowProps, isBreakLine } from './CurrencyList.types'
 import { currencyKey } from './CurrencyList.utils'
+import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
+
+import { BREAK_LINE, CurrencyListProps, CurrencyRowProps, isBreakLine } from './CurrencyList.types'
 
 const Balance = ({ balance }: { balance: CurrencyAmount }) => (
   <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>

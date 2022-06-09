@@ -1,39 +1,35 @@
-import { JsonRpcSigner } from '@ethersproject/providers'
-import { formatUnits, parseEther, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
-
-import { TokenList } from '@uniswap/token-lists'
-import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import { BigNumber } from 'ethers'
+import { TokenList } from '@uniswap/token-lists'
+import { parseEther, parseUnits } from '@ethersproject/units'
+import { JsonRpcSigner } from '@ethersproject/providers'
+import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import request from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
-import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { arbitrumActions } from './ArbitrumBridge.reducer'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
+import { ecoBridgeUIActions } from '../store/UI.reducer'
+import { commonActions } from '../store/Common.reducer'
 import { addTransaction } from '../../../state/transactions/actions'
-import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { BridgeAssetType, BridgeTransactionSummary, ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 import getTokenList from '../../../utils/getTokenList'
+import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
+import { subgraphClientsUris } from '../../../apollo/client'
 import {
   ArbitrumList,
+  SyncState,
   BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
-  SyncState,
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
-import { ecoBridgeUIActions } from '../store/UI.reducer'
-import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
-import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import {
-  getErrorMsg,
-  MAX_SUBMISSION_PRICE_PERCENT_INCREASE,
-  migrateBridgeTransactions,
-  QUERY_ETH_PRICE,
-} from './ArbitrumBridge.utils'
+import { formatUnits } from '@ethersproject/units'
+import { MAX_SUBMISSION_PRICE_PERCENT_INCREASE } from './ArbitrumBridge.utils'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId

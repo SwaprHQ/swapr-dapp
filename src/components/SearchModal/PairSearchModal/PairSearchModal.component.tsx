@@ -1,9 +1,9 @@
-import { Pair } from '@swapr/sdk'
-
 import React, { useCallback } from 'react'
+import { Pair } from '@swapr/sdk'
 
 import Modal from '../../Modal'
 import { PairSearch } from '../PairSearch'
+
 import { PairSearchModalProps } from './PairSearchModal.types'
 
 export const PairSearchModal = ({

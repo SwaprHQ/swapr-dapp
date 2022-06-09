@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect'
-
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { normalizeInputValue } from '../../../utils'
 import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
-import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
+import { SocketTx, SocketTxStatus, SOCKET_PENDING_REASONS } from './Socket.types'
 
 const createSelectBridgingDetails = (bridgeId: SocketList) =>
   createSelector(

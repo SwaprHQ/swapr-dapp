@@ -1,15 +1,12 @@
-import { ChainId, Currency, CurrencyAmount, currencyEquals, Fraction, JSBI, Price, TEN, Token, Trade } from '@swapr/sdk'
-
+import { Token, Trade, currencyEquals, Price, CurrencyAmount, Currency, Fraction, JSBI, TEN, ChainId } from '@swapr/sdk'
+import { useTradeExactInAllPlatforms } from './Trades'
+import { USDC, DAI } from '../constants/index'
+import { useActiveWeb3React } from './index'
 import { useEffect, useMemo, useState } from 'react'
-
-import { DAI, USDC } from '../constants/index'
+import { currencyId } from '../utils/currencyId'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
-import { currencyId } from '../utils/currencyId'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency'
-import { useTradeExactInAllPlatforms } from './Trades'
-
-import { useActiveWeb3React } from './index'
 
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: DAI,

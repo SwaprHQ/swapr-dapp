@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 
 export const Option = styled.button<{ active?: boolean; width?: string; transparent?: boolean }>`

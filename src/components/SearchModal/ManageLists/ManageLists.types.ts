@@ -1,5 +1,4 @@
 import { TokenList } from '@uniswap/token-lists'
-
 import { ListsState } from '../../../state/lists/reducer'
 import { CurrencyModalView } from '../CurrencySearchModal'
 

@@ -1,12 +1,11 @@
-import { ChainId, Pair, Token } from '@swapr/sdk'
-
 import { createSelector } from '@reduxjs/toolkit'
+import { ChainId, Pair, Token } from '@swapr/sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
 import { PairState, usePairs } from '../../data/Reserves'
+
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
 import { MainnetGasPrice } from '../application/actions'
@@ -14,18 +13,18 @@ import { AppDispatch, AppState } from '../index'
 import {
   addSerializedPair,
   addSerializedToken,
-  removeSerializedPair,
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
-  toggleURLWarning,
-  updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
+  updateUserSlippageTolerance,
+  toggleURLWarning,
+  removeSerializedPair,
   updateUserMultihop,
   updateUserPreferredGasPrice,
-  updateUserSlippageTolerance,
+  updateUserAdvancedSwapDetails,
 } from './actions'
 
 function serializeToken(token: Token): SerializedToken {

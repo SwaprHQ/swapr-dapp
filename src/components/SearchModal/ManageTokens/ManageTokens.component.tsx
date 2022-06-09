@@ -1,22 +1,24 @@
+import React, { useRef, RefObject, useCallback, useState, useMemo, useContext } from 'react'
 import { Token } from '@swapr/sdk'
-
-import React, { RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import { ThemeContext } from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
-import { useToken } from '../../../hooks/Tokens'
-import { useRemoveUserAddedToken, useUserAddedTokens } from '../../../state/user/hooks'
-import { ExternalLink, TYPE } from '../../../theme'
-import { getExplorerLink, isAddress } from '../../../utils'
-import { ButtonOutlined } from '../../Button'
 import Card from '../../Card'
-import { CurrencyLogo } from '../../CurrencyLogo'
-import Row, { RowBetween, RowFixed } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
 import { ImportRow } from '../ImportRow'
-import { PaddedColumn, SearchInput, Separator } from '../shared'
-import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
+import { CurrencyLogo } from '../../CurrencyLogo'
+import { ButtonOutlined } from '../../Button'
+import { getExplorerLink } from '../../../utils'
+import { TYPE, ExternalLink } from '../../../theme'
+import Row, { RowBetween, RowFixed } from '../../Row'
+import { Wrapper, Footer, TrashIcon } from './ManageTokens.styles'
+import { PaddedColumn, Separator, SearchInput } from '../shared'
+
+import { useToken } from '../../../hooks/Tokens'
+import { isAddress } from '../../../utils'
+import { useActiveWeb3React } from '../../../hooks'
+import { useUserAddedTokens, useRemoveUserAddedToken } from '../../../state/user/hooks'
+
+import { CurrencyModalView } from '../CurrencySearchModal'
 import { ManageTokensProps } from './ManageTokens.types'
 
 export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps) => {

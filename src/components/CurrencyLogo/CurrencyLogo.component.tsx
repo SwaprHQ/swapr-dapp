@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react'
 import Skeleton from 'react-loading-skeleton'
-
 import { StyledLogo, Wrapper } from './CurrencyLogo.styles'
 import { CurrencyLogoComponentProps } from './CurrencyLogo.types'
 

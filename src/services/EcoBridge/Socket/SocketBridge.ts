@@ -1,34 +1,32 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { formatUnits, parseUnits } from '@ethersproject/units'
 import { Currency } from '@swapr/sdk'
-
-import { TokenList } from '@uniswap/token-lists'
-
-import SocketLogo from '../../../assets/images/socket-logo.png'
-import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
-  SocketList,
+  EcoBridgeChangeHandler,
+  BridgeModalStatus,
   SyncState,
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
+import { SocketList } from '../EcoBridge.types'
+import { socketActions } from './Socket.reducer'
+import { socketSelectors } from './Socket.selectors'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
-import { ApprovalsAPI, QuoteAPI, ServerAPI } from './api'
+import { QuoteAPI, ServerAPI, ApprovalsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
   QuoteControllerGetQuoteSortEnum,
   QuoteOutputDTO,
   TokenPriceResponseDTO,
 } from './api/generated'
-import { SOCKET_TOKENS } from './Socket.lists'
-import { socketActions } from './Socket.reducer'
-import { socketSelectors } from './Socket.selectors'
-import { SocketTxStatus } from './Socket.types'
+import { TokenList } from '@uniswap/token-lists'
+import SocketLogo from '../../../assets/images/socket-logo.png'
+import { commonActions } from '../store/Common.reducer'
+import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, VERSION } from './Socket.utils'
+import { SOCKET_TOKENS } from './Socket.lists'
+import { BigNumber } from '@ethersproject/bignumber'
+import { SocketTxStatus } from './Socket.types'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {

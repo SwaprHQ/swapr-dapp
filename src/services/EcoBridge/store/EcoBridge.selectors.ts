@@ -1,15 +1,14 @@
+import { TokenList } from '@uniswap/token-lists'
+import { createSelector } from '@reduxjs/toolkit'
 import { ChainId, Token } from '@swapr/sdk'
 
-import { createSelector } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
-
-import { DEFAULT_TOKEN_LIST } from '../../../constants'
 import { AppState } from '../../../state'
-import { listToTokenMap } from '../../../state/lists/hooks'
-import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { ecoBridgeConfig } from '../EcoBridge.config'
-import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
+import { listToTokenMap } from '../../../state/lists/hooks'
 import { socketSelectors } from '../Socket/Socket.selectors'
+import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
+import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
+import { DEFAULT_TOKEN_LIST } from '../../../constants'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.

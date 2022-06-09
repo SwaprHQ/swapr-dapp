@@ -1,28 +1,27 @@
-import { transparentize } from 'polished'
 import React, { useState } from 'react'
-import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
+import { Settings as SettingsIcon, X, Info, Code, MessageCircle } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-
+import { transparentize } from 'polished'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useSimpleSettingsModal, useToggleSettingsMenu } from '../../state/application/hooks'
+import { useModalOpen, useToggleSettingsMenu, useSimpleSettingsModal } from '../../state/application/hooks'
 import {
   useExpertModeManager,
-  useMultihopManager,
-  useUserPreferredGasPrice,
-  useUserSlippageToleranceManager,
   useUserTransactionTTL,
+  useUserPreferredGasPrice,
+  useMultihopManager,
+  useUserSlippageToleranceManager,
 } from '../../state/user/hooks'
-import { CloseIcon, ExternalLink, LinkStyledButton, TYPE } from '../../theme'
+import { TYPE, ExternalLink, LinkStyledButton, CloseIcon } from '../../theme'
 import { ButtonError } from '../Button'
-import { DarkCard } from '../Card'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
-import SwaprVersionLogo from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
+import SwaprVersionLogo from '../SwaprVersionLogo'
+import { DarkCard } from '../Card'
 
 const MenuModal = styled(Modal)`
   && {

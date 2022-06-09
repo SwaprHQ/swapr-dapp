@@ -1,8 +1,6 @@
 import { ChainId } from '@swapr/sdk'
-
 import { TokenList } from '@uniswap/token-lists'
-
-import { BridgeList, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import { BridgeList, SyncState, BridgingDetailsErrorMessage } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 export const SOCKET_PENDING_REASONS = {

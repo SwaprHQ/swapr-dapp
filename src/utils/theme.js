@@ -1,4 +1,4 @@
-import { darken, lighten, transparentize } from 'polished'
+import { lighten, darken, transparentize } from 'polished'
 
 const colorList = ['slateblue', 'goldenrod', 'royalblue', 'orangered']
 

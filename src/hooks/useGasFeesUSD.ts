@@ -1,15 +1,12 @@
-import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, USD } from '@swapr/sdk'
-
 import { BigNumber } from 'ethers'
+import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-
+import { useActiveWeb3React } from '.'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
-
-import { useActiveWeb3React } from '.'
 
 export function useGasFeesUSD(
   gasEstimations: (BigNumber | null)[]

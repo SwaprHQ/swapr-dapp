@@ -1,21 +1,18 @@
 import { getAddress } from '@ethersproject/address'
-
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { gql } from 'graphql-request'
 import { useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
-
+import { useActiveWeb3React } from '.'
 import { immediateCarrotSubgraphClients } from '../apollo/client'
-import carrotListLogoUrl from '../assets/images/carrot.png'
 import { getNetworkLibrary } from '../connectors'
-import { KPI_TOKEN_CREATORS } from '../constants'
 import { AppDispatch } from '../state'
 import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
-
-import { useActiveWeb3React } from '.'
+import { gql } from 'graphql-request'
+import carrotListLogoUrl from '../assets/images/carrot.png'
+import { KPI_TOKEN_CREATORS } from '../constants'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const { chainId, library } = useActiveWeb3React()

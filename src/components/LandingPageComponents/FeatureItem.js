@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from './../../utils/theme'
 import Button from './common/Button'
+import { breakpoints } from './../../utils/theme'
 
 const FeatureItem = props => {
   const { feature } = props

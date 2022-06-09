@@ -1,13 +1,10 @@
 import { LiquidityMiningCampaign, PricedToken, PricedTokenAmount, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-
+import { useMemo } from 'react'
+import { useStakingRewardsDistributionContract } from './useContract'
+import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
+import { useActiveWeb3React } from '.'
 import { BigNumber } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useMemo } from 'react'
-
-import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
-import { useStakingRewardsDistributionContract } from './useContract'
-
-import { useActiveWeb3React } from '.'
 
 interface UseLiquidityMiningCampaignUserPositionHookResult {
   stakedTokenAmount: PricedTokenAmount | null

@@ -1,8 +1,7 @@
 import { ChainId } from '@swapr/sdk'
-
 import EtherLogo from '../../assets/images/ether-logo.png'
-import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import XDAILogo from '../../assets/images/xdai-logo.png'
+import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 
 export const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
   [ChainId.XDAI]: XDAILogo,

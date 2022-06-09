@@ -1,20 +1,21 @@
 import { Pair } from '@swapr/sdk'
-
-import React, { useCallback } from 'react'
-import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { Plus, X } from 'react-feather'
 import { FixedSizeList } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
+import React, { useCallback } from 'react'
 
-import { useActiveWeb3React } from '../../../hooks'
-import { useIsUserAddedPair } from '../../../hooks/Tokens'
+import Badge from '../../Badge'
+import { TokenPickerItem } from '../shared'
+import DoubleCurrencyLogo from '../../DoubleLogo'
+
 import { useAllPairs } from '../../../hooks/useAllPairs'
-import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
 import { isPairOnList } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import Badge from '../../Badge'
-import DoubleCurrencyLogo from '../../DoubleLogo'
-import { TokenPickerItem } from '../shared'
+import { useActiveWeb3React } from '../../../hooks'
+import { useIsUserAddedPair } from '../../../hooks/Tokens'
+import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
+
 import { PairListProps, PairRowProps } from './PairList.types'
 
 function pairKey(index: number, data: Pair[]) {

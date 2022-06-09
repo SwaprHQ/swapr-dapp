@@ -1,18 +1,16 @@
-import { TokenAmount } from '@swapr/sdk'
-
-import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
-import { useHistory } from 'react-router'
-import { Flex } from 'rebass'
-import styled from 'styled-components'
-
-import { useShowClaimPopup } from '../../state/application/hooks'
-import { CloseIcon, TYPE } from '../../theme'
-import { AddTokenButton } from '../AddTokenButton/AddTokenButton'
-import { ButtonDark1, ButtonPurple } from '../Button'
 import { AutoColumn } from '../Column'
-import Modal from '../Modal'
+import styled from 'styled-components'
 import { RowBetween } from '../Row'
+import { TYPE, CloseIcon } from '../../theme'
+import { ButtonDark1, ButtonPurple } from '../Button'
+import { transparentize } from 'polished'
+import { TokenAmount } from '@swapr/sdk'
+import { AddTokenButton } from '../AddTokenButton/AddTokenButton'
+import { Flex } from 'rebass'
+import { useHistory } from 'react-router'
+import Modal from '../Modal'
+import { useShowClaimPopup } from '../../state/application/hooks'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

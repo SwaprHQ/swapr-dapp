@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+import { Box, Flex } from 'rebass'
 import {
   LiquidityMiningCampaign,
   Pair,
@@ -6,19 +8,17 @@ import {
   Token,
   TokenAmount,
 } from '@swapr/sdk'
-
-import React, { useEffect, useState } from 'react'
-import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
-
-import { useActiveWeb3React } from '../../../../../hooks'
-import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
-import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
-import { ButtonPrimary } from '../../../../Button'
-import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
-import { Card, Divider } from '../../../styleds'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
+import { Card, Divider } from '../../../styleds'
+import { ButtonPrimary } from '../../../../Button'
+
+import styled from 'styled-components'
+import { useActiveWeb3React } from '../../../../../hooks'
+import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
+import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
+import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
+
 import SimulateStaking from './SimulateStaking'
 
 const FlexContainer = styled(Flex)`

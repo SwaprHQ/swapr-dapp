@@ -1,10 +1,8 @@
 import React, { useCallback } from 'react'
 import styled, { useTheme } from 'styled-components'
-
-import { useActiveWeb3React } from '../../hooks'
 import useENS from '../../hooks/useENS'
+import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink, TYPE } from '../../theme'
-import { getExplorerLink } from '../../utils'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
 import { getExplorerLink } from '../../utils'

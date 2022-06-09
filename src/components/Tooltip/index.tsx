@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-
 import Popover, { PopoverProps } from '../Popover'
 
 const TooltipContainer = styled.div`

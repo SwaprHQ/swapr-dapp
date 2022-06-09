@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { FooterContent } from './../../../utils/ui-constants'
+import { breakpoints } from './../../../utils/theme'
+import { scrollTo } from './../../../utils/helper-functions'
+import Layout from './Layout'
+import NavigationButton from './../../../assets/images/timeline-assets/navigation-button.png'
 
 import SwaprLogo from './../../../assets/images/swapr-logo.svg'
-import NavigationButton from './../../../assets/images/timeline-assets/navigation-button.png'
-import { scrollTo } from './../../../utils/helper-functions'
-import { breakpoints } from './../../../utils/theme'
-import { FooterContent } from './../../../utils/ui-constants'
-import Layout from './Layout'
 
 const Footer = () => {
   return (

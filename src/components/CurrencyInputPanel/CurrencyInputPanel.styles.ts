@@ -1,8 +1,8 @@
-import transparentize from 'polished/lib/color/transparentize'
 import styled from 'styled-components'
+import transparentize from 'polished/lib/color/transparentize'
 
-import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { breakpoints } from '../../utils/theme'
+import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 export const InputRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}

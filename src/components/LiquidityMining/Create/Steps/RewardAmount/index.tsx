@@ -1,10 +1,10 @@
 import { Currency, currencyEquals, TokenAmount } from '@swapr/sdk'
-
 import React, { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
-import styled from 'styled-components'
 
-import { ApprovalState } from '../../../../../hooks/useApproveCallback'
+import { tryParseAmount } from '../../../../../state/swap/hooks'
+
+import AssetSelector from '../PairAndReward/AssetSelector'
 import {
   Actions,
   ActionType,
@@ -12,9 +12,9 @@ import {
   numberOfRewards,
   RewardsObject,
 } from '../../../../../pages/LiquidityMining/Create'
-import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
-import AssetSelector from '../PairAndReward/AssetSelector'
+import styled from 'styled-components'
+import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 const FlexWrapper = styled(Flex)`
   gap: 28px;

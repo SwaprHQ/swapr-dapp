@@ -1,13 +1,11 @@
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
-
 import { useMemo } from 'react'
-
-import { ERC20_INTERFACE } from '../../constants/abis/erc20'
-import { useActiveWeb3React } from '../../hooks'
+import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
-import { useMulticallContract } from '../../hooks/useContract'
+import { useActiveWeb3React } from '../../hooks'
 import { isAddress } from '../../utils'
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../multicall/hooks'
+import { useMulticallContract } from '../../hooks/useContract'
 
 export function useNativeCurrencyBalance(): CurrencyAmount | undefined {
   const { chainId, account } = useActiveWeb3React()

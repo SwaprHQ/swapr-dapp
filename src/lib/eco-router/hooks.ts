@@ -1,15 +1,12 @@
-import { Currency, CurrencyAmount, Percent, Trade } from '@swapr/sdk'
-
-import { useEffect, useState } from 'react'
+import { Trade, CurrencyAmount, Currency, Percent } from '@swapr/sdk'
+import { useState, useEffect } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
-
-
-
 // Eco Router modules
+import { getExactIn, getExactOut } from './api'
 // Web3 hooks
 import { useActiveWeb3React } from '../../hooks'
 import { useIsMultihop } from '../../state/user/hooks'
-import { getExactIn, getExactOut } from './api'
+
 // Types
 // eslint-disable-next-line
 import type { EcoRouterHookResults } from './types'

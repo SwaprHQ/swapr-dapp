@@ -1,7 +1,6 @@
-import { Pair, Token } from '@swapr/sdk'
-
-import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'
+import { TokenInfo } from '@uniswap/token-lists'
+import { Pair, Token } from '@swapr/sdk'
 
 import { isAddress } from '../../../utils'
 

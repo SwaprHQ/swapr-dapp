@@ -1,20 +1,19 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useEffect } from 'react'
-import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
-
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import DxDao from '../../assets/svg/dxdao.svg'
-import { useUnsupportedChainIdError } from '../../hooks'
 import usePrevious from '../../hooks/usePrevious'
-import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
 import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
-import { AutoRow } from '../Row'
-import { ModalView } from '../Web3Status'
 import PendingView from './PendingView'
+import DxDao from '../../assets/svg/dxdao.svg'
+import { AutoRow } from '../Row'
+import { AlertTriangle } from 'react-feather'
+import { ModalView } from '../Web3Status'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
+import { useUnsupportedChainIdError } from '../../hooks'
 
 const CloseIcon = styled.div`
   position: absolute;

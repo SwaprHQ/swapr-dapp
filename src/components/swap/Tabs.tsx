@@ -1,9 +1,8 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-
-import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
 import Row from '../Row'
+import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { useTranslation } from 'react-i18next'
 
 const TabsColumn = styled.div`
   max-width: 457px;

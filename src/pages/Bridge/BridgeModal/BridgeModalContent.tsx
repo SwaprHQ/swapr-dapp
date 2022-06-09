@@ -1,9 +1,7 @@
 import React from 'react'
-import { AlertCircle, ArrowRightCircle } from 'react-feather'
-import { Trans, useTranslation } from 'react-i18next'
-
-import { ButtonPrimary } from '../../../components/Button'
+import { ArrowRightCircle, AlertCircle } from 'react-feather'
 import Modal from '../../../components/Modal'
+import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'
 import {
@@ -16,6 +14,7 @@ import {
   Wrapper,
 } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
+import { Trans, useTranslation } from 'react-i18next'
 
 export const BridgeModalContent = ({
   isOpen,
@@ -40,7 +39,7 @@ export const BridgeModalContent = ({
           {modalType === 'error' && <TransactionErrorContent onDismiss={onDismiss} message={error ?? ''} />}
 
           {modalType !== 'pending' && modalType !== 'error' && (
-            <Wrapper data-testid="bridge-initiated-modal">
+            <Wrapper>
               {isWarning ? (
                 <AlertCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
               ) : (
@@ -66,7 +65,6 @@ export const BridgeModalContent = ({
                     </DisclaimerText>
                   </DisclaimerTextWrapper>
                   <ButtonAccept
-                    data-testid="accept-bridging"
                     mb="12px"
                     disabled={disableConfirm}
                     onClick={() => {
@@ -84,9 +82,7 @@ export const BridgeModalContent = ({
                 <>
                   <TYPE.main>{text}</TYPE.main>{' '}
                   <ButtonsWrapper>
-                    <ButtonPrimary data-testid="close-bridge-initiated-button" onClick={onDismiss}>
-                      {t('bridgeBackText')}
-                    </ButtonPrimary>
+                    <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                   </ButtonsWrapper>
                 </>
               )}
@@ -95,9 +91,7 @@ export const BridgeModalContent = ({
                   <TYPE.main textAlign="center" mb="24px">
                     {text}
                   </TYPE.main>
-                  <ButtonPrimary data-testid="close-bridge-initiated-button" onClick={onDismiss}>
-                    {t('bridgeBackText')}
-                  </ButtonPrimary>
+                  <ButtonPrimary onClick={onDismiss}>{t('bridgeBackText')}</ButtonPrimary>
                 </>
               )}
             </Wrapper>

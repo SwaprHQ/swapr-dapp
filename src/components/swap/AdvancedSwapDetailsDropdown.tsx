@@ -1,20 +1,18 @@
-import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
-
-import { formatUnits } from 'ethers/lib/utils'
-import { transparentize } from 'polished'
 import React from 'react'
+import styled from 'styled-components'
+import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
+import { SwapPlatformSelector } from './SwapPlatformSelector'
+import { AutoColumn } from '../Column'
 import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
-
-import { useActiveWeb3React } from '../../hooks'
-import { MainnetGasPrice } from '../../state/application/actions'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../state/application/hooks'
-import { useMultihopManager, useUserPreferredGasPrice } from '../../state/user/hooks'
-import { AutoColumn } from '../Column'
 import { GreenGasPriceOption, OrangeGasPriceOption, PurpleGasPriceOption } from '../GasBadges'
+import { formatUnits } from 'ethers/lib/utils'
+import { MainnetGasPrice } from '../../state/application/actions'
 import { RowFixed } from '../Row'
-import { SwapPlatformSelector } from './SwapPlatformSelector'
+import { useMultihopManager, useUserPreferredGasPrice } from '../../state/user/hooks'
+import { transparentize } from 'polished'
+import { useActiveWeb3React } from '../../hooks'
 
 const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
   transform: ${({ show }) => (show ? 'translateY(16px)' : 'translateY(-100%)')};

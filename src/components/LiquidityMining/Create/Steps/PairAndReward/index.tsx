@@ -1,15 +1,14 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
-
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { TYPE } from '../../../../../theme'
 import { unwrappedToken } from '../../../../../utils/wrappedCurrency'
-import { NumericalInput } from '../../../../Input/NumericalInput'
+import NumericalInput from '../../../../Input/NumericalInput'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
+
 import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'

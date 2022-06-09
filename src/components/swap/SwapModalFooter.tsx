@@ -1,9 +1,7 @@
 import { Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
-
 import React, { useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
-
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import {

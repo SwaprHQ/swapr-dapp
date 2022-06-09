@@ -1,15 +1,16 @@
-import { darken } from 'polished'
 import React, { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-
-import { ReactComponent as Cross } from '../../assets/svg/crossIcon.svg'
-import { ReactComponent as ThreeBars } from '../../assets/svg/three-bars.svg'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleMobileMenu } from '../../state/application/hooks'
 import { ExternalLink } from '../../theme'
+import { darken } from 'polished'
+import { useTranslation } from 'react-i18next'
+
+import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import Popover from '../Popover'
+
+import { ReactComponent as ThreeBars } from '../../assets/svg/three-bars.svg'
+import { ReactComponent as Cross } from '../../assets/svg/crossIcon.svg'
 
 const StyledPopover = styled(Popover)`
   padding: 22px;

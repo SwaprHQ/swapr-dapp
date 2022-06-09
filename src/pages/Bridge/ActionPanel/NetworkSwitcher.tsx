@@ -1,11 +1,10 @@
-import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
-
 import { ButtonPrimary } from '../../../components/Button'
 import { RowBetween } from '../../../components/Row'
-import { ChainLabel } from '../../../constants'
+import { transparentize } from 'polished'
 import { useActiveWeb3React } from '../../../hooks'
+import { ChainLabel } from '../../../constants'
 
 interface NetworkSwitcherProps {
   sendToId: number

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { escapeRegExp } from '../../../utils'
 import { StyledInput } from '../styleds'
 
@@ -47,5 +46,7 @@ export const NumericalInput = React.memo(function InnerInput({
     />
   )
 })
+
+export default NumericalInput
 
 // const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group

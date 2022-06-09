@@ -1,17 +1,14 @@
 import React, { useCallback } from 'react'
-import { ExternalLink as LinkIcon } from 'react-feather'
 import { useDispatch } from 'react-redux'
-import { ButtonProps } from 'rebass'
 import styled from 'styled-components'
-
-import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
-import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
-import { getExplorerLink, shortenAddress } from '../../utils'
-import { ButtonInvisbile } from '../Button'
+import { shortenAddress } from '../../utils'
 import { AutoRow } from '../Row'
+import Copy from './Copy'
+import Transaction from './Transaction'
+
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { getExplorerLink } from '../../utils'
 import { ExternalLink as LinkIcon } from 'react-feather'
@@ -19,9 +16,6 @@ import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { ButtonProps } from 'rebass'
 import { ButtonInvisbile } from '../Button'
 import { useTranslation } from 'react-i18next'
-
-import Copy from './Copy'
-import Transaction from './Transaction'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

@@ -1,12 +1,11 @@
 import React from 'react'
-import Skeleton from 'react-loading-skeleton'
-import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-
+import Skeleton from 'react-loading-skeleton'
+import { DarkCard } from '../../../Card'
+import { Box, Flex } from 'rebass'
+import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { useWindowSize } from '../../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../../theme'
-import { DarkCard } from '../../../Card'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
 
 const SizedCard = styled(DarkCard)<{ isMobile: boolean }>`
   width: 100%;

@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import { StyledConnectedIcon } from '../../utils'
 import { AutoRow } from '../Row'
 import { NetworkOptions } from './NetworkSwitcher.types'
+import { StyledConnectedIcon } from '../../utils'
 
 const InfoCard = styled.button<{ active?: boolean; connected?: boolean }>`
   background-color: transparent;

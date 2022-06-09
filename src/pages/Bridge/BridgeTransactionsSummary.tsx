@@ -1,11 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { BridgeStatusTag } from './BridgeStatusTag'
 import { getExplorerLink } from '../../utils'
 import { getNetworkInfo } from '../../utils/networksList'
-import { BridgeStatusTag } from './BridgeStatusTag'
 
 const Container = styled.div`
   display: flex;
@@ -161,12 +160,12 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
 
   return (
     <Row>
-      <ColumnBridging data-testid="bridged-asset-name">
+      <ColumnBridging>
         <TextBridging>
           {value} {assetName}
         </TextBridging>
       </ColumnBridging>
-      <ColumnFrom data-testid="bridged-from-chain">
+      <ColumnFrom>
         <TextFrom>
           <Link
             href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction')}
@@ -177,7 +176,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
           </Link>
         </TextFrom>
       </ColumnFrom>
-      <ColumnToFlex data-testid="bridged-to-chain">
+      <ColumnToFlex>
         <Filler>
           <Dots status={BridgeTransactionStatus.CONFIRMED} />
           <Dots status={status} />
@@ -191,7 +190,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
           {toChainName}
         </TextTo>
       </ColumnToFlex>
-      <ColumnStatus data-testid="status-tag">
+      <ColumnStatus>
         <BridgeStatusTag
           status={status}
           pendingReason={pendingReason}

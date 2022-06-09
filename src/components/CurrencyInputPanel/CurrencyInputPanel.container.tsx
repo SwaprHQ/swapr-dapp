@@ -1,14 +1,17 @@
 import React from 'react'
 
-import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
-import { CurrencyWrapperSource } from '../CurrencyLogo'
-import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
-import {
-  useCurrencySearchModalBridge,
-  useCurrencySearchModalSwap,
-} from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
+
+import {
+  useCurrencySearchModalSwap,
+  useCurrencySearchModalBridge,
+} from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
+import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
+
+import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
+
+import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()

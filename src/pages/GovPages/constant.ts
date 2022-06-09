@@ -1,5 +1,4 @@
 import { ChainId, Currency } from '@swapr/sdk'
-
 import { DAI, USDC, USDT, WBTC } from '../../constants'
 
 export const MainPage = 'Governance Main Page'

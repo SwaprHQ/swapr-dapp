@@ -10,7 +10,6 @@
   },
   "ignorePatterns": [
     "node_modules/**/*",
-    "cypress/**/*",
     "scripts/*.js",
     "config-overrides.js",
     "src/**/generated/**/*"
@@ -23,8 +22,6 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
@@ -34,46 +31,12 @@
     "react/prop-types": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "no-unused-vars": "off",
-    "react/display-name": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
-      }
-    ],
-    "import/no-unresolved": "off",
-    "import/order": [
-      "error",
-      {
-        "groups": ["internal", ["builtin", "external"], ["parent", "sibling"]],
-        "pathGroups": [
-          {
-            "pattern": "@swapr/**",
-            "group": "internal"
-          },
-          {
-            "pattern": "@ethersproject/**",
-            "group": "internal"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["builtin"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "caseInsensitive": true,
-          "order": "asc"
-        }
-      }
-    ],
-    "sort-imports": [
-      "error",
-      {
-        "allowSeparatedGroups": true,
-        "ignoreCase": true,
-        "ignoreDeclarationSort": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
       }
     ]
   }

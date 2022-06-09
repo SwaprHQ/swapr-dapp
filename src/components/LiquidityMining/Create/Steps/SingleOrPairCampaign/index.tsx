@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
-
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
+
 import { AutoRow } from '../../../../Row'
 import { SmoothGradientCard } from '../../../styleds'
 import { Circle } from '../PairAndReward/AssetSelector/AssetLogo'
@@ -62,7 +62,6 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         height={'138px'}
         active={singleReward === CampaignType.TOKEN}
         onClick={() => handleRewardClick(CampaignType.TOKEN)}
-        data-testid="single-token-staking-switch"
       >
         <AdjustableDiamondSize pairOrToken={true} active={singleReward === CampaignType.TOKEN} />
         <StyledAutoColumn active={singleReward === CampaignType.TOKEN}>
@@ -77,7 +76,6 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         height={'138px'}
         onClick={() => handleRewardClick(CampaignType.PAIR)}
         active={singleReward === CampaignType.PAIR}
-        data-testid="lp-token-staking-switch"
       >
         <AdjustableDiamondSize pairOrToken={false} active={singleReward === CampaignType.PAIR} />
         <StyledAutoColumn active={singleReward === CampaignType.PAIR}>

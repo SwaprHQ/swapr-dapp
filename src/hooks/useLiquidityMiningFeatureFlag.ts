@@ -1,5 +1,4 @@
 import { ChainId } from '@swapr/sdk'
-
 import { useActiveWeb3React } from '.'
 
 export function useLiquidityMiningFeatureFlag(): boolean {

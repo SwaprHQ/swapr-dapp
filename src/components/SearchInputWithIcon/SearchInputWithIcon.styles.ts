@@ -1,6 +1,5 @@
-import transparentize from 'polished/lib/color/transparentize'
 import styled from 'styled-components'
-
+import transparentize from 'polished/lib/color/transparentize'
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 
 export const SearchExpandedInput = styled.input<{ fontWeight?: number; fontSize?: string }>`

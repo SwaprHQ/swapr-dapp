@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit'
-
 import { MainnetGasPrice } from '../application/actions'
 
 export interface SerializedToken {

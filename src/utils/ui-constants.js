@@ -1,5 +1,34 @@
-import TextyAnim from 'rc-texty'
 import React from 'react'
+import TextyAnim from 'rc-texty'
+
+// Hero Imports
+
+import EthereumLogo from './../assets/images/logo-Ethereum.svg'
+import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
+import xDaiLogo from './../assets/images/logo-xDai.svg'
+import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
+import PolygonLogo from './../assets/images/logo-Polygon.svg'
+
+// Hero Imports
+
+import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
+import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
+import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
+import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
+import RoutingLevinSwap from './../assets/images/levinswap.svg'
+import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
+import RoutingDFYN from './../assets/images/routing-DFYN.svg'
+
+// Features Imports
+
+import Swap from './../assets/images/features/swap.png'
+import EcoRouting from './../assets/images/features/eco-routing.png'
+import Vote from './../assets/images/features/vote.png'
+import Farming from './../assets/images/features/farm.png'
+import DiyFarm from './../assets/images/features/diy-farm.png'
+import Bridge from './../assets/images/features/bridge.png'
+
+// Features Imports Animations
 
 import SwapAnim from './../assets/images/animations/01_Swap.svg'
 import EcoRoutingAnim from './../assets/images/animations/02_Eco_Routing.svg'
@@ -7,34 +36,26 @@ import VoteAnim from './../assets/images/animations/03_Vote.svg'
 import FarmingAnim from './../assets/images/animations/04_Farming.svg'
 import DiyFarmAnim from './../assets/images/animations/05_DIY_Farm.svg'
 import BridgeAnim from './../assets/images/animations/06_Bridge.svg'
+
+// Community Links Imports
+
+import Discord from './../assets/images/isologo-discord.svg'
+import Github from './../assets/images/isologo-github.svg'
+import Twitter from './../assets/images/isologo-twitter.svg'
+
+// Blog Images
+
 import Entry1 from './../assets/images/blog/blog-entry-1.jpg'
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
 import Entry3 from './../assets/images/blog/blog-entry-3.jpg'
-import Bridge from './../assets/images/features/bridge.png'
-import DiyFarm from './../assets/images/features/diy-farm.png'
-import EcoRouting from './../assets/images/features/eco-routing.png'
-import Farming from './../assets/images/features/farm.png'
-import Swap from './../assets/images/features/swap.png'
-import Vote from './../assets/images/features/vote.png'
-import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
-import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
-import Discord from './../assets/images/isologo-discord.svg'
-import Github from './../assets/images/isologo-github.svg'
-import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
-import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
-import Twitter from './../assets/images/isologo-twitter.svg'
+
+// Stats Images
+
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
-import RoutingLevinSwap from './../assets/images/levinswap.svg'
-import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
-import EthereumLogo from './../assets/images/logo-Ethereum.svg'
-import PolygonLogo from './../assets/images/logo-Polygon.svg'
-import xDaiLogo from './../assets/images/logo-xDai.svg'
-import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
-import RoutingDFYN from './../assets/images/routing-DFYN.svg'
-import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
-import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
-import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
-import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
+import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
+import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
+import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
+
 import { scrollTo } from './helper-functions'
 
 export const mainNavigation = [

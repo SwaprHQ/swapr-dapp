@@ -1,6 +1,5 @@
 import { transparentize } from 'polished'
 import styled from 'styled-components'
-
 import { Option } from '../Option'
 
 const BaseGasPriceOption = styled(Option)<{ active?: boolean; compact?: boolean }>`

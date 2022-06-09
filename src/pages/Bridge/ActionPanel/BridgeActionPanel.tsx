@@ -1,19 +1,18 @@
-import { ChainId } from '@swapr/sdk'
-
 import React, { useCallback } from 'react'
+import { ChainId } from '@swapr/sdk'
 import { useSelector } from 'react-redux'
-
-import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'
-import { ButtonConnect } from '../../../components/ButtonConnect'
-import Loader from '../../../components/Loader'
-import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
-import { RowBetween } from '../../../components/Row'
-import { isToken } from '../../../hooks/Tokens'
+import { ButtonPrimary } from '../../../components/Button'
 import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
-import { AppState } from '../../../state'
-import { BridgeButton } from './BridgeButton'
 import { NetworkSwitcher } from './NetworkSwitcher'
+import { BridgeButton } from './BridgeButton'
+import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
+import { isToken } from '../../../hooks/Tokens'
+import { ButtonConfirmed } from '../../../components/Button'
+import { RowBetween } from '../../../components/Row'
 import { useBridgeActionPanel } from './useBridgeActionPanel'
+import { AppState } from '../../../state'
+import Loader from '../../../components/Loader'
+import { ButtonConnect } from '../../../components/ButtonConnect'
 
 export type BridgeActionPanelProps = {
   account: string | null | undefined
@@ -59,7 +58,7 @@ export const BridgeActionPanel = ({
     // Change network
     if (!isNetworkConnected && !isCollecting) {
       return (
-        <ButtonPrimary onClick={handleSelectFromNetwork} data-testid="bridge-button">
+        <ButtonPrimary onClick={handleSelectFromNetwork}>
           Connect to {networkOptionsPreset.find(network => network.chainId === fromNetworkChainId)?.name}
         </ButtonPrimary>
       )

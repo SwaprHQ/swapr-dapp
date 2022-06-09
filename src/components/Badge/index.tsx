@@ -1,7 +1,6 @@
 import React, { MouseEvent } from 'react'
-import { Box, Flex } from 'rebass'
+import { Flex, Box } from 'rebass'
 import styled from 'styled-components'
-
 import { TYPE } from '../../theme'
 
 const Root = styled(Flex)`

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
-
-import { MEDIA_WIDTHS } from '../theme'
 import { useWindowSize } from './useWindowSize'
+import { MEDIA_WIDTHS } from '../theme'
 
 const { upToMedium } = MEDIA_WIDTHS
 

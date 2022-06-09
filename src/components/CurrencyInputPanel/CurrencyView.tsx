@@ -1,8 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { CurrencyLogo } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
+import { CurrencyLogo } from '../CurrencyLogo'
 import { StyledDropDown, StyledTokenName } from './CurrencyInputPanel.styles'
 import { CurrencyViewProps } from './CurrencyInputPanel.types'
 
@@ -37,11 +36,7 @@ export const CurrencyView = ({
           currencyWrapperSource={currencyWrapperSource}
         />
       )}
-      <StyledTokenName
-        className="token-symbol-container"
-        data-testid="token-symbol"
-        active={Boolean(currency && currency.symbol)}
-      >
+      <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
         {(currency && currency.symbol && currency.symbol.length > 20
           ? currency.symbol.slice(0, 4) +
             '...' +

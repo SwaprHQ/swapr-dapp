@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '../../utils/theme'
 
 const BottomRail = props => {

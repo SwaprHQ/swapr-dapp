@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-
 import { AppState } from '..'
 import { getChainPair } from '../../utils/arbitrum'
 

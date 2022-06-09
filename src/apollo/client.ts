@@ -1,8 +1,6 @@
-import { ChainId } from '@swapr/sdk'
-
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { GraphQLClient } from 'graphql-request'
-
+import { ChainId } from '@swapr/sdk'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } = {

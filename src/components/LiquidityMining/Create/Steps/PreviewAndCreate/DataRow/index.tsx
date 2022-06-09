@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react'
 import { Box, Flex } from 'rebass'
-
 import { TYPE } from '../../../../../../theme'
 
 interface DataRowProps {

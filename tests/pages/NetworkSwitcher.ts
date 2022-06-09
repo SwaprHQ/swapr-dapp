@@ -1,21 +1,18 @@
 export class NetworkSwitcher {
   static ethereum() {
-    return cy.get('[data-testid=ethereum-network-button]').filter(':visible')
+    return cy.get('[data-testid=ethereum-network-button]')
   }
   static arbitrum() {
-    return cy.get('[data-testid=arbitrum-one-network-button]').filter(':visible')
+    return cy.get('[data-testid=arbitrum-one-network-button]')
   }
   static gnosis() {
-    return cy.get('[data-testid=gnosis-chain-network-button]').filter(':visible')
+    return cy.get('[data-testid=gnosis-chain-network-button]')
   }
   static rinkeby() {
-    return cy.get('[data-testid=rinkeby-network-button]').filter(':visible')
+    return cy.get('[data-testid=rinkeby-network-button]')
   }
   static arinkeby() {
-    return cy.get('[data-testid=a-rinkeby-network-button]').filter(':visible')
-  }
-  static getNetworkSwitcher() {
-    return cy.get('[data-testid=network-switcher]').filter(':visible')
+    return cy.get('[data-testid=a-rinkeby-network-button]')
   }
   static polygon() {
     return cy.get('[data-testid=polygon-network-button]')

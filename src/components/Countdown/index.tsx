@@ -1,5 +1,6 @@
+import React, { useEffect } from 'react'
 import { Duration } from 'luxon'
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useInterval } from 'react-use'
 
 interface CountdownProps {

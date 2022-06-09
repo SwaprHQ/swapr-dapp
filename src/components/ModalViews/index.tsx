@@ -1,15 +1,16 @@
 import React from 'react'
-import { ArrowUpCircle } from 'react-feather'
+import { useActiveWeb3React } from '../../hooks'
+
+import { AutoColumn, ColumnCenter } from '../Column'
 import styled, { useTheme } from 'styled-components'
+import { RowBetween } from '../Row'
+import { TYPE, CloseIcon, CustomLightSpinner } from '../../theme'
+import { ArrowUpCircle } from 'react-feather'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useActiveWeb3React } from '../../hooks'
-import { CloseIcon, CustomLightSpinner, TYPE } from '../../theme'
+import { getExplorerLink } from '../../utils'
 import { ExternalLink } from '../../theme/components'
 import { useTranslation } from 'react-i18next'
-import { getExplorerLink } from '../../utils'
-import { AutoColumn, ColumnCenter } from '../Column'
-import { RowBetween } from '../Row'
 
 const ConfirmOrLoadingWrapper = styled.div`
   width: 100%;

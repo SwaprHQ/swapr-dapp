@@ -1,6 +1,5 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
-
 import { TagFailed, TagPending, TagSuccess, TagSuccessArrow } from '../../components/Tag'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 

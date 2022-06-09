@@ -1,29 +1,28 @@
-import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
-
 import React, { useCallback, useEffect, useState } from 'react'
-import { ChevronsDown } from 'react-feather'
-import { useTranslation } from 'react-i18next'
-import Skeleton from 'react-loading-skeleton'
-import { Box, Flex } from 'rebass'
+import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import styled, { useTheme } from 'styled-components'
+import { useTranslation } from 'react-i18next'
+import { ChevronsDown } from 'react-feather'
 
-import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
-import useDebounce from '../../hooks/useDebounce'
-import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
-import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
-import { Field } from '../../state/swap/actions'
-import { useSwapState } from '../../state/swap/hooks'
-import { useUserSlippageTolerance } from '../../state/user/hooks'
+import { AutoColumn } from '../Column'
 import { TYPE } from '../../theme'
+import { CurrencyLogo } from '../CurrencyLogo'
+import { Box, Flex } from 'rebass'
+import WarningHelper from '../WarningHelper'
+import SwapRoute from './SwapRoute'
+import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
+import { useUserSlippageTolerance } from '../../state/user/hooks'
+import { useSwapState } from '../../state/swap/hooks'
+import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
 import {
   computeSlippageAdjustedAmounts,
   computeTradePriceBreakdown,
   limitNumberOfDecimalPlaces,
   simpleWarningSeverity,
 } from '../../utils/prices'
-import { AutoColumn } from '../Column'
-import { CurrencyLogo } from '../CurrencyLogo'
+import { Field } from '../../state/swap/actions'
+import Skeleton from 'react-loading-skeleton'
+import useDebounce from '../../hooks/useDebounce'
 import {
   SelectionListDetails,
   SelectionListLabel,
@@ -33,9 +32,9 @@ import {
   SelectionListReceiveAmount,
   SelectionListWindowWrapper,
 } from '../SelectionList'
-import WarningHelper from '../WarningHelper'
+import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
-import SwapRoute from './SwapRoute'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined

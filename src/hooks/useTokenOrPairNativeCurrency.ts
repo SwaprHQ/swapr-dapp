@@ -1,15 +1,13 @@
-import { parseUnits } from '@ethersproject/units'
-import { Pair, Price, Token } from '@swapr/sdk'
-
-import Decimal from 'decimal.js-light'
+import { Token, Pair, Price } from '@swapr/sdk'
 import { useMemo } from 'react'
-
-import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
-import { getLpTokenPrice } from '../utils/prices'
 import { useNativeCurrency } from './useNativeCurrency'
+import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
+import { getLpTokenPrice } from '../utils/prices'
 
+import Decimal from 'decimal.js-light'
+import { parseUnits } from 'ethers/lib/utils'
 import { useActiveWeb3React } from '.'
 
 export function useTokenOrPairNativeCurrency(

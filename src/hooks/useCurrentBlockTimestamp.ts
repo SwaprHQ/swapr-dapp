@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers'
-
 import { useSingleCallResult } from '../state/multicall/hooks'
 import { useMulticallContract } from './useContract'
 

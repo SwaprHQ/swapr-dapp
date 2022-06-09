@@ -20,27 +20,17 @@ export class SwapPage {
   }
 
   static wrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Wrap')
-      .click()
-    return this
-  }
-  static unwrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Unwrap')
-      .click({ force: true })
+    cy.get('[data-testid=wrap-button]').click()
     return this
   }
 
   static swap() {
-    cy.get('#swap-button')
-      .should('contain.text', 'Swap')
-      .click({ force: true })
+    cy.get('#swap-button').click()
     return this
   }
 
   static confirmSwap() {
-    cy.get('#confirm-swap-or-send').click({ force: true })
+    cy.get('#confirm-swap-or-send').click()
   }
 
   static getConnectOrSwitchButton() {
@@ -68,7 +58,7 @@ export class SwapPage {
     return cy.get('[data-testid=wallet-connect-list]')
   }
   static getConfirmButton() {
-    return cy.get('[data-testid=switch-connect-button]', { timeout: 60000 })
+    return cy.get('[data-testid=switch-connect-button]')
   }
   static getEstimatedMinimalTransactionValue() {
     return cy.get('[data-testid=estimated-transaction-output]')
@@ -78,8 +68,5 @@ export class SwapPage {
   }
   static getAlternateReceiverInput() {
     return cy.get('[data-testid=address-input]')
-  }
-  static getTransactionConfirmedModal() {
-    return cy.get('[data-testid=transaction-confirmed-modal]')
   }
 }

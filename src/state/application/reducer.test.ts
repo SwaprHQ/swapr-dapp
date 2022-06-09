@@ -1,7 +1,5 @@
 import { ChainId } from '@swapr/sdk'
-
 import { createStore, Store } from 'redux'
-
 import { ApplicationModal, setOpenModal, updateBlockNumber } from './actions'
 import reducer, { ApplicationState, initialState } from './reducer'
 

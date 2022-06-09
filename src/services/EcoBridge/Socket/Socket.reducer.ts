@@ -1,11 +1,9 @@
-import { ChainId } from '@swapr/sdk'
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
-
-import { BridgeDetails, BridgingDetailsErrorMessage, SocketList, SyncState } from '../EcoBridge.types'
-import { Route } from './api/generated'
+import { ChainId } from '@swapr/sdk'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
+import { TokenList } from '@uniswap/token-lists'
+import { SocketList, SyncState, BridgingDetailsErrorMessage, BridgeDetails } from '../EcoBridge.types'
+import { Route } from './api/generated'
 
 const initialState: SocketBridgeState = {
   transactions: [],

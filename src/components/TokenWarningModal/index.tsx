@@ -1,26 +1,19 @@
 import { Token } from '@swapr/sdk'
-
-import { TokenList } from '@uniswap/token-lists'
-import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
-import { AlertCircle, AlertTriangle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
-
 import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
-import { ButtonError } from '../Button'
-import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
+import Modal from '../Modal'
 import { AutoRow, RowFixed } from '../Row'
 import { AutoColumn } from '../Column'
 import { AlertCircle, AlertTriangle } from 'react-feather'
 import { ButtonError } from '../Button'
 import { TokenList } from '@uniswap/token-lists'
+import ListLogo from '../ListLogo'
 import { transparentize } from 'polished'
 import { useTranslation } from 'react-i18next'
-import ListLogo from '../ListLogo'
-import Modal from '../Modal'
 
 const WarningContainer = styled.div`
   width: 100%;

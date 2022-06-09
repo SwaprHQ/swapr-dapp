@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-
 import { useActiveWeb3React } from '../../hooks'
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 

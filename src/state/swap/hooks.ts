@@ -1,22 +1,15 @@
+import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
-
-import { createSelector } from '@reduxjs/toolkit'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import useENS from '../../hooks/useENS'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { useEcoRouterExactIn, useEcoRouterExactOut } from '../../lib/eco-router'
+import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
-import { currencyId } from '../../utils/currencyId'
-import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { AppDispatch, AppState } from '../index'
-import { useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import {
   Field,
@@ -27,6 +20,11 @@ import {
   switchCurrencies,
   typeInput,
 } from './actions'
+import { useUserSlippageTolerance } from '../user/hooks'
+import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { currencyId } from '../../utils/currencyId'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { createSelector } from '@reduxjs/toolkit'
 
 const selectSwap = createSelector(
   (state: AppState) => state.swap,

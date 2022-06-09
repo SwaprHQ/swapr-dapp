@@ -1,18 +1,16 @@
-import { getAddress } from '@ethersproject/address'
-import { BigNumber } from '@ethersproject/bignumber'
-import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+import { getAddress } from '@ethersproject/address'
+import { AddressZero } from '@ethersproject/constants'
+import { JsonRpcSigner, Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
+import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
-import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
-
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, Pair, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { TokenAddressMap } from '../state/lists/hooks'
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
-
-import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
 import { NetworkDetails } from '../constants'
-import { TokenAddressMap } from '../state/lists/hooks'
+import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {

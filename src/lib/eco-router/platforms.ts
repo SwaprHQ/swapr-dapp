@@ -1,4 +1,4 @@
-import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { UniswapV2RoutablePlatform, ChainId } from '@swapr/sdk'
 
 /**
  * List of Uniswap V2 platform that support current chain
@@ -11,7 +11,5 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
     UniswapV2RoutablePlatform.HONEYSWAP,
     UniswapV2RoutablePlatform.BAOSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
-    UniswapV2RoutablePlatform.DFYN,
-    UniswapV2RoutablePlatform.QUICKSWAP,
-  ].filter(platform => platform.supportsChain(chainId))
+  ].filter(platform => platform.supportsChain(chainId as ChainId))
 }

@@ -1,5 +1,4 @@
 import { ChainId } from '@swapr/sdk'
-
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 export enum ArbitrumPendingReasons {

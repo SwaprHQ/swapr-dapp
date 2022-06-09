@@ -1,8 +1,6 @@
-import { BigintIsh } from '@swapr/sdk'
-
 import { createReducer } from '@reduxjs/toolkit'
-
-import { setProtocolFee, setSwapFees } from './actions'
+import { BigintIsh } from '@swapr/sdk'
+import { setSwapFees, setProtocolFee } from './actions'
 
 export interface FeesState {
   readonly swapFees:

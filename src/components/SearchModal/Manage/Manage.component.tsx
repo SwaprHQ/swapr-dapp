@@ -1,23 +1,24 @@
-import { useSpring } from '@react-spring/web'
 import React, { useCallback, useContext, useState } from 'react'
-import { useMeasure } from 'react-use'
 import { Box, Text } from 'rebass'
+import { useSpring } from '@react-spring/web'
+import { useMeasure } from 'react-use'
 
-import { CloseIcon } from '../../../theme'
-import { RowBetween } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-import { GoBackIcon } from '../GoBackIcon'
-import { ManageLists } from '../ManageLists'
-import { ManageTokens } from '../ManageTokens'
 import {
-  AnimatedSlide,
-  AnimatedToggleIndicator,
+  Wrapper,
   TabContainer,
   ToggleOption,
   ToggleWrapper,
-  Wrapper,
+  AnimatedSlide,
+  AnimatedToggleIndicator,
 } from './Manage.styles'
+import { CloseIcon } from '../../../theme'
+import { RowBetween } from '../../Row'
+import { GoBackIcon } from '../GoBackIcon'
+import { ManageLists } from '../ManageLists'
+import { ManageTokens } from '../ManageTokens'
+import { CurrencyModalView } from '../CurrencySearchModal'
+
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { ManageProps } from './Manage.types'
 
 export const Manage = ({ onDismiss }: ManageProps) => {

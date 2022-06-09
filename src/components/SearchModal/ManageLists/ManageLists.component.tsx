@@ -1,27 +1,29 @@
 import React, { useContext } from 'react'
-import { CheckCircle, Settings } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
+import { Settings, CheckCircle } from 'react-feather'
 
-import { ExternalLink, IconWrapper, TYPE } from '../../../theme'
-import { ButtonEmpty, ButtonPrimary } from '../../Button'
-import Card from '../../Card'
-import Column, { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import Row, { RowBetween, RowFixed } from '../../Row'
-import ListToggle from '../../Toggle/ListToggle'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
-import { ManageListsContext } from './ManageLists.context'
-import { useListRow } from './ManageLists.hooks'
 import {
-  ListContainer,
-  PopoverContainer,
-  RowWrapper,
-  StyledListUrlText,
-  StyledMenu,
-  StyledTitleText,
-  UnpaddedLinkStyledButton,
   Wrapper,
+  RowWrapper,
+  StyledMenu,
+  ListContainer,
+  StyledTitleText,
+  PopoverContainer,
+  StyledListUrlText,
+  UnpaddedLinkStyledButton,
 } from './ManageLists.styles'
+import Card from '../../Card'
+import ListLogo from '../../ListLogo'
+import ListToggle from '../../Toggle/ListToggle'
+import Column, { AutoColumn } from '../../Column'
+import Row, { RowFixed, RowBetween } from '../../Row'
+import { ButtonEmpty, ButtonPrimary } from '../../Button'
+import { ExternalLink, TYPE, IconWrapper } from '../../../theme'
+import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
+
+import { useListRow } from './ManageLists.hooks'
+
+import { ManageListsContext } from './ManageLists.context'
 import { ListRowProps } from './ManageLists.types'
 
 const listUrlRowHTMLId = (listUrl: string) => {

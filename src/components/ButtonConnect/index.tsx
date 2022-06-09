@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { useUnsupportedChainIdError } from '../../hooks'
 import { ApplicationModal } from '../../state/application/actions'
 import {

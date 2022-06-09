@@ -46,7 +46,6 @@ export class SubgraphFacade {
       })
       .then(resp => {
         try {
-          console.log('Subgraph response: ', resp)
           expect(resp.body.data.liquidityMiningCampaigns).to.have.length.greaterThan(0)
         } catch (err) {
           if (retries > 100) {

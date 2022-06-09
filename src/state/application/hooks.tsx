@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
-
-import PopupItem from '../../components/Popups/PopupItem'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
+import { toast } from 'react-toastify'
+import PopupItem from '../../components/Popups/PopupItem'
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = useActiveWeb3React()

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-
 import Badge from '../Badge'
 
 const AbsoluteBadgeFlex = styled(Flex)`

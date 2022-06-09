@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-
 import { ApplicationState } from './reducer'
 
 export type PopupContent =

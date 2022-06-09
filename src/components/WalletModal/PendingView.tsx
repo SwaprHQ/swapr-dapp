@@ -1,13 +1,12 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import React from 'react'
-import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-
-import { injected } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
+import { injected } from '../../connectors'
+import Loader from '../Loader'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
-import Loader from '../Loader'
+import { Box, Flex } from 'rebass'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};

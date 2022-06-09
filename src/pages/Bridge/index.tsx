@@ -1,45 +1,43 @@
-import { CurrencyAmount } from '@swapr/sdk'
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-
+import { CurrencyAmount } from '@swapr/sdk'
+import { useDispatch, useSelector } from 'react-redux'
+import { Tabs } from './Tabs'
+import AppBody from '../AppBody'
+import { AssetSelector } from './AssetsSelector'
+import { RowBetween } from '../../components/Row'
 import ArrowIcon from '../../assets/svg/arrow.svg'
-import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
+import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
+import { BridgeModal } from './BridgeModal/BridgeModal'
+import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import {
-  networkOptionsPreset,
   NetworkSwitcher as NetworkSwitcherPopover,
+  networkOptionsPreset,
   NetworkSwitcherTags,
 } from '../../components/NetworkSwitcher'
-import { RowBetween } from '../../components/Row'
-import { SHOW_TESTNETS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
+import { SHOW_TESTNETS } from '../../constants'
+import { maxAmountSpend } from '../../utils/maxAmountSpend'
+import { BridgeTab, isNetworkDisabled } from './utils'
+import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
+import { useEcoBridge } from '../../services/EcoBridge/EcoBridgeProvider'
+import { AppState } from '../../state'
+import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
+import { BridgeSelectionWindow } from './BridgeSelectionWindow'
+import { useBridgeModal } from '../../services/EcoBridge/EcoBridge.hooks'
 import {
   useBridgeActionHandlers,
   useBridgeCollectHandlers,
   useBridgeFetchDynamicLists,
   useBridgeInfo,
   useBridgeListsLoadingStatus,
-  useBridgeModal,
   useBridgeTxsFilter,
   useShowAvailableBridges,
 } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
-import { useEcoBridge } from '../../services/EcoBridge/EcoBridgeProvider'
-import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
-import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
-import { AppState } from '../../state'
-import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
-import AppBody from '../AppBody'
-import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
-import { AssetSelector } from './AssetsSelector'
-import { BridgeModal } from './BridgeModal/BridgeModal'
-import { BridgeSelectionWindow } from './BridgeSelectionWindow'
-import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
-import { Tabs } from './Tabs'
-import { BridgeTab, isNetworkDisabled } from './utils'
+import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -221,7 +219,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
-        activeChainId: account ? chainId : -1,
+        activeChainId: !!account ? chainId : -1,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange]
   )
@@ -233,7 +231,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
-        activeChainId: account ? chainId : -1,
+        activeChainId: !!account ? chainId : -1,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )

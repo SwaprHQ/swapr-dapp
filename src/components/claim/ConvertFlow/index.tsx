@@ -1,16 +1,14 @@
-import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
-
 import React, { useCallback } from 'react'
-import styled from 'styled-components'
-
+import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
 import { useActiveWeb3React } from '../../../hooks'
-import { useConvertSwprCallback } from '../../../hooks/swpr/useConvertSwprCallback'
-import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
-import { useTransactionAdder } from '../../../state/transactions/hooks'
-import { ButtonPrimary } from '../../Button'
 import { AutoColumn } from '../../Column'
-import ProgressCircles from '../../ProgressSteps'
 import { RowBetween } from '../../Row'
+import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
+import { ButtonPrimary } from '../../Button'
+import ProgressCircles from '../../ProgressSteps'
+import { useConvertSwprCallback } from '../../../hooks/swpr/useConvertSwprCallback'
+import { useTransactionAdder } from '../../../state/transactions/hooks'
+import styled from 'styled-components'
 
 const StyledAutoColumn = styled(AutoColumn)<{ disabled: boolean }>`
   opacity: ${props => (props.disabled ? 0.5 : 1)};

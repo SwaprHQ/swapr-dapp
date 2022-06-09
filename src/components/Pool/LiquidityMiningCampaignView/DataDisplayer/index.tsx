@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react'
-
 import { TYPE } from '../../../../theme'
 import { Colors } from '../../../../theme/styled'
 import { AutoColumn } from '../../../Column'

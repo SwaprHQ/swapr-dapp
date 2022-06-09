@@ -1,4 +1,4 @@
-import { AddressZero, MaxUint256 } from '@ethersproject/constants'
+import { MaxUint256, AddressZero } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
   TokenAmount,
@@ -12,19 +12,15 @@ import {
   Currency,
 } from '@swapr/sdk'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
-import { ChainId, CurrencyAmount, CurveTrade, TokenAmount, UniswapV2RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
-
 import { useCallback, useMemo } from 'react'
-
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
-import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin } from '../utils'
+import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
+import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
-import { useNativeCurrency } from './useNativeCurrency'
-
 import { useActiveWeb3React } from './index'
+import { useNativeCurrency } from './useNativeCurrency'
 
 export enum ApprovalState {
   UNKNOWN,

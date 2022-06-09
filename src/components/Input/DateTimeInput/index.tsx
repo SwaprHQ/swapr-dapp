@@ -1,10 +1,9 @@
 import React from 'react'
 import Datepicker from 'react-datepicker'
-import { Flex } from 'rebass'
 import styled from 'styled-components'
-
-import { ReactComponent as CalendarIcon } from '../../../assets/svg/calendar.svg'
 import { StyledInput } from '../styleds'
+import { ReactComponent as CalendarIcon } from '../../../assets/svg/calendar.svg'
+import { Flex } from 'rebass'
 
 const Input = styled(StyledInput)<{ selected: boolean }>`
   position: relative;

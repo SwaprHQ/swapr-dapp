@@ -1,20 +1,21 @@
-import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
-
 import React from 'react'
-import { Flex, Text } from 'rebass'
-import styled from 'styled-components'
 
-import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
-import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
-import { useWindowSize } from '../../../../hooks/useWindowSize'
+import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 import { MEDIA_WIDTHS, TYPE } from '../../../../theme'
-import { formatCurrencyAmount } from '../../../../utils'
-import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import CarrotBadge from '../../../Badge/Carrot'
-import { DarkCard } from '../../../Card'
-import { CurrencyLogo } from '../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
+import { DarkCard } from '../../../Card'
+import styled from 'styled-components'
+import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
+import { formatCurrencyAmount } from '../../../../utils'
+
+import { unwrappedToken } from '../../../../utils/wrappedCurrency'
+
+import { useWindowSize } from '../../../../hooks/useWindowSize'
+import { Flex, Text } from 'rebass'
+import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import ApyBadge from '../../ApyBadge'
+import { CurrencyLogo } from '../../../CurrencyLogo'
+import CarrotBadge from '../../../Badge/Carrot'
 
 const SizedCard = styled(DarkCard)`
   //THIS SHOULD BE TOOGLEABLE 210PX OR 100% DEPENDING ON LAYOUT CHOSEN

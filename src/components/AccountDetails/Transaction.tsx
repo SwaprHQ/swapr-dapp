@@ -1,16 +1,14 @@
 import React from 'react'
-import { CheckCircle, Triangle } from 'react-feather'
 import styled from 'styled-components'
+import { CheckCircle, Triangle } from 'react-feather'
 
 import { SwapProtocol } from '../../state/transactions/reducer'
 import { useActiveWeb3React } from '../../hooks'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ExternalLink } from '../../theme'
 import { useAllTransactions } from '../../state/transactions/hooks'
-import { ExternalLink } from '../../theme'
-import { getExplorerLink } from '../../utils'
-import Loader from '../Loader'
 import { RowFixed } from '../Row'
+import Loader from '../Loader'
 
 const TransactionWrapper = styled.div``
 

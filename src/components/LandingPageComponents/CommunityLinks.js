@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import { breakpoints, gradients } from '../../utils/theme'
+import { gradients } from '../../utils/theme'
 import { CommunityLinksContent } from '../../utils/ui-constants'
-import Button from './common/Button'
+import { breakpoints } from '../../utils/theme'
 import Layout from './layout/Layout'
+import Button from './common/Button'
 
 const CommunityLinks = () => {
   return (

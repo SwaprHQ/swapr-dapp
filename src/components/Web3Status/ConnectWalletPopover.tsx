@@ -1,19 +1,17 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { useWeb3React } from '@web3-react/core'
 import React, { ReactNode, useRef } from 'react'
-import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
-
-import MetamaskIcon from '../../assets/images/metamask.png'
-import { injected } from '../../connectors'
+import { useWeb3React } from '@web3-react/core'
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { isMobile } from 'react-device-detect'
 import { SUPPORTED_WALLETS } from '../../constants'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
-import { ApplicationModal } from '../../state/application/actions'
-import { useCloseModals, useModalOpen } from '../../state/application/hooks'
-import { StyledConnectedIcon } from '../../utils'
-import Popover from '../Popover'
-
+import { injected } from '../../connectors'
+import MetamaskIcon from '../../assets/images/metamask.png'
 import { ModalView } from '.'
+import Popover from '../Popover'
+import { useCloseModals, useModalOpen } from '../../state/application/hooks'
+import { ApplicationModal } from '../../state/application/actions'
+import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import { StyledConnectedIcon } from '../../utils'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -233,7 +231,7 @@ export const Item = ({ id, onClick, name, icon, link, isActive }: ItemProps) => 
 
   return (
     <ListItem id={id}>
-      {link ? (
+      {!!link ? (
         <ListButton as="a" href={link} target="_blank" rel="noopener noreferrer">
           {getContent()}
         </ListButton>

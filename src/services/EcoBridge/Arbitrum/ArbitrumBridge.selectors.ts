@@ -1,21 +1,19 @@
-import { ChainId } from '@swapr/sdk'
-
 import { createSelector } from '@reduxjs/toolkit'
 import { OutgoingMessageState } from 'arb-ts'
-
 import { AppState } from '../../../state'
 import {
-  ArbitrumBridgeTxn,
   BridgeTransactionLog,
   BridgeTransactionStatus,
   BridgeTransactionSummary,
+  ArbitrumBridgeTxn,
 } from '../../../state/bridgeTransactions/types'
-import { normalizeInputValue } from '../../../utils'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
-import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumList } from '../EcoBridge.types'
-import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
+import { ChainId } from '@swapr/sdk'
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import { normalizeInputValue } from '../../../utils'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)

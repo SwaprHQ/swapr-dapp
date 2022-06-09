@@ -1,18 +1,18 @@
+import React, { useState, useCallback, useEffect } from 'react'
+import styled, { css } from 'styled-components'
+import { Text } from 'rebass'
 import { ChainId } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { Text } from 'rebass'
-import styled, { css } from 'styled-components'
-
-import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { useActiveWeb3React } from '../../hooks'
-import { MainnetGasPrice } from '../../state/application/actions'
+import QuestionHelper from '../QuestionHelper'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
-import { Option } from '../Option'
-import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
+
+import border8pxRadius from '../../assets/images/border-8px-radius.png'
+import { MainnetGasPrice } from '../../state/application/actions'
+import { Option } from '../Option'
 import Toggle from '../Toggle'
+import { useActiveWeb3React } from '../../hooks'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
@@ -280,7 +280,7 @@ export default function SlippageTabs({
             <OptionCustom focused={deadlineFocused} style={{ width: '52px', minWidth: '52px' }} tabIndex={-1}>
               <Input
                 data-testid="input-transaction-deadline"
-                color={deadlineError ? 'red' : undefined}
+                color={!!deadlineError ? 'red' : undefined}
                 onFocus={handleDeadlineFocus}
                 onBlur={() => {
                   setDeadlineFocused(false)

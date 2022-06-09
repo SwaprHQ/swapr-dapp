@@ -1,14 +1,14 @@
-import { darken, lighten, transparentize } from 'polished'
 import React, { ReactNode } from 'react'
-import { ChevronDown } from 'react-feather'
-import { Text } from 'rebass'
-import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
 import styled from 'styled-components'
+import { darken, lighten, transparentize } from 'polished'
 
-import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 import { RowBetween } from '../Row'
+import { ChevronDown } from 'react-feather'
+import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
+import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import arrowIcon from './../../assets/svg/double-angle.svg'
+import { Text } from 'rebass'
+import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 
 interface BaseProps {
   padding?: string

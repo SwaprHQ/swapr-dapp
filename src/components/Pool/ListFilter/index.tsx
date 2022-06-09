@@ -2,7 +2,6 @@ import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-
 import Radio from '../../Radio'
 
 export enum PairsFilterType {

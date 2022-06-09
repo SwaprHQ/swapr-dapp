@@ -1,14 +1,14 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import Marquee from 'react-fast-marquee'
+import React, { useState, useEffect, Fragment } from 'react'
 import styled, { keyframes } from 'styled-components'
-
-import { breakpoints, gradients } from '../../../utils/theme'
-import Arrow from './../../../assets/images/arrow-down-hero.svg'
+import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
+import { gradients, breakpoints } from '../../../utils/theme'
 import HeroImage from './../../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from './../../../assets/images/hero-graphic-left.png'
-import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
-import Button from './../common/Button'
 import Layout from './Layout'
+import Button from './../common/Button'
+
+import Arrow from './../../../assets/images/arrow-down-hero.svg'
+import Marquee from 'react-fast-marquee'
 
 const arrowIndicatorAnimation = keyframes`
   0% {opacity: 1}

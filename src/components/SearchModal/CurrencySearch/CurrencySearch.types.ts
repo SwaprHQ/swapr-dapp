@@ -1,5 +1,4 @@
 import { Currency, Token } from '@swapr/sdk'
-
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export interface CurrencySearchContextType {

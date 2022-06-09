@@ -1,7 +1,5 @@
 import { Currency, Token } from '@swapr/sdk'
-
 import { TokenList } from '@uniswap/token-lists'
-
 import { CurrencySearchContextType } from '../CurrencySearch/CurrencySearch.types'
 import { ListRowContextType, ManageListsContextType } from '../ManageLists/ManageLists.types'
 

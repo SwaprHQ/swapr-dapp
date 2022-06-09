@@ -2,13 +2,12 @@ import {
   Currency,
   CurrencyAmount,
   Pair,
-  Percent,
+  UniswapV2RoutablePlatform,
   Token,
   Trade,
-  UniswapV2RoutablePlatform,
   UniswapV2Trade,
+  Percent,
 } from '@swapr/sdk'
-
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
 

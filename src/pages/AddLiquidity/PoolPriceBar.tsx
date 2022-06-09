@@ -1,9 +1,7 @@
 import { Currency, Percent, Price } from '@swapr/sdk'
-
 import React from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
-
 import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'
 import { ONE_BIPS } from '../../constants'

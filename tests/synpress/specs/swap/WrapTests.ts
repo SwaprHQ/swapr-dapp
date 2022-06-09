@@ -1,8 +1,8 @@
-import { MenuBar } from '../../../../pages/MenuBar'
-import { SwapPage } from '../../../../pages/SwapPage'
-import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
-import { TransactionHelper } from '../../../../utils/TransactionHelper'
+import { MenuBar } from '../../../pages/MenuBar'
+import { SwapPage } from '../../../pages/SwapPage'
+import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
+import { EtherscanFacade } from '../../../utils/facades/EtherscanFacade'
+import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
@@ -20,14 +20,13 @@ describe('Wrapping tests', () => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
 
-    ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then(response => {
+    EtherscanFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then(response => {
       balanceBefore = parseInt(response.body.result)
     })
   })
   after(() => {
     cy.resetMetamaskAccount()
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.wait(500)
   })
 
   it('Should wrap ETH to WETH [TC-03]', () => {
@@ -50,7 +49,7 @@ describe('Wrapping tests', () => {
       .openTokenToSwapMenu()
       .chooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-      .unwrap()
+      .wrap()
     cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()

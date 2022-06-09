@@ -1,10 +1,9 @@
 // largely taken from https://github.com/NoahZinsmeister/web3-react/blob/v6/packages/walletconnect-connector/src/index.ts
 // Updated to always be in sync with network connector's chain id
 
-import { IWalletConnectProviderOptions } from '@walletconnect/types'
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { ConnectorUpdate } from '@web3-react/types'
-
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { IWalletConnectProviderOptions } from '@walletconnect/types'
 import { network } from '.'
 
 export const URI_AVAILABLE = 'URI_AVAILABLE'

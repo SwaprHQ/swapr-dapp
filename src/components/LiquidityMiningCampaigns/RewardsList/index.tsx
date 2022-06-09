@@ -1,16 +1,17 @@
-import { Pair } from '@swapr/sdk'
-
 import React, { useState } from 'react'
-import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
 import { AutoColumn } from '../../Column'
-import { PairsFilterType } from '../../Pool/ListFilter'
-import { Switch } from '../../Switch'
 import TabBar from '../../TabBar'
 import List from '../List'
+
 import TabTitle from '../TabTitle'
+import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
+
+import { PairsFilterType } from '../../Pool/ListFilter'
+import { Pair } from '@swapr/sdk'
+import { Flex } from 'rebass'
+import { Switch } from '../../Switch'
 
 const View = styled(AutoColumn)`
   margin-top: 20px;

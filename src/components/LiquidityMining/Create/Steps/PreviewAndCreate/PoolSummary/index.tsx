@@ -1,13 +1,11 @@
-import { Pair, Token } from '@swapr/sdk'
-
-import { DateTime } from 'luxon'
 import React from 'react'
 import { Flex } from 'rebass'
-
+import { Pair, Token } from '@swapr/sdk'
 import { TYPE } from '../../../../../../theme'
-import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'
+import { DateTime } from 'luxon'
+import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 
 interface PoolSummaryProps {
   stakePair?: Pair

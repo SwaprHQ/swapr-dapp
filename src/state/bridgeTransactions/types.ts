@@ -1,8 +1,6 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { ChainId } from '@swapr/sdk'
-
 import { OutgoingMessageState } from 'arb-ts'
-
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 
 export type BridgeTxnType =

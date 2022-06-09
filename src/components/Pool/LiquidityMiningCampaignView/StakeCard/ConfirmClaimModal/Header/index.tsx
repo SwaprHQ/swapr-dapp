@@ -1,8 +1,6 @@
 import { PricedTokenAmount, TokenAmount } from '@swapr/sdk'
-
 import React, { useState } from 'react'
 import styled from 'styled-components'
-
 import { tryParseAmount } from '../../../../../../state/swap/hooks'
 import { AutoColumn } from '../../../../../Column'
 import { CurrencyInputPanel } from '../../../../../CurrencyInputPanel'

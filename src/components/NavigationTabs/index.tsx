@@ -1,13 +1,13 @@
-import { darken } from 'polished'
 import React from 'react'
-import { ArrowLeft } from 'react-feather'
+import styled from 'styled-components'
+import { darken } from 'polished'
 import { useTranslation } from 'react-i18next'
 import { NavLink, useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-
-import QuestionHelper from '../QuestionHelper'
-import { RowBetween } from '../Row'
 import { Settings } from '../Settings'
+
+import { ArrowLeft } from 'react-feather'
+import { RowBetween } from '../Row'
+import QuestionHelper from '../QuestionHelper'
 
 const Tabs = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}

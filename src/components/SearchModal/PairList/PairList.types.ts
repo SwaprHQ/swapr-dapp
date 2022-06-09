@@ -1,6 +1,5 @@
-import { Pair } from '@swapr/sdk'
-
 import { CSSProperties } from 'react'
+import { Pair } from '@swapr/sdk'
 
 export interface PairRowProps {
   pair: Pair

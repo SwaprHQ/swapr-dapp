@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-
-import { breakpoints, gradients } from '../../../utils/theme'
+import PropTypes from 'prop-types'
+import { gradients, breakpoints } from '../../../utils/theme'
 
 const Button = props => {
   const {

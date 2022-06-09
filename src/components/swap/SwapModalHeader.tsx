@@ -1,19 +1,17 @@
 import { Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
-
 import React, { useMemo } from 'react'
-import { AlertTriangle, ArrowDown } from 'react-feather'
+import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
-
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
+import { ButtonPrimary } from '../Button'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
-import { SwapShowAcceptChanges, TruncatedText } from './styleds'
+import { TruncatedText, SwapShowAcceptChanges } from './styleds'
 
 export default function SwapModalHeader({
   trade,
@@ -107,7 +105,7 @@ export default function SwapModalHeader({
         ) : (
           <TYPE.body fontSize="13px" color="text4" textAlign="left" style={{ width: '100%' }}>
             {`Input is estimated. You will sell at most `}
-            <b data-testid="estimated-transaction-output">
+            <b>
               {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
             </b>
             {' or the transaction will revert.'}

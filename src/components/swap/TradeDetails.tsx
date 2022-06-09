@@ -1,18 +1,16 @@
 import { Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
-
 import React, { useState } from 'react'
-import { Trans } from 'react-i18next'
-import Skeleton from 'react-loading-skeleton'
-import { Box } from 'rebass'
-
-import { setRecipient } from '../../state/swap/actions'
-import { TYPE } from '../../theme'
-import { AdvancedSwapDetailsToggle } from '../AdvancedSwapDetailsToggle'
 import { AutoColumn } from '../Column'
-import { RecipientField } from '../RecipientField'
 import { RowBetween, RowFixed } from '../Row'
+import { AdvancedSwapDetailsToggle } from '../AdvancedSwapDetailsToggle'
+import { RecipientField } from '../RecipientField'
+import { Trans } from 'react-i18next'
+import { TYPE } from '../../theme'
 import { SwapSettings } from './SwapSettings'
 import TradePrice from './TradePrice'
+import { setRecipient } from '../../state/swap/actions'
+import Skeleton from 'react-loading-skeleton'
+import { Box } from 'rebass'
 
 interface TradeDetailsProps {
   show: boolean

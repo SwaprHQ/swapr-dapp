@@ -1,21 +1,19 @@
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
-
 import React from 'react'
-import { AlertTriangle, ArrowUpCircle } from 'react-feather'
-import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
+import Modal from '../Modal'
+import { ExternalLink, TYPE } from '../../theme'
+import { Text } from 'rebass'
+import { CloseIcon, CustomLightSpinner } from '../../theme'
+import { RowBetween } from '../Row'
+import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { ButtonPrimary } from '../Button'
+import { AutoColumn, ColumnCenter } from '../Column'
+import Circle from '../../assets/images/blue-loader.svg'
 
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
-import { useActiveWeb3React } from '../../hooks'
-import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
-import { getExplorerLink } from '../../utils'
-import { ButtonPrimary } from '../Button'
-import { AutoColumn, ColumnCenter } from '../Column'
-import { RowBetween } from '../Row'
-import Modal from '../Modal'
-import Circle from '../../assets/images/blue-loader.svg'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -96,7 +94,7 @@ function TransactionSubmittedContent({
   )
 
   return (
-    <Wrapper data-testid="transaction-confirmed-modal">
+    <Wrapper>
       <Section>
         <RowBetween>
           <div />
@@ -149,11 +147,11 @@ export function ConfirmationModalContent({
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
   const theme = useTheme()
   return (
-    <Wrapper data-testid="transaction-error-modal">
+    <Wrapper>
       <Section>
         <RowBetween>
           <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
-          <CloseIcon data-testid="close-icon" onClick={onDismiss} />
+          <CloseIcon onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />

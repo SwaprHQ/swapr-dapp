@@ -1,11 +1,9 @@
 import { Currency, CurrencyAmount, Fraction, Percent } from '@swapr/sdk'
-
 import React from 'react'
 import { Text } from 'rebass'
-
 import { ButtonPrimary } from '../../components/Button'
-import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { RowBetween, RowFixed } from '../../components/Row'
+import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
 
