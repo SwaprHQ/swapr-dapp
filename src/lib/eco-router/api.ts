@@ -72,42 +72,47 @@ export async function getExactIn(
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
 
-  const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
-    try {
-      let pairs: Pair[] = []
+  const uniswapV2TradesList = await Promise.all(
+    uniswapV2PlatformList.map(async platform => {
+      try {
+        let pairs: Pair[] = []
 
-      const getAllCommonUniswapV2PairsParams = {
-        currencyA: currencyAmountIn.currency,
-        currencyB: currencyOut,
-        platform,
-        provider,
+        const getAllCommonUniswapV2PairsParams = {
+          currencyA: currencyAmountIn.currency,
+          currencyB: currencyOut,
+          platform,
+          provider,
+        }
+
+        if (platform.subgraphEndpoint[chainId] !== undefined) {
+          pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
+        } else {
+          pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+        }
+
+        return (
+          UniswapV2Trade.computeTradesExactIn({
+            currencyAmountIn,
+            currencyOut,
+            maximumSlippage,
+            maxHops: {
+              maxHops: uniswapV2.useMultihops ? 3 : 1,
+              maxNumResults: 1,
+            },
+            pairs,
+          })[0] ?? undefined
+        )
+      } catch (error) {
+        errors.push(error)
+        return undefined
       }
+    })
+  )
 
-      if (platform.subgraphEndpoint[chainId] !== undefined) {
-        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
-      } else {
-        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-      }
+  console.log('uniswapV2TradesList', uniswapV2TradesList)
 
-      return (
-        UniswapV2Trade.computeTradesExactIn({
-          currencyAmountIn,
-          currencyOut,
-          maximumSlippage,
-          maxHops: {
-            maxHops: uniswapV2.useMultihops ? 3 : 1,
-            maxNumResults: 1,
-          },
-          pairs,
-        })[0] ?? undefined
-      )
-    } catch (error) {
-      errors.push(error)
-      return undefined
-    }
-  })
-
-  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
+  // Uniswap Auto Router: v2 and v3
+  const uniswapTrade = await new Promise<UniswapTrade | undefined>(resolve => {
     if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -128,7 +133,7 @@ export async function getExactIn(
   })
 
   // Curve
-  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+  const curveTrade = await new Promise<CurveTrade | undefined>(async resolve => {
     if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -151,12 +156,9 @@ export async function getExactIn(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
-    ...uniswapV2TradesList,
-    curveTrade,
-    uniswapTrade,
-  ])
-  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
+  const unsortedTrades = [...uniswapV2TradesList, curveTrade, uniswapTrade].filter(
+    trade => trade !== undefined
+  ) as Trade[]
 
   // Return the list of sorted trades
   return {
