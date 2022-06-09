@@ -8,7 +8,6 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
     UniswapV2RoutablePlatform.SWAPR,
     UniswapV2RoutablePlatform.SUSHISWAP,
     UniswapV2RoutablePlatform.HONEYSWAP,
-    UniswapV2RoutablePlatform.BAOSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
   ].filter(platform => platform.supportsChain(chainId as ChainId))
 }
