@@ -1,20 +1,19 @@
-import React, { useContext } from 'react'
 import { Token } from '@swapr/sdk'
+
+import React, { useContext } from 'react'
 import { Text } from 'rebass'
 
-import { RowBetween } from '../../Row'
+import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
+import { useAddUserToken } from '../../../state/user/hooks'
+import { CloseIcon, TYPE } from '../../../theme'
 import { AutoColumn } from '../../Column'
+import { RowBetween } from '../../Row'
+import { TokenWarningCard } from '../../TokenWarningModal'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { PaddedColumn } from '../shared'
-import { TYPE, CloseIcon } from '../../../theme'
-import { TokenWarningCard } from '../../TokenWarningModal'
 import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
-
-import { useAddUserToken } from '../../../state/user/hooks'
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-
 import { ImportTokenProps } from './ImportToken.types'
-import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 
 export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportTokenProps) => {
   const addToken = useAddUserToken()

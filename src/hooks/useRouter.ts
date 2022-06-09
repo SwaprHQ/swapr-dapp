@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
-import { useParams, useLocation, useHistory, useRouteMatch } from 'react-router-dom'
 import queryString from 'query-string'
+import { useMemo } from 'react'
+import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
 
 export function useRouter(): any {
   const params = useParams()

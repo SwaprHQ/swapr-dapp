@@ -1,25 +1,28 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { UnsignedTransaction } from 'ethers'
 import {
-  UniswapV2Trade,
-  UniswapV2RoutablePlatform,
-  Trade,
-  CurveTrade,
   ChainId,
+  CurveTrade,
+  Trade,
   TradeType,
   UniswapTrade,
+  UniswapV2RoutablePlatform,
+  UniswapV2Trade,
 } from '@swapr/sdk'
+
+import { UnsignedTransaction } from 'ethers'
 import { useMemo } from 'react'
+
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
-import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
-import { useActiveWeb3React } from './index'
-import useTransactionDeadline from './useTransactionDeadline'
-import useENS from './useENS'
-import { useMainnetGasPrices } from '../state/application/hooks'
-import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { MainnetGasPrice } from '../state/application/actions'
+import { useMainnetGasPrices } from '../state/application/hooks'
+import { useTransactionAdder } from '../state/transactions/hooks'
+import { useUserPreferredGasPrice } from '../state/user/hooks'
+import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
+import useENS from './useENS'
+import useTransactionDeadline from './useTransactionDeadline'
+
+import { useActiveWeb3React } from './index'
 
 export enum SwapCallbackState {
   INVALID,

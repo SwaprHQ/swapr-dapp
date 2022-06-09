@@ -1,33 +1,28 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageWrapper } from '../Pools/styleds'
-import { Link } from 'react-router-dom'
-
-import { TYPE } from '../../theme'
-import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../components/Row'
-import { AutoColumn } from '../../components/Column'
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
-
-import { ChevronDown } from 'react-feather'
-import { useToken } from '../../hooks/Tokens'
-
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
-import { PairState, usePair } from '../../data/Reserves'
-
-import { PairSearchModal } from '../../components/SearchModal/PairSearchModal'
-import { ButtonSecondary } from '../../components/Button'
-import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
-
-import { PairsFilterType } from '../../components/Pool/ListFilter'
-
 import { Pair } from '@swapr/sdk'
-import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
-import { useRouter } from '../../hooks/useRouter'
+
+import React, { useCallback, useEffect, useState } from 'react'
+import { ChevronDown } from 'react-feather'
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ButtonSecondary } from '../../components/Button'
+import { AutoColumn } from '../../components/Column'
+import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { RewardsList } from '../../components/LiquidityMiningCampaigns/RewardsList'
+import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PairsFilterType } from '../../components/Pool/ListFilter'
+import { RowBetween, RowFixed } from '../../components/Row'
+import { PairSearchModal } from '../../components/SearchModal/PairSearchModal'
+import { PairState, usePair } from '../../data/Reserves'
+import { useToken } from '../../hooks/Tokens'
+import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
+import { useRouter } from '../../hooks/useRouter'
+import { TYPE } from '../../theme'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
+import { PageWrapper } from '../Pools/styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

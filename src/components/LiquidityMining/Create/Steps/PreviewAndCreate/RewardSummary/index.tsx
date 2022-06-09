@@ -1,6 +1,8 @@
+import { Percent, TokenAmount } from '@swapr/sdk'
+
 import React from 'react'
 import { Flex } from 'rebass'
-import { Percent, TokenAmount } from '@swapr/sdk'
+
 import { TYPE } from '../../../../../../theme'
 import { AutoColumn } from '../../../../../Column'
 import DataRow from '../DataRow'

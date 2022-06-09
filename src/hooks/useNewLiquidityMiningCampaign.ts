@@ -1,3 +1,4 @@
+import { parseUnits } from '@ethersproject/units'
 import {
   LiquidityMiningCampaign,
   Pair,
@@ -8,15 +9,14 @@ import {
   Token,
   TokenAmount,
 } from '@swapr/sdk'
-import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
-import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
-
-import { useNativeCurrency } from './useNativeCurrency'
-
-import { parseUnits } from '@ethersproject/units'
 
 import Decimal from 'decimal.js-light'
+import { useMemo } from 'react'
+
+import { useNativeCurrency } from './useNativeCurrency'
+import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 export function useNewLiquidityMiningCampaign(
   rewards: TokenAmount[],

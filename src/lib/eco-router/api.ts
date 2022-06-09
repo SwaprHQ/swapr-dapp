@@ -1,6 +1,6 @@
-import { Trade, UniswapTrade, UniswapV2Trade, CurveTrade, Token, RoutablePlatform, TradeType } from '@swapr/sdk'
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
+import { CurveTrade, RoutablePlatform, Token, Trade, TradeType, UniswapTrade, UniswapV2Trade } from '@swapr/sdk'
 // Low-level API for Uniswap V2
 import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/contracts'
 
@@ -8,9 +8,9 @@ import { getUniswapV2PlatformList } from './platforms'
 // Types
 import {
   EcoRouterBestExactInParams,
+  EcoRouterBestExactOutParams,
   EcoRouterResults,
   EcoRouterSourceOptionsParams,
-  EcoRouterBestExactOutParams,
 } from './types'
 
 /**
@@ -68,6 +68,7 @@ export async function getExactIn(
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
         platform,
+        provider,
       })
       return (
         UniswapV2Trade.computeTradesExactIn({
@@ -176,6 +177,7 @@ export async function getExactOut(
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
         platform,
+        provider,
       })
       return (
         UniswapV2Trade.computeTradesExactOut({

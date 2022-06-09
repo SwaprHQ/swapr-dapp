@@ -1,4 +1,5 @@
 import { Token } from '@swapr/sdk'
+
 import { CurrencyModalView } from '../CurrencySearchModal'
 
 export interface ManageTokensProps {
