@@ -1,7 +1,7 @@
+import { parseUnits } from '@ethersproject/units'
 import { Pair, Price, Token } from '@swapr/sdk'
 
 import Decimal from 'decimal.js-light'
-import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'

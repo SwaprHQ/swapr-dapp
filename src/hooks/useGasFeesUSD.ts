@@ -1,7 +1,7 @@
+import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, USD } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { MainnetGasPrice } from '../state/application/actions'

@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/providers'
+import { parseUnits } from '@ethersproject/units'
 import { TokenAmount } from '@swapr/sdk'
 
-import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { useStakingRewardsDistributionContract } from './useContract'

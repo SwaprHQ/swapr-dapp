@@ -1,3 +1,4 @@
+import { parseUnits } from '@ethersproject/units'
 import {
   _100,
   _10000,
@@ -16,7 +17,6 @@ import {
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
-import { parseUnits } from 'ethers/lib/utils'
 import toFormat from 'toformat'
 
 import {

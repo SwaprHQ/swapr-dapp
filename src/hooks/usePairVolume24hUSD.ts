@@ -1,8 +1,8 @@
+import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, USD } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { parseUnits } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { useMemo } from 'react'
 

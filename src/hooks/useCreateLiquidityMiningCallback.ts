@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/providers'
+import { parseUnits } from '@ethersproject/units'
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
-import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { useStakingRewardsDistributionFactoryContract } from './useContract'

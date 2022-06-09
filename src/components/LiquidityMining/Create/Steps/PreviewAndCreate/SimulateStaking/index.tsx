@@ -1,6 +1,6 @@
+import { parseUnits } from '@ethersproject/units'
 import { Pair, Price, Token, TokenAmount } from '@swapr/sdk'
 
-import { parseUnits } from 'ethers/lib/utils'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
