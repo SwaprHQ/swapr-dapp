@@ -1,5 +1,5 @@
-import React, { useContext, FC } from 'react'
-import { ThemeContext } from 'styled-components'
+import React, { FC } from 'react'
+import { useTheme } from 'styled-components'
 import { Text } from 'rebass'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 
@@ -13,7 +13,7 @@ export const ResponsiveValueWithLabel: FC<{
   fontSize?: string
 }> = ({ title, value, color, big, fontSize }) => {
   const isMobile = useIsMobileByMedia()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return isMobile ? (
     <ValueWithLabel title={title} big={big} value={value} />

@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from 'react'
-import { ThemeContext } from 'styled-components'
+import React, { useState, useRef } from 'react'
+import { useTheme } from 'styled-components'
 import Popover from '../../Popover'
 import { useTranslation } from 'react-i18next'
 import { Text, Flex } from 'rebass/styled-components'
@@ -18,7 +18,7 @@ export function SortByDropdown({
   const popoverRef = useRef()
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   useOnClickOutside(popoverRef, () => setIsOpen(false))
 
   return (

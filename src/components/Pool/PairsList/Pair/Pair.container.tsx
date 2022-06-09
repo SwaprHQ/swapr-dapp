@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { Flex } from 'rebass/styled-components'
 
@@ -13,7 +13,7 @@ import CarrotBadge from '../../../Badge/Carrot'
 import { useTranslation } from 'react-i18next'
 import { PairProps } from './Pair.types'
 import { EllipsizedText, FarmingBadge, GridCard, BadgeText } from './Pair.styles'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 import { ResponsiveValueWithLabel } from './Pair.components'
 
 export function Pair({
@@ -30,7 +30,7 @@ export function Pair({
 }: PairProps) {
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const isMobile = useIsMobileByMedia()
 
   const correctLogo = () =>

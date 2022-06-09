@@ -1,5 +1,5 @@
-import React, { ReactNode, useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React, { ReactNode } from 'react'
+import styled, { useTheme } from 'styled-components'
 import { darken, lighten, transparentize } from 'polished'
 
 import { RowBetween } from '../Row'
@@ -328,7 +328,7 @@ export function ButtonExternalLink({
   disabled?: boolean
   children: ReactNode
 }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled ? link : ''}>
       {children}
