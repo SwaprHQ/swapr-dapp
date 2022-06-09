@@ -62,6 +62,7 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         height={'138px'}
         active={singleReward === CampaignType.TOKEN}
         onClick={() => handleRewardClick(CampaignType.TOKEN)}
+        data-testid="single-token-staking-switch"
       >
         <AdjustableDiamondSize pairOrToken={true} active={singleReward === CampaignType.TOKEN} />
         <StyledAutoColumn active={singleReward === CampaignType.TOKEN}>
@@ -76,6 +77,7 @@ export default function SingleOrPairCampaign({ singleReward, onChange }: SingleO
         height={'138px'}
         onClick={() => handleRewardClick(CampaignType.PAIR)}
         active={singleReward === CampaignType.PAIR}
+        data-testid="lp-token-staking-switch"
       >
         <AdjustableDiamondSize pairOrToken={false} active={singleReward === CampaignType.PAIR} />
         <StyledAutoColumn active={singleReward === CampaignType.PAIR}>

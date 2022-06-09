@@ -58,7 +58,7 @@ export const BridgeActionPanel = ({
     // Change network
     if (!isNetworkConnected && !isCollecting) {
       return (
-        <ButtonPrimary onClick={handleSelectFromNetwork}>
+        <ButtonPrimary onClick={handleSelectFromNetwork} data-testid="bridge-button">
           Connect to {networkOptionsPreset.find(network => network.chainId === fromNetworkChainId)?.name}
         </ButtonPrimary>
       )

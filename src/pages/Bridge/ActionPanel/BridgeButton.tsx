@@ -22,7 +22,14 @@ const getColor = (network?: ChainId): string =>
 
 export const BridgeButton = ({ onClick, disabled, children, from, to }: BridgeButtonProps) => {
   return (
-    <GradientButton onClick={onClick} mt="12px" disabled={disabled} from={getColor(from)} to={getColor(to)}>
+    <GradientButton
+      onClick={onClick}
+      mt="12px"
+      disabled={disabled}
+      from={getColor(from)}
+      to={getColor(to)}
+      data-testid="bridge-button"
+    >
       {children}
     </GradientButton>
   )

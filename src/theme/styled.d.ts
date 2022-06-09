@@ -62,6 +62,7 @@ export interface Colors {
   purple4: Color
   purple5: Color
   lightPurple: Color
+  lightPurple2: Color
   purple6: Color
   boxShadow: Color
 

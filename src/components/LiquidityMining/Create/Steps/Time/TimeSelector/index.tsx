@@ -23,7 +23,11 @@ interface TimeSelectorProps {
 
 export default function TimeSelector({ title, placeholder, minimum, value, onChange }: TimeSelectorProps) {
   return (
-    <TimeSelectorWrapper flexDirection="column" alignSelf={'stretch'}>
+    <TimeSelectorWrapper
+      flexDirection="column"
+      alignSelf={'stretch'}
+      data-testid={`${title.toLowerCase()}-time-selector-box`}
+    >
       <Flex>
         <TYPE.small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
           {title}

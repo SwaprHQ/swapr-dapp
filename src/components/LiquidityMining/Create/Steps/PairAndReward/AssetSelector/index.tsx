@@ -20,7 +20,7 @@ const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;
   border-radius: 4px;
   border: none;
-  width: 150px;
+  width: ${({ value }) => (value && value.length > 16 ? '150' : value ? 28 + value?.length * 8 : 25)}px;
   height: 33px;
   font-weight: 400;
   font-size: ${({ value }) => (value.length > 18 ? '9' : value.length > 11 ? '12' : '14')}px;
@@ -180,25 +180,23 @@ export default function AssetSelector({
             {isReward && currency0 && handleUserInput ? (
               <RelativeContainer>
                 <StyledNumericalInput
-                  style={{
-                    width: `${
-                      rawAmount && rawAmount.length > 16 ? '150' : rawAmount ? 28 + rawAmount?.length * 8 : 25
-                    }px`,
-                  }}
                   onClick={event => event.stopPropagation()}
                   placeholder="0"
                   value={rawAmount ? rawAmount : ''}
                   onUserInput={handleUserInput}
+                  data-testid="reward-input"
                 />
               </RelativeContainer>
             ) : (
-              //TODO: re add this test related property to appropriate field-> deleted data-testid={title.toLocaleLowerCase().replace(' ', '-') + '-select'}
               <TYPE.largeHeader
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}
                 lineHeight="22px"
                 color={customAssetTitle || !tokenName ? '#8C83C0' : 'lightPurple'}
                 fontSize={13}
+                data-testid={`${campaingType === CampaignType.TOKEN ? 'token' : 'pair'}${
+                  isReward ? '-reward' : ''
+                }-asset-selector`}
               >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
               </TYPE.largeHeader>

@@ -90,7 +90,7 @@ export default function AddLiquidity({
 
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
-  const [allowedSlippage] = useUserSlippageTolerance() // custom from users
+  const allowedSlippage = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
   const [invertedPrice, setInvertedPrice] = useState<boolean>(false)
 
