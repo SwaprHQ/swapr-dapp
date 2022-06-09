@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
 import { ListRowContext, ManageListsContext } from '../ManageLists/ManageLists.context'
@@ -7,13 +7,13 @@ import { CurrencySearchModalContext } from './CurrencySearchModal.context'
 import { useCurrencySearchModalSwap } from './CurrencySearchModal.hooks'
 import { CurrencySearchModalProps, CurrencySearchModalProviderProps } from './CurrencySearchModal.types'
 
-export const CurrencySearchModalProvider: React.FC<CurrencySearchModalProviderProps> = ({
+export function CurrencySearchModalProvider({
   children,
   listRowContext,
   manageListsContext,
   currencySearchContext,
   currencySearchModalContext,
-}) => {
+}: PropsWithChildren<CurrencySearchModalProviderProps>) {
   return (
     <CurrencySearchModalContext.Provider value={currencySearchModalContext}>
       <CurrencySearchContext.Provider value={currencySearchContext}>
@@ -25,7 +25,7 @@ export const CurrencySearchModalProvider: React.FC<CurrencySearchModalProviderPr
   )
 }
 
-export const CurrencySearchModal = (props: CurrencySearchModalProps) => {
+export function CurrencySearchModal(props: CurrencySearchModalProps) {
   const {
     listRowContext,
     manageListsContext,
