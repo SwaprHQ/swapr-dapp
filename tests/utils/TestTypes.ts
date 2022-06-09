@@ -36,3 +36,25 @@ export interface Transaction {
     }
   }
 }
+
+export interface Transaction {
+  body: {
+    data: {
+      transactions: {
+        id: string
+        blockNumber: string
+        timestamp: string
+        swaps: {
+          amount0In: string
+          amount1In: string
+          amount0Out: string
+          amount1Out: string
+          pair: {
+            token0: { symbol: string }
+            token1: { symbol: string }
+          }
+        }[]
+      }[]
+    }
+  }
+}

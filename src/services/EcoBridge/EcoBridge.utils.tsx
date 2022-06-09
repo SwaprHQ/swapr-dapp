@@ -1,3 +1,4 @@
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import {
   BridgeList,
   EcoBridgeChangeHandler,
@@ -6,7 +7,6 @@ import {
   EcoBridgeChildBaseProps,
   EcoBridgeInitialEnv,
 } from './EcoBridge.types'
-import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 
 export abstract class EcoBridgeChildBase {
   public readonly bridgeId: BridgeList

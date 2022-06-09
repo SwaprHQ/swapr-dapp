@@ -1,28 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { CurrencyAmount, Percent, Trade, RoutablePlatform, TradeType, UniswapV2Trade } from '@swapr/sdk'
-import styled, { useTheme } from 'styled-components'
-import { useTranslation } from 'react-i18next'
-import { ChevronsDown } from 'react-feather'
+import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
 
-import { AutoColumn } from '../Column'
-import { TYPE } from '../../theme'
-import { CurrencyLogo } from '../CurrencyLogo'
+import React, { useCallback, useEffect, useState } from 'react'
+import { ChevronsDown } from 'react-feather'
+import { useTranslation } from 'react-i18next'
+import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
-import WarningHelper from '../WarningHelper'
-import SwapRoute from './SwapRoute'
-import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
-import { useUserSlippageTolerance } from '../../state/user/hooks'
-import { useSwapState } from '../../state/swap/hooks'
+import styled, { useTheme } from 'styled-components'
+
+import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
+import useDebounce from '../../hooks/useDebounce'
 import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
+import { Field } from '../../state/swap/actions'
+import { useSwapState } from '../../state/swap/hooks'
+import { useUserSlippageTolerance } from '../../state/user/hooks'
+import { TYPE } from '../../theme'
 import {
   computeSlippageAdjustedAmounts,
   computeTradePriceBreakdown,
   limitNumberOfDecimalPlaces,
   simpleWarningSeverity,
 } from '../../utils/prices'
-import { Field } from '../../state/swap/actions'
-import Skeleton from 'react-loading-skeleton'
-import useDebounce from '../../hooks/useDebounce'
+import { AutoColumn } from '../Column'
+import { CurrencyLogo } from '../CurrencyLogo'
 import {
   SelectionListDetails,
   SelectionListLabel,
@@ -32,9 +33,9 @@ import {
   SelectionListReceiveAmount,
   SelectionListWindowWrapper,
 } from '../SelectionList'
-import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../constants'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import WarningHelper from '../WarningHelper'
 import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
+import SwapRoute from './SwapRoute'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined

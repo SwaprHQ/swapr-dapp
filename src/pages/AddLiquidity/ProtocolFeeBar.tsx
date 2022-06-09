@@ -1,10 +1,12 @@
-import { Percent, CurrencyAmount } from '@swapr/sdk'
+import { CurrencyAmount, Percent } from '@swapr/sdk'
+
 import React from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
+
 import { AutoColumn } from '../../components/Column'
-import { AutoRow } from '../../components/Row'
 import QuestionHelper from '../../components/QuestionHelper'
+import { AutoRow } from '../../components/Row'
 import { TYPE } from '../../theme'
 
 export function ProtocolFeeBar({

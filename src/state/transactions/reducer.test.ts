@@ -1,5 +1,6 @@
 import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { createStore, Store } from 'redux'
+
 import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTransaction } from './actions'
 import reducer, { createSwapProtocol, getMapOfExchanges, initialState, TransactionState } from './reducer'
 

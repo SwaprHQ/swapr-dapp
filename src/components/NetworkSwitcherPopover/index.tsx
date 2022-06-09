@@ -1,12 +1,14 @@
-import React, { ReactNode } from 'react'
 import { ChainId } from '@swapr/sdk'
+
 import { Placement } from '@popperjs/core'
+import React, { ReactNode } from 'react'
+
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useCloseModals } from '../../state/application/hooks'
-import { NetworkSwitcher, networkOptionsPreset, NetworkSwitcherTags } from '../NetworkSwitcher'
+import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { createNetworksList } from '../../utils/networksList'
+import { networkOptionsPreset, NetworkSwitcher, NetworkSwitcherTags } from '../NetworkSwitcher'
 
 interface NetworkSwitcherPopoverProps {
   children: ReactNode
@@ -35,7 +37,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     onNetworkChange: selectNetwork,
     isNetworkDisabled,
     selectedNetworkChainId: activeChainId ? activeChainId : -1,
-    activeChainId: !!account ? activeChainId : -1,
+    activeChainId: account ? activeChainId : -1,
     ignoreTags: [NetworkSwitcherTags.COMING_SOON],
   })
 
