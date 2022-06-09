@@ -1,16 +1,16 @@
-import { TokenAmount, Pair, Currency, UniswapV2RoutablePlatform } from '@swapr/sdk'
-import { useMemo } from 'react'
-import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { Interface } from '@ethersproject/abi'
-import { useActiveWeb3React } from '../hooks'
+import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
+import { Currency, Pair, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useMultipleContractSingleData } from '../state/multicall/hooks'
-import { useFeesState } from '../state/fees/hooks'
-import { wrappedCurrency } from '../utils/wrappedCurrency'
-import { usePairContract, useTokenContract } from '../hooks/useContract'
-import { useToken } from '../hooks/Tokens'
-import { useSingleCallResult } from '../state/multicall/hooks'
 import { BigNumber } from 'ethers'
+import { useMemo } from 'react'
+
+import { useActiveWeb3React } from '../hooks'
+import { useToken } from '../hooks/Tokens'
+import { usePairContract, useTokenContract } from '../hooks/useContract'
+import { useFeesState } from '../state/fees/hooks'
+import { useMultipleContractSingleData, useSingleCallResult } from '../state/multicall/hooks'
+import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 const PAIR_INTERFACE = new Interface(IDXswapPairABI)
 
@@ -39,7 +39,13 @@ export function usePairs(
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
-        return tokenA && tokenB && !tokenA.equals(tokenB) && chainId && platform.supportsChain(chainId)
+        return tokenA &&
+          tokenB &&
+          !tokenA.equals(tokenB) &&
+          chainId &&
+          platform.supportsChain(chainId) &&
+          platform.supportsChain(tokenA.chainId) &&
+          platform.supportsChain(tokenB.chainId)
           ? Pair.getAddress(tokenA, tokenB, platform)
           : undefined
       }),

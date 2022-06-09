@@ -1,15 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { AddressZero } from '@ethersproject/constants'
-import { TokenAmount, Token, ChainId, Percent, JSBI } from '@swapr/sdk'
+import { ChainId, JSBI, Percent, Token, TokenAmount } from '@swapr/sdk'
 
 import {
-  getExplorerLink,
-  calculateSlippageAmount,
-  isAddress,
-  shortenAddress,
-  calculateGasMargin,
   basisPointsToPercent,
+  calculateGasMargin,
+  calculateSlippageAmount,
+  getExplorerLink,
+  isAddress,
   normalizeInputValue,
+  shortenAddress,
 } from '.'
 
 describe('utils', () => {

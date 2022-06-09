@@ -1,11 +1,13 @@
 import { UniswapV2Trade } from '@swapr/sdk'
-import React, { Fragment, memo, useContext } from 'react'
+
+import React, { Fragment, memo } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
-import styled, { ThemeContext } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { TYPE } from '../../theme'
 import { CurrencyLogo } from '../CurrencyLogo'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 
 const StyledChevronRight = styled(ChevronRight)`
   height: 17px;
@@ -13,7 +15,7 @@ const StyledChevronRight = styled(ChevronRight)`
 `
 
 export default memo(function SwapRoute({ trade }: { trade: UniswapV2Trade }) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const isMobileByMedia = useIsMobileByMedia()
 
   return (

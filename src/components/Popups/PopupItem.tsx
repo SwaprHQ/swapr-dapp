@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { PopupContent } from '../../state/application/actions'
 import TransactionPopup from './TransactionPopup'
 

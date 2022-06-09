@@ -2,12 +2,13 @@ import {
   Currency,
   CurrencyAmount,
   Pair,
-  UniswapV2RoutablePlatform,
+  Percent,
   Token,
   Trade,
+  UniswapV2RoutablePlatform,
   UniswapV2Trade,
-  Percent,
 } from '@swapr/sdk'
+
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
 
@@ -83,7 +84,7 @@ function useAllCommonPairs(
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
-export function useTradeExactIn(
+export function useTradeExactInUniswapV2(
   currencyAmountIn?: CurrencyAmount,
   currencyOut?: Currency,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
@@ -114,7 +115,7 @@ export function useTradeExactIn(
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useTradeExactOut(
+export function useTradeExactOutUniswapV2(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
@@ -151,14 +152,14 @@ export function useTradeExactInAllPlatforms(
   currencyOut?: Currency
 ): (Trade | undefined)[] {
   const bestTrades = [
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SWAPR),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.UNISWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SUSHISWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.QUICKSWAP),
-    useTradeExactIn(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.DFYN),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SWAPR),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.UNISWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.SUSHISWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.HONEYSWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.BAOSWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.LEVINSWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.QUICKSWAP),
+    useTradeExactInUniswapV2(currencyAmountIn, currencyOut, UniswapV2RoutablePlatform.DFYN),
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }
@@ -172,14 +173,14 @@ export function useTradeExactOutAllPlatforms(
   currencyAmountOut?: CurrencyAmount
 ): (Trade | undefined)[] {
   const bestTrades = [
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SWAPR),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.UNISWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SUSHISWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.HONEYSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.BAOSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.LEVINSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.QUICKSWAP),
-    useTradeExactOut(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.DFYN),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SWAPR),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.UNISWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.SUSHISWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.HONEYSWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.BAOSWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.LEVINSWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.QUICKSWAP),
+    useTradeExactOutUniswapV2(currencyIn, currencyAmountOut, UniswapV2RoutablePlatform.DFYN),
   ]
   return sortTradesByExecutionPrice(bestTrades).filter(trade => !!trade)
 }

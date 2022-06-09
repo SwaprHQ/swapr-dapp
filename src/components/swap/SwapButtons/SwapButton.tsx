@@ -1,15 +1,27 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
-import { ButtonPrimary } from '../Button/index'
 import styled from 'styled-components'
-import { ROUTABLE_PLATFORM_STYLE } from '../../constants'
-import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM } from '../../constants'
-import { useTranslation } from 'react-i18next'
+
+import {
+  PRICE_IMPACT_HIGH,
+  PRICE_IMPACT_MEDIUM,
+  ROUTABLE_PLATFORM_STYLE,
+  RoutablePlatformKeysByNetwork,
+} from '../../../constants'
+import { useActiveWeb3React } from '../../../hooks'
+import { ButtonPrimary } from '../../Button/index'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
     !disabled && gradientColor && `linear-gradient(90deg, #2E17F2 19.74%, ${gradientColor} 120.26%)`};
+`
+
+const StyledSwapLoadingButton = styled(ButtonPrimary)`
+  background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
+  cursor: 'wait';
+  padding: 16px;
 `
 
 const StyledPlataformImage = styled.img`
@@ -17,10 +29,16 @@ const StyledPlataformImage = styled.img`
   margin-right: 6px;
 `
 
-const StyledSwapButtonText = styled(Text)`
+const StyledSwapButtonText = styled(Text)<{ width?: string }>`
   display: flex;
   height: 16px;
   white-space: pre-wrap;
+  width: ${({ width }) => (width ? `${width}px` : 'auto')};
+`
+
+const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)`
+  justify-content: end;
+  flex: 1.1;
 `
 
 const StyledPlataformText = styled(Text)`
@@ -71,5 +89,29 @@ export const SwapButton = ({
         )}
       </StyledSwapButtonText>
     </StyledSwapButton>
+  )
+}
+
+export const SwapLoadingButton = () => {
+  const { t } = useTranslation()
+  const { chainId } = useActiveWeb3React()
+  const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
+  return (
+    <StyledSwapLoadingButton>
+      <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
+      <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
+        {routablePlatforms.map((key: string) => (
+          <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
+            <StyledPlataformImage
+              width={21}
+              height={21}
+              src={ROUTABLE_PLATFORM_STYLE[key].logo}
+              alt={ROUTABLE_PLATFORM_STYLE[key].alt}
+            />
+            <StyledSwapButtonText width={'120'}>{ROUTABLE_PLATFORM_STYLE[key].name}</StyledSwapButtonText>
+          </div>
+        ))}
+      </div>
+    </StyledSwapLoadingButton>
   )
 }

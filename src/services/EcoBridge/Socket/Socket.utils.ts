@@ -1,9 +1,10 @@
 import { formatUnits } from '@ethersproject/units'
 import { ChainId, Currency, WETH } from '@swapr/sdk'
-import { isFee, SocketWrapDirection } from './Socket.types'
-import { Route, TokenPriceResponseDTO } from './api/generated'
+
 import { DAI, MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { SupportedChainsConfig } from '../EcoBridge.types'
+import { Route, TokenPriceResponseDTO } from './api/generated'
+import { isFee, SocketWrapDirection } from './Socket.types'
 
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
   if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]

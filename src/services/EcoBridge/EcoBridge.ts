@@ -1,10 +1,12 @@
-import { Store } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
-import { EcoBridgeChildBase } from './EcoBridge.utils'
-import { initiateEcoBridgeProviders } from './EcoBridge.providers'
-import { BridgeList, EcoBridgeProviders, EcoBridgeChangeHandler, EcoBridgeConstructorParams } from './EcoBridge.types'
+
+import { Store } from '@reduxjs/toolkit'
+
 import { AppState } from '../../state'
-import { selectSupportedBridges, selectBridgeCollectableTx } from './store/EcoBridge.selectors'
+import { initiateEcoBridgeProviders } from './EcoBridge.providers'
+import { BridgeList, EcoBridgeChangeHandler, EcoBridgeConstructorParams, EcoBridgeProviders } from './EcoBridge.types'
+import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { selectBridgeCollectableTx, selectSupportedBridges } from './store/EcoBridge.selectors'
 
 export class EcoBridge {
   public readonly staticProviders: EcoBridgeProviders

@@ -1,17 +1,16 @@
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { NetworkContextName } from '../../constants'
-import useENSName from '../../hooks/useENSName'
-import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
-import { TransactionDetails } from '../../state/transactions/reducer'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
-import { ConnectWalletPopover } from './ConnectWalletPopover'
-import WalletModal from '../WalletModal'
-import { AccountStatus } from './AccountStatus'
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+
+import { NetworkContextName } from '../../constants'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
+import { useENSAvatar } from '../../hooks/useENSAvatar'
+import useENSName from '../../hooks/useENSName'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { ApplicationModal } from '../../state/application/actions'
 import {
   useCloseModals,
   useModalOpen,
@@ -19,12 +18,14 @@ import {
   useOpenModal,
   useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
+import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
+import { TransactionDetails } from '../../state/transactions/reducer'
 import { TriangleIcon } from '../Icons'
-import { useTranslation } from 'react-i18next'
+import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import Row from '../Row'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
-import { useENSAvatar } from '../../hooks/useENSAvatar'
-import { ApplicationModal } from '../../state/application/actions'
+import WalletModal from '../WalletModal'
+import { AccountStatus } from './AccountStatus'
+import { ConnectWalletPopover } from './ConnectWalletPopover'
 
 const SwitchNetworkButton = styled.button`
   display: flex;
@@ -104,6 +105,8 @@ export default function Web3Status() {
     setModal(ModalView.Pending)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+    // eslint-disable-next-line
+    // @ts-ignore
     if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
       connector.walletConnectProvider = undefined
     }

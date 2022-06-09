@@ -1,8 +1,9 @@
 import { ChainId } from '@swapr/sdk'
-import { SocketBridge } from './Socket/SocketBridge'
+
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { socketSupportedChains } from './Socket/Socket.utils'
+import { SocketBridge } from './Socket/SocketBridge'
 
 const socketBridgeId = 'socket'
 

@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { CurrencyAmount, LiquidityMiningCampaign, Percent, SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
-import { CurrencyAmount, LiquidityMiningCampaign, Percent, Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-import { TYPE } from '../../../../theme'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
-
+import React, { useCallback, useEffect, useState } from 'react'
+import { Card, Flex } from 'rebass'
 import styled from 'styled-components'
-import { formatCurrencyAmount } from '../../../../utils'
+
 import { ReactComponent as ClockSvg } from '../../../../assets/svg/clock.svg'
 import { ReactComponent as LockSvg } from '../../../../assets/svg/lock.svg'
-
+import { TYPE } from '../../../../theme'
+import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-
-import { Card, Flex } from 'rebass'
-
-import { CurrencyLogo } from '../../../CurrencyLogo'
-
-import Countdown from '../../../Countdown'
 import CarrotBadge from '../../../Badge/Carrot'
 import SimpleTextBadge from '../../../Badge/SimpleText'
+import Countdown from '../../../Countdown'
+import { CurrencyLogo } from '../../../CurrencyLogo'
+import DoubleCurrencyLogo from '../../../DoubleLogo'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
   /* width: 260px; */

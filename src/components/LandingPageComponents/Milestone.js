@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { breakpoints } from '../../utils/theme'
 
+import { breakpoints } from '../../utils/theme'
 import SwaprTimelineLogo from './../../assets/images/timeline-assets/swapr.svg'
 
 const fadeLeftIn = keyframes`
