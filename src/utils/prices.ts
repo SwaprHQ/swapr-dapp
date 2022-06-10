@@ -6,6 +6,7 @@ import {
   CurrencyAmount,
   CurveTrade,
   Fraction,
+  GnosisProtocolTrade,
   JSBI,
   Pair,
   Percent,
@@ -13,8 +14,6 @@ import {
   TokenAmount,
   Trade,
   UniswapV2Trade,
-  CurveTrade,
-  GnosisProtocolTrade,
   ZERO,
 } from '@swapr/sdk'
 

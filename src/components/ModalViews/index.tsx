@@ -1,12 +1,12 @@
 import React from 'react'
 import { ArrowUpCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
-import { useTranslation } from 'react-i18next'
 import { getExplorerLink } from '../../utils'
 import { AutoColumn, ColumnCenter } from '../Column'
 import { RowBetween } from '../Row'

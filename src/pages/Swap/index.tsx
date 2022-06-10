@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform, GnosisProtocolTrade, ChainId } from '@swapr/sdk'
+import { ChainId, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 
@@ -15,15 +15,14 @@ import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
 import SwapButtons from '../../components/swap/SwapButtons'
 import { Tabs } from '../../components/swap/Tabs'
-import { TradeDetails } from '../../components/swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
-import { useTradeWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
+import { useTradeWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -42,7 +41,6 @@ import CommunityBanner from './../../components/LandingPageComponents/CommunityB
 import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
 import Features from './../../components/LandingPageComponents/Features'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import SwapButtons from '../../components/swap/SwapButtons'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'

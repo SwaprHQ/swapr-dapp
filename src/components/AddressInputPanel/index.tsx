@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -7,8 +8,6 @@ import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink } from '../../utils'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
-import { getExplorerLink } from '../../utils'
-import { useTranslation } from 'react-i18next'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}

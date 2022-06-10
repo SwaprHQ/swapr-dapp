@@ -1,5 +1,7 @@
-import { createReducer } from '@reduxjs/toolkit'
 import { RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+
+import { createReducer } from '@reduxjs/toolkit'
+
 import {
   addTransaction,
   checkedTransaction,

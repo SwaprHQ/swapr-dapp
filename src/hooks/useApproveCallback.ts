@@ -1,18 +1,17 @@
 import { AddressZero, MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
-  TokenAmount,
-  CurrencyAmount,
   ChainId,
-  UniswapV2Trade,
-  UniswapV2RoutablePlatform,
+  Currency,
+  CurrencyAmount,
   CurveTrade,
   GnosisProtocolTrade,
+  TokenAmount,
   Trade,
-  Currency,
+  UniswapV2RoutablePlatform,
+  UniswapV2Trade,
 } from '@swapr/sdk'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
-import { ChainId, CurrencyAmount, CurveTrade, TokenAmount, UniswapV2RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 

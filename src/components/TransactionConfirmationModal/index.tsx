@@ -2,20 +2,18 @@ import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
 import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
-import { useActiveWeb3React } from '../../hooks'
-import { useTranslation } from 'react-i18next'
+import Circle from '../../assets/images/blue-loader.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import { RowBetween } from '../Row'
 import Modal from '../Modal'
-import Circle from '../../assets/images/blue-loader.svg'
+import { RowBetween } from '../Row'
 
 const Wrapper = styled.div`
   width: 100%;
