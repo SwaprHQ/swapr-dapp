@@ -399,24 +399,25 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
 export const RoutablePlatformKeysByNetwork = {
   [ChainId.MAINNET]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
   ],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
   [ChainId.POLYGON]: [
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
@@ -424,21 +425,21 @@ export const RoutablePlatformKeysByNetwork = {
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
   [ChainId.ARBITRUM_RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
 }
 
@@ -504,6 +505,11 @@ export const ROUTABLE_PLATFORM_STYLE: {
     alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  [RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.UNISWAP.name,
   },
 }
 
@@ -518,6 +524,7 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CowLogo} alt="Cow" />,
+  [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 
 export const ChainLabel: any = {

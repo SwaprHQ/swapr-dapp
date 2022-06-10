@@ -47,6 +47,7 @@ export default function Updater(): null {
   const lastBlockNumber = useBlockNumber()
 
   const dispatch = useDispatch()
+
   const state = useSelector<AppState, TransactionState>(state => state.transactions)
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [chainId, state])
@@ -163,11 +164,9 @@ export default function Updater(): null {
               )
 
               addPopup({
-                txn: {
-                  hash,
-                  success: receipt.status === 1,
-                  summary: transactions[hash]?.summary,
-                },
+                hash,
+                success: receipt.status === 1,
+                summary: transactions[hash]?.summary,
               })
 
               // the receipt was fetched before the block, fast forward to that block to trigger balance updates

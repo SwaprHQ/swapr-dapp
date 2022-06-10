@@ -13,6 +13,7 @@ import {
   Price,
   TokenAmount,
   Trade,
+  UniswapTrade,
   UniswapV2Trade,
   ZERO,
 } from '@swapr/sdk'

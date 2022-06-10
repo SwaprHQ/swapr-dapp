@@ -7,6 +7,7 @@ import styled, { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
 import { SwapProtocol } from '../../state/transactions/reducer'
+import { PopupContent } from '../../state/application/actions'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
@@ -18,17 +19,7 @@ const RowNoFlex = styled(AutoRow)`
   margin-right: 16px;
 `
 
-export default function TransactionPopup({
-  hash,
-  success,
-  summary,
-  swapProtocol,
-}: {
-  hash: string
-  success?: boolean
-  summary?: string
-  swapProtocol?: string
-}) {
+export function TransactionPopup({ hash, success, summary, swapProtocol }: PopupContent) {
   const { chainId } = useActiveWeb3React()
 
   const { t } = useTranslation()

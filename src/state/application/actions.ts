@@ -1,25 +1,14 @@
 import { createAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 
 import { ApplicationState } from './reducer'
+import SwapProtocol from '../transactions/reducer'
 
-export type PopupContent =
-  | {
-      txn: {
-        hash: string
-        success: boolean
-        summary?: string
-        swapProtocol?: string
-      }
-    }
-  | {
-      listUpdate: {
-        listUrl: string
-        oldList: TokenList
-        newList: TokenList
-        auto: boolean
-      }
-    }
+export type PopupContent = {
+  hash: string
+  success: boolean
+  summary?: string
+  swapProtocol?: string
+}
 
 export enum ApplicationModal {
   SETTINGS,
