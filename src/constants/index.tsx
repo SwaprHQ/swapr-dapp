@@ -239,9 +239,9 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   COINBASE: {
     connector: walletLink,
-    name: 'Coinbase',
+    name: 'Coinbase Wallet',
     iconName: 'coinbase.svg',
-    description: 'Connect using Coinbase.',
+    description: 'Connect using Coinbase Wallet.',
     href: null,
     color: '#4196FC',
     mobile: true,
