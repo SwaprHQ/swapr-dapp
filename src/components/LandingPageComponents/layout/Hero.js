@@ -3,6 +3,7 @@ import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'
 
 import { breakpoints } from '../../../utils/theme'
+import Arrow from './../../../assets/images/arrow-down-hero.svg'
 import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
 import Button from './../common/Button'
 import Layout from './Layout'
