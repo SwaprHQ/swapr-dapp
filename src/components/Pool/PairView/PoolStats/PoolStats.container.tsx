@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react'
-import { Box, Flex, Text } from 'rebass'
+import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
-import { useTranslation } from 'react-i18next'
+import { Box, Flex, Text } from 'rebass'
 
+import { useActiveWeb3React } from '../../../../hooks'
+import { useBestAPY } from '../../../../hooks/useBestAPY'
+import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
-import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
-import { useActiveWeb3React } from '../../../../hooks'
 import { formatCurrencyAmount } from '../../../../utils'
-import { PairViewProps } from './PoolStats.types'
 import { ButtonExternalLink } from '../../../Button'
-import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
-import { useBestAPY } from '../../../../hooks/useBestAPY'
-import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
+import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
+import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
+import { PairViewProps } from './PoolStats.types'
 
 export function PoolStats({ pair }: PairViewProps) {
   const { chainId } = useActiveWeb3React()

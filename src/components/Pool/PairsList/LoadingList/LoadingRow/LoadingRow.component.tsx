@@ -1,9 +1,10 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
+
+import { useIsMobileByMedia } from '../../../../../hooks/useIsMobileByMedia'
 import DoubleCurrencyLogo from '../../../../DoubleLogo'
 import { Row } from './LoadingRow.styles'
-import { useIsMobileByMedia } from '../../../../../hooks/useIsMobileByMedia'
 
 export function LoadingRow() {
   const isMobile = useIsMobileByMedia()

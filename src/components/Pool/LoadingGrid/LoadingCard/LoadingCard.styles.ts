@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { DarkCard } from '../../../Card'
 
 export const Card = styled(DarkCard)`

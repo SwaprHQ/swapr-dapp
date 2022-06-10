@@ -1,5 +1,5 @@
-import { MenuBar } from '../../../pages/MenuBar'
-import { SwapPage } from '../../../pages/SwapPage'
+import { MenuBar } from '../../../../pages/MenuBar'
+import { SwapPage } from '../../../../pages/SwapPage'
 
 describe('Wallet connection tests', () => {
   beforeEach(() => {

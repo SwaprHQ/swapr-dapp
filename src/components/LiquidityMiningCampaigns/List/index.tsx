@@ -1,19 +1,19 @@
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import { Pagination } from '../../Pagination'
 
-import { Empty } from '../../Pool/Empty'
-import { LoadingGrid } from '../../Pool/LoadingGrid'
+import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useWindowSize } from '../../../hooks/useWindowSize'
 import { MEDIA_WIDTHS } from '../../../theme'
-
-import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { UndecoratedLink } from '../../UndercoratedLink'
+import { Pagination } from '../../Pagination'
+import { Empty } from '../../Pool/Empty'
+import { LoadingGrid } from '../../Pool/LoadingGrid'
 import { CampaignCard } from '../../Pool/PairsList/CampaignCard'
+import { UndecoratedLink } from '../../UndercoratedLink'
 
 const ListLayout = styled.div`
   display: grid;

@@ -1,4 +1,5 @@
 import { JSBI, Percent, TokenAmount } from '@swapr/sdk'
+
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -7,14 +8,14 @@ import { Box, Flex, Text } from 'rebass'
 import { useTotalSupply } from '../../../../data/TotalSupply'
 import { useActiveWeb3React } from '../../../../hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
+import { getAccountAnalyticsLink } from '../../../../utils'
 import { currencyId } from '../../../../utils/currencyId'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-import { UserLiquidityProps } from './UserLiquidity.types'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
-import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
-import { getAccountAnalyticsLink } from '../../../../utils'
-import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
+import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
+import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
+import { UserLiquidityProps } from './UserLiquidity.types'
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()

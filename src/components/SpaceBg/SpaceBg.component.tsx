@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
-import { StyledHero, AppBodyContainer } from './SpaceBg.styles'
+
+import { AppBodyContainer, StyledHero } from './SpaceBg.styles'
 
 export const SpaceBg: FC = ({ children }) => (
   <StyledHero id="liquidity-hero" className="hero-active">

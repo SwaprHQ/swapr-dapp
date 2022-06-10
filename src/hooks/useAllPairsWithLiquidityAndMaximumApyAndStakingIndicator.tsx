@@ -1,5 +1,7 @@
-import { Pair, CurrencyAmount, Percent, Token, KpiToken, ZERO, BigintIsh, JSBI } from '@swapr/sdk'
+import { BigintIsh, CurrencyAmount, JSBI, KpiToken, Pair, Percent, Token, ZERO } from '@swapr/sdk'
+
 import { useMemo } from 'react'
+
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { AggregatedPairs } from '../components/Pool/PairsList'
 import { LIQUIDITY_SORTING_TYPES } from '../constants'

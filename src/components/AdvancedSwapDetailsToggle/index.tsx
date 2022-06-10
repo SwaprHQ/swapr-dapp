@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
-import styled from 'styled-components'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Button } from 'rebass/styled-components'
+import styled from 'styled-components'
 
 const StyledAdvancedSwapDetailsButton = styled(Button)`
   display: flex;

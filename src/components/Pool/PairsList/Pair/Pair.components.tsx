@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
-import { useTheme } from 'styled-components'
 import { Text } from 'rebass'
-import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
+import { useTheme } from 'styled-components'
 
+import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { ValueWithLabel } from '../../PairView/ValueWithLabel/ValueWithLabel.component'
 
 export const ResponsiveValueWithLabel: FC<{

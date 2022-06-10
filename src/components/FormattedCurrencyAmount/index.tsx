@@ -1,5 +1,6 @@
-import React from 'react'
 import { CurrencyAmount, Fraction, JSBI } from '@swapr/sdk'
+
+import React from 'react'
 
 const CURRENCY_AMOUNT_MIN = new Fraction(JSBI.BigInt(1), JSBI.BigInt(1000000))
 

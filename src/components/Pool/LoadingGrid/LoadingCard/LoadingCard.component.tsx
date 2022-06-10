@@ -1,6 +1,7 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass/styled-components'
+
 import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { Card } from './LoadingCard.styles'
 

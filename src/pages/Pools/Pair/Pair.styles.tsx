@@ -1,5 +1,6 @@
-import styled from 'styled-components'
 import { Flex } from 'rebass'
+import styled from 'styled-components'
+
 import { RowBetween, RowFixed } from '../../../components/Row'
 
 export const TitleRow = styled(RowBetween)`

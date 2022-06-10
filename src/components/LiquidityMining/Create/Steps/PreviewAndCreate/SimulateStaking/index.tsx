@@ -1,22 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-
-import { SmoothGradientCard } from '../../../../styleds'
-import styled from 'styled-components'
-import Loader from '../../../../../Loader'
-import Slider from '../../../../../Slider'
-
-import useDebouncedChangeHandler from '../../../../../../utils/useDebouncedChangeHandler'
+import { parseUnits } from '@ethersproject/units'
 import { Pair, Price, Token, TokenAmount } from '@swapr/sdk'
-import { useTokenOrPairNativeCurrency } from '../../../../../../hooks/useTokenOrPairNativeCurrency'
-import { parseUnits } from 'ethers/lib/utils'
-import { calculatePercentage } from '../../../../../../utils'
+
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
+import styled from 'styled-components'
+
 import { ReactComponent as CashIcon } from '../../../../../../assets/svg/cash-icon.svg'
 import { ReactComponent as CryptoIcon } from '../../../../../../assets/svg/crypto-icon.svg'
 import { ReactComponent as RefreshIcon } from '../../../../../../assets/svg/refresh-icon.svg'
-import NumericalInput from '../../../../../Input/NumericalInput'
-import { TYPE } from '../../../../../../theme'
 import { DOLLAR_AMOUNT_MAX_SIMULATION } from '../../../../../../constants'
+import { useTokenOrPairNativeCurrency } from '../../../../../../hooks/useTokenOrPairNativeCurrency'
+import { TYPE } from '../../../../../../theme'
+import { calculatePercentage } from '../../../../../../utils'
+import useDebouncedChangeHandler from '../../../../../../utils/useDebouncedChangeHandler'
+import { NumericalInput } from '../../../../../Input/NumericalInput'
+import Loader from '../../../../../Loader'
+import Slider from '../../../../../Slider'
+import { SmoothGradientCard } from '../../../../styleds'
 
 const SwitchContainer = styled(Flex)`
   font-size: 10px;

@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react'
-import { useTheme } from 'styled-components'
-import Popover from '../../Popover'
-import { useTranslation } from 'react-i18next'
-import { Text, Flex } from 'rebass/styled-components'
+import React, { useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
-import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
+import { useTranslation } from 'react-i18next'
+import { Flex, Text } from 'rebass/styled-components'
+import { useTheme } from 'styled-components'
+
 import { LIQUIDITY_SORTING_TYPES } from '../../../constants'
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
+import Popover from '../../Popover'
 import { List, ListItem, StyledFlex, StyledText } from './SortByDropdown.styles'
 
 export function SortByDropdown({

@@ -1,4 +1,5 @@
 import { BigintIsh, CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
 import { PairsFilterType } from '../ListFilter'
 
 export interface AggregatedPairs {

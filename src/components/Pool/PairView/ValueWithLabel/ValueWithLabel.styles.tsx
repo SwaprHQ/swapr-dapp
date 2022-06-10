@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { Text } from 'rebass'
+import styled from 'styled-components'
 
 export const ValueWithLabelTitle = styled(Text)`
   color: ${({ theme }) => theme.text5};

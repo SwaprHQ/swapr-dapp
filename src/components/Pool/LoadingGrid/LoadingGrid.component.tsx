@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { LoadingCard } from './LoadingCard'
 import { GridLayout } from './LoadingGrid.styles'

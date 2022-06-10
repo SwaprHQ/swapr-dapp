@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import { NavLink, NavLinkProps } from 'react-router-dom'
 import transparentize from 'polished/lib/color/transparentize'
+import React from 'react'
+import { NavLink, NavLinkProps } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme/components'
 

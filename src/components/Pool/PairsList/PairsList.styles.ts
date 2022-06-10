@@ -1,5 +1,6 @@
-import styled from 'styled-components'
 import { Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
 import { UndecoratedLink } from '../../UndercoratedLink'
 
 export const HeaderText = styled(Text)`

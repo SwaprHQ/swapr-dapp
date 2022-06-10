@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { BridgeList, OptionalBridgeList } from '../EcoBridge.types'
 
 interface CommonState {

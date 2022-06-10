@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components'
+
 import HeroImage from '../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from '../../assets/images/hero-graphic-left.png'
 import { breakpoints, gradients } from '../../utils/theme'

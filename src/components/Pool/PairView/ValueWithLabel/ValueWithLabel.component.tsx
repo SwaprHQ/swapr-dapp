@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { ValueWithLabelTitle, ValueWithLabelValue } from './ValueWithLabel.styles'
 
 export const ValueWithLabel = ({

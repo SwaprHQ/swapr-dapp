@@ -1,22 +1,23 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
+
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+
 import { AutoColumn } from '../../../components/Column'
+import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
 import Step from '../../../components/LiquidityMining/Create/Steps'
 import StakeTokenAndLimit from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
+import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
 import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
-
 import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
-import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
-import { TYPE } from '../../../theme'
-import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
-import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
-import { useTransactionAdder } from '../../../state/transactions/hooks'
-import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
-import styled from 'styled-components'
-import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useActiveWeb3React } from '../../../hooks'
+import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
+import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
+import { useTransactionAdder } from '../../../state/transactions/hooks'
+import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../PageWrapper'
 
 const LastStep = styled(Step)`

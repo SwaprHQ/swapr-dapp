@@ -1,5 +1,5 @@
+import { Flex, Text } from 'rebass/styled-components'
 import styled from 'styled-components'
-import { Text, Flex } from 'rebass/styled-components'
 
 export const List = styled.ul`
   margin: 0;

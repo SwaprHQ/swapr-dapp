@@ -1,18 +1,17 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
-import { useTranslation } from 'react-i18next'
 
-import { ButtonPrimary } from '../../Button/index'
 import {
-  ROUTABLE_PLATFORM_STYLE,
-  RoutablePlatformKeysByNetwork,
   PRICE_IMPACT_HIGH,
   PRICE_IMPACT_MEDIUM,
+  ROUTABLE_PLATFORM_STYLE,
+  RoutablePlatformKeysByNetwork,
 } from '../../../constants'
-
 import { useActiveWeb3React } from '../../../hooks'
+import { ButtonPrimary } from '../../Button/index'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>

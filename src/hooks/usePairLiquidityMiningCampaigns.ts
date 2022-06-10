@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from 'react'
-import { gql, useQuery } from '@apollo/client'
 import { BigintIsh, Pair } from '@swapr/sdk'
-import { SubgraphLiquidityMiningCampaign } from '../apollo'
 
-import { useNativeCurrency } from './useNativeCurrency'
-import { useActiveWeb3React } from '.'
+import { gql, useQuery } from '@apollo/client'
+import { useCallback, useMemo } from 'react'
+
+import { SubgraphLiquidityMiningCampaign } from '../apollo'
+import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
   getTokenAmount,
@@ -12,8 +12,10 @@ import {
   sortExpiredCampaigns,
   toLiquidityMiningCampaign,
 } from '../utils/liquidityMining'
-import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
 const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']

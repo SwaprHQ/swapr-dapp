@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Text } from 'rebass'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
+import { Box, Flex, Text } from 'rebass'
 
-import { usePage } from '../../../hooks/usePage'
-import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
-
-import { Pagination } from '../../Pagination'
-import { LoadingList } from './LoadingList'
-import { Pair as PairCard } from './Pair'
+import { usePage } from '../../../hooks/usePage'
+import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { PairsListProps } from './PairsList.types'
-import { Header, HeaderText, PaginationRow, StyledUndecoratedLink } from './PairsList.styles'
-import { ListLayout } from './LoadingList'
 import { ButtonPrimary } from '../../Button'
+import { Pagination } from '../../Pagination'
 import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
+import { ListLayout, LoadingList } from './LoadingList'
+import { Pair as PairCard } from './Pair'
+import { Header, HeaderText, PaginationRow, StyledUndecoratedLink } from './PairsList.styles'
+import { PairsListProps } from './PairsList.types'
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()

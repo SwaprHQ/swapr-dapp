@@ -1,5 +1,6 @@
-import styled from 'styled-components'
 import { Box } from 'rebass'
+import styled from 'styled-components'
+
 import { gradients } from '../../../utils/theme'
 
 export const DimBlurBgBox = styled(Box)`

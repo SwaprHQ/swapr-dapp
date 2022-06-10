@@ -1,23 +1,25 @@
-import { useCallback, useMemo } from 'react'
-import { gql, useQuery } from '@apollo/client'
 import { BigintIsh, Pair, Token } from '@swapr/sdk'
 
-import { MiningCampaign } from '../utils/liquidityMining'
+import { gql, useQuery } from '@apollo/client'
+import { useCallback, useMemo } from 'react'
+
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
-import { useNativeCurrency } from './useNativeCurrency'
-import { useActiveWeb3React } from '.'
+import { PairsFilterType } from '../components/Pool/ListFilter'
+import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
   getTokenAmount,
+  MiningCampaign,
   sortActiveCampaigns,
   sortExpiredCampaigns,
   toLiquidityMiningCampaign,
   toSingleSidedStakeCampaign,
 } from '../utils/liquidityMining'
-import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { useKpiTokens } from './useKpiTokens'
-import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useSWPRToken } from './swpr/useSWPRToken'
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 // Native fragments will not be resovled
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']

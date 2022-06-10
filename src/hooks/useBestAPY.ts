@@ -1,17 +1,20 @@
 import { Pair, Percent } from '@swapr/sdk'
+
+import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
-import { useQuery, gql } from '@apollo/client'
+
+import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getBestApyPairCampaign,
-  getRewardTokenAddressFromPair,
   getLowerTimeLimit,
+  getPairWithLiquidityMiningCampaign,
+  getRewardTokenAddressFromPair,
   SubgraphPair,
 } from '../utils/liquidityMining'
-import { useActiveWeb3React } from '.'
-import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { useNativeCurrency } from './useNativeCurrency'
 import { useKpiTokens } from './useKpiTokens'
-import { getPairWithLiquidityMiningCampaign } from '../utils/liquidityMining'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 const QUERY = gql`
   query($lowerTimeLimit: BigInt!, $pairAddress: ID) {

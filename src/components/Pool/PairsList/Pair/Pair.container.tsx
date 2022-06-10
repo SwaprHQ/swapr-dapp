@@ -1,20 +1,19 @@
 import React from 'react'
-import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
+import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass/styled-components'
+import { useTheme } from 'styled-components'
 
+import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
+import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
-
-import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
-import { CurrencyLogo } from '../../../CurrencyLogo'
 import CarrotBadge from '../../../Badge/Carrot'
-import { useTranslation } from 'react-i18next'
-import { PairProps } from './Pair.types'
-import { EllipsizedText, FarmingBadge, GridCard, BadgeText } from './Pair.styles'
-import { useTheme } from 'styled-components'
+import { CurrencyLogo } from '../../../CurrencyLogo'
+import DoubleCurrencyLogo from '../../../DoubleLogo'
 import { ResponsiveValueWithLabel } from './Pair.components'
+import { BadgeText, EllipsizedText, FarmingBadge, GridCard } from './Pair.styles'
+import { PairProps } from './Pair.types'
 
 export function Pair({
   token0,

@@ -1,18 +1,18 @@
 import { ChainId } from '@swapr/sdk'
+
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
-import Modal from '../Modal'
-import { ExternalLink, TYPE } from '../../theme'
-import { Text } from 'rebass'
-import { CloseIcon, CustomLightSpinner } from '../../theme'
-import { RowBetween } from '../Row'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
+
+import Circle from '../../assets/images/blue-loader.svg'
+import { useActiveWeb3React } from '../../hooks'
+import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
+import { getExplorerLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Circle from '../../assets/images/blue-loader.svg'
-
-import { getExplorerLink } from '../../utils'
-import { useActiveWeb3React } from '../../hooks'
+import Modal from '../Modal'
+import { RowBetween } from '../Row'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -74,7 +74,7 @@ function TransactionSubmittedContent({
   const theme = useTheme()
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-confirmed-modal">
       <Section>
         <RowBetween>
           <div />
@@ -133,11 +133,11 @@ export function ConfirmationModalContent({
 export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
   const theme = useTheme()
   return (
-    <Wrapper>
+    <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
           <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
-          <CloseIcon onClick={onDismiss} />
+          <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
