@@ -1,8 +1,16 @@
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
-import { CurveTrade, RoutablePlatform, Token, Trade, TradeType, UniswapTrade, UniswapV2Trade } from '@swapr/sdk'
+import {
+  CurveTrade,
+  getAllCommonUniswapV2Pairs,
+  RoutablePlatform,
+  Token,
+  Trade,
+  TradeType,
+  UniswapTrade,
+  UniswapV2Trade,
+} from '@swapr/sdk'
 // Low-level API for Uniswap V2
-import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/contracts'
 
 import { getUniswapV2PlatformList } from './platforms'
 // Types
@@ -64,7 +72,7 @@ export async function getExactIn(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonPairs({
+      const pairs = await getAllCommonUniswapV2Pairs({
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
         platform,
@@ -173,7 +181,7 @@ export async function getExactOut(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonPairs({
+      const pairs = await getAllCommonUniswapV2Pairs({
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
         platform,
