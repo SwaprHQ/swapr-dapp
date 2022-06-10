@@ -19,6 +19,7 @@ import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
+import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
 
@@ -64,7 +65,9 @@ export function useSwapsCallArguments(
   const deadline = useTransactionDeadline()
 
   return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) return []
+    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) {
+      return []
+    }
 
     return trades.map(trade => {
       if (!trade) {
@@ -116,8 +119,8 @@ export function useSwapsCallArguments(
 export function getSwapSummary(trade: Trade, recipientAddressOrName: string | null): string {
   const inputSymbol = trade.inputAmount.currency.symbol
   const outputSymbol = trade.outputAmount.currency.symbol
-  const inputAmount = trade.inputAmount.toSignificant(3)
-  const outputAmount = trade.outputAmount.toSignificant(3)
+  const inputAmount = limitNumberOfDecimalPlaces(trade.inputAmount)
+  const outputAmount = limitNumberOfDecimalPlaces(trade.outputAmount)
   const platformName = trade.platform.name
 
   const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
