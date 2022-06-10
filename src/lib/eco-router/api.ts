@@ -246,35 +246,9 @@ export async function getExactOut(
       })
   })
 
-  // Curve
-  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    CurveTrade.bestTradeExactOut(
-      {
-        currencyAmountOut,
-        currencyIn,
-        maximumSlippage,
-        receiver,
-      },
-      provider
-    )
-      .then(resolve)
-      .catch(error => {
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
-    ...uniswapV2TradesList,
-    curveTrade,
-    uniswapTrade,
-  ])
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList, uniswapTrade])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
