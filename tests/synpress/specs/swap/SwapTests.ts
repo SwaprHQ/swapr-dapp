@@ -49,7 +49,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap',String(TRANSACTION_VALUE), 'ETH', 'DXD')
+    MenuBar.checkToastMessage('Swap', String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -85,7 +85,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "DXD", "WETH", String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -133,7 +133,7 @@ describe('Swapping tests', () => {
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-    MenuBar.checkToastMessage('Swap', "DAI", "ETH", String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -167,7 +167,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "DXD", "ETH", String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'DXD', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       console.log(ethBalanceBefore, TRANSACTION_VALUE * Math.pow(10, 18))
@@ -196,7 +196,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    MenuBar.checkToastMessage('Swap', "XEENUS", "ETH", String(TRANSACTION_VALUE))
+    MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
@@ -207,5 +207,23 @@ describe('Swapping tests', () => {
         AddressesEnum.SECOND_TEST_WALLET
       )
     })
+  })
+  it.only('Should get the correct error message when reject transaction while swapping DAI to ETH []', () => {
+    SwapPage.openTokenToSwapMenu()
+      .chooseToken('dxd')
+      .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+
+    SwapPage.getToInput()
+      .should('not.have.value', '')
+      .then((res: JQuery) => {
+        estimatedTransactionOutput = parseFloat(res.val() as string)
+      })
+
+    SwapPage.swap().confirmSwap()
+    cy.rejectMetamaskTransaction({})
+    SwapPage.getErrorMessage().should('contain.text', 'Transaction rejected.')
+    SwapPage.getErrorModalWindowTitle().should('be.visible')
+    SwapPage.getDismissButtonOnErrorModalWindow().should('be.visible')
+    SwapPage.getDismissButtonOnErrorModalWindow().click()
   })
 })

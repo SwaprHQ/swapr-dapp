@@ -69,4 +69,13 @@ export class SwapPage {
   static getAlternateReceiverInput() {
     return cy.get('[data-testid=address-input]')
   }
+  static getErrorModalWindowTitle() {
+    return cy.get('[data-testid=rejected-error-modal]')
+  }
+  static getDismissButtonOnErrorModalWindow() {
+    return cy.get('[data-testid=dismiss-button]')
+  }
+  static getErrorMessage() {
+    return cy.get('[data-testid=error-modal-message]')
+  }
 }
