@@ -29,14 +29,12 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
 
   const explorer = isGnosisProtocolHash ? t('gnosisProtocolExplorer') : t('blockExplorer')
 
+  const href = isGnosisProtocolHash
+    ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
+    : getExplorerLink(chainId as ChainId, hash, 'transaction')
+
   const explorerExternalLink = (
-    <ExternalLink
-      href={
-        isGnosisProtocolHash
-          ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
-          : getExplorerLink(chainId as ChainId, hash, 'transaction')
-      }
-    >
+    <ExternalLink href={href}>
       {t('viewOn')} {explorer}
     </ExternalLink>
   )

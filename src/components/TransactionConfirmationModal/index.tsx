@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import Circle from '../../assets/images/blue-loader.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
@@ -14,6 +13,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
 import { RowBetween } from '../Row'
+import Circle from '../../assets/images/blue-loader.svg'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -79,14 +79,15 @@ function TransactionSubmittedContent({
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
   const explorer = isGnosisProtocolTrade ? t('gnosisProtocolExplorer') : t('blockExplorer')
+  const href =
+    chainId &&
+    hash &&
+    (isGnosisProtocolTrade
+      ? getGnosisProtocolExplorerOrderLink(chainId, hash)
+      : getExplorerLink(chainId, hash, 'transaction'))
+
   const explorerExternalLink = chainId && hash && (
-    <ExternalLink
-      href={
-        isGnosisProtocolTrade
-          ? getGnosisProtocolExplorerOrderLink(chainId, hash)
-          : getExplorerLink(chainId, hash, 'transaction')
-      }
-    >
+    <ExternalLink href={href as string}>
       <Text fontWeight={500} fontSize="13px">
         {t('viewOn')} {explorer}
       </Text>
