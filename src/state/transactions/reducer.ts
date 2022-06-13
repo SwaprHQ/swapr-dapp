@@ -33,14 +33,6 @@ export function getMapOfExchanges(arg: any): Record<string, string> {
     .map(el => el.value.name.toUpperCase().replace(/ .*/, ''))
     //convert array to collection of records
     .reduce<Record<string, string>>((accumulator, current) => ({ ...accumulator, [current]: current }), {})
-
-  console.info({
-    arg,
-    isPrototype: isPrototypeOf(BaseRoutablePlatform, arg),
-    condition: !(isPrototypeOf(BaseRoutablePlatform, arg) || arg === BaseRoutablePlatform),
-    listOfProperties,
-    ofMap,
-  })
   return ofMap
 }
 
