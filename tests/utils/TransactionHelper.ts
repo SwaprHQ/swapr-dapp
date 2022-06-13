@@ -59,6 +59,7 @@ export class TransactionHelper {
     expectedValueIn: number
   ) {
     cy.window().then(() => {
+      console.log(TransactionHelper.getTxFromStorage(), '    !!!!!')
       ;(SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()) as Cypress.Chainable).then(
         (res: Transaction) => {
           console.log('SUBGRAPH RESPONSE', res.body)
@@ -82,8 +83,8 @@ export class TransactionHelper {
   }
 
   static getTxFromStorage() {
-    console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0])
-    return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
+    console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4]).pop())
+    return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4]).pop()!
   }
 
   static checkEthereumBalanceFromEtherscan(
