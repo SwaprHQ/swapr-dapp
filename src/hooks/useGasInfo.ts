@@ -17,12 +17,16 @@ interface ChainGasInfo {
 const gasInfoChainUrls: ChainGasInfo = {
   [ChainId.MAINNET]: {
     url: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env
-      .REACT_APP_ETHERSCAN_API_KEY ?? 'YourApiKeyToken'}`,
+      .REACT_APP_ETHERSCAN_API_KEY ?? 'key'}`,
     keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
   [ChainId.XDAI]: {
     url: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
     keys: ['average', 'fast', 'slow'],
+  },
+  [ChainId.POLYGON]: {
+    url: 'https://gpoly.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle',
+    keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
   [ChainId.ARBITRUM_ONE]: {
     url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -79,22 +83,18 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
         let { normal, slow, fast } = defaultGasState
 
         // Mainnet and xDAI uses external API
-        if (chainId === ChainId.MAINNET || chainId === ChainId.XDAI) {
+        if (chainId === ChainId.MAINNET || chainId === ChainId.POLYGON) {
           const keys = chainGasInfo.keys ?? []
           // Pick the keys
-          const gasNormalData = data.result[keys[0]]
-          const gasFastData = data.result[keys[1]]
-          const gasSlowData = data.result[keys[2]]
+          normal = data.result[keys[0]]
+          fast = data.result[keys[1]]
+          slow = data.result[keys[2]]
           // ethgas.watch returns both USD and Gwei units
-          if (chainId === ChainId.MAINNET) {
-            normal = gasNormalData
-            fast = gasFastData
-            slow = gasSlowData
-          } else {
-            normal = gasNormalData
-            fast = gasFastData
-            slow = gasSlowData
-          }
+        } else if (chainId === ChainId.XDAI) {
+          const keys = chainGasInfo.keys ?? []
+          normal = data[keys[0]]
+          fast = data[keys[1]]
+          slow = data[keys[2]]
         } else {
           // On Arbitrum (and other L2's), parse Gwei to decimal and round the number
           // There is no fast nor slow gas prices

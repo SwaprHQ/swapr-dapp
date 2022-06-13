@@ -7,7 +7,7 @@
     "start": "yarn && yarn codegen:socket && react-scripts start",
     "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
-    "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
+    "ipfs-build": "cross-env PUBLIC_URL=\".\" REACT_APP_ETHERSCAN_API_KEY=\"${{secrets.REACT_APP_ETHERSCAN_API_KEY}}\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint src --ext js,jsx,ts,tsx",
     "lint:fix": "eslint src --ext js,jsx,ts,tsx --fix",
     "typecheck": "tsc --noEmit",
