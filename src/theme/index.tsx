@@ -154,8 +154,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
-const TextWrapper = styled(Text)<{ color: keyof Colors }>`
-  color: ${({ color, theme }) => (theme as any)[color]};
+const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`
+  color: ${({ color, theme }) => theme[color]};
 `
 
 export const TYPE = {
@@ -172,7 +172,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} color={'white'} {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text5'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={14} lineHeight="20px" color={'text5'} {...props} />
   },
   largeHeader(props: TextProps) {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
@@ -390,6 +390,7 @@ body {
 
 .custom-toast-root {
     margin-top: 86px;
+    min-width: 350px;
 }
 
 .custom-toast-container {
@@ -401,19 +402,13 @@ body {
     padding: 4px 8px;
 }
 
+.custom-toast-body a{
+  font-size: 14px;
+}
+
 .Toastify__toast {
     min-height: auto !important;
-    padding: 16px;
-}
-
-.Toastify__toast-body {
-    margin: 0 !important;
-}
-
-.Toastify__close-button {
-  position: absolute;
-  right: 12px;
-  top: 12px;
+    padding: 8px 10px 12px 4px;
 }
 
 .Toastify__toast--info {

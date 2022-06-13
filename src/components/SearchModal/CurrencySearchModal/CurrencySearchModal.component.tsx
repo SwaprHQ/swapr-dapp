@@ -12,7 +12,7 @@ import { Manage } from '../Manage'
 import { CurrencySearchModalContext } from './CurrencySearchModal.context'
 import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 
-export const CurrencySearchModalComponent = ({
+export function CurrencySearchModalComponent({
   isOpen,
   onDismiss,
   onCurrencySelect: onCurrencySelectWithoutDismiss,
@@ -20,7 +20,7 @@ export const CurrencySearchModalComponent = ({
   otherSelectedCurrency,
   showCommonBases = false,
   showNativeCurrency = true,
-}: CurrencySearchModalProps) => {
+}: CurrencySearchModalProps) {
   const lastOpen = useLast(isOpen)
   const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
 
