@@ -63,7 +63,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
-    "@swapr/sdk": "^1.4.0-beta.2",
+    "@swapr/sdk": "^1.4.2-beta.0",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",

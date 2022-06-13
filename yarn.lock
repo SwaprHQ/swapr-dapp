@@ -2881,10 +2881,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@^1.4.0-beta.2":
-  version "1.4.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.4.0-beta.2.tgz#6ae63084824cdd584d6cce9c4b29760fa9962e54"
-  integrity sha512-cVDEtdNVECV0GaZMEfg8u2F8ax83g3Y35ZH++nphhlkgQYf14cM6gDNgy1VPi0sv0I06nFuN8K0VjBD6fHNfUw==
+"@swapr/sdk@^1.4.2-beta.0":
+  version "1.4.2-beta.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.4.2-beta.0.tgz#6f5d41347eb61767c775e4d22dbd18a58faf6868"
+  integrity sha512-bR+eE7fVjArW4D6lX9lPID3Atgd5eJOI3/xDkBQrt4039qV730CHLt8s/mJjICq5XLBNZbHmcKzCcxerXiHOsQ==
   dependencies:
     "@ethersproject/abi" "^5.4.0"
     "@ethersproject/address" "^5.4.0"
