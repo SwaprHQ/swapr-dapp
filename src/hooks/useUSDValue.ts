@@ -23,25 +23,25 @@ import { useTradeExactInUniswapV2 } from './Trades'
 
 import { useActiveWeb3React } from './index'
 
-const STABLECOIN_AND_PLATFOM_BY_CHAIN: { [chainId: number]: { token: Token; platform: UniswapV2RoutablePlatform } } = {
-  [ChainId.MAINNET]: { token: DAI, platform: UniswapV2RoutablePlatform.UNISWAP },
-  [ChainId.POLYGON]: { token: USDC[ChainId.POLYGON], platform: UniswapV2RoutablePlatform.QUICKSWAP },
-  [ChainId.ARBITRUM_ONE]: { token: USDC[ChainId.ARBITRUM_ONE], platform: UniswapV2RoutablePlatform.UNISWAP },
-  [ChainId.XDAI]: { token: USDC[ChainId.XDAI], platform: UniswapV2RoutablePlatform.SUSHISWAP },
+const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platform: UniswapV2RoutablePlatform }> = {
+  [ChainId.MAINNET]: { stablecoin: DAI, platform: UniswapV2RoutablePlatform.UNISWAP },
+  [ChainId.POLYGON]: { stablecoin: USDC[ChainId.POLYGON], platform: UniswapV2RoutablePlatform.QUICKSWAP },
+  [ChainId.ARBITRUM_ONE]: { stablecoin: USDC[ChainId.ARBITRUM_ONE], platform: UniswapV2RoutablePlatform.UNISWAP },
+  [ChainId.XDAI]: { stablecoin: USDC[ChainId.XDAI], platform: UniswapV2RoutablePlatform.SUSHISWAP },
 }
 
 const FETCH_PRICE_INTERVAL = 15000
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount) {
   const { chainId } = useActiveWeb3React()
-  const { stablecoin, platform }: { stablecoin?: Token; platform?: UniswapV2RoutablePlatform } = chainId
+  const { stablecoin, platform } = chainId
     ? STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId]
-    : {}
+    : { stablecoin: undefined, platform: undefined }
 
-  const tradeExactOutAllPlatforms = useTradeExactInUniswapV2(currencyAmount, stablecoin, platform)
+  const tradeExactInUniswapV2 = useTradeExactInUniswapV2(currencyAmount, stablecoin, platform)
 
   return useMemo(() => {
-    if (!currencyAmount || !chainId || !stablecoin || !tradeExactOutAllPlatforms) return undefined
+    if (!currencyAmount || !chainId || !stablecoin || !tradeExactInUniswapV2) return undefined
 
     const currency = currencyAmount.currency
 
@@ -53,21 +53,15 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount) {
         numerator: '1',
       })
 
-    const calculateBestPrice = (trade: Trade | undefined): Price | undefined => {
-      if (!trade) return undefined
+    const { numerator, denominator } = tradeExactInUniswapV2?.executionPrice
 
-      const { numerator, denominator } = trade?.executionPrice
-
-      return new Price({
-        baseCurrency: currency,
-        quoteCurrency: stablecoin,
-        denominator,
-        numerator,
-      })
-    }
-
-    return calculateBestPrice(tradeExactOutAllPlatforms)
-  }, [chainId, currencyAmount, stablecoin, tradeExactOutAllPlatforms])
+    return new Price({
+      baseCurrency: currency,
+      quoteCurrency: stablecoin,
+      denominator,
+      numerator,
+    })
+  }, [chainId, currencyAmount, stablecoin, tradeExactInUniswapV2])
 }
 
 export function useCoingeckoUSDPrice(currency?: Currency) {
@@ -100,7 +94,7 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
           // we need to parse all USD returned amounts
           // and convert to the same currencyRef.current for both sides (SDK math invariant)
           // in our case we stick to the USDC paradigm
-          const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].token, chainId)
+          const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].stablecoin, chainId)
 
           // parse failure is unlikely - type safe
           if (!quoteAmount) return
