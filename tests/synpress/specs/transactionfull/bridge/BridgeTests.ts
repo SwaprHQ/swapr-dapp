@@ -1,6 +1,7 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { BridgePage } from '../../../../pages/BridgePage'
+import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import {ScannerFacade, SCANNERS} from '../../../../utils/facades/ScannerFacade'
@@ -227,5 +228,36 @@ describe('Bridge tests', () => {
         expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
       }
     )
+  })
+  it.only('Should get the correct error message when reject transaction', function() {
+    if (isNaN(balanceBefore)) {
+      this.skip() // Skipping test if Arbiscan is down
+    }
+    MenuBar.getNetworkSwitcher().click()
+    NetworkSwitcher.gnosis().click()
+    cy.allowMetamaskToAddAndSwitchNetwork()
+    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis')
+    BridgePage.getNetworkFromSelector().click()
+    NetworkSwitcher.gnosis().click()
+    BridgePage.getNetworkToSelector().click()
+    NetworkSwitcher.arinkeby().click()
+    BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
+    BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
+    BridgePage.getSelectTokenButton().click()
+    TokenMenu.chooseToken('xdai')
+    BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
+    BridgePage.getBridgeSelector('arbitrum').should('be.visible')
+    BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
+    BridgePage.getBridgeSelector('arbitrum').click()
+    BridgePage.getBridgeButton()
+      .should('contain.text', 'Bridge to')
+      .click()
+    BridgePage.confirmBridging()
+    cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
+    cy.rejectMetamaskTransaction({})
+    SwapPage.getErrorMessage().should('contain.text', 'Transaction rejected.')
+    SwapPage.getErrorModalWindowTitle().should('be.visible')
+    SwapPage.getDismissButtonOnErrorModalWindow().should('be.visible')
+    SwapPage.getDismissButtonOnErrorModalWindow().click()
   })
 })
