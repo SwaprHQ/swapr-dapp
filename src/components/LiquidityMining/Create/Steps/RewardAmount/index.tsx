@@ -29,10 +29,12 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
   const handleDismissCurrencySearch = useCallback(() => {
     setCurrencySearchOpen(false)
   }, [])
+
   const handleOpenPairOrTokenSearch = useCallback(value => {
     setCurrentReward(value)
     setCurrencySearchOpen(true)
   }, [])
+
   const disabledRewardsArray = useMemo(() => {
     const filteredRewardsArray = rewardsObject
       .map(reward => reward.reward?.currency)
@@ -46,8 +48,6 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     selectedPair => {
       const checkIfSelectedPairExists = disabledRewardsArray?.some(currency => currencyEquals(currency, selectedPair))
       if (currentReward !== undefined && !checkIfSelectedPairExists) {
-        console.log('hereagain', currentReward)
-
         setRewardsObject({
           type: ActionType.REWARDS_CHANGE,
           payload: {
@@ -76,7 +76,6 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
-      console.log('rawBValue', rawValue)
       const newParsedAmount = tryParseAmount(rawValue, rewardsObject[index]?.reward?.currency) as
         | TokenAmount
         | undefined
@@ -98,7 +97,6 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     [setRewardsObject, rewardsObject]
   )
 
-  console.log('rewards )OBJECT', rewardsObject)
   return (
     <>
       <FlexWrapper marginTop="32px" flexWrap="wrap">

@@ -68,20 +68,19 @@ const reducer = (state: RewardsObject[], action: Actions): RewardsObject[] => {
         reward: state[payload.index].reward,
         rawAmount: state[payload.index].rawAmount,
       }
-      console.log('does approvals fire and fuck shit up', object)
+
       stateItems.splice(payload.index, 1, object)
+
       return stateItems
 
     case ActionType.REWARDS_CHANGE:
-      const object2: RewardsObject = {
-        approval: ApprovalState.UNKNOWN,
+      const newReward: RewardsObject = {
+        approval: state[payload.index].approval ? state[payload.index].approval : ApprovalState.UNKNOWN,
         reward: payload.reward,
         rawAmount: payload.rawAmount,
       }
-      console.log('reward', payload.reward)
 
-      // console.log('REWARDS CHANGE', state.splice(payload.index, 1, object2))
-      stateItems.splice(payload.index, 1, object2)
+      stateItems.splice(payload.index, 1, newReward)
 
       return stateItems
 
@@ -90,9 +89,14 @@ const reducer = (state: RewardsObject[], action: Actions): RewardsObject[] => {
       return stateItems
 
     case ActionType.REMOVE_REWARD:
+      const hasMaxNumberOfReward = state.every(reward => reward.reward !== undefined)
+
       if (payload.index === 0 && state.length === 1) return [intitialState]
+
       stateItems.splice(payload.index, 1)
-      if (state.length === 4) state.push(intitialState)
+
+      if (hasMaxNumberOfReward) stateItems.push(intitialState)
+
       return stateItems
     case ActionType.RESET:
       return [intitialState]
@@ -253,13 +257,13 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        {/* <Step
+        <Step
           title={t('liquidityMining.create.reward')}
           index={3}
           key={3}
-          disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
-        > */}
-        <Step title={t('liquidityMining.create.reward')} index={3} key={3} disabled={false}>
+          // disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
+          disabled={false}
+        >
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
