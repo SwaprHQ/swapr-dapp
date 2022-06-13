@@ -16,6 +16,7 @@ interface ChainGasInfo {
 
 const gasInfoChainUrls: ChainGasInfo = {
   [ChainId.MAINNET]: {
+    //without apiKey will work in rate limit manner
     url: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env
       .REACT_APP_ETHERSCAN_API_KEY ?? 'key'}`,
     keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
@@ -25,6 +26,7 @@ const gasInfoChainUrls: ChainGasInfo = {
     keys: ['average', 'fast', 'slow'],
   },
   [ChainId.POLYGON]: {
+    //apiKey is `key` 😁
     url: 'https://gpoly.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle',
     keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
