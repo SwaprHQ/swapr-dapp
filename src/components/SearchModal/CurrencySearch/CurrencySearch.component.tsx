@@ -72,11 +72,15 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency) return filteredSortedTokens
-    const s = debouncedQuery.toLowerCase().trim()
-    if (nativeCurrency.symbol && nativeCurrency.symbol.toLowerCase().startsWith(s)) {
-      return nativeCurrency ? [nativeCurrency, ...filteredSortedTokens] : filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+
+    if (
+      nativeCurrency &&
+      new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
+    ) {
+      return [nativeCurrency, ...filteredSortedTokens]
     }
+
     return filteredSortedTokens
   }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
 
@@ -161,7 +165,7 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {filteredSortedTokensWithNativeCurrency?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
