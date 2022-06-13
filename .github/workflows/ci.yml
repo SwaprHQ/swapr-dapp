@@ -132,6 +132,8 @@ jobs:
           node-version: '16'
 
       - name: Build app
+        env:
+          REACT_APP_ETHERSCAN_API_KEY: ${{ secrets.REACT_APP_ETHERSCAN_API_KEY }}
         run: yarn ipfs-build
 
       - name: Compress build artifact
@@ -200,8 +202,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [transactionfull, transactionless]
+        containers: [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
