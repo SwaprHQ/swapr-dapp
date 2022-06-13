@@ -80,12 +80,12 @@ export function useWrapCallback(
     nativeCurrency &&
     currencies.INPUT &&
     currencyEquals(nativeCurrency, currencies.INPUT) &&
-    currencyEquals(currencies.OUTPUT as Currency, wrappedCurrency(nativeCurrency, chainId as ChainId))
+    currencyEquals(currencies.OUTPUT as Currency, nativeCurrencyWrapperToken as Currency)
   const toUnwrap =
     nativeCurrency &&
     currencies.OUTPUT &&
     currencyEquals(nativeCurrency, currencies.OUTPUT) &&
-    currencyEquals(currencies.INPUT as Currency, wrappedCurrency(nativeCurrency, chainId as ChainId))
+    currencyEquals(currencies.INPUT as Currency, nativeCurrencyWrapperToken as Currency)
 
   const allTransactions = useAllTransactions()
   useEffect(() => {
