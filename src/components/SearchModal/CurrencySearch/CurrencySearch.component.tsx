@@ -165,7 +165,7 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {filteredSortedTokensWithNativeCurrency?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
