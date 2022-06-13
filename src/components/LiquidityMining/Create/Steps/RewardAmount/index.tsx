@@ -4,14 +4,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { ApprovalState } from '../../../../../hooks/useApproveCallback'
-import {
-  Actions,
-  ActionType,
-  CampaignType,
-  numberOfRewards,
-  RewardsObject,
-} from '../../../../../pages/LiquidityMining/Create'
+import { Actions, ActionType, CampaignType, RewardsObject } from '../../../../../pages/LiquidityMining/Create'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import AssetSelector from '../PairAndReward/AssetSelector'
@@ -24,7 +17,7 @@ const FlexWrapper = styled(Flex)`
   `}
 `
 interface RewardAmountProps {
-  rewardsObject: RewardsObject
+  rewardsObject: RewardsObject[]
   setRewardsObject: React.Dispatch<Actions>
 }
 
@@ -41,8 +34,8 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     setCurrencySearchOpen(true)
   }, [])
   const disabledRewardsArray = useMemo(() => {
-    const filteredRewardsArray = rewardsObject.rewards
-      .map(reward => reward?.currency)
+    const filteredRewardsArray = rewardsObject
+      .map(reward => reward.reward?.currency)
       .filter(currency => currency && currency !== undefined) as Currency[]
 
     if (filteredRewardsArray.length !== 0) return filteredRewardsArray
@@ -53,6 +46,8 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     selectedPair => {
       const checkIfSelectedPairExists = disabledRewardsArray?.some(currency => currencyEquals(currency, selectedPair))
       if (currentReward !== undefined && !checkIfSelectedPairExists) {
+        console.log('hereagain', currentReward)
+
         setRewardsObject({
           type: ActionType.REWARDS_CHANGE,
           payload: {
@@ -60,39 +55,38 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
             reward: new TokenAmount(selectedPair, '0'),
           },
         })
+        if (rewardsObject.length < 4)
+          setRewardsObject({
+            type: ActionType.ADD_REWARD,
+            payload: {
+              index: currentReward,
+            },
+          })
       }
     },
-    [currentReward, setRewardsObject, disabledRewardsArray]
+    [rewardsObject, currentReward, setRewardsObject, disabledRewardsArray]
   )
 
   const handleCurrencyReset = useCallback(
     index => {
-      setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { index: index, rawAmount: undefined } })
-      setRewardsObject({
-        type: ActionType.REWARDS_CHANGE,
-        payload: { index: index, reward: undefined },
-      })
-      setRewardsObject({
-        type: ActionType.APPROVALS_CHANGE,
-        payload: { index: index, approval: ApprovalState.UNKNOWN },
-      })
+      setRewardsObject({ type: ActionType.REMOVE_REWARD, payload: { index: index } })
     },
     [setRewardsObject]
   )
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
-      setRewardsObject({ type: ActionType.RAW_AMOUNTS, payload: { rawAmount: rawValue, index: index } })
-
-      const newParsedAmount = tryParseAmount(rawValue, rewardsObject.rewards[index]?.currency) as
+      console.log('rawBValue', rawValue)
+      const newParsedAmount = tryParseAmount(rawValue, rewardsObject[index]?.reward?.currency) as
         | TokenAmount
         | undefined
-      const currentCurrency = rewardsObject.rewards[index]?.token
+      const currentCurrency = rewardsObject[index]?.reward?.token
 
       setRewardsObject({
         type: ActionType.REWARDS_CHANGE,
         payload: {
           index: index,
+          rawAmount: rawValue,
           reward: newParsedAmount
             ? newParsedAmount
             : currentCurrency
@@ -104,13 +98,14 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
     [setRewardsObject, rewardsObject]
   )
 
+  console.log('rewards )OBJECT', rewardsObject)
   return (
     <>
       <FlexWrapper marginTop="32px" flexWrap="wrap">
-        {[...Array(numberOfRewards)].map((item, index) => (
+        {[...Array(rewardsObject.length)].map((item, index) => (
           <AssetSelector
             key={index}
-            currency0={rewardsObject.rewards[index]?.token}
+            currency0={rewardsObject[index]?.reward?.token}
             campaingType={CampaignType.TOKEN}
             onClick={() => handleOpenPairOrTokenSearch(index)}
             customAssetTitle={
@@ -122,7 +117,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
                 </div>
               )
             }
-            amount={rewardsObject.rewards[index]}
+            amount={rewardsObject[index].reward}
             handleUserInput={event => {
               handleLocalUserInput(event, index)
             }}
@@ -130,7 +125,7 @@ export default function RewardsSelection({ rewardsObject, setRewardsObject }: Re
             setRewardsObject={setRewardsObject}
             onResetCurrency={() => handleCurrencyReset(index)}
             index={index}
-            rawAmount={rewardsObject.rawAmounts[index]}
+            rawAmount={rewardsObject[index].rawAmount}
           />
         ))}
       </FlexWrapper>

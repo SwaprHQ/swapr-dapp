@@ -27,60 +27,75 @@ export enum CampaignType {
   TOKEN,
   PAIR,
 }
-export const numberOfRewards = 4
+
 export interface RewardsObject {
-  approvals: ApprovalState[]
-  rewards: (TokenAmount | undefined)[]
-  rawAmounts: (string | undefined)[]
+  approval: ApprovalState
+  reward: TokenAmount | undefined
+  rawAmount: string | undefined
 }
 
 export enum ActionType {
   APPROVALS_CHANGE,
   REWARDS_CHANGE,
   RAW_AMOUNTS,
+  ADD_REWARD,
+  REMOVE_REWARD,
   RESET,
 }
 export interface Actions {
   type: ActionType
   payload: {
-    index?: number
+    index: number
     reward?: TokenAmount | undefined
     rawAmount?: string
     approval?: ApprovalState
   }
 }
-const initialState: RewardsObject = {
-  approvals: new Array(numberOfRewards).fill(ApprovalState.UNKNOWN),
-  rewards: new Array(numberOfRewards).fill(undefined),
-  rawAmounts: new Array(numberOfRewards).fill(undefined),
+const intitialState: RewardsObject = {
+  approval: ApprovalState.UNKNOWN,
+  reward: undefined,
+  rawAmount: undefined,
 }
 
-const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
+const reducer = (state: RewardsObject[], action: Actions): RewardsObject[] => {
   const { type, payload } = action
+
+  const stateItems = [...state]
   switch (type) {
     case ActionType.APPROVALS_CHANGE:
-      return {
-        ...state,
-        approvals: state.approvals.map((approval: ApprovalState, i: number) =>
-          i === payload.index && payload.approval !== undefined ? payload.approval : approval
-        ),
+      const object = {
+        approval: payload.approval !== undefined ? payload.approval : state[payload.index].approval,
+        reward: state[payload.index].reward,
+        rawAmount: state[payload.index].rawAmount,
       }
+      console.log('does approvals fire and fuck shit up', object)
+      stateItems.splice(payload.index, 1, object)
+      return stateItems
+
     case ActionType.REWARDS_CHANGE:
-      return {
-        ...state,
-        rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
-          i === payload.index ? payload.reward : reward
-        ),
+      const object2: RewardsObject = {
+        approval: ApprovalState.UNKNOWN,
+        reward: payload.reward,
+        rawAmount: payload.rawAmount,
       }
-    case ActionType.RAW_AMOUNTS:
-      return {
-        ...state,
-        rawAmounts: state.rawAmounts.map((rawAmount: string | undefined, i: number) =>
-          i === payload.index ? payload.rawAmount : rawAmount
-        ),
-      }
+      console.log('reward', payload.reward)
+
+      // console.log('REWARDS CHANGE', state.splice(payload.index, 1, object2))
+      stateItems.splice(payload.index, 1, object2)
+
+      return stateItems
+
+    case ActionType.ADD_REWARD:
+      stateItems.push(intitialState)
+      return stateItems
+
+    case ActionType.REMOVE_REWARD:
+      if (payload.index === 0 && state.length === 1) return [intitialState]
+      stateItems.splice(payload.index, 1)
+      if (state.length === 4) state.push(intitialState)
+      return stateItems
     case ActionType.RESET:
-      return initialState
+      return [intitialState]
     default:
       return state
   }
@@ -105,23 +120,23 @@ export default function CreateLiquidityMining() {
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
-  const [rewardsObject, dispatch] = useReducer(reducer, initialState)
+  const [rewardsObject, dispatch] = useReducer(reducer, [intitialState])
   const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
   const [simulatedPrice, setSimulatedPrice] = useState('0')
 
   const memoizedRewardsArray = useMemo(
     () =>
-      rewardsObject.rewards.length
-        ? rewardsObject.rewards.filter(reward => reward?.greaterThan('0'))
-        : new Array(numberOfRewards).fill(undefined),
-    [rewardsObject.rewards]
+      rewardsObject.length
+        ? rewardsObject.map(item => item.reward).filter(reward => reward?.greaterThan('0'))
+        : new Array(rewardsObject.length).fill(undefined),
+    [rewardsObject]
   )
   const memoizedApprovalsArray = useMemo(
     () =>
-      rewardsObject.approvals.some((value: ApprovalState) =>
-        value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? false : true
+      rewardsObject.some((item: RewardsObject) =>
+        item.approval === ApprovalState.APPROVED || item.approval === ApprovalState.UNKNOWN ? false : true
       ),
-    [rewardsObject.approvals]
+    [rewardsObject]
   )
 
   const campaign = useNewLiquidityMiningCampaign(
@@ -175,7 +190,7 @@ export default function CreateLiquidityMining() {
   }, [addTransaction, createLiquidityMiningCallback, stakeToken, stakePair])
 
   const resetAllFileds = () => {
-    dispatch({ type: ActionType.RESET, payload: {} })
+    dispatch({ type: ActionType.RESET, payload: { index: 0 } })
     setStakePair(undefined)
     setStakeToken(undefined)
     setUnlimitedPool(true)
@@ -227,7 +242,8 @@ export default function CreateLiquidityMining() {
             onStakingCapChange={setStakingCap}
           />
         </Step>
-        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}>
+        {/* <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}> */}
+        <Step title={t('liquidityMining.create.duration')} index={2} disabled={false}>
           <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
@@ -237,12 +253,13 @@ export default function CreateLiquidityMining() {
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
-        <Step
+        {/* <Step
           title={t('liquidityMining.create.reward')}
           index={3}
           key={3}
           disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
-        >
+        > */}
+        <Step title={t('liquidityMining.create.reward')} index={3} key={3} disabled={false}>
           <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
         </Step>
 
