@@ -1,31 +1,32 @@
-import React, { useState, useCallback } from 'react'
+import { Currency } from '@swapr/sdk'
 
-import {
-  Content,
-  FiatRow,
-  Aligner,
-  InputRow,
-  LabelRow,
-  Container,
-  InputPanel,
-  CurrencySelect,
-  UppercaseHelper,
-} from './CurrencyInputPanel.styles'
-import Loader from '../Loader'
-import { TYPE } from '../../theme'
-import { RowBetween } from '../Row'
-import NumericalInput from '../Input/NumericalInput'
-import { FiatValueDetails } from '../FiatValueDetails'
-import { CurrencyWrapperSource } from '../CurrencyLogo'
-import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+import debounce from 'lodash.debounce'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-
+import { TYPE } from '../../theme'
+import { normalizeInputValue } from '../../utils'
+import { CurrencyWrapperSource } from '../CurrencyLogo'
+import { FiatValueDetails } from '../FiatValueDetails'
+import { NumericalInput } from '../Input/NumericalInput'
+import Loader from '../Loader'
+import { RowBetween } from '../Row'
+import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+import {
+  Aligner,
+  Container,
+  Content,
+  CurrencySelect,
+  FiatRow,
+  InputPanel,
+  InputRow,
+  LabelRow,
+  UppercaseHelper,
+} from './CurrencyInputPanel.styles'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
-import { CurrencyView } from './CurrencyView'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
-import { Currency } from '@swapr/sdk'
+import { CurrencyView } from './CurrencyView'
 
 export const CurrencyInputPanelComponent = ({
   id,
@@ -53,6 +54,7 @@ export const CurrencyInputPanelComponent = ({
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
+  const [localValue, setLocalValue] = useState(value)
   const { account } = useActiveWeb3React()
   const [isMaxAmount, setIsMaxAmount] = useState(false)
 
@@ -98,6 +100,17 @@ export const CurrencyInputPanelComponent = ({
     [onUserInput]
   )
 
+  const debouncedUserInput = useMemo(() => {
+    return debounce(handleOnUserInput, 250)
+  }, [handleOnUserInput])
+
+  useEffect(() => {
+    if (localValue !== value) {
+      setLocalValue(value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
   return (
     <InputPanel id={id}>
       <Container focused={focused}>
@@ -116,10 +129,13 @@ export const CurrencyInputPanelComponent = ({
               <>
                 <NumericalInput
                   className="token-amount-input"
-                  value={value}
+                  value={localValue}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  onUserInput={handleOnUserInput}
+                  onUserInput={value => {
+                    setLocalValue(normalizeInputValue(value))
+                    debouncedUserInput(normalizeInputValue(value))
+                  }}
                   disabled={disabled}
                   data-testid={'transaction-value-input'}
                 />
@@ -168,7 +184,7 @@ export const CurrencyInputPanelComponent = ({
           onDismiss={onDismiss}
           onCurrencySelect={handleOnCurrencySelect}
           selectedCurrency={currency}
-          otherSelectedCurrency={otherCurrency}
+          otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
         />
       )}

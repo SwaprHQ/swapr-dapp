@@ -1,4 +1,5 @@
 import { Currency, Token } from '@swapr/sdk'
+
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export interface CurrencySearchContextType {
@@ -20,5 +21,5 @@ export interface CurrencySearchProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
 }

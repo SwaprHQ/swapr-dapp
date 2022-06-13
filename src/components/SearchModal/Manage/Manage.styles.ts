@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { Flex } from 'rebass'
 import { animated } from '@react-spring/web'
+import { Flex } from 'rebass'
+import styled from 'styled-components'
 
 import { RowBetween } from '../../Row'
 

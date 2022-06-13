@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import { NavLink, NavLinkProps } from 'react-router-dom'
 import transparentize from 'polished/lib/color/transparentize'
+import React from 'react'
+import { NavLink, NavLinkProps } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme/components'
 
@@ -17,7 +17,6 @@ const StyledNavLink = styled(NavLink)`
   font-weight: 400;
   font-size: 14px;
   line-height: 19.5px;
-  font-family: 'Montserrat';
   position: relative;
 
   &.active {
@@ -38,7 +37,7 @@ const StyledExternalLink = styled(ExternalLink)`
   line-height: 19.5px;
   width: fit-content;
   text-decoration: none !important;
-  font-family: 'Montserrat';
+
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

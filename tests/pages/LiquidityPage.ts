@@ -2,7 +2,6 @@ export class LiquidityPage {
   static visitLiquidityPage() {
     cy.visit('/#/pools')
   }
-
   static getAllPairsButton() {
     return cy.get('[data-testid=all-token-list]')
   }
@@ -11,6 +10,16 @@ export class LiquidityPage {
   }
   static getCampaignsAndMyPairsToggleSwitch() {
     return cy.get('[data-testid=campaigns-toggle]')
+  }
+  static typeValueToFirstToken(value: string) {
+    this.getFirstTokenField().type(value)
+    return this
+  }
+  static getFirstTokenField() {
+    return cy.get('[data-testid=transaction-value-input]').first()
+  }
+  static getSecondTokenField() {
+    return cy.get('[data-testid=transaction-value-input]').last()
   }
   static getInputFields() {
     return cy.get('[data-testid=transaction-value-input]')
@@ -23,6 +32,30 @@ export class LiquidityPage {
   }
   static getTokenSearchField() {
     return cy.get('[id=token-search-input]')
+  }
+  static getAddLiquidityButton() {
+    return cy.get('[data-testid=add-liquidity]')
+  }
+  static getYourPoolTokens() {
+    return cy.get('[data-testid=user-pool-balance]')
+  }
+  static getFirstTokenBalance() {
+    return cy.get('[data-testid=first-token-balance]')
+  }
+  static getSecondTokenBalance() {
+    return cy.get('[data-testid=second-token-balance]')
+  }
+  static getUsersPoolShare() {
+    return cy.get('[data-testid=pool-share]')
+  }
+  static getSupplyButton() {
+    return cy.get('[data-testid=supply-button]')
+  }
+  static getConfirmSupplyButton() {
+    return cy.get('[data-testid=confirm-supply]')
+  }
+  static getCloseTransactionSubmittedWindowButton() {
+    return cy.get('[data-testid=close-modal-button]')
   }
   static getPairCards() {
     return cy.get('[data-testid=pair-card]')

@@ -1,13 +1,14 @@
 import { formatUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
-import { isFee } from './Socket.types'
-import { Route, TokenPriceResponseDTO } from './api/generated'
+
 import {
   DAI_ARBITRUM_ADDRESS,
   DAI_ETHEREUM_ADDRESS,
   SOCKET_NATIVE_TOKEN_ADDRESS,
   WETH_GNOSIS_ADDRESS,
 } from '../../../constants'
+import { Route, TokenPriceResponseDTO } from './api/generated'
+import { isFee } from './Socket.types'
 
 export const getDAIAddress = (chainId: ChainId) => {
   switch (chainId) {

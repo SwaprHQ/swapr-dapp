@@ -1,20 +1,18 @@
-import React, { useCallback, useContext, useEffect } from 'react'
 import { Currency } from '@swapr/sdk'
+
+import React, { useCallback, useContext, useLayoutEffect } from 'react'
 
 import useLast from '../../../hooks/useLast'
 import usePrevious from '../../../hooks/usePrevious'
-
 import Modal from '../../Modal'
-import { Manage } from '../Manage'
+import { CurrencySearch } from '../CurrencySearch'
 import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
-import { CurrencySearch } from '../CurrencySearch'
-
+import { Manage } from '../Manage'
 import { CurrencySearchModalContext } from './CurrencySearchModal.context'
-
 import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 
-export const CurrencySearchModalComponent = ({
+export function CurrencySearchModalComponent({
   isOpen,
   onDismiss,
   onCurrencySelect: onCurrencySelectWithoutDismiss,
@@ -22,11 +20,11 @@ export const CurrencySearchModalComponent = ({
   otherSelectedCurrency,
   showCommonBases = false,
   showNativeCurrency = true,
-}: CurrencySearchModalProps) => {
+}: CurrencySearchModalProps) {
   const lastOpen = useLast(isOpen)
   const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen && !lastOpen) {
       setModalView(CurrencyModalView.SEARCH)
     }

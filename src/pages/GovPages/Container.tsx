@@ -1,11 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
 import { Currency } from '@swapr/sdk'
+
+import React from 'react'
+import { Redirect } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { AutoRowCleanGap } from '../../components/Row'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { GovCard } from './Card'
 import { MainPage, PairPage, temporaryCurrencyData } from './constant'
-import { AutoRowCleanGap } from '../../components/Row'
-import { Redirect } from 'react-router-dom'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 
 const CardContainer = styled(AutoRowCleanGap)`
   max-height: 330px;

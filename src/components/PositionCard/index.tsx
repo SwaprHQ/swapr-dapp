@@ -1,25 +1,25 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
+
 import React, { useState } from 'react'
+import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Link } from 'react-router-dom'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-import { ArrowUpRight } from 'react-feather'
-import { useTotalSupply } from '../../data/TotalSupply'
 
+import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { ButtonDark, ButtonGrey } from '../Button'
-
 import Card, { GreyCard, OutlineCard } from '../Card'
 import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween, RowFixed } from '../Row'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 
 export const FixedHeightRow = styled(RowBetween)`
   height: 20px;
@@ -213,7 +213,7 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
         : new Percent('0', '100')
       : undefined
 
-  const [token0Deposited, token1Deposited] = !!pair
+  const [token0Deposited, token1Deposited] = pair
     ? !!totalPoolTokens &&
       totalPoolTokens.greaterThan('0') &&
       !!userPoolBalance &&
@@ -244,10 +244,17 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               Your pool tokens:
             </TYPE.body>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="user-pool-balance"
+              >
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : <Skeleton width="50px" />}
               </TYPE.body>
-              <DoubleCurrencyLogo loading={!!!userPoolBalance} size={16} currency0={currency0} currency1={currency1} />
+              <DoubleCurrencyLogo loading={!userPoolBalance} size={16} currency0={currency0} currency1={currency1} />
             </RowFixed>
           </FixedHeightRow>
           <FixedHeightRow>
@@ -257,10 +264,17 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               </TYPE.body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="first-token-balance"
+              >
                 {token0Deposited ? token0Deposited.toSignificant(6) : <Skeleton width="50px" />}
               </TYPE.body>
-              <CurrencyLogo loading={!!!currency0} size="16px" currency={currency0} />
+              <CurrencyLogo loading={!currency0} size="16px" currency={currency0} />
             </RowFixed>
           </FixedHeightRow>
 
@@ -271,10 +285,17 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               </TYPE.body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px" marginRight="8px">
+              <TYPE.body
+                color="text4"
+                fontWeight="500"
+                fontSize="14px"
+                lineHeight="17px"
+                marginRight="8px"
+                data-testid="second-token-balance"
+              >
                 {token1Deposited ? token1Deposited.toSignificant(6) : <Skeleton width="50px" />}
               </TYPE.body>
-              <CurrencyLogo loading={!!!currency1} size="16px" currency={currency1} />
+              <CurrencyLogo loading={!currency1} size="16px" currency={currency1} />
             </RowFixed>
           </FixedHeightRow>
 
@@ -306,6 +327,7 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
               style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
               width={showRemoveButton ? '48%' : '100%'}
+              data-testid="add-liquidity"
             >
               ADD LIQUIDITY
             </ButtonDark>

@@ -1,57 +1,106 @@
-import { LiquidityMiningCampaign, Pair, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
+import { parseUnits } from '@ethersproject/units'
+import {
+  LiquidityMiningCampaign,
+  Pair,
+  Price,
+  PricedToken,
+  PricedTokenAmount,
+  SingleSidedLiquidityMiningCampaign,
+  Token,
+  TokenAmount,
+} from '@swapr/sdk'
+
+import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
-import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
-import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
-import { getLpTokenPrice } from '../utils/prices'
+
 import { useNativeCurrency } from './useNativeCurrency'
-import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
+import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 export function useNewLiquidityMiningCampaign(
-  targetedPair: Pair | null,
   rewards: TokenAmount[],
   startTime: Date | null,
   endTime: Date | null,
   locked: boolean,
-  stakingCap: TokenAmount | null
-): LiquidityMiningCampaign | null {
+  stakingCap: TokenAmount | null,
+  simulatedStakedAmount: string,
+  simulatedPrice: string,
+  stakeToken?: Token,
+  stakePair?: Pair
+): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
   const { chainId } = useActiveWeb3React()
+
   const nativeCurrency = useNativeCurrency()
   const { pricedTokenAmounts: pricedRewardAmounts } = useNativeCurrencyPricedTokenAmounts(rewards)
-  const lpTokenTotalSupply = usePairLiquidityTokenTotalSupply(targetedPair || undefined)
-  const { reserveNativeCurrency: targetedPairReserveNativeCurrency } = usePairReserveNativeCurrency()
 
   return useMemo(() => {
-    if (!chainId || !targetedPair || !lpTokenTotalSupply || pricedRewardAmounts.length === 0 || !startTime || !endTime)
+    const derivedToken = stakeToken ? stakeToken : stakePair?.liquidityToken
+    if (
+      !chainId ||
+      derivedToken === undefined ||
+      pricedRewardAmounts.length === 0 ||
+      !startTime ||
+      !endTime ||
+      pricedRewardAmounts.length !== rewards.length
+    ) {
       return null
-    const { address, symbol, name, decimals } = targetedPair.liquidityToken
-    const lpTokenNativeCurrencyPrice = getLpTokenPrice(
-      targetedPair,
-      nativeCurrency,
-      lpTokenTotalSupply.raw.toString(),
-      targetedPairReserveNativeCurrency.raw.toString()
-    )
-    const lpToken = new PricedToken(chainId, address, decimals, lpTokenNativeCurrencyPrice, symbol, name)
-    const staked = new PricedTokenAmount(lpToken, '0')
-    return new LiquidityMiningCampaign({
-      startsAt: Math.floor(startTime.getTime() / 1000).toString(),
-      endsAt: Math.floor(endTime.getTime() / 1000).toString(),
-      targetedPair,
-      rewards: pricedRewardAmounts,
-      staked,
-      locked,
-      stakingCap: stakingCap || new TokenAmount(targetedPair.liquidityToken, '0'),
+    }
+
+    const formattedStartTime = Math.floor(startTime.getTime() / 1000).toString()
+    const formattedEndTime = Math.floor(endTime.getTime() / 1000).toString()
+
+    const { address, symbol, name, decimals } = derivedToken
+
+    const tokenNativePrice = simulatedPrice.length === 0 ? '0' : simulatedPrice
+    const derivedNative = new Price({
+      baseCurrency: derivedToken,
+      quoteCurrency: nativeCurrency,
+      denominator: parseUnits('1', nativeCurrency.decimals).toString(),
+      numerator: parseUnits(
+        new Decimal(tokenNativePrice).toFixed(nativeCurrency.decimals),
+        nativeCurrency.decimals
+      ).toString(),
     })
+    const pricedToken = new PricedToken(chainId, address, decimals, derivedNative, symbol, name)
+    const staked = new PricedTokenAmount(pricedToken, simulatedStakedAmount)
+
+    if (stakePair) {
+      return new LiquidityMiningCampaign({
+        startsAt: formattedStartTime,
+        endsAt: formattedEndTime,
+        targetedPair: stakePair,
+        rewards: pricedRewardAmounts,
+        staked,
+        locked,
+        stakingCap: stakingCap || new TokenAmount(stakePair.liquidityToken, '0'),
+      })
+    } else if (stakeToken) {
+      return new SingleSidedLiquidityMiningCampaign(
+        formattedStartTime,
+        formattedEndTime,
+        stakeToken,
+        pricedRewardAmounts,
+        staked,
+        locked,
+        stakingCap || new TokenAmount(stakeToken, '0')
+      )
+    } else {
+      return null
+    }
   }, [
+    simulatedPrice,
     chainId,
-    targetedPair,
-    lpTokenTotalSupply,
+    stakeToken,
+    stakePair,
+
+    simulatedStakedAmount,
     pricedRewardAmounts,
     startTime,
+    rewards,
     endTime,
     stakingCap,
     nativeCurrency,
-    targetedPairReserveNativeCurrency.raw,
     locked,
   ])
 }

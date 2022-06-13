@@ -1,15 +1,18 @@
+import { parseUnits } from '@ethersproject/units'
+import { CurrencyAmount, KpiToken, Pair, Percent, Token, TokenAmount, USD } from '@swapr/sdk'
+
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { CurrencyAmount, KpiToken, Pair, Percent, Token, TokenAmount, USD } from '@swapr/sdk'
 import { ethers } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
 import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
+
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
-import { useNativeCurrency } from './useNativeCurrency'
 import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 // when a user stakes their full lp share on a certain campaign, their liquidity position
 // goes to 0, and their liquidity mining position increases. In order to avoid hiding pairs where
@@ -189,7 +192,7 @@ export function useLPPairs(
       .reduce((accumulator: { pair: SubgraphPair }[], rawWrappedPair: { pair: SubgraphPair }): {
         pair: SubgraphPair
       }[] => {
-        if (!!!accumulator.find(p => p.pair.address === rawWrappedPair.pair.address)) {
+        if (!accumulator.find(p => p.pair.address === rawWrappedPair.pair.address)) {
           accumulator.push(rawWrappedPair)
         }
         return accumulator

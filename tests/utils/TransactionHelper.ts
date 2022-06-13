@@ -1,6 +1,6 @@
 import 'etherscan-api/dist/bundle.js'
 import './enums/AddressesEnum'
-import { EtherscanFacade } from './facades/EtherscanFacade'
+import { ScannerFacade } from './facades/ScannerFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
 import { AddressesEnum } from './enums/AddressesEnum'
 import { Transaction } from './TestTypes'
@@ -11,7 +11,7 @@ export class TransactionHelper {
   static checkIfTxFromLocalStorageHaveNoError() {
     cy.log('Checking tx status from ETHERSCAN API')
     cy.window().then(() => {
-      EtherscanFacade.transactionStatus(TransactionHelper.getTxFromStorage()).should(res => {
+      ScannerFacade.transactionStatus(TransactionHelper.getTxFromStorage()).should(res => {
         expect(res.body.result.isError).to.be.eq('0')
       })
     })
@@ -27,7 +27,7 @@ export class TransactionHelper {
   ) {
     const expectedTransactionValue: number = transactionValue * Math.pow(10, 18)
     cy.log('Checking token balance from ETHERSCAN API')
-    EtherscanFacade.erc20TokenBalance(tokenAddress, walletAddress).should(res => {
+    ScannerFacade.erc20TokenBalance(tokenAddress, walletAddress).should(res => {
       console.log('ACTUAL ERC 20 TOKEN BALANCE FROM ETHERSCAN', res)
       console.log('EXPECTED TRANSACTION VALUE', expectedTransactionValue)
       console.log('EXPECTED BALANCE AFTER', balanceBefore + expectedTransactionValue)
@@ -96,12 +96,12 @@ export class TransactionHelper {
     expectedBalance -= expectedGasCost * Math.pow(10, 18)
     console.log('EXPECTED BALANCE: ', expectedBalance)
     cy.window().then(() => {
-      EtherscanFacade.transaction(TransactionHelper.getTxFromStorage()).then(res => {
+      ScannerFacade.transaction(TransactionHelper.getTxFromStorage()).then(res => {
         console.log('ETHSC: ', res)
       })
     })
 
-    EtherscanFacade.ethBalance(walletAddress).then((response: { body: { result: string } }) => {
+    ScannerFacade.ethBalance(walletAddress).then((response: { body: { result: string } }) => {
       console.log('ETHERSCAN RESPONSE: ', response)
       try {
         expect(parseFloat(response.body.result)).to.be.greaterThan(expectedBalance) //gas fee

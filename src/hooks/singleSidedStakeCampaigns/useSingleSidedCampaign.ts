@@ -1,12 +1,10 @@
+import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
+
 import { gql, useQuery } from '@apollo/client'
-
-import { Token, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
-
 import { useMemo } from 'react'
 
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
-
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
 

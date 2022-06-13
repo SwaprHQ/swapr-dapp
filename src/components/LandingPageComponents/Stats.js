@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { gql } from 'graphql-request'
 import { ChainId } from '@swapr/sdk'
 
-import { gradients, breakpoints } from '../../utils/theme'
+import { gql } from 'graphql-request'
+import TextyAnim from 'rc-texty'
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+
+import { immediateSubgraphClients } from '../../apollo/client'
+import { breakpoints, gradients } from '../../utils/theme'
 import { StatsContent } from '../../utils/ui-constants'
 import { toClassName } from './../../utils/helper-functions'
 import Layout from './layout/Layout'
-import TextyAnim from 'rc-texty'
-import { immediateSubgraphClients } from '../../apollo/client'
 
 const subgraphApiClients = [
   immediateSubgraphClients[ChainId.ARBITRUM_ONE],

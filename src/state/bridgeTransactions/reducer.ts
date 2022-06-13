@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import { clearBridgeTxs } from './actions'
-
 import { ArbitrumBridgeTxnsState } from './types'
 
 export const initialState: ArbitrumBridgeTxnsState = {}
