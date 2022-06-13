@@ -62,8 +62,6 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
   const [loading, setLoading] = useState<boolean>(true)
   const [gas, setGas] = useState<Gas>(defaultGasState)
 
-  console.log(gas)
-
   useEffect(() => {
     if (!chainId || !gasInfoChainUrls[chainId]) {
       setLoading(false)
