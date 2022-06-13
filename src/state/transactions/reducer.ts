@@ -1,4 +1,4 @@
-import { RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { BaseRoutablePlatform, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -19,15 +19,28 @@ const now = () => new Date().getTime()
  */
 export function getMapOfExchanges(arg: any): Record<string, string> {
   const isPrototypeOf = Function.call.bind(Object.prototype.isPrototypeOf)
-  if (!(isPrototypeOf(RoutablePlatform, arg) || arg === RoutablePlatform)) return {}
+
+  if (!(isPrototypeOf(BaseRoutablePlatform, arg) || arg === BaseRoutablePlatform)) return {}
   const listOfProperties = Object.getOwnPropertyDescriptors(arg)
   const ofMap: Record<string, string> = Object.values(listOfProperties)
     //there is a 'prototype' property in this list of entries that is not writable, enumerable nor configurable
-    .filter(el => el['value'] instanceof RoutablePlatform && el['enumerable'])
+    .filter(
+      el =>
+        (el['value'] instanceof RoutablePlatform || el['value'] instanceof UniswapV2RoutablePlatform) &&
+        el['enumerable']
+    )
     // make it uppercase and get 1st word only
     .map(el => el.value.name.toUpperCase().replace(/ .*/, ''))
     //convert array to collection of records
     .reduce<Record<string, string>>((accumulator, current) => ({ ...accumulator, [current]: current }), {})
+
+  console.info({
+    arg,
+    isPrototype: isPrototypeOf(BaseRoutablePlatform, arg),
+    condition: !(isPrototypeOf(BaseRoutablePlatform, arg) || arg === BaseRoutablePlatform),
+    listOfProperties,
+    ofMap,
+  })
   return ofMap
 }
 
