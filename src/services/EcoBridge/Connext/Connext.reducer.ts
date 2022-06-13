@@ -66,10 +66,7 @@ const createConnextSlice = (bridgeId: ConnextList) =>
       addTransactions: (state, action: PayloadAction<ConnextTransaction[]>) => {
         connextTransactionsAdapter.upsertMany(state.transactions, action.payload)
       },
-      addTransaction: (state, action) => {
-        connextTransactionsAdapter.upsertOne(state.transactions, action.payload)
-      },
-      setPartnerTransaction: (state, action: PayloadAction<ConnextTransaction>) => {
+      addTransaction: (state, action: PayloadAction<ConnextTransaction>) => {
         connextTransactionsAdapter.upsertOne(state.transactions, action.payload)
       },
       updateTransactionAfterCollect: (state, action: PayloadAction<string>) => {

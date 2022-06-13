@@ -74,7 +74,7 @@ const createSelectBridgeTransactionsSummary = (
 
       const summary: BridgeTransactionSummary = {
         assetName: token?.symbol ?? '',
-        bridgeId: bridgeId,
+        bridgeId,
         fromChainId: Number(transaction.sendingChainId),
         toChainId: Number(transaction.receivingChainId),
         log: [
@@ -114,6 +114,12 @@ const createSelectBridgeTransactionsSummary = (
           summary.timestampResolved = Number(receivingTransaction?.fulfillTimestamp) * 1000
         }
         if (
+          partnerTransaction.status === ConnextTransactionStatus.PENDING ||
+          transaction.status === ConnextTransactionStatus.PENDING
+        ) {
+          summary.status = BridgeTransactionStatus.PENDING
+        }
+        if (
           partnerTransaction.status === ConnextTransactionStatus.CANCELLED ||
           transaction.status === ConnextTransactionStatus.CANCELLED
         ) {
@@ -123,12 +129,6 @@ const createSelectBridgeTransactionsSummary = (
             txHash: receivingTransaction?.cancelTransactionHash ?? '',
           })
           summary.timestampResolved = Number(receivingTransaction?.cancelTimestamp) * 1000
-        }
-        if (
-          transaction.status === ConnextTransactionStatus.PENDING ||
-          partnerTransaction.status === ConnextTransactionStatus.PENDING
-        ) {
-          summary.status = BridgeTransactionStatus.PENDING
         }
       }
 
@@ -146,7 +146,7 @@ const createSelectPendingTransactions = (
     txs.filter(({ status }) => status === BridgeTransactionStatus.PENDING)
   )
 
-const createSelectSpecificTransaction = (bridgeId: ConnextList) =>
+const createSelectTransaction = (bridgeId: ConnextList) =>
   createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions, (state: AppState, txHash: string) => txHash],
     (txs, txHash) => connextTransactionsAdapter.getSelectors().selectById(txs, txHash)
@@ -162,7 +162,7 @@ export interface ConnextBridgeSelectors {
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
-  selectSpecificTransaction: ReturnType<typeof createSelectSpecificTransaction>
+  selectTransaction: ReturnType<typeof createSelectTransaction>
   selectAllTransactions: ReturnType<typeof createSelectAllTransactions>
 }
 
@@ -172,7 +172,7 @@ export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
     const selectPendingTransactions = createSelectPendingTransactions(bridgeId, selectBridgeTransactionsSummary)
-    const selectSpecificTransaction = createSelectSpecificTransaction(bridgeId)
+    const selectTransaction = createSelectTransaction(bridgeId)
     const selectAllTransactions = createSelectAllTransactions(bridgeId)
 
     const selectors = {
@@ -180,7 +180,7 @@ export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
       selectOwnedTransactions,
       selectBridgeTransactionsSummary,
       selectPendingTransactions,
-      selectSpecificTransaction,
+      selectTransaction,
       selectAllTransactions,
     }
 

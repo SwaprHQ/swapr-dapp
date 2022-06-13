@@ -66,7 +66,7 @@ export type ConnextTransactionsSubgraph = {
 
 export type ConnextTransaction = {
   amount: string
-  bidSignature: string | undefined
+  bidSignature?: string
   callData: null | string
   callDataHash: string
   callTo: string
@@ -75,20 +75,20 @@ export type ConnextTransaction = {
   cancelTimestamp: null | string
   cancelTransactionHash: null | string
   chainId: string
-  encodedBid: string | undefined
+  encodedBid?: string
   encryptedCallData: string
   expiry: string
-  externalCallIsContract: boolean
-  externalCallReturnData: null | string
-  externalCallSuccess: boolean
-  fulfillCaller: null | string
-  fulfillMeta: null | string
-  fulfillTimestamp: null | string
+  externalCallIsContract?: boolean
+  externalCallReturnData?: null | string
+  externalCallSuccess?: boolean
+  fulfillCaller?: null | string
+  fulfillMeta?: null | string
+  fulfillTimestamp?: null | string
   fulfillTransactionHash: null | string
-  id: string
+  id?: string
   initiator: string
-  prepareCaller: string
-  prepareMeta: string
+  prepareCaller?: string
+  prepareMeta?: string
   prepareTransactionHash: string
   preparedBlockNumber: string
   preparedTimestamp: string
@@ -96,10 +96,10 @@ export type ConnextTransaction = {
   receivingAssetId: string
   receivingChainId: string
   receivingChainTxManagerAddress: string
-  relayerFee: null | string
+  relayerFee?: null | string
   router: { id: string }
   sendingAssetId: string
-  sendingChainFallback: string
+  sendingChainFallback?: string
   sendingChainId: string
   signature: null | string
   status: ConnextTransactionStatus

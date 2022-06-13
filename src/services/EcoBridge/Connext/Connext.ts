@@ -99,25 +99,29 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   private _createConnextSdk = async (signer: Signer) => {
-    const connextSdk = await NxtpSdk.create({
-      chainConfig: connextSdkChainConfig,
-      signer,
-      skipPolling: false,
-    })
+    try {
+      const connextSdk = await NxtpSdk.create({
+        chainConfig: connextSdkChainConfig,
+        signer,
+        skipPolling: false,
+      })
 
-    if (connextSdk) {
-      this._connextSdk = connextSdk
+      if (connextSdk) {
+        this._connextSdk = connextSdk
+      }
+    } catch (e) {
+      throw new Error('Connext: Failed to create connext sdk')
     }
   }
 
   public approve = async () => {
+    if (!this._activeProvider) return
+
+    const {
+      from: { address, value, decimals, chainId },
+    } = this.store.getState().ecoBridge.ui
+
     try {
-      if (!this._activeProvider) return
-
-      const {
-        from: { address, value, decimals, chainId },
-      } = this.store.getState().ecoBridge.ui
-
       const token = new Contract(address, ERC20.abi, this._activeProvider.getSigner())
 
       const amount = parseUnits(value, decimals)
@@ -159,16 +163,16 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public collect = async () => {
+    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+
+    const transactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
+
     try {
-      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-
-      const transactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
-
       if (!transactionHash || !this._account || !this._connextSdk) throw new Error('Cannot execute collect method')
 
       const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
 
-      const transaction = this.selectors.selectSpecificTransaction(this.store.getState(), transactionHash)
+      const transaction = this.selectors.selectTransaction(this.store.getState(), transactionHash)
 
       if (!transaction) throw new Error('Cannot find transaction')
 
@@ -215,7 +219,7 @@ export class Connext extends EcoBridgeChildBase {
             initiator,
             sendingAssetId,
             receivingAssetId,
-            sendingChainFallback,
+            sendingChainFallback: sendingChainFallback ?? '',
             callTo,
             receivingAddress,
             sendingChainId: Number(sendingChainId),
@@ -230,10 +234,10 @@ export class Connext extends EcoBridgeChildBase {
         false
       )
 
+      this.store.dispatch(this.actions.updateTransactionAfterCollect(transactionHash))
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
 
       if (receipt) {
-        this.store.dispatch(this.actions.updateTransactionAfterCollect(transactionHash))
         this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
       }
     } catch (e) {
@@ -338,7 +342,7 @@ export class Connext extends EcoBridgeChildBase {
 
       const { prepareResponse, transactionId } = await this._connextSdk.prepareTransfer(transferData, false)
 
-      const summary = {
+      const summary: ConnextTransaction = {
         amount,
         bidSignature,
         callDataHash,
@@ -361,6 +365,14 @@ export class Connext extends EcoBridgeChildBase {
         status: ConnextTransactionStatus.PREPARED,
         transactionId,
         user: { id: user },
+        callData: null,
+        cancelCaller: null,
+        cancelMeta: null,
+        cancelTimestamp: null,
+        cancelTransactionHash: null,
+        encodedBid: undefined,
+        fulfillTransactionHash: null,
+        signature: null,
       }
 
       this.store.dispatch(this.actions.addTransaction(summary))
@@ -416,7 +428,6 @@ export class Connext extends EcoBridgeChildBase {
         }, undefined)
       }
 
-      console.log(toTokenAddress)
       if (!toTokenAddress || !this._account || !this._connextSdk)
         throw new Error('Not enough information to find quote')
 
@@ -474,35 +485,34 @@ export class Connext extends EcoBridgeChildBase {
 
       this.store.dispatch(this.actions.setBridgeDetails(details))
     } catch (e) {
-      console.log(e)
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
     }
   }
   public validate = async () => {
-    try {
-      if (!this._activeProvider || !this._account || !this._quote) return
+    if (!this._activeProvider || !this._account || !this._quote) return
 
+    this.store.dispatch(
+      ecoBridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, isApproved: false })
+    )
+
+    const {
+      from: { address: fromTokenAddress, chainId: fromChainId },
+    } = this.store.getState().ecoBridge.ui
+
+    if (fromTokenAddress === Currency.getNative(fromChainId).symbol) {
       this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({ label: 'Loading', isLoading: true, isError: false, isApproved: false })
+        ecoBridgeUIActions.setStatusButton({
+          label: 'Bridge',
+          isLoading: false,
+          isError: false,
+          isApproved: true,
+          isBalanceSufficient: true,
+        })
       )
+      return
+    }
 
-      const {
-        from: { address: fromTokenAddress, chainId: fromChainId },
-      } = this.store.getState().ecoBridge.ui
-
-      if (fromTokenAddress === Currency.getNative(fromChainId).symbol) {
-        this.store.dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Bridge',
-            isLoading: false,
-            isError: false,
-            isApproved: true,
-            isBalanceSufficient: true,
-          })
-        )
-        return
-      }
-
+    try {
       const token = new Contract(fromTokenAddress, ERC20.abi, this._activeProvider.getSigner())
 
       const managerContract = getDeployedTransactionManagerContract(fromChainId)
@@ -550,25 +560,25 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public fetchHistory = async () => {
+    if (!this._account || !this._connextSdk) return
+
+    const query = getTransactionsQuery(this._account)
+
+    const connextSupportedChains = this.supportedChains.reduce<number[]>((supportedChains, chain) => {
+      const { from, to } = chain
+      supportedChains.push(Number(from))
+      supportedChains.push(Number(to))
+
+      return supportedChains
+    }, [])
+
+    const queryTransactionsPerChain = connextSupportedChains
+      .filter((chain, index) => connextSupportedChains.indexOf(chain) === index)
+      .map(chain => {
+        return this._connextSdk?.querySubgraph(chain, query)
+      })
+
     try {
-      if (!this._account || !this._connextSdk) return
-
-      const query = getTransactionsQuery(this._account)
-
-      const connextSupportedChains = this.supportedChains.reduce<number[]>((supportedChains, chain) => {
-        const { from, to } = chain
-        supportedChains.push(Number(from))
-        supportedChains.push(Number(to))
-
-        return supportedChains
-      }, [])
-
-      const queryTransactionsPerChain = connextSupportedChains
-        .filter((chain, index) => connextSupportedChains.indexOf(chain) === index)
-        .map(chain => {
-          return this._connextSdk?.querySubgraph(chain, query)
-        })
-
       const [...connextSubgraphTransactions]: ConnextTransactionsSubgraph[] = await Promise.all(
         queryTransactionsPerChain
       )
@@ -590,25 +600,32 @@ export class Connext extends EcoBridgeChildBase {
           : null
       )
 
-      //don't update transaction which has status pending (after collect)
       const pendingTransactionsInStore = this.selectors
         .selectAllTransactions(this.store.getState())
         .filter(({ status }) => status === ConnextTransactionStatus.PENDING)
 
-      const filteredTxs = [...transactionsSupportedByChain]
-
-      pendingTransactionsInStore.forEach(transaction => {
-        const index = transactionsSupportedByChain.findIndex(
-          tx => tx.prepareTransactionHash.toLowerCase() === transaction.prepareTransactionHash.toLowerCase()
+      const filteredTxs = transactionsSupportedByChain.reduce<ConnextTransaction[]>((total, next) => {
+        const index = pendingTransactionsInStore.findIndex(
+          tx => tx.prepareTransactionHash.toLowerCase() === next.prepareTransactionHash.toLowerCase()
         )
-        if (index !== -1) {
-          filteredTxs.splice(index, 1)
-        }
-      })
+        if (index === -1) total.push(next)
+
+        return total
+      }, [])
 
       this.store.dispatch(this.actions.addTransactions(filteredTxs))
     } catch (e) {
       console.warn('Cannot fetch history')
+    }
+  }
+  private _updateTransaction = (transactionOnChain: ConnextTransactionsSubgraph, fulfillPending?: boolean) => {
+    if (transactionOnChain && !!transactionOnChain.transactions.length) {
+      const [txn] = transactionOnChain.transactions
+
+      //if transaction is fulfilling don't update status to prepared
+      if (fulfillPending && txn.status === ConnextTransactionStatus.PREPARED) return
+
+      this.store.dispatch(this.actions.addTransaction(txn))
     }
   }
   public pendingTransactionsListener = async () => {
@@ -616,9 +633,9 @@ export class Connext extends EcoBridgeChildBase {
 
     if (!pendingTransactions.length) return
 
-    const promises = pendingTransactions.map(async tx => {
-      try {
-        const transaction = this.selectors.selectSpecificTransaction(this.store.getState(), tx.txHash)
+    try {
+      const promises = pendingTransactions.map(async tx => {
+        const transaction = this.selectors.selectTransaction(this.store.getState(), tx.txHash)
 
         if (!transaction || !this._connextSdk) return
 
@@ -631,24 +648,13 @@ export class Connext extends EcoBridgeChildBase {
           this._connextSdk.querySubgraph(Number(receivingChainId), query),
         ])
 
-        const updateTransaction = (transactionOnChain: ConnextTransactionsSubgraph) => {
-          if (transactionOnChain && !!transactionOnChain.transactions.length) {
-            const [txn] = transactionOnChain.transactions
+        this._updateTransaction(transactionOnFirstChain, fulfillPending)
+        this._updateTransaction(transactionOnSecondChain, fulfillPending)
+      })
 
-            //if transaction is fulfilling don't update status to prepared
-            if (fulfillPending && txn.status === ConnextTransactionStatus.PREPARED) return
-
-            this.store.dispatch(this.actions.setPartnerTransaction(txn))
-          }
-        }
-
-        updateTransaction(transactionOnFirstChain)
-        updateTransaction(transactionOnSecondChain)
-      } catch (e) {
-        console.warn('Cannot fetch transaction')
-      }
-    })
-
-    await Promise.all(promises)
+      await Promise.all(promises)
+    } catch (e) {
+      console.warn('Cannot fetch transaction')
+    }
   }
 }
