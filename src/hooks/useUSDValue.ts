@@ -1,12 +1,15 @@
-import { Token, Trade, currencyEquals, Price, CurrencyAmount, Currency, Fraction, JSBI, TEN, ChainId } from '@swapr/sdk'
-import { useTradeExactInAllPlatforms } from './Trades'
-import { USDC, DAI } from '../constants/index'
-import { useActiveWeb3React } from './index'
+import { ChainId, Currency, CurrencyAmount, currencyEquals, Fraction, JSBI, Price, TEN, Token, Trade } from '@swapr/sdk'
+
 import { useEffect, useMemo, useState } from 'react'
-import { currencyId } from '../utils/currencyId'
+
+import { DAI, USDC } from '../constants/index'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
+import { currencyId } from '../utils/currencyId'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../utils/wrappedCurrency'
+import { useTradeExactInAllPlatforms } from './Trades'
+
+import { useActiveWeb3React } from './index'
 
 const STABLECOIN_OUT: { [chainId: number]: Token } = {
   [ChainId.MAINNET]: DAI,
@@ -110,12 +113,6 @@ export function useCoingeckoUSDPrice(currency?: Currency) {
             denominator: result.denominator,
             numerator: result.numerator,
           })
-
-          console.debug(
-            '[useCoingeckoUSDPrice] Best Coingecko USD price amount',
-            usdPrice.toSignificant(12),
-            usdPrice.invert().toSignificant(12)
-          )
 
           setPrice(usdPrice)
         })

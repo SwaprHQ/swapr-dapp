@@ -1,24 +1,47 @@
-import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
+
+import { createSelector } from '@reduxjs/toolkit'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import { useTradeExactInAllPlatforms, useTradeExactOutAllPlatforms } from '../../hooks/Trades'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { isAddress } from '../../utils'
-import { AppDispatch, AppState } from '../index'
-import { useCurrencyBalances } from '../wallet/hooks'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
-import { useUserSlippageTolerance } from '../user/hooks'
-import { computeSlippageAdjustedAmounts } from '../../utils/prices'
-import { currencyId } from '../../utils/currencyId'
+import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import useParsedQueryString from '../../hooks/useParsedQueryString'
+import { useEcoRouterExactIn, useEcoRouterExactOut } from '../../lib/eco-router'
+import { isAddress } from '../../utils'
+import { currencyId } from '../../utils/currencyId'
+import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { AppDispatch, AppState } from '../index'
+import { useUserSlippageTolerance } from '../user/hooks'
+import { useCurrencyBalances } from '../wallet/hooks'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setLoading,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+} from './actions'
 
-export function useSwapState(): AppState['swap'] {
-  return useSelector<AppState, AppState['swap']>(state => state.swap)
+const selectSwap = createSelector(
+  (state: AppState) => state.swap,
+  swap => swap
+)
+export function useSwapState() {
+  return useSelector<AppState, AppState['swap']>(selectSwap)
+}
+
+const selectSwapLoading = createSelector(
+  (state: AppState) => state.swap.loading,
+  loading => loading
+)
+export function useSwapLoading() {
+  return useSelector<AppState, AppState['swap']['loading']>(selectSwapLoading)
 }
 
 export function useSwapActionHandlers(): {
@@ -104,17 +127,18 @@ function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boo
   )
 }
 
-// from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(
-  platformOverride?: RoutablePlatform
-): {
+export interface UseDerivedSwapInfoResult {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
   trade: Trade | undefined
   allPlatformTrades: (Trade | undefined)[] | undefined
   inputError?: string
-} {
+}
+
+// from the current swap inputs, compute the best trade and return it.
+export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
+  const dispatch = useDispatch()
   const { account, chainId } = useActiveWeb3React()
   const {
     independentField,
@@ -126,8 +150,6 @@ export function useDerivedSwapInfo(
 
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-  const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -137,23 +159,23 @@ export function useDerivedSwapInfo(
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const bestTradeExactInAllPlatforms = useTradeExactInAllPlatforms(
+  const useTradeExactInAllPlatformsRes = useEcoRouterExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const bestTradeExactOutAllPlatforms = useTradeExactOutAllPlatforms(
+  const useTradeExactOutAllPlatformsRes = useEcoRouterExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )
-  const bestTradeExactIn = bestTradeExactInAllPlatforms[0]
-  const bestTradeExactOut = bestTradeExactOutAllPlatforms[0]
+  const bestTradeExactIn = useTradeExactInAllPlatformsRes.trades[0]
+  const bestTradeExactOut = useTradeExactOutAllPlatformsRes.trades[0]
 
-  const allPlatformTrades = isExactIn ? bestTradeExactInAllPlatforms : bestTradeExactOutAllPlatforms
+  const allPlatformTrades = isExactIn ? useTradeExactInAllPlatformsRes.trades : useTradeExactOutAllPlatformsRes.trades
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
   if (platformOverride) {
-    platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
+    platformTrade = allPlatformTrades?.filter(t => t?.platform === platformOverride)[0]
   }
   const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
 
@@ -180,6 +202,9 @@ export function useDerivedSwapInfo(
     inputError = inputError ?? 'Select a token'
   }
 
+  const recipientLookup = useENS(recipient ?? undefined)
+  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
+
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient'
@@ -193,7 +218,7 @@ export function useDerivedSwapInfo(
     }
   }
 
-  const [allowedSlippage] = useUserSlippageTolerance()
+  const allowedSlippage = useUserSlippageTolerance()
 
   const slippageAdjustedAmounts =
     trade && allowedSlippage && computeSlippageAdjustedAmounts(trade /* allowedSlippage */)
@@ -206,6 +231,17 @@ export function useDerivedSwapInfo(
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+  }
+
+  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
+    dispatch(setLoading(true))
+  } else {
+    dispatch(setLoading(false))
+  }
+  if (inputError !== undefined) {
+    setTimeout(() => {
+      dispatch(setLoading(false))
+    }, 500)
   }
 
   return {

@@ -93,8 +93,13 @@
   "liquidityMining.header": "Liq. mining",
   "liquidityMining.title": "Liquidity mining",
   "liquidityMining.action.create": "CREATE LIQ. MINING",
-  "liquidityMining.create.title": "Create a liquidity mining pool",
-  "liquidityMining.create.subtitle": "Follow these simple steps to preview and create a liquidity mining pool on swapr",
+  "liquidityMining.create.title": "Create a Rewards Campaign",
+  "liquidityMining.create.chooseCampaign": "Choose Campaign Type",
+  "liquidityMining.create.selectToken": "Select Token To Stake",
+  "liquidityMining.create.selectPair": "Select Pair To Stake",
+  "liquidityMining.create.duration": "Campaign Duration",
+  "liquidityMining.create.reward": "Select Token To Reward",
+  "liquidityMining.create.preview": "Preview, approve and create mining pool",
   "bridge": "Bridge",
   "vote": "Vote",
   "charts": "Charts",
@@ -132,5 +137,6 @@
   "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
   "bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
-  "showMore": "Show more"
+  "showMore": "Show more",
+  "findingBestPrice": "Finding best price"
 }

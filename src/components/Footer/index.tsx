@@ -1,8 +1,8 @@
 import React from 'react'
+import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
-import { Sun, Moon } from 'react-feather'
-import { useDarkModeManager } from '../../state/user/hooks'
 
+import { useDarkModeManager } from '../../state/user/hooks'
 import { ButtonSecondary } from '../Button'
 
 const FooterFrame = styled.div`

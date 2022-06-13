@@ -1,6 +1,8 @@
-import { CSSProperties, MutableRefObject } from 'react'
 import { Currency, CurrencyAmount, Token } from '@swapr/sdk'
+
+import { CSSProperties, MutableRefObject } from 'react'
 import { FixedSizeList } from 'react-window'
+
 import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export const BREAK_LINE = 'BREAK'
@@ -13,7 +15,7 @@ export function isBreakLine(x: unknown): x is BreakLine {
 export interface CurrencyListProps {
   currencies: Currency[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  otherCurrency?: Currency | null
+  otherCurrency?: Currency[] | null
   setImportToken: (token: Token) => void
   showImportView: () => void
   otherListTokens: Token[]

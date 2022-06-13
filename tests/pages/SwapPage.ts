@@ -20,17 +20,27 @@ export class SwapPage {
   }
 
   static wrap() {
-    cy.get('[data-testid=wrap-button]').click()
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Wrap')
+      .click()
+    return this
+  }
+  static unwrap() {
+    cy.get('[data-testid=wrap-button]')
+      .should('contain.text', 'Unwrap')
+      .click({ force: true })
     return this
   }
 
   static swap() {
-    cy.get('#swap-button').click()
+    cy.get('#swap-button')
+      .should('contain.text', 'Swap')
+      .click({ force: true })
     return this
   }
 
   static confirmSwap() {
-    cy.get('#confirm-swap-or-send').click()
+    cy.get('#confirm-swap-or-send').click({ force: true })
   }
 
   static getConnectOrSwitchButton() {
@@ -58,7 +68,7 @@ export class SwapPage {
     return cy.get('[data-testid=wallet-connect-list]')
   }
   static getConfirmButton() {
-    return cy.get('[data-testid=switch-connect-button]')
+    return cy.get('[data-testid=switch-connect-button]', { timeout: 60000 })
   }
   static getEstimatedMinimalTransactionValue() {
     return cy.get('[data-testid=estimated-transaction-output]')
@@ -69,6 +79,7 @@ export class SwapPage {
   static getAlternateReceiverInput() {
     return cy.get('[data-testid=address-input]')
   }
+<<<<<<< HEAD
   static getErrorModalWindowTitle() {
     return cy.get('[data-testid=rejected-error-modal]')
   }
@@ -77,5 +88,9 @@ export class SwapPage {
   }
   static getErrorMessage() {
     return cy.get('[data-testid=error-modal-message]')
+=======
+  static getTransactionConfirmedModal() {
+    return cy.get('[data-testid=transaction-confirmed-modal]')
+>>>>>>> develop
   }
 }

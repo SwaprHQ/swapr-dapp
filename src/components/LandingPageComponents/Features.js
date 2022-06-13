@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
+
+import { breakpoints, gradients } from './../../utils/theme'
 import { FeaturesContent } from './../../utils/ui-constants'
-import { gradients, breakpoints } from './../../utils/theme'
-import Layout from './layout/Layout'
 import FeatureItem from './FeatureItem'
+import Layout from './layout/Layout'
 
 const Features = () => {
   return (

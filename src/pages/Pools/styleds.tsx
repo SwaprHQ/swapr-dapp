@@ -1,6 +1,7 @@
 import styled from 'styled-components'
-import { TYPE } from '../../theme'
+
 import { AutoColumn } from '../../components/Column'
+import { TYPE } from '../../theme'
 
 export const Wrapper = styled.div`
   position: relative;
