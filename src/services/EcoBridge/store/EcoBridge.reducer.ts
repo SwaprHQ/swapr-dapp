@@ -3,12 +3,14 @@ import { arbitrumReducers } from '../Arbitrum/ArbitrumBridge.reducer'
 import { reducer as uiReducer } from './UI.reducer'
 import { reducer as commonReducer } from './Common.reducer'
 import { socketReducers } from '../Socket/Socket.reducer'
+import { xdaiReducers } from '../Xdai/XdaiBridge.reducer'
 
 const ecoBridgeReducer = combineReducers({
   ui: uiReducer,
   common: commonReducer,
   ...arbitrumReducers,
   ...socketReducers,
+  ...xdaiReducers,
 })
 
 export default ecoBridgeReducer

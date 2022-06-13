@@ -2,6 +2,7 @@ import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { ChainId } from '@swapr/sdk'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { SocketBridge } from './Socket/SocketBridge'
+import { XdaiBridge } from './Xdai/XdaiBridge'
 
 const socketBridgeId = 'socket'
 //supported chains are bidirectional
@@ -24,6 +25,11 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
       { from: ChainId.MAINNET, to: ChainId.XDAI },
       { from: ChainId.XDAI, to: ChainId.ARBITRUM_ONE },
     ],
+  }),
+  new XdaiBridge({
+    bridgeId: 'xdai',
+    displayName: 'xDai Bridge',
+    supportedChains: [{ from: ChainId.MAINNET, to: ChainId.XDAI }],
   }),
 ]
 
