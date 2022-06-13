@@ -505,6 +505,7 @@ export const ROUTABLE_PLATFORM_STYLE: {
     alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  },
   [RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
     alt: RoutablePlatform.UNISWAP.name,

@@ -1,7 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
 import { ApplicationState } from './reducer'
-import SwapProtocol from '../transactions/reducer'
 
 export type PopupContent = {
   hash: string

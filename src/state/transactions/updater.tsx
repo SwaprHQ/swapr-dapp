@@ -129,12 +129,10 @@ export default function Updater(): null {
               )
 
               addPopup({
-                txn: {
-                  hash,
-                  success: isFulfilled,
-                  summary,
-                  swapProtocol: SwapProtocol.COW,
-                },
+                hash,
+                success: isFulfilled,
+                summary,
+                swapProtocol: SwapProtocol.COW,
               })
             })
             .catch()

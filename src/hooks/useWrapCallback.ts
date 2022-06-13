@@ -69,8 +69,16 @@ export function useWrapCallback(
   // Watch the transaction from transaction reducer
   const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt | undefined>()
 
-  const toWrap = nativeCurrency && inputCurrency && currencyEquals(nativeCurrency, inputCurrency)
-  const toUnwrap = nativeCurrency && outputCurrency && currencyEquals(nativeCurrency, outputCurrency)
+  const toWrap =
+    nativeCurrency &&
+    inputCurrency &&
+    currencyEquals(nativeCurrency, inputCurrency) &&
+    currencyEquals(outputCurrency as Currency, wrappedCurrency(nativeCurrency, chainId as ChainId))
+  const toUnwrap =
+    nativeCurrency &&
+    outputCurrency &&
+    currencyEquals(nativeCurrency, outputCurrency) &&
+    currencyEquals(inputCurrency as Currency, wrappedCurrency(nativeCurrency, chainId as ChainId))
 
   const allTransactions = useAllTransactions()
   useEffect(() => {

@@ -1,6 +1,16 @@
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
-import { ChainId, CurveTrade, GnosisProtocolTrade, RoutablePlatform, Token, Trade, TradeType, UniswapTrade, UniswapV2Trade } from '@swapr/sdk'
+import {
+  ChainId,
+  CurveTrade,
+  GnosisProtocolTrade,
+  RoutablePlatform,
+  Token,
+  Trade,
+  TradeType,
+  UniswapTrade,
+  UniswapV2Trade,
+} from '@swapr/sdk'
 // Low-level API for Uniswap V2
 import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/contracts'
 
