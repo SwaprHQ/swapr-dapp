@@ -79,7 +79,7 @@ function TransactionSubmittedContent({
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
   const explorer = isGnosisProtocolTrade ? t('gnosisProtocolExplorer') : t('blockExplorer')
-  const href =
+  const link =
     chainId &&
     hash &&
     (isGnosisProtocolTrade
@@ -87,7 +87,7 @@ function TransactionSubmittedContent({
       : getExplorerLink(chainId, hash, 'transaction'))
 
   const explorerExternalLink = chainId && hash && (
-    <ExternalLink href={href as string}>
+    <ExternalLink href={link as string}>
       <Text fontWeight={500} fontSize="13px">
         {t('viewOn')} {explorer}
       </Text>
