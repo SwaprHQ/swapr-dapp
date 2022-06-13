@@ -87,13 +87,10 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-=======
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
     MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
@@ -120,13 +117,6 @@ describe('Swapping tests', () => {
     SwapPage.openTokenToSwapMenu()
       .getOpenTokenManagerButton()
       .click()
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-    TokenMenu.switchTokenList('compound')
-    TokenMenu.switchTokenList('swapr-token-list')
-    TokenMenu.goBack()
-      .chooseToken('dai')
-      .switchTokens()
-=======
     TokenMenu.getSwitchTokenManagerToTokens().click()
     TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.LINK_ADDRESS_RINKEBY)
     TokenMenu.importToken('link')
@@ -135,7 +125,6 @@ describe('Swapping tests', () => {
       .last()
       .should('contain.text', 'LINK')
     SwapPage.switchTokens()
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.swap()
@@ -156,11 +145,7 @@ describe('Swapping tests', () => {
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-    MenuBar.checkToastMessage('Swap', 'DAI', 'ETH', String(TRANSACTION_VALUE))
-=======
     MenuBar.checkToastMessage('Swap', 'LINK', 'ETH', String(TRANSACTION_VALUE))
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
 
     cy.wrap(null).then(() => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
@@ -194,13 +179,10 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-=======
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
     MenuBar.checkToastMessage('Swap', 'DXD', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
@@ -228,13 +210,10 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-=======
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
     MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', String(TRANSACTION_VALUE))
 
     cy.wrap(null).then(() => {
