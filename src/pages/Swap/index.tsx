@@ -1,4 +1,4 @@
-import { ChainId, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 
@@ -22,7 +22,7 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useAppro
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { useTradeWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
+import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -126,10 +126,9 @@ export default function Swap() {
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
   const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(GnosisProtocolTradeState.UNKNOWN)
-  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useTradeWrapCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useWrapCallback(
     currencies,
     potentialTrade instanceof GnosisProtocolTrade,
-    potentialTrade?.chainId as ChainId,
     typedValue
   )
 
