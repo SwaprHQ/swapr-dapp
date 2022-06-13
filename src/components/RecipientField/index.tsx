@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
-import styled from 'styled-components'
-import { SearchInput } from '../SearchModal/shared'
-import { TYPE } from '../../theme'
-import useENS from '../../hooks/useENS'
-import { useDispatch } from 'react-redux'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import styled from 'styled-components'
+
+import useENS from '../../hooks/useENS'
+import { TYPE } from '../../theme'
+import { SearchInput } from '../SearchModal/shared'
 
 const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   margin-top: 5px;

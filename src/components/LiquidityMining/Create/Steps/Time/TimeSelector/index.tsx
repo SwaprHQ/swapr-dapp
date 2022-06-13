@@ -1,7 +1,18 @@
 import React from 'react'
+import { Flex } from 'rebass'
+import styled from 'styled-components'
+
 import { TYPE } from '../../../../../../theme'
-import { Box, Flex } from 'rebass'
 import DateTimeInput from '../../../../../Input/DateTimeInput'
+
+const TimeSelectorWrapper = styled(Flex)`
+  width: 100%;
+  justify-content: space-between;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    gap: 22px;
+    justify-content: space-evenly;
+  `};
+`
 
 interface TimeSelectorProps {
   title: string
@@ -13,13 +24,17 @@ interface TimeSelectorProps {
 
 export default function TimeSelector({ title, placeholder, minimum, value, onChange }: TimeSelectorProps) {
   return (
-    <Flex flexDirection="column" width="100%">
-      <Box mb="16px">
-        <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
+    <TimeSelectorWrapper
+      flexDirection="column"
+      alignSelf={'stretch'}
+      data-testid={`${title.toLowerCase()}-time-selector-box`}
+    >
+      <Flex>
+        <TYPE.small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
           {title}
         </TYPE.small>
-      </Box>
-      <Box>
+      </Flex>
+      <Flex maxWidth={'154px'}>
         <DateTimeInput
           value={value}
           placeholder={placeholder}
@@ -27,7 +42,7 @@ export default function TimeSelector({ title, placeholder, minimum, value, onCha
           maximum={new Date(Number.MAX_SAFE_INTEGER)}
           onChange={onChange}
         />
-      </Box>
-    </Flex>
+      </Flex>
+    </TimeSelectorWrapper>
   )
 }

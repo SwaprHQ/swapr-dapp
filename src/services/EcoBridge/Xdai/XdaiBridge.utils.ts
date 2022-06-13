@@ -1,6 +1,8 @@
 import { formatUnits } from '@ethersproject/units'
 import { ChainId } from '@swapr/sdk'
+
 import { utils } from 'ethers'
+
 import { DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'

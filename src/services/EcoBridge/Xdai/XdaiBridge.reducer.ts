@@ -1,10 +1,10 @@
-import { TokenList } from '@uniswap/token-lists'
 import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
+import { TokenList } from '@uniswap/token-lists'
 
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { BridgeDetails, BridgingDetailsErrorMessage, SyncState, XdaiBridgeList } from '../EcoBridge.types'
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 import { XdaiBridgeTransaction, XdaiMessage } from './XdaiBridge.types'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { SyncState, BridgingDetailsErrorMessage, BridgeDetails, XdaiBridgeList } from '../EcoBridge.types'
 
 interface XdaiBridgeState {
   bridgingDetails: BridgeDetails

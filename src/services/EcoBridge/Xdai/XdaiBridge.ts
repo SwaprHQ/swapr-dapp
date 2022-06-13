@@ -1,38 +1,17 @@
+import { Contract } from '@ethersproject/contracts'
+import { TransactionResponse } from '@ethersproject/providers'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+import { ChainId, Currency } from '@swapr/sdk'
+
+import { TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
-import { ChainId, Currency } from '@swapr/sdk'
-import { TokenList } from '@uniswap/token-lists'
-import { Contract } from '@ethersproject/contracts'
-import { formatUnits, parseUnits } from '@ethersproject/units'
-import { TransactionResponse } from 'arb-ts/node_modules/@ethersproject/providers'
 
-import { xdaiActions } from './XdaiBridge.reducer'
-import { xdaiSelectors } from './XdaiBridge.selectors'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { subgraphClientsUris } from '../../../apollo/client'
-import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 import { DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { getErrorMsg, QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { XdaiBridgeRequests, XdaiBridgeExecutions, XdaiMessage } from './XdaiBridge.types'
-import {
-  combineTransactions,
-  ETHEREUM_BRIDGE_ADDRESS,
-  XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
-  XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
-  XDAI_BRIDGE_ETHEREUM_AMB,
-  packSignatures,
-  signatureToVRS,
-  XDAI_BRIDGE_ADDRESS,
-} from './XdaiBridge.utils'
-import {
-  XDAI_BRIDGE_EXECUTIONS,
-  XDAI_BRIDGE_FOREIGN_REQUEST,
-  XDAI_BRIDGE_HOME_REQUEST,
-  XDAI_MESSAGE,
-} from './subgraph/history'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -41,6 +20,28 @@ import {
   SyncState,
   XdaiBridgeList,
 } from '../EcoBridge.types'
+import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ecoBridgeUIActions } from '../store/UI.reducer'
+import {
+  XDAI_BRIDGE_EXECUTIONS,
+  XDAI_BRIDGE_FOREIGN_REQUEST,
+  XDAI_BRIDGE_HOME_REQUEST,
+  XDAI_MESSAGE,
+} from './subgraph/history'
+import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
+import { xdaiActions } from './XdaiBridge.reducer'
+import { xdaiSelectors } from './XdaiBridge.selectors'
+import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiMessage } from './XdaiBridge.types'
+import {
+  combineTransactions,
+  ETHEREUM_BRIDGE_ADDRESS,
+  packSignatures,
+  signatureToVRS,
+  XDAI_BRIDGE_ADDRESS,
+  XDAI_BRIDGE_ETHEREUM_AMB,
+  XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
+  XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
+} from './XdaiBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI

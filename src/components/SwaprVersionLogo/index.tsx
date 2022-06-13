@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import logoImage from '../../assets/svg/swapr_white_no_badge.svg'
+
 import { version } from '../../../package.json'
+import logoImage from '../../assets/svg/swapr_white_no_badge.svg'
 
 const Logo = styled.img.attrs({ src: logoImage })`
   height: 40px;

@@ -1,5 +1,7 @@
 import { Currency, Token } from '@swapr/sdk'
+
 import { TokenList } from '@uniswap/token-lists'
+
 import { CurrencySearchContextType } from '../CurrencySearch/CurrencySearch.types'
 import { ListRowContextType, ManageListsContextType } from '../ManageLists/ManageLists.types'
 
@@ -10,7 +12,7 @@ export interface CurrencySearchModalProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
-  otherSelectedCurrency?: Currency | null
+  otherSelectedCurrency?: Currency[] | null
 }
 
 export enum CurrencyModalView {

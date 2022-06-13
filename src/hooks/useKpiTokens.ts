@@ -1,12 +1,15 @@
-import { gql, useQuery } from '@apollo/client'
-import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
-import { PricedTokenAmount, Price, Token, PricedToken, KpiToken } from '@swapr/sdk'
 import { getAddress } from '@ethersproject/address'
-import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { parseUnits } from '@ethersproject/units'
+import { KpiToken, Price, PricedToken, PricedTokenAmount, Token } from '@swapr/sdk'
+
+import { gql, useQuery } from '@apollo/client'
 import { Decimal } from 'decimal.js-light'
+import { useMemo } from 'react'
+
+import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
+
+import { useActiveWeb3React } from '.'
 
 const KPI_TOKENS_QUERY = gql`
   query kpiTokens($ids: [ID!]!) {

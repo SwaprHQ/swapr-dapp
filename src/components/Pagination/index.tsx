@@ -1,5 +1,5 @@
-import React from 'react'
 import RcPagination from 'rc-pagination'
+import React from 'react'
 import { ChevronLeft, ChevronRight } from 'react-feather'
 
 interface PaginationProps {

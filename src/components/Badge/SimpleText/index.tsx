@@ -1,5 +1,4 @@
 import React from 'react'
-
 import styled from 'styled-components'
 
 const BadgeText = styled.div<{ color: string }>`
@@ -12,7 +11,6 @@ const BadgeText = styled.div<{ color: string }>`
   padding: 0 4px;
   font-size: 9px;
   font-weight: bold;
-  font-family: 'Montserrat';
 `
 
 const SimpleText = ({ color, text }: { color: string; text: string }) => {

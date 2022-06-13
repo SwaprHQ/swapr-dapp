@@ -1,22 +1,21 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useToggle } from 'react-use'
 import { TokenList } from '@uniswap/token-lists'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
+import { useToggle } from 'react-use'
 
-import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
+import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
 import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
-import { useActiveListUrls, useAllLists } from '../../../state/lists/hooks'
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import { useActiveListsHandlers, useBridgeSupportedLists } from '../../../services/EcoBridge/EcoBridge.hooks'
+import { AppDispatch, AppState } from '../../../state'
 import { acceptListUpdate, disableList, enableList, removeList } from '../../../state/lists/actions'
-
-import uriToHttp from '../../../utils/uriToHttp'
-import { ListRowContext } from './ManageLists.context'
+import { useActiveListUrls, useAllLists } from '../../../state/lists/hooks'
 import { parseENSAddress } from '../../../utils/parseENSAddress'
+import uriToHttp from '../../../utils/uriToHttp'
 import { CurrencyModalView } from '../CurrencySearchModal'
-import { AppState, AppDispatch } from '../../../state'
-import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
+import { ListRowContext } from './ManageLists.context'
 import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
 
 export const useManageListsContextSwap = ({
@@ -76,7 +75,7 @@ export const useManageListsContextSwap = ({
   const renderableLists = useMemo(() => {
     return Object.keys(lists).filter(listUrl => {
       // only show loaded lists, hide unsupported lists
-      return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+      return Boolean(lists[listUrl].current) && !UNSUPPORTED_LIST_URLS.includes(listUrl)
     })
   }, [lists])
 
@@ -97,7 +96,7 @@ export const useManageListsContextBridge = (): ManageListsContextType => {
 
   const renderableLists = useMemo(() => {
     return Object.keys(lists).filter(listUrl => {
-      return Boolean(lists[listUrl]) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
+      return Boolean(lists[listUrl]) && !UNSUPPORTED_LIST_URLS.includes(listUrl)
     })
   }, [lists])
 

@@ -1,5 +1,7 @@
 import { SWPR, Token } from '@swapr/sdk'
+
 import { useMemo } from 'react'
+
 import { useActiveWeb3React } from '..'
 
 export const useSWPRToken = () => {

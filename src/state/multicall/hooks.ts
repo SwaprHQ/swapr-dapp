@@ -1,8 +1,11 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+
+import debounce from 'lodash.debounce'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { AppState } from '..'
 import { useActiveWeb3React } from '../../hooks'
 import { useBlockNumber } from '../application/hooks'
@@ -52,31 +55,32 @@ function useCallsData(
   const callResults = useSelector<AppState, MulticallState['callResults']>(state => state.multicall.callResults)
   const dispatch = useDispatch()
 
-  const serializedCallKeys: string = useMemo(
-    () =>
-      JSON.stringify(
-        calls
-          ?.filter((c): c is Call => Boolean(c))
-          ?.map(toCallKey)
-          ?.sort() ?? []
-      ),
-    [calls]
-  )
+  const { callKeys, stringifiedCalls } = useMemo(() => {
+    const filteredCalls =
+      calls
+        ?.filter((c): c is Call => Boolean(c))
+        ?.map(toCallKey)
+        ?.sort() ?? []
+    return {
+      callKeys: filteredCalls.map(key => parseCallKey(key)),
+      stringifiedCalls: JSON.stringify(filteredCalls),
+    }
+  }, [calls])
 
-  // update listeners when there is an actual change that persists for at least 100ms
-  useEffect(() => {
-    const callKeys: string[] = JSON.parse(serializedCallKeys)
-    if (!chainId || callKeys.length === 0) return undefined
-    const calls = callKeys.map(key => parseCallKey(key))
-    dispatch(
-      addMulticallListeners({
-        chainId,
-        calls,
-        options: { blocksPerFetch },
-      })
-    )
+  const debouncedAddMultiCall = useMemo(() => {
+    return debounce((chainId, calls) => {
+      dispatch(
+        addMulticallListeners({
+          chainId,
+          calls,
+          options: { blocksPerFetch },
+        })
+      )
+    }, 250)
+  }, [dispatch, blocksPerFetch])
 
-    return () => {
+  const debouncedRemoveMultiCall = useMemo(() => {
+    return debounce((chainId, calls) => {
       dispatch(
         removeMulticallListeners({
           chainId,
@@ -84,8 +88,19 @@ function useCallsData(
           options: { blocksPerFetch },
         })
       )
+    }, 250)
+  }, [dispatch, blocksPerFetch])
+
+  // update listeners when there is an actual change that persists for at least 100ms
+  useEffect(() => {
+    if (!chainId || callKeys.length === 0) return undefined
+
+    debouncedAddMultiCall(chainId, callKeys)
+
+    return () => {
+      debouncedRemoveMultiCall(chainId, callKeys)
     }
-  }, [chainId, dispatch, blocksPerFetch, serializedCallKeys])
+  }, [chainId, dispatch, stringifiedCalls, callKeys, debouncedAddMultiCall, debouncedRemoveMultiCall])
 
   return useMemo(
     () =>

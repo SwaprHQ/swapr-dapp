@@ -1,6 +1,6 @@
 import { FixedSizeList } from 'react-window'
-import styled from 'styled-components'
 import { Text } from 'rebass'
+import styled from 'styled-components'
 
 export const StyledBalanceText = styled(Text)`
   white-space: nowrap;

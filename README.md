@@ -2,16 +2,6 @@
 
 An open source decentralized application for Swapr -- a protocol for decentralized exchange of Ethereum tokens governed by the DXdao.
 
-## Development
-
-Please mind that `Socket` bridge API is generated on `postinstall` hook. If hooks are disabled, remember to generate it manually.
-
-### Install Dependencies
-
-```bash
-yarn
-```
-
 ### Run
 
 ```bash
@@ -31,7 +21,7 @@ git clone https://github.com/levelkdev/dxswap-dapp.git
 Install dependencies using Yarn
 
 ```bash
-yarn install --force
+yarn install --frozen-lockfile
 ```
 
 Build the app
@@ -49,14 +39,19 @@ ipfs add -rn build
 The last line of the output will have the IPFS hash. Different machines should output the same hash in order to publish the release.
 
 # Run tests
-### Remember to start server 
+
+### Remember to start server
+
 `yarn start`
 
 ### Cypress open
+
 `yarn cypress open`
 
 ### Cypress run
+
 `yarn cypress:run`
 
 ### Synpress
+
 `yarn synpress:run`

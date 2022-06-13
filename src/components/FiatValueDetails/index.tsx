@@ -1,9 +1,11 @@
+import { CurrencyAmount, JSBI, Percent } from '@swapr/sdk'
+
 import React from 'react'
 import styled from 'styled-components'
-import { TYPE } from '../../theme'
-import { CurrencyAmount, JSBI, Percent } from '@swapr/sdk'
-import { simpleWarningSeverity } from '../../utils/prices'
+
 import { PRICE_IMPACT_HIGH } from '../../constants'
+import { TYPE } from '../../theme'
+import { simpleWarningSeverity } from '../../utils/prices'
 
 interface FiatValueDetailsProps {
   fiatValue?: CurrencyAmount | null

@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { AutoColumn } from '../Column'
 
 import uImage from '../../assets/images/big_unicorn.png'
 import noise from '../../assets/images/noise.png'
+import { AutoColumn } from '../Column'
 
 export const TextBox = styled.div`
   display: flex;

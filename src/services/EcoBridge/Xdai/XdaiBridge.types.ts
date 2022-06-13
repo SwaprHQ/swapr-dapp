@@ -1,4 +1,5 @@
 import { ChainId } from '@swapr/sdk'
+
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 
 type XdaiBridgeRequest = {
