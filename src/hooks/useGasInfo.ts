@@ -16,8 +16,9 @@ interface ChainGasInfo {
 
 const gasInfoChainUrls: ChainGasInfo = {
   [ChainId.MAINNET]: {
-    url: 'http://ethgas.watch/api/gas',
-    keys: ['normal', 'fast', 'slow'],
+    url: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env
+      .REACT_APP_ETHERSCAN_API_KEY ?? 'YourApiKeyToken'}`,
+    keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
   [ChainId.XDAI]: {
     url: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
@@ -61,6 +62,8 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
   const [loading, setLoading] = useState<boolean>(true)
   const [gas, setGas] = useState<Gas>(defaultGasState)
 
+  console.log(gas)
+
   useEffect(() => {
     if (!chainId || !gasInfoChainUrls[chainId]) {
       setLoading(false)
@@ -81,14 +84,14 @@ export function useGasInfo(): { loading: boolean; gas: Gas } {
         if (chainId === ChainId.MAINNET || chainId === ChainId.XDAI) {
           const keys = chainGasInfo.keys ?? []
           // Pick the keys
-          const gasNormalData = data[keys[0]]
-          const gasFastData = data[keys[1]]
-          const gasSlowData = data[keys[2]]
+          const gasNormalData = data.result[keys[0]]
+          const gasFastData = data.result[keys[1]]
+          const gasSlowData = data.result[keys[2]]
           // ethgas.watch returns both USD and Gwei units
           if (chainId === ChainId.MAINNET) {
-            normal = gasNormalData.gwei
-            fast = gasFastData.gwei
-            slow = gasSlowData.gwei
+            normal = gasNormalData
+            fast = gasFastData
+            slow = gasSlowData
           } else {
             normal = gasNormalData
             fast = gasFastData
