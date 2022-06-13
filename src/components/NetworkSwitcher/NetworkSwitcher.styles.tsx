@@ -1,5 +1,6 @@
-import Popover from '../Popover'
 import styled from 'styled-components'
+
+import Popover from '../Popover'
 
 // Network Switcher
 export const StyledPopover = styled(Popover)`

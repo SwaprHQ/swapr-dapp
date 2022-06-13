@@ -1,6 +1,10 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - develop
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -33,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
+      - name: Generate open-api
+        run: yarn codegen:socket
+
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
@@ -63,6 +70,7 @@ jobs:
 
       - name: Run linter
         run: yarn lint --quiet
+
   test:
     name: 🔎 ・Test
     needs: install
@@ -83,6 +91,7 @@ jobs:
 
       - name: Run tests
         run: yarn test
+
   typecheck:
     name: ⬡・Typecheck
     needs: install
@@ -103,6 +112,7 @@ jobs:
 
       - name: Run typescript check
         run: yarn typecheck
+
   build:
     name: ⚙️ ・Build
     needs: install
@@ -133,6 +143,7 @@ jobs:
           name: build
           path: /tmp/build.tar.zst
           retention-days: 3
+
   deploy:
     name: ⬡・IPFS Deploy
     needs: build
@@ -185,7 +196,12 @@ jobs:
     runs-on: ubuntu-20.04
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
-      NODE_ENV: false
+      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+    strategy:
+      fail-fast: false
+      matrix:
+        containers:
+          [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -206,6 +222,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
+      - name: Generate open-api
+        run: yarn codegen:socket
+
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
@@ -214,17 +233,20 @@ jobs:
         continue-on-error: true
 
       - name: Merge test results into one
-        run: npm run report:merge
+        run: |
+          yarn run report:merge
+          mv index.json ${{ matrix.containers }}.json
 
-      - name: Generate HTML report
-        run: yarn run report:generate
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: synpress-coverage-report
-          path: public-report/*
-          retention-days: 3
+          name: ${{ matrix.containers }}
+          path: |
+            ${{ matrix.containers }}.json
+            public-report/screenshots
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
@@ -261,11 +283,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
-          path: ${{ matrix.containers }}.json
+          path: |
+            ${{ matrix.containers }}.json
+            tests/screenshots
 
   cypress-report:
     name: ⬡・Merge and generate cypress reports
-    needs: [install, cypress]
+    needs: [install, cypress, synpress]
     runs-on: ubuntu-20.04
     steps:
       - name: 📥 ・Download workspace artifact
@@ -278,7 +302,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: LiquidityTests
-          path: report
+          path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
           name: MenuBarTests
@@ -299,11 +323,20 @@ jobs:
         with:
           name: TransactionSettingsTests
           path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: transactionless
+          path: mochawesome-report
+      - uses: actions/download-artifact@v3
+        with:
+          name: transactionfull
+          path: mochawesome-report
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: mochawesome-report
@@ -314,11 +347,17 @@ jobs:
       - name: Generate HTML report
         run: yarn run report:generate
 
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: public-report
+
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: cypress-report
-          path: public-report/*
+          name: test-report
+          path: |
+            public-report
+            mochawesome-report/public-report/screenshots/**
           retention-days: 3
 
       - name: Delete merged artifacts
@@ -331,6 +370,8 @@ jobs:
             SwapBoxTests
             TokenMenuTests
             TransactionSettingsTests
+            transactionless
+            transactionfull
 
   cleanup:
     name: 🧹 Cleanup

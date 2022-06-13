@@ -1,10 +1,9 @@
-import { TokenList } from '@uniswap/token-lists'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { TokenList } from '@uniswap/token-lists'
 
-import { connextTransactionsAdapter } from './Connext.adapter'
-
-import { ConnextBridgeState, ConnextTransaction, ConnextTransactionStatus } from './Connext.types'
 import { BridgeDetails, BridgingDetailsErrorMessage, ConnextList, SyncState } from '../EcoBridge.types'
+import { connextTransactionsAdapter } from './Connext.adapter'
+import { ConnextBridgeState, ConnextTransaction, ConnextTransactionStatus } from './Connext.types'
 
 const initialState: ConnextBridgeState = {
   transactions: connextTransactionsAdapter.getInitialState({}),

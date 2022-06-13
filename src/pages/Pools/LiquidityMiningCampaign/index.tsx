@@ -1,29 +1,28 @@
-import React, { useMemo } from 'react'
-import styled from 'styled-components'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
-import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import { PageWrapper } from '../styleds'
-
-import { TYPE } from '../../../theme'
-import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../../components/Row'
-import { AutoColumn } from '../../../components/Column'
-
-import { useToken } from '../../../hooks/Tokens'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
-import { PairState, usePair } from '../../../data/Reserves'
-import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMiningCampaignView'
-import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
-import Skeleton from 'react-loading-skeleton'
-import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'
-import { useActiveWeb3React } from '../../../hooks'
-import { useTokenBalance } from '../../../state/wallet/hooks'
-import { CurrencyLogo } from '../../../components/CurrencyLogo'
-import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { Location } from 'history'
+import React, { useMemo } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
+import { AutoColumn } from '../../../components/Column'
+import { CurrencyLogo } from '../../../components/CurrencyLogo'
+import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { SwapPoolTabs } from '../../../components/NavigationTabs'
+import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMiningCampaignView'
+import { RowBetween, RowFixed } from '../../../components/Row'
+import { UndecoratedLink } from '../../../components/UndercoratedLink'
+import { PairState, usePair } from '../../../data/Reserves'
+import { useActiveWeb3React } from '../../../hooks'
+import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
+import { useToken } from '../../../hooks/Tokens'
+import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
+import { useTokenBalance } from '../../../state/wallet/hooks'
+import { TYPE } from '../../../theme'
 import { currencyId } from '../../../utils/currencyId'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
+import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'
+import { PageWrapper } from '../styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -138,7 +137,7 @@ export default function LiquidityMiningCampaign({
                   if (token0 && token1) {
                     return {
                       ...location,
-                      pathname: `/add/${currencyId(token0)}/${currencyId(token1)}`,
+                      pathname: `/pools/add/${currencyId(token0)}/${currencyId(token1)}`,
                     }
                   }
 
@@ -146,7 +145,7 @@ export default function LiquidityMiningCampaign({
                 }}
               >
                 <Text fontWeight={700} fontSize={12}>
-                  {isSingleSidedCampaign ? 'GET SWPR' : 'ADD LIQUIDITY'}
+                  {isSingleSidedCampaign ? `GET ${token0?.symbol ?? 'TOKEN'}` : 'ADD LIQUIDITY'}
                 </Text>
               </AddLiquidityButtonComponent>
             </ButtonRow>

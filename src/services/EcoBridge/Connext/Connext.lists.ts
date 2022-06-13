@@ -1,4 +1,5 @@
 import { ChainId } from '@swapr/sdk'
+
 import { ConnextToken } from './Connext.types'
 
 //connext's list of tokens

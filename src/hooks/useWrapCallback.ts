@@ -1,12 +1,15 @@
 import { Currency, currencyEquals } from '@swapr/sdk'
+
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
-import { useActiveWeb3React } from './index'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
-import { useTranslation } from 'react-i18next'
+
+import { useActiveWeb3React } from './index'
 
 export enum WrapType {
   NOT_APPLICABLE,

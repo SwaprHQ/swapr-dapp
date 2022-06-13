@@ -1,25 +1,17 @@
+import { Signer } from '@ethersproject/abstract-signer'
+import { BigNumber } from '@ethersproject/bignumber'
+import { Contract, ContractTransaction } from '@ethersproject/contracts'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+import { ChainId, Currency } from '@swapr/sdk'
+
+import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
+import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sdk'
+import { getHardcodedGasLimits } from '@connext/nxtp-utils'
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 import { request } from 'graphql-request'
-import { NxtpSdk } from '@connext/nxtp-sdk'
-import { ChainId, Currency } from '@swapr/sdk'
-import { BigNumber } from '@ethersproject/bignumber'
-import { Signer } from '@ethersproject/abstract-signer'
-import { TokenInfo, TokenList } from '@uniswap/token-lists'
-import { getHardcodedGasLimits } from '@connext/nxtp-utils'
-import { formatUnits, parseUnits } from '@ethersproject/units'
-import { Contract, ContractTransaction } from '@ethersproject/contracts'
-import { getDeployedTransactionManagerContract } from '@connext/nxtp-sdk'
-import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
 
-import { connextSdkChainConfig } from './Connext.config'
-import { CONNEXT_TOKENS } from './Connext.lists'
-import { connextActions } from './Connext.reducer'
-import { connextSelectors } from './Connext.selectors'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { subgraphClientsUris } from '../../../apollo/client'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE } from './Connext.utils'
 import {
   DAI_ARBITRUM_ADDRESS,
   DAI_ETHEREUM_ADDRESS,
@@ -27,22 +19,29 @@ import {
   WETH_GNOSIS_ADDRESS,
   WETH_POLYGON_ADDRESS,
 } from '../../../constants'
-
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import {
-  SyncState,
-  ConnextList,
   BridgeModalStatus,
-  EcoBridgeChildBaseInit,
+  ConnextList,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  SyncState,
 } from '../EcoBridge.types'
+import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { commonActions } from '../store/Common.reducer'
+import { ecoBridgeUIActions } from '../store/UI.reducer'
+import { connextSdkChainConfig } from './Connext.config'
+import { CONNEXT_TOKENS } from './Connext.lists'
+import { connextActions } from './Connext.reducer'
+import { connextSelectors } from './Connext.selectors'
 import {
   ConnextQuote,
   ConnextTransaction,
-  ConnextTransactionStatus,
   ConnextTransactionsSubgraph,
+  ConnextTransactionStatus,
 } from './Connext.types'
-import { commonActions } from '../store/Common.reducer'
+import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE } from './Connext.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {

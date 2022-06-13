@@ -1,10 +1,11 @@
 import {
   JSBI,
-  parseBigintIsh,
-  TokenAmount,
-  SingleSidedLiquidityMiningCampaign,
   LiquidityMiningCampaign,
+  parseBigintIsh,
+  SingleSidedLiquidityMiningCampaign,
+  TokenAmount,
 } from '@swapr/sdk'
+
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
@@ -18,7 +19,6 @@ import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { TYPE } from '../../../../theme'
 import { ButtonDark } from '../../../Button'
-
 import { GreyCard } from '../../../Card'
 import { AutoColumn } from '../../../Column'
 import { CurrencyLogo } from '../../../CurrencyLogo'

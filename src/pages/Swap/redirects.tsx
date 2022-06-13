@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+
 import { AppDispatch } from '../../state'
 import { ApplicationModal, setOpenModal } from '../../state/application/actions'
 
@@ -32,6 +33,7 @@ export function RedirectToSwap(props: RouteComponentProps<{ outputCurrency: stri
   )
 }
 
+// TODO: Remove unused function OpenClaimAddressModalAndRedirectToSwap
 export function OpenClaimAddressModalAndRedirectToSwap(props: RouteComponentProps) {
   const dispatch = useDispatch<AppDispatch>()
   useEffect(() => {

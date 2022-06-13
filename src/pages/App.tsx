@@ -1,33 +1,33 @@
 import { ApolloProvider } from '@apollo/client'
-import React, { FC, Suspense, useContext, useEffect } from 'react'
-import { Redirect, Route, RouteProps, Switch } from 'react-router-dom'
-import styled, { ThemeContext } from 'styled-components'
-import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
-import Header from '../components/Header'
-import Web3ReactManager from '../components/Web3ReactManager'
-import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
-import AddLiquidity from './AddLiquidity'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import Pools from './Pools'
-import RemoveLiquidity from './RemoveLiquidity'
-import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
-import Swap from './Swap'
-import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-import Pair from './Pools/Pair'
-import CreateLiquidityMining from './LiquidityMining/Create'
-import { useActiveWeb3React } from '../hooks'
-import { SkeletonTheme } from 'react-loading-skeleton'
-import MyPairs from './Pools/Mine'
-import LiquidityMiningCampaign from './Pools/LiquidityMiningCampaign'
-import NetworkWarningModal from '../components/NetworkWarningModal'
-import { Slide, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import Bridge from './Bridge'
+import React, { FC, Suspense, useEffect } from 'react'
+import { SkeletonTheme } from 'react-loading-skeleton'
+import { Redirect, Route, RouteProps, Switch } from 'react-router-dom'
+import { Slide, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import styled, { useTheme } from 'styled-components'
 
-import Rewards from './Rewards'
+import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
+import Header from '../components/Header'
+import NetworkWarningModal from '../components/NetworkWarningModal'
+import Web3ReactManager from '../components/Web3ReactManager'
+import { useActiveWeb3React } from '../hooks'
+import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+import AddLiquidity from './AddLiquidity'
+import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
+import Bridge from './Bridge'
+import CreateLiquidityMining from './LiquidityMining/Create'
+import Pools from './Pools'
+import LiquidityMiningCampaign from './Pools/LiquidityMiningCampaign'
+import MyPairs from './Pools/Mine'
+import Pair from './Pools/Pair'
+import RemoveLiquidity from './RemoveLiquidity'
+import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
+import Rewards from './Rewards'
+import Swap from './Swap'
+import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -86,7 +86,7 @@ const FullFeaturesRoute: FC<RouteProps> = routeProps => {
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -132,26 +132,30 @@ export default function App() {
                     path="/rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     component={LiquidityMiningCampaign}
                   />
-                  <FullFeaturesRoute exact strict path="/create" component={AddLiquidity} />
-                  <FullFeaturesRoute exact path="/add" component={AddLiquidity} />
+                  <FullFeaturesRoute exact strict path="/pools/create" component={AddLiquidity} />
+                  <FullFeaturesRoute exact path="/pools/add" component={AddLiquidity} />
                   {/* <Route exact strict path="/governance" component={GovPages} /> */}
                   {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
-                  <FullFeaturesRoute exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <FullFeaturesRoute
                     exact
-                    path="/add/:currencyIdA/:currencyIdB"
+                    path="/pools/add/:currencyIdA"
+                    component={RedirectOldAddLiquidityPathStructure}
+                  />
+                  <FullFeaturesRoute
+                    exact
+                    path="/pools/add/:currencyIdA/:currencyIdB"
                     component={RedirectDuplicateTokenIds}
                   />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/remove/:tokens"
+                    path="/pools/remove/:tokens"
                     component={RedirectOldRemoveLiquidityPathStructure}
                   />
                   <FullFeaturesRoute
                     exact
                     strict
-                    path="/remove/:currencyIdA/:currencyIdB"
+                    path="/pools/remove/:currencyIdA/:currencyIdB"
                     component={RemoveLiquidity}
                   />
                   <FullFeaturesRoute exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />

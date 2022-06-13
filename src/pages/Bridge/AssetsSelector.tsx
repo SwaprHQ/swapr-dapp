@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import TriangleIcon from '../../assets/svg/triangle.svg'
 import { NetworkOptions } from '../../components/NetworkSwitcher'
 import { RowBetween } from '../../components/Row'
@@ -79,7 +80,7 @@ export const AssetSelector = ({ label, onClick, disabled = false, networkOption 
   const { preset, active } = networkOption
   const name = preset ? preset.name : ''
   return (
-    <Section disabled={disabled} onClick={disabled ? undefined : onClick}>
+    <Section disabled={disabled} onClick={disabled ? undefined : onClick} data-testid={`${label}-network-selector`}>
       <Row>
         <IconWrapper>
           <img src={preset?.logoSrc} alt={`${preset?.name} logo`} />

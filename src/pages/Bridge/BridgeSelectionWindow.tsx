@@ -1,21 +1,22 @@
 import React from 'react'
-import { Text, Box } from 'rebass'
-import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
 import Skeleton from 'react-loading-skeleton'
+import { useDispatch } from 'react-redux'
+import { Box, Text } from 'rebass'
+import styled from 'styled-components'
+
 import QuestionHelper from '../../components/QuestionHelper'
-import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
-import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { SyncState, BridgeList, OptionalBridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import {
-  SelectionListWindowWrapper,
-  SelectionListLabelWrapper,
-  SelectionListLabel,
-  SelectionListOption,
-  SelectionListName,
   SelectionListDetails,
+  SelectionListLabel,
+  SelectionListLabelWrapper,
+  SelectionListName,
+  SelectionListOption,
   SelectionListReceiveAmount,
+  SelectionListWindowWrapper,
 } from '../../components/SelectionList'
+import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
+import { BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
+import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 
 export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
@@ -83,6 +84,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
 
   return (
     <SelectionListOption
+      data-testid={`${name.toLowerCase()}-bridge`}
       isSelected={isSelected}
       isLoading={isLoading}
       onClick={() => {
@@ -94,7 +96,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <SelectionListName flex="35%" isSelected={isSelected}>
         {name}
       </SelectionListName>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="fee-amount">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
@@ -103,7 +105,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.fee
         )}
       </SelectionListDetails>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="bridge-gas">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
@@ -112,10 +114,10 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.gas
         )}
       </SelectionListDetails>
-      <SelectionListDetails>
+      <SelectionListDetails data-testid="estimated-time">
         {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
       </SelectionListDetails>
-      <SelectionListReceiveAmount flex="22%">
+      <SelectionListReceiveAmount flex="22%" data-testid="bridge-amount">
         {!show ? <Skeleton width="25px" height="9px" /> : details.receiveAmount}
       </SelectionListReceiveAmount>
     </SelectionListOption>

@@ -1,8 +1,8 @@
 import { EntityState } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
-import { BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
 export type ConnextToken = {
   id: string

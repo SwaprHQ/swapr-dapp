@@ -1,29 +1,28 @@
-import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageWrapper } from './styleds'
-
-import { TYPE } from '../../theme'
-import { Box, Button, Flex, Text } from 'rebass'
-import { RowBetween } from '../../components/Row'
-import { ButtonWithLink } from '../../components/Button'
-import { AutoColumn } from '../../components/Column'
-
-import { useActiveWeb3React } from '../../hooks'
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
-import { ChevronDown, Plus, X } from 'react-feather'
-import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 import { Currency, Token } from '@swapr/sdk'
 
-import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
-import { PairsFilterType } from '../../components/Pool/ListFilter'
-import { useLPPairs } from '../../hooks/useLiquidityPositions'
-import PairsList from '../../components/Pool/PairsList'
+import React, { useCallback, useState } from 'react'
+import { ChevronDown, Plus, X } from 'react-feather'
+import { Link } from 'react-router-dom'
+import { Box, Button, Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ButtonWithLink } from '../../components/Button'
+import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
+import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PairsFilterType } from '../../components/Pool/ListFilter'
+import PairsList from '../../components/Pool/PairsList'
+import { RowBetween } from '../../components/Row'
+import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 import { Switch } from '../../components/Switch'
+import { useActiveWeb3React } from '../../hooks'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
+import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
+import { useLPPairs } from '../../hooks/useLiquidityPositions'
+import { TYPE } from '../../theme'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { PageWrapper } from './styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -146,7 +145,7 @@ function Title({
             </PointableFlex>
           )}
 
-          <TransperentButton as={Link} to="/create">
+          <TransperentButton as={Link} to="/pools/create">
             <Plus size="16" />
             <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
               CREATE PAIR

@@ -1,27 +1,28 @@
+import { transparentize } from 'polished'
 import React, { useState } from 'react'
-import { Settings as SettingsIcon, X, Info, Code, MessageCircle } from 'react-feather'
+import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
-import { transparentize } from 'polished'
+
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleSettingsMenu, useSimpleSettingsModal } from '../../state/application/hooks'
+import { useModalOpen, useSimpleSettingsModal, useToggleSettingsMenu } from '../../state/application/hooks'
 import {
   useExpertModeManager,
-  useUserTransactionTTL,
-  useUserSlippageTolerance,
-  useUserPreferredGasPrice,
   useMultihopManager,
+  useUserPreferredGasPrice,
+  useUserSlippageToleranceManager,
+  useUserTransactionTTL,
 } from '../../state/user/hooks'
-import { TYPE, ExternalLink, LinkStyledButton, CloseIcon } from '../../theme'
+import { CloseIcon, ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { ButtonError } from '../Button'
+import { DarkCard } from '../Card'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
+import SwaprVersionLogo from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
-import SwaprVersionLogo from '../SwaprVersionLogo'
-import { DarkCard } from '../Card'
 
 const MenuModal = styled(Modal)`
   && {
@@ -183,7 +184,7 @@ export function Settings({ simple }: { simple?: boolean }) {
   const toggleSimpleSettings = useSimpleSettingsModal()
   const toggle = simple ? toggleSimpleSettings : toggleSettings
 
-  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
+  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageToleranceManager()
   const [userPreferredGasPrice, setUserPreferredGasPrice] = useUserPreferredGasPrice()
   const [ttl, setTtl] = useUserTransactionTTL()
   const [expertMode, toggleExpertMode] = useExpertModeManager()

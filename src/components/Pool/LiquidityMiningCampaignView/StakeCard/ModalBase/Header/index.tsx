@@ -1,13 +1,15 @@
-import { PricedTokenAmount, TokenAmount, Token, Pair } from '@swapr/sdk'
+import { Pair, PricedTokenAmount, Token, TokenAmount } from '@swapr/sdk'
+
 import React, { useState } from 'react'
-import { AutoColumn } from '../../../../../Column'
-import { CurrencyInputPanel } from '../../../../../CurrencyInputPanel'
-import { tryParseAmount } from '../../../../../../state/swap/hooks'
-import { TYPE } from '../../../../../../theme'
-import Countdown from '../../../../../Countdown'
-import styled from 'styled-components'
 import { AlertTriangle } from 'react-feather'
 import { Box, Flex } from 'rebass'
+import styled from 'styled-components'
+
+import { tryParseAmount } from '../../../../../../state/swap/hooks'
+import { TYPE } from '../../../../../../theme'
+import { AutoColumn } from '../../../../../Column'
+import Countdown from '../../../../../Countdown'
+import { CurrencyInputPanel } from '../../../../../CurrencyInputPanel'
 
 const AlertIcon = styled(AlertTriangle)`
   color: ${props => props.theme.red1};

@@ -1,24 +1,23 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { Box, Text } from 'rebass'
 import { useSpring } from '@react-spring/web'
+import React, { useCallback, useContext, useState } from 'react'
 import { useMeasure } from 'react-use'
+import { Box, Text } from 'rebass'
 
-import {
-  Wrapper,
-  TabContainer,
-  ToggleOption,
-  ToggleWrapper,
-  AnimatedSlide,
-  AnimatedToggleIndicator,
-} from './Manage.styles'
 import { CloseIcon } from '../../../theme'
 import { RowBetween } from '../../Row'
+import { CurrencyModalView } from '../CurrencySearchModal'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
-import { CurrencyModalView } from '../CurrencySearchModal'
-
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
+import {
+  AnimatedSlide,
+  AnimatedToggleIndicator,
+  TabContainer,
+  ToggleOption,
+  ToggleWrapper,
+  Wrapper,
+} from './Manage.styles'
 import { ManageProps } from './Manage.types'
 
 export const Manage = ({ onDismiss }: ManageProps) => {

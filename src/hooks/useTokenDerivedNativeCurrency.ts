@@ -1,10 +1,13 @@
+import { ChainId, CurrencyAmount, Token } from '@swapr/sdk'
+
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { ChainId, Token, CurrencyAmount } from '@swapr/sdk'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
-import { useActiveWeb3React } from '.'
+
 import { useNativeCurrency } from './useNativeCurrency'
+
+import { useActiveWeb3React } from '.'
 
 export function useTokenDerivedNativeCurrency(
   token?: Token
@@ -30,7 +33,9 @@ export function useTokenDerivedNativeCurrency(
   return useMemo(() => {
     if (loading || !chainId)
       return { loading: true, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
-    if (!data || error) return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
+    if (!data || data.token === null || error)
+      return { loading: false, derivedNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId) }
+
     return {
       loading: false,
       derivedNativeCurrency: CurrencyAmount.nativeCurrency(
