@@ -79,7 +79,6 @@ export class SwapPage {
   static getAlternateReceiverInput() {
     return cy.get('[data-testid=address-input]')
   }
-<<<<<<< HEAD
   static getErrorModalWindowTitle() {
     return cy.get('[data-testid=rejected-error-modal]')
   }
@@ -88,9 +87,8 @@ export class SwapPage {
   }
   static getErrorMessage() {
     return cy.get('[data-testid=error-modal-message]')
-=======
+  }
   static getTransactionConfirmedModal() {
     return cy.get('[data-testid=transaction-confirmed-modal]')
->>>>>>> develop
   }
 }

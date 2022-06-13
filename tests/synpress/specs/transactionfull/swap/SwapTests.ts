@@ -47,13 +47,10 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-<<<<<<< HEAD:tests/synpress/specs/swap/SwapTests.ts
-=======
     SwapPage.getTransactionConfirmedModal()
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
->>>>>>> develop:tests/synpress/specs/transactionfull/swap/SwapTests.ts
     MenuBar.checkToastMessage('Swap', String(TRANSACTION_VALUE), 'ETH', 'DXD')
 
     cy.wrap(null).then(() => {

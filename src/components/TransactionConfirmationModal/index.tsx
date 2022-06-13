@@ -136,15 +136,10 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
     <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
-<<<<<<< HEAD
           <TYPE.mediumHeader data-testid="rejected-error-modal" color="text4">
             Error
           </TYPE.mediumHeader>
-          <CloseIcon onClick={onDismiss} />
-=======
-          <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
           <CloseIcon data-testid="close-icon" onClick={onDismiss} />
->>>>>>> develop
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
