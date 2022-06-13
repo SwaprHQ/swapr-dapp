@@ -74,8 +74,11 @@ export const CurrencySearch = ({
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
     if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
 
-    if (new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)) {
-      return nativeCurrency ? [nativeCurrency, ...filteredSortedTokens] : filteredSortedTokens
+    if (
+      nativeCurrency &&
+      new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
+    ) {
+      return [nativeCurrency, ...filteredSortedTokens]
     }
 
     return filteredSortedTokens
