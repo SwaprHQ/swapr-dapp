@@ -1,4 +1,5 @@
 import { ChainId, Currency } from '@swapr/sdk'
+
 import { useActiveWeb3React } from '.'
 
 export function useNativeCurrency(chainId?: ChainId): Currency {

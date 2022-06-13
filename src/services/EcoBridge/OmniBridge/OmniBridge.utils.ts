@@ -1,21 +1,22 @@
-import { ChainId } from '@swapr/sdk'
-import { gql } from 'graphql-request'
-import { formatUnits } from 'ethers/lib/utils'
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
-import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
+import { ChainId } from '@swapr/sdk'
 
-import { BRIDGE_CONFIG, OVERRIDES } from './OmniBridge.config'
-import { EcoBridgeProviders } from '../EcoBridge.types'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import {
-  OmnibridgeTokenWithAddressAndChain,
-  OmnibridgeToken,
-  OmnibridgeRequest,
-  OmnibridgeExecution,
-  Mode,
-  ConfigPerChain,
-} from './OmniBridge.types'
+import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
+import { gql } from 'graphql-request'
+
 import { WETH_GNOSIS_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { EcoBridgeProviders } from '../EcoBridge.types'
+import { BRIDGE_CONFIG, OVERRIDES } from './OmniBridge.config'
+import {
+  ConfigPerChain,
+  Mode,
+  OmnibridgeExecution,
+  OmnibridgeRequest,
+  OmnibridgeToken,
+  OmnibridgeTokenWithAddressAndChain,
+} from './OmniBridge.types'
 
 //constants
 export const defaultTokensUrl: ConfigPerChain = {

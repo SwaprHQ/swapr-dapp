@@ -1,22 +1,21 @@
-import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Pair } from '@swapr/sdk'
-import { FixedSizeList } from 'react-window'
+
+import React, { KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FixedSizeList } from 'react-window'
 
-import Column from '../../Column'
-import { Wrapper } from './PairSearch.styles'
-import { PairList } from '../PairList'
-import { RowBetween } from '../../Row'
-import { SortButton } from '../SortButton'
-import { CloseIcon, TYPE } from '../../../theme'
-import { PaddedColumn, SearchInput, Separator } from '../shared'
-
-import { isAddress } from '../../../utils'
-import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAtAddress } from '../../../data/Reserves'
-import { usePairsComparator } from '../utils/sorting'
+import { useAllPairs } from '../../../hooks/useAllPairs'
+import { CloseIcon, TYPE } from '../../../theme'
+import { isAddress } from '../../../utils'
+import Column from '../../Column'
+import { RowBetween } from '../../Row'
+import { PairList } from '../PairList'
+import { PaddedColumn, SearchInput, Separator } from '../shared'
+import { SortButton } from '../SortButton'
 import { filterPairs as filterPairsBySearchQuery } from '../utils/filtering'
-
+import { usePairsComparator } from '../utils/sorting'
+import { Wrapper } from './PairSearch.styles'
 import { PairSearchProps } from './PairSearch.types'
 
 export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filterPairs }: PairSearchProps) => {

@@ -1,4 +1,4 @@
-import { OmnibridgeConfig, OmnibridgeOverrides, Mode } from './OmniBridge.types'
+import { Mode, OmnibridgeConfig, OmnibridgeOverrides } from './OmniBridge.types'
 
 //official OmniBridge config
 export const ETH_XDAI_BRIDGE_CONFIG = {

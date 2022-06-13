@@ -1,10 +1,11 @@
-import { TokenList } from '@uniswap/token-lists'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { TokenList } from '@uniswap/token-lists'
+
+import { BridgeDetails, BridgingDetailsErrorMessage, OmniBridgeList, SyncState } from '../EcoBridge.types'
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
-import { InitialState, OmniBridgeTxn, OmnibridgeTransactionMessage } from './OmniBridge.types'
-import { SyncState, BridgeDetails, BridgingDetailsErrorMessage, OmniBridgeList } from '../EcoBridge.types'
+import { InitialState, OmnibridgeTransactionMessage, OmniBridgeTxn } from './OmniBridge.types'
 
 const initialState: InitialState = {
   transactions: omniTransactionsAdapter.getInitialState({}),

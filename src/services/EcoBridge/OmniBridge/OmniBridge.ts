@@ -1,21 +1,36 @@
+import { formatEther, parseUnits } from '@ethersproject/units'
+import { ChainId, Currency } from '@swapr/sdk'
+
+import { schema, TokenList } from '@uniswap/token-lists'
 import Ajv from 'ajv'
-import { request } from 'graphql-request'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
-import { ChainId, Currency } from '@swapr/sdk'
-import { formatEther, parseUnits } from '@ethersproject/units'
-import { schema, TokenList } from '@uniswap/token-lists'
+import { request } from 'graphql-request'
 
-import { BRIDGE_CONFIG } from './OmniBridge.config'
+import { subgraphClientsUris } from '../../../apollo/client'
+import { ZERO_ADDRESS } from '../../../constants'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import {
+  BridgeModalStatus,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  OmniBridgeList,
+  SyncState,
+} from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
+import { BRIDGE_CONFIG } from './OmniBridge.config'
 import { omniBridgeActions } from './OmniBridge.reducers'
-import { subgraphClientsUris } from '../../../apollo/client'
 import { omniBridgeSelectors } from './OmniBridge.selectors'
-import { getErrorMsg, QUERY_ETH_PRICE } from './OmniBridge.utils'
-import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { executionsQuery, partnerTxHashQuery, requestsUserQuery } from './subgraph/history'
+import {
+  Mode,
+  OmnibridgePairTokens,
+  OmnibridgeSubgraphExecutions,
+  OmnibridgeSubgraphRequests,
+  OmnibridgeSubgraphResponse,
+} from './OmniBridge.types'
 import {
   approveToken,
   calculateFees,
@@ -30,34 +45,20 @@ import {
   fetchToAmount,
   fetchTokenLimits,
   fetchToToken,
+  getErrorMsg,
   getGraphEndpoint,
   getMediatorAddress,
   getMessage,
   getMessageData,
   messageCallStatus,
+  QUERY_ETH_PRICE,
   relayTokens,
   requiredSignatures,
   timeout,
   VERSION,
 } from './OmniBridge.utils'
-
-import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  OmniBridgeList,
-  SyncState,
-} from '../EcoBridge.types'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import {
-  Mode,
-  OmnibridgePairTokens,
-  OmnibridgeSubgraphExecutions,
-  OmnibridgeSubgraphRequests,
-  OmnibridgeSubgraphResponse,
-} from './OmniBridge.types'
-import { ZERO_ADDRESS } from '../../../constants'
+import { executionsQuery, partnerTxHashQuery, requestsUserQuery } from './subgraph/history'
+import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
 
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId

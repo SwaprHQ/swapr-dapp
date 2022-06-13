@@ -1,8 +1,10 @@
-import { ChainId } from '@swapr/sdk'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { BigNumber } from 'ethers'
+import { ChainId } from '@swapr/sdk'
+
 import { EntityState } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
+import { BigNumber } from 'ethers'
+
 import { BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
 export type ConfigPerChain = { [chainId: number]: string }

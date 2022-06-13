@@ -1,30 +1,28 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
-import { useTranslation } from 'react-i18next'
+import React from 'react'
 import { Info } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
 
-import { TYPE } from '../../theme'
-import { PageWrapper } from '../Pools/styleds'
-
+import { ButtonPrimary, ButtonWithLink } from '../../components/Button'
 import { LightCard } from '../../components/Card'
-import { RowBetween } from '../../components/Row'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
+import { RowBetween } from '../../components/Row'
 import { SearchInputWithIcon } from '../../components/SearchInputWithIcon'
-import { useRouter } from '../../hooks/useRouter'
-import { ButtonPrimary, ButtonWithLink } from '../../components/Button'
-
-import Container from './Container'
-import { MainPage, PairPage } from './constant'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useRouter } from '../../hooks/useRouter'
+import { TYPE } from '../../theme'
+import { PageWrapper } from '../Pools/styleds'
+import { MainPage, PairPage } from './constant'
+import Container from './Container'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
-    
+
   `};
 `
 const StyledSearchInput = styled(SearchInputWithIcon)`
@@ -40,7 +38,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 
 export default function Governance() {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const router = useRouter()
   const nativeCurrency = useNativeCurrency()
 

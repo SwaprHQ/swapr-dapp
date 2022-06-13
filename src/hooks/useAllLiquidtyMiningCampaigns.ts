@@ -1,18 +1,19 @@
-import { gql, useQuery } from '@apollo/client'
-
 import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token, TokenAmount } from '@swapr/sdk'
+
+import { gql, useQuery } from '@apollo/client'
+import { getAddress, parseUnits } from 'ethers/lib/utils'
+import { DateTime, Duration } from 'luxon'
 import { useCallback, useMemo } from 'react'
-import { useActiveWeb3React } from '.'
+
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
+import { PairsFilterType } from '../components/Pool/ListFilter'
+import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
+import { toLiquidityMiningCampaign, toSingleSidedStakeCampaign } from '../utils/liquidityMining'
+import { useSWPRToken } from './swpr/useSWPRToken'
+import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { toLiquidityMiningCampaign, toSingleSidedStakeCampaign } from '../utils/liquidityMining'
-import { DateTime, Duration } from 'luxon'
-import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { getAddress, parseUnits } from 'ethers/lib/utils'
-import { useKpiTokens } from './useKpiTokens'
-import { PairsFilterType } from '../components/Pool/ListFilter'
-import { useSWPRToken } from './swpr/useSWPRToken'
+import { useActiveWeb3React } from '.'
 
 // Native fragments will not be resovled
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']

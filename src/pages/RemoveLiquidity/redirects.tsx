@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouteComponentProps, Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 
 const OLD_PATH_STRUCTURE = /^(0x[a-fA-F0-9]{40})-(0x[a-fA-F0-9]{40})$/
 
@@ -13,5 +13,5 @@ export function RedirectOldRemoveLiquidityPathStructure({
   }
   const [currency0, currency1] = tokens.split('-')
 
-  return <Redirect to={`/remove/${currency0}/${currency1}`} />
+  return <Redirect to={`/pools/remove/${currency0}/${currency1}`} />
 }

@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+
 import { updateSwitchingToCorrectChain } from './actions'
 
 export interface MultiChainLinksState {
