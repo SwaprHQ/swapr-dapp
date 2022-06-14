@@ -78,6 +78,11 @@ export const BridgeModal = ({
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
     }
+
+    if (activeBridge === 'xdai') {
+      setIsWarning(false)
+      setBridgeName('xDai Bridge')
+    }
   }, [activeBridge, status, symbol, t, typedValue])
 
   const onDismiss = () => {
