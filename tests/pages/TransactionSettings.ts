@@ -48,4 +48,12 @@ export class TransactionSettings {
     this.getSlippageToleranceField().type(value)
     return this
   }
+  static setMultihopOff() {
+    cy.get('[data-testid=toggle-off]')
+      .first()
+      .click()
+  }
+  static closeModal() {
+    cy.get('body').click(0, 0)
+  }
 }

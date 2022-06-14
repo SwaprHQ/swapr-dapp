@@ -4,45 +4,48 @@ import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
+import {TransactionSettings} from "../../../../pages/TransactionSettings";
 
 describe('Swapping tests', () => {
-  const TRANSACTION_VALUE: number = 0.0000001
+  const TRANSACTION_VALUE: number = 0.00000001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number
   let ercBalanceBefore: number
 
   before(() => {
     cy.changeMetamaskNetwork('rinkeby')
+    SwapPage.visitSwapPage()
+    MenuBar.getSettings().click()
+    TransactionSettings.setMultihopOff()
+    TransactionSettings.closeModal()
   })
   beforeEach(() => {
-    cy.clearLocalStorage()
-    cy.clearCookies()
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    localStorage.removeItem('swapr_transactions')
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
-  it('Should swap eth to dxd [TC-51]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.DXD_TOKEN_RINKEBY).then((response: { body: { result: string } }) => {
+  it('Should swap XEENUS to DAI [TC-51]', () => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
     SwapPage.openTokenToSwapMenu()
-      .chooseToken('dxd')
+      .chooseToken('xeenus')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.getToInput()
       .should('not.have.value', '')
       .then((res: JQuery) => {
         estimatedTransactionOutput = parseFloat(res.val() as string)
+        console.log('estimated tx output', estimatedTransactionOutput)
       })
 
     SwapPage.swap().confirmSwap()
@@ -52,16 +55,16 @@ describe('Swapping tests', () => {
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
-    MenuBar.checkToastMessage('Swap', TRANSACTION_VALUE.toLocaleString(), 'ETH', 'DXD')
+    MenuBar.checkToastMessage('Swap', TRANSACTION_VALUE.toLocaleString(), 'ETH', 'XEENUS')
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
-        AddressesEnum.DXD_TOKEN_RINKEBY,
+        AddressesEnum.XEENUS_TOKEN_RINKEBY,
         ercBalanceBefore,
         estimatedTransactionOutput,
         false
       )
-      TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
+      TransactionHelper.checkSubgraphTransaction('XEENUS', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
 
@@ -76,35 +79,36 @@ describe('Swapping tests', () => {
     })
 
     SwapPage.openTokenToSwapMenu()
-        .getOpenTokenManagerButton()
-        .click()
+      .getOpenTokenManagerButton()
+      .click()
     TokenMenu.getSwitchTokenManagerToTokens().click()
     TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.LINK_ADDRESS_RINKEBY)
     TokenMenu.importToken('link')
     TokenMenu.confirmTokenImport()
     SwapPage.getCurrencySelectors()
-        .last()
-        .should('contain.text', 'LINK')
+      .last()
+      .should('contain.text', 'LINK')
     SwapPage.switchTokens()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
-    SwapPage.cho
+    SwapPage.chooseExchange('swapr')
 
     SwapPage.swap()
     SwapPage.getEstimatedMinimalTransactionValue().then(value => {
       estimatedTransactionOutput = parseFloat(
-          value
-              .text()!
-              .toString()
-              .replace(/[^\d.-]/g, '')
+        value
+          .text()!
+          .toString()
+          .replace(/[^\d.-]/g, '')
       )
     })
+
     SwapPage.confirmSwap()
     cy.confirmMetamaskTransaction({})
 
     SwapPage.getTransactionConfirmedModal()
-        .should('be.visible')
-        .should('contain.text', 'Transaction Submitted')
+      .should('be.visible')
+      .should('contain.text', 'Transaction Submitted')
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -114,26 +118,26 @@ describe('Swapping tests', () => {
       console.log('ESTIMATED VALUE: ', estimatedTransactionOutput * Math.pow(10, 18))
       console.log('ESTIMATED BALANCE: ', ethBalanceBefore - 0.002 + estimatedTransactionOutput * Math.pow(10, 18))
       TransactionHelper.checkEthereumBalanceFromEtherscan(
-          ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18),
-          0.001
+        ethBalanceBefore + estimatedTransactionOutput * Math.pow(10, 18),
+        0.001
       )
       TransactionHelper.checkErc20TokenBalance(
-          AddressesEnum.LINK_ADDRESS_RINKEBY,
-          ercBalanceBefore,
-          -TRANSACTION_VALUE,
-          true
+        AddressesEnum.LINK_ADDRESS_RINKEBY,
+        ercBalanceBefore,
+        -TRANSACTION_VALUE,
+        true
       )
       TransactionHelper.checkSubgraphTransaction('LINK', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
-  it('Should swap DXD to WETH [TC-52]', () => {
+  it('Should swap XEENUS to WETH [TC-52]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
     SwapPage.openTokenToSwapMenu()
-      .chooseToken('dxd')
+      .chooseToken('xeenus')
       .switchTokens()
     SwapPage.getCurrencySelectors()
       .last()
@@ -154,16 +158,16 @@ describe('Swapping tests', () => {
       .should('be.visible')
       .should('contain.text', 'Transaction Submitted')
 
-    MenuBar.checkToastMessage('Swap', 'DXD', 'WETH', TRANSACTION_VALUE.toLocaleString())
+    MenuBar.checkToastMessage('Swap', 'XEENUS', 'WETH', TRANSACTION_VALUE.toLocaleString())
 
     cy.wrap(null).then(() => {
       TransactionHelper.checkErc20TokenBalance(
-        AddressesEnum.WETH_TOKEN,
+        AddressesEnum.XEENUS_TOKEN_RINKEBY,
         ercBalanceBefore,
         estimatedTransactionOutput,
         false
       )
-      TransactionHelper.checkSubgraphTransaction('DXD', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
+      TransactionHelper.checkSubgraphTransaction('XEENUS', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
 

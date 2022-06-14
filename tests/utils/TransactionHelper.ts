@@ -1,8 +1,7 @@
 import 'etherscan-api/dist/bundle.js'
-import './enums/AddressesEnum'
+import { AddressesEnum } from './enums/AddressesEnum'
 import { ScannerFacade } from './facades/ScannerFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
-import { AddressesEnum } from './enums/AddressesEnum'
 import { Transaction } from './TestTypes'
 
 export class TransactionHelper {
@@ -59,7 +58,6 @@ export class TransactionHelper {
     expectedValueIn: number
   ) {
     cy.window().then(() => {
-      console.log(TransactionHelper.getTxFromStorage(), '    !!!!!')
       ;(SubgraphFacade.transaction(TransactionHelper.getTxFromStorage()) as Cypress.Chainable).then(
         (res: Transaction) => {
           console.log('SUBGRAPH RESPONSE', res.body)
