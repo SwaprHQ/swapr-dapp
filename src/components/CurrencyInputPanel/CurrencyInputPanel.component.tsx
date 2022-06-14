@@ -49,6 +49,7 @@ export const CurrencyInputPanelComponent = ({
   onCurrencySelect,
   customBalanceText,
   isFallbackFiatValue,
+  maxAmount,
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
 }: CurrencyInputPanelProps) => {
@@ -94,10 +95,12 @@ export const CurrencyInputPanelComponent = ({
 
   const handleOnUserInput = useCallback(
     (value: string) => {
-      setIsMaxAmount(false)
+      if (maxAmount === value) setIsMaxAmount(true)
+      else setIsMaxAmount(false)
+
       onUserInput(value)
     },
-    [onUserInput]
+    [maxAmount, onUserInput]
   )
 
   const debouncedUserInput = useMemo(() => {

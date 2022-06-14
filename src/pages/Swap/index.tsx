@@ -248,11 +248,10 @@ export default function Swap() {
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
-    (inputCurrency, isMaxAmount) => {
+    inputCurrency => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
-      setIsMaxAmountInput(isMaxAmount)
     },
     [onCurrencySelection]
   )
@@ -266,10 +265,9 @@ export default function Swap() {
   )
 
   const handleOutputSelect = useCallback(
-    (outputCurrency, isMaxAmount) => {
+    outputCurrency => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(Field.OUTPUT, outputCurrency)
-      setIsMaxAmountOutput(isMaxAmount)
     },
     [onCurrencySelection]
   )
@@ -284,21 +282,6 @@ export default function Swap() {
     fiatValueInput,
     fiatValueOutput,
   ])
-
-  const [isMaxAmountInput, setIsMaxAmountInput] = useState<boolean>(false)
-  const [isMaxAmountOutput, setIsMaxAmountOutput] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (isMaxAmountInput && maxAmountInput) {
-      setIsMaxAmountInput(false)
-      onUserInput(Field.INPUT, maxAmountInput.toExact())
-    }
-
-    if (isMaxAmountOutput && maxAmountOutput) {
-      setIsMaxAmountOutput(false)
-      onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
-    }
-  }, [isMaxAmountInput, isMaxAmountOutput, maxAmountInput, maxAmountOutput, onUserInput])
 
   return (
     <>
@@ -342,6 +325,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
                     isFallbackFiatValue={isFallbackFiatValueInput}
+                    maxAmount={maxAmountInput?.toExact()}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -371,6 +355,7 @@ export default function Swap() {
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
                     isFallbackFiatValue={isFallbackFiatValueOutput}
+                    maxAmount={maxAmountOutput?.toExact()}
                     showCommonBases
                     id="swap-currency-output"
                   />
