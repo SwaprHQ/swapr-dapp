@@ -221,6 +221,8 @@ export default function AccountDetails({
     if (chainId) dispatch(clearAllTransactions({ chainId }))
   }, [dispatch, chainId])
 
+  const addressLinkText = `${t('viewOn')} ${t('blockExplorer')}`
+
   return (
     <>
       <UpperSection>
@@ -277,9 +279,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>
-                              {t('viewOn')} {t('blockExplorer')}
-                            </span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -301,9 +301,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>
-                              {t('viewOn')} {t('blockExplorer')}
-                            </span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>

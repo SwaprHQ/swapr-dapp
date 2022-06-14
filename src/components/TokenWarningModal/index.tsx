@@ -61,6 +61,8 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
 
   if (!token) return null
 
+  const externalLinkText = `${t('viewOn')} ${t('blockExplorer')}`
+
   return (
     <AutoRow gap="6px">
       <AutoColumn gap="24px">
@@ -80,7 +82,7 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
             href={getExplorerLink(chainId, token.address, 'token')}
           >
             <TYPE.main color="purple4" fontSize="14px" lineHeight="17px" title={token.address}>
-              {shortenAddress(token.address)} ({t('viewOn')} {t('blockExplorer')})
+              {shortenAddress(token.address)} ({externalLinkText})
             </TYPE.main>
           </ExternalLink>
         )}

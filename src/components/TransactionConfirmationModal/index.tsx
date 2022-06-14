@@ -86,10 +86,11 @@ function TransactionSubmittedContent({
       ? getGnosisProtocolExplorerOrderLink(chainId, hash)
       : getExplorerLink(chainId, hash, 'transaction'))
 
+  const externalLinkText = `${t('viewOn')} ${explorer}`
   const explorerExternalLink = chainId && hash && (
     <ExternalLink href={link as string}>
       <Text fontWeight={500} fontSize="13px">
-        {t('viewOn')} {explorer}
+        {externalLinkText}
       </Text>
     </ExternalLink>
   )

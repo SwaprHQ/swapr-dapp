@@ -33,11 +33,9 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
     ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
     : getExplorerLink(chainId as ChainId, hash, 'transaction')
 
-  const explorerExternalLink = (
-    <ExternalLink href={link}>
-      {t('viewOn')} {explorer}
-    </ExternalLink>
-  )
+  const popupText = `${t('viewOn')} ${explorer}`
+
+  const explorerExternalLink = <ExternalLink href={link}>{popupText}</ExternalLink>
 
   return (
     <RowNoFlex>
