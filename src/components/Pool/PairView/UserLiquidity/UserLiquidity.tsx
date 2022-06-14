@@ -1,4 +1,4 @@
-import { JSBI, Percent, TokenAmount } from '@swapr/sdk'
+import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,8 +14,11 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
-import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
-import { UserLiquidityProps } from './UserLiquidity.types'
+import { ValueWithLabel } from '../ValueWithLabel'
+
+interface UserLiquidityProps {
+  pair?: Pair
+}
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
   const { account, chainId } = useActiveWeb3React()

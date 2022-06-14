@@ -1,10 +1,10 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
+import styled from 'styled-components'
 
 import { useIsMobileByMedia } from '../../../../../hooks/useIsMobileByMedia'
 import DoubleCurrencyLogo from '../../../../DoubleLogo'
-import { Row } from './LoadingRow.styles'
 
 export function LoadingRow() {
   const isMobile = useIsMobileByMedia()
@@ -39,3 +39,10 @@ export function LoadingRow() {
     </Row>
   )
 }
+
+const Row = styled(Flex)`
+  row-gap: 24px;
+  :not(:last-child) {
+    border-bottom: 1px solid ${({ theme }) => theme.bg3};
+  }
+`

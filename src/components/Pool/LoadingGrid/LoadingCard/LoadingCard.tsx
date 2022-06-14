@@ -1,9 +1,10 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass/styled-components'
+import styled from 'styled-components'
 
+import { DarkCard } from '../../../Card'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
-import { Card } from './LoadingCard.styles'
 
 export function LoadingCard() {
   return (
@@ -23,3 +24,9 @@ export function LoadingCard() {
     </Card>
   )
 }
+
+const Card = styled(DarkCard)`
+  height: 147px;
+  padding: 16px;
+  min-width: 240px;
+`

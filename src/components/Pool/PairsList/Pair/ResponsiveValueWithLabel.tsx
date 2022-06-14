@@ -3,7 +3,7 @@ import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
-import { ValueWithLabel } from '../../PairView/ValueWithLabel/ValueWithLabel.component'
+import { ValueWithLabel } from '../../PairView/ValueWithLabel'
 
 export const ResponsiveValueWithLabel: FC<{
   title: string

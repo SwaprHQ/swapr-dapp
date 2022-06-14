@@ -1,1 +1,1 @@
-export { LoadingRow } from './LoadingRow.component'
+export { LoadingRow } from './LoadingRow'

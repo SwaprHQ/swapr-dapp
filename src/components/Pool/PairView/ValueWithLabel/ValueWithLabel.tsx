@@ -1,6 +1,6 @@
 import React from 'react'
-
-import { ValueWithLabelTitle, ValueWithLabelValue } from './ValueWithLabel.styles'
+import { Text } from 'rebass'
+import styled from 'styled-components'
 
 export const ValueWithLabel = ({
   title,
@@ -22,3 +22,11 @@ export const ValueWithLabel = ({
     </ValueWithLabelValue>
   </div>
 )
+
+const ValueWithLabelTitle = styled(Text)`
+  color: ${({ theme }) => theme.text5};
+  text-transform: uppercase;
+`
+const ValueWithLabelValue = styled(Text)<{ big: boolean }>`
+  color: ${({ theme, big }) => (big ? theme.white : theme.text4)};
+`

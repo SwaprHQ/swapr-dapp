@@ -1,1 +1,1 @@
-export { LoadingCard } from './LoadingCard.component'
+export { LoadingCard } from './LoadingCard'

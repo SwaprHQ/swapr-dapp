@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 
 import { useResponsiveItemsPerPage } from '../../../../hooks/useResponsiveItemsPerPage'
-import { Header, HeaderText, ListLayout } from '../PairsList.styles'
+import { Header, HeaderText, ListLayout } from '../PairsList'
 import { LoadingRow } from './LoadingRow'
 
 export function LoadingList() {

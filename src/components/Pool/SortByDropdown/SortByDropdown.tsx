@@ -2,12 +2,11 @@ import React, { useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass/styled-components'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { LIQUIDITY_SORTING_TYPES } from '../../../constants'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import Popover from '../../Popover'
-import { List, ListItem, StyledFlex, StyledText } from './SortByDropdown.styles'
 
 export function SortByDropdown({
   sortBy,
@@ -57,3 +56,24 @@ export function SortByDropdown({
     </Flex>
   )
 }
+
+export const List = styled.ul`
+  margin: 0;
+  padding: 0;
+`
+
+export const ListItem = styled.li`
+  cursor: pointer;
+  & + & {
+    margin-top: 28px;
+  }
+`
+
+export const StyledText = styled(Text)`
+  text-transform: uppercase;
+`
+
+export const StyledFlex = styled(Flex)`
+  cursor: pointer;
+  gap: 4px;
+`

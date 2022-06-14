@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
 
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
@@ -13,7 +14,8 @@ import List from '../../../components/LiquidityMiningCampaigns/List'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
-import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel/ValueWithLabel.component'
+import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
+import { RowBetween, RowFixed } from '../../../components/Row'
 import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
@@ -21,7 +23,6 @@ import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidity
 import { useRouter } from '../../../hooks/useRouter'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { PageWrapper } from '../../PageWrapper'
-import { ButtonRow, ContentGrid, PointableFlex, TitleRow, TwoColumnsGrid } from './Pair.styles'
 
 export function Pair({
   match: {
@@ -141,3 +142,49 @@ export function Pair({
     </>
   )
 }
+
+const TitleRow = styled(RowBetween)`
+  margin-bottom: 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    flex-direction: column-reverse;
+  `};
+`
+
+const PointableFlex = styled(Flex)`
+  border: solid 1px ${props => props.theme.bg3};
+  border-radius: 8px;
+  height: 36px;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+`
+
+const ButtonRow = styled(RowFixed)`
+  gap: 12px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  `};
+`
+
+const TwoColumnsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 0.4fr;
+  grid-gap: 24px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+  `};
+`
+
+const ContentGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 24px;
+`

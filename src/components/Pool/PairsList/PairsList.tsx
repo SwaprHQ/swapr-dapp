@@ -1,7 +1,10 @@
+import { BigintIsh, CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
@@ -12,11 +15,29 @@ import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerP
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
+import { UndecoratedLink } from '../../UndercoratedLink'
 import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
-import { ListLayout, LoadingList } from './LoadingList'
+import { PairsFilterType } from '../ListFilter'
+import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
-import { Header, HeaderText, PaginationRow, StyledUndecoratedLink } from './PairsList.styles'
-import { PairsListProps } from './PairsList.types'
+
+export interface AggregatedPairs {
+  pair: Pair
+  liquidityUSD: CurrencyAmount
+  maximumApy: Percent
+  staked?: boolean
+  containsKpiToken?: boolean
+  hasFarming?: boolean
+  startsAt?: BigintIsh
+}
+interface PairsListProps {
+  aggregatedPairs: AggregatedPairs[]
+  singleSidedStake?: SingleSidedLiquidityMiningCampaign
+  hasActiveCampaigns?: boolean
+  filter?: PairsFilterType
+  loading?: boolean
+  hasSingleSidedStake?: boolean
+}
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
   const { chainId } = useActiveWeb3React()
@@ -126,3 +147,42 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
     </Flex>
   )
 }
+
+export const ListLayout = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 0;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 10px 16px;
+  `};
+`
+
+export const HeaderText = styled(Text)`
+  font-weight: 600;
+  font-size: 10px;
+  color: ${({ theme }) => theme.purple3};
+  text-transform: uppercase;
+`
+
+export const Header = styled(Flex)`
+  border-bottom: 1px solid ${({ theme }) => theme.bg3};
+`
+
+const PaginationRow = styled(Flex)`
+  width: 100%;
+  justify-content: flex-end;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
+
+  & ul {
+    margin: 22px 0;
+  }
+`
+
+const StyledUndecoratedLink = styled(UndecoratedLink)`
+  :not(:last-child) {
+    border-bottom: 1px solid ${({ theme }) => theme.bg3};
+  }
+`

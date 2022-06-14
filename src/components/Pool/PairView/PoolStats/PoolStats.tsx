@@ -1,3 +1,5 @@
+import { Pair } from '@swapr/sdk'
+
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -13,8 +15,12 @@ import { formatCurrencyAmount } from '../../../../utils'
 import { ButtonExternalLink } from '../../../Button'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
-import { ValueWithLabel } from '../ValueWithLabel/ValueWithLabel.component'
-import { PairViewProps } from './PoolStats.types'
+import { ValueWithLabel } from '../ValueWithLabel'
+
+interface PairViewProps {
+  loading: boolean
+  pair?: Pair | null
+}
 
 export function PoolStats({ pair }: PairViewProps) {
   const { chainId } = useActiveWeb3React()

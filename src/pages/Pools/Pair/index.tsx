@@ -1,1 +1,1 @@
-export { Pair } from './Pair.container'
+export { Pair } from './Pair'

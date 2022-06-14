@@ -1,19 +1,32 @@
+import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
+
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass/styled-components'
-import { useTheme } from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
+import { TYPE } from '../../../../theme'
 import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import CarrotBadge from '../../../Badge/Carrot'
 import { CurrencyLogo } from '../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
-import { ResponsiveValueWithLabel } from './Pair.components'
-import { BadgeText, EllipsizedText, FarmingBadge, GridCard } from './Pair.styles'
-import { PairProps } from './Pair.types'
+import { ResponsiveValueWithLabel } from './ResponsiveValueWithLabel'
+
+export interface PairProps {
+  token0?: Token
+  token1?: Token
+  apy: Percent
+  usdLiquidity: CurrencyAmount
+  pairOrStakeAddress?: string
+  containsKpiToken?: boolean
+  hasFarming?: boolean
+  isSingleSidedStakingCampaign?: boolean
+  dayLiquidity?: string
+}
 
 export function Pair({
   token0,
@@ -98,3 +111,48 @@ export function Pair({
     </GridCard>
   )
 }
+
+const GridCard = styled(Flex)`
+  row-gap: 24px;
+`
+
+const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
+  height: 16px;
+  border: solid 1px;
+  border-color: ${({ isGreyed, theme }) => (isGreyed ? `transparent` : `${theme.green2}`)};
+  div {
+    color: ${({ isGreyed, theme }) => (isGreyed ? theme.purple2 : theme.green2)};
+  }
+  border-radius: 6px;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  padding: 0 2px;
+  background-color: ${({ isGreyed, theme }) => isGreyed && theme.bg3};
+  opacity: ${({ isGreyed }) => isGreyed && '0.5'};
+  gap: 4px;
+  svg {
+    > path {
+      fill: ${({ isGreyed, theme }) => (isGreyed ? theme.purple2 : theme.green2)};
+    }
+  }
+  font-weight: 700;
+  font-size: 9px;
+  line-height: 9px;
+  letter-spacing: 0.02em;
+`
+
+const BadgeText = styled.div`
+  font-weight: 700;
+  font-size: 9px;
+  line-height: 9px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+`
+
+const EllipsizedText = styled(TYPE.body)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`

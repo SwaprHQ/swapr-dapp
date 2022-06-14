@@ -1,1 +1,1 @@
-export { SortByDropdown } from './SortByDropdown.component'
+export { SortByDropdown } from './SortByDropdown'

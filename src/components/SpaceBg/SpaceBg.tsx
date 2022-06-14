@@ -1,10 +1,23 @@
+import React, { FC } from 'react'
 import styled, { keyframes } from 'styled-components'
 
 import HeroImage from '../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from '../../assets/images/hero-graphic-left.png'
 import { breakpoints, gradients } from '../../utils/theme'
 
-export const AppBodyContainer = styled.section`
+export const SpaceBg: FC = ({ children }) => (
+  <StyledHero id="liquidity-hero" className="hero-active">
+    <div className="inner-hero">
+      <AppBodyContainer>{children}</AppBodyContainer>
+      <div className="hero-background">
+        <div className="hero-image hero-image-right"></div>
+        <div className="hero-image hero-image-left"></div>
+      </div>
+    </div>
+  </StyledHero>
+)
+
+const AppBodyContainer = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,12 +25,12 @@ export const AppBodyContainer = styled.section`
   min-height: calc(100vh - 340px);
 `
 
-export const zoomOut = keyframes`
+const zoomOut = keyframes`
     0% {transform: scale(1.2); opacity: 0;}
     100% {transform: scale(1); opacity: 0.7;}
 `
 
-export const StyledHero = styled.div`
+const StyledHero = styled.div`
     position: relative;
     width: 100% !important;
     .inner-hero {
