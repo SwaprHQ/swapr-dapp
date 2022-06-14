@@ -1,31 +1,33 @@
-import React, { ReactNode } from 'react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import {
   ChainId,
+  Currency,
+  CurrencyAmount,
+  DXD,
   JSBI,
   Percent,
-  CurrencyAmount,
-  WETH,
-  DXD,
-  WXDAI,
-  Token,
-  Currency,
-  SWPR,
-  UniswapV2RoutablePlatform,
-  WMATIC,
   RoutablePlatform,
+  SWPR,
+  Token,
+  UniswapV2RoutablePlatform,
+  WETH,
+  WMATIC,
+  WXDAI,
 } from '@swapr/sdk'
-import { injected, walletConnect, walletLink } from '../connectors'
-import UniswapLogo from '../assets/svg/uniswap-logo.svg'
-import SwaprLogo from '../assets/svg/logo.svg'
-import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
-import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
+
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { providers } from 'ethers'
+import React, { ReactNode } from 'react'
+
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import CurveLogo from '../assets/images/curve-logo.svg'
+import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
-import DFYNLogo from '../assets/images/dfyn-logo.svg'
-import CurveLogo from '../assets/images/curve-logo.svg'
-import { providers } from 'ethers'
+import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
+import SwaprLogo from '../assets/svg/logo.svg'
+import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
+import UniswapLogo from '../assets/svg/uniswap-logo.svg'
+import { injected, walletConnect, walletLink } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -237,9 +239,9 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
   COINBASE: {
     connector: walletLink,
-    name: 'Coinbase',
+    name: 'Coinbase Wallet',
     iconName: 'coinbase.svg',
-    description: 'Connect using Coinbase.',
+    description: 'Connect using Coinbase Wallet.',
     href: null,
     color: '#4196FC',
     mobile: true,
@@ -396,24 +398,25 @@ export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetail
 export const RoutablePlatformKeysByNetwork = {
   [ChainId.MAINNET]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
   ],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
   [ChainId.POLYGON]: [
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
@@ -421,21 +424,21 @@ export const RoutablePlatformKeysByNetwork = {
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
   [ChainId.ARBITRUM_RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
-    UniswapV2RoutablePlatform.UNISWAP.name,
+    RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.HONEYSWAP.name,
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
-    UniswapV2RoutablePlatform.CURVE.name,
+    RoutablePlatform.CURVE.name,
   ],
 }
 
@@ -496,6 +499,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
+  [RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.UNISWAP.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
@@ -508,6 +517,7 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 
 export const ChainLabel: any = {

@@ -1,11 +1,11 @@
 import {
-  Configuration,
-  ServerApi,
   ApprovalsApi,
-  QuoteApi,
-  SupportedApi,
   BalancesApi,
+  Configuration,
+  QuoteApi,
   RoutesApi,
+  ServerApi,
+  SupportedApi,
   TokenListsApi,
 } from './generated'
 

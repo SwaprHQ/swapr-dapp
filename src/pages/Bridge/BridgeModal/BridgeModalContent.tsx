@@ -1,7 +1,9 @@
 import React from 'react'
-import { ArrowRightCircle, AlertCircle } from 'react-feather'
-import Modal from '../../../components/Modal'
+import { AlertCircle, ArrowRightCircle } from 'react-feather'
+import { Trans, useTranslation } from 'react-i18next'
+
 import { ButtonPrimary } from '../../../components/Button'
+import Modal from '../../../components/Modal'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'
 import {
@@ -14,7 +16,6 @@ import {
   Wrapper,
 } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
-import { Trans, useTranslation } from 'react-i18next'
 
 export const BridgeModalContent = ({
   isOpen,

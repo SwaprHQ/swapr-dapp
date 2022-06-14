@@ -1,20 +1,22 @@
-import Decimal from 'decimal.js-light'
 import {
+  ChainId,
+  Currency,
   CurrencyAmount,
+  KpiToken,
   LiquidityMiningCampaign,
   Pair,
   Price,
-  USD,
-  ChainId,
-  Currency,
-  Token,
   PricedToken,
   PricedTokenAmount,
-  TokenAmount,
-  KpiToken,
   SingleSidedLiquidityMiningCampaign,
+  Token,
+  TokenAmount,
+  USD,
 } from '@swapr/sdk'
+
+import Decimal from 'decimal.js-light'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
+
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
 import { getLpTokenPrice } from './prices'
@@ -176,7 +178,7 @@ export function toLiquidityMiningCampaign(
       reward.token.name
     )
     const kpiToken = kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
-    if (!!kpiToken)
+    if (kpiToken)
       return new PricedTokenAmount(
         kpiToken,
         parseUnits(new Decimal(reward.amount).toFixed(rewardToken.decimals), rewardToken.decimals).toString()

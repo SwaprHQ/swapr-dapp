@@ -1,7 +1,9 @@
 import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
+
 import { useActiveWeb3React } from '../../hooks'
+import { PopupContent } from '../../state/application/actions'
 import { TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
 import { getExplorerLink } from '../../utils'
@@ -13,15 +15,7 @@ const RowNoFlex = styled(AutoRow)`
   margin-right: 16px;
 `
 
-export default function TransactionPopup({
-  hash,
-  success,
-  summary,
-}: {
-  hash: string
-  success?: boolean
-  summary?: string
-}) {
+export function TransactionPopup({ hash, success, summary }: PopupContent) {
   const { chainId } = useActiveWeb3React()
 
   const theme = useTheme()

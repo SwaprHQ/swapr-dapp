@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
+import { useAllTokens, useToken } from '../../../hooks/Tokens'
+import useDebounce from '../../../hooks/useDebounce'
 import {
-  useBridgeToken,
   useBridgeActiveTokenMap,
   useBridgeSupportedTokens,
+  useBridgeToken,
 } from '../../../services/EcoBridge/EcoBridge.hooks'
-import useDebounce from '../../../hooks/useDebounce'
-import { useAllTokens, useToken } from '../../../hooks/Tokens'
 import { useCombinedActiveList } from '../../../state/lists/hooks'
 
 export const useCurrencySearchContextSwap = () => {

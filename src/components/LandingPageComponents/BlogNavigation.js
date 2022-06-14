@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import Layout from './layout/Layout'
-import Button from './common/Button'
-import { BlogContent } from '../../utils/ui-constants'
+
 import { breakpoints } from '../../utils/theme'
+import { BlogContent } from '../../utils/ui-constants'
+import Button from './common/Button'
+import Layout from './layout/Layout'
 
 const BlogNavigation = () => {
   return (

@@ -1,30 +1,28 @@
 import { Currency, Token } from '@swapr/sdk'
+
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { ThemeContext } from 'styled-components/macro'
 
-import useToggle from '../../../hooks/useToggle'
-import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
-import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useActiveWeb3React } from '../../../hooks'
-import { useTokenComparator } from '../utils/sorting'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
-import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
-
+import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
+import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
+import useToggle from '../../../hooks/useToggle'
 import { TYPE } from '../../../theme'
-import { ButtonDark2 } from '../../Button'
-import { CurrencyList } from '../CurrencyList'
-import { CommonTokens } from '../CommonTokens'
-import Row, { RowBetween } from '../../Row'
-import Column, { AutoColumn } from '../../Column'
-import { SearchInput, Separator } from '../shared'
-import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
-
-import { CurrencySearchContext } from './CurrencySearch.context'
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-
 import { isAddress } from '../../../utils'
+import { ButtonDark2 } from '../../Button'
+import Column, { AutoColumn } from '../../Column'
+import Row, { RowBetween } from '../../Row'
+import { CommonTokens } from '../CommonTokens'
+import { CurrencyList } from '../CurrencyList'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
+import { SearchInput, Separator } from '../shared'
+import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
+import { useTokenComparator } from '../utils/sorting'
+import { CurrencySearchContext } from './CurrencySearch.context'
+import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
 import { CurrencySearchProps } from './CurrencySearch.types'
 
 export const CurrencySearch = ({
@@ -74,11 +72,15 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency) return filteredSortedTokens
-    const s = debouncedQuery.toLowerCase().trim()
-    if (nativeCurrency.symbol && nativeCurrency.symbol.toLowerCase().startsWith(s)) {
-      return nativeCurrency ? [nativeCurrency, ...filteredSortedTokens] : filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+
+    if (
+      nativeCurrency &&
+      new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
+    ) {
+      return [nativeCurrency, ...filteredSortedTokens]
     }
+
     return filteredSortedTokens
   }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
 
@@ -163,7 +165,7 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {filteredSortedTokensWithNativeCurrency?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}

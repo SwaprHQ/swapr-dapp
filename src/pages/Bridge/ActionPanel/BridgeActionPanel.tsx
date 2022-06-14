@@ -1,18 +1,19 @@
-import React, { useCallback } from 'react'
 import { ChainId } from '@swapr/sdk'
+
+import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { ButtonPrimary } from '../../../components/Button'
-import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
-import { NetworkSwitcher } from './NetworkSwitcher'
-import { BridgeButton } from './BridgeButton'
-import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
-import { isToken } from '../../../hooks/Tokens'
-import { ButtonConfirmed } from '../../../components/Button'
-import { RowBetween } from '../../../components/Row'
-import { useBridgeActionPanel } from './useBridgeActionPanel'
-import { AppState } from '../../../state'
-import Loader from '../../../components/Loader'
+
+import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
+import Loader from '../../../components/Loader'
+import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
+import { RowBetween } from '../../../components/Row'
+import { isToken } from '../../../hooks/Tokens'
+import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
+import { AppState } from '../../../state'
+import { BridgeButton } from './BridgeButton'
+import { NetworkSwitcher } from './NetworkSwitcher'
+import { useBridgeActionPanel } from './useBridgeActionPanel'
 
 export type BridgeActionPanelProps = {
   account: string | null | undefined

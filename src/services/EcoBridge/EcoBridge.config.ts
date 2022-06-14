@@ -1,5 +1,6 @@
-import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { ChainId } from '@swapr/sdk'
+
+import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 

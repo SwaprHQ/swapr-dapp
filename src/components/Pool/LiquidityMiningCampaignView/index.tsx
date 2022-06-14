@@ -1,16 +1,18 @@
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
 import React, { useCallback, useEffect, useState } from 'react'
+import { ChevronLeft, Repeat } from 'react-feather'
+import { useHistory } from 'react-router-dom'
+import { usePrevious } from 'react-use'
+import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { DarkCard } from '../../Card'
+import { AutoColumn } from '../../Column'
+import { RowBetween } from '../../Row'
 import Information from './Information'
 import StakeCard from './StakeCard'
-import { AutoColumn } from '../../Column'
-import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-import { ChevronLeft, Repeat } from 'react-feather'
-import { useActiveWeb3React } from '../../../hooks'
-import { usePrevious } from 'react-use'
-import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
-import { RowBetween } from '../../Row'
-import { SingleSidedLiquidityMiningCampaign, LiquidityMiningCampaign } from '@swapr/sdk'
 
 const GoBackContainer = styled.div`
   font-size: 11px;

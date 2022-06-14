@@ -1,16 +1,26 @@
-import { Trade, UniswapV2Trade, CurveTrade, Token, RoutablePlatform } from '@swapr/sdk'
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
+import {
+  CurveTrade,
+  getAllCommonUniswapV2Pairs,
+  getAllCommonUniswapV2PairsFromSubgraph,
+  Pair,
+  RoutablePlatform,
+  Token,
+  Trade,
+  TradeType,
+  UniswapTrade,
+  UniswapV2Trade,
+} from '@swapr/sdk'
 // Low-level API for Uniswap V2
-import { getAllCommonPairs } from '@swapr/sdk/dist/entities/trades/uniswap-v2/contracts'
 
 import { getUniswapV2PlatformList } from './platforms'
 // Types
 import {
   EcoRouterBestExactInParams,
+  EcoRouterBestExactOutParams,
   EcoRouterResults,
   EcoRouterSourceOptionsParams,
-  EcoRouterBestExactOutParams,
 } from './types'
 
 /**
@@ -64,11 +74,21 @@ export async function getExactIn(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonPairs({
+      let pairs: Pair[] = []
+
+      const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
         platform,
-      })
+        provider,
+      }
+
+      if (platform.subgraphEndpoint[chainId] !== undefined) {
+        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
+      } else {
+        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+      }
+
       return (
         UniswapV2Trade.computeTradesExactIn({
           currencyAmountIn,
@@ -85,6 +105,26 @@ export async function getExactIn(
       errors.push(error)
       return undefined
     }
+  })
+
+  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
+    if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    UniswapTrade.getQuote({
+      quoteCurrency: currencyOut,
+      amount: currencyAmountIn,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_INPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
+      .catch(error => {
+        console.error(error)
+        errors.push(error)
+        resolve(undefined)
+      })
   })
 
   // Curve
@@ -111,7 +151,11 @@ export async function getExactIn(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList, curveTrade])
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
+    ...uniswapV2TradesList,
+    curveTrade,
+    uniswapTrade,
+  ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
@@ -148,11 +192,21 @@ export async function getExactOut(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      const pairs = await getAllCommonPairs({
+      let pairs: Pair[] = []
+
+      const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
         platform,
-      })
+        provider,
+      }
+
+      if (platform.subgraphEndpoint[chainId] !== undefined) {
+        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
+      } else {
+        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+      }
+
       return (
         UniswapV2Trade.computeTradesExactOut({
           currencyAmountOut,
@@ -171,23 +225,22 @@ export async function getExactOut(
     }
   })
 
-  // Curve
-  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
+  // Uniswap v2 and v3
+  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
+    if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
       return resolve(undefined)
     }
 
-    CurveTrade.bestTradeExactOut(
-      {
-        currencyAmountOut,
-        currencyIn,
-        maximumSlippage,
-        receiver,
-      },
-      provider
-    )
-      .then(resolve)
+    UniswapTrade.getQuote({
+      quoteCurrency: currencyIn,
+      amount: currencyAmountOut,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_OUTPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
       .catch(error => {
+        console.error(error)
         errors.push(error)
         resolve(undefined)
       })
@@ -195,7 +248,7 @@ export async function getExactOut(
 
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList, curveTrade])
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList, uniswapTrade])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
