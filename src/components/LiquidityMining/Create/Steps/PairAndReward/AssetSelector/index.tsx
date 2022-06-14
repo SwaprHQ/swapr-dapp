@@ -45,8 +45,8 @@ const RelativeContainer = styled.div<{ disabled?: boolean }>`
 const RelativeDismiss = styled(CloseIcon)`
   position: absolute;
   padding: 0;
-  top: -18px;
-  right: 7px;
+  top: -23px;
+  right: 3px;
 
   svg {
     stroke: #464366;

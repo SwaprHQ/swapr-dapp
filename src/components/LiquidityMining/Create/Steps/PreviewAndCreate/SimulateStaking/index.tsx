@@ -179,7 +179,8 @@ export default function SimulateStaking({
       alignItems="center"
       padding="18px 28px"
       height="162px"
-      width="354px"
+      minWidth="330px"
+      width="48%"
     >
       <Flex width={'100%'} padding={'10px 12px'} justifyContent={'space-between'}>
         <SimulateOption

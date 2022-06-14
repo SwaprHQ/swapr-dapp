@@ -97,7 +97,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
 
   return (
     <>
-      <FlexWrapper marginTop="32px" flexWrap="wrap">
+      <FlexWrapper justifyContent="center" marginTop="32px" flexWrap="wrap">
         {[...Array(rewardsArray.length)].map((item, index) => (
           <AssetSelector
             key={index}

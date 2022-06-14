@@ -264,7 +264,6 @@ export default function CreateLiquidityMining() {
         >
           <RewardsSelection rewardsArray={rewardsArray} setRewardsArray={dispatch} />
         </Step>
-
         <LastStep
           title={t('liquidityMining.create.preview')}
           index={4}
