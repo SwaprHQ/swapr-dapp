@@ -232,7 +232,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
             label: 'Approve',
             isError: false,
             isLoading: false,
-            isBalanceSufficient: false,
+            isBalanceSufficient: true,
             isApproved: false,
           })
         )
@@ -374,6 +374,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
         try {
           const transaction: TransactionResponse = await ambContract.executeSignatures(content, signs)
+
+          this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
 
           this.store.dispatch(this.actions.updateTransactionAfterCollect({ txHash: collectableTransactionHash }))
 
