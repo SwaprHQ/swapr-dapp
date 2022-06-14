@@ -35,8 +35,6 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
 
   const popupText = `${t('viewOn')} ${explorer}`
 
-  const explorerExternalLink = <ExternalLink href={link}>{popupText}</ExternalLink>
-
   return (
     <RowNoFlex>
       <div style={{ paddingRight: 16 }}>
@@ -44,7 +42,7 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
       </div>
       <AutoColumn gap="8px">
         <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
-        {explorerExternalLink}
+        {<ExternalLink href={link}>{popupText}</ExternalLink>}
       </AutoColumn>
     </RowNoFlex>
   )

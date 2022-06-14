@@ -56,7 +56,7 @@ export function useWrapCallback(
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => {
-    const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT) ? true : false
+    const isOutputCurrencyNative = !!(currencies.OUTPUT && Currency.isNative(currencies.OUTPUT))
     const inputCurrency =
       isGnosisTrade && isOutputCurrencyNative
         ? wrappedCurrency(currencies.OUTPUT as Currency, chainId as ChainId)
@@ -65,7 +65,7 @@ export function useWrapCallback(
   }, [currencies, typedValue, isGnosisTrade, chainId])
 
   const outputAmount = useMemo(() => {
-    const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies?.INPUT) ? true : false
+    const isInputCurrencyNative = !!(currencies.INPUT && Currency.isNative(currencies?.INPUT))
     const outputCurrency =
       isGnosisTrade && isInputCurrencyNative
         ? wrappedCurrency(currencies.INPUT as Currency, chainId as ChainId)
@@ -80,12 +80,12 @@ export function useWrapCallback(
     nativeCurrency &&
     currencies.INPUT &&
     currencyEquals(nativeCurrency, currencies.INPUT) &&
-    currencyEquals(currencies.OUTPUT as Currency, nativeCurrencyWrapperToken as Currency)
+    (currencyEquals(currencies.OUTPUT as Currency, nativeCurrencyWrapperToken as Currency) || isGnosisTrade)
   const toUnwrap =
     nativeCurrency &&
     currencies.OUTPUT &&
     currencyEquals(nativeCurrency, currencies.OUTPUT) &&
-    currencyEquals(currencies.INPUT as Currency, nativeCurrencyWrapperToken as Currency)
+    (currencyEquals(currencies.INPUT as Currency, nativeCurrencyWrapperToken as Currency) || isGnosisTrade)
 
   const allTransactions = useAllTransactions()
   useEffect(() => {
