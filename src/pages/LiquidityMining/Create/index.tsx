@@ -35,10 +35,8 @@ export interface RewardsArray {
 }
 
 export enum ActionType {
-  APPROVALS_CHANGE,
-  REWARDS_CHANGE,
-  RAW_AMOUNTS,
-  ADD_REWARD,
+  APPROVAL_CHANGE,
+  REWARD_CHANGE,
   REMOVE_REWARD,
   RESET,
 }
@@ -62,7 +60,7 @@ const reducer = (state: RewardsArray[], action: Actions): RewardsArray[] => {
 
   const mutableState = [...state]
   switch (type) {
-    case ActionType.APPROVALS_CHANGE:
+    case ActionType.APPROVAL_CHANGE:
       const approvalObject = {
         approval: payload.approval !== undefined ? payload.approval : state[payload.index].approval,
         reward: state[payload.index].reward,
@@ -73,7 +71,7 @@ const reducer = (state: RewardsArray[], action: Actions): RewardsArray[] => {
 
       return mutableState
 
-    case ActionType.REWARDS_CHANGE:
+    case ActionType.REWARD_CHANGE:
       const newRewardObject: RewardsArray = {
         approval: state[payload.index].approval ? state[payload.index].approval : ApprovalState.UNKNOWN,
         reward: payload.reward,
@@ -82,10 +80,9 @@ const reducer = (state: RewardsArray[], action: Actions): RewardsArray[] => {
 
       mutableState.splice(payload.index, 1, newRewardObject)
 
-      return mutableState
+      const hasAdditionalReward = mutableState.some(({ reward }) => reward?.currency === undefined)
+      if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(intitialState)
 
-    case ActionType.ADD_REWARD:
-      mutableState.push(intitialState)
       return mutableState
 
     case ActionType.REMOVE_REWARD:

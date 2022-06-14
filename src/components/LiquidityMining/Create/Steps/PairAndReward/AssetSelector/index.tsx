@@ -113,7 +113,7 @@ export default function AssetSelector({
   useEffect(() => {
     if (setRewardsObject && rewardMemo && userBalance && index) {
       setRewardsObject({
-        type: ActionType.APPROVALS_CHANGE,
+        type: ActionType.APPROVAL_CHANGE,
         payload: {
           index: index,
           approval:

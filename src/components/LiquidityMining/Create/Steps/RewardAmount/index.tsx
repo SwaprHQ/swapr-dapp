@@ -49,22 +49,15 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
       const checkIfSelectedPairExists = disabledRewardsArray?.some(currency => currencyEquals(currency, selectedPair))
       if (currentReward !== undefined && !checkIfSelectedPairExists) {
         setRewardsArray({
-          type: ActionType.REWARDS_CHANGE,
+          type: ActionType.REWARD_CHANGE,
           payload: {
             index: currentReward,
             reward: new TokenAmount(selectedPair, '0'),
           },
         })
-        if (rewardsArray.length < 4)
-          setRewardsArray({
-            type: ActionType.ADD_REWARD,
-            payload: {
-              index: currentReward,
-            },
-          })
       }
     },
-    [rewardsArray, currentReward, setRewardsArray, disabledRewardsArray]
+    [currentReward, setRewardsArray, disabledRewardsArray]
   )
 
   const handleCurrencyReset = useCallback(
@@ -80,7 +73,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
       const currentCurrency = rewardsArray[index]?.reward?.token
 
       setRewardsArray({
-        type: ActionType.REWARDS_CHANGE,
+        type: ActionType.REWARD_CHANGE,
         payload: {
           index: index,
           rawAmount: rawValue,
