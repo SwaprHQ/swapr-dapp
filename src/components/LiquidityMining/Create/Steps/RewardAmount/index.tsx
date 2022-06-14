@@ -91,10 +91,10 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
   return (
     <>
       <FlexWrapper justifyContent="center" marginTop="32px" flexWrap="wrap">
-        {[...Array(rewardsArray.length)].map((item, index) => (
+        {rewardsArray.map((item, index) => (
           <AssetSelector
             key={index}
-            currency0={rewardsArray[index]?.reward?.token}
+            currency0={item.reward?.token}
             campaingType={CampaignType.TOKEN}
             onClick={() => handleOpenPairOrTokenSearch(index)}
             customAssetTitle={
@@ -106,7 +106,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
                 </div>
               )
             }
-            amount={rewardsArray[index].reward}
+            amount={item.reward}
             handleUserInput={event => {
               handleLocalUserInput(event, index)
             }}
@@ -114,7 +114,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
             setRewardsObject={setRewardsArray}
             onResetCurrency={() => handleCurrencyReset(index)}
             index={index}
-            rawAmount={rewardsArray[index].rawAmount}
+            rawAmount={item.rawAmount}
           />
         ))}
       </FlexWrapper>
