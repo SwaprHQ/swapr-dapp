@@ -34,9 +34,14 @@ const FETCH_PRICE_INTERVAL = 15000
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount) {
   const { chainId } = useActiveWeb3React()
-  const { stablecoin, platform } = chainId
-    ? STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId]
-    : { stablecoin: undefined, platform: undefined }
+
+  let stablecoin: Token | undefined = undefined
+  let platform: UniswapV2RoutablePlatform | undefined = undefined
+
+  if (chainId && STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId] !== undefined) {
+    stablecoin = STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].stablecoin
+    platform = STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].platform
+  }
 
   const tradeExactInUniswapV2 = useTradeExactInUniswapV2(currencyAmount, stablecoin, platform)
 
