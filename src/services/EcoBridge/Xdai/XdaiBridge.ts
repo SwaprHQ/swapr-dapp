@@ -38,7 +38,6 @@ import {
   packSignatures,
   signatureToVRS,
   XDAI_BRIDGE_ADDRESS,
-  XDAI_BRIDGE_ETHEREUM_AMB,
   XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
   XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
 } from './XdaiBridge.utils'
@@ -357,7 +356,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
     const abi = ['function executeSignatures(bytes messageData, bytes signatures) external']
 
-    const ambContract = new Contract(XDAI_BRIDGE_ETHEREUM_AMB, abi, this._activeProvider.getSigner())
+    const ambContract = new Contract(ETHEREUM_BRIDGE_ADDRESS, abi, this._activeProvider.getSigner())
 
     const collectableTransaction = xdaiBridgeTransactionAdapter
       .getSelectors()

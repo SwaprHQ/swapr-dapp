@@ -9,7 +9,6 @@ import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from 
 
 export const ETHEREUM_BRIDGE_ADDRESS = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016'
 export const XDAI_BRIDGE_ADDRESS = '0x7301CFA0e1756B71869E93d4e4Dca5c7d0eb0AA6'
-export const XDAI_BRIDGE_ETHEREUM_AMB = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016'
 
 export const XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT =
   'https://api.thegraph.com/subgraphs/name/maxaleks/foreign-bridge-mainnet'
