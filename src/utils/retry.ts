@@ -66,7 +66,8 @@ export function retry<T>(
         if (completed) {
           break
         }
-        if (n <= 0 || (isRetryableError(error) && !error.isRetryableError)) {
+
+        if (n <= 0 || !isRetryableError(error) || !error.isRetryableError) {
           reject(error)
           completed = true
           break
