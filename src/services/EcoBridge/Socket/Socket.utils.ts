@@ -256,8 +256,7 @@ export const SOCKET_LISTS_URL =
 // Pairs all provided chains
 export const socketSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains
-    .map((v, i) => supportedChains.slice(i + 1).map(w => [v, w]))
-    .flat()
+    .flatMap((v, i) => supportedChains.slice(i + 1).map(w => [v, w]))
     .map<SupportedChainsConfig>(([from, to]) => ({
       from,
       to,
