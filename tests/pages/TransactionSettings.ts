@@ -51,18 +51,18 @@ export class TransactionSettings {
     return this
   }
   static setMultihopOff() {
-    const user = localStorage.getItem('swapr_user')
-    if (typeof user == 'string') {
-      const userData = JSON.parse(user)
-      console.log(userData)
-      if ((userData.userMultihop = true)) {
-        MenuBar.getSettings().click()
-        cy.get('[data-testid=toggle-off]')
-          .first()
-          .click()
-        TransactionSettings.closeModal()
-      }
-    }
+    cy.get('[data-testid=multihop-icon]').trigger('mouseover')
+    cy.get('[data-testid=popover]')
+      .contains('Multihop')
+      .then(element => {
+        if (element.text() == 'Multihop enabled') {
+          MenuBar.getSettings().click()
+          cy.get('[data-testid=toggle-off]')
+            .first()
+            .click()
+          TransactionSettings.closeModal()
+        }
+      })
   }
   static closeModal() {
     cy.get('body').click(0, 0)

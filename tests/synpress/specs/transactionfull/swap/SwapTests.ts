@@ -4,7 +4,7 @@ import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
-import {TransactionSettings} from "../../../../pages/TransactionSettings";
+import { TransactionSettings } from '../../../../pages/TransactionSettings'
 
 describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.00000001
@@ -15,11 +15,12 @@ describe('Swapping tests', () => {
   before(() => {
     cy.changeMetamaskNetwork('rinkeby')
     SwapPage.visitSwapPage()
+    MenuBar.connectWallet()
+    cy.disconnectMetamaskWalletFromAllDapps()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    TransactionSettings.setMultihopOff()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
@@ -29,15 +30,17 @@ describe('Swapping tests', () => {
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
-  it('Should swap XEENUS to DAI [TC-51]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then((response: { body: { result: string } }) => {
-      ercBalanceBefore = parseInt(response.body.result)
-      console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
-    })
-
+  it('Should swap XEENUS to ETH [TC-51]', () => {
+    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then(
+      (response: { body: { result: string } }) => {
+        ercBalanceBefore = parseInt(response.body.result)
+        console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
+      }
+    )
     SwapPage.openTokenToSwapMenu()
       .chooseToken('xeenus')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    TransactionSettings.setMultihopOff()
 
     SwapPage.getToInput()
       .should('not.have.value', '')
@@ -90,6 +93,7 @@ describe('Swapping tests', () => {
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.chooseExchange('swapr')
+    TransactionSettings.setMultihopOff()
 
     SwapPage.swap()
     SwapPage.getEstimatedMinimalTransactionValue().then(value => {
@@ -123,13 +127,13 @@ describe('Swapping tests', () => {
         AddressesEnum.LINK_ADDRESS_RINKEBY,
         ercBalanceBefore,
         -TRANSACTION_VALUE,
-        true
+        false
       )
       TransactionHelper.checkSubgraphTransaction('LINK', 'WETH', estimatedTransactionOutput, TRANSACTION_VALUE)
     })
   })
   it('Should swap XEENUS to WETH [TC-52]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
+  ScannerFacade.erc20TokenBalance(AddressesEnum.WETH_TOKEN).then((response: { body: { result: string } }) => {
       ercBalanceBefore = parseInt(response.body.result)
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -148,6 +152,8 @@ describe('Swapping tests', () => {
       .then((res: JQuery) => {
         estimatedTransactionOutput = parseFloat(res.val() as string)
       })
+
+    TransactionSettings.setMultihopOff()
 
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
@@ -170,7 +176,7 @@ describe('Swapping tests', () => {
   })
 
   it('Should send ether to ens domain address [TC-54]', () => {
-    ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
+  ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
@@ -181,6 +187,7 @@ describe('Swapping tests', () => {
     SwapPage.switchTokens()
     SwapPage.getAlternateReceiverInput().type('testrf2.eth', { delay: 50 })
     SwapPage.getAlternateReceiverInput().should('have.value', AddressesEnum.SECOND_TEST_WALLET)
+    TransactionSettings.setMultihopOff()
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
@@ -202,7 +209,7 @@ describe('Swapping tests', () => {
     })
   })
   it('Should send erc20 token to wallet address [TC-54]', () => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
+  ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
@@ -212,6 +219,7 @@ describe('Swapping tests', () => {
     SwapPage.getAlternateReceiverButton().click()
     SwapPage.getAlternateReceiverInput().type(AddressesEnum.SECOND_TEST_WALLET, { delay: 50 })
     SwapPage.getAlternateReceiverInput().should('have.value', AddressesEnum.SECOND_TEST_WALLET)
+    TransactionSettings.setMultihopOff()
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
