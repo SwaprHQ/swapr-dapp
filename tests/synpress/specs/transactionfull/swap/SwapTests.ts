@@ -183,11 +183,11 @@ describe('Swapping tests', () => {
 
     SwapPage.openTokenToSwapMenu().chooseToken('dxd')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
+    TransactionSettings.setMultihopOff()
     SwapPage.getAlternateReceiverButton().click()
     SwapPage.switchTokens()
     SwapPage.getAlternateReceiverInput().type('testrf2.eth', { delay: 50 })
     SwapPage.getAlternateReceiverInput().should('have.value', AddressesEnum.SECOND_TEST_WALLET)
-    TransactionSettings.setMultihopOff()
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
