@@ -1,3 +1,5 @@
+import { MenuBar } from './MenuBar'
+
 export class TransactionSettings {
   static visitTransactionSettingsPage() {
     cy.visit('/#/swap')
@@ -49,9 +51,18 @@ export class TransactionSettings {
     return this
   }
   static setMultihopOff() {
-    cy.get('[data-testid=toggle-off]')
-      .first()
-      .click()
+    const user = localStorage.getItem('swapr_user')
+    if (typeof user == 'string') {
+      const userData = JSON.parse(user)
+      console.log(userData)
+      if ((userData.userMultihop = true)) {
+        MenuBar.getSettings().click()
+        cy.get('[data-testid=toggle-off]')
+          .first()
+          .click()
+        TransactionSettings.closeModal()
+      }
+    }
   }
   static closeModal() {
     cy.get('body').click(0, 0)

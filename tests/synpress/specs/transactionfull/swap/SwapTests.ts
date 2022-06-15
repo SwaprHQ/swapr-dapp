@@ -19,9 +19,7 @@ describe('Swapping tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    MenuBar.getSettings().click()
     TransactionSettings.setMultihopOff()
-    TransactionSettings.closeModal()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
