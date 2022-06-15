@@ -28,10 +28,10 @@ export enum CampaignType {
   PAIR,
 }
 
-export interface RewardsArray {
-  approval: ApprovalState
-  reward: TokenAmount | undefined
-  rawAmount: string | undefined
+export interface Reward {
+  approvalState: ApprovalState
+  rewardTokenAmount: TokenAmount | undefined
+  rewardRawAmount: string | undefined
 }
 
 export enum ActionType {
@@ -49,22 +49,22 @@ export interface Actions {
     approval?: ApprovalState
   }
 }
-const intitialState: RewardsArray = {
-  approval: ApprovalState.UNKNOWN,
-  reward: undefined,
-  rawAmount: undefined,
+const intitialState: Reward = {
+  approvalState: ApprovalState.UNKNOWN,
+  rewardTokenAmount: undefined,
+  rewardRawAmount: undefined,
 }
 
-const reducer = (state: RewardsArray[], action: Actions): RewardsArray[] => {
+const reducer = (state: Reward[], action: Actions): Reward[] => {
   const { type, payload } = action
 
   const mutableState = [...state]
   switch (type) {
     case ActionType.APPROVAL_CHANGE:
-      const approvalObject = {
-        approval: payload.approval !== undefined ? payload.approval : state[payload.index].approval,
-        reward: state[payload.index].reward,
-        rawAmount: state[payload.index].rawAmount,
+      const approvalObject: Reward = {
+        approvalState: payload.approval !== undefined ? payload.approval : state[payload.index].approvalState,
+        rewardTokenAmount: state[payload.index].rewardTokenAmount,
+        rewardRawAmount: state[payload.index].rewardRawAmount,
       }
 
       mutableState.splice(payload.index, 1, approvalObject)
@@ -72,21 +72,21 @@ const reducer = (state: RewardsArray[], action: Actions): RewardsArray[] => {
       return mutableState
 
     case ActionType.REWARD_CHANGE:
-      const newRewardObject: RewardsArray = {
-        approval: state[payload.index].approval ? state[payload.index].approval : ApprovalState.UNKNOWN,
-        reward: payload.reward,
-        rawAmount: payload.rawAmount,
+      const newRewardObject: Reward = {
+        approvalState: state[payload.index].approvalState ? state[payload.index].approvalState : ApprovalState.UNKNOWN,
+        rewardTokenAmount: payload.reward,
+        rewardRawAmount: payload.rawAmount,
       }
 
       mutableState.splice(payload.index, 1, newRewardObject)
 
-      const hasAdditionalReward = mutableState.some(({ reward }) => reward?.currency === undefined)
+      const hasAdditionalReward = mutableState.some(({ rewardTokenAmount: reward }) => reward?.currency === undefined)
       if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(intitialState)
 
       return mutableState
 
     case ActionType.REMOVE_REWARD:
-      const hasMaxNumberOfReward = state.every(reward => reward.reward !== undefined)
+      const hasMaxNumberOfReward = state.every(reward => reward.rewardTokenAmount !== undefined)
 
       if (payload.index === 0 && state.length === 1) return [intitialState]
 
@@ -128,13 +128,13 @@ export default function CreateLiquidityMining() {
   const memoizedRewardsArray = useMemo(
     () =>
       rewardsArray.length
-        ? rewardsArray.map(({ reward }: RewardsArray) => reward).filter(reward => reward?.greaterThan('0'))
+        ? rewardsArray.map(({ rewardTokenAmount: reward }: Reward) => reward).filter(reward => reward?.greaterThan('0'))
         : new Array(rewardsArray.length).fill(undefined),
     [rewardsArray]
   )
   const memoizedApprovalsArray = useMemo(
     () =>
-      rewardsArray.some(({ approval }: RewardsArray) =>
+      rewardsArray.some(({ approvalState: approval }: Reward) =>
         approval === ApprovalState.APPROVED || approval === ApprovalState.UNKNOWN ? false : true
       ),
     [rewardsArray]

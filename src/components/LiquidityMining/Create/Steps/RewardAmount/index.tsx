@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { Actions, ActionType, CampaignType, RewardsArray } from '../../../../../pages/LiquidityMining/Create'
+import { Actions, ActionType, CampaignType, Reward } from '../../../../../pages/LiquidityMining/Create'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import AssetSelector from '../PairAndReward/AssetSelector'
@@ -17,7 +17,7 @@ const FlexWrapper = styled(Flex)`
   `}
 `
 interface RewardAmountProps {
-  rewardsArray: RewardsArray[]
+  rewardsArray: Reward[]
   setRewardsArray: React.Dispatch<Actions>
 }
 
@@ -37,7 +37,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
 
   const disabledRewardsArray = useMemo(() => {
     const filteredRewardsArray = rewardsArray
-      .map(({ reward }) => reward?.currency)
+      .map(({ rewardTokenAmount: reward }) => reward?.currency)
       .filter(currency => currency && currency !== undefined) as Currency[]
 
     if (filteredRewardsArray.length !== 0) return filteredRewardsArray
@@ -69,8 +69,10 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
 
   const handleLocalUserInput = useCallback(
     (rawValue, index) => {
-      const newParsedAmount = tryParseAmount(rawValue, rewardsArray[index]?.reward?.currency) as TokenAmount | undefined
-      const currentCurrency = rewardsArray[index]?.reward?.token
+      const newParsedAmount = tryParseAmount(rawValue, rewardsArray[index]?.rewardTokenAmount?.currency) as
+        | TokenAmount
+        | undefined
+      const currentCurrency = rewardsArray[index]?.rewardTokenAmount?.token
 
       setRewardsArray({
         type: ActionType.REWARD_CHANGE,
@@ -94,7 +96,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
         {rewardsArray.map((item, index) => (
           <AssetSelector
             key={index}
-            currency0={item.reward?.token}
+            currency0={item.rewardTokenAmount?.token}
             campaingType={CampaignType.TOKEN}
             onClick={() => handleOpenPairOrTokenSearch(index)}
             customAssetTitle={
@@ -106,7 +108,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
                 </div>
               )
             }
-            amount={item.reward}
+            amount={item.rewardTokenAmount}
             handleUserInput={event => {
               handleLocalUserInput(event, index)
             }}
@@ -114,7 +116,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
             setRewardsObject={setRewardsArray}
             onResetCurrency={() => handleCurrencyReset(index)}
             index={index}
-            rawAmount={item.rawAmount}
+            rawAmount={item.rewardRawAmount}
           />
         ))}
       </FlexWrapper>
