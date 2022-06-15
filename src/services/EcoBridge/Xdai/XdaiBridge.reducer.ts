@@ -43,15 +43,12 @@ const createXdaiSlice = (bridgeId: XdaiBridgeList) =>
           return
         } else {
           state.bridgingDetailsStatus = SyncState.READY
+
+          state.bridgingDetails.gas = gas
+          state.bridgingDetails.fee = fee
+          state.bridgingDetails.estimateTime = estimateTime
+          state.bridgingDetails.receiveAmount = receiveAmount
         }
-
-        state.bridgingDetails.gas = gas
-
-        state.bridgingDetails.fee = fee
-
-        state.bridgingDetails.estimateTime = estimateTime
-
-        state.bridgingDetails.receiveAmount = receiveAmount
       },
       setBridgeDetailsStatus: (
         state,
