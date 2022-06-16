@@ -121,7 +121,7 @@ export function SwapButtons({
     const isApprovalRequired = approval !== ApprovalState.APPROVED
     const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
-    const swapDisabled =
+    const isSwapDisabled =
       !isValid ||
       isApprovalRequired ||
       (priceImpactSeverity > 3 && !isExpertMode) ||
@@ -149,7 +149,7 @@ export function SwapButtons({
           </ButtonConfirmed>
         }
 
-        {// If the EOA needs to approve the WXDAI or any ERC20
+        {// If the EOA needs to approve the wrapped token
         showApproveFlow && isApprovalRequired && (
           <ButtonConfirmed
             onClick={handleGPApproveClick}
@@ -172,10 +172,7 @@ export function SwapButtons({
           onClick={onSwapClick}
           width={width}
           id="swap-button"
-          // swapDisabled depends on the step of the process
-          // errorMessage depends on the specific details in the swap step
-          // standard disable or if there is some kind of problem
-          disabled={swapDisabled}
+          disabled={isSwapDisabled}
           platformName={trade?.platform.name}
           priceImpactSeverity={priceImpactSeverity}
           isExpertMode={isExpertMode}

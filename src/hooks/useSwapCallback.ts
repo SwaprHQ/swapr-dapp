@@ -224,12 +224,12 @@ export function useSwapCallback({
                 call,
                 gasEstimate,
               }))
-              .catch((gasError: string) => {
+              .catch(gasError => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
                 return library
                   .call(transactionRequest as any)
-                  .then((result: string) => {
+                  .then(result => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
                     return {
                       call,
