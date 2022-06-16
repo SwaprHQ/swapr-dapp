@@ -191,9 +191,7 @@ export function useSwapCallback({
 
           // Sign the order using Metamask
           // and then submit the order to GPv2
-          const orderId = await trade
-            .signOrder(signer)
-            .then((trade: { submitOrder: () => Promise<string> }) => trade.submitOrder())
+          const orderId = await (await trade.signOrder(signer)).submitOrder()
 
           addTransaction(
             {
