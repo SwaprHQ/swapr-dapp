@@ -65,7 +65,7 @@ export function useWrapCallback(
   }, [currencies, typedValue, isGnosisTrade, chainId])
 
   const outputAmount = useMemo(() => {
-    const isInputCurrencyNative = !!(currencies.INPUT && Currency.isNative(currencies?.INPUT))
+    const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies.INPUT)
     const outputCurrency =
       isGnosisTrade && isInputCurrencyNative
         ? wrappedCurrency(currencies.INPUT as Currency, chainId as ChainId)
