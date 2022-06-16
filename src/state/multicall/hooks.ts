@@ -94,13 +94,13 @@ function useCallsData(
   // update listeners when there is an actual change that persists for at least 100ms
   useEffect(() => {
     if (!chainId || callKeys.length === 0) return undefined
-
     debouncedAddMultiCall(chainId, callKeys)
 
     return () => {
       debouncedRemoveMultiCall(chainId, callKeys)
     }
-  }, [chainId, dispatch, stringifiedCalls, callKeys, debouncedAddMultiCall, debouncedRemoveMultiCall])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, dispatch, stringifiedCalls, debouncedAddMultiCall, debouncedRemoveMultiCall])
 
   return useMemo(
     () =>

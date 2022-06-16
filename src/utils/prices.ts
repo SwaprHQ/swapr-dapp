@@ -218,7 +218,8 @@ export const limitNumberOfDecimalPlaces = (
 ): string | undefined => {
   if (!value || value.equalTo(ZERO)) return undefined
   if (value instanceof CurrencyAmount && value.currency.decimals < significantDigits)
-    significantDigits = value.currency.decimals
+    significantDigits =
+      typeof value.currency.decimals === 'string' ? parseInt(value.currency.decimals) : value.currency.decimals
 
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
