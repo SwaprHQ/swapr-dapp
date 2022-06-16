@@ -39,6 +39,7 @@ interface UseWrapCallbackReturn {
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
  * @param outputCurrency the selected output currency
+ * @param isGnosisTrade if the trade is a GnosisTrade
  * @param typedValue the user input value
  */
 export function useWrapCallback(
