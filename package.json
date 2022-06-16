@@ -73,6 +73,7 @@
     "ajv": "^6.12.3",
     "aos": "^2.3.4",
     "arb-ts": "^1.0.2",
+    "@arbitrum/sdk": "^2.0.1",
     "cids": "^1.1.7",
     "copy-to-clipboard": "^3.2.0",
     "cypress-ethereum-provider": "^0.1.7",

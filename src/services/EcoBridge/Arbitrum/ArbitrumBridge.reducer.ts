@@ -4,6 +4,7 @@ import { ChainId } from '@swapr/sdk'
 import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList, BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
