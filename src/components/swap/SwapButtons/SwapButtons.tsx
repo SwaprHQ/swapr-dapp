@@ -102,8 +102,7 @@ export function SwapButtons({
   }, [isExpertMode, handleSwap, setSwapState, trade])
 
   const handleGPApproveClick = useCallback(async () => {
-    await approveCallback()
-    setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
+    await approveCallback().then(() => setGnosisProtocolState(GnosisProtocolTradeState.SWAP))
   }, [approveCallback, setGnosisProtocolState])
 
   if (loading) {
