@@ -55,22 +55,19 @@ export function useWrapCallback(
   const { t } = useTranslation()
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
-  const inputAmount = useMemo(() => {
+  const [inputAmount, outputAmount] = useMemo(() => {
     const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT)
     const inputCurrency =
       isGnosisTrade && isOutputCurrencyNative
         ? wrappedCurrency(currencies.OUTPUT as Currency, chainId as ChainId)
         : currencies.INPUT
-    return tryParseAmount(typedValue, inputCurrency, chainId)
-  }, [currencies, typedValue, isGnosisTrade, chainId])
 
-  const outputAmount = useMemo(() => {
     const isInputCurrencyNative = currencies.INPUT && Currency.isNative(currencies.INPUT)
     const outputCurrency =
       isGnosisTrade && isInputCurrencyNative
         ? wrappedCurrency(currencies.INPUT as Currency, chainId as ChainId)
         : currencies.OUTPUT
-    return tryParseAmount(typedValue, outputCurrency, chainId)
+    return [tryParseAmount(typedValue, inputCurrency, chainId), tryParseAmount(typedValue, outputCurrency, chainId)]
   }, [currencies, typedValue, isGnosisTrade, chainId])
 
   // Watch the transaction from transaction reducer
