@@ -127,7 +127,8 @@ export default function Swap() {
   // wrap status(use useWrapCallback and a state variable)
   const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(GnosisProtocolTradeState.UNKNOWN)
   const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useWrapCallback(
-    currencies,
+    currencies.INPUT,
+    currencies.OUTPUT,
     potentialTrade instanceof GnosisProtocolTrade,
     typedValue
   )
