@@ -56,7 +56,7 @@ export function useWrapCallback(
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => {
-    const isOutputCurrencyNative = !!(currencies.OUTPUT && Currency.isNative(currencies.OUTPUT))
+    const isOutputCurrencyNative = currencies.OUTPUT && Currency.isNative(currencies.OUTPUT)
     const inputCurrency =
       isGnosisTrade && isOutputCurrencyNative
         ? wrappedCurrency(currencies.OUTPUT as Currency, chainId as ChainId)
