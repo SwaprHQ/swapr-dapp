@@ -61,7 +61,7 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
 
   if (!token) return null
 
-  const externalLinkText = `${t('viewOn')} ${t('blockExplorer')}`
+  const externalLinkText = t('viewOnBlockExplorer')
 
   return (
     <AutoRow gap="6px">

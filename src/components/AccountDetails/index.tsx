@@ -221,7 +221,7 @@ export default function AccountDetails({
     if (chainId) dispatch(clearAllTransactions({ chainId }))
   }, [dispatch, chainId])
 
-  const addressLinkText = `${t('viewOn')} ${t('blockExplorer')}`
+  const addressLinkText = t('viewOnBlockExplorer')
 
   return (
     <>

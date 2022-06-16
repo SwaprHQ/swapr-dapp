@@ -95,7 +95,7 @@ export default function AddressInputPanel({
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
-  const containerLinkText = `${t('viewOn')} ${t('blockExplorer')}`
+  const containerLinkText = t('viewOnBlockExplorer')
 
   return (
     <InputPanel id={id}>

@@ -78,7 +78,6 @@ function TransactionSubmittedContent({
   const { t } = useTranslation()
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
-  const explorer = isGnosisProtocolTrade ? t('gnosisProtocolExplorer') : t('blockExplorer')
   const link =
     chainId &&
     hash &&
@@ -86,7 +85,7 @@ function TransactionSubmittedContent({
       ? getGnosisProtocolExplorerOrderLink(chainId, hash)
       : getExplorerLink(chainId, hash, 'transaction'))
 
-  const externalLinkText = `${t('viewOn')} ${explorer}`
+  const externalLinkText = `${isGnosisProtocolTrade ? t('viewOnGnosisBlockExplorer') : t('viewOnBlockExplorer')}`
   const explorerExternalLink = chainId && hash && (
     <ExternalLink href={link as string}>
       <Text fontWeight={500} fontSize="13px">

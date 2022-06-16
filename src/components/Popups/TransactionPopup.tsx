@@ -27,13 +27,11 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
 
-  const explorer = isGnosisProtocolHash ? t('gnosisProtocolExplorer') : t('blockExplorer')
-
   const link = isGnosisProtocolHash
     ? getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
     : getExplorerLink(chainId as ChainId, hash, 'transaction')
 
-  const popupText = `${t('viewOn')} ${explorer}`
+  const popupText = isGnosisProtocolHash ? t('viewOnGnosisBlockExplorer') : t('viewOnBlockExplorer')
 
   return (
     <RowNoFlex>
