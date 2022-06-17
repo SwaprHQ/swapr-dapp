@@ -65,16 +65,16 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         <InfoGrid>
           <ValueWithLabel
             title={t('poolShare')}
-            value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '-'}
+            value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '0'}
           />
-          <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} />
+          <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'} />
           <ValueWithLabel
             title={t('pooledToken', { token: currency0?.symbol })}
-            value={token0Deposited ? token0Deposited.toSignificant(6) : '-'}
+            value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
           />
           <ValueWithLabel
             title={t('pooledToken', { token: currency1?.symbol })}
-            value={token1Deposited ? token1Deposited.toSignificant(6) : '-'}
+            value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
           />
         </InfoGrid>
       </Box>
