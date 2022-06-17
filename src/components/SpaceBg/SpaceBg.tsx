@@ -142,7 +142,6 @@ const StyledHero = styled.div`
             margin-top: 42px;
             padding: 0px;
             h1 {
-                /* max-width: 303px; */
                 span {
                     font-size: 48px;
                     line-height: 54px;
