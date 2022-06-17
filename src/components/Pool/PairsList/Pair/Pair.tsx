@@ -3,7 +3,7 @@ import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass/styled-components'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
@@ -60,25 +60,16 @@ export function Pair({
     )
 
   return (
-    <GridCard
-      {...rest}
-      data-testid="pair-card"
-      flexWrap="wrap"
-      justifyContent="space-between"
-      padding={isMobile ? '22px 10px' : '22px'}
-    >
-      <Flex flex={isMobile ? '' : '25%'} flexDirection="row" alignItems="center">
+    <GridCard {...rest} data-testid="pair-card" flexWrap="wrap" justifyContent="space-between">
+      <FlexWrapper>
         {correctLogo()}
         <Flex flexDirection="column">
           <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
-            {unwrappedToken(token0)?.symbol}
-          </EllipsizedText>
-          <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
-            {!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
+            {unwrappedToken(token0)?.symbol}/{!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
           </EllipsizedText>
         </Flex>
-      </Flex>
-      <Flex flex={isMobile ? '' : '25%'} flexDirection="column" alignItems="flex-start" justifyContent="space-evenly">
+      </FlexWrapper>
+      <FlexWrapper>
         <Flex style={{ gap: '6px' }} flexDirection="row" alignItems="flex-start" flexWrap="wrap">
           <FarmingBadge isGreyed={!hasFarming}>
             <FarmingLogo />
@@ -86,13 +77,18 @@ export function Pair({
           </FarmingBadge>
           <CarrotBadge isGreyed={!containsKpiToken} />
         </Flex>
-      </Flex>
-      <Flex flex={isMobile ? '100%' : '45%'} justifyContent="space-between">
-        <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
-          <ValueWithLabel title="TVL" value={`$${formatCurrencyAmount(usdLiquidity).split('.')[0]}`} />
-        </Flex>
-        <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
+      </FlexWrapper>
+      <FlexValueWithLabelsWrapper>
+        <Flex40>
           <ValueWithLabel
+            labelDesktop={false}
+            title="TVL"
+            value={`$${formatCurrencyAmount(usdLiquidity).split('.')[0]}`}
+          />
+        </Flex40>
+        <Flex40>
+          <ValueWithLabel
+            labelDesktop={false}
             title="24h Volume"
             value={`$${
               !loading && volume24hUSD
@@ -102,17 +98,48 @@ export function Pair({
                 : '-'
             }`}
           />
+        </Flex40>
+        <Flex alignItems="center">
+          <ValueWithLabel labelDesktop={false} title="APY" value={`${apy.toFixed(0)}%`} big />
         </Flex>
-        <Flex alignItems="center" flex={isMobile ? '' : '10%'}>
-          <ValueWithLabel title="APY" value={`${apy.toFixed(0)}%`} big />
-        </Flex>
-      </Flex>
+      </FlexValueWithLabelsWrapper>
     </GridCard>
   )
 }
 
+const Flex40 = styled(Flex)`
+  width: 40%;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `}
+`
+
+const FlexWrapper = styled(Flex)`
+  width: 25%;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `}
+`
+
+const FlexValueWithLabelsWrapper = styled(Flex)`
+  width: 45%;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-content: space-between;
+    width: 100%;
+  `};
+`
+
 const GridCard = styled(Flex)`
   row-gap: 24px;
+  padding: 22px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 22px 10px
+  `};
 `
 
 const FarmingBadge = styled.div<{ isGreyed?: boolean }>`
