@@ -130,7 +130,6 @@ export function Pair({
               number={miningCampaigns.active.length}
               color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}
               to={token0 && token1 ? `/rewards/${token0.address}/${token1.address}` : ''}
-              fit
             >
               {t('campaigns')}
             </ButtonBadge>

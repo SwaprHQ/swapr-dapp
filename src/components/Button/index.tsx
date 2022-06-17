@@ -19,7 +19,6 @@ interface BaseProps {
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
-  fit?: boolean
   disabled?: boolean
 }
 
@@ -102,7 +101,6 @@ export const ButtonGrey = styled(Base)`
 `
 
 export const ButtonPurpleDim = styled(Base)`
-  width: ${({ fit }) => (fit ? 'fit-content' : '100%')};
   padding: 8px 24px;
   border: 1px solid ${({ theme }) => theme.purple5};
 
@@ -345,18 +343,16 @@ export function ButtonBadge({
   children,
   number,
   color = 'orange',
-  fit = false,
   disabled = false,
 }: {
   to: string
   number: number
-  fit?: boolean
   children: ReactNode
   disabled?: boolean
   color?: 'orange' | 'green' | 'red'
 }) {
   return (
-    <ButtonPurpleDim fit={fit} as={disabled ? ButtonPurpleDim : Link} to={to} disabled={disabled}>
+    <ButtonPurpleDim width="fit-content" as={disabled ? ButtonPurpleDim : Link} to={to} disabled={disabled}>
       <Flex alignItems="center">
         {children}
         <Box ml={1}>
