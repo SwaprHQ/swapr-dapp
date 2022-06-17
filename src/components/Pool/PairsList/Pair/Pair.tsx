@@ -14,7 +14,7 @@ import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import CarrotBadge from '../../../Badge/Carrot'
 import { CurrencyLogo } from '../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../DoubleLogo'
-import { ResponsiveValueWithLabel } from './ResponsiveValueWithLabel'
+import { ValueWithLabel } from '../../PairView/ValueWithLabel'
 
 export interface PairProps {
   token0?: Token
@@ -42,7 +42,6 @@ export function Pair({
 }: PairProps) {
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
   const { t } = useTranslation()
-  const theme = useTheme()
   const isMobile = useIsMobileByMedia()
 
   const correctLogo = () =>
@@ -90,10 +89,10 @@ export function Pair({
       </Flex>
       <Flex flex={isMobile ? '100%' : '45%'} justifyContent="space-between">
         <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
-          <ResponsiveValueWithLabel title="TVL" value={`$${formatCurrencyAmount(usdLiquidity).split('.')[0]}`} />
+          <ValueWithLabel title="TVL" value={`$${formatCurrencyAmount(usdLiquidity).split('.')[0]}`} />
         </Flex>
         <Flex alignItems="center" flex={isMobile ? '' : '30%'}>
-          <ResponsiveValueWithLabel
+          <ValueWithLabel
             title="24h Volume"
             value={`$${
               !loading && volume24hUSD
@@ -105,7 +104,7 @@ export function Pair({
           />
         </Flex>
         <Flex alignItems="center" flex={isMobile ? '' : '10%'}>
-          <ResponsiveValueWithLabel title="APY" value={`${apy.toFixed(0)}%`} fontSize="18px" color={theme.white} big />
+          <ValueWithLabel title="APY" value={`${apy.toFixed(0)}%`} big />
         </Flex>
       </Flex>
     </GridCard>

@@ -14,19 +14,24 @@ export const ValueWithLabel = ({
   center?: boolean
 }) => (
   <div>
-    <ValueWithLabelTitle mb="8px" fontSize="10px">
+    <Title mb="8px" fontSize="10px">
       {title}
-    </ValueWithLabelTitle>
-    <ValueWithLabelValue fontSize={big ? '18px' : '14px'} big={big} textAlign={center ? 'center' : 'left'}>
+    </Title>
+    <Value big={big} textAlign={center ? 'center' : 'left'}>
       {value}
-    </ValueWithLabelValue>
+    </Value>
   </div>
 )
 
-const ValueWithLabelTitle = styled(Text)`
+const Title = styled(Text)`
   color: ${({ theme }) => theme.text5};
   text-transform: uppercase;
 `
-const ValueWithLabelValue = styled(Text)<{ big: boolean }>`
+const Value = styled(Text)<{ big: boolean }>`
   color: ${({ theme, big }) => (big ? theme.white : theme.text4)};
+  font-size: ${({ big }) => (big ? '18px' : '16px')};
+
+  ${({ theme, big }) => theme.mediaWidth.upToSmall`
+    font-size: ${big ? '14px' : '12px'}
+  `};
 `
