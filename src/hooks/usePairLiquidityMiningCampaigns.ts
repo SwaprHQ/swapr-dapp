@@ -8,6 +8,7 @@ import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
   getTokenAmount,
+  MiningCampaign,
   sortActiveCampaigns,
   sortExpiredCampaigns,
   toLiquidityMiningCampaign,
@@ -62,7 +63,7 @@ export function usePairLiquidityMiningCampaigns(
   pair?: Pair
 ): {
   loading: boolean
-  miningCampaigns: any
+  miningCampaigns: { active: MiningCampaign[]; expired: MiningCampaign[] }
 } {
   const pairAddress = pair ? pair.liquidityToken.address.toLowerCase() : undefined
   const { chainId, account } = useActiveWeb3React()
