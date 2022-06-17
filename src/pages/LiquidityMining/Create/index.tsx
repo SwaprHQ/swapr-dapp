@@ -49,7 +49,7 @@ export interface Actions {
     approval?: ApprovalState
   }
 }
-const intitialState: Reward = {
+const initialState: Reward = {
   approvalState: ApprovalState.UNKNOWN,
   rewardTokenAmount: undefined,
   rewardRawAmount: undefined,
@@ -81,22 +81,22 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
       mutableState.splice(payload.index, 1, newRewardObject)
 
       const hasAdditionalReward = mutableState.some(({ rewardTokenAmount: reward }) => reward?.currency === undefined)
-      if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(intitialState)
+      if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(initialState)
 
       return mutableState
 
     case ActionType.REMOVE_REWARD:
       const hasMaxNumberOfReward = state.every(reward => reward.rewardTokenAmount !== undefined)
 
-      if (payload.index === 0 && state.length === 1) return [intitialState]
+      if (payload.index === 0 && state.length === 1) return [initialState]
 
       mutableState.splice(payload.index, 1)
 
-      if (hasMaxNumberOfReward) mutableState.push(intitialState)
+      if (hasMaxNumberOfReward) mutableState.push(initialState)
 
       return mutableState
     case ActionType.RESET:
-      return [intitialState]
+      return [initialState]
     default:
       return state
   }
@@ -121,7 +121,7 @@ export default function CreateLiquidityMining() {
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
-  const [rewardsArray, dispatch] = useReducer(reducer, [intitialState])
+  const [rewardsArray, dispatch] = useReducer(reducer, [initialState])
   const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
   const [simulatedPrice, setSimulatedPrice] = useState('0')
 

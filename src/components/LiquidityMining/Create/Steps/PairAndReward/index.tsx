@@ -61,7 +61,7 @@ const StyledFlex = styled(Flex)<{ active: boolean }>`
 const BorderContainer = styled(Flex)<{ active: boolean }>`
   border-bottom: 1px solid ${({ active }) => (active ? 'white' : 'transparent')};
   opacity: ${({ active }) => !active && '0.7'};
-  flex-direction: row !important;
+  flex-direction: row;
 `
 
 interface TokenAndLimitProps {
