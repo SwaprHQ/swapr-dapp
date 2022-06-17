@@ -64,11 +64,11 @@ export function usePairLiquidityMiningCampaigns(
   loading: boolean
   miningCampaigns: any
 } {
-  const pairAddress = useMemo(() => (pair ? pair.liquidityToken.address.toLowerCase() : undefined), [pair])
+  const pairAddress = pair ? pair.liquidityToken.address.toLowerCase() : undefined
   const { chainId, account } = useActiveWeb3React()
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
+  const subgraphAccountId = account?.toLowerCase() || ''
   const nativeCurrency = useNativeCurrency()
-  const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
+  const timestamp = Math.floor(Date.now() / 1000)
   const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()

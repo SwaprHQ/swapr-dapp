@@ -87,8 +87,8 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
 
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const filterTokenAddress = useMemo(() => tokenFilter?.address.toLowerCase(), [tokenFilter])
+  const subgraphAccountId = account?.toLowerCase() || ''
+  const filterTokenAddress = tokenFilter?.address.toLowerCase()
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
 
   const [loadingPairs, setLoadingPairs] = useState(false)
