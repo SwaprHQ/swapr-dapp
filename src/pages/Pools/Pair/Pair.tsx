@@ -49,9 +49,9 @@ export function Pair({
   }, [])
 
   const handlePairSelect = useCallback(
-    pair => {
+    ({ token0, token1 }) => {
       router.push({
-        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`,
+        pathname: `/pools/${token0.address}/${token1.address}`,
       })
     },
     [router]

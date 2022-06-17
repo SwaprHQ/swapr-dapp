@@ -32,7 +32,7 @@ const zoomOut = keyframes`
 
 const StyledHero = styled.div`
     position: relative;
-    width: 100% !important;
+    width: 100%;
     .inner-hero {
         display: flex;
         flex-direction: column;
