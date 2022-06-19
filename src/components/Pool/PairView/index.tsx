@@ -1,9 +1,9 @@
 import { Pair } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
-import { useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -72,7 +72,7 @@ interface PairViewProps {
 
 function PairView({ loading, pair }: PairViewProps) {
   const { account, chainId } = useActiveWeb3React()
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
   const previousChainId = usePrevious(chainId)
   const { loading: volumeLoading, volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { loading: liquidityLoading, liquidityUSD, numberOfCampaigns } = usePairCampaignIndicatorAndLiquidityUSD(pair)
