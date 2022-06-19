@@ -351,20 +351,20 @@ function Header() {
       </AdditionalDataWrap>
       <HeaderControls isConnected={!!account}>
         <Flex style={{ gap: '26px' }} minWidth={'unset'}>
-          <HeaderMobileLink id="swap-nav-link" to="/swap" className="active">
+          <HeaderMobileLink id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="pool-nav-link" to="/pools" className="active">
+            <HeaderMobileLink id="pool-nav-link" to="/pools">
               Pools
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="rewards-nav-link" to="/rewards" className="active">
+            <HeaderMobileLink id="rewards-nav-link" to="/rewards">
               Rewards
             </HeaderMobileLink>
           )}
-          <HeaderMobileLink id="bridge-nav-link" to="/bridge" className="active">
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
             {t('bridge')}
           </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
