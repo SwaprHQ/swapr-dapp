@@ -4,7 +4,7 @@ import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV
 
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
-import { RouteComponentProps } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
@@ -40,12 +40,10 @@ import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../Pools/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 
-export default function AddLiquidity({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-  history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+export default function AddLiquidity() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()
@@ -265,27 +263,27 @@ export default function AddLiquidity({
     (currencyA: Currency) => {
       const newCurrencyIdA = currencyId(currencyA)
       if (newCurrencyIdA === currencyIdB) {
-        history.push(`/pools/add/${currencyIdB}/${currencyIdA}`)
+        navigate(`/pools/add/${currencyIdB}/${currencyIdA}`)
       } else {
-        history.push(`/pools/add/${newCurrencyIdA}/${currencyIdB}`)
+        navigate(`/pools/add/${newCurrencyIdA}/${currencyIdB}`)
       }
     },
-    [currencyIdB, history, currencyIdA]
+    [currencyIdB, navigate, currencyIdA]
   )
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
       const newCurrencyIdB = currencyId(currencyB)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
-          history.push(`/pools/add/${currencyIdB}/${newCurrencyIdB}`)
+          navigate(`/pools/add/${currencyIdB}/${newCurrencyIdB}`)
         } else {
-          history.push(`/pools/add/${newCurrencyIdB}`)
+          navigate(`/pools/add/${newCurrencyIdB}`)
         }
       } else {
-        history.push(`/pools/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
+        navigate(`/pools/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
       }
     },
-    [currencyIdA, history, currencyIdB]
+    [currencyIdA, navigate, currencyIdB]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -298,7 +296,7 @@ export default function AddLiquidity({
     setTxHash('')
   }, [onFieldAInput, onFieldBInput, txHash])
 
-  const isCreate = history.location.pathname.includes('/create')
+  const isCreate = location.pathname.includes('/create')
 
   return (
     <>

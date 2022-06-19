@@ -1,6 +1,6 @@
 import transparentize from 'polished/lib/color/transparentize'
 import React from 'react'
-import { NavLink, NavLinkProps } from 'react-router-dom'
+import { NavLink, NavLinkProps, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ExternalLink } from '../../theme/components'
@@ -80,6 +80,7 @@ export interface HeaderLinkProps extends Omit<NavLinkProps, 'to'> {
 }
 
 export const HeaderLink = ({ id, to = '', href, disabled, children, ...navLinkProps }: HeaderLinkProps) => {
+  const [search] = useSearchParams()
   if (href || disabled) {
     return (
       <StyledExternalLink id={id} href={disabled ? '/#' : href ?? '/#'} disabled={disabled}>
@@ -88,9 +89,9 @@ export const HeaderLink = ({ id, to = '', href, disabled, children, ...navLinkPr
     )
   }
 
-  if (to) {
+  if (to !== undefined && to !== '') {
     return (
-      <StyledNavLink to={to} {...navLinkProps}>
+      <StyledNavLink to={{ pathname: to, search: search.toString() }} {...navLinkProps}>
         {children}
       </StyledNavLink>
     )
@@ -100,6 +101,7 @@ export const HeaderLink = ({ id, to = '', href, disabled, children, ...navLinkPr
 }
 
 export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...navLinkProps }: HeaderLinkProps) => {
+  const [search] = useSearchParams()
   if (href || disabled) {
     return (
       <StyledExternalMobileLink id={id} href={disabled ? '/#' : href ?? '/#'} disabled={disabled}>
@@ -110,11 +112,11 @@ export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...nav
 
   if (to !== undefined && to !== '') {
     return (
-      <StyledMobileLink to={to} {...navLinkProps}>
+      <StyledMobileLink to={{ pathname: to, search: search.toString() }} {...navLinkProps}>
         {children}
       </StyledMobileLink>
     )
   }
 
-  throw new Error('Either to or href props must be provided')
+  return null
 }

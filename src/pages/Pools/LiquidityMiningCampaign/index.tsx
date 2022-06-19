@@ -1,7 +1,6 @@
-import { Location } from 'history'
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Navigate, NavLink, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -43,20 +42,22 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export default function LiquidityMiningCampaign({
-  match: {
-    params: { liquidityMiningCampaignId, currencyIdA, currencyIdB },
-  },
-  location,
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB?: string; liquidityMiningCampaignId: string }>) {
+export default function LiquidityMiningCampaign() {
   const { account } = useActiveWeb3React()
+  const [search] = useSearchParams()
+  const { liquidityMiningCampaignId, currencyIdA, currencyIdB } = useParams<{
+    currencyIdA: string
+    currencyIdB?: string
+    liquidityMiningCampaignId: string
+  }>()
+  const location = useLocation()
 
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
   const isSingleSidedCampaign = location.pathname.includes('/single-sided-campaign')
 
   const { singleSidedStakingCampaign, loading: singleSidedCampaignLoading } = useSingleSidedCampaign(
-    liquidityMiningCampaignId
+    liquidityMiningCampaignId!
   )
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
@@ -71,7 +72,7 @@ export default function LiquidityMiningCampaign({
       (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) ||
     (wrappedPair[0] === PairState.INVALID && token0 === undefined && token1 === undefined)
   ) {
-    return <Redirect to="/rewards" />
+    return <Navigate to="/rewards" replace />
   }
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
@@ -87,7 +88,7 @@ export default function LiquidityMiningCampaign({
           <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
             <Flex alignItems="center">
               <Box mr="8px">
-                <UndecoratedLink to="/rewards">
+                <UndecoratedLink to={{ pathname: '/rewards', search: search.toString() }}>
                   <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     Rewards
                   </TYPE.mediumHeader>
@@ -123,31 +124,21 @@ export default function LiquidityMiningCampaign({
               </Box>
             </Flex>
             <ButtonRow>
-              <AddLiquidityButtonComponent
-                as={Link}
-                padding="8px 14px"
-                to={(location: Location) => {
-                  if (isSingleSidedCampaign && token0) {
-                    return {
-                      ...location,
-                      pathname: `/swap/${token0.address}`,
-                    }
-                  }
-
-                  if (token0 && token1) {
-                    return {
-                      ...location,
-                      pathname: `/pools/add/${currencyId(token0)}/${currencyId(token1)}`,
-                    }
-                  }
-
-                  return ''
-                }}
+              <NavLink
+                to={
+                  isSingleSidedCampaign && token0
+                    ? `/swap/${token0.address}`
+                    : token0 && token1
+                    ? `/pools/add/${currencyId(token0)}/${currencyId(token1)}`
+                    : ''
+                }
               >
-                <Text fontWeight={700} fontSize={12}>
-                  {isSingleSidedCampaign ? `GET ${token0?.symbol ?? 'TOKEN'}` : 'ADD LIQUIDITY'}
-                </Text>
-              </AddLiquidityButtonComponent>
+                <AddLiquidityButtonComponent padding="8px 14px">
+                  <Text fontWeight={700} fontSize={12}>
+                    {isSingleSidedCampaign ? `GET ${token0?.symbol ?? 'TOKEN'}` : 'ADD LIQUIDITY'}
+                  </Text>
+                </AddLiquidityButtonComponent>
+              </NavLink>
             </ButtonRow>
           </TitleRow>
           {((!isSingleSidedCampaign && !loading) || (!singleSidedCampaignLoading && isSingleSidedCampaign)) && (

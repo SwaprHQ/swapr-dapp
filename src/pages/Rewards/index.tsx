@@ -1,8 +1,9 @@
 import { Pair } from '@swapr/sdk'
 
 import React, { useCallback, useEffect, useState } from 'react'
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import { ChevronDown } from 'react-feather'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -59,14 +60,12 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export default function Rewards({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+export default function Rewards() {
   const router = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
+  const [search] = useSearchParams()
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
@@ -86,7 +85,11 @@ export default function Rewards({
   }, [])
 
   useEffect(() => {
-    if (router.location.state?.showSwpr) {
+    if (
+      typeof router.location.state === 'object' &&
+      router.location.state !== null &&
+      'showSwpr' in router.location.state
+    ) {
       setAggregatedDataFilter(PairsFilterType.SWPR)
     }
   }, [router])
@@ -97,27 +100,25 @@ export default function Rewards({
 
   const handlePairSelect = useCallback(
     pair => {
-      router.push({
-        pathname: `/rewards/${pair.token0.address}/${pair.token1.address}`,
-      })
+      router.navigate(`/rewards/${pair.token0.address}/${pair.token1.address}`)
       setFilterPair(pair)
     },
     [router]
   )
   const handleFilterTokenReset = useCallback(
     e => {
-      setAggregatedDataFilter(PairsFilterType.ALL)
-      router.push({
-        pathname: `/rewards`,
+      batchedUpdates(() => {
+        setAggregatedDataFilter(PairsFilterType.ALL)
+        setFilterPair(null)
       })
-      setFilterPair(null)
+      router.navigate(`/rewards`)
       e.stopPropagation()
     },
     [router]
   )
 
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
-    return <Redirect to="/rewards" />
+    return <Navigate to={{ pathname: '/rewards', search: search.toString() }} />
   }
 
   return (
@@ -194,7 +195,7 @@ export default function Rewards({
                   <ResponsiveButtonSecondary
                     as={Link}
                     padding="8px 14px"
-                    to="/liquidity-mining/create"
+                    to={{ pathname: '/liquidity-mining/create', search: search.toString() }}
                     data-testid="create-campaign"
                   >
                     <Text fontWeight={700} fontSize={12} lineHeight="15px">

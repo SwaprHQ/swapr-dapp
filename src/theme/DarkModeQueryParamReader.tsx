@@ -1,33 +1,22 @@
-import { parse } from 'qs'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { RouteComponentProps } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
-import { AppDispatch } from '../state'
 import { updateUserDarkMode } from '../state/user/actions'
-
-export default function DarkModeQueryParamReader({ location: { search } }: RouteComponentProps): null {
-  const dispatch = useDispatch<AppDispatch>()
-
+// TODO: This is not used for theme switching. Can be removed
+export default function DarkModeQueryParamReader() {
+  const dispatch = useDispatch()
+  const [search] = useSearchParams()
   useEffect(() => {
-    if (!search) return
-    if (search.length < 2) return
+    if (!search || !search.has('theme')) return
 
-    const parsed = parse(search, {
-      parseArrays: false,
-      ignoreQueryPrefix: true,
-    })
-
-    const theme = parsed.theme
-
-    if (typeof theme !== 'string') return
-
-    if (theme.toLowerCase() === 'light') {
+    const theme = search.get('theme') ?? 'dark'
+    if (theme?.toLowerCase() === 'light') {
       dispatch(updateUserDarkMode({ userDarkMode: false }))
-    } else if (theme.toLowerCase() === 'dark') {
+    } else {
       dispatch(updateUserDarkMode({ userDarkMode: true }))
     }
   }, [dispatch, search])
 
-  return null
+  return <></>
 }

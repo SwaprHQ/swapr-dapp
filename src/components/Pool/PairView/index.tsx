@@ -3,7 +3,7 @@ import { Pair } from '@swapr/sdk'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -72,7 +72,7 @@ interface PairViewProps {
 
 function PairView({ loading, pair }: PairViewProps) {
   const { account, chainId } = useActiveWeb3React()
-  const history = useHistory()
+  const navigate = useNavigate()
   const previousChainId = usePrevious(chainId)
   const { loading: volumeLoading, volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { loading: liquidityLoading, liquidityUSD, numberOfCampaigns } = usePairCampaignIndicatorAndLiquidityUSD(pair)
@@ -88,9 +88,9 @@ function PairView({ loading, pair }: PairViewProps) {
     // when the chain is switched, and not as a reaction to following a multi chain link
     // (which might require changing chains), redirect to generic pools page
     if (chainId && previousChainId && chainId !== previousChainId && !switchingToCorrectChain) {
-      history.push('/pools')
+      navigate('/pools')
     }
-  }, [chainId, history, previousChainId, switchingToCorrectChain])
+  }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
     <>
@@ -144,7 +144,7 @@ function PairView({ loading, pair }: PairViewProps) {
             <ButtonGrey
               id="rewards-campaign-for-pair"
               onClick={() => {
-                history.push(`/rewards/${pair?.token0.address}/${pair?.token1.address}`)
+                navigate(`/rewards/${pair?.token0.address}/${pair?.token1.address}`)
               }}
               disabled={!liquidityMiningEnabled || loading}
               padding="8px"

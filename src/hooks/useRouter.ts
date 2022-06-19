@@ -1,25 +1,34 @@
 import queryString from 'query-string'
-import { useMemo } from 'react'
-import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
+import { useCallback, useMemo } from 'react'
+import { NavigateOptions, To, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
-export function useRouter(): any {
+export function useRouter() {
   const params = useParams()
   const location = useLocation()
-  const history = useHistory()
-  const match = useRouteMatch()
+  const [search] = useSearchParams()
+  const _navigate = useNavigate()
+
+  const navigate = useCallback(
+    (to: To, props?: NavigateOptions) => {
+      if (typeof to === 'string') {
+        _navigate({ pathname: to, search: search.toString() }, props)
+      } else if (typeof to === 'object') {
+        _navigate({ ...to, search: search.toString() }, props)
+      }
+    },
+    [_navigate, search]
+  )
 
   return useMemo(() => {
     return {
-      push: history.push,
-      replace: history.replace,
+      navigate,
       pathname: location.pathname,
       query: {
         ...queryString.parse(location.search),
         ...params,
       },
-      match,
       location,
       history,
     }
-  }, [params, match, location, history])
+  }, [params, location, navigate])
 }

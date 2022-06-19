@@ -85,9 +85,10 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
                 key={singleSidedStake.address}
                 to={
                   isSWPRSingleSidedStake
-                    ? () => ({ pathname: '/rewards', state: { showSwpr: true } })
+                    ? '/rewards'
                     : `/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`
                 }
+                state={isSWPRSingleSidedStake && { showSwpr: true }}
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}

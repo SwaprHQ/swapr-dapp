@@ -2,7 +2,7 @@ import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@sw
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { ChevronLeft, Repeat } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
@@ -60,7 +60,7 @@ interface PairViewProps {
 }
 
 function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { chainId, account } = useActiveWeb3React()
   const previousChainId = usePrevious(chainId)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
@@ -71,16 +71,16 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
     // when the chain is switched, and not as a reaction to following a multi chain link
     // (which might require changing chains) redirect to generic pools page
     if (chainId && previousChainId && chainId !== previousChainId && !switchingToCorrectChain) {
-      history.push('/pools')
+      navigate('/pools')
     }
-  }, [chainId, history, previousChainId, switchingToCorrectChain])
+  }, [chainId, navigate, previousChainId, switchingToCorrectChain])
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
   return (
     <AutoColumn gap="18px" data-testid="reward-campaign-information-card">
       <RowBetween>
-        <GoBackContainer onClick={history.goBack}>
+        <GoBackContainer onClick={() => navigate(-1)}>
           <StyledChevronLeft />
           Back to rewards
         </GoBackContainer>
