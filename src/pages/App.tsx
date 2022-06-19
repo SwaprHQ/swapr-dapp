@@ -74,16 +74,13 @@ const Marginer = styled.div`
 /**
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
  */
-const RouteWrapper = ({ children, isBeta = false }: { children: ReactElement; isBeta?: boolean }) => {
+const RouteWrapper = ({ children }: { children: ReactElement }) => {
   const { chainId } = useActiveWeb3React()
-  if (isBeta) {
-    const isAllFeaturesEnabled = chainSupportsSWPR(chainId)
-    if (isAllFeaturesEnabled) {
-      return children
-    }
-    return <RedirectToSwap />
+  // If all features are available, render the route
+  if (chainSupportsSWPR(chainId)) {
+    return children
   }
-  return children
+  return <RedirectToSwap />
 }
 
 export default function App() {
@@ -118,7 +115,7 @@ export default function App() {
                   <Route
                     path="pools"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <Pools />
                       </RouteWrapper>
                     }
@@ -126,7 +123,7 @@ export default function App() {
                   <Route
                     path="pools/:currencyIdA/:currencyIdB"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <Pair />
                       </RouteWrapper>
                     }
@@ -134,7 +131,7 @@ export default function App() {
                   <Route
                     path="pools/mine"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <MyPairs />
                       </RouteWrapper>
                     }
@@ -142,7 +139,7 @@ export default function App() {
                   <Route
                     path="pools/create"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <AddLiquidity />
                       </RouteWrapper>
                     }
@@ -158,7 +155,7 @@ export default function App() {
                   <Route
                     path="pools/add/:currencyIdA"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <RedirectOldAddLiquidityPathStructure />
                       </RouteWrapper>
                     }
@@ -166,7 +163,7 @@ export default function App() {
                   <Route
                     path="pools/add/:currencyIdA/:currencyIdB"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <RedirectDuplicateTokenIds />
                       </RouteWrapper>
                     }
@@ -182,7 +179,7 @@ export default function App() {
                   <Route
                     path="pools/remove/:currencyIdA/:currencyIdB"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <RemoveLiquidity />
                       </RouteWrapper>
                     }
@@ -191,7 +188,7 @@ export default function App() {
                   <Route
                     path="rewards"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <Rewards />
                       </RouteWrapper>
                     }
@@ -207,7 +204,7 @@ export default function App() {
                   <Route
                     path="rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <LiquidityMiningCampaign />
                       </RouteWrapper>
                     }
@@ -215,7 +212,7 @@ export default function App() {
                   <Route
                     path="rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <LiquidityMiningCampaign />
                       </RouteWrapper>
                     }
@@ -227,7 +224,7 @@ export default function App() {
                   <Route
                     path="/liquidity-mining/create"
                     element={
-                      <RouteWrapper isBeta>
+                      <RouteWrapper>
                         <CreateLiquidityMining />
                       </RouteWrapper>
                     }
