@@ -1,8 +1,7 @@
+import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
 import { TokenMenu } from '../../../pages/TokenMenu'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
-import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
-import { MenuBar } from '../../../pages/MenuBar'
 
 describe('Swap page smoke tests', () => {
   beforeEach(() => {
@@ -108,7 +107,7 @@ describe('Swap page smoke tests', () => {
       .scrollIntoView()
       .should('be.visible')
   })
-  it.only('Should display connect button when transaction data is filled [TC-32]', () => {
+  it('Should display connect button when transaction data is filled [TC-32]', () => {
     SwapPage.openTokenToSwapMenu().chooseToken('usdc')
     SwapPage.typeValueFrom('100')
     SwapPage.getConfirmButton().should('contain.text', 'Connect wallet')
