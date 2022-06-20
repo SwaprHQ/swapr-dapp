@@ -131,26 +131,35 @@ export default function SimulateStaking({
   const maxStakedSimulatedAmount = useMemo(() => {
     const simulatedPriceAdjusted = simulatedPrice || '0'
 
-    const base = stakingCap
-      ? parseFloat(stakingCap.multiply(simulatedPriceAdjusted).toSignificant(22))
+    const stakingCapNumber = stakingCap && parseFloat(stakingCap.toExact())
+
+    const maxAmountUSD = stakingCapNumber
+      ? stakingCapNumber / parseFloat(simulatedPriceAdjusted)
       : DOLLAR_AMOUNT_MAX_SIMULATION
 
-    const baseInUsd = parseFloat(simulatedPriceAdjusted)
+    const simulatedPriceUSD = parseFloat(simulatedPriceAdjusted)
 
-    const baseValue = showUSDValue ? base : base / baseInUsd
+    const maxAmount = showUSDValue
+      ? maxAmountUSD
+      : stakingCapNumber && !showUSDValue
+      ? stakingCapNumber
+      : maxAmountUSD / simulatedPriceUSD
 
     const baseCurrency = stakeToken ? stakeToken : stakePair?.liquidityToken
 
-    if (baseCurrency && base !== 0 && baseInUsd !== 0) {
+    if (baseCurrency && ((maxAmountUSD !== 0 && simulatedPriceUSD !== 0) || stakingCap)) {
       setSimulatedStakedAmount(
         parseUnits(
-          calculatePercentage(base / baseInUsd, simulatedValuePercentage).toString(),
+          calculatePercentage(
+            stakingCapNumber ? stakingCapNumber : maxAmountUSD / simulatedPriceUSD,
+            simulatedValuePercentage
+          ).toString(),
           baseCurrency.decimals
         ).toString()
       )
     }
 
-    return calculatePercentage(baseValue, simulatedValuePercentage)
+    return calculatePercentage(maxAmount, simulatedValuePercentage)
   }, [
     setSimulatedStakedAmount,
     stakeToken,
@@ -179,7 +188,8 @@ export default function SimulateStaking({
       alignItems="center"
       padding="18px 28px"
       height="162px"
-      width="354px"
+      minWidth="330px"
+      width="48%"
     >
       <Flex width={'100%'} padding={'10px 12px'} justifyContent={'space-between'}>
         <SimulateOption
