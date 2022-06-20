@@ -88,7 +88,7 @@ export default function PairsList({ aggregatedPairs, loading, filter, singleSide
                     ? '/rewards'
                     : `/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`
                 }
-                state={isSWPRSingleSidedStake && { showSwpr: true }}
+                state={isSWPRSingleSidedStake ? { showSwpr: true } : undefined}
               >
                 <PairCard
                   token0={singleSidedStake.stakeToken}

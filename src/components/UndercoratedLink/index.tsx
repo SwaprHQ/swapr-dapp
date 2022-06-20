@@ -27,6 +27,6 @@ export const UndecoratedLink = ({ children, ...props }: UndecoratedLinkProps) =>
         </StyledLink>
       )
     default:
-      return null
+      throw new Error('UndecoratedLink props to must be an object or string')
   }
 }

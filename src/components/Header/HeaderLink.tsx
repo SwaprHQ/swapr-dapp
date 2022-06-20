@@ -97,7 +97,7 @@ export const HeaderLink = ({ id, to = '', href, disabled, children, ...navLinkPr
     )
   }
 
-  return null
+  throw new Error('Either to or href props must be provided')
 }
 
 export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...navLinkProps }: HeaderLinkProps) => {
@@ -118,5 +118,5 @@ export const HeaderMobileLink = ({ id, to = '', href, disabled, children, ...nav
     )
   }
 
-  return null
+  throw new Error('Either to or href props must be provided')
 }
