@@ -73,7 +73,6 @@ describe('Token menu smoke tests', () => {
     TokenMenu.switchTokenList('swapr-token-list')
     TokenMenu.getTokenListsRow('swapr-token-list').should('contain.text', 'OFF')
     TokenMenu.goBack()
-      .getPicker()
-      .should('contain.text', 'No results found')
+    TokenMenu.getTokenRow('eth').should('be.visible')
   })
 })

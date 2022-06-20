@@ -202,7 +202,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [transactionfull, transactionless]
+        containers:
+          [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
