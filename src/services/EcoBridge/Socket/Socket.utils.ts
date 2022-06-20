@@ -6,6 +6,34 @@ import { SupportedChainsConfig } from '../EcoBridge.types'
 import { Route, TokenPriceResponseDTO } from './api/generated'
 import { isFee, SocketWrapDirection } from './Socket.types'
 
+const OVERRIDES = [
+  {
+    chainPair: [ChainId.MAINNET, ChainId.XDAI],
+    BNativeWrapperAddressOnA: DAI[ChainId.MAINNET]?.address ?? '',
+    ANativeWrapperAddressOnB: WETH[ChainId.XDAI]?.address ?? '',
+  },
+  {
+    chainPair: [ChainId.MAINNET, ChainId.POLYGON],
+    BNativeWrapperAddressOnA: MATIC[ChainId.MAINNET]?.address ?? '',
+    ANativeWrapperAddressOnB: WETH[ChainId.POLYGON]?.address ?? '',
+  },
+  {
+    chainPair: [ChainId.XDAI, ChainId.ARBITRUM_ONE],
+    BNativeWrapperAddressOnA: WETH[ChainId.XDAI]?.address ?? '',
+    ANativeWrapperAddressOnB: DAI[ChainId.ARBITRUM_ONE]?.address ?? '',
+  },
+  {
+    chainPair: [ChainId.XDAI, ChainId.POLYGON],
+    BNativeWrapperAddressOnA: MATIC[ChainId.XDAI]?.address ?? '',
+    ANativeWrapperAddressOnB: DAI[ChainId.POLYGON]?.address ?? '',
+  },
+  {
+    chainPair: [ChainId.POLYGON, ChainId.ARBITRUM_ONE],
+    BNativeWrapperAddressOnA: WETH[ChainId.POLYGON]?.address ?? '',
+    ANativeWrapperAddressOnB: MATIC[ChainId.ARBITRUM_ONE]?.address ?? '',
+  },
+]
+
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
   if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]
 
@@ -108,6 +136,7 @@ const getOverridesForChainPair = ({
   const supportedPair = [chainA, chainB]
 
   if (!(supportedPair.includes(fromChainId) && supportedPair.includes(toChainId))) return undefined
+
   const getWrapDirection = () => {
     // Ex: Mainnet ETH => WETH Gnosis
     if (toChainId === chainB && fromAddress === fromNativeCurrency.symbol?.toLowerCase())
@@ -166,82 +195,26 @@ export const overrideTokensAddresses = ({
   fromAddress: string
 }) => {
   // No need to substitute on mainnet-arbitrum
-  const MAINNET_XDAI = [ChainId.MAINNET, ChainId.XDAI]
-  const MAINNET_POLYGON = [ChainId.MAINNET, ChainId.POLYGON]
-  const XDAI_ARBITRUM = [ChainId.XDAI, ChainId.ARBITRUM_ONE]
-  const XDAI_POLYGON = [ChainId.XDAI, ChainId.POLYGON]
-  const POLYGON_ARBITRUM = [ChainId.POLYGON, ChainId.ARBITRUM_ONE]
 
-  const onSelectedChainPair = (chainPair: ChainId[]) => chainPair.includes(fromChainId) && chainPair.includes(toChainId)
+  const resolvedOverride = OVERRIDES.find(
+    ({ chainPair }) => chainPair.includes(fromChainId) && chainPair.includes(toChainId)
+  )
 
-  const overrideBaseParams = {
+  if (!resolvedOverride) return
+
+  const { ANativeWrapperAddressOnB, BNativeWrapperAddressOnA, chainPair } = resolvedOverride
+  const [chainA, chainB] = chainPair
+
+  return getOverridesForChainPair({
     toChainId,
     fromChainId,
     fromAddress: fromAddress.toLowerCase(),
     fromNativeCurrency: Currency.getNative(fromChainId),
-  }
-
-  if (onSelectedChainPair(MAINNET_XDAI)) {
-    const [chainA, chainB] = MAINNET_XDAI
-
-    return getOverridesForChainPair({
-      ...overrideBaseParams,
-      chainA,
-      chainB,
-      BNativeWrapperAddressOnA: DAI[chainA]?.address ?? '',
-      ANativeWrapperAddressOnB: WETH[chainB]?.address ?? '',
-    })
-  }
-
-  if (onSelectedChainPair(MAINNET_POLYGON)) {
-    const [chainA, chainB] = MAINNET_POLYGON
-
-    return getOverridesForChainPair({
-      ...overrideBaseParams,
-      chainA,
-      chainB,
-      BNativeWrapperAddressOnA: MATIC[chainA]?.address,
-      ANativeWrapperAddressOnB: WETH[chainB]?.address,
-    })
-  }
-
-  if (onSelectedChainPair(XDAI_ARBITRUM)) {
-    const [chainA, chainB] = XDAI_ARBITRUM
-
-    return getOverridesForChainPair({
-      ...overrideBaseParams,
-      chainA,
-      chainB,
-      BNativeWrapperAddressOnA: WETH[chainA]?.address ?? '',
-      ANativeWrapperAddressOnB: DAI[chainB]?.address ?? '',
-    })
-  }
-
-  if (onSelectedChainPair(XDAI_POLYGON)) {
-    const [chainA, chainB] = XDAI_POLYGON
-
-    return getOverridesForChainPair({
-      ...overrideBaseParams,
-      chainA,
-      chainB,
-      BNativeWrapperAddressOnA: MATIC[chainA]?.address ?? '',
-      ANativeWrapperAddressOnB: DAI[chainB]?.address ?? '',
-    })
-  }
-
-  if (onSelectedChainPair(POLYGON_ARBITRUM)) {
-    const [chainA, chainB] = POLYGON_ARBITRUM
-
-    return getOverridesForChainPair({
-      ...overrideBaseParams,
-      chainA,
-      chainB,
-      BNativeWrapperAddressOnA: WETH[chainA]?.address ?? '',
-      ANativeWrapperAddressOnB: MATIC[chainB]?.address ?? '',
-    })
-  }
-
-  return undefined
+    chainA,
+    chainB,
+    BNativeWrapperAddressOnA,
+    ANativeWrapperAddressOnB,
+  })
 }
 
 export const VERSION = {
