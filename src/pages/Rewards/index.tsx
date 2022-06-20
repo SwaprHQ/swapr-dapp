@@ -62,6 +62,7 @@ const ButtonRow = styled(RowFixed)`
 
 export default function Rewards() {
   const router = useRouter()
+  const [search] = useSearchParams()
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
