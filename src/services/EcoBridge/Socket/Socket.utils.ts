@@ -159,30 +159,28 @@ const getOverridesForChainPair = ({
 
   const wrapDirection = getWrapDirection()
 
-  switch (wrapDirection) {
-    case SocketWrapDirection.FROM_A_NATIVE_TO_B_WRAPPED:
-      return {
-        fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-        toTokenAddressOverride: ANativeWrapperAddressOnB,
-      }
-    case SocketWrapDirection.FROM_B_WRAPPED_TO_A_NATIVE:
-      return {
-        fromTokenAddressOverride: ANativeWrapperAddressOnB,
-        toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-      }
-    case SocketWrapDirection.FROM_B_NATIVE_TO_A_WRAPPED:
-      return {
-        fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-        toTokenAddressOverride: BNativeWrapperAddressOnA,
-      }
-    case SocketWrapDirection.FROM_A_WRAPPED_TO_B_NATIVE:
-      return {
-        fromTokenAddressOverride: BNativeWrapperAddressOnA,
-        toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
-      }
-    default:
-      return undefined
+  if (!wrapDirection) return
+
+  const wrapDirectionMap = {
+    [SocketWrapDirection.FROM_A_NATIVE_TO_B_WRAPPED]: {
+      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      toTokenAddressOverride: ANativeWrapperAddressOnB,
+    },
+    [SocketWrapDirection.FROM_B_WRAPPED_TO_A_NATIVE]: {
+      fromTokenAddressOverride: ANativeWrapperAddressOnB,
+      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+    },
+    [SocketWrapDirection.FROM_B_NATIVE_TO_A_WRAPPED]: {
+      fromTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+      toTokenAddressOverride: BNativeWrapperAddressOnA,
+    },
+    [SocketWrapDirection.FROM_A_WRAPPED_TO_B_NATIVE]: {
+      fromTokenAddressOverride: BNativeWrapperAddressOnA,
+      toTokenAddressOverride: SOCKET_NATIVE_TOKEN_ADDRESS,
+    },
   }
+
+  return wrapDirectionMap[wrapDirection]
 }
 
 export const overrideTokensAddresses = ({
