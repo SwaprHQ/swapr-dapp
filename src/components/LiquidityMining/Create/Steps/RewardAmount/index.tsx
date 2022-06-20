@@ -1,7 +1,7 @@
 import { Currency, currencyEquals, TokenAmount } from '@swapr/sdk'
 
 import React, { useCallback, useMemo, useState } from 'react'
-import { Flex } from 'rebass'
+import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { Actions, ActionType, CampaignType, Reward } from '../../../../../pages/LiquidityMining/Create'
@@ -14,6 +14,8 @@ const FlexWrapper = styled(Flex)`
   width: fit-content;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap:40px;
+    justify-content: center;
+    width:100%;
   `}
 `
 interface RewardAmountProps {
