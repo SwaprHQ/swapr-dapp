@@ -3,7 +3,6 @@ import { ChainId } from '@swapr/sdk'
 
 import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { OutgoingMessageState } from 'arb-ts'
 import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
@@ -93,7 +92,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           txHash: string
           batchIndex?: string
           batchNumber?: string
-          outgoingMessageState: OutgoingMessageState
+          outgoingMessageState: L2ToL1MessageStatus
         }>
       ) => {
         const { outgoingMessageState, txHash, batchIndex, batchNumber } = action.payload
@@ -102,7 +101,7 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           id: txHash,
           changes: {
             outgoingMessageState,
-            timestampResolved: outgoingMessageState === OutgoingMessageState.EXECUTED ? now() : undefined,
+            timestampResolved: outgoingMessageState === L2ToL1MessageStatus.EXECUTED ? now() : undefined,
             batchIndex,
             batchNumber,
           },

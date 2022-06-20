@@ -1,7 +1,7 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { ChainId } from '@swapr/sdk'
 
-import { OutgoingMessageState } from 'arb-ts'
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
 import { BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 
@@ -46,7 +46,7 @@ export type ArbitrumBridgeTxn = {
   partnerTxHash?: string
   batchIndex?: string
   batchNumber?: string
-  outgoingMessageState?: OutgoingMessageState
+  outgoingMessageState?: L2ToL1MessageStatus
 }
 
 export enum BridgeTransactionStatus {

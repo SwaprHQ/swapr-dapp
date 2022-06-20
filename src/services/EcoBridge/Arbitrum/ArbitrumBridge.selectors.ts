@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { OutgoingMessageState } from 'arb-ts'
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
 import { AppState } from '../../../state'
 import {
@@ -70,7 +70,7 @@ const createSelectPendingWithdrawals = (
 
     return txs.filter(
       tx =>
-        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.outgoingMessageState !== OutgoingMessageState.EXECUTED
+        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.outgoingMessageState !== L2ToL1MessageStatus.EXECUTED
     )
   })
 
@@ -218,11 +218,11 @@ const createSelectBridgeTransactionsSummary = (
           } else {
             if (tx.receipt?.status !== 0) {
               switch (tx.outgoingMessageState) {
-                case OutgoingMessageState.CONFIRMED:
+                case L2ToL1MessageStatus.CONFIRMED:
                   summary.status = BridgeTransactionStatus.REDEEM
                   summary.timestampResolved = undefined
                   break
-                case OutgoingMessageState.EXECUTED:
+                case L2ToL1MessageStatus.EXECUTED:
                   summary.status = BridgeTransactionStatus.CLAIMED
                   break
                 default:
