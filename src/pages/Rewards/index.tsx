@@ -3,7 +3,7 @@ import { Pair } from '@swapr/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import { ChevronDown } from 'react-feather'
-import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -59,11 +59,15 @@ const ButtonRow = styled(RowFixed)`
     margin-bottom: 8px;
   `};
 `
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
 
 export default function Rewards() {
-  const router = useRouter()
-  const [search] = useSearchParams()
-  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+  const { navigate, location, searchParams: search } = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
+
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
 
@@ -85,14 +89,10 @@ export default function Rewards() {
   }, [])
 
   useEffect(() => {
-    if (
-      typeof router.location.state === 'object' &&
-      router.location.state !== null &&
-      'showSwpr' in router.location.state
-    ) {
+    if (typeof location.state === 'object' && location.state !== null && 'showSwpr' in location.state) {
       setAggregatedDataFilter(PairsFilterType.SWPR)
     }
-  }, [router])
+  }, [location])
 
   const handleModalClose = useCallback(() => {
     setOpenPairsModal(false)
@@ -100,10 +100,10 @@ export default function Rewards() {
 
   const handlePairSelect = useCallback(
     pair => {
-      router.navigate(`/rewards/${pair.token0.address}/${pair.token1.address}`)
+      navigate(`/rewards/${pair.token0.address}/${pair.token1.address}`)
       setFilterPair(pair)
     },
-    [router]
+    [navigate]
   )
   const handleFilterTokenReset = useCallback(
     e => {
@@ -111,14 +111,14 @@ export default function Rewards() {
         setAggregatedDataFilter(PairsFilterType.ALL)
         setFilterPair(null)
       })
-      router.navigate(`/rewards`)
+      navigate(`/rewards`)
       e.stopPropagation()
     },
-    [router]
+    [navigate]
   )
 
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
-    return <Navigate to={{ pathname: '/rewards', search: router.searchParams.toString() }} />
+    return <Navigate to={{ pathname: '/rewards', search: search.toString() }} />
   }
 
   return (

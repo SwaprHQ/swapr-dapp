@@ -9,14 +9,16 @@ export function useRouter() {
 
   const navigate = useCallback(
     (to: To | number, options?: NavigateOptions) => {
-      if (typeof to === 'string') {
-        return _navigate({ pathname: to, search: searchParams.toString() }, options)
-      } else if (typeof to === 'object') {
-        return _navigate({ ...to, search: searchParams.toString() }, options)
-      } else if (typeof to === 'number') {
-        return _navigate(to)
+      switch (typeof to) {
+        case 'string':
+          return _navigate({ pathname: to, search: searchParams.toString() }, options)
+        case 'object':
+          return _navigate({ ...to, search: searchParams.toString() }, options)
+        case 'number':
+          return _navigate(to)
+        default:
+          throw new Error('Invalid "to" value in navigate')
       }
-      throw new Error('Invalid "to" value in navigate')
     },
     [_navigate, searchParams]
   )

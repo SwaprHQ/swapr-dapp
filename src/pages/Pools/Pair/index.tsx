@@ -63,9 +63,14 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
 export default function Pair() {
   const { navigate, searchParams: search } = useRouter()
-  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
 
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)

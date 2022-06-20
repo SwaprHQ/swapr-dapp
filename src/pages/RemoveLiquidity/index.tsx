@@ -52,8 +52,13 @@ const StyledInternalLinkText = styled(TYPE.body)`
   text-decoration: underline;
 `
 
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
 export default function RemoveLiquidity() {
-  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
   const { navigate } = useRouter()
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]

@@ -41,9 +41,14 @@ import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../Pools/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
 export default function AddLiquidity() {
   const { navigate, location } = useRouter()
-  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()

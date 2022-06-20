@@ -17,7 +17,9 @@ const Tabs = styled.div`
   justify-content: space-evenly;
 `
 
-const StyledNavLink = styled(({ isActive: _, ...rest }) => <NavLink {...rest} />)<{ isActive: boolean }>`
+const StyledNavLink = styled(NavLink).withConfig({
+  shouldForwardProp: prop => !['isActive'].includes(prop),
+})<{ isActive: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   justify-content: center;
@@ -62,13 +64,13 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'bridge' })
 
   return (
     <Tabs style={{ marginBottom: '20px', display: 'none' }}>
-      <StyledNavLink id={`swap-nav-link`} to={'/swap'} isActive={active === 'swap'}>
+      <StyledNavLink id="swap-nav-link" to="/swap" isActive={active === 'swap'}>
         {t('swap')}
       </StyledNavLink>
-      <StyledNavLink id={`bridge-nav-link`} to={'/bridge'} isActive={active === 'bridge'}>
+      <StyledNavLink id="bridge-nav-link" to="/bridge" isActive={active === 'bridge'}>
         {t('bridge')}
       </StyledNavLink>
-      <StyledNavLink id={`pool-nav-link`} to={'/pools'} isActive={active === 'pool'}>
+      <StyledNavLink id="pool-nav-link" to="/pools" isActive={active === 'pool'}>
         {t('pool')}
       </StyledNavLink>
     </Tabs>

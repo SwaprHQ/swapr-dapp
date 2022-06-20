@@ -13,18 +13,20 @@ interface UndecoratedLinkProps extends LinkProps {
 
 export const UndecoratedLink = ({ children, ...props }: UndecoratedLinkProps) => {
   const [search] = useSearchParams()
-  if (typeof props.to === 'string') {
-    return (
-      <StyledLink {...props} to={{ pathname: props.to, search: search.toString() }}>
-        {children}
-      </StyledLink>
-    )
-  } else if (typeof props.to === 'object') {
-    return (
-      <StyledLink {...props} to={{ ...props.to, search: search.toString() }}>
-        {children}
-      </StyledLink>
-    )
+  switch (typeof props.to) {
+    case 'string':
+      return (
+        <StyledLink {...props} to={{ pathname: props.to, search: search.toString() }}>
+          {children}
+        </StyledLink>
+      )
+    case 'object':
+      return (
+        <StyledLink {...props} to={{ ...props.to, search: search.toString() }}>
+          {children}
+        </StyledLink>
+      )
+    default:
+      return null
   }
-  return null
 }

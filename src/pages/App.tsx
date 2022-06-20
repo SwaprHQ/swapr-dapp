@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import React, { ReactElement, Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Route, Routes } from 'react-router-dom'
 import { Slide, ToastContainer } from 'react-toastify'
@@ -74,7 +74,7 @@ const Marginer = styled.div`
 /**
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
  */
-const RouteWrapper = ({ children }: { children: ReactElement }) => {
+const RouteWrapper = ({ children }: { children: JSX.Element }) => {
   const { chainId } = useActiveWeb3React()
   // If all features are available, render the route
   if (chainSupportsSWPR(chainId)) {
@@ -217,9 +217,6 @@ export default function App() {
                       </RouteWrapper>
                     }
                   />
-
-                  {/* <Route   path="/governance" element={<RouteWrapper></RouteWrapper><GovPages/>} /> */}
-                  {/* <Route   path="/governance/:asset/pairs" element={<RouteWrapper></RouteWrapper><GovPages/>} /> */}
 
                   <Route
                     path="/liquidity-mining/create"

@@ -270,7 +270,7 @@ function Header() {
         }
       />
       <HeaderRow isDark={isDark}>
-        <Title to={'/swap'}>
+        <Title to="/swap">
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
