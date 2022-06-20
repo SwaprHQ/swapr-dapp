@@ -65,7 +65,8 @@ export function Pair({
         {correctLogo()}
         <Flex flexDirection="column">
           <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
-            {unwrappedToken(token0)?.symbol}/{!isSingleSidedStakingCampaign && unwrappedToken(token1)?.symbol}
+            {unwrappedToken(token0)?.symbol}
+            {!isSingleSidedStakingCampaign && `/${unwrappedToken(token1)?.symbol}`}
           </EllipsizedText>
         </Flex>
       </FlexWrapper>
