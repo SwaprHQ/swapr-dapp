@@ -65,7 +65,6 @@ export default function Rewards() {
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
-  const [search] = useSearchParams()
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
@@ -118,7 +117,7 @@ export default function Rewards() {
   )
 
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
-    return <Navigate to={{ pathname: '/rewards', search: search.toString() }} />
+    return <Navigate to={{ pathname: '/rewards', search: router.searchParams.toString() }} />
   }
 
   return (

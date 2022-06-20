@@ -1,6 +1,7 @@
+import { useRouter } from 'hooks/useRouter'
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { Navigate, NavLink, useLocation, useParams, useSearchParams } from 'react-router-dom'
+import { Navigate, NavLink, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -44,13 +45,12 @@ const ButtonRow = styled(RowFixed)`
 
 export default function LiquidityMiningCampaign() {
   const { account } = useActiveWeb3React()
-  const [search] = useSearchParams()
+  const { location, searchParams: search } = useRouter()
   const { liquidityMiningCampaignId, currencyIdA, currencyIdB } = useParams<{
     currencyIdA: string
     currencyIdB?: string
     liquidityMiningCampaignId: string
   }>()
-  const location = useLocation()
 
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)

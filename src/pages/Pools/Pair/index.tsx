@@ -1,7 +1,8 @@
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -63,9 +64,9 @@ const ButtonRow = styled(RowFixed)`
 `
 
 export default function Pair() {
-  const navigate = useNavigate()
-  const [search] = useSearchParams()
+  const { navigate, searchParams: search } = useRouter()
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
