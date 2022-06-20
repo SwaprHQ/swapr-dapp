@@ -2,9 +2,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
@@ -41,8 +42,7 @@ import { Dots, Wrapper } from '../Pools/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 
 export default function AddLiquidity() {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { navigate, location } = useRouter()
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useTheme()

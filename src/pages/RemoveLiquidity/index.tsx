@@ -4,9 +4,10 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
@@ -53,7 +54,7 @@ const StyledInternalLinkText = styled(TYPE.body)`
 
 export default function RemoveLiquidity() {
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()

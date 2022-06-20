@@ -1,8 +1,9 @@
+import { useRouter } from 'hooks/useRouter'
 import { darken } from 'polished'
 import React from 'react'
 import { ArrowLeft } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 import QuestionHelper from '../QuestionHelper'
@@ -75,7 +76,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'bridge' })
 }
 
 export function FindPoolTabs() {
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
   return (
     <Tabs>
       <RowBetween mb="16px">
@@ -88,7 +89,7 @@ export function FindPoolTabs() {
 }
 
 export function AddRemoveTabs({ adding, creating }: { adding: boolean; creating: boolean }) {
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
   return (
     <Tabs>
       <RowBetween mb="16px">

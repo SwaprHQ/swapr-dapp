@@ -1,8 +1,8 @@
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ChevronLeft, Repeat } from 'react-feather'
-import { useNavigate } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
@@ -60,7 +60,7 @@ interface PairViewProps {
 }
 
 function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
   const { chainId, account } = useActiveWeb3React()
   const previousChainId = usePrevious(chainId)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()

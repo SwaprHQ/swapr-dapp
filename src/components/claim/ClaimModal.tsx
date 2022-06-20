@@ -1,8 +1,8 @@
 import { TokenAmount } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -36,7 +36,7 @@ export default function ClaimModal({
   stakedAmount?: string | null
   singleSidedCampaignLink?: string
 }) {
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
   const open = useShowClaimPopup()
 
   const wrappedOnDismiss = useCallback(() => {

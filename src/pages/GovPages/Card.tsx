@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
@@ -68,7 +68,7 @@ export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   const doubleCurrencyLogoSize = 26.88
 
   const theme = useTheme()
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
 
   const onClick = () => {
     navigate(`/governance/${currency.symbol}/pairs`, {

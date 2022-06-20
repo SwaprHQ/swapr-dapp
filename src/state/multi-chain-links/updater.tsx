@@ -23,7 +23,6 @@ export default function Updater(): null {
   // - If the user lands on a Swapr link without a chain id set in the URL, we set it up for him depending on
   //   the selected network (whether the user has a connected wallet or not).
   useEffect(() => {
-    debugger
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
