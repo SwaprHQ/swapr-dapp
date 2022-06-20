@@ -27,7 +27,7 @@ export interface CurrencyInputPanelProps {
   currencyWrapperSource?: CurrencyWrapperSource
   displayedValue?: string
   setDisplayedValue?: (val: string) => void
-  maxAmount?: string
+  maxAmount?: CurrencyAmount
 }
 
 export type CurrencyViewProps = Pick<

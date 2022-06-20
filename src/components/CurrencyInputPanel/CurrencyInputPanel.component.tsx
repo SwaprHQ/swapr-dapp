@@ -95,7 +95,7 @@ export const CurrencyInputPanelComponent = ({
 
   const handleOnUserInput = useCallback(
     (value: string) => {
-      if (maxAmount === value) setIsMaxAmount(true)
+      if (maxAmount?.toExact() === value) setIsMaxAmount(true)
       else setIsMaxAmount(false)
 
       onUserInput(value)
