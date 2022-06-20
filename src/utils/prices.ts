@@ -12,6 +12,7 @@ import {
   Price,
   TokenAmount,
   Trade,
+  UniswapTrade,
   UniswapV2Trade,
   ZERO,
 } from '@swapr/sdk'
@@ -69,6 +70,8 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
   } else if (trade instanceof CurveTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+  } else if (trade instanceof UniswapTrade) {
+    realizedLPFee = trade.fee
   }
 
   // remove lp fees from price impact
@@ -217,7 +220,8 @@ export const limitNumberOfDecimalPlaces = (
 ): string | undefined => {
   if (!value || value.equalTo(ZERO)) return undefined
   if (value instanceof CurrencyAmount && value.currency.decimals < significantDigits)
-    significantDigits = value.currency.decimals
+    significantDigits =
+      typeof value.currency.decimals === 'string' ? parseInt(value.currency.decimals) : value.currency.decimals
 
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })

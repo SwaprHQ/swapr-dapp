@@ -36,6 +36,15 @@ export interface RetryOptions {
  * @param minWait min wait between retries in ms
  * @param maxWait max wait between retries in ms
  */
+
+type ErrorWithRetryable = {
+  isRetryableError: boolean
+}
+
+function isRetryableError(error: unknown): error is ErrorWithRetryable {
+  return (typeof error === 'object' && error && 'isRetryableError' in error) ?? false
+}
+
 export function retry<T>(
   fn: () => Promise<T>,
   { n, minWait, maxWait }: RetryOptions
@@ -57,7 +66,8 @@ export function retry<T>(
         if (completed) {
           break
         }
-        if (n <= 0 || !error.isRetryableError) {
+
+        if (n <= 0 || !isRetryableError(error) || !error.isRetryableError) {
           reject(error)
           completed = true
           break

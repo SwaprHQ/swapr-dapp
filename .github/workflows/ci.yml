@@ -132,6 +132,8 @@ jobs:
           node-version: '16'
 
       - name: Build app
+        env:
+          REACT_APP_ETHERSCAN_API_KEY: ${{ secrets.REACT_APP_ETHERSCAN_API_KEY }}
         run: yarn ipfs-build
 
       - name: Compress build artifact

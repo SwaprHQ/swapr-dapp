@@ -1,3 +1,5 @@
+import { MenuBar } from './MenuBar'
+
 export class TransactionSettings {
   static visitTransactionSettingsPage() {
     cy.visit('/#/swap')
@@ -47,5 +49,22 @@ export class TransactionSettings {
   static typeSlippageTolerance(value: string) {
     this.getSlippageToleranceField().type(value)
     return this
+  }
+  static setMultihopOff() {
+    cy.get('[data-testid=multihop-icon]').trigger('mouseover')
+    cy.get('[data-testid=popover]')
+      .contains('Multihop')
+      .then(element => {
+        if (element.text() == 'Multihop enabled') {
+          MenuBar.getSettings().click()
+          cy.get('[data-testid=toggle-off]')
+            .first()
+            .click()
+          TransactionSettings.closeModal()
+        }
+      })
+  }
+  static closeModal() {
+    cy.get('body').click(0, 0)
   }
 }

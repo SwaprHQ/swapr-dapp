@@ -154,8 +154,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
-const TextWrapper = styled(Text)<{ color: keyof Colors }>`
-  color: ${({ color, theme }) => (theme as any)[color]};
+const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`
+  color: ${({ color, theme }) => theme[color]};
 `
 
 export const TYPE = {
@@ -172,7 +172,7 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} color={'white'} {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text5'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={14} lineHeight="20px" color={'text5'} {...props} />
   },
   largeHeader(props: TextProps) {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
@@ -390,6 +390,7 @@ body {
 
 .custom-toast-root {
     margin-top: 86px;
+    min-width: 350px;
 }
 
 .custom-toast-container {
@@ -401,19 +402,13 @@ body {
     padding: 4px 8px;
 }
 
+.custom-toast-body a{
+  font-size: 14px;
+}
+
 .Toastify__toast {
     min-height: auto !important;
-    padding: 16px;
-}
-
-.Toastify__toast-body {
-    margin: 0 !important;
-}
-
-.Toastify__close-button {
-  position: absolute;
-  right: 12px;
-  top: 12px;
+    padding: 8px 10px 12px 4px;
 }
 
 .Toastify__toast--info {
@@ -496,17 +491,17 @@ body {
 
 
 
-@keyframes loading-rotations-7 {
+@keyframes loading-rotations-3 {
   0% {
     opacity:1;
   }
-  6.25% {
+  22% {
     opacity:1;
   }
-  12.5% {
+  34% {
     opacity:0;
   }
-  93.75% {
+  88% {
     opacity:0;
   }
   100% {
@@ -514,17 +509,89 @@ body {
   }
 }
 
-@keyframes loading-rotations-3 {
+@keyframes loading-rotations-4 {
   0% {
     opacity:1;
   }
   17% {
     opacity:1;
   }
-  34% {
+  25% {
     opacity:0;
   }
-  84% {
+  91% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes loading-rotations-5 {
+  0% {
+    opacity:1;
+  }
+  13% {
+    opacity:1;
+  }
+  20% {
+    opacity:0;
+  }
+  93% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes loading-rotations-6 {
+  0% {
+    opacity:1;
+  }
+  11% {
+    opacity:1;
+  }
+  17% {
+    opacity:0;
+  }
+  94% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes loading-rotations-7 {
+  0% {
+    opacity:1;
+  }
+  9.5% {
+    opacity:1;
+  }
+  14.2% {
+    opacity:0;
+  }
+  95% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@keyframes loading-rotations-8 {
+  0% {
+    opacity:1;
+  }
+  8.33% {
+    opacity:1;
+  }
+  12.5% {
+    opacity:0;
+  }
+  96% {
     opacity:0;
   }
   100% {
@@ -550,6 +617,93 @@ body {
 
 .loading-button>div>div{
   padding: 0px 5px;
+}
+
+.loading-rotation-3>div {
+  animation-name: loading-rotations-3;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 6s;
+}
+
+.loading-rotation-3>div:nth-of-type(1) {
+  animation-delay: 4s;
+}
+.loading-rotation-3>div:nth-of-type(2) {
+  animation-delay: 2s;
+}
+.loading-rotation-3>div:nth-of-type(3) {
+  animation-delay: 0s;
+}
+
+.loading-rotation-4>div {
+  animation-name: loading-rotations-4;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 8s;
+}
+
+.loading-rotation-4>div:nth-of-type(1) {
+  animation-delay: 6s;
+}
+.loading-rotation-4>div:nth-of-type(2) {
+  animation-delay: 4s;
+}
+.loading-rotation-4>div:nth-of-type(3) {
+  animation-delay: 2s;
+}
+.loading-rotation-4>div:nth-of-type(4) {
+  animation-delay: 0s;
+}
+
+
+.loading-rotation-5>div {
+  animation-name: loading-rotations-5;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+}
+
+.loading-rotation-5>div:nth-of-type(1) {
+  animation-delay: 8s;
+}
+.loading-rotation-5>div:nth-of-type(2) {
+  animation-delay: 6s;
+}
+.loading-rotation-5>div:nth-of-type(3) {
+  animation-delay: 4s;
+}
+.loading-rotation-5>div:nth-of-type(4) {
+  animation-delay: 2s;
+}
+.loading-rotation-5>div:nth-of-type(5) {
+  animation-delay: 0s;
+}
+
+.loading-rotation-6>div {
+  animation-name: loading-rotations-6;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 12s;
+}
+
+.loading-rotation-6>div:nth-of-type(1) {
+  animation-delay: 10s;
+}
+.loading-rotation-6>div:nth-of-type(2) {
+  animation-delay: 8s;
+}
+.loading-rotation-6>div:nth-of-type(3) {
+  animation-delay: 6s;
+}
+.loading-rotation-6>div:nth-of-type(4) {
+  animation-delay: 4s;
+}
+.loading-rotation-6>div:nth-of-type(5) {
+  animation-delay: 2s;
+}
+.loading-rotation-6>div:nth-of-type(6) {
+  animation-delay: 0s;
 }
 
 .loading-rotation-7>div {
@@ -581,20 +735,35 @@ body {
   animation-delay: 0s;
 }
 
-.loading-rotation-3>div {
-  animation-name: loading-rotations-3;
+.loading-rotation-8>div {
+  animation-name: loading-rotations-8;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  animation-duration: 6s;
+  animation-duration: 16s;
 }
 
-.loading-rotation-3>div:nth-of-type(1) {
+.loading-rotation-8>div:nth-of-type(1) {
+  animation-delay: 14s;  
+}
+.loading-rotation-8>div:nth-of-type(2) {
+  animation-delay: 12s;  
+}
+.loading-rotation-8>div:nth-of-type(3) {
+  animation-delay: 10s;  
+}
+.loading-rotation-8>div:nth-of-type(4) {
+  animation-delay: 8s;  
+}
+.loading-rotation-8>div:nth-of-type(5) {
+  animation-delay: 6s;
+}
+.loading-rotation-8>div:nth-of-type(6) {
   animation-delay: 4s;
 }
-.loading-rotation-3>div:nth-of-type(2) {
+.loading-rotation-8>div:nth-of-type(7) {
   animation-delay: 2s;
 }
-.loading-rotation-3>div:nth-of-type(3) {
+.loading-rotation-8>div:nth-of-type(8) {
   animation-delay: 0s;
 }
 `
