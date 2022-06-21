@@ -96,7 +96,7 @@ export function Pair({
                 ? formatCurrencyAmount(volume24hUSD).split('.')[0]
                 : dayLiquidity
                 ? dayLiquidity
-                : '-'
+                : '0'
             }`}
           />
         </Flex40>
