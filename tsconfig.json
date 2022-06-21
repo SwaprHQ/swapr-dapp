@@ -27,12 +27,15 @@
     "allowSyntheticDefaultImports": true,
     "types": [
       "jest"
-    ]
+    ],
+    "sourceMap": true,
+    "baseUrl": "src"
   },
   "exclude": [
     "node_modules",
     "cypress",
-    "./src/services/EcoBridge/Socket/api/generated"
+    "./src/services/EcoBridge/Socket/api/generated",
+    "build"
   ],
   "include": [
     "./src/**/*.ts",

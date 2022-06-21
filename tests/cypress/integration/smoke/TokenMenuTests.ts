@@ -4,7 +4,7 @@ import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Token menu smoke tests', () => {
-  const TYPING_DELAY = 110
+  const TYPING_DELAY = 200
   beforeEach(() => {
     SwapPage.visitSwapPage()
     TransactionHelper.waitForTokenLists()
