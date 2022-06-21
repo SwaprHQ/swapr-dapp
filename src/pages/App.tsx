@@ -1,7 +1,8 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import React, { Suspense, useEffect } from 'react'
+import FallbackLoader from 'components/Loader/FallbackLoader'
+import React, { lazy, Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Route, Routes } from 'react-router-dom'
 import { Slide, ToastContainer } from 'react-toastify'
@@ -14,19 +15,21 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
-import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import Bridge from './Bridge'
-import CreateLiquidityMining from './LiquidityMining/Create'
-import Pools from './Pools'
-import LiquidityMiningCampaign from './Pools/LiquidityMiningCampaign'
-import MyPairs from './Pools/Mine'
-import Pair from './Pools/Pair'
-import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
-import Rewards from './Rewards'
+// Dont want to lazy import swap
 import Swap from './Swap'
 import { RedirectToSwap } from './Swap/redirects'
+
+const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
+const Pools = lazy(() => import(/* webpackPrefetch: true */ './Pools'))
+const LiquidityMiningCampaign = lazy(() => import(/* webpackPrefetch: true */ './Pools/LiquidityMiningCampaign'))
+const Pair = lazy(() => import(/* webpackPrefetch: true */ './Pools/Pair'))
+const MyPairs = lazy(() => import(/* webpackPrefetch: true */ './Pools/Mine'))
+const Bridge = lazy(() => import(/* webpackPrefetch: true */ './Bridge'))
+const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './AddLiquidity'))
+const RemoveLiquidity = lazy(() => import(/* webpackPrefetch: true */ './RemoveLiquidity'))
+const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './LiquidityMining/Create'))
 
 const AppWrapper = styled.div`
   display: flex;
@@ -107,129 +110,131 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper>
               <Web3ReactManager>
-                <Routes>
-                  <Route path="swap" element={<Swap />} />
-                  <Route path="swap/:outputCurrency" element={<RedirectToSwap />} />
-                  <Route path="bridge" element={<Bridge />} />
+                <Suspense fallback={<FallbackLoader />}>
+                  <Routes>
+                    <Route path="swap" element={<Swap />} />
+                    <Route path="swap/:outputCurrency" element={<RedirectToSwap />} />
+                    <Route path="bridge" element={<Bridge />} />
 
-                  <Route
-                    path="pools"
-                    element={
-                      <RouteWrapper>
-                        <Pools />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/:currencyIdA/:currencyIdB"
-                    element={
-                      <RouteWrapper>
-                        <Pair />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/mine"
-                    element={
-                      <RouteWrapper>
-                        <MyPairs />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/create"
-                    element={
-                      <RouteWrapper>
-                        <AddLiquidity />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/add"
-                    element={
-                      <RouteWrapper>
-                        <AddLiquidity />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/add/:currencyIdA"
-                    element={
-                      <RouteWrapper>
-                        <RedirectOldAddLiquidityPathStructure />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/add/:currencyIdA/:currencyIdB"
-                    element={
-                      <RouteWrapper>
-                        <RedirectDuplicateTokenIds />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/remove/:tokens"
-                    element={
-                      <RouteWrapper>
-                        <RedirectOldRemoveLiquidityPathStructure />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="pools/remove/:currencyIdA/:currencyIdB"
-                    element={
-                      <RouteWrapper>
-                        <RemoveLiquidity />
-                      </RouteWrapper>
-                    }
-                  />
+                    <Route
+                      path="pools"
+                      element={
+                        <RouteWrapper>
+                          <Pools />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/:currencyIdA/:currencyIdB"
+                      element={
+                        <RouteWrapper>
+                          <Pair />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/mine"
+                      element={
+                        <RouteWrapper>
+                          <MyPairs />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/create"
+                      element={
+                        <RouteWrapper>
+                          <AddLiquidity />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/add"
+                      element={
+                        <RouteWrapper>
+                          <AddLiquidity />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/add/:currencyIdA"
+                      element={
+                        <RouteWrapper>
+                          <RedirectOldAddLiquidityPathStructure />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/add/:currencyIdA/:currencyIdB"
+                      element={
+                        <RouteWrapper>
+                          <RedirectDuplicateTokenIds />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/remove/:tokens"
+                      element={
+                        <RouteWrapper>
+                          <RedirectOldRemoveLiquidityPathStructure />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="pools/remove/:currencyIdA/:currencyIdB"
+                      element={
+                        <RouteWrapper>
+                          <RemoveLiquidity />
+                        </RouteWrapper>
+                      }
+                    />
 
-                  <Route
-                    path="rewards"
-                    element={
-                      <RouteWrapper>
-                        <Rewards />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="rewards/:currencyIdA/:currencyIdB"
-                    element={
-                      <RouteWrapper>
-                        <Rewards />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
-                    element={
-                      <RouteWrapper>
-                        <LiquidityMiningCampaign />
-                      </RouteWrapper>
-                    }
-                  />
-                  <Route
-                    path="rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
-                    element={
-                      <RouteWrapper>
-                        <LiquidityMiningCampaign />
-                      </RouteWrapper>
-                    }
-                  />
+                    <Route
+                      path="rewards"
+                      element={
+                        <RouteWrapper>
+                          <Rewards />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="rewards/:currencyIdA/:currencyIdB"
+                      element={
+                        <RouteWrapper>
+                          <Rewards />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
+                      element={
+                        <RouteWrapper>
+                          <LiquidityMiningCampaign />
+                        </RouteWrapper>
+                      }
+                    />
+                    <Route
+                      path="rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
+                      element={
+                        <RouteWrapper>
+                          <LiquidityMiningCampaign />
+                        </RouteWrapper>
+                      }
+                    />
 
-                  <Route
-                    path="/liquidity-mining/create"
-                    element={
-                      <RouteWrapper>
-                        <CreateLiquidityMining />
-                      </RouteWrapper>
-                    }
-                  />
+                    <Route
+                      path="/liquidity-mining/create"
+                      element={
+                        <RouteWrapper>
+                          <CreateLiquidityMining />
+                        </RouteWrapper>
+                      }
+                    />
 
-                  <Route path="send" element={<RedirectToSwap />} />
-                  <Route path="*" element={<RedirectToSwap />} />
-                </Routes>
+                    <Route path="send" element={<RedirectToSwap />} />
+                    <Route path="*" element={<RedirectToSwap />} />
+                  </Routes>
+                </Suspense>
               </Web3ReactManager>
               <Marginer />
             </BodyWrapper>
