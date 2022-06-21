@@ -2,7 +2,6 @@ import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -283,10 +282,9 @@ function validatedRecipient(recipient: any): string | null {
   return null
 }
 
-export function queryParametersToSwapState(
-  parsedQs: ParsedQs,
-  nativeCurrencyId: string
-): {
+type SearchParams = { [k: string]: string }
+
+type QueryParametersToSwapStateResponse = {
   independentField: Field
   typedValue: string
   [Field.INPUT]: {
@@ -296,7 +294,12 @@ export function queryParametersToSwapState(
     currencyId: string | undefined
   }
   recipient: string | null
-} {
+}
+
+export function queryParametersToSwapState(
+  parsedQs: SearchParams,
+  nativeCurrencyId: string
+): QueryParametersToSwapStateResponse {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency, nativeCurrencyId)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency, nativeCurrencyId)
   if (inputCurrency === outputCurrency) {
