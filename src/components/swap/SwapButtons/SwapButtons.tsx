@@ -1,5 +1,4 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
-import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -114,11 +113,9 @@ export function SwapButtons({
   }
 
   if (isGnosisProtocolTradeRequireWrap) {
-    const midCurrency = trade && wrappedAmount(trade.inputAmount, trade.chainId).currency
     if (gnosisProtocolTradeState === GnosisProtocolTradeState.UNKNOWN)
       setGnosisProtocolState(GnosisProtocolTradeState.WRAP)
     const isApprovalRequired = approval !== ApprovalState.APPROVED
-    const width = showApproveFlow && isApprovalRequired ? '31%' : '48%'
 
     const isSwapDisabled =
       !isValid ||
@@ -127,60 +124,57 @@ export function SwapButtons({
       gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP
 
     return (
-      <RowBetween>
-        {
-          <ButtonConfirmed
-            onClick={onWrap}
-            disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP || wrapState === WrapState.PENDING}
-            width={width}
-            altDisabledStyle={wrapState !== WrapState.UNKNOWN}
-            confirmed={wrapState === WrapState.WRAPPED}
-          >
-            {wrapState === WrapState.PENDING ? (
-              <AutoRow gap="6px" justify="center">
-                Wrapping <Loader />
-              </AutoRow>
-            ) : wrapState === WrapState.WRAPPED ? (
-              'Wrapped'
-            ) : (
-              'Wrap ' + currencies[Field.INPUT]?.symbol
-            )}
-          </ButtonConfirmed>
-        }
+      <>
+        <RowBetween gap={24}>
+          {
+            <ButtonConfirmed
+              padding={'8px'}
+              onClick={onWrap}
+              disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP || wrapState === WrapState.PENDING}
+              altDisabledStyle={wrapState !== WrapState.UNKNOWN}
+              confirmed={wrapState === WrapState.WRAPPED}
+            >
+              {wrapState === WrapState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Wrapping <Loader />
+                </AutoRow>
+              ) : (
+                '1. Wrap ' + currencies[Field.INPUT]?.symbol
+              )}
+            </ButtonConfirmed>
+          }
 
-        {// If the EOA needs to approve the wrapped token
-        showApproveFlow && isApprovalRequired && (
           <ButtonConfirmed
+            confirmed={!(showApproveFlow && isApprovalRequired)}
+            padding={'8px'}
             onClick={handleGPApproveClick}
             disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.APPROVAL || approvalSubmitted}
-            width={width}
             altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
           >
             {approval === ApprovalState.PENDING ? (
               <AutoRow gap="6px" justify="center">
                 Approving <Loader />
               </AutoRow>
-            ) : approvalSubmitted ? (
-              'Approved'
             ) : (
-              'Approve ' + midCurrency?.symbol
+              '2. Approve'
             )}
           </ButtonConfirmed>
-        )}
-        <SwapButton
-          onClick={onSwapClick}
-          width={width}
-          id="swap-button"
-          disabled={isSwapDisabled}
-          platformName={trade?.platform.name}
-          priceImpactSeverity={priceImpactSeverity}
-          isExpertMode={isExpertMode}
-        >
-          {priceImpactSeverity > 3 && !isExpertMode
-            ? t('PriceImpactHigh')
-            : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
-        </SwapButton>
-      </RowBetween>
+        </RowBetween>
+        <RowBetween>
+          <SwapButton
+            onClick={onSwapClick}
+            id="swap-button"
+            disabled={isSwapDisabled}
+            platformName={trade?.platform.name}
+            priceImpactSeverity={priceImpactSeverity}
+            isExpertMode={isExpertMode}
+          >
+            {priceImpactSeverity > 3 && !isExpertMode
+              ? t('PriceImpactHigh')
+              : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
+          </SwapButton>
+        </RowBetween>
+      </>
     )
   }
 
