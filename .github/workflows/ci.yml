@@ -199,6 +199,7 @@ jobs:
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+      PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
