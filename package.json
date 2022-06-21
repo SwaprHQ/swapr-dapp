@@ -20,7 +20,9 @@
     "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
-    "test": "react-scripts test --env=jsdom"
+    "test": "react-scripts test --env=jsdom",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.20.0",
@@ -28,6 +30,7 @@
     "ansi-html": "^0.0.8",
     "ansi-regex": "^5.0.1",
     "axios": "^0.21.2",
+    "babel-loader": "8.1.0",
     "browserslist": "^4.16.5",
     "dns-packet": "^1.3.2",
     "glob-parent": "^5.1.2",
@@ -47,7 +50,7 @@
     "trim": "^0.0.3",
     "underscore": "^1.12.1",
     "url-parse": "^1.5.9",
-    "ws": "^7.4.6",
+    "ws": "^8.8.0",
     "@types/react": "^16.9.34"
   },
   "dependencies": {
@@ -122,6 +125,14 @@
     "wcag-contrast": "^3.0.0"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22",
+    "@storybook/node-logger": "^6.4.22",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.22",
+    "@storybook/testing-library": "^0.0.11",
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
@@ -155,6 +166,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-storybook": "^0.5.12",
     "mochawesome": "^7.1.3",
     "mochawesome-merge": "^4.2.1",
     "mochawesome-report-generator": "^6.1.1",
