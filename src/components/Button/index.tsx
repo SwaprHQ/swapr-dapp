@@ -17,7 +17,7 @@ interface BaseProps {
   altDisabledStyle?: boolean
 }
 
-const Base = styled(RebassButton)<BaseProps>`
+export const Base = styled(RebassButton)<BaseProps>`
   padding: ${({ padding }) => (padding ? padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
   font-weight: 600;

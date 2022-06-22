@@ -82,6 +82,13 @@ export function shortenAddress(address: string, charsBefore = 4, charsAfter = 4)
   return `${parsed.substring(0, charsBefore + 2)}...${parsed.substring(42 - charsAfter)}`
 }
 
+//get component name with spacing between camel case
+export function componentName(component: React.FunctionComponent): string {
+  const componentName = component.displayName
+  if (componentName) return componentName.replace(/([a-z])([A-Z])/g, '$1 $2')
+  return ''
+}
+
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))

@@ -63,6 +63,7 @@
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",
     "@react-spring/web": "^9.2.4",
+    "@react-theming/storybook-addon": "^1.1.6",
     "@reduxjs/toolkit": "^1.6.1",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
