@@ -1,6 +1,6 @@
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { StyledComponent } from 'styled-components'
 
 import { componentName } from '../../utils'
 
@@ -48,7 +48,8 @@ const StyledButtonsArray = [
 
 export default {
   title: 'Components/Button',
-} as ComponentMeta
+} as ComponentMeta<typeof Base>
+
 const Wrapper = styled.div`
   flex-wrap: wrap;
   display: flex;
@@ -56,7 +57,7 @@ const Wrapper = styled.div`
 `
 const Template = () => (
   <Wrapper>
-    {StyledButtonsArray.map(Component => (
+    {StyledButtonsArray.map((Component: any) => (
       <Component style={{ width: 'auto' }} key={Component.index}>
         {componentName(Component)}
       </Component>
