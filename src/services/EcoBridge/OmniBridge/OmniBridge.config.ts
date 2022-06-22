@@ -1,4 +1,4 @@
-import { Mode, OmnibridgeConfig, OmnibridgeOverrides } from './OmniBridge.types'
+import { ConfigPerChain, Mode, OmnibridgeConfig, OmnibridgeOverrides } from './OmniBridge.types'
 
 //official OmniBridge config
 export const ETH_XDAI_BRIDGE_CONFIG = {
@@ -16,6 +16,15 @@ export const ETH_XDAI_BRIDGE_CONFIG = {
   ambLiveMonitorPrefix: 'https://alm-xdai.herokuapp.com',
   claimDisabled: false,
   tokensClaimDisabled: [],
+}
+
+export const defaultTokensUrl: ConfigPerChain = {
+  100: 'https://tokens.honeyswap.org',
+  1: 'https://tokens.uniswap.org',
+}
+
+export const nativeCurrencyMediators: ConfigPerChain = {
+  1: '0xa6439ca0fcba1d0f80df0be6a17220fed9c9038a'.toLowerCase(),
 }
 
 const OWLTokenOverride = {
