@@ -1,16 +1,37 @@
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
-import { ChainId } from '@swapr/sdk'
+import { ChainId, MULTICALL2_ABI, MULTICALL2_ADDRESS } from '@swapr/sdk'
 
 import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
-import { formatUnits } from 'ethers/lib/utils'
+import { BytesLike, formatUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
 
 import { WETH_GNOSIS_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { ERC20_BYTES32_ABI } from '../../../constants/abis/erc20'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { EcoBridgeProviders } from '../EcoBridge.types'
-import { BRIDGE_CONFIG, OVERRIDES } from './OmniBridge.config'
 import {
-  ConfigPerChain,
+  AMB_INTERFACE_VERISON_ABI,
+  DEDICATED_MEDIATOR_TOKEN_ABI,
+  FEE_MANAGER_CALCULATE_ABI,
+  FEE_MANAGER_REWARD_ADDRESS_ABI,
+  FEE_MANAGER_TYPE_ABI,
+  FOREIGN_AMB_ABI,
+  HOME_AMB_ABI,
+  HOME_MEDIATOR_ABI,
+  MEDIATOR_ABI,
+  MEDIATOR_DEDICATED_ERC20_ABI,
+  MEDIATOR_ERC20_ABI,
+  MEDIATOR_ERC677_TOKEN_ABI,
+  MEDIATOR_TOKEN_ABI,
+  MESSAGE_AFFIRMATION_ABI,
+  MESSAGE_CALL_STATUS_ABI,
+  MESSAGE_SIGNATURES_ABI,
+  NATIVE_ABI,
+  REQUIRED_BLOCKS_ABI,
+} from './abis/abi'
+import { BRIDGE_CONFIG, nativeCurrencyMediators, OVERRIDES } from './OmniBridge.config'
+import {
   Mode,
   OmnibridgeExecution,
   OmnibridgeRequest,
@@ -18,21 +39,7 @@ import {
   OmnibridgeTokenWithAddressAndChain,
 } from './OmniBridge.types'
 
-//constants
-export const defaultTokensUrl: ConfigPerChain = {
-  100: 'https://tokens.honeyswap.org',
-  1: 'https://tokens.uniswap.org',
-}
-
-export const nativeCurrencyMediators: ConfigPerChain = {
-  1: '0xa6439ca0fcba1d0f80df0be6a17220fed9c9038a'.toLowerCase(),
-}
-
-export const VERSION = {
-  major: 1,
-  minor: 0,
-  patch: 0,
-}
+const bytesTerminator = '0x0000000000000000000000000000000000000000000000000000000000000020'
 
 //subgraph
 export const getGraphEndpoint = (chainId: ChainId, direction: string) => {
@@ -53,7 +60,7 @@ export const QUERY_ETH_PRICE = gql`
 `
 
 //error message
-export const getErrorMsg = (error: any) => {
+export const getErrorMessage = (error: any) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
   }
@@ -132,11 +139,9 @@ export const fetchMode = async (
   const { chainId, address } = token
   const mediatorAddress = getMediatorAddressWithoutOverride(bridgeDirection, chainId)
 
-  const abi = ['function nativeTokenAddress(address) view returns (address)']
-
   if (!mediatorAddress) return
 
-  const mediatorContract = new Contract(mediatorAddress, abi, provider)
+  const mediatorContract = new Contract(mediatorAddress, MEDIATOR_ABI, provider)
   const nativeTokenAddress = await mediatorContract.nativeTokenAddress(address)
 
   if (nativeTokenAddress === ZERO_ADDRESS) return Mode.ERC20
@@ -152,12 +157,10 @@ export const fetchTokenName = async (
   let tokenName = token.name || ''
 
   try {
-    const stringAbi = ['function name() view returns (string)']
-    const tokenContractString = new Contract(token.address, stringAbi, provider)
+    const tokenContractString = new Contract(token.address, ERC20_ABI, provider)
     tokenName = await tokenContractString.name()
   } catch {
-    const bytes32Abi = ['function name() view returns (bytes32)']
-    const tokenContractBytes32 = new Contract(token.address, bytes32Abi, provider)
+    const tokenContractBytes32 = new Contract(token.address, ERC20_BYTES32_ABI, provider)
     tokenName = utils.parseBytes32String(await tokenContractBytes32.name())
   }
   return tokenName
@@ -189,43 +192,56 @@ export const getMediatorAddress = (bridgeDirection: string, token: OmnibridgeTok
   return getMediatorAddressWithoutOverride(bridgeDirection, token.chainId)
 }
 
-//fetch toToken details
-const fetchTokenDetailsString = async (token: OmnibridgeTokenWithAddressAndChain, provider?: Provider) => {
-  const abi = [
-    'function decimals() view returns (uint8)',
-    'function symbol() view returns (string)',
-    'function name() view returns (string)',
-  ]
-  const tokenContract = new Contract(token.address, abi, provider)
+const multicallCache = new Map<ChainId, Contract>()
 
-  const [name, symbol, decimals] = await Promise.all([
-    tokenContract.name() as string,
-    tokenContract.symbol() as string,
-    tokenContract.decimals() as number,
-  ])
+const fetchTokenDetailsStringAndBytes = async (
+  token: OmnibridgeTokenWithAddressAndChain,
+  provider?: Provider
+): Promise<{ name: string; symbol: string; decimals: number }> => {
+  const contract = new Contract(token.address, ERC20_ABI, provider)
+  const contractBytes = new Contract(token.address, ERC20_BYTES32_ABI, provider)
 
-  return { name, symbol, decimals }
-}
+  const coders = [contract, contractBytes].reduce<{
+    callData: { target: string; callData: string }[]
+    decoders: ((result: BytesLike[]) => utils.Result)[]
+  }>(
+    (total, contract) => {
+      ;['name', 'symbol', 'decimals'].forEach(name => {
+        total.callData.push({ target: contract.address, callData: contract.interface.encodeFunctionData(name) })
+        total.decoders.push((result: BytesLike[]) => contract.interface.decodeFunctionResult(name, result[1]))
+      })
+      return total
+    },
+    { callData: [], decoders: [] }
+  )
 
-const fetchTokenDetailsBytes32 = async (token: OmnibridgeTokenWithAddressAndChain, provider?: Provider) => {
-  const abi = [
-    'function decimals() view returns (uint8)',
-    'function symbol() view returns (bytes32)',
-    'function name() view returns (bytes32)',
-  ]
+  let multicall: Contract | undefined
 
-  const tokenContract = new Contract(token.address, abi, provider)
+  if (multicallCache.has(token.chainId)) {
+    multicall = multicallCache.get(token.chainId) as Contract
+  } else {
+    multicall = new Contract(MULTICALL2_ADDRESS[token.chainId], MULTICALL2_ABI, provider)
+    multicallCache.set(token.chainId, multicall)
+  }
 
-  const [name, symbol, decimals] = await Promise.all([
-    tokenContract.name() as string,
-    tokenContract.symbol() as string,
-    tokenContract.decimals() as number,
-  ])
+  const multicallData = await multicall.callStatic.tryAggregate(false, coders.callData)
 
-  return {
-    name: utils.parseBytes32String(name),
-    symbol: utils.parseBytes32String(symbol),
-    decimals,
+  const decodedData: [BytesLike[]] = multicallData.map((res: BytesLike[], index: number) => coders.decoders[index](res))
+
+  const [name, symbol, decimals, nameBytes, symbolBytes, decimalsBytes] = decodedData.flat()
+
+  if (nameBytes === bytesTerminator && symbolBytes === bytesTerminator) {
+    return {
+      name: name.toString(),
+      symbol: symbol.toString(),
+      decimals: Number(decimals),
+    }
+  } else {
+    return {
+      name: utils.parseBytes32String(nameBytes as BytesLike),
+      symbol: utils.parseBytes32String(symbolBytes as BytesLike),
+      decimals: Number(decimalsBytes),
+    }
   }
 }
 
@@ -233,13 +249,11 @@ const fetchTokenDetailsFromContract = async (
   token: OmnibridgeTokenWithAddressAndChain,
   provider?: Provider
 ): Promise<{ name: string; symbol: string; decimals: number }> => {
-  let details = { name: '', symbol: '', decimals: 0 }
   try {
-    details = await fetchTokenDetailsString(token, provider)
-  } catch {
-    details = await fetchTokenDetailsBytes32(token, provider)
+    return await fetchTokenDetailsStringAndBytes(token, provider)
+  } catch (e) {
+    return { name: '', symbol: '', decimals: 0 }
   }
-  return details
 }
 
 export const fetchTokenDetails = async (
@@ -309,23 +323,18 @@ const fetchToTokenDetails = async (
 
   if (!fromMediatorAddress || !toMediatorAddress) return
 
-  const abi = [
-    'function isRegisteredAsNativeToken(address) view returns (bool)',
-    'function bridgedTokenAddress(address) view returns (address)',
-    'function nativeTokenAddress(address) view returns (address)',
-  ]
-  const fromMediatorContract = new Contract(fromMediatorAddress, abi, fromEthersProvider)
+  const fromMediatorContract = new Contract(fromMediatorAddress, MEDIATOR_ABI, fromEthersProvider)
+
   const isNativeToken = await fromMediatorContract.isRegisteredAsNativeToken(fromTokenAddress)
 
   if (isNativeToken) {
-    const toMediatorContract = new Contract(toMediatorAddress, abi, toEthersProvider)
+    const toMediatorContract = new Contract(toMediatorAddress, MEDIATOR_ABI, toEthersProvider)
 
     const toAddress = await toMediatorContract.bridgedTokenAddress(fromTokenAddress)
 
     const toName = await getToName(fromToken, toChainId, toAddress, toEthersProvider)
 
-    const abiDecimals = ['function decimals() view returns(uint)']
-    const decimals = await new Contract(toAddress, abiDecimals, toEthersProvider).decimals()
+    const decimals = await new Contract(toAddress, ERC20_ABI, toEthersProvider).decimals()
 
     return {
       name: toName,
@@ -341,8 +350,7 @@ const fetchToTokenDetails = async (
 
   const toName = await getToName(fromToken, toChainId, toAddress, toEthersProvider)
 
-  const abiDecimals = ['function decimals() view returns(uint)']
-  const decimals = await new Contract(toAddress, abiDecimals, toEthersProvider).decimals()
+  const decimals = await new Contract(toAddress, ERC20_ABI, toEthersProvider).decimals()
 
   return {
     name: toName,
@@ -372,15 +380,9 @@ const processMediatorData = async (
   direction: string,
   provider?: Provider
 ): Promise<{ feeManagerAddress: string; currentDay: BigNumber } | undefined> => {
-  const abi = [
-    'function getCurrentDay() view returns (uint256)',
-    'function feeManager() public view returns (address)',
-    'function getBridgeInterfacesVersion() external pure returns (uint64, uint64, uint64)',
-  ]
-
   const { homeMediatorAddress } = BRIDGE_CONFIG[direction]
 
-  const mediatorContract = new Contract(homeMediatorAddress, abi, provider)
+  const mediatorContract = new Contract(homeMediatorAddress, HOME_MEDIATOR_ABI, provider)
 
   const [interfaceVersion, currentDay] = await Promise.all([
     mediatorContract.getBridgeInterfacesVersion() as BigNumber[],
@@ -403,8 +405,7 @@ export const checkRewardAddress = async (
   account: string,
   provider?: Provider
 ): Promise<boolean> => {
-  const abi = ['function isRewardAddress(address) view returns (bool)']
-  const feeManagerContract = new Contract(feeManagerAddress, abi, provider)
+  const feeManagerContract = new Contract(feeManagerAddress, FEE_MANAGER_REWARD_ADDRESS_ABI, provider)
 
   return await feeManagerContract.isRewardAddress(account)
 }
@@ -412,18 +413,13 @@ export const checkRewardAddress = async (
 export const calculateFees = async (direction: string, provider?: Provider) => {
   if (!provider) return
   try {
-    const abi = [
-      'function FOREIGN_TO_HOME_FEE() view returns (bytes32)',
-      'function HOME_TO_FOREIGN_FEE() view returns (bytes32)',
-    ]
-
     const mediatorData = await processMediatorData(direction, provider)
 
     if (!mediatorData) return
 
     const { feeManagerAddress, currentDay } = mediatorData
 
-    const feeManagerContract = new Contract(feeManagerAddress, abi, provider)
+    const feeManagerContract = new Contract(feeManagerAddress, FEE_MANAGER_TYPE_ABI, provider)
 
     const [foreignToHomeFee, homeToForeignFee] = await Promise.all<string>([
       feeManagerContract.FOREIGN_TO_HOME_FEE(),
@@ -449,17 +445,16 @@ export const fetchToAmount = async (
 
   const { homeChainId, homeMediatorAddress } = BRIDGE_CONFIG[direction]
 
-  const isHome = homeChainId === toToken.chainId
-  const tokenAddress = isHome ? toToken.address : fromToken.address
-  const mediatorAddress = isHome ? toToken.mediator : fromToken.mediator
+  const isHomeChainId = homeChainId === toToken.chainId
+  const tokenAddress = isHomeChainId ? toToken.address : fromToken.address
+  const mediatorAddress = isHomeChainId ? toToken.mediator : fromToken.mediator
 
   if (mediatorAddress !== homeMediatorAddress) {
     return fromAmount
   }
 
   try {
-    const abi = ['function calculateFee(bytes32, address, uint256) view returns (uint256)']
-    const feeManagerContract = new Contract(feeManagerAddress, abi, provider)
+    const feeManagerContract = new Contract(feeManagerAddress, FEE_MANAGER_CALCULATE_ABI, provider)
 
     const fee = await feeManagerContract.calculateFee(feeType, tokenAddress, fromAmount)
 
@@ -478,8 +473,7 @@ export const fetchAllowance = async (
   if (address === ZERO_ADDRESS || !mediator || mediator === ZERO_ADDRESS || !provider) return
 
   try {
-    const abi = ['function allowance(address, address) view returns (uint256)']
-    const tokenContract = new Contract(address, abi, provider)
+    const tokenContract = new Contract(address, ERC20_ABI, provider)
     return tokenContract.allowance(account, mediator)
   } catch (e) {
     return
@@ -491,8 +485,7 @@ export const approveToken = async (
   amount: string,
   signer?: Signer
 ): Promise<ContractTransaction> => {
-  const abi = ['function approve(address, uint256)']
-  const tokenContract = new Contract(address, abi, signer)
+  const tokenContract = new Contract(address, ERC20_ABI, signer)
   return tokenContract.approve(mediator, amount)
 }
 
@@ -510,23 +503,11 @@ export const fetchTokenLimits = async (
   const toProvider = staticProviders[toToken.chainId]
   const isDedicatedMediatorToken = token.mediator !== getMediatorAddressWithoutOverride(direction, token.chainId)
 
-  const abi = isDedicatedMediatorToken
-    ? [
-        'function minPerTx() view returns (uint256)',
-        'function executionMaxPerTx() view returns (uint256)',
-        'function executionDailyLimit() view returns (uint256)',
-        'function totalExecutedPerDay(uint256) view returns (uint256)',
-      ]
-    : [
-        'function minPerTx(address) view returns (uint256)',
-        'function executionMaxPerTx(address) view returns (uint256)',
-        'function executionDailyLimit(address) view returns (uint256)',
-        'function totalExecutedPerDay(address, uint256) view returns (uint256)',
-      ]
+  const ABI = isDedicatedMediatorToken ? DEDICATED_MEDIATOR_TOKEN_ABI : MEDIATOR_TOKEN_ABI
 
   try {
-    const mediatorContract = new Contract(token.mediator, abi, fromProvider)
-    const toMediatorContract = new Contract(toToken.mediator, abi, toProvider)
+    const mediatorContract = new Contract(token.mediator, ABI, fromProvider)
+    const toMediatorContract = new Contract(toToken.mediator, ABI, toProvider)
 
     const [minPerTx, executionMaxPerTx, executionDailyLimit, totalExecutedPerDay] = isDedicatedMediatorToken
       ? await Promise.all<BigNumber>([
@@ -558,7 +539,7 @@ export const relayTokens = async (
   token: { address: string; mode: Mode; mediator: string },
   receiver: string,
   amount: string,
-  { shouldReceiveNativeCur, foreignChainId }: { shouldReceiveNativeCur: boolean; foreignChainId: ChainId }
+  { shouldReceiveNativeCurrency, foreignChainId }: { shouldReceiveNativeCurrency: boolean; foreignChainId: ChainId }
 ): Promise<ContractTransaction> => {
   const { mode, mediator, address } = token
 
@@ -566,29 +547,25 @@ export const relayTokens = async (
 
   switch (mode) {
     case Mode.NATIVE: {
-      const abi = ['function wrapAndRelayTokens(address _receiver) public payable']
-      const helperContract = new Contract(helperContractAddress, abi, signer)
+      const helperContract = new Contract(helperContractAddress, NATIVE_ABI, signer)
       return helperContract.wrapAndRelayTokens(receiver, { value: amount })
     }
     case Mode.ERC677: {
-      const abi = ['function transferAndCall(address, uint256, bytes)']
-      const tokenContract = new Contract(address, abi, signer)
+      const tokenContract = new Contract(address, MEDIATOR_ERC677_TOKEN_ABI, signer)
       const foreignHelperContract = nativeCurrencyMediators[foreignChainId || 1]
       const bytesData =
-        shouldReceiveNativeCur && foreignHelperContract
+        shouldReceiveNativeCurrency && foreignHelperContract
           ? `${foreignHelperContract}${receiver.replace('0x', '')}`
           : receiver
       return tokenContract.transferAndCall(mediator, amount, bytesData)
     }
     case Mode.DEDICATED_ERC20: {
-      const abi = ['function relayTokens(address, uint256)']
-      const mediatorContract = new Contract(mediator, abi, signer)
+      const mediatorContract = new Contract(mediator, MEDIATOR_DEDICATED_ERC20_ABI, signer)
       return mediatorContract.relayTokens(receiver, amount)
     }
     case Mode.ERC20:
     default: {
-      const abi = ['function relayTokens(address, address, uint256)']
-      const mediatorContract = new Contract(mediator, abi, signer)
+      const mediatorContract = new Contract(mediator, MEDIATOR_ERC20_ABI, signer)
       return mediatorContract.relayTokens(token.address, receiver, amount)
     }
   }
@@ -649,8 +626,7 @@ export const getTransactionStatus = (
 
 //collect
 export const requiredSignatures = async (homeAmbAddress: string, homeProvider: Provider) => {
-  const abi = ['function requiredSignatures() public view returns (uint256)']
-  const ambContract = new Contract(homeAmbAddress, abi, homeProvider)
+  const ambContract = new Contract(homeAmbAddress, HOME_AMB_ABI, homeProvider)
   const numRequired = await ambContract.requiredSignatures()
   const signatures = Number.parseInt(numRequired.toString(), 10)
 
@@ -658,7 +634,7 @@ export const requiredSignatures = async (homeAmbAddress: string, homeProvider: P
 }
 
 export const getMessageData = async (
-  isHome: boolean,
+  isHomeChainId: boolean,
   provider: Provider,
   txHash: string,
   txReceipt?: TransactionReceipt
@@ -666,9 +642,8 @@ export const getMessageData = async (
   messageId: string
   messageData: string
 }> => {
-  const abi = isHome
-    ? new utils.Interface(['event UserRequestForSignature(bytes32 indexed messageId, bytes encodedData)'])
-    : new utils.Interface(['event UserRequestForAffirmation(bytes32 indexed messageId, bytes encodedData)'])
+  const ABI = isHomeChainId ? MESSAGE_SIGNATURES_ABI : MESSAGE_AFFIRMATION_ABI
+
   let receipt = txReceipt
   if (!receipt) {
     try {
@@ -680,13 +655,14 @@ export const getMessageData = async (
   if (!receipt || !receipt.logs) {
     throw Error('No transaction found.')
   }
-  const eventFragment = abi.events[Object.keys(abi.events)[0]]
-  const eventTopic = abi.getEventTopic(eventFragment)
+  const eventFragment = ABI.events[Object.keys(ABI.events)[0]]
+  const eventTopic = ABI.getEventTopic(eventFragment)
   const event = receipt.logs.find(e => e.topics[0] === eventTopic)
+
   if (!event) {
     throw Error('It is not a bridge transaction. Specify hash of a transaction sending tokens to the bridge.')
   }
-  const decodedLog = abi.decodeEventLog(eventFragment, event.data, event.topics)
+  const decodedLog = ABI.decodeEventLog(eventFragment, event.data, event.topics)
 
   return {
     messageId: decodedLog.messageId,
@@ -695,38 +671,31 @@ export const getMessageData = async (
 }
 
 export const getMessage = async (
-  isHome: boolean,
-  ambAddress: string,
+  isHomeChainId: boolean,
   txHash: string,
-  provider: Provider
+  provider: Provider,
+  ambContract: Contract
 ): Promise<{
   messageData: string
   signatures: string[]
   messageId: string
 }> => {
-  const { messageId, messageData } = await getMessageData(isHome, provider, txHash)
+  const { messageId, messageData } = await getMessageData(isHomeChainId, provider, txHash)
   const messageHash = utils.solidityKeccak256(['bytes'], [messageData])
 
-  const abi = [
-    'function isAlreadyProcessed(uint256 _number) public pure returns (bool)',
-    'function requiredSignatures() public view returns (uint256)',
-    'function numMessagesSigned(bytes32 _message) public view returns (uint256)',
-    'function signature(bytes32 _hash, uint256 _index) public view returns (bytes)',
-  ]
-  const ambContract = new Contract(ambAddress, abi, provider)
   const [requiredSignatures, numMessagesSigned] = await Promise.all([
     ambContract.requiredSignatures(),
     ambContract.numMessagesSigned(messageHash),
   ])
 
-  const isEnoughCollected = await ambContract.isAlreadyProcessed(numMessagesSigned)
+  const isEnoughCollected = await ambContract?.isAlreadyProcessed(numMessagesSigned)
   if (!isEnoughCollected) {
     throw Error('Not enough collected signatures')
   }
   const signatures = await Promise.all(
     Array(requiredSignatures.toNumber())
       .fill(null)
-      .map((_item, index) => ambContract.signature(messageHash, index))
+      .map((_item, index) => ambContract?.signature(messageHash, index))
   )
   return {
     messageData,
@@ -740,8 +709,7 @@ export const messageCallStatus = async (
   messageId: string,
   provider: Provider
 ): Promise<boolean> => {
-  const abi = ['function messageCallStatus(bytes32 _messageId) public view returns (bool)']
-  const ambContract = new Contract(ambAddress, abi, provider)
+  const ambContract = new Contract(ambAddress, MESSAGE_CALL_STATUS_ABI, provider)
   const claimed: boolean = await ambContract.messageCallStatus(messageId)
   return claimed
 }
@@ -777,11 +745,7 @@ export const executeSignatures = async (
   { messageData, signatures }: { messageData: string; signatures: string[] },
   signer: Signer
 ): Promise<ContractTransaction> => {
-  const abi = [
-    'function executeSignatures(bytes messageData, bytes signatures) external',
-    'function safeExecuteSignaturesWithAutoGasLimit(bytes _data, bytes _signatures) external',
-  ]
-  const ambContract = new Contract(address, abi, signer)
+  const ambContract = new Contract(address, FOREIGN_AMB_ABI, signer)
 
   let executeSignaturesFunc = ambContract.executeSignatures
   if (version > '5.6.0') {
@@ -801,8 +765,8 @@ export const fetchAmbVersion = async (address: string, provider: Provider) => {
   if (!provider) {
     return '0.0.0'
   }
-  const abi = ['function getBridgeInterfacesVersion() external pure returns (uint64, uint64, uint64)']
-  const ambContract = new Contract(address, abi, provider)
+
+  const ambContract = new Contract(address, AMB_INTERFACE_VERISON_ABI, provider)
   const ambVersion: BigNumber[] = await ambContract.getBridgeInterfacesVersion()
 
   return ambVersion.map(v => v.toNumber()).join('.')
@@ -826,8 +790,7 @@ export const timeout = (ms: number, promise: Promise<any>): Promise<TransactionR
   })
 
 export const fetchConfirmations = async (address: string, provider: Provider) => {
-  const abi = ['function requiredBlockConfirmations() view returns (uint256)']
-  const ambContract = new Contract(address, abi, provider)
+  const ambContract = new Contract(address, REQUIRED_BLOCKS_ABI, provider)
   const requiredConfirmations = await ambContract.requiredBlockConfirmations()
 
   return parseInt(requiredConfirmations, 10)
