@@ -85,7 +85,7 @@ function TransactionSubmittedContent({
       ? getGnosisProtocolExplorerOrderLink(chainId, hash)
       : getExplorerLink(chainId, hash, 'transaction'))
 
-  const externalLinkText = `${isGnosisProtocolTrade ? t('viewOnGnosisBlockExplorer') : t('viewOnBlockExplorer')}`
+  const externalLinkText = `${isGnosisProtocolTrade ? t('viewOnCowExplorer') : t('viewOnBlockExplorer')}`
   const explorerExternalLink = chainId && hash && (
     <ExternalLink href={link as string}>
       <Text fontWeight={500} fontSize="13px">

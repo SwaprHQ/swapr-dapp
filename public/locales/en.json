@@ -139,10 +139,8 @@
   "bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
   "showMore": "Show more",
-  "gnosisProtocolExplorer": "Gnosis Protocol Explorer",
-  "blockExplorer": "Block Explorer",
   "findingBestPrice": "Finding best price",
   "viewOnBlockExplorer": "View on Block Explorer",
-  "viewOnGnosisBlockExplorer": "View on Gnosis Block Explorer",
+  "viewOnCowExplorer": "View on Cow Protocol Explorer",
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer"
 }
