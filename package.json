@@ -89,7 +89,7 @@
     "i18next-xhr-backend": "^2.0.1",
     "lodash.flatmap": "^4.5.0",
     "luxon": "^1.25.0",
-    "merkletreejs": "^0.2.18",
+    "merkletreejs": "^0.2.32",
     "multicodec": "^2.0.0",
     "multiformats": "^9.4.10",
     "multihashes": "^3.0.1",
