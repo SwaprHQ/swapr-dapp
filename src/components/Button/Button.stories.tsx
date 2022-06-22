@@ -6,6 +6,7 @@ import { componentName } from '../../utils'
 
 import {
   AddSWPRToMetamaskButton,
+  Base,
   ButtonConfirmed,
   ButtonDark1,
   ButtonDark2,
@@ -25,6 +26,7 @@ import {
 } from '.'
 
 const StyledButtonsArray = [
+  Base,
   ButtonPrimary,
   ButtonSecondary,
   ButtonGrey,
@@ -46,8 +48,7 @@ const StyledButtonsArray = [
 
 export default {
   title: 'Components/Button',
-  component: ButtonPrimary,
-} as ComponentMeta<typeof ButtonPrimary>
+} as ComponentMeta
 const Wrapper = styled.div`
   flex-wrap: wrap;
   display: flex;
@@ -56,7 +57,7 @@ const Wrapper = styled.div`
 const Template = () => (
   <Wrapper>
     {StyledButtonsArray.map(Component => (
-      <Component style={{ width: '160px' }} key={Component.index}>
+      <Component style={{ width: 'auto' }} key={Component.index}>
         {componentName(Component)}
       </Component>
     ))}
