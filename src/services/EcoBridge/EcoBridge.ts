@@ -13,6 +13,7 @@ export class EcoBridge {
   public readonly store: EcoBridgeConstructorParams['store']
   public readonly bridges: { [k in BridgeList]: EcoBridgeChildBase }
   private _initialized = false
+  private _asyncInit: { promise: Promise<void>; resolve: () => void }
   private _account: string | undefined
   private _activeChainId: ChainId | undefined // Assumed that activeChainId === activeProvider.getChain(), so if activeChain changes then signer changes
 
@@ -55,6 +56,17 @@ export class EcoBridge {
     this.bridges = bridges
 
     this.staticProviders = initiateEcoBridgeProviders()
+
+    let resolve = () => undefined as void
+
+    const promise = new Promise<void>(res => {
+      resolve = res
+    })
+
+    this._asyncInit = {
+      promise,
+      resolve,
+    }
   }
 
   public updateSigner = async (signerData: Omit<EcoBridgeChangeHandler, 'previousChainId'>) => {
@@ -69,6 +81,8 @@ export class EcoBridge {
   }
 
   public fetchDynamicLists = async () => {
+    await this._asyncInit.promise
+
     const fetchDynamicListsCall = (bridgeKey: BridgeList) => this.bridges[bridgeKey].fetchDynamicLists()
 
     await this._callForEachBridge(fetchDynamicListsCall, 'fetchDynamicList() failed for')
@@ -94,6 +108,7 @@ export class EcoBridge {
     await this._callForEachBridge(staticListsCall, 'fetchStaticLists() failed for')
 
     this._initialized = true
+    this._asyncInit.resolve()
   }
 
   public getSupportedBridges = () => {

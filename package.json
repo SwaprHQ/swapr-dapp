@@ -21,7 +21,8 @@
     "codegen:socket": "cross-env TARGET=src/services/EcoBridge/Socket/api/generated PROPERTIES='typescriptThreePlus=true' yarn codegen:execute",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
-    "test": "react-scripts test --env=jsdom"
+    "test": "react-scripts test --env=jsdom",
+    "prepare": "husky install"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.20.0",
@@ -89,14 +90,12 @@
     "i18next-xhr-backend": "^2.0.1",
     "lodash.flatmap": "^4.5.0",
     "luxon": "^1.25.0",
-    "merkletreejs": "^0.2.18",
+    "merkletreejs": "^0.2.32",
     "multicodec": "^2.0.0",
     "multiformats": "^9.4.10",
     "multihashes": "^3.0.1",
     "node-vibrant": "^3.1.5",
     "polished": "^3.3.2",
-    "qs": "^6.9.4",
-    "query-string": "^6.13.8",
     "rc-pagination": "^3.1.9",
     "rc-texty": "^0.2.0",
     "react": "^16.13.1",
@@ -110,7 +109,7 @@
     "react-loading-skeleton": "2.2.0",
     "react-popper": "^2.2.5",
     "react-redux": "^7.2.4",
-    "react-router-dom": "^5.0.0",
+    "react-router-dom": "^6.3.0",
     "react-toastify": "^7.0.4",
     "react-use": "^15.3.3",
     "react-virtualized-auto-sizer": "^1.0.6",
@@ -156,6 +155,8 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.4.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^13.0.2",
     "mochawesome": "^7.1.3",
     "mochawesome-merge": "^4.2.1",
     "mochawesome-report-generator": "^6.1.1",
@@ -163,6 +164,6 @@
     "react-error-overlay": "6.0.9",
     "react-scripts": "4.0.3",
     "serve": "^11.3.2",
-    "typescript": "^3.8.3"
+    "typescript": "^4.7.3"
   }
 }

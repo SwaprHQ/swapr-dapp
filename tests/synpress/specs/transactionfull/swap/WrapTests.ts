@@ -27,7 +27,7 @@ describe('Wrapping tests', () => {
   after(() => {
     cy.resetMetamaskAccount()
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.wait(500)
+    cy.wait(1000)
   })
 
   it('Should wrap ETH to WETH [TC-03]', () => {

@@ -19,6 +19,15 @@ import { Call, parseCallKey } from './utils'
  * @param chunk chunk of calls to make
  * @param blockNumber block number passed as the block tag in the eth_call
  */
+type ErrorWithMessageAndCode = {
+  code: number
+  message: string
+}
+
+function isErrorWithMessageAndCode(error: unknown): error is ErrorWithMessageAndCode {
+  return (typeof error === 'object' && error && ('message' in error || 'code' in error)) ?? false
+}
+
 async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: number): Promise<string[]> {
   try {
     const { returnData } = await multicall.callStatic.aggregate(
@@ -30,8 +39,10 @@ async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: numbe
     )
     return returnData
   } catch (error) {
-    if (error.code === -32000 || error.message?.indexOf('header not found') !== -1) {
-      throw new RetryableError(`header not found for block number ${blockNumber}`)
+    if (isErrorWithMessageAndCode(error)) {
+      if (error.code === -32000 || error.message?.indexOf('header not found') !== -1) {
+        throw new RetryableError(`header not found for block number ${blockNumber}`)
+      }
     }
     console.error('Failed to fetch chunk', error)
     throw error
