@@ -190,6 +190,8 @@ jobs:
           step: finish
           token: ${{secrets.GITHUB_TOKEN}}
           status: ${{job.status}}
+          env: ${{ steps.deployment.outputs.env }}
+          auto_inactive: true
           deployment_id: ${{steps.deployment.outputs.deployment_id}}
           env_url: 'https://${{steps.web3.outputs.cid}}.ipfs.dweb.link'
 
@@ -203,8 +205,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [transactionfull, transactionless]
+        containers: [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
