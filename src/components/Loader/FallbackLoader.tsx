@@ -37,7 +37,7 @@ interface FallbackLoaderProps {
   fill?: boolean
   height?: string
 }
-const FallbackLoader = ({ fill, height }: FallbackLoaderProps) => {
+export function FallbackLoader({ fill, height }: FallbackLoaderProps) {
   useEffect(() => {
     new Image().src = Logo
   }, [])
@@ -49,5 +49,3 @@ const FallbackLoader = ({ fill, height }: FallbackLoaderProps) => {
     </Wrapper>
   )
 }
-
-export default FallbackLoader

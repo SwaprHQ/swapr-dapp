@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import FallbackLoader from 'components/Loader/FallbackLoader'
+import { FallbackLoader } from 'components/Loader/FallbackLoader'
 import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
@@ -14,7 +14,7 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
-import Routes from './Routes'
+import { Routes } from './Routes'
 
 const AppWrapper = styled.div`
   display: flex;

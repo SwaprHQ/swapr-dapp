@@ -32,7 +32,7 @@ const RouteWrapper = ({ element }: { element: JSX.Element }) => {
   return <RedirectToSwap />
 }
 
-export default function Routes() {
+export function Routes() {
   return (
     <Switch>
       <Route path="swap" element={<Swap />} />
