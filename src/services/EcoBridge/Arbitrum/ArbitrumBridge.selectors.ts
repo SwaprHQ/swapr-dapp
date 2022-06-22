@@ -70,7 +70,7 @@ const createSelectPendingWithdrawals = (
 
     return txs.filter(
       tx =>
-        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.outgoingMessageState !== L2ToL1MessageStatus.EXECUTED
+        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.l2ToL1MessageStatus !== L2ToL1MessageStatus.EXECUTED
     )
   })
 
@@ -217,7 +217,7 @@ const createSelectBridgeTransactionsSummary = (
             summary.status = BridgeTransactionStatus.LOADING
           } else {
             if (tx.receipt?.status !== 0) {
-              switch (tx.outgoingMessageState) {
+              switch (tx.l2ToL1MessageStatus) {
                 case L2ToL1MessageStatus.CONFIRMED:
                   summary.status = BridgeTransactionStatus.REDEEM
                   summary.timestampResolved = undefined

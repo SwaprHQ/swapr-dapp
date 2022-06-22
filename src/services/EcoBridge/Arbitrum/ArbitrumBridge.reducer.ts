@@ -90,20 +90,16 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         action: PayloadAction<{
           chainId: ChainId
           txHash: string
-          batchIndex?: string
-          batchNumber?: string
-          outgoingMessageState: L2ToL1MessageStatus
+          l2ToL1MessageStatus: L2ToL1MessageStatus
         }>
       ) => {
-        const { outgoingMessageState, txHash, batchIndex, batchNumber } = action.payload
+        const { l2ToL1MessageStatus, txHash } = action.payload
 
         arbitrumTransactionsAdapter.updateOne(state.transactions, {
           id: txHash,
           changes: {
-            outgoingMessageState,
-            timestampResolved: outgoingMessageState === L2ToL1MessageStatus.EXECUTED ? now() : undefined,
-            batchIndex,
-            batchNumber,
+            l2ToL1MessageStatus,
+            timestampResolved: l2ToL1MessageStatus === L2ToL1MessageStatus.EXECUTED ? now() : undefined,
           },
         })
       },

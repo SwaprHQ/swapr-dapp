@@ -46,7 +46,7 @@ export type ArbitrumBridgeTxn = {
   partnerTxHash?: string
   batchIndex?: string
   batchNumber?: string
-  outgoingMessageState?: L2ToL1MessageStatus
+  l2ToL1MessageStatus?: L2ToL1MessageStatus
 }
 
 export enum BridgeTransactionStatus {
