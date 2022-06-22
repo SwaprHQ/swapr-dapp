@@ -373,6 +373,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
                     isFallbackFiatValue={isFallbackFiatValueInput}
+                    maxAmount={maxAmountInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -402,6 +403,7 @@ export default function Swap() {
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
                     isFallbackFiatValue={isFallbackFiatValueOutput}
+                    maxAmount={maxAmountOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />

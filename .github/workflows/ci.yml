@@ -199,10 +199,12 @@ jobs:
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+      PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
-        containers: [transactionfull, transactionless]
+        containers:
+          [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3

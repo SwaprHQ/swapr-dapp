@@ -179,6 +179,7 @@ export function SwapPlatformSelector({
                 key={trade.platform.name}
                 isSelected={selectedTrade?.platform.name === trade.platform.name}
                 onClick={() => handleSelectedTradeOverride(trade.platform.name)}
+                data-testid={`${trade.platform.name.replace(/\s+/g, '-').toLowerCase()}-platform-selector`}
               >
                 <SelectionListName
                   flex={showGasFees ? '30%' : '45%'}
