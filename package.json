@@ -149,7 +149,7 @@
     "cypress": "^9.5.3",
     "cypress-localstorage-commands": "^1.7.0",
     "cypress-mochawesome-reporter": "^3.1.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
