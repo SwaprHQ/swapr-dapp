@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@3.5.1
+        uses: rlespinasse/github-slug-action@4.2.5
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Node.js
@@ -25,7 +25,7 @@ jobs:
           check-latest: true
           cache: 'yarn'
       - name: Start Deployment
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v1.3.0
         id: deployment
         with:
           step: start
@@ -38,13 +38,13 @@ jobs:
       - name: Build
         run: yarn ipfs-build
       - name: Deploy to IPFS
-        uses: web3-storage/add-to-web3@v1
+        uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
           path_to_add: 'build'
       - name: Update Deployment Status
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v1.3.0
         if: always()
         with:
           step: finish
