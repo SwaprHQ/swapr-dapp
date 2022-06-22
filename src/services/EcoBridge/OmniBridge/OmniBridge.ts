@@ -3,7 +3,7 @@ import { ChainId, Currency } from '@swapr/sdk'
 
 import { schema, TokenList } from '@uniswap/token-lists'
 import Ajv from 'ajv'
-import { BigNumber } from 'ethers'
+import { BigNumber, Contract } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { request } from 'graphql-request'
 
@@ -21,7 +21,8 @@ import {
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
-import { BRIDGE_CONFIG } from './OmniBridge.config'
+import { HOME_AMB_ABI } from './abis/abi'
+import { BRIDGE_CONFIG, defaultTokensUrl } from './OmniBridge.config'
 import { omniBridgeActions } from './OmniBridge.reducers'
 import { omniBridgeSelectors } from './OmniBridge.selectors'
 import {
@@ -36,7 +37,6 @@ import {
   calculateFees,
   checkRewardAddress,
   combineTransactions,
-  defaultTokensUrl,
   executeSignatures,
   fetchAllowance,
   fetchAmbVersion,
@@ -45,7 +45,7 @@ import {
   fetchToAmount,
   fetchTokenLimits,
   fetchToToken,
-  getErrorMsg,
+  getErrorMessage,
   getGraphEndpoint,
   getMediatorAddress,
   getMessage,
@@ -55,17 +55,16 @@ import {
   relayTokens,
   requiredSignatures,
   timeout,
-  VERSION,
 } from './OmniBridge.utils'
 import { executionsQuery, partnerTxHashQuery, requestsUserQuery } from './subgraph/history'
 import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
-
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
   private _foreignChainId: ChainId
   private _listeners: NodeJS.Timeout[] = []
   private _tokensPair: OmnibridgePairTokens | undefined
   private _currentDay: BigNumber | undefined
+  private _homeAmbContract: Contract | undefined
 
   private get store() {
     if (!this._store) throw new Error('OmniBridge: No store set')
@@ -93,6 +92,12 @@ export class OmniBridge extends EcoBridgeChildBase {
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: EcoBridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
+
+    this._homeAmbContract = new Contract(
+      BRIDGE_CONFIG[this.bridgeId].homeAmbAddress,
+      HOME_AMB_ABI,
+      this._staticProviders?.[this._homeChainId]
+    )
 
     await this._fetchHistory()
     this.startListeners()
@@ -124,22 +129,23 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       if (!fromTokenMode || !fromMediator || !toTokenMode) return
 
-      let shouldReceiveNativeCur = false
+      let shouldReceiveNativeCurrency = false
+
       if (
         toChainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
         toTokenAddress === ZERO_ADDRESS &&
         toTokenMode === Mode.NATIVE
       ) {
-        shouldReceiveNativeCur = true
+        shouldReceiveNativeCurrency = true
       }
 
-      const isHome = this._activeChainId === this._homeChainId
-      const claimDisabled = BRIDGE_CONFIG[this.bridgeId].claimDisabled
+      const isHomeChainId = this._activeChainId === this._homeChainId
+      const isClaimDisabled = BRIDGE_CONFIG[this.bridgeId].claimDisabled
       const tokensClaimDisabled = BRIDGE_CONFIG[this.bridgeId].tokensClaimDisabled
 
       //check is withdraw
       const needsClaiming =
-        isHome && !claimDisabled && !(tokensClaimDisabled || []).includes(fromTokenAddress.toLowerCase())
+        isHomeChainId && !isClaimDisabled && !(tokensClaimDisabled || []).includes(fromTokenAddress.toLowerCase())
 
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
@@ -148,7 +154,7 @@ export class OmniBridge extends EcoBridgeChildBase {
         { address: fromTokenAddress, mode: fromTokenMode, mediator: fromMediator },
         this._account,
         fromAmount.toString(),
-        { shouldReceiveNativeCur, foreignChainId: this._foreignChainId }
+        { shouldReceiveNativeCurrency, foreignChainId: this._foreignChainId }
       )
 
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
@@ -175,7 +181,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMessage(e) })
       )
     }
   }
@@ -239,7 +245,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       const collectableTxHash = this.store.getState().ecoBridge.ui.collectableTxHash
       const transactions = this.selectors.selectAllTransactions(this.store.getState())
 
-      if (!collectableTxHash) return
+      if (!collectableTxHash || !this._homeAmbContract) return
 
       const collectableTransaction = transactions.find(
         tx => tx.txHash.toLowerCase() === collectableTxHash.toLowerCase()
@@ -262,7 +268,7 @@ export class OmniBridge extends EcoBridgeChildBase {
         message && message.signatures && message.signatures.length >= homeRequiredSignatures ? message : null
 
       if (!txMessage) {
-        const fetchedMessage = await getMessage(true, homeAmbAddress, txHash, homeProvider)
+        const fetchedMessage = await getMessage(true, txHash, homeProvider, this._homeAmbContract)
         txMessage = fetchedMessage
       }
       const isClaimed = await messageCallStatus(foreignAmbAddress, txMessage.messageId, foreignProvider)
@@ -307,7 +313,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMessage(e) })
       )
     }
   }
@@ -473,7 +479,11 @@ export class OmniBridge extends EcoBridgeChildBase {
       const tokenList: TokenList = {
         name: 'OmniBridge',
         timestamp: new Date().toISOString(),
-        version: VERSION,
+        version: {
+          major: 1,
+          minor: 0,
+          patch: 0,
+        },
         tokens,
       }
 
@@ -720,9 +730,9 @@ export class OmniBridge extends EcoBridgeChildBase {
       if (!this._account || !this._staticProviders) return
       const pendingTxs = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
 
-      if (!pendingTxs.length) return
+      if (!pendingTxs.length || !this._homeAmbContract) return
 
-      pendingTxs.map(async pendingTx => {
+      for (const pendingTx of pendingTxs) {
         if (!this._staticProviders) return
 
         const { fromChainId, txHash, needsClaiming, toChainId } = pendingTx
@@ -745,13 +755,13 @@ export class OmniBridge extends EcoBridgeChildBase {
         const confirmations = receipt ? receipt.confirmations : 0
         const totalConfirms = await fetchConfirmations(ambAddress, provider)
 
-        const isHome = fromChainId === this._homeChainId
+        const isHomeChainId = fromChainId === this._homeChainId
 
         if (receipt) {
           if (confirmations >= totalConfirms) {
             if (needsClaiming) {
               try {
-                const message = await getMessage(isHome, ambAddress, txHash, provider)
+                const message = await getMessage(isHomeChainId, txHash, provider, this._homeAmbContract)
 
                 if (message && message.signatures) {
                   this.store.dispatch(this.actions.updatePartnerTransaction({ txHash, message, status: true }))
@@ -763,7 +773,7 @@ export class OmniBridge extends EcoBridgeChildBase {
               const toProvider = this._staticProviders[toChainId]
               const toAmbAddress = BRIDGE_CONFIG[this.bridgeId].homeAmbAddress
               if (!toProvider) return
-              const { messageId } = await getMessageData(isHome, provider, txHash, receipt)
+              const { messageId } = await getMessageData(isHomeChainId, provider, txHash, receipt)
 
               const status = await messageCallStatus(toAmbAddress, messageId, toProvider)
 
@@ -792,7 +802,7 @@ export class OmniBridge extends EcoBridgeChildBase {
             }
           }
         }
-      })
+      }
     } catch (e) {
       return
     }

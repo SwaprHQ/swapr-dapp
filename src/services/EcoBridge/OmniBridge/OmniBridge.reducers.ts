@@ -5,7 +5,7 @@ import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeDetails, BridgingDetailsErrorMessage, OmniBridgeList, SyncState } from '../EcoBridge.types'
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
-import { InitialState, OmnibridgeTransactionMessage, OmniBridgeTxn } from './OmniBridge.types'
+import { InitialState, OmniBridgeTransaction, OmnibridgeTransactionMessage } from './OmniBridge.types'
 
 const initialState: InitialState = {
   transactions: omniTransactionsAdapter.getInitialState({}),
@@ -21,10 +21,10 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      addTransactions: (state, action: PayloadAction<OmniBridgeTxn[]>) => {
+      addTransactions: (state, action: PayloadAction<OmniBridgeTransaction[]>) => {
         omniTransactionsAdapter.upsertMany(state.transactions, action.payload)
       },
-      addTransaction: (state, action: PayloadAction<OmniBridgeTxn>) => {
+      addTransaction: (state, action: PayloadAction<OmniBridgeTransaction>) => {
         const { payload: txn } = action
 
         if (!txn.txHash) return
@@ -58,13 +58,12 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
           state.bridgingDetailsStatus = SyncState.READY
         }
 
-        state.bridgingDetails.gas = gas
-
-        state.bridgingDetails.fee = fee
-
-        state.bridgingDetails.estimateTime = estimateTime
-
-        state.bridgingDetails.receiveAmount = receiveAmount
+        state.bridgingDetails = {
+          gas,
+          fee,
+          estimateTime,
+          receiveAmount,
+        }
       },
       setBridgeDetailsStatus: (
         state,

@@ -1,7 +1,7 @@
 import { createEntityAdapter } from '@reduxjs/toolkit'
 
-import { OmniBridgeTxn } from './OmniBridge.types'
+import { OmniBridgeTransaction } from './OmniBridge.types'
 
-export const omniTransactionsAdapter = createEntityAdapter<OmniBridgeTxn>({
+export const omniTransactionsAdapter = createEntityAdapter<OmniBridgeTransaction>({
   selectId: transaction => transaction.txHash,
 })

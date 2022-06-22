@@ -49,7 +49,7 @@ export type OmnibridgeTransactionMessage = {
   txHash?: string
 }
 
-export type OmniBridgeTxn = {
+export type OmniBridgeTransaction = {
   txHash: string
   assetName: string
   assetAddressL1?: string
@@ -90,7 +90,7 @@ export type OmnibridgeSubgraphExecutions = {
 }
 
 export type InitialState = {
-  transactions: EntityState<OmniBridgeTxn>
+  transactions: EntityState<OmniBridgeTransaction>
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
   bridgingDetails: BridgeDetails
