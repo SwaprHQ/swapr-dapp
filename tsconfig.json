@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -22,21 +18,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "types": [
-      "jest"
-    ]
+    "types": ["jest"],
+    "sourceMap": true,
+    "baseUrl": "src"
   },
-  "exclude": [
-    "node_modules",
-    "cypress",
-    "./src/services/EcoBridge/Socket/api/generated"
-  ],
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "src/components/Confetti/index.js"
-  ]
+  "exclude": ["node_modules", "cypress", "./src/services/EcoBridge/Socket/api/generated", "build"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/components/Confetti/index.js"]
 }

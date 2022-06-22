@@ -82,7 +82,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                 key={singleSidedStake.address}
                 to={
                   isSWPRSingleSidedStake
-                    ? () => ({ pathname: '/rewards', state: { showSwpr: true } })
+                    ? '/rewards'
                     : `/pools/${singleSidedStake.stakeToken.address}/${singleSidedStake.address}/singleSidedStaking`
                 }
               >

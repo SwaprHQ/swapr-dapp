@@ -3,7 +3,7 @@ import { Currency, Token } from '@swapr/sdk'
 import React, { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -97,6 +97,7 @@ function Title({
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
   const { t } = useTranslation()
+  const [search] = useSearchParams()
 
   const handleAllClick = useCallback(() => {
     setOpenTokenModal(true)
@@ -152,7 +153,7 @@ function Title({
             </PointableFlex>
           )}
 
-          <TransperentButton as={Link} to="/pools/create">
+          <TransperentButton as={Link} to={{ pathname: '/pools/create', search: search.toString() }}>
             <Plus size="16" />
             <StyledText marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
               {t('addLiquidity')}

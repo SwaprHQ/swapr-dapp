@@ -39,9 +39,9 @@ const Title = styled(Text)`
 `
 const Value = styled(Text)<{ big: boolean }>`
   color: ${({ theme, big }) => (big ? theme.white : theme.text4)};
-  font-size: ${({ big }) => (big ? '18px' : '15px')};
+  font-size: ${({ big }) => (big ? '16px' : '15px')};
 
   ${({ theme, big }) => theme.mediaWidth.upToSmall`
-    font-size: ${big ? '14px' : '12px'}
+    font-size: ${big ? '14px' : '13px'}
   `};
 `

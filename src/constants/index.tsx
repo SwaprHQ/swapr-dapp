@@ -40,7 +40,29 @@ type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
 }
 
-export const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin')
+export const DAI: { [key: number]: Token } = {
+  [ChainId.MAINNET]: new Token(
+    ChainId.MAINNET,
+    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+  [ChainId.POLYGON]: new Token(
+    ChainId.POLYGON,
+    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+  [ChainId.ARBITRUM_ONE]: new Token(
+    ChainId.ARBITRUM_ONE,
+    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+}
 
 export const USDC: { [key: number]: Token } = {
   [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C'),
@@ -99,6 +121,23 @@ export const WBTC: { [key: number]: Token } = {
   [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC'),
 }
 
+export const MATIC: { [key: number]: Token } = {
+  [ChainId.MAINNET]: new Token(
+    ChainId.MAINNET,
+    '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+    18,
+    'MATIC',
+    'Matic Token'
+  ),
+  [ChainId.XDAI]: new Token(
+    ChainId.XDAI,
+    '0x7122d7661c4564b7C6Cd4878B06766489a6028A2',
+    18,
+    'MATIC',
+    'Matic Token on xDai'
+  ),
+}
+
 export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
@@ -124,7 +163,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MAINNET]: [
     WETH[ChainId.MAINNET],
     DXD[ChainId.MAINNET],
-    DAI,
+    DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
@@ -158,7 +197,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
     DXD[ChainId.MAINNET],
-    DAI,
+    DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
@@ -180,7 +219,13 @@ export const SUGGESTED_BASES: ChainTokenList = {
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  [ChainId.MAINNET]: [WETH[ChainId.MAINNET], DXD[ChainId.MAINNET], DAI, USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
+  [ChainId.MAINNET]: [
+    WETH[ChainId.MAINNET],
+    DXD[ChainId.MAINNET],
+    DAI[ChainId.MAINNET],
+    USDC[ChainId.MAINNET],
+    USDT[ChainId.MAINNET],
+  ],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.ARBITRUM_ONE]: [WETH[ChainId.ARBITRUM_ONE], DXD[ChainId.ARBITRUM_ONE], USDC[ChainId.ARBITRUM_ONE]],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
@@ -191,7 +236,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
-    [DAI, USDT[ChainId.MAINNET]],
+    [DAI[ChainId.MAINNET], USDT[ChainId.MAINNET]],
   ],
 }
 

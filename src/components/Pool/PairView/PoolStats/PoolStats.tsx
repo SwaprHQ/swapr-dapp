@@ -1,8 +1,8 @@
 import { Pair } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
@@ -23,8 +23,8 @@ interface PairViewProps {
 }
 
 export function PoolStats({ pair }: PairViewProps) {
+  const { navigate } = useRouter()
   const { chainId } = useActiveWeb3React()
-  const history = useHistory()
   const previousChainId = usePrevious(chainId)
   const { volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
@@ -40,9 +40,9 @@ export function PoolStats({ pair }: PairViewProps) {
     // when the chain is switched, and not as a reaction to following a multi chain link
     // (which might require changing chains), redirect to generic pools page
     if (chainId && previousChainId && chainId !== previousChainId && !switchingToCorrectChain) {
-      history.push('/pools')
+      navigate('/pools')
     }
-  }, [chainId, history, previousChainId, switchingToCorrectChain])
+  }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
     <DimBlurBgBox padding={'24px'}>

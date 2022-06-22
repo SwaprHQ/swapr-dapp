@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -24,12 +24,14 @@ import { useRouter } from '../../../hooks/useRouter'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { PageWrapper } from '../../PageWrapper'
 
-export function Pair({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const router = useRouter()
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
+export function Pair() {
+  const { navigate } = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
 
@@ -49,16 +51,16 @@ export function Pair({
   }, [])
 
   const handlePairSelect = useCallback(
-    ({ token0, token1 }) => {
-      router.push({
-        pathname: `/pools/${token0.address}/${token1.address}`,
-      })
+    pair => {
+      navigate(`/pools/${pair.token0.address}/${pair.token1.address}`)
     },
-    [router]
+    [navigate]
   )
 
-  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
-    return <Redirect to="/pools" />
+  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
+    return <Navigate to="/pools" replace />
+  }
+
   return (
     <>
       <PageWrapper>
