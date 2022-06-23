@@ -52,12 +52,16 @@ export const combineTransactions = (
 
     const { sender, transactionHash, value, message } = request
 
-    const token = { symbol: 'XDAI', assetAddressL1: ZERO_ADDRESS, assetAddressL2: DAI_ETHEREUM_ADDRESS }
+    const token = { symbol: '', assetAddressL1: '', assetAddressL2: '' }
 
     if (chainId === ChainId.MAINNET) {
       token.symbol = 'DAI'
-      token.assetAddressL1 = token.assetAddressL2
-      token.assetAddressL2 = token.assetAddressL1
+      token.assetAddressL1 = DAI_ETHEREUM_ADDRESS
+      token.assetAddressL2 = ZERO_ADDRESS
+    } else {
+      token.symbol = 'XDAI'
+      token.assetAddressL1 = ZERO_ADDRESS
+      token.assetAddressL2 = DAI_ETHEREUM_ADDRESS
     }
 
     let status = BridgeTransactionStatus.PENDING
