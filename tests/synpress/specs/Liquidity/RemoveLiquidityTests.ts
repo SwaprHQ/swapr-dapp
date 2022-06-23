@@ -2,12 +2,12 @@ import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 
-describe('Add liquidity', () => {
+describe('Remove liquidity', () => {
   let firstTokenBefore: number
   let secondTokenBefore: number
   let firstTokenAfter: number
   let secondTokenAfter: number
-  let firstTokenRemovedAmount: number 
+  let firstTokenRemovedAmount: number
   let secondTokenRemovedAmount: number
   let firstTokenBalance: number = 0
   let secondTokenBalance: number = 0
@@ -25,9 +25,9 @@ describe('Add liquidity', () => {
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
     LiquidityPage.getPairCards()
-    .contains('DXD')
-    .contains('WEENUS')
-    .click()
+      .contains('DXD')
+      .contains('WEENUS')
+      .click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
@@ -53,31 +53,31 @@ describe('Add liquidity', () => {
     LiquidityPage.getRemoveLiquidityButton().click()
     LiquidityPage.getRemove25PercentLiquidityButton().click()
     LiquidityPage.getFirstTokenAmountToRemove()
-    .invoke('text')
-    .should(res => {
-      expect(parseFloat(res)).be.greaterThan(0)
-      console.log('FIRST TOKEN AMOUNT TO REMOVED: ', res)
-      firstTokenRemovedAmount = parseFloat(res)
+      .invoke('text')
+      .should(res => {
+        expect(parseFloat(res)).be.greaterThan(0)
+        console.log('FIRST TOKEN AMOUNT TO BE REMOVED: ', res)
+        firstTokenRemovedAmount = parseFloat(res)
+      })
+    cy.wrap(null).then(() => {
+      console.log('FIRST TOKEN AMOUNT TO BE REMOVED: ', firstTokenRemovedAmount)
     })
-  cy.wrap(null).then(() => {
-    console.log('FIRST TOKEN AMOUNT TO REMOVED: ', firstTokenRemovedAmount)
-  })
-  LiquidityPage.getSecondTokenAmountToRemove()
-    .invoke('text')
-    .should(res => {
-      expect(parseFloat(res)).be.greaterThan(0)
-      console.log('SECOND TOKEN AMOUNT TO REMOVED: ', res)
-      secondTokenRemovedAmount = parseFloat(res)
-    })
-    .should(value => {
+    LiquidityPage.getSecondTokenAmountToRemove()
+      .invoke('text')
+      .should(res => {
+        expect(parseFloat(res)).be.greaterThan(0)
+        console.log('SECOND TOKEN AMOUNT TO BE REMOVED: ', res)
+        secondTokenRemovedAmount = parseFloat(res)
+      })
+      .should(value => {
         firstTokenBalance = firstTokenBefore - firstTokenRemovedAmount
-        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)      
+        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)
         secondTokenBalance = secondTokenBefore - secondTokenRemovedAmount
         console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
       })
     cy.wrap(null).then(() => {
-        console.log('SECOND TOKEN AMOUNT TO REMOVED: ', secondTokenRemovedAmount)
-      })
+      console.log('SECOND TOKEN AMOUNT TO BE REMOVED: ', secondTokenRemovedAmount)
+    })
     LiquidityPage.getApproveButtonToRemoveLiquidity().click()
     LiquidityPage.getRemoveButton().click()
     cy.confirmMetamaskSignatureRequest({})
@@ -85,9 +85,9 @@ describe('Add liquidity', () => {
   it('Should check if tokens are removed from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
     LiquidityPage.getPairCards()
-    .contains('DXD')
-    .contains('WEENUS')
-    .click()
+      .contains('DXD')
+      .contains('WEENUS')
+      .click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
