@@ -21,7 +21,7 @@
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom",
-    "storybook": "start-storybook -p 6006 -s public",
+    "stoyrybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "resolutions": {

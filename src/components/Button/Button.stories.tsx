@@ -43,6 +43,7 @@ const StyledButtonsArray = [
 
 export default {
   title: 'Buttons',
+  component: Base,
 } as ComponentMeta<typeof Base>
 
 const Wrapper = styled.div`
