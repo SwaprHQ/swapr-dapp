@@ -2,13 +2,16 @@ import { ChainId } from '@swapr/sdk'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 
-type XdaiBridgeRequest = {
+type XdaiBridgeBaseTransactionData = {
   id: string
   transactionHash: string
   timestamp: string
-  sender: string
   recipient: string
   value: string
+}
+
+type XdaiBridgeRequest = XdaiBridgeBaseTransactionData & {
+  sender: string
   message?: {
     id: string | null
     content: string | null
@@ -16,13 +19,7 @@ type XdaiBridgeRequest = {
   }
 }
 
-type XdaiBridgeExecution = {
-  id: string
-  transactionHash: string
-  timestamp: string
-  recipient: string
-  value: string
-}
+type XdaiBridgeExecution = XdaiBridgeBaseTransactionData
 
 export type XdaiBridgeRequests = {
   requests: XdaiBridgeRequest[]
