@@ -9,6 +9,7 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  layout: 'centered',
   grid: {
     gridOn: true,
     columns: 12,

@@ -162,9 +162,8 @@ export default function TokenWarningModal({
                 onClick={() => {
                   onConfirm()
                 }}
-              >
-                <TYPE.body color="white">I understand</TYPE.body>
-              </SpacedButtonError>
+                content={<TYPE.body color="white">I understand</TYPE.body>}
+              />
             </BottomSectionContainer>
           </AutoColumn>
         </WarningContainer>

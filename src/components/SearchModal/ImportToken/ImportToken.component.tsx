@@ -58,9 +58,8 @@ export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportToken
                 tokens.map(token => addToken(token))
                 onCurrencySelect && onCurrencySelect(tokens[0])
               }}
-            >
-              Import
-            </SpacedButtonError>
+              content="Import"
+            />
           </AutoColumn>
         </BottomSectionContainer>
       </AutoColumn>

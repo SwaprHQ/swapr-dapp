@@ -722,24 +722,25 @@ export default function RemoveLiquidity({
                     mr="0.5rem"
                     fontWeight={500}
                     fontSize={16}
-                  >
-                    {approval === ApprovalState.PENDING ? (
-                      <Dots>Approving</Dots>
-                    ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
-                      'Approved'
-                    ) : (
-                      'Approve'
-                    )}
-                  </ButtonConfirmed>
+                    content={
+                      approval === ApprovalState.PENDING ? (
+                        <Dots>Approving</Dots>
+                      ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
+                        'Approved'
+                      ) : (
+                        'Approve'
+                      )
+                    }
+                  />
+
                   <ButtonError
                     onClick={() => {
                       setShowConfirm(true)
                     }}
                     disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
-                  >
-                    {error || 'Remove'}
-                  </ButtonError>
+                    content={error || 'Remove'}
+                  />
                 </RowBetween>
               )}
             </div>

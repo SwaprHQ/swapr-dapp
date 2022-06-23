@@ -108,17 +108,18 @@ export function SwapButtons({
             width="48%"
             altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
             confirmed={approval === ApprovalState.APPROVED}
-          >
-            {approval === ApprovalState.PENDING ? (
-              <AutoRow gap="6px" justify="center">
-                Approving <Loader />
-              </AutoRow>
-            ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-              'Approved'
-            ) : (
-              'Approve ' + currencies[Field.INPUT]?.symbol
-            )}
-          </ButtonConfirmed>
+            content={
+              approval === ApprovalState.PENDING ? (
+                <AutoRow gap="6px" justify="center">
+                  Approving <Loader />
+                </AutoRow>
+              ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                'Approved'
+              ) : (
+                'Approve ' + currencies[Field.INPUT]?.symbol
+              )
+            }
+          />
           <ButtonError
             onClick={() => {
               if (isExpertMode) {
@@ -137,11 +138,12 @@ export function SwapButtons({
             id="swap-button"
             disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
             error={isValid && priceImpactSeverity > 2}
-          >
-            {priceImpactSeverity > 3 && !isExpertMode
-              ? `Price Impact High`
-              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-          </ButtonError>
+            content={
+              priceImpactSeverity > 3 && !isExpertMode
+                ? `Price Impact High`
+                : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`
+            }
+          />
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>
           <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />

@@ -1,14 +1,11 @@
 import { darken, lighten, transparentize } from 'polished'
-import React, { ReactNode } from 'react'
-import { ChevronDown } from 'react-feather'
+import React from 'react'
 import { Text } from 'rebass'
 import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
-import { RowBetween } from '../Row'
-import arrowIcon from './../../assets/svg/double-angle.svg'
 
 interface BaseProps {
   padding?: string
@@ -256,28 +253,41 @@ const ButtonErrorStyle = styled(Base)`
     background-color: ${({ theme }) => theme.red1};
   }
 `
-
-export function ButtonConfirmed({
-  confirmed,
-  altDisabledStyle,
-  ...rest
-}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonProps) {
+export interface ButtonConfirmedProps extends Omit<ButtonProps, 'content'> {
+  confirmed?: boolean
+  altDisabledStyle?: boolean
+  content: string | JSX.Element
+}
+export function ButtonConfirmed({ confirmed, altDisabledStyle, content, ...rest }: ButtonConfirmedProps) {
   if (confirmed) {
-    return <ButtonConfirmedStyle {...rest} />
+    return <ButtonConfirmedStyle {...rest}>{content}</ButtonConfirmedStyle>
   } else {
-    return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
+    return (
+      <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle}>
+        {content}
+      </ButtonPrimary>
+    )
   }
 }
-
-export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {
+export interface ButtonErrorProps extends Omit<ButtonProps, 'content'> {
+  error?: boolean
+  content: string | JSX.Element
+}
+export function ButtonError({ error, content, ...rest }: ButtonErrorProps) {
   if (error) {
-    return <ButtonErrorStyle {...rest} />
+    return <ButtonErrorStyle {...rest}>{content}</ButtonErrorStyle>
   } else {
-    return <ButtonPrimary {...rest} />
+    return <ButtonPrimary {...rest}>{content}</ButtonPrimary>
   }
 }
+export interface ButtonLinkProps {
+  link?: string
+  text?: string
+  style?: any
+}
 
-export function ButtonWithLink({ link, text, style }: { link: string; text: string; style?: any }) {
+//Simple button that redirects users to link
+export function ButtonWithLink({ link, text, style }: ButtonLinkProps) {
   return (
     <ButtonSecondary
       id="join-pool-button"
@@ -312,7 +322,7 @@ const StyledButtonSecondary = styled(ButtonSecondary)`
   border: none;
 `
 
-export function CarrotButton({ link, text, style }: { link: string; text: string; style?: any }) {
+export function CarrotButton({ link, text, style }: ButtonLinkProps) {
   return (
     <StyledButtonSecondary as="a" style={style} href={link} rel="noopener noreferrer" target="_blank">
       <CarrotIconWithMargin />
@@ -320,32 +330,6 @@ export function CarrotButton({ link, text, style }: { link: string; text: string
         {text}
       </CarrotButtonText>
     </StyledButtonSecondary>
-  )
-}
-
-export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonPrimary {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
-      </RowBetween>
-    </ButtonPrimary>
-  )
-}
-
-const StyledChevronDown = styled(ChevronDown)`
-  color: ${({ theme }) => theme.text5};
-`
-
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
-  return (
-    <ButtonOutlined {...rest} disabled={disabled}>
-      <RowBetween>
-        <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <StyledChevronDown size={20} />
-      </RowBetween>
-    </ButtonOutlined>
   )
 }
 
@@ -365,36 +349,3 @@ export const AddSWPRToMetamaskButton = styled(Base)<{ active?: boolean }>`
   border: none;
   box-shadow: ${props => (props.active ? '0px 0px 42px rgba(165, 58, 196, 0.35)' : 'none')};
 `
-
-const MoreButton = styled.button`
-  position: relative;
-  display: block;
-  padding: 6px 8px;
-  margin: 12px auto 0;
-  font-weight: 600;
-  font-size: 10px;
-  line-height: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.text5};
-  background: none;
-  border: none;
-  cursor: pointer;
-
-  img {
-    margin-left: 10px;
-  }
-`
-
-interface ShowMoreButtonProps {
-  children: ReactNode
-  onClick: () => void
-  isOpen: boolean
-}
-
-export const ShowMoreButton = ({ children, onClick, isOpen }: ShowMoreButtonProps) => (
-  <MoreButton onClick={onClick}>
-    {children}
-    <img src={arrowIcon} alt="arrow down" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }} />
-  </MoreButton>
-)
