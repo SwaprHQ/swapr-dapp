@@ -1,8 +1,8 @@
 import { TokenAmount } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
-import { useHistory } from 'react-router'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -36,7 +36,7 @@ export default function ClaimModal({
   stakedAmount?: string | null
   singleSidedCampaignLink?: string
 }) {
-  const { push } = useHistory()
+  const { navigate } = useRouter()
   const open = useShowClaimPopup()
 
   const wrappedOnDismiss = useCallback(() => {
@@ -45,7 +45,7 @@ export default function ClaimModal({
 
   const handleStakeUnstakeClick = () => {
     if (singleSidedCampaignLink) {
-      push({ pathname: '/rewards', state: { showSwpr: true } })
+      navigate('/rewards', { state: { showSwpr: true } })
       wrappedOnDismiss()
     }
   }

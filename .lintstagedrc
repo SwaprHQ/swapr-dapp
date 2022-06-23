@@ -1,0 +1,4 @@
+{
+  "**/!(*Tests).{cjs,mjs,js,jsx,ts,tsx}": "eslint --fix",
+  "**/*.{cjs,mjs,js,jsx,ts,tsx,css,json}": "prettier --write"
+}
