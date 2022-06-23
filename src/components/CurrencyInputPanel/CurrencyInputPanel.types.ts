@@ -1,4 +1,5 @@
-import { Currency, Pair, CurrencyAmount, Percent, ChainId } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, Pair, Percent } from '@swapr/sdk'
+
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 
 export interface CurrencyInputPanelProps {
@@ -19,13 +20,14 @@ export interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   chainIdOverride?: ChainId
   showCommonBases?: boolean
-  onCurrencySelect?: (currency: Currency) => void
+  onCurrencySelect?: (currency: Currency, isMaxAmount?: boolean) => void
   customBalanceText?: string
   isFallbackFiatValue?: boolean
   disableCurrencySelect?: boolean
   currencyWrapperSource?: CurrencyWrapperSource
   displayedValue?: string
   setDisplayedValue?: (val: string) => void
+  maxAmount?: CurrencyAmount
 }
 
 export type CurrencyViewProps = Pick<

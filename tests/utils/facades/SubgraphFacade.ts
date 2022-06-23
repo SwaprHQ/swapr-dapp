@@ -1,5 +1,5 @@
-import { LIQUIDITY_CAMPAIGNS_QUERY, TOKENS_QUERY, TRANSACTIONS_QUERY } from './SubgraphQueries'
 import { LiquidityCampaign, Transaction } from '../TestTypes'
+import { LIQUIDITY_CAMPAIGNS_QUERY, TOKENS_QUERY, TRANSACTIONS_QUERY } from './SubgraphQueries'
 
 export class SubgraphFacade {
   private static SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby'
@@ -17,8 +17,8 @@ export class SubgraphFacade {
           expect(resp.body.data.transactions).to.have.length.greaterThan(0)
         } catch (err) {
           console.log('Subgraph response: ', resp)
-          cy.wait(500)
-          if (retries > 100) {
+          cy.wait(1000)
+          if (retries > 200) {
             throw new Error('Retried too many times')
           }
           return this.transaction(txid, ++retries)
@@ -46,9 +46,10 @@ export class SubgraphFacade {
       })
       .then(resp => {
         try {
+          console.log('Subgraph response: ', resp)
           expect(resp.body.data.liquidityMiningCampaigns).to.have.length.greaterThan(0)
         } catch (err) {
-          if (retries > 100) {
+          if (retries > 200) {
             throw new Error('Retried too many times')
           }
           cy.wait(500)

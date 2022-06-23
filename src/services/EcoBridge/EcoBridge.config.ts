@@ -1,9 +1,12 @@
-import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { ChainId } from '@swapr/sdk'
+
+import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { socketSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 
 const socketBridgeId = 'socket'
+
 //supported chains are bidirectional
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
@@ -19,11 +22,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new SocketBridge({
     bridgeId: 'socket',
     displayName: 'Socket',
-    supportedChains: [
-      { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE },
-      { from: ChainId.MAINNET, to: ChainId.XDAI },
-      { from: ChainId.XDAI, to: ChainId.ARBITRUM_ONE },
-    ],
+    supportedChains: socketSupportedChains([ChainId.ARBITRUM_ONE, ChainId.MAINNET, ChainId.POLYGON, ChainId.XDAI]),
   }),
 ]
 

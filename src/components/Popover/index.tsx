@@ -1,11 +1,12 @@
 import { Placement } from '@popperjs/core'
+import Portal from '@reach/portal'
 import { transparentize } from 'polished'
 import React, { MutableRefObject, useCallback, useState } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { CSSProperties } from 'styled-components'
-import useInterval from '../../hooks/useInterval'
-import Portal from '@reach/portal'
+
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
+import useInterval from '../../hooks/useInterval'
 
 const PopoverContainer = styled.div<{ show: boolean }>`
   z-index: 9999;
@@ -68,6 +69,7 @@ export default function Popover({
           <PopoverContainer
             className={className}
             show={show}
+            data-testid="popover"
             ref={setPopperElement as any}
             style={{ ...styles.popper, ...styled }}
             {...attributes.popper}

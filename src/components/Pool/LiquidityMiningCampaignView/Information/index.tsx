@@ -1,4 +1,5 @@
-import { Percent, PricedTokenAmount, TokenAmount, KpiToken, Token, Pair } from '@swapr/sdk'
+import { KpiToken, Pair, Percent, PricedTokenAmount, Token, TokenAmount } from '@swapr/sdk'
+
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
@@ -7,8 +8,11 @@ import { Lock, Unlock } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
 import { ExternalLink, TYPE } from '../../../../theme'
+import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { CarrotButton } from '../../../Button'
 import { AutoColumn } from '../../../Column'
 import Countdown from '../../../Countdown'
@@ -17,8 +21,6 @@ import DoubleCurrencyLogo from '../../../DoubleLogo'
 import Row, { AutoRow, RowBetween, RowFixed } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
 import TokenAmountDisplayer from '../TokenAmountDisplayer'
-import { useActiveWeb3React } from '../../../../hooks'
-import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 
 const KpiTokenInfoContainer = styled.div`
   width: 100%;

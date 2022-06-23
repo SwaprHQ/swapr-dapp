@@ -1,6 +1,7 @@
 import { Contract } from 'ethers'
 import { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
@@ -18,8 +19,16 @@ import { Call, parseCallKey } from './utils'
  * @param chunk chunk of calls to make
  * @param blockNumber block number passed as the block tag in the eth_call
  */
+type ErrorWithMessageAndCode = {
+  code: number
+  message: string
+}
+
+function isErrorWithMessageAndCode(error: unknown): error is ErrorWithMessageAndCode {
+  return (typeof error === 'object' && error && ('message' in error || 'code' in error)) ?? false
+}
+
 async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: number): Promise<string[]> {
-  console.debug('Fetching chunk', chunk, blockNumber)
   try {
     const { returnData } = await multicall.callStatic.aggregate(
       chunk.map(obj => ({
@@ -30,8 +39,10 @@ async function fetchChunk(multicall: Contract, chunk: Call[], blockNumber: numbe
     )
     return returnData
   } catch (error) {
-    if (error.code === -32000 || error.message?.indexOf('header not found') !== -1) {
-      throw new RetryableError(`header not found for block number ${blockNumber}`)
+    if (isErrorWithMessageAndCode(error)) {
+      if (error.code === -32000 || error.message?.indexOf('header not found') !== -1) {
+        throw new RetryableError(`header not found for block number ${blockNumber}`)
+      }
     }
     console.error('Failed to fetch chunk', error)
     throw error
@@ -175,7 +186,7 @@ export default function Updater(): null {
             )
 
             // dispatch any new results
-            if (Object.keys(results).length > 0)
+            if (Object.keys(results).length > 0) {
               dispatch(
                 updateMulticallResults({
                   chainId,
@@ -183,6 +194,7 @@ export default function Updater(): null {
                   blockNumber: latestBlockNumber,
                 })
               )
+            }
 
             // dispatch any errored calls
             if (erroredCalls.length > 0) {

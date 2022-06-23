@@ -1,33 +1,20 @@
 import { ApolloProvider } from '@apollo/client'
-import React, { FC, Suspense, useContext, useEffect } from 'react'
-import { Redirect, Route, RouteProps, Switch } from 'react-router-dom'
-import styled, { ThemeContext } from 'styled-components'
-import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
-import Header from '../components/Header'
-import Web3ReactManager from '../components/Web3ReactManager'
-import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
-import AddLiquidity from './AddLiquidity'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import Pools from './Pools'
-import RemoveLiquidity from './RemoveLiquidity'
-import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
-import Swap from './Swap'
-import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-import Pair from './Pools/Pair'
-import CreateLiquidityMining from './LiquidityMining/Create'
-import { useActiveWeb3React } from '../hooks'
-import { SkeletonTheme } from 'react-loading-skeleton'
-import MyPairs from './Pools/Mine'
-import LiquidityMiningCampaign from './Pools/LiquidityMiningCampaign'
-import NetworkWarningModal from '../components/NetworkWarningModal'
-import { Slide, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import Bridge from './Bridge'
+import { FallbackLoader } from 'components/Loader/FallbackLoader'
+import React, { Suspense, useEffect } from 'react'
+import { SkeletonTheme } from 'react-loading-skeleton'
+import { Slide, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import styled, { useTheme } from 'styled-components'
 
-import Rewards from './Rewards'
-import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
+import Header from '../components/Header'
+import NetworkWarningModal from '../components/NetworkWarningModal'
+import Web3ReactManager from '../components/Web3ReactManager'
+import { useActiveWeb3React } from '../hooks'
+import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+import { Routes } from './Routes'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -72,21 +59,9 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-/**
- * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
- */
-const FullFeaturesRoute: FC<RouteProps> = routeProps => {
-  const { chainId } = useActiveWeb3React()
-  const isAllFeaturesEnabled = chainSupportsSWPR(chainId)
-  if (isAllFeaturesEnabled) {
-    return <Route {...routeProps} />
-  }
-  return <Redirect to={{ ...location, pathname: '/swap' }} />
-}
-
 export default function App() {
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -102,66 +77,15 @@ export default function App() {
       <SkeletonTheme color={theme.bg3} highlightColor={theme.bg2}>
         <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
           <NetworkWarningModal />
-          <Route component={DarkModeQueryParamReader} />
           <AppWrapper id="app-wrapper">
             <HeaderWrapper>
               <Header />
             </HeaderWrapper>
             <BodyWrapper>
               <Web3ReactManager>
-                <Switch>
-                  <Route exact strict path="/swap" component={Swap} />
-                  <Route exact strict path="/swap/:outputCurrency" component={RedirectToSwap} />
-                  <Route exact strict path="/bridge" component={Bridge} />
-
-                  <FullFeaturesRoute exact strict path="/send" component={RedirectPathToSwapOnly} />
-                  <FullFeaturesRoute exact strict path="/pools" component={Pools} />
-                  <FullFeaturesRoute exact strict path="/pools/mine" component={MyPairs} />
-                  <FullFeaturesRoute exact strict path="/rewards" component={Rewards} />
-                  <FullFeaturesRoute exact strict path="/rewards/:currencyIdA/:currencyIdB" component={Rewards} />
-                  <FullFeaturesRoute exact strict path="/pools/:currencyIdA/:currencyIdB" component={Pair} />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/rewards/single-sided-campaign/:currencyIdA/:liquidityMiningCampaignId"
-                    component={LiquidityMiningCampaign}
-                  />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/rewards/campaign/:currencyIdA/:currencyIdB/:liquidityMiningCampaignId"
-                    component={LiquidityMiningCampaign}
-                  />
-                  <FullFeaturesRoute exact strict path="/pools/create" component={AddLiquidity} />
-                  <FullFeaturesRoute exact path="/pools/add" component={AddLiquidity} />
-                  {/* <Route exact strict path="/governance" component={GovPages} /> */}
-                  {/* <Route exact strict path="/governance/:asset/pairs" component={GovPages} /> */}
-                  <FullFeaturesRoute
-                    exact
-                    path="/pools/add/:currencyIdA"
-                    component={RedirectOldAddLiquidityPathStructure}
-                  />
-                  <FullFeaturesRoute
-                    exact
-                    path="/pools/add/:currencyIdA/:currencyIdB"
-                    component={RedirectDuplicateTokenIds}
-                  />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/pools/remove/:tokens"
-                    component={RedirectOldRemoveLiquidityPathStructure}
-                  />
-                  <FullFeaturesRoute
-                    exact
-                    strict
-                    path="/pools/remove/:currencyIdA/:currencyIdB"
-                    component={RemoveLiquidity}
-                  />
-                  <FullFeaturesRoute exact strict path="/liquidity-mining/create" component={CreateLiquidityMining} />
-
-                  <Route component={RedirectPathToSwapOnly} />
-                </Switch>
+                <Suspense fallback={<FallbackLoader />}>
+                  <Routes />
+                </Suspense>
               </Web3ReactManager>
               <Marginer />
             </BodyWrapper>

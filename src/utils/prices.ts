@@ -1,34 +1,38 @@
-import { BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
+import { parseUnits } from '@ethersproject/units'
 import {
+  _100,
+  _10000,
+  Currency,
   CurrencyAmount,
+  CurveTrade,
   Fraction,
   JSBI,
+  Pair,
   Percent,
+  Price,
   TokenAmount,
   Trade,
-  Pair,
-  Price,
-  Currency,
-  _10000,
-  _100,
-  ZERO,
+  UniswapTrade,
   UniswapV2Trade,
+  ZERO,
 } from '@swapr/sdk'
+
+import _Decimal from 'decimal.js-light'
+import toFormat from 'toformat'
+
 import {
+  ALLOWED_FIAT_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_LOW,
   ALLOWED_PRICE_IMPACT_MEDIUM,
-  ALLOWED_FIAT_PRICE_IMPACT_HIGH,
-  PRICE_IMPACT_NON_EXPERT,
-  PRICE_IMPACT_HIGH,
-  PRICE_IMPACT_MEDIUM,
-  PRICE_IMPACT_LOW,
+  BLOCKED_PRICE_IMPACT_NON_EXPERT,
   NO_PRICE_IMPACT,
+  PRICE_IMPACT_HIGH,
+  PRICE_IMPACT_LOW,
+  PRICE_IMPACT_MEDIUM,
+  PRICE_IMPACT_NON_EXPERT,
 } from '../constants'
 import { Field } from '../state/swap/actions'
-import _Decimal from 'decimal.js-light'
-import { parseUnits } from 'ethers/lib/utils'
-import toFormat from 'toformat'
 
 const Decimal = toFormat(_Decimal)
 
@@ -41,18 +45,34 @@ interface TradePriceBreakdown {
 }
 
 // computes price breakdown for the trade
-export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBreakdown {
+export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
-  const realizedLPFee = !trade
-    ? undefined
-    : ONE_HUNDRED_PERCENT.subtract(
-        trade.route.pairs.reduce<Fraction>((currentFee: Fraction, currentIndex: Pair): Fraction => {
-          return currentFee.multiply(
-            ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
-          )
-        }, ONE_HUNDRED_PERCENT)
+  let realizedLPFee: Percent | undefined = undefined
+  const priceImpactWithoutFee: Percent | undefined = undefined
+  let realizedLPFeeAmount: CurrencyAmount | undefined = undefined
+
+  // early exit
+  if (!trade) {
+    return {
+      priceImpactWithoutFee,
+      realizedLPFee,
+      realizedLPFeeAmount,
+    }
+  }
+
+  if (trade instanceof UniswapV2Trade) {
+    const totalRoutesFee = trade.route.pairs.reduce<Fraction>((currentFee: Fraction, currentIndex: Pair): Fraction => {
+      return currentFee.multiply(
+        ONE_HUNDRED_PERCENT.subtract(new Percent(JSBI.BigInt(currentIndex.swapFee.toString()), _10000))
       )
+    }, ONE_HUNDRED_PERCENT)
+    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
+  } else if (trade instanceof CurveTrade) {
+    realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+  } else if (trade instanceof UniswapTrade) {
+    realizedLPFee = trade.fee
+  }
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
@@ -63,12 +83,13 @@ export function computeTradePriceBreakdown(trade?: UniswapV2Trade): TradePriceBr
     : undefined
 
   // the amount of the input that accrues to LPs
-  const realizedLPFeeAmount = !trade
-    ? undefined
-    : realizedLPFee &&
-      (trade.inputAmount instanceof TokenAmount
+  if (realizedLPFee) {
+    realizedLPFeeAmount =
+      trade.inputAmount instanceof TokenAmount
         ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId))
+        : CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+  }
+
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,
     realizedLPFee: realizedLPFee ? new Percent(realizedLPFee.numerator, realizedLPFee.denominator) : undefined,
@@ -192,14 +213,19 @@ export function getLpTokenPrice(
  * @param rounding Rounding mode
  */
 export const limitNumberOfDecimalPlaces = (
-  value?: Fraction,
+  value?: CurrencyAmount | Fraction,
   significantDigits = 6,
   format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
 ): string | undefined => {
   if (!value || value.equalTo(ZERO)) return undefined
+  if (value instanceof CurrencyAmount && value.currency.decimals < significantDigits)
+    significantDigits =
+      typeof value.currency.decimals === 'string' ? parseInt(value.currency.decimals) : value.currency.decimals
+
   const fixedQuotient = value.toFixed(significantDigits)
   Decimal.set({ precision: significantDigits + 1, rounding })
   const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
+
   return quotient.toFormat(quotient.decimalPlaces(), format)
 }

@@ -1,13 +1,14 @@
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
 import { Currency } from '@swapr/sdk'
-import { Text } from 'rebass'
 
-import { useRouter } from '../../hooks/useRouter'
+import { useRouter } from 'hooks/useRouter'
+import React from 'react'
+import { Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
+
 import Card from '../../components/Card'
-import { AutoRow } from '../../components/Row'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
+import { AutoRow } from '../../components/Row'
 
 const LightCardWrap = styled(Card)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
@@ -66,12 +67,11 @@ interface CardProps {
 export const GovCard = ({ currency, currency1, apy, proposals }: CardProps) => {
   const doubleCurrencyLogoSize = 26.88
 
-  const theme = useContext(ThemeContext)
-  const router = useRouter()
+  const theme = useTheme()
+  const { navigate } = useRouter()
 
   const onClick = () => {
-    router.push({
-      pathname: `/governance/${currency.symbol}/pairs`,
+    navigate(`/governance/${currency.symbol}/pairs`, {
       state: {
         currency: currency,
       },

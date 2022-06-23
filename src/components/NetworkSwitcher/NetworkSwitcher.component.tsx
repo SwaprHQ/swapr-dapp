@@ -1,14 +1,12 @@
 import React, { useRef } from 'react'
 
-import Option from './Option'
 import { useActiveWeb3React } from '../../hooks'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
-
-import { OptionGrid, StyledPopover, ChangeWalletButton, NetworkTagRow } from './NetworkSwitcher.styles'
-
+import { ChangeWalletButton, NetworkTagRow, OptionGrid, StyledPopover } from './NetworkSwitcher.styles'
 import { NetworkSwitcherProps } from './NetworkSwitcher.types'
+import Option from './Option'
 
 export const NetworkSwitcher = ({
   show,

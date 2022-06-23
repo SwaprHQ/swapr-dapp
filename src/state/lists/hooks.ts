@@ -1,13 +1,15 @@
+import { ChainId, Currency, Token } from '@swapr/sdk'
+
 import { TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import sortByListPriority from '../../utils/listSort'
-import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
-import { AppState } from '../index'
+
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
-import { WrappedTokenInfo } from './wrapped-token-info'
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
 import { useActiveWeb3React } from '../../hooks'
+import sortByListPriority from '../../utils/listSort'
+import { AppState } from '../index'
+import { WrappedTokenInfo } from './wrapped-token-info'
 
 export type TokenAddressMap = Readonly<{
   [chainId: number]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }>

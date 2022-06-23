@@ -1,26 +1,25 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
-import debounce from 'lodash.debounce'
+import React from 'react'
 
-import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
-
-import {
-  useCurrencySearchModalSwap,
-  useCurrencySearchModalBridge,
-} from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
+import { useAutoMaxBalance } from '../../hooks/useAutoMaxBalance'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
-
 import { CurrencyWrapperSource } from '../CurrencyLogo'
+import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.container'
+import {
+  useCurrencySearchModalBridge,
+  useCurrencySearchModalSwap,
+} from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
+import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
-
-import { CurrencySearchModalProvider } from '../SearchModal/CurrencySearchModal'
-import { normalizeInputValue } from '../../utils'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()
+  const { onMax, onCurrencySelect } = currencyInputPanelProps
+
+  const { handleOnCurrencySelect } = useAutoMaxBalance({ onMax, onCurrencySelect })
 
   return (
     <CurrencySearchModalProvider {...searchModalContexts}>
-      <CurrencyInputPanelComponent {...currencyInputPanelProps} />
+      <CurrencyInputPanelComponent {...currencyInputPanelProps} onCurrencySelect={handleOnCurrencySelect} />
     </CurrencySearchModalProvider>
   )
 }
@@ -28,33 +27,10 @@ export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelPr
 export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalBridge()
 
-  const {
-    value: valueRaw,
-    onUserInput: onUserInputRaw,
-    displayedValue,
-    setDisplayedValue,
-    disableCurrencySelect,
-  } = currencyInputPanelProps
+  const { value, onUserInput, displayedValue, disableCurrencySelect } = currencyInputPanelProps
+  const { onMax, onCurrencySelect } = currencyInputPanelProps
 
-  const debounceOnUserInput = useMemo(() => {
-    return debounce(onUserInputRaw, 500)
-  }, [onUserInputRaw])
-
-  const onUserInput = useCallback(
-    (val: string) => {
-      const normalizedValue = normalizeInputValue(val)
-
-      setDisplayedValue?.(normalizedValue)
-      debounceOnUserInput(normalizedValue)
-    },
-    [debounceOnUserInput, setDisplayedValue]
-  )
-
-  const value = disableCurrencySelect ? valueRaw : displayedValue ?? ''
-
-  useEffect(() => {
-    debounceOnUserInput.cancel()
-  }, [debounceOnUserInput, disableCurrencySelect])
+  const { handleOnCurrencySelect } = useAutoMaxBalance({ onMax, onCurrencySelect })
 
   useBridgeInputValidation(!!disableCurrencySelect)
 
@@ -66,6 +42,7 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
         onUserInput={onUserInput}
         displayedValue={displayedValue}
         currencyWrapperSource={CurrencyWrapperSource.BRIDGE}
+        onCurrencySelect={handleOnCurrencySelect}
       />
     </CurrencySearchModalProvider>
   )

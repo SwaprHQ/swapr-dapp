@@ -1,5 +1,6 @@
-import { createAction } from '@reduxjs/toolkit'
 import { BigintIsh } from '@swapr/sdk'
+
+import { createAction } from '@reduxjs/toolkit'
 
 export const setSwapFees = createAction<{
   swapFees:

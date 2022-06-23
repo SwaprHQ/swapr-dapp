@@ -1,16 +1,18 @@
+import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useEffect, useState } from 'react'
+import { ChevronLeft, Repeat } from 'react-feather'
+import { usePrevious } from 'react-use'
+import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { DarkCard } from '../../Card'
+import { AutoColumn } from '../../Column'
+import { RowBetween } from '../../Row'
 import Information from './Information'
 import StakeCard from './StakeCard'
-import { AutoColumn } from '../../Column'
-import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-import { ChevronLeft, Repeat } from 'react-feather'
-import { useActiveWeb3React } from '../../../hooks'
-import { usePrevious } from 'react-use'
-import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
-import { RowBetween } from '../../Row'
-import { SingleSidedLiquidityMiningCampaign, LiquidityMiningCampaign } from '@swapr/sdk'
 
 const GoBackContainer = styled.div`
   font-size: 11px;
@@ -22,7 +24,7 @@ const GoBackContainer = styled.div`
   color: ${props => props.theme.text3};
 `
 
-const USDValueSwitcherContainer = styled.div`
+export const USDValueSwitcherContainer = styled.div`
   font-size: 11px;
   font-weight: 600;
   line-height: 11px;
@@ -38,7 +40,7 @@ const StyledChevronLeft = styled(ChevronLeft)`
   margin-right: 4px;
 `
 
-const StyledSwitch = styled(Repeat)`
+export const StyledSwitch = styled(Repeat)`
   width: 12px;
   height: 12px;
   color: ${props => props.theme.purple3};
@@ -58,7 +60,7 @@ interface PairViewProps {
 }
 
 function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
-  const history = useHistory()
+  const { navigate } = useRouter()
   const { chainId, account } = useActiveWeb3React()
   const previousChainId = usePrevious(chainId)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
@@ -69,16 +71,16 @@ function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSided
     // when the chain is switched, and not as a reaction to following a multi chain link
     // (which might require changing chains) redirect to generic pools page
     if (chainId && previousChainId && chainId !== previousChainId && !switchingToCorrectChain) {
-      history.push('/pools')
+      navigate('/pools')
     }
-  }, [chainId, history, previousChainId, switchingToCorrectChain])
+  }, [chainId, navigate, previousChainId, switchingToCorrectChain])
   const handleUSDValueClick = useCallback(() => {
     setShowUSDValue(!showUSDValue)
   }, [showUSDValue])
   return (
     <AutoColumn gap="18px" data-testid="reward-campaign-information-card">
       <RowBetween>
-        <GoBackContainer onClick={history.goBack}>
+        <GoBackContainer onClick={() => navigate(-1)}>
           <StyledChevronLeft />
           Back to rewards
         </GoBackContainer>

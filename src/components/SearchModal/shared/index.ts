@@ -1,11 +1,10 @@
-import styled from 'styled-components'
-import { Flex } from 'rebass'
 import { transparentize } from 'polished'
-
-import { AutoColumn } from '../../Column'
-import { RowBetween } from '../../Row'
+import { Flex } from 'rebass'
+import styled from 'styled-components'
 
 import border8pxRadius from '../../../assets/images/border-8px-radius.png'
+import { AutoColumn } from '../../Column'
+import { RowBetween } from '../../Row'
 
 export const ModalInfo = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}

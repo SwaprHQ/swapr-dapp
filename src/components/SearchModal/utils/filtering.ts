@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { Currency, Pair, Token } from '@swapr/sdk'
+
 import { TokenInfo } from '@uniswap/token-lists'
-import { Pair, Token } from '@swapr/sdk'
+import { useMemo } from 'react'
 
 import { isAddress } from '../../../utils'
 
@@ -11,7 +12,7 @@ export function createTokenFilterFunction<T extends Token | TokenInfo>(search: s
 
   if (searchingAddress) {
     const lower = searchingAddress.toLowerCase()
-    return (t: T) => ('isToken' in t ? searchingAddress === t.address : lower === t.address.toLowerCase())
+    return (t: T | Currency) => 'address' in t && lower === t.address?.toLowerCase()
   }
 
   const lowerSearchParts = search

@@ -1,6 +1,7 @@
 import { transparentize } from 'polished'
-import React, { useContext } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import React from 'react'
+import styled, { useTheme } from 'styled-components'
+
 import { DarkCard } from '../components/Card'
 
 export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
@@ -31,7 +32,7 @@ interface AppBodyProps {
  * The styled container element that wraps the content of most pages and the tabs.
  */
 export default function AppBody({ children, tradeDetailsOpen }: AppBodyProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <BodyWrapper backgroundColor={theme.bg1} tradeDetailsOpen={tradeDetailsOpen}>
       {children}

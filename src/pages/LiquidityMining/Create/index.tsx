@@ -1,86 +1,171 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
-import React, { useCallback, useMemo, useState } from 'react'
+
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+
 import { AutoColumn } from '../../../components/Column'
+import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
 import Step from '../../../components/LiquidityMining/Create/Steps'
-import PairAndReward from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
-import RewardAmount from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
-import SingleOrMultiStep from '../../../components/LiquidityMining/Create/Steps/SingleOrMulti'
-import Time from '../../../components/LiquidityMining/Create/Steps/Time'
+import StakeTokenAndLimit from '../../../components/LiquidityMining/Create/Steps/PairAndReward'
 import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/PreviewAndCreate'
+import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
+import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
+import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
+import { useActiveWeb3React } from '../../../hooks'
+import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
+import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
+import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../styleds'
-import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
-import ConfirmStakingRewardsDistributionCreation from '../../../components/LiquidityMining/ConfirmStakingRewardsDistributionCreation'
-import { useTransactionAdder } from '../../../state/transactions/hooks'
-import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
-import styled from 'styled-components'
 
 const LastStep = styled(Step)`
   z-index: 0;
 `
+export enum CampaignType {
+  TOKEN,
+  PAIR,
+}
+
+export interface Reward {
+  approvalState: ApprovalState
+  rewardTokenAmount: TokenAmount | undefined
+  rewardRawAmount: string | undefined
+}
+
+export enum ActionType {
+  APPROVAL_CHANGE,
+  REWARD_CHANGE,
+  REMOVE_REWARD,
+  RESET,
+}
+export interface Actions {
+  type: ActionType
+  payload: {
+    index: number
+    reward?: TokenAmount | undefined
+    rawAmount?: string
+    approval?: ApprovalState
+  }
+}
+const initialState: Reward = {
+  approvalState: ApprovalState.UNKNOWN,
+  rewardTokenAmount: undefined,
+  rewardRawAmount: undefined,
+}
+
+const reducer = (state: Reward[], action: Actions): Reward[] => {
+  const { type, payload } = action
+
+  const mutableState = [...state]
+  switch (type) {
+    case ActionType.APPROVAL_CHANGE:
+      const approvalObject: Reward = {
+        approvalState: payload.approval !== undefined ? payload.approval : state[payload.index].approvalState,
+        rewardTokenAmount: state[payload.index].rewardTokenAmount,
+        rewardRawAmount: state[payload.index].rewardRawAmount,
+      }
+
+      mutableState.splice(payload.index, 1, approvalObject)
+
+      return mutableState
+
+    case ActionType.REWARD_CHANGE:
+      const newRewardObject: Reward = {
+        approvalState: state[payload.index].approvalState ? state[payload.index].approvalState : ApprovalState.UNKNOWN,
+        rewardTokenAmount: payload.reward,
+        rewardRawAmount: payload.rawAmount,
+      }
+
+      mutableState.splice(payload.index, 1, newRewardObject)
+
+      const hasAdditionalReward = mutableState.some(({ rewardTokenAmount: reward }) => reward?.currency === undefined)
+      if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(initialState)
+
+      return mutableState
+
+    case ActionType.REMOVE_REWARD:
+      const hasMaxNumberOfReward = state.every(reward => reward.rewardTokenAmount !== undefined)
+
+      if (payload.index === 0 && state.length === 1) return [initialState]
+
+      mutableState.splice(payload.index, 1)
+
+      if (hasMaxNumberOfReward) mutableState.push(initialState)
+
+      return mutableState
+    case ActionType.RESET:
+      return [initialState]
+    default:
+      return state
+  }
+}
 
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
+  const { chainId } = useActiveWeb3React()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+
   const [errorMessage, setErrorMessage] = useState('')
-  const [singleReward, setSingleReward] = useState<boolean | null>(true)
-  const [targetedPair, setTargetedPair] = useState<Pair | null>(null)
-  const [reward, setReward] = useState<TokenAmount | null>(null)
+  const [campaingType, setCampaignType] = useState<CampaignType>(CampaignType.TOKEN)
+
+  const [stakeToken, setStakeToken] = useState<Token | undefined>(undefined)
+  const [stakePair, setStakePair] = useState<Pair | undefined>(undefined)
+
   const [unlimitedPool, setUnlimitedPool] = useState(true)
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
+  const [rewardsArray, dispatch] = useReducer(reducer, [initialState])
+  const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
+  const [simulatedPrice, setSimulatedPrice] = useState('0')
 
-  const memoizedRewardArray = useMemo(() => (reward ? [reward] : []), [reward])
+  const memoizedRewardsArray = useMemo(
+    () =>
+      rewardsArray.length
+        ? rewardsArray.map(({ rewardTokenAmount: reward }: Reward) => reward).filter(reward => reward?.greaterThan('0'))
+        : new Array(rewardsArray.length).fill(undefined),
+    [rewardsArray]
+  )
+  const memoizedApprovalsArray = useMemo(
+    () =>
+      rewardsArray.some(({ approvalState: approval }: Reward) =>
+        approval === ApprovalState.APPROVED || approval === ApprovalState.UNKNOWN ? false : true
+      ),
+    [rewardsArray]
+  )
+
   const campaign = useNewLiquidityMiningCampaign(
-    targetedPair,
-    memoizedRewardArray,
+    memoizedRewardsArray,
     startTime,
     endTime,
     timelocked,
-    stakingCap
+    stakingCap,
+    simulatedStakedAmount,
+    simulatedPrice,
+    stakeToken,
+    stakePair
   )
 
   const addTransaction = useTransactionAdder()
   const createLiquidityMiningCallback = useCreateLiquidityMiningCallback(campaign)
 
-  const handleTimelockedChange = useCallback(() => {
-    setTimelocked(!timelocked)
-  }, [timelocked])
-
-  const handleRewardTokenChange = useCallback(
-    (token: Token) => {
-      setReward(new TokenAmount(token, reward ? reward.raw.toString() : '0'))
+  const handleTimelockedChange = useCallback(
+    (value?: boolean) => {
+      setTimelocked(value !== undefined ? value : !timelocked)
     },
-    [reward]
+    [timelocked]
   )
 
   const handleCreateRequest = useCallback(() => {
     if (!createLiquidityMiningCallback) return
     setShowConfirmationModal(true)
   }, [createLiquidityMiningCallback])
-
-  const handleStartTimeChange = useCallback((newStartTime: Date) => {
-    if (Date.now() > newStartTime.getTime()) return // date in the past, invalid
-    setStartTime(newStartTime)
-  }, [])
-
-  const handleEndTimeChange = useCallback(
-    (newEndTime: Date | null) => {
-      if (!newEndTime) {
-        setEndTime(null)
-        return
-      }
-      if (startTime ? startTime.getTime() >= newEndTime.getTime() : Date.now() > newEndTime.getTime()) return // date in the past, invalid
-      setEndTime(newEndTime)
-    },
-    [startTime]
-  )
 
   const handleCreateConfirmation = useCallback(() => {
     if (!createLiquidityMiningCallback) return
@@ -90,7 +175,10 @@ export default function CreateLiquidityMining() {
         setErrorMessage('')
         setTransactionHash(transaction.hash || null)
         addTransaction(transaction, {
-          summary: `Create liquidity mining campaign on ${targetedPair?.token0.symbol}/${targetedPair?.token1.symbol}`,
+          summary: `Create liquidity mining campaign on ${
+            stakePair ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}` : stakeToken ? stakeToken.symbol : ''
+          }
+          }`,
         })
       })
       .catch(error => {
@@ -100,78 +188,99 @@ export default function CreateLiquidityMining() {
       .finally(() => {
         setAttemptingTransaction(false)
       })
-  }, [addTransaction, createLiquidityMiningCallback, targetedPair])
+  }, [addTransaction, createLiquidityMiningCallback, stakeToken, stakePair])
 
+  const resetAllFileds = () => {
+    dispatch({ type: ActionType.RESET, payload: { index: 0 } })
+    setStakePair(undefined)
+    setStakeToken(undefined)
+    setUnlimitedPool(true)
+    setStartTime(null)
+    setEndTime(null)
+    setTimelocked(false)
+  }
   const handleCreateDismiss = useCallback(() => {
     if (transactionHash) {
       // the creation tx has been submitted, let's empty the creation form
-      setSingleReward(null)
-      setTargetedPair(null)
-      setReward(null)
-      setUnlimitedPool(true)
-      setStartTime(null)
-      setEndTime(null)
-      setTimelocked(false)
+      setCampaignType(CampaignType.TOKEN)
+      resetAllFileds()
     }
     setErrorMessage('')
     setTransactionHash(null)
     setShowConfirmationModal(false)
   }, [transactionHash])
 
+  useEffect(() => {
+    resetAllFileds()
+  }, [chainId, handleCreateDismiss, campaingType])
+
   return (
     <>
       <PageWrapper gap="40px">
         <AutoColumn gap="8px">
           <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
-          <TYPE.subHeader color="text5" lineHeight="17px">
-            {t('liquidityMining.create.subtitle')}
-          </TYPE.subHeader>
         </AutoColumn>
-        <Step title="Choose one or multiple rewards" index={0} disabled={false}>
-          <SingleOrMultiStep singleReward={singleReward} onChange={setSingleReward} />
+        <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
+          <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
         </Step>
-        <Step title="Select pair and reward" index={1} disabled={singleReward === null}>
-          <PairAndReward
-            liquidityPair={targetedPair}
-            reward={reward}
-            onLiquidityPairChange={setTargetedPair}
-            onRewardTokenChange={handleRewardTokenChange}
-          />
-        </Step>
-        <Step title="Select reward amount" index={2} disabled={!targetedPair || !reward || !reward.token}>
-          <RewardAmount
-            reward={reward}
-            stakablePair={targetedPair}
+        <Step
+          title={
+            campaingType === CampaignType.TOKEN
+              ? t('liquidityMining.create.selectToken')
+              : t('liquidityMining.create.selectPair')
+          }
+          index={1}
+          disabled={false}
+        >
+          <StakeTokenAndLimit
             unlimitedPool={unlimitedPool}
-            onRewardAmountChange={setReward}
             onUnlimitedPoolChange={setUnlimitedPool}
+            campaingType={campaingType}
+            stakeToken={stakeToken}
+            stakePair={stakePair}
+            setStakeToken={setStakeToken}
+            setStakePair={setStakePair}
             onStakingCapChange={setStakingCap}
           />
         </Step>
-        <Step title="Duration and start/end time" index={3} disabled={!reward || reward.equalTo('0')}>
-          <Time
+        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}>
+          <DurationAndLocking
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
-            onStartTimeChange={handleStartTimeChange}
-            onEndTimeChange={handleEndTimeChange}
+            setStartTime={setStartTime}
+            setEndTime={setEndTime}
             onTimelockedChange={handleTimelockedChange}
           />
         </Step>
+        <Step
+          title={t('liquidityMining.create.reward')}
+          index={3}
+          key={3}
+          disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
+        >
+          <RewardsSelection rewardsArray={rewardsArray} setRewardsArray={dispatch} />
+        </Step>
         <LastStep
-          title="Preview, approve and create mining pool"
+          title={t('liquidityMining.create.preview')}
           index={4}
-          disabled={!targetedPair || !startTime || !endTime || !reward || !reward.token || reward.equalTo('0')}
+          disabled={(!stakeToken && !stakePair) || !startTime || !endTime || memoizedRewardsArray.length === 0}
         >
           <PreviewAndCreate
-            liquidityPair={targetedPair}
+            simulatedPrice={simulatedPrice}
+            setSimulatedPrice={setSimulatedPrice}
+            campaign={campaign}
+            approvals={memoizedApprovalsArray}
+            stakePair={stakePair}
+            stakeToken={stakeToken}
             startTime={startTime}
             endTime={endTime}
             timelocked={timelocked}
-            reward={reward}
+            rewards={memoizedRewardsArray}
             stakingCap={stakingCap}
-            apy={campaign ? campaign.apy : new Percent('0', '100')}
+            apr={campaign ? campaign.apy : new Percent('0', '100')}
             onCreate={handleCreateRequest}
+            setSimulatedStakedAmount={setSimulatedStakedAmount}
           />
         </LastStep>
       </PageWrapper>
@@ -182,10 +291,11 @@ export default function CreateLiquidityMining() {
         attemptingTransaction={attemptingTransaction}
         transactionHash={transactionHash}
         errorMessage={errorMessage}
-        liquidityPair={targetedPair}
+        stakeToken={stakeToken}
+        stakePair={stakePair}
         startTime={startTime}
         endTime={endTime}
-        reward={reward}
+        rewards={memoizedRewardsArray}
         timelocked={timelocked}
         stakingCap={stakingCap}
         unlimitedPool={unlimitedPool}

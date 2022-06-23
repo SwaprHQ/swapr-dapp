@@ -96,4 +96,7 @@ export class TokenMenu {
   static getCommonTokens() {
     return cy.get('[data-testid=common-tokens]')
   }
+  static closeModal() {
+    return cy.get('[data-testid=close-icon]').click()
+  }
 }
