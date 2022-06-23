@@ -31,10 +31,15 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
   flex: ${({ flex1 }) => (flex1 ? 1 : 'auto')};
 `
 const StyledCampaignCard = styled(CampaignCard)`
-  width: 50%;
+  width: 47%;
+  min-width: 330px;
+  height: 162px;
 `
 const CampaignDetailWrapper = styled(Flex)`
   gap: 32px;
+  ${props => props.theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `}
 `
 
 interface PreviewProps {

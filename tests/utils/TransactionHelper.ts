@@ -1,8 +1,7 @@
 import 'etherscan-api/dist/bundle.js'
-import './enums/AddressesEnum'
+import { AddressesEnum } from './enums/AddressesEnum'
 import { ScannerFacade } from './facades/ScannerFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
-import { AddressesEnum } from './enums/AddressesEnum'
 import { Transaction } from './TestTypes'
 
 export class TransactionHelper {
@@ -82,8 +81,8 @@ export class TransactionHelper {
   }
 
   static getTxFromStorage() {
-    console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0])
-    return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4])[0]
+    console.log('tx', Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4]).pop())
+    return Object.keys(JSON.parse(localStorage.getItem('swapr_transactions')!)[4]).pop()!
   }
 
   static checkEthereumBalanceFromEtherscan(

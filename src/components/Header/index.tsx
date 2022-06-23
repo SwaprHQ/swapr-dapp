@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
-import { withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 import styled, { css } from 'styled-components'
 
@@ -110,7 +110,7 @@ const HeaderLinks = styled(Row)`
   `};
 `
 
-const Title = styled.a`
+const Title = styled(Link)`
   display: flex;
   align-items: center;
   pointer-events: auto;
@@ -220,6 +220,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 
 function Header() {
   const { account, chainId } = useActiveWeb3React()
+
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const nativeCurrency = useNativeCurrency()
@@ -269,35 +270,23 @@ function Header() {
         }
       />
       <HeaderRow isDark={isDark}>
-        <Title href=".">
+        <Title to="/swap">
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
           <Divider />
-          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink
-            data-testid="pool-nav-link"
-            id="pool-nav-link"
-            to="/pools"
-            activeClassName="active"
-            disabled={networkWithoutSWPR}
-          >
+          <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
             Liquidity
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink
-            data-testid="rewards-nav-link"
-            id="rewards-nav-link"
-            to="/rewards"
-            activeClassName="active"
-            disabled={networkWithoutSWPR}
-          >
+          <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
             Rewards
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" activeClassName="active">
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
             {t('bridge')}
             <HeaderLinkBadge label="BETA" />
           </HeaderLink>
@@ -362,20 +351,20 @@ function Header() {
       </AdditionalDataWrap>
       <HeaderControls isConnected={!!account}>
         <Flex style={{ gap: '26px' }} minWidth={'unset'}>
-          <HeaderMobileLink id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderMobileLink id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="pool-nav-link" to="/pools" activeClassName="active">
+            <HeaderMobileLink id="pool-nav-link" to="/pools">
               Pools
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="rewards-nav-link" to="/rewards" activeClassName="active">
+            <HeaderMobileLink id="rewards-nav-link" to="/rewards">
               Rewards
             </HeaderMobileLink>
           )}
-          <HeaderMobileLink id="bridge-nav-link" to="/bridge" activeClassName="active">
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
             {t('bridge')}
           </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
@@ -397,4 +386,4 @@ function Header() {
   )
 }
 
-export default withRouter(Header)
+export default Header

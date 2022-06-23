@@ -3,6 +3,9 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 
 describe('Switching from mainnet tests', () => {
+  before(()=>{
+    cy.clearLocalStorage()
+  })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()

@@ -316,6 +316,7 @@ export default function Bridge() {
             }
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
+            maxAmount={maxAmountInput}
           />
           <BridgeActionPanel
             account={account}
