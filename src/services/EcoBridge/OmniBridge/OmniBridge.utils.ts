@@ -1,11 +1,11 @@
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider'
-import { ChainId, MULTICALL2_ABI, MULTICALL2_ADDRESS } from '@swapr/sdk'
+import { ChainId, MULTICALL2_ABI, MULTICALL2_ADDRESS, WETH } from '@swapr/sdk'
 
 import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
 import { BytesLike, formatUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
 
-import { WETH_GNOSIS_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { ZERO_ADDRESS } from '../../../constants'
 import { ERC20_BYTES32_ABI } from '../../../constants/abis/erc20'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
@@ -310,7 +310,8 @@ const fetchToTokenDetails = async (
   const toEthersProvider = providers[toChainId]
 
   if (fromTokenAddress === ZERO_ADDRESS && fromTokenMode === Mode.NATIVE) {
-    const toAddress = WETH_GNOSIS_ADDRESS
+    const toAddress = WETH[ChainId.XDAI].address
+
     return fetchTokenDetails(
       bridgeDirection,
       {
@@ -612,16 +613,13 @@ export const getTransactionStatus = (
     return BridgeTransactionStatus.REDEEM
   }
 
-  if (isClaimed) {
-    if (isFailed) {
-      return BridgeTransactionStatus.FAILED
-    }
-    if (hasSignatures) {
-      return BridgeTransactionStatus.CLAIMED
-    }
-    return BridgeTransactionStatus.CONFIRMED
+  if (isFailed) {
+    return BridgeTransactionStatus.FAILED
   }
-  return BridgeTransactionStatus.LOADING
+  if (hasSignatures) {
+    return BridgeTransactionStatus.CLAIMED
+  }
+  return BridgeTransactionStatus.CONFIRMED
 }
 
 //collect
