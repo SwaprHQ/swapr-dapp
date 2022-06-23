@@ -3,12 +3,12 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { DAI, DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
@@ -96,6 +96,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
     //create list only for mainnet
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
+
     if (chainId === ChainId.MAINNET) {
       const tokenList: TokenList = {
         name: 'xDai Bridge',
@@ -105,15 +106,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
           minor: 0,
           patch: 0,
         },
-        tokens: [
-          {
-            address: DAI_ETHEREUM_ADDRESS,
-            chainId,
-            decimals: 18,
-            name: 'Dai Stablecoin',
-            symbol: 'DAI',
-          },
-        ],
+        tokens: [DAI[ChainId.MAINNET] as TokenInfo],
       }
       this.store.dispatch(this.actions.addTokenLists({ xdai: tokenList }))
     }
