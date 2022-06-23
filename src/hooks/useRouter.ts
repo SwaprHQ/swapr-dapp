@@ -1,25 +1,39 @@
-import queryString from 'query-string'
-import { useMemo } from 'react'
-import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
+import { useCallback, useMemo } from 'react'
+import { NavigateOptions, To, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
-export function useRouter(): any {
+export function useRouter() {
   const params = useParams()
   const location = useLocation()
-  const history = useHistory()
-  const match = useRouteMatch()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const _navigate = useNavigate()
+
+  const navigate = useCallback(
+    (to: To | number, options?: NavigateOptions) => {
+      switch (typeof to) {
+        case 'string':
+          return _navigate({ pathname: to, search: searchParams.toString() }, options)
+        case 'object':
+          return _navigate({ ...to, search: searchParams.toString() }, options)
+        case 'number':
+          return _navigate(to)
+        default:
+          throw new Error('Invalid "to" value in navigate')
+      }
+    },
+    [_navigate, searchParams]
+  )
 
   return useMemo(() => {
     return {
-      push: history.push,
-      replace: history.replace,
+      navigate,
+      searchParams,
+      setSearchParams,
       pathname: location.pathname,
       query: {
-        ...queryString.parse(location.search),
+        ...Object.fromEntries(searchParams),
         ...params,
       },
-      match,
       location,
-      history,
     }
-  }, [params, match, location, history])
+  }, [navigate, searchParams, setSearchParams, location, params])
 }

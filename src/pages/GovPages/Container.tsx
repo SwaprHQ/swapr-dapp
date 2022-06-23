@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { AutoRowCleanGap } from '../../components/Row'
@@ -43,7 +43,7 @@ export default function Container({ currentPage, currency }: ContainerProps) {
     )
   } else if (currentPage === PairPage) {
     if (currency === undefined) {
-      return <Redirect to="/" />
+      return <Navigate to="/" />
     } else {
       return (
         <CardContainer gap={8}>

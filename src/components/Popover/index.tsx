@@ -69,6 +69,7 @@ export default function Popover({
           <PopoverContainer
             className={className}
             show={show}
+            data-testid="popover"
             ref={setPopperElement as any}
             style={{ ...styles.popper, ...styled }}
             {...attributes.popper}
