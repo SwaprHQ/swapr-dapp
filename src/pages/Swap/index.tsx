@@ -136,6 +136,9 @@ export default function Swap() {
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
+
+  console.info({ trade })
+
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
     ? {
@@ -375,6 +378,10 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueInput}
                     maxAmount={maxAmountInput}
                     showCommonBases
+                    disabled={
+                      gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
+                      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
+                    }
                     id="swap-currency-input"
                   />
                   <SwitchIconContainer>
@@ -405,6 +412,10 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueOutput}
                     maxAmount={maxAmountOutput}
                     showCommonBases
+                    disabled={
+                      gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
+                      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
+                    }
                     id="swap-currency-output"
                   />
                 </AutoColumn>

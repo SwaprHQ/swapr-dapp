@@ -94,6 +94,8 @@ function TransactionSubmittedContent({
     </ExternalLink>
   )
 
+  console.info({ chainId, trade, externalLinkText })
+
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
       <Section>
@@ -175,6 +177,7 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
+  trade?: Trade
 }
 
 export default function TransactionConfirmationModal({
@@ -184,6 +187,7 @@ export default function TransactionConfirmationModal({
   hash,
   pendingText,
   content,
+  trade,
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -195,7 +199,7 @@ export default function TransactionConfirmationModal({
       {attemptingTxn ? (
         <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
       ) : hash ? (
-        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
+        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} trade={trade} />
       ) : (
         content()
       )}
