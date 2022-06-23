@@ -1,4 +1,4 @@
-import { Contract } from '@ethersproject/contracts'
+import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
@@ -9,6 +9,7 @@ import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
 import { DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { getErrorMsg, QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
@@ -66,13 +67,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   private _createDaiTokenContract = () => {
-    const abi = [
-      'function allowance(address, address) view returns (uint256)',
-      'function approve(address, uint256)',
-      'function transferFrom(address, address, uint256)',
-    ]
-
-    const daiToken = new Contract(DAI_ETHEREUM_ADDRESS, abi, this._activeProvider?.getSigner())
+    const daiToken = new Contract(DAI_ETHEREUM_ADDRESS, ERC20_ABI, this._activeProvider?.getSigner())
 
     return daiToken
   }
@@ -266,7 +261,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
     try {
       const parsedValue = parseUnits(value, decimals)
-      const txn = await this._daiToken.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
+      const txn: ContractTransaction = await this._daiToken.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
 
       this.store.dispatch(
         ecoBridgeUIActions.setStatusButton({
@@ -278,7 +273,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         })
       )
 
-      const receipt = txn.wait()
+      const receipt = await txn.wait()
 
       if (receipt) {
         this.store.dispatch(
@@ -365,7 +360,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         collectableTransactionHash
       )
 
-    if (collectableTransaction && collectableTransaction.message) {
+    if (collectableTransaction?.message) {
       const { content, signatures } = collectableTransaction.message
 
       if (content && !!signatures?.length) {
