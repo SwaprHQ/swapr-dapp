@@ -1,5 +1,6 @@
-import { BigintIsh, CurrencyAmount, Pair, Percent, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
+import { SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
+import { AggregatedPairs } from 'hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -21,15 +22,6 @@ import { PairsFilterType } from '../ListFilter'
 import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
 
-export interface AggregatedPairs {
-  pair: Pair
-  liquidityUSD: CurrencyAmount
-  maximumApy: Percent
-  staked?: boolean
-  containsKpiToken?: boolean
-  hasFarming?: boolean
-  startsAt?: BigintIsh
-}
 interface PairsListProps {
   aggregatedPairs: AggregatedPairs[]
   singleSidedStake?: SingleSidedLiquidityMiningCampaign

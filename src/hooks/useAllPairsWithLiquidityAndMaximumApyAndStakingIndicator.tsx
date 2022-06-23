@@ -3,10 +3,19 @@ import { BigintIsh, CurrencyAmount, JSBI, KpiToken, Pair, Percent, Token, ZERO }
 import { useMemo } from 'react'
 
 import { PairsFilterType } from '../components/Pool/ListFilter'
-import { AggregatedPairs } from '../components/Pool/PairsList/PairsList'
 import { LIQUIDITY_SORTING_TYPES } from '../constants'
 import { getBestApyPairCampaign } from '../utils/liquidityMining'
 import { useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator } from './useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator'
+
+export interface AggregatedPairs {
+  pair: Pair
+  liquidityUSD: CurrencyAmount
+  maximumApy: Percent
+  staked?: boolean
+  containsKpiToken?: boolean
+  hasFarming?: boolean
+  startsAt?: BigintIsh
+}
 
 const liquidityPairSorter: {
   [sortBy: string]: (pairA: AggregatedPairs, pairB: AggregatedPairs) => number

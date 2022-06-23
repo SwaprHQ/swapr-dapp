@@ -44,25 +44,22 @@ export function Pair({
   const { t } = useTranslation()
   const isMobile = useIsMobileByMedia()
 
-  const correctLogo = () =>
-    isSingleSidedStakingCampaign ? (
-      <CurrencyLogo size={isMobile ? '32px' : '45px'} marginRight={14} currency={token0} />
-    ) : (
-      <DoubleCurrencyLogo
-        spaceBetween={0}
-        marginLeft={0}
-        marginRight={14}
-        top={0}
-        currency0={token0}
-        currency1={token1}
-        size={isMobile ? 32 : 45}
-      />
-    )
-
   return (
     <GridCard {...rest} data-testid="pair-card" flexWrap="wrap" justifyContent="space-between">
       <FlexWrapper>
-        {correctLogo()}
+        {isSingleSidedStakingCampaign ? (
+          <CurrencyLogo size={isMobile ? '32px' : '45px'} marginRight={14} currency={token0} />
+        ) : (
+          <DoubleCurrencyLogo
+            spaceBetween={0}
+            marginLeft={0}
+            marginRight={14}
+            top={0}
+            currency0={token0}
+            currency1={token1}
+            size={isMobile ? 32 : 45}
+          />
+        )}
         <Flex flexDirection="column">
           <EllipsizedText color="white" lineHeight="20px" fontWeight="700" fontSize="16px" maxWidth="145px">
             {unwrappedToken(token0)?.symbol}

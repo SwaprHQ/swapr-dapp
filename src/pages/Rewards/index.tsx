@@ -124,8 +124,7 @@ export default function Rewards() {
   return (
     <>
       <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
+        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>

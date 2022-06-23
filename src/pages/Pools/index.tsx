@@ -220,7 +220,7 @@ export default function Pools() {
 
   return (
     <PageWrapper>
-      <SwapPoolTabs active={'pool'} />
+      <SwapPoolTabs active="pool" />
       <AutoColumn gap="lg" justify="center">
         <AutoColumn gap="27px" style={{ width: '100%' }}>
           <Title
