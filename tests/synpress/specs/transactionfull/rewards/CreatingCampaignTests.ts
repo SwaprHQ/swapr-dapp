@@ -43,15 +43,15 @@ describe('Campaign creation tests', () => {
     CreatePoolPage.setStartTime(DateUtils.getFormattedDateTimeForInput(expectedStartsAt))
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTimeForInput(expectedEndsAt))
 
-    CreatePoolPage.getRewardTokenMenuButton().first().click()
+    CreatePoolPage.getRewardTokenMenuButton()
+      .first()
+      .click()
     TokenMenu.chooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
-
 
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
     MenuBar.checkToastMessage('campaign')
-
     ;(SubgraphFacade.liquidityCampaign(
       AddressesEnum.WALLET_PUBLIC,
       getUnixTime(expectedStartsAt)
@@ -73,8 +73,8 @@ describe('Campaign creation tests', () => {
       isCampaignCreated = true
     })
   })
-  it('Should open a campaign through liquidity pair [TC-60]', function () {
-    if(!isCampaignCreated){
+  it('Should open a campaign through liquidity pair [TC-60]', function() {
+    if (!isCampaignCreated) {
       this.skip()
     }
     LiquidityPage.visitLiquidityPage()
@@ -97,9 +97,8 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  //TODO INVESTIGATE WHY THIS FAILS ON PIPELINE
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
-    if(!isCampaignCreated){
+  it('Should open a campaign through Rewards page [TC-60]', function() {
+    if (!isCampaignCreated) {
       this.skip()
     }
     RewardsPage.getRewardCards().should('be.visible')
@@ -107,11 +106,11 @@ describe('Campaign creation tests', () => {
     PairMenu.choosePair(TOKENS_PAIR)
     RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
     CampaignPage.checkCampaignData(
-        TOKENS_PAIR,
-        REWARDS_INPUT,
-        'ACTIVE',
-        DateUtils.getFormattedDateTimeForValidation(expectedStartsAt),
-        DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
+      TOKENS_PAIR,
+      REWARDS_INPUT,
+      'ACTIVE',
+      DateUtils.getFormattedDateTimeForValidation(expectedStartsAt),
+      DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
 })
