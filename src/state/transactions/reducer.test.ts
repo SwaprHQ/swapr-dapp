@@ -211,7 +211,6 @@ describe('createSwapProtocol', () => {
     // the filtered entries can grow, if that happens we don't want the tests to break
     // we are checking if the expected list is a subset of the actual list
     const uniswapFilteredEntries = getMapOfExchanges(UniswapV2RoutablePlatform)
-    console.info({ expectedUniswapNames, uniswapFilteredEntries })
     expect(expectedUniswapNames.every(el => Array.from(Object.keys(uniswapFilteredEntries)).includes(el))).toBeTruthy()
 
     const genericFilteredEntries = getMapOfExchanges(RoutablePlatform)
@@ -219,7 +218,6 @@ describe('createSwapProtocol', () => {
   })
   it('create SwapProtocol', () => {
     const actualProtocol = createSwapProtocol()
-    console.info(typeof actualProtocol.SWAPR)
     expect(actualProtocol.SWAPR).toBeDefined()
     expect(actualProtocol.notDefined).toBeUndefined()
   })
