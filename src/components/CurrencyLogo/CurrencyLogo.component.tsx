@@ -17,7 +17,7 @@ export const CurrencyLogoComponent = ({
   if (loading)
     return (
       <Skeleton
-        wrapper={({ children }: { children: ReactNode }) => (
+        wrapper={({ children }: { children?: ReactNode }) => (
           <Wrapper
             size={size}
             className={className}
