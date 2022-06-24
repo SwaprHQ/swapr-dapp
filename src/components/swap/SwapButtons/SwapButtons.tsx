@@ -1,6 +1,6 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
@@ -86,6 +86,8 @@ export function SwapButtons({
   const isGnosisProtocolTradeRequireWrap =
     trade instanceof GnosisProtocolTrade && Currency.getNative(trade?.chainId) == currencies?.INPUT && !swapInputError
 
+  const [storedTrade, setStoredTrade] = useState<Trade | undefined>(undefined)
+
   const onSwapClick = useCallback(() => {
     if (isExpertMode) {
       handleSwap()
@@ -98,6 +100,7 @@ export function SwapButtons({
         txHash: undefined,
       })
     }
+    setStoredTrade(trade)
   }, [isExpertMode, handleSwap, setSwapState, trade])
 
   const handleGPApproveClick = useCallback(async () => {
@@ -121,7 +124,8 @@ export function SwapButtons({
       !isValid ||
       isApprovalRequired ||
       (priceImpactSeverity > 3 && !isExpertMode) ||
-      gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP
+      gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP ||
+      trade === storedTrade
 
     return (
       <>
@@ -130,7 +134,11 @@ export function SwapButtons({
             <ButtonConfirmed
               padding={'8px'}
               onClick={onWrap}
-              disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP || wrapState === WrapState.PENDING}
+              disabled={
+                gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP ||
+                wrapState === WrapState.PENDING ||
+                trade === storedTrade
+              }
               altDisabledStyle={wrapState !== WrapState.UNKNOWN}
               confirmed={wrapState === WrapState.WRAPPED}
             >

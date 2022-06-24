@@ -137,8 +137,6 @@ export default function Swap() {
 
   const trade = showWrap ? undefined : potentialTrade
 
-  console.info({ trade })
-
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
     ? {
