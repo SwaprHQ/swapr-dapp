@@ -94,8 +94,6 @@ function TransactionSubmittedContent({
     </ExternalLink>
   )
 
-  console.info({ chainId, trade, externalLinkText })
-
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
       <Section>
