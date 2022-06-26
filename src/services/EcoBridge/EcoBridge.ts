@@ -8,10 +8,12 @@ import { BridgeList, EcoBridgeChangeHandler, EcoBridgeConstructorParams, EcoBrid
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { selectBridgeCollectableTx, selectSupportedBridges } from './store/EcoBridge.selectors'
 
+type Bridges = { [k in BridgeList]: EcoBridgeChildBase }
+
 export class EcoBridge {
   public readonly staticProviders: EcoBridgeProviders
   public readonly store: EcoBridgeConstructorParams['store']
-  public readonly bridges: { [k in BridgeList]: EcoBridgeChildBase }
+  public readonly bridges: Bridges
   private _initialized = false
   private _asyncInit: { promise: Promise<void>; resolve: () => void }
   private _account: string | undefined
