@@ -38,7 +38,7 @@
     "@fontsource/montserrat": "^4.5.1",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.10.3",
-    "@reach/portal": "^0.10.3",
+    "@reach/portal": "^0.17.0",
     "@react-spring/web": "^9.2.4",
     "@reduxjs/toolkit": "^1.8.3",
     "@swapr/core": "^0.3.18",
