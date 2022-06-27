@@ -1,7 +1,5 @@
 import { getUnixTime } from 'date-fns'
 
-import { PairMenu } from './PairMenu'
-
 export class RewardsPage {
   static visitRewardsPage() {
     cy.visit('/#/rewards')
@@ -51,7 +49,7 @@ export class RewardsPage {
     return cy.get('[data-testid=reward-starting-at-' + startingAt + ']', { timeout: 60000 })
   }
 
-  static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '', retries = 0) {
+  static clickOnRewardCardUntilCampaignOpen(startingAt: Date) {
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString()).click()
   }
 }
