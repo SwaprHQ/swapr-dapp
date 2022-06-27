@@ -4,11 +4,15 @@ import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
-import { BridgeList, EcoBridgeChangeHandler, EcoBridgeConstructorParams, EcoBridgeProviders } from './EcoBridge.types'
+import {
+  BridgeList,
+  Bridges,
+  EcoBridgeChangeHandler,
+  EcoBridgeConstructorParams,
+  EcoBridgeProviders,
+} from './EcoBridge.types'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { selectBridgeCollectableTx, selectSupportedBridges } from './store/EcoBridge.selectors'
-
-type Bridges = { [k in BridgeList]: EcoBridgeChildBase }
 
 export class EcoBridge {
   public readonly staticProviders: EcoBridgeProviders
