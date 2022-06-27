@@ -1,0 +1,89 @@
+import { Canvas, Meta, Story} from '@storybook/addon-docs'
+import styled from 'styled-components'
+import {AutoRowCleanGap} from "../Row"
+import { componentName } from '../../utils'
+import {StyledButtonsArray,Base,ButtonConfirmed,ButtonError,ButtonWithLink,CarrotButton,BaseProps} from "."
+
+
+
+<Meta title="ButtonsMDX" />
+
+# Buttons
+
+<p> All buttons below are purely styled components buttons which accept css props and <strong>Base</strong> button is base that all of them use </p>
+
+<Canvas>
+<Story name='Styled Buttons' component={Base} argTypes={{padding:{
+    name:'Padding',
+    type:{name:'string',required:false},
+    defaultValue:'18px',
+    description:'Padding of the buttonz'
+    },
+    width:{
+        control:{
+            type:'string',
+        }
+    }
+    }} >
+<AutoRowCleanGap gap={12} >
+  {StyledButtonsArray.map((Component) => (
+      <Component style={{ width: 'auto' }} key={Component.index}>
+        {componentName(Component)}
+      </Component>
+    ))}
+    </AutoRowCleanGap>
+</Story>
+</Canvas>
+
+
+
+<p> Button confirmed has two states depending on confirm property</p>
+
+export const ButtonConfirmedTemplate=(args)=><ButtonConfirmed {...args}/>
+
+<Story name='Button Confirmed' component={ButtonConfirmed} args={{
+  content: 'some text here',
+  confirmed: true,
+  width: 'fit-content',
+  altDisabledStyle: true,
+}}>
+  {ButtonConfirmedTemplate.bind({})}
+</Story>
+
+export const ButtonErrorTemplate=(args)=><ButtonError {...args}/>
+
+<Story name='Button Error' component={ButtonError} args={{
+  error: true,
+  content: 'text here',
+  width: 'fit-content',
+}}>
+{ButtonErrorTemplate.bind({})}
+</Story> 
+
+export const ButtonWithLinkTemplate=(args)=><ButtonWithLink {...args}/>
+
+<Story name='Button With Link' component={ButtonWithLink} args={{
+  link:
+    'https://dcabtc.com/what-is-stacking-sats#:~:text=In%20short%2C%20stacking%20sats%20is,the%20smallest%20unit%20in%20Bitcoin.',
+  text: 'Stack Sats',
+  style: { width: 'fit-content' },
+}}>
+{ButtonWithLinkTemplate.bind({})}
+</Story> 
+
+export const CarrotButtonTemplate=(args)=><CarrotButton {...args}/>
+
+<Story name='Carrot Button' component={CarrotButton} args={{
+  link: 'https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards',
+  text: 'some text here',
+  style: { width: 'fit-content' },
+}}>
+{CarrotButtonTemplate.bind({})}
+</Story> 
+
+
+
+
+
+
+

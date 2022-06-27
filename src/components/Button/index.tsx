@@ -349,3 +349,18 @@ export const AddSWPRToMetamaskButton = styled(Base)<{ active?: boolean }>`
   border: none;
   box-shadow: ${props => (props.active ? '0px 0px 42px rgba(165, 58, 196, 0.35)' : 'none')};
 `
+
+export const StyledButtonsArray = [
+  Base,
+  ButtonPrimary,
+  ButtonSecondary,
+  ButtonGrey,
+  ButtonInvisbile,
+  ButtonDark1,
+  ButtonPurple,
+  ButtonDark2,
+  ButtonOutlined,
+  ButtonEmpty,
+  ButtonWhite,
+  AddSWPRToMetamaskButton,
+]
