@@ -92,7 +92,7 @@
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
     "multiformats": "^9.4.10",
-    "multihashes": "^3.0.1",
+    "multihashes": "^4.0.3",
     "node-vibrant": "^3.1.5",
     "polished": "^3.3.2",
     "rc-pagination": "^3.1.17",
