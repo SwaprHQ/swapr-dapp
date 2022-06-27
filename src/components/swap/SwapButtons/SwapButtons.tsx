@@ -10,7 +10,7 @@ import Loader from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { SwapCallbackError } from '../../../components/swap/styleds'
-import { ROUTABLE_PLATFORM_STYLE } from '../../../constants'
+import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
@@ -123,7 +123,7 @@ export function SwapButtons({
     const isSwapDisabled =
       !isValid ||
       isApprovalRequired ||
-      (priceImpactSeverity > 3 && !isExpertMode) ||
+      (priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode) ||
       gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP ||
       trade === storedTrade
 
@@ -132,7 +132,7 @@ export function SwapButtons({
         <RowBetween gap={24}>
           {
             <ButtonConfirmed
-              padding={'8px'}
+              padding="8px"
               onClick={onWrap}
               disabled={
                 gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP ||
@@ -154,7 +154,7 @@ export function SwapButtons({
 
           <ButtonConfirmed
             confirmed={!(showApproveFlow && isApprovalRequired)}
-            padding={'8px'}
+            padding="8px"
             onClick={handleGPApproveClick}
             disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.APPROVAL || approvalSubmitted}
             altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
@@ -177,9 +177,9 @@ export function SwapButtons({
             priceImpactSeverity={priceImpactSeverity}
             isExpertMode={isExpertMode}
           >
-            {priceImpactSeverity > 3 && !isExpertMode
+            {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
               ? t('PriceImpactHigh')
-              : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('swapAnyway') : t('swap')}`}
           </SwapButton>
         </RowBetween>
       </>
@@ -228,11 +228,11 @@ export function SwapButtons({
             width="48%"
             id="swap-button"
             disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
-            error={isValid && priceImpactSeverity > 2}
+            error={isValid && priceImpactSeverity > PRICE_IMPACT_MEDIUM}
           >
-            {priceImpactSeverity > 3 && !isExpertMode
+            {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
               ? t('PriceImpactHigh')
-              : `${priceImpactSeverity > 2 ? t('swapAnyway') : t('swap')}`}
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('swapAnyway') : t('swap')}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>
