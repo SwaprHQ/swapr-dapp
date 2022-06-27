@@ -21,7 +21,7 @@
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom",
-    "stoyrybook": "start-storybook -p 6006 -s public",
+    "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "resolutions": {
@@ -65,6 +65,7 @@
     "@react-spring/web": "^9.2.4",
     "@react-theming/storybook-addon": "^1.1.6",
     "@reduxjs/toolkit": "^1.6.1",
+    "@storybook/addon-docs": "^6.5.9",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
     "@swapr/sdk": "^1.4.2-beta.0",
