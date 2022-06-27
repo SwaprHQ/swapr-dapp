@@ -95,8 +95,6 @@ export default function AddressInputPanel({
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
-  const containerLinkText = t('viewOnBlockExplorer')
-
   return (
     <InputPanel id={id}>
       <ContainerRow error={error}>
@@ -108,7 +106,7 @@ export default function AddressInputPanel({
               </TYPE.black>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  ({containerLinkText})
+                  {t('viewOnBlockExplorer')}
                 </ExternalLink>
               )}
             </RowBetween>
