@@ -19,6 +19,9 @@ describe('Campaign creation tests', () => {
   const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
   let isCampaignCreated = false
 
+  before(() => {
+    cy.changeMetamaskNetwork('rinkeby')
+  })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
     MenuBar.connectWallet()
