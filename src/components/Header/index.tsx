@@ -1,5 +1,6 @@
 import { SWPR } from '@swapr/sdk'
 
+import ExpeditionsModal from 'components/expeditions/ExpeditionsModal'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +16,7 @@ import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import ClaimModal from '../claim/ClaimModal'
@@ -24,6 +25,7 @@ import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import SwaprVersionLogo from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
+import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
@@ -231,6 +233,7 @@ function Header() {
   const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
   const toggleClaimPopup = useToggleShowClaimPopup()
+  const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
@@ -269,6 +272,7 @@ function Header() {
           data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
+      <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
       <HeaderRow isDark={isDark}>
         <Title to="/swap">
           <SwaprVersionLogo />
@@ -308,6 +312,11 @@ function Header() {
         </HeaderSubRow>
 
         <Flex maxHeight={'22px'} justifyContent={'end'}>
+          {account && (
+            <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
+              &#128640;&nbsp;Expeditions
+            </HeaderButton>
+          )}
           {!networkWithoutSWPR && (
             <SwprInfo
               hasActiveCampaigns={!loading && !!data}
