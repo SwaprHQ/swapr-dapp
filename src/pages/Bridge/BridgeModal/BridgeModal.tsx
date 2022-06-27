@@ -90,6 +90,11 @@ export const BridgeModal = ({
         setBridgeName('xDai Bridge')
       })
     }
+
+    if (activeBridge?.includes('omnibridge')) {
+      setIsWarning(false)
+      setBridgeName('OmniBridge')
+    }
   }, [activeBridge, status, symbol, t, typedValue])
 
   const onDismiss = () => {

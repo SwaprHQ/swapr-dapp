@@ -9,6 +9,7 @@ import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
+import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
 
@@ -65,10 +66,17 @@ export const selectBridgeTransactions = createSelector(
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTransactionsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTransactionsSummary,
     socketSelectors['socket'].selectBridgeTransactionsSummary,
+    omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
     xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
   ],
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsSummaryXdai) => {
-    const txs = [...txsSummaryTestnet, ...txsSummaryMainnet, ...txsSummarySocket, ...txsSummaryXdai]
+  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsOmnibridgeEthGnosis, txsSummaryXdai) => {
+    const txs = [
+      ...txsSummaryTestnet,
+      ...txsSummaryMainnet,
+      ...txsSummarySocket,
+      ...txsOmnibridgeEthGnosis,
+      ...txsSummaryXdai,
+    ]
 
     return txs
   }
@@ -120,6 +128,7 @@ export const selectBridgeListsLoadingStatus = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].listsStatus,
     (state: AppState) => state.ecoBridge['socket'].listsStatus,
     (state: AppState) => state.ecoBridge['xdai'].listsStatus,
+    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].listsStatus,
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
@@ -131,9 +140,10 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
     (state: AppState) => state.ecoBridge['socket'].lists,
     (state: AppState) => state.ecoBridge['xdai'].lists,
+    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket, tokenListXdai, swprDefaultList) => {
+  (tokenListTestnet, tokenListMainnet, tokenListSocket, tokenListXdai, omnibridgeEthGnosisList, swprDefaultList) => {
     // Tmp solution to add swpr token list to arbitrum bridges
     const swprListWithIds = {
       'arbitrum:testnet-swpr': swprDefaultList as TokenList,
@@ -145,6 +155,7 @@ export const selectBridgeLists = createSelector(
       ...tokenListMainnet,
       ...tokenListSocket,
       ...tokenListXdai,
+      ...omnibridgeEthGnosisList,
     }
 
     return allTokenLists
@@ -203,6 +214,7 @@ export const selectBridgeTokens = createSelector([selectBridgeLists], allLists =
     },
     {}
   )
+
   return allTokens
 })
 
@@ -247,18 +259,23 @@ export const selectSupportedBridgesForUI = createSelector(
     selectSupportedBridges,
     arbitrumSelectors['arbitrum:testnet'].selectBridgingDetails,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgingDetails,
+    omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgingDetails,
     socketSelectors['socket'].selectBridgingDetails,
     xdaiSelectors['xdai'].selectBridgingDetails,
   ],
-  (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, socketDetails, xdaiDetails) => {
+  (bridges, arbitrumTestnetDetails, arbitrumMainnetDetails, omnibridgeEthGnosisDetails, socketDetails, xdaiDetails) => {
     const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
       total[next.bridgeId] = next.name
       return total
     }, {})
 
-    const supportedBridges = [arbitrumMainnetDetails, arbitrumTestnetDetails, socketDetails, xdaiDetails].reduce<
-      SupportedBridges[]
-    >((total, bridge) => {
+    const supportedBridges = [
+      arbitrumMainnetDetails,
+      arbitrumTestnetDetails,
+      omnibridgeEthGnosisDetails,
+      socketDetails,
+      xdaiDetails,
+    ].reduce<SupportedBridges[]>((total, bridge) => {
       if (bridgeNameMap[bridge.bridgeId] !== undefined) {
         total.push({
           name: bridgeNameMap[bridge.bridgeId],

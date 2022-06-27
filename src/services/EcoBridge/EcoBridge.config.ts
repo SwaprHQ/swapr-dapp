@@ -2,6 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { OmniBridge } from './OmniBridge/OmniBridge'
 import { socketSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 import { XdaiBridge } from './Xdai/XdaiBridge'
@@ -29,6 +30,11 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     bridgeId: 'xdai',
     displayName: 'xDai Bridge',
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.XDAI }],
+  }),
+  new OmniBridge({
+    bridgeId: 'omnibridge:eth-xdai',
+    displayName: 'OmniBridge',
+    supportedChains: [{ from: ChainId.XDAI, to: ChainId.MAINNET }],
   }),
 ]
 

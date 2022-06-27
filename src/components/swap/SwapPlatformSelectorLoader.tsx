@@ -10,11 +10,16 @@ const ListContentItem = styled.div`
   margin-bottom: 6px;
   font-size: 10px;
   & > *:nth-child(1) {
-    flex-basis: 40%;
+    flex-basis: 36%;
   }
-  & > *:nth-child(2),
   & > *:nth-child(2) {
-    flex-basis: 20%;
+    flex-basis: 22%;
+  }
+  & > *:nth-child(3) {
+    flex-basis: 15%;
+  }
+  & > *:nth-child(4) {
+    flex-basis: 12%;
   }
   & > *:last-child {
     flex-basis: 80px;
@@ -48,11 +53,11 @@ export const PlatformSelectorLoader: FC<PlatformSelectorLoaderProps> = ({ showGa
   <>
     {[0, 1, 2].map(i => (
       <ListContentItem key={i}>
-        <Skeleton width="72px" height="12px" />
-        <Skeleton width="36px" height="12px" />
-        <Skeleton width="36px" height="12px" />
-        {showGasFeeColumn && <Skeleton width="36px" height="12px" />}
-        <Skeleton width="36px" height="12px" />
+        <Skeleton width="72px" height="12px" style={{ margin: '4px 0px' }} />
+        <Skeleton width="36px" height="12px" style={{ margin: '4px 0px' }} />
+        <Skeleton width="24px" height="12px" style={{ margin: '4px 0px' }} />
+        {showGasFeeColumn && <Skeleton width="20px" height="12px" style={{ margin: '4px 0px' }} />}
+        <Skeleton width="60px" height="12px" style={{ margin: '4px 0px' }} />
       </ListContentItem>
     ))}
   </>
