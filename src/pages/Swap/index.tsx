@@ -332,6 +332,10 @@ export default function Swap() {
     fiatValueOutput,
   ])
 
+  const isInputPanelDisabled =
+    gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
+    gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
+
   return (
     <>
       <TokenWarningModal
@@ -376,10 +380,7 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueInput}
                     maxAmount={maxAmountInput}
                     showCommonBases
-                    disabled={
-                      gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
-                      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
-                    }
+                    disabled={isInputPanelDisabled}
                     id="swap-currency-input"
                   />
                   <SwitchIconContainer>
@@ -410,10 +411,7 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueOutput}
                     maxAmount={maxAmountOutput}
                     showCommonBases
-                    disabled={
-                      gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
-                      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
-                    }
+                    disabled={isInputPanelDisabled}
                     id="swap-currency-output"
                   />
                 </AutoColumn>
