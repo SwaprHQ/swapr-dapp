@@ -15,6 +15,7 @@ import {
   UniswapTrade,
   UniswapV2Trade,
   ZERO,
+  ZeroXTrade,
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
@@ -70,7 +71,7 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
   } else if (trade instanceof CurveTrade) {
     realizedLPFee = ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
-  } else if (trade instanceof UniswapTrade) {
+  } else if (trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
     realizedLPFee = trade.fee
   }
 

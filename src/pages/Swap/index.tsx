@@ -118,11 +118,12 @@ export default function Swap() {
     inputError: swapInputError,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
-    currencies[Field.INPUT],
-    currencies[Field.OUTPUT],
-    typedValue
-  )
+  // eslint-disable-next-line
+  const {
+    wrapType,
+    execute: onWrap,
+    inputError: wrapInputError,
+  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
   const bestPricedTrade = allPlatformTrades?.[0] // the best trade is always the first
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : potentialTrade
@@ -278,10 +279,11 @@ export default function Swap() {
     trade,
   })
 
-  const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
-    fiatValueInput,
-    fiatValueOutput,
-  ])
+  // eslint-disable-next-line
+  const priceImpact = useMemo(
+    () => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput),
+    [fiatValueInput, fiatValueOutput] // eslint-disable-next-line
+  )
 
   return (
     <>

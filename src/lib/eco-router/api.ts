@@ -11,6 +11,7 @@ import {
   TradeType,
   UniswapTrade,
   UniswapV2Trade,
+  ZeroXTrade,
 } from '@swapr/sdk'
 // Low-level API for Uniswap V2
 
@@ -149,12 +150,27 @@ export async function getExactIn(
       })
   })
 
+  // ZeroX
+  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    ZeroXTrade.bestTradeExactIn(currencyAmountIn, currencyOut, maximumSlippage)
+      .then(resolve)
+      .catch(error => {
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
+
   // Wait for all promises to resolve, and
   // remove undefined values
   const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
     ...uniswapV2TradesList,
     curveTrade,
     uniswapTrade,
+    zeroXTrade,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
