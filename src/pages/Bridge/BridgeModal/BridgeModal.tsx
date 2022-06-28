@@ -37,7 +37,12 @@ export const BridgeModal = ({
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
-  const text = t('bridgeModalText', { typedValue, symbol: symbol ?? '', fromNetworkName, toNetworkName })
+  const text = t('bridgeModalText', {
+    typedValue,
+    symbol: symbol ?? '',
+    fromNetworkName,
+    toNetworkName,
+  })
 
   useEffect(() => {
     setDisableConfirm(false)

@@ -4,7 +4,7 @@ import { gql, useQuery } from '@apollo/client'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const QUERY = gql`
   query {
