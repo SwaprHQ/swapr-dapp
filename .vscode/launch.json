@@ -1,0 +1,32 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Jest (related tests)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["--runInBand", "--testTimeout=3600000", "--findRelatedTests", "${relativeFile}"],
+      "skipFiles": [
+        "<node_internals>/**/*.js",
+        "${workspaceFolder}/node_modules/jest*",
+        "${workspaceFolder}/node_modules/jsdom*"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Chrome",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMapPathOverrides": {
+        "webpack:///*": "${webRoot}/*"
+      }
+    }
+  ]
+}

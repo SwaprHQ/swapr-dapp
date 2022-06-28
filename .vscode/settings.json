@@ -1,0 +1,24 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.preferences.quoteStyle": "single",
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+  "files.associations": {
+    "*.env.*": "env"
+  },
+  "prettier.enable": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.rulers": [120]
+  }
+}
