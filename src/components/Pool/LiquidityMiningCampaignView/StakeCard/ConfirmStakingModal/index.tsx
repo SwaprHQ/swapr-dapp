@@ -1,5 +1,7 @@
-import { TokenAmount, Token, Pair } from '@swapr/sdk'
+import { Pair, Token, TokenAmount } from '@swapr/sdk'
+
 import React, { useCallback, useState } from 'react'
+
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

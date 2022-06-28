@@ -1,17 +1,29 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import {
+  ChainId,
+  CurveTrade,
+  Trade,
+  TradeType,
+  UniswapTrade,
+  UniswapV2RoutablePlatform,
+  UniswapV2Trade,
+} from '@swapr/sdk'
+
 import { UnsignedTransaction } from 'ethers'
-import { UniswapV2Trade, UniswapV2RoutablePlatform, Trade, CurveTrade, ChainId, TradeType } from '@swapr/sdk'
 import { useMemo } from 'react'
+
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
-import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
-import { useActiveWeb3React } from './index'
-import useTransactionDeadline from './useTransactionDeadline'
-import useENS from './useENS'
-import { useMainnetGasPrices } from '../state/application/hooks'
-import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { MainnetGasPrice } from '../state/application/actions'
+import { useMainnetGasPrices } from '../state/application/hooks'
+import { useTransactionAdder } from '../state/transactions/hooks'
+import { useUserPreferredGasPrice } from '../state/user/hooks'
+import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
+import { limitNumberOfDecimalPlaces } from '../utils/prices'
+import useENS from './useENS'
+import useTransactionDeadline from './useTransactionDeadline'
+
+import { useActiveWeb3React } from './index'
 
 export enum SwapCallbackState {
   INVALID,
@@ -53,7 +65,9 @@ export function useSwapsCallArguments(
   const deadline = useTransactionDeadline()
 
   return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) return []
+    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) {
+      return []
+    }
 
     return trades.map(trade => {
       if (!trade) {
@@ -61,8 +75,8 @@ export function useSwapsCallArguments(
       }
 
       const swapMethods = []
-      // Curve trade
-      if (trade instanceof CurveTrade) {
+      // Curve and Uniswap v3
+      if (trade instanceof CurveTrade || trade instanceof UniswapTrade) {
         return [
           {
             transactionParameters: trade.swapTransaction(),
@@ -105,8 +119,8 @@ export function useSwapsCallArguments(
 export function getSwapSummary(trade: Trade, recipientAddressOrName: string | null): string {
   const inputSymbol = trade.inputAmount.currency.symbol
   const outputSymbol = trade.outputAmount.currency.symbol
-  const inputAmount = trade.inputAmount.toSignificant(3)
-  const outputAmount = trade.outputAmount.toSignificant(3)
+  const inputAmount = limitNumberOfDecimalPlaces(trade.inputAmount)
+  const outputAmount = limitNumberOfDecimalPlaces(trade.outputAmount)
   const platformName = trade.platform.name
 
   const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${

@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import Skeleton from 'react-loading-skeleton'
+
 import { StyledLogo, Wrapper } from './CurrencyLogo.styles'
 import { CurrencyLogoComponentProps } from './CurrencyLogo.types'
 
@@ -16,7 +17,7 @@ export const CurrencyLogoComponent = ({
   if (loading)
     return (
       <Skeleton
-        wrapper={({ children }: { children: ReactNode }) => (
+        wrapper={({ children }: { children?: ReactNode }) => (
           <Wrapper
             size={size}
             className={className}

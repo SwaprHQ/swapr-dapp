@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Flex } from 'rebass'
 import {
   LiquidityMiningCampaign,
   Pair,
@@ -8,17 +6,19 @@ import {
   Token,
   TokenAmount,
 } from '@swapr/sdk'
+
+import React, { useEffect, useState } from 'react'
+import { Box, Flex } from 'rebass'
+import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../../../hooks'
+import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
+import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
+import { ButtonPrimary } from '../../../../Button'
+import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
+import { Card, Divider } from '../../../styleds'
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
-import { Card, Divider } from '../../../styleds'
-import { ButtonPrimary } from '../../../../Button'
-
-import styled from 'styled-components'
-import { useActiveWeb3React } from '../../../../../hooks'
-import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
-import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
-import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
-
 import SimulateStaking from './SimulateStaking'
 
 const FlexContainer = styled(Flex)`
@@ -31,10 +31,15 @@ const ResponsiveContainer = styled(Box)<{ flex1?: boolean }>`
   flex: ${({ flex1 }) => (flex1 ? 1 : 'auto')};
 `
 const StyledCampaignCard = styled(CampaignCard)`
-  width: 50%;
+  width: 47%;
+  min-width: 330px;
+  height: 162px;
 `
 const CampaignDetailWrapper = styled(Flex)`
   gap: 32px;
+  ${props => props.theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `}
 `
 
 interface PreviewProps {

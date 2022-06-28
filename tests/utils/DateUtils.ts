@@ -1,4 +1,4 @@
-import { format, addMinutes, setSeconds } from 'date-fns'
+import { addMinutes, format, setSeconds } from 'date-fns'
 
 export class DateUtils {
   static getFormattedDateTimeForInput(date: Date) {

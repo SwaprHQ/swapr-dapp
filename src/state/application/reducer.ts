@@ -1,13 +1,15 @@
-import { createReducer } from '@reduxjs/toolkit'
 import { ChainId } from '@swapr/sdk'
+
+import { createReducer } from '@reduxjs/toolkit'
+
 import {
-  PopupContent,
-  updateBlockNumber,
   ApplicationModal,
-  setOpenModal,
-  updateMainnetGasPrices,
   MainnetGasPrice,
+  PopupContent,
   setConnectorInfo,
+  setOpenModal,
+  updateBlockNumber,
+  updateMainnetGasPrices,
 } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>

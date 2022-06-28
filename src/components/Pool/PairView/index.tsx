@@ -1,25 +1,26 @@
-import React, { ReactNode, useEffect, useMemo } from 'react'
-import { Box, Flex, Text } from 'rebass'
 import { Pair } from '@swapr/sdk'
-import { DarkCard } from '../../Card'
-import DoubleCurrencyLogo from '../../DoubleLogo'
-import styled from 'styled-components'
-import FullPositionCard from '../../PositionCard'
-import { RowBetween } from '../../Row'
-import { ButtonGrey } from '../../Button'
-import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+
+import { useRouter } from 'hooks/useRouter'
+import React, { ReactNode, useEffect, useMemo } from 'react'
+import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
-import { usePair24hVolumeUSD } from '../../../hooks/usePairVolume24hUSD'
-import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
-import { useActiveWeb3React } from '../../../hooks'
-import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'react-use'
+import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
+import { useActiveWeb3React } from '../../../hooks'
+import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
+import { usePair24hVolumeUSD } from '../../../hooks/usePairVolume24hUSD'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
+import { ExternalLink, TYPE } from '../../../theme'
 import { formatCurrencyAmount } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import { TYPE } from '../../../theme'
-import { ArrowUpRight } from 'react-feather'
-import { ExternalLink } from '../../../theme'
+import { ButtonGrey } from '../../Button'
+import { DarkCard } from '../../Card'
+import DoubleCurrencyLogo from '../../DoubleLogo'
+import FullPositionCard from '../../PositionCard'
+import { RowBetween } from '../../Row'
 
 const StyledDarkCard = styled(DarkCard)`
   ::before {
@@ -71,7 +72,7 @@ interface PairViewProps {
 
 function PairView({ loading, pair }: PairViewProps) {
   const { account, chainId } = useActiveWeb3React()
-  const history = useHistory()
+  const { navigate } = useRouter()
   const previousChainId = usePrevious(chainId)
   const { loading: volumeLoading, volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { loading: liquidityLoading, liquidityUSD, numberOfCampaigns } = usePairCampaignIndicatorAndLiquidityUSD(pair)
@@ -87,9 +88,9 @@ function PairView({ loading, pair }: PairViewProps) {
     // when the chain is switched, and not as a reaction to following a multi chain link
     // (which might require changing chains), redirect to generic pools page
     if (chainId && previousChainId && chainId !== previousChainId && !switchingToCorrectChain) {
-      history.push('/pools')
+      navigate('/pools')
     }
-  }, [chainId, history, previousChainId, switchingToCorrectChain])
+  }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
     <>
@@ -143,7 +144,7 @@ function PairView({ loading, pair }: PairViewProps) {
             <ButtonGrey
               id="rewards-campaign-for-pair"
               onClick={() => {
-                history.push(`/rewards/${pair?.token0.address}/${pair?.token1.address}`)
+                navigate(`/rewards/${pair?.token0.address}/${pair?.token1.address}`)
               }}
               disabled={!liquidityMiningEnabled || loading}
               padding="8px"

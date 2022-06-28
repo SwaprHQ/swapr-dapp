@@ -1,11 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
 import { Currency } from '@swapr/sdk'
+
+import React from 'react'
+import { Navigate } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { AutoRowCleanGap } from '../../components/Row'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { GovCard } from './Card'
 import { MainPage, PairPage, temporaryCurrencyData } from './constant'
-import { AutoRowCleanGap } from '../../components/Row'
-import { Redirect } from 'react-router-dom'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 
 const CardContainer = styled(AutoRowCleanGap)`
   max-height: 330px;
@@ -41,7 +43,7 @@ export default function Container({ currentPage, currency }: ContainerProps) {
     )
   } else if (currentPage === PairPage) {
     if (currency === undefined) {
-      return <Redirect to="/" />
+      return <Navigate to="/" />
     } else {
       return (
         <CardContainer gap={8}>

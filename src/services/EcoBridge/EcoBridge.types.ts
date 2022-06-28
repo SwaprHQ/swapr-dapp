@@ -1,14 +1,19 @@
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
+
 import { Store } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+
 import { AppState } from '../../state'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { ListsState } from '../../state/lists/reducer'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { EcoBridgeChildBase } from './EcoBridge.utils'
 
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
 }
+
+export type Bridges = { [k in BridgeList]: EcoBridgeChildBase }
 
 export interface EcoBridgeConstructorParams {
   store: Store<AppState>
@@ -38,8 +43,9 @@ export interface EcoBridgeChildBaseProps
 export interface EcoBridgeChildBaseInit extends EcoBridgeChangeHandler, EcoBridgeInitialEnv {}
 
 export type SocketList = 'socket'
+export type OmniBridgeList = 'omnibridge:eth-xdai'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
-export type BridgeList = ArbitrumList | SocketList
+export type BridgeList = ArbitrumList | SocketList | OmniBridgeList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface EcoBridgeChildBaseConstructor {

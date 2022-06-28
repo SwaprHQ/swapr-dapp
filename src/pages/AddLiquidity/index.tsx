@@ -1,51 +1,54 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, TokenAmount, Percent, JSBI, ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
+
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
+
 import { ButtonPrimary } from '../../components/Button'
 import { BlueCard, OutlineCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
-import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFlat } from '../../components/Row'
-
+import TradePrice from '../../components/swap/TradePrice'
+import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { PairState } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
+import { useWrappingToken } from '../../hooks/useContract'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { Field } from '../../state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../state/mint/hooks'
-
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
-import { calculateProtocolFee } from '../../utils/prices'
+import { currencyId } from '../../utils/currencyId'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
+import { calculateProtocolFee } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../Pools/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
-import { currencyId } from '../../utils/currencyId'
-import TradePrice from '../../components/swap/TradePrice'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
-import { useWrappingToken } from '../../hooks/useContract'
 
-export default function AddLiquidity({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-  history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
+export default function AddLiquidity() {
+  const { navigate, location } = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()
@@ -265,27 +268,27 @@ export default function AddLiquidity({
     (currencyA: Currency) => {
       const newCurrencyIdA = currencyId(currencyA)
       if (newCurrencyIdA === currencyIdB) {
-        history.push(`/pools/add/${currencyIdB}/${currencyIdA}`)
+        navigate(`/pools/add/${currencyIdB}/${currencyIdA}`)
       } else {
-        history.push(`/pools/add/${newCurrencyIdA}/${currencyIdB}`)
+        navigate(`/pools/add/${newCurrencyIdA}/${currencyIdB}`)
       }
     },
-    [currencyIdB, history, currencyIdA]
+    [currencyIdB, navigate, currencyIdA]
   )
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
       const newCurrencyIdB = currencyId(currencyB)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
-          history.push(`/pools/add/${currencyIdB}/${newCurrencyIdB}`)
+          navigate(`/pools/add/${currencyIdB}/${newCurrencyIdB}`)
         } else {
-          history.push(`/pools/add/${newCurrencyIdB}`)
+          navigate(`/pools/add/${newCurrencyIdB}`)
         }
       } else {
-        history.push(`/pools/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
+        navigate(`/pools/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
       }
     },
-    [currencyIdA, history, currencyIdB]
+    [currencyIdA, navigate, currencyIdB]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -298,7 +301,7 @@ export default function AddLiquidity({
     setTxHash('')
   }, [onFieldAInput, onFieldBInput, txHash])
 
-  const isCreate = history.location.pathname.includes('/create')
+  const isCreate = location.pathname.includes('/create')
 
   return (
     <>
@@ -347,6 +350,7 @@ export default function AddLiquidity({
               }}
               onCurrencySelect={handleCurrencyASelect}
               currency={currencies[Field.CURRENCY_A]}
+              maxAmount={maxAmounts[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
             />
@@ -361,6 +365,7 @@ export default function AddLiquidity({
                 onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
               }}
               currency={currencies[Field.CURRENCY_B]}
+              maxAmount={maxAmounts[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
             />
@@ -446,8 +451,8 @@ export default function AddLiquidity({
                     !isValid ||
                     approvalA !== ApprovalState.APPROVED ||
                     approvalB !== ApprovalState.APPROVED ||
-                    !!!parsedAmounts[Field.CURRENCY_A] ||
-                    !!!parsedAmounts[Field.CURRENCY_B]
+                    !parsedAmounts[Field.CURRENCY_A] ||
+                    !parsedAmounts[Field.CURRENCY_B]
                   }
                 >
                   {error ?? 'Supply'}

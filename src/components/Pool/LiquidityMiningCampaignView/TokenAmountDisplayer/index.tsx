@@ -1,13 +1,15 @@
 import { PricedToken, PricedTokenAmount } from '@swapr/sdk'
+
 import React from 'react'
 import { Box, Flex } from 'rebass'
+import { useTheme } from 'styled-components'
+
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
 import { TYPE } from '../../../../theme'
-import { CurrencyLogo } from '../../../CurrencyLogo'
-import { MouseoverTooltip } from '../../../Tooltip'
 import { AutoColumn } from '../../../Column'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import { AutoRow } from '../../../Row'
-import { useTheme } from 'styled-components'
+import { MouseoverTooltip } from '../../../Tooltip'
 
 interface TokenAmountDisplayerProps {
   amount: PricedTokenAmount

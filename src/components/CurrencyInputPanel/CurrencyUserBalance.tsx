@@ -1,9 +1,11 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { TYPE } from '../../theme'
+import { Trans } from 'react-i18next'
+import { useTheme } from 'styled-components'
+
 import { useActiveWeb3React } from '../../hooks'
-import { UppercaseHelper } from './CurrencyInputPanel.styles'
+import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
+import { UppercaseHelper } from './CurrencyInputPanel.styles'
 import { CurrencyUserBalanceProps } from './CurrencyInputPanel.types'
 
 export const CurrencyUserBalance = ({
@@ -16,7 +18,7 @@ export const CurrencyUserBalance = ({
   onMax,
 }: CurrencyUserBalanceProps) => {
   const { account } = useActiveWeb3React()
-  const { t } = useTranslation()
+  const theme = useTheme()
 
   if (account) {
     return (
@@ -35,10 +37,18 @@ export const CurrencyUserBalance = ({
         <UppercaseHelper>
           {!hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) && (
             <>
-              {customBalanceText ?? t('balance')}
-              <TYPE.small as="span" fontWeight="600" color="text3" style={{ textDecoration: 'underline' }}>
-                {limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'}
-              </TYPE.small>
+              {customBalanceText ?? (
+                <Trans
+                  i18nKey="balance"
+                  values={{ balanceInput: limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0' }}
+                  components={[
+                    <span
+                      key="1"
+                      style={{ fontSize: '11px', color: theme.text3, fontWeight: 600, textDecoration: 'underline' }}
+                    ></span>,
+                  ]}
+                />
+              )}
             </>
           )}
         </UppercaseHelper>

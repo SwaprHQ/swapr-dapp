@@ -1,7 +1,9 @@
 import { Trade, UniswapV2Trade } from '@swapr/sdk'
+
 import React from 'react'
 import { Settings } from 'react-feather'
 import styled from 'styled-components'
+
 import { useToggleSettingsMenu } from '../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'

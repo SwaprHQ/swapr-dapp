@@ -1,5 +1,7 @@
 # Swapr dapp
 
+[![CI](https://github.com/levelkdev/swapr-dapp/workflows/CI/badge.svg)](https://github.com/levelkdev/swapr-dapp/actions?query=branch%3Adevelop+workflow%3ACI)
+
 An open source decentralized application for Swapr -- a protocol for decentralized exchange of Ethereum tokens governed by the DXdao.
 
 ### Run

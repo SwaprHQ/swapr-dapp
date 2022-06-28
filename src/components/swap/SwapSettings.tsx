@@ -1,18 +1,19 @@
+import { transparentize } from 'polished'
 import React from 'react'
-import { RowFixed } from '../Row/index'
-import styled, { useTheme } from 'styled-components'
-import { useMultihopManager, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { Button } from 'rebass/styled-components'
-import { transparentize } from 'polished'
+import styled, { useTheme } from 'styled-components'
+
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
-import { ReactComponent as Slippage } from '../../assets/svg/slippage.svg'
-import { ReactComponent as Recipient } from '../../assets/svg/recipient.svg'
 import { ReactComponent as MEVProtection } from '../../assets/svg/mev-protection.svg'
-import { useSwapState } from '../../state/swap/hooks'
+import { ReactComponent as Recipient } from '../../assets/svg/recipient.svg'
+import { ReactComponent as Slippage } from '../../assets/svg/slippage.svg'
 import { useToggleSettingsMenu } from '../../state/application/hooks'
+import { useSwapState } from '../../state/swap/hooks'
+import { useMultihopManager, useUserSlippageTolerance } from '../../state/user/hooks'
+import { RowFixed } from '../Row/index'
 import { MouseoverTooltip } from '../Tooltip/index'
-import { useTranslation } from 'react-i18next'
 
 const StyledButton = styled(Button)<{ active?: boolean; cursor?: string }>`
   height: 20px;
@@ -56,13 +57,13 @@ export function SwapSettings({
       <MouseoverTooltip content={t('slippagePercentage')} placement="top">
         <StyledButton active={!!userSlippageTolerance} cursor="pointer" onClick={toggle}>
           <Slippage />
-          <Text color={!!userSlippageTolerance ? transparentize(0.2, theme.green2) : theme.gray1} ml="4px">
+          <Text color={userSlippageTolerance ? transparentize(0.2, theme.green2) : theme.gray1} ml="4px">
             {(userSlippageTolerance / 100).toFixed(1)}%
           </Text>
         </StyledButton>
       </MouseoverTooltip>
       <MouseoverTooltip content={multihop ? t('multihopEnabled') : t('multihopDisabled')} placement="top">
-        <StyledButton active={multihop} cursor="pointer" onClick={toggle}>
+        <StyledButton active={multihop} cursor="pointer" onClick={toggle} data-testid="multihop-icon">
           <EcoRouter />
         </StyledButton>
       </MouseoverTooltip>

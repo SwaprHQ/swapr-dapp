@@ -1,15 +1,17 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+
+import debounce from 'lodash/debounce'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { AppState } from '..'
 import { useActiveWeb3React } from '../../hooks'
 import { useBlockNumber } from '../application/hooks'
 import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
 import { MulticallState } from './reducer'
 import { Call, parseCallKey, toCallKey } from './utils'
-import debounce from 'lodash.debounce'
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any
@@ -92,13 +94,13 @@ function useCallsData(
   // update listeners when there is an actual change that persists for at least 100ms
   useEffect(() => {
     if (!chainId || callKeys.length === 0) return undefined
-
     debouncedAddMultiCall(chainId, callKeys)
 
     return () => {
       debouncedRemoveMultiCall(chainId, callKeys)
     }
-  }, [chainId, dispatch, stringifiedCalls, callKeys, debouncedAddMultiCall, debouncedRemoveMultiCall])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, dispatch, stringifiedCalls, debouncedAddMultiCall, debouncedRemoveMultiCall])
 
   return useMemo(
     () =>

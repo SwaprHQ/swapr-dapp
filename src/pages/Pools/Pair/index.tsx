@@ -1,27 +1,25 @@
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import { PageWrapper } from '../styleds'
-import { Link } from 'react-router-dom'
-
-import { TYPE } from '../../../theme'
-import { Box, Flex, Text } from 'rebass'
-import { RowBetween, RowFixed } from '../../../components/Row'
-import { AutoColumn } from '../../../components/Column'
-
 import { ChevronDown } from 'react-feather'
-import { useToken } from '../../../hooks/Tokens'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
-import { PairState, usePair } from '../../../data/Reserves'
-import PairView from '../../../components/Pool/PairView'
-import { useRouter } from '../../../hooks/useRouter'
-import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
 import Skeleton from 'react-loading-skeleton'
+import { Link, Navigate, useParams } from 'react-router-dom'
+import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
+
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
+import { AutoColumn } from '../../../components/Column'
+import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { SwapPoolTabs } from '../../../components/NavigationTabs'
+import PairView from '../../../components/Pool/PairView'
+import { RowBetween, RowFixed } from '../../../components/Row'
+import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
+import { UndecoratedLink } from '../../../components/UndercoratedLink'
+import { PairState, usePair } from '../../../data/Reserves'
+import { useToken } from '../../../hooks/Tokens'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+import { TYPE } from '../../../theme'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
+import { PageWrapper } from '../styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -65,12 +63,15 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export default function Pair({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const router = useRouter()
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
+export default function Pair() {
+  const { navigate, searchParams: search } = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
+
   const token0 = useToken(currencyIdA)
   const token1 = useToken(currencyIdB)
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
@@ -88,15 +89,15 @@ export default function Pair({
 
   const handlePairSelect = useCallback(
     pair => {
-      router.push({
-        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`,
-      })
+      navigate(`/pools/${pair.token0.address}/${pair.token1.address}`)
     },
-    [router]
+    [navigate]
   )
 
-  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
-    return <Redirect to="/pools" />
+  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
+    return <Navigate to="/pools" replace />
+  }
+
   return (
     <>
       <PageWrapper>
@@ -142,7 +143,12 @@ export default function Pair({
                 </PointableFlex>
               </Flex>
               <ButtonRow>
-                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/pools/create">
+                <ResponsiveButtonPrimary
+                  id="join-pool-button"
+                  as={Link}
+                  padding="8px 14px"
+                  to={{ pathname: '/pools/create', search: search.toString() }}
+                >
                   <Text fontWeight={700} fontSize={12}>
                     CREATE PAIR
                   </Text>

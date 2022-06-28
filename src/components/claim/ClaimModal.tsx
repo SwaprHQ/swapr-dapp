@@ -1,16 +1,18 @@
-import React, { useCallback } from 'react'
-import { AutoColumn } from '../Column'
-import styled from 'styled-components'
-import { RowBetween } from '../Row'
-import { TYPE, CloseIcon } from '../../theme'
-import { ButtonDark1, ButtonPurple } from '../Button'
-import { transparentize } from 'polished'
 import { TokenAmount } from '@swapr/sdk'
-import { AddTokenButton } from '../AddTokenButton/AddTokenButton'
+
+import { useRouter } from 'hooks/useRouter'
+import { transparentize } from 'polished'
+import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
-import { useHistory } from 'react-router'
-import Modal from '../Modal'
+import styled from 'styled-components'
+
 import { useShowClaimPopup } from '../../state/application/hooks'
+import { CloseIcon, TYPE } from '../../theme'
+import { AddTokenButton } from '../AddTokenButton/AddTokenButton'
+import { ButtonDark1, ButtonPurple } from '../Button'
+import { AutoColumn } from '../Column'
+import Modal from '../Modal'
+import { RowBetween } from '../Row'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -34,7 +36,7 @@ export default function ClaimModal({
   stakedAmount?: string | null
   singleSidedCampaignLink?: string
 }) {
-  const { push } = useHistory()
+  const { navigate } = useRouter()
   const open = useShowClaimPopup()
 
   const wrappedOnDismiss = useCallback(() => {
@@ -43,7 +45,7 @@ export default function ClaimModal({
 
   const handleStakeUnstakeClick = () => {
     if (singleSidedCampaignLink) {
-      push({ pathname: '/rewards', state: { showSwpr: true } })
+      navigate('/rewards', { state: { showSwpr: true } })
       wrappedOnDismiss()
     }
   }

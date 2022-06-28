@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { BridgeModalContent } from './BridgeModalContent'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
+import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
 import { BridgeModalType } from './BridgeModal.types'
-import { useSelector } from 'react-redux'
-import { AppState } from '../../../state'
-import { useTranslation } from 'react-i18next'
+import { BridgeModalContent } from './BridgeModalContent'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
@@ -76,6 +77,11 @@ export const BridgeModal = ({
     if (activeBridge?.includes('arbitrum')) {
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
+    }
+
+    if (activeBridge?.includes('omnibridge')) {
+      setIsWarning(false)
+      setBridgeName('OmniBridge')
     }
   }, [activeBridge, status, symbol, t, typedValue])
 

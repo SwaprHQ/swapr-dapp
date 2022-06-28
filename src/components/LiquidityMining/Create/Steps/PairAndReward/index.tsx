@@ -1,14 +1,15 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Flex } from 'rebass'
+import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
+
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { TYPE } from '../../../../../theme'
 import { unwrappedToken } from '../../../../../utils/wrappedCurrency'
-import NumericalInput from '../../../../Input/NumericalInput'
+import { NumericalInput } from '../../../../Input/NumericalInput'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
-
 import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
 import AssetSelector from './AssetSelector'
@@ -60,6 +61,7 @@ const StyledFlex = styled(Flex)<{ active: boolean }>`
 const BorderContainer = styled(Flex)<{ active: boolean }>`
   border-bottom: 1px solid ${({ active }) => (active ? 'white' : 'transparent')};
   opacity: ${({ active }) => !active && '0.7'};
+  flex-direction: row;
 `
 
 interface TokenAndLimitProps {
@@ -161,7 +163,7 @@ export default function StakeTokenAndLimit({
           justifyContent={'space-between'}
           flexDirection={'column'}
           padding={'33.45px 41px'}
-          height="150px"
+          height="fit-content"
           width="fit-content"
           disabled={!stakeToken && !stakePair}
         >

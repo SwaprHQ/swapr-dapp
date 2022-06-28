@@ -1,32 +1,19 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
+
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import {
-  selectBridgeTokens,
-  selectSupportedLists,
-  selectBridgeActiveTokens,
-  selectBridgeCollectableTx,
-  selectSupportedBridgesForUI,
-  selectBridgeListsLoadingStatus,
-  selectBridgeSupportedTokensOnChain,
-} from './store/EcoBridge.selectors'
-import { AppState } from '../../state'
-import { commonActions } from './store/Common.reducer'
-import { tryParseAmount } from '../../state/swap/hooks'
-import { ecoBridgeUIActions } from './store/UI.reducer'
-import { useCurrencyBalances } from '../../state/wallet/hooks'
-import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
-
 import { useActiveWeb3React } from '../../hooks'
-import { useEcoBridge } from './EcoBridgeProvider'
 import { parseStringOrBytes32 } from '../../hooks/Tokens'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
-
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { AppState } from '../../state'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
+import { tryParseAmount } from '../../state/swap/hooks'
+import { useCurrencyBalances } from '../../state/wallet/hooks'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
-
 import {
   BridgeModalData,
   BridgeModalState,
@@ -34,7 +21,18 @@ import {
   BridgeTxsFilter,
   WritableListsState,
 } from './EcoBridge.types'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { useEcoBridge } from './EcoBridgeProvider'
+import { commonActions } from './store/Common.reducer'
+import {
+  selectBridgeActiveTokens,
+  selectBridgeCollectableTx,
+  selectBridgeListsLoadingStatus,
+  selectBridgeSupportedTokensOnChain,
+  selectBridgeTokens,
+  selectSupportedBridgesForUI,
+  selectSupportedLists,
+} from './store/EcoBridge.selectors'
+import { ecoBridgeUIActions } from './store/UI.reducer'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()
@@ -305,7 +303,7 @@ export const useBridgeCollectHandlers = () => {
     [dispatch]
   )
 
-  const collectableCurrency = useBridgeToken(collectableTx?.assetAddressL1, collectableTx?.toChainId ?? 0)
+  const collectableCurrency = useBridgeToken(collectableTx?.assetAddressL1, collectableTx?.fromChainId ?? 0)
   const nativeCurrency = useNativeCurrency(collectableTx?.toChainId)
 
   return {

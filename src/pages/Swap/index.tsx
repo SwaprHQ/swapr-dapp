@@ -1,18 +1,29 @@
-import { CurrencyAmount, JSBI, Trade, Token, RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
+// Landing Page Imports
+import './../../theme/landingPageTheme/stylesheet.css'
+
+import { CurrencyAmount, JSBI, RoutablePlatform, Token, Trade, UniswapV2Trade } from '@swapr/sdk'
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+
+import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
-import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
+import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
+import SwapButtons from '../../components/swap/SwapButtons'
+import { Tabs } from '../../components/swap/Tabs'
+import { TradeDetails } from '../../components/swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
+import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
+import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
 import {
@@ -23,27 +34,18 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
-import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import { Tabs } from '../../components/swap/Tabs'
-import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
-
-// Landing Page Imports
-import './../../theme/landingPageTheme/stylesheet.css'
-import Features from './../../components/LandingPageComponents/Features'
-import Stats from './../../components/LandingPageComponents/Stats'
-import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
-import Timeline from './../../components/LandingPageComponents/Timeline'
-import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
-import Hero from './../../components/LandingPageComponents/layout/Hero'
+import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
+import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
+import Features from './../../components/LandingPageComponents/Features'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import SwapButtons from '../../components/swap/SwapButtons'
-import { TradeDetails } from '../../components/swap/TradeDetails'
+import Hero from './../../components/LandingPageComponents/layout/Hero'
+import Stats from './../../components/LandingPageComponents/Stats'
+import Timeline from './../../components/LandingPageComponents/Timeline'
 
 export type SwapData = {
   showConfirm: boolean
@@ -323,6 +325,7 @@ export default function Swap() {
                     otherCurrency={currencies[Field.OUTPUT]}
                     fiatValue={fiatValueInput}
                     isFallbackFiatValue={isFallbackFiatValueInput}
+                    maxAmount={maxAmountInput}
                     showCommonBases
                     id="swap-currency-input"
                   />
@@ -352,6 +355,7 @@ export default function Swap() {
                     fiatValue={fiatValueOutput}
                     priceImpact={priceImpact}
                     isFallbackFiatValue={isFallbackFiatValueOutput}
+                    maxAmount={maxAmountOutput}
                     showCommonBases
                     id="swap-currency-output"
                   />

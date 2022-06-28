@@ -1,35 +1,33 @@
-import React, { useMemo, useState, useEffect } from 'react'
-import { Flex, Text } from 'rebass'
-import { withRouter } from 'react-router-dom'
 import { SWPR } from '@swapr/sdk'
-import { ChevronUp } from 'react-feather'
 
+import React, { useEffect, useMemo, useState } from 'react'
+import { ChevronUp } from 'react-feather'
+import { useTranslation } from 'react-i18next'
+import Skeleton from 'react-loading-skeleton'
+import { Link } from 'react-router-dom'
+import { Flex, Text } from 'rebass'
 import styled, { css } from 'styled-components'
 
+import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
+import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
+import { useGasInfo } from '../../hooks/useGasInfo'
+import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { ApplicationModal } from '../../state/application/actions'
+import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
-import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
-
-import { Settings } from '../Settings'
-
-import Row, { RowFixed, RowFlat } from '../Row'
-import Web3Status from '../Web3Status'
-import { useTranslation } from 'react-i18next'
-import MobileOptions from './MobileOptions'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
-import SwaprVersionLogo from '../SwaprVersionLogo'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import ClaimModal from '../claim/ClaimModal'
-import Skeleton from 'react-loading-skeleton'
-import { SwprInfo } from './swpr-info'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
-import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import UnsupportedNetworkPopover from '../NetworkUnsupportedPopover'
-import { ApplicationModal } from '../../state/application/actions'
-import { useGasInfo } from '../../hooks/useGasInfo'
+import Row, { RowFixed, RowFlat } from '../Row'
+import { Settings } from '../Settings'
+import SwaprVersionLogo from '../SwaprVersionLogo'
+import Web3Status from '../Web3Status'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
+import MobileOptions from './MobileOptions'
+import { SwprInfo } from './swpr-info'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -112,7 +110,7 @@ const HeaderLinks = styled(Row)`
   `};
 `
 
-const Title = styled.a`
+const Title = styled(Link)`
   display: flex;
   align-items: center;
   pointer-events: auto;
@@ -222,6 +220,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 
 function Header() {
   const { account, chainId } = useActiveWeb3React()
+
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const nativeCurrency = useNativeCurrency()
@@ -271,35 +270,23 @@ function Header() {
         }
       />
       <HeaderRow isDark={isDark}>
-        <Title href=".">
+        <Title to="/swap">
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
           <Divider />
-          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink
-            data-testid="pool-nav-link"
-            id="pool-nav-link"
-            to="/pools"
-            activeClassName="active"
-            disabled={networkWithoutSWPR}
-          >
+          <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
             Liquidity
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink
-            data-testid="rewards-nav-link"
-            id="rewards-nav-link"
-            to="/rewards"
-            activeClassName="active"
-            disabled={networkWithoutSWPR}
-          >
+          <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
             Rewards
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" activeClassName="active">
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
             {t('bridge')}
             <HeaderLinkBadge label="BETA" />
           </HeaderLink>
@@ -364,20 +351,20 @@ function Header() {
       </AdditionalDataWrap>
       <HeaderControls isConnected={!!account}>
         <Flex style={{ gap: '26px' }} minWidth={'unset'}>
-          <HeaderMobileLink id="swap-nav-link" to="/swap" activeClassName="active">
+          <HeaderMobileLink id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="pool-nav-link" to="/pools" activeClassName="active">
+            <HeaderMobileLink id="pool-nav-link" to="/pools">
               Pools
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="rewards-nav-link" to="/rewards" activeClassName="active">
+            <HeaderMobileLink id="rewards-nav-link" to="/rewards">
               Rewards
             </HeaderMobileLink>
           )}
-          <HeaderMobileLink id="bridge-nav-link" to="/bridge" activeClassName="active">
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
             {t('bridge')}
           </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
@@ -399,4 +386,4 @@ function Header() {
   )
 }
 
-export default withRouter(Header)
+export default Header

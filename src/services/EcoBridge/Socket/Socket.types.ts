@@ -1,7 +1,13 @@
 import { ChainId } from '@swapr/sdk'
-import { TokenList } from '@uniswap/token-lists'
-import { BridgeList, SyncState, BridgingDetailsErrorMessage } from '../EcoBridge.types'
+
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
+
+import { BridgeList, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 import { Route } from './api/generated'
+
+export type SocketTokenMap = {
+  [key: string]: TokenInfo[]
+}
 
 export const SOCKET_PENDING_REASONS = {
   FROM_PENDING: 'Transaction on source chain has not been confirmed yet',
@@ -59,4 +65,11 @@ type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; a
 
 export function isFee(userTxs: any): userTxs is UserTxs {
   return userTxs.length && userTxs[0].steps.length && userTxs[0].steps
+}
+
+export enum SocketWrapDirection {
+  FROM_A_NATIVE_TO_B_WRAPPED = 'FROM_A_NATIVE_TO_B_WRAPPED',
+  FROM_B_WRAPPED_TO_A_NATIVE = 'FROM_B_WRAPPED_TO_A_NATIVE',
+  FROM_B_NATIVE_TO_A_WRAPPED = 'FROM_B_NATIVE_TO_A_WRAPPED',
+  FROM_A_WRAPPED_TO_B_NATIVE = 'FROM_A_WRAPPED_TO_B_NATIVE',
 }
