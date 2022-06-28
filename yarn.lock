@@ -2923,10 +2923,9 @@
     synthetix "2.41.0"
     web3-utils "1.2.11"
 
-"@synthetixio/synpress@^1.1.1":
+"@synthetixio/synpress@git+https://git@github.com/niemam29/synpress-x.git":
   version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@synthetixio/synpress/-/synpress-1.2.0.tgz#237b27fa08950256b1a6fe11856271b149bbfc23"
-  integrity sha512-RnXAGPE1YUysxJHMNoHkt9tbaifaFFFxUr4okc5HDtDp6TT7blZ0hQEmh70aR/ml3xfQ2J0R3VFQZCMTWNVDJg==
+  resolved "git+https://git@github.com/niemam29/synpress-x.git#1bc84cfa77fd1f487289d92b4f5ecd8de3406b50"
   dependencies:
     "@cypress/code-coverage" "3.9.12"
     "@cypress/react" "5.12.4"
@@ -2967,7 +2966,7 @@
     puppeteer-core "13.5.2"
     serve "13.0.2"
     start-server-and-test "1.14.0"
-    synthetix-js "2.66.0"
+    synthetix-js "2.66.2"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -19222,10 +19221,10 @@ syntax-error@^1.1.1:
   dependencies:
     acorn-node "^1.2.0"
 
-synthetix-js@2.66.0:
-  version "2.66.0"
-  resolved "https://registry.yarnpkg.com/synthetix-js/-/synthetix-js-2.66.0.tgz#6a33a13e6ec00b349d091625e05b0bfbf25d0ce7"
-  integrity sha512-1ZVhQn0MgSQXqpMHmSZvBiz5y7FqZ+jdAE2WVXWUYkM3IEbkHFDZq9lIlJKJZjoZK1d931OfyzSRxv7Oyr33UQ==
+synthetix-js@2.66.2:
+  version "2.66.2"
+  resolved "https://registry.yarnpkg.com/synthetix-js/-/synthetix-js-2.66.2.tgz#2870b1385b90345560954f1479beda3a25807238"
+  integrity sha512-xI+/7Q3waIp1wiysgjMskPUHVAGof99u7eYIfoJkUbix39vwnelhw/oq0WZzg4UizvBqdan6sBurWqMzsB5sCw==
   dependencies:
     "@ledgerhq/hw-app-eth" "4.74.2"
     "@ledgerhq/hw-transport" "4.74.2"
@@ -19237,7 +19236,7 @@ synthetix-js@2.66.0:
     ethers "4.0.44"
     hdkey "1.1.1"
     lodash "4.17.15"
-    synthetix "2.66.0"
+    synthetix "2.66.2"
     trezor-connect "8.1.8"
     walletlink "2.0.2"
 
@@ -19256,10 +19255,10 @@ synthetix@2.41.0:
     solidity-parser-antlr "^0.4.11"
     web3-utils "1.2.2"
 
-synthetix@2.66.0:
-  version "2.66.0"
-  resolved "https://registry.yarnpkg.com/synthetix/-/synthetix-2.66.0.tgz#2845659026d73d17455f4a6ceec5b14fec54c45e"
-  integrity sha512-XQtjAdmZWX5xDJKlDLxmvLE2cqpnzU+/fL6Zs4dJU7ke002GXc0RGLQUQG8xYO+x/htyxQTGbJGo8ZfaJEyUoA==
+synthetix@2.66.2:
+  version "2.66.2"
+  resolved "https://registry.yarnpkg.com/synthetix/-/synthetix-2.66.2.tgz#95dbfff19117e7c2f0ac0172c1f7b1b15729fa73"
+  integrity sha512-hzIgyaZjf1pQ06SZvMp3Txzz75gPeVqs6H88Bh6Vea6w9MnIKAITnUcHitYmqGQb7kW2IwDEmmMVJfZwRMAG1g==
   dependencies:
     abi-decoder "2.3.0"
     commander "8.1.0"

@@ -424,7 +424,11 @@ export default function RemoveLiquidity() {
             </RowBetween>
           </>
         )}
-        <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
+        <ButtonPrimary
+          data-testid="confirm-remove-liquidity"
+          disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
+          onClick={onRemove}
+        >
           <Text fontWeight={500} fontSize={20}>
             Confirm
           </Text>

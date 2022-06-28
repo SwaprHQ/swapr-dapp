@@ -36,7 +36,7 @@ describe('Remove liquidity', () => {
         firstTokenBefore = parseFloat(res)
       })
     cy.wrap(null).then(() => {
-      console.log('FIRST TOKEN BALANCE: ', firstTokenBefore)
+      console.log('FIRST TOKEN BALANCE: ', firstTokenBefore.toFixed(3))
     })
     LiquidityPage.getSecondTokenBalance()
       .invoke('text')
@@ -46,7 +46,7 @@ describe('Remove liquidity', () => {
         secondTokenBefore = parseFloat(res)
       })
     cy.wrap(null).then(() => {
-      console.log('SECOND TOKEN BALANCE: ', secondTokenBefore)
+      console.log('SECOND TOKEN BALANCE: ', secondTokenBefore.toFixed(3))
     })
   })
   it('Should Remove tokens from liquidity pool [TC-59]', () => {
@@ -76,11 +76,14 @@ describe('Remove liquidity', () => {
         console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
       })
     cy.wrap(null).then(() => {
-      console.log('SECOND TOKEN AMOUNT TO BE REMOVED: ', secondTokenRemovedAmount)
+      console.log('SECOND TOKEN AMOUNT TO BE REMOVED: ', secondTokenRemovedAmount.toFixed(3))
     })
     LiquidityPage.getApproveButtonToRemoveLiquidity().click()
+    cy.confirmMetamaskDataSignatureRequest()
     LiquidityPage.getRemoveButton().click()
-    cy.confirmMetamaskSignatureRequest({})
+    LiquidityPage.getConfirmButtonToRemoveLiquidity().click()
+    cy.confirmMetamaskTransaction({})
+    LiquidityPage.getCloseTransactionSubmittedWindowButton().click()
   })
   it('Should check if tokens are removed from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
@@ -98,6 +101,7 @@ describe('Remove liquidity', () => {
     cy.wrap(null).then(() => {
       console.log('FIRST TOKEN BALANCE AFTER: ', firstTokenAfter)
     })
+    cy.wait(2000)
     LiquidityPage.getSecondTokenBalance()
       .invoke('text')
       .should(res => {
@@ -105,8 +109,8 @@ describe('Remove liquidity', () => {
         console.log('SECOND TOKEN BALANCE AFTER: ', res)
         secondTokenAfter = parseFloat(res)
       })
+    console.log('SECOND TOKEN BALANCE AFTER: ', secondTokenAfter)
     cy.wrap(null).then(() => {
-      console.log('SECOND TOKEN BALANCE AFTER: ', secondTokenAfter)
       if (firstTokenBalance.toFixed(3) === firstTokenAfter.toFixed(3)) {
         console.log('SUM OF THE FIRST TOKEN BALANCE IS OK')
       } else {

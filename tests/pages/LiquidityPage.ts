@@ -60,6 +60,9 @@ export class LiquidityPage {
   static getApproveButtonToRemoveLiquidity() {
     return cy.get('[data-testid=approve-remove-liquidity]')
   }
+  static getConfirmButtonToRemoveLiquidity() {
+    return cy.get('[data-testid=confirm-remove-liquidity]')
+  }
   static getRemoveButton() {
     return cy.get('[data-testid=remove-button]')
   }

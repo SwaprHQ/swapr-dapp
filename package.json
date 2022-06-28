@@ -121,7 +121,7 @@
     "wcag-contrast": "^3.0.0"
   },
   "devDependencies": {
-    "@synthetixio/synpress": "^1.1.1",
+    "@synthetixio/synpress": "git+https://git@github.com/niemam29/synpress-x.git",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
     "@types/jest": "^25.2.1",
