@@ -1,6 +1,6 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
@@ -86,8 +86,6 @@ export function SwapButtons({
   const isGnosisProtocolTradeRequireWrap =
     trade instanceof GnosisProtocolTrade && Currency.getNative(trade?.chainId) == currencies?.INPUT && !swapInputError
 
-  const [storedTrade, setStoredTrade] = useState<Trade | undefined>(undefined)
-
   const onSwapClick = useCallback(() => {
     if (isExpertMode) {
       handleSwap()
@@ -100,7 +98,6 @@ export function SwapButtons({
         txHash: undefined,
       })
     }
-    setStoredTrade(trade)
   }, [isExpertMode, handleSwap, setSwapState, trade])
 
   const handleGPApproveClick = useCallback(async () => {
@@ -124,8 +121,7 @@ export function SwapButtons({
       !isValid ||
       isApprovalRequired ||
       (priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode) ||
-      gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP ||
-      trade === storedTrade
+      gnosisProtocolTradeState !== GnosisProtocolTradeState.SWAP
 
     return (
       <>
@@ -134,11 +130,7 @@ export function SwapButtons({
             <ButtonConfirmed
               padding="8px"
               onClick={onWrap}
-              disabled={
-                gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP ||
-                wrapState === WrapState.PENDING ||
-                trade === storedTrade
-              }
+              disabled={gnosisProtocolTradeState !== GnosisProtocolTradeState.WRAP || wrapState === WrapState.PENDING}
               altDisabledStyle={wrapState !== WrapState.UNKNOWN}
               confirmed={wrapState === WrapState.WRAPPED}
             >
@@ -227,7 +219,11 @@ export function SwapButtons({
             onClick={onSwapClick}
             width="48%"
             id="swap-button"
-            disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
+            disabled={
+              !isValid ||
+              approval !== ApprovalState.APPROVED ||
+              (priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode)
+            }
             error={isValid && priceImpactSeverity > PRICE_IMPACT_MEDIUM}
           >
             {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode

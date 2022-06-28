@@ -2,6 +2,7 @@ import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Tra
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 
+import { TradeDetails } from 'components/swap/TradeDetails'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -83,7 +84,7 @@ export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-  const [showAdvancedSwapDetails] = useAdvancedSwapDetails()
+  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -130,9 +131,10 @@ export default function Swap() {
     currencies.INPUT,
     currencies.OUTPUT,
     potentialTrade instanceof GnosisProtocolTrade,
-    typedValue
+    potentialTrade?.inputAmount?.toSignificant(6)
   )
 
+  const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
@@ -256,6 +258,7 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
+        setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
       })
   }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
 
@@ -333,8 +336,9 @@ export default function Swap() {
   ])
 
   const isInputPanelDisabled =
-    gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
-    gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP
+    (gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
+      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP) &&
+    trade instanceof GnosisProtocolTrade
 
   return (
     <>
@@ -415,6 +419,15 @@ export default function Swap() {
                     id="swap-currency-output"
                   />
                 </AutoColumn>
+                <TradeDetails
+                  show={!showWrap}
+                  loading={loading}
+                  trade={trade}
+                  bestPricedTrade={bestPricedTrade}
+                  showAdvancedSwapDetails={showAdvancedSwapDetails}
+                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                  recipient={recipient}
+                />
                 <SwapButtons
                   wrapInputError={wrapInputError}
                   showApproveFlow={showApproveFlow}
