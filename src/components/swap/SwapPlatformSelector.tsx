@@ -176,7 +176,6 @@ export function SwapPlatformSelector({
             return (
               <SelectionListOption
                 role="button"
-                data-testid="exchange-option"
                 key={trade.platform.name}
                 isSelected={selectedTrade?.platform.name === trade.platform.name}
                 onClick={() => handleSelectedTradeOverride(trade.platform.name)}
