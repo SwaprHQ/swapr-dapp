@@ -107,7 +107,7 @@ describe('Campaign creation tests', () => {
     RewardsPage.getRewardCards().should('be.visible')
     RewardsPage.getAllPairsButton().click()
     PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt)
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
