@@ -8,9 +8,21 @@ import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
 
 interface BaseProps {
+  /**
+   * Padding of the buttons default is 18px
+   */
   padding?: string
+  /**
+   * Width and default is 100%
+   */
   width?: string
+  /**
+   * Border radius and default is 12px
+   */
   borderRadius?: string
+  /**
+   * No clue what this is
+   */
   altDisabledStyle?: boolean
 }
 
@@ -281,8 +293,17 @@ export function ButtonError({ error, content, ...rest }: ButtonErrorProps) {
   }
 }
 export interface ButtonLinkProps {
+  /**
+   * Link that opens up new page
+   */
   link?: string
+  /**
+   * Button text
+   */
   text?: string
+  /**
+   * Any additional style to be added to button wrapper
+   */
   style?: any
 }
 

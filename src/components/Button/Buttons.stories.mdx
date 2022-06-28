@@ -1,8 +1,8 @@
-import { Canvas, Meta, Story} from '@storybook/addon-docs'
+import { Canvas, Meta, Story, ArgsTable,Description} from '@storybook/addon-docs'
 import styled from 'styled-components'
 import {AutoRowCleanGap} from "../Row"
 import { componentName } from '../../utils'
-import {StyledButtonsArray,Base,ButtonConfirmed,ButtonError,ButtonWithLink,CarrotButton,BaseProps} from "."
+import {StyledButtonsArray,Base,ButtonConfirmed,ButtonError,ButtonWithLink,CarrotButton,BaseProps,ButtonPrimary} from "."
 
 
 
@@ -13,18 +13,7 @@ import {StyledButtonsArray,Base,ButtonConfirmed,ButtonError,ButtonWithLink,Carro
 <p> All buttons below are purely styled components buttons which accept css props and <strong>Base</strong> button is base that all of them use </p>
 
 <Canvas>
-<Story name='Styled Buttons' component={Base} argTypes={{padding:{
-    name:'Padding',
-    type:{name:'string',required:false},
-    defaultValue:'18px',
-    description:'Padding of the buttonz'
-    },
-    width:{
-        control:{
-            type:'string',
-        }
-    }
-    }} >
+<Story name='Styled Buttons'  component={Base} >
 <AutoRowCleanGap gap={12} >
   {StyledButtonsArray.map((Component) => (
       <Component style={{ width: 'auto' }} key={Component.index}>
@@ -35,34 +24,70 @@ import {StyledButtonsArray,Base,ButtonConfirmed,ButtonError,ButtonWithLink,Carro
 </Story>
 </Canvas>
 
+Below are all Basic props styled buttons accept
 
+<ArgsTable of={Base} />
 
-<p> Button confirmed has two states depending on confirm property</p>
 
 export const ButtonConfirmedTemplate=(args)=><ButtonConfirmed {...args}/>
 
-<Story name='Button Confirmed' component={ButtonConfirmed} args={{
-  content: 'some text here',
+## <em>Button confirmed</em> has two states depending on confirm property
+<Canvas>
+<Story name='Button Confirmed/Active' component={ButtonConfirmed} args={{
+  content: 'Confirmed true',
   confirmed: true,
   width: 'fit-content',
   altDisabledStyle: true,
 }}>
   {ButtonConfirmedTemplate.bind({})}
 </Story>
+<Story name='Button Confirmed/Inactive' component={ButtonConfirmed} args={{
+  content: 'Confirmed false',
+  confirmed: false,
+  width: 'fit-content',
+  altDisabledStyle: true,
+}}>
+  {ButtonConfirmedTemplate.bind({})}
+</Story>
+</Canvas>
+
+
 
 export const ButtonErrorTemplate=(args)=><ButtonError {...args}/>
 
-<Story name='Button Error' component={ButtonError} args={{
+## <em>Button error</em> has two states depending on error property
+<Canvas>
+<Story name='Button Error/Active' component={ButtonError} args={{
   error: true,
-  content: 'text here',
+  content: 'Error triggered',
   width: 'fit-content',
 }}>
 {ButtonErrorTemplate.bind({})}
 </Story> 
+<Story name='Button Error/Inactive' component={ButtonError} args={{
+  error: false,
+  content: 'No Error',
+  width: 'fit-content',
+}}>
+{ButtonErrorTemplate.bind({})}
+</Story> 
+</Canvas>
+
+
+
 
 export const ButtonWithLinkTemplate=(args)=><ButtonWithLink {...args}/>
 
-<Story name='Button With Link' component={ButtonWithLink} args={{
+export const CarrotButtonTemplate=(args)=><CarrotButton {...args}/>
+
+## <em>Button link and Carrot Button</em> share props but have different styling
+
+<br/>
+
+> ### Button With Link
+
+<Canvas>
+<Story name='Button With Link' component={ButtonWithLink} argTypes={ButtonWithLink} args={{
   link:
     'https://dcabtc.com/what-is-stacking-sats#:~:text=In%20short%2C%20stacking%20sats%20is,the%20smallest%20unit%20in%20Bitcoin.',
   text: 'Stack Sats',
@@ -70,9 +95,12 @@ export const ButtonWithLinkTemplate=(args)=><ButtonWithLink {...args}/>
 }}>
 {ButtonWithLinkTemplate.bind({})}
 </Story> 
+</Canvas>
 
-export const CarrotButtonTemplate=(args)=><CarrotButton {...args}/>
 
+> ### Carrot Button
+
+<Canvas>
 <Story name='Carrot Button' component={CarrotButton} args={{
   link: 'https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards',
   text: 'some text here',
@@ -80,6 +108,13 @@ export const CarrotButtonTemplate=(args)=><CarrotButton {...args}/>
 }}>
 {CarrotButtonTemplate.bind({})}
 </Story> 
+</Canvas>
+
+<ArgsTable of={ButtonWithLink} />
+
+
+
+
 
 
 
