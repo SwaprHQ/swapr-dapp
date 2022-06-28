@@ -4,14 +4,20 @@ import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
-import { BridgeList, EcoBridgeChangeHandler, EcoBridgeConstructorParams, EcoBridgeProviders } from './EcoBridge.types'
+import {
+  BridgeList,
+  Bridges,
+  EcoBridgeChangeHandler,
+  EcoBridgeConstructorParams,
+  EcoBridgeProviders,
+} from './EcoBridge.types'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { selectBridgeCollectableTx, selectSupportedBridges } from './store/EcoBridge.selectors'
 
 export class EcoBridge {
   public readonly staticProviders: EcoBridgeProviders
   public readonly store: EcoBridgeConstructorParams['store']
-  public readonly bridges: { [k in BridgeList]: EcoBridgeChildBase }
+  public readonly bridges: Bridges
   private _initialized = false
   private _asyncInit: { promise: Promise<void>; resolve: () => void }
   private _account: string | undefined
