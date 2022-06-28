@@ -34,6 +34,7 @@ describe('Token menu smoke tests', () => {
   it('Should add additional token [TC-42]', () => {
     TokenMenu.openTokenManager()
     TokenMenu.getSingleTokenManagerInput()
+      .clear()
       .type(AddressesEnum.STRONG_TOKEN_RINKEBY, { delay: TYPING_DELAY })
       .should('have.value', AddressesEnum.STRONG_TOKEN_RINKEBY)
     TokenMenu.getTokenManagerRow('strong').should('be.visible')
@@ -60,6 +61,7 @@ describe('Token menu smoke tests', () => {
   })
   it('Should find token by valid address [TC-45]', () => {
     TokenMenu.getSingleTokenManagerInput()
+      .clear()
       .type(AddressesEnum.DXD_TOKEN_MAINNET, { delay: TYPING_DELAY })
       .should('have.value', AddressesEnum.DXD_TOKEN_MAINNET)
     TokenMenu.getTokenRow('dxd').should('be.visible')
