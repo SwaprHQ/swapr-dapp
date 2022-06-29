@@ -5,7 +5,7 @@ import { EntityState } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 
-import { BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import { BridgeDetails, BridgingDetailsErrorMessage, EcoBridgeChildBaseState, SyncState } from '../EcoBridge.types'
 
 export type ConfigPerChain = { [chainId: number]: string }
 
@@ -88,14 +88,12 @@ export type OmnibridgeSubgraphRequests = {
 export type OmnibridgeSubgraphExecutions = {
   executions: OmnibridgeExecution[]
 }
-
-export type InitialState = {
+export interface InitialState extends EcoBridgeChildBaseState {
   transactions: EntityState<OmniBridgeTransaction>
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
   bridgingDetails: BridgeDetails
   bridgingDetailsStatus: SyncState
-  lastMetadataCt: number
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
 }
 

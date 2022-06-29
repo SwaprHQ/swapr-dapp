@@ -516,11 +516,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       return
     }
 
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as OmniBridgeList].lastMetadataCt
-
-    const helperRequestId = (requestId ?? 0) + 1
-
-    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+    const requestId = this.startRequest({ actions: this.actions })
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
@@ -671,7 +667,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       gas,
       receiveAmount: Number(formatUnits(toAmount.toString(), toTokenDecimals)).toFixed(2),
       estimateTime: '5 min',
-      requestId: helperRequestId,
+      requestId,
     }
     this.store.dispatch(this.actions.setBridgeDetails(details))
   }

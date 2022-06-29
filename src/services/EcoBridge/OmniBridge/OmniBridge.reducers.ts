@@ -1,9 +1,10 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeDetails, BridgingDetailsErrorMessage, OmniBridgeList, SyncState } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
 import { InitialState, OmniBridgeTransaction, OmnibridgeTransactionMessage } from './OmniBridge.types'
 
@@ -13,11 +14,11 @@ const initialState: InitialState = {
   listsStatus: SyncState.IDLE,
   bridgingDetails: {},
   bridgingDetailsStatus: SyncState.IDLE,
-  lastMetadataCt: 0,
+  ...ecoBridgeChildBaseInitialState,
 }
 
 export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
@@ -76,9 +77,6 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
         if (errorMessage) {
           state.bridgingDetailsErrorMessage = errorMessage
         }
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
       },
       setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
         state.listsStatus = action.payload

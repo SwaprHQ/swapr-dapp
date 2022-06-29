@@ -9,6 +9,10 @@ import { ListsState } from '../../state/lists/reducer'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
+export interface EcoBridgeChildBaseState {
+  lastMetadataCt: number
+}
+
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
 }

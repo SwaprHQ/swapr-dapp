@@ -768,11 +768,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].lastMetadataCt
-
-    const helperRequestId = (requestId ?? 0) + 1
-
-    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+    const requestId = this.startRequest({ actions: this.actions })
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
@@ -853,7 +849,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         receiveAmount: Number(value)
           .toFixed(2)
           .toString(),
-        requestId: helperRequestId,
+        requestId,
       })
     )
   }

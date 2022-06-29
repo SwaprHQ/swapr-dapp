@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
-import { BridgeList, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import { BridgeList, BridgingDetailsErrorMessage, EcoBridgeChildBaseState, SyncState } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 export type SocketTokenMap = {
@@ -34,7 +34,7 @@ export type SocketTx = {
   sender: string
 }
 
-export interface SocketBridgeState {
+export interface SocketBridgeState extends EcoBridgeChildBaseState {
   transactions: SocketTx[]
   bridgingDetails: {
     gas?: string
@@ -58,7 +58,6 @@ export interface SocketBridgeState {
     to?: string
   }
   routes: Route[]
-  lastMetadataCt: number
 }
 
 type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; asset: { decimals: number } } }] }]

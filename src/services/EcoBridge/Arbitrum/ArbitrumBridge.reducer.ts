@@ -1,22 +1,28 @@
 import { TransactionReceipt } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
-import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
+import { EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { OutgoingMessageState } from 'arb-ts'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import {
+  ArbitrumList,
+  BridgeDetails,
+  BridgingDetailsErrorMessage,
+  EcoBridgeChildBaseState,
+  SyncState,
+} from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 
-interface ArbitrumBridgeState {
+interface ArbitrumBridgeState extends EcoBridgeChildBaseState {
   transactions: EntityState<ArbitrumBridgeTxn>
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
   bridgingDetails: BridgeDetails
   bridgingDetailsStatus: SyncState
   bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  lastMetadataCt: number
 }
 
 const now = () => new Date().getTime()
@@ -27,11 +33,11 @@ const initialState: ArbitrumBridgeState = {
   lists: {},
   listsStatus: SyncState.IDLE,
   bridgingDetailsStatus: SyncState.IDLE,
-  lastMetadataCt: 0,
+  ...ecoBridgeChildBaseInitialState,
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
@@ -159,9 +165,6 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         if (errorMessage) {
           state.bridgingDetailsErrorMessage = errorMessage
         }
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
       },
     },
   })

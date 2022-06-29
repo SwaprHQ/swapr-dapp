@@ -1,9 +1,10 @@
 import { ChainId } from '@swapr/sdk'
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeDetails, BridgingDetailsErrorMessage, SocketList, SyncState } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
 import { Route } from './api/generated'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 
@@ -16,11 +17,11 @@ const initialState: SocketBridgeState = {
   listsStatus: SyncState.IDLE,
   lists: {},
   routes: [],
-  lastMetadataCt: 0,
+  ...ecoBridgeChildBaseInitialState,
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
@@ -113,9 +114,6 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
       },
     },
   })
