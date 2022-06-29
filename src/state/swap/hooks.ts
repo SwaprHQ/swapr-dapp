@@ -2,7 +2,7 @@ import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -158,18 +158,18 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const useTradeExactInAllPlatformsRes = useEcoRouterExactIn(
+  const { trades: inTrades, loading: inLoading } = useEcoRouterExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const useTradeExactOutAllPlatformsRes = useEcoRouterExactOut(
+  const { trades: outTrades, loading: outLoading } = useEcoRouterExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )
-  const bestTradeExactIn = useTradeExactInAllPlatformsRes.trades[0]
-  const bestTradeExactOut = useTradeExactOutAllPlatformsRes.trades[0]
+  const bestTradeExactIn = inTrades[0]
+  const bestTradeExactOut = outTrades[0]
 
-  const allPlatformTrades = isExactIn ? useTradeExactInAllPlatformsRes.trades : useTradeExactOutAllPlatformsRes.trades
+  const allPlatformTrades = isExactIn ? inTrades : outTrades
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
@@ -232,16 +232,18 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
   }
 
-  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
-    dispatch(setLoading(true))
-  } else {
-    dispatch(setLoading(false))
-  }
-  if (inputError !== undefined) {
-    setTimeout(() => {
+  useLayoutEffect(() => {
+    if (inLoading || outLoading) {
+      dispatch(setLoading(true))
+    } else {
       dispatch(setLoading(false))
-    }, 500)
-  }
+    }
+    if (inputError !== undefined) {
+      setTimeout(() => {
+        dispatch(setLoading(false))
+      }, 500)
+    }
+  }, [inLoading, outLoading, inputError, dispatch, typedValue, inputCurrency, outputCurrency])
 
   return {
     currencies,
