@@ -15,17 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn
         # 👇 Adds Chromatic as a step in the workflow
-      - name: Build
-        run: yarn build
-
-      - name: Generate open-api
-        run: yarn codegen:socket
-
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
-          # 👇 Chromatic projectToken, refer to the manage page to obtain it. <3
+          # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
