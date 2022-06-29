@@ -19,7 +19,6 @@ jobs:
         # 👇 Adds Chromatic as a step in the workflow
       - name: Create generated files
         run: yarn build
-        #building
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options

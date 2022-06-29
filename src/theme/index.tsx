@@ -115,14 +115,6 @@ export function colors(darkMode: boolean): Colors {
     dark2: '#2A2F42',
   }
 }
-console.log(colors(true))
-const object = colors(true)
-export const wholeObject = Object.entries(object).map((token, i) => {
-  console.log(token, i)
-  return token
-})
-
-console.log(wholeObject)
 
 export function theme(darkMode: boolean): DefaultTheme {
   return {
