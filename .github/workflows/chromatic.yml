@@ -15,8 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
         # 👇 Adds Chromatic as a step in the workflow
+      - name: Generate open-api
+        run: yarn codegen:socket
       - name: Create generated files
         run: yarn build
       - name: Publish to Chromatic
