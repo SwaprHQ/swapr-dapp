@@ -1,15 +1,13 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 
 import { OmniBridgeList } from '../EcoBridge.types'
-import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
-import { InitialState, OmniBridgeTransaction, OmnibridgeTransactionMessage } from './OmniBridge.types'
+import { OmnibridgeInitialState, OmniBridgeTransaction, OmnibridgeTransactionMessage } from './OmniBridge.types'
 
-const initialState: InitialState = {
-  ...ecoBridgeChildBaseInitialState,
+const initialState: OmnibridgeInitialState = {
   transactions: omniTransactionsAdapter.getInitialState({}),
 }
 
@@ -38,11 +36,6 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
             timestampResolved: Date.now(),
           },
         })
-      },
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        const { payload } = action
-
-        state.lists = payload
       },
       updatePartnerTransaction: (
         state,

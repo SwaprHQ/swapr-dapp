@@ -1,15 +1,13 @@
 import { ChainId } from '@swapr/sdk'
 
 import { PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 
 import { SocketList } from '../EcoBridge.types'
-import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { Route } from './api/generated'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 
 const initialState: SocketBridgeState = {
-  ...ecoBridgeChildBaseInitialState,
   transactions: [],
   approvalData: {},
   txBridgingData: {},
@@ -21,11 +19,6 @@ const createSocketSlice = (bridgeId: SocketList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        const { payload } = action
-
-        state.lists = payload
-      },
       setApprovalData: (
         state,
         action: PayloadAction<{

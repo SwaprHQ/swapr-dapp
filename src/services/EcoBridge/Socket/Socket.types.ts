@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { TokenInfo } from '@uniswap/token-lists'
 
-import { BridgeList, EcoBridgeChildBaseState } from '../EcoBridge.types'
+import { BridgeList } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 export type SocketTokenMap = {
@@ -34,7 +34,7 @@ export type SocketTx = {
   sender: string
 }
 
-export interface SocketBridgeState extends EcoBridgeChildBaseState {
+export interface SocketBridgeState {
   transactions: SocketTx[]
   approvalData: {
     chainId?: ChainId

@@ -1,23 +1,18 @@
 import { TransactionReceipt } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
-import { EntityState, PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
+import { PayloadAction } from '@reduxjs/toolkit'
 import { OutgoingMessageState } from 'arb-ts'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, EcoBridgeChildBaseState } from '../EcoBridge.types'
-import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
+import { ArbitrumList } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-
-interface ArbitrumBridgeState extends EcoBridgeChildBaseState {
-  transactions: EntityState<ArbitrumBridgeTxn>
-}
+import { ArbitrumInitialState } from './ArbitrumBridge.types'
 
 const now = () => new Date().getTime()
 
-const initialState: ArbitrumBridgeState = {
-  ...ecoBridgeChildBaseInitialState,
+const initialState: ArbitrumInitialState = {
   transactions: arbitrumTransactionsAdapter.getInitialState({}),
 }
 
@@ -97,11 +92,6 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
             batchNumber,
           },
         })
-      },
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        const { payload } = action
-
-        state.lists = payload
       },
       migrateTxs: (state, action: PayloadAction<ArbitrumBridgeTxnsState>) => {
         const { payload } = action

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducers } from '@reduxjs/toolkit'
+import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import {
@@ -82,29 +83,31 @@ export abstract class EcoBridgeChildBase {
   abstract getBridgingMetadata(): void
 }
 
-export const ecoBridgeChildBaseInitialState: EcoBridgeChildBaseState = {
-  lastMetadataCt: 0,
-  listsStatus: SyncState.IDLE,
-  bridgingDetailsStatus: SyncState.IDLE,
-  bridgingDetails: {},
+const ecoBridgeChildBaseInitialState: EcoBridgeChildBaseState = {
   lists: {},
+  listsStatus: SyncState.IDLE,
+  bridgingDetails: {},
+  bridgingDetailsStatus: SyncState.IDLE,
+  lastMetadataCt: 0,
 }
 
-export const createEcoBridgeChildBaseSlice = <
-  T extends EcoBridgeChildBaseState,
-  Reducers extends SliceCaseReducers<T>
->({
+function createBridgeChildBaseInitialState<T>(initialState: T): EcoBridgeChildBaseState & T {
+  return { ...initialState, ...ecoBridgeChildBaseInitialState }
+}
+
+export const createEcoBridgeChildBaseSlice = <T, Reducers extends SliceCaseReducers<EcoBridgeChildBaseState & T>>({
   name,
   initialState,
   reducers,
 }: {
   name: string
   initialState: T
-  reducers: ValidateSliceCaseReducers<T, Reducers>
+  reducers: ValidateSliceCaseReducers<EcoBridgeChildBaseState & T, Reducers>
 }) => {
   return createSlice({
     name,
-    initialState,
+    // TODO: double-check lazy loading
+    initialState: () => createBridgeChildBaseInitialState(initialState),
     reducers: {
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
         state.lastMetadataCt = action.payload.id
@@ -146,6 +149,11 @@ export const createEcoBridgeChildBaseSlice = <
       },
       setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
         state.listsStatus = action.payload
+      },
+      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
+        const { payload } = action
+
+        state.lists = payload
       },
       ...reducers,
     },

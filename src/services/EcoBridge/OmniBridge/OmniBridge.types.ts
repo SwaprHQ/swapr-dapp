@@ -4,8 +4,6 @@ import { ChainId } from '@swapr/sdk'
 import { EntityState } from '@reduxjs/toolkit'
 import { BigNumber } from 'ethers'
 
-import { EcoBridgeChildBaseState } from '../EcoBridge.types'
-
 export type ConfigPerChain = { [chainId: number]: string }
 
 export enum Mode {
@@ -87,7 +85,7 @@ export type OmnibridgeSubgraphRequests = {
 export type OmnibridgeSubgraphExecutions = {
   executions: OmnibridgeExecution[]
 }
-export interface InitialState extends EcoBridgeChildBaseState {
+export interface OmnibridgeInitialState {
   transactions: EntityState<OmniBridgeTransaction>
 }
 
