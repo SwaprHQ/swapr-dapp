@@ -3,21 +3,17 @@ import { ChainId } from '@swapr/sdk'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
-import { BridgeDetails, BridgingDetailsErrorMessage, SocketList, SyncState } from '../EcoBridge.types'
+import { SocketList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice, ecoBridgeChildBaseInitialState } from '../EcoBridge.utils'
 import { Route } from './api/generated'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 
 const initialState: SocketBridgeState = {
+  ...ecoBridgeChildBaseInitialState,
   transactions: [],
   approvalData: {},
   txBridgingData: {},
-  bridgingDetails: {},
-  bridgingDetailsStatus: SyncState.IDLE,
-  listsStatus: SyncState.IDLE,
-  lists: {},
   routes: [],
-  ...ecoBridgeChildBaseInitialState,
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -25,52 +21,10 @@ const createSocketSlice = (bridgeId: SocketList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
-
-        //(store persist) crashing page without that code
-        if (!state.bridgingDetails) {
-          state.bridgingDetails = {}
-        }
-
-        if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === SyncState.FAILED) return
-          state.bridgingDetailsStatus = SyncState.LOADING
-          return
-        } else {
-          state.bridgingDetailsStatus = SyncState.READY
-        }
-
-        if (gas) {
-          state.bridgingDetails.gas = gas
-        }
-        if (fee) {
-          state.bridgingDetails.fee = fee
-        }
-        if (estimateTime) {
-          state.bridgingDetails.estimateTime = estimateTime
-        }
-        if (receiveAmount) {
-          state.bridgingDetails.receiveAmount = receiveAmount
-        }
-      },
-      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
-        state.listsStatus = action.payload
-      },
       addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
         const { payload } = action
 
         state.lists = payload
-      },
-      setBridgeDetailsStatus: (
-        state,
-        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
-      ) => {
-        const { status, errorMessage } = action.payload
-        state.bridgingDetailsStatus = status
-        if (errorMessage) {
-          state.bridgingDetailsErrorMessage = errorMessage
-        }
       },
       setApprovalData: (
         state,

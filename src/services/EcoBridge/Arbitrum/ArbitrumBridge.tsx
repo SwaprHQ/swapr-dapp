@@ -767,6 +767,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this.withdraw(value, tokenAddress)
     }
   }
+
   public getBridgingMetadata = async () => {
     const requestId = this.startRequest({ actions: this.actions })
 

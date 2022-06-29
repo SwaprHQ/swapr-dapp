@@ -2,13 +2,16 @@ import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducer
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import {
+  BridgeDetails,
   BridgeList,
+  BridgingDetailsErrorMessage,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
   EcoBridgeChildBaseProps,
   EcoBridgeChildBaseState,
   EcoBridgeInitialEnv,
+  SyncState,
 } from './EcoBridge.types'
 
 export abstract class EcoBridgeChildBase {
@@ -81,6 +84,10 @@ export abstract class EcoBridgeChildBase {
 
 export const ecoBridgeChildBaseInitialState: EcoBridgeChildBaseState = {
   lastMetadataCt: 0,
+  listsStatus: SyncState.IDLE,
+  bridgingDetailsStatus: SyncState.IDLE,
+  bridgingDetails: {},
+  lists: {},
 }
 
 export const createEcoBridgeChildBaseSlice = <
@@ -101,6 +108,44 @@ export const createEcoBridgeChildBaseSlice = <
     reducers: {
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
         state.lastMetadataCt = action.payload.id
+      },
+      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
+        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
+
+        //(store persist) crashing page without that code
+        if (!state.bridgingDetails) {
+          state.bridgingDetails = {}
+        }
+
+        if (requestId !== state.lastMetadataCt) {
+          if (state.bridgingDetailsStatus === SyncState.FAILED) return
+          state.bridgingDetailsStatus = SyncState.LOADING
+          return
+        } else {
+          state.bridgingDetailsStatus = SyncState.READY
+        }
+
+        state.bridgingDetails = {
+          gas,
+          fee,
+          estimateTime,
+          receiveAmount,
+        }
+      },
+      setBridgeDetailsStatus: (
+        state,
+        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
+      ) => {
+        const { status, errorMessage } = action.payload
+
+        state.bridgingDetailsStatus = status
+
+        if (errorMessage) {
+          state.bridgingDetailsErrorMessage = errorMessage
+        }
+      },
+      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
+        state.listsStatus = action.payload
       },
       ...reducers,
     },

@@ -10,6 +10,11 @@ import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
 export interface EcoBridgeChildBaseState {
+  lists: { [id: string]: TokenList }
+  listsStatus: SyncState
+  bridgingDetails: BridgeDetails
+  bridgingDetailsStatus: SyncState
+  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
   lastMetadataCt: number
 }
 
