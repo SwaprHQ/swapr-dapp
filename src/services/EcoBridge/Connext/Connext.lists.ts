@@ -1,5 +1,6 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, WETH } from '@swapr/sdk'
 
+import { DAI, USDC, USDT, WBTC, ZERO_ADDRESS } from '../../../constants'
 import { ConnextToken } from './Connext.types'
 
 //connext's list of tokens
@@ -11,20 +12,20 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
     logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/usdt.svg',
     contracts: {
       [ChainId.MAINNET]: {
-        contract_address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-        contract_decimals: 6,
+        contract_address: USDT[ChainId.MAINNET].address,
+        contract_decimals: USDT[ChainId.MAINNET].decimals,
       },
       [ChainId.ARBITRUM_ONE]: {
-        contract_address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
-        contract_decimals: 6,
+        contract_address: USDT[ChainId.ARBITRUM_ONE].address,
+        contract_decimals: USDT[ChainId.ARBITRUM_ONE].decimals,
       },
       [ChainId.XDAI]: {
-        contract_address: '0x4ecaba5870353805a9f068101a40e0f32ed605c6',
-        contract_decimals: 6,
+        contract_address: USDT[ChainId.XDAI].address,
+        contract_decimals: USDT[ChainId.XDAI].decimals,
       },
       [ChainId.POLYGON]: {
-        contract_address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
-        contract_decimals: 6,
+        contract_address: USDT[ChainId.POLYGON].address,
+        contract_decimals: USDT[ChainId.POLYGON].decimals,
       },
     },
   },
@@ -35,20 +36,20 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
     logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/usdc.svg',
     contracts: {
       [ChainId.MAINNET]: {
-        contract_address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        contract_decimals: 6,
+        contract_address: USDC[ChainId.MAINNET].address,
+        contract_decimals: USDC[ChainId.MAINNET].decimals,
       },
       [ChainId.ARBITRUM_ONE]: {
-        contract_address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
-        contract_decimals: 6,
+        contract_address: USDC[ChainId.ARBITRUM_ONE].address,
+        contract_decimals: USDC[ChainId.ARBITRUM_ONE].decimals,
       },
       [ChainId.XDAI]: {
-        contract_address: '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
-        contract_decimals: 6,
+        contract_address: USDC[ChainId.XDAI].address,
+        contract_decimals: USDC[ChainId.XDAI].decimals,
       },
       [ChainId.POLYGON]: {
-        contract_address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-        contract_decimals: 6,
+        contract_address: USDC[ChainId.POLYGON].address,
+        contract_decimals: USDC[ChainId.POLYGON].decimals,
       },
     },
   },
@@ -59,20 +60,20 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
     logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/dai.svg',
     contracts: {
       [ChainId.MAINNET]: {
-        contract_address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        contract_decimals: 18,
+        contract_address: DAI[ChainId.MAINNET].address,
+        contract_decimals: DAI[ChainId.MAINNET].decimals,
       },
       [ChainId.ARBITRUM_ONE]: {
-        contract_address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-        contract_decimals: 18,
+        contract_address: DAI[ChainId.ARBITRUM_ONE].address,
+        contract_decimals: DAI[ChainId.ARBITRUM_ONE].decimals,
       },
       [ChainId.XDAI]: {
-        contract_address: '0x0000000000000000000000000000000000000000',
+        contract_address: ZERO_ADDRESS,
         contract_decimals: 18,
       },
       [ChainId.POLYGON]: {
-        contract_address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-        contract_decimals: 18,
+        contract_address: DAI[ChainId.POLYGON].address,
+        contract_decimals: DAI[ChainId.POLYGON].decimals,
       },
     },
   },
@@ -83,20 +84,20 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
     logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/weth.svg',
     contracts: {
       [ChainId.XDAI]: {
-        contract_address: '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1',
-        contract_decimals: 18,
+        contract_address: WETH[ChainId.XDAI].address,
+        contract_decimals: WETH[ChainId.XDAI].decimals,
       },
       [ChainId.MAINNET]: {
+        contract_address: ZERO_ADDRESS,
         contract_decimals: 18,
-        contract_address: '0x0000000000000000000000000000000000000000',
       },
       [ChainId.ARBITRUM_ONE]: {
+        contract_address: ZERO_ADDRESS,
         contract_decimals: 18,
-        contract_address: '0x0000000000000000000000000000000000000000',
       },
       [ChainId.POLYGON]: {
-        contract_address: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-        contract_decimals: 18,
+        contract_address: WETH[ChainId.POLYGON].address,
+        contract_decimals: WETH[ChainId.POLYGON].decimals,
       },
     },
   },
@@ -107,20 +108,20 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
     logoURI: 'https://maticnetwork.github.io/polygon-token-assets/assets/wbtc.svg',
     contracts: {
       [ChainId.MAINNET]: {
-        contract_address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-        contract_decimals: 8,
+        contract_address: WBTC[ChainId.MAINNET].address,
+        contract_decimals: WBTC[ChainId.MAINNET].decimals,
       },
       [ChainId.ARBITRUM_ONE]: {
-        contract_address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
-        contract_decimals: 8,
+        contract_address: WBTC[ChainId.ARBITRUM_ONE].address,
+        contract_decimals: WBTC[ChainId.ARBITRUM_ONE].decimals,
       },
       [ChainId.XDAI]: {
-        contract_address: '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252',
-        contract_decimals: 8,
+        contract_address: WBTC[ChainId.XDAI].address,
+        contract_decimals: WBTC[ChainId.XDAI].decimals,
       },
       [ChainId.POLYGON]: {
-        contract_address: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
-        contract_decimals: 8,
+        contract_address: WBTC[ChainId.POLYGON].address,
+        contract_decimals: WBTC[ChainId.POLYGON].decimals,
       },
     },
   },

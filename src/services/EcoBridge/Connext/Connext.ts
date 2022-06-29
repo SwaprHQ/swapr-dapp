@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency } from '@swapr/sdk'
+import { ChainId, Currency, WETH } from '@swapr/sdk'
 
 import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
 import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sdk'
@@ -12,13 +12,7 @@ import { ethers, utils } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import {
-  DAI_ARBITRUM_ADDRESS,
-  DAI_ETHEREUM_ADDRESS,
-  DAI_POLYGON_ADDRESS,
-  WETH_GNOSIS_ADDRESS,
-  WETH_POLYGON_ADDRESS,
-} from '../../../constants'
+import { DAI } from '../../../constants'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import {
   BridgeModalStatus,
@@ -407,13 +401,16 @@ export class Connext extends EcoBridgeChildBase {
       if (isNative) {
         //eth to weth
         if (fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) {
-          if (toChainId === ChainId.XDAI) toTokenAddress = WETH_GNOSIS_ADDRESS
-          if (toChainId === ChainId.POLYGON) toTokenAddress = WETH_POLYGON_ADDRESS
+          if (toChainId === ChainId.XDAI) toTokenAddress = WETH[ChainId.XDAI].address
+
+          if (toChainId === ChainId.POLYGON) toTokenAddress = WETH[ChainId.POLYGON].address
         }
         if (fromChainId === ChainId.XDAI) {
-          if (toChainId === ChainId.MAINNET) toTokenAddress = DAI_ETHEREUM_ADDRESS
-          if (toChainId === ChainId.ARBITRUM_ONE) toTokenAddress = DAI_ARBITRUM_ADDRESS
-          if (toChainId === ChainId.POLYGON) toTokenAddress = DAI_POLYGON_ADDRESS
+          if (toChainId === ChainId.MAINNET) toTokenAddress = DAI[ChainId.MAINNET].address
+
+          if (toChainId === ChainId.ARBITRUM_ONE) toTokenAddress = DAI[ChainId.ARBITRUM_ONE].address
+
+          if (toChainId === ChainId.POLYGON) toTokenAddress = DAI[ChainId.POLYGON].address
         }
       } else {
         toTokenAddress = CONNEXT_TOKENS.reduce<string | undefined>((tokenAddressOnDestinationChain, token) => {
