@@ -127,6 +127,7 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.22",
     "@storybook/testing-library": "^0.0.11",
+    "@connext/nxtp-sdk": "^0.1.36",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
