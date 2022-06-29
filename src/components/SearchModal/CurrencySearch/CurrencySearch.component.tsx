@@ -72,11 +72,15 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency) return filteredSortedTokens
-    const s = debouncedQuery.toLowerCase().trim()
-    if (nativeCurrency.symbol && nativeCurrency.symbol.toLowerCase().startsWith(s)) {
-      return nativeCurrency ? [nativeCurrency, ...filteredSortedTokens] : filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+
+    if (
+      nativeCurrency &&
+      new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
+    ) {
+      return [nativeCurrency, ...filteredSortedTokens]
     }
+
     return filteredSortedTokens
   }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
 
@@ -141,7 +145,7 @@ export const CurrencySearch = ({
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
           <TYPE.body fontWeight={500}>Select a token</TYPE.body>
-          <CloseIconStyled onClick={onDismiss} />
+          <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <Row>
           <SearchInput

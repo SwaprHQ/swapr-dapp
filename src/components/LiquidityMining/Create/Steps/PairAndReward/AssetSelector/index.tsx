@@ -45,8 +45,8 @@ const RelativeContainer = styled.div<{ disabled?: boolean }>`
 const RelativeDismiss = styled(CloseIcon)`
   position: absolute;
   padding: 0;
-  top: -18px;
-  right: 7px;
+  top: -23px;
+  right: 3px;
 
   svg {
     stroke: #464366;
@@ -111,9 +111,9 @@ export default function AssetSelector({
   }, [approvalState, account, userBalance, rewardMemo])
 
   useEffect(() => {
-    if (setRewardsObject && rewardMemo && userBalance) {
+    if (setRewardsObject && rewardMemo && userBalance && index) {
       setRewardsObject({
-        type: ActionType.APPROVALS_CHANGE,
+        type: ActionType.APPROVAL_CHANGE,
         payload: {
           index: index,
           approval:

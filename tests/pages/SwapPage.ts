@@ -91,4 +91,7 @@ export class SwapPage {
   static getTransactionConfirmedModal() {
     return cy.get('[data-testid=transaction-confirmed-modal]')
   }
+  static chooseExchange(exchange: string) {
+    return cy.get(`[data-testid=${exchange}-platform-selector]`).click()
+  }
 }

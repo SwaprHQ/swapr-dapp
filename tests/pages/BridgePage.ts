@@ -27,7 +27,7 @@ export class BridgePage {
     return cy.get('[data-testid=accept-bridging').click()
   }
   static getStatusTag(timeoutValue: number) {
-    return cy.get('[data-testid=status-tag', { timeout: timeoutValue })
+    return cy.get('[data-testid=status-tag]', { timeout: timeoutValue })
   }
   static getBridgingInitiatedModal() {
     return cy.get('[data-testid=bridge-initiated-modal]')
