@@ -1,21 +1,23 @@
-import { JsonRpcSigner } from '@ethersproject/providers'
 import { Provider } from '@ethersproject/abstract-provider'
+import { JsonRpcSigner } from '@ethersproject/providers'
 import { formatUnits, parseEther, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
-import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
 import {
-  L2ToL1MessageStatus,
-  EthBridger,
   Erc20Bridger,
+  EthBridger,
   getL2Network,
   L1TransactionReceipt,
+  L2ToL1MessageStatus,
   L2TransactionReceipt,
 } from '@arbitrum/sdk'
 import { ERC20 } from '@arbitrum/sdk/dist/lib/abi/ERC20'
-import { BaseContract, BigNumber, Signer } from 'ethers'
+import { TokenList } from '@uniswap/token-lists'
+//import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
+import { L2GatewayToken } from 'arb-ts/dist/lib/abi/L2GatewayToken'
+import { BigNumber, Signer } from 'ethers'
 import request from 'graphql-request'
+
 import { subgraphClientsUris } from '../../../apollo/client'
 import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { addTransaction } from '../../../state/transactions/actions'
@@ -37,19 +39,13 @@ import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import {
-  getErrorMsg,
-  MAX_SUBMISSION_PRICE_PERCENT_INCREASE,
-  migrateBridgeTransactions,
-  QUERY_ETH_PRICE,
-} from './ArbitrumBridge.utils'
-import { L2GatewayToken } from 'arb-ts/dist/lib/abi/L2GatewayToken'
+import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId
   private l2ChainId: ChainId
-  private l1Signer: Signer
-  private l2Signer: Signer
+  private l1Signer: Signer | undefined = undefined
+  private l2Signer: Signer | undefined = undefined
   private _ethBridger: EthBridger | undefined
   private _erc20Bridger: Erc20Bridger | undefined
   private _initialPendingWithdrawalsChecked = false
@@ -157,12 +153,12 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       if (!txHash) return
 
-      const l2Provider = this.l2Signer.provider as Provider
+      const l2Provider = this.l2Signer?.provider as Provider
 
       //how to get this from the store instead of the chain network?
       const receipt = await l2Provider.getTransactionReceipt(txHash)
       const l2Receipt = new L2TransactionReceipt(receipt)
-      const messages = await l2Receipt.getL2ToL1Messages(this.l1Signer, l2Provider)
+      const messages = await l2Receipt.getL2ToL1Messages(this.l1Signer as Signer, l2Provider)
       const l2ToL1Msg = messages[0]
 
       const l1Tx = await l2ToL1Msg.execute(l2Provider)
@@ -221,15 +217,20 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     const erc20L1Address = this.store.getState().ecoBridge.ui.from.address
     if (!erc20L1Address) return
-    if (!this.l1Signer.provider) return
 
-    const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(erc20L1Address, this.l1Signer.provider)
+    const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(
+      erc20L1Address,
+      this.l1Signer?.provider as Provider
+    )
 
     const tokenSymbol = await (
-      await this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, erc20L1Address)
+      await this.erc20Bridger.getL1TokenContract(this.l1Signer?.provider as Provider, erc20L1Address)
     ).symbol()
 
-    const txn = await this.erc20Bridger.approveToken({ l1Signer: this.l1Signer, erc20L1Address: erc20L1Address })
+    const txn = await this.erc20Bridger.approveToken({
+      l1Signer: this.l1Signer as Signer,
+      erc20L1Address: erc20L1Address,
+    })
 
     this.store.dispatch(
       ecoBridgeUIActions.setStatusButton({
@@ -295,8 +296,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       l2Signer = this._activeProvider.getSigner()
     }
 
-    this.l1Signer = l1Signer
-    this.l2Signer = l2Signer
+    this.l1Signer = l1Signer as Signer
+    this.l2Signer = l2Signer as Signer
 
     try {
       this._erc20Bridger = new Erc20Bridger(l2Network)
@@ -314,7 +315,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
   // PendingTx Listener
   private getReceipt = async (tx: ArbitrumBridgeTxn) => {
-    const provider = txnTypeToLayer(tx.type) === 2 ? this.l2Signer.provider : this.l1Signer.provider
+    const provider = txnTypeToLayer(tx.type) === 2 ? (this.l2Signer?.provider as Provider) : this.l1Signer?.provider
     if (!provider) throw new Error('No provider on bridge')
 
     return provider.getTransactionReceipt(tx.txHash)
@@ -342,7 +343,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
   // L1 Deposit Listener
   private getL2TxnHash = async (txn: ArbitrumBridgeTxn) => {
-    const message = txn.receipt && (await new L1TransactionReceipt(txn.receipt).getL1ToL2Message(this.l2Signer))
+    const message =
+      txn.receipt && (await new L1TransactionReceipt(txn.receipt).getL1ToL2Message(this.l2Signer as Signer))
     return {
       retryableTicketHash: message && message.retryableCreationId,
     }
@@ -356,15 +358,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     depositTransactions.forEach((txn, index) => {
       if (!this.l1ChainId || !this.l2ChainId) return
       const txnHash = depositHashes[index]
-      if (txnHash === null) {
-        return
-      }
+      if (!txnHash || txnHash === null) return
 
       const { retryableTicketHash } = txnHash
-
-      if (!retryableTicketHash) {
-        throw new Error('No Hash')
-      }
 
       const l1ChainRetryableTicketHash = allTransactions.find(
         tx => tx.chainId === this.l1ChainId && tx.txHash === retryableTicketHash
@@ -373,6 +369,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         tx => tx.chainId === this.l2ChainId && tx.txHash === retryableTicketHash
       )
 
+      console.info({ txnHash, retryableTicketHash })
+
       if (!l1ChainRetryableTicketHash && !l2ChainRetryableTicketHash) {
         this.store.dispatch(
           this.actions.addTx({
@@ -380,14 +378,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             receipt: undefined,
             chainId: this.l2ChainId,
             type: 'deposit-l2',
-            txHash: retryableTicketHash,
+            txHash: retryableTicketHash ?? '',
             blockNumber: undefined,
           })
         )
         this.store.dispatch(
           this.actions.updateTxPartnerHash({
             chainId: this.l2ChainId,
-            txHash: retryableTicketHash,
+            txHash: retryableTicketHash ?? '',
             partnerTxHash: txn.txHash,
             partnerChainId: this.l1ChainId,
           })
@@ -407,9 +405,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       return outbox
     }
 
-    const l2Provider = this.l2Signer.provider as Provider
+    const l2Provider = this.l2Signer?.provider as Provider
     const l2Receipt = new L2TransactionReceipt(tx.receipt)
-    const [message] = await l2Receipt.getL2ToL1Messages(this.l1Signer, l2Provider)
+    const [message] = await l2Receipt.getL2ToL1Messages(this.l1Signer as Signer, l2Provider)
     outbox.l2ToL1MessageStatus = await message.status(l2Provider)
 
     return outbox
@@ -452,8 +450,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const weiValue = parseEther(value)
 
     const txn = await this.ethBridger.deposit({
-      l1Signer: this.l1Signer,
-      l2Provider: this.l2Signer.provider as Provider,
+      l1Signer: this.l1Signer as Signer,
+      l2Provider: this.l2Signer?.provider as Provider,
       amount: weiValue,
     })
 
@@ -487,7 +485,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
-    const tokenData = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider as Provider, erc20L1Address)
+    const tokenData = this.erc20Bridger.getL1TokenContract(this.l1Signer?.provider as Provider, erc20L1Address)
     const decimals = await tokenData.decimals()
     const symbol = await tokenData.symbol()
 
@@ -499,8 +497,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     const txn = await this.erc20Bridger.deposit({
       erc20L1Address: erc20L1Address,
-      l1Signer: this.l1Signer,
-      l2Provider: this.l2Signer.provider as Provider,
+      l1Signer: this.l1Signer as Signer,
+      l2Provider: this.l2Signer?.provider as Provider,
       amount: parsedValue,
     })
 
@@ -519,7 +517,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     )
 
     const l1Receipt = await txn.wait()
-    const message = await new L1TransactionReceipt(l1Receipt).getL1ToL2Message(this.l2Signer)
 
     this.store.dispatch(
       this.actions.updateTxReceipt({
@@ -545,7 +542,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     )
 
     const weiValue = parseEther(value)
-    const txn = await this.ethBridger.withdraw({ l2Signer: this.l2Signer, amount: weiValue })
+    const txn = await this.ethBridger.withdraw({ l2Signer: this.l2Signer as Signer, amount: weiValue })
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     this.store.dispatch(
@@ -574,12 +571,15 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private withdrawERC20 = async (erc20L2Address: string, value: string) => {
     if (!this._account) return
 
-    const erc20L1Address = await this.erc20Bridger.getL1ERC20Address(erc20L2Address, this.l2Signer.provider as Provider)
+    const erc20L1Address = await this.erc20Bridger.getL1ERC20Address(
+      erc20L2Address,
+      this.l2Signer?.provider as Provider
+    )
     if (!erc20L1Address) {
       throw new Error('Token address not recognized')
     }
 
-    const tokenData = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider as Provider, erc20L1Address)
+    const tokenData = this.erc20Bridger.getL1TokenContract(this.l1Signer?.provider as Provider, erc20L1Address)
     if (!tokenData) {
       throw new Error("Can't withdraw; token not found")
     }
@@ -601,7 +601,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const txn = await this.erc20Bridger.withdraw({
       erc20l1Address: erc20L1Address,
       amount: weiValue,
-      l2Signer: this.l2Signer,
+      l2Signer: this.l2Signer as Signer,
     })
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
@@ -730,9 +730,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       //let response: L1TokenData | L2TokenData
       let response: L2GatewayToken | ERC20
       if (from.chainId === this.l1ChainId) {
-        response = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider as Provider, from.address)
+        response = this.erc20Bridger.getL1TokenContract(this.l1Signer?.provider as Provider, from.address)
       } else {
-        response = this.erc20Bridger.getL2TokenContract(this.l2Signer.provider as Provider, from.address)
+        response = this.erc20Bridger.getL2TokenContract(this.l2Signer?.provider as Provider, from.address)
       }
 
       const [decimals] = await Promise.all([response.decimals()])
@@ -742,9 +742,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       //check allowance
       let gatewayAddress: string
       if (from.chainId === this.l1ChainId) {
-        gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(from.address, this.l1Signer.provider as Provider)
+        gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(from.address, this.l1Signer?.provider as Provider)
       } else {
-        gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(from.address, this.l2Signer.provider as Provider)
+        gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(from.address, this.l2Signer?.provider as Provider)
       }
 
       const allowance = await response.allowance(this._account, gatewayAddress)
@@ -818,40 +818,41 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       //calculate for deposit
       if (this._activeChainId === this.l1ChainId) {
-        gasPrice = await this.bridge.l1Provider.getGasPrice()
+        gasPrice = await (this.l1Signer?.provider as Provider).getGasPrice()
         if (address === nativeCurrency) {
-          const maxSubmissionPrice = BridgeHelper.percentIncrease(
-            (await this.bridge.l2Bridge.getTxnSubmissionPrice(0))[0],
-            MAX_SUBMISSION_PRICE_PERCENT_INCREASE
-          )
-          gas =
-            this.l2Signer.provider &&
-            (await this.ethBridger.depositEstimateGas({
-              l1Signer: this.l1Signer,
-              l2Provider: this.l2Signer.provider,
-              amount: parsedValue,
-            })) // how to incorporate "maxSubmissionPrice" here?
+          gas = await this.ethBridger.depositEstimateGas({
+            amount: parsedValue,
+            l1Signer: this.l1Signer as Signer,
+            l2Provider: this.l2Signer?.provider as Provider,
+          })
         } else {
-          gas = await this.erc20Bridger.depositEstimateGas({
-            l1Signer: this.l1Signer,
-            l2Provider: this.l2Signer.provider as Provider,
+          console.info({
+            l1Signer: this.l1Signer as Signer,
+            l2Provider: this.l2Signer?.provider as Provider,
             erc20L1Address: address,
             amount: parsedValue,
-          }) //this method under the hood calls this.bridge.l1Bridge
+          })
+          //Why are you being a pain, depositEstimateGas ????
+          gas = await this.erc20Bridger.depositEstimateGas({
+            l1Signer: this.l1Signer as Signer,
+            l2Provider: this.l2Signer?.provider as Provider,
+            erc20L1Address: address,
+            amount: parsedValue,
+          })
         }
       }
 
       //calculate for withdraw
       if (this._activeChainId === this.l2ChainId) {
-        gasPrice = await this.bridge.l2Provider.getGasPrice()
+        gasPrice = await (this.l2Signer?.provider as Provider).getGasPrice()
         if (address === nativeCurrency) {
-          gas = await this.ethBridger.withdrawEstimateGas({ l2Signer: this.l2Signer, amount: parsedValue })
+          gas = await this.ethBridger.withdrawEstimateGas({ l2Signer: this.l2Signer as Signer, amount: parsedValue })
         } else {
-          const l1Address = await this.erc20Bridger.getL1ERC20Address(address, this.l2Signer.provider as Provider)
+          const l1Address = await this.erc20Bridger.getL1ERC20Address(address, this.l2Signer?.provider as Provider)
           if (l1Address) {
             gas = await this.erc20Bridger.withdrawEstimateGas({
               erc20l1Address: l1Address,
-              l2Signer: this.l2Signer,
+              l2Signer: this.l2Signer as Signer,
               amount: parsedValue,
             })
           }
@@ -873,6 +874,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       totalTxnGasCostInUSD = `${(Number(totalTxnGasCostInEth) * Number(nativeCurrencyPrice)).toFixed(2)}$` // mul eth cost * eth price
     } catch (e) {
+      console.warn(e)
       totalTxnGasCostInUSD = undefined //when Arbitrum cannot estimate gas
     }
 

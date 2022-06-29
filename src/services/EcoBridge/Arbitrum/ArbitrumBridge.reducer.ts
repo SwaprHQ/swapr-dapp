@@ -1,9 +1,9 @@
 import { TransactionReceipt } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList, BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
