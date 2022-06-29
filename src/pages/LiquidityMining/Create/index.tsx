@@ -27,60 +27,76 @@ export enum CampaignType {
   TOKEN,
   PAIR,
 }
-export const numberOfRewards = 4
-export interface RewardsObject {
-  approvals: ApprovalState[]
-  rewards: (TokenAmount | undefined)[]
-  rawAmounts: (string | undefined)[]
+
+export interface Reward {
+  approvalState: ApprovalState
+  rewardTokenAmount: TokenAmount | undefined
+  rewardRawAmount: string | undefined
 }
 
 export enum ActionType {
-  APPROVALS_CHANGE,
-  REWARDS_CHANGE,
-  RAW_AMOUNTS,
+  APPROVAL_CHANGE,
+  REWARD_CHANGE,
+  REMOVE_REWARD,
   RESET,
 }
 export interface Actions {
   type: ActionType
   payload: {
-    index?: number
+    index: number
     reward?: TokenAmount | undefined
     rawAmount?: string
     approval?: ApprovalState
   }
 }
-const initialState: RewardsObject = {
-  approvals: new Array(numberOfRewards).fill(ApprovalState.UNKNOWN),
-  rewards: new Array(numberOfRewards).fill(undefined),
-  rawAmounts: new Array(numberOfRewards).fill(undefined),
+const initialState: Reward = {
+  approvalState: ApprovalState.UNKNOWN,
+  rewardTokenAmount: undefined,
+  rewardRawAmount: undefined,
 }
 
-const reducer = (state: RewardsObject, action: Actions): RewardsObject => {
+const reducer = (state: Reward[], action: Actions): Reward[] => {
   const { type, payload } = action
+
+  const mutableState = [...state]
   switch (type) {
-    case ActionType.APPROVALS_CHANGE:
-      return {
-        ...state,
-        approvals: state.approvals.map((approval: ApprovalState, i: number) =>
-          i === payload.index && payload.approval !== undefined ? payload.approval : approval
-        ),
+    case ActionType.APPROVAL_CHANGE:
+      const approvalObject: Reward = {
+        approvalState: payload.approval !== undefined ? payload.approval : state[payload.index].approvalState,
+        rewardTokenAmount: state[payload.index].rewardTokenAmount,
+        rewardRawAmount: state[payload.index].rewardRawAmount,
       }
-    case ActionType.REWARDS_CHANGE:
-      return {
-        ...state,
-        rewards: state.rewards.map((reward: TokenAmount | undefined, i: number) =>
-          i === payload.index ? payload.reward : reward
-        ),
+
+      mutableState.splice(payload.index, 1, approvalObject)
+
+      return mutableState
+
+    case ActionType.REWARD_CHANGE:
+      const newRewardObject: Reward = {
+        approvalState: state[payload.index].approvalState ? state[payload.index].approvalState : ApprovalState.UNKNOWN,
+        rewardTokenAmount: payload.reward,
+        rewardRawAmount: payload.rawAmount,
       }
-    case ActionType.RAW_AMOUNTS:
-      return {
-        ...state,
-        rawAmounts: state.rawAmounts.map((rawAmount: string | undefined, i: number) =>
-          i === payload.index ? payload.rawAmount : rawAmount
-        ),
-      }
+
+      mutableState.splice(payload.index, 1, newRewardObject)
+
+      const hasAdditionalReward = mutableState.some(({ rewardTokenAmount: reward }) => reward?.currency === undefined)
+      if (!hasAdditionalReward && mutableState.length < 4) mutableState.push(initialState)
+
+      return mutableState
+
+    case ActionType.REMOVE_REWARD:
+      const hasMaxNumberOfReward = state.every(reward => reward.rewardTokenAmount !== undefined)
+
+      if (payload.index === 0 && state.length === 1) return [initialState]
+
+      mutableState.splice(payload.index, 1)
+
+      if (hasMaxNumberOfReward) mutableState.push(initialState)
+
+      return mutableState
     case ActionType.RESET:
-      return initialState
+      return [initialState]
     default:
       return state
   }
@@ -105,23 +121,23 @@ export default function CreateLiquidityMining() {
   const [endTime, setEndTime] = useState<Date | null>(null)
   const [timelocked, setTimelocked] = useState(false)
   const [stakingCap, setStakingCap] = useState<TokenAmount | null>(null)
-  const [rewardsObject, dispatch] = useReducer(reducer, initialState)
+  const [rewardsArray, dispatch] = useReducer(reducer, [initialState])
   const [simulatedStakedAmount, setSimulatedStakedAmount] = useState<string>('0')
   const [simulatedPrice, setSimulatedPrice] = useState('0')
 
   const memoizedRewardsArray = useMemo(
     () =>
-      rewardsObject.rewards.length
-        ? rewardsObject.rewards.filter(reward => reward?.greaterThan('0'))
-        : new Array(numberOfRewards).fill(undefined),
-    [rewardsObject.rewards]
+      rewardsArray.length
+        ? rewardsArray.map(({ rewardTokenAmount: reward }: Reward) => reward).filter(reward => reward?.greaterThan('0'))
+        : new Array(rewardsArray.length).fill(undefined),
+    [rewardsArray]
   )
   const memoizedApprovalsArray = useMemo(
     () =>
-      rewardsObject.approvals.some((value: ApprovalState) =>
-        value === ApprovalState.APPROVED || value === ApprovalState.UNKNOWN ? false : true
+      rewardsArray.some(({ approvalState: approval }: Reward) =>
+        approval === ApprovalState.APPROVED || approval === ApprovalState.UNKNOWN ? false : true
       ),
-    [rewardsObject.approvals]
+    [rewardsArray]
   )
 
   const campaign = useNewLiquidityMiningCampaign(
@@ -175,7 +191,7 @@ export default function CreateLiquidityMining() {
   }, [addTransaction, createLiquidityMiningCallback, stakeToken, stakePair])
 
   const resetAllFileds = () => {
-    dispatch({ type: ActionType.RESET, payload: {} })
+    dispatch({ type: ActionType.RESET, payload: { index: 0 } })
     setStakePair(undefined)
     setStakeToken(undefined)
     setUnlimitedPool(true)
@@ -243,9 +259,8 @@ export default function CreateLiquidityMining() {
           key={3}
           disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
         >
-          <RewardsSelection rewardsObject={rewardsObject} setRewardsObject={dispatch} />
+          <RewardsSelection rewardsArray={rewardsArray} setRewardsArray={dispatch} />
         </Step>
-
         <LastStep
           title={t('liquidityMining.create.preview')}
           index={4}

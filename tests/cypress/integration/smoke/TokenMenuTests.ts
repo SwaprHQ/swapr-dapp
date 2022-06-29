@@ -4,7 +4,7 @@ import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Token menu smoke tests', () => {
-  const TYPING_DELAY = 110
+  const TYPING_DELAY = 200
   beforeEach(() => {
     SwapPage.visitSwapPage()
     TransactionHelper.waitForTokenLists()
@@ -73,7 +73,6 @@ describe('Token menu smoke tests', () => {
     TokenMenu.switchTokenList('swapr-token-list')
     TokenMenu.getTokenListsRow('swapr-token-list').should('contain.text', 'OFF')
     TokenMenu.goBack()
-      .getPicker()
-      .should('contain.text', 'No results found')
+    TokenMenu.getTokenRow('eth').should('be.visible')
   })
 })

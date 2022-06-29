@@ -63,7 +63,7 @@ export function SwapSettings({
         </StyledButton>
       </MouseoverTooltip>
       <MouseoverTooltip content={multihop ? t('multihopEnabled') : t('multihopDisabled')} placement="top">
-        <StyledButton active={multihop} cursor="pointer" onClick={toggle}>
+        <StyledButton active={multihop} cursor="pointer" onClick={toggle} data-testid="multihop-icon">
           <EcoRouter />
         </StyledButton>
       </MouseoverTooltip>
