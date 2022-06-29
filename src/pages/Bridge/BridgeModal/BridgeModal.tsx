@@ -79,6 +79,10 @@ export const BridgeModal = ({
       setBridgeName('Arbitrum One Bridge')
     }
 
+    if (activeBridge === 'connext') {
+      setIsWarning(false)
+      setBridgeName('Connext Network')
+    }
     if (activeBridge?.includes('omnibridge')) {
       setIsWarning(false)
       setBridgeName('OmniBridge')

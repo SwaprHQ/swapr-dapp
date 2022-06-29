@@ -100,6 +100,7 @@
     "wcag-contrast": "^3.0.0"
   },
   "devDependencies": {
+    "@connext/nxtp-sdk": "^0.1.36",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",

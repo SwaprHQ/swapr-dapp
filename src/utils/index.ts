@@ -39,6 +39,8 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return 'https://testnet.arbiscan.io'
     case ChainId.XDAI:
       return 'https://blockscout.com/xdai/mainnet'
+    case ChainId.POLYGON:
+      return 'https://polygonscan.com/'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
