@@ -71,9 +71,8 @@ const ButtonWithLinkTemplate: ComponentStory<typeof ButtonLink> = (args: ButtonL
 
 const CarrotButtonTemplate: ComponentStory<typeof Carrot> = (args: ButtonLinkProps) => <Carrot {...args} />
 
-//This story displays just styled components buttons which have no extra functionality
 export const StyledButtons = StyleButtons.bind({})
-// some shit here
+
 export const ButtonConfirmed = ButtonConfirmedTemplate.bind({})
 ButtonConfirmed.args = {
   content: 'some text here',

@@ -7,7 +7,6 @@ import { colors } from './'
 
 <ColorPalette>
   {Object.entries(colors(true)).map((token, i) => {
-    console.log(token, i)
     const name = token[0]
     return <ColorItem key={i} title={name} colors={{ [name]: token[1] }} />
   })}

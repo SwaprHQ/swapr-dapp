@@ -20,9 +20,6 @@ interface BaseProps {
    * Border radius and default is 12px
    */
   borderRadius?: string
-  /**
-   * No clue what this is
-   */
   altDisabledStyle?: boolean
 }
 
@@ -307,7 +304,6 @@ export interface ButtonLinkProps {
   style?: any
 }
 
-//Simple button that redirects users to link
 export function ButtonWithLink({ link, text, style }: ButtonLinkProps) {
   return (
     <ButtonSecondary
