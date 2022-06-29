@@ -78,6 +78,11 @@ export const BridgeModal = ({
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
     }
+
+    if (activeBridge?.includes('omnibridge')) {
+      setIsWarning(false)
+      setBridgeName('OmniBridge')
+    }
   }, [activeBridge, status, symbol, t, typedValue])
 
   const onDismiss = () => {

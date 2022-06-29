@@ -1,5 +1,3 @@
-import { parse } from 'qs'
-
 import { Field } from './actions'
 import { queryParametersToSwapState } from './hooks'
 
@@ -8,9 +6,10 @@ describe('hooks', () => {
     test('ETH to DAI', () => {
       expect(
         queryParametersToSwapState(
-          parse(
-            '?inputCurrency=ETH&outputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&exactAmount=20.5&exactField=outPUT',
-            { parseArrays: false, ignoreQueryPrefix: true }
+          Object.fromEntries(
+            new URLSearchParams(
+              '?inputCurrency=ETH&outputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&exactAmount=20.5&exactField=outPUT'
+            )
           ),
           'ETH'
         )
@@ -25,10 +24,7 @@ describe('hooks', () => {
 
     test('does not duplicate eth for invalid output token', () => {
       expect(
-        queryParametersToSwapState(
-          parse('?outputCurrency=invalid', { parseArrays: false, ignoreQueryPrefix: true }),
-          'ETH'
-        )
+        queryParametersToSwapState(Object.fromEntries(new URLSearchParams('?outputCurrency=invalid')), 'ETH')
       ).toEqual({
         [Field.INPUT]: { currencyId: '' },
         [Field.OUTPUT]: { currencyId: 'ETH' },
@@ -41,7 +37,7 @@ describe('hooks', () => {
     test('output ETH only', () => {
       expect(
         queryParametersToSwapState(
-          parse('?outputCurrency=eth&exactAmount=20.5', { parseArrays: false, ignoreQueryPrefix: true }),
+          Object.fromEntries(new URLSearchParams('?outputCurrency=eth&exactAmount=20.5')),
           'ETH'
         )
       ).toEqual({
@@ -56,7 +52,7 @@ describe('hooks', () => {
     test('invalid recipient', () => {
       expect(
         queryParametersToSwapState(
-          parse('?outputCurrency=eth&exactAmount=20.5&recipient=abc', { parseArrays: false, ignoreQueryPrefix: true }),
+          Object.fromEntries(new URLSearchParams('?outputCurrency=eth&exactAmount=20.5&recipient=abc')),
           'ETH'
         )
       ).toEqual({
@@ -71,10 +67,11 @@ describe('hooks', () => {
     test('valid recipient', () => {
       expect(
         queryParametersToSwapState(
-          parse('?outputCurrency=eth&exactAmount=20.5&recipient=0x0fF2D1eFd7A57B7562b2bf27F3f37899dB27F4a5', {
-            parseArrays: false,
-            ignoreQueryPrefix: true,
-          }),
+          Object.fromEntries(
+            new URLSearchParams(
+              '?outputCurrency=eth&exactAmount=20.5&recipient=0x0fF2D1eFd7A57B7562b2bf27F3f37899dB27F4a5'
+            )
+          ),
           'ETH'
         )
       ).toEqual({
@@ -88,10 +85,7 @@ describe('hooks', () => {
     test('accepts any recipient', () => {
       expect(
         queryParametersToSwapState(
-          parse('?outputCurrency=eth&exactAmount=20.5&recipient=bob.argent.xyz', {
-            parseArrays: false,
-            ignoreQueryPrefix: true,
-          }),
+          Object.fromEntries(new URLSearchParams('?outputCurrency=eth&exactAmount=20.5&recipient=bob.argent.xyz')),
           'ETH'
         )
       ).toEqual({

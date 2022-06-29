@@ -9,7 +9,7 @@ import {
   UniswapV2Trade,
 } from '@swapr/sdk'
 
-import flatMap from 'lodash.flatmap'
+import flatMap from 'lodash/flatMap'
 import { useMemo } from 'react'
 
 import { BASES_TO_CHECK_TRADES_AGAINST } from '../constants'

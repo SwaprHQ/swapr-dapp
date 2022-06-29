@@ -4,9 +4,10 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
-import { RouteComponentProps } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
@@ -51,12 +52,15 @@ const StyledInternalLinkText = styled(TYPE.body)`
   text-decoration: underline;
 `
 
-export default function RemoveLiquidity({
-  history,
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
+export default function RemoveLiquidity() {
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
+  const { navigate } = useRouter()
+
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
@@ -451,22 +455,22 @@ export default function RemoveLiquidity({
   const handleSelectCurrencyA = useCallback(
     (currency: Currency) => {
       if (currencyIdB && currencyId(currency) === currencyIdB) {
-        history.push(`/pools/remove/${currencyId(currency)}/${currencyIdA}`)
+        navigate(`/pools/remove/${currencyId(currency)}/${currencyIdA}`)
       } else {
-        history.push(`/pools/remove/${currencyId(currency)}/${currencyIdB}`)
+        navigate(`/pools/remove/${currencyId(currency)}/${currencyIdB}`)
       }
     },
-    [currencyIdA, currencyIdB, history]
+    [currencyIdA, currencyIdB, navigate]
   )
   const handleSelectCurrencyB = useCallback(
     (currency: Currency) => {
       if (currencyIdA && currencyId(currency) === currencyIdA) {
-        history.push(`/pools/remove/${currencyIdB}/${currencyId(currency)}`)
+        navigate(`/pools/remove/${currencyIdB}/${currencyId(currency)}`)
       } else {
-        history.push(`/pools/remove/${currencyIdA}/${currencyId(currency)}`)
+        navigate(`/pools/remove/${currencyIdA}/${currencyId(currency)}`)
       }
     },
-    [currencyIdA, currencyIdB, history]
+    [currencyIdA, currencyIdB, navigate]
   )
 
   const handleDismissConfirmation = useCallback(() => {
