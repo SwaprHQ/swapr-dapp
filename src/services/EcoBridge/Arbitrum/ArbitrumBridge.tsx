@@ -12,9 +12,8 @@ import {
   L2TransactionReceipt,
 } from '@arbitrum/sdk'
 import { ERC20 } from '@arbitrum/sdk/dist/lib/abi/ERC20'
+import { L2GatewayToken } from '@arbitrum/sdk/dist/lib/abi/L2GatewayToken'
 import { TokenList } from '@uniswap/token-lists'
-//import { Bridge, BridgeHelper, L1TokenData, L2TokenData, OutgoingMessageState } from 'arb-ts'
-import { L2GatewayToken } from 'arb-ts/dist/lib/abi/L2GatewayToken'
 import { BigNumber, Signer } from 'ethers'
 import request from 'graphql-request'
 
