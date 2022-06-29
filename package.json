@@ -23,7 +23,8 @@
     "test": "react-scripts test --env=jsdom",
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^5.20.0",
