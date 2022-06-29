@@ -832,7 +832,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             erc20L1Address: address,
             amount: parsedValue,
           })
-          //Why are you being a pain, depositEstimateGas ????
           gas = await this.erc20Bridger.depositEstimateGas({
             l1Signer: this.l1Signer as Signer,
             l2Provider: this.l2Signer?.provider as Provider,
