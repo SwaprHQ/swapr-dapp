@@ -4,20 +4,24 @@ import { BridgePage } from '../../../../pages/BridgePage'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import {ScannerFacade, SCANNERS} from '../../../../utils/facades/ScannerFacade'
+import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
+  const REJECT_TRANSACTION_VALUE = 13.5
+  const TYPING_DELAY = 200
 
   before(() => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).then(
-      (res: { body: { result: string } }) => {
-        balanceBefore = parseFloat(res.body.result)
-        console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
-        console.log('ERC20 BALANCE BEFORE: ', res)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(
+      AddressesEnum.USDC_TOKEN_ARINKEBY,
+      AddressesEnum.WALLET_PUBLIC,
+      SCANNERS.ARBISCAN
+    ).then((res: { body: { result: string } }) => {
+      balanceBefore = parseFloat(res.body.result)
+      console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
+      console.log('ERC20 BALANCE BEFORE: ', res)
+    })
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
   })
@@ -223,11 +227,13 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
 
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).should(
-      (res: { body: { result: string } }) => {
-        expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
-      }
-    )
+    ScannerFacade.erc20TokenBalance(
+      AddressesEnum.USDC_TOKEN_ARINKEBY,
+      AddressesEnum.WALLET_PUBLIC,
+      SCANNERS.ARBISCAN
+    ).should((res: { body: { result: string } }) => {
+      expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
+    })
   })
   it.only('Should get the correct error message when reject transaction', function() {
     if (isNaN(balanceBefore)) {
@@ -240,22 +246,22 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.gnosis().click()
     BridgePage.getNetworkToSelector().click()
-    NetworkSwitcher.arinkeby().click()
+    NetworkSwitcher.ethereum().click()
     BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
-    BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
+    BridgePage.getTransactionValueInput().type(String(REJECT_TRANSACTION_VALUE))
     BridgePage.getSelectTokenButton().click()
-    TokenMenu.chooseToken('xdai')
+    TokenMenu.chooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
-    BridgePage.getBridgeSelector('arbitrum').should('be.visible')
-    BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
-    BridgePage.getBridgeSelector('arbitrum').click()
+    BridgePage.getBridgeSelector('omnibridge').should('be.visible')
+    BridgePage.getBridgedAmount().should('contain.text', String(REJECT_TRANSACTION_VALUE))
+    BridgePage.getBridgeSelector('omnibridge').click()
     BridgePage.getBridgeButton()
       .should('contain.text', 'Bridge to')
       .click()
     BridgePage.confirmBridging()
     cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
-    cy.rejectMetamaskTransaction({})
-    SwapPage.getErrorMessage().should('contain.text', 'Transaction rejected.')
+    cy.rejectMetamaskTransaction()
+    SwapPage.getErrorMessage().should('contain.text', 'Transaction rejected')
     SwapPage.getErrorModalWindowTitle().should('be.visible')
     SwapPage.getDismissButtonOnErrorModalWindow().should('be.visible')
     SwapPage.getDismissButtonOnErrorModalWindow().click()
