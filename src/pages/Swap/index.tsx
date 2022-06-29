@@ -337,7 +337,8 @@ export default function Swap() {
 
   const isInputPanelDisabled =
     (gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
-      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP) &&
+      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP ||
+      wrapState === WrapState.PENDING) &&
     trade instanceof GnosisProtocolTrade
 
   return (
