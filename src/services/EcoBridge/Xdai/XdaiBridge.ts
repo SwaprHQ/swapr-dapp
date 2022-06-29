@@ -67,7 +67,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   private _createDaiTokenContract = () => {
-    const daiToken = new Contract(DAI_ETHEREUM_ADDRESS, ERC20_ABI, this._activeProvider?.getSigner())
+    const daiToken = new Contract(DAI_ETHEREUM_ADDRESS, ERC20_ABI, this._staticProviders?.[ChainId.MAINNET])
 
     return daiToken
   }
