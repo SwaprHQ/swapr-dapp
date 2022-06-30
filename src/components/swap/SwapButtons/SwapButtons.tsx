@@ -43,6 +43,7 @@ interface SwapButtonsProps {
   onWrap: (() => Promise<void>) | undefined
   handleInputSelect: (inputCurrency: Currency) => void
   wrapState?: WrapState | undefined
+  setWrapState: ((wrapState: WrapState) => void) | undefined
 }
 
 export function SwapButtons({
@@ -65,6 +66,7 @@ export function SwapButtons({
   onWrap,
   handleInputSelect,
   wrapState,
+  setWrapState,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -81,8 +83,6 @@ export function SwapButtons({
     })
   }, [])
 
-  console.info({ wrapState })
-
   useEffect(() => {
     const wrappedToken = wrappedCurrency(trade?.inputAmount.currency, trade?.chainId)
     if (
@@ -91,9 +91,11 @@ export function SwapButtons({
       wrapState === WrapState.WRAPPED &&
       currencies.INPUT &&
       Currency.isNative(currencies.INPUT)
-    )
+    ) {
       handleInputSelect(wrappedToken)
-  }, [currencies, trade, handleInputSelect, wrapState])
+      setWrapState && setWrapState(WrapState.UNKNOWN)
+    }
+  }, [currencies, trade, handleInputSelect, wrapState, setWrapState])
 
   const onSwapClick = useCallback(() => {
     if (isExpertMode) {

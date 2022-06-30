@@ -455,6 +455,7 @@ export default function Swap() {
                   handleSwap={handleSwap}
                   handleInputSelect={handleInputSelect}
                   wrapState={wrapState}
+                  setWrapState={setWrapState}
                 />
               </AutoColumn>
             </Wrapper>
