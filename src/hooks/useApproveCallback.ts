@@ -2,13 +2,17 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
   ChainId,
+  Currency,
   CurrencyAmount,
   CurveTrade,
+  GnosisProtocolTrade,
   TokenAmount,
+  Trade,
   UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
 } from '@swapr/sdk'
+import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 import { useCallback, useMemo } from 'react'
 
@@ -110,19 +114,26 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
+export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
-  const amountToApprove = useMemo(
-    () => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined),
-    [
-      trade,
-      // allowedSlippage,
-    ]
-  )
+
+  const amountToApprove = useMemo(() => {
+    if (trade) {
+      // For GPv2 trades, make sure to wrap the currency amount if
+      // the trade input currency is the native one
+      if (trade instanceof GnosisProtocolTrade && Currency.isNative(trade.inputAmount.currency)) {
+        return wrappedAmount(trade.inputAmount, trade.chainId)
+      }
+      // For any other case, return the default
+      return computeSlippageAdjustedAmounts(trade)[Field.INPUT]
+    }
+
+    return undefined
+  }, [trade])
 
   // Find the approve address for the trade
   let approveAddress = AddressZero
-  if (trade instanceof CurveTrade || trade instanceof UniswapTrade) {
+  if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade || trade instanceof UniswapTrade) {
     approveAddress = trade.approveAddress
   } else if (trade instanceof UniswapV2Trade) {
     /**

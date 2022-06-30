@@ -1566,7 +1566,7 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.0"
 
-"@ethersproject/abi@5.6.4", "@ethersproject/abi@^5.0.0", "@ethersproject/abi@^5.0.0-beta.146", "@ethersproject/abi@^5.0.12", "@ethersproject/abi@^5.4.0", "@ethersproject/abi@^5.5.0", "@ethersproject/abi@^5.6.0", "@ethersproject/abi@^5.6.3":
+"@ethersproject/abi@5.6.4", "@ethersproject/abi@^5.0.0", "@ethersproject/abi@^5.0.0-beta.146", "@ethersproject/abi@^5.0.12", "@ethersproject/abi@^5.4.0", "@ethersproject/abi@^5.5.0", "@ethersproject/abi@^5.6.0", "@ethersproject/abi@^5.6.3", "@ethersproject/abi@^5.6.4":
   version "5.6.4"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.6.4.tgz#f6e01b6ed391a505932698ecc0d9e7a99ee60362"
   integrity sha512-TTeZUlCeIHG6527/2goZA6gW5F8Emoc7MrZDC7hhP84aRGvW3TEdTnZR08Ls88YXM1m2SuK42Osw/jSi3uO8gg==
@@ -1882,7 +1882,7 @@
   dependencies:
     "@ethersproject/logger" "^5.6.0"
 
-"@ethersproject/networks@5.6.4", "@ethersproject/networks@^5.0.0", "@ethersproject/networks@^5.4.0", "@ethersproject/networks@^5.6.0", "@ethersproject/networks@^5.6.3":
+"@ethersproject/networks@5.6.4", "@ethersproject/networks@^5.0.0", "@ethersproject/networks@^5.6.0", "@ethersproject/networks@^5.6.3", "@ethersproject/networks@^5.6.4":
   version "5.6.4"
   resolved "https://registry.yarnpkg.com/@ethersproject/networks/-/networks-5.6.4.tgz#51296d8fec59e9627554f5a8a9c7791248c8dc07"
   integrity sha512-KShHeHPahHI2UlWdtDMn2lJETcbtaJge4k7XSjDR9h79QTd6yQJmv6Cp2ZA4JdqWnhszAOLSuJEd9C0PRw7hSQ==
@@ -3330,17 +3330,17 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@^1.4.2-beta.0":
-  version "1.4.2-beta.0"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.4.2-beta.0.tgz#6f5d41347eb61767c775e4d22dbd18a58faf6868"
-  integrity sha512-bR+eE7fVjArW4D6lX9lPID3Atgd5eJOI3/xDkBQrt4039qV730CHLt8s/mJjICq5XLBNZbHmcKzCcxerXiHOsQ==
+"@swapr/sdk@^1.4.3-beta.0":
+  version "1.4.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.4.3-beta.0.tgz#8d804e888425e3be1a6c4caafebc984f16af90ea"
+  integrity sha512-WFkumOFWAkn+65ebYLsS+p4odc7OXjONG/MHDvQ+gQ1BrbGU4AhhUKnjkfOezwvYedjPveeWJ7fgo+sRmdVZ8Q==
   dependencies:
-    "@ethersproject/abi" "^5.4.0"
+    "@ethersproject/abi" "^5.6.4"
     "@ethersproject/address" "^5.4.0"
     "@ethersproject/bignumber" "^5.4.0"
     "@ethersproject/constants" "^5.4.0"
     "@ethersproject/contracts" "^5.4.0"
-    "@ethersproject/networks" "^5.4.0"
+    "@ethersproject/networks" "^5.6.4"
     "@ethersproject/providers" "^5.4.0"
     "@ethersproject/solidity" "^5.4.0"
     "@ethersproject/transactions" "^5.4.0"
