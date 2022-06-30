@@ -5,20 +5,8 @@ import styled from 'styled-components'
 import { breakpoints, gradients } from '../../../utils/theme'
 
 const Button = props => {
-  const {
-    to,
-    label,
-    type,
-    size,
-    dataAOS,
-    dataAOSDelay,
-    iconImage,
-    title,
-    className,
-    onClick,
-    external,
-    elementTag,
-  } = props
+  const { to, label, type, size, dataAOS, dataAOSDelay, iconImage, title, className, onClick, external, elementTag } =
+    props
 
   return (
     <StyledButtonWrapper

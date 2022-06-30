@@ -46,7 +46,11 @@ function TokenAmountDisplayer({
   return (
     <Flex justifyContent={alignRight ? 'flex-end' : 'flex-start'} alignItems="center" className={className} mb="2px">
       <MouseoverTooltip
-        styled={{ border: 'none', borderRadius: '4px', backgroundColor: theme.bg3 }}
+        styled={{
+          border: 'none',
+          borderRadius: '4px',
+          backgroundColor: theme.bg3,
+        }}
         content={tooltipIcons(amount.token)}
       >
         <Flex alignItems="center">

@@ -20,7 +20,10 @@ const TransactionStatusText = styled.div`
   }
 `
 
-const TransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
+const TransactionState = styled(ExternalLink)<{
+  pending: boolean
+  success?: boolean
+}>`
   display: flex;
   justify-content: space-between;
   align-items: center;

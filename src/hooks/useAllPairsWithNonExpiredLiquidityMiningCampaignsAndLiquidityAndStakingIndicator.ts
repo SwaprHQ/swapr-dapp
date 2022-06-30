@@ -14,12 +14,12 @@ import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const PAGE_SIZE = 1000
 
 const QUERY = gql`
-  query($lowerTimeLimit: BigInt!, $userId: ID, $pageSize: Int!, $lastId: ID) {
+  query ($lowerTimeLimit: BigInt!, $userId: ID, $pageSize: Int!, $lastId: ID) {
     pairs(first: $pageSize, where: { id_gt: $lastId }) {
       address: id
       reserve0
@@ -88,9 +88,7 @@ interface QueryResult {
   pairs: SubgraphPair[]
 }
 
-export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(
-  tokenFilter?: Token
-): {
+export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(tokenFilter?: Token): {
   loading: boolean
   wrappedPairs: {
     pair: Pair

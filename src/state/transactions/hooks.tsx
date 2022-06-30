@@ -11,7 +11,11 @@ import { TransactionDetails } from './reducer'
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
   response: TransactionResponse,
-  customData?: { summary?: string; approval?: { tokenAddress: string; spender: string }; claim?: { recipient: string } }
+  customData?: {
+    summary?: string
+    approval?: { tokenAddress: string; spender: string }
+    claim?: { recipient: string }
+  }
 ) => void {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
@@ -23,7 +27,11 @@ export function useTransactionAdder(): (
         summary,
         approval,
         claim,
-      }: { summary?: string; claim?: { recipient: string }; approval?: { tokenAddress: string; spender: string } } = {}
+      }: {
+        summary?: string
+        claim?: { recipient: string }
+        approval?: { tokenAddress: string; spender: string }
+      } = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -32,7 +40,16 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim }))
+      dispatch(
+        addTransaction({
+          hash,
+          from: account,
+          chainId,
+          approval,
+          summary,
+          claim,
+        })
+      )
     },
     [dispatch, chainId, account]
   )
@@ -87,9 +104,10 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
 
 // watch for submissions to claim
 // return null if not done loading, return undefined if not found
-export function useUserHasSubmittedClaim(
-  account?: string
-): { claimSubmitted: boolean; claimTxn: TransactionDetails | undefined } {
+export function useUserHasSubmittedClaim(account?: string): {
+  claimSubmitted: boolean
+  claimTxn: TransactionDetails | undefined
+} {
   const allTransactions = useAllTransactions()
 
   // get the txn if it has been submitted
