@@ -447,9 +447,6 @@ export default function Swap() {
                   onWrap={onWrap}
                   approveCallback={approveCallback}
                   handleSwap={handleSwap}
-                  wrapState={wrapState}
-                  gnosisProtocolTradeState={gnosisProtocolTradeState}
-                  setGnosisProtocolState={setGnosisProtocolState}
                 />
               </AutoColumn>
             </Wrapper>
