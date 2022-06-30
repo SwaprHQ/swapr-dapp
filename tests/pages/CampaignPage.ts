@@ -21,7 +21,7 @@ export class CampaignPage {
     startsAt: string,
     endsAt: string
   ) {
-    CampaignPage.getCampaignTokensText(90000).should('contain.text', tokenPair)
+    CampaignPage.getCampaignTokensText(120000).should('contain.text', tokenPair)
     CampaignPage.getCampaignRewardsBox().should('contain.text', rewardsInput)
     CampaignPage.getCampaignStatusText(90000).should('contain.text', campaignStatus)
     CampaignPage.getCampaignStartDateText().should('contain.text', startsAt)

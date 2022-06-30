@@ -16,7 +16,7 @@ describe('Campaign creation tests', () => {
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
   const expectedStartsAt = DateUtils.getDateTimeAndAppendMinutes(2)
-  const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
+  const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(6)
   let isCampaignCreated = false
 
   before(() => {
