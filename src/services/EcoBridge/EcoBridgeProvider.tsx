@@ -20,9 +20,17 @@ export const EcoBridgeProvider: FC = ({ children }) => {
 
       if (ecoBridge && account && library && chainId) {
         if (!ecoBridge.ready) {
-          await ecoBridge.init({ account, activeChainId: chainId, activeProvider: library })
+          await ecoBridge.init({
+            account,
+            activeChainId: chainId,
+            activeProvider: library,
+          })
         } else {
-          await ecoBridge.updateSigner({ account, activeChainId: chainId, activeProvider: library })
+          await ecoBridge.updateSigner({
+            account,
+            activeChainId: chainId,
+            activeProvider: library,
+          })
         }
       }
     }

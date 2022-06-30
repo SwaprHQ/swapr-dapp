@@ -9,7 +9,7 @@ import { useMemo } from 'react'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const KPI_TOKENS_QUERY = gql`
   query kpiTokens($ids: [ID!]!) {
@@ -72,17 +72,23 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
   const carrotSubgraphClient = useCarrotSubgraphClient()
 
   const lowercaseAddresses = useMemo(() => addresses.map(address => address.toLowerCase()), [addresses])
-  const { loading: loadingRawKpiTokens, data: rawKpiTokens, error: rawKpiTokensError } = useQuery<KpiTokensQueryResult>(
-    KPI_TOKENS_QUERY,
-    { variables: { ids: lowercaseAddresses }, client: carrotSubgraphClient }
-  )
+  const {
+    loading: loadingRawKpiTokens,
+    data: rawKpiTokens,
+    error: rawKpiTokensError,
+  } = useQuery<KpiTokensQueryResult>(KPI_TOKENS_QUERY, {
+    variables: { ids: lowercaseAddresses },
+    client: carrotSubgraphClient,
+  })
   const collateralTokenAddresses = useMemo(() => {
     if (loadingRawKpiTokens || rawKpiTokensError || !rawKpiTokens) return []
     return rawKpiTokens.kpiTokens.map(rawKpiToken => rawKpiToken.collateral.token.address.toLowerCase())
   }, [loadingRawKpiTokens, rawKpiTokens, rawKpiTokensError])
-  const { loading: loadingCollateralPrices, data: collateralPrices, error: collateralError } = useQuery<
-    DerivedNativeCurrencyQueryResult
-  >(DERIVED_NATIVE_CURRENCY_QUERY, {
+  const {
+    loading: loadingCollateralPrices,
+    data: collateralPrices,
+    error: collateralError,
+  } = useQuery<DerivedNativeCurrencyQueryResult>(DERIVED_NATIVE_CURRENCY_QUERY, {
     variables: { tokenIds: collateralTokenAddresses },
   })
 

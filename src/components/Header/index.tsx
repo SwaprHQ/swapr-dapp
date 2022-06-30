@@ -128,7 +128,11 @@ const Title = styled(Link)`
   }
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
+export const Amount = styled.p<{
+  clickable?: boolean
+  zero: boolean
+  borderRadius?: string
+}>`
   padding: 6px 8px;
   margin: 0;
   max-height: 22px;
@@ -342,7 +346,12 @@ function Header() {
           )}
         </Flex>
         {gas.fast !== 0 && gas.slow !== 0 && (
-          <HeaderSubRow style={{ visibility: isGasInfoOpen ? 'visible' : 'hidden', gap: '4px' }}>
+          <HeaderSubRow
+            style={{
+              visibility: isGasInfoOpen ? 'visible' : 'hidden',
+              gap: '4px',
+            }}
+          >
             <ColoredGas color={'fast'}>FAST {gas.fast}</ColoredGas>
             <ColoredGas color={'normal'}>NORMAL {gas.normal}</ColoredGas>
             <ColoredGas color={'slow'}>SLOW {gas.slow}</ColoredGas>

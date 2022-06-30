@@ -9,9 +9,7 @@ import { useStakingRewardsDistributionContract } from './useContract'
 /**
  * Returns functions that let a given account stake/withdraw/claim on a specific liquidity mining contract.
  */
-export function useLiquidityMiningActionCallbacks(
-  distributionContractAddress?: string
-): {
+export function useLiquidityMiningActionCallbacks(distributionContractAddress?: string): {
   stake: (amount: TokenAmount) => Promise<TransactionResponse>
   withdraw: (amount: TokenAmount) => Promise<TransactionResponse>
   claim: (amounts: TokenAmount[], recipient: string) => Promise<TransactionResponse>
