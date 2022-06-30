@@ -33,8 +33,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.7",
-    "@ethersproject/experimental": "^5.4.0",
-    "@openapitools/openapi-generator-cli": "^2.4.26",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",
