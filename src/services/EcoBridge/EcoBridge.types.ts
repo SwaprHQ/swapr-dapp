@@ -78,7 +78,7 @@ export enum SyncState {
   READY = 'ready',
   FAILED = 'failed',
 }
-export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
+export type BridgingDetailsErrorMessage = string
 
 export interface BridgeDetails {
   gas?: string

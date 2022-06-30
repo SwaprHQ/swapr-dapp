@@ -14,21 +14,25 @@ import {
   EcoBridgeInitialEnv,
   SyncState,
 } from './EcoBridge.types'
+import { ecoBridgeUIActions } from './store/UI.reducer'
 
 export abstract class EcoBridgeChildBase {
   public readonly bridgeId: BridgeList
   public readonly displayName: string
   public readonly supportedChains: EcoBridgeChildBaseConstructor['supportedChains']
+  protected ecoBridgeUIActions: typeof ecoBridgeUIActions
   protected _store: EcoBridgeChildBaseProps['store']
   protected _account: EcoBridgeChildBaseProps['account']
   protected _activeChainId: EcoBridgeChildBaseProps['activeChainId']
   protected _staticProviders: EcoBridgeChildBaseProps['staticProviders']
   protected _activeProvider: EcoBridgeChildBaseProps['activeProvider']
+  private _baseActions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions'] | undefined
 
   constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
     this.displayName = displayName
     this.supportedChains = supportedChains
+    this.ecoBridgeUIActions = ecoBridgeUIActions
   }
 
   protected setSignerData = ({ account, activeChainId, activeProvider }: EcoBridgeChangeHandler) => {
@@ -42,20 +46,41 @@ export abstract class EcoBridgeChildBase {
     this._store = store
   }
 
-  protected startRequest = <T extends ReturnType<typeof createEcoBridgeChildBaseSlice>['actions']>({
-    actions,
-  }: {
-    actions: T
-  }) => {
-    if (!this._store) return
+  protected setBaseActions(actions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions']) {
+    this._baseActions = actions
+  }
 
-    const lastRequestId = this._store.getState().ecoBridge[this.bridgeId].lastMetadataCt
+  protected get store() {
+    if (!this._store) throw new Error(`${this.bridgeId}: No store set`)
+    return this._store
+  }
 
-    const requestId = (lastRequestId ?? 0) + 1
+  protected metadataStatus = {
+    start: () => {
+      if (!this._store || !this._baseActions) {
+        throw new Error('Initial env not set')
+      }
 
-    this._store.dispatch(actions.requestStarted({ id: requestId }))
+      const lastRequestId = this._store.getState().ecoBridge[this.bridgeId].lastMetadataCt
 
-    return requestId
+      const requestId = (lastRequestId ?? 0) + 1
+
+      this._store.dispatch(this._baseActions.requestStarted({ id: requestId }))
+      this._store.dispatch(this._baseActions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
+
+      return requestId
+    },
+    fail: (errorMessage?: BridgingDetailsErrorMessage) => {
+      if (!this._store || !this._baseActions) {
+        throw new Error('Initial env not set')
+      }
+      this._store.dispatch(
+        this._baseActions.setBridgeDetailsStatus({
+          status: SyncState.FAILED,
+          errorMessage,
+        })
+      )
+    },
   }
 
   // To be implemented by bridge
