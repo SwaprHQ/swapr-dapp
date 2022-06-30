@@ -280,7 +280,7 @@ export interface ButtonLinkProps {
   /**
    * Any additional style to be added to button wrapper
    */
-  style?: any
+  style?: React.CSSProperties
 }
 
 export function ButtonWithLink({ link, text, style }: ButtonLinkProps) {
