@@ -87,7 +87,7 @@ export function useWrapCallback(
     nativeCurrency &&
     outputCurrency &&
     currencyEquals(nativeCurrency, outputCurrency) &&
-    (currencyEquals(inputCurrency as Currency, nativeCurrencyWrapperToken as Currency) || isGnosisTrade)
+    currencyEquals(inputCurrency as Currency, nativeCurrencyWrapperToken as Currency)
 
   const allTransactions = useAllTransactions()
   useEffect(() => {
