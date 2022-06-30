@@ -21,10 +21,8 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     hasFarming: boolean
   }[]
 } {
-  const {
-    loading: loadingAllWrappedPairs,
-    wrappedPairs: allWrappedPairs,
-  } = useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
+  const { loading: loadingAllWrappedPairs, wrappedPairs: allWrappedPairs } =
+    useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
   const sorter = useAggregatedByToken0PairComparator()
 
   return useMemo(() => {

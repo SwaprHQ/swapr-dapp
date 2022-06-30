@@ -39,15 +39,8 @@ export const CurrencySearch = ({
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-  const {
-    allTokens,
-    searchToken,
-    searchQuery,
-    setSearchQuery,
-    debouncedQuery,
-    selectedTokenList,
-    showFallbackTokens,
-  } = useContext(CurrencySearchContext)
+  const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
+    useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
 
   const fixedList = useRef<FixedSizeList>()
@@ -165,7 +158,7 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokensWithNativeCurrency?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}

@@ -112,10 +112,13 @@ export function useApproveCallback(
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
-  const amountToApprove = useMemo(() => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined), [
-    trade,
-    // allowedSlippage,
-  ])
+  const amountToApprove = useMemo(
+    () => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined),
+    [
+      trade,
+      // allowedSlippage,
+    ]
+  )
 
   // Find the approve address for the trade
   let approveAddress = AddressZero

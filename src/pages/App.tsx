@@ -67,7 +67,7 @@ export default function App() {
 
   useEffect(() => {
     document.body.classList.add('no-margin')
-    setTimeout(function() {
+    setTimeout(function () {
       AOS.init({
         duration: 500,
       })

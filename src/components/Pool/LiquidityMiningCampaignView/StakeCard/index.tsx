@@ -126,12 +126,8 @@ export default function StakeCard({
   )
 
   const callbacks = useLiquidityMiningActionCallbacks(campaign?.address)
-  const {
-    stakedTokenAmount,
-    claimableRewardAmounts,
-    claimedRewardAmounts,
-    totalRewardedAmounts,
-  } = useLiquidityMiningCampaignPosition(campaign, account || undefined)
+  const { stakedTokenAmount, claimableRewardAmounts, claimedRewardAmounts, totalRewardedAmounts } =
+    useLiquidityMiningCampaignPosition(campaign, account || undefined)
   const addTransaction = useTransactionAdder()
   const { loading: loadingLpTokensUnderlyingAssets, underlyingAssets } = useLpTokensUnderlyingAssets(
     campaign instanceof LiquidityMiningCampaign ? campaign?.targetedPair : undefined,

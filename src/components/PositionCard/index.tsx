@@ -325,7 +325,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               padding="8px"
               as={Link}
               to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-              style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+              style={{
+                fontSize: '12px',
+                fontWeight: 'bold',
+                lineHeight: '15px',
+              }}
               width={showRemoveButton ? '48%' : '100%'}
               data-testid="add-liquidity"
             >
@@ -337,7 +341,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 as={Link}
                 width="48%"
                 to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-                style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  lineHeight: '15px',
+                }}
               >
                 REMOVE LIQUIDITY
               </ButtonDark>
