@@ -17,21 +17,15 @@ export class SwapPage {
     return this
   }
   static wrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Wrap')
-      .click()
+    cy.get('[data-testid=wrap-button]').should('contain.text', 'Wrap').click()
     return this
   }
   static unwrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Unwrap')
-      .click({ force: true })
+    cy.get('[data-testid=wrap-button]').should('contain.text', 'Unwrap').click({ force: true })
     return this
   }
   static swap() {
-    cy.get('#swap-button')
-      .should('contain.text', 'Swap')
-      .click({ force: true })
+    cy.get('#swap-button').should('contain.text', 'Swap').click({ force: true })
     return this
   }
   static confirmSwap() {
@@ -72,9 +66,6 @@ export class SwapPage {
   }
   static getExchangeOption() {
     return cy.get('[data-testid=exchange-option]')
-  }
-  static getTransactionConfirmedModal() {
-    return cy.get('[data-testid=transaction-confirmed-modal]')
   }
   static getTransactionConfirmedModal() {
     return cy.get('[data-testid=transaction-confirmed-modal]')
