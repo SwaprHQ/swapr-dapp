@@ -63,7 +63,11 @@ const Web3StatusConnected = styled.button<{ pending?: boolean }>`
   align-items: center;
 `
 
-const Web3StatusNetwork = styled.button<{ pendingTransactions?: boolean; isConnected: boolean; clickable: boolean }>`
+const Web3StatusNetwork = styled.button<{
+  pendingTransactions?: boolean
+  isConnected: boolean
+  clickable: boolean
+}>`
   display: flex;
   align-items: center;
   height: 26px;

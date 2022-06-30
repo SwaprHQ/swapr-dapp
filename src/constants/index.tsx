@@ -230,7 +230,9 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
 }
 
-export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
+export const PINNED_PAIRS: {
+  readonly [chainId in ChainId]?: [Token, Token][]
+} = {
   [ChainId.MAINNET]: [
     [USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
     [DAI[ChainId.MAINNET], USDT[ChainId.MAINNET]],
@@ -415,7 +417,9 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   },
 }
 
-export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetails } = {
+export const NETWORK_OPTIONAL_DETAIL: {
+  [chainId: number]: NetworkOptionalDetails
+} = {
   [ChainId.MAINNET]: {
     partnerChainId: ChainId.ARBITRUM_ONE,
     isArbitrum: false,
@@ -485,7 +489,12 @@ export const RoutablePlatformKeysByNetwork = {
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
-  [routablePaltformName: string]: { logo: string; alt: string; gradientColor: string; name: string }
+  [routablePaltformName: string]: {
+    logo: string
+    alt: string
+    gradientColor: string
+    name: string
+  }
 } = {
   [UniswapV2RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
@@ -549,7 +558,9 @@ export const ROUTABLE_PLATFORM_STYLE: {
   },
 }
 
-export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
+export const ROUTABLE_PLATFORM_LOGO: {
+  [routablePaltformName: string]: ReactNode
+} = {
   [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
   [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,

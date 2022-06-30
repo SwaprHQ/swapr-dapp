@@ -13,7 +13,7 @@ import { useSWPRToken } from './swpr/useSWPRToken'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 // Native fragments will not be resovled
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
@@ -109,7 +109,11 @@ export function useAllLiquidtyMiningCampaigns(
   const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
 
-  const { data: singleSidedCampaigns, loading: singleSidedLoading, error: singleSidedCampaignsError } = useQuery<{
+  const {
+    data: singleSidedCampaigns,
+    loading: singleSidedLoading,
+    error: singleSidedCampaignsError,
+  } = useQuery<{
     singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
   }>(SINGLE_SIDED_CAMPAIGNS, {
     variables: {
@@ -117,7 +121,11 @@ export function useAllLiquidtyMiningCampaigns(
     },
   })
 
-  const { data: pairCampaigns, loading: campaignLoading, error: campaignError } = useQuery<{
+  const {
+    data: pairCampaigns,
+    loading: campaignLoading,
+    error: campaignError,
+  } = useQuery<{
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {

@@ -3,7 +3,10 @@ import styled from 'styled-components'
 
 import { Option } from '../Option'
 
-const BaseGasPriceOption = styled(Option)<{ active?: boolean; compact?: boolean }>`
+const BaseGasPriceOption = styled(Option)<{
+  active?: boolean
+  compact?: boolean
+}>`
   padding: 0 4px;
   position: relative;
   min-width: 51px;
