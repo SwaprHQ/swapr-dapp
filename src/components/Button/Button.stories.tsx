@@ -22,7 +22,6 @@ import {
   ButtonPrimary,
   ButtonPurple,
   ButtonSecondary,
-  ButtonWhite,
   CarrotButton as Carrot,
 } from '.'
 
@@ -37,7 +36,6 @@ const StyledButtonsArray = [
   ButtonDark2,
   ButtonOutlined,
   ButtonEmpty,
-  ButtonWhite,
   AddSWPRToMetamaskButton,
 ]
 
@@ -75,7 +73,7 @@ export const StyledButtons = StyleButtons.bind({})
 
 export const ButtonConfirmed = ButtonConfirmedTemplate.bind({})
 ButtonConfirmed.args = {
-  content: 'some text here',
+  content: 'Button Confirmed Text',
   confirmed: true,
   width: 'fit-content',
   altDisabledStyle: true,
@@ -84,7 +82,7 @@ ButtonConfirmed.args = {
 export const ButtonError = ButtonErrorTemplate.bind({})
 ButtonError.args = {
   error: true,
-  content: 'text here',
+  content: 'Button Error Text',
   width: 'fit-content',
 }
 export const ButtonWithLink = ButtonWithLinkTemplate.bind({})
@@ -97,7 +95,7 @@ ButtonWithLink.args = {
 
 export const CarrotButton = CarrotButtonTemplate.bind({})
 CarrotButton.args = {
-  link: 'https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards',
-  text: 'some text here',
+  link: 'https://carrot.eth.limo/',
+  text: 'Carrot Button text',
   style: { width: 'fit-content' },
 }
