@@ -368,8 +368,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         tx => tx.chainId === this.l2ChainId && tx.txHash === retryableTicketHash
       )
 
-      console.info({ txnHash, retryableTicketHash })
-
       if (!l1ChainRetryableTicketHash && !l2ChainRetryableTicketHash) {
         this.store.dispatch(
           this.actions.addTx({
@@ -825,12 +823,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
             l2Provider: this.l2Signer?.provider as Provider,
           })
         } else {
-          console.info({
-            l1Signer: this.l1Signer as Signer,
-            l2Provider: this.l2Signer?.provider as Provider,
-            erc20L1Address: address,
-            amount: parsedValue,
-          })
           gas = await this.erc20Bridger.depositEstimateGas({
             l1Signer: this.l1Signer as Signer,
             l2Provider: this.l2Signer?.provider as Provider,
@@ -881,9 +873,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         gas: totalTxnGasCostInUSD,
         fee: '0%',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value)
-          .toFixed(2)
-          .toString(),
+        receiveAmount: Number(value).toFixed(2).toString(),
         requestId: helperRequestId,
       })
     )
