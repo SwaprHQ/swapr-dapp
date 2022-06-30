@@ -1,11 +1,9 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
-import 'aos/dist/aos.css'
 import { FallbackLoader } from 'components/Loader/FallbackLoader'
 import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import styled, { useTheme } from 'styled-components'
 
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
@@ -16,6 +14,10 @@ import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
+
+import 'react-loading-skeleton/dist/skeleton.css'
+import 'aos/dist/aos.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -75,7 +77,7 @@ export default function App() {
 
   return (
     <Suspense fallback={null}>
-      <SkeletonTheme color={theme.bg3} highlightColor={theme.bg2}>
+      <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
         <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
           <NetworkWarningModal />
           <AppWrapper id="app-wrapper">
