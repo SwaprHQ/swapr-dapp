@@ -1,9 +1,9 @@
 import { formatUnits } from '@ethersproject/units'
-import { ChainId } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 
 import { utils } from 'ethers'
 
-import { DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { DAI, ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'
 
@@ -55,13 +55,13 @@ export const combineTransactions = (
     const token = { symbol: '', assetAddressL1: '', assetAddressL2: '' }
 
     if (chainId === ChainId.MAINNET) {
-      token.symbol = 'DAI'
-      token.assetAddressL1 = DAI_ETHEREUM_ADDRESS
+      token.symbol = DAI[ChainId.MAINNET].symbol ?? 'DAI'
+      token.assetAddressL1 = DAI[ChainId.MAINNET].address
       token.assetAddressL2 = ZERO_ADDRESS
     } else {
-      token.symbol = 'XDAI'
+      token.symbol = Currency.getNative(ChainId.XDAI).symbol ?? 'XDAI'
       token.assetAddressL1 = ZERO_ADDRESS
-      token.assetAddressL2 = DAI_ETHEREUM_ADDRESS
+      token.assetAddressL2 = DAI[ChainId.MAINNET].address
     }
 
     let status = BridgeTransactionStatus.PENDING

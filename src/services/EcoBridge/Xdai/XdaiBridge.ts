@@ -8,7 +8,7 @@ import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { DAI, DAI_ETHEREUM_ADDRESS, ZERO_ADDRESS } from '../../../constants'
+import { DAI, ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
@@ -47,7 +47,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI
   private _foreignChainId = ChainId.MAINNET
   private _listeners: NodeJS.Timeout[] = []
-  private _daiToken: Contract | undefined = undefined
+  private _daiTokenOnMainnet: Contract | undefined = undefined
 
   constructor({ supportedChains, bridgeId, displayName = 'xDai Bridge' }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
@@ -66,23 +66,29 @@ export class XdaiBridge extends EcoBridgeChildBase {
     return xdaiSelectors[this.bridgeId as XdaiBridgeList]
   }
 
-  private _createDaiTokenContract = () => {
-    const daiToken = new Contract(DAI_ETHEREUM_ADDRESS, ERC20_ABI, this._staticProviders?.[ChainId.MAINNET])
+  private _createDaiTokenOnMainnet = () => {
+    if (this._activeChainId === ChainId.MAINNET) {
+      const daiTokenOnMainnet = new Contract(DAI[ChainId.MAINNET].address, ERC20_ABI, this._activeProvider?.getSigner())
 
-    return daiToken
+      return daiTokenOnMainnet
+    }
+
+    return
   }
 
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: EcoBridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    this._daiToken = this._createDaiTokenContract()
+    this._daiTokenOnMainnet = this._createDaiTokenOnMainnet()
     await this.fetchHistory()
     this.startListeners()
   }
 
   public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
     this.setSignerData(signerData)
+
+    this._daiTokenOnMainnet = this._createDaiTokenOnMainnet()
   }
 
   private startListeners = () => {
@@ -127,7 +133,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
     } = this.store.getState().ecoBridge.ui
 
     if (
-      (fromChainId === ChainId.MAINNET && fromTokenAddress.toLowerCase() !== DAI_ETHEREUM_ADDRESS.toLowerCase()) ||
+      (fromChainId === ChainId.MAINNET &&
+        fromTokenAddress.toLowerCase() !== DAI[ChainId.MAINNET].address.toLowerCase()) ||
       (fromChainId === ChainId.XDAI && fromTokenAddress !== Currency.getNative(fromChainId).symbol)
     ) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
@@ -196,8 +203,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
     }
 
     try {
-      if (fromChainId === ChainId.MAINNET && this._daiToken) {
-        const allowance: BigNumber = await this._daiToken.allowance(this._account, ETHEREUM_BRIDGE_ADDRESS)
+      if (this._daiTokenOnMainnet) {
+        const allowance: BigNumber = await this._daiTokenOnMainnet.allowance(this._account, ETHEREUM_BRIDGE_ADDRESS)
 
         const parsedValue = parseUnits(fromAmount, fromTokenDecimals)
 
@@ -248,13 +255,13 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   public approve = async () => {
-    if (!this._daiToken) return
+    if (!this._daiTokenOnMainnet) return
 
     const { value, decimals } = this.store.getState().ecoBridge.ui.from
 
     try {
       const parsedValue = parseUnits(value, decimals)
-      const txn: ContractTransaction = await this._daiToken.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
+      const txn: ContractTransaction = await this._daiTokenOnMainnet.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
 
       this.store.dispatch(
         ecoBridgeUIActions.setStatusButton({
@@ -287,7 +294,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   public triggerBridging = async () => {
-    if (!this._activeProvider || !this._account || !this._daiToken) return
+    if (!this._activeProvider || !this._account) return
 
     this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
 
@@ -301,8 +308,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
     let transaction: TransactionResponse | undefined = undefined
 
     try {
-      if (fromChainId === ChainId.MAINNET) {
-        transaction = await this._daiToken.transferFrom(this._account, ETHEREUM_BRIDGE_ADDRESS, amount)
+      if (this._daiTokenOnMainnet) {
+        transaction = await this._daiTokenOnMainnet.transferFrom(this._account, ETHEREUM_BRIDGE_ADDRESS, amount)
       } else {
         transaction = await this._activeProvider.getSigner().sendTransaction({
           to: XDAI_BRIDGE_ADDRESS,
@@ -315,8 +322,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
       if (transaction) {
         this.store.dispatch(
           this.actions.addTransaction({
-            assetAddressL1: fromChainId === ChainId.MAINNET ? DAI_ETHEREUM_ADDRESS : ZERO_ADDRESS,
-            assetAddressL2: toChainId === ChainId.MAINNET ? DAI_ETHEREUM_ADDRESS : ZERO_ADDRESS,
+            assetAddressL1: fromChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
+            assetAddressL2: toChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
             assetName: fromChainId === ChainId.MAINNET ? 'DAI' : 'XDAI',
             fromChainId,
             toChainId,
