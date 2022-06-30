@@ -17,7 +17,7 @@ import { useNativeCurrency } from './useNativeCurrency'
 import { useActiveWeb3React } from '.'
 
 const QUERY = gql`
-  query($lowerTimeLimit: BigInt!, $pairAddress: ID) {
+  query ($lowerTimeLimit: BigInt!, $pairAddress: ID) {
     pair(id: $pairAddress) {
       address: id
       reserve0
@@ -63,9 +63,7 @@ interface QueryResult {
   pair: SubgraphPair
 }
 
-export function useBestAPY(
-  pair?: Pair | null
-): {
+export function useBestAPY(pair?: Pair | null): {
   loading: boolean
   bestAPY?: Percent
 } {

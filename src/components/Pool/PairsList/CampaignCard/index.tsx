@@ -117,10 +117,7 @@ export function CampaignCard({
   const [status, setStatus] = useState<StatusKeys | undefined>(undefined)
   const isLimitedCampaign = !campaign.stakingCap.equalTo('0')
   const percentage = useCallback(() => {
-    return campaign.staked
-      .multiply('100')
-      .divide(campaign.stakingCap)
-      .toFixed(0)
+    return campaign.staked.multiply('100').divide(campaign.stakingCap).toFixed(0)
   }, [campaign])
 
   useEffect(() => {

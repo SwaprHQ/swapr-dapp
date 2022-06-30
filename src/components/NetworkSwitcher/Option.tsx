@@ -66,12 +66,7 @@ export default function Option({
           <HeaderText
             connected={connected}
             data-testid={
-              preset.name
-                ?.valueOf()
-                .toString()
-                .toLowerCase()
-                .replace(/\s/g, '-')
-                .replace('.', '') + '-network-button'
+              preset.name?.valueOf().toString().toLowerCase().replace(/\s/g, '-').replace('.', '') + '-network-button'
             }
           >
             {name}

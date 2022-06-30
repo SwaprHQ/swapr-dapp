@@ -6,11 +6,11 @@ export interface NumberBadgeProps {
 }
 
 export const NumberBadge = styled.div<NumberBadgeProps>`
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 2px;
-  height:16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  height: 16px;
   width: auto;
   border: 1.75px solid;
   border-color: ${props => props.theme.bg3};
@@ -18,11 +18,10 @@ export const NumberBadge = styled.div<NumberBadgeProps>`
   background-color: ${props => transparentize(0.3, props.theme.bg3)};
 
   & > span {
-  
     font-weight: 500;
     font-size: 9px;
   }
-  
+
   ${({ badgeTheme: theme }) =>
     theme === 'green' &&
     css`
@@ -30,7 +29,7 @@ export const NumberBadge = styled.div<NumberBadgeProps>`
       border-color: rgba(14, 159, 110, 0.65);
       color: #0e9f6e;
     `}
-  
+
   ${({ badgeTheme }) =>
     badgeTheme === 'orange' &&
     css`

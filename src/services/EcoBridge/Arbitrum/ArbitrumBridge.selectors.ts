@@ -101,16 +101,8 @@ const createSelectBridgeTransactionsSummary = (
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-      const {
-        assetName,
-        assetAddressL1,
-        assetAddressL2,
-        value,
-        txHash,
-        batchIndex,
-        batchNumber,
-        timestampResolved,
-      } = tx
+      const { assetName, assetAddressL1, assetAddressL2, value, txHash, batchIndex, batchNumber, timestampResolved } =
+        tx
 
       const normalizedValue = normalizeInputValue(value, true)
 
@@ -178,16 +170,8 @@ const createSelectBridgeTransactionsSummary = (
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-      const {
-        assetAddressL1,
-        assetAddressL2,
-        assetName,
-        value,
-        txHash,
-        batchIndex,
-        batchNumber,
-        timestampResolved,
-      } = tx
+      const { assetAddressL1, assetAddressL2, assetName, value, txHash, batchIndex, batchNumber, timestampResolved } =
+        tx
 
       const normalizedValue = normalizeInputValue(value, true)
 

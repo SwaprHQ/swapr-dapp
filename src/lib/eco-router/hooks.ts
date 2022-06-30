@@ -1,9 +1,7 @@
 import { Currency, CurrencyAmount, Percent, Trade } from '@swapr/sdk'
 
 import { useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
-
-
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 
 // Eco Router modules
 // Web3 hooks

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { INFURA_PROJECT_ID } from '../connectors'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 interface ChainGasInfo {
   [chainId: number]: {
@@ -17,8 +17,9 @@ interface ChainGasInfo {
 const gasInfoChainUrls: ChainGasInfo = {
   [ChainId.MAINNET]: {
     //without apiKey will work in rate limit manner
-    url: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env
-      .REACT_APP_ETHERSCAN_API_KEY ?? ''}`,
+    url: `https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${
+      process.env.REACT_APP_ETHERSCAN_API_KEY ?? ''
+    }`,
     keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
   [ChainId.XDAI]: {

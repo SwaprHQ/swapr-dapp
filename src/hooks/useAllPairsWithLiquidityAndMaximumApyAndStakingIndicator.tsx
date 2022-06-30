@@ -52,10 +52,8 @@ export function useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     hasFarming: boolean
   }[]
 } {
-  const {
-    loading: loadingAllWrappedPairs,
-    wrappedPairs: allWrappedPairs,
-  } = useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
+  const { loading: loadingAllWrappedPairs, wrappedPairs: allWrappedPairs } =
+    useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator(filterToken)
 
   return useMemo(() => {
     const sorter = liquidityPairSorter[sortBy]

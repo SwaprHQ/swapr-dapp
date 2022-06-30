@@ -194,7 +194,10 @@ export default function Rewards() {
                   <ResponsiveButtonSecondary
                     as={Link}
                     padding="8px 14px"
-                    to={{ pathname: '/liquidity-mining/create', search: search.toString() }}
+                    to={{
+                      pathname: '/liquidity-mining/create',
+                      search: search.toString(),
+                    }}
                     data-testid="create-campaign"
                   >
                     <Text fontWeight={700} fontSize={12} lineHeight="15px">

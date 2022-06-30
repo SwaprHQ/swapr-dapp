@@ -6,7 +6,12 @@ import styled from 'styled-components'
 
 import { CurrencyLogo } from '../CurrencyLogo'
 
-const Wrapper = styled.div<{ sizeraw: number; marginRight: number; marginLeft: number; top: number }>`
+const Wrapper = styled.div<{
+  sizeraw: number
+  marginRight: number
+  marginLeft: number
+  top: number
+}>`
   position: relative;
   display: flex;
   justify-content: flex-end;

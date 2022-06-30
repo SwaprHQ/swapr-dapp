@@ -28,7 +28,9 @@ export default function ConfirmClaimModal({
   onDismiss,
   onConfirm,
 }: ConfirmClaimModalProps) {
-  const [claimedAmounts, setClaimedAmounts] = useState<{ [claimedTokenAddress: string]: TokenAmount }>({})
+  const [claimedAmounts, setClaimedAmounts] = useState<{
+    [claimedTokenAddress: string]: TokenAmount
+  }>({})
   const [disabledConfirm, setDisabledConfirm] = useState(true)
 
   useEffect(() => {
@@ -51,7 +53,10 @@ export default function ConfirmClaimModal({
 
   const handleClaimedAmountChange = useCallback(
     (newAmount: TokenAmount) => {
-      setClaimedAmounts({ ...claimedAmounts, [newAmount.token.address]: newAmount })
+      setClaimedAmounts({
+        ...claimedAmounts,
+        [newAmount.token.address]: newAmount,
+      })
     },
     [claimedAmounts]
   )

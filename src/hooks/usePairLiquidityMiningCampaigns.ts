@@ -59,9 +59,7 @@ const REGULAR_CAMPAIGN = gql`
   }
 `
 
-export function usePairLiquidityMiningCampaigns(
-  pair?: Pair
-): {
+export function usePairLiquidityMiningCampaigns(pair?: Pair): {
   loading: boolean
   miningCampaigns: { active: MiningCampaign[]; expired: MiningCampaign[] }
 } {
@@ -74,7 +72,11 @@ export function usePairLiquidityMiningCampaigns(
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
 
-  const { data: pairCampaigns, loading: campaignLoading, error: campaignError } = useQuery<{
+  const {
+    data: pairCampaigns,
+    loading: campaignLoading,
+    error: campaignError,
+  } = useQuery<{
     liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
   }>(REGULAR_CAMPAIGN, {
     variables: {
