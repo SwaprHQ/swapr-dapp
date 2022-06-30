@@ -169,10 +169,21 @@ export default function Updater(): null {
 
               // the receipt was fetched before the block, fast forward to that block to trigger balance updates
               if (receipt.blockNumber > lastBlockNumber) {
-                dispatch(updateBlockNumber({ chainId, blockNumber: receipt.blockNumber }))
+                dispatch(
+                  updateBlockNumber({
+                    chainId,
+                    blockNumber: receipt.blockNumber,
+                  })
+                )
               }
             } else {
-              dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+              dispatch(
+                checkedTransaction({
+                  chainId,
+                  hash,
+                  blockNumber: lastBlockNumber,
+                })
+              )
             }
           })
           .catch(error => {

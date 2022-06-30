@@ -127,7 +127,13 @@ export default function Swap() {
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
   const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(GnosisProtocolTradeState.UNKNOWN)
-  const { wrapType, execute: onWrap, inputError: wrapInputError, wrapState, setWrapState } = useWrapCallback(
+  const {
+    wrapType,
+    execute: onWrap,
+    inputError: wrapInputError,
+    wrapState,
+    setWrapState,
+  } = useWrapCallback(
     currencies.INPUT,
     currencies.OUTPUT,
     potentialTrade instanceof GnosisProtocolTrade,
@@ -330,10 +336,10 @@ export default function Swap() {
     trade,
   })
 
-  const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
-    fiatValueInput,
-    fiatValueOutput,
-  ])
+  const priceImpact = useMemo(
+    () => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput),
+    [fiatValueInput, fiatValueOutput]
+  )
 
   const isInputPanelDisabled =
     (gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||

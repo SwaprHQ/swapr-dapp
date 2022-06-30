@@ -159,7 +159,11 @@ function PairView({ loading, pair }: PairViewProps) {
             <ButtonGrey
               padding="8px"
               disabled
-              style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+              style={{
+                fontSize: '12px',
+                fontWeight: 'bold',
+                lineHeight: '15px',
+              }}
               width="50%"
             >
               GOVERNANCE (COMING SOON)

@@ -11,7 +11,7 @@ import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
-  query($address: ID, $userId: ID) {
+  query ($address: ID, $userId: ID) {
     singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
       id
       owner

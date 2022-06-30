@@ -40,11 +40,18 @@ export const CurrencyUserBalance = ({
               {customBalanceText ?? (
                 <Trans
                   i18nKey="balance"
-                  values={{ balanceInput: limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0' }}
+                  values={{
+                    balanceInput: limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0',
+                  }}
                   components={[
                     <span
                       key="1"
-                      style={{ fontSize: '11px', color: theme.text3, fontWeight: 600, textDecoration: 'underline' }}
+                      style={{
+                        fontSize: '11px',
+                        color: theme.text3,
+                        fontWeight: 600,
+                        textDecoration: 'underline',
+                      }}
                     ></span>,
                   ]}
                 />
