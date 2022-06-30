@@ -1,7 +1,8 @@
-import { Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
+import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
@@ -13,7 +14,7 @@ import { SwapCallbackError } from '../../../components/swap/styleds'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
-import { WrapType } from '../../../hooks/useWrapCallback'
+import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
 import { Field } from '../../../state/swap/actions'
 import { useIsExpertMode } from '../../../state/user/hooks'
@@ -40,6 +41,8 @@ interface SwapButtonsProps {
   handleSwap: () => void
   approveCallback: () => Promise<void>
   onWrap: (() => Promise<void>) | undefined
+  handleInputSelect: (inputCurrency: Currency) => void
+  wrapState?: WrapState | undefined
 }
 
 export function SwapButtons({
@@ -60,6 +63,8 @@ export function SwapButtons({
   handleSwap,
   approveCallback,
   onWrap,
+  handleInputSelect,
+  wrapState,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -75,6 +80,20 @@ export function SwapButtons({
       new Image().src = ROUTABLE_PLATFORM_STYLE[key].logo
     })
   }, [])
+
+  console.info({ wrapState })
+
+  useEffect(() => {
+    const wrappedToken = wrappedCurrency(trade?.inputAmount.currency, trade?.chainId)
+    if (
+      wrappedToken &&
+      trade instanceof GnosisProtocolTrade &&
+      wrapState === WrapState.WRAPPED &&
+      currencies.INPUT &&
+      Currency.isNative(currencies.INPUT)
+    )
+      handleInputSelect(wrappedToken)
+  }, [currencies, trade, handleInputSelect, wrapState])
 
   const onSwapClick = useCallback(() => {
     if (isExpertMode) {
@@ -100,8 +119,19 @@ export function SwapButtons({
 
   if (showWrap) {
     return (
-      <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-        {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+      <ButtonPrimary
+        disabled={Boolean(wrapInputError) || wrapState === WrapState.PENDING}
+        onClick={onWrap}
+        data-testid="wrap-button"
+      >
+        {wrapInputError ??
+          (wrapState === WrapState.PENDING
+            ? 'Wrapping'
+            : wrapType === WrapType.WRAP
+            ? 'Wrap'
+            : wrapType === WrapType.UNWRAP
+            ? 'Unwrap'
+            : null)}
       </ButtonPrimary>
     )
   }

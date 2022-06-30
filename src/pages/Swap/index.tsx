@@ -447,6 +447,8 @@ export default function Swap() {
                   onWrap={onWrap}
                   approveCallback={approveCallback}
                   handleSwap={handleSwap}
+                  handleInputSelect={handleInputSelect}
+                  wrapState={wrapState}
                 />
               </AutoColumn>
             </Wrapper>
