@@ -6,6 +6,7 @@ import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { OmniBridge } from './OmniBridge/OmniBridge'
 import { socketSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
+import { XdaiBridge } from './Xdai/XdaiBridge'
 
 const socketBridgeId = 'socket'
 
@@ -25,6 +26,11 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     bridgeId: 'socket',
     displayName: 'Socket',
     supportedChains: socketSupportedChains([ChainId.ARBITRUM_ONE, ChainId.MAINNET, ChainId.POLYGON, ChainId.XDAI]),
+  }),
+  new XdaiBridge({
+    bridgeId: 'xdai',
+    displayName: 'xDai Bridge',
+    supportedChains: [{ from: ChainId.MAINNET, to: ChainId.XDAI }],
   }),
   new Connext({
     bridgeId: 'connext',
