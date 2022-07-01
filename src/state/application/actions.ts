@@ -6,6 +6,7 @@ export type PopupContent = {
   hash: string
   success: boolean
   summary?: string
+  swapProtocol?: string
 }
 
 export enum ApplicationModal {

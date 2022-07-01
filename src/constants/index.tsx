@@ -23,6 +23,7 @@ import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import CowLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
@@ -550,6 +551,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
+    logo: CowLogo,
+    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  },
   [RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
     alt: RoutablePlatform.UNISWAP.name,
@@ -570,6 +577,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CowLogo} alt="Cow" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 

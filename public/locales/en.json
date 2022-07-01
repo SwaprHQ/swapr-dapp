@@ -105,6 +105,7 @@
   "charts": "Charts",
   "limit": "Limit",
   "bridgeSwap": "Bridge Swap",
+  "priceImpactHigh": "Price Impact High",
   "priceImpactTooHigh": "Price Impact Too High",
   "anyway": "Anyway",
   "swapWith": "Swap with",
@@ -158,5 +159,8 @@
   "bridgeHeadingCollecting": "Bridging Collecting",
   "bridgeHeadingSuccess": "Bridging Successful",
   "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
-  "findingBestPrice": "Finding best price"
+  "findingBestPrice": "Finding best price",
+  "viewOnBlockExplorer": "View on Block Explorer",
+  "viewOnCowExplorer": "View on Cow Protocol Explorer",
+  "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer"
 }

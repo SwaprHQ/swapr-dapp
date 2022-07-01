@@ -1,6 +1,8 @@
-import { Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
+import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
@@ -9,10 +11,10 @@ import Loader from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { SwapCallbackError } from '../../../components/swap/styleds'
-import { ROUTABLE_PLATFORM_STYLE } from '../../../constants'
+import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
-import { WrapType } from '../../../hooks/useWrapCallback'
+import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
 import { Field } from '../../../state/swap/actions'
 import { useIsExpertMode } from '../../../state/user/hooks'
@@ -39,6 +41,9 @@ interface SwapButtonsProps {
   handleSwap: () => void
   approveCallback: () => Promise<void>
   onWrap: (() => Promise<void>) | undefined
+  handleInputSelect: (inputCurrency: Currency) => void
+  wrapState?: WrapState | undefined
+  setWrapState: ((wrapState: WrapState) => void) | undefined
 }
 
 export function SwapButtons({
@@ -59,9 +64,13 @@ export function SwapButtons({
   handleSwap,
   approveCallback,
   onWrap,
+  handleInputSelect,
+  wrapState,
+  setWrapState,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
+  const { t } = useTranslation()
 
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
@@ -74,6 +83,34 @@ export function SwapButtons({
     })
   }, [])
 
+  useEffect(() => {
+    const wrappedToken = wrappedCurrency(trade?.inputAmount.currency, trade?.chainId)
+    if (
+      wrappedToken &&
+      trade instanceof GnosisProtocolTrade &&
+      wrapState === WrapState.WRAPPED &&
+      currencies.INPUT &&
+      Currency.isNative(currencies.INPUT)
+    ) {
+      handleInputSelect(wrappedToken)
+      setWrapState && setWrapState(WrapState.UNKNOWN)
+    }
+  }, [currencies, trade, handleInputSelect, wrapState, setWrapState])
+
+  const onSwapClick = useCallback(() => {
+    if (isExpertMode) {
+      handleSwap()
+    } else {
+      setSwapState({
+        tradeToConfirm: trade,
+        attemptingTxn: false,
+        swapErrorMessage: undefined,
+        showConfirm: true,
+        txHash: undefined,
+      })
+    }
+  }, [isExpertMode, handleSwap, setSwapState, trade])
+
   if (loading) {
     return <SwapLoadingButton />
   }
@@ -84,8 +121,19 @@ export function SwapButtons({
 
   if (showWrap) {
     return (
-      <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap} data-testid="wrap-button">
-        {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+      <ButtonPrimary
+        disabled={Boolean(wrapInputError) || wrapState === WrapState.PENDING}
+        onClick={onWrap}
+        data-testid="wrap-button"
+      >
+        {wrapInputError ??
+          (wrapState === WrapState.PENDING
+            ? 'Wrapping'
+            : wrapType === WrapType.WRAP
+            ? 'Wrap'
+            : wrapType === WrapType.UNWRAP
+            ? 'Unwrap'
+            : null)}
       </ButtonPrimary>
     )
   }
@@ -120,27 +168,19 @@ export function SwapButtons({
             )}
           </ButtonConfirmed>
           <ButtonError
-            onClick={() => {
-              if (isExpertMode) {
-                handleSwap()
-              } else {
-                setSwapState({
-                  tradeToConfirm: trade,
-                  attemptingTxn: false,
-                  swapErrorMessage: undefined,
-                  showConfirm: true,
-                  txHash: undefined,
-                })
-              }
-            }}
+            onClick={onSwapClick}
             width="48%"
             id="swap-button"
-            disabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
-            error={isValid && priceImpactSeverity > 2}
+            disabled={
+              !isValid ||
+              approval !== ApprovalState.APPROVED ||
+              (priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode)
+            }
+            error={isValid && priceImpactSeverity > PRICE_IMPACT_MEDIUM}
           >
-            {priceImpactSeverity > 3 && !isExpertMode
-              ? `Price Impact High`
-              : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+            {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
+              ? t('PriceImpactHigh')
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('swapAnyway') : t('swap')}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>
@@ -156,19 +196,7 @@ export function SwapButtons({
 
   return (
     <SwapButton
-      onClick={() => {
-        if (isExpertMode) {
-          handleSwap()
-        } else {
-          setSwapState({
-            tradeToConfirm: trade,
-            attemptingTxn: false,
-            swapErrorMessage: undefined,
-            showConfirm: true,
-            txHash: undefined,
-          })
-        }
-      }}
+      onClick={onSwapClick}
       id="swap-button"
       disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
       platformName={trade?.platform.name}
