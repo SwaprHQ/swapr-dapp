@@ -56,7 +56,7 @@ const createSelectL1Deposits = (
       if (tx.chainId === l1ChainId && (tx.type === 'deposit' || tx.type === 'deposit-l1') && tx.receipt?.status === 1) {
         return tx
       }
-      return []
+      return false
     })
   })
 
