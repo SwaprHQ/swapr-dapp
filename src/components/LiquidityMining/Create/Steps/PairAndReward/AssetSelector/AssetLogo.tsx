@@ -42,7 +42,12 @@ interface AssetLogoProps {
   campaingType: CampaignType
 }
 
-export const Circle = styled.div<{ size: string; active: boolean; top?: string; left?: string }>`
+export const Circle = styled.div<{
+  size: string
+  active: boolean
+  top?: string
+  left?: string
+}>`
   position: absolute;
   display: flex;
   align-items: center;

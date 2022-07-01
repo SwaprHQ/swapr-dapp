@@ -91,8 +91,9 @@ export function ImportList({ onBack, onDismiss }: ImportListProps) {
                 </ExternalLink>
               )}
             </AutoColumn>
-            <ButtonError error onClick={handleAddList} content="Import" />
-
+            <ButtonError error onClick={handleAddList}>
+              Import
+            </ButtonError>
             {addError && (
               <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
                 {addError}

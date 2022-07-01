@@ -12,6 +12,7 @@ import { ecoBridgeConfig } from '../EcoBridge.config'
 import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
+import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.
@@ -60,7 +61,6 @@ export const selectSupportedBridges = createSelector(
 )
 
 // TXS
-
 export const selectBridgeTransactions = createSelector(
   [
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTransactionsSummary,
@@ -68,14 +68,23 @@ export const selectBridgeTransactions = createSelector(
     socketSelectors['socket'].selectBridgeTransactionsSummary,
     omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
     connextSelectors['connext'].selectBridgeTransactionsSummary,
+    xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
   ],
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsOmnibridgeEthGnosis, txsSummaryConnext) => {
+  (
+    txsSummaryTestnet,
+    txsSummaryMainnet,
+    txsSummarySocket,
+    txsOmnibridgeEthGnosis,
+    txsSummaryConnext,
+    txsSummaryXdai
+  ) => {
     const txs = [
       ...txsSummaryTestnet,
       ...txsSummaryMainnet,
       ...txsSummarySocket,
       ...txsOmnibridgeEthGnosis,
       ...txsSummaryConnext,
+      ...txsSummaryXdai,
     ]
 
     return txs
@@ -127,6 +136,7 @@ export const selectBridgeListsLoadingStatus = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:testnet'].listsStatus,
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].listsStatus,
     (state: AppState) => state.ecoBridge['socket'].listsStatus,
+    (state: AppState) => state.ecoBridge['xdai'].listsStatus,
     (state: AppState) => state.ecoBridge['connext'].listsStatus,
     (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].listsStatus,
   ],
@@ -140,10 +150,19 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
     (state: AppState) => state.ecoBridge['socket'].lists,
     (state: AppState) => state.ecoBridge['connext'].lists,
-    (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
     (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
+    (state: AppState) => state.ecoBridge['xdai'].lists,
+    (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
-  (tokenListTestnet, tokenListMainnet, tokenListSocket, tokenListConnext, swprDefaultList, omnibridgeEthGnosisList) => {
+  (
+    tokenListTestnet,
+    tokenListMainnet,
+    tokenListSocket,
+    tokenListConnext,
+    omnibridgeEthGnosisList,
+    tokenListXdai,
+    swprDefaultList
+  ) => {
     // Tmp solution to add swpr token list to arbitrum bridges
     const swprListWithIds = {
       'arbitrum:testnet-swpr': swprDefaultList as TokenList,
@@ -154,6 +173,7 @@ export const selectBridgeLists = createSelector(
       ...tokenListTestnet,
       ...tokenListMainnet,
       ...tokenListSocket,
+      ...tokenListXdai,
       ...tokenListConnext,
       ...omnibridgeEthGnosisList,
     }
@@ -262,6 +282,7 @@ export const selectSupportedBridgesForUI = createSelector(
     omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgingDetails,
     socketSelectors['socket'].selectBridgingDetails,
     connextSelectors['connext'].selectBridgingDetails,
+    xdaiSelectors['xdai'].selectBridgingDetails,
   ],
   (
     bridges,
@@ -269,7 +290,8 @@ export const selectSupportedBridgesForUI = createSelector(
     arbitrumMainnetDetails,
     omnibridgeEthGnosisDetails,
     socketDetails,
-    connextDetails
+    connextDetails,
+    xdaiDetails
   ) => {
     const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
       total[next.bridgeId] = next.name
@@ -282,6 +304,7 @@ export const selectSupportedBridgesForUI = createSelector(
       omnibridgeEthGnosisDetails,
       socketDetails,
       connextDetails,
+      xdaiDetails,
     ].reduce<SupportedBridges[]>((total, bridge) => {
       if (bridgeNameMap[bridge.bridgeId] !== undefined) {
         total.push({

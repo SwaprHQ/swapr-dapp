@@ -34,15 +34,11 @@ export default function ConfirmStakingModalFooter({
         </Box>
       )}
       <Box width={showApprove ? '50%' : '100%'} pl={showApprove ? '6px' : '0'}>
-        <ButtonError
-          onClick={onConfirm}
-          disabled={disabledConfirm}
-          content={
-            <Text fontSize={13} fontWeight={600}>
-              Confirm
-            </Text>
-          }
-        />
+        <ButtonError onClick={onConfirm} disabled={disabledConfirm}>
+          <Text fontSize={13} fontWeight={600}>
+            Confirm
+          </Text>
+        </ButtonError>
       </Box>
     </Flex>
   )

@@ -21,17 +21,16 @@ export const MEDIA_WIDTHS = {
   upToLarge: 1280,
 }
 
-const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
-) as any
+const mediaWidthTemplates: {
+  [width in keyof typeof MEDIA_WIDTHS]: typeof css
+} = Object.keys(MEDIA_WIDTHS).reduce((accumulator, size) => {
+  ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+    @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+      ${css(a, b, c)}
+    }
+  `
+  return accumulator
+}, {}) as any
 
 const white = '#FFFFFF'
 const black = '#000000'
@@ -207,10 +206,9 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
+* {
   font-family: 'Inter', Arial, Helvetica;
-  font-feature-settings: 'zero' on;
-  font-display: fallback;
+  font-feature-settings: 'ss01', 'zero', 'tnum';
 }
 
 html,

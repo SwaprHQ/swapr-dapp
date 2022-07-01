@@ -64,7 +64,10 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
 
   const handleCurrencyReset = useCallback(
     index => {
-      setRewardsArray({ type: ActionType.REMOVE_REWARD, payload: { index: index } })
+      setRewardsArray({
+        type: ActionType.REMOVE_REWARD,
+        payload: { index: index },
+      })
     },
     [setRewardsArray]
   )

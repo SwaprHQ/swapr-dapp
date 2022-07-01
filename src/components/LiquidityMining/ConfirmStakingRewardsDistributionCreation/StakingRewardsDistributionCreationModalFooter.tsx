@@ -142,16 +142,11 @@ export default function StakingRewardsDistributionCreationModalFooter({
       </RowBetween>
 
       <AutoRow>
-        <ButtonError
-          onClick={onConfirm}
-          style={{ margin: '10px 0 0 0' }}
-          data-testid="modal-confirm-button"
-          content={
-            <Text fontSize={13} fontWeight={600}>
-              Confirm
-            </Text>
-          }
-        />
+        <ButtonError onClick={onConfirm} style={{ margin: '10px 0 0 0' }} data-testid="modal-confirm-button">
+          <Text fontSize={13} fontWeight={600}>
+            Confirm
+          </Text>
+        </ButtonError>
       </AutoRow>
     </AutoColumn>
   )

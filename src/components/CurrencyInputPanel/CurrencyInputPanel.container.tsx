@@ -15,7 +15,10 @@ export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelPr
   const searchModalContexts = useCurrencySearchModalSwap()
   const { onMax, onCurrencySelect } = currencyInputPanelProps
 
-  const { handleOnCurrencySelect } = useAutoMaxBalance({ onMax, onCurrencySelect })
+  const { handleOnCurrencySelect } = useAutoMaxBalance({
+    onMax,
+    onCurrencySelect,
+  })
 
   return (
     <CurrencySearchModalProvider {...searchModalContexts}>
@@ -30,7 +33,10 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
   const { value, onUserInput, displayedValue, disableCurrencySelect } = currencyInputPanelProps
   const { onMax, onCurrencySelect } = currencyInputPanelProps
 
-  const { handleOnCurrencySelect } = useAutoMaxBalance({ onMax, onCurrencySelect })
+  const { handleOnCurrencySelect } = useAutoMaxBalance({
+    onMax,
+    onCurrencySelect,
+  })
 
   useBridgeInputValidation(!!disableCurrencySelect)
 

@@ -11,7 +11,7 @@ import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
-  query($address: ID, $userId: ID) {
+  query ($address: ID, $userId: ID) {
     singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
       id
       owner
@@ -57,8 +57,8 @@ export function useSwaprSinglelSidedStakeCampaigns(
 } {
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
+  const subgraphAccountId = account?.toLowerCase() || ''
+  const filterTokenAddress = filterToken?.address.toLowerCase()
 
   const SWPRToken = useSWPRToken()
   const swaprAddress = SWPRToken?.address ?? undefined

@@ -14,6 +14,13 @@ const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
 const Pools = lazy(() => import(/* webpackPrefetch: true */ './Pools'))
 const LiquidityMiningCampaign = lazy(() => import(/* webpackPrefetch: true */ './Pools/LiquidityMiningCampaign'))
 const Pair = lazy(() => import(/* webpackPrefetch: true */ './Pools/Pair'))
+
+// const Pair = lazy(() =>
+//   import(/* webpackPrefetch: true */ './Pools/Pair').then(({ Pair }) => ({
+//     default: Pair,
+//   }))
+// )
+
 const MyPairs = lazy(() => import(/* webpackPrefetch: true */ './Pools/Mine'))
 const Bridge = lazy(() => import(/* webpackPrefetch: true */ './Bridge'))
 const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './AddLiquidity'))

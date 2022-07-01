@@ -37,7 +37,6 @@ const StyledExternalLink = styled(ExternalLink)`
   line-height: 19.5px;
   width: fit-content;
   text-decoration: none !important;
-
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

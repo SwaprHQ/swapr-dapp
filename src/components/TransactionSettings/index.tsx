@@ -39,7 +39,11 @@ const Input = styled.input`
   display: flex;
 `
 
-const OptionCustom = styled(Option)<{ active?: boolean; warning?: boolean; focused?: boolean }>`
+const OptionCustom = styled(Option)<{
+  active?: boolean
+  warning?: boolean
+  focused?: boolean
+}>`
   position: relative;
   flex: 1;
   display: flex;

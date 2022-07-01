@@ -22,8 +22,8 @@ import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFea
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { PageWrapper } from '../PageWrapper'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
-import { PageWrapper } from '../Pools/styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -124,8 +124,7 @@ export default function Rewards() {
   return (
     <>
       <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
+        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
@@ -195,7 +194,10 @@ export default function Rewards() {
                   <ResponsiveButtonSecondary
                     as={Link}
                     padding="8px 14px"
-                    to={{ pathname: '/liquidity-mining/create', search: search.toString() }}
+                    to={{
+                      pathname: '/liquidity-mining/create',
+                      search: search.toString(),
+                    }}
                     data-testid="create-campaign"
                   >
                     <Text fontWeight={700} fontSize={12} lineHeight="15px">

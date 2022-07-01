@@ -5,39 +5,16 @@ import styled from 'styled-components'
 import { componentName } from '../../utils'
 
 import {
-  AddSWPRToMetamaskButton,
   Base,
   ButtonConfirmed as ButtonConfirm,
   ButtonConfirmedProps,
-  ButtonDark1,
-  ButtonDark2,
-  ButtonEmpty,
   ButtonError as ButtonErr,
   ButtonErrorProps,
-  ButtonGrey,
-  ButtonInvisbile,
-  ButtonWithLink as ButtonLink,
+  ButtonExternalLink as ButtonLink,
   ButtonLinkProps,
-  ButtonOutlined,
-  ButtonPrimary,
-  ButtonPurple,
-  ButtonSecondary,
   CarrotButton as Carrot,
+  StyledButtonsArray,
 } from '.'
-
-const StyledButtonsArray = [
-  Base,
-  ButtonPrimary,
-  ButtonSecondary,
-  ButtonGrey,
-  ButtonInvisbile,
-  ButtonDark1,
-  ButtonPurple,
-  ButtonDark2,
-  ButtonOutlined,
-  ButtonEmpty,
-  AddSWPRToMetamaskButton,
-]
 
 export default {
   title: 'Buttons',
@@ -65,7 +42,7 @@ const ButtonConfirmedTemplate: ComponentStory<typeof ButtonConfirm> = (args: But
 )
 const ButtonErrorTemplate: ComponentStory<typeof ButtonErr> = (args: ButtonErrorProps) => <ButtonErr {...args} />
 
-const ButtonWithLinkTemplate: ComponentStory<typeof ButtonLink> = (args: ButtonLinkProps) => <ButtonLink {...args} />
+const ButtonWithLinkTemplate: ComponentStory<typeof ButtonLink> = args => <ButtonLink {...args} />
 
 const CarrotButtonTemplate: ComponentStory<typeof Carrot> = (args: ButtonLinkProps) => <Carrot {...args} />
 
@@ -73,7 +50,7 @@ export const StyledButtons = StyleButtons.bind({})
 
 export const ButtonConfirmed = ButtonConfirmedTemplate.bind({})
 ButtonConfirmed.args = {
-  content: 'Button Confirmed Text',
+  children: 'Button Confirmed Text',
   confirmed: true,
   width: 'fit-content',
   altDisabledStyle: true,
@@ -87,15 +64,14 @@ ButtonError.args = {
 }
 export const ButtonWithLink = ButtonWithLinkTemplate.bind({})
 ButtonWithLink.args = {
-  link:
-    'https://dcabtc.com/what-is-stacking-sats#:~:text=In%20short%2C%20stacking%20sats%20is,the%20smallest%20unit%20in%20Bitcoin.',
-  text: 'Stack Sats',
+  link: 'https://www.youtube.com/',
+  children: 'Stack Sats',
   style: { width: 'fit-content' },
 }
 
 export const CarrotButton = CarrotButtonTemplate.bind({})
 CarrotButton.args = {
   link: 'https://carrot.eth.limo/',
-  text: 'Carrot Button text',
+  children: 'Carrot Button text',
   style: { width: 'fit-content' },
 }

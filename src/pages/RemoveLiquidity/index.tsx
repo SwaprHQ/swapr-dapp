@@ -65,11 +65,10 @@ export default function RemoveLiquidity() {
   const { account, chainId, library } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
-  const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
-    currencyA,
-    currencyB,
-    chainId,
-  ])
+  const [tokenA, tokenB] = useMemo(
+    () => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)],
+    [currencyA, currencyB, chainId]
+  )
 
   const theme = useTheme()
 
@@ -120,7 +119,12 @@ export default function RemoveLiquidity() {
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
 
   // allowance handling
-  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
+  const [signatureData, setSignatureData] = useState<{
+    v: number
+    r: string
+    s: string
+    deadline: number
+  } | null>(null)
   const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], routerAddress)
 
@@ -202,15 +206,18 @@ export default function RemoveLiquidity() {
     [_onUserInput]
   )
 
-  const onLiquidityInput = useCallback((typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue), [
-    onUserInput,
-  ])
-  const onCurrencyAInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue), [
-    onUserInput,
-  ])
-  const onCurrencyBInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue), [
-    onUserInput,
-  ])
+  const onLiquidityInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue),
+    [onUserInput]
+  )
+  const onCurrencyAInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue),
+    [onUserInput]
+  )
+  const onCurrencyBInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue),
+    [onUserInput]
+  )
 
   // tx sending
   const addTransaction = useTransactionAdder()
@@ -385,8 +392,9 @@ export default function RemoveLiquidity() {
         </RowBetween>
 
         <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
-            100}% your transaction will revert.`}
+          {`Output is estimated. If the price changes by more than ${
+            allowedSlippage / 100
+          }% your transaction will revert.`}
         </TYPE.italic>
       </AutoColumn>
     )
@@ -726,16 +734,15 @@ export default function RemoveLiquidity() {
                     mr="0.5rem"
                     fontWeight={500}
                     fontSize={16}
-                    content={
-                      approval === ApprovalState.PENDING ? (
-                        <Dots>Approving</Dots>
-                      ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
-                        'Approved'
-                      ) : (
-                        'Approve'
-                      )
-                    }
-                  />
+                  >
+                    {approval === ApprovalState.PENDING ? (
+                      <Dots>Approving</Dots>
+                    ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
+                      'Approved'
+                    ) : (
+                      'Approve'
+                    )}
+                  </ButtonConfirmed>
 
                   <ButtonError
                     onClick={() => {
@@ -743,8 +750,9 @@ export default function RemoveLiquidity() {
                     }}
                     disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
                     error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
-                    content={error || 'Remove'}
-                  />
+                  >
+                    {error || 'Remove'}
+                  </ButtonError>
                 </RowBetween>
               )}
             </div>
@@ -753,7 +761,14 @@ export default function RemoveLiquidity() {
       </AppBody>
 
       {pair ? (
-        <AutoColumn style={{ minWidth: '20rem', width: '100%', maxWidth: '400px', marginTop: '1rem' }}>
+        <AutoColumn
+          style={{
+            minWidth: '20rem',
+            width: '100%',
+            maxWidth: '400px',
+            marginTop: '1rem',
+          }}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsNativeWrapper} pair={pair} />
         </AutoColumn>
       ) : null}

@@ -96,8 +96,7 @@ export const BridgeActionPanel = ({
               width="100%"
               altDisabledStyle={false}
               confirmed={false}
-              content={`Approve ${bridgeCurrency?.symbol}`}
-            />
+            >{`Approve ${bridgeCurrency?.symbol}`}</ButtonConfirmed>
           </RowBetween>
         )
       }

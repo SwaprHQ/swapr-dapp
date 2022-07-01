@@ -1,11 +1,16 @@
 import { darken, lighten, transparentize } from 'polished'
-import React from 'react'
-import { Text } from 'rebass'
+import React, { ReactNode } from 'react'
+import { ArrowUpRight } from 'react-feather'
+import { Link } from 'react-router-dom'
+import { Box, Flex, Text } from 'rebass'
 import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
+import { ExternalLink } from '../../theme'
+import { gradients } from '../../utils/theme'
+import { NumberBadge } from '../NumberBadge'
 
 interface BaseProps {
   /**
@@ -21,6 +26,7 @@ interface BaseProps {
    */
   borderRadius?: string
   altDisabledStyle?: boolean
+  disabled?: boolean
 }
 
 export const Base = styled(RebassButton)<BaseProps>`
@@ -46,12 +52,6 @@ export const Base = styled(RebassButton)<BaseProps>`
   z-index: 1;
   &:disabled {
     cursor: auto;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 16px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-align: center;
   }
 
   > * {
@@ -104,6 +104,23 @@ export const ButtonGrey = styled(Base)`
 
   &:disabled {
     opacity: 50%;
+  }
+`
+
+export const ButtonPurpleDim = styled(Base)`
+  padding: 8px 24px;
+  border: 1px solid ${({ theme }) => theme.purple5};
+
+  font-size: 12px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text4};
+
+  background: ${gradients.purpleDim};
+  backdrop-filter: blur(25px);
+  background-blend-mode: overlay, normal;
+
+  &:disabled {
+    opacity: 50%;
     cursor: auto;
   }
   a:hover {
@@ -111,7 +128,7 @@ export const ButtonGrey = styled(Base)`
   }
 `
 
-export const ButtonInvisbile = styled.button`
+export const ButtonInvisble = styled.button`
   border: none;
   outline: none;
   background: transparent;
@@ -241,31 +258,36 @@ const ButtonErrorStyle = styled(Base)`
     background-color: ${({ theme }) => theme.red1};
   }
 `
-export interface ButtonConfirmedProps extends Omit<ButtonProps, 'content'> {
+export interface ButtonConfirmedProps extends ButtonProps {
   confirmed?: boolean
   altDisabledStyle?: boolean
-  content: string | JSX.Element
 }
-export function ButtonConfirmed({ confirmed, altDisabledStyle, content, ...rest }: ButtonConfirmedProps) {
+export function ButtonConfirmed({ confirmed, altDisabledStyle, children, ...rest }: ButtonConfirmedProps) {
   if (confirmed) {
-    return <ButtonConfirmedStyle {...rest}>{content}</ButtonConfirmedStyle>
+    return <ButtonConfirmedStyle {...rest}>{children}</ButtonConfirmedStyle>
   } else {
     return (
       <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle}>
-        {content}
+        {children}
       </ButtonPrimary>
     )
   }
 }
-export interface ButtonErrorProps extends Omit<ButtonProps, 'content'> {
+export interface ButtonErrorProps extends ButtonProps {
+  /**
+   * If true style changes to reflect error is present
+   */
   error?: boolean
-  content: string | JSX.Element
+  /**
+   * Content to be displayed in button
+   */
+  children: ReactNode
 }
-export function ButtonError({ error, content, ...rest }: ButtonErrorProps) {
+export function ButtonError({ error, children, ...rest }: ButtonErrorProps) {
   if (error) {
-    return <ButtonErrorStyle {...rest}>{content}</ButtonErrorStyle>
+    return <ButtonErrorStyle {...rest}>{children}</ButtonErrorStyle>
   } else {
-    return <ButtonPrimary {...rest}>{content}</ButtonPrimary>
+    return <ButtonPrimary {...rest}>{children}</ButtonPrimary>
   }
 }
 export interface ButtonLinkProps {
@@ -274,16 +296,16 @@ export interface ButtonLinkProps {
    */
   link?: string
   /**
-   * Button text
+   * Content to be displayed in button
    */
-  text?: string
+  children?: ReactNode
   /**
    * Any additional style to be added to button wrapper
    */
   style?: React.CSSProperties
 }
 
-export function ButtonWithLink({ link, text, style }: ButtonLinkProps) {
+export function ButtonWithExternalLink({ link, children, style }: ButtonLinkProps) {
   return (
     <ButtonSecondary
       id="join-pool-button"
@@ -294,9 +316,61 @@ export function ButtonWithLink({ link, text, style }: ButtonLinkProps) {
       target="_blank"
     >
       <Text fontWeight={700} fontSize={12} lineHeight="15px">
-        {text} <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
+        {children} <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
       </Text>
     </ButtonSecondary>
+  )
+}
+
+export function ButtonExternalLink({
+  link,
+  children,
+  disabled = false,
+  style,
+}: {
+  link: string
+  disabled?: boolean
+  children: ReactNode
+  style?: React.CSSProperties
+}) {
+  const theme = useTheme()
+  return (
+    <ButtonPurpleDim
+      disabled={disabled}
+      as={disabled ? ButtonPurpleDim : ExternalLink}
+      href={!disabled ? link : ''}
+      style={style}
+    >
+      {children}
+      <Box ml={2}>
+        <ArrowUpRight size="14px" color={theme.purple2} />
+      </Box>
+    </ButtonPurpleDim>
+  )
+}
+
+export function ButtonBadge({
+  to,
+  children,
+  number,
+  color = 'orange',
+  disabled = false,
+}: {
+  to: string
+  number: number
+  children: ReactNode
+  disabled?: boolean
+  color?: 'orange' | 'green' | 'red'
+}) {
+  return (
+    <ButtonPurpleDim width="fit-content" as={disabled ? ButtonPurpleDim : Link} to={to} disabled={disabled}>
+      <Flex alignItems="center">
+        {children}
+        <Box ml={1}>
+          <NumberBadge badgeTheme={color}>{number}</NumberBadge>
+        </Box>
+      </Flex>
+    </ButtonPurpleDim>
   )
 }
 
@@ -318,12 +392,12 @@ const StyledButtonSecondary = styled(ButtonSecondary)`
   border: none;
 `
 
-export function CarrotButton({ link, text, style }: ButtonLinkProps) {
+export function CarrotButton({ link, children, style }: ButtonLinkProps) {
   return (
     <StyledButtonSecondary as="a" style={style} href={link} rel="noopener noreferrer" target="_blank">
       <CarrotIconWithMargin />
       <CarrotButtonText fontWeight={700} fontSize={10} lineHeight="9px" letterSpacing="4%">
-        {text}
+        {children}
       </CarrotButtonText>
     </StyledButtonSecondary>
   )
@@ -351,7 +425,7 @@ export const StyledButtonsArray = [
   ButtonPrimary,
   ButtonSecondary,
   ButtonGrey,
-  ButtonInvisbile,
+  ButtonInvisble,
   ButtonDark1,
   ButtonPurple,
   ButtonDark2,
