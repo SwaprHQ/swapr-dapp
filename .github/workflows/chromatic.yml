@@ -3,7 +3,7 @@ name: 'Chromatic'
 on:
   push:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 jobs:
   chromatic-deployment:
