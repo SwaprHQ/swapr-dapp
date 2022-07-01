@@ -1,7 +1,7 @@
 import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-
 import { TradeDetails } from 'components/swap/TradeDetails'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'

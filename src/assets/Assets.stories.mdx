@@ -1,41 +1,78 @@
 import { Meta, Title, IconGallery, IconItem } from '@storybook/addon-docs/'
-import dxd from './svg/dxd.svg'
-import curveLogo from './svg/curve-logo.svg'
-import lockOpen from './svg/lock-open.svg'
-import lock from './svg/lock.svg'
-import cryptoIcon from './svg/crypto-icon.svg'
-import gasInfo from './svg/gas-info.svg'
-import farming from './svg/farming.svg'
-import sushiSwap from './svg/sushiswap-logo.svg'
+import { imagesBase, svg, imagesAnimations, imagesBlog, imagesFeatures, imagesLogos, imagesTimelineAssets } from './'
 
-<Meta title="Theme/Iconography" />
+<Meta title="Theme/Icons" />
 
 ## Iconography
-this is work in progress trying to figure out more dynamic way of imoporting svg-s
-<IconGallery>
-  <IconItem name="dxd">
-    <img src={dxd} />
-  </IconItem>
-  <IconItem name="curve-logo">
-    <img src={curveLogo} />
-  </IconItem>
-  <IconItem name="lock-open">
-    <img src={lockOpen} />
-  </IconItem>
-  <IconItem name="lock">
-    <img src={lock} />
-  </IconItem>
-  <IconItem name="crypto-icon">
-    <img src={cryptoIcon} />
-  </IconItem>
-  <IconItem name="gas-info">
-    <img src={gasInfo} />
-  </IconItem>
-  <IconItem name="farming">
-    <img src={farming} />
-  </IconItem>
-  <IconItem name="sushiswap-logo">
-    <img src={sushiSwap} />
-  </IconItem>
 
+- All icon folder will be displayed here
+
+## Images folder(assets/images)
+
+<IconGallery name="Images">
+  {imagesBase.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## SVG folder (assets/svg)
+
+<IconGallery name="SVG">
+  {svg.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Animations folder (assets/images/animations)
+
+<IconGallery name="imagesAnimations">
+  {imagesAnimations.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Blog folder (assets/images/blog)
+
+<IconGallery name="Blog">
+  {imagesBlog.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Images Features folder (assets/images/features)
+
+<IconGallery name="Images Feature">
+  {imagesFeatures.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Logos folder (assets/images/logos)
+
+<IconGallery name="SVG">
+  {imagesLogos.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Timeline assets folder (assets/images/timeline-assets)
+
+<IconGallery name="Timeline Assets">
+  {imagesTimelineAssets.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
 </IconGallery>

@@ -158,6 +158,18 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
+export function exportAllImagesFilesFromRelativePath(arrayOfFiles: any): any[] {
+  const images: any[] = []
+
+  arrayOfFiles.keys().map((item: string) => {
+    const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
+    const imageLocation = arrayOfFiles(item).default
+
+    images.push({ name: imageName, location: imageLocation })
+  })
+  return images
+}
+
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency: Currency): boolean {
   if (Currency.isNative(currency)) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
