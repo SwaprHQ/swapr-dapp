@@ -288,7 +288,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const chains = [this.l1ChainId, this.l2ChainId]
 
     if (
-      !(this._erc20Bridger || this._ethBridger) &&
+      this._erc20Bridger &&
+      this._ethBridger &&
       !chains.includes(this._activeChainId) &&
       (!previousChainId || (previousChainId && !chains.includes(previousChainId)))
     )
