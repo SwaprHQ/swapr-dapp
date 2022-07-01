@@ -473,9 +473,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
-        .toFixed(2)
-        .toString(),
+      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals)).toFixed(2).toString(),
       requestId: helperRequestId,
     }
 

@@ -17,7 +17,7 @@ import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,

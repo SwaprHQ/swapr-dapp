@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useStakingRewardsDistributionContract } from './useContract'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 interface UseLiquidityMiningCampaignUserPositionHookResult {
   stakedTokenAmount: PricedTokenAmount | null
