@@ -206,10 +206,9 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
+* {
   font-family: 'Inter', Arial, Helvetica;
-  font-feature-settings: 'zero' on;
-  font-display: fallback;
+  font-feature-settings: 'ss01', 'zero', 'tnum';
 }
 
 html,

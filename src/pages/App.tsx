@@ -9,6 +9,7 @@ import styled, { useTheme } from 'styled-components'
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import NetworkWarningModal from '../components/NetworkWarningModal'
+import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
@@ -85,9 +86,11 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper>
               <Web3ReactManager>
-                <Suspense fallback={<FallbackLoader />}>
-                  <Routes />
-                </Suspense>
+                <SpaceBg>
+                  <Suspense fallback={<FallbackLoader />}>
+                    <Routes />
+                  </Suspense>
+                </SpaceBg>
               </Web3ReactManager>
               <Marginer />
             </BodyWrapper>

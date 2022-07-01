@@ -2,10 +2,8 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'
 
-import { breakpoints, gradients } from '../../../utils/theme'
+import { breakpoints } from '../../../utils/theme'
 import Arrow from './../../../assets/images/arrow-down-hero.svg'
-import HeroImage from './../../../assets/images/hero-graphic-desktop.png'
-import HeroImageLeft from './../../../assets/images/hero-graphic-left.png'
 import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
 import Button from './../common/Button'
 import Layout from './Layout'
@@ -108,10 +106,6 @@ const Hero = props => {
             </ul>
           </div>
         )}
-        <div className="hero-background">
-          <div className="hero-image hero-image-right"></div>
-          <div className="hero-image hero-image-left"></div>
-        </div>
         <div className="routing-through desktop" data-aos="fade-up">
           <div className="routing-through-header">
             <div className="left-line"></div>
@@ -161,115 +155,7 @@ const Hero = props => {
   )
 }
 
-const zoomOut = keyframes`
-    0% {transform: scale(1.2); opacity: 0;}
-    100% {transform: scale(1); opacity: 0.7;}
-`
-
 const StyledHero = styled(Layout)`
-  position: relative;
-  padding-bottom: 120px;
-  width: calc(100% + 32px) !important;
-  .inner-hero {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 240px);
-    width: 100%;
-  }
-  &:not(.hero-active) {
-    .hero-image-left,
-    .hero-image-right {
-      opacity: 0;
-    }
-    .hero-image-right {
-      transform: translateY(-100px);
-    }
-    .hero-image-left {
-      transform: translateY(-30px);
-    }
-  }
-  .hero-content {
-    padding: 0 144px;
-    margin-top: 80px;
-    position: relative;
-    z-index: 4;
-    h1 {
-      width: 665px;
-      span {
-        font-size: 61px;
-        font-weight: 600;
-        background: ${gradients.heroMainText};
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        line-height: 74px;
-        br {
-          display: none;
-        }
-      }
-    }
-    .hero-logos-list {
-      margin-top: 65px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      z-index: 3;
-      .hero-logo-group {
-        display: flex;
-        align-items: center;
-        li {
-          margin-right: 31px;
-          opacity: 0.7;
-        }
-      }
-    }
-    .hero-button-list {
-      display: flex;
-      margin-top: 65px;
-      li {
-        margin-right: 40px;
-      }
-    }
-  }
-  .hero-background {
-    animation: ${zoomOut} 500ms 1750ms ease-out forwards;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    z-index: 2;
-  }
-  .hero-image-left,
-  .hero-image-right {
-    position: absolute;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    background-position: right;
-    transition: 1s ease-in-out all;
-    /* transition: 0.25s ease-in-out transform; */
-  }
-  .hero-image-right {
-    background-image: url('${HeroImage}');
-    width: 1198px;
-    height: 905px;
-    top: -172px;
-    right: 0;
-    z-index: 1;
-  }
-  .hero-image-left {
-    background-image: url('${HeroImageLeft}');
-    width: 1680px;
-    height: 1680px;
-    top: -172px;
-    right: 0;
-    background-position: left top;
-    background-size: 100% auto;
-    z-index: 1;
-    @media screen and (min-width: 1680px) {
-      width: 100%;
-    }
-  }
   .routing-through {
     margin-top: auto;
     position: relative;
@@ -330,7 +216,6 @@ const StyledHero = styled(Layout)`
       margin-top: 42px;
       padding: 0px;
       h1 {
-        /* max-width: 303px; */
         span {
           font-size: 48px;
           line-height: 54px;
