@@ -1,12 +1,10 @@
 name: 'Chromatic'
 
-on:
-  pull_request:
-  types:
-    - ready_for_review
+on: pull_request
 
 jobs:
   chromatic-deployment:
+    if: ! github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
