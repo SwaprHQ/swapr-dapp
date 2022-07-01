@@ -4,8 +4,8 @@ on: push
 
 jobs:
   chromatic-deployment:
-    if: { { !github.event.pull_request.draft  } }
     runs-on: ubuntu-latest
+    if: { { !github.event.pull_request.draft  } }
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
