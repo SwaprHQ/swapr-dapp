@@ -2,9 +2,11 @@ import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducer
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { getErrorMsg } from './Arbitrum/ArbitrumBridge.utils'
 import {
   BridgeDetails,
   BridgeList,
+  BridgeModalStatus,
   BridgingDetailsErrorMessage,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
@@ -14,6 +16,7 @@ import {
   EcoBridgeInitialEnv,
   SyncState,
 } from './EcoBridge.types'
+import { commonActions } from './store/Common.reducer'
 import { ecoBridgeUIActions } from './store/UI.reducer'
 
 export abstract class EcoBridgeChildBase {
@@ -21,41 +24,31 @@ export abstract class EcoBridgeChildBase {
   public readonly displayName: string
   public readonly supportedChains: EcoBridgeChildBaseConstructor['supportedChains']
   protected ecoBridgeUIActions: typeof ecoBridgeUIActions
+  protected commonActions: typeof commonActions
   protected _store: EcoBridgeChildBaseProps['store']
   protected _account: EcoBridgeChildBaseProps['account']
   protected _activeChainId: EcoBridgeChildBaseProps['activeChainId']
   protected _staticProviders: EcoBridgeChildBaseProps['staticProviders']
   protected _activeProvider: EcoBridgeChildBaseProps['activeProvider']
-  private _baseActions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions'] | undefined
+  protected _baseActions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions'] | undefined
+  private _listeners: NodeJS.Timeout[] = []
 
   constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
     this.displayName = displayName
     this.supportedChains = supportedChains
     this.ecoBridgeUIActions = ecoBridgeUIActions
+    this.commonActions = commonActions
   }
 
-  protected setSignerData = ({ account, activeChainId, activeProvider }: EcoBridgeChangeHandler) => {
-    this._account = account
-    this._activeChainId = activeChainId
-    this._activeProvider = activeProvider
+  private _log = (message: string) => `EcoBridge::${this.bridgeId}: ${message}`
+
+  private _loggerUtils = {
+    log: (message: string) => console.log(this._log(message)),
+    error: (message: string) => new Error(this._log(message)),
   }
 
-  protected setInitialEnv = ({ staticProviders, store }: EcoBridgeInitialEnv) => {
-    this._staticProviders = staticProviders
-    this._store = store
-  }
-
-  protected setBaseActions(actions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions']) {
-    this._baseActions = actions
-  }
-
-  protected get store() {
-    if (!this._store) throw new Error(`${this.bridgeId}: No store set`)
-    return this._store
-  }
-
-  protected metadataStatus = {
+  private _metadataStatusUtils = {
     start: () => {
       if (!this._store || !this._baseActions) {
         throw new Error('Initial env not set')
@@ -81,6 +74,133 @@ export abstract class EcoBridgeChildBase {
         })
       )
     },
+  }
+
+  private _listenerUtils = {
+    start: (listeners: { listener: () => void; interval?: number }[]) => {
+      if (this._listeners.length) {
+        throw this._loggerUtils.error('Listeners already started')
+      }
+      this._listeners = listeners.map(({ listener, interval }) => setInterval(listener, interval ?? 5000))
+    },
+    stop: () => {
+      this._listeners.forEach(listener => clearInterval(listener))
+      this._listeners = []
+    },
+  }
+
+  // Utils should go to separate abstract service that will be extended by EcoBridgeChildBase
+  // Not sure about nesting and naming...
+  // listeners are ok, same for logger, I dont thing UI needs to be so deepy nested
+  // add more modal controls and replace them in all bridges
+  // replace _baseActions with ecoBridgeActions
+  public ecoBridgeUtils = {
+    listeners: this._listenerUtils,
+    metadataStatus: this._metadataStatusUtils,
+    logger: this._loggerUtils,
+    ui: {
+      modal: {
+        setBridgeModalStatus: (status: BridgeModalStatus, error?: any) => {
+          this.store.dispatch(
+            this.ecoBridgeUIActions.setBridgeModalStatus({
+              status,
+              error: error && getErrorMsg(error),
+            })
+          )
+        },
+      },
+      statusButton: {
+        setStatus: (status: 'Approve' | 'Approving' | 'Bridge' | 'Loading') => {
+          let payload: {
+            isError?: boolean
+            isLoading?: boolean
+            label?: string
+            isBalanceSufficient?: boolean
+            isApproved?: boolean
+          } = {}
+
+          switch (status) {
+            case 'Approve':
+              payload = {
+                label: 'Approve',
+                isLoading: false,
+                isError: false,
+                isApproved: false,
+                isBalanceSufficient: true,
+              }
+              break
+            case 'Approving':
+              payload = {
+                label: 'Approving',
+                isError: false,
+                isLoading: true,
+                isBalanceSufficient: true,
+                isApproved: false,
+              }
+              break
+            case 'Bridge':
+              payload = {
+                label: 'Bridge',
+                isError: false,
+                isLoading: false,
+                isBalanceSufficient: true,
+                isApproved: true,
+              }
+              break
+            case 'Loading':
+              payload = {
+                label: 'Loading',
+                isLoading: true,
+                isError: false,
+                isApproved: false,
+              }
+              break
+          }
+
+          this.store.dispatch(this.ecoBridgeUIActions.setStatusButton(payload))
+        },
+        setError: (label = 'Something went wrong') => {
+          this.store.dispatch(
+            this.ecoBridgeUIActions.setStatusButton({
+              label,
+              isLoading: false,
+              isError: true,
+              isApproved: false,
+              isBalanceSufficient: false,
+            })
+          )
+        },
+        setCustomStatus: (payload: {
+          isError?: boolean
+          isLoading?: boolean
+          label?: string
+          isBalanceSufficient?: boolean
+          isApproved?: boolean
+        }) => {
+          this.store.dispatch(this.ecoBridgeUIActions.setStatusButton(payload))
+        },
+      },
+    },
+  }
+
+  protected setSignerData = ({ account, activeChainId, activeProvider }: EcoBridgeChangeHandler) => {
+    this._account = account
+    this._activeChainId = activeChainId
+    this._activeProvider = activeProvider
+  }
+
+  protected setInitialEnv = ({ staticProviders, store }: EcoBridgeInitialEnv) => {
+    this._staticProviders = staticProviders
+    this._store = store
+  }
+
+  protected setBaseActions = (actions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions']) => {
+    this._baseActions = actions
+  }
+
+  protected get store() {
+    if (!this._store) throw new Error(`${this.bridgeId}: No store set`)
+    return this._store
   }
 
   // To be implemented by bridge

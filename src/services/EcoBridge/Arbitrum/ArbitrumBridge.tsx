@@ -22,7 +22,6 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
 import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
@@ -39,7 +38,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private l2ChainId: ChainId
   private _bridge: Bridge | undefined
   private _initialPendingWithdrawalsChecked = false
-  private _listeners: NodeJS.Timeout[] = []
 
   private get actions() {
     return arbitrumActions[this.bridgeId as ArbitrumList]
@@ -50,7 +48,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
   // Typed setters
   public get bridge() {
-    if (!this._bridge) throw new Error('ArbBridge: No bridge set')
+    if (!this._bridge) throw this.ecoBridgeUtils.logger.error('No bridge set')
     return this._bridge
   }
 
@@ -62,13 +60,13 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     super({ supportedChains: supportedChainsArr, bridgeId, displayName })
     this.setBaseActions(this.actions)
 
-    if (supportedChainsArr.length !== 1) throw new Error('Invalid config')
+    if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error('Invalid config')
 
     const [supportedChains] = supportedChainsArr
 
     const { l1ChainId, l2ChainId } = getChainPair(supportedChains.from)
 
-    if (!l1ChainId || !l2ChainId) throw new Error('ArbBridge: Wrong config')
+    if (!l1ChainId || !l2ChainId) throw this.ecoBridgeUtils.logger.error('Wrong config')
     this.l1ChainId = l1ChainId
     this.l2ChainId = l2ChainId
   }
@@ -82,7 +80,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     await this.setArbTs()
 
-    this.startListeners()
+    this.ecoBridgeUtils.listeners.start([{ listener: this.l2DepositsListener }, { listener: this.pendingTxListener }])
+
     this.updatePendingWithdrawals()
   }
 
@@ -237,7 +236,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     let l1Signer: JsonRpcSigner | undefined = this._staticProviders[this.l1ChainId]?.getSigner(this._account)
     let l2Signer: JsonRpcSigner | undefined = this._staticProviders[this.l2ChainId]?.getSigner(this._account)
 
-    if (!l1Signer || !l2Signer) throw new Error('ArbBridge: No static provider found')
+    if (!l1Signer || !l2Signer) throw this.ecoBridgeUtils.logger.error('No static provider found')
 
     const chains = [this.l1ChainId, this.l2ChainId]
 
@@ -259,19 +258,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     try {
       this._bridge = await Bridge.init(l1Signer, l2Signer)
     } catch (err) {
-      throw new Error('ArbBridge: ' + err)
+      throw this.ecoBridgeUtils.logger.error(err as string)
     }
-  }
-
-  private startListeners = () => {
-    this._listeners.push(setInterval(this.l2DepositsListener, 5000))
-    this._listeners.push(setInterval(this.pendingTxListener, 5000))
   }
 
   // PendingTx Listener
   private getReceipt = async (tx: ArbitrumBridgeTxn) => {
     const provider = txnTypeToLayer(tx.type) === 2 ? this.bridge?.l2Provider : this.bridge?.l1Provider
-    if (!provider) throw new Error('No provider on bridge')
+    if (!provider) throw this.ecoBridgeUtils.logger.error('No provider on bridge')
 
     return provider.getTransactionReceipt(tx.txHash)
   }
@@ -473,7 +467,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const tokenData = await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)
 
     if (!tokenData) {
-      throw new Error('Token data not found')
+      throw this.ecoBridgeUtils.logger.error('Token data not found')
     }
 
     const parsedValue = parseUnits(typedValue, tokenData.decimals)
@@ -559,12 +553,12 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     const erc20L1Address = await this.bridge.l2Bridge.getERC20L1Address(erc20L2Address)
     if (!erc20L1Address) {
-      throw new Error('Token address not recognized')
+      throw this.ecoBridgeUtils.logger.error('Token address not recognized')
     }
 
     const tokenData = await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)
     if (!tokenData) {
-      throw new Error("Can't withdraw; token not found")
+      throw this.ecoBridgeUtils.logger.error("Can't withdraw; token not found")
     }
 
     this.store.dispatch(this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
@@ -670,7 +664,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(this.actions.addTokenLists(tokenLists))
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
-    this.store.dispatch(commonActions.activateLists(defaultListsIds))
+    this.store.dispatch(this.commonActions.activateLists(defaultListsIds))
   }
 
   // No need to implement
@@ -763,7 +757,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
-    const requestId = this.metadataStatus.start()
+    const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     const { value, decimals, address, chainId } = this.store.getState().ecoBridge.ui.from
 
@@ -772,7 +766,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     try {
       parsedValue = parseUnits(value, decimals)
     } catch (e) {
-      this.metadataStatus.fail('No available routes / details')
+      this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
 
@@ -812,7 +806,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
 
       if (!this._activeChainId) {
-        this.metadataStatus.fail()
+        this.ecoBridgeUtils.metadataStatus.fail()
         return
       }
 

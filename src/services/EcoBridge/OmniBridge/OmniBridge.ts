@@ -60,7 +60,6 @@ import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
   private _foreignChainId: ChainId
-  private _listeners: NodeJS.Timeout[] = []
   private _tokensPair: OmnibridgePairTokens | undefined
   private _currentDay: BigNumber | undefined
   private _homeAmbContract: Contract | undefined
@@ -76,7 +75,7 @@ export class OmniBridge extends EcoBridgeChildBase {
     super({ supportedChains: supportedChainsArr, bridgeId, displayName })
     this.setBaseActions(this.actions)
 
-    if (supportedChainsArr.length !== 1) throw new Error('Invalid config')
+    if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error('Invalid config')
 
     const [supportedChains] = supportedChainsArr
     const { from, to } = supportedChains
@@ -95,11 +94,7 @@ export class OmniBridge extends EcoBridgeChildBase {
     )
 
     await this._fetchHistory()
-    this.startListeners()
-  }
-
-  private startListeners = () => {
-    this._listeners.push(setInterval(this.pendingTxListener, 5000))
+    this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTxListener }])
   }
 
   public onSignerChange = async (signerData: EcoBridgeChangeHandler) => {
@@ -183,13 +178,14 @@ export class OmniBridge extends EcoBridgeChildBase {
 
   public approve = async () => {
     try {
-      if (!this._account || !this._activeProvider || !this._tokensPair) throw new Error('Cannot execute approve method')
+      if (!this._account || !this._activeProvider || !this._tokensPair)
+        throw this.ecoBridgeUtils.logger.error('Cannot execute approve method')
 
       const {
         fromToken: { address: fromTokenAddress, mediator: fromMediator, amount: fromAmount },
       } = this._tokensPair
 
-      if (!fromMediator) throw new Error('Mediator not found')
+      if (!fromMediator) throw this.ecoBridgeUtils.logger.error('Mediator not found')
 
       const tx = await approveToken(
         { address: fromTokenAddress, mediator: fromMediator },
@@ -331,7 +327,7 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       const limits = await fetchTokenLimits(this.bridgeId, fromToken, toToken, this._currentDay, this._staticProviders)
 
-      if (!limits) throw new Error('Cannot get limits')
+      if (!limits) throw this.ecoBridgeUtils.logger.error('Cannot get limits')
 
       const { maxPerTx, minPerTx } = limits
 
@@ -493,7 +489,7 @@ export class OmniBridge extends EcoBridgeChildBase {
 
   public getBridgingMetadata = async () => {
     if (!this._activeProvider || !this._activeChainId || !this._staticProviders || !this._account) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -511,10 +507,10 @@ export class OmniBridge extends EcoBridgeChildBase {
       return
     }
 
-    const requestId = this.metadataStatus.start()
+    const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     if (fromTokenAddressUI === Currency.getNative(this._homeChainId).symbol) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -533,7 +529,7 @@ export class OmniBridge extends EcoBridgeChildBase {
     const fromTokenMediator = getMediatorAddress(this.bridgeId, { address: fromTokenAddress, chainId: fromChainId })
 
     if (!fromTokenMediator || !fromTokenMode || !fromTokenName) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -545,7 +541,7 @@ export class OmniBridge extends EcoBridgeChildBase {
     )
 
     if (!toToken) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -562,14 +558,14 @@ export class OmniBridge extends EcoBridgeChildBase {
     try {
       parsedFromAmount = parseUnits(fromAmount, fromTokenDecimals)
     } catch (e) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
     const feesData = await calculateFees(this.bridgeId, this._staticProviders[this._homeChainId])
 
     if (!feesData) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -642,7 +638,7 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       const gasPrice = await this._staticProviders[this._activeChainId]?.getGasPrice()
 
-      if (!gasPrice) throw new Error('Cannot get gas price')
+      if (!gasPrice) throw this.ecoBridgeUtils.logger.error('Cannot get gas price')
 
       const {
         bundle: { nativeCurrencyPrice },

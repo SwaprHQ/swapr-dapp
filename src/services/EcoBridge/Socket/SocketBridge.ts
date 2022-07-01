@@ -15,7 +15,6 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
 import { ApprovalsAPI, QuoteAPI, ServerAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
@@ -39,7 +38,6 @@ const getErrorMsg = (error: any) => {
 }
 export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
-  private _listeners: NodeJS.Timeout[] = []
   private _abortControllers: { [id: string]: AbortController } = {}
 
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: EcoBridgeChildBaseConstructor) {
@@ -69,7 +67,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    this.startListeners()
+    this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTxListener }])
   }
 
   public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
@@ -97,36 +95,30 @@ export class SocketBridge extends EcoBridgeChildBase {
     )
       return
 
-    try {
-      const value =
-        from.address === Currency.getNative(from.chainId).symbol ? parseUnits(from.value, from.decimals) : undefined
+    const value =
+      from.address === Currency.getNative(from.chainId).symbol ? parseUnits(from.value, from.decimals) : undefined
 
-      const tx = await this._activeProvider?.getSigner().sendTransaction({
-        to: recipient,
-        data,
-        value,
+    const tx = await this._activeProvider?.getSigner().sendTransaction({
+      to: recipient,
+      data,
+      value,
+    })
+
+    if (!tx) return
+
+    this.store.dispatch(this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+
+    this.store.dispatch(
+      this.actions.addTx({
+        sender: this._account,
+        txHash: tx.hash,
+        assetName: from.symbol,
+        value: from.value,
+        fromChainId: from.chainId,
+        toChainId: to.chainId,
+        bridgeId: this.bridgeId,
       })
-
-      if (!tx) return
-
-      this.store.dispatch(this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
-
-      this.store.dispatch(
-        this.actions.addTx({
-          sender: this._account,
-          txHash: tx.hash,
-          assetName: from.symbol,
-          value: from.value,
-          fromChainId: from.chainId,
-          toChainId: to.chainId,
-          bridgeId: this.bridgeId,
-        })
-      )
-    } catch (e) {
-      this.store.dispatch(
-        this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
-      )
-    }
+    )
   }
   public approve = async () => {
     //get approval data from store
@@ -180,8 +172,6 @@ export class SocketBridge extends EcoBridgeChildBase {
         this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
       )
     }
-
-    return
   }
 
   public validate = async () => {
@@ -238,10 +228,10 @@ export class SocketBridge extends EcoBridgeChildBase {
         this.store.dispatch(
           this.ecoBridgeUIActions.setStatusButton({
             label: 'Bridge',
-            isLoading: false,
             isError: false,
-            isApproved: true,
+            isLoading: false,
             isBalanceSufficient: true,
+            isApproved: true,
           })
         )
       } else {
@@ -319,7 +309,7 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
-    const requestId = this.metadataStatus.start()
+    const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     const { from, to } = this.store.getState().ecoBridge.ui
 
@@ -353,7 +343,7 @@ export class SocketBridge extends EcoBridgeChildBase {
         const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
 
         if (!fromToken) {
-          this.metadataStatus.fail('No available routes / details')
+          this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
           return
         }
 
@@ -362,7 +352,7 @@ export class SocketBridge extends EcoBridgeChildBase {
         )
 
         if (!toToken) {
-          this.metadataStatus.fail('No available routes / details')
+          this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
           return
         }
 
@@ -376,7 +366,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     try {
       value = parseUnits(from.value, from.decimals)
     } catch (e) {
-      this.metadataStatus.fail('No available routes / details')
+      this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
 
@@ -402,7 +392,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       //if status of response isn't 20 (aborted) then set socket status to failed
       const isValid = getStatusOfResponse(e)
       if (!isValid) {
-        this.metadataStatus.fail('No available routes / details')
+        this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
         return
       }
     }
@@ -412,7 +402,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const { success, result } = quote
 
     if (!success || result.routes.length === 0) {
-      this.metadataStatus.fail('No available routes / details')
+      this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
     const { routes, toAsset } = result
@@ -431,13 +421,13 @@ export class SocketBridge extends EcoBridgeChildBase {
     const bestRoute = getBestRoute(routes, tokenData, toAsset.decimals)
 
     if (!bestRoute) {
-      this.metadataStatus.fail()
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
     const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
 
-    this.store.dispatch(commonActions.setActiveRouteId(routeId))
+    this.store.dispatch(this.commonActions.setActiveRouteId(routeId))
 
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
@@ -484,14 +474,10 @@ export class SocketBridge extends EcoBridgeChildBase {
       const socketLists: { data: SocketTokenMap } = await socketListsResponse.json()
       this._tokenLists = socketLists.data
     } catch (e) {
-      throw new Error('Failed to fetch Socket token lists')
+      throw this.ecoBridgeUtils.logger.error('Failed to fetch Socket token lists')
     }
 
-    this.store.dispatch(commonActions.activateLists(['socket']))
-  }
-
-  private startListeners = () => {
-    this._listeners.push(setInterval(this.pendingTxListener, 5000))
+    this.store.dispatch(this.commonActions.activateLists(['socket']))
   }
 
   private pendingTxListener = async () => {

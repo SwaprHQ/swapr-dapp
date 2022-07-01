@@ -6,6 +6,7 @@ import { AppState } from '../../state'
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
 import {
   BridgeList,
+  BridgeModalStatus,
   Bridges,
   EcoBridgeChangeHandler,
   EcoBridgeConstructorParams,
@@ -128,7 +129,11 @@ export class EcoBridge {
   // ADAPTERS
   public triggerBridging = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].triggerBridging()
+    try {
+      return this.bridges[this._activeBridgeId].triggerBridging()
+    } catch (e) {
+      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, e)
+    }
   }
 
   public approve = async () => {
