@@ -7,6 +7,7 @@ export const imagesAnimations = exportAllImagesFilesFromRelativePath(
 export const imagesBlog = exportAllImagesFilesFromRelativePath(
   require.context('./images/blog', false, /\.(png|jpe?g|svg)$/)
 )
+
 export const imagesFeatures = exportAllImagesFilesFromRelativePath(
   require.context('./images/features', false, /\.(png|jpe?g|svg)$/)
 )

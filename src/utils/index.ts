@@ -158,12 +158,16 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-export function exportAllImagesFilesFromRelativePath(arrayOfFiles: any): any[] {
-  const images: any[] = []
+interface ImageType {
+  name: string
+  location: string
+}
+export function exportAllImagesFilesFromRelativePath(folderArray: any): ImageType[] | [] {
+  const images: ImageType[] = []
 
-  arrayOfFiles.keys().map((item: string) => {
+  folderArray.keys().map((item: string) => {
     const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
-    const imageLocation = arrayOfFiles(item).default
+    const imageLocation = folderArray(item).default
 
     images.push({ name: imageName, location: imageLocation })
   })
