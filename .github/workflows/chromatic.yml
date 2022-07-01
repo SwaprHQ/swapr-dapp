@@ -4,7 +4,7 @@ on: push
 
 jobs:
   chromatic-deployment:
-    if: ! github.event.pull_request.draft
+    if: { { !github.event.pull_request.draft  } }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
