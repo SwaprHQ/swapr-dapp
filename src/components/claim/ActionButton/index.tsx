@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
-import { ButtonPrimary } from '../../Button'
+import { ButtonPrimary } from '../../Button/Button'
 import { AutoColumn } from '../../Column'
 
 const StyledClaimButton = styled(ButtonPrimary)`

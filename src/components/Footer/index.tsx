@@ -3,7 +3,7 @@ import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
 
 import { useDarkModeManager } from '../../state/user/hooks'
-import { ButtonSecondary } from '../Button'
+import { ButtonSecondary } from '../Button/Button'
 
 const FooterFrame = styled.div`
   display: flex;

@@ -11,7 +11,7 @@ import {
   RoutablePlatformKeysByNetwork,
 } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
-import { ButtonPrimary } from '../../Button/index'
+import { ButtonPrimary } from '../../Button/Button'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>

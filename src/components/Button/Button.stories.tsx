@@ -3,7 +3,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { componentName } from '../../utils'
-
 import {
   Base,
   ButtonConfirmed as ButtonConfirm,
@@ -14,7 +13,7 @@ import {
   ButtonLinkProps,
   CarrotButton as Carrot,
   StyledButtonsArray,
-} from '.'
+} from './Button'
 
 export default {
   title: 'Buttons',

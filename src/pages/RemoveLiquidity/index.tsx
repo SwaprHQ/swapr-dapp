@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../components/Button'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../components/Button/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'

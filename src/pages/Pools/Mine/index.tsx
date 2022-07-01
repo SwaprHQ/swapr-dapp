@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
+import { ButtonPrimary, ButtonSecondary } from '../../../components/Button/Button'
 import { AutoColumn } from '../../../components/Column'
 import { PairsList } from '../../../components/Pool/PairsList'
 import { RowBetween, RowFixed } from '../../../components/Row'

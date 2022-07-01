@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button'
+import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'

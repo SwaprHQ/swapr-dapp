@@ -3,7 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import React from 'react'
 import styled from 'styled-components'
 
-import { ButtonPrimary } from '../../../components/Button'
+import { ButtonPrimary } from '../../../components/Button/Button'
 import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
 
 interface GradientButtonProps {

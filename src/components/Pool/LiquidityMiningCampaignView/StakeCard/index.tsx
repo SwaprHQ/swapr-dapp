@@ -18,7 +18,7 @@ import { useLpTokensUnderlyingAssets } from '../../../../hooks/useLpTokensUnderl
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { TYPE } from '../../../../theme'
-import { ButtonDark } from '../../../Button'
+import { ButtonDark } from '../../../Button/Button'
 import { GreyCard } from '../../../Card'
 import { AutoColumn } from '../../../Column'
 import { CurrencyLogo } from '../../../CurrencyLogo'

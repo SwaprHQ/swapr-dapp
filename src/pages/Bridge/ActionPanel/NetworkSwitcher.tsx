@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
 
-import { ButtonPrimary } from '../../../components/Button'
+import { ButtonPrimary } from '../../../components/Button/Button'
 import { RowBetween } from '../../../components/Row'
 import { ChainLabel } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'

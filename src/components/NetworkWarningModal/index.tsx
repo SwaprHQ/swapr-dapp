@@ -9,7 +9,7 @@ import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
 import { TYPE } from '../../theme'
 import { switchOrAddNetwork } from '../../utils'
-import { ButtonPrimary } from '../Button'
+import { ButtonPrimary } from '../Button/Button'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'

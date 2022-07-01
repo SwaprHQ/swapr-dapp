@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Button as Base, ButtonProps } from 'rebass'
 import styled, { keyframes } from 'styled-components'
 
-import { ButtonInvisble } from '../components/Button'
+import { ButtonInvisble } from '../components/Button/Button'
 import { Colors } from './styled'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({

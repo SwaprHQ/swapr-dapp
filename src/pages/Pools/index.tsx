@@ -8,7 +8,7 @@ import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
-import { ButtonWithExternalLink } from '../../components/Button'
+import { ButtonWithExternalLink } from '../../components/Button/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
