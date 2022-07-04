@@ -57,8 +57,8 @@ export function useSwaprSinglelSidedStakeCampaigns(
 } {
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
+  const subgraphAccountId = account?.toLowerCase() || ''
+  const filterTokenAddress = filterToken?.address.toLowerCase()
 
   const SWPRToken = useSWPRToken()
   const swaprAddress = SWPRToken?.address ?? undefined

@@ -20,8 +20,9 @@ const Row = styled(Box)<{
   justify-content: ${({ justify }) => justify && justify};
 `
 
-export const RowBetween = styled(Row)`
+export const RowBetween = styled(Row)<{ gap?: number }>`
   justify-content: space-between;
+  ${({ gap }) => gap && `gap: ${gap}px;`}
 `
 
 export const RowFlat = styled.div`

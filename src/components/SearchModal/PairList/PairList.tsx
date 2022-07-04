@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useCallback } from 'react'
+import React, { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
@@ -15,7 +15,20 @@ import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import Badge from '../../Badge'
 import DoubleCurrencyLogo from '../../DoubleLogo'
 import { TokenPickerItem } from '../shared'
-import { PairListProps, PairRowProps } from './PairList.types'
+
+interface PairRowProps {
+  pair: Pair
+  style: CSSProperties
+  onSelect: () => void
+  isSelected: boolean
+}
+
+interface PairListProps {
+  pairs: Pair[]
+  otherPair?: Pair | null
+  onPairSelect: (pair: Pair) => void
+  selectedPair?: Pair | null
+}
 
 function pairKey(index: number, data: Pair[]) {
   return data[index].liquidityToken.address

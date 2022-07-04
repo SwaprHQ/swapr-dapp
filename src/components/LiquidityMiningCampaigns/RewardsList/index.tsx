@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useAllLiquidtyMiningCampaigns } from '../../../hooks/useAllLiquidtyMiningCampaigns'
+import { useAllLiquidityMiningCampaigns } from '../../../hooks/useAllLiquidityMiningCampaigns'
 import { AutoColumn } from '../../Column'
 import { PairsFilterType } from '../../Pool/ListFilter'
 import { Switch } from '../../Switch'
@@ -24,7 +24,7 @@ interface RewardsInterface {
 }
 
 export function RewardsList({ dataFilter, pair, setDataFiler, loading }: RewardsInterface) {
-  const { loading: loadingPairs, miningCampaigns } = useAllLiquidtyMiningCampaigns(pair ? pair : undefined, dataFilter)
+  const { loading: loadingPairs, miningCampaigns } = useAllLiquidityMiningCampaigns(pair ?? undefined, dataFilter)
 
   const [activeTab, setActiveTab] = useState(0)
 

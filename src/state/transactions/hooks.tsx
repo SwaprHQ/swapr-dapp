@@ -8,30 +8,36 @@ import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
 
+export type SwaprTransactionResponse =
+  | TransactionResponse
+  | {
+      hash: string
+    }
+
+interface TransactionAdderCustomData {
+  summary?: string
+  claim?: {
+    recipient: string
+  }
+  approval?: {
+    tokenAddress: string
+    spender: string
+  }
+  swapProtocol?: string
+}
+
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponse,
-  customData?: {
-    summary?: string
-    approval?: { tokenAddress: string; spender: string }
-    claim?: { recipient: string }
-  }
+  response: SwaprTransactionResponse,
+  customData?: TransactionAdderCustomData
 ) => void {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback(
     (
-      response: TransactionResponse,
-      {
-        summary,
-        approval,
-        claim,
-      }: {
-        summary?: string
-        claim?: { recipient: string }
-        approval?: { tokenAddress: string; spender: string }
-      } = {}
+      response: SwaprTransactionResponse,
+      { summary, approval, claim, swapProtocol }: TransactionAdderCustomData = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -40,16 +46,7 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(
-        addTransaction({
-          hash,
-          from: account,
-          chainId,
-          approval,
-          summary,
-          claim,
-        })
-      )
+      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim, swapProtocol }))
     },
     [dispatch, chainId, account]
   )

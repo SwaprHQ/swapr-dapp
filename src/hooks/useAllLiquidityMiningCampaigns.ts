@@ -1,14 +1,20 @@
-import { BigintIsh, Pair, SingleSidedLiquidityMiningCampaign, Token, TokenAmount } from '@swapr/sdk'
+import { BigintIsh, Pair, Token } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { getAddress, parseUnits } from 'ethers/lib/utils'
-import { DateTime, Duration } from 'luxon'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
-import { toLiquidityMiningCampaign, toSingleSidedStakeCampaign } from '../utils/liquidityMining'
+import {
+  getLowerTimeLimit,
+  getTokenAmount,
+  MiningCampaign,
+  sortActiveCampaigns,
+  sortExpiredCampaigns,
+  toLiquidityMiningCampaign,
+  toSingleSidedStakeCampaign,
+} from '../utils/liquidityMining'
 import { useSWPRToken } from './swpr/useSWPRToken'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -83,13 +89,7 @@ const REGULAR_CAMPAIGN = gql`
   }
 `
 
-export function useAllLiquidtyMiningCampaigns(
-  pair?: Pair,
-  dataFilter?: PairsFilterType
-): {
-  loading: boolean
-  miningCampaigns: any
-} {
+export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFilterType) {
   const token0Address = pair?.token0?.address.toLowerCase()
   const token1Address = pair?.token1?.address.toLowerCase()
   const pairAddress = pair?.liquidityToken.address.toLowerCase()
@@ -102,11 +102,8 @@ export function useAllLiquidtyMiningCampaigns(
   const nativeCurrency = useNativeCurrency()
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
   const isUpcoming = useCallback((startTime: BigintIsh) => timestamp < parseInt(startTime.toString()), [timestamp])
-  const lowerTimeLimit = DateTime.utc()
-    .minus(Duration.fromObject({ days: 150 }))
-    .toJSDate()
 
-  const memoizedLowerTimeLimit = useMemo(() => Math.floor(lowerTimeLimit.getTime() / 1000), [lowerTimeLimit])
+  const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
 
   const {
@@ -142,10 +139,11 @@ export function useAllLiquidtyMiningCampaigns(
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(kpiTokenAddresses)
 
   return useMemo(() => {
-    if (singleSidedLoading || chainId === undefined || campaignLoading || !SWPRToken) {
-      return { loading: true, miningCampaigns: { active: [], expired: [] } }
-    }
     if (
+      singleSidedLoading ||
+      !chainId ||
+      campaignLoading ||
+      !SWPRToken ||
       singleSidedCampaignsError ||
       campaignError ||
       !singleSidedCampaigns ||
@@ -156,8 +154,9 @@ export function useAllLiquidtyMiningCampaigns(
     ) {
       return { loading: true, miningCampaigns: { active: [], expired: [] } }
     }
-    const expiredCampaigns = []
-    const activeCampaigns = []
+    const expiredCampaigns: MiningCampaign[] = []
+    const activeCampaigns: MiningCampaign[] = []
+
     for (let i = 0; i < pairCampaigns.liquidityMiningCampaigns.length; i++) {
       const campaign = pairCampaigns.liquidityMiningCampaigns[i]
 
@@ -171,26 +170,13 @@ export function useAllLiquidtyMiningCampaigns(
       const containsKpiToken = !!campaign.rewards.find(
         reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
       )
-      const token0ChecksummedAddress = getAddress(token0.address)
-      const token1ChecksummedAddress = getAddress(token1.address)
 
-      const tokenA =
-        tokensInCurrentChain &&
-        tokensInCurrentChain[token0ChecksummedAddress] &&
-        tokensInCurrentChain[token0ChecksummedAddress].token
-          ? tokensInCurrentChain[token0ChecksummedAddress].token
-          : new Token(chainId, token0ChecksummedAddress, parseInt(token0.decimals), token0.symbol, token0.name)
-      const tokenAmountA = new TokenAmount(tokenA, parseUnits(reserve0, token0.decimals).toString())
+      const tokenAmountA = getTokenAmount({ token: token0, tokensInCurrentChain, chainId, reserve: reserve0 })
+      const tokenAmountB = getTokenAmount({ token: token1, tokensInCurrentChain, chainId, reserve: reserve1 })
 
-      const tokenB =
-        tokensInCurrentChain &&
-        tokensInCurrentChain[token1ChecksummedAddress] &&
-        tokensInCurrentChain[token1ChecksummedAddress].token
-          ? tokensInCurrentChain[token1ChecksummedAddress].token
-          : new Token(chainId, token1ChecksummedAddress, parseInt(token1.decimals), token1.symbol, token1.name)
-      const tokenAmountB = new TokenAmount(tokenB, parseUnits(reserve1, token1.decimals).toString())
       const pair = new Pair(tokenAmountA, tokenAmountB)
-      const liquditiyCampaign = toLiquidityMiningCampaign(
+
+      const liquidityCampaign = toLiquidityMiningCampaign(
         chainId,
         pair,
         totalSupply,
@@ -202,12 +188,17 @@ export function useAllLiquidtyMiningCampaigns(
 
       const hasStake = campaign.liquidityMiningPositions.length > 0
       const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
+      const isActive = hasStake || liquidityCampaign.currentlyActive || isUpcoming(campaign.startsAt)
 
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(tokenA) || SWPRToken.equals(tokenB)) {
-        if (hasStake || liquditiyCampaign.currentlyActive || isUpcoming(campaign.startsAt)) {
-          activeCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+      if (
+        dataFilter !== PairsFilterType.SWPR ||
+        SWPRToken.address.toLowerCase() === token0.address ||
+        SWPRToken.address.toLowerCase() === token1.address
+      ) {
+        if (isActive) {
+          activeCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
         } else if (isExpired) {
-          expiredCampaigns.push({ campaign: liquditiyCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
+          expiredCampaigns.push({ campaign: liquidityCampaign, staked: hasStake, containsKpiToken: containsKpiToken })
         }
       }
     }
@@ -270,52 +261,12 @@ export function useAllLiquidtyMiningCampaigns(
       }
     }
 
-    const sortedActiveCampaigns = activeCampaigns.sort((a, b) => {
-      if (a.campaign.ended && !b.campaign.ended) return -1
-      if (!a.campaign.ended && b.campaign.ended) return 1
-
-      if (a.staked && !b.staked) return -1
-      if (!a.staked && b.staked) return 1
-
-      if (
-        a.campaign instanceof SingleSidedLiquidityMiningCampaign &&
-        !(b.campaign instanceof SingleSidedLiquidityMiningCampaign)
-      )
-        return -1
-
-      if (
-        !(a.campaign instanceof SingleSidedLiquidityMiningCampaign) &&
-        b.campaign instanceof SingleSidedLiquidityMiningCampaign
-      )
-        return 1
-
-      // Active above upcoming
-      if (a.campaign.currentlyActive && !b.campaign.currentlyActive) return -1
-      if (!a.campaign.currentlyActive && b.campaign.currentlyActive) return 1
-
-      // TV
-      if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
-      if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
-
-      if (a.campaign.apy > b.campaign.apy) return -1
-      if (a.campaign.apy < b.campaign.apy) return 1
-
-      return 0
-    })
-
-    const sortedExpiredCampaigns = expiredCampaigns.sort((a, b) => {
-      if (a.campaign.endsAt > b.campaign.endsAt) return -1
-      if (a.campaign.endsAt < b.campaign.endsAt) return 1
-
-      if (a.campaign.staked.nativeCurrencyAmount.greaterThan(b.campaign.staked.nativeCurrencyAmount)) return -1
-      if (a.campaign.staked.nativeCurrencyAmount.lessThan(b.campaign.staked.nativeCurrencyAmount)) return 1
-
-      return 0
-    })
-
     return {
       loading: false,
-      miningCampaigns: { active: sortedActiveCampaigns, expired: sortedExpiredCampaigns },
+      miningCampaigns: {
+        active: sortActiveCampaigns(activeCampaigns),
+        expired: sortExpiredCampaigns(expiredCampaigns),
+      },
     }
   }, [
     singleSidedLoading,

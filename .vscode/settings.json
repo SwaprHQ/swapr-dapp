@@ -9,7 +9,6 @@
     "source.fixAll.eslint": true
   },
   "typescript.preferences.quoteStyle": "single",
-  "editor.rulers": [80],
   "editor.tabSize": 2,
   "files.associations": {
     "*.env.*": "env"

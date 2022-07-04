@@ -22,8 +22,8 @@ import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFea
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { PageWrapper } from '../PageWrapper'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
-import { PageWrapper } from '../Pools/styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -124,8 +124,7 @@ export default function Rewards() {
   return (
     <>
       <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
+        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
