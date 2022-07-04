@@ -21,16 +21,13 @@ describe('Add liquidity', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    //TODO: delete wait after synpress resolve bug 
+    //TODO: delete wait after synpress resolve bug
     cy.wait(1000)
   })
 
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getPairCards()
-    .contains('DXD')
-    .contains('WEENUS')
-    .click()
+    LiquidityPage.getPairCards().contains('DXD').contains('WEENUS').click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
@@ -56,13 +53,14 @@ describe('Add liquidity', () => {
     LiquidityPage.getAddLiquidityButton().click()
     LiquidityPage.typeValueToFirstToken(TRANSACTION_VALUE.toFixed(9).toString())
     console.log('FIST TOKEN ADDED AMOUNT', firstTokenAddedAmount)
+    cy.wait(1000)
     LiquidityPage.getSecondTokenField()
       .invoke('val')
       .should(value => {
         console.log('SECOND TOKEN ADDED AMOUNT', value)
         secondTokenAddedAmount = parseFloat(value as string)
         firstTokenBalance = firstTokenBefore + firstTokenAddedAmount
-        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)      
+        console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)
         secondTokenBalance = secondTokenBefore + secondTokenAddedAmount
         console.log('FINAL SECOND TOKEN BALANCE', secondTokenBalance)
       })
@@ -74,10 +72,7 @@ describe('Add liquidity', () => {
   })
   it('Should check if tokens are added to liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getPairCards()
-    .contains('DXD')
-    .contains('WEENUS')
-    .click()
+    LiquidityPage.getPairCards().contains('DXD').contains('WEENUS').click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
