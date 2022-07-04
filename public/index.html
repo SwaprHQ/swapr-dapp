@@ -30,7 +30,7 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
 
     <script>
-      ;(function() {
+      ;(function () {
         const { pathname, hostname, protocol } = window.location
 
         // redirect to https on non-localhost
@@ -52,7 +52,7 @@
 
     <title>Swapr</title>
     <script>
-      ;(function() {
+      ;(function () {
         const { pathname, hostname, protocol } = window.location
 
         // redirect to https on non-localhost
@@ -61,6 +61,19 @@
           return
         }
       })()
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            backgroundImage: {
+              'example-dim':
+                'linear-gradient(143.3deg,rgba(46,23,242,0.5) -185.11%,rgba(46,23,242,0) 49.63%),linear-gradient(113.18deg,#c0baf638 -0.1%,rgba(0,0,0,0) 98.9%),rgba(57,51,88,0.3)',
+            },
+          },
+        },
+      }
     </script>
   </head>
   <body>

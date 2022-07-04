@@ -1,13 +1,22 @@
-import { Box } from 'rebass'
-import styled from 'styled-components'
+import classNames from 'classnames'
+import React, { ReactNode } from 'react'
 
-import { gradients } from '../../../utils/theme'
+interface EmptyProps {
+  padding?: string
+  children: ReactNode
+}
 
-export const DimBlurBgBox = styled(Box)`
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.purple5};
-
-  background: ${gradients.purpleDimDark};
-  background-blend-mode: normal, overlay, normal;
-  backdrop-filter: blur(25px);
-`
+export const DimBlurBgBox = ({ children, padding }: EmptyProps) => {
+  return (
+    <div
+      className={classNames(
+        'border border-solid border-purple5 rounded-xl backdrop-blur bg-blend-overlay bg-purple-dim-dark',
+        {
+          'p-6': padding,
+        }
+      )}
+    >
+      {children}
+    </div>
+  )
+}
