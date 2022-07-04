@@ -34,16 +34,16 @@ export class LiquidityPage {
     return cy.get('[id=token-search-input]')
   }
   static getAddLiquidityButton() {
-    return cy.get('[data-testid=add-liquidity]')
+    return cy.get('[data-testid=add-liquidity-button]')
   }
   static getYourPoolTokens() {
     return cy.get('[data-testid=user-pool-balance]')
   }
   static getFirstTokenBalance() {
-    return cy.get('[data-testid=first-token-balance]')
+    return cy.get('[data-testid=token-balance]').eq(6)
   }
   static getSecondTokenBalance() {
-    return cy.get('[data-testid=second-token-balance]')
+    return cy.get('[data-testid=token-balance]').eq(7)
   }
   static getUsersPoolShare() {
     return cy.get('[data-testid=pool-share]')
@@ -65,10 +65,7 @@ export class LiquidityPage {
   }
   static switchCampaignsToogle() {
     LiquidityPage.getCampaignsAndMyPairsToggleSwitch().within(() => {
-      return cy
-        .get('label')
-        .first()
-        .click()
+      return cy.get('label').first().click()
     })
   }
 }

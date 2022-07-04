@@ -26,7 +26,7 @@ export const ValueWithLabel = ({
           {title}
         </Title>
       )}
-      <Value big={big} textAlign={center ? 'center' : 'left'}>
+      <Value big={big} textAlign={center ? 'center' : 'left'} data-testid="token-balance">
         {value}
       </Value>
     </div>
