@@ -24,11 +24,10 @@ import {
   QuoteOutputDTO,
   TokenPriceResponseDTO,
 } from './api/generated'
-import { SOCKET_TOKENS } from './Socket.lists'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
-import { SocketTxStatus } from './Socket.types'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, VERSION } from './Socket.utils'
+import { SocketTokenMap, SocketTxStatus } from './Socket.types'
+import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 
 const getErrorMsg = (error: any) => {
   if (error?.code === 4001) {
@@ -40,6 +39,7 @@ const getErrorMsg = (error: any) => {
   return `Bridge failed: ${error.message}`
 }
 export class SocketBridge extends EcoBridgeChildBase {
+  private _tokenLists: SocketTokenMap = {}
   private _listeners: NodeJS.Timeout[] = []
   private _abortControllers: { [id: string]: AbortController } = {}
 
@@ -337,7 +337,11 @@ export class SocketBridge extends EcoBridgeChildBase {
     let fromTokenAddress = ''
     let toTokenAddress = ''
 
-    const overrideTokens = overrideTokensAddresses(to.chainId, from.chainId, from.address, fromNativeCurrency)
+    const overrideTokens = overrideTokensAddresses({
+      toChainId: to.chainId,
+      fromChainId: from.chainId,
+      fromAddress: from.address,
+    })
 
     if (overrideTokens) {
       const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
@@ -469,9 +473,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals))
-        .toFixed(2)
-        .toString(),
+      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals)).toFixed(2).toString(),
       requestId: helperRequestId,
     }
 
@@ -497,7 +499,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       name: 'Socket',
       timestamp: new Date().toISOString(),
       version: VERSION,
-      tokens: SOCKET_TOKENS[tokenListKey] ?? [],
+      tokens: this._tokenLists[tokenListKey] ?? [],
       logoURI: SocketLogo,
     }
 
@@ -506,6 +508,14 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
+    try {
+      const socketListsResponse = await fetch(SOCKET_LISTS_URL)
+      const socketLists: { data: SocketTokenMap } = await socketListsResponse.json()
+      this._tokenLists = socketLists.data
+    } catch (e) {
+      throw new Error('Failed to fetch Socket token lists')
+    }
+
     this.store.dispatch(commonActions.activateLists(['socket']))
   }
 

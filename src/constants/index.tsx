@@ -24,6 +24,7 @@ import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import CowLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
@@ -32,16 +33,35 @@ import { injected, walletConnect, walletLink } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-export const DAI_ETHEREUM_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
-export const DAI_ARBITRUM_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
-export const WETH_GNOSIS_ADDRESS = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'
 
 // a list of tokens by chain
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
 }
 
-export const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin')
+export const DAI: { [key: number]: Token } = {
+  [ChainId.MAINNET]: new Token(
+    ChainId.MAINNET,
+    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+  [ChainId.POLYGON]: new Token(
+    ChainId.POLYGON,
+    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+  [ChainId.ARBITRUM_ONE]: new Token(
+    ChainId.ARBITRUM_ONE,
+    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    18,
+    'DAI',
+    'Dai Stablecoin'
+  ),
+}
 
 export const USDC: { [key: number]: Token } = {
   [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C'),
@@ -100,6 +120,23 @@ export const WBTC: { [key: number]: Token } = {
   [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC'),
 }
 
+export const MATIC: { [key: number]: Token } = {
+  [ChainId.MAINNET]: new Token(
+    ChainId.MAINNET,
+    '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+    18,
+    'MATIC',
+    'Matic Token'
+  ),
+  [ChainId.XDAI]: new Token(
+    ChainId.XDAI,
+    '0x7122d7661c4564b7C6Cd4878B06766489a6028A2',
+    18,
+    'MATIC',
+    'Matic Token on xDai'
+  ),
+}
+
 export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
@@ -125,7 +162,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MAINNET]: [
     WETH[ChainId.MAINNET],
     DXD[ChainId.MAINNET],
-    DAI,
+    DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
@@ -159,7 +196,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
     DXD[ChainId.MAINNET],
-    DAI,
+    DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
     WBTC[ChainId.MAINNET],
@@ -181,7 +218,13 @@ export const SUGGESTED_BASES: ChainTokenList = {
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  [ChainId.MAINNET]: [WETH[ChainId.MAINNET], DXD[ChainId.MAINNET], DAI, USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
+  [ChainId.MAINNET]: [
+    WETH[ChainId.MAINNET],
+    DXD[ChainId.MAINNET],
+    DAI[ChainId.MAINNET],
+    USDC[ChainId.MAINNET],
+    USDT[ChainId.MAINNET],
+  ],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.ARBITRUM_ONE]: [WETH[ChainId.ARBITRUM_ONE], DXD[ChainId.ARBITRUM_ONE], USDC[ChainId.ARBITRUM_ONE]],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
@@ -189,10 +232,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
 }
 
-export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
+export const PINNED_PAIRS: {
+  readonly [chainId in ChainId]?: [Token, Token][]
+} = {
   [ChainId.MAINNET]: [
     [USDC[ChainId.MAINNET], USDT[ChainId.MAINNET]],
-    [DAI, USDT[ChainId.MAINNET]],
+    [DAI[ChainId.MAINNET], USDT[ChainId.MAINNET]],
   ],
 }
 
@@ -374,7 +419,9 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   },
 }
 
-export const NETWORK_OPTIONAL_DETAIL: { [chainId: number]: NetworkOptionalDetails } = {
+export const NETWORK_OPTIONAL_DETAIL: {
+  [chainId: number]: NetworkOptionalDetails
+} = {
   [ChainId.MAINNET]: {
     partnerChainId: ChainId.ARBITRUM_ONE,
     isArbitrum: false,
@@ -445,7 +492,12 @@ export const RoutablePlatformKeysByNetwork = {
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
-  [routablePaltformName: string]: { logo: string; alt: string; gradientColor: string; name: string }
+  [routablePaltformName: string]: {
+    logo: string
+    alt: string
+    gradientColor: string
+    name: string
+  }
 } = {
   [UniswapV2RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
@@ -507,6 +559,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.ZEROX.name,
   },
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
+    logo: CowLogo,
+    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  },
   [RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
     alt: RoutablePlatform.UNISWAP.name,
@@ -515,7 +573,9 @@ export const ROUTABLE_PLATFORM_STYLE: {
   },
 }
 
-export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode } = {
+export const ROUTABLE_PLATFORM_LOGO: {
+  [routablePaltformName: string]: ReactNode
+} = {
   [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
   [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
@@ -526,6 +586,7 @@ export const ROUTABLE_PLATFORM_LOGO: { [routablePaltformName: string]: ReactNode
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
   [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CowLogo} alt="Cow" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 
@@ -564,4 +625,10 @@ export const SHOW_TESTNETS = true
 export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {
   [ChainId.XDAI]: ['0xe716ec63c5673b3a4732d22909b38d779fa47c3f', '0x9467dcfd4519287e3878c018c02f5670465a9003'],
   [ChainId.RINKEBY]: ['0x1A639b50D807ce7e61Dc9eeB091e6Cea8EcB1595', '0xb4124ceb3451635dacedd11767f004d8a28c6ee7'],
+}
+
+export const LIQUIDITY_SORTING_TYPES: { [key: string]: string } = {
+  TVL: 'TVL',
+  APY: 'APY',
+  NEW: 'NEW',
 }

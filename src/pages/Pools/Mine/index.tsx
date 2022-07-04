@@ -1,18 +1,18 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
-import PairsList from '../../../components/Pool/PairsList'
+import { PairsList } from '../../../components/Pool/PairsList'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { useActiveWeb3React } from '../../../hooks'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -49,6 +49,7 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
 
 export default function MyPairs() {
   const { account } = useActiveWeb3React()
+  const [search] = useSearchParams()
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const { loading: loadingPairs, data } = useLPPairs(account || undefined)
 
@@ -77,7 +78,12 @@ export default function MyPairs() {
               </Box>
             </Flex>
             <ButtonRow>
-              <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/pools/create">
+              <ResponsiveButtonPrimary
+                id="join-pool-button"
+                as={Link}
+                padding="8px 14px"
+                to={{ pathname: '/pools/create', search: search.toString() }}
+              >
                 <Text fontWeight={700} fontSize={12}>
                   CREATE PAIR
                 </Text>

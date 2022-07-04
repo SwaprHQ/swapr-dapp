@@ -1,9 +1,11 @@
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
 import {
+  ChainId,
   CurveTrade,
   getAllCommonUniswapV2Pairs,
   getAllCommonUniswapV2PairsFromSubgraph,
+  GnosisProtocolTrade,
   Pair,
   RoutablePlatform,
   Token,
@@ -161,6 +163,26 @@ export async function getExactIn(
       .catch(error => {
         errors.push(error)
         resolve(undefined)
+        console.error(error)
+      })
+  })
+
+  // Gnosis Protocol V2
+  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
+    GnosisProtocolTrade.bestTradeExactIn({
+      currencyAmountIn,
+      currencyOut,
+      maximumSlippage,
+      receiver,
+    })
+      .then(resolve)
+      .catch(error => {
+        resolve(undefined)
+        console.error(error)
       })
   })
 
@@ -169,6 +191,7 @@ export async function getExactIn(
   const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
     ...uniswapV2TradesList,
     curveTrade,
+    gnosisProtocolTrade,
     uniswapTrade,
     zeroXTrade,
   ])
@@ -262,9 +285,71 @@ export async function getExactOut(
       })
   })
 
+  // Curve
+  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    CurveTrade.bestTradeExactOut(
+      {
+        currencyAmountOut,
+        currencyIn,
+        maximumSlippage,
+        receiver,
+      },
+      provider
+    )
+      .then(resolve)
+      .catch(error => {
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
+
+  // ZeroX
+  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    ZeroXTrade.bestTradeExactOut(currencyIn, currencyAmountOut, maximumSlippage)
+      .then(resolve)
+      .catch(error => {
+        errors.push(error)
+        resolve(undefined)
+        console.error(error)
+      })
+  })
+
+  // Gnosis Protocol V2
+  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+      return resolve(undefined)
+    }
+
+    GnosisProtocolTrade.bestTradeExactOut({
+      currencyAmountOut,
+      currencyIn,
+      maximumSlippage,
+      receiver,
+    })
+      .then(resolve)
+      .catch(error => {
+        resolve(undefined)
+        console.error(error)
+      })
+  })
+
   // Wait for all promises to resolve, and
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList, uniswapTrade])
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
+    ...uniswapV2TradesList,
+    curveTrade,
+    gnosisProtocolTrade,
+    uniswapTrade,
+    zeroXTrade,
+  ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades

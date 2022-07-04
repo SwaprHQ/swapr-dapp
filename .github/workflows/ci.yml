@@ -153,7 +153,7 @@ jobs:
     if: ${{ github.event_name != 'schedule' }}
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@3.5.1
+        uses: rlespinasse/github-slug-action@4.2.5
 
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -168,7 +168,7 @@ jobs:
         with:
           node-version: '16'
       - name: Start Deployment
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v1.3.0
         id: deployment
         with:
           step: start
@@ -177,19 +177,21 @@ jobs:
           ref: ${{github.head_ref}}
 
       - name: Deploy to IPFS
-        uses: web3-storage/add-to-web3@v1
+        uses: web3-storage/add-to-web3@v2
         id: web3
         with:
           web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
           path_to_add: 'build'
 
       - name: Update Deployment Status
-        uses: bobheadxi/deployments@v0.6.0
+        uses: bobheadxi/deployments@v1.3.0
         if: always()
         with:
           step: finish
           token: ${{secrets.GITHUB_TOKEN}}
           status: ${{job.status}}
+          env: ${{ steps.deployment.outputs.env }}
+          auto_inactive: true
           deployment_id: ${{steps.deployment.outputs.deployment_id}}
           env_url: 'https://${{steps.web3.outputs.cid}}.ipfs.dweb.link'
 
@@ -199,11 +201,11 @@ jobs:
     container: cypress/browsers:node12.13.0-chrome78-ff70
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+      PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [transactionfull, transactionless]
+        containers: [transactionfull, transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3

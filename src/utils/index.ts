@@ -39,6 +39,8 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return 'https://testnet.arbiscan.io'
     case ChainId.XDAI:
       return 'https://blockscout.com/xdai/mainnet'
+    case ChainId.POLYGON:
+      return 'https://polygonscan.com/'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
@@ -71,6 +73,12 @@ export function getExplorerLink(
       return `${prefix}/address/${data}`
     }
   }
+}
+
+export function getAccountAnalyticsLink(account: string, chainId: ChainId | undefined): string {
+  return account
+    ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
 }
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
@@ -217,4 +225,42 @@ export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
   return strictFormat
     ? normalizedValue.replace(/^([\d,]+)$|^([\d,]+)\.0*$|^([\d,]+\.[0-9]*?)0*$/, '$1$2$3')
     : normalizedValue
+}
+
+/**
+ * Gnosis Protocol Explorer Base URL list
+ */
+const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
+  [ChainId.MAINNET]: 'https://explorer.cow.fi',
+  [ChainId.RINKEBY]: 'https://explorer.cow.fi/rinkeby',
+  [ChainId.XDAI]: 'https://explorer.cow.fi/xdai',
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer Base link
+ * @param chainId the chain Id
+ * @returns the explorer URL for given chain ID
+ */
+export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
+  return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param orderId the order ID
+ * @returns the order link
+ */
+export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/orders/${orderId}`
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param address the order address
+ * @returns the order link
+ */
+export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`
 }

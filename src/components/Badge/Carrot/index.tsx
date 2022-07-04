@@ -25,6 +25,7 @@ const KpiBadge = styled.div<{ isGreyed: boolean }>`
   display: flex;
   align-items: center;
   padding: 0 2px;
+  text-transform: uppercase;
 `
 const StyledCarrotLogo = styled(CarrotLogo)`
   width: 16px;
@@ -34,15 +35,13 @@ const StyledCarrotLogo = styled(CarrotLogo)`
   }
 `
 
-const CarrotBadge = ({ isGreyed = false }: { isGreyed?: boolean }) => {
-  return (
-    <MouseoverTooltip content="Rewards at least a Carrot KPI token">
-      <KpiBadge isGreyed={isGreyed}>
-        <StyledCarrotLogo />
-        CARROT
-      </KpiBadge>
-    </MouseoverTooltip>
-  )
-}
+const CarrotBadge = ({ isGreyed = false }) => (
+  <MouseoverTooltip content="Rewards at least a Carrot KPI token">
+    <KpiBadge isGreyed={isGreyed}>
+      <StyledCarrotLogo />
+      CARROT
+    </KpiBadge>
+  </MouseoverTooltip>
+)
 
 export default CarrotBadge

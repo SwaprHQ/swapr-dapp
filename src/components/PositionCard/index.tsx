@@ -12,6 +12,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, TYPE } from '../../theme'
+import { getAccountAnalyticsLink } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { ButtonDark, ButtonGrey } from '../Button'
@@ -170,11 +171,7 @@ const AccountAnalyticsButton = ({
     width={fullWidth ? undefined : 'auto'}
     style={{ padding: '8px 12px' }}
     as={ExternalLink}
-    href={
-      account
-        ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
-        : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
-    }
+    href={getAccountAnalyticsLink(account || '', chainId)}
   >
     <Flex alignItems="center">
       <Box mr="4px">
@@ -325,7 +322,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               padding="8px"
               as={Link}
               to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-              style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+              style={{
+                fontSize: '12px',
+                fontWeight: 'bold',
+                lineHeight: '15px',
+              }}
               width={showRemoveButton ? '48%' : '100%'}
               data-testid="add-liquidity"
             >
@@ -337,7 +338,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 as={Link}
                 width="48%"
                 to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-                style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  lineHeight: '15px',
+                }}
               >
                 REMOVE LIQUIDITY
               </ButtonDark>

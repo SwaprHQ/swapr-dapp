@@ -93,7 +93,11 @@ const Dots = styled.div<{ status: BridgeTransactionStatus }>`
   justify-content: space-between;
   align-items: center;
   color: ${({ theme, status }) =>
-    status === 'confirmed' || status === 'claimed' ? theme.green2 : status === 'failed' ? theme.red2 : theme.purple3};
+    status === 'confirmed' || status === 'claimed'
+      ? theme.green2
+      : status === 'failed' || status === 'cancelled'
+      ? theme.red2
+      : theme.purple3};
 
   &:after {
     font-size: 14px;
@@ -117,7 +121,11 @@ const TextTo = styled(Link)<{ status: BridgeTransactionStatus }>`
   font-size: 10px;
   line-height: 12px;
   color: ${({ theme, status }) =>
-    status === 'confirmed' || status === 'claimed' ? theme.green2 : status === 'failed' ? theme.red2 : theme.purple3};
+    status === 'confirmed' || status === 'claimed'
+      ? theme.green2
+      : status === 'failed' || status === 'cancelled'
+      ? theme.red2
+      : theme.purple3};
 `
 interface BridgeTransactionsSummaryProps {
   transactions: BridgeTransactionSummary[]

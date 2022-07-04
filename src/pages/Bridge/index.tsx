@@ -106,20 +106,10 @@ export default function Bridge() {
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
   const { bridgeCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
-  const {
-    onCurrencySelection,
-    onUserInput,
-    onToNetworkChange,
-    onFromNetworkChange,
-    onSwapBridgeNetworks,
-  } = useBridgeActionHandlers()
-  const {
-    collectableTx,
-    setCollectableTx,
-    isCollecting,
-    setIsCollecting,
-    collectableCurrency,
-  } = useBridgeCollectHandlers()
+  const { onCurrencySelection, onUserInput, onToNetworkChange, onFromNetworkChange, onSwapBridgeNetworks } =
+    useBridgeActionHandlers()
+  const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
+    useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
 
   const [activeTab, setActiveTab] = useState<BridgeTab>(BridgeTab.BRIDGE)
@@ -204,7 +194,12 @@ export default function Bridge() {
       setIsCollecting(true)
       setActiveTab(BridgeTab.COLLECT)
       setTxsFilter(BridgeTxsFilter.COLLECTABLE)
-      setModalData({ fromChainId, toChainId, symbol: assetName, typedValue: value })
+      setModalData({
+        fromChainId,
+        toChainId,
+        symbol: assetName,
+        typedValue: value,
+      })
     },
     [setCollectableTx, setIsCollecting, setModalData, setTxsFilter]
   )
@@ -316,6 +311,7 @@ export default function Bridge() {
             }
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
+            maxAmount={maxAmountInput}
           />
           <BridgeActionPanel
             account={account}

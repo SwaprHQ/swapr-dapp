@@ -26,11 +26,10 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
-  const error = useMemo(() => Boolean(recipient && recipient.length > 0 && !loading && !address), [
-    address,
-    loading,
-    recipient,
-  ])
+  const error = useMemo(
+    () => Boolean(recipient && recipient.length > 0 && !loading && !address),
+    [address, loading, recipient]
+  )
 
   const handleInput = useCallback(
     event => {

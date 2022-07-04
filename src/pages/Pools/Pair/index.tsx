@@ -1,27 +1,152 @@
+import { JSBI, Percent } from '@swapr/sdk'
+
 import React, { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
-import { AutoColumn } from '../../../components/Column'
+import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
-import { SwapPoolTabs } from '../../../components/NavigationTabs'
-import PairView from '../../../components/Pool/PairView'
+import List from '../../../components/LiquidityMiningCampaigns/List'
+import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'
+import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
+import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
+import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
-import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
-import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
+import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
-import { TYPE } from '../../../theme'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../PageWrapper'
+
+type CurrencySearchParams = {
+  currencyIdA: string
+  currencyIdB: string
+}
+
+export default function Pair() {
+  const { navigate } = useRouter()
+  const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
+  const token0 = useToken(currencyIdA)
+  const token1 = useToken(currencyIdB)
+
+  const wrappedPair = usePair(token0 || undefined, token1 || undefined)
+  const [openPairsModal, setOpenPairsModal] = useState(false)
+  const { t } = useTranslation()
+  const { loading: loadingPairs, miningCampaigns } = usePairLiquidityMiningCampaigns(
+    wrappedPair[1] ? wrappedPair[1] : undefined
+  )
+
+  const handleAllClick = useCallback(() => {
+    setOpenPairsModal(true)
+  }, [])
+
+  const handleModalClose = useCallback(() => {
+    setOpenPairsModal(false)
+  }, [])
+
+  const handlePairSelect = useCallback(
+    pair => {
+      navigate(`/pools/${pair.token0.address}/${pair.token1.address}`)
+    },
+    [navigate]
+  )
+
+  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
+    return <Navigate to="/pools" replace />
+  }
+
+  return (
+    <>
+      <PageWrapper>
+        <Box paddingX={2}>
+          <TitleRow>
+            <Flex alignItems="center">
+              <PointableFlex onClick={handleAllClick}>
+                <Box mr="4px">
+                  <DoubleCurrencyLogo
+                    loading={!token0 || !token1}
+                    currency0={token0 || undefined}
+                    currency1={token1 || undefined}
+                    size={20}
+                  />
+                </Box>
+                <Box mr="4px">
+                  <Text fontWeight="600" fontSize="16px" lineHeight="20px">
+                    {!token0 || !token1 ? (
+                      <Skeleton width="60px" />
+                    ) : (
+                      `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
+                    )}
+                  </Text>
+                </Box>
+                <Box>
+                  <ChevronDown size={12} />
+                </Box>
+              </PointableFlex>
+            </Flex>
+            <ButtonRow>
+              <ButtonPurpleDim
+                as={Link}
+                to={token0 && token1 ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}` : ''}
+              >
+                {t('trade')}
+              </ButtonPurpleDim>
+            </ButtonRow>
+          </TitleRow>
+          <ContentGrid>
+            <TwoColumnsGrid>
+              <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
+              <DimBlurBgBox padding={'24px'}>
+                <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
+                  <Box mb={3}>
+                    <ValueWithLabel
+                      title={t('swapFee')}
+                      value={
+                        wrappedPair[1]
+                          ? new Percent(
+                              JSBI.BigInt(wrappedPair[1].swapFee.toString()),
+                              JSBI.BigInt(10000)
+                            ).toSignificant(3) + '%'
+                          : '-'
+                      }
+                      big
+                      center
+                    />
+                  </Box>
+                  <ButtonBadge to={'#'} number={0} disabled>
+                    {t('governance')}
+                  </ButtonBadge>
+                </Flex>
+              </DimBlurBgBox>
+            </TwoColumnsGrid>
+            <UserLiquidity pair={wrappedPair[1] || undefined} />
+          </ContentGrid>
+          <Flex my={3}>
+            <ButtonBadge
+              number={miningCampaigns.active.length}
+              color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}
+              to={token0 && token1 ? `/rewards/${token0.address}/${token1.address}` : ''}
+            >
+              {t('campaigns')}
+            </ButtonBadge>
+          </Flex>
+          {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading loadingItems={3} />}
+        </Box>
+      </PageWrapper>
+      <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
+    </>
+  )
+}
 
 const TitleRow = styled(RowBetween)`
+  margin-bottom: 24px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
     gap: 12px;
@@ -39,20 +164,6 @@ const PointableFlex = styled(Flex)`
   cursor: pointer;
 `
 
-const ResponsiveButtonPrimary = styled(ButtonPrimary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
-const ResponsiveButtonSecondary = styled(ButtonSecondary)`
-  width: fit-content;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
-`
-
 const ButtonRow = styled(RowFixed)`
   gap: 12px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -63,102 +174,18 @@ const ButtonRow = styled(RowFixed)`
   `};
 `
 
-export default function Pair({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const router = useRouter()
-  const token0 = useToken(currencyIdA)
-  const token1 = useToken(currencyIdB)
-  const wrappedPair = usePair(token0 || undefined, token1 || undefined)
+const TwoColumnsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 0.4fr;
+  grid-gap: 24px;
 
-  const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
-  const [openPairsModal, setOpenPairsModal] = useState(false)
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1fr;
+  `};
+`
 
-  const handleAllClick = useCallback(() => {
-    setOpenPairsModal(true)
-  }, [])
-
-  const handleModalClose = useCallback(() => {
-    setOpenPairsModal(false)
-  }, [])
-
-  const handlePairSelect = useCallback(
-    pair => {
-      router.push({
-        pathname: `/pools/${pair.token0.address}/${pair.token1.address}`,
-      })
-    },
-    [router]
-  )
-
-  if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID))
-    return <Redirect to="/pools" />
-  return (
-    <>
-      <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
-        <AutoColumn gap="lg" justify="center">
-          <AutoColumn gap="lg" style={{ width: '100%' }}>
-            <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-              <Flex alignItems="center">
-                <Box mr="8px">
-                  <UndecoratedLink to="/pools">
-                    <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                      Pairs
-                    </TYPE.mediumHeader>
-                  </UndecoratedLink>
-                </Box>
-                <Box mr="8px">
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
-                    /
-                  </TYPE.mediumHeader>
-                </Box>
-                <PointableFlex onClick={handleAllClick}>
-                  <Box mr="4px">
-                    <DoubleCurrencyLogo
-                      loading={!token0 || !token1}
-                      currency0={token0 || undefined}
-                      currency1={token1 || undefined}
-                      size={20}
-                    />
-                  </Box>
-                  <Box mr="4px">
-                    <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                      {!token0 || !token1 ? (
-                        <Skeleton width="60px" />
-                      ) : (
-                        `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
-                      )}
-                    </Text>
-                  </Box>
-                  <Box>
-                    <ChevronDown size={12} />
-                  </Box>
-                </PointableFlex>
-              </Flex>
-              <ButtonRow>
-                <ResponsiveButtonPrimary id="join-pool-button" as={Link} padding="8px 14px" to="/pools/create">
-                  <Text fontWeight={700} fontSize={12}>
-                    CREATE PAIR
-                  </Text>
-                </ResponsiveButtonPrimary>
-                {liquidityMiningEnabled && (
-                  <ResponsiveButtonSecondary as={Link} padding="8px 14px" to="/liquidity-mining/create">
-                    <Text fontWeight={700} fontSize={12} lineHeight="15px">
-                      CREATE REWARDS
-                    </Text>
-                  </ResponsiveButtonSecondary>
-                )}
-              </ButtonRow>
-            </TitleRow>
-            <PairView loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-          </AutoColumn>
-        </AutoColumn>
-      </PageWrapper>
-      <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
-    </>
-  )
-}
+const ContentGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 24px;
+`

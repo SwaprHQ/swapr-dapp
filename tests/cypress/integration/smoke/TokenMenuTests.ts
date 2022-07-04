@@ -4,7 +4,7 @@ import { AddressesEnum } from '../../../utils/enums/AddressesEnum'
 import { TransactionHelper } from '../../../utils/TransactionHelper'
 
 describe('Token menu smoke tests', () => {
-  const TYPING_DELAY = 110
+  const TYPING_DELAY = 200
   beforeEach(() => {
     SwapPage.visitSwapPage()
     TransactionHelper.waitForTokenLists()
@@ -40,23 +40,17 @@ describe('Token menu smoke tests', () => {
     TokenMenu.importToken('strong')
     TokenMenu.getTokenImportWarning().should('be.visible')
     TokenMenu.confirmTokenImport()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .should('contain.text', 'STRONG')
+    SwapPage.getCurrencySelectors().last().should('contain.text', 'STRONG')
   })
   it('Should display warning when single token address is invalid [TC-43]', () => {
     TokenMenu.openTokenManager()
     TokenMenu.getSingleTokenManagerInput().type('Definitely Not Token Address')
-    TokenMenu.getTokenManagerErrorMessage()
-      .should('be.visible')
-      .should('contain.text', 'Enter valid token address')
+    TokenMenu.getTokenManagerErrorMessage().should('be.visible').should('contain.text', 'Enter valid token address')
   })
   it('Should display warning when token list address is invalid [TC-44]', () => {
     TokenMenu.openTokenManager()
     TokenMenu.getTokenListManagerInput().type('Definitely Not list Address')
-    TokenMenu.getTokenManagerErrorMessage()
-      .should('be.visible')
-      .should('contain.text', 'Enter valid list location')
+    TokenMenu.getTokenManagerErrorMessage().should('be.visible').should('contain.text', 'Enter valid list location')
   })
   it('Should find token by valid address [TC-45]', () => {
     TokenMenu.getSingleTokenManagerInput()

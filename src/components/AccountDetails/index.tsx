@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { ButtonProps } from 'rebass'
 import styled from 'styled-components'
@@ -214,10 +215,13 @@ export default function AccountDetails({
 }: AccountDetailsProps) {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
+  const { t } = useTranslation()
 
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) dispatch(clearAllTransactions({ chainId }))
   }, [dispatch, chainId])
+
+  const addressLinkText = t('viewOnBlockExplorer')
 
   return (
     <>
@@ -275,7 +279,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -297,7 +301,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>
