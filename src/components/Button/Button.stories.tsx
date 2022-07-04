@@ -58,7 +58,7 @@ ButtonConfirmed.args = {
 export const ButtonError = ButtonErrorTemplate.bind({})
 ButtonError.args = {
   error: true,
-  content: 'Button Error Text',
+  children: 'Button Error Text',
   width: 'fit-content',
 }
 export const ButtonWithLink = ButtonWithLinkTemplate.bind({})

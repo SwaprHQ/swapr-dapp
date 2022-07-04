@@ -80,7 +80,7 @@ export const ButtonErrorTemplate = args => <ButtonError {...args} />
     component={ButtonError}
     args={{
       error: true,
-      content: 'Error triggered',
+      children: 'Error triggered',
       width: 'fit-content',
     }}
   >
@@ -91,7 +91,7 @@ export const ButtonErrorTemplate = args => <ButtonError {...args} />
     component={ButtonError}
     args={{
       error: false,
-      content: 'No Error',
+      children: 'No Error',
       width: 'fit-content',
     }}
   >
@@ -140,4 +140,4 @@ export const CarrotButtonTemplate = args => <CarrotButton {...args} />
   </Story>
 </Canvas>
 
-<ArgsTable of={ButtonWithLink} />
+<ArgsTable of={ButtonExternalLink} />
