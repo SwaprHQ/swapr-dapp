@@ -56,9 +56,10 @@ describe('Add liquidity', () => {
     cy.wait(1000)
     LiquidityPage.getSecondTokenField()
       .invoke('val')
-      .should(value => {
-        console.log('SECOND TOKEN ADDED AMOUNT', value)
-        secondTokenAddedAmount = parseFloat(value as string)
+      .should(res => {
+        expect(parseFloat(res as string)).be.greaterThan(0)
+        console.log('SECOND TOKEN ADDED AMOUNT', res)
+        secondTokenAddedAmount = parseFloat(res as string)
         firstTokenBalance = firstTokenBefore + firstTokenAddedAmount
         console.log('FINAL FIRST TOKEN BALANCE', firstTokenBalance)
         secondTokenBalance = secondTokenBefore + secondTokenAddedAmount
