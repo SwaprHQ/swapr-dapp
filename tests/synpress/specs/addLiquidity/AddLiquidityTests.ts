@@ -53,7 +53,6 @@ describe('Add liquidity', () => {
     LiquidityPage.getAddLiquidityButton().click()
     LiquidityPage.typeValueToFirstToken(TRANSACTION_VALUE.toFixed(9).toString())
     console.log('FIST TOKEN ADDED AMOUNT', firstTokenAddedAmount)
-    cy.wait(1000)
     LiquidityPage.getSecondTokenField()
       .invoke('val')
       .should(res => {
