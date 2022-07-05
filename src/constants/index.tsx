@@ -447,6 +447,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.GNOSIS_PROTOCOL.name, // COW PROTOCOL
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
