@@ -1,10 +1,12 @@
 import { ChainId } from '@swapr/sdk'
 
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
+import { Connext } from './Connext/Connext'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { OmniBridge } from './OmniBridge/OmniBridge'
 import { socketSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
+import { XdaiBridge } from './Xdai/XdaiBridge'
 
 const socketBridgeId = 'socket'
 
@@ -24,6 +26,23 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     bridgeId: 'socket',
     displayName: 'Socket',
     supportedChains: socketSupportedChains([ChainId.ARBITRUM_ONE, ChainId.MAINNET, ChainId.POLYGON, ChainId.XDAI]),
+  }),
+  new XdaiBridge({
+    bridgeId: 'xdai',
+    displayName: 'xDai Bridge',
+    supportedChains: [{ from: ChainId.MAINNET, to: ChainId.XDAI }],
+  }),
+  new Connext({
+    bridgeId: 'connext',
+    displayName: 'Connext',
+    supportedChains: [
+      { from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE },
+      { from: ChainId.MAINNET, to: ChainId.XDAI },
+      { from: ChainId.MAINNET, to: ChainId.POLYGON },
+      { from: ChainId.XDAI, to: ChainId.ARBITRUM_ONE },
+      { from: ChainId.XDAI, to: ChainId.POLYGON },
+      { from: ChainId.POLYGON, to: ChainId.ARBITRUM_ONE },
+    ],
   }),
   new OmniBridge({
     bridgeId: 'omnibridge:eth-xdai',

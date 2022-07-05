@@ -694,16 +694,15 @@ export class OmniBridge extends EcoBridgeChildBase {
       const homeRequestsIds = homeRequests.map(request => request.messageId)
       const foreignRequestsIds = foreignRequests.map(request => request.messageId)
 
-      const [{ executions: homeExecutions }, { executions: foreignExecutions }] = await Promise.all<
-        OmnibridgeSubgraphExecutions
-      >([
-        request(getGraphEndpoint(this._homeChainId, this.bridgeId), executionsQuery, {
-          messageIds: foreignRequestsIds,
-        }),
-        request(getGraphEndpoint(this._foreignChainId, this.bridgeId), executionsQuery, {
-          messageIds: homeRequestsIds,
-        }),
-      ])
+      const [{ executions: homeExecutions }, { executions: foreignExecutions }] =
+        await Promise.all<OmnibridgeSubgraphExecutions>([
+          request(getGraphEndpoint(this._homeChainId, this.bridgeId), executionsQuery, {
+            messageIds: foreignRequestsIds,
+          }),
+          request(getGraphEndpoint(this._foreignChainId, this.bridgeId), executionsQuery, {
+            messageIds: homeRequestsIds,
+          }),
+        ])
 
       const homeTransfers = combineTransactions(
         homeRequests,

@@ -18,7 +18,7 @@ import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquid
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../PageWrapper'
 
 const LastStep = styled(Step)`
   z-index: 0;
@@ -216,73 +216,75 @@ export default function CreateLiquidityMining() {
 
   return (
     <>
-      <PageWrapper gap="40px">
-        <AutoColumn gap="8px">
-          <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
+      <PageWrapper>
+        <AutoColumn gap="40px">
+          <AutoColumn gap="8px">
+            <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
+          </AutoColumn>
+          <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
+            <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
+          </Step>
+          <Step
+            title={
+              campaingType === CampaignType.TOKEN
+                ? t('liquidityMining.create.selectToken')
+                : t('liquidityMining.create.selectPair')
+            }
+            index={1}
+            disabled={false}
+          >
+            <StakeTokenAndLimit
+              unlimitedPool={unlimitedPool}
+              onUnlimitedPoolChange={setUnlimitedPool}
+              campaingType={campaingType}
+              stakeToken={stakeToken}
+              stakePair={stakePair}
+              setStakeToken={setStakeToken}
+              setStakePair={setStakePair}
+              onStakingCapChange={setStakingCap}
+            />
+          </Step>
+          <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}>
+            <DurationAndLocking
+              startTime={startTime}
+              endTime={endTime}
+              timelocked={timelocked}
+              setStartTime={setStartTime}
+              setEndTime={setEndTime}
+              onTimelockedChange={handleTimelockedChange}
+            />
+          </Step>
+          <Step
+            title={t('liquidityMining.create.reward')}
+            index={3}
+            key={3}
+            disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
+          >
+            <RewardsSelection rewardsArray={rewardsArray} setRewardsArray={dispatch} />
+          </Step>
+          <LastStep
+            title={t('liquidityMining.create.preview')}
+            index={4}
+            disabled={(!stakeToken && !stakePair) || !startTime || !endTime || memoizedRewardsArray.length === 0}
+          >
+            <PreviewAndCreate
+              simulatedPrice={simulatedPrice}
+              setSimulatedPrice={setSimulatedPrice}
+              campaign={campaign}
+              approvals={memoizedApprovalsArray}
+              stakePair={stakePair}
+              stakeToken={stakeToken}
+              startTime={startTime}
+              endTime={endTime}
+              timelocked={timelocked}
+              rewards={memoizedRewardsArray}
+              stakingCap={stakingCap}
+              apr={campaign ? campaign.apy : new Percent('0', '100')}
+              onCreate={handleCreateRequest}
+              setSimulatedStakedAmount={setSimulatedStakedAmount}
+            />
+          </LastStep>
         </AutoColumn>
-        <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
-          <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />
-        </Step>
-        <Step
-          title={
-            campaingType === CampaignType.TOKEN
-              ? t('liquidityMining.create.selectToken')
-              : t('liquidityMining.create.selectPair')
-          }
-          index={1}
-          disabled={false}
-        >
-          <StakeTokenAndLimit
-            unlimitedPool={unlimitedPool}
-            onUnlimitedPoolChange={setUnlimitedPool}
-            campaingType={campaingType}
-            stakeToken={stakeToken}
-            stakePair={stakePair}
-            setStakeToken={setStakeToken}
-            setStakePair={setStakePair}
-            onStakingCapChange={setStakingCap}
-          />
-        </Step>
-        <Step title={t('liquidityMining.create.duration')} index={2} disabled={!stakeToken && !stakePair}>
-          <DurationAndLocking
-            startTime={startTime}
-            endTime={endTime}
-            timelocked={timelocked}
-            setStartTime={setStartTime}
-            setEndTime={setEndTime}
-            onTimelockedChange={handleTimelockedChange}
-          />
-        </Step>
-        <Step
-          title={t('liquidityMining.create.reward')}
-          index={3}
-          key={3}
-          disabled={!startTime || !endTime || (!stakeToken && !stakePair)}
-        >
-          <RewardsSelection rewardsArray={rewardsArray} setRewardsArray={dispatch} />
-        </Step>
-        <LastStep
-          title={t('liquidityMining.create.preview')}
-          index={4}
-          disabled={(!stakeToken && !stakePair) || !startTime || !endTime || memoizedRewardsArray.length === 0}
-        >
-          <PreviewAndCreate
-            simulatedPrice={simulatedPrice}
-            setSimulatedPrice={setSimulatedPrice}
-            campaign={campaign}
-            approvals={memoizedApprovalsArray}
-            stakePair={stakePair}
-            stakeToken={stakeToken}
-            startTime={startTime}
-            endTime={endTime}
-            timelocked={timelocked}
-            rewards={memoizedRewardsArray}
-            stakingCap={stakingCap}
-            apr={campaign ? campaign.apy : new Percent('0', '100')}
-            onCreate={handleCreateRequest}
-            setSimulatedStakedAmount={setSimulatedStakedAmount}
-          />
-        </LastStep>
       </PageWrapper>
       <ConfirmStakingRewardsDistributionCreation
         onConfirm={handleCreateConfirmation}

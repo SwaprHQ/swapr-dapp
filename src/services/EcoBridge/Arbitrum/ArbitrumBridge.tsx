@@ -108,7 +108,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
     } catch (err) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(err),
+        })
       )
     }
   }
@@ -122,7 +125,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
     } catch (err) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(err),
+        })
       )
     }
   }
@@ -131,7 +137,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const { batchIndex, batchNumber, value, assetAddressL2 } = l2Tx
     if (!this._account || !batchIndex || !batchNumber || !value) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.PENDING,
+      })
+    )
 
     try {
       const batchNumberBN = BigNumber.from(batchNumber)
@@ -139,7 +149,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const l1Tx = await this.bridge.triggerL2ToL1Transaction(batchNumberBN, batchIndexBN, true)
 
-      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
+      this.store.dispatch(
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.COLLECTING,
+        })
+      )
 
       this.store.dispatch(
         this.actions.addTx({
@@ -164,7 +178,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const l1Receipt = await l1Tx.wait()
 
-      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
+      this.store.dispatch(
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.SUCCESS,
+        })
+      )
 
       this.store.dispatch(
         this.actions.updateTxReceipt({
@@ -183,7 +201,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       )
     } catch (err) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(err),
+        })
       )
     }
   }
@@ -441,12 +462,20 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private depositETH = async (value: string) => {
     if (!this._account) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.PENDING,
+      })
+    )
     const weiValue = parseEther(value)
 
     const txn = await this.bridge.depositETH(weiValue)
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.INITIATED,
+      })
+    )
 
     this.store.dispatch(
       this.actions.addTx({
@@ -474,7 +503,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private depositERC20 = async (erc20L1Address: string, typedValue: string) => {
     if (!this._account) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.PENDING,
+      })
+    )
 
     const tokenData = await this.bridge.l1Bridge.getL1TokenData(erc20L1Address)
 
@@ -489,7 +522,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       amount: parsedValue,
     })
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.INITIATED,
+      })
+    )
 
     this.store.dispatch(
       this.actions.addTx({
@@ -522,7 +559,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private withdrawETH = async (value: string) => {
     if (!this._account) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.PENDING,
+      })
+    )
 
     this.store.dispatch(
       ecoBridgeUIActions.setBridgeModalData({
@@ -536,7 +577,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const weiValue = parseEther(value)
     const txn = await this.bridge.withdrawETH(weiValue)
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.INITIATED,
+      })
+    )
     this.store.dispatch(
       this.actions.addTx({
         assetName: 'ETH',
@@ -573,7 +618,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       throw new Error("Can't withdraw; token not found")
     }
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.PENDING,
+      })
+    )
 
     this.store.dispatch(
       ecoBridgeUIActions.setBridgeModalData({
@@ -587,7 +636,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const weiValue = parseUnits(value, tokenData.decimals)
     const txn = await this.bridge.withdrawERC20(erc20L1Address, weiValue)
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+    this.store.dispatch(
+      ecoBridgeUIActions.setBridgeModalStatus({
+        status: BridgeModalStatus.INITIATED,
+      })
+    )
     this.store.dispatch(
       this.actions.addTx({
         assetName: tokenData.symbol,
@@ -810,7 +863,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
           )
           gas = await this.bridge.l1Bridge.estimateGasDepositEth(parsedValue, maxSubmissionPrice)
         } else {
-          gas = await this.bridge.estimateGasDeposit({ erc20L1Address: address, amount: parsedValue }) //this method under the hood calls this.bridge.l1Bridge
+          gas = await this.bridge.estimateGasDeposit({
+            erc20L1Address: address,
+            amount: parsedValue,
+          }) //this method under the hood calls this.bridge.l1Bridge
         }
       }
 
@@ -850,9 +906,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         gas: totalTxnGasCostInUSD,
         fee: '0%',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value)
-          .toFixed(2)
-          .toString(),
+        receiveAmount: Number(value).toFixed(2).toString(),
         requestId: helperRequestId,
       })
     )
