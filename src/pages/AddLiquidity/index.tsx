@@ -240,8 +240,9 @@ export default function AddLiquidity() {
           </Text>
         </Row>
         <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
-            100}% your transaction will revert.`}
+          {`Output is estimated. If the price changes by more than ${
+            allowedSlippage / 100
+          }% your transaction will revert.`}
         </TYPE.italic>
       </AutoColumn>
     )
@@ -464,7 +465,14 @@ export default function AddLiquidity() {
       </AppBody>
 
       {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-        <AutoColumn style={{ minWidth: '20rem', width: '100%', maxWidth: '400px', marginTop: '1rem' }}>
+        <AutoColumn
+          style={{
+            minWidth: '20rem',
+            width: '100%',
+            maxWidth: '400px',
+            marginTop: '1rem',
+          }}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWrapped} pair={pair} />
         </AutoColumn>
       ) : null}

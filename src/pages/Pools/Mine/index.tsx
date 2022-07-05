@@ -5,14 +5,14 @@ import styled from 'styled-components'
 
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
-import PairsList from '../../../components/Pool/PairsList'
+import { PairsList } from '../../../components/Pool/PairsList'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { useActiveWeb3React } from '../../../hooks'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

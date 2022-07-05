@@ -17,7 +17,9 @@ interface ConfirmStakeModalHeaderProps {
 }
 
 export default function ConfirmClaimModalHeader({ claimableRewards, onAmountChange }: ConfirmStakeModalHeaderProps) {
-  const [typedAmount, setTypedAmount] = useState<{ [rewardTokenAddress: string]: string }>({})
+  const [typedAmount, setTypedAmount] = useState<{
+    [rewardTokenAddress: string]: string
+  }>({})
 
   return (
     <Root>
@@ -37,7 +39,10 @@ export default function ConfirmClaimModalHeader({ claimableRewards, onAmountChan
                 }
               }}
               onMax={() => {
-                setTypedAmount({ ...typedAmount, [rewardTokenAddress]: claimableReward.toExact() })
+                setTypedAmount({
+                  ...typedAmount,
+                  [rewardTokenAddress]: claimableReward.toExact(),
+                })
                 onAmountChange(new TokenAmount(rewardToken, claimableReward.raw.toString()))
               }}
               currency={rewardToken}

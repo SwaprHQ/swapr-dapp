@@ -2,27 +2,31 @@ import { Currency, Token } from '@swapr/sdk'
 
 import React, { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
-import { ButtonWithLink } from '../../components/Button'
+import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
-import PairsList from '../../components/Pool/PairsList'
+import { PairsList } from '../../components/Pool/PairsList'
+import { SortByDropdown } from '../../components/Pool/SortByDropdown'
 import { RowBetween } from '../../components/Row'
 import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 import { Switch } from '../../components/Switch'
+import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { TYPE } from '../../theme'
+import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from './styleds'
+import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -63,12 +67,22 @@ export const ResetFilterIcon = styled(X)`
   color: ${props => props.theme.purple3};
 `
 
+export const StyledMediumHeader = styled(TYPE.mediumHeader)`
+  text-transform: uppercase;
+`
+
+export const StyledText = styled(Text)`
+  text-transform: uppercase;
+`
+
 interface TitleProps {
   filteredToken?: Token
   onCurrencySelection: (currency: Currency) => void
   onFilteredTokenReset: () => void
   aggregatedDataFilter: PairsFilterType
   onFilterChange: any
+  onSortByChange: (sortBy: string) => void
+  sortBy: string
 }
 
 // decoupling the title from the rest of the component avoids full-rerender everytime the pair selection modal is opened
@@ -78,8 +92,11 @@ function Title({
   onFilteredTokenReset,
   aggregatedDataFilter,
   onFilterChange,
+  onSortByChange,
+  sortBy,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
+  const { t } = useTranslation()
   const [search] = useSearchParams()
 
   const handleAllClick = useCallback(() => {
@@ -101,22 +118,12 @@ function Title({
   return (
     <>
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
-        <Flex alignItems="center" justifyContent="space-between">
-          <Box mr="8px">
-            <Text fontSize="26px" lineHeight="32px">
-              Pairs
-            </Text>
-          </Box>
-          <Box mr="8px">
-            <Text fontSize="26px" lineHeight="32px">
-              /
-            </Text>
-          </Box>
+        <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
-              <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
-                MY PAIRS
-              </TYPE.mediumHeader>
+              <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">
+                {t('myPairs')}
+              </StyledMediumHeader>
             </Box>
           ) : (
             <PointableFlex onClick={handleAllClick}>
@@ -130,9 +137,9 @@ function Title({
                   <CurrencyLogo currency={filteredToken} size="21px" />
                 </Box>
               )}
-              <Text mr="8px" fontWeight="600" fontSize="16px" lineHeight="20px" data-testid="all-token-list">
-                {filteredToken ? unwrappedToken(filteredToken)?.symbol : 'ALL'}
-              </Text>
+              <StyledText mr="8px" fontWeight="600" fontSize="16px" lineHeight="20px" data-testid="all-token-list">
+                {filteredToken ? unwrappedToken(filteredToken)?.symbol : t('all')}
+              </StyledText>
               <Box>
                 <ChevronDown size={12} />
               </Box>
@@ -148,14 +155,14 @@ function Title({
 
           <TransperentButton as={Link} to={{ pathname: '/pools/create', search: search.toString() }}>
             <Plus size="16" />
-            <Text marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
-              CREATE PAIR
-            </Text>
+            <StyledText marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
+              {t('addLiquidity')}
+            </StyledText>
           </TransperentButton>
         </Flex>
         <Flex data-testid="campaigns-toggle">
           <Switch
-            label="CAMPAIGNS"
+            label={t('campaings')}
             handleToggle={() =>
               onFilterChange(
                 aggregatedDataFilter === PairsFilterType.REWARDS ? PairsFilterType.ALL : PairsFilterType.REWARDS
@@ -164,12 +171,13 @@ function Title({
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch
-            label="MY PAIRS"
+            label={t('myPairs')}
             handleToggle={() =>
               onFilterChange(aggregatedDataFilter === PairsFilterType.MY ? PairsFilterType.ALL : PairsFilterType.MY)
             }
             isOn={aggregatedDataFilter === PairsFilterType.MY}
           />
+          <SortByDropdown sortBy={sortBy} onSortByChange={onSortByChange} />
         </Flex>
       </TitleRow>
       <CurrencySearchModal
@@ -183,12 +191,15 @@ function Title({
 }
 
 export default function Pools() {
+  const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
+  const [sortBy, setSortBy] = useState(LIQUIDITY_SORTING_TYPES.TVL)
   const { loading: loadingAggregatedData, aggregatedData } = useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator(
     aggregatedDataFilter,
-    filterToken
+    filterToken,
+    sortBy
   )
 
   const { loading: ssLoading, data } = useSwaprSinglelSidedStakeCampaigns(filterToken, aggregatedDataFilter)
@@ -203,67 +214,43 @@ export default function Pools() {
     setFilterToken(undefined)
   }, [])
 
+  const handleSortBy = useCallback(sortBy => {
+    setSortBy(sortBy)
+  }, [])
+
   return (
-    <>
-      <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-        <AutoColumn gap="lg" justify="center">
-          <AutoColumn gap="27px" style={{ width: '100%' }}>
-            <Title
-              aggregatedDataFilter={aggregatedDataFilter}
-              onCurrencySelection={handleCurrencySelect}
-              filteredToken={filterToken}
-              onFilteredTokenReset={handleFilterTokenReset}
-              onFilterChange={setAggregatedDataFilter}
-            />
-            {aggregatedDataFilter === PairsFilterType.MY ? (
-              <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
-            ) : (
-              <PairsList
-                loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
-                aggregatedPairs={aggregatedData}
-                singleSidedStake={data}
-                filter={aggregatedDataFilter}
-              />
-            )}
-          </AutoColumn>
-        </AutoColumn>
-        {account && (
-          <ButtonWithLink
-            link={`https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`}
-            text={'ACCOUNT ANALYTICS AND ACCRUED FEES'}
-            style={{ marginTop: '32px' }}
+    <PageWrapper>
+      <SwapPoolTabs active="pool" />
+      <AutoColumn gap="lg" justify="center">
+        <AutoColumn gap="27px" style={{ width: '100%' }}>
+          <Title
+            aggregatedDataFilter={aggregatedDataFilter}
+            onCurrencySelection={handleCurrencySelect}
+            filteredToken={filterToken}
+            onFilteredTokenReset={handleFilterTokenReset}
+            onFilterChange={setAggregatedDataFilter}
+            onSortByChange={handleSortBy}
+            sortBy={sortBy}
           />
-        )}
-        {/* Should not be needed since when we fetch liquidity positions from the subgraph */}
-        {/* <TYPE.body color="text4" textAlign="center" fontWeight="500" fontSize="14px" lineHeight="17px" marginTop="32px">
-          Don't see a pool you joined?{' '}
-          <StyledInternalLink color="text5" id="import-pool-link" to="/find">
-            Import it.
-          </StyledInternalLink>
-        </TYPE.body> */}
-        {/* <VoteCard style={{ marginTop: '32px' }}>
-          <CardSection>
-            <AutoColumn gap="md">
-              <RowBetween>
-                <TYPE.body fontWeight={600} lineHeight="20px">
-                  Liquidity provider rewards
-                </TYPE.body>
-              </RowBetween>
-              <RowBetween>
-                <TYPE.body fontWeight="500" fontSize="12px" lineHeight="20px" letterSpacing="-0.4px">
-                  Liquidity providers earn a swap fee (0.25% by default, of which ~10% taken by the protocol as a fee)
-                  on all trades proportional to their share of the pool.
-                  <br /> Fees are added to the pool, accrue in real time and can be claimed by withdrawing your
-                  liquidity.
-                  <br /> The swap fee value is decided by DXdao and liquidty providers, it can be between 0% and 10% and
-                  it uses 0.25% as default value that is assigned when the pair is created.
-                </TYPE.body>
-              </RowBetween>
-            </AutoColumn>
-          </CardSection>
-        </VoteCard> */}
-      </PageWrapper>
-    </>
+          {aggregatedDataFilter === PairsFilterType.MY ? (
+            <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
+          ) : (
+            <PairsList
+              loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
+              aggregatedPairs={aggregatedData}
+              singleSidedStake={data}
+              filter={aggregatedDataFilter}
+            />
+          )}
+        </AutoColumn>
+      </AutoColumn>
+      {account && (
+        <ButtonWithExternalLink
+          link={getAccountAnalyticsLink(account || '', chainId)}
+          text={t('accountAnalyticsAndAccruedFees')}
+          style={{ marginTop: '32px', textTransform: 'uppercase' }}
+        />
+      )}
+    </PageWrapper>
   )
 }

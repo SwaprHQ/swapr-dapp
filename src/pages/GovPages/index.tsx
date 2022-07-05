@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ButtonPrimary, ButtonWithLink } from '../../components/Button'
+import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
@@ -13,7 +13,7 @@ import { SearchInputWithIcon } from '../../components/SearchInputWithIcon'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
-import { PageWrapper } from '../Pools/styleds'
+import { PageWrapper } from '../PageWrapper'
 import { MainPage, PairPage } from './constant'
 import Container from './Container'
 
@@ -75,7 +75,7 @@ export default function Governance() {
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
         {router.query.asset === undefined && (
-          <ButtonWithLink link={'https://swapr.eth.limo'} text={'GOVERNANCE STATISTICS'} />
+          <ButtonWithExternalLink link="https://swapr.eth.limo" text="GOVERNANCE STATISTICS" />
         )}
         <LightCard>
           <AutoColumn gap="md">

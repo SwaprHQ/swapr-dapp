@@ -61,14 +61,16 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, maxWidth, mobile, is
     `}
     ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
       width:  100vw;
-      ${mobile &&
+      ${
+        mobile &&
         css`
           width: 100vw;
           border-radius: 20px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
           margin-bottom: 72px;
-        `}
+        `
+      }
     `}
   }
 `

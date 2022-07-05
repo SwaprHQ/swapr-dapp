@@ -193,7 +193,12 @@ export const HideSmall = styled.span`
   `};
 `
 
-export const IconWrapper = styled.div<{ stroke?: string; size?: string; marginRight?: string; marginLeft?: string }>`
+export const IconWrapper = styled.div<{
+  stroke?: string
+  size?: string
+  marginRight?: string
+  marginLeft?: string
+}>`
   display: flex;
   align-items: center;
   justify-content: center;

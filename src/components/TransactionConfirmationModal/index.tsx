@@ -1,14 +1,15 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
 import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
@@ -63,15 +64,35 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
 }
 
 function TransactionSubmittedContent({
+  trade,
   onDismiss,
   chainId,
   hash,
 }: {
+  trade?: Trade
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
 }) {
   const theme = useTheme()
+  const { t } = useTranslation()
+
+  const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
+  const link =
+    chainId &&
+    hash &&
+    (isGnosisProtocolTrade
+      ? getGnosisProtocolExplorerOrderLink(chainId, hash)
+      : getExplorerLink(chainId, hash, 'transaction'))
+
+  const externalLinkText = `${isGnosisProtocolTrade ? t('viewOnCowExplorer') : t('viewOnBlockExplorer')}`
+  const explorerExternalLink = chainId && hash && (
+    <ExternalLink href={link as string}>
+      <Text fontWeight={500} fontSize="13px">
+        {externalLinkText}
+      </Text>
+    </ExternalLink>
+  )
 
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
@@ -87,13 +108,7 @@ function TransactionSubmittedContent({
           <Text fontWeight={500} fontSize="22px">
             Transaction Submitted
           </Text>
-          {chainId && hash && (
-            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize="13px">
-                View on block explorer
-              </Text>
-            </ExternalLink>
-          )}
+          {explorerExternalLink}
           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }} data-testid="close-modal-button">
             <Text fontWeight={600} fontSize="13px">
               Close
@@ -170,6 +185,7 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
+  trade?: Trade
 }
 
 export default function TransactionConfirmationModal({
@@ -179,6 +195,7 @@ export default function TransactionConfirmationModal({
   hash,
   pendingText,
   content,
+  trade,
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -190,7 +207,7 @@ export default function TransactionConfirmationModal({
       {attemptingTxn ? (
         <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
       ) : hash ? (
-        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
+        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} trade={trade} />
       ) : (
         content()
       )}

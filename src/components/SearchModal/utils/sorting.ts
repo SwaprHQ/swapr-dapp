@@ -1,7 +1,6 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
-import { CurrencyAmount } from '@swapr/sdk/dist/entities/fractions/currencyAmount'
 
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { toDXSwapLiquidityToken, useTrackedTokenPairs } from '../../../state/user/hooks'
@@ -80,18 +79,7 @@ export const useTokenComparator = (inverted: boolean): ((tokenA: Token, tokenB: 
   }, [inverted, comparator])
 }
 
-export const useAggregatedByToken0PairComparator = (): ((
-  pairA: { liquidityUSD: CurrencyAmount },
-  pairB: { liquidityUSD: CurrencyAmount }
-) => number) => {
-  return useCallback((pairA, pairB): number => {
-    // sort by rewards
-    if (pairA.liquidityUSD.equalTo(pairB.liquidityUSD)) return 0
-    return pairA.liquidityUSD.lessThan(pairB.liquidityUSD) ? 1 : -1
-  }, [])
-}
-
-export const usePairsComparator = (inverted: boolean): ((pairA: Pair, pairB: Pair) => number) => {
+export function usePairsComparator(inverted: boolean): (pairA: Pair, pairB: Pair) => number {
   const { account } = useActiveWeb3React()
   const trackedTokenPairs = useTrackedTokenPairs()
   const balances = useTokenBalances(

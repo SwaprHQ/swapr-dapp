@@ -1,12 +1,16 @@
 import { darken, lighten, transparentize } from 'polished'
 import React, { ReactNode } from 'react'
-import { ChevronDown } from 'react-feather'
-import { Text } from 'rebass'
+import { ArrowUpRight, ChevronDown } from 'react-feather'
+import { Link } from 'react-router-dom'
+import { Box, Flex, Text } from 'rebass'
 import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
+import { ExternalLink } from '../../theme'
+import { gradients } from '../../utils/theme'
+import { NumberBadge } from '../NumberBadge'
 import { RowBetween } from '../Row'
 import arrowIcon from './../../assets/svg/double-angle.svg'
 
@@ -15,6 +19,7 @@ interface BaseProps {
   width?: string
   borderRadius?: string
   altDisabledStyle?: boolean
+  disabled?: boolean
 }
 
 const Base = styled(RebassButton)<BaseProps>`
@@ -40,12 +45,6 @@ const Base = styled(RebassButton)<BaseProps>`
   z-index: 1;
   &:disabled {
     cursor: auto;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 16px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-align: center;
   }
 
   > * {
@@ -95,6 +94,23 @@ export const ButtonGrey = styled(Base)`
   color: ${({ theme }) => theme.text5};
   font-size: 16px;
   padding: ${({ padding }) => (padding ? padding : '10px')};
+
+  &:disabled {
+    opacity: 50%;
+  }
+`
+
+export const ButtonPurpleDim = styled(Base)`
+  padding: 8px 24px;
+  border: 1px solid ${({ theme }) => theme.purple5};
+
+  font-size: 12px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text4};
+
+  background: ${gradients.purpleDim};
+  backdrop-filter: blur(25px);
+  background-blend-mode: overlay, normal;
 
   &:disabled {
     opacity: 50%;
@@ -277,7 +293,15 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
   }
 }
 
-export function ButtonWithLink({ link, text, style }: { link: string; text: string; style?: any }) {
+export function ButtonWithExternalLink({
+  link,
+  text,
+  style,
+}: {
+  link: string
+  text: string
+  style?: React.CSSProperties
+}) {
   return (
     <ButtonSecondary
       id="join-pool-button"
@@ -291,6 +315,51 @@ export function ButtonWithLink({ link, text, style }: { link: string; text: stri
         {text} <span style={{ fontSize: '11px', marginLeft: '4px' }}>↗</span>
       </Text>
     </ButtonSecondary>
+  )
+}
+
+export function ButtonExternalLink({
+  link,
+  children,
+  disabled = false,
+}: {
+  link: string
+  disabled?: boolean
+  children: ReactNode
+}) {
+  const theme = useTheme()
+  return (
+    <ButtonPurpleDim disabled={disabled} as={disabled ? ButtonPurpleDim : ExternalLink} href={!disabled ? link : ''}>
+      {children}
+      <Box ml={2}>
+        <ArrowUpRight size="14px" color={theme.purple2} />
+      </Box>
+    </ButtonPurpleDim>
+  )
+}
+
+export function ButtonBadge({
+  to,
+  children,
+  number,
+  color = 'orange',
+  disabled = false,
+}: {
+  to: string
+  number: number
+  children: ReactNode
+  disabled?: boolean
+  color?: 'orange' | 'green' | 'red'
+}) {
+  return (
+    <ButtonPurpleDim width="fit-content" as={disabled ? ButtonPurpleDim : Link} to={to} disabled={disabled}>
+      <Flex alignItems="center">
+        {children}
+        <Box ml={1}>
+          <NumberBadge badgeTheme={color}>{number}</NumberBadge>
+        </Box>
+      </Flex>
+    </ButtonPurpleDim>
   )
 }
 
