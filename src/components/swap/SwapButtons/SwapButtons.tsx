@@ -35,7 +35,7 @@ interface SwapButtonsProps {
   approvalSubmitted: boolean
   currencies: { [field in Field]?: Currency }
   trade: Trade | undefined
-  swapInputError: string | undefined
+  swapInputError: number | undefined
   swapErrorMessage: string | undefined
   loading: boolean
   handleSwap: () => void
@@ -203,6 +203,7 @@ export function SwapButtons({
       swapInputError={swapInputError}
       priceImpactSeverity={priceImpactSeverity}
       isExpertMode={isExpertMode}
-    ></SwapButton>
+      amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+    />
   )
 }
