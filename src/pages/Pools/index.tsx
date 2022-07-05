@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Box, Button, Flex, Text } from 'rebass'
+import { Box, Button, Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
@@ -70,11 +70,6 @@ export const ResetFilterIcon = styled(X)`
 export const StyledMediumHeader = styled(TYPE.mediumHeader)`
   text-transform: uppercase;
 `
-
-export const StyledText = styled(Text)`
-  text-transform: uppercase;
-`
-
 interface TitleProps {
   filteredToken?: Token
   onCurrencySelection: (currency: Currency) => void
@@ -120,11 +115,7 @@ function Title({
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
         <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (
-            <Box>
-              <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">
-                {t('myPairs')}
-              </StyledMediumHeader>
-            </Box>
+            <h1 className="uppercase text-xl">{t('myPairs')}</h1>
           ) : (
             <PointableFlex onClick={handleAllClick}>
               {!filteredToken && (
@@ -137,9 +128,9 @@ function Title({
                   <CurrencyLogo currency={filteredToken} size="21px" />
                 </Box>
               )}
-              <StyledText mr="8px" fontWeight="600" fontSize="16px" lineHeight="20px" data-testid="all-token-list">
+              <p className="uppercase ml-2 tx-sm font-semibold mr-2" data-testid="all-token-list">
                 {filteredToken ? unwrappedToken(filteredToken)?.symbol : t('all')}
-              </StyledText>
+              </p>
               <Box>
                 <ChevronDown size={12} />
               </Box>
@@ -155,12 +146,12 @@ function Title({
 
           <TransperentButton as={Link} to={{ pathname: '/pools/create', search: search.toString() }}>
             <Plus size="16" />
-            <StyledText marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="create-pair">
+            <p className="uppercase ml-2 text-xs" data-testid="create-pair">
               {t('addLiquidity')}
-            </StyledText>
+            </p>
           </TransperentButton>
         </Flex>
-        <Flex data-testid="campaigns-toggle">
+        <div className="flex space-x-3 md:space-x-4" data-testid="campaigns-toggle">
           <Switch
             label={t('campaings')}
             handleToggle={() =>
@@ -178,7 +169,7 @@ function Title({
             isOn={aggregatedDataFilter === PairsFilterType.MY}
           />
           <SortByDropdown sortBy={sortBy} onSortByChange={onSortByChange} />
-        </Flex>
+        </div>
       </TitleRow>
       <CurrencySearchModal
         isOpen={openTokenModal}

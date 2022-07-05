@@ -1,30 +1,33 @@
 import React, { ReactNode } from 'react'
 import { Link, LinkProps, useSearchParams } from 'react-router-dom'
-import styled from 'styled-components'
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-`
 interface UndecoratedLinkProps extends LinkProps {
   children: ReactNode
+  className?: string
 }
 
-export const UndecoratedLink = ({ children, ...props }: UndecoratedLinkProps) => {
+export const UndecoratedLink = ({ children, className, ...props }: UndecoratedLinkProps) => {
   const [search] = useSearchParams()
   switch (typeof props.to) {
     case 'string':
       return (
-        <StyledLink {...props} to={{ pathname: props.to, search: search.toString() }}>
+        <Link
+          {...props}
+          to={{ pathname: props.to, search: search.toString() }}
+          className={`text-inherit no-underline	cursor-pointer ${className}`}
+        >
           {children}
-        </StyledLink>
+        </Link>
       )
     case 'object':
       return (
-        <StyledLink {...props} to={{ ...props.to, search: search.toString() }}>
+        <Link
+          {...props}
+          to={{ ...props.to, search: search.toString() }}
+          className={`text-inherit no-underline	cursor-pointer ${className}`}
+        >
           {children}
-        </StyledLink>
+        </Link>
       )
     default:
       throw new Error('UndecoratedLink props to must be an object or string')

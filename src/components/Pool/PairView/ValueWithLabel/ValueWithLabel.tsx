@@ -1,6 +1,5 @@
+import classNames from 'classnames'
 import React from 'react'
-import { Text } from 'rebass'
-import styled from 'styled-components'
 
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 
@@ -21,27 +20,17 @@ export const ValueWithLabel = ({
 
   return (
     <div>
-      {(labelDesktop || isMobile) && (
-        <Title mb="8px" fontSize="11px">
-          {title}
-        </Title>
-      )}
-      <Value big={big} textAlign={center ? 'center' : 'left'}>
+      {(labelDesktop || isMobile) && <p className="mb-3 text-xs text-text5 uppercase">{title}</p>}
+      <p
+        className={classNames({
+          'text-sm md:text-lg text-white': big,
+          ' text-xs md:text-sm text-text4': !big,
+          center: center,
+          left: !center,
+        })}
+      >
         {value}
-      </Value>
+      </p>
     </div>
   )
 }
-
-const Title = styled(Text)`
-  color: ${({ theme }) => theme.text5};
-  text-transform: uppercase;
-`
-const Value = styled(Text)<{ big: boolean }>`
-  color: ${({ theme, big }) => (big ? theme.white : theme.text4)};
-  font-size: ${({ big }) => (big ? '16px' : '15px')};
-
-  ${({ theme, big }) => theme.mediaWidth.upToSmall`
-    font-size: ${big ? '14px' : '13px'}
-  `};
-`

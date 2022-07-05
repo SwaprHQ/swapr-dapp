@@ -1,8 +1,7 @@
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Flex, Text } from 'rebass'
-import styled from 'styled-components'
+import { Box, Text } from 'rebass'
 
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
@@ -14,19 +13,6 @@ import { Empty } from '../../Pool/Empty'
 import { LoadingGrid } from '../../Pool/LoadingGrid'
 import { CampaignCard } from '../../Pool/PairsList/CampaignCard'
 import { UndecoratedLink } from '../../UndercoratedLink'
-
-const ListLayout = styled.div`
-  display: grid;
-  grid-gap: 12px 10px;
-  grid-template-columns: 1fr 1fr 1fr;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr 1fr;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    grid-template-columns: auto;
-    grid-gap: 8px;
-  `};
-`
 
 interface LiquidityMiningCampaignsListProps {
   items?: {
@@ -72,12 +58,12 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
 
   return (
     <>
-      <Flex flexDirection="column">
-        <Box mb="8px">
+      <div className="flex flex-column">
+        <div className="mb-2">
           {overallLoading ? (
             <LoadingGrid itemsAmount={loadingItems || responsiveItemsPerPage} />
           ) : itemsPage.length > 0 ? (
-            <ListLayout>
+            <div className="grid grid-cols-auto md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-5 py-3 px-4 md:p-0">
               {itemsPage.map(item => {
                 if (item.campaign instanceof SingleSidedLiquidityMiningCampaign) {
                   return (
@@ -125,7 +111,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
                   )
                 }
               })}
-            </ListLayout>
+            </div>
           ) : (
             <Empty>
               <Text fontSize="12px" fontWeight="700" lineHeight="15px" letterSpacing="0.08em">
@@ -133,7 +119,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
               </Text>
             </Empty>
           )}
-        </Box>
+        </div>
         <Box alignSelf="flex-end" mt="16px">
           {!overallLoading && itemsPage.length > 0 && (
             <Pagination
@@ -144,7 +130,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
             />
           )}
         </Box>
-      </Flex>
+      </div>
     </>
   )
 }

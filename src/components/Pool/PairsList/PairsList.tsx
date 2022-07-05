@@ -4,8 +4,6 @@ import { AggregatedPairs } from 'hooks/useAllPairsWithLiquidityAndMaximumApyAndS
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Box, Flex, Text } from 'rebass'
-import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
@@ -21,6 +19,7 @@ import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
 import { PairsFilterType } from '../ListFilter'
 import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
+import { PoolListHeader } from './PoolListHeader'
 
 interface PairsListProps {
   aggregatedPairs: AggregatedPairs[]
@@ -50,27 +49,16 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
     swprAddress && singleSidedStake?.stakeToken.address.toLowerCase() === swprAddress.toLowerCase()
 
   return (
-    <Flex flexDirection="column">
+    <div className="flex flex-col">
       <DimBlurBgBox>
         {loading ? (
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
-          <ListLayout>
-            {!isMobile && (
-              <HeaderText>
-                <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-                  <Flex flex="25%">{t('Pair')}</Flex>
-                  <Flex flex="25%">{t('Campaigns')}</Flex>
-                  <Flex flex="45%">
-                    <Flex flex="30%">{t('TVL')}</Flex>
-                    <Flex flex="30%">{t('24hVolume')}</Flex>
-                    <Flex flex="10%">{t('APY')}</Flex>
-                  </Flex>
-                </Header>
-              </HeaderText>
-            )}
+          <div className="grid grid-cols-auto py-3 px-4 md:p-0">
+            {!isMobile && <PoolListHeader />}
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
-              <StyledUndecoratedLink
+              <UndecoratedLink
+                className="border-b border-solid border-bg3"
                 key={singleSidedStake.address}
                 to={
                   isSWPRSingleSidedStake
@@ -89,12 +77,13 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                   hasFarming={true}
                   isSingleSidedStakingCampaign={true}
                 />
-              </StyledUndecoratedLink>
+              </UndecoratedLink>
             )}
             {itemsPage.length > 0 &&
               itemsPage.map(aggregatedPair => {
                 return (
-                  <StyledUndecoratedLink
+                  <UndecoratedLink
+                    className="border-b border-solid border-bg3 last:border-none"
                     key={aggregatedPair.pair.liquidityToken.address}
                     to={`/pools/${aggregatedPair.pair.token0.address}/${aggregatedPair.pair.token1.address}`}
                   >
@@ -107,74 +96,31 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                       containsKpiToken={aggregatedPair.containsKpiToken}
                       hasFarming={aggregatedPair.hasFarming}
                     />
-                  </StyledUndecoratedLink>
+                  </UndecoratedLink>
                 )
               })}
-          </ListLayout>
+          </div>
         ) : (
-          <Flex alignItems="center" justifyContent="center" flexDirection={'column'} my="50px">
-            <Text fontSize="16px" color="#BCB3F0" mb="24px">
-              {t('noPoolsFound')}
-            </Text>
-            <div>
+          <div className="flex items-center justify-center flex-col my-24">
+            <p className="mb-6 text-text4">{t('noPoolsFound')}</p>
+            <div className="w-fit">
               <ButtonPrimary to="/pools/create" as={Link}>
                 {t('createAPool')}
               </ButtonPrimary>
             </div>
-          </Flex>
+          </div>
         )}
       </DimBlurBgBox>
       {aggregatedPairs.length > responsiveItemsPerPage && (
-        <PaginationRow>
-          <Box>
-            <Pagination
-              page={page}
-              totalItems={aggregatedPairs.length + 1}
-              itemsPerPage={responsiveItemsPerPage}
-              onPageChange={setPage}
-            />
-          </Box>
-        </PaginationRow>
+        <div className="flex justify-center md:justify-end md:w-full my-4">
+          <Pagination
+            page={page}
+            totalItems={aggregatedPairs.length + 1}
+            itemsPerPage={responsiveItemsPerPage}
+            onPageChange={setPage}
+          />
+        </div>
       )}
-    </Flex>
+    </div>
   )
 }
-
-export const ListLayout = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-gap: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 10px 16px;
-  `};
-`
-
-export const HeaderText = styled(Text)`
-  font-weight: 600;
-  font-size: 10px;
-  color: ${({ theme }) => theme.purple3};
-  text-transform: uppercase;
-`
-
-export const Header = styled(Flex)`
-  border-bottom: 1px solid ${({ theme }) => theme.bg3};
-`
-
-const PaginationRow = styled(Flex)`
-  width: 100%;
-  justify-content: flex-end;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    justify-content: center;
-  `};
-
-  & ul {
-    margin: 22px 0;
-  }
-`
-
-const StyledUndecoratedLink = styled(UndecoratedLink)`
-  :not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.bg3};
-  }
-`

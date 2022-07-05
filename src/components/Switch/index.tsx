@@ -1,20 +1,7 @@
+import classNames from 'classnames'
 import React from 'react'
-import { Text } from 'rebass'
-import styled from 'styled-components'
-import './Switch.css'
 
-const StyledLabel = styled.label<{ isOn: boolean; isRed: boolean }>`
-  ${({ isRed, isOn }) => isRed && !isOn && 'outline: 1px solid #464366;outline-offset: -1px;'};
-  background: ${({ isOn, isRed, theme }) =>
-    isOn && isRed ? '#F02E51' : !isOn && isRed ? '#3933584D' : isOn ? `${theme.mainPurple}` : `${theme.purple5}`};
-`
-const StyledText = styled(Text)<{ isOn: boolean }>`
-  color: ${({ theme, isOn }) => (isOn ? theme.text2 : theme.purple2)};
-  text-transform: uppercase;
-`
-const StyledSpan = styled.span<{ isOn: boolean; isRed: boolean }>`
-  background: ${({ isOn, isRed }) => (isOn && isRed ? 'black' : isOn ? '#fff' : '#c0baf6')};
-`
+import './Switch.css'
 interface SwitchProps {
   isOn: boolean
   isRed?: boolean
@@ -25,7 +12,7 @@ interface SwitchProps {
 
 export const Switch = ({ isOn, handleToggle, label, style, isRed = false }: SwitchProps) => {
   return (
-    <>
+    <div className="flex items-center space-x-2">
       <input
         style={style}
         checked={isOn}
@@ -35,14 +22,26 @@ export const Switch = ({ isOn, handleToggle, label, style, isRed = false }: Swit
         id={label ? label : handleToggle.name}
         value={label ? label : handleToggle.name}
       />
-      <StyledLabel className="react-switch-label" isRed={isRed} isOn={isOn} htmlFor={label ? label : handleToggle.name}>
-        <StyledSpan isRed={isRed} isOn={isOn} className="react-switch-button" />
-      </StyledLabel>
+      <label
+        className={classNames('react-switch-label', {
+          'bg-mainBlue': isOn,
+          'bg-purple5': !isOn,
+          'bg-red-600': isOn && isRed,
+          'bg-[#3933584D] outline-1	outline-text2': !isOn && isRed,
+        })}
+        htmlFor={label ? label : handleToggle.name}
+      >
+        <p
+          className={classNames('react-switch-button', {
+            'bg-white': isOn,
+            'bg-purple2': !isOn,
+            'bg-black': isOn && isRed,
+          })}
+        />
+      </label>
       {label && (
-        <StyledText isOn={isOn} marginLeft={'8px'} alignSelf={'center'} fontSize={'11px'} fontWeight={'500'}>
-          {label}
-        </StyledText>
+        <p className={classNames('uppercase text-xs', { 'text-white': isOn, 'text-purple2': !isOn })}>{label}</p>
       )}
-    </>
+    </div>
   )
 }
