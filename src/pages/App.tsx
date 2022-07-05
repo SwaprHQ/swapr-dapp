@@ -1,20 +1,23 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
-import 'aos/dist/aos.css'
 import { FallbackLoader } from 'components/Loader/FallbackLoader'
 import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import styled, { useTheme } from 'styled-components'
 
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import NetworkWarningModal from '../components/NetworkWarningModal'
+import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
+
+import 'react-loading-skeleton/dist/skeleton.css'
+import 'aos/dist/aos.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -65,7 +68,7 @@ export default function App() {
 
   useEffect(() => {
     document.body.classList.add('no-margin')
-    setTimeout(function() {
+    setTimeout(function () {
       AOS.init({
         duration: 500,
       })
@@ -74,7 +77,7 @@ export default function App() {
 
   return (
     <Suspense fallback={null}>
-      <SkeletonTheme color={theme.bg3} highlightColor={theme.bg2}>
+      <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
         <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
           <NetworkWarningModal />
           <AppWrapper id="app-wrapper">
@@ -83,9 +86,11 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper>
               <Web3ReactManager>
-                <Suspense fallback={<FallbackLoader />}>
-                  <Routes />
-                </Suspense>
+                <SpaceBg>
+                  <Suspense fallback={<FallbackLoader />}>
+                    <Routes />
+                  </Suspense>
+                </SpaceBg>
               </Web3ReactManager>
               <Marginer />
             </BodyWrapper>

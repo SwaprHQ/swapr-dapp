@@ -3,7 +3,7 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 
 describe('Switching from mainnet tests', () => {
-  before(()=>{
+  before(() => {
     cy.clearLocalStorage()
   })
   beforeEach(() => {

@@ -107,7 +107,7 @@ describe('Swap page smoke tests', () => {
       .scrollIntoView()
       .should('be.visible')
   })
-  it.only('Should display connect button when transaction data is filled [TC-32]', () => {
+  it('Should display connect button when transaction data is filled [TC-32]', () => {
     SwapPage.openTokenToSwapMenu().chooseToken('usdc')
     SwapPage.typeValueFrom('100')
     SwapPage.getConfirmButton().should('contain.text', 'Connect wallet')

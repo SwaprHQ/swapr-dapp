@@ -7,10 +7,10 @@ import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const QUERY = gql`
-  query($pairId: ID) {
+  query ($pairId: ID) {
     pair(id: $pairId) {
       reserve0
       reserve1

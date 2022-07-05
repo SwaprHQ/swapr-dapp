@@ -10,6 +10,7 @@ const StyledLabel = styled.label<{ isOn: boolean; isRed: boolean }>`
 `
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${({ theme, isOn }) => (isOn ? theme.text2 : theme.purple2)};
+  text-transform: uppercase;
 `
 const StyledSpan = styled.span<{ isOn: boolean; isRed: boolean }>`
   background: ${({ isOn, isRed }) => (isOn && isRed ? 'black' : isOn ? '#fff' : '#c0baf6')};

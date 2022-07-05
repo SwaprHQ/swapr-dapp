@@ -2,9 +2,10 @@ import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
@@ -132,7 +133,7 @@ export interface UseDerivedSwapInfoResult {
   parsedAmount: CurrencyAmount | undefined
   trade: Trade | undefined
   allPlatformTrades: (Trade | undefined)[] | undefined
-  inputError?: string
+  inputError?: number
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -158,18 +159,18 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const useTradeExactInAllPlatformsRes = useEcoRouterExactIn(
+  const { trades: inTrades, loading: inLoading } = useEcoRouterExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const useTradeExactOutAllPlatformsRes = useEcoRouterExactOut(
+  const { trades: outTrades, loading: outLoading } = useEcoRouterExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined
   )
-  const bestTradeExactIn = useTradeExactInAllPlatformsRes.trades[0]
-  const bestTradeExactOut = useTradeExactOutAllPlatformsRes.trades[0]
+  const bestTradeExactIn = inTrades[0]
+  const bestTradeExactOut = outTrades[0]
 
-  const allPlatformTrades = isExactIn ? useTradeExactInAllPlatformsRes.trades : useTradeExactOutAllPlatformsRes.trades
+  const allPlatformTrades = isExactIn ? inTrades : outTrades
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
@@ -188,17 +189,17 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     [Field.OUTPUT]: outputCurrency ?? undefined,
   }
 
-  let inputError: string | undefined
+  let inputError: number | undefined
   if (!account) {
-    inputError = 'Connect Wallet'
+    inputError = SWAP_INPUT_ERRORS.CONNECT_WALLET
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter amount'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.ENTER_AMOUNT
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.SELECT_TOKEN
   }
 
   const recipientLookup = useENS(recipient ?? undefined)
@@ -206,14 +207,14 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
-    inputError = inputError ?? 'Enter a recipient'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.ENTER_RECIPIENT
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
       (bestTradeExactIn instanceof UniswapV2Trade && involvesAddress(bestTradeExactIn, formattedTo)) ||
       (bestTradeExactOut instanceof UniswapV2Trade && involvesAddress(bestTradeExactOut, formattedTo))
     ) {
-      inputError = inputError ?? 'Invalid recipient'
+      inputError = inputError ?? SWAP_INPUT_ERRORS.INVALID_RECIPIENT
     }
   }
 
@@ -229,19 +230,21 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   ]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+    inputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
   }
 
-  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
-    dispatch(setLoading(true))
-  } else {
-    dispatch(setLoading(false))
-  }
-  if (inputError !== undefined) {
-    setTimeout(() => {
+  useLayoutEffect(() => {
+    if (inLoading || outLoading) {
+      dispatch(setLoading(true))
+    } else {
       dispatch(setLoading(false))
-    }, 500)
-  }
+    }
+    if (inputError !== undefined && inputError !== SWAP_INPUT_ERRORS.CONNECT_WALLET) {
+      setTimeout(() => {
+        dispatch(setLoading(false))
+      }, 500)
+    }
+  }, [inLoading, outLoading, inputError, dispatch, typedValue, inputCurrency, outputCurrency])
 
   return {
     currencies,
