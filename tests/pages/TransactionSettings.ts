@@ -46,6 +46,19 @@ export class TransactionSettings {
   static getEnterValiErrorMesssage() {
     return cy.get('[data-testid=slippage-error]')
   }
+  static getExpertModeButton() {
+    return cy.get('#toggle-expert-mode-button')
+  }
+  static switchExpertModeOn() {
+    this.getExpertModeButton().within(() => {
+      cy.get('[data-testid=toggle-on]').click()
+    })
+  }
+  static switchExpertModeOff() {
+    this.getExpertModeButton().within(() => {
+      cy.get('[data-testid=toggle-off]').click()
+    })
+  }
   static typeSlippageTolerance(value: string) {
     this.getSlippageToleranceField().type(value)
     return this

@@ -138,13 +138,7 @@ describe('Swapping tests', () => {
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu()
-      .chooseToken('xeenus')
-      .switchTokens()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .click()
-    TokenMenu.chooseToken('weth')
+    SwapPage.chooseTokes('xeenus', 'weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.getToInput()
@@ -239,5 +233,33 @@ describe('Swapping tests', () => {
         AddressesEnum.SECOND_TEST_WALLET
       )
     })
+  })
+  it('Should reject transaction', () => {
+    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.swap().confirmSwap()
+
+    cy.rejectMetamaskTransaction()
+
+    SwapPage.getTransactionErrorModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction rejected')
+    SwapPage.closeTransactionErrorModal()
+    SwapPage.getSwapBox().should('be.visible')
+    SwapPage.getSwapButton().should('be.visible')
+    SwapPage.getToInput().should('be.visible')
+    SwapPage.getFromInput().should('be.visible')
+  })
+  it('Should send erc20 token to wallet address [TC-54]', () => {
+    MenuBar.getSettings().click()
+    TransactionSettings.switchExpertModeOn()
+    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+
+    cy.rejectMetamaskTransaction()
+
+    SwapPage.getTransactionErrorModal()
+      .should('be.visible')
+      .should('contain.text', 'Transaction rejected')
   })
 })

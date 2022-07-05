@@ -32,8 +32,12 @@ export class SwapPage {
     return this
   }
 
+  static getSwapButton() {
+    return cy.get('#swap-button')
+  }
+
   static swap() {
-    cy.get('#swap-button')
+    this.getSwapButton()
       .should('contain.text', 'Swap')
       .click({ force: true })
     return this
@@ -82,7 +86,24 @@ export class SwapPage {
   static getTransactionConfirmedModal() {
     return cy.get('[data-testid=transaction-confirmed-modal]')
   }
+  static getTransactionErrorModal() {
+    return cy.get('[data-testid=transaction-error-modal]')
+  }
+  static closeTransactionErrorModal() {
+    return this.getTransactionErrorModal().within(() => {
+      cy.get('[data-testid=close-icon]').click()
+    })
+  }
   static chooseExchange(exchange: string) {
     return cy.get(`[data-testid=${exchange}-platform-selector]`).click()
+  }
+  static chooseTokes(tokenFrom: string, tokenTo: string) {
+    SwapPage.openTokenToSwapMenu()
+      .chooseToken(tokenFrom)
+      .switchTokens()
+    SwapPage.getCurrencySelectors()
+      .last()
+      .click()
+    TokenMenu.chooseToken(tokenTo)
   }
 }
