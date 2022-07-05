@@ -53,6 +53,7 @@ export class TransactionSettings {
     this.getExpertModeButton().within(() => {
       cy.get('[data-testid=toggle-on]').click()
     })
+    cy.get('#confirm-expert-mode').click()
   }
   static switchExpertModeOff() {
     this.getExpertModeButton().within(() => {
@@ -70,9 +71,7 @@ export class TransactionSettings {
       .then(element => {
         if (element.text() == 'Multihop enabled') {
           MenuBar.getSettings().click()
-          cy.get('[data-testid=toggle-off]')
-            .first()
-            .click()
+          cy.get('[data-testid=toggle-off]').first().click()
           TransactionSettings.closeModal()
         }
       })
