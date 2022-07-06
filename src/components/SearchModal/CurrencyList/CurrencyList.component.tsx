@@ -196,6 +196,7 @@ export const CurrencyList = ({
 
   return (
     <Flex overflowY="auto" flex="1">
+      {/* #TODO: AutoSizer should be replaced since its too old*/}
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-expect-error */}
       <AutoSizer style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
