@@ -16,7 +16,7 @@ export function SortByDropdown({
   onSortByChange: (sortBy: string) => void
 }) {
   const popoverRef = useRef()
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const [isOpen, setIsOpen] = useState(false)
   const theme = useTheme()
   useOnClickOutside(popoverRef, () => setIsOpen(false))
@@ -48,7 +48,7 @@ export function SortByDropdown({
       >
         <StyledFlex alignItems="center" onClick={() => setIsOpen(!isOpen)}>
           <StyledText fontWeight={600} fontSize={10} color={theme.purple2}>
-            {t('sortBy', { option: LIQUIDITY_SORTING_TYPES[sortBy] })}
+            {t('dropdown.sortBy', { option: LIQUIDITY_SORTING_TYPES[sortBy] })}
           </StyledText>
           <ChevronDown color={theme.purple2} size={16} />
         </StyledFlex>

@@ -39,7 +39,7 @@ export const CurrencyUserBalance = ({
             <>
               {customBalanceText ?? (
                 <Trans
-                  i18nKey="balance"
+                  i18nKey="swap:currencyUserBalance.balance"
                   values={{
                     balanceInput: limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0',
                   }}

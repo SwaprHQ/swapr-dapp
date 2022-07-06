@@ -39,7 +39,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
   const SWPRToken = useSWPRToken()
   const swprAddress = SWPRToken?.address ?? undefined
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const isMobile = useIsMobileByMedia()
 
   useEffect(() => {
@@ -59,8 +59,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
             {!isMobile && (
               <HeaderText>
                 <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-                  <Flex flex="25%">{t('Pair')}</Flex>
-                  <Flex flex="25%">{t('Campaigns')}</Flex>
+                  <Flex flex="25%">{t('pairsList.pair')}</Flex>
+                  <Flex flex="25%">{t('campaigns')}</Flex>
                   <Flex flex="45%">
                     <Flex flex="30%">{t('TVL')}</Flex>
                     <Flex flex="30%">{t('24hVolume')}</Flex>
@@ -114,11 +114,11 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
         ) : (
           <Flex alignItems="center" justifyContent="center" flexDirection={'column'} my="50px">
             <Text fontSize="16px" color="#BCB3F0" mb="24px">
-              {t('noPoolsFound')}
+              {t('pairsList.noPoolsFound')}
             </Text>
             <div>
               <ButtonPrimary to="/pools/create" as={Link}>
-                {t('createAPool')}
+                {t('pairsList.createAPool')}
               </ButtonPrimary>
             </div>
           </Flex>

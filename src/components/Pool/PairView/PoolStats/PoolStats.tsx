@@ -30,7 +30,7 @@ export function PoolStats({ pair }: PairViewProps) {
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
   const { bestAPY } = useBestAPY(pair)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
 
   const statsLink = pair?.liquidityToken.address
     ? `https://dxstats.eth.limo/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
@@ -48,10 +48,10 @@ export function PoolStats({ pair }: PairViewProps) {
     <DimBlurBgBox padding={'24px'}>
       <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
         <Text fontSize="16px" mb="16px">
-          {t('poolStats')}
+          {t('poolStats.poolStats')}
         </Text>
         <Box>
-          <ButtonExternalLink link={statsLink}>{t('stats')}</ButtonExternalLink>
+          <ButtonExternalLink link={statsLink}>{t('poolStats.stats')}</ButtonExternalLink>
         </Box>
       </Flex>
       <Box marginTop={4}>

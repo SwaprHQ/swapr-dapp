@@ -22,7 +22,7 @@ const RowNoFlex = styled(AutoRow)`
 export function TransactionPopup({ hash, success, summary, swapProtocol }: PopupContent) {
   const { chainId } = useActiveWeb3React()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const theme = useTheme()
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW

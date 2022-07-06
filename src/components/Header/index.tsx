@@ -225,7 +225,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const nativeCurrency = useNativeCurrency()
   const { gas } = useGasInfo()

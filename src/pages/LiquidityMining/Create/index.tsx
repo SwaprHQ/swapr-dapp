@@ -103,7 +103,7 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
 }
 
 export default function CreateLiquidityMining() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('liquidity')
 
   const { chainId } = useActiveWeb3React()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)

@@ -64,15 +64,15 @@ export const SwapButton = ({
   amountInCurrencySymbol,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('')
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
-    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: 'Connect wallet',
-    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: 'Enter amount',
-    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: 'Select token',
-    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: 'Enter recipient',
-    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: 'Invalid recipient',
-    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: `Insufficient ${amountInCurrencySymbol} balance`,
+    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('connectWallet'),
+    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('enterAmount'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('selectToken'),
+    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('enterRecipient'),
+    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('invalidRecipient'),
+    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('insufficientCurrencyBalance', { currency: amountInCurrencySymbol }),
   }
 
   return (
@@ -81,10 +81,10 @@ export const SwapButton = ({
         {swapInputError ? (
           SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
         ) : priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode ? (
-          t('priceImpactTooHigh')
+          t('button.priceImpactTooHigh')
         ) : (
           <>
-            {t('swapWith')}
+            {t('button.swapWith')}
             {platformName && (
               <>
                 {' '}
@@ -97,7 +97,7 @@ export const SwapButton = ({
                 <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
               </>
             )}
-            {priceImpactSeverity > PRICE_IMPACT_MEDIUM ? ` ${t('anyway')}` : ''}
+            {priceImpactSeverity > PRICE_IMPACT_MEDIUM ? ` ${t('button.anyway')}` : ''}
           </>
         )}
       </StyledSwapButtonText>
@@ -106,12 +106,12 @@ export const SwapButton = ({
 }
 
 export const SwapLoadingButton = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
   const { chainId } = useActiveWeb3React()
   const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>
-      <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
+      <StyledLoadingSwapButtonText>{t('button.findingBestPrice')}</StyledLoadingSwapButtonText>
       <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
         {shuffle(routablePlatforms).map((key: string) => (
           <div key={ROUTABLE_PLATFORM_STYLE[key].name}>

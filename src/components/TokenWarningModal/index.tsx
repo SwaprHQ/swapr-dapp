@@ -56,7 +56,7 @@ interface TokenWarningCardProps {
 
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
 
   if (!token) return null

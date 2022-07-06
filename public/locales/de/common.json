@@ -14,10 +14,8 @@
   "input": "Input",
   "output": "Output",
   "estimated": "geschätzt",
-  "balance": "Guthaben: {{ balanceInput }}",
   "unlock": "Freischalten",
   "pending": "hängige",
-  "selectToken": "Token auswählen",
   "searchOrPaste": "Token Name, Symbol oder Adresse suchen",
   "searchOrPasteMobile": "Name, Symbol oder Adresse",
   "noExchange": "Exchange nicht gefunden",
@@ -86,6 +84,5 @@
   "priceChange": "Geschätzter Wechselkursrutsch",
   "forAtLeast": "für mindestens ",
   "brokenToken": "Der ausgewählte Token ist nicht kompatibel mit Swapr. Liquidität hinzufügen wird zu nicht mehr zugänglichen Token führen!",
-  "bridge": "Bridge",
-  "findingBestPrice": "Bestpreis finden"
+  "bridge": "Bridge"
 }

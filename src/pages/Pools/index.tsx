@@ -96,7 +96,7 @@ function Title({
   sortBy,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const [search] = useSearchParams()
 
   const handleAllClick = useCallback(() => {
@@ -122,7 +122,7 @@ function Title({
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
               <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">
-                {t('myPairs')}
+                {t('pairsList.myPairs')}
               </StyledMediumHeader>
             </Box>
           ) : (
@@ -162,7 +162,7 @@ function Title({
         </Flex>
         <Flex data-testid="campaigns-toggle">
           <Switch
-            label={t('campaings')}
+            label={t('campaigns')}
             handleToggle={() =>
               onFilterChange(
                 aggregatedDataFilter === PairsFilterType.REWARDS ? PairsFilterType.ALL : PairsFilterType.REWARDS
@@ -171,7 +171,7 @@ function Title({
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch
-            label={t('myPairs')}
+            label={t('pairsList.myPairs')}
             handleToggle={() =>
               onFilterChange(aggregatedDataFilter === PairsFilterType.MY ? PairsFilterType.ALL : PairsFilterType.MY)
             }
@@ -191,7 +191,7 @@ function Title({
 }
 
 export default function Pools() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const { account, chainId } = useActiveWeb3React()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
@@ -247,7 +247,7 @@ export default function Pools() {
       {account && (
         <ButtonWithExternalLink
           link={getAccountAnalyticsLink(account || '', chainId)}
-          text={t('accountAnalyticsAndAccruedFees')}
+          text={t('pairsList.accountAnalyticsAndAccruedFees')}
           style={{ marginTop: '32px', textTransform: 'uppercase' }}
         />
       )}

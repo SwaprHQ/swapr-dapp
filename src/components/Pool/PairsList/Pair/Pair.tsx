@@ -41,7 +41,7 @@ export function Pair({
   ...rest
 }: PairProps) {
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const isMobile = useIsMobileByMedia()
 
   return (
@@ -71,7 +71,7 @@ export function Pair({
         <Flex style={{ gap: '6px' }} flexDirection="row" alignItems="flex-start" flexWrap="wrap">
           <FarmingBadge isGreyed={!hasFarming}>
             <FarmingLogo />
-            <BadgeText>{t('farming')}</BadgeText>
+            <BadgeText>{t('pairsList.farming')}</BadgeText>
           </FarmingBadge>
           <CarrotBadge isGreyed={!containsKpiToken} />
         </Flex>

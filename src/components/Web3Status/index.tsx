@@ -122,7 +122,7 @@ export default function Web3Status() {
   }
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const mobileByMedia = useIsMobileByMedia()
   const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
@@ -171,7 +171,7 @@ export default function Web3Status() {
         <Row alignItems="center" justifyContent="flex-end">
           {networkConnectorChainId && !account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
-              {mobileByMedia ? 'Connect' : t('Connect wallet')}
+              {mobileByMedia ? 'Connect' : t('connectWallet')}
             </Button>
           )}
           <AccountStatus

@@ -65,7 +65,7 @@ export function TradeDetails({
           <RowBetween alignItems="center">
             <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
-                i18nKey="bestPriceFoundOn"
+                i18nKey="swap:tradeDetails.bestPriceFoundOn"
                 values={{ platform: bestPricedTrade?.platform.name }}
                 components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
               />
@@ -73,7 +73,7 @@ export function TradeDetails({
                 <>
                   {' '}
                   <Trans
-                    i18nKey="swapWithNoAdditionalFees"
+                    i18nKey="swap:tradeDetails.swapWithNoAdditionalFees"
                     components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
                   />
                 </>

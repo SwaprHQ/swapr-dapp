@@ -100,7 +100,7 @@ export function SwapPlatformSelector({
   onSelectedPlatformChange,
 }: SwapPlatformSelectorProps) {
   const isMobileByMedia = useIsMobileByMedia()
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
   const theme = useTheme()
 
   const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
@@ -151,13 +151,15 @@ export function SwapPlatformSelector({
       <SelectionListWindowWrapper>
         <SelectionListLabelWrapper>
           <SelectionListLabel justify={true} flex={showGasFees ? '30%' : '45%'}>
-            {t('exchange')}
+            {t('platfromSelector.exchange')}
           </SelectionListLabel>
-          <SelectionListLabel>{isMobileByMedia ? t('pImp') : t('pImpact')}</SelectionListLabel>
-          <SelectionListLabel>{t('fee')}</SelectionListLabel>
-          {showGasFees && <SelectionListLabel>{t('gas')}</SelectionListLabel>}
+          <SelectionListLabel>
+            {isMobileByMedia ? t('platfromSelector.pImp') : t('platfromSelector.pImpact')}
+          </SelectionListLabel>
+          <SelectionListLabel>{t('platfromSelector.fee')}</SelectionListLabel>
+          {showGasFees && <SelectionListLabel>{t('platfromSelector.gas')}</SelectionListLabel>}
           <SelectionListLabel flex="25%">
-            {independentField === Field.OUTPUT ? t('maxSent') : t('minReceived')}
+            {independentField === Field.OUTPUT ? t('platfromSelector.maxSent') : t('platfromSelector.minReceived')}
           </SelectionListLabel>
         </SelectionListLabelWrapper>
         {isLoading && allPlatformTrades?.length === 0 ? (
@@ -219,7 +221,7 @@ export function SwapPlatformSelector({
           {!showAllPlatformsTrades && (
             <MoreMarketsButton alignItems="center" onClick={() => setShowAllPlatformsTrades(true)}>
               <TYPE.main fontWeight={600} color={'purple3'} fontSize="10px" mr="8px">
-                {t('showMore')}
+                {t('platfromSelector.showMore')}
               </TYPE.main>
               <ChevronsDown size={15} color={theme.purple3} />
             </MoreMarketsButton>

@@ -215,7 +215,7 @@ export default function AccountDetails({
 }: AccountDetailsProps) {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) dispatch(clearAllTransactions({ chainId }))

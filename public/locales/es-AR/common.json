@@ -13,7 +13,6 @@
   "input": "Entrada",
   "output": "Salida",
   "estimated": "estimado",
-  "balance": "Saldo: {{ balanceInput }}",
   "unlock": "Desbloquear",
   "pending": "Pendiente",
   "selectToken": "Seleccioná un token",

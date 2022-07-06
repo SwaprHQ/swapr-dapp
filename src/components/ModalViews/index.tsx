@@ -49,7 +49,7 @@ export function SubmittedView({
 }) {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   return (
     <ConfirmOrLoadingWrapper>
