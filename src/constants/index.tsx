@@ -469,6 +469,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
+    RoutablePlatform.ZEROX.name,
   ],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
