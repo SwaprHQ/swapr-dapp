@@ -49,6 +49,8 @@ describe('Campaign creation tests', () => {
 
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
+
+    cy.scrollTo('top')
     MenuBar.checkToastMessage('campaign')
     ;(
       SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(expectedStartsAt)) as Cypress.Chainable
