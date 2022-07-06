@@ -1,12 +1,12 @@
 import { LiquidityMiningCampaign, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ChevronLeft, Repeat } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
+import { useRouter } from '../../../hooks/useRouter'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { DarkCard } from '../../Card'
 import { AutoColumn } from '../../Column'
