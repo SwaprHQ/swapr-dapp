@@ -449,6 +449,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.ZEROX.name,
+    RoutablePlatform.GNOSIS_PROTOCOL.name, // COW PROTOCOL
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -632,4 +633,13 @@ export const LIQUIDITY_SORTING_TYPES: { [key: string]: string } = {
   TVL: 'TVL',
   APY: 'APY',
   NEW: 'NEW',
+}
+
+export const SWAP_INPUT_ERRORS: Record<string, number> = {
+  CONNECT_WALLET: 1,
+  ENTER_AMOUNT: 2,
+  SELECT_TOKEN: 3,
+  ENTER_RECIPIENT: 4,
+  INVALID_RECIPIENT: 5,
+  INSUFFICIENT_BALANCE: 6,
 }
