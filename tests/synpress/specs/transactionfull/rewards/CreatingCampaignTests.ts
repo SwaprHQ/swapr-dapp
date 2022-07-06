@@ -35,15 +35,15 @@ describe('Campaign creation tests', () => {
   })
 
   it('Should create a single reward pool [TC-60]', () => {
-    RewardsPage.getCreateCampaignButton().click()
+    RewardsPage.getCreateCampaignButton().click({ scrollBehavior: 'top' })
     CreatePoolPage.selectLpTokenStaking()
-    CreatePoolPage.getLiquidityPairMenuButton().click()
+    CreatePoolPage.getLiquidityPairMenuButton().click({ scrollBehavior: 'top' })
     PairMenu.choosePair(TOKENS_PAIR)
 
     CreatePoolPage.setStartTime(DateUtils.getFormattedDateTimeForInput(expectedStartsAt))
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTimeForInput(expectedEndsAt))
 
-    CreatePoolPage.getRewardTokenMenuButton().first().click()
+    CreatePoolPage.getRewardTokenMenuButton().first().click({ scrollBehavior: 'top' })
     TokenMenu.chooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
@@ -75,13 +75,13 @@ describe('Campaign creation tests', () => {
       this.skip()
     }
     LiquidityPage.visitLiquidityPage()
-    LiquidityPage.getAllPairsButton().click({ scrollBehavior: false })
-    TokenMenu.getOpenTokenManagerButton().click({ scrollBehavior: false })
+    LiquidityPage.getAllPairsButton().click({ scrollBehavior: 'top' })
+    TokenMenu.getOpenTokenManagerButton().click({ scrollBehavior: 'top' })
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
     TokenMenu.chooseToken('dai')
-    LiquidityPage.getPairCards().contains('USDT').click({ scrollBehavior: false })
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({ scrollBehavior: false })
+    LiquidityPage.getPairCards().contains('USDT').click({ scrollBehavior: 'top' })
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({ scrollBehavior: 'top' })
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
@@ -95,7 +95,7 @@ describe('Campaign creation tests', () => {
       this.skip()
     }
     RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click({ scrollBehavior: false })
+    RewardsPage.getAllPairsButton().click({ scrollBehavior: 'top' })
     PairMenu.choosePair(TOKENS_PAIR)
     RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt)
     CampaignPage.checkCampaignData(
