@@ -52,6 +52,7 @@ export const CurrencyInputPanelComponent = ({
   maxAmount,
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
+  isOutputPanel,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -115,7 +116,7 @@ export const CurrencyInputPanelComponent = ({
   }, [value])
 
   return (
-    <InputPanel id={id}>
+    <InputPanel style={isOutputPanel ? { marginTop: '12px' } : {}} id={id}>
       <Container focused={focused}>
         <Content>
           {!hideInput && label && (
@@ -189,6 +190,7 @@ export const CurrencyInputPanelComponent = ({
           selectedCurrency={currency}
           otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
+          isOutputPanel={isOutputPanel}
         />
       )}
     </InputPanel>

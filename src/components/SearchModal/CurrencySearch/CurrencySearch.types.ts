@@ -4,6 +4,7 @@ import { TokenAddressMap } from '../../../state/lists/hooks'
 
 export interface CurrencySearchContextType {
   allTokens: { [address: string]: Token }
+  allTokensOnSecondChain?: { [address: string]: Token }
   searchQuery: string
   searchToken: Token | null | undefined
   setSearchQuery: (query: string) => void
@@ -22,4 +23,5 @@ export interface CurrencySearchProps {
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
   otherSelectedCurrency?: Currency[] | null
+  isOutputPanel?: boolean
 }

@@ -35,13 +35,24 @@ export const CurrencySearch = ({
   onCurrencySelect,
   showNativeCurrency,
   otherSelectedCurrency,
+  isOutputPanel,
 }: CurrencySearchProps) => {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-  const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
-    useContext(CurrencySearchContext)
+  const {
+    allTokens,
+    allTokensOnSecondChain,
+    searchToken,
+    searchQuery,
+    setSearchQuery,
+    debouncedQuery,
+    selectedTokenList,
+    showFallbackTokens,
+  } = useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
+
+  const tokens = isOutputPanel ? allTokensOnSecondChain : allTokens
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -55,8 +66,8 @@ export const CurrencySearch = ({
   const tokenComparator = useTokenComparator(invertSearchOrder)
 
   const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(Object.values(allTokens), debouncedQuery)
-  }, [allTokens, debouncedQuery])
+    return filterTokens(Object.values(tokens ?? {}), debouncedQuery)
+  }, [tokens, debouncedQuery])
 
   const sortedTokens: Token[] = useMemo(() => {
     return filteredTokens.sort(tokenComparator)
@@ -169,6 +180,7 @@ export const CurrencySearch = ({
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
+          hideBalance={!isOutputPanel}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
