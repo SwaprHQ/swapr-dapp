@@ -40,7 +40,7 @@ describe('Bridge tests', () => {
     BridgePage.getSelectTokenButton().click()
     TokenMenu.chooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
-    BridgePage.getBridgeSelector('arbitrum').scrollIntoView().scrollIntoView().should('be.visible')
+    BridgePage.getBridgeSelector('arbitrum').scrollIntoView().should('be.visible')
     BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
     BridgePage.getBridgeSelector('arbitrum').click()
     BridgePage.getBridgeButton().should('contain.text', 'Bridge to').click()

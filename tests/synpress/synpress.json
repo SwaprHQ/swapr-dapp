@@ -4,7 +4,7 @@
   "retries": { "runMode": 0, "openMode": 0 },
   "integrationFolder": "tests/synpress/specs",
   "screenshotsFolder": "public-report/screenshots",
-  "videosFolder": "public-report/screenshots",
+  "videosFolder": "public-report/videos",
   "chromeWebSecurity": true,
   "viewportWidth": 1366,
   "viewportHeight": 768,
