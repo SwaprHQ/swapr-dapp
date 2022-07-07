@@ -1,6 +1,6 @@
 import { Currency } from '@swapr/sdk'
 
-import { transparentize } from 'polished'
+import classNames from 'classnames'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -32,18 +32,8 @@ interface DoubleCurrencyLogoProps {
   currency1?: Currency
   top?: number
   spaceBetween?: number
-  style?: React.CSSProperties
+  classname?: string
 }
-
-const HigherLogo = styled(CurrencyLogo)<{ loading?: boolean }>`
-  z-index: 2;
-  box-shadow: ${props => (props.loading ? 'none' : `0px 0px 8px ${transparentize(0.9, props.theme.black)}`)};
-`
-
-const CoveredLogo = styled(CurrencyLogo)`
-  position: absolute;
-  left: 0 !important;
-`
 
 export default function DoubleCurrencyLogo({
   currency0,
@@ -54,12 +44,23 @@ export default function DoubleCurrencyLogo({
   marginLeft = 0,
   top = 0,
   spaceBetween = 0,
-  style,
+  classname,
 }: DoubleCurrencyLogoProps) {
   return (
-    <Wrapper style={style} top={top} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
-      <CoveredLogo loading={loading} currency={currency0} size={size.toString() + 'px'} />
-      <HigherLogo marginRight={spaceBetween} loading={loading} currency={currency1} size={size.toString() + 'px'} />
+    <Wrapper className={` ${classname}`} top={top} sizeraw={size} marginRight={marginRight} marginLeft={marginLeft}>
+      <CurrencyLogo
+        className="!absolute !left-0"
+        loading={loading}
+        currency={currency0}
+        size={size.toString() + 'px'}
+      />
+      <CurrencyLogo
+        className={classNames('z-10', { 'drop-shadow-lg': !loading })}
+        marginRight={spaceBetween}
+        loading={loading}
+        currency={currency1}
+        size={size.toString() + 'px'}
+      />
     </Wrapper>
   )
 }

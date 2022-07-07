@@ -8,16 +8,11 @@ import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'
 
-const StyledCurrencyLogo = styled(CurrencyLogo)`
-  position: absolute;
-  top: -31px;
-`
 const InsideCircle = styled.div<{ size: string }>`
   position: relative;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   margin: 0 auto;
-  /* BG/Dark/#3 */
   text-align: center;
 
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%233E4259FF' stroke-width='1' stroke-dasharray='6%25%2c 8%25' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
@@ -112,17 +107,9 @@ const CrossIcon = ({ campaignType }: CrossProps) => {
 }
 export const AssetLogo = ({ currency0, currency1, campaingType }: AssetLogoProps) => {
   if (currency0 && currency1) {
-    return (
-      <DoubleCurrencyLogo
-        style={{ position: 'absolute' }}
-        size={84}
-        top={-26}
-        currency0={currency0}
-        currency1={currency1}
-      />
-    )
+    return <DoubleCurrencyLogo classname="!absolute" size={84} top={-26} currency0={currency0} currency1={currency1} />
   } else if (currency0) {
-    return <StyledCurrencyLogo size="98px" currency={currency0} />
+    return <CurrencyLogo className="!absolute -top-[31px]" size="98px" currency={currency0} />
   }
   return <CrossIcon campaignType={campaingType} />
 }
