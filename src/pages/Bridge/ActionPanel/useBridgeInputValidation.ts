@@ -7,14 +7,14 @@ import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (isCollecting: boolean) => {
+export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: boolean) => {
   const value = useSelector((state: AppState) => state.ecoBridge.ui.from.value)
 
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
+  const { from, to, showAvailableBridges, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const useBridgeInputValidation = (isCollecting: boolean) => {
   }, [showAvailableBridges, ecoBridge, value, from.address, to.address, from.chainId, to.chainId])
 
   useEffect(() => {
-    if (isCollecting) return
+    if (isCollecting || isOutputPanel) return
 
     const validateInput = () => {
       if (Number(value) === 0 || isNaN(Number(value))) {
@@ -42,7 +42,7 @@ export const useBridgeInputValidation = (isCollecting: boolean) => {
         dispatch(ecoBridgeUIActions.setTo({ value: '' }))
         return false
       }
-      if (Number(value) > 0 && !from.address && !to.address) {
+      if ((isBridgeSwapActive && (!from.address || !to.address)) || (!isBridgeSwapActive && !from.address)) {
         dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: 'Select token',
@@ -92,5 +92,16 @@ export const useBridgeInputValidation = (isCollecting: boolean) => {
     if (isValid) {
       ecoBridge.validate()
     }
-  }, [value, ecoBridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, isCollecting])
+  }, [
+    value,
+    ecoBridge,
+    activeBridge,
+    isBalanceSufficient,
+    dispatch,
+    from.address,
+    to.address,
+    isCollecting,
+    isBridgeSwapActive,
+    isOutputPanel,
+  ])
 }
