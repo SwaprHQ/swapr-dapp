@@ -16,6 +16,7 @@ interface TabsProps {
   setActiveTab: (tab: BridgeTab) => void
   handleTriggerCollect: (tx: BridgeTransactionSummary) => void
   firstTxnToCollect?: BridgeTransactionSummary
+  toggleBridgeSwap: (isActive: boolean) => void
 }
 
 export const Tabs = ({
@@ -27,6 +28,7 @@ export const Tabs = ({
   setActiveTab,
   handleTriggerCollect,
   firstTxnToCollect,
+  toggleBridgeSwap,
 }: TabsProps) => {
   return (
     <TabsRow>
@@ -38,10 +40,20 @@ export const Tabs = ({
           }
           setActiveTab(BridgeTab.BRIDGE)
           setTxsFilter(BridgeTxsFilter.RECENT)
+          toggleBridgeSwap(false)
         }}
-        className={activeTab === 'bridge' ? 'active' : ''}
+        className={activeTab === BridgeTab.BRIDGE ? 'active' : ''}
       >
         Bridge
+      </Button>
+      <Button
+        onClick={() => {
+          setActiveTab(BridgeTab.BRIDGE_SWAP)
+          toggleBridgeSwap(true)
+        }}
+        className={activeTab === BridgeTab.BRIDGE_SWAP ? 'active' : ''}
+      >
+        Bridge Swap
       </Button>
       <Button
         onClick={() => {
@@ -51,7 +63,7 @@ export const Tabs = ({
           }
         }}
         disabled={!firstTxnToCollect}
-        className={activeTab === 'collect' ? 'active' : ''}
+        className={activeTab === BridgeTab.COLLECT ? 'active' : ''}
       >
         Collect
         {<Badge badgeTheme="green">{collectableTxAmount}</Badge>}
@@ -62,7 +74,7 @@ export const Tabs = ({
           setTxsFilter(BridgeTxsFilter.NONE)
           setActiveTab(BridgeTab.HISTORY)
         }}
-        className={activeTab === 'history' ? 'active' : ''}
+        className={activeTab === BridgeTab.HISTORY ? 'active' : ''}
       >
         History
       </Button>

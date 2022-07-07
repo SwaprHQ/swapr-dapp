@@ -6,6 +6,7 @@ export enum BridgeTab {
   BRIDGE = 'bridge',
   COLLECT = 'collect',
   HISTORY = 'history',
+  BRIDGE_SWAP = 'bridge swap',
 }
 
 export const isNetworkDisabled = (optionChainId: ChainId, selectedNetworkChainId: ChainId) => {

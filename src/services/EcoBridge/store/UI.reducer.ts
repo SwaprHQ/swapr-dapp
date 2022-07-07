@@ -26,6 +26,7 @@ type UIInitialState = Record<'from' | 'to', EcoBridgeInput> & {
   filter: BridgeTxsFilter
   isCheckingWithdrawals: boolean
   showAvailableBridges: boolean
+  isBridgeSwapActive: boolean
 }
 
 const initialState: UIInitialState = {
@@ -60,6 +61,7 @@ const initialState: UIInitialState = {
   filter: BridgeTxsFilter.RECENT,
   isCheckingWithdrawals: false,
   showAvailableBridges: false,
+  isBridgeSwapActive: false,
 }
 
 export const ecoBridgeUISlice = createSlice({
@@ -173,6 +175,9 @@ export const ecoBridgeUISlice = createSlice({
     },
     setShowAvailableBridges(state, action: PayloadAction<boolean>) {
       state.showAvailableBridges = action.payload
+    },
+    setBridgeSwapStatus: (state, action: PayloadAction<boolean>) => {
+      state.isBridgeSwapActive = action.payload
     },
   },
 })
