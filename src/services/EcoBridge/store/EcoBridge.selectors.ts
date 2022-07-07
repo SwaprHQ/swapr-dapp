@@ -31,8 +31,12 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  */
 
 export const selectSupportedBridges = createSelector(
-  [(state: AppState) => state.ecoBridge.ui.from.chainId, (state: AppState) => state.ecoBridge.ui.to.chainId],
-  (fromChainId, toChainId) => {
+  [
+    (state: AppState) => state.ecoBridge.ui.from.chainId,
+    (state: AppState) => state.ecoBridge.ui.to.chainId,
+    (state: AppState) => state.ecoBridge.ui.isBridgeSwapActive,
+  ],
+  (fromChainId, toChainId, isBridgeSwapActive) => {
     if (!fromChainId || !toChainId) return []
 
     const supportedBridges = Object.values(ecoBridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
@@ -56,7 +60,7 @@ export const selectSupportedBridges = createSelector(
       []
     )
 
-    return supportedBridges
+    return isBridgeSwapActive ? supportedBridges.filter(bridge => bridge.bridgeId === 'socket') : supportedBridges
   }
 )
 
@@ -239,11 +243,17 @@ export const selectBridgeTokens = createSelector([selectBridgeLists], allLists =
 })
 
 export const selectBridgeActiveTokens = createSelector(
-  [selectSupportedLists, (state: AppState) => state.ecoBridge.common.activeLists],
-  (supportedLists, activeLists) => {
-    if (!activeLists.length) return {}
+  [
+    selectSupportedLists,
+    (state: AppState) => state.ecoBridge.common.activeLists,
+    (state: AppState) => state.ecoBridge.ui.isBridgeSwapActive,
+  ],
+  (supportedLists, activeLists, isBridgeSwapActive) => {
+    const lists = isBridgeSwapActive ? ['socket'] : activeLists
 
-    const activeTokensMap = activeLists.reduce((activeTokens, activeId) => {
+    if (!lists.length) return {}
+
+    const activeTokensMap = lists.reduce((activeTokens, activeId) => {
       const tokenMapByChain = listToTokenMap(supportedLists[activeId])
       const supportedChainsByList = Object.keys(tokenMapByChain)
 
@@ -258,19 +268,31 @@ export const selectBridgeActiveTokens = createSelector(
     return activeTokensMap
   }
 )
+const getTokensPerChain = (activeTokens: TokenMap, chainId: ChainId) => {
+  const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{
+    [address: string]: Token
+  }>((newMap, address) => {
+    newMap[address] = activeTokens[chainId][address].token
+    return newMap
+  }, {})
+
+  return mapWithoutLists
+}
 
 export const selectBridgeSupportedTokensOnChain = createSelector(
-  [selectBridgeActiveTokens, (state: AppState, chainId: ChainId) => chainId],
-  (activeTokens, chainId) => {
-    const mapWithoutLists = Object.keys(activeTokens[chainId] ?? {}).reduce<{ [address: string]: Token }>(
-      (newMap, address) => {
-        newMap[address] = activeTokens[chainId][address].token
-        return newMap
-      },
-      {}
-    )
+  [
+    selectBridgeActiveTokens,
+    (state: AppState, chainId: ChainId) => chainId,
+    (state: AppState) => state.ecoBridge.ui.to.chainId,
+  ],
+  (activeTokens, chainId, toChainId) => {
+    const tokensOnFromChainId = getTokensPerChain(activeTokens, chainId)
+    const tokensOnToChainId = getTokensPerChain(activeTokens, toChainId)
 
-    return mapWithoutLists
+    return {
+      tokensOnFromChainId,
+      tokensOnToChainId,
+    }
   }
 )
 
