@@ -76,7 +76,8 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name || isOutputPanel)
+      return filteredSortedTokens
 
     if (
       nativeCurrency &&
@@ -86,7 +87,7 @@ export const CurrencySearch = ({
     }
 
     return filteredSortedTokens
-  }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
+  }, [showNativeCurrency, nativeCurrency, isOutputPanel, filteredSortedTokens, debouncedQuery])
 
   // clear the input on open
   useEffect(() => {

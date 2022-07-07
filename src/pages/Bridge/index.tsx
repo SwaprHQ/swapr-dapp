@@ -162,22 +162,26 @@ export default function Bridge() {
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
-    setDisplayedValue('')
-    onUserInput('')
-    onCurrencySelection('')
 
-    setActiveTab(BridgeTab.BRIDGE)
+    onUserInput('')
+    setDisplayedValue('')
+    dispatch(ecoBridgeUIActions.setTo({ value: '' }))
+
+    onCurrencySelection('')
+    onCurrencyOutputSelection('')
+
     setTxsFilter(BridgeTxsFilter.RECENT)
     setModalState(BridgeModalStatus.CLOSED)
-
-    onCurrencyOutputSelection('')
-    dispatch(ecoBridgeUIActions.setTo({ value: '' }))
-    dispatch(ecoBridgeUIActions.setBridgeSwapStatus(false))
 
     if (isCollecting) {
       setIsCollecting(false)
     }
+
+    if (activeTab === BridgeTab.BRIDGE_SWAP) return
+
+    setActiveTab(BridgeTab.BRIDGE)
   }, [
+    activeTab,
     chainId,
     dispatch,
     isCollecting,
