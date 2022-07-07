@@ -17,7 +17,7 @@ import {
 import { EcoBridgeChildBase } from '../EcoBridge.utils'
 import { commonActions } from '../store/Common.reducer'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
-import { ApprovalsAPI, QuoteAPI, ServerAPI } from './api'
+import { ApprovalsAPI, QuoteAPI, ServerAPI, TokenListsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
   QuoteControllerGetQuoteSortEnum,
@@ -535,34 +535,26 @@ export class SocketBridge extends EcoBridgeChildBase {
     let tokenList: TokenList | undefined
 
     if (isBridgeSwapActive) {
-      const fromChainIdString = fromChainId.toString()
-      const toChainIdString = toChainId.toString()
+      const tokenListparameters = {
+        fromChainId: fromChainId.toString(),
+        toChainId: toChainId.toString(),
+        isShortList: true,
+        disableSwapping: false,
+        singleTxOnly: true,
+      }
 
       try {
-        const [fromTokenListRequest, toTokenListRequest] = await Promise.all([
-          fetch(
-            `https://backend.movr.network/v2/token-lists/from-token-list?fromChainId=${fromChainIdString}&toChainId=${toChainIdString}&isShortList=true&disableSwapping=false&singleTxOnly=true`,
-            {
-              headers: {
-                'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37',
-              },
-            }
-          ),
-          fetch(
-            `https://backend.movr.network/v2/token-lists/to-token-list?fromChainId=${fromChainIdString}&toChainId=${toChainIdString}&isShortList=true&disableSwapping=false&singleTxOnly=true`,
-            {
-              headers: {
-                'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37',
-              },
-            }
-          ),
+        const [fromTokenList, toTokenList] = await Promise.all([
+          TokenListsAPI.tokenListControllerGetfromTokenList(tokenListparameters),
+          TokenListsAPI.tokenListControllerGetToTokenList(tokenListparameters),
         ])
-
-        const [fromTokenList, toTokenList] = await Promise.all([fromTokenListRequest.json(), toTokenListRequest.json()])
-        if (!toTokenList.result.length || !fromTokenList.result.length) return
 
         const tokens = [...fromTokenList.result, ...toTokenList.result].reduce<TokenInfo[]>((allTokens, token) => {
           const { address, chainId, symbol, decimals, icon, name } = token
+
+          // remove native currency from fromTokenList
+          if (address === SOCKET_NATIVE_TOKEN_ADDRESS && symbol === Currency.getNative(fromChainId).symbol)
+            return allTokens
 
           allTokens.push({
             address,
