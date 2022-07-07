@@ -30,6 +30,21 @@ describe('Swapping tests', () => {
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
+  it('Should reject transaction', () => {
+    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.swap().confirmSwap()
+
+    cy.rejectMetamaskTransaction()
+
+    SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    SwapPage.closeTransactionErrorModal()
+    cy.scrollTo('top')
+    SwapPage.getSwapBox().should('be.visible')
+    SwapPage.getSwapButton().should('be.visible')
+    SwapPage.getToInput().should('be.visible')
+    SwapPage.getFromInput().should('be.visible')
+  })
   it('Should swap XEENUS to ETH [TC-51]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then(
       (response: { body: { result: string } }) => {
@@ -218,22 +233,6 @@ describe('Swapping tests', () => {
       )
     })
   })
-  it('Should reject transaction', () => {
-    SwapPage.chooseTokes('xeenus', 'weth')
-    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-    SwapPage.swap().confirmSwap()
-
-    cy.rejectMetamaskTransaction()
-
-    SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
-    SwapPage.closeTransactionErrorModal()
-    cy.scrollTo('top')
-    SwapPage.getSwapBox().should('be.visible')
-    SwapPage.getSwapButton().should('be.visible')
-    SwapPage.getToInput().should('be.visible')
-    SwapPage.getFromInput().should('be.visible')
-  })
-
   // TODO unskip when #1068 is fixed
   it.skip('Should send erc20 token to wallet address [TC-54]', () => {
     MenuBar.getSettings().click()
