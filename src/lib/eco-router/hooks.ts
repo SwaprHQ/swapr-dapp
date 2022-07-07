@@ -35,7 +35,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
     let isCancelled = false
 
     // Early exit and clean state if necessary
-    if (!currencyAmountIn || !account || !currencyAmountIn.currency || !library || !currencyOut || !chainId) {
+    if (!currencyAmountIn || !currencyAmountIn.currency || !library || !currencyOut || !chainId) {
       batchedUpdates(() => {
         setTrades([])
         setLoading(false)
@@ -118,7 +118,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
     let isCancelled = false
 
     // Early exit and clean state if necessary
-    if (!currencyAmountOut || !account || !currencyAmountOut.currency || !currencyIn || !chainId) {
+    if (!currencyAmountOut || !currencyAmountOut.currency || !currencyIn || !chainId) {
       batchedUpdates(() => {
         setTrades([])
         setLoading(false)
