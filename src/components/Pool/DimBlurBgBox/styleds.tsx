@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import React, { ReactNode } from 'react'
 
 interface EmptyProps {
-  padding?: string
+  padding?: boolean
   children: ReactNode
 }
 

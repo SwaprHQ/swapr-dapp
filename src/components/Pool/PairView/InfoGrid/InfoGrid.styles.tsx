@@ -1,12 +1,5 @@
-import styled from 'styled-components'
+import React, { ReactNode } from 'react'
 
-export const InfoGrid = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  flex-wrap: wrap;
-  gap: 24px;
-`}
-`
+export const InfoGrid = ({ children }: { children: ReactNode }) => (
+  <div className="flex flex-wrap gap-6 md:items-center md:justify-between">{children}</div>
+)

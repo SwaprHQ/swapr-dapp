@@ -58,7 +58,7 @@ export default function List({ loading, items = [], loadingItems }: LiquidityMin
 
   return (
     <>
-      <div className="flex flex-column">
+      <div className="flex flex-col">
         <div className="mb-2">
           {overallLoading ? (
             <LoadingGrid itemsAmount={loadingItems || responsiveItemsPerPage} />

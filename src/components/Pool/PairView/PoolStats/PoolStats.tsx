@@ -4,7 +4,6 @@ import { useRouter } from 'hooks/useRouter'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePrevious } from 'react-use'
-import { Box, Flex, Text } from 'rebass'
 
 import { useActiveWeb3React } from '../../../../hooks'
 import { useBestAPY } from '../../../../hooks/useBestAPY'
@@ -45,22 +44,20 @@ export function PoolStats({ pair }: PairViewProps) {
   }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
-    <DimBlurBgBox padding={'24px'}>
-      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
-        <Text fontSize="16px" mb="16px">
-          {t('poolStats')}
-        </Text>
-        <Box>
+    <DimBlurBgBox padding>
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <p className="md:text-lg mb-5">{t('poolStats')}</p>
+        <div>
           <ButtonExternalLink link={statsLink}>{t('stats')}</ButtonExternalLink>
-        </Box>
-      </Flex>
-      <Box marginTop={4}>
+        </div>
+      </div>
+      <div className="mt-5">
         <InfoGrid>
           <ValueWithLabel title={t('TVL')} value={`$${formatCurrencyAmount(liquidityUSD)}`} />
           <ValueWithLabel title={t('24hVolume')} value={`$${formatCurrencyAmount(volume24hUSD)}`} />
           <ValueWithLabel title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
         </InfoGrid>
-      </Box>
+      </div>
     </DimBlurBgBox>
   )
 }

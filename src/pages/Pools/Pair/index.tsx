@@ -5,7 +5,7 @@ import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { Box, Flex, Text } from 'rebass'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
@@ -64,32 +64,32 @@ export default function Pair() {
   return (
     <>
       <PageWrapper>
-        <Box paddingX={2}>
+        <div className="px-2">
           <TitleRow>
-            <Flex alignItems="center">
+            <div className="flex items-center">
               <PointableFlex onClick={handleAllClick}>
-                <Box mr="4px">
+                <div className="mr-1">
                   <DoubleCurrencyLogo
                     loading={!token0 || !token1}
                     currency0={token0 || undefined}
                     currency1={token1 || undefined}
                     size={20}
                   />
-                </Box>
-                <Box mr="4px">
-                  <Text fontWeight="600" fontSize="16px" lineHeight="20px">
+                </div>
+                <div className="mr-1">
+                  <div className="font-bold">
                     {!token0 || !token1 ? (
                       <Skeleton width="60px" />
                     ) : (
                       `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
                     )}
-                  </Text>
-                </Box>
-                <Box>
+                  </div>
+                </div>
+                <div>
                   <ChevronDown size={12} />
-                </Box>
+                </div>
               </PointableFlex>
-            </Flex>
+            </div>
             <ButtonRow>
               <ButtonPurpleDim
                 as={Link}
@@ -102,9 +102,9 @@ export default function Pair() {
           <ContentGrid>
             <TwoColumnsGrid>
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-              <DimBlurBgBox padding={'24px'}>
-                <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
-                  <Box mb={3}>
+              <DimBlurBgBox padding>
+                <div className="flex items-center justify-between flex-col h-full">
+                  <div className="mb-3">
                     <ValueWithLabel
                       title={t('swapFee')}
                       value={
@@ -118,16 +118,16 @@ export default function Pair() {
                       big
                       center
                     />
-                  </Box>
+                  </div>
                   <ButtonBadge to={'#'} number={0} disabled>
                     {t('governance')}
                   </ButtonBadge>
-                </Flex>
+                </div>
               </DimBlurBgBox>
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
-          <Flex my={3}>
+          <div className="my-3">
             <ButtonBadge
               number={miningCampaigns.active.length}
               color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}
@@ -135,9 +135,9 @@ export default function Pair() {
             >
               {t('campaigns')}
             </ButtonBadge>
-          </Flex>
+          </div>
           {!loadingPairs ? <List items={miningCampaigns.active} /> : <List loading loadingItems={3} />}
-        </Box>
+        </div>
       </PageWrapper>
       <PairSearchModal isOpen={openPairsModal} onDismiss={handleModalClose} onPairSelect={handlePairSelect} />
     </>

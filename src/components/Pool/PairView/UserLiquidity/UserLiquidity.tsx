@@ -3,7 +3,6 @@ import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Box, Flex, Text } from 'rebass'
 
 import { useTotalSupply } from '../../../../data/TotalSupply'
 import { useActiveWeb3React } from '../../../../hooks'
@@ -50,18 +49,16 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
     : [undefined, undefined]
 
   return (
-    <DimBlurBgBox padding={'24px'}>
-      <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
-        <Text fontSize="16px" mb="16px">
-          {t('yourLiquidity')}
-        </Text>
-        <Box>
+    <DimBlurBgBox padding>
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <p className="md:text-lg mb-4">{t('yourLiquidity')}</p>
+        <div>
           <ButtonExternalLink link={getAccountAnalyticsLink(account || '', chainId)}>
             {t('accountAnalytics')}
           </ButtonExternalLink>
-        </Box>
-      </Flex>
-      <Box marginY={4}>
+        </div>
+      </div>
+      <div className="my-6">
         <InfoGrid>
           <ValueWithLabel
             title={t('poolShare')}
@@ -77,17 +74,17 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
           />
         </InfoGrid>
-      </Box>
-      <Flex flexDirection={['column', 'row']} alignItems="center">
-        <Box marginBottom={[3, 0]} width="100%">
+      </div>
+      <div className="flex flex-col md:flex-row items-center">
+        <div className="w-full mb-3 md:mb-0">
           <ButtonPurpleDim
             as={Link}
             to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
           >
             {t('addLiquidity')}
           </ButtonPurpleDim>
-        </Box>
-        <Box marginLeft={[0, 3]} width="100%">
+        </div>
+        <div className="w-full md:ml-3">
           <ButtonPurpleDim
             disabled={token0Deposited?.equalTo('0')}
             as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
@@ -95,8 +92,8 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           >
             {t('removeLiquidity')}
           </ButtonPurpleDim>
-        </Box>
-      </Flex>
+        </div>
+      </div>
     </DimBlurBgBox>
   )
 }
