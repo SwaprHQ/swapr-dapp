@@ -2268,6 +2268,15 @@
             }
           },
           {
+            "name": "isShortList",
+            "required": false,
+            "in": "query",
+            "description": "short list",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "API-KEY",
             "in": "header",
             "schema": {
@@ -2374,6 +2383,15 @@
             "required": false,
             "in": "query",
             "description": "To be Marked true if you want the token list that needs only a single transaction from the user to bridge.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isShortList",
+            "required": false,
+            "in": "query",
+            "description": "short list",
             "schema": {
               "type": "boolean"
             }
