@@ -1,5 +1,7 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { useWeb3React } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { WalletConnect } from '@web3-react/walletconnect'
 import React, { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
@@ -107,10 +109,10 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: AbstractConnector | undefined) => void
+  tryActivation: (connector: MetaMask | CoinbaseWallet | WalletConnect | undefined) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
-  pendingWallet: AbstractConnector | undefined
+  pendingWallet: MetaMask | CoinbaseWallet | WalletConnect | undefined
 }
 
 export default function WalletModal({
@@ -124,7 +126,7 @@ export default function WalletModal({
   setPendingError,
   pendingWallet,
 }: WalletModalProps) {
-  const { active, account, connector, error } = useWeb3React()
+  const { account, connector, isActive } = useWeb3React()
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
@@ -146,13 +148,13 @@ export default function WalletModal({
     }
   }, [account, previousAccount, closeModal, isModalVisible])
 
-  const activePrevious = usePrevious(active)
+  const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
-    if (!!modal && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
+    if (!!modal && ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))) {
       setModal(null)
     }
-  }, [setModal, active, error, connector, modal, activePrevious, connectorPrevious])
+  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, pendingError])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
@@ -163,7 +165,7 @@ export default function WalletModal({
   const unsupportedChainIdError = useUnsupportedChainIdError()
 
   function getModalContent() {
-    if (error) {
+    if (pendingError) {
       return (
         <UpperSection>
           <CloseIcon onClick={closeModal}>

@@ -14,7 +14,6 @@ import {
   WXDAI,
 } from '@swapr/sdk'
 
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
 import React, { ReactNode } from 'react'
 
@@ -28,10 +27,13 @@ import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
-import { injected, walletConnect, walletLink } from '../connectors'
+import { coinbaseWallet, hooks as coinbaseWalletHooks } from './../connectors/coinbaseWallet'
+import { metaMask, hooks as metaMaskHooks } from './../connectors/metaMask'
+import { walletConnect, hooks as walletConnectHooks } from './../connectors/walletConnect'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -243,7 +245,7 @@ export const PINNED_PAIRS: {
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
 export interface WalletInfo {
-  connector?: AbstractConnector
+  connector?: any // TODO
   name: string
   iconName: string
   description: string
@@ -255,17 +257,8 @@ export interface WalletInfo {
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  INJECTED: {
-    connector: injected,
-    name: 'Injected',
-    iconName: 'arrow-right.svg',
-    description: 'Injected web3 provider.',
-    href: null,
-    color: '#010101',
-    primary: true,
-  },
   METAMASK: {
-    connector: injected,
+    connector: metaMask,
     name: 'MetaMask',
     iconName: 'metamask.png',
     description: 'Easy-to-use browser extension.',
@@ -283,7 +276,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     mobile: true,
   },
   COINBASE: {
-    connector: walletLink,
+    connector: coinbaseWallet,
     name: 'Coinbase Wallet',
     iconName: 'coinbase.svg',
     description: 'Connect using Coinbase Wallet.',

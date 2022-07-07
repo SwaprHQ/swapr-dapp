@@ -1,6 +1,8 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { useWeb3React } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { Network } from '@web3-react/network'
+import { WalletConnect } from '@web3-react/walletconnect'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -76,10 +78,7 @@ export enum ModalView {
 }
 
 export default function Web3Status() {
-  const { active, activate, account, error } = useWeb3React()
-  const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
-  const contextNetwork = useWeb3React(NetworkContextName)
-
+  const { account, connector, chainId } = useWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
@@ -95,30 +94,33 @@ export default function Web3Status() {
   const [modal, setModal] = useState<ModalView | null>(null)
 
   const [pendingError, setPendingError] = useState<boolean>()
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
+  const [pendingWallet, setPendingWallet] = useState<MetaMask | CoinbaseWallet | WalletConnect | undefined>()
 
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
+  const { isActivating } = useWeb3React()
+  const isNetwork = connector instanceof Network
+  const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1)
 
-  const tryActivation = async (connector: AbstractConnector | undefined) => {
+  const tryActivation = async (connector: MetaMask | CoinbaseWallet | WalletConnect | undefined) => {
+    // TODO ?
     setPendingWallet(connector)
     setModal(ModalView.Pending)
 
-    // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    // eslint-disable-next-line
-    // @ts-ignore
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-      connector.walletConnectProvider = undefined
-    }
-
-    connector &&
-      activate(connector, undefined, true).catch(error => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector)
-        } else {
-          setPendingError(true)
-        }
-      })
+    isActivating
+      ? undefined
+      : () =>
+          !connector
+            ? undefined
+            : connector instanceof WalletConnect
+            ? connector
+                .activate(desiredChainId === -1 ? undefined : desiredChainId)
+                .then(() => setPendingError(undefined))
+                .catch(setPendingError)
+            : connector
+                .activate(desiredChainId === -1 ? undefined : desiredChainId) // TODO getAddChainParams?
+                .then(() => setPendingError(undefined))
+                .catch(setPendingError)
   }
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
@@ -151,10 +153,7 @@ export default function Web3Status() {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (!contextNetwork.active && !active) {
-    return null
-  }
-  if (error) {
+  if (pendingError) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>
@@ -169,7 +168,7 @@ export default function Web3Status() {
     <>
       <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation}>
         <Row alignItems="center" justifyContent="flex-end">
-          {networkConnectorChainId && !account && (
+          {chainId && !account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
               {mobileByMedia ? 'Connect' : t('Connect wallet')}
             </Button>
@@ -178,8 +177,8 @@ export default function Web3Status() {
             pendingTransactions={pending}
             ENSName={ENSName ?? undefined}
             account={account}
-            connector={activeConnector}
-            networkConnectorChainId={networkConnectorChainId}
+            connector={connector}
+            networkConnectorChainId={chainId}
             onAddressClick={() => setModal(ModalView.Account)}
             avatar={ensAvatar ?? undefined}
           />

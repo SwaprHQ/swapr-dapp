@@ -1,11 +1,13 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { useWeb3React } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { Network } from '@web3-react/network'
+import { WalletConnect } from '@web3-react/walletconnect'
 import React, { ReactNode, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
 import MetamaskIcon from '../../assets/images/metamask.png'
-import { injected } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
@@ -13,7 +15,7 @@ import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
 
-import { ModalView } from '.'
+import { ModalView } from './'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -101,12 +103,12 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 
 interface ConnectWalletProps {
   setModal: (modal: ModalView | null) => void
-  tryActivation: (connector: AbstractConnector | undefined) => void
+  tryActivation: (connector: MetaMask | WalletConnect | CoinbaseWallet) => void
   children: ReactNode
 }
 
 export const ConnectWalletPopover = ({ setModal, tryActivation, children }: ConnectWalletProps) => {
-  const { connector, active, deactivate } = useWeb3React()
+  const { connector, isActive } = useWeb3React()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
   const closeModals = useCloseModals()
@@ -115,7 +117,6 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
   })
 
   function getOptions() {
-    const isMetamask = window.ethereum && window.ethereum.isMetaMask
     return Object.keys(SUPPORTED_WALLETS).map(key => {
       const option = SUPPORTED_WALLETS[key]
       // check for mobile options
@@ -137,35 +138,6 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
           )
         }
         return null
-      }
-
-      // overwrite injected when needed
-      if (option.connector === injected) {
-        // don't show injected if there's no injected provider
-        if (!(window.web3 || window.ethereum) || ((window.web3 || window.ethereum) && !isMetamask)) {
-          if (option.name === 'MetaMask') {
-            return (
-              <Item
-                key={key}
-                id={`connect-${key}`}
-                name="Install Metamask"
-                icon={MetamaskIcon}
-                link={'https://metamask.io/'}
-                onClick={closeModals}
-              />
-            )
-          } else {
-            return null //dont want to return install twice
-          }
-        }
-        // don't return metamask if injected provider isn't metamask
-        else if (option.name === 'MetaMask' && !isMetamask) {
-          return null
-        }
-        // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
-          return null
-        }
       }
 
       // return rest of options
@@ -198,11 +170,23 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
         content={
           <List data-testid="wallet-connect-list">
             {getOptions()}
-            {active && <DisconnectButton onClick={deactivate}>Disconnect Wallet</DisconnectButton>}
+            {isActive && (
+              <DisconnectButton
+                onClick={() => {
+                  if (connector?.deactivate) {
+                    void connector.deactivate()
+                  } else {
+                    void connector.resetState()
+                  }
+                }}
+              >
+                Disconnect Wallet
+              </DisconnectButton>
+            )}
           </List>
         }
         show={walletSwitcherPopoverOpen}
-        isActive={active}
+        isActive={isActive}
         placement="bottom-end"
       >
         {children}
