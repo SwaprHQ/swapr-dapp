@@ -2,6 +2,7 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useDispatch } from 'react-redux'
 import { Box, Text } from 'rebass'
+import { ecoBridgeUIActions } from 'services/EcoBridge/store/UI.reducer'
 import styled from 'styled-components'
 
 import QuestionHelper from '../../components/QuestionHelper'
@@ -23,8 +24,9 @@ export const BridgeSelectionWindow = () => {
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
 
-  const handleSelectBridge = (id: OptionalBridgeList) => {
+  const handleSelectBridge = (id: OptionalBridgeList, receiveAmount?: string) => {
     dispatch(commonActions.setActiveBridge(id))
+    dispatch(ecoBridgeUIActions.setTo({ value: receiveAmount }))
   }
 
   return (
@@ -74,7 +76,7 @@ interface BridgeProps {
     receiveAmount?: string
   }
   status: SyncState
-  handleSelectBridge: (id: OptionalBridgeList) => void
+  handleSelectBridge: (id: OptionalBridgeList, receiveAmount?: string) => void
 }
 
 const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
@@ -89,7 +91,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       isLoading={isLoading}
       onClick={() => {
         if (!isLoading) {
-          handleSelectBridge(id)
+          handleSelectBridge(id, details.receiveAmount)
         }
       }}
     >
