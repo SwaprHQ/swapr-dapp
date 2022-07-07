@@ -22,6 +22,7 @@ export interface CurrencyListProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   selectedTokenList: TokenAddressMap
+  hideBalance?: boolean
 }
 
 export interface CurrencyRowProps {
@@ -32,4 +33,5 @@ export interface CurrencyRowProps {
   isSelected: boolean
   otherSelected: boolean
   selectedTokenList: TokenAddressMap
+  hideBalance?: boolean
 }
