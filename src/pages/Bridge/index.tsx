@@ -105,9 +105,15 @@ export default function Bridge() {
   const showAvailableBridges = useShowAvailableBridges()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
-  const { bridgeCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
-  const { onCurrencySelection, onUserInput, onToNetworkChange, onFromNetworkChange, onSwapBridgeNetworks } =
-    useBridgeActionHandlers()
+  const { bridgeCurrency, bridgeOutputCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
+  const {
+    onCurrencySelection,
+    onCurrencyOutputSelection,
+    onUserInput,
+    onToNetworkChange,
+    onFromNetworkChange,
+    onSwapBridgeNetworks,
+  } = useBridgeActionHandlers()
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
@@ -140,14 +146,19 @@ export default function Bridge() {
       onUserInput('')
       setDisplayedValue('')
       onCurrencySelection('')
+      onCurrencyOutputSelection('')
     }
-  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput])
+  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
 
   useEffect(() => {
     if (isUnsupportedBridgeNetwork) return
 
     dispatch(ecoBridgeUIActions.setFrom({ chainId }))
   }, [chainId, dispatch, isUnsupportedBridgeNetwork])
+
+  const toggleBridgeSwap = (isActive: boolean) => {
+    dispatch(ecoBridgeUIActions.setBridgeSwapStatus(isActive))
+  }
 
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
@@ -158,10 +169,25 @@ export default function Bridge() {
     setActiveTab(BridgeTab.BRIDGE)
     setTxsFilter(BridgeTxsFilter.RECENT)
     setModalState(BridgeModalStatus.CLOSED)
+
+    onCurrencyOutputSelection('')
+    dispatch(ecoBridgeUIActions.setTo({ value: '' }))
+    dispatch(ecoBridgeUIActions.setBridgeSwapStatus(false))
+
     if (isCollecting) {
       setIsCollecting(false)
     }
-  }, [chainId, isCollecting, onCurrencySelection, onUserInput, setIsCollecting, setModalState, setTxsFilter])
+  }, [
+    chainId,
+    dispatch,
+    isCollecting,
+    onCurrencyOutputSelection,
+    onCurrencySelection,
+    onUserInput,
+    setIsCollecting,
+    setModalState,
+    setTxsFilter,
+  ])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -244,6 +270,7 @@ export default function Bridge() {
         handleResetBridge={handleResetBridge}
         handleTriggerCollect={handleTriggerCollect}
         firstTxnToCollect={collectableTx}
+        toggleBridgeSwap={toggleBridgeSwap}
       />
       {activeTab !== BridgeTab.HISTORY && (
         <AppBody>
@@ -313,6 +340,20 @@ export default function Bridge() {
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
             maxAmount={maxAmountInput}
           />
+          {activeTab === BridgeTab.BRIDGE_SWAP && (
+            <CurrencyInputPanelBridge
+              id="bridge-currency-output"
+              value={to.value}
+              onUserInput={onUserInput}
+              disabled={true}
+              currency={bridgeOutputCurrency}
+              onCurrencySelect={onCurrencyOutputSelection}
+              isOutputPanel={true}
+              disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+              isLoading={!!account && isNetworkConnected && listsLoading}
+            />
+          )}
+
           <BridgeActionPanel
             account={account}
             fromNetworkChainId={fromChainId}
@@ -325,7 +366,9 @@ export default function Bridge() {
           />
         </AppBody>
       )}
-      {activeTab === BridgeTab.BRIDGE && showAvailableBridges && <BridgeSelectionWindow />}
+      {(activeTab === BridgeTab.BRIDGE || activeTab === BridgeTab.BRIDGE_SWAP) && showAvailableBridges && (
+        <BridgeSelectionWindow />
+      )}
       {!!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           extraMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
