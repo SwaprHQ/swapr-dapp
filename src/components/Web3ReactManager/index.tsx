@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { network } from '../../connectors/network'
 import { NetworkContextName } from '../../constants'
-import { useEagerConnect, useInactiveListener } from '../../hooks'
+import { useEagerConnect } from '../../hooks'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import Loader from '../Loader'
 
@@ -40,7 +40,6 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   // }, [triedEager, networkActive, networkError, activateNetwork, isActive, targetedChainId])
 
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
-  useInactiveListener(!triedEager)
 
   // handle delayed loader state
   const [showLoader, setShowLoader] = useState(false)
@@ -59,23 +58,24 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
     return null
   }
 
-  // if the account context isn't isActive, and there's an error on the network context, it's an irrecoverable error
-  if (!isActive && networkError) {
-    return (
-      <MessageWrapper>
-        <Message>{t('unknownError')}</Message>
-      </MessageWrapper>
-    )
-  }
+  // TODO
+  // // if the account context isn't isActive, and there's an error on the network context, it's an irrecoverable error
+  // if (!isActive && networkError) {
+  //   return (
+  //     <MessageWrapper>
+  //       <Message>{t('unknownError')}</Message>
+  //     </MessageWrapper>
+  //   )
+  // }
 
-  // if neither context is isActive, spin
-  if (!isActive && !networkActive) {
-    return showLoader ? (
-      <MessageWrapper>
-        <Loader />
-      </MessageWrapper>
-    ) : null
-  }
+  // // if neither context is isActive, spin
+  // if (!isActive && !networkActive) {
+  //   return showLoader ? (
+  //     <MessageWrapper>
+  //       <Loader />
+  //     </MessageWrapper>
+  //   ) : null
+  // }
 
   return children
 }

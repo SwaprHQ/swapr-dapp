@@ -2,13 +2,12 @@ import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
-import { WalletConnect } from '@web3-react/walletconnect'
+import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect' // TODO pack all import into one
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { NetworkContextName } from '../../constants'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import useENSName from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
@@ -94,7 +93,7 @@ export default function Web3Status() {
   const [modal, setModal] = useState<ModalView | null>(null)
 
   const [pendingError, setPendingError] = useState<boolean>()
-  const [pendingWallet, setPendingWallet] = useState<MetaMask | CoinbaseWallet | WalletConnect | undefined>()
+  const [pendingWallet, setPendingWallet] = useState<Connector | undefined>()
 
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
@@ -102,25 +101,17 @@ export default function Web3Status() {
   const isNetwork = connector instanceof Network
   const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1)
 
-  const tryActivation = async (connector: MetaMask | CoinbaseWallet | WalletConnect | undefined) => {
+  const tryActivation = async (connector: Connector | undefined) => {
     // TODO ?
     setPendingWallet(connector)
     setModal(ModalView.Pending)
 
     isActivating
       ? undefined
-      : () =>
-          !connector
-            ? undefined
-            : connector instanceof WalletConnect
-            ? connector
-                .activate(desiredChainId === -1 ? undefined : desiredChainId)
-                .then(() => setPendingError(undefined))
-                .catch(setPendingError)
-            : connector
-                .activate(desiredChainId === -1 ? undefined : desiredChainId) // TODO getAddChainParams?
-                .then(() => setPendingError(undefined))
-                .catch(setPendingError)
+      : () => (!connector ? undefined : connector.activate(desiredChainId === -1 ? undefined : desiredChainId))
+    // .then(() => setPendingError(undefined))
+    // .catch(setPendingError)
+    // TODO
   }
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
@@ -130,7 +121,8 @@ export default function Web3Status() {
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const closeModals = useCloseModals()
 
-  const unsupportedChainIdError = useUnsupportedChainIdError()
+  // TODO unsupported chain id
+  const unsupportedChainIdError = false
 
   useEffect(() => {
     if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && unsupportedChainIdError) {
