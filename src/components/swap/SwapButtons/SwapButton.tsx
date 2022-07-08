@@ -1,3 +1,4 @@
+import shuffle from 'lodash/shuffle'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
@@ -9,6 +10,7 @@ import {
   PRICE_IMPACT_MEDIUM,
   ROUTABLE_PLATFORM_STYLE,
   RoutablePlatformKeysByNetwork,
+  SWAP_INPUT_ERRORS,
 } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ButtonPrimary } from '../../Button/Button'
@@ -48,9 +50,10 @@ const StyledPlataformText = styled(Text)`
 
 interface SwapButtonProps {
   platformName?: string
-  swapInputError?: string
+  swapInputError?: number
   priceImpactSeverity: number
   isExpertMode: boolean
+  amountInCurrencySymbol?: string
 }
 
 export const SwapButton = ({
@@ -58,15 +61,25 @@ export const SwapButton = ({
   swapInputError,
   priceImpactSeverity,
   isExpertMode,
+  amountInCurrencySymbol,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
   const { t } = useTranslation()
+
+  const SWAP_INPUT_ERRORS_MESSAGE = {
+    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: 'Connect wallet',
+    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: 'Enter amount',
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: 'Select token',
+    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: 'Enter recipient',
+    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: 'Invalid recipient',
+    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: `Insufficient ${amountInCurrencySymbol} balance`,
+  }
 
   return (
     <StyledSwapButton gradientColor={platformName && ROUTABLE_PLATFORM_STYLE[platformName].gradientColor} {...rest}>
       <StyledSwapButtonText>
         {swapInputError ? (
-          swapInputError
+          SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
         ) : priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode ? (
           t('priceImpactTooHigh')
         ) : (
@@ -100,7 +113,7 @@ export const SwapLoadingButton = () => {
     <StyledSwapLoadingButton>
       <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
       <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
-        {routablePlatforms.map((key: string) => (
+        {shuffle(routablePlatforms).map((key: string) => (
           <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
             <StyledPlataformImage
               width={21}

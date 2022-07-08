@@ -137,7 +137,7 @@ export default function Swap() {
     currencies.INPUT,
     currencies.OUTPUT,
     potentialTrade instanceof GnosisProtocolTrade,
-    potentialTrade?.inputAmount?.toSignificant(6)
+    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
 
   const bestPricedTrade = allPlatformTrades?.[0]
