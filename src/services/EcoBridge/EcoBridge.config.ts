@@ -56,15 +56,14 @@ export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
 )
 
 export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: string) => {
-  const isEntityAdapter = /^{"ids":\[/g
-
   const keysWithoutSocket = ecoBridgePersistedKeys.filter(key => !key.includes(socketBridgeId))
 
   keysWithoutSocket.forEach(key => {
     const fullKey = `${persistenceNamespace}_${key}`
-    const entry = window.localStorage.getItem(fullKey)
 
-    if (entry && !isEntityAdapter.test(entry)) {
+    const isEntityAdapter = window.localStorage.getItem(fullKey)?.includes('entities')
+
+    if (!isEntityAdapter) {
       console.warn(`${fullKey} uses legacy store interface. It was cleared to preserve compatibility.`)
       window.localStorage.removeItem(fullKey)
     }
