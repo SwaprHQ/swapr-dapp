@@ -59,14 +59,6 @@ export const QUERY_ETH_PRICE = gql`
   }
 `
 
-//error message
-export const getErrorMessage = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  return `Bridge failed: ${error.message}`
-}
-
 //overrides
 const isOverridden = (bridgeDirection: string, token: OmnibridgeTokenWithAddressAndChain) => {
   if (!token || !bridgeDirection) return false

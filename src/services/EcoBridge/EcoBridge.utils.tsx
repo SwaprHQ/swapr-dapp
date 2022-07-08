@@ -59,3 +59,26 @@ export abstract class EcoBridgeChildBase {
   abstract fetchDynamicLists(): Promise<void>
   abstract getBridgingMetadata(): void
 }
+
+const getIndexOfSpecialCharacter = (message: string) => {
+  for (let index = 0; index < message.length; index++) {
+    if ("/[!@#$%^&*()_+-=[]{};':\\|,.<>/?]+/".indexOf(message[index]) !== -1) return index
+  }
+  return
+}
+
+const reduceMessage = (message?: string) => {
+  if (!message) return ''
+
+  return message.slice(0, getIndexOfSpecialCharacter(message))
+}
+
+export const getErrorMsg = (error: any, bridgeId: BridgeList) => {
+  if (error?.code === 4001) {
+    return 'Transaction rejected'
+  }
+  if (bridgeId === 'socket' && error.status === 500 && !error.ok) {
+    return 'Socket API is temporarily unavailable'
+  }
+  return `Bridge failed: ${reduceMessage(error.message)}`
+}

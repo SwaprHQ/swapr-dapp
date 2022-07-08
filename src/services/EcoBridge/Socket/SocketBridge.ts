@@ -14,7 +14,7 @@ import {
   SocketList,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { commonActions } from '../store/Common.reducer'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { ApprovalsAPI, QuoteAPI, ServerAPI } from './api'
@@ -29,15 +29,6 @@ import { socketSelectors } from './Socket.selectors'
 import { SocketTokenMap, SocketTxStatus } from './Socket.types'
 import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 
-const getErrorMsg = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  if (error.status === 500 && !error.ok) {
-    return 'Socket API is temporarily unavailable'
-  }
-  return `Bridge failed: ${error.message}`
-}
 export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
   private _listeners: NodeJS.Timeout[] = []
@@ -129,7 +120,10 @@ export class SocketBridge extends EcoBridgeChildBase {
       )
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -182,7 +176,10 @@ export class SocketBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
 
@@ -313,7 +310,10 @@ export class SocketBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
