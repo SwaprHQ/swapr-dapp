@@ -13,6 +13,7 @@ import {
   Price,
   TokenAmount,
   Trade,
+  UniswapTrade,
   UniswapV2Trade,
   ZERO,
   ZeroXTrade,
@@ -67,9 +68,11 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
         ONE_HUNDRED_PERCENT
       )
       return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-    } else if (trade instanceof GnosisProtocolTrade || trade instanceof ZeroXTrade) return trade.fee
-    else if (trade instanceof CurveTrade) return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
-    else return undefined
+    } else if (trade instanceof GnosisProtocolTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
+      return trade.fee
+    } else if (trade instanceof CurveTrade) {
+      return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+    } else return undefined
   }
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
