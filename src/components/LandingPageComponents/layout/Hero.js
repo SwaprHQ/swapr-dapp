@@ -158,6 +158,8 @@ const Hero = props => {
 const StyledHero = styled(Layout)`
   .routing-through {
     margin-top: auto;
+    margin-left: -16px;
+    margin-right: -16px;
     position: relative;
     z-index: 0;
     &.mobile {
