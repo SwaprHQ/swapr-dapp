@@ -15,7 +15,7 @@
   "input": "Input",
   "output": "Output",
   "estimated": "estimated",
-  "balance": "Balance: {{ balanceInput }}",
+  "balance": "Balance: <0>{{ balanceInput }}</0>",
   "unlock": "Unlock",
   "pending": "Pending",
   "selectToken": "Select a token",
