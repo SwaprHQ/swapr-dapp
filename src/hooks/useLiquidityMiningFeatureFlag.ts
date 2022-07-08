@@ -1,9 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
-import { useActiveWeb3React } from './index'
+import { useWeb3React } from '@web3-react/core'
 
 export function useLiquidityMiningFeatureFlag(): boolean {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return (
     chainId === ChainId.RINKEBY ||
     chainId === ChainId.XDAI ||

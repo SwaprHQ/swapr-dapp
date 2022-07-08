@@ -1,6 +1,7 @@
 import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, USD } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
@@ -9,13 +10,11 @@ import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 
-import { useActiveWeb3React } from './index'
-
 export function useGasFeesUSD(gasEstimations: (BigNumber | null)[]): {
   loading: boolean
   gasFeesUSD: (CurrencyAmount | null)[]
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()

@@ -18,7 +18,7 @@ interface NetworkSwitcherPopoverProps {
 
 export default function NetworkSwitcherPopover({ children, modal, placement }: NetworkSwitcherPopoverProps) {
   const closeModals = useCloseModals()
-  const { connector, chainId: activeChainId, account } = useActiveWeb3React()
+  const { connector, chainId: activeChainId, account } = useWeb3React()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
   const unsupportedChainIdError = useUnsupportedChainIdError()
 

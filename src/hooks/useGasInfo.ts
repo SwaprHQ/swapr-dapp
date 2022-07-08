@@ -1,10 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 
 import { INFURA_PROJECT_ID } from '../connectors'
-
-import { useActiveWeb3React } from './index'
 
 interface ChainGasInfo {
   [chainId: number]: {
@@ -65,7 +64,7 @@ const defaultGasState: Gas = {
  * @returns Gas prices
  */
 export function useGasInfo(): { loading: boolean; gas: Gas } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const [loading, setLoading] = useState<boolean>(true)
   const [gas, setGas] = useState<Gas>(defaultGasState)
 

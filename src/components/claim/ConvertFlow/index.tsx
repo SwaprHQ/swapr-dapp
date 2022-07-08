@@ -1,9 +1,9 @@
 import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useConvertSwprCallback } from '../../../hooks/swpr/useConvertSwprCallback'
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
@@ -23,7 +23,7 @@ interface ConvertFlowProps {
 }
 
 export function ConvertFlow({ oldSwprBalance, disabled, onError }: ConvertFlowProps) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const addTransaction = useTransactionAdder()
   //chainId will be one of  1,4,100,137,42161,421611 or undefined
   const spender = SWPR_CONVERTER_ADDRESS[chainId!]

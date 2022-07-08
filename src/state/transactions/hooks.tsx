@@ -1,9 +1,9 @@
 import { TransactionResponse } from '@ethersproject/providers'
 
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
@@ -31,7 +31,7 @@ export function useTransactionAdder(): (
   response: SwaprTransactionResponse,
   customData?: TransactionAdderCustomData
 ) => void {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback(
@@ -54,7 +54,7 @@ export function useTransactionAdder(): (
 
 // returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const state = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 

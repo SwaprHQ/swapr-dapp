@@ -1,12 +1,12 @@
 import { Pair } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedPair } from '../../../hooks/Tokens'
 import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
@@ -35,7 +35,7 @@ function pairKey(index: number, data: Pair[]) {
 }
 
 const PairRow = ({ pair, onSelect, isSelected, style }: PairRowProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { pairs: allPairs } = useAllPairs()
   const isOnSelectedList = isPairOnList(allPairs, pair)
   const customAdded = useIsUserAddedPair(pair)

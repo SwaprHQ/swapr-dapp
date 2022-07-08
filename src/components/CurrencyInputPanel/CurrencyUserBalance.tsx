@@ -1,8 +1,8 @@
+import { useWeb3React } from '@web3-react/core'
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
 import { UppercaseHelper } from './CurrencyInputPanel.styles'
@@ -17,7 +17,7 @@ export const CurrencyUserBalance = ({
   customBalanceText,
   onMax,
 }: CurrencyUserBalanceProps) => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const theme = useTheme()
 
   if (account) {

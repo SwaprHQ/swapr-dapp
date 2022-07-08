@@ -1,5 +1,6 @@
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +8,6 @@ import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
@@ -187,7 +187,7 @@ export default function TransactionConfirmationModal({
   content,
   trade,
 }: ConfirmationModalProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   if (!chainId) return null
 

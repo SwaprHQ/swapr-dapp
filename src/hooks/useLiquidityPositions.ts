@@ -2,6 +2,7 @@ import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, KpiToken, Pair, Percent, Token, TokenAmount, USD } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { ethers } from 'ethers'
 import { DateTime, Duration } from 'luxon'
@@ -11,8 +12,6 @@ import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 // when a user stakes their full lp share on a certain campaign, their liquidity position
 // goes to 0, and their liquidity mining position increases. In order to avoid hiding pairs where
@@ -145,7 +144,7 @@ export function useLPPairs(account?: string): {
     containsKpiToken: boolean
   }[]
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(
     () =>

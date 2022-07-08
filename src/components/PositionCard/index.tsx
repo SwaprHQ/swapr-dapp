@@ -1,5 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useState } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
@@ -8,7 +9,6 @@ import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { useTotalSupply } from '../../data/TotalSupply'
-import { useActiveWeb3React } from '../../hooks'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, TYPE } from '../../theme'
@@ -51,7 +51,7 @@ interface MinimalPositionCardProps {
 }
 
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: MinimalPositionCardProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
   const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
@@ -193,7 +193,7 @@ interface FullPositionCardProps {
 }
 
 export default function FullPositionCard({ pair, border }: FullPositionCardProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const currency0 = unwrappedToken(pair?.token0)
   const currency1 = unwrappedToken(pair?.token1)

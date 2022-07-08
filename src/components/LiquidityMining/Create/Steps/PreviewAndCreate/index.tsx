@@ -7,11 +7,11 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../../../Button'
@@ -76,7 +76,7 @@ export default function PreviewAndCreate({
   setSimulatedPrice,
   simulatedPrice,
 }: PreviewProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   useEffect(() => {

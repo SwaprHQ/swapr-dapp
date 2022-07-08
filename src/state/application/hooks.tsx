@@ -1,14 +1,14 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
 
 export function useBlockNumber(): number | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
 }

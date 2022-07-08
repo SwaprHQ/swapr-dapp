@@ -2,13 +2,12 @@ import { parseUnits } from '@ethersproject/units'
 import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 interface DerivedNativeCurrencyQueryResult {
   tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
@@ -18,7 +17,7 @@ export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[]
   loading: boolean
   pricedTokenAmounts: PricedTokenAmount[]
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const tokenIds = useMemo(() => {
     return tokenAmounts ? tokenAmounts.map(tokenAmount => tokenAmount.token.address.toLowerCase()) : []

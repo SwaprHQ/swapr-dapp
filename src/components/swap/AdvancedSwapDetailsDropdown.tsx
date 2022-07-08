@@ -1,5 +1,6 @@
 import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { formatUnits } from 'ethers/lib/utils'
 import { transparentize } from 'polished'
 import React from 'react'
@@ -7,7 +8,6 @@ import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../state/application/hooks'
 import { useMultihopManager, useUserPreferredGasPrice } from '../../state/user/hooks'
@@ -85,7 +85,7 @@ export default function AdvancedSwapDetailsDropdown({
   allPlatformTrades,
   onSelectedPlatformChange,
 }: AdvancedSwapDetailsDropdownProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()
   const [multihopEnabled, toggleMultihop] = useMultihopManager()
   const toggleSettingsMenu = useToggleSettingsMenu()

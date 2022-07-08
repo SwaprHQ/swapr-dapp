@@ -1,11 +1,11 @@
 import { ChainId } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { useActiveWeb3React } from '../../hooks'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
@@ -97,7 +97,7 @@ export default function SlippageTabs({
   multihop,
   onMultihopChange,
 }: SlippageTabsProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageFocused, setSlippageFocused] = useState(false)

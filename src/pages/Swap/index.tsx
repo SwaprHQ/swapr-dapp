@@ -2,6 +2,7 @@ import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Tra
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 
+import { useWeb3React } from '@web3-react/core'
 import { TradeDetails } from 'components/swap/TradeDetails'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -17,7 +18,6 @@ import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../compo
 import SwapButtons from '../../components/swap/SwapButtons'
 import { Tabs } from '../../components/swap/Tabs'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -105,7 +105,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   // for expert mode
   const isExpertMode = useIsExpertMode()

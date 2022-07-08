@@ -1,6 +1,7 @@
 import { BigintIsh, Pair } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
@@ -15,8 +16,6 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from '.'
 
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
 const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
@@ -64,7 +63,7 @@ export function usePairLiquidityMiningCampaigns(pair?: Pair): {
   miningCampaigns: { active: MiningCampaign[]; expired: MiningCampaign[] }
 } {
   const pairAddress = pair ? pair.liquidityToken.address.toLowerCase() : undefined
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const subgraphAccountId = account?.toLowerCase() || ''
   const nativeCurrency = useNativeCurrency()
   const timestamp = Math.floor(Date.now() / 1000)

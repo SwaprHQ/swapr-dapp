@@ -1,10 +1,10 @@
 import { CurrencyAmount, Token, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { BigNumber, constants } from 'ethers'
 import { useMemo } from 'react'
 
 import { ERC20_INTERFACE } from '../constants/abis/erc20'
-import { useActiveWeb3React } from '../hooks'
 import { useMulticallContract, useTokenContract } from '../hooks/useContract'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import {
@@ -60,7 +60,7 @@ export function useTokenAllowancesForMultipleSpenders(
   owner?: string,
   spenders?: string[]
 ): CurrencyAmount[] | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const contract = useTokenContract(token?.address, false)
 

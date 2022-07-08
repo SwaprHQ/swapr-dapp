@@ -1,8 +1,8 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
 import useENS from '../../hooks/useENS'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink } from '../../utils'
@@ -78,7 +78,7 @@ export default function AddressInputPanel({
   // triggers whenever the typed value changes
   onChange: (value: string) => void
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useTheme()
   const { t } = useTranslation()
 

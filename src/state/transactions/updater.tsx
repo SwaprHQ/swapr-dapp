@@ -1,9 +1,9 @@
 import { ChainId, GnosisProtocolTrade, GnosisProtocolTradeOrderStatus } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import { retry, RetryableError, RetryOptions } from '../../utils/retry'
 import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
@@ -42,7 +42,7 @@ const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 1, minWait: 0, maxWait: 0 }
 
 export default function Updater(): null {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library } = useWeb3React()
 
   const lastBlockNumber = useBlockNumber()
 

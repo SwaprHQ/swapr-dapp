@@ -17,6 +17,7 @@ import {
   WXDAI,
 } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { constants } from 'ethers'
 import { useMemo } from 'react'
 
@@ -35,11 +36,9 @@ import WXDAI_ABI from '../constants/abis/wxdai.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from './index'
-
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React()
+  const { library, account } = useWeb3React()
 
   return useMemo(() => {
     if (!address || !ABI || !library) return null
@@ -57,7 +56,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 }
 
 export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token | undefined {
-  const { chainId: activeChainId } = useActiveWeb3React()
+  const { chainId: activeChainId } = useWeb3React()
 
   const selectedChainId = chainId ?? activeChainId
   if (!selectedChainId || !currency || !Currency.isNative(currency)) return undefined
@@ -65,7 +64,7 @@ export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token 
 }
 
 function useWrappingTokenAbi(token?: Token): any | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   if (!chainId) return undefined
   switch (token) {
     case WETH[chainId]:
@@ -87,7 +86,7 @@ export function useNativeCurrencyWrapperContract(withSignerIfPossible?: boolean)
 }
 
 export function useArgentWalletDetectorContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract(
     chainId === ChainId.MAINNET ? ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS : undefined,
     ARGENT_WALLET_DETECTOR_ABI,
@@ -96,7 +95,7 @@ export function useArgentWalletDetectorContract(): Contract | null {
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   let address: string | undefined
   if (chainId) {
     switch (chainId) {
@@ -122,12 +121,12 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function useMulticallContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract(chainId && MULTICALL2_ADDRESS[chainId], MULTICALL2_ABI, false)
 }
 
 export function useStakingRewardsDistributionFactoryContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   return useContract(
     chainId && STAKING_REWARDS_FACTORY_ADDRESS[chainId],
     STAKING_REWARDS_FACTORY_ABI,
@@ -143,7 +142,7 @@ export function useStakingRewardsDistributionContract(
 }
 
 export function useSWPRClaimerContract(): Contract | null {
-  const { library, chainId, account } = useActiveWeb3React()
+  const { library, chainId, account } = useWeb3React()
   return useMemo(() => {
     const address = SWPR_CLAIMER_ADDRESS[ChainId.ARBITRUM_ONE]
     const ABI = SWPR_CLAIMER_ABI
@@ -164,7 +163,7 @@ export function useSWPRClaimerContract(): Contract | null {
 }
 
 export function useSWPRConverterContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const address = useMemo(() => (chainId ? SWPR_CONVERTER_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, SWPR_CONVERTER_ABI, withSignerIfPossible)
 }

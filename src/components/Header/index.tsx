@@ -1,5 +1,6 @@
 import { SWPR } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +10,6 @@ import { Flex, Text } from 'rebass'
 import styled, { css } from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
@@ -223,7 +223,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
@@ -240,7 +240,8 @@ function Header() {
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
 
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
+  // TODO
+  const isUnsupportedChainIdError = false
 
   const networkWithoutSWPR = !newSwpr
 

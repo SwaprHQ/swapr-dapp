@@ -14,6 +14,7 @@ import {
 } from '@swapr/sdk'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
 
 import { useTokenAllowance } from '../data/Allowances'
@@ -23,8 +24,6 @@ import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { useTokenContract } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -38,7 +37,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
@@ -115,7 +114,7 @@ export function useApproveCallback(
 
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0 */) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const amountToApprove = useMemo(() => {
     if (trade) {

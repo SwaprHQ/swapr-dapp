@@ -1,10 +1,10 @@
 import { Token, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../../../hooks'
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
 import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
 import { Actions, ActionType, CampaignType } from '../../../../../../pages/LiquidityMining/Create'
@@ -82,7 +82,7 @@ export default function AssetSelector({
   rawAmount,
   setRewardsObject,
 }: AssetSelectorProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
 
   const [assetTitle, setAssetTitle] = useState<string | null>(null)

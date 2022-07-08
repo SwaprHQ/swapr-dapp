@@ -1,5 +1,6 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -13,7 +14,6 @@ import {
 } from '../../components/NetworkSwitcher'
 import { RowBetween } from '../../components/Row'
 import { SHOW_TESTNETS } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
 import {
   useBridgeActionHandlers,
   useBridgeCollectHandlers,
@@ -93,7 +93,7 @@ const HistoryMessage = styled(Title)`
 
 export default function Bridge() {
   const dispatch = useDispatch()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const ecoBridge = useEcoBridge()
 
   const bridgeSummaries = useSelector((state: AppState) =>

@@ -1,9 +1,9 @@
 import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
@@ -55,7 +55,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
   data: SingleSidedLiquidityMiningCampaign | undefined
   stakedAmount?: string
 } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const subgraphAccountId = account?.toLowerCase() || ''
   const filterTokenAddress = filterToken?.address.toLowerCase()

@@ -1,8 +1,8 @@
+import { useWeb3React } from '@web3-react/core'
 import { Contract } from 'ethers'
 import { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
 import chunkArray from '../../utils/chunkArray'
@@ -120,7 +120,7 @@ export default function Updater(): null {
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100)
   const latestBlockNumber = useBlockNumber()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const multicallContract = useMulticallContract()
   const cancellations = useRef<{
     blockNumber: number

@@ -1,5 +1,6 @@
 import { CurrencyAmount, Pair, Token, USD } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
@@ -16,8 +17,6 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 const PAGE_SIZE = 1000
 
@@ -81,7 +80,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     staked: boolean
   }[]
 } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
 

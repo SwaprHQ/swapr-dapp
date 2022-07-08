@@ -1,13 +1,13 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
+import { useWeb3React } from '@web3-react/core'
 import flatMap from 'lodash/flatMap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
 import { PairState, usePairs } from '../../data/Reserves'
-import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
 import { MainnetGasPrice } from '../application/actions'
 import { AppDispatch, AppState } from '../index'
@@ -201,7 +201,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 }
 
 export function useUserAddedTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens']>(({ user: { tokens } }) => tokens)
 
   return useMemo(() => {
@@ -233,7 +233,7 @@ export function usePairRemover(): (pair: Pair) => void {
 }
 
 export function useUserAddedPairs(): Pair[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const serializedPairsMap = useSelector<AppState, AppState['user']['pairs']>(({ user: { pairs } }) => pairs)
   const simplifiedPairs = Object.values(serializedPairsMap[chainId as ChainId] ?? {}).map(deserializeSimplifiedPair)
   const pairs = usePairs(simplifiedPairs)
@@ -289,7 +289,7 @@ export function toDXSwapLiquidityToken([tokenA, tokenB]: [Token, Token]): Token 
  * Returns all the pairs of tokens that are tracked by the user for the current chain ID.
  */
 export function useTrackedTokenPairs(): [Token, Token][] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const tokens = useAllTokens()
 
   // get user added tokens to be used as base

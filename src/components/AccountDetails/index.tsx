@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +7,6 @@ import { ButtonProps } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
@@ -213,7 +213,7 @@ export default function AccountDetails({
   ENSName,
   openOptions,
 }: AccountDetailsProps) {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const { t } = useTranslation()
 

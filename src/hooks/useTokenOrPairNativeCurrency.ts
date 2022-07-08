@@ -1,6 +1,7 @@
 import { parseUnits } from '@ethersproject/units'
 import { Pair, Price, Token } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
@@ -10,13 +11,11 @@ import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
 
-import { useActiveWeb3React } from './index'
-
 export function useTokenOrPairNativeCurrency(tokenOrPair?: Token | Pair): {
   loading: boolean
   derivedNativeCurrency?: Price
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const isToken = tokenOrPair instanceof Token
   const lpTokenTotalSupply = usePairLiquidityTokenTotalSupply(tokenOrPair instanceof Pair ? tokenOrPair : undefined)

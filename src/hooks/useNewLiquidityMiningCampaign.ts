@@ -10,13 +10,12 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
 import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 export function useNewLiquidityMiningCampaign(
   rewards: TokenAmount[],
@@ -29,7 +28,7 @@ export function useNewLiquidityMiningCampaign(
   stakeToken?: Token,
   stakePair?: Pair
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const nativeCurrency = useNativeCurrency()
   const { pricedTokenAmounts: pricedRewardAmounts } = useNativeCurrencyPricedTokenAmounts(rewards)

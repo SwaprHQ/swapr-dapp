@@ -1,6 +1,7 @@
 import { BigintIsh, Pair, Token } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
@@ -18,8 +19,6 @@ import {
 import { useSWPRToken } from './swpr/useSWPRToken'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 // Native fragments will not be resovled
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
@@ -94,7 +93,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
   const token1Address = pair?.token1?.address.toLowerCase()
   const pairAddress = pair?.liquidityToken.address.toLowerCase()
 
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
 
   const subgraphAccountId = account?.toLowerCase() ?? ''
 

@@ -1,13 +1,12 @@
 import { LiquidityMiningCampaign, PricedToken, PricedTokenAmount, SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useStakingRewardsDistributionContract } from './useContract'
-
-import { useActiveWeb3React } from './index'
 
 interface UseLiquidityMiningCampaignUserPositionHookResult {
   stakedTokenAmount: PricedTokenAmount | null
@@ -20,7 +19,7 @@ export function useLiquidityMiningCampaignPosition(
   campaign?: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign,
   account?: string
 ): UseLiquidityMiningCampaignUserPositionHookResult {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const distributionContract = useStakingRewardsDistributionContract(campaign?.address, true)
 

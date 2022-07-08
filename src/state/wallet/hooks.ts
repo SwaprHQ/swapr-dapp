@@ -1,16 +1,16 @@
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 
 import { ERC20_INTERFACE } from '../../constants/abis/erc20'
-import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../multicall/hooks'
 
 export function useNativeCurrencyBalance(): CurrencyAmount | undefined {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3React()
   const multicallContract = useMulticallContract()
 
   const results = useSingleContractMultipleData(
@@ -111,7 +111,7 @@ export function useCurrencyBalance(account?: string, currency?: Currency): Curre
 
 // mimics useAllBalances
 export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const allTokens = useAllTokens()
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const balances = useTokenBalances(account ?? undefined, allTokensArray)

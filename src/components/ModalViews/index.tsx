@@ -1,10 +1,10 @@
+import { useWeb3React } from '@web3-react/core'
 import React from 'react'
 import { ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, TYPE } from '../../theme'
 import { ExternalLink } from '../../theme/components'
 import { getExplorerLink } from '../../utils'
@@ -48,7 +48,7 @@ export function SubmittedView({
   hash: string | undefined
 }) {
   const theme = useTheme()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { t } = useTranslation()
 
   return (

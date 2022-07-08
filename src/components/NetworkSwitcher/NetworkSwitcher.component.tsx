@@ -1,6 +1,6 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { useRef } from 'react'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -18,7 +18,7 @@ export const NetworkSwitcher = ({
   showWalletConnector = true,
 }: NetworkSwitcherProps) => {
   const popoverRef = useRef(null)
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const ethereumOptionPopoverOpen = useModalOpen(ApplicationModal.ETHEREUM_OPTION)
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()

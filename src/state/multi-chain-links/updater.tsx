@@ -1,11 +1,11 @@
+import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
 export default function Updater(): null {
-  const { chainId, connector } = useActiveWeb3React()
+  const { chainId, connector } = useWeb3React()
   const [searchParams, setSearchParams] = useSearchParams()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const updateSwitchingToCorrectChain = useIsSwitchingToCorrectChainUpdater()

@@ -1,15 +1,15 @@
 import { ChainId } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { MainnetGasPrice, setConnectorInfo, updateBlockNumber, updateMainnetGasPrices } from './actions'
 
 export default function Updater(): null {
-  const { library, chainId, account } = useActiveWeb3React()
+  const { library, chainId, account } = useWeb3React()
   const dispatch = useDispatch()
 
   const windowVisible = useIsWindowVisible()

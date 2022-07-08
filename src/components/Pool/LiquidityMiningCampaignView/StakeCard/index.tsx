@@ -6,12 +6,12 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../hooks'
 import { useLiquidityMiningActionCallbacks } from '../../../../hooks/useLiquidityMiningActionCallbacks'
 import { useLiquidityMiningCampaignPosition } from '../../../../hooks/useLiquidityMiningCampaignPosition'
 import { useLpTokensUnderlyingAssets } from '../../../../hooks/useLpTokensUnderlyingAssets'
@@ -119,7 +119,7 @@ export default function StakeCard({
   isSingleSided,
   targetedPairOrToken: targetedPairOrSingleToken,
 }: FullPositionCardProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const stakableTokenBalance = useTokenBalance(
     account || undefined,
     isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken

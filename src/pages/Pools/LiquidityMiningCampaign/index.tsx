@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -13,7 +14,6 @@ import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMinin
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { PairState, usePair } from '../../../data/Reserves'
-import { useActiveWeb3React } from '../../../hooks'
 import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { useToken } from '../../../hooks/Tokens'
 import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
@@ -44,7 +44,7 @@ const ButtonRow = styled(RowFixed)`
 `
 
 export default function LiquidityMiningCampaign() {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const { location, searchParams: search } = useRouter()
   const { liquidityMiningCampaignId, currencyIdA, currencyIdB } = useParams<{
     currencyIdA: string

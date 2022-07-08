@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, Percent, Trade } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 
 // Eco Router modules
 // Web3 hooks
-import { useActiveWeb3React } from '../../hooks'
 import { useIsMultihop } from '../../state/user/hooks'
 import { getExactIn, getExactOut } from './api'
 // Types
@@ -25,7 +25,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   // Errors
   const [errors, setErrors] = useState<any[]>([])
   // Chain Id
-  const { chainId, account, library } = useActiveWeb3React()
+  const { chainId, account, library } = useWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
@@ -108,7 +108,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   // Errors
   const [errors, setErrors] = useState<any[]>([])
   // Chain Id
-  const { chainId, account, library } = useActiveWeb3React()
+  const { chainId, account, library } = useWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route

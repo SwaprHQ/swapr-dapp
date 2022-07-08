@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
@@ -25,7 +26,6 @@ import Slider from '../../components/Slider'
 import { Dots } from '../../components/swap/styleds'
 import TradePrice from '../../components/swap/TradePrice'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { usePairContract, useWrappingToken } from '../../hooks/useContract'
@@ -62,7 +62,7 @@ export default function RemoveLiquidity() {
   const { navigate } = useRouter()
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
   const [tokenA, tokenB] = useMemo(

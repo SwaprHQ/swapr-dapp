@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
@@ -5,7 +6,6 @@ import styled from 'styled-components'
 import { ButtonPrimary } from '../../../components/Button'
 import { RowBetween } from '../../../components/Row'
 import { ChainLabel } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
 
 interface NetworkSwitcherProps {
   sendToId: number
@@ -14,7 +14,7 @@ interface NetworkSwitcherProps {
 }
 
 export const NetworkSwitcher = ({ sendToId, onCollectClick, onSwitchClick }: NetworkSwitcherProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   if (!chainId) return null
 
   return (

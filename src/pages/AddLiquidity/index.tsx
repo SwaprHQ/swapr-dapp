@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
@@ -20,7 +21,6 @@ import Row, { RowBetween, RowFlat } from '../../components/Row'
 import TradePrice from '../../components/swap/TradePrice'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { PairState } from '../../data/Reserves'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useWrappingToken } from '../../hooks/useContract'
@@ -49,7 +49,7 @@ type CurrencySearchParams = {
 export default function AddLiquidity() {
   const { navigate, location } = useRouter()
   const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useWeb3React()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)

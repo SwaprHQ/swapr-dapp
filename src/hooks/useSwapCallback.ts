@@ -11,6 +11,7 @@ import {
   UniswapV2Trade,
 } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { UnsignedTransaction } from 'ethers'
 import { useMemo } from 'react'
 
@@ -24,8 +25,6 @@ import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
-
-import { useActiveWeb3React } from './index'
 
 export enum SwapCallbackState {
   INVALID,
@@ -61,7 +60,7 @@ export function useSwapsCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useWeb3React()
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const deadline = useTransactionDeadline()
@@ -158,7 +157,7 @@ export function useSwapCallback({
   allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName,
 }: UseSwapCallbackParams): UseSwapCallbackReturn {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
 

@@ -1,13 +1,13 @@
 import { Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
+import { useWeb3React } from '@web3-react/core'
 import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
 import { AlertCircle, AlertTriangle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import { ButtonError } from '../Button'
@@ -57,7 +57,7 @@ interface TokenWarningCardProps {
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
   const theme = useTheme()
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   if (!token) return null
 

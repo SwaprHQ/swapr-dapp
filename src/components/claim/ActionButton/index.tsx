@@ -1,10 +1,10 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { ButtonPrimary } from '../../Button'
 import { AutoColumn } from '../../Column'
 
@@ -35,7 +35,7 @@ export function ActionButton({
   onSwitchToArbitrum,
   onClaim,
 }: ActionButtonProps) {
-  const { account, chainId, connector } = useActiveWeb3React()
+  const { account, chainId, connector } = useWeb3React()
 
   const [disabled, setDisabled] = useState(true)
   const [text, setText] = useState('Claim SWPR (old)')

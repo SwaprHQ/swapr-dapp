@@ -1,4 +1,5 @@
 import { ApolloProvider } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import AOS from 'aos'
 import { FallbackLoader } from 'components/Loader/FallbackLoader'
 import React, { Suspense, useEffect } from 'react'
@@ -11,7 +12,6 @@ import Header from '../components/Header'
 import NetworkWarningModal from '../components/NetworkWarningModal'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
-import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -63,7 +63,7 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useTheme()
 
   useEffect(() => {

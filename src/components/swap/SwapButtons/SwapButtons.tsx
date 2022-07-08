@@ -1,5 +1,6 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -12,7 +13,6 @@ import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { SwapCallbackError } from '../../../components/swap/styleds'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
@@ -68,7 +68,7 @@ export function SwapButtons({
   wrapState,
   setWrapState,
 }: SwapButtonsProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const isExpertMode = useIsExpertMode()
   const { t } = useTranslation()
 

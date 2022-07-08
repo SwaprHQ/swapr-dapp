@@ -1,7 +1,7 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
-import { useActiveWeb3React } from '../hooks'
 import { chainSupportsSWPR } from '../utils/chainSupportsSWPR'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
@@ -31,7 +31,7 @@ const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './L
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
  */
 const RouteWrapper = ({ element }: { element: JSX.Element }) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   // If all features are available, render the route
   if (chainSupportsSWPR(chainId)) {
     return element

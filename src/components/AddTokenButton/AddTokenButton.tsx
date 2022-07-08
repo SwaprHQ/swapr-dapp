@@ -1,13 +1,13 @@
 import { SWPR } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useMemo } from 'react'
 
 import swprLogo from '../../assets/images/swpr-logo.png'
-import { useActiveWeb3React } from '../../hooks'
 import { AddSWPRToMetamaskButton } from '../Button'
 
 export const AddTokenButton = ({ active }: { active?: boolean }) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const swpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
 

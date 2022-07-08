@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId, Token, Trade, UniswapV2RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -17,14 +18,12 @@ import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
 
-import { useActiveWeb3React } from './index'
-
 export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName: string | null,
   trades?: (Trade | undefined)[]
 ): { loading: boolean; estimations: (BigNumber | null)[][] } {
-  const { account, library, chainId } = useActiveWeb3React()
+  const { account, library, chainId } = useWeb3React()
   const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName)
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()

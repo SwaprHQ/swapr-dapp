@@ -2,10 +2,10 @@ import { Interface } from '@ethersproject/abi'
 import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
 import { Currency, Pair, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '../hooks'
 import { useToken } from '../hooks/Tokens'
 import { usePairContract, useTokenContract } from '../hooks/useContract'
 import { useFeesState } from '../state/fees/hooks'
@@ -25,7 +25,7 @@ export function usePairs(
   currencies: [Currency | undefined, Currency | undefined][],
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): [PairState, Pair | null][] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
 
   const tokens = useMemo(
     () =>

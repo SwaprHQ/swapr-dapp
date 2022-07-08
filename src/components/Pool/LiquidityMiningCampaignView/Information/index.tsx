@@ -1,5 +1,6 @@
 import { KpiToken, Pair, Percent, PricedTokenAmount, Token, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { commify } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
@@ -9,7 +10,6 @@ import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
 import { ExternalLink, TYPE } from '../../../../theme'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
@@ -184,7 +184,7 @@ function Information({
   containsKpiToken,
   showUSDValue,
 }: InformationProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   const [upcoming, setUpcoming] = useState(false)

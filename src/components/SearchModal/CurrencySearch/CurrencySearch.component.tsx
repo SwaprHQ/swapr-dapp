@@ -1,11 +1,11 @@
 import { Currency, Token } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { ThemeContext } from 'styled-components/macro'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
@@ -37,7 +37,7 @@ export const CurrencySearch = ({
   otherSelectedCurrency,
 }: CurrencySearchProps) => {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
   const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
     useContext(CurrencySearchContext)

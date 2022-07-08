@@ -1,6 +1,6 @@
+import { useWeb3React } from '@web3-react/core'
 import React, { FC, useContext, useEffect, useState } from 'react'
 
-import { useActiveWeb3React } from '../../hooks'
 import store from '../../state'
 import { EcoBridge } from './EcoBridge'
 import { ecoBridgeConfig } from './EcoBridge.config'
@@ -8,7 +8,7 @@ import { ecoBridgeConfig } from './EcoBridge.config'
 export const EcoBridgeContext = React.createContext<EcoBridge | null>(null)
 
 export const EcoBridgeProvider: FC = ({ children }) => {
-  const { library, account, chainId } = useActiveWeb3React()
+  const { library, account, chainId } = useWeb3React()
   const [ecoBridge, setEcoBridge] = useState<EcoBridge | null>(null)
 
   useEffect(() => {

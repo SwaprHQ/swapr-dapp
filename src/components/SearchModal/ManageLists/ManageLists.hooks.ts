@@ -1,11 +1,11 @@
 import { TokenList } from '@uniswap/token-lists'
+import { useWeb3React } from '@web3-react/core'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from 'react-use'
 
 import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
-import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import { useActiveListsHandlers, useBridgeSupportedLists } from '../../../services/EcoBridge/EcoBridge.hooks'
@@ -161,7 +161,7 @@ export const useListRow = ({ listUrl }: ListRowProps) => {
     handleAcceptListUpdate: handleAcceptListUpdateRaw,
   } = useContext(ListRowContext)
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
 
   const tokensAmountInCurrentChain = useMemo(() => {

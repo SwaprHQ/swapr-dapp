@@ -1,5 +1,6 @@
 import { SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { AggregatedPairs } from 'hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +8,6 @@ import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
 import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
@@ -32,7 +32,7 @@ interface PairsListProps {
 }
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)

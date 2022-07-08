@@ -1,5 +1,6 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -12,7 +13,6 @@ import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/P
 import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
 import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
-import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
@@ -105,7 +105,7 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)

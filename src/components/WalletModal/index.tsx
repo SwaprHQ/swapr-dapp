@@ -8,7 +8,6 @@ import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
-import { useUnsupportedChainIdError } from '../../hooks'
 import usePrevious from '../../hooks/usePrevious'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
@@ -162,7 +161,8 @@ export default function WalletModal({
     setModal(null)
     toggleWalletSwitcherPopover()
   }
-  const unsupportedChainIdError = useUnsupportedChainIdError()
+  // TODO
+  const unsupportedChainIdError = false
 
   function getModalContent() {
     if (pendingError) {

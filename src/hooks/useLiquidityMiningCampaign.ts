@@ -1,6 +1,7 @@
 import { LiquidityMiningCampaign, Pair } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
@@ -9,8 +10,6 @@ import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 const QUERY = gql`
   query ($id: ID) {
@@ -45,7 +44,7 @@ export function useLiquidityMiningCampaign(
   targetedPair?: Pair,
   id?: string
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const { loading, error, data } = useQuery<QueryResult>(QUERY, {
     variables: { id: id?.toLowerCase() || '' },
   })

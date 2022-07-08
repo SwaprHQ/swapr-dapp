@@ -1,6 +1,7 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Pair, Token } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
@@ -19,11 +20,9 @@ import { isAddress } from '../utils'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from './index'
-
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const userAddedTokens = useUserAddedTokens()
 
   return useMemo(() => {
@@ -68,7 +67,7 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
 export function useSearchInactiveTokenLists(search: string | undefined, minResults = 10): WrappedTokenInfo[] {
   const lists = useAllLists()
   const inactiveUrls = useInactiveListUrls()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const activeTokens = useAllTokens()
   return useMemo(() => {
     if (!search || search.trim().length === 0) return []
@@ -131,7 +130,7 @@ export function parseStringOrBytes32(
 // null if loading
 // otherwise returns the token
 export function useToken(tokenAddress?: string): Token | undefined | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const tokens = useAllTokens()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)

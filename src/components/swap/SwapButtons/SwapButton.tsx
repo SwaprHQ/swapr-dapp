@@ -1,3 +1,4 @@
+import { useWeb3React } from '@web3-react/core'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
@@ -10,7 +11,6 @@ import {
   ROUTABLE_PLATFORM_STYLE,
   RoutablePlatformKeysByNetwork,
 } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
 import { ButtonPrimary } from '../../Button/index'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
@@ -94,7 +94,7 @@ export const SwapButton = ({
 
 export const SwapLoadingButton = () => {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>

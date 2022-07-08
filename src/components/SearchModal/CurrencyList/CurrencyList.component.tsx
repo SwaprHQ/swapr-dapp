@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
+import { useWeb3React } from '@web3-react/core'
 import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -7,7 +8,6 @@ import { Box, Flex, Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
-import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
@@ -39,7 +39,7 @@ const CurrencyRow = ({
   otherSelected,
   selectedTokenList,
 }: CurrencyRowProps) => {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3React()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
 
@@ -127,7 +127,7 @@ export const CurrencyList = ({
   onCurrencySelect,
   selectedTokenList,
 }: CurrencyListProps) => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3React()
   const [hasBreakLine, setHasBreakLine] = useState(false)
   const itemData = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {

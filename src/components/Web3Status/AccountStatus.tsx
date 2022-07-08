@@ -2,6 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { MetaMask } from '@web3-react/metamask'
+import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'rebass'
@@ -139,7 +140,7 @@ interface AccountStatusProps {
   ENSName?: string
   avatar?: ENSAvatarData
   account: string | undefined | null
-  connector: MetaMask | CoinbaseWallet | WalletConnect | undefined
+  connector: Connector | undefined
   networkConnectorChainId: ChainId | undefined
   onAddressClick: () => void
 }

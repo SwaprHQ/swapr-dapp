@@ -2,12 +2,11 @@ import { parseUnits } from '@ethersproject/units'
 import { ChainId, CurrencyAmount, Pair } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
+import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
 
 const QUERY = gql`
   query ($pairId: ID!) {
@@ -23,7 +22,7 @@ interface QueryResult {
 }
 
 export function usePairReserveNativeCurrency(pair?: Pair): { loading: boolean; reserveNativeCurrency: CurrencyAmount } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3React()
   const nativeCurrency = useNativeCurrency()
 
   const { loading, data, error } = useQuery<QueryResult>(QUERY, {
