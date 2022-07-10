@@ -40,6 +40,10 @@ const ArrowIndicator = styled.section`
   }
 `
 
+const RoutingThroughImage = styled.img`
+  height: 20px;
+`
+
 const Hero = props => {
   const [isHeroActive, setIsHeroActive] = useState(true)
   const [logosArrays, setLogosArrays] = useState([])
@@ -118,7 +122,11 @@ const Hero = props => {
                 {[...Array(3)].map((_, index) => (
                   <Fragment key={index}>
                     {RoutingThroughContent.companies.map((company, key) => (
-                      <img key={`${key}-${company.title}`} src={company.img} alt={`Routing through...`} />
+                      <RoutingThroughImage
+                        key={`${key}-${company.title}`}
+                        src={company.img}
+                        alt={`Routing through...`}
+                      />
                     ))}
                   </Fragment>
                 ))}
@@ -141,10 +149,10 @@ const Hero = props => {
             <Marquee speed={50} gradientColor={[12, 11, 18]}>
               <div className="marquee-inner">
                 {RoutingThroughContent.companies.map((company, key) => (
-                  <img key={key} src={company.img} alt="Routing through..." />
+                  <RoutingThroughImage key={key} src={company.img} alt="Routing through..." />
                 ))}
                 {RoutingThroughContent.companies.map((company, key) => (
-                  <img key={key + '-copy'} src={company.img} alt="Routing through..." />
+                  <RoutingThroughImage key={key + '-copy'} src={company.img} alt="Routing through..." />
                 ))}
               </div>
             </Marquee>

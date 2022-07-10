@@ -30,6 +30,8 @@ import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
+import RoutingCOW from './../assets/images/routing-cow.svg'
+import RoutingCurve from './../assets/images/routing-curve.png'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
@@ -121,6 +123,14 @@ export const RoutingThroughContent = {
     },
     { title: 'QuickSwap', img: RoutingQuickSwap },
     { title: 'DFYN', img: RoutingDFYN },
+    {
+      title: 'COW',
+      img: RoutingCOW,
+    },
+    {
+      title: 'Curve',
+      img: RoutingCurve,
+    },
   ],
 }
 
