@@ -1,11 +1,11 @@
-import React, { FC } from 'react'
+import React, { ReactNode } from 'react'
 import styled, { keyframes } from 'styled-components'
 
 import HeroImage from '../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from '../../assets/images/hero-graphic-left.png'
 import { breakpoints, gradients } from '../../utils/theme'
 
-export const SpaceBg: FC = ({ children }) => (
+export const SpaceBg = ({ children }: { children: ReactNode }) => (
   <StyledHero id="liquidity-hero" className="hero-active">
     <div className="inner-hero">
       <AppBodyContainer>{children}</AppBodyContainer>
