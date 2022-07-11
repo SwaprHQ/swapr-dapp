@@ -1,5 +1,5 @@
 import transparentize from 'polished/lib/color/transparentize'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { NavLink, NavLinkProps, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -73,6 +73,7 @@ const StyledExternalMobileLink = styled(ExternalLink)`
 
 export interface HeaderLinkProps extends Omit<NavLinkProps, 'to'> {
   id: string
+  children: ReactNode
   to?: string
   href?: string
   disabled?: boolean

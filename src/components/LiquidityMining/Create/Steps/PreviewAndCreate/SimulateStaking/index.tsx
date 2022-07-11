@@ -104,7 +104,7 @@ export default function SimulateStaking({
   )
 
   const handleLocalStakingCapChange = useCallback(
-    rawValue => {
+    (rawValue: string) => {
       setSimulatedPrice(rawValue)
     },
     [setSimulatedPrice]
