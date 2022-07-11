@@ -201,7 +201,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     })
 
     const commonParams = {
-      maximumSlippage: new Percent(allowedSlippage.toString()),
+      maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
       receiver: to,
     }
 
