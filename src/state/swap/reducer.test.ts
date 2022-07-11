@@ -26,7 +26,6 @@ describe('swap reducer', () => {
         typedValue: '',
         independentField: Field.INPUT,
         recipient: null,
-        loading: true,
         protocolFeeTo: undefined,
       })
     })

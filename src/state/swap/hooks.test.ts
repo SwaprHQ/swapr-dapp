@@ -1,5 +1,5 @@
-import { Field } from './actions'
 import { queryParametersToSwapState } from './hooks'
+import { Field } from './types'
 
 describe('hooks', () => {
   describe('#queryParametersToSwapState', () => {
