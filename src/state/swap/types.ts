@@ -15,5 +15,4 @@ export interface SwapState {
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly recipient: string | null
   readonly protocolFeeTo: string | undefined
-  readonly loading: boolean
 }

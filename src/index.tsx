@@ -1,3 +1,4 @@
+import { setUseWhatChange } from '@simbathesailor/use-what-changed'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
@@ -18,6 +19,9 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
+
+// Enables use of the useWhatChanged hook in dev environment
+setUseWhatChange(process.env.NODE_ENV === 'development')
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
