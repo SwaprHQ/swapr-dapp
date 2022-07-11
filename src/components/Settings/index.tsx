@@ -20,7 +20,7 @@ import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
 

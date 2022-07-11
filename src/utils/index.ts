@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
+import IDXswapRouter from '@swapr/periphery/build/IDXswapRouter.json'
 import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import Decimal from 'decimal.js-light'
@@ -148,7 +148,7 @@ export function getRouterContract(
 ): Contract {
   return getContract(
     platform.routerAddress[chainId ? chainId : ChainId.MAINNET] as string,
-    IDXswapRouterABI,
+    IDXswapRouter.abi,
     library,
     account
   )

@@ -206,15 +206,15 @@ export default function Pools() {
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
-  const handleCurrencySelect = useCallback(token => {
-    setFilterToken(token as Token)
+  const handleCurrencySelect = useCallback((token: any) => {
+    setFilterToken(token)
   }, [])
 
   const handleFilterTokenReset = useCallback(() => {
     setFilterToken(undefined)
   }, [])
 
-  const handleSortBy = useCallback(sortBy => {
+  const handleSortBy = useCallback((sortBy: string) => {
     setSortBy(sortBy)
   }, [])
 

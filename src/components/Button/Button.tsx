@@ -16,6 +16,7 @@ interface BaseProps {
   /**
    * Padding of the buttons default is 18px
    */
+  children?: ReactNode
   padding?: string
   /**
    * Width and default is 100%

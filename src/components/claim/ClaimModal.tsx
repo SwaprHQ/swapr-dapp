@@ -1,11 +1,11 @@
 import { TokenAmount } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
 import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { useRouter } from '../../hooks/useRouter'
 import { useShowClaimPopup } from '../../state/application/hooks'
 import { CloseIcon, TYPE } from '../../theme'
 import { AddTokenButton } from '../AddTokenButton/AddTokenButton'

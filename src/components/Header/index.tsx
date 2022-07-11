@@ -22,7 +22,7 @@ import ClaimModal from '../claim/ClaimModal'
 import UnsupportedNetworkPopover from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
@@ -291,17 +291,21 @@ function Header() {
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-            <HeaderLinkBadge label="BETA" />
+            <>
+              {t('bridge')}
+              <HeaderLinkBadge label="BETA" />
+            </>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </HeaderLink>
           <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
@@ -380,10 +384,12 @@ function Header() {
             {t('vote')}
           </HeaderMobileLink>
           <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderMobileLink>
         </Flex>
 
