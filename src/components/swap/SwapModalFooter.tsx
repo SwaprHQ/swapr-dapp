@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 
-import { Field } from '../../state/swap/actions'
+import { Field } from '../../state/swap/types'
 import { TYPE } from '../../theme'
 import {
   computeSlippageAdjustedAmounts,

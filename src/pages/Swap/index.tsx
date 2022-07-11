@@ -24,7 +24,6 @@ import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
@@ -32,6 +31,7 @@ import {
   useSwapLoading,
   useSwapState,
 } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'

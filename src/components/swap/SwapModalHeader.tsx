@@ -5,7 +5,7 @@ import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { Field } from '../../state/swap/actions'
+import { Field } from '../../state/swap/types'
 import { TYPE } from '../../theme'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
