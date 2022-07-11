@@ -15,7 +15,7 @@
   "input": "Input",
   "output": "Output",
   "estimated": "estimated",
-  "balance": "Balance: {{ balanceInput }}",
+  "balance": "Balance: <0>{{ balanceInput }}</0>",
   "unlock": "Unlock",
   "pending": "Pending",
   "selectToken": "Select a token",
@@ -116,7 +116,7 @@
   "multihopEnabled": "Multihop enabled",
   "multihopDisabled": "Multihop disabled",
   "alternateReceiver": "Alternate Receiver",
-  "MEVProtectionComingSoon": "MEV Protection (coming soon)",
+  "MEVProtection": "MEV Protection",
   "insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
   "enterCurrencyAmount": "Enter {{ currency }} amount",
   "exchange": "Exchange",
@@ -161,6 +161,6 @@
   "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
   "findingBestPrice": "Finding best price",
   "viewOnBlockExplorer": "View on Block Explorer",
-  "viewOnCowExplorer": "View on Cow Protocol Explorer",
+  "viewOnCowExplorer": "View on CoW Protocol Explorer",
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer"
 }
