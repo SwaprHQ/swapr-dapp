@@ -3332,10 +3332,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.4.4.tgz#67b3df02cb4dfc1b70cbe2bed12c64d39b9fd62a"
-  integrity sha512-TZ63gh3Mwr5FQ6HAYlpT6eYqv4sd5I5+uuAGU4Y5ihE6hFwVloWZ6lSM64PGbnye1ihZxiyvTDpRLzHxs+o8QA==
+"@swapr/sdk@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.5.0.tgz#5684d6b480c31b6bd5701654e60448a62fc98f1b"
+  integrity sha512-8rTmqgzat6S4bZM8ZJ+Km7WkOuBFpLdodAqo8bOJr8N4wJ8N3mEnDSdv9Ig4CtJNGZaladEvhAMAUapUdiAw/g==
   dependencies:
     "@ethersproject/abi" "^5.6.4"
     "@ethersproject/address" "^5.4.0"
