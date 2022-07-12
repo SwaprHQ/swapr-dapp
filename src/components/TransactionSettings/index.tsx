@@ -107,6 +107,7 @@ export default function SlippageTabs({
   const slippageInputIsValid =
     slippageInput === '' ||
     (!Number.isNaN(Number(slippageInput)) &&
+      rawSlippage >= 10 &&
       rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2))
 
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
