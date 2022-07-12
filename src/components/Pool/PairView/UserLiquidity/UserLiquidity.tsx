@@ -65,7 +65,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         <InfoGrid>
           <ValueWithLabel
             title={t('userLiquidity.poolShare')}
-            value={poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : '0'}
+            value={poolTokenPercentage ? poolTokenPercentage.toFixed(5) + '%' : '0'}
           />
           <ValueWithLabel
             title={t('userLiquidity.poolTokens')}

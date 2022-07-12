@@ -1,4 +1,4 @@
-import { JSBI, Percent } from '@swapr/sdk'
+import { JSBI, Pair as PairType, Percent } from '@swapr/sdk'
 
 import React, { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
@@ -51,7 +51,7 @@ export default function Pair() {
   }, [])
 
   const handlePairSelect = useCallback(
-    pair => {
+    (pair: PairType) => {
       navigate(`/pools/${pair.token0.address}/${pair.token1.address}`)
     },
     [navigate]

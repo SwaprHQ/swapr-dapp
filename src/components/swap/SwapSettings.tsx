@@ -38,13 +38,17 @@ const StyledRowFixed = styled(RowFixed)`
   }
 `
 
+interface SwapSettingsProps {
+  showAddRecipient: boolean
+  setShowAddRecipient: (value: boolean) => void
+  isMEVProtectionEnabled?: boolean
+}
+
 export function SwapSettings({
   showAddRecipient,
   setShowAddRecipient,
-}: {
-  showAddRecipient: boolean
-  setShowAddRecipient: (value: boolean) => void
-}) {
+  isMEVProtectionEnabled = false,
+}: SwapSettingsProps) {
   const userSlippageTolerance = useUserSlippageTolerance()
   const [multihop] = useMultihopManager()
   const theme = useTheme()
@@ -80,8 +84,8 @@ export function SwapSettings({
           <Recipient />
         </StyledButton>
       </MouseoverTooltip>
-      <MouseoverTooltip content={t('settings.MEVProtectionComingSoon')} placement="top">
-        <StyledButton>
+      <MouseoverTooltip content={t('settings.MEVProtection')} placement="top">
+        <StyledButton active={isMEVProtectionEnabled}>
           <MEVProtection />
         </StyledButton>
       </MouseoverTooltip>

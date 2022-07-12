@@ -15,6 +15,7 @@ import { RowBetween } from '../Row'
 import arrowIcon from './../../assets/svg/double-angle.svg'
 
 interface BaseProps {
+  children?: ReactNode
   padding?: string
   width?: string
   borderRadius?: string
@@ -392,7 +393,11 @@ export function CarrotButton({ link, text, style }: { link: string; text: string
   )
 }
 
-export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
+export function ButtonDropdown({
+  disabled = false,
+  children,
+  ...rest
+}: { children: ReactNode; disabled?: boolean } & ButtonProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
       <RowBetween>
@@ -407,7 +412,11 @@ const StyledChevronDown = styled(ChevronDown)`
   color: ${({ theme }) => theme.text5};
 `
 
-export function ButtonDropdownLight({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
+export function ButtonDropdownLight({
+  disabled = false,
+  children,
+  ...rest
+}: { children: ReactNode; disabled?: boolean } & ButtonProps) {
   return (
     <ButtonOutlined {...rest} disabled={disabled}>
       <RowBetween>

@@ -18,7 +18,6 @@ import {
   Container,
   Content,
   CurrencySelect,
-  FiatRow,
   InputPanel,
   InputRow,
   LabelRow,
@@ -165,7 +164,7 @@ export const CurrencyInputPanelComponent = ({
               </Aligner>
             </CurrencySelect>
           </InputRow>
-          <FiatRow>
+          <div>
             <RowBetween>
               <FiatValueDetails fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
               <CurrencyUserBalance
@@ -178,7 +177,7 @@ export const CurrencyInputPanelComponent = ({
                 onMax={handleOnMax}
               />
             </RowBetween>
-          </FiatRow>
+          </div>
         </Content>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (

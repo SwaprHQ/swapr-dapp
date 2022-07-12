@@ -15,7 +15,7 @@
   "settings.multihopEnabled": "Multihop enabled",
   "settings.multihopDisabled": "Multihop disabled",
   "settings.alternateReceiver": "Alternate Receiver",
-  "settings.MEVProtectionComingSoon": "MEV Protection (coming soon)",
+  "settings.MEVProtection": "MEV Protection",
   "tabs.limit": "Limit",
   "tabs.bridgeSwap": "Bridge Swap",
   "button.priceImpactTooHigh": "Price Impact Too High",
