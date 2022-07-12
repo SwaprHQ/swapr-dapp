@@ -77,13 +77,13 @@ describe('Campaign creation tests', () => {
       this.skip()
     }
     LiquidityPage.visitLiquidityPage()
-    LiquidityPage.getAllPairsButton().click({ scrollBehavior: 'top' })
-    TokenMenu.getOpenTokenManagerButton().click({ scrollBehavior: 'top' })
+    LiquidityPage.getAllPairsButton().click({})
+    TokenMenu.getOpenTokenManagerButton().click({})
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
     TokenMenu.chooseToken('dai')
-    LiquidityPage.getPairCards().contains('USDT').click({ scrollBehavior: 'top' })
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({ scrollBehavior: 'top' })
+    LiquidityPage.getPairCards().contains('USDT').click({})
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
@@ -97,7 +97,7 @@ describe('Campaign creation tests', () => {
       this.skip()
     }
     RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click({ scrollBehavior: 'top' })
+    RewardsPage.getAllPairsButton().click({})
     PairMenu.choosePair(TOKENS_PAIR)
     RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt)
     CampaignPage.checkCampaignData(
