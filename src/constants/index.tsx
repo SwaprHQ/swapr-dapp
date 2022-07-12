@@ -23,7 +23,7 @@ import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
-import CowLogo from '../assets/svg/cow-protocol.svg'
+import CoWLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
@@ -447,7 +447,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.GNOSIS_PROTOCOL.name, // COW PROTOCOL
+    RoutablePlatform.GNOSIS_PROTOCOL.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -462,6 +462,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
+    RoutablePlatform.GNOSIS_PROTOCOL.name,
   ],
   [ChainId.POLYGON]: [
     RoutablePlatform.UNISWAP.name,
@@ -553,7 +554,7 @@ export const ROUTABLE_PLATFORM_STYLE: {
     name: RoutablePlatform.CURVE.name,
   },
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
-    logo: CowLogo,
+    logo: CoWLogo,
     alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.GNOSIS_PROTOCOL.name,
@@ -578,7 +579,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
-  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CowLogo} alt="Cow" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 

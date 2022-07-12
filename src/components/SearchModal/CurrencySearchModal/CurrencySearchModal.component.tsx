@@ -1,9 +1,9 @@
 import { Currency } from '@swapr/sdk'
 
 import React, { useCallback, useContext, useLayoutEffect } from 'react'
+import { usePrevious } from 'react-use'
 
 import useLast from '../../../hooks/useLast'
-import usePrevious from '../../../hooks/usePrevious'
 import Modal from '../../Modal'
 import { CurrencySearch } from '../CurrencySearch'
 import { ImportList } from '../ImportList'
