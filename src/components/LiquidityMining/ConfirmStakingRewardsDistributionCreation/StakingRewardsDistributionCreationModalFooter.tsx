@@ -5,7 +5,7 @@ import React from 'react'
 import { Text } from 'rebass'
 
 import { TYPE } from '../../../theme'
-import { ButtonError } from '../../Button/Button'
+import { ButtonError } from '../../Button'
 import { AutoColumn } from '../../Column'
 import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'

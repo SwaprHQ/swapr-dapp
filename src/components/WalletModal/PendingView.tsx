@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { injected } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
-import { ButtonPrimary } from '../Button/Button'
+import { ButtonPrimary } from '../Button'
 import Loader from '../Loader'
 
 const PendingSection = styled.div`

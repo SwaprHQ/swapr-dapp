@@ -2,7 +2,7 @@ import React from 'react'
 import { AlertCircle, ArrowRightCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { ButtonPrimary } from '../../../components/Button/Button'
+import { ButtonPrimary } from '../../../components/Button'
 import Modal from '../../../components/Modal'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { TYPE } from '../../../theme'

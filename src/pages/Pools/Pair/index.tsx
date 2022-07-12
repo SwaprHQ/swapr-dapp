@@ -8,7 +8,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button/Button'
+import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import List from '../../../components/LiquidityMiningCampaigns/List'
 import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'

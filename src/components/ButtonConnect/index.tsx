@@ -7,7 +7,7 @@ import {
   useNetworkSwitcherPopoverToggle,
   useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
-import { ButtonPrimary } from '../Button/Button'
+import { ButtonPrimary } from '../Button'
 
 export const ButtonConnect = () => {
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()

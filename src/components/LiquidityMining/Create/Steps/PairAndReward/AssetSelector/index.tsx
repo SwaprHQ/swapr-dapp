@@ -11,7 +11,7 @@ import { Actions, ActionType, CampaignType } from '../../../../../../pages/Liqui
 import { useTokenBalance } from '../../../../../../state/wallet/hooks'
 import { CloseIcon, TYPE } from '../../../../../../theme'
 import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
-import { ButtonPrimary } from '../../../../../Button/Button'
+import { ButtonPrimary } from '../../../../../Button'
 import { NumericalInput } from '../../../../../Input/NumericalInput'
 import { SmoothGradientCard } from '../../../../styleds'
 import { AssetLogo } from './AssetLogo'

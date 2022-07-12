@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { ButtonError } from '../../Button/Button'
+import { ButtonError } from '../../Button'
 
 export const Wrapper = styled.div`
   position: relative;

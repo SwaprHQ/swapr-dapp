@@ -1,13 +1,13 @@
 import React from 'react'
 import { ButtonProps } from 'rebass'
 
-import { ButtonInvisble } from '../../Button/Button'
+import { ButtonInvisible } from '../../Button'
 import { StyledGoBackIcon } from './GoBackIcon.styles'
 
 export const GoBackIcon = (props: ButtonProps) => {
   return (
-    <ButtonInvisble {...props}>
+    <ButtonInvisible {...props}>
       <StyledGoBackIcon />
-    </ButtonInvisble>
+    </ButtonInvisible>
   )
 }

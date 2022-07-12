@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { ButtonPrimary } from '../../components/Button/Button'
+import { ButtonPrimary } from '../../components/Button'
 import { BlueCard, OutlineCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'

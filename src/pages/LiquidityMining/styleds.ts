@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { ButtonPrimary, ButtonSecondary } from '../../components/Button/Button'
+import { ButtonPrimary, ButtonSecondary } from '../../components/Button'
 import { RowBetween } from '../../components/Row'
 
 export const TitleRow = styled(RowBetween)`

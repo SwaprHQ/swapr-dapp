@@ -14,7 +14,7 @@ import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPr
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
-import { ButtonPrimary } from '../../Button/Button'
+import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import { DimBlurBgBox } from '../DimBlurBgBox/styleds'

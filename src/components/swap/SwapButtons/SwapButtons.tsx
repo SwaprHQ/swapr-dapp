@@ -18,7 +18,7 @@ import { SwapData } from '../../../pages/Swap'
 import { Field } from '../../../state/swap/actions'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button/Button'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)

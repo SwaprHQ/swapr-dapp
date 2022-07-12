@@ -14,7 +14,7 @@ import {
   useUserTransactionTTL,
 } from '../../state/user/hooks'
 import { CloseIcon, ExternalLink, LinkStyledButton, TYPE } from '../../theme'
-import { ButtonError } from '../Button/Button'
+import { ButtonError } from '../Button'
 import { DarkCard } from '../Card'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'

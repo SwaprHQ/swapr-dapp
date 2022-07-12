@@ -129,7 +129,7 @@ export const ButtonPurpleDim = styled(Base)`
   }
 `
 
-export const ButtonInvisble = styled.button`
+export const ButtonInvisible = styled.button`
   border: none;
   outline: none;
   background: transparent;
@@ -426,7 +426,7 @@ export const StyledButtonsArray = [
   ButtonPrimary,
   ButtonSecondary,
   ButtonGrey,
-  ButtonInvisble,
+  ButtonInvisible,
   ButtonDark1,
   ButtonPurple,
   ButtonDark2,

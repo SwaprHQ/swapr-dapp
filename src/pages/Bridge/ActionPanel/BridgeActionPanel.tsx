@@ -3,7 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
-import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button/Button'
+import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import Loader from '../../../components/Loader'
 import { networkOptionsPreset } from '../../../components/NetworkSwitcher'

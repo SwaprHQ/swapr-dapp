@@ -3,7 +3,7 @@ import { Box, Flex, Text } from 'rebass'
 
 import { ApprovalState } from '../../../../../../hooks/useApproveCallback'
 import { Dots } from '../../../../../../pages/Pools/styleds'
-import { ButtonError, ButtonPrimary } from '../../../../../Button/Button'
+import { ButtonError, ButtonPrimary } from '../../../../../Button'
 
 interface ConfirmStakingModalFooterProps {
   onConfirm: () => void

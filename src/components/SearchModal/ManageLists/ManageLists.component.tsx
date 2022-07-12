@@ -3,7 +3,7 @@ import { CheckCircle, Settings } from 'react-feather'
 import { useTheme } from 'styled-components'
 
 import { ExternalLink, IconWrapper, TYPE } from '../../../theme'
-import { ButtonEmpty, ButtonPrimary } from '../../Button/Button'
+import { ButtonEmpty, ButtonPrimary } from '../../Button'
 import Card from '../../Card'
 import Column, { AutoColumn } from '../../Column'
 import ListLogo from '../../ListLogo'

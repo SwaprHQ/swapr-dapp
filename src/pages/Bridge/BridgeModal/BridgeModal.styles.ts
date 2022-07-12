@@ -1,7 +1,7 @@
 import { darken } from 'polished'
 import styled from 'styled-components'
 
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button/Button'
+import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
 
 export const TitleWrapper = styled.div`
   margin: 24px 0px;

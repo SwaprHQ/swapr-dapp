@@ -11,7 +11,7 @@ import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
-import { ButtonInvisble } from '../Button/Button'
+import { ButtonInvisible } from '../Button'
 import { AutoRow } from '../Row'
 import Copy from './Copy'
 import Transaction from './Transaction'
@@ -152,9 +152,9 @@ const StyledCloseIcon = styled.div`
 `
 export const CloseIcon = (props: ButtonProps) => {
   return (
-    <ButtonInvisble {...props}>
+    <ButtonInvisible {...props}>
       <StyledCloseIcon />
-    </ButtonInvisble>
+    </ButtonInvisible>
   )
 }
 
