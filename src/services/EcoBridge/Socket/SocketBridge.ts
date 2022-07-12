@@ -535,18 +535,18 @@ export class SocketBridge extends EcoBridgeChildBase {
     let tokenList: TokenList | undefined
 
     if (isBridgeSwapActive) {
-      const tokenListparameters = {
+      const tokenListParameters = {
         fromChainId: fromChainId.toString(),
         toChainId: toChainId.toString(),
-        isShortList: true,
+        isShortList: false,
         disableSwapping: false,
         singleTxOnly: true,
       }
 
       try {
         const [fromTokenList, toTokenList] = await Promise.all([
-          TokenListsAPI.tokenListControllerGetfromTokenList(tokenListparameters),
-          TokenListsAPI.tokenListControllerGetToTokenList(tokenListparameters),
+          TokenListsAPI.tokenListControllerGetfromTokenList(tokenListParameters),
+          TokenListsAPI.tokenListControllerGetToTokenList(tokenListParameters),
         ])
 
         const tokens = [...fromTokenList.result, ...toTokenList.result].reduce<TokenInfo[]>((allTokens, token) => {
