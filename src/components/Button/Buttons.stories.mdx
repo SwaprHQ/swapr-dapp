@@ -1,0 +1,143 @@
+import { Canvas, Meta, Story, ArgsTable, Description } from '@storybook/addon-docs'
+import styled from 'styled-components'
+import { AutoRowCleanGap } from '../Row'
+import { componentName } from '../../utils'
+import {
+  StyledButtonsArray,
+  Base,
+  ButtonConfirmed,
+  ButtonError,
+  ButtonExternalLink,
+  CarrotButton,
+  BaseProps,
+  ButtonPrimary,
+} from './Button'
+
+<Meta title="ButtonsMDX" />
+
+# Buttons
+
+<p>
+  {' '}
+  All buttons below are purely styled components buttons which accept css props and <strong>Base</strong> button is base
+  that all of them use{' '}
+</p>
+
+<Canvas>
+  <Story name="Styled Buttons" component={Base}>
+    <AutoRowCleanGap gap={12}>
+      {StyledButtonsArray.map(Component => (
+        <Component style={{ width: 'auto' }} key={Component.index}>
+          {componentName(Component)}
+        </Component>
+      ))}
+    </AutoRowCleanGap>
+  </Story>
+</Canvas>
+
+Below are all Basic props styled buttons accept
+
+<ArgsTable of={Base} />
+
+export const ButtonConfirmedTemplate = args => <ButtonConfirmed {...args} />
+
+## <em>Button confirmed</em> has two states depending on confirm property
+
+<Canvas>
+  <Story
+    name="Button Confirmed/Active"
+    component={ButtonConfirmed}
+    args={{
+      children: 'Confirmed true',
+      confirmed: true,
+      width: 'fit-content',
+      altDisabledStyle: true,
+    }}
+  >
+    {ButtonConfirmedTemplate.bind({})}
+  </Story>
+  <Story
+    name="Button Confirmed/Inactive"
+    component={ButtonConfirmed}
+    args={{
+      children: 'Confirmed false',
+      confirmed: false,
+      width: 'fit-content',
+      altDisabledStyle: true,
+    }}
+  >
+    {ButtonConfirmedTemplate.bind({})}
+  </Story>
+</Canvas>
+
+export const ButtonErrorTemplate = args => <ButtonError {...args} />
+
+## <em>Button error</em> has two states depending on error property
+
+<Canvas>
+  <Story
+    name="Button Error/Active"
+    component={ButtonError}
+    args={{
+      error: true,
+      children: 'Error triggered',
+      width: 'fit-content',
+    }}
+  >
+    {ButtonErrorTemplate.bind({})}
+  </Story>
+  <Story
+    name="Button Error/Inactive"
+    component={ButtonError}
+    args={{
+      error: false,
+      children: 'No Error',
+      width: 'fit-content',
+    }}
+  >
+    {ButtonErrorTemplate.bind({})}
+  </Story>
+</Canvas>
+
+export const ButtonWithLinkTemplate = args => <ButtonExternalLink {...args} />
+
+export const CarrotButtonTemplate = args => <CarrotButton {...args} />
+
+## <em>Button link and Carrot Button</em> share props but have different styling
+
+<br />
+
+> ### Button With Link
+
+<Canvas>
+  <Story
+    name="Button With Link"
+    component={ButtonExternalLink}
+    argTypes={ButtonExternalLink}
+    args={{
+      link: 'https://dcabtc.com/what-is-stacking-sats#:~:text=In%20short%2C%20stacking%20sats%20is,the%20smallest%20unit%20in%20Bitcoin.',
+      children: 'Stack Sats',
+      style: { width: 'fit-content' },
+    }}
+  >
+    {ButtonWithLinkTemplate.bind({})}
+  </Story>
+</Canvas>
+
+> ### Carrot Button
+
+<Canvas>
+  <Story
+    name="Carrot Button"
+    component={CarrotButton}
+    args={{
+      link: 'https://carrot.eth.limo/',
+      children: 'Carrot Button Text',
+      style: { width: 'fit-content' },
+    }}
+  >
+    {CarrotButtonTemplate.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={ButtonExternalLink} />
