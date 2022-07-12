@@ -743,6 +743,7 @@ export default function RemoveLiquidity() {
                       'Approve'
                     )}
                   </ButtonConfirmed>
+
                   <ButtonError
                     onClick={() => {
                       setShowConfirm(true)

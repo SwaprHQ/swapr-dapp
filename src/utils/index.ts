@@ -90,6 +90,13 @@ export function shortenAddress(address: string, charsBefore = 4, charsAfter = 4)
   return `${parsed.substring(0, charsBefore + 2)}...${parsed.substring(42 - charsAfter)}`
 }
 
+//get component name with spacing between camel case
+export function componentName(component: React.FunctionComponent): string {
+  const componentName = component.displayName
+  if (componentName) return componentName.replace(/([a-z])([A-Z])/g, '$1 $2')
+  return ''
+}
+
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
@@ -149,6 +156,22 @@ export function getRouterContract(
 
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
+interface ImageType {
+  name: string
+  location: string
+}
+export function exportAllImagesFilesFromRelativePath(folderArray: any): ImageType[] | [] {
+  const images: ImageType[] = []
+
+  folderArray.keys().map((item: string) => {
+    const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
+    const imageLocation = folderArray(item).default
+
+    images.push({ name: imageName, location: imageLocation })
+  })
+  return images
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency: Currency): boolean {
