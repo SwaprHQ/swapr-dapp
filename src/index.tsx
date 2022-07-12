@@ -21,7 +21,9 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 
 // Enables use of the useWhatChanged hook in dev environment
-setUseWhatChange(process.env.NODE_ENV === 'development')
+setUseWhatChange({
+  active: process.env.NODE_ENV === 'development',
+})
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
