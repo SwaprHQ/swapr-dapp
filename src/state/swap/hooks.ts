@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
 
@@ -17,6 +18,7 @@ import { getExactIn as getExactInFromEcoRouter, getExactOut as getExactOutFromEc
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
@@ -165,11 +167,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   useEffect(() => {
     const [inputCurrencyBalance] = relevantTokenBalances
 
-    // Require a connected wallet
-    if (!account) {
-      setInputError(SWAP_INPUT_ERRORS.CONNECT_WALLET)
-      return
-    }
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
       setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
@@ -180,29 +177,41 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
       return
     }
-    // Require sufficient input balance
+    // Notify user if input amount is too low, but still trigger the EcoRouter
+    let inputErrorNextState: undefined | number = undefined
     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)) {
-      setInputError(SWAP_INPUT_ERRORS.INSUFFICIENT_FUNDS)
-      return
+      inputErrorNextState = SWAP_INPUT_ERRORS.INSUFFICIENT_FUNDS
     }
 
-    // Require a valid recipient address
-    const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
-    if (!to || !isAddress(to)) {
-      setInputError(SWAP_INPUT_ERRORS.INVALID_RECIPIENT)
+    // Require a valid receipient
+    let receiver = account ?? AddressZero // default back to zero if no account is connected
+    if (recipient !== null) {
+      if (isAddress(recipientLookup.address)) {
+        receiver = recipientLookup.address as string
+      } else {
+        setInputError(SWAP_INPUT_ERRORS.INVALID_RECIPIENT)
+        return
+      }
+    }
+
+    // The user wants to un/wrap the network native token
+    const isWrap = Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === outputCurrency
+    const isUnwrap = Currency.isNative(outputCurrency) && wrappedCurrency(outputCurrency, chainId) === inputCurrency
+
+    if (isWrap || isUnwrap) {
       return
     }
 
     // Update swap state with the new input
     unstable_batchedUpdates(() => {
-      setInputError(undefined)
+      setInputError(inputErrorNextState)
       setLoading(true)
       setAllPlatformTrades([])
     })
 
     const commonParams = {
       maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
-      receiver: to,
+      receiver,
     }
 
     const ecoRouterSourceOptionsParams = {
@@ -249,13 +258,14 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       unstable_batchedUpdates(() => {
         setAllPlatformTrades([])
         setLoading(false)
+        setInputError(undefined)
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     account,
     useMultihops,
-    recipientLookupComputed,
+    recipientLookup,
     chainId,
     inputCurrency?.address,
     outputCurrency?.address,
