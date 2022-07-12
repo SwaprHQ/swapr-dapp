@@ -1,9 +1,9 @@
 export class CampaignPage {
-  static getCampaignTokensText(specifiedTimout = 30000) {
-    return cy.get('[data-testid=campaign-tokens]', { timeout: specifiedTimout })
+  static getCampaignTokensText(specifiedTimeout = 30000) {
+    return cy.get('[data-testid=campaign-tokens]', { timeout: specifiedTimeout })
   }
-  static getCampaignStatusText(specifiedTimout = 30000) {
-    return cy.get('[data-testid=campaign-status]', { timeout: specifiedTimout })
+  static getCampaignStatusText(specifiedTimeout = 30000) {
+    return cy.get('[data-testid=campaign-status]', { timeout: specifiedTimeout })
   }
   static getCampaignStartDateText() {
     return cy.get('[data-testid=start-date]')
