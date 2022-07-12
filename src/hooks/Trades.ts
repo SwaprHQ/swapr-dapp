@@ -90,10 +90,10 @@ export function useTradeExactInUniswapV2(
   const { chainId } = useActiveWeb3React()
   const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, platform)
   const multihop = useIsMultihop()
-  const userSlippageTolerance = useUserSlippageTolerance().toString()
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   return useMemo(() => {
-    const maximumSlippage = new Percent(userSlippageTolerance, '10000')
+    const maximumSlippage = new Percent(userSlippageTolerance.toString(), '10000')
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0 && chainId && platform.supportsChain(chainId)) {
       return (
         UniswapV2Trade.computeTradesExactIn({
@@ -123,10 +123,10 @@ export function useTradeExactOutUniswapV2(
   const { chainId } = useActiveWeb3React()
   const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, platform)
   const multihop = useIsMultihop()
-  const userSlippageTolerance = useUserSlippageTolerance().toString()
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   return useMemo(() => {
-    const maximumSlippage = new Percent(userSlippageTolerance, '10000')
+    const maximumSlippage = new Percent(userSlippageTolerance.toString(), '10000')
     if (currencyIn && currencyAmountOut && allowedPairs.length > 0 && chainId && platform.supportsChain(chainId)) {
       return (
         UniswapV2Trade.computeTradesExactOut({

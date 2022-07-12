@@ -31,7 +31,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyOut?.address}-${currencyAmountIn?.currency.address}`
   // User max slippage
-  const userSlippageTolerance = useUserSlippageTolerance().toString()
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   useEffect(() => {
     let isCancelled = false
@@ -55,7 +55,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
       {
         currencyAmountIn,
         currencyOut,
-        maximumSlippage: new Percent(userSlippageTolerance, '10000'),
+        maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
         receiver: account ?? undefined,
       },
       {
@@ -117,7 +117,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyIn?.address}-${currencyAmountOut?.currency.address}`
   // User max slippage
-  const userSlippageTolerance = useUserSlippageTolerance().toString()
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   useEffect(() => {
     let isCancelled = false
@@ -141,7 +141,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
       {
         currencyAmountOut,
         currencyIn,
-        maximumSlippage: new Percent(userSlippageTolerance, '10000'),
+        maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
         receiver: account ?? undefined,
       },
       {
