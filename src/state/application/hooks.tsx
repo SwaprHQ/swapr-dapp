@@ -76,6 +76,12 @@ export function useSimpleSettingsModal(): () => void {
 
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {
   return useCallback((content: PopupContent, autoClose: number | false = 15000) => {
-    toast.info(<TransactionPopup {...content} />, { autoClose })
+    toast.info(<TransactionPopup {...content} />, {
+      autoClose,
+      icon: false,
+      progressStyle: {
+        background: 'hsla(0,0%,100%,.7)',
+      },
+    })
   }, [])
 }
