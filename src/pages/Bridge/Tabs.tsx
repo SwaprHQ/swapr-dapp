@@ -34,12 +34,8 @@ export const Tabs = ({
     <TabsRow>
       <Button
         onClick={() => {
-          if (isCollecting) {
-            handleResetBridge()
-            return
-          }
+          handleResetBridge()
           setActiveTab(BridgeTab.BRIDGE)
-          setTxsFilter(BridgeTxsFilter.RECENT)
           toggleBridgeSwap(false)
         }}
         className={activeTab === BridgeTab.BRIDGE ? 'active' : ''}
@@ -48,6 +44,7 @@ export const Tabs = ({
       </Button>
       <Button
         onClick={() => {
+          handleResetBridge()
           setActiveTab(BridgeTab.BRIDGE_SWAP)
           toggleBridgeSwap(true)
         }}

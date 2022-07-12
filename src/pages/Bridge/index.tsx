@@ -175,13 +175,9 @@ export default function Bridge() {
 
     if (isCollecting) {
       setIsCollecting(false)
+      setActiveTab(BridgeTab.COLLECT)
     }
-
-    if (activeTab === BridgeTab.BRIDGE_SWAP) return
-
-    setActiveTab(BridgeTab.BRIDGE)
   }, [
-    activeTab,
     chainId,
     dispatch,
     isCollecting,
