@@ -69,7 +69,7 @@
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
     "lodash": "^4.17.21",
-    "luxon": "^2.4.0",
+    "luxon": "^3.0.1",
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
     "multiformats": "^9.4.10",
