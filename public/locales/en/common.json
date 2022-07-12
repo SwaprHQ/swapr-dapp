@@ -96,5 +96,7 @@
   "connectWallet": "Connect wallet",
   "enterAmount": "Enter amount",
   "selectToken": "Select token",
-  "enterRecipient": "Enter recipient"
+  "enterRecipient": "Enter recipient",
+  "liquidity": "Liquidity",
+  "rewards": "Rewards"
 }
