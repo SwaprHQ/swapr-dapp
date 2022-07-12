@@ -6,7 +6,7 @@ import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 // Eco Router modules
 // Web3 hooks
 import { useActiveWeb3React } from '../../hooks'
-import { useIsMultihop } from '../../state/user/hooks'
+import { useIsMultihop, useUserSlippageTolerance } from '../../state/user/hooks'
 import { getExactIn, getExactOut } from './api'
 // Types
 // eslint-disable-next-line
@@ -30,6 +30,8 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyOut?.address}-${currencyAmountIn?.currency.address}`
+  // User max slippage
+  const userSlippageTolerance = useUserSlippageTolerance().toString()
 
   useEffect(() => {
     let isCancelled = false
@@ -53,7 +55,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
       {
         currencyAmountIn,
         currencyOut,
-        maximumSlippage: new Percent('3', '100'),
+        maximumSlippage: new Percent(userSlippageTolerance, '10000'),
         receiver: account ?? undefined,
       },
       {
@@ -86,6 +88,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
     currencyAmountIn?.toSignificant(),
     currencyInAndOutAdddress,
     account,
+    userSlippageTolerance,
   ])
 
   return {
@@ -113,6 +116,8 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyIn?.address}-${currencyAmountOut?.currency.address}`
+  // User max slippage
+  const userSlippageTolerance = useUserSlippageTolerance().toString()
 
   useEffect(() => {
     let isCancelled = false
@@ -136,7 +141,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
       {
         currencyAmountOut,
         currencyIn,
-        maximumSlippage: new Percent('3', '100'),
+        maximumSlippage: new Percent(userSlippageTolerance, '10000'),
         receiver: account ?? undefined,
       },
       {
@@ -167,6 +172,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
     currencyAmountOut?.toSignificant(),
     currencyInAndOutAdddress,
     account,
+    userSlippageTolerance,
   ])
 
   return {
