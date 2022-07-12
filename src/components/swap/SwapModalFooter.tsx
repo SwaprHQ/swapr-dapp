@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 
+import { PRICE_IMPACT_MEDIUM } from '../../constants'
 import { Field } from '../../state/swap/types'
 import { TYPE } from '../../theme'
 import {
@@ -114,15 +115,15 @@ export default function SwapModalFooter({
         <ButtonError
           onClick={onConfirm}
           disabled={disabledConfirm}
-          error={severity > 2}
+          error={severity > PRICE_IMPACT_MEDIUM}
           style={{ margin: '10px 0 0 0' }}
           id="confirm-swap-or-send"
         >
+          {' '}
           <Text fontSize={13} fontWeight={600}>
-            {severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
+            {severity > PRICE_IMPACT_MEDIUM ? 'Swap Anyway' : 'Confirm Swap'}
           </Text>
         </ButtonError>
-
         {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
       </AutoRow>
     </>

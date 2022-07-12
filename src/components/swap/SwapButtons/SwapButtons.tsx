@@ -4,7 +4,6 @@ import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import Column from '../../../components/Column'
 import Loader from '../../../components/Loader'
@@ -19,6 +18,7 @@ import { SwapData } from '../../../pages/Swap'
 import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
