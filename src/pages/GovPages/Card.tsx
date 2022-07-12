@@ -1,6 +1,5 @@
 import { Currency } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
 import React from 'react'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
@@ -9,6 +8,7 @@ import Card from '../../components/Card'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AutoRow } from '../../components/Row'
+import { useRouter } from '../../hooks/useRouter'
 
 const LightCardWrap = styled(Card)`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
