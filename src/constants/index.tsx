@@ -22,6 +22,7 @@ import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
+import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import CoWLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
@@ -447,6 +448,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.ZEROX.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
@@ -469,6 +471,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
+    RoutablePlatform.ZEROX.name,
   ],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
@@ -553,6 +556,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
+  [RoutablePlatform.ZEROX.name]: {
+    logo: ZeroXLogo,
+    alt: RoutablePlatform.ZEROX.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.ZEROX.name,
+  },
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
     logo: CoWLogo,
     alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
@@ -579,6 +588,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
