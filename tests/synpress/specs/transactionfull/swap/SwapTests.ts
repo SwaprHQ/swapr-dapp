@@ -205,7 +205,6 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
 
     cy.confirmMetamaskTransaction({})
-    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
