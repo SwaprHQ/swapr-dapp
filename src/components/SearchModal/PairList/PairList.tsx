@@ -89,7 +89,7 @@ const PairRow = ({ pair, onSelect, isSelected, style }: PairRowProps) => {
 
 export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) => {
   const Row = useCallback(
-    ({ data, index, style }) => {
+    ({ data, index, style }: { data: any; index: number; style: CSSProperties }) => {
       const pair = data[index]
       const isSelected = Boolean(selectedPair && selectedPair.equals(pair))
       const handleSelect = () => onPairSelect(pair)
@@ -100,18 +100,25 @@ export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) =
 
   return (
     <Flex overflowY="auto" flex="1">
+      {/* TODO: Replace Auto Sizer */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
       <AutoSizer style={{ width: '100%', height: '100%' }}>
-        {({ width, height }) => (
-          <FixedSizeList
-            width={width}
-            height={height}
-            itemData={pairs}
-            itemCount={pairs.length}
-            itemSize={56}
-            itemKey={pairKey}
-          >
-            {Row}
-          </FixedSizeList>
+        {({ width, height }: { width: string | number; height: string | number }) => (
+          <>
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-expect-error */}
+            <FixedSizeList
+              width={width}
+              height={height}
+              itemData={pairs}
+              itemCount={pairs.length}
+              itemSize={56}
+              itemKey={pairKey}
+            >
+              {Row}
+            </FixedSizeList>
+          </>
         )}
       </AutoSizer>
     </Flex>

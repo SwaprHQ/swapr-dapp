@@ -48,8 +48,8 @@ export function AdjustableDiamondSize({ pairOrToken, active }: CircleProps) {
 
 export default function SingleOrPairCampaign({ singleReward, onChange }: SingleOrPairCampaignProps) {
   const handleRewardClick = useCallback(
-    event => {
-      onChange(event)
+    (type: CampaignType) => {
+      onChange(type)
     },
     [onChange]
   )

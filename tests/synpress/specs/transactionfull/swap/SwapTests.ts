@@ -143,7 +143,9 @@ describe('Swapping tests', () => {
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').switchTokens()
+    SwapPage.getCurrencySelectors().last().click()
+    TokenMenu.chooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.getToInput()

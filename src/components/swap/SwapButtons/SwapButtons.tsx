@@ -4,7 +4,6 @@ import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import Column from '../../../components/Column'
 import Loader from '../../../components/Loader'
@@ -16,9 +15,10 @@ import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
-import { Field } from '../../../state/swap/actions'
+import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
@@ -35,7 +35,7 @@ interface SwapButtonsProps {
   approvalSubmitted: boolean
   currencies: { [field in Field]?: Currency }
   trade: Trade | undefined
-  swapInputError: string | undefined
+  swapInputError: number | undefined
   swapErrorMessage: string | undefined
   loading: boolean
   handleSwap: () => void
@@ -203,6 +203,7 @@ export function SwapButtons({
       swapInputError={swapInputError}
       priceImpactSeverity={priceImpactSeverity}
       isExpertMode={isExpertMode}
-    ></SwapButton>
+      amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+    />
   )
 }

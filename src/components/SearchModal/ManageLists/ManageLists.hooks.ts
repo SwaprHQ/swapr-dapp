@@ -1,5 +1,5 @@
 import { TokenList } from '@uniswap/token-lists'
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from 'react-use'
@@ -27,7 +27,7 @@ export const useManageListsContextSwap = ({
 
   const lists = useAllLists()
 
-  const handleInput = useCallback(e => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setListUrlInput(e.target.value)
   }, [])
 

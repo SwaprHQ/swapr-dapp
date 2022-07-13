@@ -20,7 +20,7 @@ import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
 
@@ -222,10 +222,13 @@ export function Settings({ simple }: { simple?: boolean }) {
                     setShowConfirmation(false)
                   }}
                 >
-                  <TYPE.body fontSize="13px" fontWeight={600} color="text1" id="confirm-expert-mode">
-                    Turn on Expert mode
-                  </TYPE.body>
+                  {
+                    <TYPE.body fontSize="13px" fontWeight={600} color="text1" id="confirm-expert-mode">
+                      Turn on Expert mode
+                    </TYPE.body>
+                  }
                 </ButtonError>
+
                 <Row style={{ justifyContent: 'center' }}>
                   <CloseTextButton onClick={() => setShowConfirmation(false)}>Cancel</CloseTextButton>
                 </Row>

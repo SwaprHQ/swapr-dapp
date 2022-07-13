@@ -1,4 +1,3 @@
-import { useRouter } from 'hooks/useRouter'
 import { darken } from 'polished'
 import React from 'react'
 import { ArrowLeft } from 'react-feather'
@@ -6,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { useRouter } from '../../hooks/useRouter'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween } from '../Row'
 import { Settings } from '../Settings'
