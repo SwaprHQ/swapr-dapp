@@ -33,11 +33,11 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
 const FETCH_PRICE_INTERVAL = 15000
 
 const convertToTokenAmount = (currencyAmount: CurrencyAmount | undefined, chainId: ChainId) => {
-  if (!currencyAmount) return undefined
+  if (!currencyAmount) return
 
   if (Currency.isNative(currencyAmount?.currency)) return wrappedCurrencyAmount(currencyAmount, chainId)
 
-  if (!currencyAmount.currency.address) return undefined
+  if (!currencyAmount.currency.address) return
 
   const token = new Token(
     chainId,
