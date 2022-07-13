@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -24,14 +24,13 @@ import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
-  useSwapLoading,
   useSwapState,
 } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -80,7 +79,6 @@ export enum GnosisProtocolTradeState {
 }
 
 export default function Swap() {
-  const loading = useSwapLoading()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -122,6 +120,7 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
+    loading,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
