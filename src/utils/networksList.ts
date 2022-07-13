@@ -101,7 +101,7 @@ export const createNetworksList = ({
   }
 
   return networks
-    .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId))
+    .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId) || network.chainId === activeChainId)
     .reduce<NetworksList[]>((taggedList, currentNet) => {
       const tag = currentNet.tag
       const networkPreset = currentNet
