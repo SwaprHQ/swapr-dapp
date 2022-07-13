@@ -22,7 +22,7 @@ import {
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { commonActions } from '../store/Common.reducer'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { connextSdkChainConfig } from './Connext.config'
@@ -36,13 +36,6 @@ import {
   ConnextTransactionStatus,
 } from './Connext.types'
 import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE } from './Connext.utils'
-
-const getErrorMsg = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  return `Bridge failed: ${error.message}`
-}
 
 export class Connext extends EcoBridgeChildBase {
   private _connextSdk: NxtpSdk | undefined
@@ -151,7 +144,10 @@ export class Connext extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -236,7 +232,10 @@ export class Connext extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -373,7 +372,10 @@ export class Connext extends EcoBridgeChildBase {
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }

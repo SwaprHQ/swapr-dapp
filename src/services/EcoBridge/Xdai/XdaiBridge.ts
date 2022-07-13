@@ -12,7 +12,7 @@ import { DAI, ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { getErrorMsg, QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
+import { QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -21,7 +21,7 @@ import {
   SyncState,
   XdaiBridgeList,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import {
   XDAI_BRIDGE_EXECUTIONS,
@@ -288,7 +288,10 @@ export class XdaiBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -337,7 +340,10 @@ export class XdaiBridge extends EcoBridgeChildBase {
       }
     } catch (err) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(err, this.bridgeId),
+        })
       )
     }
   }
@@ -394,7 +400,10 @@ export class XdaiBridge extends EcoBridgeChildBase {
           }
         } catch (err) {
           this.store.dispatch(
-            ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(err) })
+            ecoBridgeUIActions.setBridgeModalStatus({
+              status: BridgeModalStatus.ERROR,
+              error: getErrorMsg(err, this.bridgeId),
+            })
           )
         }
       }
