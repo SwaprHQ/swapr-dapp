@@ -185,7 +185,7 @@ export function AccountStatus({
           )}
         </Web3StatusConnected>
       )}
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER} placement="bottom-end">
         <Web3StatusNetwork
           clickable={networkSwitchingActive}
           onClick={networkSwitchingActive ? toggleNetworkSwitcherPopover : undefined}
