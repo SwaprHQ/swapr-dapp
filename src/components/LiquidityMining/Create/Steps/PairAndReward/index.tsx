@@ -1,4 +1,4 @@
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { Currency, Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
@@ -99,7 +99,7 @@ export default function StakeTokenAndLimit({
     }
   }, [onStakingCapChange, stakeToken, stakePair, unlimitedPool])
 
-  const handleOpenPairOrTokenSearch = useCallback(value => {
+  const handleOpenPairOrTokenSearch = useCallback((value: CampaignType) => {
     if (value === CampaignType.PAIR) {
       setPairSearchOpen(true)
     } else {
@@ -113,14 +113,15 @@ export default function StakeTokenAndLimit({
   }, [])
 
   const handlePairSelection = useCallback(
-    selectedPair => {
+    (selectedPair: Pair) => {
       setStakePair(selectedPair)
     },
     [setStakePair]
   )
   const handleTokenSelection = useCallback(
-    selectedToken => {
-      setStakeToken(selectedToken)
+    (selectedToken: Currency) => {
+      // TODO: fix type
+      setStakeToken(selectedToken as Token)
     },
     [setStakeToken]
   )
@@ -136,7 +137,7 @@ export default function StakeTokenAndLimit({
   }, [stakingCapString, inputRef])
 
   const handleLocalStakingCapChange = useCallback(
-    rawValue => {
+    (rawValue: string) => {
       let tokenOrPair: Token
       if (stakeToken) tokenOrPair = stakeToken
       else if (stakePair?.liquidityToken) tokenOrPair = stakePair.liquidityToken

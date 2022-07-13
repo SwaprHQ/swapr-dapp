@@ -161,6 +161,6 @@
   "bridgeHeadingDisclaimer": "Bridging {{typedValue}} {{symbol}}",
   "findingBestPrice": "Finding best price",
   "viewOnBlockExplorer": "View on Block Explorer",
-  "viewOnCowExplorer": "View on Cow Protocol Explorer",
+  "viewOnCowExplorer": "View on CoW Protocol Explorer",
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer"
 }

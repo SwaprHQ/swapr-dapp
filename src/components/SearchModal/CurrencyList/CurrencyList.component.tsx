@@ -1,10 +1,10 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
+import React, { CSSProperties, useCallback, useMemo, useState } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Box, Flex, Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
 import { useActiveWeb3React } from '../../../hooks'
@@ -98,7 +98,7 @@ const CurrencyRow = ({
 }
 
 const BreakLineComponent = ({ style }: { style: CSSProperties }) => {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <FixedContentRow style={style}>
       <DarkCard padding="8px 12px" borderRadius="8px">
@@ -149,7 +149,7 @@ export const CurrencyList = ({
   )
 
   const Row = useCallback(
-    ({ data, index, style }) => {
+    ({ data, index, style }: { data: any; index: number; style: CSSProperties }) => {
       const currency: Currency = data[index]
       if (isBreakLine(currency)) return <BreakLineComponent style={style} />
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
@@ -196,6 +196,8 @@ export const CurrencyList = ({
 
   return (
     <Flex overflowY="auto" flex="1">
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
       <AutoSizer style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
         {({ width, height }) => (
           <StyledFixedSizeList

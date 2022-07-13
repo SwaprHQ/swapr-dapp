@@ -433,10 +433,9 @@ function Information({
                     <TYPE.white>{reward.token.symbol}</TYPE.white>
                   </AutoColumn>
                 </AutoRow>
-                <CarrotButton
-                  link={`https://carrot.eth.limo/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}
-                  text="Go to campaign"
-                />
+                <CarrotButton link={`https://carrot.eth.limo/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}>
+                  Go to campaign
+                </CarrotButton>
               </RowBetween>
             )
           })}

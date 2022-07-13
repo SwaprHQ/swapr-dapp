@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { ThemeContext } from 'styled-components/macro'
+import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { useIsTokenActive, useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
@@ -13,7 +13,7 @@ import { CheckIcon, NameOverflow, TokenSection } from './ImportRow.styles'
 import { ImportRowProps } from './ImportRow.types'
 
 export const ImportRow = ({ token, style, dim, showImportView, setImportToken }: ImportRowProps) => {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // check if already active on list or local storage tokens
   const isAdded = useIsUserAddedToken(token)

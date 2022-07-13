@@ -1,8 +1,7 @@
-import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-
-import { TradeDetails } from 'components/swap/TradeDetails'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -16,6 +15,7 @@ import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
 import SwapButtons from '../../components/swap/SwapButtons'
 import { Tabs } from '../../components/swap/Tabs'
+import { TradeDetails } from '../../components/swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
@@ -24,14 +24,13 @@ import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
-  useSwapLoading,
   useSwapState,
 } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -80,7 +79,6 @@ export enum GnosisProtocolTradeState {
 }
 
 export default function Swap() {
-  const loading = useSwapLoading()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -122,6 +120,7 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
+    loading,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
@@ -141,7 +140,7 @@ export default function Swap() {
   )
 
   const bestPricedTrade = allPlatformTrades?.[0]
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
 
@@ -306,7 +305,7 @@ export default function Swap() {
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
-    inputCurrency => {
+    (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
@@ -315,7 +314,7 @@ export default function Swap() {
   )
 
   const handleMaxInput = useCallback(
-    fieldInput => () => {
+    (fieldInput: string) => () => {
       maxAmountInput && fieldInput === Field.INPUT && onUserInput(Field.INPUT, maxAmountInput.toExact())
       maxAmountOutput && fieldInput === Field.OUTPUT && onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
     },
@@ -323,7 +322,7 @@ export default function Swap() {
   )
 
   const handleOutputSelect = useCallback(
-    outputCurrency => {
+    (outputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(Field.OUTPUT, outputCurrency)
     },
