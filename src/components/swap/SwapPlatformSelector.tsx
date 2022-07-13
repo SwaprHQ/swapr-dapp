@@ -124,7 +124,7 @@ export function SwapPlatformSelector({
   const showGasFees = estimations.length === allPlatformTrades?.length
 
   const handleSelectedTradeOverride = useCallback(
-    platformName => {
+    (platformName: string) => {
       const newTrade = allPlatformTrades?.find(trade => trade?.platform.name === platformName)
       if (!newTrade) return
       onSelectedPlatformChange(newTrade.platform)

@@ -5,6 +5,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
@@ -132,7 +133,7 @@ export interface UseDerivedSwapInfoResult {
   parsedAmount: CurrencyAmount | undefined
   trade: Trade | undefined
   allPlatformTrades: (Trade | undefined)[] | undefined
-  inputError?: string
+  inputError?: number
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -188,17 +189,17 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     [Field.OUTPUT]: outputCurrency ?? undefined,
   }
 
-  let inputError: string | undefined
+  let inputError: number | undefined
   if (!account) {
-    inputError = 'Connect Wallet'
+    inputError = SWAP_INPUT_ERRORS.CONNECT_WALLET
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter amount'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.ENTER_AMOUNT
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.SELECT_TOKEN
   }
 
   const recipientLookup = useENS(recipient ?? undefined)
@@ -206,14 +207,14 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
-    inputError = inputError ?? 'Enter a recipient'
+    inputError = inputError ?? SWAP_INPUT_ERRORS.ENTER_RECIPIENT
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
       (bestTradeExactIn instanceof UniswapV2Trade && involvesAddress(bestTradeExactIn, formattedTo)) ||
       (bestTradeExactOut instanceof UniswapV2Trade && involvesAddress(bestTradeExactOut, formattedTo))
     ) {
-      inputError = inputError ?? 'Invalid recipient'
+      inputError = inputError ?? SWAP_INPUT_ERRORS.INVALID_RECIPIENT
     }
   }
 
@@ -229,7 +230,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   ]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+    inputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
   }
 
   useLayoutEffect(() => {
@@ -238,7 +239,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     } else {
       dispatch(setLoading(false))
     }
-    if (inputError !== undefined) {
+    if (inputError !== undefined && inputError !== SWAP_INPUT_ERRORS.CONNECT_WALLET) {
       setTimeout(() => {
         dispatch(setLoading(false))
       }, 500)

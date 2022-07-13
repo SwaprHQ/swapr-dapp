@@ -99,14 +99,14 @@ export default function Rewards() {
   }, [])
 
   const handlePairSelect = useCallback(
-    pair => {
+    (pair: Pair) => {
       navigate(`/rewards/${pair.token0.address}/${pair.token1.address}`)
       setFilterPair(pair)
     },
     [navigate]
   )
   const handleFilterTokenReset = useCallback(
-    e => {
+    (e: React.MouseEvent<Element>) => {
       batchedUpdates(() => {
         setAggregatedDataFilter(PairsFilterType.ALL)
         setFilterPair(null)

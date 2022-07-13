@@ -18,9 +18,9 @@ export const useAutoMaxBalance = ({ onMax, onCurrencySelect }: AutoMaxBalancePro
   }, [isMaxAmount, onMax])
 
   const handleOnCurrencySelect = useCallback(
-    (inputCurrency, isMaxAmount) => {
+    (inputCurrency: Currency, isMaxAmount?: boolean) => {
       onCurrencySelect && onCurrencySelect(inputCurrency)
-      setIsMaxAmount(isMaxAmount)
+      setIsMaxAmount(isMaxAmount ?? false)
     },
     [onCurrencySelect]
   )

@@ -1,6 +1,5 @@
 import { SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
-import { AggregatedPairs } from 'hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -9,6 +8,7 @@ import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
+import { AggregatedPairs } from '../../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'

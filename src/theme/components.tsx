@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Button as Base, ButtonProps } from 'rebass'
 import styled, { keyframes } from 'styled-components'
 
-import { ButtonInvisbile } from '../components/Button'
+import { ButtonInvisible } from '../components/Button'
 import { Colors } from './styled'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
@@ -46,9 +46,9 @@ const StyledCloseIcon = styled(X)`
 `
 export const CloseIcon = (props: ButtonProps) => {
   return (
-    <ButtonInvisbile {...props}>
+    <ButtonInvisible {...props}>
       <StyledCloseIcon />
-    </ButtonInvisbile>
+    </ButtonInvisible>
   )
 }
 
