@@ -12,7 +12,6 @@ import {
   NetworkSwitcherTags,
 } from '../../components/NetworkSwitcher'
 import { RowBetween } from '../../components/Row'
-import { SHOW_TESTNETS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import {
   useBridgeActionHandlers,
@@ -254,8 +253,8 @@ export default function Bridge() {
             <AssetWrapper ref={fromPanelRef}>
               <AssetSelector
                 label="from"
-                onClick={SHOW_TESTNETS ? () => setShowFromList(val => !val) : () => null}
-                disabled={SHOW_TESTNETS ? isCollecting : true}
+                onClick={() => setShowFromList(val => !val)}
+                disabled={isCollecting}
                 networkOption={getNetworkOptions({
                   chainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
                   networkList: fromNetworkList,
@@ -265,8 +264,8 @@ export default function Bridge() {
                 networksList={fromNetworkList}
                 showWalletConnector={false}
                 parentRef={fromPanelRef}
-                show={SHOW_TESTNETS ? showFromList : false}
-                onOuterClick={SHOW_TESTNETS ? () => setShowFromList(false) : () => null}
+                show={showFromList}
+                onOuterClick={() => setShowFromList(false)}
                 placement="bottom"
               />
             </AssetWrapper>
@@ -276,8 +275,8 @@ export default function Bridge() {
             <AssetWrapper ref={toPanelRef}>
               <AssetSelector
                 label="to"
-                onClick={SHOW_TESTNETS ? () => setShowToList(val => !val) : () => null}
-                disabled={SHOW_TESTNETS ? isCollecting : true}
+                onClick={() => setShowToList(val => !val)}
+                disabled={isCollecting}
                 networkOption={getNetworkOptions({
                   chainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
                   networkList: toNetworkList,
@@ -287,8 +286,8 @@ export default function Bridge() {
                 networksList={toNetworkList}
                 showWalletConnector={false}
                 parentRef={toPanelRef}
-                show={SHOW_TESTNETS ? showToList : false}
-                onOuterClick={SHOW_TESTNETS ? () => setShowToList(false) : () => null}
+                show={showToList}
+                onOuterClick={() => setShowToList(false)}
                 placement="bottom"
               />
             </AssetWrapper>
