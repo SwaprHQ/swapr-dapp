@@ -1,13 +1,4 @@
 {
-  // "parser": "@typescript-eslint/parser",
-  // "parserOptions": {
-  //   "ecmaVersion": 2018,
-  //   "sourceType": "module",
-  //   "ecmaFeatures": {
-  //     // Allows for the parsing of JSX
-  //     "jsx": true
-  //   }
-  // },
   "ignorePatterns": [
     "node_modules/**/*",
     "cypress/**/*",
@@ -23,11 +14,8 @@
   "extends": [
     "react-app",
     "react-app/jest",
-    // "plugin:react/recommended",
-    // "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    // "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
