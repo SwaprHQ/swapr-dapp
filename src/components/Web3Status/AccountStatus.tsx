@@ -91,6 +91,7 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '30px')};
+    width: 20px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
