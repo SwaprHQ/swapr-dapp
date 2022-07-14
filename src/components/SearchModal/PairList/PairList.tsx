@@ -100,14 +100,9 @@ export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) =
 
   return (
     <Flex overflowY="auto" flex="1">
-      {/* TODO: Replace Auto Sizer */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-expect-error */}
       <AutoSizer style={{ width: '100%', height: '100%' }}>
         {({ width, height }: { width: string | number; height: string | number }) => (
           <>
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-expect-error */}
             <FixedSizeList
               width={width}
               height={height}

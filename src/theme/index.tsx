@@ -150,14 +150,7 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
 
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return (
-    <>
-      {/* TODO: Fix types and move to Styled Components v6 */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-expect-error */}
-      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
-    </>
-  )
+  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
 const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`

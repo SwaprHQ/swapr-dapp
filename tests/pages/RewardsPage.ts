@@ -1,4 +1,5 @@
 import { getUnixTime } from 'date-fns'
+
 import { PairMenu } from './PairMenu'
 
 export class RewardsPage {

@@ -67,7 +67,6 @@ const BorderContainer = styled(Flex)<{ active: boolean }>`
 interface TokenAndLimitProps {
   unlimitedPool: boolean
   campaingType: CampaignType
-
   onStakingCapChange: (newValue: TokenAmount | null) => void
   onUnlimitedPoolChange: (newValue: boolean) => void
   stakeToken?: Token
@@ -120,7 +119,7 @@ export default function StakeTokenAndLimit({
   )
   const handleTokenSelection = useCallback(
     (selectedToken: Currency) => {
-      // TODO: fix type
+      //Token extends Currency so it can be typecasted here
       setStakeToken(selectedToken as Token)
     },
     [setStakeToken]

@@ -4,7 +4,8 @@
     "cypress/**/*",
     "scripts/*.js",
     "config-overrides.js",
-    "src/**/generated/**/*"
+    "src/**/generated/**/*",
+    "tests/synpress/**/*"
   ],
   "settings": {
     "react": {

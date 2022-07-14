@@ -53,8 +53,6 @@ const root = createRoot(container)
 
 root.render(
   <StrictMode>
-    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-    {/* @ts-expect-error */}
     <FixedGlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
@@ -62,8 +60,6 @@ root.render(
           <EcoBridgeProvider>
             <Updaters />
             <ThemeProvider>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-expect-error */}
               <ThemedGlobalStyle />
               <HashRouter>
                 <MultiChainLinksUpdater />

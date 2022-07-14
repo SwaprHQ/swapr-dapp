@@ -1,5 +1,3 @@
-import { PropsWithChildren } from 'react'
-
 import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
 import { ListRowContext, ManageListsContext } from '../ManageLists/ManageLists.context'
 import { CurrencySearchModalComponent } from './CurrencySearchModal.component'
@@ -13,7 +11,7 @@ export function CurrencySearchModalProvider({
   manageListsContext,
   currencySearchContext,
   currencySearchModalContext,
-}: PropsWithChildren<CurrencySearchModalProviderProps>) {
+}: CurrencySearchModalProviderProps) {
   return (
     <CurrencySearchModalContext.Provider value={currencySearchModalContext}>
       <CurrencySearchContext.Provider value={currencySearchContext}>
