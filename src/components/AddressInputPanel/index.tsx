@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { ChangeEvent, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
@@ -85,7 +85,7 @@ export default function AddressInputPanel({
   const { address, loading, name } = useENS(value)
 
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const withoutSpaces = input.replace(/\s+/g, '')
       onChange(withoutSpaces)

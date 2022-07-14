@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import 'react-datepicker/dist/react-datepicker.min.css'
 import { Text, TextProps } from 'rebass'
 import styled, {
@@ -145,12 +145,19 @@ export function theme(darkMode: boolean): DefaultTheme {
   }
 }
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({ children }: { children: ReactNode }) {
   const darkMode = useIsDarkMode()
 
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+  return (
+    <>
+      {/* TODO: Fix types and move to Styled Components v6 */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
+      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+    </>
+  )
 }
 
 const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`

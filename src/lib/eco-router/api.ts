@@ -13,6 +13,7 @@ import {
   TradeType,
   UniswapTrade,
   UniswapV2Trade,
+  ZeroXTrade,
 } from '@swapr/sdk'
 // Low-level API for Uniswap V2
 
@@ -151,6 +152,21 @@ export async function getExactIn(
       })
   })
 
+  // ZeroX
+  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    ZeroXTrade.bestTradeExactIn(currencyAmountIn, currencyOut, maximumSlippage)
+      .then(resolve)
+      .catch(error => {
+        errors.push(error)
+        resolve(undefined)
+        console.error(error)
+      })
+  })
+
   // Gnosis Protocol V2
   const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
     if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
@@ -177,6 +193,7 @@ export async function getExactIn(
     curveTrade,
     gnosisProtocolTrade,
     uniswapTrade,
+    zeroXTrade,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
@@ -290,6 +307,21 @@ export async function getExactOut(
       })
   })
 
+  // ZeroX
+  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    ZeroXTrade.bestTradeExactOut(currencyIn, currencyAmountOut, maximumSlippage)
+      .then(resolve)
+      .catch(error => {
+        errors.push(error)
+        resolve(undefined)
+        console.error(error)
+      })
+  })
+
   // Gnosis Protocol V2
   const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
     if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
@@ -316,6 +348,7 @@ export async function getExactOut(
     curveTrade,
     gnosisProtocolTrade,
     uniswapTrade,
+    zeroXTrade,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
