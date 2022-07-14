@@ -68,36 +68,36 @@ export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
         <div> </div>
       </AutoColumn>
       <AutoColumn gap="11px" justify="flex-start">
-        <TYPE.main fontSize="16px" lineHeight="20px">
+        <TYPE.Main fontSize="16px" lineHeight="20px">
           {token && token.name && token.symbol && token.name !== token.symbol
             ? `${token.name} (${token.symbol})`
             : token.name || token.symbol}{' '}
-        </TYPE.main>
+        </TYPE.Main>
         {chainId && (
           <ExternalLink
             color="purple4"
             style={{ fontWeight: 400 }}
             href={getExplorerLink(chainId, token.address, 'token')}
           >
-            <TYPE.main color="purple4" fontSize="14px" lineHeight="17px" title={token.address}>
+            <TYPE.Main color="purple4" fontSize="14px" lineHeight="17px" title={token.address}>
               {shortenAddress(token.address)} ({t('viewOnBlockExplorer')})
-            </TYPE.main>
+            </TYPE.Main>
           </ExternalLink>
         )}
         {list !== undefined ? (
           <RowFixed>
             {list.logoURI && <ListLogo logoURI={list.logoURI} defaultText={list.name} size="16px" />}
-            <TYPE.small ml="6px" fontSize={14} color={theme.text3}>
+            <TYPE.Small ml="6px" fontSize={14} color={theme.text3}>
               via {list.name} token list
-            </TYPE.small>
+            </TYPE.Small>
           </RowFixed>
         ) : (
           <WarningWrapper>
             <RowFixed>
               <AlertCircle stroke={theme.red1} size="10px" />
-              <TYPE.body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>
+              <TYPE.Body color={theme.red1} ml="4px" fontSize="10px" fontWeight={500}>
                 Unknown Source
-              </TYPE.body>
+              </TYPE.Body>
             </RowFixed>
           </WarningWrapper>
         )}
@@ -124,11 +124,11 @@ export default function TokenWarningModal({
             <UpperSectionContainer>
               <AutoRow gap="6px">
                 <StyledWarningIcon size="20px" />
-                <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
+                <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
                   Token imported
-                </TYPE.main>
+                </TYPE.Main>
               </AutoRow>
-              <TYPE.body
+              <TYPE.Body
                 marginY="20px"
                 fontSize="14px"
                 fontWeight="400"
@@ -138,8 +138,8 @@ export default function TokenWarningModal({
               >
                 Anyone can create an ERC20 token on Ethereum with <em>any</em> name, including creating fake versions of
                 existing tokens and tokens that claim to represent projects that do not have a token.
-              </TYPE.body>
-              <TYPE.body
+              </TYPE.Body>
+              <TYPE.Body
                 marginBottom="20px"
                 fontSize="14px"
                 fontWeight="400"
@@ -149,10 +149,10 @@ export default function TokenWarningModal({
               >
                 This interface can load arbitrary tokens by token addresses. Please take extra caution and do your
                 research when interacting with arbitrary ERC20 tokens.
-              </TYPE.body>
-              <TYPE.body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
+              </TYPE.Body>
+              <TYPE.Body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
                 If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>
-              </TYPE.body>
+              </TYPE.Body>
             </UpperSectionContainer>
             <BottomSectionContainer>
               {tokens.map(token => {
@@ -165,7 +165,7 @@ export default function TokenWarningModal({
                   onConfirm()
                 }}
               >
-                <TYPE.body color="white">I understand</TYPE.body>
+                <TYPE.Body color="white">I understand</TYPE.Body>
               </SpacedButtonError>
             </BottomSectionContainer>
           </AutoColumn>

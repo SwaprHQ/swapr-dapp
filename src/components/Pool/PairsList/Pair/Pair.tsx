@@ -176,7 +176,7 @@ const BadgeText = styled.div`
   text-transform: uppercase;
 `
 
-const EllipsizedText = styled(TYPE.body)`
+const EllipsizedText = styled(TYPE.Body)`
   overflow: hidden;
   text-overflow: ellipsis;
 `

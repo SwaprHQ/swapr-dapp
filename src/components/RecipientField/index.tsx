@@ -48,9 +48,9 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
 
   return (
     <div>
-      <TYPE.subHeader lineHeight={'11px'} color={'purple3'}>
+      <TYPE.SubHeader lineHeight={'11px'} color={'purple3'}>
         {t('recipient')}
-      </TYPE.subHeader>
+      </TYPE.SubHeader>
       <SearchInputStyled
         data-testid="address-input"
         type="text"

@@ -67,7 +67,7 @@ export const ResetFilterIcon = styled(X)`
   color: ${props => props.theme.purple3};
 `
 
-export const StyledMediumHeader = styled(TYPE.mediumHeader)`
+export const StyledMediumHeader = styled(TYPE.MediumHeader)`
   text-transform: uppercase;
 `
 

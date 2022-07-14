@@ -61,20 +61,20 @@ export default function MyPairs() {
             <Flex alignItems="center">
               <Box mr="8px">
                 <UndecoratedLink to="/pools">
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                  <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     Pairs
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </UndecoratedLink>
               </Box>
               <Box mr="8px">
-                <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                   /
-                </TYPE.mediumHeader>
+                </TYPE.MediumHeader>
               </Box>
               <Box>
-                <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
+                <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px">
                   MY PAIRS
-                </TYPE.mediumHeader>
+                </TYPE.MediumHeader>
               </Box>
             </Flex>
             <ButtonRow>

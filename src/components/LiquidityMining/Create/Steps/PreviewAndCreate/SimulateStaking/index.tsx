@@ -225,9 +225,9 @@ export default function SimulateStaking({
           {SimulateOptions.PRICE === simulateOption && (
             <AmountFlex>
               <StyledNumericalInput placeholder="0" value={simulatedPrice} onUserInput={handleLocalStakingCapChange} />
-              <TYPE.largeHeader alignSelf={'center'} fontSize={13} color={'dark4'} letterSpacing="0.08em">
+              <TYPE.LargeHeader alignSelf={'center'} fontSize={13} color={'dark4'} letterSpacing="0.08em">
                 USD
-              </TYPE.largeHeader>
+              </TYPE.LargeHeader>
             </AmountFlex>
           )}
         </>

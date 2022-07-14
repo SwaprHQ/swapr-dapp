@@ -37,13 +37,13 @@ export default function ConfirmExitModal({
     () => (
       <Flex mt="16px">
         <Box>
-          <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
             Confirming will withdraw {stakedTokenBalance?.toSignificant(4)}
             {stakablePair instanceof Token && stakablePair.symbol}
             {stakablePair instanceof Pair && `${stakablePair?.token0.symbol}/${stakablePair?.token1.symbol}`}
             LP tokens and claim{' '}
             {claimableRewards?.map(claimable => `${claimable.toSignificant(4)} ${claimable.token.symbol}`).join(', ')}.
-          </TYPE.body>
+          </TYPE.Body>
         </Box>
       </Flex>
     ),

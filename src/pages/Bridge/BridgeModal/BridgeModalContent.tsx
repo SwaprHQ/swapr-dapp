@@ -47,15 +47,15 @@ export const BridgeModalContent = ({
                 <ArrowRightCircle strokeWidth={0.5} size={75} color="#EBE9F8" />
               )}
               <TitleWrapper>
-                <TYPE.body fontSize="22px" fontWeight="500" color="text1" textAlign="center">
+                <TYPE.Body fontSize="22px" fontWeight="500" color="text1" textAlign="center">
                   {heading}
-                </TYPE.body>
+                </TYPE.Body>
               </TitleWrapper>
               {modalType === 'disclaimer' && (
                 <>
-                  <TYPE.main fontSize="14px" fontWeight="500" color="#EBE9F8" textAlign="center" lineHeight="1.6">
+                  <TYPE.Main fontSize="14px" fontWeight="500" color="#EBE9F8" textAlign="center" lineHeight="1.6">
                     {text}
-                  </TYPE.main>
+                  </TYPE.Main>
                   <DisclaimerTextWrapper isWarning={isWarning}>
                     <DisclaimerText>
                       <Trans i18nKey="bridgeTxnThrough" values={{ bridgeName }} components={[<span key="0"></span>]} />
@@ -82,7 +82,7 @@ export const BridgeModalContent = ({
               )}
               {modalType === 'success' && (
                 <>
-                  <TYPE.main>{text}</TYPE.main>{' '}
+                  <TYPE.Main>{text}</TYPE.Main>{' '}
                   <ButtonsWrapper>
                     <ButtonPrimary data-testid="close-bridge-initiated-button" onClick={onDismiss}>
                       {t('bridgeBackText')}
@@ -92,9 +92,9 @@ export const BridgeModalContent = ({
               )}
               {(modalType === 'initiated' || modalType === 'collecting') && (
                 <>
-                  <TYPE.main textAlign="center" mb="24px">
+                  <TYPE.Main textAlign="center" mb="24px">
                     {text}
-                  </TYPE.main>
+                  </TYPE.Main>
                   <ButtonPrimary data-testid="close-bridge-initiated-button" onClick={onDismiss}>
                     {t('bridgeBackText')}
                   </ButtonPrimary>

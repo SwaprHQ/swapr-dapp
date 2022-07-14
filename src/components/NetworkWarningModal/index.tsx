@@ -57,11 +57,11 @@ export default function NetworkWarningModal() {
             <UpperSectionContainer>
               <AutoRow gap="6px">
                 <StyledWarningIcon size="20px" />
-                <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
+                <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
                   Wrong network
-                </TYPE.main>
+                </TYPE.Main>
               </AutoRow>
-              <TYPE.body
+              <TYPE.Body
                 marginY="20px"
                 fontSize="14px"
                 fontWeight="400"
@@ -72,14 +72,14 @@ export default function NetworkWarningModal() {
                 You&apos;re currently on the wrong network to correctly visualize this page. Please switch to{' '}
                 {urlLoadedChainId && NETWORK_DETAIL[urlLoadedChainId] ? NETWORK_DETAIL[urlLoadedChainId].chainName : ''}{' '}
                 in your connected wallet to continue.
-              </TYPE.body>
+              </TYPE.Body>
               {!isMobile &&
                 urlLoadedChainId &&
                 window.ethereum &&
                 window.ethereum.isMetaMask &&
                 NETWORK_DETAIL[urlLoadedChainId] && (
                   <>
-                    <TYPE.body
+                    <TYPE.Body
                       marginY="20px"
                       fontSize="14px"
                       fontWeight="400"
@@ -88,7 +88,7 @@ export default function NetworkWarningModal() {
                       color="text4"
                     >
                       To add/switch to the requested network, click the button below.
-                    </TYPE.body>
+                    </TYPE.Body>
                     <ButtonPrimary onClick={handleAddClick}>Add</ButtonPrimary>
                   </>
                 )}

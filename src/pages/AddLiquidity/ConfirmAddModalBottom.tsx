@@ -27,51 +27,51 @@ export function ConfirmAddModalBottom({
   return (
     <>
       <RowBetween>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           {currencies[Field.CURRENCY_A]?.symbol} Deposited
-        </TYPE.body>
+        </TYPE.Body>
         <RowFixed>
           <CurrencyLogo size="16px" currency={currencies[Field.CURRENCY_A]} marginRight={4} />
-          <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+          <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
             {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           {currencies[Field.CURRENCY_B]?.symbol} Deposited
-        </TYPE.body>
+        </TYPE.Body>
         <RowFixed>
           <CurrencyLogo size="16px" currency={currencies[Field.CURRENCY_B]} marginRight={4} />
-          <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+          <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
             {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           Rates
-        </TYPE.body>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        </TYPE.Body>
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
             currencies[Field.CURRENCY_B]?.symbol
           }`}
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
       <RowBetween style={{ justifyContent: 'flex-end' }}>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           {`1 ${currencies[Field.CURRENCY_B]?.symbol} = ${price?.invert().toSignificant(4)} ${
             currencies[Field.CURRENCY_A]?.symbol
           }`}
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
       <RowBetween>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           Share of Pool:
-        </TYPE.body>
-        <TYPE.body fontSize="14px" fontWeight={500} color="text5">
+        </TYPE.Body>
+        <TYPE.Body fontSize="14px" fontWeight={500} color="text5">
           {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
       <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd} data-testid="confirm-supply">
         <Text fontWeight={600} fontSize={13}>

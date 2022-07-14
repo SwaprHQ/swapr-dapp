@@ -32,12 +32,12 @@ export const BalancesAPI = new BalancesApi(config)
 export const RoutesAPI = new RoutesApi(config)
 export const TokenListsAPI = new TokenListsApi(config)
 
-export default {
-  ServerAPI,
-  ApprovalsAPI,
-  QuoteAPI,
-  SupportedAPI,
-  BalancesAPI,
-  RoutesAPI,
-  TokenListsAPI,
-}
+// export default {
+//   ServerAPI,
+//   ApprovalsAPI,
+//   QuoteAPI,
+//   SupportedAPI,
+//   BalancesAPI,
+//   RoutesAPI,
+//   TokenListsAPI,
+// }

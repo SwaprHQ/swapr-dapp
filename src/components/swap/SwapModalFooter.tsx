@@ -45,10 +45,10 @@ export default function SwapModalFooter({
     <>
       <AutoColumn gap="0px">
         <RowBetween align="center" mb="6px">
-          <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+          <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
             Price
-          </TYPE.body>
-          <TYPE.body
+          </TYPE.Body>
+          <TYPE.Body
             fontWeight={500}
             fontSize="12px"
             color="text5"
@@ -64,50 +64,50 @@ export default function SwapModalFooter({
             <StyledBalanceMaxMini style={{ marginLeft: 6 }} onClick={() => setShowInverted(!showInverted)}>
               <Repeat size={14} />
             </StyledBalanceMaxMini>
-          </TYPE.body>
+          </TYPE.Body>
         </RowBetween>
 
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
               {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
-            </TYPE.body>
+            </TYPE.Body>
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
-            <TYPE.body fontWeight={500} fontSize="12px" color="text5" data-testid="estimated-output">
+            <TYPE.Body fontWeight={500} fontSize="12px" color="text5" data-testid="estimated-output">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
                 : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
-            </TYPE.body>
-            <TYPE.body fontWeight={500} fontSize="12px" color="text5" marginLeft={'4px'}>
+            </TYPE.Body>
+            <TYPE.Body fontWeight={500} fontSize="12px" color="text5" marginLeft={'4px'}>
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? trade.outputAmount.currency.symbol
                 : trade.inputAmount.currency.symbol}
-            </TYPE.body>
+            </TYPE.Body>
           </RowFixed>
         </RowBetween>
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
               Price Impact
-            </TYPE.body>
+            </TYPE.Body>
             <QuestionHelper text="The difference between the market price and your price due to trade size." />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
               Liquidity provider fee
-            </TYPE.body>
+            </TYPE.Body>
             <QuestionHelper text="A portion of each trade goes to liquidity providers as incentive." />
           </RowFixed>
-          <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
             {realizedLPFeeAmount
               ? `${realizedLPFeeAmount?.toSignificant(6)} ${trade.inputAmount.currency.symbol}`
               : '-'}
-          </TYPE.body>
+          </TYPE.Body>
         </RowBetween>
       </AutoColumn>
 

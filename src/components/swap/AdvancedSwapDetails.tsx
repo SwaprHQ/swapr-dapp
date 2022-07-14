@@ -36,22 +36,22 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
       <AutoColumn gap="8px">
         <RowBetween>
           <RowBetween>
-            <TYPE.body fontSize="12px" lineHeight="15px" fontWeight="500">
+            <TYPE.Body fontSize="12px" lineHeight="15px" fontWeight="500">
               Max slippage
-            </TYPE.body>
+            </TYPE.Body>
             <RowFixed>
-              <TYPE.body fontSize="12px" lineHeight="15px" fontWeight="500">
+              <TYPE.Body fontSize="12px" lineHeight="15px" fontWeight="500">
                 {formattedSlippage}%
-              </TYPE.body>
+              </TYPE.Body>
               <StyledMenuIcon onClick={toggleSettings} id="open-settings-from-swap-dialog-button"></StyledMenuIcon>
             </RowFixed>
           </RowBetween>
           <Spacer />
           <RowBetween>
             <AutoRow>
-              <TYPE.body fontSize="12px" lineHeight="15px" fontWeight="500">
+              <TYPE.Body fontSize="12px" lineHeight="15px" fontWeight="500">
                 Price impact
-              </TYPE.body>
+              </TYPE.Body>
               <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
             </AutoRow>
             <RowFixed>

@@ -21,7 +21,7 @@ const SizedCard = styled(DarkCard)`
   `}
 `
 
-const PlusNText = styled(TYPE.body)`
+const PlusNText = styled(TYPE.Body)`
   z-index: 1;
 `
 
@@ -57,9 +57,9 @@ export default function MyPairs({ pairsAmount }: MyPairsProps) {
             </BlurredCircleImage>
           </Box>
           <Box>
-            <TYPE.body color="white" lineHeight="19.5px" fontWeight="600" fontSize="16px">
+            <TYPE.Body color="white" lineHeight="19.5px" fontWeight="600" fontSize="16px">
               MY PAIRS
-            </TYPE.body>
+            </TYPE.Body>
           </Box>
         </Flex>
       </SizedCard>

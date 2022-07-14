@@ -73,9 +73,9 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
   }
   if (gasFeeUSD) {
     return (
-      <TYPE.main color="text4" fontSize="10px" lineHeight="12px">
+      <TYPE.Main color="text4" fontSize="10px" lineHeight="12px">
         ${gasFeeUSD.toFixed(2)}
-      </TYPE.main>
+      </TYPE.Main>
     )
   }
   return <WarningHelper text="Could not estimate gas fee. Please make sure you've approved the traded token." />
@@ -83,13 +83,13 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
 
 const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
   return (
-    <TYPE.main
+    <TYPE.Main
       color={simpleWarningSeverity(priceImpact) >= PRICE_IMPACT_MEDIUM ? 'red1' : 'text4'}
       fontSize="10px"
       lineHeight="12px"
     >
       {priceImpact ? (priceImpact.lessThan(ONE_BIPS) ? '<0.01%' : `${priceImpact.toFixed(2)}%`) : '-'}
-    </TYPE.main>
+    </TYPE.Main>
   )
 }
 
@@ -139,9 +139,9 @@ export function SwapPlatformSelector({
       {selectedTrade instanceof UniswapV2Trade && selectedTrade.route.path.length > 2 && (
         <StyledRouteFlex>
           {!isMobileByMedia && (
-            <TYPE.body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
+            <TYPE.Body fontSize="14px" lineHeight="15px" fontWeight="400" minWidth="auto" color={theme.purple2}>
               Route
-            </TYPE.body>
+            </TYPE.Body>
           )}
           <Box flex="1">
             <SwapRoute trade={selectedTrade} />
@@ -200,9 +200,9 @@ export function SwapPlatformSelector({
                   </SelectionListDetails>
                 )}
                 <SelectionListReceiveAmount flex="25%">
-                  <TYPE.subHeader color="white" fontSize="12px" fontWeight="600">
+                  <TYPE.SubHeader color="white" fontSize="12px" fontWeight="600">
                     {tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}
-                  </TYPE.subHeader>
+                  </TYPE.SubHeader>
                   <CurrencyLogo
                     currency={isExactIn ? trade.outputAmount.currency : trade.inputAmount.currency}
                     size="14px"
@@ -218,9 +218,9 @@ export function SwapPlatformSelector({
         <Flex justifyContent="center">
           {!showAllPlatformsTrades && (
             <MoreMarketsButton alignItems="center" onClick={() => setShowAllPlatformsTrades(true)}>
-              <TYPE.main fontWeight={600} color={'purple3'} fontSize="10px" mr="8px">
+              <TYPE.Main fontWeight={600} color={'purple3'} fontSize="10px" mr="8px">
                 {t('showMore')}
-              </TYPE.main>
+              </TYPE.Main>
               <ChevronsDown size={15} color={theme.purple3} />
             </MoreMarketsButton>
           )}

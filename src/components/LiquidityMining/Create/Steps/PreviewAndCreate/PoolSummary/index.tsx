@@ -21,9 +21,9 @@ export default function PoolSummary({ stakePair, stakeToken, startTime, endTime,
   return (
     <Flex flexDirection="column" justifyContent="stretch" flex="1">
       <AutoColumn gap="8px">
-        <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
+        <TYPE.Small fontWeight="600" color="text4" letterSpacing="0.08em">
           POOL SUMMARY
-        </TYPE.small>
+        </TYPE.Small>
         <AutoColumn gap="4px">
           <DataRow
             name="CAMPAIGN"

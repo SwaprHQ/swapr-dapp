@@ -17,9 +17,9 @@ export default function RewardSummary({ rewards, apr, stakingCap }: RewardSummar
   return (
     <Flex flexDirection="column" justifyContent="stretch" width="100%">
       <AutoColumn gap="8px">
-        <TYPE.small fontWeight="600" color="text4" letterSpacing="0.08em">
+        <TYPE.Small fontWeight="600" color="text4" letterSpacing="0.08em">
           REWARD SUMMARY
-        </TYPE.small>
+        </TYPE.Small>
         <DataRow
           name="REWARDS"
           value={rewards.map(reward => `${reward.toExact()} ${reward.token.symbol}`).join(', ')}

@@ -230,9 +230,9 @@ export default function AccountDetails({
           <CloseColor />
         </CloseIcon>
         <HeaderRow>
-          <TYPE.body fontWeight={500} fontSize={20} color={'text4'}>
+          <TYPE.Body fontWeight={500} fontSize={20} color={'text4'}>
             Account
-          </TYPE.body>
+          </TYPE.Body>
         </HeaderRow>
         <AccountSection>
           <YourAccount>
@@ -253,9 +253,9 @@ export default function AccountDetails({
                       <div>
                         {' '}
                         {account && (
-                          <TYPE.body fontSize="22px" fontWeight="500" color={'text1'}>
+                          <TYPE.Body fontSize="22px" fontWeight="500" color={'text1'}>
                             {shortenAddress(account)}
-                          </TYPE.body>
+                          </TYPE.Body>
                         )}
                       </div>
                     </>
@@ -316,9 +316,9 @@ export default function AccountDetails({
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body fontSize="14px" color="text4">
+            <TYPE.Body fontSize="14px" color="text4">
               Recent Transactions
-            </TYPE.body>
+            </TYPE.Body>
             <LinkStyledButton onClick={clearAllTransactionsCallback}>(clear all)</LinkStyledButton>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
@@ -326,7 +326,7 @@ export default function AccountDetails({
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body fontSize="14px">Your transactions will appear here...</TYPE.body>
+          <TYPE.Body fontSize="14px">Your transactions will appear here...</TYPE.Body>
         </LowerSection>
       )}
     </>

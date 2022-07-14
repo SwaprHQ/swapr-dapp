@@ -88,9 +88,9 @@ export default function PendingView({
                 />
               </Box>
               <Box>
-                <TYPE.body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
+                <TYPE.Body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
                   {option.name}
-                </TYPE.body>
+                </TYPE.Body>
               </Box>
             </Flex>
           )
@@ -101,7 +101,7 @@ export default function PendingView({
         <LoadingWrapper>
           {error ? (
             <ErrorGroup>
-              <TYPE.body
+              <TYPE.Body
                 color="red1"
                 fontWeight="500"
                 fontSize="20px"
@@ -110,7 +110,7 @@ export default function PendingView({
                 marginBottom="24px"
               >
                 Error connecting.
-              </TYPE.body>
+              </TYPE.Body>
               <ButtonPrimary
                 padding="8px 14px"
                 onClick={() => {
@@ -124,9 +124,9 @@ export default function PendingView({
           ) : (
             <>
               <StyledLoader />
-              <TYPE.body color="text4" fontWeight="500" fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
+              <TYPE.Body color="text4" fontWeight="500" fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
                 Initializing...
-              </TYPE.body>
+              </TYPE.Body>
             </>
           )}
         </LoadingWrapper>

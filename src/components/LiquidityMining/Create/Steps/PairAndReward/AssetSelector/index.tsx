@@ -188,7 +188,7 @@ export default function AssetSelector({
                 />
               </RelativeContainer>
             ) : (
-              <TYPE.largeHeader
+              <TYPE.LargeHeader
                 letterSpacing={'0.08em'}
                 marginBottom={'4px'}
                 lineHeight="22px"
@@ -199,10 +199,10 @@ export default function AssetSelector({
                 }-asset-selector`}
               >
                 {customAssetTitle && !tokenName ? customAssetTitle : assetTitle}
-              </TYPE.largeHeader>
+              </TYPE.LargeHeader>
             )}
             {tokenName && (
-              <TYPE.small
+              <TYPE.Small
                 letterSpacing={'0.05em'}
                 color="purple3"
                 fontSize={10}
@@ -222,7 +222,7 @@ export default function AssetSelector({
                     )}
                   </span>
                 )}
-              </TYPE.small>
+              </TYPE.Small>
             )}
           </Flex>
         </Flex>

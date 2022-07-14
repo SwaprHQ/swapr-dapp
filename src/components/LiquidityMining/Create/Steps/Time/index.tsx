@@ -24,7 +24,7 @@ const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   `};
 `
 
-const StyledLockText = styled(TYPE.small)<{ active: boolean }>`
+const StyledLockText = styled(TYPE.Small)<{ active: boolean }>`
   font-weight: 600 !important;
   align-self: center;
   white-space: nowrap;
@@ -106,7 +106,7 @@ export default function DurationAndLocking({
       >
         <Flex alignSelf={'start'}>
           {timelocked ? <LockSvg /> : <LockOpenSvg />}
-          <TYPE.small
+          <TYPE.Small
             marginLeft="4px"
             fontSize={'11px'}
             textAlign={'start'}
@@ -116,7 +116,7 @@ export default function DurationAndLocking({
             letterSpacing="0.08em"
           >
             TIME LOCKED STAKING
-          </TYPE.small>
+          </TYPE.Small>
         </Flex>
 
         <Flex alignItems={'start'}>

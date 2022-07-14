@@ -63,7 +63,7 @@ export function TradeDetails({
       <>
         <AutoColumn gap="8px">
           <RowBetween alignItems="center">
-            <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
+            <TYPE.Body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
                 i18nKey="bestPriceFoundOn"
                 values={{ platform: bestPricedTrade?.platform.name }}
@@ -78,7 +78,7 @@ export function TradeDetails({
                   />
                 </>
               ) : null}
-            </TYPE.body>
+            </TYPE.Body>
             <AdvancedSwapDetailsToggle
               setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
               showAdvancedSwapDetails={showAdvancedSwapDetails}

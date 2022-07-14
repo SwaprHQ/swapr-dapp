@@ -26,7 +26,7 @@ export default memo(function SwapRoute({ trade }: { trade: UniswapV2Trade }) {
           <Fragment key={i}>
             <Flex alignItems="center">
               <CurrencyLogo currency={token} size={isMobileByMedia ? '16px' : '20px'} />
-              <TYPE.black
+              <TYPE.Black
                 fontSize={isMobileByMedia ? '12px' : '14px'}
                 lineHeight="17px"
                 fontWeight="600"
@@ -34,7 +34,7 @@ export default memo(function SwapRoute({ trade }: { trade: UniswapV2Trade }) {
                 ml="6px"
               >
                 {token.symbol}
-              </TYPE.black>
+              </TYPE.Black>
             </Flex>
             {!isLastItem && <StyledChevronRight />}
           </Fragment>

@@ -128,14 +128,14 @@ export const ManageLists = () => {
               />
             </Row>
             {addError ? (
-              <TYPE.error
+              <TYPE.Error
                 data-testid="token-manager-error-message"
                 title={addError}
                 style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}
                 error
               >
                 {addError}
-              </TYPE.error>
+              </TYPE.Error>
             ) : null}
           </PaddedColumn>
           {tempList && (
@@ -147,8 +147,8 @@ export const ManageLists = () => {
                       <ListLogo logoURI={tempList.logoURI} defaultText={tempList.name} size="40px" />
                     )}
                     <AutoColumn gap="4px" style={{ marginLeft: '20px' }}>
-                      <TYPE.body fontWeight={600}>{tempList.name}</TYPE.body>
-                      <TYPE.main fontSize={'12px'}>{tempList.tokens.length} tokens</TYPE.main>
+                      <TYPE.Body fontWeight={600}>{tempList.name}</TYPE.Body>
+                      <TYPE.Main fontSize={'12px'}>{tempList.tokens.length} tokens</TYPE.Main>
                     </AutoColumn>
                   </RowFixed>
                   {isImported ? (
@@ -156,7 +156,7 @@ export const ManageLists = () => {
                       <IconWrapper stroke={theme.text2} size="16px" marginRight={'10px'}>
                         <CheckCircle />
                       </IconWrapper>
-                      <TYPE.body color={theme.text2}>Loaded</TYPE.body>
+                      <TYPE.Body color={theme.text2}>Loaded</TYPE.Body>
                     </RowFixed>
                   ) : (
                     <ButtonPrimary

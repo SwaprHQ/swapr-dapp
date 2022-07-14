@@ -34,10 +34,10 @@ function TokenAmountDisplayer({
       <AutoRow>
         <CurrencyLogo currency={token} size={'22px'} />
         <AutoColumn style={{ marginLeft: '4px' }}>
-          <TYPE.white>{token.symbol}</TYPE.white>
-          <TYPE.body fontWeight={600} fontSize={9}>
+          <TYPE.White>{token.symbol}</TYPE.White>
+          <TYPE.Body fontWeight={600} fontSize={9}>
             {token.name}
-          </TYPE.body>
+          </TYPE.Body>
         </AutoColumn>
       </AutoRow>
     )
@@ -55,11 +55,11 @@ function TokenAmountDisplayer({
       >
         <Flex alignItems="center">
           <Box mr="4px">
-            <TYPE.small fontWeight="500" fontSize={fontSize} color="text3">
+            <TYPE.Small fontWeight="500" fontSize={fontSize} color="text3">
               {showUSDValue
                 ? `$${amount.nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toSignificant(4)}`
                 : amount.toSignificant(4)}
-            </TYPE.small>
+            </TYPE.Small>
           </Box>
           {!showUSDValue && (
             <Box mr="4px">

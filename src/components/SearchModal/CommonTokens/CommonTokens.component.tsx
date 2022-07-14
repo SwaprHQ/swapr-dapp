@@ -24,9 +24,9 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
   return (
     <AutoColumn gap="15px" data-testid="common-tokens">
       <AutoRow>
-        <TYPE.body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
+        <TYPE.Body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
           COMMON TOKENS
-        </TYPE.body>
+        </TYPE.Body>
       </AutoRow>
       <AutoRow gap="4px">
         <BaseWrapper

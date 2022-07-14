@@ -218,7 +218,7 @@ export default function CreateLiquidityMining() {
       <PageWrapper>
         <AutoColumn gap="40px">
           <AutoColumn gap="8px">
-            <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
+            <TYPE.MediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.MediumHeader>
           </AutoColumn>
           <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
             <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />

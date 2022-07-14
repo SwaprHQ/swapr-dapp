@@ -147,7 +147,7 @@ export const CurrencySearch = ({
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
-          <TYPE.body fontWeight={500}>Select a token</TYPE.body>
+          <TYPE.Body fontWeight={500}>Select a token</TYPE.Body>
           <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <Row>
@@ -182,9 +182,9 @@ export const CurrencySearch = ({
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
             No results found.
-          </TYPE.main>
+          </TYPE.Main>
         </Column>
       )}
       <Footer>

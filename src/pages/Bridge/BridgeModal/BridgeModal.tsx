@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -76,24 +75,18 @@ export const BridgeModal = ({
     }
 
     if (activeBridge === 'socket') {
-      batchedUpdates(() => {
-        setIsWarning(true)
-        setBridgeName('Socket Network')
-      })
+      setIsWarning(true)
+      setBridgeName('Socket Network')
     }
 
     if (activeBridge?.includes('arbitrum')) {
-      batchedUpdates(() => {
-        setIsWarning(false)
-        setBridgeName('Arbitrum One Bridge')
-      })
+      setIsWarning(false)
+      setBridgeName('Arbitrum One Bridge')
     }
 
     if (activeBridge === 'xdai') {
-      batchedUpdates(() => {
-        setIsWarning(false)
-        setBridgeName('xDai Bridge')
-      })
+      setIsWarning(false)
+      setBridgeName('xDai Bridge')
     }
 
     if (activeBridge === 'connext') {

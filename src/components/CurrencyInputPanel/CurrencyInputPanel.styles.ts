@@ -94,6 +94,6 @@ export const UppercaseHelper = styled.span`
   text-transform: uppercase;
 `
 
-export const UnderlinedSmallText = styled(TYPE.darkGray)<TextProps>`
+export const UnderlinedSmallText = styled(TYPE.DarkGray)<TextProps>`
   text-decoration: underline;
 `

@@ -40,9 +40,9 @@ export default function ConfirmStakingWithdrawingModalHeader({
             <AlertIcon size="18px" />
           </Box>
           <Box>
-            <TYPE.body fontWeight="500" lineHeight="19.5px" color="red1">
+            <TYPE.Body fontWeight="500" lineHeight="19.5px" color="red1">
               Tokens will be locked for <Countdown to={endingTimestamp} />
-            </TYPE.body>
+            </TYPE.Body>
           </Box>
         </Flex>
       )}

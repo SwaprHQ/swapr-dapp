@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from './../../utils/theme'
@@ -6,6 +5,11 @@ import Button from './common/Button'
 
 const FeatureItem = props => {
   const { feature } = props
+
+  /**
+   * TODO: This is to disbale the Animated SVG's in the landing page
+   * */
+
   // const [isElementVisible, setIsElementVisible] = useState(false)
   // const [isSafari, setIsSafari] = useState(false)
 

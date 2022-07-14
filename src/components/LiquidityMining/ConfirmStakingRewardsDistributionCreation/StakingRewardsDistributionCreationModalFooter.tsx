@@ -41,10 +41,10 @@ export default function StakingRewardsDistributionCreationModalFooter({
   return (
     <AutoColumn gap="0px">
       <RowBetween align="center" mb="6px">
-        <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+        <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
           Pool {stakePair ? 'Pair' : 'Token'}
-        </TYPE.body>
-        <TYPE.body
+        </TYPE.Body>
+        <TYPE.Body
           fontWeight={500}
           fontSize="12px"
           color="text5"
@@ -57,14 +57,14 @@ export default function StakingRewardsDistributionCreationModalFooter({
           }}
         >
           {tokenOrPair}
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
 
       <RowBetween align="center" mb="6px">
-        <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+        <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
           Total reward
-        </TYPE.body>
-        <TYPE.body
+        </TYPE.Body>
+        <TYPE.Body
           fontWeight={500}
           fontSize="12px"
           color="text5"
@@ -77,14 +77,14 @@ export default function StakingRewardsDistributionCreationModalFooter({
           }}
         >
           {rewards ? rewards.map(reward => `${reward.toExact()} ${reward.token.symbol}`).join(', ') : '-'}
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
 
       <RowBetween align="center" mb="6px">
-        <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+        <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
           Max pool size
-        </TYPE.body>
-        <TYPE.body
+        </TYPE.Body>
+        <TYPE.Body
           fontWeight={500}
           fontSize="12px"
           color="text5"
@@ -97,47 +97,47 @@ export default function StakingRewardsDistributionCreationModalFooter({
           }}
         >
           {unlimitedPool ? 'Unlimited' : `${stakingCap?.toSignificant(4)} ${tokenOrPair} LP`}
-        </TYPE.body>
+        </TYPE.Body>
       </RowBetween>
 
       <RowBetween mb="6px">
         <RowFixed>
-          <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+          <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
             Starts
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
         <RowFixed>
-          <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
             {startTime ? DateTime.fromJSDate(startTime).toFormat('dd-MM-yyyy HH:mm') : '-'}
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
       </RowBetween>
 
       <RowBetween mb="6px">
         <RowFixed>
-          <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+          <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
             Ends
-          </TYPE.body>
+          </TYPE.Body>
           <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
         </RowFixed>
         <RowFixed>
-          <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
             {endTime ? DateTime.fromJSDate(endTime).toFormat('dd-MM-yyyy HH:mm') : '-'}
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
       </RowBetween>
 
       <RowBetween mb="6px">
         <RowFixed>
-          <TYPE.body fontWeight={400} fontSize="13px" color="text5">
+          <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
             Timelock
-          </TYPE.body>
+          </TYPE.Body>
           <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
         </RowFixed>
         <RowFixed>
-          <TYPE.body fontWeight={500} fontSize="12px" color="text5">
+          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
             {timelocked ? 'Yes' : 'No'}
-          </TYPE.body>
+          </TYPE.Body>
         </RowFixed>
       </RowBetween>
 

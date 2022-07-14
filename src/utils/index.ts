@@ -165,7 +165,7 @@ interface ImageType {
 export function exportAllImagesFilesFromRelativePath(folderArray: any): ImageType[] | [] {
   const images: ImageType[] = []
 
-  folderArray.keys().map((item: string) => {
+  folderArray.keys().forEach((item: string) => {
     const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
     const imageLocation = folderArray(item).default
 

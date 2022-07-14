@@ -172,19 +172,19 @@ export default function WalletModal({
           <HeaderRow>
             <AutoRow gap="6px">
               <StyledWarningIcon size="20px" />
-              <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
+              <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
                 {unsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}
-              </TYPE.main>
+              </TYPE.Main>
             </AutoRow>
           </HeaderRow>
           <ContentWrapper>
-            <TYPE.yellow color="text4">
+            <TYPE.Yellow color="text4">
               <h5>
                 {unsupportedChainIdError
                   ? 'Please connect to the appropriate network.'
                   : 'Error connecting. Try refreshing the page.'}
               </h5>
-            </TYPE.yellow>
+            </TYPE.Yellow>
           </ContentWrapper>
         </UpperSection>
       )
@@ -211,16 +211,16 @@ export default function WalletModal({
         {modal !== ModalView.Account ? (
           <HeaderRow color="blue">
             <HoverText onClick={onBackButtonClick}>
-              <TYPE.body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
+              <TYPE.Body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
                 Back
-              </TYPE.body>
+              </TYPE.Body>
             </HoverText>
           </HeaderRow>
         ) : (
           <HeaderRow>
-            <TYPE.body fontWeight={500} fontSize={20} color="text4">
+            <TYPE.Body fontWeight={500} fontSize={20} color="text4">
               Connect to a wallet
-            </TYPE.body>
+            </TYPE.Body>
           </HeaderRow>
         )}
         <ContentWrapper>
@@ -232,12 +232,12 @@ export default function WalletModal({
           />
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
-          <TYPE.body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
+          <TYPE.Body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
             A DXDAO PRODUCT
-          </TYPE.body>
-          <TYPE.body fontWeight={600} fontSize="8px" color="text5" letterSpacing="2px">
+          </TYPE.Body>
+          <TYPE.Body fontWeight={600} fontSize="8px" color="text5" letterSpacing="2px">
             DXDAO.ETH
-          </TYPE.body>
+          </TYPE.Body>
           <img src={DxDao} alt="dxdao" />
         </Blurb>
       </UpperSection>

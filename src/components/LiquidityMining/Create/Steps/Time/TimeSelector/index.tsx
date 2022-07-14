@@ -30,9 +30,9 @@ export default function TimeSelector({ title, placeholder, minimum, value, onCha
       data-testid={`${title.toLowerCase()}-time-selector-box`}
     >
       <Flex>
-        <TYPE.small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
+        <TYPE.Small textAlign={'start'} fontWeight="600" color="text2" letterSpacing="0.08em">
           {title}
-        </TYPE.small>
+        </TYPE.Small>
       </Flex>
       <Flex maxWidth={'154px'}>
         <DateTimeInput

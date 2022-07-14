@@ -63,9 +63,9 @@ const CurrencyRow = ({
           </Text>
         </AutoRow>
         <AutoRow>
-          <TYPE.body marginTop={'4px'} fontSize="9px" color="text4" fontWeight={600}>
+          <TYPE.Body marginTop={'4px'} fontSize="9px" color="text4" fontWeight={600}>
             {currency.name?.toUpperCase()}
-          </TYPE.body>
+          </TYPE.Body>
         </AutoRow>
       </Box>
 
@@ -105,9 +105,9 @@ const BreakLineComponent = ({ style }: { style: CSSProperties }) => {
         <RowBetween>
           <RowFixed>
             <TokenListLogoWrapper src={TokenListLogo} />
-            <TYPE.main ml="6px" fontSize="12px" color={theme.text1}>
+            <TYPE.Main ml="6px" fontSize="12px" color={theme.text1}>
               Expanded results from inactive token lists
-            </TYPE.main>
+            </TYPE.Main>
           </RowFixed>
           <QuestionHelper text="Tokens from inactive lists. Import specific tokens below or click 'Manage' to activate more lists." />
         </RowBetween>

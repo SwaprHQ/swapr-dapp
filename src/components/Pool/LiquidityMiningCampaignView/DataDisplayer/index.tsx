@@ -15,16 +15,16 @@ interface DataDisplayerProps {
 function DataDisplayer({ title, dataTextSize, data, fontWeight, color }: DataDisplayerProps) {
   return (
     <AutoColumn gap="4px">
-      <TYPE.small fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.06em" color="text5">
+      <TYPE.Small fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.06em" color="text5">
         {title}
-      </TYPE.small>
-      <TYPE.small
+      </TYPE.Small>
+      <TYPE.Small
         fontWeight={fontWeight ?? '500'}
         fontSize={dataTextSize ? `${dataTextSize}px` : '14px'}
         color={color || 'text3'}
       >
         {data}
-      </TYPE.small>
+      </TYPE.Small>
     </AutoColumn>
   )
 }

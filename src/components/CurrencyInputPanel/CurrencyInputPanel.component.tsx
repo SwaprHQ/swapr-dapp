@@ -120,9 +120,9 @@ export const CurrencyInputPanelComponent = ({
           {!hideInput && label && (
             <LabelRow>
               <RowBetween>
-                <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
+                <TYPE.Body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
                   <UppercaseHelper>{label}</UppercaseHelper>
-                </TYPE.body>
+                </TYPE.Body>
               </RowBetween>
             </LabelRow>
           )}

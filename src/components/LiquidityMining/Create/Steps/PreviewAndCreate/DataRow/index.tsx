@@ -12,14 +12,14 @@ export default function DataRow({ name, value }: DataRowProps) {
   return (
     <Flex justifyContent="space-between" width="100%">
       <Box>
-        <TYPE.small fontWeight="600" lineHeight="13px" color="text5">
+        <TYPE.Small fontWeight="600" lineHeight="13px" color="text5">
           {name}
-        </TYPE.small>
+        </TYPE.Small>
       </Box>
       <Box>
-        <TYPE.small textAlign={'end'} fontWeight="600" lineHeight="13px" color="text4">
+        <TYPE.Small textAlign={'end'} fontWeight="600" lineHeight="13px" color="text4">
           {value}
-        </TYPE.small>
+        </TYPE.Small>
       </Box>
     </Flex>
   )

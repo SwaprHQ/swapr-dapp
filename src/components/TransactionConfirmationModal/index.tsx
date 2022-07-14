@@ -135,7 +135,7 @@ export function ConfirmationModalContent({
     <Wrapper>
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">{title}</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">{title}</TYPE.MediumHeader>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         {topContent()}
@@ -151,7 +151,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
     <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">Error</TYPE.MediumHeader>
           <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">

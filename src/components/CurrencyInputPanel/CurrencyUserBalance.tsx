@@ -27,7 +27,7 @@ export const CurrencyUserBalance = ({
   const trimmedBalance: string = limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'
 
   return (
-    <TYPE.body
+    <TYPE.Body
       onClick={onMax}
       fontWeight="600"
       fontSize="10px"
@@ -71,6 +71,6 @@ export const CurrencyUserBalance = ({
           </>
         )}
       </UppercaseHelper>
-    </TYPE.body>
+    </TYPE.Body>
   )
 }
