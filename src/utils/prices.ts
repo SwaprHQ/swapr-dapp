@@ -34,7 +34,7 @@ import {
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_NON_EXPERT,
 } from '../constants'
-import { Field } from '../state/swap/types'
+import { Field } from '../state/swap/actions'
 
 const Decimal = toFormat(_Decimal)
 

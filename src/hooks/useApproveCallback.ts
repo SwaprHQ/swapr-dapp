@@ -18,7 +18,7 @@ import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 import { useCallback, useMemo } from 'react'
 
 import { useTokenAllowance } from '../data/Allowances'
-import { Field } from '../state/swap/types'
+import { Field } from '../state/swap/actions'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'

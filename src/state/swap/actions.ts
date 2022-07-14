@@ -1,6 +1,9 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { Field } from './types'
+export enum Field {
+  INPUT = 'INPUT',
+  OUTPUT = 'OUTPUT',
+}
 
 export const selectCurrency = createAction<{ field: Field; currencyId: string }>('swap/selectCurrency')
 export const switchCurrencies = createAction<void>('swap/switchCurrencies')
@@ -13,3 +16,4 @@ export const replaceSwapState = createAction<{
   recipient: string | null
 }>('swap/replaceSwapState')
 export const setRecipient = createAction<{ recipient: string | null }>('swap/setRecipient')
+export const setLoading = createAction<boolean>('swap/loading')
