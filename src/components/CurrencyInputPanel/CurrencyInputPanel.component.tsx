@@ -115,7 +115,7 @@ export const CurrencyInputPanelComponent = ({
   }, [value])
 
   return (
-    <InputPanel style={isOutputPanel ? { marginTop: '12px' } : {}} id={id}>
+    <InputPanel id={id}>
       <Container focused={focused}>
         <Content>
           {!hideInput && label && (

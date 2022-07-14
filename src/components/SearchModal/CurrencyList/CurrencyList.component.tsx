@@ -91,7 +91,7 @@ const CurrencyRow = ({
           </Box>
         )}
       </Flex>
-      {hideBalance && (
+      {!hideBalance && (
         <Box style={{ justifySelf: 'flex-end' }}>
           {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
         </Box>

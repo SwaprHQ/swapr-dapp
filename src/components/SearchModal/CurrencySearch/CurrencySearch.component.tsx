@@ -191,7 +191,7 @@ export const CurrencySearch = ({
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
-          hideBalance={!isOutputPanel}
+          hideBalance={isOutputPanel}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>

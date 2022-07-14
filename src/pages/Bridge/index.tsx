@@ -91,6 +91,10 @@ const HistoryMessage = styled(Title)`
   margin: 5px;
 `
 
+const OutputPanelContainer = styled.div`
+  margin-top: 12px;
+`
+
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
@@ -341,17 +345,19 @@ export default function Bridge() {
             maxAmount={maxAmountInput}
           />
           {activeTab === BridgeTab.BRIDGE_SWAP && (
-            <CurrencyInputPanelBridge
-              id="bridge-currency-output"
-              value={to.value}
-              onUserInput={onUserInput}
-              disabled={true}
-              currency={bridgeOutputCurrency}
-              onCurrencySelect={onCurrencyOutputSelection}
-              isOutputPanel={true}
-              disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
-              isLoading={!!account && isNetworkConnected && listsLoading}
-            />
+            <OutputPanelContainer>
+              <CurrencyInputPanelBridge
+                id="bridge-currency-output"
+                value={to.value}
+                onUserInput={onUserInput}
+                disabled={true}
+                currency={bridgeOutputCurrency}
+                onCurrencySelect={onCurrencyOutputSelection}
+                isOutputPanel={true}
+                disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+                isLoading={!!account && isNetworkConnected && listsLoading}
+              />
+            </OutputPanelContainer>
           )}
 
           <BridgeActionPanel
