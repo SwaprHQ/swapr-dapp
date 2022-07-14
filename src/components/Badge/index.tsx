@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react'
+import { MouseEvent } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 

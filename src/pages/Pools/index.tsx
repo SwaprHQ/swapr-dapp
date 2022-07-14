@@ -1,6 +1,6 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'

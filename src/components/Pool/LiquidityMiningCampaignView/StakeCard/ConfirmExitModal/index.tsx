@@ -1,6 +1,6 @@
 import { Pair, PricedTokenAmount, Token } from '@swapr/sdk'
 
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Box, Flex } from 'rebass'
 
 import { TYPE } from '../../../../../theme'

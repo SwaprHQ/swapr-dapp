@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'

@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components'
 

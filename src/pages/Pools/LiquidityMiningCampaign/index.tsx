@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'

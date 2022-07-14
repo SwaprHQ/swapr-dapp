@@ -1,6 +1,6 @@
 import { Currency, Pair, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
@@ -90,7 +90,7 @@ export default function StakeTokenAndLimit({
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (unlimitedPool) {

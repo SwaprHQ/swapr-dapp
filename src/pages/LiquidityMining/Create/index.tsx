@@ -1,6 +1,6 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 

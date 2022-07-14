@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePrevious } from 'react-use'
 import { Box, Flex, Text } from 'rebass'

@@ -16,7 +16,7 @@ import {
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import CurveLogo from '../assets/images/curve-logo.svg'

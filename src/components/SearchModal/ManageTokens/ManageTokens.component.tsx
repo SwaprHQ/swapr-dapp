@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import React, { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 

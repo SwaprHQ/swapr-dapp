@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'

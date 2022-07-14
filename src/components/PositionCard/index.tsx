@@ -1,6 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Link } from 'react-router-dom'

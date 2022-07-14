@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Text } from 'rebass'
 
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'

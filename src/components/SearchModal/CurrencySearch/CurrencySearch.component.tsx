@@ -1,6 +1,6 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, {
+import {
   ChangeEvent,
   KeyboardEvent,
   RefObject,

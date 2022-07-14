@@ -1,6 +1,6 @@
 import { CurrencyAmount, LiquidityMiningCampaign, Percent, SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Card, Flex } from 'rebass'
 import styled from 'styled-components'
 

@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback } from 'react'
+import { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'
 

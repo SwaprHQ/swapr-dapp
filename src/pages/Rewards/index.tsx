@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import { ChevronDown } from 'react-feather'
 import { Link, Navigate, useParams } from 'react-router-dom'

@@ -1,6 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
-import React, { ReactNode, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 

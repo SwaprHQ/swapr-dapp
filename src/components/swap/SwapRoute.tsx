@@ -1,6 +1,6 @@
 import { UniswapV2Trade } from '@swapr/sdk'
 
-import React, { Fragment, memo } from 'react'
+import { Fragment, memo } from 'react'
 import { ChevronRight } from 'react-feather'
 import { Flex } from 'rebass'
 import styled, { useTheme } from 'styled-components'

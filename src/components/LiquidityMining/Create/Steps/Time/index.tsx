@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 

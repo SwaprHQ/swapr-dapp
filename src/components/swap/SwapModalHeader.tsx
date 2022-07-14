@@ -1,6 +1,6 @@
 import { Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
 
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'

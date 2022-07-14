@@ -1,5 +1,4 @@
 import TextyAnim from 'rc-texty'
-import React from 'react'
 
 // import SwapAnim from './../assets/images/animations/01_Swap.svg'
 // import EcoRoutingAnim from './../assets/images/animations/02_Eco_Routing.svg'

@@ -1,6 +1,6 @@
 import { SWPR } from '@swapr/sdk'
 
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import swprLogo from '../../assets/images/swpr-logo.png'
 import { useActiveWeb3React } from '../../hooks'

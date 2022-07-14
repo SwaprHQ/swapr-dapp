@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import 'react-datepicker/dist/react-datepicker.min.css'
 import { Text, TextProps } from 'rebass'
 import styled, {

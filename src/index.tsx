@@ -1,6 +1,6 @@
 import { setUseWhatChange } from '@simbathesailor/use-what-changed'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
-import React, { StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'

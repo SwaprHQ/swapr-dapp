@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
 import { ListRowContext, ManageListsContext } from '../ManageLists/ManageLists.context'

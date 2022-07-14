@@ -1,6 +1,6 @@
 import { GnosisProtocolTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'

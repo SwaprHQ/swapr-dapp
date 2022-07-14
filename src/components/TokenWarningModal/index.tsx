@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
 import { transparentize } from 'polished'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { AlertCircle, AlertTriangle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'

@@ -1,10 +1,11 @@
 {
   "name": "@swapr/frontend",
   "version": "1.0.0-beta.14.2",
+  "private": true,
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn && yarn codegen:socket && react-app-rewired start",
+    "start": "react-app-rewired start",
     "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
@@ -136,6 +137,7 @@
     "cypress-mochawesome-reporter": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.29.4",
@@ -156,6 +158,9 @@
     "serve": "^13.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "svg-inline-loader": "^0.8.2",
+    "svg-react-loader": "^0.4.6",
+    "svg-url-loader": "^7.1.1",
     "tls": "^0.0.1",
     "typescript": "^4.7.4",
     "url": "^0.11.0"

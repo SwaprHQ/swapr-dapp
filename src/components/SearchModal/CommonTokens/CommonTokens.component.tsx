@@ -1,6 +1,6 @@
 import { currencyEquals, Token } from '@swapr/sdk'
 
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Text } from 'rebass'
 
 import { SUGGESTED_BASES } from '../../../constants'

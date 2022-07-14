@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
 import { useTheme } from 'styled-components'
 

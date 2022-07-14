@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback, useMemo, useState } from 'react'
+import { CSSProperties, useCallback, useMemo, useState } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { Box, Flex, Text } from 'rebass'

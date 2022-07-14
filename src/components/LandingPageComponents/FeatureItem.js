@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from './../../utils/theme'
@@ -6,37 +6,36 @@ import Button from './common/Button'
 
 const FeatureItem = props => {
   const { feature } = props
-  const [isElementVisible, setIsElementVisible] = useState(false)
-  const [isSafari, setIsSafari] = useState(false)
+  // const [isElementVisible, setIsElementVisible] = useState(false)
+  // const [isSafari, setIsSafari] = useState(false)
 
-  useEffect(() => {
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-    setIsSafari(isSafari)
-  }, [])
+  // useEffect(() => {
+  //   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+  //   setIsSafari(isSafari)
+  // }, [])
 
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      let el = document.getElementById(props.id)
-      if (el) {
-        let elRect = el.getBoundingClientRect().y
-        if (elRect < 800) {
-          setIsElementVisible(true)
-        } else if (elRect > 1200) {
-          setIsElementVisible(false)
-        }
-      }
-    })
-  }, [props.id])
-
+  // useEffect(() => {
+  //   window.addEventListener('scroll', () => {
+  //     let el = document.getElementById(props.id)
+  //     if (el) {
+  //       let elRect = el.getBoundingClientRect().y
+  //       if (elRect < 800) {
+  //         setIsElementVisible(true)
+  //       } else if (elRect > 1200) {
+  //         setIsElementVisible(false)
+  //       }
+  //     }
+  //   })
+  // }, [props.id])
   return (
     <StyledFeatureItem className="feature-item" data-aos="fade-up" id={props.id}>
       <div className="feature-item-content">
         <div className="image-container">
-          {!isSafari ? (
+          {/* {!isSafari ? (
             isElementVisible && <object type="image/svg+xml" data={feature.animation} aria-label="Swapr feature" />
-          ) : (
-            <img src={feature.image} alt="Swapr feature" />
-          )}
+          ) : ( */}
+          <img src={feature.image} alt="Swapr feature" />
+          {/* )} */}
         </div>
         <div className="feature-content">
           <h3>{feature.title}</h3>

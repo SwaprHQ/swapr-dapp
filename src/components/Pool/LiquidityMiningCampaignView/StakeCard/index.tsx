@@ -6,7 +6,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'

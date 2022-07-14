@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { TYPE } from '../../../../theme'
 import { Colors } from '../../../../theme/styled'

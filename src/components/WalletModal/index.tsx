@@ -1,6 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'

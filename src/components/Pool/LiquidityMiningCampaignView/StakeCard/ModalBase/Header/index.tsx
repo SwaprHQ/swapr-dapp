@@ -1,6 +1,6 @@
 import { Pair, PricedTokenAmount, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
