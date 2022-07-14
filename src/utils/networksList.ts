@@ -81,6 +81,7 @@ export const createNetworksList = ({
   selectedNetworkChainId,
   activeChainId,
   ignoreTags,
+  showTestnets,
 }: {
   networkOptionsPreset: NetworkOptionsPreset[]
   onNetworkChange: (chainId: ChainId) => void
@@ -88,6 +89,7 @@ export const createNetworksList = ({
   selectedNetworkChainId: ChainId
   activeChainId: ChainId | undefined
   ignoreTags?: string[]
+  showTestnets?: boolean
 }): NetworksList[] => {
   let networks = networkOptionsPreset
 
@@ -101,7 +103,7 @@ export const createNetworksList = ({
   }
 
   return networks
-    .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId) || network.chainId === activeChainId)
+    .filter(network => showTestnets || !TESTNETS.includes(network.chainId) || network.chainId === activeChainId)
     .reduce<NetworksList[]>((taggedList, currentNet) => {
       const tag = currentNet.tag
       const networkPreset = currentNet
