@@ -312,9 +312,12 @@ export class SocketBridge extends EcoBridgeChildBase {
         }
       }
     } catch (e) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
-      )
+      const isValid = getStatusOfResponse(e)
+      if (!isValid) {
+        this.store.dispatch(
+          ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMsg(e) })
+        )
+      }
     }
   }
 
@@ -420,6 +423,19 @@ export class SocketBridge extends EcoBridgeChildBase {
     const helperRequestId = (requestId ?? 0) + 1
 
     this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+
+    // reset previous data
+    this.store.dispatch(
+      this.actions.setApprovalData({
+        allowanceTarget: undefined,
+        amount: undefined,
+        chainId: undefined,
+        owner: undefined,
+        tokenAddress: undefined,
+      })
+    )
+    this.store.dispatch(this.actions.setRoutes([]))
+
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
 
     const { from, to } = this.store.getState().ecoBridge.ui
