@@ -11,13 +11,14 @@ import {
   UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
+  ZeroXTrade,
 } from '@swapr/sdk'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 import { useCallback, useMemo } from 'react'
 
 import { useTokenAllowance } from '../data/Allowances'
-import { Field } from '../state/swap/actions'
+import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
@@ -133,7 +134,12 @@ export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0
 
   // Find the approve address for the trade
   let approveAddress = AddressZero
-  if (trade instanceof CurveTrade || trade instanceof GnosisProtocolTrade || trade instanceof UniswapTrade) {
+  if (
+    trade instanceof CurveTrade ||
+    trade instanceof GnosisProtocolTrade ||
+    trade instanceof UniswapTrade ||
+    trade instanceof ZeroXTrade
+  ) {
     approveAddress = trade.approveAddress
   } else if (trade instanceof UniswapV2Trade) {
     /**

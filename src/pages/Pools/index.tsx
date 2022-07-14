@@ -247,9 +247,10 @@ export default function Pools() {
       {account && (
         <ButtonWithExternalLink
           link={getAccountAnalyticsLink(account || '', chainId)}
-          text={t('accountAnalyticsAndAccruedFees')}
           style={{ marginTop: '32px', textTransform: 'uppercase' }}
-        />
+        >
+          {t('accountAnalyticsAndAccruedFees')}
+        </ButtonWithExternalLink>
       )}
     </PageWrapper>
   )
