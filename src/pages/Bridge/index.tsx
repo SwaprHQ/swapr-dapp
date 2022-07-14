@@ -216,6 +216,7 @@ export default function Bridge() {
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
         activeChainId: account ? chainId : -1,
+        showTestnets: true,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange]
   )
@@ -228,6 +229,7 @@ export default function Bridge() {
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
         activeChainId: account ? chainId : -1,
+        showTestnets: true,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )
