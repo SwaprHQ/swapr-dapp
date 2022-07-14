@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
 import { NetworkOptions, networkOptionsPreset, NetworkOptionsPreset, NetworksList } from '../components/NetworkSwitcher'
-import { NETWORK_DETAIL, NETWORK_OPTIONAL_DETAIL, SHOW_TESTNETS, TESTNETS } from '../constants'
+import { NETWORK_DETAIL, NETWORK_OPTIONAL_DETAIL, TESTNETS } from '../constants'
 
 export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPreset[] = networkOptionsPreset) => {
   const network = customPreset.find(net => {
