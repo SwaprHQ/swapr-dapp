@@ -18,15 +18,8 @@ import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { AppDispatch, AppState } from '../index'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import {
-  Field,
-  replaceSwapState,
-  selectCurrency,
-  setLoading,
-  setRecipient,
-  switchCurrencies,
-  typeInput,
-} from './actions'
+import { replaceSwapState, selectCurrency, setLoading, setRecipient, switchCurrencies, typeInput } from './actions'
+import { Field } from './types'
 
 const selectSwap = createSelector(
   (state: AppState) => state.swap,

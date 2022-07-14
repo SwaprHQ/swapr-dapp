@@ -1,7 +1,8 @@
 import { createStore, Store } from 'redux'
 
-import { Field, selectCurrency } from './actions'
+import { selectCurrency } from './actions'
 import reducer, { initialState, SwapState } from './reducer'
+import { Field } from './types'
 
 describe('swap reducer', () => {
   let store: Store<SwapState>
