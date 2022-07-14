@@ -444,14 +444,14 @@ export class OmniBridge extends EcoBridgeChildBase {
       const fetchDefaultTokens = async () => {
         const url = defaultTokensUrl[Number(from.chainId)]
 
-        const tokenListValidator = new Ajv({ allErrors: true }).compile(schema)
+        // const tokenListValidator = new Ajv({ allErrors: false }).compile(schema)
 
         const response = await fetch(url)
         if (response.ok) {
           const json: TokenList = await response.json()
-          if (tokenListValidator(json)) {
-            return json.tokens.filter(token => token.chainId === from.chainId)
-          }
+          // if (tokenListValidator(json)) {
+          return json.tokens.filter(token => token.chainId === from.chainId)
+          // }
         }
         return []
       }
