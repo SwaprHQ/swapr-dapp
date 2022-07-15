@@ -138,6 +138,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
       (fromChainId === ChainId.XDAI && fromTokenAddress !== Currency.getNative(fromChainId).symbol)
     ) {
       this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
+      return
     }
 
     const estimatedGas = 100000
