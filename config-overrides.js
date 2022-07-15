@@ -45,28 +45,9 @@ module.exports = (config, env) => {
   if (env !== 'production') {
     return config
   }
-  console.log({ shortCommitHash })
+
   config.output.filename = `static/js/[name].${shortCommitHash}.js`
   config.output.chunkFilename = `static/js/[name].${shortCommitHash}.chunk.js`
-
-  // TODO: Need to fix the build file output hash
-  // config.plugins = config.plugins.filter(
-  //   plugin =>
-  //     !(
-  //       plugin instanceof WorkboxWebpackPlugin.GenerateSW ||
-  //       // plugin instanceof ManifestPlugin ||
-  //       plugin instanceof MiniCssExtractPlugin
-  //     )
-  // )
-  // config.plugins.push(
-  //   new webpack.DefinePlugin({
-  //     process: { env: {} },
-  //   })
-  // )
-  // config.module.rules[1].oneOf.find(rule => rule.loader === require.resolve('file-loader')).options.name =
-  //   'static/media/[name].[ext]'
-  // config.module.rules[1].oneOf.find(rule => rule.loader === require.resolve('url-loader')).options.name =
-  //   'static/media/[name].[ext]'
 
   return config
 }
