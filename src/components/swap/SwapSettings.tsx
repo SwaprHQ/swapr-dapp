@@ -1,5 +1,4 @@
 import { transparentize } from 'polished'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { Button } from 'rebass/styled-components'

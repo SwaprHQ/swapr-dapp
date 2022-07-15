@@ -3,6 +3,7 @@ import { Currency, Token } from '@swapr/sdk'
 import {
   ChangeEvent,
   KeyboardEvent,
+  MutableRefObject,
   RefObject,
   useCallback,
   useContext,
@@ -168,14 +169,15 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
+      fixedList !== undefined ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
           onCurrencySelect={onCurrencySelect}
           otherCurrency={otherSelectedCurrency}
           selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList}
+          fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}

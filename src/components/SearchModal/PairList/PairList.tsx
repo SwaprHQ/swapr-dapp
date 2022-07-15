@@ -12,7 +12,7 @@ import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
 import { isPairOnList } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import Badge from '../../Badge'
+import { Badge } from '../../Badge'
 import DoubleCurrencyLogo from '../../DoubleLogo'
 import { TokenPickerItem } from '../shared'
 

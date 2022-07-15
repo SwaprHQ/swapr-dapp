@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import { TYPE } from '../../../../theme'
@@ -8,7 +8,7 @@ interface StepProps {
   disabled: boolean
   index: number
   title: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 const Root = styled(AutoColumn)<{ disabled: boolean }>`

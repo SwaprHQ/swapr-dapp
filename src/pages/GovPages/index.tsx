@@ -1,4 +1,3 @@
-import React from 'react'
 import { Info } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'

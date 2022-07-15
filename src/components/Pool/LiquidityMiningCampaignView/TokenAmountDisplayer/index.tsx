@@ -1,6 +1,5 @@
 import { PricedToken, PricedTokenAmount } from '@swapr/sdk'
 
-import React from 'react'
 import { Box, Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 

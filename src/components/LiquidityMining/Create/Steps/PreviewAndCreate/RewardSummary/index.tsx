@@ -1,6 +1,5 @@
 import { Percent, TokenAmount } from '@swapr/sdk'
 
-import React from 'react'
 import { Flex } from 'rebass'
 
 import { TYPE } from '../../../../../../theme'

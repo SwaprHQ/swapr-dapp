@@ -206,8 +206,11 @@ export default function Pools() {
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
-  const handleCurrencySelect = useCallback((token: any) => {
-    setFilterToken(token)
+  const handleCurrencySelect = useCallback((token: Currency) => {
+    // Since Token extends Currency we are checking address in useSwaprSinglelSidedStakeCampaigns
+    if (token.address) {
+      setFilterToken(token as Token)
+    }
   }, [])
 
   const handleFilterTokenReset = useCallback(() => {

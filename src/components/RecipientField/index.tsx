@@ -17,12 +17,12 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   }
 `
 
-export interface RecipientField {
+export interface RecipientFieldProps {
   recipient: string | null
   action: any
 }
 
-export const RecipientField = ({ recipient, action }: RecipientField) => {
+export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)

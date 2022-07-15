@@ -1,7 +1,6 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { DateTime } from 'luxon'
-import React from 'react'
 import { Text } from 'rebass'
 
 import { TYPE } from '../../../theme'

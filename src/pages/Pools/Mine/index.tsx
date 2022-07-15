@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'

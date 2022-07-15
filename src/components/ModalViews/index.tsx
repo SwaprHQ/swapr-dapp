@@ -1,4 +1,3 @@
-import React from 'react'
 import { ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'

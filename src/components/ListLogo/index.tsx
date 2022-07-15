@@ -1,4 +1,4 @@
-import React from 'react'
+import { CSSProperties } from 'react'
 import styled from 'styled-components/macro'
 
 import useHttpLocations from '../../hooks/useHttpLocations'
@@ -17,7 +17,7 @@ export default function ListLogo({
 }: {
   logoURI: string
   size?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
   defaultText: string
 }) {
   const sources: string[] = useHttpLocations(logoURI)

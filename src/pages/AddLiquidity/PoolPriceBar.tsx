@@ -1,6 +1,5 @@
 import { Currency, Percent, Price } from '@swapr/sdk'
 
-import React from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 

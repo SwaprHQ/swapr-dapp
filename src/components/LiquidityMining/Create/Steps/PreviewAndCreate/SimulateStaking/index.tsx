@@ -14,7 +14,7 @@ import { TYPE } from '../../../../../../theme'
 import { calculatePercentage } from '../../../../../../utils'
 import useDebouncedChangeHandler from '../../../../../../utils/useDebouncedChangeHandler'
 import { NumericalInput } from '../../../../../Input/NumericalInput'
-import Loader from '../../../../../Loader'
+import { Loader } from '../../../../../Loader'
 import Slider from '../../../../../Slider'
 import { SmoothGradientCard } from '../../../../styleds'
 

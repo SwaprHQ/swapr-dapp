@@ -1,4 +1,3 @@
-import React from 'react'
 import { AlertCircle, ArrowRightCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 

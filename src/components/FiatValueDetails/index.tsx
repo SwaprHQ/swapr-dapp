@@ -1,6 +1,5 @@
 import { CurrencyAmount, JSBI, Percent } from '@swapr/sdk'
 
-import React from 'react'
 import styled from 'styled-components'
 
 import { PRICE_IMPACT_HIGH } from '../../constants'

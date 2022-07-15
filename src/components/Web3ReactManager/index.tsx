@@ -7,7 +7,7 @@ import { network } from '../../connectors'
 import { NetworkContextName } from '../../constants'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 
 const MessageWrapper = styled.div`
   display: flex;

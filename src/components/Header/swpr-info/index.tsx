@@ -1,6 +1,5 @@
 import { TokenAmount } from '@swapr/sdk'
 
-import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import Column from '../../../components/Column'
-import Loader from '../../../components/Loader'
+import { Loader } from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { SwapCallbackError } from '../../../components/swap/styleds'

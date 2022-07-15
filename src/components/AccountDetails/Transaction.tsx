@@ -1,4 +1,3 @@
-import React from 'react'
 import { CheckCircle, Triangle } from 'react-feather'
 import styled from 'styled-components'
 
@@ -7,7 +6,7 @@ import { useAllTransactions } from '../../state/transactions/hooks'
 import { SwapProtocol } from '../../state/transactions/reducer'
 import { ExternalLink } from '../../theme'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import { RowFixed } from '../Row'
 
 const TransactionWrapper = styled.div``

@@ -1,9 +1,9 @@
 import transparentize from 'polished/lib/color/transparentize'
 import { TextProps } from 'rebass'
 import styled from 'styled-components'
-import { TYPE } from 'theme'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
+import { TYPE } from '../../theme/index'
 import { breakpoints } from '../../utils/theme'
 
 export const InputRow = styled.div`

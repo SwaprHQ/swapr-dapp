@@ -1,5 +1,4 @@
 import shuffle from 'lodash/shuffle'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'

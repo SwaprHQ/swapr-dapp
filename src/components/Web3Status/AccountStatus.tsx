@@ -17,7 +17,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
 import { shortenAddress } from '../../utils'
 import { TriangleIcon } from '../Icons'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import { RowBetween } from '../Row'
 

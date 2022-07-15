@@ -1,6 +1,5 @@
 import { CurrencyAmount, Percent, Token } from '@swapr/sdk'
 
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'

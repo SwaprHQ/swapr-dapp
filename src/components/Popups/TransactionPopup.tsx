@@ -1,6 +1,5 @@
 import { ChainId } from '@swapr/sdk'
 
-import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'

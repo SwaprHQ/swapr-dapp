@@ -22,7 +22,7 @@ interface BadgeProps {
   onClick?: (event: MouseEvent) => void
 }
 
-const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
+export const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
   return (
     <Root alignItems="center" onClick={onClick}>
       {label && (
@@ -44,9 +44,3 @@ const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
     </Root>
   )
 }
-
-Badge.defaultProps = {
-  onIconClick: () => null,
-}
-
-export default Badge

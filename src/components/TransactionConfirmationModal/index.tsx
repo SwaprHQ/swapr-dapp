@@ -1,6 +1,5 @@
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
-import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
