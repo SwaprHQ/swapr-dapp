@@ -332,7 +332,6 @@ export default function Swap() {
   const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
     inputCurrencyAmount: parsedAmounts[Field.INPUT],
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
-    trade,
   })
 
   const priceImpact = useMemo(
