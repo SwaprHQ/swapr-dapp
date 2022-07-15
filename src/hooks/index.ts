@@ -74,7 +74,6 @@ export function useEagerConnect() {
 // }
 
 // TODO unsupported chain id error
-// export function useUnsupportedChainIdError(): boolean {
-//   const { error } = useWeb3ReactCore()
-//   return error instanceof UnsupportedChainIdError
-// }
+export function useUnsupportedChainIdError(): boolean {
+  return false
+}

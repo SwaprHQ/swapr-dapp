@@ -1,5 +1,6 @@
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { MetaMask } from '@web3-react/metamask'
+import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 import { metaMask } from 'connectors/metaMask'
 import React from 'react'
@@ -58,10 +59,10 @@ export default function PendingView({
   setPendingError,
   tryActivation,
 }: {
-  connector?: MetaMask | CoinbaseWallet | WalletConnect
+  connector?: Connector
   error?: boolean
   setPendingError: (error: boolean) => void
-  tryActivation: (connector: MetaMask | CoinbaseWallet | WalletConnect) => void
+  tryActivation: (connector: Connector) => void
 }) {
   const isMetamask = window?.ethereum?.isMetaMask
 

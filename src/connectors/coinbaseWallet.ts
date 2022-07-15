@@ -9,6 +9,7 @@ export const [coinbaseWallet, hooks] = initializeConnector<CoinbaseWallet>(
       actions,
       options: {
         url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+        appName: 'Swapr',
       },
     })
 )

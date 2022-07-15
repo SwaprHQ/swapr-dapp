@@ -1,9 +1,17 @@
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { Network } from '@web3-react/network'
+import { WalletConnect } from '@web3-react/walletconnect'
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
+import { coinbaseWallet, hooks as coinbaseWalletHooks } from './connectors/coinbaseWallet'
+import { metaMask, hooks as metaMaskHooks } from './connectors/metaMask'
+import { network, hooks as networkHooks } from './connectors/network'
+import { walletConnect, hooks as walletConnectHooks } from './connectors/walletConnect'
 import { NetworkContextName } from './constants'
 import './i18n'
 import App from './pages/App'
@@ -19,8 +27,6 @@ import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-
 if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false
 }
@@ -28,6 +34,13 @@ if ('ethereum' in window) {
 window.addEventListener('error', error => {
   console.error(`${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`)
 })
+
+const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
+  [metaMask, metaMaskHooks],
+  [walletConnect, walletConnectHooks],
+  [coinbaseWallet, coinbaseWalletHooks],
+  [network, networkHooks],
+]
 
 function Updaters() {
   return (
@@ -45,21 +58,19 @@ function Updaters() {
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <EcoBridgeProvider>
-            <Updaters />
-            <ThemeProvider>
-              <ThemedGlobalStyle />
-              <HashRouter>
-                <MultiChainLinksUpdater />
-                <App />
-              </HashRouter>
-            </ThemeProvider>
-          </EcoBridgeProvider>
-        </Provider>
-      </Web3ProviderNetwork>
+    <Web3ReactProvider connectors={connectors}>
+      <Provider store={store}>
+        <EcoBridgeProvider>
+          <Updaters />
+          <ThemeProvider>
+            <ThemedGlobalStyle />
+            <HashRouter>
+              <MultiChainLinksUpdater />
+              <App />
+            </HashRouter>
+          </ThemeProvider>
+        </EcoBridgeProvider>
+      </Provider>
     </Web3ReactProvider>
   </StrictMode>,
   document.getElementById('root')

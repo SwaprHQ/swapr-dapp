@@ -13,6 +13,7 @@ export const ButtonConnect = () => {
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const networkSwitcherPopoverOpen = useModalOpen(ApplicationModal.NETWORK_SWITCHER)
+  // TODO
   const unsupportedChainIdError = useUnsupportedChainIdError()
   const isSwitchNetwork = networkSwitcherPopoverOpen || unsupportedChainIdError
 

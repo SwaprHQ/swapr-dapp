@@ -1,6 +1,7 @@
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
+import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 import React, { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
@@ -108,10 +109,10 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: MetaMask | CoinbaseWallet | WalletConnect | undefined) => void
+  tryActivation: (connector: Connector | undefined) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
-  pendingWallet: MetaMask | CoinbaseWallet | WalletConnect | undefined
+  pendingWallet: Connector | undefined
 }
 
 export default function WalletModal({

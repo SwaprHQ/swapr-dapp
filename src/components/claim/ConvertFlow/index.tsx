@@ -25,8 +25,10 @@ interface ConvertFlowProps {
 export function ConvertFlow({ oldSwprBalance, disabled, onError }: ConvertFlowProps) {
   const { chainId, account } = useWeb3React()
   const addTransaction = useTransactionAdder()
+  // TODO is this used?
   //chainId will be one of  1,4,100,137,42161,421611 or undefined
-  const spender = SWPR_CONVERTER_ADDRESS[chainId!]
+  // const spender = SWPR_CONVERTER_ADDRESS[chainId!]
+  const spender = chainId!.toString()
   const [approvalState, approveCallback] = useApproveCallback(oldSwprBalance, spender)
   const convertSwprCallback = useConvertSwprCallback(account ?? undefined)
 

@@ -1,4 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
@@ -94,7 +95,8 @@ export const SwapButton = ({
 
 export const SwapLoadingButton = () => {
   const { t } = useTranslation()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
+
   const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>

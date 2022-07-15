@@ -18,6 +18,7 @@ import { PairState, usePairs } from '../data/Reserves'
 import { useIsMultihop } from '../state/user/hooks'
 import { sortTradesByExecutionPrice } from '../utils/prices'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const maximumSlippage = new Percent('3', '100')
 
@@ -26,7 +27,7 @@ function useAllCommonPairs(
   currencyB?: Currency,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Pair[] {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])
 

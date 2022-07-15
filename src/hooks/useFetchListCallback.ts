@@ -9,20 +9,20 @@ import { useDispatch } from 'react-redux'
 
 import { immediateCarrotSubgraphClients } from '../apollo/client'
 import carrotListLogoUrl from '../assets/images/carrot.png'
-import { getNetworkLibrary } from '../connectors'
 import { KPI_TOKEN_CREATORS } from '../constants'
 import { AppDispatch } from '../state'
 import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
+import { getNetworkLibrary } from './useWeb3ReactCore'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId, library } = useWeb3React()
+  const { chainId, provider } = useWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
   const ensResolver = useCallback(
     async (ensName: string) => {
-      if (!library || chainId !== 1) {
+      if (!provider || chainId !== 1) {
         const networkLibrary = getNetworkLibrary()
         const network = await networkLibrary.getNetwork()
         if (networkLibrary && network.chainId === 1) {
@@ -30,9 +30,9 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
         }
         throw new Error('Could not construct mainnet ENS resolver')
       }
-      return resolveENSContentHash(ensName, library)
+      return resolveENSContentHash(ensName, provider)
     },
-    [chainId, library]
+    [chainId, provider]
   )
 
   // note: prevent dispatch if using for list search or unsupported list

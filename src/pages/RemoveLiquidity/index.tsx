@@ -6,6 +6,7 @@ import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, Unisw
 
 import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
 import { useParams } from 'react-router-dom'
@@ -62,7 +63,7 @@ export default function RemoveLiquidity() {
   const { navigate } = useRouter()
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library } = useWeb3React()
+  const { account, chainId, provider } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
   const [tokenA, tokenB] = useMemo(
@@ -131,7 +132,7 @@ export default function RemoveLiquidity() {
   const isArgentWallet = useIsArgentWallet()
 
   async function onAttemptToApprove() {
-    if (!pairContract || !pair || !library || !deadline) throw new Error('missing dependencies')
+    if (!pairContract || !pair || !provider || !deadline) throw new Error('missing dependencies')
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
@@ -178,7 +179,7 @@ export default function RemoveLiquidity() {
       message,
     })
 
-    library
+    provider
       .send('eth_signTypedData_v4', [account, data])
       .then(splitSignature)
       .then(signature => {
@@ -222,12 +223,12 @@ export default function RemoveLiquidity() {
   // tx sending
   const addTransaction = useTransactionAdder()
   async function onRemove() {
-    if (!chainId || !library || !account || !deadline) throw new Error('missing dependencies')
+    if (!chainId || !provider || !account || !deadline) throw new Error('missing dependencies')
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
-    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
+    const router = getRouterContract(chainId, provider, UniswapV2RoutablePlatform.SWAPR, account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],

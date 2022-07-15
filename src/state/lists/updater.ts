@@ -12,7 +12,7 @@ import { acceptListUpdate } from './actions'
 import { useActiveListUrls, useAllLists } from './hooks'
 
 export default function Updater(): null {
-  const { library, chainId, account } = useWeb3React()
+  const { provider, chainId, account } = useWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const isWindowVisible = useIsWindowVisible()
 
@@ -31,8 +31,8 @@ export default function Updater(): null {
     fetchCarrotList().catch((error: Error) => console.debug('carrot interval list fetching error', error))
   }, [isWindowVisible, chainId, lists, fetchCarrotList, fetchList])
 
-  // fetch all lists every 10 minutes, but only after we initialize library
-  useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null)
+  // fetch all lists every 10 minutes, but only after we initialize provider
+  useInterval(fetchAllListsCallback, provider ? 1000 * 60 * 10 : null)
 
   useEffect(() => {
     if (account) {
@@ -57,7 +57,7 @@ export default function Updater(): null {
     if (carrotList && !carrotList.current && !carrotList.loadingRequestId && !carrotList.error) {
       fetchCarrotList().catch((error: Error) => console.debug('carrot list added fetching error', error))
     }
-  }, [dispatch, fetchCarrotList, fetchList, library, lists])
+  }, [dispatch, fetchCarrotList, fetchList, provider, lists])
 
   // if any lists from unsupported lists are loaded, check them too (in case new updates since last visit)
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Updater(): null {
         fetchList(listUrl).catch((error: Error) => console.debug('list added fetching error', error))
       }
     })
-  }, [chainId, dispatch, fetchList, library, lists])
+  }, [chainId, dispatch, fetchList, provider, lists])
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {
