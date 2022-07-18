@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { HeaderButton } from '../HeaderButton'
-import { Amount } from '../index'
+import { Amount } from '../styled'
 
 const StakeIndicator = styled(HeaderButton)`
   border-radius: 0px 8px 8px 0px;
@@ -29,7 +29,7 @@ export function SwprInfo({ onToggleClaimPopup, newSwprBalance, hasActiveCampaign
 
   return (
     <Wrapper onClick={onToggleClaimPopup} hide={!account}>
-      <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false} clickable>
+      <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false}>
         {!account ? (
           '0.000'
         ) : !newSwprBalance ? (

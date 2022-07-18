@@ -39,7 +39,7 @@ export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void 
             <TYPE.white fontSize="14px">Get ready, Expeditions is launching very soon</TYPE.white>
           </Row>
           <Row>
-            <StyledExternalLink href="#">
+            <StyledExternalLink href="https://twitter.com/swapreth">
               <i>Updates</i>
             </StyledExternalLink>
           </Row>
