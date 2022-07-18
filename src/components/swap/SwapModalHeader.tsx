@@ -5,7 +5,7 @@ import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { Field } from '../../state/swap/actions'
+import { Field } from '../../state/swap/types'
 import { TYPE } from '../../theme'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -87,7 +87,12 @@ export default function SwapModalHeader({
               <TYPE.main color={theme.primary1}> Price Updated</TYPE.main>
             </RowFixed>
             <ButtonPrimary
-              style={{ padding: '.5rem', width: 'fit-content', fontSize: '0.825rem', borderRadius: '12px' }}
+              style={{
+                padding: '.5rem',
+                width: 'fit-content',
+                fontSize: '0.825rem',
+                borderRadius: '12px',
+              }}
               onClick={onAcceptChanges}
             >
               Accept

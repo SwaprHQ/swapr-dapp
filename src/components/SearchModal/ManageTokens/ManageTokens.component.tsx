@@ -1,8 +1,8 @@
 import { Token } from '@swapr/sdk'
 
-import React, { RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import React, { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useToken } from '../../../hooks/Tokens'
@@ -23,11 +23,11 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
   const { chainId } = useActiveWeb3React()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback(event => {
+  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)

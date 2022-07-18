@@ -19,7 +19,7 @@ import { useTokenBalance } from '../../state/wallet/hooks'
 import ClaimModal from '../claim/ClaimModal'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
 import { Balances } from './Balances'
 import { HeaderButton } from './HeaderButton'
@@ -257,17 +257,21 @@ function Header() {
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-            <HeaderLinkBadge label="BETA" />
+            <>
+              {t('bridge')}
+              <HeaderLinkBadge label="BETA" />
+            </>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </HeaderLink>
           <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
@@ -297,7 +301,12 @@ function Header() {
           )}
         </Flex>
         {gas.fast !== 0 && gas.slow !== 0 && (
-          <HeaderSubRow style={{ visibility: isGasInfoOpen ? 'visible' : 'hidden', gap: '4px' }}>
+          <HeaderSubRow
+            style={{
+              visibility: isGasInfoOpen ? 'visible' : 'hidden',
+              gap: '4px',
+            }}
+          >
             <ColoredGas color={'fast'}>FAST {gas.fast}</ColoredGas>
             <ColoredGas color={'normal'}>NORMAL {gas.normal}</ColoredGas>
             <ColoredGas color={'slow'}>SLOW {gas.slow}</ColoredGas>
@@ -326,10 +335,12 @@ function Header() {
             {t('vote')}
           </HeaderMobileLink>
           <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderMobileLink>
         </Flex>
 

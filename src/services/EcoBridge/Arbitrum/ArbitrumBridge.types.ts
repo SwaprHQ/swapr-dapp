@@ -28,6 +28,6 @@ export type ArbitrumTokenList = Omit<TokenList, 'tokens'> & {
 }
 
 export const hasArbitrumMetadata = (tokenInfo: any, chain: ChainId): tokenInfo is ArbitrumTokenInfo => {
-  const bridgeInfo = ((tokenInfo as unknown) as ArbitrumTokenInfo).extensions?.bridgeInfo
+  const bridgeInfo = (tokenInfo as unknown as ArbitrumTokenInfo).extensions?.bridgeInfo
   return !!bridgeInfo && Object.keys(bridgeInfo).length === 1 && !!bridgeInfo[Number(chain)]
 }

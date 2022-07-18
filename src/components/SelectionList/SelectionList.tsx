@@ -1,7 +1,9 @@
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-export const SelectionListWindowWrapper = styled.div<{ extraMarginTop?: string }>`
+export const SelectionListWindowWrapper = styled.div<{
+  extraMarginTop?: string
+}>`
   width: 100%;
   margin-bottom: 10px;
   margin-top: ${({ extraMarginTop }) => (extraMarginTop ? extraMarginTop : '0')};
@@ -12,7 +14,10 @@ export const SelectionListLabelWrapper = styled.header`
   display: flex;
 `
 
-export const SelectionListLabel = styled(Text)<{ justify?: boolean; flex?: string }>`
+export const SelectionListLabel = styled(Text)<{
+  justify?: boolean
+  flex?: string
+}>`
   color: ${({ theme }) => theme.text5};
   font-size: 10px;
   font-weight: 600;
@@ -21,7 +26,10 @@ export const SelectionListLabel = styled(Text)<{ justify?: boolean; flex?: strin
   flex: ${({ flex }) => flex || '15%'};
   justify-content: ${({ justify }) => (justify ? 'start' : 'end')};
 `
-export const SelectionListOption = styled.div<{ isSelected: boolean; isLoading?: boolean }>`
+export const SelectionListOption = styled.div<{
+  isSelected: boolean
+  isLoading?: boolean
+}>`
   background: ${({ isSelected }) => (isSelected ? 'rgba(104,110,148,.16)' : 'rgba(104,110,148,.1)')};
   width: 100%;
   border-radius: 8px;
@@ -34,7 +42,10 @@ export const SelectionListOption = styled.div<{ isSelected: boolean; isLoading?:
   transition: background 0.4s ease;
   cursor: ${({ isLoading }) => (isLoading ? 'not-allowed' : 'pointer')};
 `
-export const SelectionListName = styled(Text)<{ isSelected: boolean; flex?: string }>`
+export const SelectionListName = styled(Text)<{
+  isSelected: boolean
+  flex?: string
+}>`
   margin: 0;
   font-weight: ${({ isSelected }) => (isSelected ? '600' : '500')};
   font-size: 14px;

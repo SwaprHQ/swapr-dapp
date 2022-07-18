@@ -1,0 +1,78 @@
+import { Meta, Title, IconGallery, IconItem } from '@storybook/addon-docs/'
+import { imagesBase, svg, imagesAnimations, imagesBlog, imagesFeatures, imagesLogos, imagesTimelineAssets } from './'
+
+<Meta title="Theme/Icons" />
+
+## Iconography
+
+- All icon folder will be displayed here
+
+## Images folder(assets/images)
+
+<IconGallery name="Images">
+  {imagesBase.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## SVG folder (assets/svg)
+
+<IconGallery name="SVG">
+  {svg.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Animations folder (assets/images/animations)
+
+<IconGallery name="imagesAnimations">
+  {imagesAnimations.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Blog folder (assets/images/blog)
+
+<IconGallery name="Blog">
+  {imagesBlog.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Images Features folder (assets/images/features)
+
+<IconGallery name="Images Feature">
+  {imagesFeatures.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Logos folder (assets/images/logos)
+
+<IconGallery name="SVG">
+  {imagesLogos.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Timeline assets folder (assets/images/timeline-assets)
+
+<IconGallery name="Timeline Assets">
+  {imagesTimelineAssets.map(item => (
+    <IconItem name={item.name}>
+      <img src={item.location} />
+    </IconItem>
+  ))}
+</IconGallery>

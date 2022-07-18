@@ -1,0 +1,21 @@
+name: Auto-rebase dependabot PRs
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  rebase-dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: 'Auto-rebase'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.createComment({ 
+              issue_number: context.issue.number, 
+              owner: context.repo.owner, 
+              repo: context.repo.repo, 
+              body: '@dependabot rebase',
+            });

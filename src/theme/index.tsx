@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import 'react-datepicker/dist/react-datepicker.min.css'
 import { Text, TextProps } from 'rebass'
 import styled, {
@@ -21,17 +21,16 @@ export const MEDIA_WIDTHS = {
   upToLarge: 1280,
 }
 
-const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
-  (accumulator, size) => {
-    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-        ${css(a, b, c)}
-      }
-    `
-    return accumulator
-  },
-  {}
-) as any
+const mediaWidthTemplates: {
+  [width in keyof typeof MEDIA_WIDTHS]: typeof css
+} = Object.keys(MEDIA_WIDTHS).reduce((accumulator, size) => {
+  ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+    @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+      ${css(a, b, c)}
+    }
+  `
+  return accumulator
+}, {}) as any
 
 const white = '#FFFFFF'
 const black = '#000000'
@@ -146,12 +145,19 @@ export function theme(darkMode: boolean): DefaultTheme {
   }
 }
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({ children }: { children: ReactNode }) {
   const darkMode = useIsDarkMode()
 
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+  return (
+    <>
+      {/* TODO: Fix types and move to Styled Components v6 */}
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
+      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
+    </>
+  )
 }
 
 const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`
@@ -207,10 +213,9 @@ export const TYPE = {
 }
 
 export const FixedGlobalStyle = createGlobalStyle`
-html, input, textarea, button {
+* {
   font-family: 'Inter', Arial, Helvetica;
-  font-feature-settings: 'zero' on;
-  font-display: fallback;
+  font-feature-settings: 'ss01', 'zero', 'tnum';
 }
 
 html,

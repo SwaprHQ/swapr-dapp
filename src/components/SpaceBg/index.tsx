@@ -1,0 +1,1 @@
+export { SpaceBg } from './SpaceBg'

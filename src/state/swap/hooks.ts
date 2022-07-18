@@ -1,46 +1,38 @@
+import { AddressZero } from '@ethersproject/constants'
+import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { useCallback, useEffect, useState } from 'react'
+import { useWhatChanged } from '@simbathesailor/use-what-changed'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
-import { useEcoRouterExactIn, useEcoRouterExactOut } from '../../lib/eco-router'
+import { getExactIn as getExactInFromEcoRouter, getExactOut as getExactOutFromEcoRouter } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
-import { useUserSlippageTolerance } from '../user/hooks'
+import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import {
-  Field,
-  replaceSwapState,
-  selectCurrency,
-  setLoading,
-  setRecipient,
-  switchCurrencies,
-  typeInput,
-} from './actions'
+import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import { Field } from './types'
 
 const selectSwap = createSelector(
   (state: AppState) => state.swap,
   swap => swap
 )
+
 export function useSwapState() {
   return useSelector<AppState, AppState['swap']>(selectSwap)
-}
-
-const selectSwapLoading = createSelector(
-  (state: AppState) => state.swap.loading,
-  loading => loading
-)
-export function useSwapLoading() {
-  return useSelector<AppState, AppState['swap']['loading']>(selectSwapLoading)
 }
 
 export function useSwapActionHandlers(): {
@@ -108,37 +100,20 @@ export function tryParseAmount(value?: string, currency?: Currency, chainId?: nu
   return undefined
 }
 
-const BAD_RECIPIENT_ADDRESSES: string[] = [
-  '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f', // v2 factory
-  '0xf164fC0Ec4E93095b804a4795bBe1e041497b92a', // v2 router 01
-  '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', // v2 router 02
-]
-
-/**
- * Returns true if any of the pairs or tokens in a trade have the given checksummed address
- * @param trade to check for the given address
- * @param checksummedAddress address to check in the pairs and tokens
- */
-function involvesAddress(trade: UniswapV2Trade, checksummedAddress: string): boolean {
-  return (
-    trade.route.path.some(token => token.address === checksummedAddress) ||
-    trade.route.pairs.some(pair => pair.liquidityToken.address === checksummedAddress)
-  )
-}
-
 export interface UseDerivedSwapInfoResult {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
   trade: Trade | undefined
   allPlatformTrades: (Trade | undefined)[] | undefined
-  inputError?: string
+  inputError?: number
+  loading: boolean
 }
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
-  const dispatch = useDispatch()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library: provider } = useActiveWeb3React()
+  // Get all options for the input and output currencies
   const {
     independentField,
     typedValue,
@@ -146,110 +121,194 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     recipient,
   } = useSwapState()
-
+  const allowedSlippage = useUserSlippageTolerance()
+  const useMultihops = useIsMultihop()
+  const recipientLookup = useENS(recipient ?? undefined)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-
+  // Start by retrieveing the balances of the input and output currencies
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
-
-  const isExactIn: boolean = independentField === Field.INPUT
+  // Internal state
+  const [loading, setLoading] = useState<boolean>(false)
+  const [inputError, setInputError] = useState<number | undefined>()
+  // const [trade, setTrade] = useState<Trade>()
+  const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
+  // Computed on the fly state
+  const isExactIn = useMemo(() => independentField === Field.INPUT, [independentField])
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const useTradeExactInAllPlatformsRes = useEcoRouterExactIn(
-    isExactIn ? parsedAmount : undefined,
-    outputCurrency ?? undefined
-  )
-  const useTradeExactOutAllPlatformsRes = useEcoRouterExactOut(
-    inputCurrency ?? undefined,
-    !isExactIn ? parsedAmount : undefined
-  )
-  const bestTradeExactIn = useTradeExactInAllPlatformsRes.trades[0]
-  const bestTradeExactOut = useTradeExactOutAllPlatformsRes.trades[0]
+  // useCurrency and useToken returns a new object every time,
+  // so we need to compare the addresses as strings
+  const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
+  const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
-  const allPlatformTrades = isExactIn ? useTradeExactInAllPlatformsRes.trades : useTradeExactOutAllPlatformsRes.trades
+  const dependencyList = [
+    account,
+    useMultihops,
+    recipientLookupComputed,
+    chainId,
+    inputCurrency?.address,
+    outputCurrency?.address,
+    parsedAmountString,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    relevantTokenBalances[0]?.raw.toString(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    relevantTokenBalances[1]?.raw.toString(),
+    allowedSlippage,
+    recipient,
+    isExactIn,
+    provider,
+  ]
+
+  useWhatChanged(
+    dependencyList,
+    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider`
+  )
+
+  useEffect(() => {
+    const [inputCurrencyBalance] = relevantTokenBalances
+
+    // Require two currencies to be selected
+    if (!inputCurrency || !outputCurrency) {
+      setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
+      return
+    }
+    // Require a valid input amount
+    if (!parsedAmount) {
+      setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
+      return
+    }
+    // Notify user if input amount is too low, but still trigger the EcoRouter
+    let inputErrorNextState: undefined | number = undefined
+    if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)) {
+      inputErrorNextState = SWAP_INPUT_ERRORS.INSUFFICIENT_FUNDS
+    }
+
+    // Require a valid receipient
+    let receiver = account ?? AddressZero // default back to zero if no account is connected
+    if (recipient !== null) {
+      if (isAddress(recipientLookup.address)) {
+        receiver = recipientLookup.address as string
+      } else {
+        setInputError(SWAP_INPUT_ERRORS.INVALID_RECIPIENT)
+        return
+      }
+    }
+
+    // The user wants to un/wrap the network native token
+    const isWrap = Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === outputCurrency
+    const isUnwrap = Currency.isNative(outputCurrency) && wrappedCurrency(outputCurrency, chainId) === inputCurrency
+
+    if (isWrap || isUnwrap) {
+      return
+    }
+
+    // Update swap state with the new input
+    unstable_batchedUpdates(() => {
+      setInputError(inputErrorNextState)
+      setLoading(true)
+      setAllPlatformTrades([])
+    })
+
+    const commonParams = {
+      maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
+      receiver,
+    }
+
+    const ecoRouterSourceOptionsParams = {
+      uniswapV2: {
+        useMultihops,
+      },
+    }
+
+    // Use a static version
+    const staticProvider = provider ? new StaticJsonRpcProvider(provider?.connection.url) : undefined
+
+    console.log('useDerivedSwapInfo: fetching trades')
+
+    const getTrades = isExactIn
+      ? getExactInFromEcoRouter(
+          {
+            currencyAmountIn: parsedAmount,
+            currencyOut: outputCurrency,
+            ...commonParams,
+          },
+          ecoRouterSourceOptionsParams,
+          staticProvider
+        )
+      : getExactOutFromEcoRouter(
+          {
+            currencyAmountOut: parsedAmount,
+            currencyIn: inputCurrency,
+            ...commonParams,
+          },
+          ecoRouterSourceOptionsParams,
+          staticProvider
+        )
+
+    // Start fetching trades from EcoRouter API
+    getTrades
+      .then(trades => {
+        unstable_batchedUpdates(() => {
+          setAllPlatformTrades(trades.trades)
+          setLoading(false)
+        })
+      })
+      .catch(error => {
+        console.error(error)
+        unstable_batchedUpdates(() => {
+          setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+          setLoading(false)
+        })
+      })
+
+    return function useDerivedSwapInfoCleanUp() {
+      unstable_batchedUpdates(() => {
+        setAllPlatformTrades([])
+        setLoading(false)
+        setInputError(undefined)
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, dependencyList)
+
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
   if (platformOverride) {
-    platformTrade = allPlatformTrades?.filter(t => t?.platform === platformOverride)[0]
+    platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
   }
-  const trade = platformTrade ? platformTrade : isExactIn ? bestTradeExactIn : bestTradeExactOut
-
-  const currencyBalances = {
-    [Field.INPUT]: relevantTokenBalances[0],
-    [Field.OUTPUT]: relevantTokenBalances[1],
-  }
-
-  const currencies: { [field in Field]?: Currency } = {
-    [Field.INPUT]: inputCurrency ?? undefined,
-    [Field.OUTPUT]: outputCurrency ?? undefined,
-  }
-
-  let inputError: string | undefined
-  if (!account) {
-    inputError = 'Connect Wallet'
-  }
-
-  if (!parsedAmount) {
-    inputError = inputError ?? 'Enter amount'
-  }
-
-  if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token'
-  }
-
-  const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
-
-  const formattedTo = isAddress(to)
-  if (!to || !formattedTo) {
-    inputError = inputError ?? 'Enter a recipient'
-  } else {
-    if (
-      BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn instanceof UniswapV2Trade && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut instanceof UniswapV2Trade && involvesAddress(bestTradeExactOut, formattedTo))
-    ) {
-      inputError = inputError ?? 'Invalid recipient'
-    }
-  }
-
-  const allowedSlippage = useUserSlippageTolerance()
-
-  const slippageAdjustedAmounts =
-    trade && allowedSlippage && computeSlippageAdjustedAmounts(trade /* allowedSlippage */)
+  const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
+  const slippageAdjustedAmounts = trade && allowedSlippage && computeSlippageAdjustedAmounts(trade)
 
   // compare input balance to MAx input based on version
   const [balanceIn, amountIn] = [
-    currencyBalances[Field.INPUT],
+    relevantTokenBalances[0],
     slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
   ]
 
+  let returnInputError = inputError
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
-  }
-
-  if (useTradeExactInAllPlatformsRes.loading || useTradeExactOutAllPlatformsRes.loading) {
-    dispatch(setLoading(true))
-  } else {
-    dispatch(setLoading(false))
-  }
-  if (inputError !== undefined) {
-    setTimeout(() => {
-      dispatch(setLoading(false))
-    }, 500)
+    returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
   }
 
   return {
-    currencies,
-    currencyBalances,
+    currencies: {
+      [Field.INPUT]: inputCurrency ?? undefined,
+      [Field.OUTPUT]: outputCurrency ?? undefined,
+    },
+    currencyBalances: {
+      [Field.INPUT]: relevantTokenBalances[0] ?? undefined,
+      [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
+    },
     parsedAmount,
     trade,
     allPlatformTrades,
-    inputError,
+    inputError: returnInputError,
+    loading,
   }
 }
 

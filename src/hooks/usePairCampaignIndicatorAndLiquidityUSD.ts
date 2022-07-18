@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 import { ZERO_USD } from '../constants'
 
 const QUERY = gql`
-  query($id: ID!, $timestamp: BigInt!) {
+  query ($id: ID!, $timestamp: BigInt!) {
     pair(id: $id) {
       id
       reserveUSD
@@ -23,9 +23,11 @@ interface QueryResult {
   pair: { reserveUSD: string; liquidityMiningCampaigns: { id: string }[] }
 }
 
-export function usePairCampaignIndicatorAndLiquidityUSD(
-  pair?: Pair | null
-): { loading: boolean; liquidityUSD: CurrencyAmount; numberOfCampaigns: number } {
+export function usePairCampaignIndicatorAndLiquidityUSD(pair?: Pair | null): {
+  loading: boolean
+  liquidityUSD: CurrencyAmount
+  numberOfCampaigns: number
+} {
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
 
   const { loading, data, error } = useQuery<QueryResult>(QUERY, {

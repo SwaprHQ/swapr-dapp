@@ -26,12 +26,8 @@ export function CurrencySearchModalProvider({
 }
 
 export function CurrencySearchModal(props: CurrencySearchModalProps) {
-  const {
-    listRowContext,
-    manageListsContext,
-    currencySearchContext,
-    currencySearchModalContext,
-  } = useCurrencySearchModalSwap()
+  const { listRowContext, manageListsContext, currencySearchContext, currencySearchModalContext } =
+    useCurrencySearchModalSwap()
 
   return (
     <CurrencySearchModalProvider

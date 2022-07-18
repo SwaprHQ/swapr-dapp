@@ -1,14 +1,7 @@
+import { setUseWhatChange } from '@simbathesailor/use-what-changed'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
-import '@fontsource/montserrat/400.css'
-import '@fontsource/montserrat/500.css'
-import '@fontsource/montserrat/600.css'
-import '@fontsource/montserrat/700.css'
-import '@fontsource/fira-code/500.css'
-import '@fontsource/fira-code/700.css'
-import '@fontsource/fira-mono/500.css'
-import '@fontsource/fira-mono/700.css'
 import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
@@ -26,6 +19,11 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
+
+// Enables use of the useWhatChanged hook in dev environment
+setUseWhatChange({
+  active: process.env.NODE_ENV === 'development',
+})
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -50,8 +48,13 @@ function Updaters() {
   )
 }
 
-ReactDOM.render(
+const container = document.getElementById('root')!
+const root = createRoot(container)
+
+root.render(
   <StrictMode>
+    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+    {/* @ts-expect-error */}
     <FixedGlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
@@ -59,6 +62,8 @@ ReactDOM.render(
           <EcoBridgeProvider>
             <Updaters />
             <ThemeProvider>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-expect-error */}
               <ThemedGlobalStyle />
               <HashRouter>
                 <MultiChainLinksUpdater />
@@ -69,6 +74,5 @@ ReactDOM.render(
         </Provider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 )

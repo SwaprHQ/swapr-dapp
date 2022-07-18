@@ -1,7 +1,7 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import flatMap from 'lodash.flatmap'
+import flatMap from 'lodash/flatMap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
@@ -266,7 +266,11 @@ export function useAdvancedSwapDetails(): [boolean, () => void] {
   const advancedSwapDetails = useIsOpenAdvancedSwapDetails()
 
   const toggleSetAdvancedSwapDetails = useCallback(() => {
-    dispatch(updateUserAdvancedSwapDetails({ userAdvancedSwapDetails: !advancedSwapDetails }))
+    dispatch(
+      updateUserAdvancedSwapDetails({
+        userAdvancedSwapDetails: !advancedSwapDetails,
+      })
+    )
   }, [advancedSwapDetails, dispatch])
 
   return [advancedSwapDetails, toggleSetAdvancedSwapDetails]
@@ -332,11 +336,10 @@ export function useTrackedTokenPairs(): [Token, Token][] {
     })
   }, [savedSerializedPairs, chainId])
 
-  const combinedList = useMemo(() => userPairs.concat(generatedPairs).concat(pinnedPairs), [
-    generatedPairs,
-    pinnedPairs,
-    userPairs,
-  ])
+  const combinedList = useMemo(
+    () => userPairs.concat(generatedPairs).concat(pinnedPairs),
+    [generatedPairs, pinnedPairs, userPairs]
+  )
 
   return useMemo(() => {
     // dedupes pairs of tokens in the combined list

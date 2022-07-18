@@ -15,7 +15,7 @@ import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const { chainId, library } = useActiveWeb3React()

@@ -10,20 +10,19 @@ import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
-export function useTokenOrPairNativeCurrency(
-  tokenOrPair?: Token | Pair
-): { loading: boolean; derivedNativeCurrency?: Price } {
+export function useTokenOrPairNativeCurrency(tokenOrPair?: Token | Pair): {
+  loading: boolean
+  derivedNativeCurrency?: Price
+} {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const isToken = tokenOrPair instanceof Token
   const lpTokenTotalSupply = usePairLiquidityTokenTotalSupply(tokenOrPair instanceof Pair ? tokenOrPair : undefined)
 
-  const {
-    reserveNativeCurrency: targetedPairReserveNativeCurrency,
-    loading: loadingReserveNative,
-  } = usePairReserveNativeCurrency(tokenOrPair instanceof Pair ? tokenOrPair : undefined)
+  const { reserveNativeCurrency: targetedPairReserveNativeCurrency, loading: loadingReserveNative } =
+    usePairReserveNativeCurrency(tokenOrPair instanceof Pair ? tokenOrPair : undefined)
   const { loading: loadingTokenNativeCurrency, derivedNativeCurrency } = useTokenDerivedNativeCurrency(
     tokenOrPair instanceof Token ? tokenOrPair : undefined
   )

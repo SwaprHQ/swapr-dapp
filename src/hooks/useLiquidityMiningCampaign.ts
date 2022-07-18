@@ -10,10 +10,10 @@ import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const QUERY = gql`
-  query($id: ID) {
+  query ($id: ID) {
     liquidityMiningCampaign(id: $id) {
       address: id
       duration

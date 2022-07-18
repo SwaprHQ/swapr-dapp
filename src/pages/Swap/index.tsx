@@ -1,8 +1,7 @@
+import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-
-import { CurrencyAmount, JSBI, RoutablePlatform, Token, Trade, UniswapV2Trade } from '@swapr/sdk'
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -24,15 +23,14 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useAppro
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { Field } from '../../state/swap/actions'
+import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
-  useSwapLoading,
   useSwapState,
 } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -73,8 +71,14 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
+export enum GnosisProtocolTradeState {
+  UNKNOWN, // default
+  WRAP,
+  APPROVAL,
+  SWAP,
+}
+
 export default function Swap() {
-  const loading = useSwapLoading()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -116,17 +120,31 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
+    loading,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
-    currencies[Field.INPUT],
-    currencies[Field.OUTPUT],
-    typedValue
+  // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
+  // wrap status(use useWrapCallback and a state variable)
+  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(GnosisProtocolTradeState.UNKNOWN)
+  const {
+    wrapType,
+    execute: onWrap,
+    inputError: wrapInputError,
+    wrapState,
+    setWrapState,
+  } = useWrapCallback(
+    currencies.INPUT,
+    currencies.OUTPUT,
+    potentialTrade instanceof GnosisProtocolTrade,
+    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
-  const bestPricedTrade = allPlatformTrades?.[0] // the best trade is always the first
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+
+  const bestPricedTrade = allPlatformTrades?.[0]
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
+
   const trade = showWrap ? undefined : potentialTrade
 
+  //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
     ? {
         [Field.INPUT]: parsedAmount,
@@ -175,7 +193,7 @@ export default function Swap() {
   )
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade as UniswapV2Trade /* allowedSlippage */)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -187,6 +205,15 @@ export default function Swap() {
     }
   }, [approval, approvalSubmitted])
 
+  // Listen for changes on wrapState
+  useEffect(() => {
+    // watch GPv2
+    if (wrapState === WrapState.WRAPPED) {
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
+      else setGnosisProtocolState(GnosisProtocolTradeState.APPROVAL)
+    }
+  }, [wrapState, approval, trade])
+
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
@@ -197,7 +224,7 @@ export default function Swap() {
     recipientAddressOrName: recipient,
   })
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -206,10 +233,27 @@ export default function Swap() {
     if (!swapCallback) {
       return
     }
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    setSwapState({
+      attemptingTxn: true,
+      tradeToConfirm,
+      showConfirm,
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    })
     swapCallback()
       .then(hash => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        })
+        //reset states, in case we want to operate again
+        if (trade instanceof GnosisProtocolTrade) {
+          setGnosisProtocolState(GnosisProtocolTradeState.WRAP)
+          setWrapState && setWrapState(WrapState.UNKNOWN)
+        }
       })
       .catch(error => {
         setSwapState({
@@ -219,8 +263,9 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
+        setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
       })
-  }, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback])
+  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
@@ -235,7 +280,13 @@ export default function Swap() {
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
-    setSwapState({ showConfirm: false, tradeToConfirm, attemptingTxn, swapErrorMessage, txHash })
+    setSwapState({
+      showConfirm: false,
+      tradeToConfirm,
+      attemptingTxn,
+      swapErrorMessage,
+      txHash,
+    })
     // if there was a tx hash, we want to clear the input
     if (txHash) {
       onUserInput(Field.INPUT, '')
@@ -244,11 +295,17 @@ export default function Swap() {
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
+    setSwapState({
+      tradeToConfirm: trade,
+      swapErrorMessage,
+      txHash,
+      attemptingTxn,
+      showConfirm,
+    })
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
-    inputCurrency => {
+    (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
@@ -257,7 +314,7 @@ export default function Swap() {
   )
 
   const handleMaxInput = useCallback(
-    fieldInput => () => {
+    (fieldInput: string) => () => {
       maxAmountInput && fieldInput === Field.INPUT && onUserInput(Field.INPUT, maxAmountInput.toExact())
       maxAmountOutput && fieldInput === Field.OUTPUT && onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
     },
@@ -265,7 +322,7 @@ export default function Swap() {
   )
 
   const handleOutputSelect = useCallback(
-    outputCurrency => {
+    (outputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(Field.OUTPUT, outputCurrency)
     },
@@ -275,13 +332,18 @@ export default function Swap() {
   const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
     inputCurrencyAmount: parsedAmounts[Field.INPUT],
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
-    trade,
   })
 
-  const priceImpact = useMemo(() => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput), [
-    fiatValueInput,
-    fiatValueOutput,
-  ])
+  const priceImpact = useMemo(
+    () => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput),
+    [fiatValueInput, fiatValueOutput]
+  )
+
+  const isInputPanelDisabled =
+    (gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
+      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP ||
+      wrapState === WrapState.PENDING) &&
+    trade instanceof GnosisProtocolTrade
 
   return (
     <>
@@ -327,6 +389,7 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueInput}
                     maxAmount={maxAmountInput}
                     showCommonBases
+                    disabled={isInputPanelDisabled}
                     id="swap-currency-input"
                   />
                   <SwitchIconContainer>
@@ -357,6 +420,7 @@ export default function Swap() {
                     isFallbackFiatValue={isFallbackFiatValueOutput}
                     maxAmount={maxAmountOutput}
                     showCommonBases
+                    disabled={isInputPanelDisabled}
                     id="swap-currency-output"
                   />
                 </AutoColumn>
@@ -369,7 +433,6 @@ export default function Swap() {
                   setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
                   recipient={recipient}
                 />
-
                 <SwapButtons
                   wrapInputError={wrapInputError}
                   showApproveFlow={showApproveFlow}
@@ -388,6 +451,9 @@ export default function Swap() {
                   onWrap={onWrap}
                   approveCallback={approveCallback}
                   handleSwap={handleSwap}
+                  handleInputSelect={handleInputSelect}
+                  wrapState={wrapState}
+                  setWrapState={setWrapState}
                 />
               </AutoColumn>
             </Wrapper>

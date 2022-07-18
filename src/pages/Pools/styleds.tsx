@@ -1,15 +1,9 @@
 import styled from 'styled-components'
 
-import { AutoColumn } from '../../components/Column'
 import { TYPE } from '../../theme'
 
 export const Wrapper = styled.div`
   position: relative;
-`
-export const PageWrapper = styled(AutoColumn)`
-  max-width: 832px;
-  width: 100%;
-  margin-top: -30px;
 `
 
 export const ClickableText = styled(TYPE.body)`

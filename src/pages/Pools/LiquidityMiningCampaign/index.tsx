@@ -1,4 +1,3 @@
-import { useRouter } from 'hooks/useRouter'
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
@@ -17,12 +16,13 @@ import { useActiveWeb3React } from '../../../hooks'
 import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { useToken } from '../../../hooks/Tokens'
 import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
+import { useRouter } from '../../../hooks/useRouter'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import { TYPE } from '../../../theme'
 import { currencyId } from '../../../utils/currencyId'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'
-import { PageWrapper } from '../styleds'
+import { PageWrapper } from '../../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -82,7 +82,7 @@ export default function LiquidityMiningCampaign() {
 
   return (
     <PageWrapper>
-      <SwapPoolTabs active={'pool'} />
+      <SwapPoolTabs active="pool" />
       <AutoColumn gap="lg" justify="center">
         <AutoColumn gap="lg" style={{ width: '100%' }}>
           <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>

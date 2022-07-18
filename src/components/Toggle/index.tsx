@@ -38,7 +38,11 @@ const ToggleElement = styled.span<{
   }
 `
 
-const StyledToggle = styled.button<{ isActive?: boolean; activeElement?: boolean; disabled?: boolean }>`
+const StyledToggle = styled.button<{
+  isActive?: boolean
+  activeElement?: boolean
+  disabled?: boolean
+}>`
   border-radius: 8px;
   border: none;
   background: ${({ theme }) => theme.bg3};

@@ -9,7 +9,7 @@ import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
 
 const QUERY = gql`
-  query($campaignAddress: ID) {
+  query ($campaignAddress: ID) {
     singleSidedStakingCampaign(id: $campaignAddress) {
       id
       owner
@@ -41,9 +41,7 @@ const QUERY = gql`
   }
 `
 
-export function useSingleSidedCampaign(
-  campaginAddress: string
-): {
+export function useSingleSidedCampaign(campaginAddress: string): {
   loading: boolean
   singleSidedStakingCampaign: SingleSidedLiquidityMiningCampaign | undefined
 } {

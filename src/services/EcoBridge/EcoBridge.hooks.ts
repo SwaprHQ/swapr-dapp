@@ -255,11 +255,10 @@ export const useBridgeInfo = () => {
 
   const bridgeCurrency = useBridgeCurrency(currencyId, fromChainId)
 
-  const parsedAmount = useMemo(() => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId), [
-    bridgeCurrency,
-    chainId,
-    typedValue,
-  ])
+  const parsedAmount = useMemo(
+    () => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId),
+    [bridgeCurrency, chainId, typedValue]
+  )
 
   const [currencyBalance] = useCurrencyBalances(account ?? undefined, [bridgeCurrency ?? undefined])
 

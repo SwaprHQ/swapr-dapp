@@ -117,10 +117,7 @@ export function CampaignCard({
   const [status, setStatus] = useState<StatusKeys | undefined>(undefined)
   const isLimitedCampaign = !campaign.stakingCap.equalTo('0')
   const percentage = useCallback(() => {
-    return campaign.staked
-      .multiply('100')
-      .divide(campaign.stakingCap)
-      .toFixed(0)
+    return campaign.staked.multiply('100').divide(campaign.stakingCap).toFixed(0)
   }, [campaign])
 
   useEffect(() => {
@@ -143,31 +140,18 @@ export function CampaignCard({
             ) : (
               <DoubleCurrencyLogo spaceBetween={-5} currency0={token0} currency1={token1} size={30} />
             )}
-            <EllipsizedText
-              marginTop="10px"
-              marginBottom="6px"
-              color="purple2"
-              fontWeight="700"
-              fontSize="16px"
-              fontFamily="Montserrat"
-            >
+            <EllipsizedText marginTop="10px" marginBottom="6px" color="purple2" fontWeight="700" fontSize="16px">
               {unwrappedToken(token0)?.symbol}
               {!isSingleSidedStakingCampaign && `/${unwrappedToken(token1)?.symbol}`}
             </EllipsizedText>
-            <EllipsizedText
-              fontFamily="Fira Mono"
-              fontWeight="bold"
-              fontSize="18px"
-              color="#EBE9F8"
-              letterSpacing="0.02em"
-            >
+            <EllipsizedText fontWeight="bold" fontSize="18px" color="#EBE9F8" letterSpacing="0.02em">
               {apy.toFixed(2)}% APY
             </EllipsizedText>
           </Flex>
           <RightSection>
             <Flex width="max-content" alignItems="center">
               <ClockSvg width={'10px'} height={'10px'} />
-              <TYPE.body marginLeft="4px" fontSize="10px" fontFamily="Fira Code" fontWeight="500">
+              <TYPE.body marginLeft="4px" fontSize="10px" fontWeight="500">
                 <Countdown
                   to={
                     status === StatusKeys.UPCOMING

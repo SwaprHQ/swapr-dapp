@@ -3,7 +3,11 @@ import { CardProps, Text } from 'rebass'
 import { Box } from 'rebass/styled-components'
 import styled, { css } from 'styled-components'
 
-const Card = styled(Box)<{ padding?: string; border?: string; borderRadius?: string }>`
+const Card = styled(Box)<{
+  padding?: string
+  border?: string
+  borderRadius?: string
+}>`
   width: 100%;
   border-radius: 16px;
   padding: 1.25rem;
@@ -68,7 +72,10 @@ export const BlueCard = ({ children, ...rest }: CardProps) => {
   )
 }
 
-export const GradientCard = styled(Card)<{ selectable?: boolean; active?: boolean }>`
+export const GradientCard = styled(Card)<{
+  selectable?: boolean
+  active?: boolean
+}>`
   background: linear-gradient(113.18deg, rgba(255, 255, 255, 0.35) -0.1%, rgba(0, 0, 0, 0) 98.9%),
     ${({ theme }) => theme.dark1};
   background-color: ${({ theme }) => theme.dark1};

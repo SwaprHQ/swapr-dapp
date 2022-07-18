@@ -12,8 +12,8 @@ import useDebounce from '../../hooks/useDebounce'
 import { useGasFeesUSD } from '../../hooks/useGasFeesUSD'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useSwapsGasEstimations } from '../../hooks/useSwapsGasEstimate'
-import { Field } from '../../state/swap/actions'
 import { useSwapState } from '../../state/swap/hooks'
+import { Field } from '../../state/swap/types'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
 import {
@@ -124,7 +124,7 @@ export function SwapPlatformSelector({
   const showGasFees = estimations.length === allPlatformTrades?.length
 
   const handleSelectedTradeOverride = useCallback(
-    platformName => {
+    (platformName: string) => {
       const newTrade = allPlatformTrades?.find(trade => trade?.platform.name === platformName)
       if (!newTrade) return
       onSelectedPlatformChange(newTrade.platform)
@@ -167,7 +167,7 @@ export function SwapPlatformSelector({
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
-            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade as UniswapV2Trade)
+            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
             const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
             const tokenAmount = limitNumberOfDecimalPlaces(
               isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]

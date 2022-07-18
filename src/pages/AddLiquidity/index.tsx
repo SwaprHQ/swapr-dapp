@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
 import React, { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
 import { useParams } from 'react-router-dom'
@@ -25,6 +24,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useWrappingToken } from '../../hooks/useContract'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useRouter } from '../../hooks/useRouter'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { Field } from '../../state/mint/actions'
@@ -240,8 +240,9 @@ export default function AddLiquidity() {
           </Text>
         </Row>
         <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
-            100}% your transaction will revert.`}
+          {`Output is estimated. If the price changes by more than ${
+            allowedSlippage / 100
+          }% your transaction will revert.`}
         </TYPE.italic>
       </AutoColumn>
     )
@@ -464,7 +465,14 @@ export default function AddLiquidity() {
       </AppBody>
 
       {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-        <AutoColumn style={{ minWidth: '20rem', width: '100%', maxWidth: '400px', marginTop: '1rem' }}>
+        <AutoColumn
+          style={{
+            minWidth: '20rem',
+            width: '100%',
+            maxWidth: '400px',
+            marginTop: '1rem',
+          }}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWrapped} pair={pair} />
         </AutoColumn>
       ) : null}

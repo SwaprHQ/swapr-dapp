@@ -12,11 +12,9 @@ import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
-import { ChainLabel } from '../../constants'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
 import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
-import { TYPE } from '../../theme'
 import { shortenAddress } from '../../utils'
 import { TriangleIcon } from '../Icons'
 import Loader from '../Loader'
@@ -63,7 +61,11 @@ const Web3StatusConnected = styled.button<{ pending?: boolean }>`
   align-items: center;
 `
 
-const Web3StatusNetwork = styled.button<{ pendingTransactions?: boolean; isConnected: boolean; clickable: boolean }>`
+const Web3StatusNetwork = styled.button<{
+  pendingTransactions?: boolean
+  isConnected: boolean
+  clickable: boolean
+}>`
   display: flex;
   align-items: center;
   height: 26px;
@@ -93,12 +95,6 @@ const IconWrapper = styled.div<{ size?: number | null }>`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: center;
-  `};
-`
-
-const NetworkName = styled.div`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
   `};
 `
 
@@ -198,13 +194,6 @@ export function AccountStatus({
           <IconWrapper size={20}>
             <img src={ChainLogo[networkConnectorChainId]} alt="chain logo" />
           </IconWrapper>
-          {account && (
-            <NetworkName>
-              <TYPE.white ml="8px" fontWeight={700} fontSize="12px">
-                {ChainLabel[networkConnectorChainId]}
-              </TYPE.white>
-            </NetworkName>
-          )}
           {networkSwitchingActive && <TriangleIcon />}
         </Web3StatusNetwork>
       </NetworkSwitcherPopover>

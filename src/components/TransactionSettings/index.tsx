@@ -39,7 +39,11 @@ const Input = styled.input`
   display: flex;
 `
 
-const OptionCustom = styled(Option)<{ active?: boolean; warning?: boolean; focused?: boolean }>`
+const OptionCustom = styled(Option)<{
+  active?: boolean
+  warning?: boolean
+  focused?: boolean
+}>`
   position: relative;
   flex: 1;
   display: flex;
@@ -101,9 +105,10 @@ export default function SlippageTabs({
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
   const slippageInputIsValid =
-    slippageInput === '' ||
-    (!Number.isNaN(Number(slippageInput)) &&
-      rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2))
+    !Number.isNaN(Number(slippageInput)) &&
+    // 10 is 0.1% slippage and less than 0.1 is not desirable
+    rawSlippage >= 10 &&
+    rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
 
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
 

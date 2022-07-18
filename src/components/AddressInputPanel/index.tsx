@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react'
+import React, { ChangeEvent, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -79,11 +80,12 @@ export default function AddressInputPanel({
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
+  const { t } = useTranslation()
 
   const { address, loading, name } = useENS(value)
 
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const withoutSpaces = input.replace(/\s+/g, '')
       onChange(withoutSpaces)
@@ -104,7 +106,7 @@ export default function AddressInputPanel({
               </TYPE.black>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  (View on block explorer)
+                  {t('viewOnBlockExplorer')}
                 </ExternalLink>
               )}
             </RowBetween>

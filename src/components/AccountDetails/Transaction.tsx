@@ -4,8 +4,9 @@ import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTransactions } from '../../state/transactions/hooks'
+import { SwapProtocol } from '../../state/transactions/reducer'
 import { ExternalLink } from '../../theme'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import Loader from '../Loader'
 import { RowFixed } from '../Row'
 
@@ -20,7 +21,10 @@ const TransactionStatusText = styled.div`
   }
 `
 
-const TransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
+const TransactionState = styled(ExternalLink)<{
+  pending: boolean
+  success?: boolean
+}>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -47,9 +51,14 @@ export default function Transaction({ hash }: { hash: string }) {
 
   if (!chainId) return null
 
+  const link =
+    tx.swapProtocol === SwapProtocol.COW
+      ? getGnosisProtocolExplorerOrderLink(chainId, tx.hash)
+      : getExplorerLink(chainId, hash, 'transaction')
+
   return (
     <TransactionWrapper>
-      <TransactionState href={getExplorerLink(chainId, hash, 'transaction')} pending={pending} success={success}>
+      <TransactionState href={link} pending={pending} success={success}>
         <RowFixed>
           <TransactionStatusText>{summary ?? hash} ↗</TransactionStatusText>
         </RowFixed>

@@ -30,9 +30,7 @@ export function usePair24hVolumeUSD(
   const { loading, data, error } = useQuery(isToken ? TOKENQUERY : QUERY, {
     variables: {
       pairOrTokenAddress: pairOrTokenAddress?.toLowerCase(),
-      date: DateTime.utc()
-        .startOf('day')
-        .toSeconds(),
+      date: DateTime.utc().startOf('day').toSeconds(),
     },
   })
   return useMemo(() => {

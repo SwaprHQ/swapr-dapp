@@ -9,11 +9,12 @@ import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
-export function useGasFeesUSD(
-  gasEstimations: (BigNumber | null)[]
-): { loading: boolean; gasFeesUSD: (CurrencyAmount | null)[] } {
+export function useGasFeesUSD(gasEstimations: (BigNumber | null)[]): {
+  loading: boolean
+  gasFeesUSD: (CurrencyAmount | null)[]
+} {
   const { chainId } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()

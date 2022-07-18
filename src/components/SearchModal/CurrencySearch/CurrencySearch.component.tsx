@@ -1,9 +1,19 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { ThemeContext } from 'styled-components/macro'
+import { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
@@ -38,16 +48,9 @@ export const CurrencySearch = ({
 }: CurrencySearchProps) => {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
-  const {
-    allTokens,
-    searchToken,
-    searchQuery,
-    setSearchQuery,
-    debouncedQuery,
-    selectedTokenList,
-    showFallbackTokens,
-  } = useContext(CurrencySearchContext)
+  const theme = useTheme()
+  const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
+    useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
 
   const fixedList = useRef<FixedSizeList>()
@@ -92,7 +95,7 @@ export const CurrencySearch = ({
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const checksummedInput = isAddress(input)
       setSearchQuery(checksummedInput || input)
@@ -165,7 +168,7 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokensWithNativeCurrency?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -26,14 +26,13 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
-  const error = useMemo(() => Boolean(recipient && recipient.length > 0 && !loading && !address), [
-    address,
-    loading,
-    recipient,
-  ])
+  const error = useMemo(
+    () => Boolean(recipient && recipient.length > 0 && !loading && !address),
+    [address, loading, recipient]
+  )
 
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       dispatch(action({ recipient: input }))
     },

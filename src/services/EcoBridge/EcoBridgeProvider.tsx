@@ -1,13 +1,13 @@
-import React, { FC, useContext, useEffect, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import store from '../../state'
 import { EcoBridge } from './EcoBridge'
 import { ecoBridgeConfig } from './EcoBridge.config'
 
-export const EcoBridgeContext = React.createContext<EcoBridge | null>(null)
+export const EcoBridgeContext = createContext<EcoBridge | null>(null)
 
-export const EcoBridgeProvider: FC = ({ children }) => {
+export function EcoBridgeProvider({ children }: { children: ReactNode }) {
   const { library, account, chainId } = useActiveWeb3React()
   const [ecoBridge, setEcoBridge] = useState<EcoBridge | null>(null)
 
@@ -20,9 +20,17 @@ export const EcoBridgeProvider: FC = ({ children }) => {
 
       if (ecoBridge && account && library && chainId) {
         if (!ecoBridge.ready) {
-          await ecoBridge.init({ account, activeChainId: chainId, activeProvider: library })
+          await ecoBridge.init({
+            account,
+            activeChainId: chainId,
+            activeProvider: library,
+          })
         } else {
-          await ecoBridge.updateSigner({ account, activeChainId: chainId, activeProvider: library })
+          await ecoBridge.updateSigner({
+            account,
+            activeChainId: chainId,
+            activeProvider: library,
+          })
         }
       }
     }

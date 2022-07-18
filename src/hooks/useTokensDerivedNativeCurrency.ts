@@ -8,15 +8,16 @@ import { useMemo } from 'react'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 interface DerivedNativeCurrencyQueryResult {
   tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
 }
 
-export function useNativeCurrencyPricedTokenAmounts(
-  tokenAmounts?: TokenAmount[] | null
-): { loading: boolean; pricedTokenAmounts: PricedTokenAmount[] } {
+export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[] | null): {
+  loading: boolean
+  pricedTokenAmounts: PricedTokenAmount[]
+} {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const tokenIds = useMemo(() => {

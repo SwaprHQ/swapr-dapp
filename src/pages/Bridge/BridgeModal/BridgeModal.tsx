@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -37,7 +38,12 @@ export const BridgeModal = ({
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
-  const text = t('bridgeModalText', { typedValue, symbol: symbol ?? '', fromNetworkName, toNetworkName })
+  const text = t('bridgeModalText', {
+    typedValue,
+    symbol: symbol ?? '',
+    fromNetworkName,
+    toNetworkName,
+  })
 
   useEffect(() => {
     setDisableConfirm(false)
@@ -70,15 +76,30 @@ export const BridgeModal = ({
     }
 
     if (activeBridge === 'socket') {
-      setIsWarning(true)
-      setBridgeName('Socket Network')
+      batchedUpdates(() => {
+        setIsWarning(true)
+        setBridgeName('Socket Network')
+      })
     }
 
     if (activeBridge?.includes('arbitrum')) {
-      setIsWarning(false)
-      setBridgeName('Arbitrum One Bridge')
+      batchedUpdates(() => {
+        setIsWarning(false)
+        setBridgeName('Arbitrum One Bridge')
+      })
     }
 
+    if (activeBridge === 'xdai') {
+      batchedUpdates(() => {
+        setIsWarning(false)
+        setBridgeName('xDai Bridge')
+      })
+    }
+
+    if (activeBridge === 'connext') {
+      setIsWarning(false)
+      setBridgeName('Connext Network')
+    }
     if (activeBridge?.includes('omnibridge')) {
       setIsWarning(false)
       setBridgeName('OmniBridge')

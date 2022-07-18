@@ -142,9 +142,9 @@ type OmniBridgeSliceExtract = {
   omniBridgeActions: OmniBridgeActions
 }
 
-export const { omniBridgeReducers, omniBridgeActions } = (Object.keys(omniBridgeSlices) as Array<
-  keyof typeof omniBridgeSlices
->).reduce(
+export const { omniBridgeReducers, omniBridgeActions } = (
+  Object.keys(omniBridgeSlices) as Array<keyof typeof omniBridgeSlices>
+).reduce(
   (total, key) => {
     total.omniBridgeReducers[key] = omniBridgeSlices[key].reducer
     total.omniBridgeActions[key] = omniBridgeSlices[key].actions
