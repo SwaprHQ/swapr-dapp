@@ -10,7 +10,7 @@ import {
 } from './generated'
 
 const config = new Configuration({
-  basePath: 'https://backend.movr.network',
+  basePath: 'https://api.socket.tech',
   middleware: [
     {
       pre: async ctx => {
