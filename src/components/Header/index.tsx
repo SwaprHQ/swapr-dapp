@@ -285,7 +285,7 @@ function Header() {
           {account && (
             <>
               <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
-                &#128640;&nbsp;Expeditions
+                &#10024;&nbsp;Expeditions
               </HeaderButton>
               <Balances />
             </>

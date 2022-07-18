@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import styled from 'styled-components'
 
 import SwprLogo from '../../assets/images/swpr-logo.png'
 import { useShowExpeditionsPopup } from '../../state/application/hooks'
-import { TYPE } from '../../theme'
+import { ExternalLink, TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import Row from '../Row'
-import { StyledExternalLink } from './TaskCard'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -17,6 +16,12 @@ const ContentWrapper = styled(AutoColumn)`
 const UpperAutoColumn = styled(AutoColumn)`
   padding: 32px;
 `
+
+const Text: FC<PropsWithChildren> = ({ children }) => (
+  <TYPE.white fontSize="16px" lineHeight="150%">
+    {children}
+  </TYPE.white>
+)
 
 export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void }) {
   const open = useShowExpeditionsPopup()
@@ -30,18 +35,19 @@ export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void 
             <TYPE.largeHeader>Swapr Expeditions</TYPE.largeHeader>
           </Row>
           <Row>
-            <TYPE.white fontSize="14px">
+            <Text>
               Embark on a journey through space-time. In Swapr expeditions, you will traverse the lavender sea, making
               incredible discoveries along the way.
-            </TYPE.white>
+            </Text>
           </Row>
           <Row>
-            <TYPE.white fontSize="14px">Get ready, Expeditions is launching very soon</TYPE.white>
+            <Text>Get ready, Expeditions is launching very soon.</Text>
           </Row>
           <Row>
-            <StyledExternalLink href="https://twitter.com/swapreth">
-              <i>Updates</i>
-            </StyledExternalLink>
+            <Text>
+              Follow Swapr <ExternalLink href="https://twitter.com/swapreth">Twitter</ExternalLink> or{' '}
+              <ExternalLink href="https://discord.gg/4QXEJQkvHH">Discord</ExternalLink> to get updates on Expeditions.
+            </Text>
           </Row>
         </UpperAutoColumn>
       </ContentWrapper>
