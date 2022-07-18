@@ -145,6 +145,19 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
   const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
+  // get UTC time in miliseconds
+  const currentTime = new Date().getTime()
+  // set TTL - currently at 2 minutes
+  const quoteTTL = 2 * 60 * 1000
+
+  const [endOfTime, setEndOfTime] = useState(currentTime + quoteTTL)
+  const [computeSwitch, setComputeSwitch] = useState(false)
+
+  if (currentTime > endOfTime) {
+    setComputeSwitch(!computeSwitch)
+    setEndOfTime(currentTime + quoteTTL)
+  }
+
   const dependencyList = [
     account,
     useMultihops,
@@ -161,14 +174,17 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     recipient,
     isExactIn,
     provider,
+    computeSwitch,
   ]
 
   useWhatChanged(
     dependencyList,
-    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider`
+    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,computeSwitch`
   )
 
   useEffect(() => {
+    setEndOfTime(currentTime + quoteTTL)
+
     const [inputCurrencyBalance] = relevantTokenBalances
 
     // Require two currencies to be selected
