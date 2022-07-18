@@ -10,7 +10,7 @@ import { useIsMultihop, useUserSlippageTolerance } from '../../state/user/hooks'
 import { getExactIn, getExactOut } from './api'
 // Types
 // eslint-disable-next-line
-import type { EcoRouterHookResults } from './types'
+import { EcoRouterHookResults } from './types'
 
 /**
  * Eco Router hook

@@ -23,6 +23,7 @@ export enum ApplicationModal {
   NETWORK_SWITCHER_TO,
   UNSUPPORTED_NETWORK,
   SIMPLE_SETTINGS,
+  EXPEDITIONS,
 }
 
 export enum MainnetGasPrice {
