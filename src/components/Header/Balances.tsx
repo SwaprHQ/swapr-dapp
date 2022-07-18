@@ -1,4 +1,4 @@
-import { SWPR } from '@swapr/sdk'
+import { Fraction, SWPR } from '@swapr/sdk'
 
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
@@ -66,19 +66,36 @@ export function Balances() {
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const networkWithoutSWPR = !newSwpr
 
+  const numberFormater = Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    compactDisplay: 'short',
+    minimumFractionDigits: 3,
+  })
+
   return (
     <StyledBalanacesWrapper onClick={toggleClaimPopup}>
       {!isUnsupportedChainIdError && (
         <Amount id="eth-balance">
           {userNativeCurrencyBalance ? (
-            `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
+            `${
+              userNativeCurrencyBalance.greaterThan(new Fraction('10000'))
+                ? numberFormater.format(parseInt(userNativeCurrencyBalance.toFixed(2)))
+                : userNativeCurrencyBalance.toFixed(3)
+            } ${nativeCurrency.symbol}`
           ) : (
             <Skeleton className="eth-balance-skeleton-wrapper" />
           )}
         </Amount>
       )}
       {!networkWithoutSWPR && (
-        <Amount id="swpr-info">{newSwprBalance ? newSwprBalance.toFixed(3) : '0.000'} SWPR</Amount>
+        <Amount id="swpr-info">
+          {newSwprBalance
+            ? newSwprBalance.greaterThan(new Fraction('10000'))
+              ? numberFormater.format(parseInt(newSwprBalance.toFixed(3)))
+              : newSwprBalance.toFixed(3)
+            : '0.000'}{' '}
+          SWPR
+        </Amount>
       )}
       <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
         {isUnsupportedChainIdError && (
