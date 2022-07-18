@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, Token
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -110,6 +110,9 @@ export interface UseDerivedSwapInfoResult {
   loading: boolean
 }
 
+// set TTL - currently at 5 minutes
+const quoteTTL = 5 * 60 * 1000
+
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
   const { account, chainId, library: provider } = useActiveWeb3React()
@@ -145,18 +148,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
   const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
-  // get UTC time in miliseconds
-  const currentTime = new Date().getTime()
-  // set TTL - currently at 2 minutes
-  const quoteTTL = 2 * 60 * 1000
-
-  const [endOfTime, setEndOfTime] = useState(currentTime + quoteTTL)
-  const [computeSwitch, setComputeSwitch] = useState(false)
-
-  if (currentTime > endOfTime) {
-    setComputeSwitch(!computeSwitch)
-    setEndOfTime(currentTime + quoteTTL)
-  }
+  const [isQuoteExpired, setIsQuoteExpired] = useState(false)
+  const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
 
   const dependencyList = [
     account,
@@ -174,17 +167,15 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     recipient,
     isExactIn,
     provider,
-    computeSwitch,
+    isQuoteExpired,
   ]
 
   useWhatChanged(
     dependencyList,
-    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,computeSwitch`
+    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
   )
 
   useEffect(() => {
-    setEndOfTime(currentTime + quoteTTL)
-
     const [inputCurrencyBalance] = relevantTokenBalances
 
     // Require two currencies to be selected
@@ -227,6 +218,11 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       setInputError(inputErrorNextState)
       setLoading(true)
       setAllPlatformTrades([])
+
+      setIsQuoteExpired(false)
+      if (quoteExpiryTimeout.current) {
+        clearTimeout(quoteExpiryTimeout.current)
+      }
     })
 
     const commonParams = {
@@ -271,6 +267,9 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
         unstable_batchedUpdates(() => {
           setAllPlatformTrades(trades.trades)
           setLoading(false)
+          quoteExpiryTimeout.current = setTimeout(() => {
+            setIsQuoteExpired(true)
+          }, quoteTTL)
         })
       })
       .catch(error => {
@@ -286,6 +285,9 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
         setAllPlatformTrades([])
         setLoading(false)
         setInputError(undefined)
+        if (quoteExpiryTimeout.current) {
+          clearTimeout(quoteExpiryTimeout.current)
+        }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
