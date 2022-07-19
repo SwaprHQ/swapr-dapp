@@ -92,9 +92,7 @@ const CurrencyRow = ({
         )}
       </Flex>
       {!hideBalance && (
-        <Box style={{ justifySelf: 'flex-end' }}>
-          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-        </Box>
+        <Box style={{ justifySelf: 'flex-end' }}>{balance ? <Balance balance={balance} /> : account && <Loader />}</Box>
       )}
     </TokenPickerItem>
   )
