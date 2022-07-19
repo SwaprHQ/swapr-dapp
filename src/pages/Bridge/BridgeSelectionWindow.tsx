@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Box, Text } from 'rebass'
 import { ecoBridgeUIActions } from 'services/EcoBridge/store/UI.reducer'
-import { AppState } from 'state'
 import styled from 'styled-components'
 
 import QuestionHelper from '../../components/QuestionHelper'
@@ -24,7 +23,6 @@ export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
-  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
   const handleSelectBridge = (id: OptionalBridgeList, receiveAmount?: string) => {
     dispatch(commonActions.setActiveBridge(id))
@@ -53,7 +51,6 @@ export const BridgeSelectionWindow = () => {
               details={details}
               status={status}
               handleSelectBridge={handleSelectBridge}
-              isBridgeSwapActive={isBridgeSwapActive}
             />
           ))}
         </SelectionListWindowWrapper>
@@ -80,19 +77,12 @@ interface BridgeProps {
   }
   status: SyncState
   handleSelectBridge: (id: OptionalBridgeList, receiveAmount?: string) => void
-  isBridgeSwapActive: boolean
 }
 
-const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge, isBridgeSwapActive }: BridgeProps) => {
+const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
   const isSelected = id === activeBridge
   const isLoading = status === 'loading'
   const show = status !== 'loading' && details
-
-  useEffect(() => {
-    if (!isLoading && show && isBridgeSwapActive && details?.receiveAmount) {
-      handleSelectBridge(id, details.receiveAmount)
-    }
-  }, [id, isLoading, show, handleSelectBridge, isBridgeSwapActive, details?.receiveAmount])
 
   return (
     <SelectionListOption
