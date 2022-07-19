@@ -2,14 +2,12 @@ import { Fraction, SWPR } from '@swapr/sdk'
 
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { ApplicationModal } from 'state/application/actions'
 import styled from 'styled-components'
 
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
+import { useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
-import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import { Amount } from './styled'
 
 const StyledBalanacesWrapper = styled.div(
@@ -63,7 +61,6 @@ export function Balances() {
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
-  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const networkWithoutSWPR = !newSwpr
 
   const numberFormater = Intl.NumberFormat('en-US', {
@@ -75,35 +72,30 @@ export function Balances() {
   return (
     <StyledBalanacesWrapper onClick={toggleClaimPopup}>
       {!isUnsupportedChainIdError && (
-        <Amount id="eth-balance">
-          {userNativeCurrencyBalance ? (
-            `${
-              userNativeCurrencyBalance.greaterThan(new Fraction('10000'))
-                ? numberFormater.format(parseInt(userNativeCurrencyBalance.toFixed(2)))
-                : userNativeCurrencyBalance.toFixed(3)
-            } ${nativeCurrency.symbol}`
-          ) : (
-            <Skeleton className="eth-balance-skeleton-wrapper" />
-          )}
-        </Amount>
-      )}
-      {!networkWithoutSWPR && (
-        <Amount id="swpr-info">
-          {newSwprBalance
-            ? newSwprBalance.greaterThan(new Fraction('10000'))
-              ? numberFormater.format(parseInt(newSwprBalance.toFixed(3)))
-              : newSwprBalance.toFixed(3)
-            : '0.000'}{' '}
-          SWPR
-        </Amount>
-      )}
-      <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-        {isUnsupportedChainIdError && (
-          <Amount data-testid="unsupported-network-warning" zero>
-            {'UNSUPPORTED NETWORK'}
+        <>
+          <Amount id="eth-balance">
+            {userNativeCurrencyBalance ? (
+              `${
+                userNativeCurrencyBalance.greaterThan(new Fraction('10000'))
+                  ? numberFormater.format(parseInt(userNativeCurrencyBalance.toFixed(2)))
+                  : userNativeCurrencyBalance.toFixed(3)
+              } ${nativeCurrency.symbol}`
+            ) : (
+              <Skeleton className="eth-balance-skeleton-wrapper" />
+            )}
           </Amount>
-        )}
-      </UnsupportedNetworkPopover>
+          {!networkWithoutSWPR && (
+            <Amount id="swpr-info">
+              {newSwprBalance
+                ? newSwprBalance.greaterThan(new Fraction('10000'))
+                  ? numberFormater.format(parseInt(newSwprBalance.toFixed(3)))
+                  : newSwprBalance.toFixed(3)
+                : '0.000'}{' '}
+              SWPR
+            </Amount>
+          )}
+        </>
+      )}
     </StyledBalanacesWrapper>
   )
 }

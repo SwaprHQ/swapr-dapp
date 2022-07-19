@@ -1,11 +1,13 @@
 import { SWPR } from '@swapr/sdk'
 
 import ExpeditionsModal from 'components/expeditions/ExpeditionsModal'
+import { UnsupportedNetworkPopover } from 'components/NetworkUnsupportedPopover'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
+import { ApplicationModal } from 'state/application/actions'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
@@ -13,7 +15,7 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
-import { useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import ClaimModal from '../claim/ClaimModal'
@@ -26,6 +28,7 @@ import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
+import { Amount } from './styled'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -204,7 +207,7 @@ function Header() {
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
-
+  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   const networkWithoutSWPR = !newSwpr
@@ -290,6 +293,13 @@ function Header() {
               <Balances />
             </>
           )}
+          <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
+            {isUnsupportedChainIdError && (
+              <Amount data-testid="unsupported-network-warning" zero>
+                {'UNSUPPORTED NETWORK'}
+              </Amount>
+            )}
+          </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
             <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
               <GasInfoSvg />
