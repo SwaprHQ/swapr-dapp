@@ -1,4 +1,5 @@
 import { AddressZero } from '@ethersproject/constants'
+import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
 
@@ -111,7 +112,7 @@ export interface UseDerivedSwapInfoResult {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
   const {
     independentField,
@@ -144,24 +145,27 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
   const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
+  const dependencyList = [
+    account,
+    useMultihops,
+    recipientLookupComputed,
+    chainId,
+    inputCurrency?.address,
+    outputCurrency?.address,
+    parsedAmountString,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    relevantTokenBalances[0]?.raw.toString(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    relevantTokenBalances[1]?.raw.toString(),
+    allowedSlippage,
+    recipient,
+    isExactIn,
+    provider,
+  ]
+
   useWhatChanged(
-    [
-      account,
-      useMultihops,
-      recipientLookupComputed,
-      chainId,
-      inputCurrency?.address,
-      outputCurrency?.address,
-      parsedAmountString,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      relevantTokenBalances[0]?.raw.toString(),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      relevantTokenBalances[1]?.raw.toString(),
-      allowedSlippage,
-      recipient,
-      isExactIn,
-    ],
-    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn`
+    dependencyList,
+    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider`
   )
 
   useEffect(() => {
@@ -220,6 +224,11 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       },
     }
 
+    // Use a static version
+    const staticProvider = provider ? new StaticJsonRpcProvider(provider?.connection.url) : undefined
+
+    console.log('useDerivedSwapInfo: fetching trades')
+
     const getTrades = isExactIn
       ? getExactInFromEcoRouter(
           {
@@ -227,7 +236,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             currencyOut: outputCurrency,
             ...commonParams,
           },
-          ecoRouterSourceOptionsParams
+          ecoRouterSourceOptionsParams,
+          staticProvider
         )
       : getExactOutFromEcoRouter(
           {
@@ -235,7 +245,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             currencyIn: inputCurrency,
             ...commonParams,
           },
-          ecoRouterSourceOptionsParams
+          ecoRouterSourceOptionsParams,
+          staticProvider
         )
 
     // Start fetching trades from EcoRouter API
@@ -262,22 +273,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    account,
-    useMultihops,
-    recipientLookup,
-    chainId,
-    inputCurrency?.address,
-    outputCurrency?.address,
-    parsedAmountString,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    relevantTokenBalances[0]?.raw.toString(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    relevantTokenBalances[1]?.raw.toString(),
-    allowedSlippage,
-    recipient,
-    isExactIn,
-  ])
+  }, dependencyList)
 
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade

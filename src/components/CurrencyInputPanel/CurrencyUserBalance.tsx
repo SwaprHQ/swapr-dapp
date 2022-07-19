@@ -20,9 +20,7 @@ export const CurrencyUserBalance = ({
   const { account } = useActiveWeb3React()
   const theme = useTheme()
 
-  if (!account) {
-    return null
-  }
+  if (!account) return null
 
   const trimmedBalance: string = limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'
 

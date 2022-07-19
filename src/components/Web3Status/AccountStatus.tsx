@@ -91,6 +91,7 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '30px')};
+    width: ${({ size }) => (size ? size + 'px' : '30px')};
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -185,7 +186,7 @@ export function AccountStatus({
           )}
         </Web3StatusConnected>
       )}
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER} placement="bottom-end">
         <Web3StatusNetwork
           clickable={networkSwitchingActive}
           onClick={networkSwitchingActive ? toggleNetworkSwitcherPopover : undefined}
