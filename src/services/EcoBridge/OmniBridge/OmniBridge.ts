@@ -1,9 +1,8 @@
 import { formatEther, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
-// import { schema, TokenList } from '@uniswap/token-lists'
-// import Ajv from 'ajv'
+import { schema, TokenList } from '@uniswap/token-lists'
+import Ajv from 'ajv'
 import { BigNumber, Contract } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { request } from 'graphql-request'
@@ -445,15 +444,14 @@ export class OmniBridge extends EcoBridgeChildBase {
       const fetchDefaultTokens = async () => {
         const url = defaultTokensUrl[Number(from.chainId)]
 
-        // const tokenListValidator = new Ajv({ allErrors: false }).compile(schema)
+        const tokenListValidator = new Ajv({ allErrors: false }).compile(schema)
 
         const response = await fetch(url)
         if (response.ok) {
           const json: TokenList = await response.json()
-          // TODO: Add this check back once schema validation is fixed
-          // if (tokenListValidator(json)) {
-          return json.tokens.filter(token => token.chainId === from.chainId)
-          // }
+          if (tokenListValidator(json)) {
+            return json.tokens.filter(token => token.chainId === from.chainId)
+          }
         }
         return []
       }

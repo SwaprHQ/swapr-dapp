@@ -1,12 +1,12 @@
 import { Fraction, SWPR } from '@swapr/sdk'
 
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { ApplicationModal } from 'state/application/actions'
 import styled from 'styled-components'
 
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
