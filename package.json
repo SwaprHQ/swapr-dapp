@@ -47,6 +47,7 @@
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.14",
     "ajv": "^8.11.0",
+    "ajv-formats": "^2.1.1",
     "aos": "^2.3.4",
     "arb-ts": "^1.0.2",
     "cids": "^1.1.9",
