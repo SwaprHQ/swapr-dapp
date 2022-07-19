@@ -14,7 +14,7 @@ interface UnsupportedNetworkPopoverProps {
   parentRef?: RefObject<HTMLElement>
 }
 
-export default function UnsupportedNetworkPopover({ children, show }: UnsupportedNetworkPopoverProps) {
+export function UnsupportedNetworkPopover({ children, show }: UnsupportedNetworkPopoverProps) {
   const closeModals = useCloseModals()
   const popoverRef = useRef(null)
 

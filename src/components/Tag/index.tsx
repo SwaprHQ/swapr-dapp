@@ -45,7 +45,7 @@ export const TagSuccessArrow = styled(TagSuccess)`
   }
 `
 
-const TagWarning = styled(Tag)`
+export const TagWarning = styled(Tag)`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
