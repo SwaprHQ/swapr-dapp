@@ -69,7 +69,7 @@ export class TransactionSettings {
     cy.get('[data-testid=popover]')
       .contains('Multihop')
       .then(element => {
-        if (element.text() == 'Multihop enabled') {
+        if (element.text() === 'Multihop enabled') {
           MenuBar.getSettings().click()
           cy.get('[data-testid=toggle-off]').first().click()
           TransactionSettings.closeModal()
