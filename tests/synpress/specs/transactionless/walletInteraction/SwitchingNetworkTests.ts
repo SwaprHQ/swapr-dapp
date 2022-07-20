@@ -6,6 +6,14 @@ import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 describe('Switching from mainnet tests', () => {
   before(() => {
     cy.clearLocalStorage()
+    cy.addMetamaskNetwork({
+      networkName: 'Arbitrum Rinkeby',
+      rpcUrl: 'https://rinkeby.arbitrum.io/rpc',
+      chainId: '421611',
+      symbol: 'ETH',
+      blockExplorer: 'https://rinkeby-explorer.arbitrum.io/#/',
+      isTestnet: true,
+    })
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
