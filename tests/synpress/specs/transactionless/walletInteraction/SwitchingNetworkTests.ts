@@ -103,21 +103,21 @@ describe('Switching from mainnet tests', () => {
     NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
   it('Should switch from a. rinkeby to mainnet by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from a. rinkeby to arbitrum by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from a. rinkeby to gnosis by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
@@ -125,7 +125,7 @@ describe('Switching from mainnet tests', () => {
   })
 
   it('Should switch from a. rinkeby to Polygon by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToSwitchNetwork()
