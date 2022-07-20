@@ -46,6 +46,18 @@ interface SwapButtonsProps {
   setWrapState: ((wrapState: WrapState) => void) | undefined
 }
 
+const errorBox = ({
+  isExpertMode,
+  swapErrorMessage,
+  isSpaceAtTop = true,
+}: {
+  isExpertMode: boolean
+  swapErrorMessage?: string
+  isSpaceAtTop?: boolean
+}) => (
+  <>{isExpertMode && swapErrorMessage && <SwapCallbackError isSpaceAtTop={isSpaceAtTop} error={swapErrorMessage} />}</>
+)
+
 export function SwapButtons({
   wrapInputError,
   showApproveFlow,
@@ -186,24 +198,24 @@ export function SwapButtons({
         <Column style={{ marginTop: '1rem' }}>
           <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
         </Column>
+        {errorBox({ isExpertMode, swapErrorMessage })}
       </>
     )
   }
 
-  if (isExpertMode && swapErrorMessage) {
-    return <SwapCallbackError error={swapErrorMessage} />
-  }
-
   return (
-    <SwapButton
-      onClick={onSwapClick}
-      id="swap-button"
-      disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-      platformName={trade?.platform.name}
-      swapInputError={swapInputError}
-      priceImpactSeverity={priceImpactSeverity}
-      isExpertMode={isExpertMode}
-      amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
-    />
+    <>
+      <SwapButton
+        onClick={onSwapClick}
+        id="swap-button"
+        disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+        platformName={trade?.platform.name}
+        swapInputError={swapInputError}
+        priceImpactSeverity={priceImpactSeverity}
+        isExpertMode={isExpertMode}
+        amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+      />
+      {errorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
+    </>
   )
 }
