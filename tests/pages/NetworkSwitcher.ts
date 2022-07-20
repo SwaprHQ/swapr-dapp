@@ -1,3 +1,5 @@
+import { ChainsEnum } from '../utils/enums/ChainsEnum'
+
 export class NetworkSwitcher {
   static ethereum() {
     return cy.get('[data-testid=ethereum-network-button]').filter(':visible')
@@ -19,5 +21,10 @@ export class NetworkSwitcher {
   }
   static polygon() {
     return cy.get('[data-testid=polygon-network-button]')
+  }
+  static checkNetwork(networkId: ChainsEnum) {
+    cy.window().should(win => {
+      expect((window as any).ethereum.networkVersion).to.be.eq(networkId)
+    })
   }
 }

@@ -35,27 +35,26 @@ describe('Campaign creation tests', () => {
   })
 
   it('Should create a single reward pool [TC-60]', () => {
-    RewardsPage.getCreateCampaignButton().click()
+    RewardsPage.getCreateCampaignButton().click({ scrollBehavior: 'top' })
     CreatePoolPage.selectLpTokenStaking()
-    CreatePoolPage.getLiquidityPairMenuButton().click()
+    CreatePoolPage.getLiquidityPairMenuButton().click({ scrollBehavior: 'top' })
     PairMenu.choosePair(TOKENS_PAIR)
 
     CreatePoolPage.setStartTime(DateUtils.getFormattedDateTimeForInput(expectedStartsAt))
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTimeForInput(expectedEndsAt))
 
-    CreatePoolPage.getRewardTokenMenuButton().first().click()
+    CreatePoolPage.getRewardTokenMenuButton().first().click({ scrollBehavior: 'top' })
     TokenMenu.chooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
-
     CreatePoolPage.confirmPoolCreation()
     cy.confirmMetamaskTransaction({})
-    MenuBar.checkToastMessage('campaign')
 
-    ;(SubgraphFacade.liquidityCampaign(
-      AddressesEnum.WALLET_PUBLIC,
-      getUnixTime(expectedStartsAt)
-    ) as Cypress.Chainable).then((res: LiquidityCampaign) => {
+    cy.scrollTo('top')
+    MenuBar.checkToastMessage('campaign')
+    ;(
+      SubgraphFacade.liquidityCampaign(AddressesEnum.WALLET_PUBLIC, getUnixTime(expectedStartsAt)) as Cypress.Chainable
+    ).then((res: LiquidityCampaign) => {
       const firstLiquidityCampaign = res.body.data.liquidityMiningCampaigns[0]
       const {
         owner,
@@ -74,21 +73,17 @@ describe('Campaign creation tests', () => {
     })
   })
   it('Should open a campaign through liquidity pair [TC-60]', function () {
-    if(!isCampaignCreated){
+    if (!isCampaignCreated) {
       this.skip()
     }
     LiquidityPage.visitLiquidityPage()
-    LiquidityPage.getAllPairsButton().click()
-    TokenMenu.getOpenTokenManagerButton().click()
+    LiquidityPage.getAllPairsButton().click({})
+    TokenMenu.getOpenTokenManagerButton().click({})
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
     TokenMenu.chooseToken('dai')
-    LiquidityPage.getPairCards()
-      .contains('USDT')
-      .click()
-    LiquidityPage.getRewardsCampaignButton().click()
-    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click()
-
+    LiquidityPage.getPairCards().contains('USDT').click({})
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
       REWARDS_INPUT,
@@ -97,21 +92,20 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  //TODO INVESTIGATE WHY THIS FAILS ON PIPELINE
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
-    if(!isCampaignCreated){
+  it('Should open a campaign through Rewards page [TC-60]', function () {
+    if (!isCampaignCreated) {
       this.skip()
     }
     RewardsPage.getRewardCards().should('be.visible')
-    RewardsPage.getAllPairsButton().click()
+    RewardsPage.getAllPairsButton().click({})
     PairMenu.choosePair(TOKENS_PAIR)
-    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt, TOKENS_PAIR)
+    RewardsPage.clickOnRewardCardUntilCampaignOpen(expectedStartsAt)
     CampaignPage.checkCampaignData(
-        TOKENS_PAIR,
-        REWARDS_INPUT,
-        'ACTIVE',
-        DateUtils.getFormattedDateTimeForValidation(expectedStartsAt),
-        DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
+      TOKENS_PAIR,
+      REWARDS_INPUT,
+      'ACTIVE',
+      DateUtils.getFormattedDateTimeForValidation(expectedStartsAt),
+      DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
 })

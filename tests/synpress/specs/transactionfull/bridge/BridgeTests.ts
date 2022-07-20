@@ -3,20 +3,23 @@ import { TokenMenu } from '../../../../pages/TokenMenu'
 import { BridgePage } from '../../../../pages/BridgePage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import {ScannerFacade, SCANNERS} from '../../../../utils/facades/ScannerFacade'
+import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
+import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
   before(() => {
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).then(
-      (res: { body: { result: string } }) => {
-        balanceBefore = parseFloat(res.body.result)
-        console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
-        console.log('ERC20 BALANCE BEFORE: ', res)
-      }
-    )
+    ScannerFacade.erc20TokenBalance(
+      AddressesEnum.USDC_TOKEN_ARINKEBY,
+      AddressesEnum.WALLET_PUBLIC,
+      SCANNERS.ARBISCAN
+    ).then((res: { body: { result: string } }) => {
+      balanceBefore = parseFloat(res.body.result)
+      console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
+      console.log('ERC20 BALANCE BEFORE: ', res)
+    })
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
   })
@@ -25,7 +28,7 @@ describe('Bridge tests', () => {
     cy.resetMetamaskAccount()
     cy.wait(500)
   })
-  it('Should initiate a bridging ', function() {
+  it('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -38,12 +41,10 @@ describe('Bridge tests', () => {
     BridgePage.getSelectTokenButton().click()
     TokenMenu.chooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
-    BridgePage.getBridgeSelector('arbitrum').should('be.visible')
+    BridgePage.getBridgeSelector('arbitrum').scrollIntoView().should('be.visible')
     BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
     BridgePage.getBridgeSelector('arbitrum').click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Bridge to')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Bridge to').click()
     BridgePage.confirmBridging()
     cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
     cy.confirmMetamaskTransaction({})
@@ -64,7 +65,7 @@ describe('Bridge tests', () => {
     BridgePage.getSelectTokenButton().click()
     TokenMenu.chooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
-    BridgePage.getBridgeSelector('arbitrum').should('be.visible')
+    BridgePage.getBridgeSelector('arbitrum').scrollIntoView().should('be.visible')
     BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
     BridgePage.getBridgeSelector('arbitrum').click()
     BridgePage.getBridgeButton().click()
@@ -72,20 +73,19 @@ describe('Bridge tests', () => {
     cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
     cy.rejectMetamaskTransaction()
     BridgePage.getTransactionErrorModal()
+      .scrollIntoView()
       .should('be.visible')
       .should('contain.text', 'Transaction rejected')
     BridgePage.closeTransactionErrorModal()
-    BridgePage.getNetworkFromSelector().should('be.visible')
-    BridgePage.getNetworkToSelector().should('be.visible')
+    BridgePage.getNetworkFromSelector().scrollIntoView().should('be.visible')
+    BridgePage.getNetworkToSelector().scrollIntoView().should('be.visible')
   })
   it('Should select ethereum and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.ethereum().click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Connect to Ethereum')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to Ethereum').click()
     cy.allowMetamaskToSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arbitrum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Arbitrum one')
@@ -107,11 +107,9 @@ describe('Bridge tests', () => {
   it('Should select Arbitrum and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.arbitrum().click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Connect to Arbitrum')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to Arbitrum').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -128,11 +126,9 @@ describe('Bridge tests', () => {
   it('Should select Gnosis Chain and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.gnosis().click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Connect to Gnosis Chain')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to Gnosis Chain').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -149,11 +145,9 @@ describe('Bridge tests', () => {
   it('Should select Rinkeby and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Connect to Rinkeby')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to Rinkeby').click()
     cy.allowMetamaskToSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.RINKEBY)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -170,11 +164,9 @@ describe('Bridge tests', () => {
   it('Should select A. Rinkeby and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getBridgeButton()
-      .should('contain.text', 'Connect to A. Rinkeby')
-      .click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to A. Rinkeby').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARINKEBY)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -212,7 +204,7 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
-  it('Should display history of bridge', function() {
+  it('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
@@ -222,10 +214,12 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
 
-    ScannerFacade.erc20TokenBalance(AddressesEnum.USDC_TOKEN_ARINKEBY, AddressesEnum.WALLET_PUBLIC, SCANNERS.ARBISCAN).should(
-      (res: { body: { result: string } }) => {
-        expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
-      }
-    )
+    ScannerFacade.erc20TokenBalance(
+      AddressesEnum.USDC_TOKEN_ARINKEBY,
+      AddressesEnum.WALLET_PUBLIC,
+      SCANNERS.ARBISCAN
+    ).should((res: { body: { result: string } }) => {
+      expect(parseInt(res.body.result)).to.be.at.least(Number(balanceBefore) + Number(1000000))
+    })
   })
 })
