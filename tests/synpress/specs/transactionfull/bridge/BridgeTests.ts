@@ -4,6 +4,7 @@ import { BridgePage } from '../../../../pages/BridgePage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
+import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
@@ -84,7 +85,7 @@ describe('Bridge tests', () => {
     NetworkSwitcher.ethereum().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Ethereum').click()
     cy.allowMetamaskToSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arbitrum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Arbitrum one')
@@ -108,7 +109,7 @@ describe('Bridge tests', () => {
     NetworkSwitcher.arbitrum().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Arbitrum').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -127,7 +128,7 @@ describe('Bridge tests', () => {
     NetworkSwitcher.gnosis().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Gnosis Chain').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -146,7 +147,7 @@ describe('Bridge tests', () => {
     NetworkSwitcher.rinkeby().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Rinkeby').click()
     cy.allowMetamaskToSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.RINKEBY)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')
@@ -165,7 +166,7 @@ describe('Bridge tests', () => {
     NetworkSwitcher.arinkeby().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to A. Rinkeby').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    NetworkSwitcher.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARINKEBY)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
     BridgePage.getNetworkToSelector().should('contain.text', 'Ethereum')

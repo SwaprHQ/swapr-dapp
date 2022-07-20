@@ -35,6 +35,8 @@ describe('Swapping tests', () => {
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap().confirmSwap()
 
+    cy.wait(1000)
+
     cy.rejectMetamaskTransaction()
 
     SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
