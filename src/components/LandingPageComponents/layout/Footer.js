@@ -49,6 +49,7 @@ const StyledFooter = styled(Layout)`
     display: flex;
     flex-direction: column;
     /* margin-bottom: 80px; */
+    margin-top: 1rem;
     position: relative;
     .footer-top {
       margin-bottom: 42px;

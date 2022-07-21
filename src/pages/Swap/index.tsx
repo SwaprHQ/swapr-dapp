@@ -75,12 +75,20 @@ const Box = styled.section`
   display: flex;
   flex: 1;
   width: 100%;
+  margin-bottom: 2rem;
+  background: ${({ theme }) => theme.dark1};
+  border-radius: 12px;
+`
+
+const BorderBox = styled.div`
+  border: 1px solid rgba(41, 38, 67, 1);
 `
 
 //  TODO: better calculate height
-const DiagramBox = styled.div`
+const DiagramBox = styled(BorderBox)`
   flex: 1;
-  height: 80vh;
+  height: calc(100vh - 192px);
+  border: 1px solid rgba(41, 38, 67, 1);
 `
 
 const InfoBox = styled.div`
@@ -93,17 +101,21 @@ const HistoryBox = styled.div`
   width: 350px;
 `
 
-const HistoryTradeBox = styled.div`
+const HistoryTradeBox = styled(BorderBox)`
   height: 50%;
 `
 
-const HistoryLiquidityBox = styled.div`
+const HistoryLiquidityBox = styled(BorderBox)`
   height: 50%;
 `
 
-const TradesBox = styled.div`
+const TradesBox = styled(BorderBox)`
   display: flex;
   flex-direction: column;
+`
+
+const TitleColumn = styled(BorderBox)`
+  padding: 1rem 0.5rem;
 `
 
 export enum GnosisProtocolTradeState {
@@ -496,22 +508,24 @@ export default function Swap() {
   const expertMode = () => (
     <>
       <Box>
-        <DiagramBox>Diagram</DiagramBox>
+        <DiagramBox>
+          <TitleColumn>Diagram</TitleColumn>
+        </DiagramBox>
         <InfoBox>
           <HistoryBox>
             <HistoryTradeBox>
-              <span>Trade History</span>
+              <TitleColumn>Trade History</TitleColumn>
             </HistoryTradeBox>
             <HistoryLiquidityBox>
-              <span>LIQUIDITY HISTORY</span>
+              <TitleColumn>Liquidity History</TitleColumn>
             </HistoryLiquidityBox>
           </HistoryBox>
           <TradesBox>
             <div>
-              <span>Trade</span> {swapper()}
+              <TitleColumn>Trade</TitleColumn> {swapper()}
             </div>
             <div>
-              <span>Orders</span>
+              <TitleColumn>Orders</TitleColumn>
             </div>
           </TradesBox>
         </InfoBox>
