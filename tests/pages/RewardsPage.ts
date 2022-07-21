@@ -1,7 +1,5 @@
 import { getUnixTime } from 'date-fns'
 
-import { PairMenu } from './PairMenu'
-
 export class RewardsPage {
   static visitRewardsPage() {
     cy.visit('/#/rewards')
@@ -51,24 +49,7 @@ export class RewardsPage {
     return cy.get('[data-testid=reward-starting-at-' + startingAt + ']', { timeout: 60000 })
   }
 
-  static clickOnRewardCardUntilCampaignOpen(startingAt: Date, chosenPair = '', retries = 0) {
-    cy.waitUntil(() => {
-      if (retries > 3) {
-        throw new Error('Retried to open campaign to many times')
-      }
-      cy.get('[data-testid=reward-card]').then(element => {
-        if (element.find('[data-testid=reward-starting-at-' + getUnixTime(startingAt).toString() + ']').length == 0)
-          if (chosenPair != '') {
-            //TODO After opening campaign for first time it instead of opening reward card opens all rewards page
-            RewardsPage.getAllPairsButton().click()
-            PairMenu.choosePair(chosenPair)
-            this.clickOnRewardCardUntilCampaignOpen(startingAt, chosenPair, ++retries)
-          }
-        return RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString())
-          .click()
-          .then(() => false)
-      })
-      return true
-    })
+  static clickOnRewardCardUntilCampaignOpen(startingAt: Date) {
+    RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString()).click()
   }
 }
