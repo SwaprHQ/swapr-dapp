@@ -5,17 +5,21 @@ import HeroImage from '../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from '../../assets/images/hero-graphic-left.png'
 import { breakpoints, gradients } from '../../utils/theme'
 
-export const SpaceBg = ({ children }: { children: ReactNode }) => (
-  <StyledHero id="liquidity-hero" className="hero-active">
-    <div className="inner-hero">
-      <AppBodyContainer>{children}</AppBodyContainer>
-      <div className="hero-background">
-        <div className="hero-image hero-image-right"></div>
-        <div className="hero-image hero-image-left"></div>
+export const SpaceBg = ({ children, isExpertMode }: { children: ReactNode; isExpertMode: boolean }) => {
+  return (
+    <StyledHero id="liquidity-hero" className="hero-active">
+      <div className="inner-hero">
+        <AppBodyContainer>{children}</AppBodyContainer>
+        {!isExpertMode && (
+          <div className="hero-background">
+            <div className="hero-image hero-image-right"></div>
+            <div className="hero-image hero-image-left"></div>
+          </div>
+        )}
       </div>
-    </div>
-  </StyledHero>
-)
+    </StyledHero>
+  )
+}
 
 const AppBodyContainer = styled.section`
   display: flex;
