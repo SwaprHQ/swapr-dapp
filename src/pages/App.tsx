@@ -1,7 +1,8 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
+import { useLocation } from 'react-router-dom'
 import { Slide, ToastContainer } from 'react-toastify'
 import { useIsExpertMode } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components'
@@ -67,8 +68,16 @@ const Marginer = styled.div`
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
-  const isExpertMode = useIsExpertMode()
+  const location = useLocation()
   const theme = useTheme()
+  const [isSwapPage, setIsSwapPage] = useState(false)
+  const isExpertMode = useIsExpertMode()
+
+  useEffect(() => {
+    setIsSwapPage(!!location.pathname.includes('swap'))
+  }, [location])
+
+  const isSwapPageExpertMode = isSwapPage && isExpertMode
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -88,9 +97,9 @@ export default function App() {
             <HeaderWrapper>
               <Header />
             </HeaderWrapper>
-            <BodyWrapper isExpertMode={isExpertMode}>
+            <BodyWrapper isExpertMode={isSwapPageExpertMode}>
               <Web3ReactManager>
-                <SpaceBg isExpertMode={isExpertMode}>
+                <SpaceBg isExpertMode={isSwapPageExpertMode}>
                   <Suspense fallback={<FallbackLoader />}>
                     <Routes />
                   </Suspense>
