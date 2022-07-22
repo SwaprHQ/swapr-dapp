@@ -2,8 +2,8 @@ import { parseUnits } from '@ethersproject/units'
 import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
@@ -38,7 +38,7 @@ export function useLpTokensUnderlyingAssets(
   pair?: Pair,
   lpTokensBalance?: TokenAmount
 ): { loading: boolean; underlyingAssets?: { token0: PricedTokenAmount; token1: PricedTokenAmount } } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useQuery<QueryResult>(QUERY, {
     variables: {

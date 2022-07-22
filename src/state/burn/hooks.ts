@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -29,7 +29,7 @@ export function useDerivedBurnInfo(
   }
   error?: string
 } {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
 
   const { independentField, typedValue } = useBurnState()
 

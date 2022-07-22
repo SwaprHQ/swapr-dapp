@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useState } from 'react'

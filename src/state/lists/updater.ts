@@ -1,5 +1,5 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -12,7 +12,7 @@ import { acceptListUpdate } from './actions'
 import { useActiveListUrls, useAllLists } from './hooks'
 
 export default function Updater(): null {
-  const { provider, chainId, account } = useWeb3React()
+  const { provider, chainId, account } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
   const isWindowVisible = useIsWindowVisible()
 

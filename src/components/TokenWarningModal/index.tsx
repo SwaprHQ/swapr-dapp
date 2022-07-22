@@ -1,7 +1,7 @@
 import { Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { transparentize } from 'polished'
 import React, { useCallback } from 'react'
 import { AlertCircle, AlertTriangle } from 'react-feather'
@@ -57,7 +57,7 @@ interface TokenWarningCardProps {
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
   const theme = useTheme()
   const { t } = useTranslation()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   if (!token) return null
 

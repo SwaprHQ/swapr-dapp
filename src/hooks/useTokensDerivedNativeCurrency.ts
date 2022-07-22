@@ -2,8 +2,8 @@ import { parseUnits } from '@ethersproject/units'
 import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useKpiTokens } from './useKpiTokens'
@@ -17,7 +17,7 @@ export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[]
   loading: boolean
   pricedTokenAmounts: PricedTokenAmount[]
 } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const tokenIds = useMemo(() => {
     return tokenAmounts ? tokenAmounts.map(tokenAmount => tokenAmount.token.address.toLowerCase()) : []

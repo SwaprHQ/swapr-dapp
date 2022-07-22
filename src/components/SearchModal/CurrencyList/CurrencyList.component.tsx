@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -39,7 +39,7 @@ const CurrencyRow = ({
   otherSelected,
   selectedTokenList,
 }: CurrencyRowProps) => {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
 
@@ -127,7 +127,7 @@ export const CurrencyList = ({
   onCurrencySelect,
   selectedTokenList,
 }: CurrencyListProps) => {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const [hasBreakLine, setHasBreakLine] = useState(false)
   const itemData = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {

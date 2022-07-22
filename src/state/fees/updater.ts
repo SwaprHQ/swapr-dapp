@@ -1,6 +1,6 @@
 import { Fetcher } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -8,7 +8,7 @@ import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { setProtocolFee, setSwapFees } from './actions'
 
 export default function Updater() {
-  const { provider, chainId } = useWeb3React()
+  const { provider, chainId } = useWeb3ReactCore()
   const dispatch = useDispatch()
 
   const isSWPRSupportedChain = chainSupportsSWPR(chainId)

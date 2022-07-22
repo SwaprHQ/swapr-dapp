@@ -1,8 +1,8 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -36,7 +36,7 @@ export function ActionButton({
   onSwitchToArbitrum,
   onClaim,
 }: ActionButtonProps) {
-  const { account, chainId, connector } = useWeb3React()
+  const { account, chainId, connector } = useWeb3ReactCore()
 
   const [disabled, setDisabled] = useState(true)
   const [text, setText] = useState('Claim SWPR (old)')

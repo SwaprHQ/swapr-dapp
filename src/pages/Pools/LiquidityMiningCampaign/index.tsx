@@ -1,5 +1,5 @@
-import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
@@ -44,7 +44,7 @@ const ButtonRow = styled(RowFixed)`
 `
 
 export default function LiquidityMiningCampaign() {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const { location, searchParams: search } = useRouter()
   const { liquidityMiningCampaignId, currencyIdA, currencyIdB } = useParams<{
     currencyIdA: string

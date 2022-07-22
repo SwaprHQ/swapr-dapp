@@ -1,6 +1,6 @@
 import { Currency } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import debounce from 'lodash/debounce'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -56,7 +56,7 @@ export const CurrencyInputPanelComponent = ({
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const [localValue, setLocalValue] = useState(value)
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const [isMaxAmount, setIsMaxAmount] = useState(false)
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)

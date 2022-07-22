@@ -2,7 +2,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { ChainId, Currency, currencyEquals } from '@swapr/sdk'
 import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -47,7 +47,7 @@ export function useWrapCallback(
   isGnosisTrade = false,
   typedValue?: string // can be also obtained from the SwapState
 ): UseWrapCallbackReturn {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapperToken = useWrappingToken(nativeCurrency)
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()

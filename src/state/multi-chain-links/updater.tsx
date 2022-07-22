@@ -1,11 +1,11 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
 export default function Updater(): null {
-  const { chainId, connector } = useWeb3React()
+  const { chainId, connector } = useWeb3ReactCore()
   const [searchParams, setSearchParams] = useSearchParams()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const updateSwitchingToCorrectChain = useIsSwitchingToCorrectChainUpdater()
@@ -26,10 +26,9 @@ export default function Updater(): null {
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
-    const requiredChainIdSupported =
-      requiredChainId &&
-      connector.supportedChainIds &&
-      connector.supportedChainIds.indexOf(parseInt(requiredChainId)) >= 0
+    //TODO supported chain ids list for every connector
+    const requiredChainIdSupported = requiredChainId
+    // && supportedChainIds[parseInt(requiredChainId)].includes(connector)
 
     if (!requiredChainId) updateSwitchingToCorrectChain(false)
     if (requiredChainId && requiredChainIdSupported && switchingToCorrectChain) {

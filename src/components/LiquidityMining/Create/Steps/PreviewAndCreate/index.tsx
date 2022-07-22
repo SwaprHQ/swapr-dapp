@@ -7,7 +7,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -76,7 +76,7 @@ export default function PreviewAndCreate({
   setSimulatedPrice,
   simulatedPrice,
 }: PreviewProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   useEffect(() => {

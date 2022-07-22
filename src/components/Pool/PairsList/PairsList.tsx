@@ -1,7 +1,7 @@
 import { SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
 import { AggregatedPairs } from 'hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -32,7 +32,7 @@ interface PairsListProps {
 }
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)

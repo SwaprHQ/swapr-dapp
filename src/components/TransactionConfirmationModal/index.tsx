@@ -1,6 +1,6 @@
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -187,7 +187,7 @@ export default function TransactionConfirmationModal({
   content,
   trade,
 }: ConfirmationModalProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   if (!chainId) return null
 

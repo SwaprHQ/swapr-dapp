@@ -1,7 +1,7 @@
 import { Pair } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
 import { useRouter } from 'hooks/useRouter'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePrevious } from 'react-use'
@@ -24,7 +24,7 @@ interface PairViewProps {
 
 export function PoolStats({ pair }: PairViewProps) {
   const { navigate } = useRouter()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const previousChainId = usePrevious(chainId)
   const { volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)

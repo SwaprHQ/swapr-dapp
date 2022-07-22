@@ -5,18 +5,19 @@ import { useWeb3React, Web3ReactHooks } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { WalletConnect } from '@web3-react/walletconnect'
-import { getAddChainParameters, URLS } from 'connectors/chains'
+// import { getAddChainParameters, URLS } from 'connectors/chains'
 import { useCallback, useState } from 'react'
 
 import { NETWORK_DETAIL } from '../constants'
 import { switchOrAddNetwork } from '../utils'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export type UseNetworkSwitchProps = {
   onSelectNetworkCallback?: () => void
 }
 
 // export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchProps = {}) => {
-//   const { connector, chainId, account } = useWeb3React()
+//   const { connector, chainId, account } = useWeb3ReactCore()
 //   // TODO
 //   const unsupportedChainIdError = false
 
@@ -41,10 +42,10 @@ export type UseNetworkSwitchProps = {
 // }
 
 export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchProps = {}) => {
-  const { connector, chainId } = useWeb3React()
+  const { connector, chainId } = useWeb3ReactCore()
   const isNetwork = connector instanceof Network
   const displayDefault = !isNetwork
-  const chainIds = (isNetwork ? Object.keys(URLS) : Object.keys(NETWORK_DETAIL)).map(chainId => Number(chainId))
+  // const chainIds = (isNetwork ? Object.keys(URLS) : Object.keys(NETWORK_DETAIL)).map(chainId => Number(chainId))
 
   const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1)
   // TODO pendingError from Web3Status?
@@ -74,7 +75,7 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
             .catch(setError)
         } else if (connector instanceof MetaMask || connector instanceof CoinbaseWallet) {
           connector
-            .activate(desiredChainId === -1 ? undefined : getAddChainParameters(desiredChainId))
+            .activate(desiredChainId === -1 ? undefined : desiredChainId)
             .then(() => setError(undefined))
             .catch(setError)
         }

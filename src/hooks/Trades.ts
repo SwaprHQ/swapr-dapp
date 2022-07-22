@@ -9,7 +9,7 @@ import {
   UniswapV2Trade,
 } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import flatMap from 'lodash/flatMap'
 import { useMemo } from 'react'
 
@@ -18,7 +18,6 @@ import { PairState, usePairs } from '../data/Reserves'
 import { useIsMultihop } from '../state/user/hooks'
 import { sortTradesByExecutionPrice } from '../utils/prices'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
-import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const maximumSlippage = new Percent('3', '100')
 
@@ -89,7 +88,7 @@ export function useTradeExactInUniswapV2(
   currencyOut?: Currency,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Trade | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, platform)
   const multihop = useIsMultihop()
 
@@ -120,7 +119,7 @@ export function useTradeExactOutUniswapV2(
   currencyAmountOut?: CurrencyAmount,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Trade | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, platform)
   const multihop = useIsMultihop()
 

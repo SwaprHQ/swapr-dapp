@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -35,7 +35,7 @@ function pairKey(index: number, data: Pair[]) {
 }
 
 const PairRow = ({ pair, onSelect, isSelected, style }: PairRowProps) => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { pairs: allPairs } = useAllPairs()
   const isOnSelectedList = isPairOnList(allPairs, pair)
   const customAdded = useIsUserAddedPair(pair)

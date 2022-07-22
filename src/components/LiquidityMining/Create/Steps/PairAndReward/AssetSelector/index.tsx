@@ -1,6 +1,6 @@
 import { Token, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -82,7 +82,7 @@ export default function AssetSelector({
   rawAmount,
   setRewardsObject,
 }: AssetSelectorProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
 
   const [assetTitle, setAssetTitle] = useState<string | null>(null)

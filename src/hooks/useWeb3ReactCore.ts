@@ -1,18 +1,22 @@
 import { ChainId } from '@swapr/sdk'
 
 import { useWeb3React, Web3ContextType } from '@web3-react/core'
-import { network } from 'connectors/network'
-import { providers } from 'ethers'
+import { Connector } from '@web3-react/types'
+import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks, web3Network } from 'connectors'
+import { providers, Wallet } from 'ethers'
 import { useEffect, useState } from 'react'
 import getLibrary from 'utils/getLibrary'
 
-import { NETWORK_DETAIL } from '../constants'
+import { NETWORK_DETAIL, WalletType } from '../constants'
 
-type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & { chainId?: ChainId; isSupportedChainId: boolean }
+type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
+  chainId?: ChainId
+  isSupportedChainId: boolean
+}
 
 let networkLibrary: providers.Web3Provider | undefined
 export function getNetworkLibrary(): providers.Web3Provider {
-  return (networkLibrary = networkLibrary ?? getLibrary(network.provider))
+  return (networkLibrary = networkLibrary ?? getLibrary(web3Network.provider))
 }
 
 export const useWeb3ReactCore = (): Web3ReactProps => {

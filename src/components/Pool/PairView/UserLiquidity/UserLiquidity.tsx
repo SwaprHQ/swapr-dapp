@@ -1,6 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -21,7 +21,7 @@ interface UserLiquidityProps {
 }
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const currency0 = unwrappedToken(pair?.token0)
   const currency1 = unwrappedToken(pair?.token1)
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)

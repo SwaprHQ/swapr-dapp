@@ -1,6 +1,6 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -192,7 +192,7 @@ function Title({
 
 export default function Pools() {
   const { t } = useTranslation()
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [sortBy, setSortBy] = useState(LIQUIDITY_SORTING_TYPES.TVL)

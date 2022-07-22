@@ -1,6 +1,6 @@
 import { TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
@@ -32,7 +32,7 @@ interface SwprInfoProps {
 }
 
 export function SwprInfo({ onToggleClaimPopup, newSwprBalance, hasActiveCampaigns }: SwprInfoProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
 
   return (
     <Wrapper onClick={onToggleClaimPopup} hide={!account}>

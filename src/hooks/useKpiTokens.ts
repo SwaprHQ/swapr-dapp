@@ -3,8 +3,8 @@ import { parseUnits } from '@ethersproject/units'
 import { KpiToken, Price, PricedToken, PricedTokenAmount, Token } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
 import { Decimal } from 'decimal.js-light'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
@@ -66,7 +66,7 @@ interface DerivedNativeCurrencyQueryResult {
 }
 
 export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens: KpiToken[] } => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const carrotSubgraphClient = useCarrotSubgraphClient()
 

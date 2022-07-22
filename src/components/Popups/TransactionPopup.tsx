@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +20,7 @@ const RowNoFlex = styled(AutoRow)`
 `
 
 export function TransactionPopup({ hash, success, summary, swapProtocol }: PopupContent) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const { t } = useTranslation()
   const theme = useTheme()

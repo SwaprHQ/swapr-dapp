@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { useTheme } from 'styled-components'
@@ -17,7 +17,7 @@ export const CurrencyUserBalance = ({
   customBalanceText,
   onMax,
 }: CurrencyUserBalanceProps) => {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const theme = useTheme()
 
   if (account) {

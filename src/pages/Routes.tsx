@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
@@ -31,7 +31,7 @@ const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './L
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
  */
 const RouteWrapper = ({ element }: { element: JSX.Element }) => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   // If all features are available, render the route
   if (chainSupportsSWPR(chainId)) {
     return element

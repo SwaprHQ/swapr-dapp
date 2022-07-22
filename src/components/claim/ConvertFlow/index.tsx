@@ -1,6 +1,6 @@
 import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
@@ -23,7 +23,7 @@ interface ConvertFlowProps {
 }
 
 export function ConvertFlow({ oldSwprBalance, disabled, onError }: ConvertFlowProps) {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const addTransaction = useTransactionAdder()
   // TODO is this used?
   //chainId will be one of  1,4,100,137,42161,421611 or undefined

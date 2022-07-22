@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { CID } from 'multiformats/cid'
 import { useEffect, useState } from 'react'
 
@@ -50,7 +50,7 @@ const supportedENSChainIds = [1, 4]
 export function useENSAvatar(ensName?: string | null) {
   const [avatar, setAvatar] = useState<ENSAvatarData>()
   const [loading, setLoading] = useState<boolean>(true)
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   useEffect(() => {
     // ENS supports Mainnet and Rinkeby

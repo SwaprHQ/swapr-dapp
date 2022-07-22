@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

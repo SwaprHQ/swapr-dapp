@@ -1,7 +1,7 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -106,14 +106,14 @@ export function useCombinedActiveList(): TokenAddressMap {
 export function useAllTokensFromActiveListsOnCurrentChain(): Readonly<{
   [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
 }> {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const activeListUrls = useActiveListUrls()
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
   return useMemo(() => combinedList[chainId || ChainId.MAINNET], [chainId, combinedList])
 }
 
 export function useTokenInfoFromActiveListOnCurrentChain(currency?: Currency): WrappedTokenInfo | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const activeListUrls = useActiveListUrls()
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
 

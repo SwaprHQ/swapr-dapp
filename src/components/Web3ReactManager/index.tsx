@@ -1,10 +1,8 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { network } from '../../connectors/network'
-import { NetworkContextName } from '../../constants'
 import { useEagerConnect } from '../../hooks'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import Loader from '../Loader'
@@ -22,7 +20,7 @@ const Message = styled.h2`
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
   const { t } = useTranslation()
-  const { isActive } = useWeb3React()
+  const { isActive } = useWeb3ReactCore()
   const targetedChainId = useTargetedChainIdFromUrl()
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already

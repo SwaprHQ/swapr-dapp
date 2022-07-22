@@ -2,8 +2,8 @@ import { getAddress } from '@ethersproject/address'
 
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
 import { gql } from 'graphql-request'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -17,7 +17,7 @@ import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { getNetworkLibrary } from './useWeb3ReactCore'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId, provider } = useWeb3React()
+  const { chainId, provider } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
 
   const ensResolver = useCallback(
@@ -74,7 +74,7 @@ interface KpiTokensQueryResult {
 }
 
 export function useFetchCarrotListCallback(): (sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
   const validCreators = useMemo(
     () =>

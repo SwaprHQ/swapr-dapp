@@ -1,6 +1,6 @@
 import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useMemo } from 'react'
 
 import carrotListLogoUrl from '../../assets/images/carrot.png'
@@ -20,7 +20,7 @@ export const CurrencyLogo = ({
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   ...componentProps
 }: CurrencyLogoContainerProps) => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const selectedChainId = chainIdOverride || chainId
 
   const swapWrappedTokenInfo = useTokenInfoFromActiveListOnCurrentChain(currency)

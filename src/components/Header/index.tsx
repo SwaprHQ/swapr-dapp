@@ -1,6 +1,6 @@
 import { SWPR } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -223,7 +223,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
 
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)

@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -48,7 +48,7 @@ export function SubmittedView({
   hash: string | undefined
 }) {
   const theme = useTheme()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { t } = useTranslation()
 
   return (

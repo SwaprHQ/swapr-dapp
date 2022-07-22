@@ -6,7 +6,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
@@ -119,7 +119,7 @@ export default function StakeCard({
   isSingleSided,
   targetedPairOrToken: targetedPairOrSingleToken,
 }: FullPositionCardProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const stakableTokenBalance = useTokenBalance(
     account || undefined,
     isSingleSided ? targetedPairOrSingleToken : targetedPairOrSingleToken.liquidityToken

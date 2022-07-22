@@ -2,7 +2,7 @@ import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, TokenAmount, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -138,7 +138,7 @@ export interface UseDerivedSwapInfoResult {
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
   const dispatch = useDispatch()
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const {
     independentField,
     typedValue,
@@ -331,7 +331,7 @@ export function queryParametersToSwapState(
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const dispatch = useDispatch<AppDispatch>()
   const parsedQs = useParsedQueryString()

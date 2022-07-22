@@ -1,7 +1,7 @@
 import { Pair, Percent } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
@@ -66,7 +66,7 @@ export function useBestAPY(pair?: Pair | null): {
   loading: boolean
   bestAPY?: Percent
 } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])

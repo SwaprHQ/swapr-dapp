@@ -1,8 +1,8 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 const QUERY = gql`
@@ -45,7 +45,7 @@ interface QueryResult {
 }
 
 export function useAllPairs(): { loading: boolean; pairs: Pair[] } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { loading, data, error } = useQuery<QueryResult>(QUERY)
 
   return useMemo(() => {

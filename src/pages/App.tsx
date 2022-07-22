@@ -1,7 +1,7 @@
 import { ApolloProvider } from '@apollo/client'
-import { useWeb3React } from '@web3-react/core'
 import AOS from 'aos'
 import { FallbackLoader } from 'components/Loader/FallbackLoader'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
@@ -63,7 +63,7 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const theme = useTheme()
 
   useEffect(() => {

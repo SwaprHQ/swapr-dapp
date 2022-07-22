@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -48,7 +48,7 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
 `
 
 export default function MyPairs() {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const [search] = useSearchParams()
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const { loading: loadingPairs, data } = useLPPairs(account || undefined)

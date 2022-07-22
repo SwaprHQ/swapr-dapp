@@ -1,9 +1,9 @@
 import { CurrencyAmount, Pair, Token, USD } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
 import Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useState } from 'react'
 
 import { immediateSubgraphClients } from '../apollo/client'
@@ -80,7 +80,7 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
     staked: boolean
   }[]
 } {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
 

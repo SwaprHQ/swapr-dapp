@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import { ThemeContext } from 'styled-components'
@@ -20,7 +20,7 @@ import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
 import { ManageTokensProps } from './ManageTokens.types'
 
 export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps) => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useContext(ThemeContext)

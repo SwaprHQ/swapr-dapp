@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -213,7 +213,7 @@ export default function AccountDetails({
   ENSName,
   openOptions,
 }: AccountDetailsProps) {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
   const { t } = useTranslation()
 

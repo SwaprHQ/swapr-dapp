@@ -2,8 +2,8 @@ import { CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Tra
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 
-import { useWeb3React } from '@web3-react/core'
 import { TradeDetails } from 'components/swap/TradeDetails'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -105,7 +105,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   // for expert mode
   const isExpertMode = useIsExpertMode()

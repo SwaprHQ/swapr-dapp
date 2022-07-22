@@ -1,8 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId, Token, Trade, UniswapV2RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'ethers'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
@@ -17,7 +17,6 @@ import { calculateGasMargin } from '../utils'
 import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
-import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,

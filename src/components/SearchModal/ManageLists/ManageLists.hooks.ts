@@ -1,5 +1,5 @@
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
@@ -161,7 +161,7 @@ export const useListRow = ({ listUrl }: ListRowProps) => {
     handleAcceptListUpdate: handleAcceptListUpdateRaw,
   } = useContext(ListRowContext)
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
 
   const tokensAmountInCurrentChain = useMemo(() => {

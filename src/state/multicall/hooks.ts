@@ -2,7 +2,7 @@ import { FunctionFragment, Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import debounce from 'lodash/debounce'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,7 +51,7 @@ function useCallsData(
   calls: (Call | undefined)[],
   { blocksPerFetch }: ListenerOptions = { blocksPerFetch: 1 }
 ): CallResult[] {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const callResults = useSelector<AppState, MulticallState['callResults']>(state => state.multicall.callResults)
   const dispatch = useDispatch()
 

@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { AlertTriangle } from 'react-feather'
@@ -32,7 +32,7 @@ const StyledWarningIcon = styled(AlertTriangle)`
 `
 
 export default function NetworkWarningModal() {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
 

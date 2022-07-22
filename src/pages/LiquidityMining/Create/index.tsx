@@ -1,6 +1,6 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -105,7 +105,7 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
 export default function CreateLiquidityMining() {
   const { t } = useTranslation()
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)

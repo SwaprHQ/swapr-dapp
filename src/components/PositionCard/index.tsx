@@ -1,6 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useState } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
@@ -51,7 +51,7 @@ interface MinimalPositionCardProps {
 }
 
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: MinimalPositionCardProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
   const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
@@ -193,7 +193,7 @@ interface FullPositionCardProps {
 }
 
 export default function FullPositionCard({ pair, border }: FullPositionCardProps) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
 
   const currency0 = unwrappedToken(pair?.token0)
   const currency1 = unwrappedToken(pair?.token1)

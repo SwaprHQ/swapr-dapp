@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { transparentize } from 'polished'
 import React from 'react'
 import styled from 'styled-components'
@@ -14,7 +14,7 @@ interface NetworkSwitcherProps {
 }
 
 export const NetworkSwitcher = ({ sendToId, onCollectClick, onSwitchClick }: NetworkSwitcherProps) => {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
   if (!chainId) return null
 
   return (

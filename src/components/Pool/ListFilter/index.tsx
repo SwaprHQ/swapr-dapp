@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -24,7 +24,7 @@ interface ListFilterProps {
 }
 
 export default function ListFilter({ disabled, filter, onFilterChange }: ListFilterProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
 
   const handleFilterRadioChange = useCallback(
     event => {

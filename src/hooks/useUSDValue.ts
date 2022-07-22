@@ -12,7 +12,7 @@ import {
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useState } from 'react'
 
 import { DAI, USDC } from '../constants/index'
@@ -32,7 +32,7 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
 const FETCH_PRICE_INTERVAL = 15000
 
 export function useUSDPrice(currencyAmount?: CurrencyAmount) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   let stablecoin: Token | undefined = undefined
   let platform: UniswapV2RoutablePlatform | undefined = undefined
@@ -70,7 +70,7 @@ export function useUSDPrice(currencyAmount?: CurrencyAmount) {
 
 export function useCoingeckoUSDPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = ChainId.MAINNET } = useWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
   const [price, setPrice] = useState<Price | undefined>()
   const [error, setError] = useState<Error | undefined>()
 
@@ -165,7 +165,7 @@ function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams)
 }
 
 export function useUSDValue(currencyAmount?: CurrencyAmount) {
-  const { chainId = ChainId.MAINNET } = useWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
   const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
   const price = useUSDPrice(wrappedCurrencyToken)
@@ -174,7 +174,7 @@ export function useUSDValue(currencyAmount?: CurrencyAmount) {
 }
 
 export function useCoingeckoUSDValue(currencyAmount?: CurrencyAmount) {
-  const { chainId = ChainId.MAINNET } = useWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
   const wrappedCurrencyToken = wrappedCurrencyAmount(currencyAmount, chainId)
 
   const coingeckoUsdPrice = useCoingeckoUSDPrice(wrappedCurrencyToken?.currency)

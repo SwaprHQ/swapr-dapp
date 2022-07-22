@@ -1,6 +1,6 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -68,7 +68,7 @@ export function SwapButtons({
   wrapState,
   setWrapState,
 }: SwapButtonsProps) {
-  const { account } = useWeb3React()
+  const { account } = useWeb3ReactCore()
   const isExpertMode = useIsExpertMode()
   const { t } = useTranslation()
 
