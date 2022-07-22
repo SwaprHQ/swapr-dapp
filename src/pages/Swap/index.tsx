@@ -4,7 +4,6 @@ import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, 
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from 'utils/theme'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
@@ -37,14 +36,9 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
-import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
-import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
-import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
-import Features from './../../components/LandingPageComponents/Features'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
-import Hero from './../../components/LandingPageComponents/layout/Hero'
-import Stats from './../../components/LandingPageComponents/Stats'
-import Timeline from './../../components/LandingPageComponents/Timeline'
+import { AdvancedSwapMode } from './AdvancedSwapMode'
+import { NormalSwapMode } from './NormalSwapMode'
 
 export type SwapData = {
   showConfirm: boolean
@@ -58,126 +52,6 @@ const SwitchIconContainer = styled.div`
   height: 0;
   position: relative;
   width: 100%;
-`
-
-const AppBodyContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 3;
-  min-height: calc(100vh - 340px);
-`
-
-const LandingBodyContainer = styled.section`
-  width: calc(100% + 32px) !important;
-`
-
-const Box = styled.section`
-  display: flex;
-  flex: 1;
-  width: 100%;
-  margin-bottom: 2rem;
-  background: rgba(25, 24, 36, 0.7);
-  border-radius: 12px;
-  @media screen and (max-width: ${breakpoints.l}) {
-    flex-wrap: wrap;
-  }
-`
-
-const BorderBox = styled.div`
-  border: 1px solid rgba(41, 38, 67, 1);
-`
-
-//  TODO: better calculate height
-const DiagramBox = styled(BorderBox)`
-  flex: 1;
-  height: calc(100vh - 162px);
-  border: 1px solid rgba(41, 38, 67, 1);
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-`
-
-const InfoBox = styled.div`
-  display: flex;
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
-  }
-  @media screen and (max-width: ${breakpoints.md}) {
-    flex-wrap: wrap;
-  }
-`
-
-const HistoryBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 100%;
-    flex-wrap: wrap;
-    flex-direction: row;
-  }
-`
-
-const HistoryTradeBox = styled(BorderBox)`
-  height: 50%;
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
-  }
-`
-
-const HistoryLiquidityBox = styled(BorderBox)`
-  height: 50%;
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
-  }
-`
-
-const TradesAndOrderBox = styled(BorderBox)`
-  display: flex;
-  flex-direction: column;
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 100%;
-    flex-wrap: wrap;
-    flex-direction: row;
-  }
-`
-const TradeBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
-  }
-`
-const OrderBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
-  }
-`
-
-const TitleColumn = styled(BorderBox)`
-  padding: 1rem 0.5rem;
 `
 
 export enum GnosisProtocolTradeState {
@@ -454,7 +328,7 @@ export default function Swap() {
       wrapState === WrapState.PENDING) &&
     trade instanceof GnosisProtocolTrade
 
-  const swapper = () => (
+  const renderSwapBox = () => (
     <>
       <Tabs />
       <AppBody tradeDetailsOpen={!!trade}>
@@ -567,34 +441,6 @@ export default function Swap() {
     </>
   )
 
-  const expertMode = () => (
-    <>
-      <Box>
-        <DiagramBox>
-          <TitleColumn>Diagram</TitleColumn>
-        </DiagramBox>
-        <InfoBox>
-          <HistoryBox>
-            <HistoryTradeBox>
-              <TitleColumn>Trade History</TitleColumn>
-            </HistoryTradeBox>
-            <HistoryLiquidityBox>
-              <TitleColumn>Liquidity History</TitleColumn>
-            </HistoryLiquidityBox>
-          </HistoryBox>
-          <TradesAndOrderBox>
-            <TradeBox>
-              <TitleColumn>Trade</TitleColumn> {swapper()}
-            </TradeBox>
-            <OrderBox>
-              <TitleColumn>Orders</TitleColumn>
-            </OrderBox>
-          </TradesAndOrderBox>
-        </InfoBox>
-      </Box>
-    </>
-  )
-
   return (
     <>
       <TokenWarningModal
@@ -607,23 +453,9 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       {isExpertMode ? (
-        <>{expertMode()}</>
+        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
       ) : (
-        <Hero>
-          <AppBodyContainer>{swapper()}</AppBodyContainer>
-        </Hero>
-      )}
-      {!isExpertMode && (
-        <>
-          <LandingBodyContainer>
-            <Features />
-            <Stats />
-            <CommunityBanner />
-            <Timeline />
-            <CommunityLinks />
-            <BlogNavigation />
-          </LandingBodyContainer>
-        </>
+        <NormalSwapMode>{renderSwapBox()}</NormalSwapMode>
       )}
       <Footer />
     </>
