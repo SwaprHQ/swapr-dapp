@@ -4,6 +4,7 @@ import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, 
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { breakpoints } from 'utils/theme'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
@@ -75,35 +76,108 @@ const Box = styled.section`
   display: flex;
   flex: 1;
   width: 100%;
+  margin-bottom: 2rem;
+  background: rgba(25, 24, 36, 0.7);
+  border-radius: 12px;
+  @media screen and (max-width: ${breakpoints.l}) {
+    flex-wrap: wrap;
+  }
+`
+
+const BorderBox = styled.div`
+  border: 1px solid rgba(41, 38, 67, 1);
 `
 
 //  TODO: better calculate height
-const DiagramBox = styled.div`
+const DiagramBox = styled(BorderBox)`
   flex: 1;
-  height: 80vh;
+  height: calc(100vh - 162px);
+  border: 1px solid rgba(41, 38, 67, 1);
+  @media screen and (max-width: ${breakpoints.l}) {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 `
 
 const InfoBox = styled.div`
   display: flex;
+  @media screen and (max-width: ${breakpoints.l}) {
+    width: 100%;
+  }
+  @media screen and (max-width: ${breakpoints.md}) {
+    flex-wrap: wrap;
+  }
 `
 
 const HistoryBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 350px;
+  @media screen and (max-width: ${breakpoints.l}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
 `
 
-const HistoryTradeBox = styled.div`
+const HistoryTradeBox = styled(BorderBox)`
   height: 50%;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.s}) {
+    width: 100%;
+  }
 `
 
-const HistoryLiquidityBox = styled.div`
+const HistoryLiquidityBox = styled(BorderBox)`
   height: 50%;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.s}) {
+    width: 100%;
+  }
 `
 
-const TradesBox = styled.div`
+const TradesAndOrderBox = styled(BorderBox)`
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: ${breakpoints.l}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+`
+const TradeBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.s}) {
+    width: 100%;
+  }
+`
+const OrderBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: ${breakpoints.md}) {
+    width: 50%;
+  }
+  @media screen and (max-width: ${breakpoints.s}) {
+    width: 100%;
+  }
+`
+
+const TitleColumn = styled(BorderBox)`
+  padding: 1rem 0.5rem;
 `
 
 export enum GnosisProtocolTradeState {
@@ -496,24 +570,26 @@ export default function Swap() {
   const expertMode = () => (
     <>
       <Box>
-        <DiagramBox>Diagram</DiagramBox>
+        <DiagramBox>
+          <TitleColumn>Diagram</TitleColumn>
+        </DiagramBox>
         <InfoBox>
           <HistoryBox>
             <HistoryTradeBox>
-              <span>Trade History</span>
+              <TitleColumn>Trade History</TitleColumn>
             </HistoryTradeBox>
             <HistoryLiquidityBox>
-              <span>LIQUIDITY HISTORY</span>
+              <TitleColumn>Liquidity History</TitleColumn>
             </HistoryLiquidityBox>
           </HistoryBox>
-          <TradesBox>
-            <div>
-              <span>Trade</span> {swapper()}
-            </div>
-            <div>
-              <span>Orders</span>
-            </div>
-          </TradesBox>
+          <TradesAndOrderBox>
+            <TradeBox>
+              <TitleColumn>Trade</TitleColumn> {swapper()}
+            </TradeBox>
+            <OrderBox>
+              <TitleColumn>Orders</TitleColumn>
+            </OrderBox>
+          </TradesAndOrderBox>
         </InfoBox>
       </Box>
     </>

@@ -3,6 +3,7 @@ import AOS from 'aos'
 import React, { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
+import { useIsExpertMode } from 'state/user/hooks'
 import styled, { useTheme } from 'styled-components'
 
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
@@ -32,12 +33,14 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
 `
 
-const BodyWrapper = styled.div`
+const BodyWrapper = styled.div<{
+  isExpertMode?: boolean
+}>`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 172px);
   width: 100%;
-  padding-top: 60px;
+  padding-top: ${({ isExpertMode }) => (isExpertMode ? '30px' : '60px')};
   align-items: center;
   flex: 1;
   overflow-y: auto;
@@ -52,8 +55,8 @@ const BodyWrapper = styled.div`
   `};
 
   /* [PR#531] */
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: ${({ isExpertMode }) => (isExpertMode ? '0' : '16px')};
+  padding-right: ${({ isExpertMode }) => (isExpertMode ? '0' : '16px')};
 
   z-index: 1;
 `
@@ -64,6 +67,7 @@ const Marginer = styled.div`
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
+  const isExpertMode = useIsExpertMode()
   const theme = useTheme()
 
   useEffect(() => {
@@ -84,9 +88,9 @@ export default function App() {
             <HeaderWrapper>
               <Header />
             </HeaderWrapper>
-            <BodyWrapper>
+            <BodyWrapper isExpertMode={isExpertMode}>
               <Web3ReactManager>
-                <SpaceBg>
+                <SpaceBg isExpertMode={isExpertMode}>
                   <Suspense fallback={<FallbackLoader />}>
                     <Routes />
                   </Suspense>
