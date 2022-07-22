@@ -8,11 +8,16 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
-import { coinbaseWallet, hooks as coinbaseWalletHooks } from './connectors/coinbaseWallet'
-import { metaMask, hooks as metaMaskHooks } from './connectors/metaMask'
-import { network, hooks as networkHooks } from './connectors/network'
-import { walletConnect, hooks as walletConnectHooks } from './connectors/walletConnect'
-import { NetworkContextName } from './constants'
+import {
+  coinbaseWallet,
+  coinbaseWalletHooks,
+  metaMask,
+  metaMaskHooks,
+  walletConnect,
+  walletConnectHooks,
+  web3Network,
+  web3NetworkHooks,
+} from './connectors'
 import './i18n'
 import App from './pages/App'
 import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
@@ -39,7 +44,7 @@ const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3Reac
   [metaMask, metaMaskHooks],
   [walletConnect, walletConnectHooks],
   [coinbaseWallet, coinbaseWalletHooks],
-  [network, networkHooks],
+  [web3Network, web3NetworkHooks],
 ]
 
 function Updaters() {

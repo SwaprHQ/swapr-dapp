@@ -1,14 +1,14 @@
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { useWeb3React } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
-import { Network } from '@web3-react/network'
-import { WalletConnect } from '@web3-react/walletconnect'
+import { Connector } from '@web3-react/types'
+import CoinbaseWalletConnector from 'components/WalletSwitcher/Wallets/CoinbaseWalletConnector'
+import MetaMaskConnector from 'components/WalletSwitcher/Wallets/MetaMaskConnector'
+import WalletConnectConnector from 'components/WalletSwitcher/Wallets/WalletConnectConnector'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
 import MetamaskIcon from '../../assets/images/metamask.png'
-import { SUPPORTED_WALLETS } from '../../constants'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
@@ -103,12 +103,13 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 
 interface ConnectWalletProps {
   setModal: (modal: ModalView | null) => void
-  tryActivation: (connector: MetaMask | WalletConnect | CoinbaseWallet) => void
+  tryActivation: (connector: Connector) => void
+  tryDeactivation: (connector: Connector, account: string | undefined) => void
   children: ReactNode
 }
 
-export const ConnectWalletPopover = ({ setModal, tryActivation, children }: ConnectWalletProps) => {
-  const { connector, isActive } = useWeb3React()
+export const ConnectWalletPopover = ({ setModal, tryActivation, tryDeactivation, children }: ConnectWalletProps) => {
+  const { connector, isActive, account } = useWeb3ReactCore()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
   const closeModals = useCloseModals()
@@ -116,72 +117,19 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
     if (walletSwitcherPopoverOpen) closeModals()
   })
 
-  function getOptions() {
-    return Object.keys(SUPPORTED_WALLETS).map(key => {
-      const option = SUPPORTED_WALLETS[key]
-      // check for mobile options
-      if (isMobile) {
-        if (option.mobile) {
-          return (
-            <Item
-              key={key}
-              id={`connect-${key}`}
-              name={option.name}
-              onClick={() => {
-                closeModals()
-                option.connector !== connector && !option.href && tryActivation(option.connector)
-              }}
-              // eslint-disable-next-line
-              icon={require('../../assets/images/' + option.iconName).default}
-              isActive={option.connector && option.connector === connector}
-            />
-          )
-        }
-        return null
-      }
-
-      // return rest of options
-      return (
-        !isMobile &&
-        !option.mobileOnly && (
-          <Item
-            key={key}
-            id={`connect-${key}`}
-            onClick={() => {
-              closeModals()
-              option.connector === connector
-                ? setModal(ModalView.Account)
-                : !option.href && tryActivation(option.connector)
-            }}
-            name={option.name}
-            // eslint-disable-next-line
-            icon={require('../../assets/images/' + option.iconName).default}
-            isActive={option.connector && option.connector === connector}
-          />
-        )
-      )
-    })
-  }
-
   return (
     <Wrapper>
       <StyledPopover
-        innerRef={popoverRef}
+        innerRef={undefined}
         content={
           <List data-testid="wallet-connect-list">
-            {getOptions()}
+            {/* TODO: wrap wallets */}
+            <MetaMaskConnector tryActivation={tryActivation} />
+            <CoinbaseWalletConnector tryActivation={tryActivation} />
+            <WalletConnectConnector tryActivation={tryActivation} />
+
             {isActive && (
-              <DisconnectButton
-                onClick={() => {
-                  if (connector?.deactivate) {
-                    void connector.deactivate()
-                  } else {
-                    void connector.resetState()
-                  }
-                }}
-              >
-                Disconnect Wallet
-              </DisconnectButton>
+              <DisconnectButton onClick={() => tryDeactivation(connector, account)}>Disconnect Wallet</DisconnectButton>
             )}
           </List>
         }

@@ -1,13 +1,12 @@
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { MetaMask } from '@web3-react/metamask'
 import { Connector } from '@web3-react/types'
-import { WalletConnect } from '@web3-react/walletconnect'
-import { metaMask } from 'connectors/metaMask'
+import { metaMaskHooks } from 'connectors'
+import { getConnection } from 'connectors/utils'
+import { namehash } from 'ethers/lib/utils'
 import React from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { SUPPORTED_WALLETS } from '../../constants'
+import { SUPPORTED_WALLETS, WalletType } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
 import Loader from '../Loader'
@@ -59,47 +58,33 @@ export default function PendingView({
   setPendingError,
   tryActivation,
 }: {
-  connector?: Connector
+  connector: Connector
   error?: boolean
   setPendingError: (error: boolean) => void
   tryActivation: (connector: Connector) => void
 }) {
-  const isMetamask = window?.ethereum?.isMetaMask
+  const walletType = getConnection(connector).type
 
+  const { name, logo } = SUPPORTED_WALLETS[walletType]
   return (
     <PendingSection>
-      {Object.keys(SUPPORTED_WALLETS).map(key => {
-        const option = SUPPORTED_WALLETS[key]
-        if (option.connector === connector) {
-          if (option.connector === metaMask) {
-            if (isMetamask && option.name !== 'MetaMask') {
-              return null
-            }
-            if (!isMetamask && option.name === 'MetaMask') {
-              return null
-            }
-          }
-          return (
-            <Flex key={key} mb="28px" justifyContent="center">
-              <Box mr="10px">
-                <img
-                  // eslint-disable-next-line
-                  src={require('../../assets/images/' + option.iconName).default}
-                  alt="logo"
-                  width="24px"
-                  height="24px"
-                />
-              </Box>
-              <Box>
-                <TYPE.body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
-                  {option.name}
-                </TYPE.body>
-              </Box>
-            </Flex>
-          )
-        }
-        return null
-      })}
+      <Flex mb="28px" justifyContent="center">
+        <Box mr="10px">
+          <img
+            // eslint-disable-next-line
+            src={logo}
+            alt="logo"
+            width="24px"
+            height="24px"
+          />
+        </Box>
+        <Box>
+          <TYPE.body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
+            {name}
+          </TYPE.body>
+        </Box>
+      </Flex>
+
       <LoadingMessage error={error}>
         <LoadingWrapper>
           {error ? (

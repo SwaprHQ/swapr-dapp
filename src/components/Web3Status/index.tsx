@@ -1,13 +1,15 @@
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect' // TODO pack all import into one
+import { getConnection } from 'connectors/utils'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
+import { WalletType } from '../../constants'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import useENSName from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
@@ -77,8 +79,8 @@ export enum ModalView {
 }
 
 export default function Web3Status() {
-  const { account, connector, chainId } = useWeb3React()
-  const { ENSName } = useENSName(account ?? undefined)
+  const { account, connector, chainId, ENSName, isActive } = useWeb3ReactCore()
+  // const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
 
@@ -97,68 +99,89 @@ export default function Web3Status() {
 
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
-  const { isActivating } = useWeb3React()
-  const isNetwork = connector instanceof Network
-  const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1)
 
-  const tryActivation = async (connector: Connector | undefined) => {
-    // TODO ?
-    setPendingWallet(connector)
-    setModal(ModalView.Pending)
+  console.log('wallet', pendingWallet, connector, isActive, account)
+  //TODO: improve tryActivation funciton
+  const tryActivation = useCallback(
+    async (connector: Connector) => {
+      // TODO use for updates
+      // const connectionType = getConnection(connector).type
+      if (!connector) return
 
-    isActivating
-      ? undefined
-      : () => (!connector ? undefined : connector.activate(desiredChainId === -1 ? undefined : desiredChainId))
-    // .then(() => setPendingError(undefined))
-    // .catch(setPendingError)
-    // TODO
-  }
+      try {
+        console.log('aktywacja', pendingWallet, connector, isActive, account)
+        setPendingWallet(connector)
+        setModal(ModalView.Pending)
+        setPendingError(undefined)
+
+        await connector.activate()
+
+        // dispatch(updateSelectedWallet({ wallet: connectionType }))
+      } catch (error) {
+        console.debug(`web3-react connection error: ${error}`)
+        // dispatch(updateConnectionError({ connectionType, error: error.message }))
+        setPendingError(true)
+      }
+    },
+    [account, isActive, pendingWallet]
+  )
+
+  const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
+    if (!account) return
+    if (connector?.deactivate) {
+      void connector.deactivate()
+    } else {
+      void connector.resetState()
+    }
+  }, [])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { t } = useTranslation()
   const mobileByMedia = useIsMobileByMedia()
-  const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
-  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  const closeModals = useCloseModals()
+  // const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
+  // const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
+  // const closeModals = useCloseModals()
 
-  // TODO unsupported chain id
-  const unsupportedChainIdError = false
+  // // // TODO unsupported chain id
+  // // const unsupportedChainIdError = false
 
-  useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && unsupportedChainIdError) {
-      setUnsupportedNetwork(true)
-      openUnsupportedNetworkModal()
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !unsupportedChainIdError) {
-      setUnsupportedNetwork(false)
-    } else if (isUnsupportedNetworkModal && !unsupportedChainIdError) {
-      closeModals()
-    }
-  }, [
-    isUnsupportedNetwork,
-    openUnsupportedNetworkModal,
-    isUnsupportedNetworkModal,
-    unsupportedChainIdError,
-    closeModals,
-  ])
+  // // useEffect(() => {
+  // //   if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && unsupportedChainIdError) {
+  // //     setUnsupportedNetwork(true)
+  // //     openUnsupportedNetworkModal()
+  // //   } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !unsupportedChainIdError) {
+  // //     setUnsupportedNetwork(false)
+  // //   } else if (isUnsupportedNetworkModal && !unsupportedChainIdError) {
+  // //     closeModals()
+  // //   }
+  // // }, [
+  // //   isUnsupportedNetwork,
+  // //   openUnsupportedNetworkModal,
+  // //   isUnsupportedNetworkModal,
+  // //   unsupportedChainIdError,
+  // //   closeModals,
+  // // ])
 
-  const clickHandler = useCallback(() => {
-    toggleNetworkSwitcherPopover()
-  }, [toggleNetworkSwitcherPopover])
+  // TODO UNSUPPORTED NETWORK
+  // const clickHandler = useCallback(() => {
+  //   toggleNetworkSwitcherPopover()
+  // }, [toggleNetworkSwitcherPopover])
 
-  if (pendingError) {
-    return (
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
-        <SwitchNetworkButton onClick={clickHandler}>
-          Switch network
-          <TriangleIcon />
-        </SwitchNetworkButton>
-      </NetworkSwitcherPopover>
-    )
-  }
+  // if (pendingError) {
+  //   return (
+  //     <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+  //       <SwitchNetworkButton onClick={clickHandler}>
+  //         Switch network
+  //         <TriangleIcon />
+  //       </SwitchNetworkButton>
+  //     </NetworkSwitcherPopover>
+  //   )
+  // }
 
   return (
     <>
-      <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation}>
+      {/* TODO: pass disconnect function */}
+      <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
         <Row alignItems="center" justifyContent="flex-end">
           {chainId && !account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
@@ -176,6 +199,7 @@ export default function Web3Status() {
           />
         </Row>
       </ConnectWalletPopover>
+      {/* TODO: type it */}
       <WalletModal
         modal={modal}
         setModal={setModal}

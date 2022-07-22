@@ -1,14 +1,15 @@
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { useWeb3React } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
+import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks } from 'connectors'
+import { getConnection } from 'connectors/utils'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
+import { WalletType } from '../../constants'
 import usePrevious from '../../hooks/usePrevious'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
@@ -109,7 +110,7 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: Connector | undefined) => void
+  tryActivation: (connector: Connector, id?: WalletType) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
   pendingWallet: Connector | undefined
@@ -126,13 +127,14 @@ export default function WalletModal({
   setPendingError,
   pendingWallet,
 }: WalletModalProps) {
-  const { account, connector, isActive } = useWeb3React()
+  const { account, connector, isActive } = useWeb3ReactCore()
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
   const isModalVisible = modal !== null
 
   const previousAccount = usePrevious(account)
+  console.log('modal', account, previousAccount, connector)
 
   // close on connection, when logged out before
   useEffect(() => {
@@ -166,7 +168,7 @@ export default function WalletModal({
   const unsupportedChainIdError = false
 
   function getModalContent() {
-    if (pendingError) {
+    if (pendingError || !pendingWallet) {
       return (
         <UpperSection>
           <CloseIcon onClick={closeModal}>

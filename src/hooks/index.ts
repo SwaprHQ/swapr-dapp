@@ -2,22 +2,22 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
-import { network } from 'connectors/network'
+import { web3Network } from 'connectors'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 
 export function useEagerConnect() {
-  const { isActive } = useWeb3React() // specifically using useWeb3ReactCore because of what this hook does
+  const { isActive } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
   const [tried, setTried] = useState(false)
 
   // attempt to connect eagerly on mount
   useEffect(() => {
-    void network.activate().catch(() => {
+    void web3Network.activate().catch(() => {
       console.debug('Failed to connect to network')
     })
   }, [])

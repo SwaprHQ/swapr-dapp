@@ -14,6 +14,11 @@ import {
   WXDAI,
 } from '@swapr/sdk'
 
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { MetaMask } from '@web3-react/metamask'
+import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect'
+import { coinbaseWallet, metaMask, walletConnect } from 'connectors'
 import { providers } from 'ethers'
 import React, { ReactNode } from 'react'
 
@@ -22,14 +27,14 @@ import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import CoinbaseWalletLogo from '../assets/images/wallets/coinbase.svg'
+import MetaMaskLogo from '../assets/images/wallets/metamask.png'
+import WalletConnectLogo from '../assets/images/wallets/wallet-connect.svg'
 import CowLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
 import UniswapLogo from '../assets/svg/uniswap-logo.svg'
-import { coinbaseWallet, hooks as coinbaseWalletHooks } from './../connectors/coinbaseWallet'
-import { metaMask, hooks as metaMaskHooks } from './../connectors/metaMask'
-import { walletConnect, hooks as walletConnectHooks } from './../connectors/walletConnect'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -244,49 +249,78 @@ export const PINNED_PAIRS: {
 
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
+export enum WalletType {
+  // INJECTED = 'INJECTED',
+  METAMASK = 'METAMASK',
+  COINBASE = 'COINBASE',
+  WALLET_CONNECT = 'WALLET_CONNECT',
+  NETWORK = 'NETWORK',
+}
+
 export interface WalletInfo {
-  connector?: any // TODO
   name: string
-  iconName: string
+  logo: string
   description: string
-  href: string | null
+  link: string | null
   color: string
-  primary?: true
+  primary?: true // TODO need this?
   mobile?: true
   mobileOnly?: true
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  METAMASK: {
-    connector: metaMask,
+  [WalletType.METAMASK]: {
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    logo: MetaMaskLogo,
     description: 'Easy-to-use browser extension.',
-    href: null,
+    link: 'https://metamask.io/',
     color: '#E8831D',
     mobile: true,
   },
-  WALLET_CONNECT: {
-    connector: walletConnect,
-    name: 'WalletConnect',
-    iconName: 'wallet-connect.svg',
-    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
-    href: null,
+  [WalletType.COINBASE]: {
+    name: 'Coinbase Wallet',
+    logo: CoinbaseWalletLogo,
+    description: 'Connect using Coinbase Wallet.',
+    link: null,
     color: '#4196FC',
     mobile: true,
   },
-  COINBASE: {
-    connector: coinbaseWallet,
-    name: 'Coinbase Wallet',
-    iconName: 'coinbase.svg',
-    description: 'Connect using Coinbase Wallet.',
-    href: null,
+  [WalletType.WALLET_CONNECT]: {
+    name: 'WalletConnect',
+    logo: WalletConnectLogo,
+    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
+    link: null,
     color: '#4196FC',
     mobile: true,
   },
 }
 
-export const NetworkContextName = 'NETWORK'
+export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
+  [WalletType.METAMASK]: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
+  [WalletType.COINBASE]: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
+  [WalletType.WALLET_CONNECT]: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
+}
 
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
@@ -409,6 +443,16 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://polygonscan.com/'],
   },
+}
+
+// TODO should be taken from above rpcUrls?
+export const RPC_URLS: { [chainId: number]: string } = {
+  [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+  [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
+  [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
+  [ChainId.POLYGON]: 'https://polygon-rpc.com/',
+  [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3',
+  [ChainId.ARBITRUM_RINKEBY]: 'https://rinkeby.arbitrum.io/rpc',
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {
