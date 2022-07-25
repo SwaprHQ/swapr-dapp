@@ -5,18 +5,11 @@ import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
-import { Amount } from '../index'
+import { HeaderButton } from '../HeaderButton'
+import { Amount } from '../styled'
 
-const StakeIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
+const StakeIndicator = styled(HeaderButton)`
   border-radius: 0px 8px 8px 0px;
-  padding: 6px 12px;
-  font-weight: bold;
-  font-size: 10px;
-  line-height: 10px;
-  cursor: pointer;
 `
 const Wrapper = styled.div<{ hide: boolean }>`
   display: flex;
@@ -36,7 +29,7 @@ export function SwprInfo({ onToggleClaimPopup, newSwprBalance, hasActiveCampaign
 
   return (
     <Wrapper onClick={onToggleClaimPopup} hide={!account}>
-      <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false} clickable>
+      <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false}>
         {!account ? (
           '0.000'
         ) : !newSwprBalance ? (
