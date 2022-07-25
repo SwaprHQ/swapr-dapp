@@ -1,7 +1,6 @@
 {
   "liquidityMining.header": "Liq. mining",
   "liquidityMining.title": "Liquidity mining",
-  "liquidityMining.action.create": "CREATE LIQ. MINING",
   "liquidityMining.create.title": "Create a Rewards Campaign",
   "liquidityMining.create.chooseCampaign": "Choose Campaign Type",
   "liquidityMining.create.selectToken": "Select Token To Stake",
