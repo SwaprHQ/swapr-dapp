@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { WalletType } from './../constants'
+import { SUPPORTED_NETWORKS, WalletType } from './../constants'
 
 import {
   coinbaseWalletConnection,
@@ -59,4 +59,11 @@ export function getWalletName(walletType: WalletType, isMetaMask?: boolean) {
     case WalletType.NETWORK:
       return 'Network'
   }
+}
+
+export function isChainAllowed(connector: Connector, chainId: number | undefined) {
+  const wallet = getConnection(connector).type
+  console.log(wallet, chainId)
+  if (!chainId || !wallet) return false
+  return SUPPORTED_NETWORKS[wallet].includes(chainId)
 }

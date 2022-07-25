@@ -1,6 +1,6 @@
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React from 'react'
 
-import { useUnsupportedChainIdError } from '../../hooks'
 import { ApplicationModal } from '../../state/application/actions'
 import {
   useModalOpen,
@@ -10,12 +10,11 @@ import {
 import { ButtonPrimary } from '../Button'
 
 export const ButtonConnect = () => {
+  const { isSupportedChainId } = useWeb3ReactCore()
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const networkSwitcherPopoverOpen = useModalOpen(ApplicationModal.NETWORK_SWITCHER)
-  // TODO
-  const unsupportedChainIdError = useUnsupportedChainIdError()
-  const isSwitchNetwork = networkSwitcherPopoverOpen || unsupportedChainIdError
+  const isSwitchNetwork = networkSwitcherPopoverOpen || !isSupportedChainId
 
   return (
     <ButtonPrimary

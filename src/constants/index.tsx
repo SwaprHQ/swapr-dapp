@@ -320,6 +320,14 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.XDAI,
     ChainId.POLYGON,
   ],
+  [WalletType.NETWORK]: [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+  ],
 }
 
 // default allowed slippage, in bips

@@ -3,7 +3,7 @@ import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect' // TODO pack all import into one
-import { getConnection } from 'connectors/utils'
+import { getConnection, isChainAllowed } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -79,7 +79,7 @@ export enum ModalView {
 }
 
 export default function Web3Status() {
-  const { account, connector, chainId, ENSName, isActive } = useWeb3ReactCore()
+  const { account, connector, chainId, ENSName, isActive, isSupportedChainId } = useWeb3ReactCore()
   // const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
@@ -101,6 +101,7 @@ export default function Web3Status() {
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
   console.log('wallet', pendingWallet, connector, isActive, account)
+  console.log('supported?', isChainAllowed(connector, chainId))
   //TODO: improve tryActivation funciton
   const tryActivation = useCallback(
     async (connector: Connector) => {
@@ -138,45 +139,39 @@ export default function Web3Status() {
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { t } = useTranslation()
   const mobileByMedia = useIsMobileByMedia()
-  // const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
-  // const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  // const closeModals = useCloseModals()
+  const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
+  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
+  const closeModals = useCloseModals()
 
-  // // // TODO unsupported chain id
-  // // const unsupportedChainIdError = false
+  // // TODO unsupported chain id
 
-  // // useEffect(() => {
-  // //   if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && unsupportedChainIdError) {
-  // //     setUnsupportedNetwork(true)
-  // //     openUnsupportedNetworkModal()
-  // //   } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !unsupportedChainIdError) {
-  // //     setUnsupportedNetwork(false)
-  // //   } else if (isUnsupportedNetworkModal && !unsupportedChainIdError) {
-  // //     closeModals()
-  // //   }
-  // // }, [
-  // //   isUnsupportedNetwork,
-  // //   openUnsupportedNetworkModal,
-  // //   isUnsupportedNetworkModal,
-  // //   unsupportedChainIdError,
-  // //   closeModals,
-  // // ])
+  useEffect(() => {
+    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !isSupportedChainId) {
+      setUnsupportedNetwork(true)
+      openUnsupportedNetworkModal()
+      setPendingError(true)
+    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && isSupportedChainId) {
+      setUnsupportedNetwork(false)
+      setPendingError(undefined)
+    } else if (isUnsupportedNetworkModal && isSupportedChainId) {
+      closeModals()
+    }
+  }, [isUnsupportedNetwork, openUnsupportedNetworkModal, isUnsupportedNetworkModal, closeModals, isSupportedChainId])
 
-  // TODO UNSUPPORTED NETWORK
-  // const clickHandler = useCallback(() => {
-  //   toggleNetworkSwitcherPopover()
-  // }, [toggleNetworkSwitcherPopover])
+  const clickHandler = useCallback(() => {
+    toggleNetworkSwitcherPopover()
+  }, [toggleNetworkSwitcherPopover])
 
-  // if (pendingError) {
-  //   return (
-  //     <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
-  //       <SwitchNetworkButton onClick={clickHandler}>
-  //         Switch network
-  //         <TriangleIcon />
-  //       </SwitchNetworkButton>
-  //     </NetworkSwitcherPopover>
-  //   )
-  // }
+  if (pendingError) {
+    return (
+      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+        <SwitchNetworkButton onClick={clickHandler}>
+          Switch network
+          <TriangleIcon />
+        </SwitchNetworkButton>
+      </NetworkSwitcherPopover>
+    )
+  }
 
   return (
     <>

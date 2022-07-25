@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { useWeb3React, Web3ContextType } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks, web3Network } from 'connectors'
+import { isChainAllowed } from 'connectors/utils'
 import { providers, Wallet } from 'ethers'
 import { useEffect, useState } from 'react'
 import getLibrary from 'utils/getLibrary'
@@ -28,6 +29,14 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
       setIsSupportedChainId(Object.keys(NETWORK_DETAIL).includes(props.chainId.toString()))
     }
   }, [props.chainId])
+
+  useEffect(() => {
+    if (!isChainAllowed(props.connector, props.chainId)) {
+      setIsSupportedChainId(false)
+    } else {
+      setIsSupportedChainId(true)
+    }
+  }, [props.chainId, props.connector])
 
   return {
     ...props,

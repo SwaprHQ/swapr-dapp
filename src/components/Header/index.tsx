@@ -223,7 +223,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId } = useWeb3ReactCore()
+  const { account, chainId, isSupportedChainId } = useWeb3ReactCore()
 
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
@@ -240,8 +240,6 @@ function Header() {
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
 
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  // TODO
-  const isUnsupportedChainIdError = false
 
   const networkWithoutSWPR = !newSwpr
 
@@ -321,12 +319,12 @@ function Header() {
             />
           )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isUnsupportedChainIdError && (
+            {!isSupportedChainId && (
               <Amount data-testid="unsupported-network-warning" zero>
                 {'UNSUPPORTED NETWORK'}
               </Amount>
             )}
-            {account && !isUnsupportedChainIdError && (
+            {account && isSupportedChainId && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
                 {userNativeCurrencyBalance ? (
                   `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
@@ -337,7 +335,7 @@ function Header() {
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || !isSupportedChainId}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}

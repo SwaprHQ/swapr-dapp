@@ -1,12 +1,11 @@
 import { Connector } from '@web3-react/types'
 import { metaMaskHooks } from 'connectors'
 import { getConnection } from 'connectors/utils'
-import { namehash } from 'ethers/lib/utils'
 import React from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { SUPPORTED_WALLETS, WalletType } from '../../constants'
+import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
 import Loader from '../Loader'
