@@ -9,7 +9,6 @@ import Column from '../../../components/Column'
 import Loader from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
-import { SwapCallbackError } from '../../../components/swap/styleds'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
@@ -19,6 +18,7 @@ import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
+import { ErrorBox } from './SwabButtonsError'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
@@ -45,18 +45,6 @@ interface SwapButtonsProps {
   wrapState?: WrapState | undefined
   setWrapState: ((wrapState: WrapState) => void) | undefined
 }
-
-const errorBox = ({
-  isExpertMode,
-  swapErrorMessage,
-  isSpaceAtTop = true,
-}: {
-  isExpertMode: boolean
-  swapErrorMessage?: string
-  isSpaceAtTop?: boolean
-}) => (
-  <>{isExpertMode && swapErrorMessage && <SwapCallbackError isSpaceAtTop={isSpaceAtTop} error={swapErrorMessage} />}</>
-)
 
 export function SwapButtons({
   wrapInputError,
@@ -198,7 +186,7 @@ export function SwapButtons({
         <Column style={{ marginTop: '1rem' }}>
           <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
         </Column>
-        {errorBox({ isExpertMode, swapErrorMessage })}
+        {ErrorBox({ isExpertMode, swapErrorMessage })}
       </>
     )
   }
@@ -215,7 +203,7 @@ export function SwapButtons({
         isExpertMode={isExpertMode}
         amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
       />
-      {errorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
+      {ErrorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
     </>
   )
 }
