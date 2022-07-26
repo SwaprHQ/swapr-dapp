@@ -21,12 +21,28 @@ export const BorderStyling = css`
 `
 
 export const AdvanceSwapModeHeight = css`
-  height: calc(100vh - 162px);
+  height: calc(100vh - 130px);
+`
+
+export const CustomScrollBar = css`
+  &&::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &&::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.bg3};
+    border-radius: 8px;
+    border: 2px solid ${({ theme }) => theme.bg2};
+  }
+  //firefox support
+  scrollbar-color: ${({ theme }) => theme.bg3 + ' ' + theme.bg2};
+  scrollbar-width: thin;
 `
 
 export const WidthBox = styled.div`
   z-index: 3;
   ${BorderStyling}
+  flex: 1;
   @media screen and (max-width: ${breakpoints.md}) {
     width: 50%;
   }
@@ -92,17 +108,21 @@ export const HistoryBox = styled(WidthBox)`
   }
 `
 
-export const HistoryBoxBody = styled(BodyColumn)`
+export const HistoryBoxBody = styled.div`
   overflow-y: auto;
-  max-height: calc(100% - 50px);
+  max-height: calc(100% - 88px);
+  ${CustomScrollBar}
 `
 
 export const TradesAndOrderColumnBox = styled.div`
   width: 60%;
   min-width: 400px;
+  display: flex;
+  flex-direction: column;
   ${ColumnBoxStyles}
   @media screen and (max-width: ${breakpoints.md}) {
     order: 0;
+    flex-direction: row;
   }
 `
 
@@ -110,23 +130,36 @@ export const TradeContent = styled.div`
   padding: 0 0.5rem;
   @media screen and (max-width: ${breakpoints.l}) {
     > div {
-      width: 100%;
-      max-width: none;
+      margin: auto;
     }
   }
 `
 
-export const RowBox = styled.div`
+export const ListTitleRow = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #191919;
+`
+export const ListTitleElement = styled.div`
+  text-align: center;
+  width: calc(100% / 3);
+  padding: 0 0.5rem;
 `
 
 export const HistoryTrade = styled.div`
-  margin: 10px;
-  border: 1px solid #191919;
-  padding: 5px;
+  &:not(:last-child) {
+    border-bottom: 1px solid #191919;
+  }
+  padding: 0.5rem;
   display: flex;
   font-size: 13px;
   justify-content: space-between;
   align-items: center;
+`
+
+export const HistoryTradeCell = styled.div`
+  width: calc(100% / 3);
+  text-align: center;
 `
