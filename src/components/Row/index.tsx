@@ -8,6 +8,7 @@ const Row = styled(Box)<{
   borderRadius?: string
   flex?: string
   justify?: string
+  gap?: string
 }>`
   width: 100%;
   display: flex;
@@ -18,6 +19,7 @@ const Row = styled(Box)<{
   border: ${({ border }) => border};
   border-radius: ${({ borderRadius }) => borderRadius};
   justify-content: ${({ justify }) => justify && justify};
+  gap: ${({ gap }) => gap && gap};
 `
 
 export const RowBetween = styled(Row)<{ gap?: number }>`
