@@ -9,16 +9,16 @@ import Column from '../../../components/Column'
 import Loader from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
-import { SwapCallbackError } from '../../../components/swap/styleds'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
-import { Field } from '../../../state/swap/actions'
+import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
+import { ErrorBox } from './SwabButtonsError'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
@@ -186,24 +186,24 @@ export function SwapButtons({
         <Column style={{ marginTop: '1rem' }}>
           <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
         </Column>
+        {ErrorBox({ isExpertMode, swapErrorMessage })}
       </>
     )
   }
 
-  if (isExpertMode && swapErrorMessage) {
-    return <SwapCallbackError error={swapErrorMessage} />
-  }
-
   return (
-    <SwapButton
-      onClick={onSwapClick}
-      id="swap-button"
-      disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-      platformName={trade?.platform.name}
-      swapInputError={swapInputError}
-      priceImpactSeverity={priceImpactSeverity}
-      isExpertMode={isExpertMode}
-      amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
-    />
+    <>
+      <SwapButton
+        onClick={onSwapClick}
+        id="swap-button"
+        disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+        platformName={trade?.platform.name}
+        swapInputError={swapInputError}
+        priceImpactSeverity={priceImpactSeverity}
+        isExpertMode={isExpertMode}
+        amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+      />
+      {ErrorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
+    </>
   )
 }

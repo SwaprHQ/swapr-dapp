@@ -4,7 +4,7 @@
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn && yarn codegen:socket && react-scripts start",
+    "start": "yarn codegen:socket && react-scripts start",
     "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
@@ -114,6 +114,7 @@
     "@storybook/testing-library": "^0.0.11",
     "@connext/nxtp-sdk": "^0.1.36",
     "@openapitools/openapi-generator-cli": "^2.5.1",
+    "@simbathesailor/use-what-changed": "^2.0.0",
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",

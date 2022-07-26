@@ -1,9 +1,9 @@
 export class CampaignPage {
-  static getCampaignTokensText() {
-    return cy.get('[data-testid=campaign-tokens]')
+  static getCampaignTokensText(specifiedTimeout = 30000) {
+    return cy.get('[data-testid=campaign-tokens]', { timeout: specifiedTimeout })
   }
-  static getCampaignStatusText(specifiedTimout = 30000) {
-    return cy.get('[data-testid=campaign-status]', { timeout: specifiedTimout })
+  static getCampaignStatusText(specifiedTimeout = 30000) {
+    return cy.get('[data-testid=campaign-status]', { timeout: specifiedTimeout })
   }
   static getCampaignStartDateText() {
     return cy.get('[data-testid=start-date]')
@@ -21,7 +21,7 @@ export class CampaignPage {
     startsAt: string,
     endsAt: string
   ) {
-    CampaignPage.getCampaignTokensText().should('contain.text', tokenPair)
+    CampaignPage.getCampaignTokensText(120000).should('contain.text', tokenPair)
     CampaignPage.getCampaignRewardsBox().should('contain.text', rewardsInput)
     CampaignPage.getCampaignStatusText(90000).should('contain.text', campaignStatus)
     CampaignPage.getCampaignStartDateText().should('contain.text', startsAt)

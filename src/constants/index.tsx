@@ -622,7 +622,7 @@ export const OLD_SWPR: { [key: number]: Token } = {
 }
 
 export const TESTNETS = [4, 421611]
-export const SHOW_TESTNETS = true
+export const SHOW_TESTNETS = false
 
 // addresses to filter by when querying for verified KPI tokens
 export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {

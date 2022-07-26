@@ -31,6 +31,7 @@ const OptionCardClickable = styled(OptionCard)`
   transition: border 0.3s ease;
   color: white;
   cursor: pointer;
+  margin-bottom: 8px;
 
   &:disabled {
     cursor: not-allowed;

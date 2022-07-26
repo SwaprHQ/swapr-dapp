@@ -5,7 +5,7 @@ import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 
 import { PRICE_IMPACT_MEDIUM } from '../../constants'
-import { Field } from '../../state/swap/actions'
+import { Field } from '../../state/swap/types'
 import { TYPE } from '../../theme'
 import {
   computeSlippageAdjustedAmounts,
