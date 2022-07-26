@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, TokenAmount } from '@swapr/sdk'
+import { Currency, currencyEquals, Token, TokenAmount } from '@swapr/sdk'
 
 import React, { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
@@ -32,7 +32,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
     setCurrencySearchOpen(false)
   }, [])
 
-  const handleOpenPairOrTokenSearch = useCallback(value => {
+  const handleOpenPairOrTokenSearch = useCallback((value?: number) => {
     setCurrentReward(value)
     setCurrencySearchOpen(true)
   }, [])
@@ -47,14 +47,14 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
   }, [rewardsArray])
 
   const handlePairSelection = useCallback(
-    selectedPair => {
+    (selectedPair: Currency) => {
       const checkIfSelectedPairExists = disabledRewardsArray?.some(currency => currencyEquals(currency, selectedPair))
       if (currentReward !== undefined && !checkIfSelectedPairExists) {
         setRewardsArray({
           type: ActionType.REWARD_CHANGE,
           payload: {
             index: currentReward,
-            reward: new TokenAmount(selectedPair, '0'),
+            reward: new TokenAmount(selectedPair as Token, '0'),
           },
         })
       }
@@ -63,7 +63,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
   )
 
   const handleCurrencyReset = useCallback(
-    index => {
+    (index: number) => {
       setRewardsArray({
         type: ActionType.REMOVE_REWARD,
         payload: { index: index },
@@ -73,7 +73,7 @@ export default function RewardsSelection({ rewardsArray, setRewardsArray }: Rewa
   )
 
   const handleLocalUserInput = useCallback(
-    (rawValue, index) => {
+    (rawValue: string | undefined, index: number) => {
       const newParsedAmount = tryParseAmount(rawValue, rewardsArray[index]?.rewardTokenAmount?.currency) as
         | TokenAmount
         | undefined

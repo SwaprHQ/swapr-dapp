@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
-import { ThemeContext } from 'styled-components/macro'
+import { useTheme } from 'styled-components'
 
 import { ExternalLink, IconWrapper, TYPE } from '../../../theme'
 import { ButtonEmpty, ButtonPrimary } from '../../Button'
@@ -48,7 +48,7 @@ const ListRow = ({ listUrl }: ListRowProps) => {
     listsByUrl,
     disableListInfo,
   } = useListRow({ listUrl })
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   if (!list || tokensAmountInCurrentChain === 0) return null
 
@@ -101,7 +101,7 @@ const ListRow = ({ listUrl }: ListRowProps) => {
 }
 
 export const ManageLists = () => {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const {
     addError,
     handleImport,

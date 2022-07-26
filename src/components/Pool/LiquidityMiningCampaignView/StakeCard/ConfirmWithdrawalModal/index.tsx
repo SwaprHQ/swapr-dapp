@@ -37,7 +37,7 @@ export default function ConfirmWithdrawalModal({
       : stakablePair instanceof Pair
       ? `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
       : ''
-  const handleWithdrawableAmountChange = useCallback(amount => {
+  const handleWithdrawableAmountChange = useCallback((amount: TokenAmount) => {
     setWithdrawableAmount(amount)
   }, [])
 

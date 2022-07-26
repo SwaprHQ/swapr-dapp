@@ -1,3 +1,4 @@
+import shuffle from 'lodash/shuffle'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
@@ -12,7 +13,7 @@ import {
   SWAP_INPUT_ERRORS,
 } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
-import { ButtonPrimary } from '../../Button/index'
+import { ButtonPrimary } from '../../Button'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
@@ -112,7 +113,7 @@ export const SwapLoadingButton = () => {
     <StyledSwapLoadingButton>
       <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
       <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
-        {routablePlatforms.map((key: string) => (
+        {shuffle(routablePlatforms).map((key: string) => (
           <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
             <StyledPlataformImage
               width={21}

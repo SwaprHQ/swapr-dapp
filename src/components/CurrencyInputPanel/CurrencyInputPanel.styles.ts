@@ -1,5 +1,7 @@
 import transparentize from 'polished/lib/color/transparentize'
+import { TextProps } from 'rebass'
 import styled from 'styled-components'
+import { TYPE } from 'theme'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { breakpoints } from '../../utils/theme'
@@ -92,4 +94,6 @@ export const UppercaseHelper = styled.span`
   text-transform: uppercase;
 `
 
-export const FiatRow = styled.div``
+export const UnderlinedSmallText = styled(TYPE.darkGray)<TextProps>`
+  text-decoration: underline;
+`

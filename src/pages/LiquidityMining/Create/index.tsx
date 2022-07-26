@@ -177,7 +177,6 @@ export default function CreateLiquidityMining() {
         addTransaction(transaction, {
           summary: `Create liquidity mining campaign on ${
             stakePair ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}` : stakeToken ? stakeToken.symbol : ''
-          }
           }`,
         })
       })
