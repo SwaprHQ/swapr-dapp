@@ -24,6 +24,14 @@ enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
+enum RawSlippageValue {
+  Min = 10, // 0.1%
+  RiskyLow = 50, // 0.5%
+  Medium = 100, // 1%
+  RiskyHigh = 500, // 5%
+  Max = 5000, // 50%
+}
+
 const Input = styled.input`
   background: ${({ theme }) => theme.bg2};
   font-size: 15px;
@@ -104,10 +112,11 @@ export default function SlippageTabs({
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
+  // slippage percentage range is <0.1, 50)
   const slippageInputIsValid =
     !Number.isNaN(Number(slippageInput)) &&
-    // 10 is 0.1% slippage and less than 0.1 is not desirable
-    rawSlippage >= 10 &&
+    rawSlippage >= RawSlippageValue.Min &&
+    rawSlippage < RawSlippageValue.Max &&
     rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
 
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
@@ -115,9 +124,9 @@ export default function SlippageTabs({
   let slippageError: SlippageError | undefined
   if (slippageInput !== '' && !slippageInputIsValid) {
     slippageError = SlippageError.InvalidInput
-  } else if (slippageInputIsValid && rawSlippage < 50) {
+  } else if (slippageInputIsValid && rawSlippage < RawSlippageValue.RiskyLow) {
     slippageError = SlippageError.RiskyLow
-  } else if (slippageInputIsValid && rawSlippage > 500) {
+  } else if (slippageInputIsValid && rawSlippage > RawSlippageValue.RiskyHigh) {
     slippageError = SlippageError.RiskyHigh
   } else {
     slippageError = undefined
@@ -139,7 +148,7 @@ export default function SlippageTabs({
       if (
         !Number.isNaN(slippageAsIntFromRoundedFloat) &&
         slippageAsIntFromRoundedFloat > 0 &&
-        slippageAsIntFromRoundedFloat < 5000
+        slippageAsIntFromRoundedFloat < RawSlippageValue.Max
       ) {
         setRawSlippage(slippageAsIntFromRoundedFloat)
       }
@@ -202,27 +211,27 @@ export default function SlippageTabs({
           <Option
             onClick={() => {
               setSlippageInput('')
-              setRawSlippage(10)
+              setRawSlippage(RawSlippageValue.Min)
             }}
-            active={rawSlippage === 10}
+            active={rawSlippage === RawSlippageValue.Min}
           >
             0.1%
           </Option>
           <Option
             onClick={() => {
               setSlippageInput('')
-              setRawSlippage(50)
+              setRawSlippage(RawSlippageValue.RiskyLow)
             }}
-            active={rawSlippage === 50}
+            active={rawSlippage === RawSlippageValue.RiskyLow}
           >
             0.5%
           </Option>
           <Option
             onClick={() => {
               setSlippageInput('')
-              setRawSlippage(100)
+              setRawSlippage(RawSlippageValue.Medium)
             }}
-            active={rawSlippage === 100}
+            active={rawSlippage === RawSlippageValue.Medium}
           >
             1%
           </Option>
@@ -262,7 +271,11 @@ export default function SlippageTabs({
             color={slippageError === SlippageError.InvalidInput ? 'red' : '#F3841E'}
           >
             {slippageError === SlippageError.InvalidInput
-              ? `Enter a valid ${slippageError === SlippageError.InvalidInput ? 'slippage percentage' : 'gas price'}`
+              ? `Enter a valid ${
+                  slippageError === SlippageError.InvalidInput
+                    ? `slippage between ${RawSlippageValue.Min / 100}% and ${RawSlippageValue.Max / 100}%`
+                    : 'gas price'
+                }`
               : slippageError === SlippageError.RiskyLow
               ? 'Your transaction may fail'
               : 'Your transaction may be frontrun'}
