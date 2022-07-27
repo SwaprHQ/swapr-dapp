@@ -2,10 +2,10 @@ import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
 import {
   ChainId,
+  CoWTrade,
   CurveTrade,
   getAllCommonUniswapV2Pairs,
   getAllCommonUniswapV2PairsFromSubgraph,
-  GnosisProtocolTrade,
   Pair,
   RoutablePlatform,
   Token,
@@ -168,16 +168,17 @@ export async function getExactIn(
   })
 
   // Gnosis Protocol V2
-  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
+  const gnosisProtocolTrade = new Promise<CoWTrade | undefined>(async resolve => {
+    if (!RoutablePlatform.COW.supportsChain(chainId as ChainId)) {
       return resolve(undefined)
     }
 
-    GnosisProtocolTrade.bestTradeExactIn({
+    CoWTrade.bestTradeExactIn({
       currencyAmountIn,
       currencyOut,
       maximumSlippage,
       receiver,
+      user,
     })
       .then(resolve)
       .catch(error => {
@@ -323,16 +324,17 @@ export async function getExactOut(
   })
 
   // Gnosis Protocol V2
-  const gnosisProtocolTrade = new Promise<GnosisProtocolTrade | undefined>(async resolve => {
+  const gnosisProtocolTrade = new Promise<CoWTrade | undefined>(async resolve => {
     if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
       return resolve(undefined)
     }
 
-    GnosisProtocolTrade.bestTradeExactOut({
+    CoWTrade.bestTradeExactOut({
       currencyAmountOut,
       currencyIn,
       maximumSlippage,
       receiver,
+      user,
     })
       .then(resolve)
       .catch(error => {

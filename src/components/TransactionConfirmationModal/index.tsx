@@ -1,4 +1,4 @@
-import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
+import { ChainId, CoWTrade, Trade } from '@swapr/sdk'
 
 import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
@@ -77,15 +77,13 @@ function TransactionSubmittedContent({
   const theme = useTheme()
   const { t } = useTranslation()
 
-  const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
+  const isCoWTrade = trade instanceof CoWTrade
   const link =
     chainId &&
     hash &&
-    (isGnosisProtocolTrade
-      ? getGnosisProtocolExplorerOrderLink(chainId, hash)
-      : getExplorerLink(chainId, hash, 'transaction'))
+    (isCoWTrade ? getGnosisProtocolExplorerOrderLink(chainId, hash) : getExplorerLink(chainId, hash, 'transaction'))
 
-  const externalLinkText = `${isGnosisProtocolTrade ? t('viewOnCowExplorer') : t('viewOnBlockExplorer')}`
+  const externalLinkText = `${isCoWTrade ? t('viewOnCowExplorer') : t('viewOnBlockExplorer')}`
   const explorerExternalLink = chainId && hash && (
     <ExternalLink href={link as string}>
       <Text fontWeight={500} fontSize="13px">
