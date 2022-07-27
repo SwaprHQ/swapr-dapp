@@ -25,9 +25,10 @@ enum DeadlineError {
 }
 
 enum RawSlippageValue {
-  Min = 10, // 0.1%
+  Min = 1, // 0.01%
+  OptionMin = 10, // 0.1%
   RiskyLow = 50, // 0.5%
-  Medium = 100, // 1%
+  OptionMax = 100, // 1%
   RiskyHigh = 500, // 5%
   Max = 5000, // 50%
 }
@@ -112,7 +113,7 @@ export default function SlippageTabs({
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
-  // slippage percentage range is <0.1, 50)
+  // slippage percentage range is <0.01, 50)
   const slippageInputIsValid =
     !Number.isNaN(Number(slippageInput)) &&
     rawSlippage >= RawSlippageValue.Min &&
@@ -211,9 +212,9 @@ export default function SlippageTabs({
           <Option
             onClick={() => {
               setSlippageInput('')
-              setRawSlippage(RawSlippageValue.Min)
+              setRawSlippage(RawSlippageValue.OptionMin)
             }}
-            active={rawSlippage === RawSlippageValue.Min}
+            active={rawSlippage === RawSlippageValue.OptionMin}
           >
             0.1%
           </Option>
@@ -229,9 +230,9 @@ export default function SlippageTabs({
           <Option
             onClick={() => {
               setSlippageInput('')
-              setRawSlippage(RawSlippageValue.Medium)
+              setRawSlippage(RawSlippageValue.OptionMax)
             }}
-            active={rawSlippage === RawSlippageValue.Medium}
+            active={rawSlippage === RawSlippageValue.OptionMax}
           >
             1%
           </Option>
