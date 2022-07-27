@@ -1,68 +1,77 @@
 import React, { FC, PropsWithChildren } from 'react'
 
-import { ListBox } from '../ListBox'
+import Loader from '../../../components/Loader'
 import { AdvancedChart } from './AdvancedChart'
 import {
-  ChartContainer,
+  ColumnCellBox,
   ContainerBox,
   DiagramContainerBox,
+  EmptyCellBody,
   HistoryBox,
-  HistoryBoxBody,
   HistoryColumnBox,
   InfoContainerBox,
-  ListTitleElement,
-  ListTitleRow,
+  ListBox,
+  LoaderContainer,
   TitleColumn,
   TradeContent,
   TradesAndOrderColumnBox,
-  WidthBox,
 } from './AdvancedSwapMode.styles'
 import { TransactionHistory } from './AdvancedSwapMode.types'
+import { ListElement } from './ListElement'
+import { ListTitle } from './ListTitle'
 import { usePair } from './usePair'
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { burnsAndMints, swaps, inputTokenSymbol, outputTokenSymbol } = usePair()
+  const { burnsAndMints, swaps, inputTokenSymbol, outputTokenSymbol, isLoading } = usePair()
 
-  const renderHistory = (array: TransactionHistory[]) =>
-    array
+  const renderHistory = (array: TransactionHistory[]) => {
+    if (!inputTokenSymbol || !outputTokenSymbol)
+      return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
+
+    if (!array.length && !isLoading)
+      return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
+
+    if (isLoading)
+      return (
+        <LoaderContainer>
+          <Loader size="40px" stroke="#8780BF" />
+        </LoaderContainer>
+      )
+
+    return array
       .sort((firstTrade, secondTrade) => (Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1))
       .map(({ id, timestamp, amount0, amount1, amountUSD }) => (
-        // TODO: improve styles
-        <ListBox key={id} amount0={amount0} amount1={amount1} amountUSD={amountUSD} timestamp={timestamp} />
+        <ListElement key={id} amount0={amount0} amount1={amount1} amountUSD={amountUSD} timestamp={timestamp} />
       ))
+  }
 
   return (
     <ContainerBox>
       <DiagramContainerBox>
-        <TitleColumn>Diagram</TitleColumn>
-        <ChartContainer>
-          <AdvancedChart inputTokenSymbol={inputTokenSymbol} outputTokenSymbol={outputTokenSymbol} />
-        </ChartContainer>
+        <AdvancedChart inputTokenSymbol={inputTokenSymbol} outputTokenSymbol={outputTokenSymbol} />
       </DiagramContainerBox>
       <InfoContainerBox>
         <HistoryColumnBox>
           <HistoryBox>
             <TitleColumn>Trade History</TitleColumn>
-            <ListTitleRow>
-              <ListTitleElement>USD</ListTitleElement>
-              <ListTitleElement>Amount</ListTitleElement>
-              <ListTitleElement>Time</ListTitleElement>
-            </ListTitleRow>
-            <HistoryBoxBody>{renderHistory(swaps)}</HistoryBoxBody>
+            <ListTitle />
+            <ListBox>{renderHistory(swaps)}</ListBox>
           </HistoryBox>
           <HistoryBox>
             <TitleColumn>Liquidity History</TitleColumn>
-            <HistoryBoxBody>{renderHistory(burnsAndMints)}</HistoryBoxBody>
+            <ListTitle />
+            <ListBox>{renderHistory(burnsAndMints)}</ListBox>
           </HistoryBox>
         </HistoryColumnBox>
         <TradesAndOrderColumnBox>
-          <WidthBox>
+          <ColumnCellBox>
             <TitleColumn>Trade</TitleColumn>
             <TradeContent>{children}</TradeContent>
-          </WidthBox>
-          <WidthBox>
+          </ColumnCellBox>
+          <ColumnCellBox>
             <TitleColumn>Orders</TitleColumn>
-          </WidthBox>
+            <EmptyCellBody>The feature has not been implemented yet.</EmptyCellBody>
+          </ColumnCellBox>
         </TradesAndOrderColumnBox>
       </InfoContainerBox>
     </ContainerBox>

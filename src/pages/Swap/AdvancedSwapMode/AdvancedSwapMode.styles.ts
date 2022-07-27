@@ -7,21 +7,21 @@ export const ContainerBox = styled.div`
   margin-bottom: 2rem;
   background: #0c0b12;
   border-radius: 12px;
+  color: #b2b5be;
   @media screen and (max-width: ${breakpoints.l}) {
     display: block;
   }
 `
-
-export const ChartContainer = styled.div`
-  height: calc(100% - 50px);
-`
-
 export const BorderStyling = css`
-  border: 1px solid rgba(41, 38, 67, 1);
+  border: 1px solid ${({ theme }) => theme.purple6};
 `
 
 export const AdvanceSwapModeHeight = css`
   height: calc(100vh - 130px);
+
+  @media screen and (max-width: ${breakpoints.md}) {
+    height: calc(100vh - 188px);
+  }
 `
 
 export const CustomScrollBar = css`
@@ -39,10 +39,13 @@ export const CustomScrollBar = css`
   scrollbar-width: thin;
 `
 
-export const WidthBox = styled.div`
+export const ColumnCellBox = styled.div`
   z-index: 3;
-  ${BorderStyling}
   flex: 1;
+
+  border: 1px solid rgba(41, 38, 67, 1);
+  border-top: 0;
+
   @media screen and (max-width: ${breakpoints.md}) {
     width: 50%;
   }
@@ -53,7 +56,9 @@ export const WidthBox = styled.div`
 
 export const TitleColumn = styled.div`
   padding: 1rem 0.5rem;
-  ${BorderStyling}
+  border-bottom: 1px solid ${({ theme }) => theme.purple6};
+  font-weight: 600;
+  color: ${({ theme }) => theme.purple4};
 `
 
 export const BodyColumn = styled.div`
@@ -72,7 +77,9 @@ export const DiagramContainerBox = styled.div`
 
 export const InfoContainerBox = styled.div`
   display: flex;
+  flex: 0;
   ${AdvanceSwapModeHeight}
+  border-top: 1px solid rgb(41, 38, 67);
   @media screen and (max-width: ${breakpoints.l}) {
     width: 100%;
     height: auto;
@@ -96,22 +103,39 @@ export const HistoryColumnBox = styled.div`
   width: 40%;
   min-width: 350px;
   ${ColumnBoxStyles}
+
   @media screen and (max-width: ${breakpoints.md}) {
     order: 1;
   }
 `
 
-export const HistoryBox = styled(WidthBox)`
+export const HistoryBox = styled(ColumnCellBox)`
   height: 50%;
+
   @media screen and (max-width: ${breakpoints.l}) {
     height: 400px;
   }
 `
 
-export const HistoryBoxBody = styled.div`
+export const ListBox = styled.div`
   overflow-y: auto;
-  max-height: calc(100% - 88px);
+  height: calc(100% - 88px);
+  position: relative;
   ${CustomScrollBar}
+`
+
+export const EmptyCellBody = styled.div`
+  padding: 2rem 1rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+`
+
+export const LoaderContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
 
 export const TradesAndOrderColumnBox = styled.div`
@@ -127,39 +151,12 @@ export const TradesAndOrderColumnBox = styled.div`
 `
 
 export const TradeContent = styled.div`
-  padding: 0 0.5rem;
+  padding: 1rem 0.5rem 0;
+
   @media screen and (max-width: ${breakpoints.l}) {
     > div {
-      margin: auto;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
-`
-
-export const ListTitleRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #191919;
-`
-export const ListTitleElement = styled.div`
-  text-align: center;
-  width: calc(100% / 3);
-  padding: 0 0.5rem;
-`
-
-export const HistoryTrade = styled.div`
-  &:not(:last-child) {
-    border-bottom: 1px solid #191919;
-  }
-  padding: 0.5rem;
-  display: flex;
-  font-size: 13px;
-  justify-content: space-between;
-  align-items: center;
-`
-
-export const HistoryTradeCell = styled.div`
-  width: calc(100% / 3);
-  text-align: center;
 `
