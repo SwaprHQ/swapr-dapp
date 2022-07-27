@@ -189,6 +189,9 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     BAO,
   ],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.GOERLI]: [WETH[ChainId.GOERLI]],
+  [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -214,6 +217,9 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [],
+  [ChainId.OPTIMISM_GOERLI]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -230,6 +236,9 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.GOERLI]: [WETH[ChainId.GOERLI]],
+  [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
 }
 
 export const PINNED_PAIRS: {
@@ -492,6 +501,25 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
   ],
+  [ChainId.OPTIMISM_GOERLI]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.OPTIMISM_MAINNET]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.GOERLI]: [],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
