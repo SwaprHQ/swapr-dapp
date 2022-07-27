@@ -55,7 +55,7 @@ export function sortTradesByExecutionPrice(trades: Trade[]) {
  * @returns {Promise<EcoRouterResults>} List of unsorted trade sources
  */
 export async function getExactIn(
-  { currencyAmountIn, currencyOut, maximumSlippage, receiver = AddressZero }: EcoRouterBestExactInParams,
+  { currencyAmountIn, currencyOut, maximumSlippage, receiver = AddressZero, user }: EcoRouterBestExactInParams,
   { uniswapV2 }: EcoRouterSourceOptionsParams,
   provider?: Provider
 ): Promise<EcoRouterResults> {
@@ -209,7 +209,7 @@ export async function getExactIn(
  * @returns {Promise<EcoRouterResults>} List of unsorted trade sources
  */
 export async function getExactOut(
-  { currencyAmountOut, currencyIn, maximumSlippage, receiver = AddressZero }: EcoRouterBestExactOutParams,
+  { currencyAmountOut, currencyIn, maximumSlippage, receiver = AddressZero, user }: EcoRouterBestExactOutParams,
   { uniswapV2 }: EcoRouterSourceOptionsParams,
   provider?: Provider
 ): Promise<EcoRouterResults> {

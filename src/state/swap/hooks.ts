@@ -214,6 +214,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     })
 
     const commonParams = {
+      user: account || AddressZero, // default back to zero if no account is connected.
       maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
       receiver,
     }
@@ -226,8 +227,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
     // Use a static version
     const staticProvider = provider ? new StaticJsonRpcProvider(provider?.connection.url) : undefined
-
-    console.log('useDerivedSwapInfo: fetching trades')
 
     const getTrades = isExactIn
       ? getExactInFromEcoRouter(
