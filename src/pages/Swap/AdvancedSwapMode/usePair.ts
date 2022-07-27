@@ -4,9 +4,8 @@ import { subgraphClientsUris } from 'apollo/client'
 import request from 'graphql-request'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
-import { useEffect, useLayoutEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { AppState } from 'state'
+import { useEffect, useState } from 'react'
+import { useSwapState } from 'state/swap/hooks'
 import { SWPRSupportedChains } from 'utils/chainSupportsSWPR'
 
 import { QUERY_PAIR_TRANSACTIONS, QUERY_PAIRS } from './AdvancedSwapMode.query'
@@ -20,7 +19,7 @@ export const usePair = () => {
 
   const { chainId } = useActiveWeb3React()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const fetchPairs = async () => {
       try {
         if (chainId === ChainId.POLYGON) throw new Error('Polygon is unsupported')
@@ -43,7 +42,7 @@ export const usePair = () => {
   const {
     INPUT: { currencyId: inputCurrencyId },
     OUTPUT: { currencyId: outputCurrencyId },
-  } = useSelector((state: AppState) => state.swap)
+  } = useSwapState()
 
   // convert native currency to wrapped currency
   const [inputToken, outputToken] = [
@@ -130,5 +129,6 @@ export const usePair = () => {
     swaps,
     inputTokenSymbol: inputToken?.symbol,
     outputTokenSymbol: outputToken?.symbol,
+    isLoading: false,
   }
 }

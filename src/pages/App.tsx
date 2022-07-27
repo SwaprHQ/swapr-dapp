@@ -48,11 +48,11 @@ const BodyWrapper = styled.div<{
   overflow-x: hidden;
   overflow: visible;
   z-index: 10;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, isExpertMode }) => theme.mediaWidth.upToMedium`
     /* [PR#531]: theme.mediaWidth.upToSmall does not cover all the breakpoints smoothly
     padding: 16px;
     */
-    padding-top: 2rem;
+    padding-top: ${isExpertMode ? '1rem' : '2rem'};
   `};
 
   /* [PR#531] */
