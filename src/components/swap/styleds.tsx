@@ -98,15 +98,17 @@ export const Dots = styled.span`
   }
 `
 
-const SwapCallbackErrorInner = styled.div`
+const SwapCallbackErrorInner = styled.div<{
+  isSpaceAtTop?: boolean
+}>`
   background-color: ${({ theme }) => transparentize(0.9, theme.red1)};
   border-radius: 1rem;
   display: flex;
   align-items: center;
   font-size: 0.825rem;
   width: 100%;
-  padding: 3rem 1.25rem 1rem 1rem;
-  margin-top: -2rem;
+  padding: ${({ isSpaceAtTop }) => (isSpaceAtTop ? '1rem 1.25rem 1rem 1rem' : '3rem 1.25rem 1rem 1rem')};
+  margin-top: ${({ isSpaceAtTop }) => (isSpaceAtTop ? '' : '-2rem')};
   color: ${({ theme }) => theme.red1};
   z-index: -1;
   p {
@@ -127,9 +129,9 @@ const SwapCallbackErrorInnerAlertTriangle = styled.div`
   height: 48px;
 `
 
-export function SwapCallbackError({ error }: { error: string }) {
+export function SwapCallbackError({ error, isSpaceAtTop }: { error: string; isSpaceAtTop?: boolean }) {
   return (
-    <SwapCallbackErrorInner>
+    <SwapCallbackErrorInner isSpaceAtTop={isSpaceAtTop}>
       <SwapCallbackErrorInnerAlertTriangle>
         <AlertTriangle size={24} />
       </SwapCallbackErrorInnerAlertTriangle>

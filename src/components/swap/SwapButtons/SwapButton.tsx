@@ -1,7 +1,7 @@
 import shuffle from 'lodash/shuffle'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text } from 'rebass'
+import { Box, Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
@@ -24,23 +24,33 @@ const StyledSwapLoadingButton = styled(ButtonPrimary)`
   background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
   cursor: 'wait';
   padding: 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    flex-direction: column;
+    row-gap: 8px;
+  `};
 `
 
-const StyledPlataformImage = styled.img`
-  margin-top: -3px;
-  margin-right: 6px;
-`
-
-const StyledSwapButtonText = styled(Text)<{ width?: string }>`
+const RotatingLogo = styled.div`
+  position: relative;
   display: flex;
-  height: 16px;
-  white-space: pre-wrap;
-  width: ${({ width }) => (width ? `${width}px` : 'auto')};
+  justify-content: start;
+  align-items: center;
+  min-width: 112px;
+  min-height: 22px;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
 `
 
-const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)`
-  justify-content: end;
-  flex: 1.1;
+const LogoWithText = styled.div`
+  opacity: 0;
+  margin: auto;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const StyledPlataformText = styled(Text)`
@@ -77,30 +87,31 @@ export const SwapButton = ({
 
   return (
     <StyledSwapButton gradientColor={platformName && ROUTABLE_PLATFORM_STYLE[platformName].gradientColor} {...rest}>
-      <StyledSwapButtonText>
+      <Text marginLeft={2}>
         {swapInputError ? (
           SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
         ) : priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode ? (
           t('button.priceImpactTooHigh')
         ) : (
-          <>
-            {t('button.swapWith')}
+          <Flex alignItems="center">
+            <Text fontSize="15px">{t('button.swapWith')}</Text>
             {platformName && (
-              <>
-                {' '}
-                <StyledPlataformImage
-                  width={21}
-                  height={21}
+              <Flex alignItems="center" marginLeft={2}>
+                <img
                   src={ROUTABLE_PLATFORM_STYLE[platformName].logo}
                   alt={ROUTABLE_PLATFORM_STYLE[platformName].alt}
+                  width={21}
+                  height={21}
                 />
-                <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
-              </>
+                <Box marginLeft={2}>
+                  <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
+                </Box>
+              </Flex>
             )}
-            {priceImpactSeverity > PRICE_IMPACT_MEDIUM ? ` ${t('button.anyway')}` : ''}
-          </>
+            {priceImpactSeverity > PRICE_IMPACT_MEDIUM && ` ${t('button.anyway')}`}
+          </Flex>
         )}
-      </StyledSwapButtonText>
+      </Text>
     </StyledSwapButton>
   )
 }
@@ -111,20 +122,20 @@ export const SwapLoadingButton = () => {
   const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>
-      <StyledLoadingSwapButtonText>{t('button.findingBestPrice')}</StyledLoadingSwapButtonText>
-      <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
+      <Text marginRight={[0, 2]}>{t('button.findingBestPrice')}</Text>
+      <RotatingLogo className={`loading-rotation-${routablePlatforms.length}`}>
         {shuffle(routablePlatforms).map((key: string) => (
-          <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
-            <StyledPlataformImage
-              width={21}
-              height={21}
+          <LogoWithText key={ROUTABLE_PLATFORM_STYLE[key].name}>
+            <img
               src={ROUTABLE_PLATFORM_STYLE[key].logo}
               alt={ROUTABLE_PLATFORM_STYLE[key].alt}
+              width={21}
+              height={21}
             />
-            <StyledSwapButtonText width={'120'}>{ROUTABLE_PLATFORM_STYLE[key].name}</StyledSwapButtonText>
-          </div>
+            <Text marginLeft={2}>{ROUTABLE_PLATFORM_STYLE[key].name}</Text>
+          </LogoWithText>
         ))}
-      </div>
+      </RotatingLogo>
     </StyledSwapLoadingButton>
   )
 }
