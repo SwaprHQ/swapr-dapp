@@ -72,5 +72,9 @@
   "label": "通证符号",
   "decimals": "小数位数",
   "enterTokenCont": "输入通证地址并继续",
-  "bridge": "Bridge"
+  "bridge": "桥",
+  "vote": "投票",
+  "charts": "图表",
+  "liquidity": "流动性",
+  "rewards": "奖励"
 }
