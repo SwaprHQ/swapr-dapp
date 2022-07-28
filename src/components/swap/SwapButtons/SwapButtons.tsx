@@ -70,7 +70,7 @@ export function SwapButtons({
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
 
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
@@ -179,8 +179,8 @@ export function SwapButtons({
             error={isValid && priceImpactSeverity > PRICE_IMPACT_MEDIUM}
           >
             {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
-              ? t('PriceImpactHigh')
-              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('swapAnyway') : t('swap')}`}
+              ? t('button.priceImpactTooHigh')
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('button.swapAnyway') : t('button.swap')}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>

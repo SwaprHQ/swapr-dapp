@@ -19,7 +19,7 @@ import { Wrapper } from './PairSearch.styles'
 import { PairSearchProps } from './PairSearch.types'
 
 export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filterPairs }: PairSearchProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -98,7 +98,7 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
           <SearchInput
             data-testid="search-pair"
             type="text"
-            placeholder={t('pairSearchPlaceholder')}
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
             onChange={handleInput}
