@@ -49,7 +49,7 @@ export const CurrencyUserBalance = ({
               </>
             ) : (
               <Trans
-                i18nKey="balance"
+                i18nKey="swap:currencyUserBalance.balance"
                 values={{
                   balanceInput: trimmedBalance,
                 }}

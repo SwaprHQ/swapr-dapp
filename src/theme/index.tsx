@@ -604,26 +604,7 @@ body {
   }
 }
 
-.loading-button{
-  position:relative;
-  display: flex;
-  flex: 1;
-  justify-content: start;
-  align-items: flex-end;
-  height: 20px;
-  margin-left: 11px;
-}
-
-.loading-button>div {
-  position: absolute;
-  opacity: 0;
-  display: flex;
-}
-
-.loading-button>div>div{
-  padding: 0px 5px;
-}
-
+// rotating trade plataforms logos loading
 .loading-rotation-3>div {
   animation-name: loading-rotations-3;
   animation-timing-function: ease-in-out;

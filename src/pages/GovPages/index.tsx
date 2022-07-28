@@ -37,7 +37,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 export default function Governance() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const theme = useTheme()
   const router = useRouter()
   const nativeCurrency = useNativeCurrency()

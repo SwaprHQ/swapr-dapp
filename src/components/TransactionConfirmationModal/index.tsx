@@ -75,7 +75,7 @@ function TransactionSubmittedContent({
   chainId: ChainId
 }) {
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const isCoWTrade = trade instanceof CoWTrade
   const link =
