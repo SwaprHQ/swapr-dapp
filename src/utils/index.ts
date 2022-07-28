@@ -167,7 +167,7 @@ export function exportAllImagesFilesFromRelativePath(folderArray: any): ImageTyp
 
   folderArray.keys().forEach((item: string) => {
     const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
-    const imageLocation = folderArray(item).default
+    const imageLocation = folderArray(item)
 
     images.push({ name: imageName, location: imageLocation })
   })
