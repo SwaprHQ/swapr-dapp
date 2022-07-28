@@ -250,6 +250,7 @@ export default function SlippageTabs({
         </RowBetween>
         {slippageError ? (
           <SlippageToleranceError
+            data-testid="slippage-error"
             errorMessage={getSlippageErrorMessage(slippageError)}
             isInputValid={slippageInputIsValid}
           />
