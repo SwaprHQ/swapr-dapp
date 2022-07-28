@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
+import trades from 'services/Trades/store'
 
 import {
   ecoBridgePersistedKeys,
@@ -40,6 +41,7 @@ const store = configureStore({
     lists,
     bridgeTransactions,
     ecoBridge,
+    trades,
   },
   middleware: [
     save({
