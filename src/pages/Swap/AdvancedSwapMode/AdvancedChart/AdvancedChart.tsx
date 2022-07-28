@@ -1,25 +1,19 @@
 import React, { useMemo } from 'react'
 import { AdvancedRealTimeChart } from 'react-ts-tradingview-widgets'
 
-export const AdvancedChart = ({
-  inputTokenSymbol,
-  outputTokenSymbol,
-}: {
-  inputTokenSymbol?: string
-  outputTokenSymbol?: string
-}) => {
+export const AdvancedChart = ({ symbol }: { symbol?: string }) => {
   const memoizedAdvancedRealTimeChart = useMemo(() => {
-    const symbol = inputTokenSymbol && outputTokenSymbol ? `${inputTokenSymbol}${outputTokenSymbol}` : 'USDCUSD'
     return (
       <AdvancedRealTimeChart
-        symbol={symbol}
+        symbol={symbol ?? 'USDCUSD'}
         theme="dark"
         style="3"
         autosize
+        hide_top_toolbar
         copyrightStyles={{ parent: { display: 'none' } }}
       />
     )
-  }, [inputTokenSymbol, outputTokenSymbol])
+  }, [symbol])
 
   return <>{memoizedAdvancedRealTimeChart}</>
 }
