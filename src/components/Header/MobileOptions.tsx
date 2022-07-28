@@ -70,7 +70,7 @@ export default function MobileOptions() {
   const open = useModalOpen(ApplicationModal.MOBILE)
   const toggle = useToggleMobileMenu()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   useOnClickOutside(popoverRef, open ? toggle : undefined)
   return (
     <div ref={popoverRef}>

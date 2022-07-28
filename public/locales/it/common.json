@@ -84,5 +84,9 @@
   "enterTokenCont": "Inserire un indirizzo token per continuare",
   "priceChange": "Scostamento del prezzo previsto",
   "forAtLeast": "per almeno ",
-  "bridge": "Bridge"
+  "bridge": "Ponte",
+  "vote": "Votazione",
+  "charts": "Grafici",
+  "liquidity": "Liquidità",
+  "rewards": "Ricompense"
 }
