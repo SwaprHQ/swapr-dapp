@@ -84,5 +84,9 @@
   "enterTokenCont": "Nhập địa chỉ đồng tiền ảo để tiếp tục",
   "priceChange": "Trượt giá dự kiến",
   "forAtLeast": "cho ít nhất ",
-  "bridge": "Bridge"
+  "bridge": "Cầu",
+  "vote": "Bỏ phiếu",
+  "charts": "Biểu đồ",
+  "liquidity": "Tính thanh khoản",
+  "rewards": "Phần thưởng"
 }

@@ -195,7 +195,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const { gas } = useGasInfo()
   const [isDark] = useDarkModeManager()
@@ -252,11 +252,11 @@ function Header() {
             {t('swap')}
           </HeaderLink>
           <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
-            Liquidity
+            {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
-            Rewards
+            {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
@@ -330,12 +330,12 @@ function Header() {
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
-              Pools
+              {t('liquidity')}
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="rewards-nav-link" to="/rewards">
-              Rewards
+              {t('rewards')}
             </HeaderMobileLink>
           )}
           <HeaderMobileLink id="bridge-nav-link" to="/bridge">

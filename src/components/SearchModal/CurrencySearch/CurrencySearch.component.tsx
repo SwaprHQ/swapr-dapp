@@ -46,7 +46,7 @@ export const CurrencySearch = ({
   showNativeCurrency,
   otherSelectedCurrency,
 }: CurrencySearchProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
   const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
@@ -154,7 +154,7 @@ export const CurrencySearch = ({
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('Search a name or paste address')}
+            placeholder={t('searchPlaceholder')}
             autoComplete="off"
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}

@@ -60,7 +60,7 @@ const StyledArrowLeft = styled(ArrowLeft)`
 `
 
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'bridge' }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   return (
     <Tabs style={{ marginBottom: '20px', display: 'none' }}>
