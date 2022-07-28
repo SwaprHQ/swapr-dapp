@@ -17,7 +17,7 @@ enum SlippageError {
   InvalidInput = 'InvalidInput',
   RiskyLow = 'RiskyLow',
   RiskyHigh = 'RiskyHigh',
-  ExtremlyLow = 'ExtremlyLow',
+  ExtremelyLow = 'ExtremelyLow',
 }
 
 enum DeadlineError {
@@ -31,6 +31,13 @@ enum RawSlippageValue {
   OptionMax = 100, // 1%
   RiskyHigh = 500, // 5%
   Max = 5000, // 50%
+}
+
+enum ErrorMessage {
+  InvalidInput = 'Enter a valid slippage tolerance between 0.01% and 50%',
+  ExtremelyLow = 'Transaction with extremely low slippage tolerance (0.01% to 0.1%) might be reverted because of very small market movement',
+  RiskyLow = 'Your transaction may fail because of low slippage tolerance',
+  RiskyHigh = 'Your transaction may be frontrun because of high slippage tolerance',
 }
 
 export function SlippageToleranceError({
@@ -48,6 +55,21 @@ export function SlippageToleranceError({
       <p>{errorMessage}</p>
     </SlippageErrorInner>
   )
+}
+
+const getSlippageErrorMessage = (slippageError: SlippageError) => {
+  switch (slippageError) {
+    case SlippageError.InvalidInput:
+      return ErrorMessage.InvalidInput
+    case SlippageError.ExtremelyLow:
+      return ErrorMessage.ExtremelyLow
+    case SlippageError.RiskyLow:
+      return ErrorMessage.RiskyLow
+    case SlippageError.RiskyHigh:
+      return ErrorMessage.RiskyHigh
+    default:
+      return 'Slippage tolerance error'
+  }
 }
 
 export interface SlippageTabsProps {
@@ -88,16 +110,18 @@ export default function SlippageTabs({
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
 
   let slippageError: SlippageError | undefined
-  if (slippageInput !== '' && !slippageInputIsValid) {
-    slippageError = SlippageError.InvalidInput
-  } else if (slippageInputIsValid && rawSlippage < RawSlippageValue.OptionMin) {
-    slippageError = SlippageError.ExtremlyLow
-  } else if (slippageInputIsValid && rawSlippage < RawSlippageValue.RiskyLow) {
-    slippageError = SlippageError.RiskyLow
-  } else if (slippageInputIsValid && rawSlippage > RawSlippageValue.RiskyHigh) {
-    slippageError = SlippageError.RiskyHigh
-  } else {
-    slippageError = undefined
+  if (!slippageInputIsValid) {
+    if (slippageInput !== '') {
+      slippageError = SlippageError.InvalidInput
+    }
+  } else if (slippageInputIsValid) {
+    if (rawSlippage < RawSlippageValue.OptionMin) {
+      slippageError = SlippageError.ExtremelyLow
+    } else if (rawSlippage < RawSlippageValue.RiskyLow) {
+      slippageError = SlippageError.RiskyLow
+    } else if (rawSlippage > RawSlippageValue.RiskyHigh) {
+      slippageError = SlippageError.RiskyHigh
+    }
   }
 
   let deadlineError: DeadlineError | undefined
@@ -112,7 +136,6 @@ export default function SlippageTabs({
 
     try {
       const slippageAsIntFromRoundedFloat = Number.parseInt(Math.round(Number.parseFloat(slippage) * 100).toString())
-
       if (
         !Number.isNaN(slippageAsIntFromRoundedFloat) &&
         slippageAsIntFromRoundedFloat > 0 &&
@@ -133,32 +156,6 @@ export default function SlippageTabs({
         setDeadline(customDeadlineAsInt)
       }
     } catch {}
-  }
-
-  function getSlippageErrorMessage(slippageError: SlippageError) {
-    let errorMessage: string
-    switch (slippageError) {
-      case SlippageError.InvalidInput:
-        errorMessage = `Etner a valid slippage tolerance between ${RawSlippageValue.Min / 100}% and ${
-          RawSlippageValue.Max / 100
-        }%`
-        break
-
-      case SlippageError.ExtremlyLow:
-        errorMessage = `Transaction with extremely low slippage tolerance (${RawSlippageValue.Min / 100}% to ${
-          RawSlippageValue.OptionMin / 100
-        }%) might be reverted because of very small market movement`
-        break
-      case SlippageError.RiskyLow:
-        errorMessage = 'Your transaction may fail because of low slippage tolerance'
-        break
-      case SlippageError.RiskyHigh:
-        errorMessage = 'Your transaction may be frontrun because of high slippage tolerance'
-        break
-      default:
-        errorMessage = 'Your transaction may fail'
-    }
-    return errorMessage
   }
 
   useEffect(() => {
