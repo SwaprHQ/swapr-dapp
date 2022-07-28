@@ -24,6 +24,7 @@ describe('Bridge tests', () => {
     MenuBar.connectWallet()
   })
   after(() => {
+    cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
     cy.resetMetamaskAccount()
     cy.wait(500)

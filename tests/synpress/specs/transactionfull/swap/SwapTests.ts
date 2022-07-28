@@ -5,6 +5,7 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { TransactionSettings } from '../../../../pages/TransactionSettings'
+import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 
 describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.00000001
@@ -30,7 +31,7 @@ describe('Swapping tests', () => {
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
-  it('Should reject transaction', () => {
+  it('Should reject transaction on rinkeby', () => {
     SwapPage.chooseTokes('xeenus', 'weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap().confirmSwap()
@@ -176,7 +177,7 @@ describe('Swapping tests', () => {
     })
   })
 
-  it('Should send ether to ens domain address [TC-54]', () => {
+  it.skip('Should send ether to ens domain address [TC-54]', () => {
     ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
@@ -207,7 +208,7 @@ describe('Swapping tests', () => {
       )
     })
   })
-  it('Should send erc20 token to wallet address [TC-54]', () => {
+  it.skip('Should send erc20 token to wallet address [TC-54]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
