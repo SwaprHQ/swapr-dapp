@@ -1,10 +1,8 @@
 import { ChainId } from '@swapr/sdk'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Text } from 'rebass'
-import styled, { css } from 'styled-components'
+import { AlertTriangle } from 'react-feather'
 
-import border8pxRadius from '../../assets/images/border-8px-radius.png'
 import { useActiveWeb3React } from '../../hooks'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { TYPE } from '../../theme'
@@ -13,11 +11,13 @@ import { Option } from '../Option'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
+import { Input, OptionCustom, SlippageErrorInner, SlippageErrorInnerAlertTriangle } from './styleds'
 
 enum SlippageError {
   InvalidInput = 'InvalidInput',
   RiskyLow = 'RiskyLow',
   RiskyHigh = 'RiskyHigh',
+  ExtremlyLow = 'ExtremlyLow',
 }
 
 enum DeadlineError {
@@ -33,57 +33,22 @@ enum RawSlippageValue {
   Max = 5000, // 50%
 }
 
-const Input = styled.input`
-  background: ${({ theme }) => theme.bg2};
-  font-size: 15px;
-  line-height: 18px;
-  width: auto;
-  outline: none;
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : theme.text1)};
-  text-align: right;
-  display: flex;
-`
-
-const OptionCustom = styled(Option)<{
-  active?: boolean
-  warning?: boolean
-  focused?: boolean
-}>`
-  position: relative;
-  flex: 1;
-  display: flex;
-  border: 8px solid;
-  border-radius: 8px;
-  ${({ focused }) =>
-    focused
-      ? css`
-          border: solid 1px ${({ theme }) => theme.bg5};
-          padding: 7px 11px;
-        `
-      : css`
-          border: 8px solid transparent;
-          border-image: url(${border8pxRadius}) 8;
-          padding: 0px 4px;
-        `};
-
-  input {
-    width: 100%;
-    height: 100%;
-    border: 0px;
-    border-radius: 8px;
-  }
-`
-
-const SlippageEmojiContainer = styled.span`
-  color: #f3841e;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;  
-  `}
-`
+export function SlippageToleranceError({
+  errorMessage,
+  isInputValid,
+}: {
+  errorMessage: string
+  isInputValid: boolean
+}) {
+  return (
+    <SlippageErrorInner isInputValid={isInputValid}>
+      <SlippageErrorInnerAlertTriangle isInputValid={isInputValid}>
+        <AlertTriangle size={20} />
+      </SlippageErrorInnerAlertTriangle>
+      <p>{errorMessage}</p>
+    </SlippageErrorInner>
+  )
+}
 
 export interface SlippageTabsProps {
   rawSlippage: number
@@ -125,6 +90,8 @@ export default function SlippageTabs({
   let slippageError: SlippageError | undefined
   if (slippageInput !== '' && !slippageInputIsValid) {
     slippageError = SlippageError.InvalidInput
+  } else if (slippageInputIsValid && rawSlippage < RawSlippageValue.OptionMin) {
+    slippageError = SlippageError.ExtremlyLow
   } else if (slippageInputIsValid && rawSlippage < RawSlippageValue.RiskyLow) {
     slippageError = SlippageError.RiskyLow
   } else if (slippageInputIsValid && rawSlippage > RawSlippageValue.RiskyHigh) {
@@ -166,6 +133,32 @@ export default function SlippageTabs({
         setDeadline(customDeadlineAsInt)
       }
     } catch {}
+  }
+
+  function getSlippageErrorMessage(slippageError: SlippageError) {
+    let errorMessage: string
+    switch (slippageError) {
+      case SlippageError.InvalidInput:
+        errorMessage = `Etner a valid slippage tolerance between ${RawSlippageValue.Min / 100}% and ${
+          RawSlippageValue.Max / 100
+        }%`
+        break
+
+      case SlippageError.ExtremlyLow:
+        errorMessage = `Transaction with extremely low slippage tolerance (${RawSlippageValue.Min / 100}% to ${
+          RawSlippageValue.OptionMin / 100
+        }%) might be reverted because of very small market movement`
+        break
+      case SlippageError.RiskyLow:
+        errorMessage = 'Your transaction may fail because of low slippage tolerance'
+        break
+      case SlippageError.RiskyHigh:
+        errorMessage = 'Your transaction may be frontrun because of high slippage tolerance'
+        break
+      default:
+        errorMessage = 'Your transaction may fail'
+    }
+    return errorMessage
   }
 
   useEffect(() => {
@@ -238,14 +231,6 @@ export default function SlippageTabs({
           </Option>
           <OptionCustom focused={slippageFocused} warning={!slippageInputIsValid} tabIndex={-1}>
             <RowBetween>
-              {!!slippageInput &&
-              (slippageError === SlippageError.RiskyLow || slippageError === SlippageError.RiskyHigh) ? (
-                <SlippageEmojiContainer>
-                  <span role="img" aria-label="warning">
-                    ⚠️
-                  </span>
-                </SlippageEmojiContainer>
-              ) : null}
               {/* https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
               <Input
                 data-testid="input-slippage-tolerance"
@@ -263,25 +248,12 @@ export default function SlippageTabs({
             </RowBetween>
           </OptionCustom>
         </RowBetween>
-        {!!slippageError && (
-          <Text
-            data-testid="slippage-error"
-            fontWeight={500}
-            fontSize="12px"
-            lineHeight="15px"
-            color={slippageError === SlippageError.InvalidInput ? 'red' : '#F3841E'}
-          >
-            {slippageError === SlippageError.InvalidInput
-              ? `Enter a valid ${
-                  slippageError === SlippageError.InvalidInput
-                    ? `slippage between ${RawSlippageValue.Min / 100}% and ${RawSlippageValue.Max / 100}%`
-                    : 'gas price'
-                }`
-              : slippageError === SlippageError.RiskyLow
-              ? 'Your transaction may fail'
-              : 'Your transaction may be frontrun'}
-          </Text>
-        )}
+        {slippageError ? (
+          <SlippageToleranceError
+            errorMessage={getSlippageErrorMessage(slippageError)}
+            isInputValid={slippageInputIsValid}
+          />
+        ) : null}
         <RowBetween mt="2px">
           <RowFixed>
             <TYPE.body
