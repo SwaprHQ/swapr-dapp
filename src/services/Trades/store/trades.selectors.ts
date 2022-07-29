@@ -9,6 +9,12 @@ export type Trade = {
   timestamp: string
 }
 
+// loading
+export const selectStateLoading = createSelector([(state: AppState) => state.trades.loading], loadingState =>
+  Object.values(loadingState).includes(true)
+)
+
+// trades
 export const selectAllSwaprTrades = createSelector([(state: AppState) => state.trades.swapr], swaprTrades => {
   if (swaprTrades) {
     const {

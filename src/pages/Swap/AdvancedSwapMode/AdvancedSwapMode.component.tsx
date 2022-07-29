@@ -2,6 +2,7 @@ import React, { FC, PropsWithChildren } from 'react'
 import { useAllTrades } from 'services/Trades/hooks/useAllTrades'
 import { Trade } from 'services/Trades/store/trades.selectors'
 
+import Loader from '../../../components/Loader'
 import { useTradesAdapter } from '../../../services/Trades/hooks/useTradesAdapter'
 import { AdvancedChart } from './AdvancedChart'
 import {
@@ -13,6 +14,7 @@ import {
   HistoryColumnBox,
   InfoContainerBox,
   ListBox,
+  LoaderContainer,
   TitleColumn,
   TradeContent,
   TradesAndOrderColumnBox,
@@ -20,9 +22,15 @@ import {
 import { ListElement } from './ListElement'
 import { ListTitle } from './ListTitle'
 
+const Loading = () => (
+  <LoaderContainer>
+    <Loader size="40px" stroke="#8780BF" />
+  </LoaderContainer>
+)
+
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const { symbol, showTrades } = useTradesAdapter()
-  const { allLiquidityHistory, allTradeHistory } = useAllTrades()
+  const { allLiquidityHistory, allTradeHistory, isLoading } = useAllTrades()
 
   //TODO: loading state
   const renderTransaction = (array: Trade[]) => {
@@ -54,12 +62,18 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
           <HistoryBox>
             <TitleColumn>Trade History</TitleColumn>
             <ListTitle />
-            <ListBox>{renderTransaction(allTradeHistory)}</ListBox>
+            <ListBox>
+              {renderTransaction(allTradeHistory)}
+              {isLoading && <Loading />}
+            </ListBox>
           </HistoryBox>
           <HistoryBox>
             <TitleColumn>Liquidity History</TitleColumn>
             <ListTitle />
-            <ListBox>{renderTransaction(allLiquidityHistory)}</ListBox>
+            <ListBox>
+              {renderTransaction(allLiquidityHistory)}
+              {isLoading && <Loading />}
+            </ListBox>
           </HistoryBox>
         </HistoryColumnBox>
         <TradesAndOrderColumnBox>

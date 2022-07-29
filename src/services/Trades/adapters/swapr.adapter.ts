@@ -5,7 +5,7 @@ import { request } from 'graphql-request'
 
 import { actions } from '../store'
 import { SWAPR_PAIR_TRANSACTIONS } from './queries'
-import { AbstractTradesAdapter, AdapterInitialArguments } from './trades.adapter'
+import { AbstractTradesAdapter, AdapterInitialArguments, AdapterKeys } from './trades.adapter'
 
 type LiquidityTransaction = {
   id: string
@@ -71,11 +71,15 @@ export class SwaprAdapter extends AbstractTradesAdapter {
     const pairId = Pair.getAddress(inputToken, outputToken).toLowerCase()
 
     try {
+      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: true }))
+
       const data = await request<SwaprTradesHistory>(subgraphClientsUris[this._chainId], SWAPR_PAIR_TRANSACTIONS, {
         pairId,
       })
 
       this.store.dispatch(this.actions.setSwaprTradesHistory(data))
+
+      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
     } catch {
       console.warn('Cannot fetch history transaction')
     }

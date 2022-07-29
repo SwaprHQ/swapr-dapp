@@ -3,7 +3,9 @@ import { ChainId, Token } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 import { AppState } from 'state'
 
-type AdapterKeys = 'swapr'
+export enum AdapterKeys {
+  SWAPR = 'swapr',
+}
 
 type TradesHistoryAdapterConstructorParams = {
   adapters: Adapters
