@@ -115,7 +115,7 @@
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.182",
     "@types/luxon": "^2.3.2",
     "@types/multicodec": "^1.0.0",
