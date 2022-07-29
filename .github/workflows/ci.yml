@@ -256,6 +256,7 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
+    if: github.actor != 'dependabot[bot]'
     needs: install
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
@@ -295,6 +296,7 @@ jobs:
 
   cypress-report:
     name: ⬡・Merge and generate cypress reports
+    if: github.actor != 'dependabot[bot]'
     needs: [install, cypress, synpress]
     runs-on: ubuntu-20.04
     steps:
@@ -378,6 +380,16 @@ jobs:
             TransactionSettingsTests
             transactionless
             transactionfull
+  depcleanup:
+    name: 🧹 Dependabot Cleanup
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    needs: [install, lint, test, typecheck, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
 
   depcleanup:
     name: 🧹 Dependabot Cleanup
