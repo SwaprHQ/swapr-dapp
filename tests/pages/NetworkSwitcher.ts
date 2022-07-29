@@ -20,7 +20,7 @@ export class NetworkSwitcher {
     return cy.get('[data-testid=network-switcher]').filter(':visible')
   }
   static polygon() {
-    return cy.get('[data-testid=polygon-network-button]')
+    return cy.get('[data-testid=polygon-network-button]').filter(':visible')
   }
   static checkNetwork(networkId: ChainsEnum) {
     cy.window().should(win => {

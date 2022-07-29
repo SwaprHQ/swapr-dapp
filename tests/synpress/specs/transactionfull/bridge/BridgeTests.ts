@@ -5,6 +5,8 @@ import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
+import { SwapPage } from '../../../../pages/SwapPage'
+import { ErrorModal } from '../../../../pages/ErrorModal'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
@@ -73,7 +75,7 @@ describe('Bridge tests', () => {
     BridgePage.confirmBridging()
     cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
     cy.rejectMetamaskTransaction()
-    BridgePage.getTransactionErrorModal()
+    ErrorModal.getTransactionErrorModal()
       .scrollIntoView()
       .should('be.visible')
       .should('contain.text', 'Transaction rejected')
@@ -204,6 +206,31 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkFromSelector().should('contain.text', 'Rinkeby')
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
+  })
+  it.only('Reject transaction on Gnosis', () => {
+    BridgePage.getNetworkFromSelector().click()
+    NetworkSwitcher.gnosis().click()
+    BridgePage.getBridgeButton().click()
+    cy.allowMetamaskToAddAndSwitchNetwork()
+    BridgePage.getNetworkToSelector().click()
+    NetworkSwitcher.polygon().click()
+    BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
+    BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
+    BridgePage.getSelectTokenButton().click()
+    TokenMenu.chooseToken('xdai')
+    BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
+    BridgePage.getBridgeSelector('socket').scrollIntoView().should('be.visible')
+    BridgePage.getBridgedAmount().should(res => {
+      expect(parseFloat(res.text())).to.be.greaterThan(0)
+    })
+    BridgePage.getBridgeSelector('socket').click()
+    BridgePage.getBridgeButton().should('contain.text', 'Bridge to').click()
+    BridgePage.confirmBridging()
+    cy.wait(5000)
+    cy.rejectMetamaskTransaction()
+
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.closeTransactionErrorModal()
   })
   it('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
