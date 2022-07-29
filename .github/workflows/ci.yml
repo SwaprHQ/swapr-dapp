@@ -233,7 +233,7 @@ jobs:
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Run synpress tests
-        run: yarn synpress:ct yarn synpress:run $TEST_PARAMS
+        run: yarn synpress:ct 'yarn synpress:run $TEST_PARAMS'
         continue-on-error: true
         env:
           CI: true
