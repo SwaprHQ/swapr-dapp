@@ -13,7 +13,6 @@
   "input": "Entrada",
   "output": "Salida",
   "estimated": "estimado",
-  "balance": "Saldo: {{ balanceInput }}",
   "unlock": "Desbloquear",
   "pending": "Pendiente",
   "selectToken": "Seleccioná un token",
@@ -73,5 +72,9 @@
   "label": "Etiqueta",
   "decimals": "Decimales",
   "enterTokenCont": "Ingresá una dirección de token para continuar",
-  "bridge": "Bridge"
+  "bridge": "Puente",
+  "vote": "Votar",
+  "charts": "Gráficos",
+  "liquidity": "Liquidez",
+  "rewards": "Recompensas"
 }

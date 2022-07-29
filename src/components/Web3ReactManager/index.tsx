@@ -21,7 +21,7 @@ const Message = styled.h2`
 `
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const { active } = useWeb3React()
   const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName)
   const targetedChainId = useTargetedChainIdFromUrl()

@@ -72,5 +72,9 @@
   "label": "שם",
   "decimals": "ספרות עשרויות",
   "enterTokenCont": "הכניסו כתובת טוקן כדי להמשיך",
-  "bridge": "Bridge"
+  "bridge": "לְגַשֵׁר",
+  "vote": "הַצבָּעָה",
+  "charts": "תרשימים",
+  "liquidity": "נְזִילוּת",
+  "rewards": "תגמולים"
 }

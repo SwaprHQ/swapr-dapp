@@ -23,7 +23,7 @@ export interface RecipientFieldProps {
 }
 
 export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
   const error = useMemo(
@@ -49,12 +49,12 @@ export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
   return (
     <div>
       <TYPE.SubHeader lineHeight={'11px'} color={'purple3'}>
-        {t('recipient')}
+        {t('recipientField.recipient')}
       </TYPE.SubHeader>
       <SearchInputStyled
         data-testid="address-input"
         type="text"
-        placeholder={t('addressOrENS')}
+        placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
         error={error}

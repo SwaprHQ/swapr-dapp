@@ -10,7 +10,7 @@ i18next
   .use(initReactI18next)
   .init({
     backend: {
-      loadPath: `./locales/{{lng}}.json`,
+      loadPath: `./locales/{{lng}}/{{ns}}.json`,
     },
     react: {
       useSuspense: true,
@@ -19,6 +19,12 @@ i18next
     preload: ['en'],
     keySeparator: false,
     interpolation: { escapeValue: false },
+    ns: ['common'],
+    defaultNS: 'common',
+    initImmediate: false,
+    detection: {
+      order: ['navigator'],
+    },
   })
 
 export default i18next
