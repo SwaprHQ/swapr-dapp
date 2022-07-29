@@ -235,6 +235,8 @@ jobs:
       - name: Run synpress tests
         run: yarn synpress:ct
         continue-on-error: true
+        env:
+          CI: true
 
       - name: Merge test results into one
         run: |
