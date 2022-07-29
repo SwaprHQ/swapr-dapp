@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback } from 'react'
+import { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
@@ -12,7 +12,7 @@ import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
 import { isPairOnList } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import Badge from '../../Badge'
+import { Badge } from '../../Badge'
 import DoubleCurrencyLogo from '../../DoubleLogo'
 import { TokenPickerItem } from '../shared'
 
@@ -100,14 +100,9 @@ export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) =
 
   return (
     <Flex overflowY="auto" flex="1">
-      {/* TODO: Replace Auto Sizer */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-expect-error */}
       <AutoSizer style={{ width: '100%', height: '100%' }}>
         {({ width, height }: { width: string | number; height: string | number }) => (
           <>
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-expect-error */}
             <FixedSizeList
               width={width}
               height={height}

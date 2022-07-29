@@ -1,6 +1,6 @@
 import { Fraction, SWPR } from '@swapr/sdk'
 
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
