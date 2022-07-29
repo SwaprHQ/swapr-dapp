@@ -99,7 +99,7 @@
   "devDependencies": {
     "@connext/nxtp-sdk": "^0.1.36",
     "@openapitools/openapi-generator-cli": "^2.5.1",
-    "@react-theming/storybook-addon": "^1.1.6",
+    "@react-theming/storybook-addon": "^1.1.7",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-docs": "^6.5.9",
