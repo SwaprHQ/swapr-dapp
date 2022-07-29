@@ -198,7 +198,9 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: cypress/browsers:node12.13.0-chrome78-ff70
+    container:
+      image: cypress/browsers:node12.13.0-chrome78-ff70
+      stdin_open: true
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -233,7 +235,7 @@ jobs:
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Run synpress tests
-        run: yarn synpress:ct 'yarn synpress:run $TEST_PARAMS'
+        run: yarn synpress:ct
         continue-on-error: true
         env:
           CI: true
