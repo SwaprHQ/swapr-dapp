@@ -207,11 +207,8 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
-  it.only('Reject transaction on Gnosis', () => {
-    BridgePage.getNetworkFromSelector().click()
-    NetworkSwitcher.gnosis().click()
-    BridgePage.getBridgeButton().click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
+  it('Reject transaction on Gnosis', () => {
+    cy.changeMetamaskNetwork('gnosis chain')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.polygon().click()
     BridgePage.getBridgeButton().should('contain.text', 'Enter amount')

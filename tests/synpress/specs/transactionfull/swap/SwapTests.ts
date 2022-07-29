@@ -6,6 +6,8 @@ import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { TransactionSettings } from '../../../../pages/TransactionSettings'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
+import { NetworkAdder } from '../../../../utils/NetworkAdder'
+import { ErrorModal } from '../../../../pages/ErrorModal'
 
 describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.00000001
@@ -18,6 +20,7 @@ describe('Swapping tests', () => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
     cy.disconnectMetamaskWalletFromAllDapps()
+    NetworkAdder.addGnosis()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
@@ -40,8 +43,8 @@ describe('Swapping tests', () => {
 
     cy.rejectMetamaskTransaction()
 
-    SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
-    SwapPage.closeTransactionErrorModal()
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.closeTransactionErrorModal()
     cy.scrollTo('top')
     SwapPage.getSwapBox().should('be.visible')
     SwapPage.getSwapButton().should('be.visible')
