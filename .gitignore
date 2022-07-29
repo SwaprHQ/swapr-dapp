@@ -26,6 +26,7 @@ notes.txt
 
 package-lock.json
 
+public-report
 tests/videos
 tests/screenshots
 tests/cypress/fixtures/example.json
