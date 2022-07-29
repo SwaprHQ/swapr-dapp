@@ -239,6 +239,7 @@ function Header() {
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
 
+  //TODO to be removed?
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
 
   const networkWithoutSWPR = !newSwpr
@@ -318,7 +319,7 @@ function Header() {
               onToggleClaimPopup={toggleClaimPopup}
             />
           )}
-          <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
+          <UnsupportedNetworkPopover show={!isSupportedChainId}>
             {!isSupportedChainId && (
               <Amount data-testid="unsupported-network-warning" zero>
                 {'UNSUPPORTED NETWORK'}

@@ -1,79 +1,22 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
+import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
+import { getConnectionName } from 'connectors/utils'
+import useEagerlyConnect from 'hooks/useEagerlyConnect'
+import useOrderedConnections from 'hooks/useOrderedConnections'
+import React, { ReactNode, useMemo } from 'react'
 
-import { useEagerConnect } from '../../hooks'
-import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import Loader from '../Loader'
+import { Connection } from './../../connectors'
 
-const MessageWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20rem;
-`
+export const Web3Provider = ({ children }: { children: ReactNode }) => {
+  useEagerlyConnect()
+  const connections = useOrderedConnections()
+  const connectors: [Connector, Web3ReactHooks][] = connections.map(({ hooks, connector }) => [connector, hooks])
 
-const Message = styled.h2`
-  color: ${({ theme }) => theme.secondary1};
-`
+  const key = useMemo(() => connections.map(({ type }: Connection) => getConnectionName(type)).join('-'), [connections])
 
-export default function Web3ReactManager({ children }: { children: JSX.Element }) {
-  const { t } = useTranslation()
-  const { isActive } = useWeb3ReactCore()
-  const targetedChainId = useTargetedChainIdFromUrl()
-
-  // try to eagerly connect to an injected provider, if it exists and has granted access already
-  const triedEager = useEagerConnect()
-
-  // TODO
-  // after eagerly trying injected, if the network connect ever isn't isActive or in an error state, activate itd
-  // useEffect(() => {
-  //   if (triedEager && !networkActive && !networkError && !isActive) {
-  //     if (targetedChainId && network.supportedChainIds && network.supportedChainIds.indexOf(targetedChainId) >= 0) {
-  //       network.changeChainId(targetedChainId) network.
-  //     }
-  //     activateNetwork(network)
-  //   }
-  // }, [triedEager, networkActive, networkError, activateNetwork, isActive, targetedChainId])
-
-  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
-
-  // handle delayed loader state
-  const [showLoader, setShowLoader] = useState(false)
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowLoader(true)
-    }, 600)
-
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [])
-
-  // on page load, do nothing until we've tried to connect to the injected connector
-  if (!triedEager) {
-    return null
-  }
-
-  // TODO
-  // // if the account context isn't isActive, and there's an error on the network context, it's an irrecoverable error
-  // if (!isActive && networkError) {
-  //   return (
-  //     <MessageWrapper>
-  //       <Message>{t('unknownError')}</Message>
-  //     </MessageWrapper>
-  //   )
-  // }
-
-  // // if neither context is isActive, spin
-  // if (!isActive && !networkActive) {
-  //   return showLoader ? (
-  //     <MessageWrapper>
-  //       <Loader />
-  //     </MessageWrapper>
-  //   ) : null
-  // }
-
-  return children
+  return (
+    <Web3ReactProvider connectors={connectors} key={key}>
+      {children}
+    </Web3ReactProvider>
+  )
 }

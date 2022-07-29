@@ -10,11 +10,11 @@ export default function MetaMaskConnector({ tryActivation }: { tryActivation: (c
   const isInstalledWallet = getIsMetaMask()
   const isActive = metaMaskHooks.useIsActive()
   // attempt to connect eagerly on mount
-  useEffect(() => {
-    void metaMask.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to MetaMask')
-    })
-  }, [])
+  // useEffect(() => {
+  //   void metaMask.connectEagerly().catch(() => {
+  //     console.debug('Failed to connect eagerly to MetaMask')
+  //   })
+  // }, [])
   return (
     <WalletOption
       id={WalletType.METAMASK}

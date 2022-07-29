@@ -1,4 +1,5 @@
 import { Placement } from '@popperjs/core'
+import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode, RefObject, useRef } from 'react'
 
 import unsupportedNetworkHintImage1x from '../../assets/images/unsupported-network-hint.png'
@@ -17,13 +18,14 @@ interface UnsupportedNetworkPopoverProps {
 export default function UnsupportedNetworkPopover({ children, show }: UnsupportedNetworkPopoverProps) {
   const closeModals = useCloseModals()
   const popoverRef = useRef(null)
+  const { isSupportedChainId } = useWeb3ReactCore()
 
   useOnClickOutside(popoverRef, show ? closeModals : undefined)
 
   return (
     <StyledPopover
       placement="bottom-end"
-      show={show}
+      show={!isSupportedChainId}
       content={
         <View ref={popoverRef} data-testid="unsupported-network-popover">
           <Row>

@@ -1,15 +1,6 @@
-import { Web3Provider } from '@ethersproject/providers'
-import { ChainId } from '@swapr/sdk'
-
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { MetaMask } from '@web3-react/metamask'
-import { Network } from '@web3-react/network'
-import { Connector } from '@web3-react/types'
-import { WalletConnect } from '@web3-react/walletconnect'
 import { web3Network } from 'connectors'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
-import { isMobile } from 'react-device-detect'
 
 export function useEagerConnect() {
   const { isActive } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
@@ -72,8 +63,3 @@ export function useEagerConnect() {
 //     return undefined
 //   }, [active, error, suppress, activate])
 // }
-
-// TODO unsupported chain id error
-export function useUnsupportedChainIdError(): boolean {
-  return false
-}

@@ -11,7 +11,6 @@ import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import NetworkWarningModal from '../components/NetworkWarningModal'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
-import Web3ReactManager from '../components/Web3ReactManager'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -85,13 +84,11 @@ export default function App() {
               <Header />
             </HeaderWrapper>
             <BodyWrapper>
-              <Web3ReactManager>
-                <SpaceBg>
-                  <Suspense fallback={<FallbackLoader />}>
-                    <Routes />
-                  </Suspense>
-                </SpaceBg>
-              </Web3ReactManager>
+              <SpaceBg>
+                <Suspense fallback={<FallbackLoader />}>
+                  <Routes />
+                </Suspense>
+              </SpaceBg>
               <Marginer />
             </BodyWrapper>
           </AppWrapper>

@@ -1,23 +1,9 @@
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { MetaMask } from '@web3-react/metamask'
-import { Network } from '@web3-react/network'
-import { WalletConnect } from '@web3-react/walletconnect'
+import { Web3Provider } from 'components/Web3ReactManager'
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
-import {
-  coinbaseWallet,
-  coinbaseWalletHooks,
-  metaMask,
-  metaMaskHooks,
-  walletConnect,
-  walletConnectHooks,
-  web3Network,
-  web3NetworkHooks,
-} from './connectors'
 import './i18n'
 import App from './pages/App'
 import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
@@ -30,7 +16,6 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
-import getLibrary from './utils/getLibrary'
 
 if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false
@@ -39,13 +24,6 @@ if ('ethereum' in window) {
 window.addEventListener('error', error => {
   console.error(`${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`)
 })
-
-const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
-  [metaMask, metaMaskHooks],
-  [walletConnect, walletConnectHooks],
-  [coinbaseWallet, coinbaseWalletHooks],
-  [web3Network, web3NetworkHooks],
-]
 
 function Updaters() {
   return (
@@ -63,8 +41,8 @@ function Updaters() {
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Web3ReactProvider connectors={connectors}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <Web3Provider>
         <EcoBridgeProvider>
           <Updaters />
           <ThemeProvider>
@@ -75,8 +53,8 @@ ReactDOM.render(
             </HashRouter>
           </ThemeProvider>
         </EcoBridgeProvider>
-      </Provider>
-    </Web3ReactProvider>
+      </Web3Provider>
+    </Provider>
   </StrictMode>,
   document.getElementById('root')
 )

@@ -11,11 +11,11 @@ export default function CoinbaseConnector({ tryActivation }: { tryActivation: (c
   const isActive = coinbaseWalletHooks.useIsActive()
   console.log('coinbase', isActive, isInstalledWallet)
   // attempt to connect eagerly on mount
-  useEffect(() => {
-    void coinbaseWallet.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to Coinbase Wallet')
-    })
-  }, [])
+  // useEffect(() => {
+  //   void coinbaseWallet.connectEagerly().catch(() => {
+  //     console.debug('Failed to connect eagerly to Coinbase Wallet')
+  //   })
+  // }, [])
   return (
     <WalletOption
       id={WalletType.COINBASE}

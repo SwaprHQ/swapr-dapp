@@ -41,6 +41,7 @@ export type UseNetworkSwitchProps = {
 //   }
 // }
 
+// TODO network switcher
 export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchProps = {}) => {
   const { connector, chainId } = useWeb3ReactCore()
   const isNetwork = connector instanceof Network

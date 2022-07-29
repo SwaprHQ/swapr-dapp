@@ -8,11 +8,11 @@ import { WalletOption } from '../WalletOption'
 export default function WalletConnectConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   const isActive = walletConnectHooks.useIsActive()
   // attempt to connect eagerly on mount
-  useEffect(() => {
-    void walletConnect.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to Wallet Connect')
-    })
-  }, [])
+  // useEffect(() => {
+  //   void walletConnect.connectEagerly().catch(() => {
+  //     console.debug('Failed to connect eagerly to Wallet Connect')
+  //   })
+  // }, [])
   return (
     <WalletOption
       id={WalletType.WALLET_CONNECT}

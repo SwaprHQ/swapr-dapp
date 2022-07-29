@@ -2,6 +2,7 @@ import { Web3ReactHooks } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 import { getIsMetaMask } from 'connectors/utils'
 import React, { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import { SUPPORTED_WALLETS, WalletType } from '../../constants'
@@ -83,7 +84,6 @@ export const WalletOption = ({ id, connector, isActive, isInstalledWallet, tryAc
       ) : (
         <ListButton
           onClick={() => {
-            console.log('aaa!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             tryActivation(connector)
           }}
         >

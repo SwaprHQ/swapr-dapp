@@ -49,7 +49,7 @@ export const networkConnection: Connection = {
 // }
 
 // MetaMask
-export const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions }))
+export const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions, onError }))
 
 export const metaMaskConnection: Connection = {
   connector: metaMask,
@@ -100,4 +100,11 @@ export const CONNECTIONS: Connection[] = [
   coinbaseWalletConnection,
   walletConnectConnection,
   networkConnection,
+]
+
+export const connectors: [Connector, Web3ReactHooks][] = [
+  [metaMask, metaMaskHooks],
+  [walletConnect, walletConnectHooks],
+  [coinbaseWallet, coinbaseWalletHooks],
+  [web3Network, web3NetworkHooks],
 ]

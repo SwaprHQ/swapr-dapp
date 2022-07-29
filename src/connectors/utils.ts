@@ -46,7 +46,7 @@ export function getConnection(c: Connector | WalletType) {
   }
 }
 
-export function getWalletName(walletType: WalletType, isMetaMask?: boolean) {
+export function getConnectionName(walletType: WalletType, isMetaMask?: boolean) {
   switch (walletType) {
     // case WalletType.INJECTED:
     //   return isMetaMask ? 'MetaMask' : 'Injected'
@@ -63,7 +63,6 @@ export function getWalletName(walletType: WalletType, isMetaMask?: boolean) {
 
 export function isChainAllowed(connector: Connector, chainId: number | undefined) {
   const wallet = getConnection(connector).type
-  console.log(wallet, chainId)
   if (!chainId || !wallet) return false
   return SUPPORTED_NETWORKS[wallet].includes(chainId)
 }

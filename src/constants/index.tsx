@@ -295,6 +295,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
 }
 
+export const BACKFILLABLE_WALLETS = [WalletType.METAMASK, WalletType.COINBASE, WalletType.WALLET_CONNECT]
+
 export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
   [WalletType.METAMASK]: [
     ChainId.MAINNET,
