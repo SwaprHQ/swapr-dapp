@@ -35,7 +35,7 @@
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.17.0",
     "@reach/portal": "^0.17.0",
-    "@react-spring/web": "^9.2.4",
+    "@react-spring/web": "^9.5.2",
     "@reduxjs/toolkit": "^1.8.3",
     "@swapr/core": "^0.3.18",
     "@swapr/periphery": "^0.3.20",
