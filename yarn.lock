@@ -10510,10 +10510,10 @@ cypress-ethereum-provider@^0.1.7:
     ws "7.3.1"
     xhr2-cookies "1.1.0"
 
-cypress-localstorage-commands@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/cypress-localstorage-commands/-/cypress-localstorage-commands-2.1.0.tgz#6fc299ec60b6b5ccfc09dd23d004866b7444ee78"
-  integrity sha512-DIJLCIh+CcKulAxMVEng6EhpW691emHRqFUD4dK2HUn86Xzt3ABL3SkmxW4rXgvQt697nTDpZC+jo5K5BwndrQ==
+cypress-localstorage-commands@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/cypress-localstorage-commands/-/cypress-localstorage-commands-2.2.0.tgz#324030aba6a3915c27db95987e80223212da5d64"
+  integrity sha512-kIPxqe2yATmas3UcqK8Famecg6jThV/DQ2XcKCzK9BbzljU5Mfl2RtuzrXOmLc7phm8CIGbzXH57IIoyPsndwg==
 
 cypress-mochawesome-reporter@^3.1.0:
   version "3.2.0"
