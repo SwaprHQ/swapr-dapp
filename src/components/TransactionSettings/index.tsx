@@ -13,17 +13,6 @@ import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
 import { Input, OptionCustom, SlippageErrorInner, SlippageErrorInnerAlertTriangle } from './styleds'
 
-enum SlippageError {
-  InvalidInput = 'InvalidInput',
-  RiskyLow = 'RiskyLow',
-  RiskyHigh = 'RiskyHigh',
-  ExtremelyLow = 'ExtremelyLow',
-}
-
-enum DeadlineError {
-  InvalidInput = 'InvalidInput',
-}
-
 enum RawSlippageValue {
   Min = 1, // 0.01%
   OptionMin = 10, // 0.1%
@@ -33,11 +22,81 @@ enum RawSlippageValue {
   Max = 5000, // 50%
 }
 
+enum DeadlineError {
+  InvalidInput = 'InvalidInput',
+}
+
+enum SlippageError {
+  InvalidInput = 'InvalidInput',
+  RiskyLow = 'RiskyLow',
+  RiskyHigh = 'RiskyHigh',
+  ExtremelyLow = 'ExtremelyLow',
+}
+
 enum ErrorMessage {
   InvalidInput = 'Enter a valid slippage tolerance between 0.01% and 50%',
   ExtremelyLow = 'Transaction with extremely low slippage tolerance (0.01% to 0.1%) might be reverted because of very small market movement',
   RiskyLow = 'Your transaction may fail because of low slippage tolerance',
   RiskyHigh = 'Your transaction may be frontrun because of high slippage tolerance',
+}
+
+const getSlippageErrorMessage = (slippageError: SlippageError) => {
+  switch (slippageError) {
+    case SlippageError.InvalidInput:
+      return ErrorMessage.InvalidInput
+    case SlippageError.ExtremelyLow:
+      return ErrorMessage.ExtremelyLow
+    case SlippageError.RiskyLow:
+      return ErrorMessage.RiskyLow
+    case SlippageError.RiskyHigh:
+      return ErrorMessage.RiskyHigh
+    default:
+      return 'Slippage tolerance error'
+  }
+}
+
+const useValidateTransactionSettings = (
+  rawSlippage: number,
+  slippageInput: string,
+  deadline: number,
+  deadlineInput: string
+) => {
+  const [slippageError, setSlippageError] = useState<SlippageError | undefined>()
+  const [deadlineError, setDeadlineError] = useState<DeadlineError | undefined>()
+  const isSlippageInputValid =
+    !Number.isNaN(Number(slippageInput)) &&
+    rawSlippage >= RawSlippageValue.Min &&
+    rawSlippage < RawSlippageValue.Max &&
+    rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
+
+  const isDeadlineInputValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
+
+  useEffect(() => {
+    if (!isSlippageInputValid && slippageInput !== '') {
+      setSlippageError(SlippageError.InvalidInput)
+    } else {
+      if (rawSlippage < RawSlippageValue.OptionMin) {
+        setSlippageError(SlippageError.ExtremelyLow)
+      } else if (rawSlippage < RawSlippageValue.RiskyLow) {
+        setSlippageError(SlippageError.RiskyLow)
+      } else if (rawSlippage > RawSlippageValue.RiskyHigh) {
+        setSlippageError(SlippageError.RiskyHigh)
+      } else setSlippageError(undefined)
+    }
+  }, [isSlippageInputValid, rawSlippage, slippageInput])
+
+  useEffect(() => {
+    deadlineInput !== '' && !isDeadlineInputValid
+      ? setDeadlineError(DeadlineError.InvalidInput)
+      : setDeadlineError(undefined)
+  }, [deadlineInput, isDeadlineInputValid])
+
+  return {
+    slippageError,
+    isSlippageInputValid,
+    deadlineError,
+    isDeadlineInputValid,
+  }
 }
 
 export function SlippageToleranceError({
@@ -57,22 +116,7 @@ export function SlippageToleranceError({
   )
 }
 
-const getSlippageErrorMessage = (slippageError: SlippageError) => {
-  switch (slippageError) {
-    case SlippageError.InvalidInput:
-      return ErrorMessage.InvalidInput
-    case SlippageError.ExtremelyLow:
-      return ErrorMessage.ExtremelyLow
-    case SlippageError.RiskyLow:
-      return ErrorMessage.RiskyLow
-    case SlippageError.RiskyHigh:
-      return ErrorMessage.RiskyHigh
-    default:
-      return 'Slippage tolerance error'
-  }
-}
-
-export interface SlippageTabsProps {
+export interface TransactionSettingsProps {
   rawSlippage: number
   setRawSlippage: (rawSlippage: number) => void
   rawPreferredGasPrice: MainnetGasPrice | string | null
@@ -83,7 +127,7 @@ export interface SlippageTabsProps {
   onMultihopChange: () => void
 }
 
-export default function SlippageTabs({
+export default function TransactionSettings({
   rawSlippage,
   setRawSlippage,
   rawPreferredGasPrice,
@@ -92,44 +136,21 @@ export default function SlippageTabs({
   setDeadline,
   multihop,
   onMultihopChange,
-}: SlippageTabsProps) {
+}: TransactionSettingsProps) {
   const { chainId } = useActiveWeb3React()
+  const formattedRawSlippage = (rawSlippage / 100).toFixed(2)
 
-  const [slippageInput, setSlippageInput] = useState('')
+  const [slippageInput, setSlippageInput] = useState(formattedRawSlippage)
   const [slippageFocused, setSlippageFocused] = useState(false)
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
-  // slippage percentage range is <0.01, 50)
-  const slippageInputIsValid =
-    !Number.isNaN(Number(slippageInput)) &&
-    rawSlippage >= RawSlippageValue.Min &&
-    rawSlippage < RawSlippageValue.Max &&
-    rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
-
-  const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
-
-  let slippageError: SlippageError | undefined
-  if (!slippageInputIsValid) {
-    if (slippageInput !== '') {
-      slippageError = SlippageError.InvalidInput
-    }
-  } else if (slippageInputIsValid) {
-    if (rawSlippage < RawSlippageValue.OptionMin) {
-      slippageError = SlippageError.ExtremelyLow
-    } else if (rawSlippage < RawSlippageValue.RiskyLow) {
-      slippageError = SlippageError.RiskyLow
-    } else if (rawSlippage > RawSlippageValue.RiskyHigh) {
-      slippageError = SlippageError.RiskyHigh
-    }
-  }
-
-  let deadlineError: DeadlineError | undefined
-  if (deadlineInput !== '' && !deadlineInputIsValid) {
-    deadlineError = DeadlineError.InvalidInput
-  } else {
-    deadlineError = undefined
-  }
+  const { isSlippageInputValid, slippageError, deadlineError } = useValidateTransactionSettings(
+    rawSlippage,
+    slippageInput,
+    deadline,
+    deadlineInput
+  )
 
   function parseCustomSlippage(slippage: string) {
     setSlippageInput(slippage)
@@ -226,20 +247,20 @@ export default function SlippageTabs({
           >
             1%
           </Option>
-          <OptionCustom focused={slippageFocused} warning={!slippageInputIsValid} tabIndex={-1}>
+          <OptionCustom focused={slippageFocused} warning={!isSlippageInputValid} tabIndex={-1}>
             <RowBetween>
               {/* https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451 */}
               <Input
                 data-testid="input-slippage-tolerance"
-                placeholder={(rawSlippage / 100).toFixed(2)}
+                placeholder={formattedRawSlippage}
                 value={slippageInput}
                 onFocus={handleSlippageFocus}
                 onBlur={() => {
                   setSlippageFocused(false)
-                  parseCustomSlippage((rawSlippage / 100).toFixed(2))
+                  parseCustomSlippage(formattedRawSlippage)
                 }}
-                onChange={e => parseCustomSlippage(e.target.value)}
-                color={!slippageInputIsValid ? 'red' : ''}
+                onChange={e => parseCustomSlippage(e.target.value.replace(',', '.'))}
+                color={!isSlippageInputValid ? 'red' : ''}
               />
               %
             </RowBetween>
@@ -249,7 +270,7 @@ export default function SlippageTabs({
           <SlippageToleranceError
             data-testid="slippage-error"
             errorMessage={getSlippageErrorMessage(slippageError)}
-            isInputValid={slippageInputIsValid}
+            isInputValid={isSlippageInputValid}
           />
         ) : null}
         <RowBetween mt="2px">
