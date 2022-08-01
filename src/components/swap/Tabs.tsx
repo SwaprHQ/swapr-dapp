@@ -52,7 +52,7 @@ const StyledEcoRouter = styled(EcoRouter)`
 `
 
 export const Tabs = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
 
   return (
     <TabsColumn>
@@ -61,8 +61,8 @@ export const Tabs = () => {
           <StyledEcoRouter />
           Eco Router V1.5
         </Button>
-        <Button disabled={true}>{t('limit')}</Button>
-        <Button disabled={true}>{t('bridgeSwap')}</Button>
+        <Button disabled={true}>{t('tabs.limit')}</Button>
+        <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>
       </TabsRow>
     </TabsColumn>
   )

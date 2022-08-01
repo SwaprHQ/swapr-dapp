@@ -72,5 +72,9 @@
   "label": "Denumire",
   "decimals": "Zecimale",
   "enterTokenCont": "Setează o adresă de token pentru a continua",
-  "bridge": "Bridge"
+  "bridge": "Мост",
+  "vote": "Vot",
+  "charts": "Diagrame",
+  "liquidity": "Lichiditate",
+  "rewards": "Recompense"
 }

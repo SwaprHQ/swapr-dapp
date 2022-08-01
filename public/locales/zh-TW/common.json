@@ -72,5 +72,9 @@
   "label": "代幣符號",
   "decimals": "小數位數",
   "enterTokenCont": "輸入代幣地址",
-  "bridge": "Bridge"
+  "bridge": "Bridge",
+  "vote": "Vote",
+  "charts": "Charts",
+  "liquidity": "Liquidity",
+  "rewards": "Rewards"
 }

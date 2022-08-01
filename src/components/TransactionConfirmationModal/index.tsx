@@ -75,7 +75,7 @@ function TransactionSubmittedContent({
   chainId: ChainId
 }) {
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
   const link =

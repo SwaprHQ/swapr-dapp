@@ -1,0 +1,13 @@
+{
+  "bridgeModal.modalText": "{{typedValue}} {{symbol}} from {{fromNetworkName}} to {{toNetworkName}}",
+  "bridgeModal.heading.initiated": "Bridging Initiated",
+  "bridgeModal.heading.collecting": "Bridging Collecting",
+  "bridgeModal.heading.success": "Bridging Successful",
+  "bridgeModal.heading.disclaimer": "Bridging {{typedValue}} {{symbol}}",
+  "bridge.txnThrough": "This transaction is routed through <0>{{bridgeName}}</0>",
+  "bridge.walletControl": "{{bridgeName}} asks you to sign a transaction that gives them control to your wallet.",
+  "bridge.responsible": "Swapr is <0>not</0> responsible for any transactions outside of its control.",
+  "bridge.confirmText": "Accept & Continue",
+  "bridge.rejectText": "Cancel",
+  "bridge.backText": "Back to Bridge"
+}
