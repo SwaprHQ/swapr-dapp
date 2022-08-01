@@ -150,7 +150,7 @@ jobs:
     name: ⬡・IPFS Deploy
     needs: build
     runs-on: ubuntu-20.04
-    if: ${{ github.event_name != 'schedule' }}
+    if: github.event_name != 'schedule' || github.actor != 'dependabot[bot]'
     steps:
       - name: Inject slug variables
         uses: rlespinasse/github-slug-action@4.2.5
@@ -198,6 +198,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -378,11 +379,22 @@ jobs:
             transactionless
             transactionfull
 
+  depcleanup:
+    name: 🧹 Dependabot Cleanup
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    needs: [install, lint, test, typecheck, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
+
   cleanup:
     name: 🧹 Cleanup
+    if: ${{ success() && github.actor != 'dependabot[bot]' }}
     needs: [install, lint, test, typecheck, build, cypress, cypress-report]
     runs-on: ubuntu-20.04
-    if: ${{ success() }}
     steps:
       - name: Delete workspace artifact
         uses: geekyeggo/delete-artifact@v1
