@@ -1,0 +1,18 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs'
+import { colors } from './'
+
+<Meta title="Theme/Colors" />
+
+### Colors from theme file generated dynamically
+
+<ColorPalette>
+  {Object.entries(colors(true)).map((token, i) => {
+    const name = token[0]
+    return <ColorItem key={i} title={name} colors={{ [name]: token[1] }} />
+  })}
+  <ColorItem
+    title="theme.color.greyscale"
+    subtitle="Some of the greys"
+    colors={{ White: '#FFFFFF', Alabaster: '#F8F8F8', Concrete: '#F3F3F3' }}
+  />
+</ColorPalette>

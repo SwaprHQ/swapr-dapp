@@ -1,6 +1,6 @@
-import { Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { GnosisProtocolTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'
@@ -63,9 +63,9 @@ export function TradeDetails({
       <>
         <AutoColumn gap="8px">
           <RowBetween alignItems="center">
-            <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
+            <TYPE.Body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
-                i18nKey="bestPriceFoundOn"
+                i18nKey="swap:tradeDetails.bestPriceFoundOn"
                 values={{ platform: bestPricedTrade?.platform.name }}
                 components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
               />
@@ -73,19 +73,23 @@ export function TradeDetails({
                 <>
                   {' '}
                   <Trans
-                    i18nKey="swapWithNoAdditionalFees"
+                    i18nKey="swap:tradeDetails.swapWithNoAdditionalFees"
                     components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
                   />
                 </>
               ) : null}
-            </TYPE.body>
+            </TYPE.Body>
             <AdvancedSwapDetailsToggle
               setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
               showAdvancedSwapDetails={showAdvancedSwapDetails}
             />
           </RowBetween>
           <RowBetween>
-            <SwapSettings showAddRecipient={showAddRecipient} setShowAddRecipient={setShowAddRecipient} />
+            <SwapSettings
+              showAddRecipient={showAddRecipient}
+              setShowAddRecipient={setShowAddRecipient}
+              isMEVProtectionEnabled={trade instanceof GnosisProtocolTrade}
+            />
             <RowFixed>
               <TradePrice price={trade?.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
             </RowFixed>

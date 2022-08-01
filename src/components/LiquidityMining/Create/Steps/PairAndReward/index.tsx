@@ -1,6 +1,6 @@
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { Currency, Pair, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
@@ -30,7 +30,7 @@ const AmountFlex = styled(Flex)`
   backdrop-filter: blur(20px);
   padding: 12px;
 `
-const StyledUnlimitedText = styled(TYPE.largeHeader)<{ active: boolean }>`
+const StyledUnlimitedText = styled(TYPE.LargeHeader)<{ active: boolean }>`
   text-decoration: ${({ active }) => (active ? 'underline' : 'none')};
   opacity: ${({ active }) => !active && '0.7'};
   text-underline-offset: 6px;
@@ -67,7 +67,6 @@ const BorderContainer = styled(Flex)<{ active: boolean }>`
 interface TokenAndLimitProps {
   unlimitedPool: boolean
   campaingType: CampaignType
-
   onStakingCapChange: (newValue: TokenAmount | null) => void
   onUnlimitedPoolChange: (newValue: boolean) => void
   stakeToken?: Token
@@ -90,7 +89,7 @@ export default function StakeTokenAndLimit({
   const [currencySearchOpen, setCurrencySearchOpen] = useState<boolean>(false)
   const [stakingCapString, setStakingCapString] = useState('')
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (unlimitedPool) {
@@ -99,7 +98,7 @@ export default function StakeTokenAndLimit({
     }
   }, [onStakingCapChange, stakeToken, stakePair, unlimitedPool])
 
-  const handleOpenPairOrTokenSearch = useCallback(value => {
+  const handleOpenPairOrTokenSearch = useCallback((value: CampaignType) => {
     if (value === CampaignType.PAIR) {
       setPairSearchOpen(true)
     } else {
@@ -113,14 +112,15 @@ export default function StakeTokenAndLimit({
   }, [])
 
   const handlePairSelection = useCallback(
-    selectedPair => {
+    (selectedPair: Pair) => {
       setStakePair(selectedPair)
     },
     [setStakePair]
   )
   const handleTokenSelection = useCallback(
-    selectedToken => {
-      setStakeToken(selectedToken)
+    (selectedToken: Currency) => {
+      //Token extends Currency so it can be typecasted here
+      setStakeToken(selectedToken as Token)
     },
     [setStakeToken]
   )
@@ -136,7 +136,7 @@ export default function StakeTokenAndLimit({
   }, [stakingCapString, inputRef])
 
   const handleLocalStakingCapChange = useCallback(
-    rawValue => {
+    (rawValue: string) => {
       let tokenOrPair: Token
       if (stakeToken) tokenOrPair = stakeToken
       else if (stakePair?.liquidityToken) tokenOrPair = stakePair.liquidityToken
@@ -167,7 +167,7 @@ export default function StakeTokenAndLimit({
           width="fit-content"
           disabled={!stakeToken && !stakePair}
         >
-          <TYPE.mediumHeader
+          <TYPE.MediumHeader
             alignSelf={'start'}
             letterSpacing="0.08em"
             color="text3"
@@ -176,7 +176,7 @@ export default function StakeTokenAndLimit({
             lineHeight="22px"
           >
             MAX STAKED
-          </TYPE.mediumHeader>
+          </TYPE.MediumHeader>
           <FlexContainer marginTop="16px" flexDirection={'row'} width={'100%'} justifyContent={'space-between '}>
             <StyledFlex
               marginRight="20px"
@@ -200,7 +200,7 @@ export default function StakeTokenAndLimit({
                   {stakingCapString}
                 </span>
 
-                <TYPE.largeHeader
+                <TYPE.LargeHeader
                   alignSelf={'center'}
                   fontSize={13}
                   marginLeft={'9px'}
@@ -214,7 +214,7 @@ export default function StakeTokenAndLimit({
                     : stakeToken
                     ? unwrappedToken(stakeToken)?.symbol
                     : ''}
-                </TYPE.largeHeader>
+                </TYPE.LargeHeader>
               </BorderContainer>
             </AmountFlex>
           </FlexContainer>

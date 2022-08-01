@@ -31,7 +31,7 @@ import {
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { commonActions } from '../store/Common.reducer'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
@@ -39,7 +39,7 @@ import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
 import { arbitrumSelectors } from './ArbitrumBridge.selectors'
 import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import { getErrorMsg, migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
+import { migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId
@@ -135,7 +135,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this.store.dispatch(
         ecoBridgeUIActions.setBridgeModalStatus({
           status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err),
+          error: getErrorMsg(err, this.bridgeId),
         })
       )
     }
@@ -152,7 +152,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this.store.dispatch(
         ecoBridgeUIActions.setBridgeModalStatus({
           status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err),
+          error: getErrorMsg(err, this.bridgeId),
         })
       )
     }
@@ -235,7 +235,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this.store.dispatch(
         ecoBridgeUIActions.setBridgeModalStatus({
           status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err),
+          error: getErrorMsg(err, this.bridgeId),
         })
       )
     }

@@ -1,6 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components'
 
@@ -105,9 +105,10 @@ export default function SlippageTabs({
   const [deadlineFocused, setDeadlineFocused] = useState(false)
 
   const slippageInputIsValid =
-    slippageInput === '' ||
-    (!Number.isNaN(Number(slippageInput)) &&
-      rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2))
+    !Number.isNaN(Number(slippageInput)) &&
+    // 10 is 0.1% slippage and less than 0.1 is not desirable
+    rawSlippage >= 10 &&
+    rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
 
   const deadlineInputIsValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
 
@@ -178,15 +179,15 @@ export default function SlippageTabs({
       <AutoColumn gap="12px">
         <RowBetween>
           <RowFixed>
-            <TYPE.body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="multihop-text">
+            <TYPE.Body color="text4" fontWeight={500} fontSize="12px" lineHeight="15px" data-testid="multihop-text">
               Multihop
-            </TYPE.body>
+            </TYPE.Body>
             <QuestionHelper text="If off, forces trades to be performed without routing, considerably reducing gas fees (might result in a worse execution price)." />
           </RowFixed>
           <Toggle isActive={multihop} toggle={onMultihopChange} />
         </RowBetween>
         <RowFixed>
-          <TYPE.body
+          <TYPE.Body
             color="text4"
             fontWeight={500}
             fontSize="12px"
@@ -194,7 +195,7 @@ export default function SlippageTabs({
             data-testid="slippage-tolerance-text"
           >
             Slippage tolerance
-          </TYPE.body>
+          </TYPE.Body>
           <QuestionHelper text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
         </RowFixed>
         <RowBetween>
@@ -269,7 +270,7 @@ export default function SlippageTabs({
         )}
         <RowBetween mt="2px">
           <RowFixed>
-            <TYPE.body
+            <TYPE.Body
               color="text4"
               fontWeight={500}
               fontSize="12px"
@@ -277,7 +278,7 @@ export default function SlippageTabs({
               data-testid="transaction-deadline-text"
             >
               Transaction deadline
-            </TYPE.body>
+            </TYPE.Body>
             <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
           </RowFixed>
           <RowFixed>
@@ -295,9 +296,9 @@ export default function SlippageTabs({
                 onChange={e => parseCustomDeadline(e.target.value)}
               />
             </OptionCustom>
-            <TYPE.body color="text4" fontSize={14}>
+            <TYPE.Body color="text4" fontSize={14}>
               minutes
-            </TYPE.body>
+            </TYPE.Body>
           </RowFixed>
         </RowBetween>
       </AutoColumn>

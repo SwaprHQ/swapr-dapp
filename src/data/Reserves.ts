@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi'
-import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
+import IDXswapPair from '@swapr/core/build/IDXswapPair.json'
 import { Currency, Pair, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
@@ -12,7 +12,7 @@ import { useFeesState } from '../state/fees/hooks'
 import { useMultipleContractSingleData, useSingleCallResult } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
-const PAIR_INTERFACE = new Interface(IDXswapPairABI)
+const PAIR_INTERFACE = new Interface(IDXswapPair.abi)
 
 export enum PairState {
   LOADING,

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -30,7 +29,7 @@ export const BridgeModal = ({
   const [isWarning, setIsWarning] = useState(false)
   const [bridgeName, setBridgeName] = useState('')
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('bridge')
   const { status, symbol, typedValue, fromChainId, toChainId, error } = modalData
 
   const { name: fromNetworkName } = getNetworkInfo(fromChainId)
@@ -38,36 +37,31 @@ export const BridgeModal = ({
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
-  const text = t('bridgeModalText', {
-    typedValue,
-    symbol: symbol ?? '',
-    fromNetworkName,
-    toNetworkName,
-  })
+  const text = t('bridgeModal.modalText', { typedValue, symbol: symbol ?? '', fromNetworkName, toNetworkName })
 
   useEffect(() => {
     setDisableConfirm(false)
     switch (status) {
       case BridgeModalStatus.INITIATED:
         setModalType('initiated')
-        setHeading(t('bridgeHeadingInitiated'))
+        setHeading(t('bridgeModal.heading.initiated'))
         break
       case BridgeModalStatus.PENDING:
         setModalType('pending')
         break
       case BridgeModalStatus.COLLECTING:
         setModalType('collecting')
-        setHeading(t('bridgeHeadingCollecting'))
+        setHeading(t('bridgeModal.heading.collecting'))
         break
       case BridgeModalStatus.SUCCESS:
         setModalType('success')
-        setHeading(t('bridgeHeadingSuccess'))
+        setHeading(t('bridgeModal.heading.success'))
         break
       case BridgeModalStatus.ERROR:
         setModalType('error')
         break
       case BridgeModalStatus.DISCLAIMER:
-        setHeading(t('bridgeHeadingDisclaimer', { typedValue, symbol: symbol ?? '' }))
+        setHeading(t('bridgeModal.heading.disclaimer', { typedValue, symbol: symbol ?? '' }))
         setModalType('disclaimer')
         break
 
@@ -76,24 +70,18 @@ export const BridgeModal = ({
     }
 
     if (activeBridge === 'socket') {
-      batchedUpdates(() => {
-        setIsWarning(true)
-        setBridgeName('Socket Network')
-      })
+      setIsWarning(true)
+      setBridgeName('Socket Network')
     }
 
     if (activeBridge?.includes('arbitrum')) {
-      batchedUpdates(() => {
-        setIsWarning(false)
-        setBridgeName('Arbitrum One Bridge')
-      })
+      setIsWarning(false)
+      setBridgeName('Arbitrum One Bridge')
     }
 
     if (activeBridge === 'xdai') {
-      batchedUpdates(() => {
-        setIsWarning(false)
-        setBridgeName('xDai Bridge')
-      })
+      setIsWarning(false)
+      setBridgeName('xDai Bridge')
     }
 
     if (activeBridge === 'connext') {

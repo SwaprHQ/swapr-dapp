@@ -1,7 +1,6 @@
 import { Price } from '@swapr/sdk'
 
 import { transparentize } from 'polished'
-import React from 'react'
 import styled from 'styled-components'
 
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
@@ -38,12 +37,12 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
     <Wrapper onClick={() => setShowInverted(!showInverted)}>
       {show ? (
         <>
-          <TYPE.body mr="4px" fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="700">
+          <TYPE.Body mr="4px" fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="700">
             {formattedPrice || '-'}
-          </TYPE.body>
-          <TYPE.body fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="500">
+          </TYPE.Body>
+          <TYPE.Body fontSize="13px" lineHeight="12px" letterSpacing="0" fontWeight="500">
             {label}
-          </TYPE.body>
+          </TYPE.Body>
         </>
       ) : (
         '-'

@@ -1,8 +1,8 @@
-import React from 'react'
+import { createContext } from 'react'
 
 import { ListRowContextType, ManageListsContextType } from './ManageLists.types'
 
-export const ListRowContext = React.createContext<ListRowContextType>({
+export const ListRowContext = createContext<ListRowContextType>({
   listsByUrl: {},
   disableListInfo: false,
   isActiveList: () => false,
@@ -12,7 +12,7 @@ export const ListRowContext = React.createContext<ListRowContextType>({
   handleAcceptListUpdate: () => null,
 })
 
-export const ManageListsContext = React.createContext<ManageListsContextType>({
+export const ManageListsContext = createContext<ManageListsContextType>({
   addError: 'false',
   tempList: undefined,
   isImported: false,

@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -20,7 +20,7 @@ import { AutoColumn } from '../Column'
 import Modal from '../Modal'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
 
@@ -201,19 +201,19 @@ export function Settings({ simple }: { simple?: boolean }) {
           <ModalContentWrapper>
             <AutoColumn gap="25px">
               <Row style={{ padding: '0 25px', justifyContent: 'center' }}>
-                <TYPE.body fontWeight={500} fontSize="20px" color="text3" data-testid="expert-mode-confirmation-window">
+                <TYPE.Body fontWeight={500} fontSize="20px" color="text3" data-testid="expert-mode-confirmation-window">
                   Are you sure?
-                </TYPE.body>
+                </TYPE.Body>
                 <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
               </Row>
               <AutoColumn gap="24px" style={{ padding: '0 24px' }}>
-                <TYPE.body fontWeight={400} fontSize="16px" lineHeight="20px" color="text1" textAlign="center">
+                <TYPE.Body fontWeight={400} fontSize="16px" lineHeight="20px" color="text1" textAlign="center">
                   Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
                   in bad rates and lost funds.
-                </TYPE.body>
-                <TYPE.body fontWeight={600} fontSize="13px" color="text1" textAlign="center">
+                </TYPE.Body>
+                <TYPE.Body fontWeight={600} fontSize="13px" color="text1" textAlign="center">
                   ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.
-                </TYPE.body>
+                </TYPE.Body>
                 <ButtonError
                   error={true}
                   padding={'18px'}
@@ -222,10 +222,13 @@ export function Settings({ simple }: { simple?: boolean }) {
                     setShowConfirmation(false)
                   }}
                 >
-                  <TYPE.body fontSize="13px" fontWeight={600} color="text1" id="confirm-expert-mode">
-                    Turn on Expert mode
-                  </TYPE.body>
+                  {
+                    <TYPE.Body fontSize="13px" fontWeight={600} color="text1" id="confirm-expert-mode">
+                      Turn on Expert mode
+                    </TYPE.Body>
+                  }
                 </ButtonError>
+
                 <Row style={{ justifyContent: 'center' }}>
                   <CloseTextButton onClick={() => setShowConfirmation(false)}>Cancel</CloseTextButton>
                 </Row>
@@ -273,7 +276,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </Text>
                     <RowBetween marginBottom="12px">
                       <RowFixed>
-                        <TYPE.body
+                        <TYPE.Body
                           color="text4"
                           fontWeight={500}
                           fontSize="12px"
@@ -281,7 +284,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                           data-testid="toggle-expert-mode-text"
                         >
                           Toggle expert mode
-                        </TYPE.body>
+                        </TYPE.Body>
                         <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
                       </RowFixed>
                       <Toggle
@@ -323,9 +326,9 @@ export function Settings({ simple }: { simple?: boolean }) {
                     <RowBetween alignItems="center" marginBottom="8px">
                       <SwaprVersionLogo />
                       <Divider horizontal style={{ height: 48 }} />
-                      <TYPE.body fontWeight={700} fontSize="8px" letterSpacing="3px" color="white">
+                      <TYPE.Body fontWeight={700} fontSize="8px" letterSpacing="3px" color="white">
                         A DXDAO PRODUCT
-                      </TYPE.body>
+                      </TYPE.Body>
                     </RowBetween>
                   </>
                 )}

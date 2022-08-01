@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import arrowIcon from '../../assets/svg/arrow-bright.svg'
@@ -46,7 +45,7 @@ export const TagSuccessArrow = styled(TagSuccess)`
   }
 `
 
-const TagWarning = styled(Tag)`
+export const TagWarning = styled(Tag)`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;

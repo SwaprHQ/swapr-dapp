@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback } from 'react'
+import { CSSProperties, useCallback } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
@@ -12,7 +12,7 @@ import { useAllPairs } from '../../../hooks/useAllPairs'
 import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
 import { isPairOnList } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import Badge from '../../Badge'
+import { Badge } from '../../Badge'
 import DoubleCurrencyLogo from '../../DoubleLogo'
 import { TokenPickerItem } from '../shared'
 
@@ -89,7 +89,7 @@ const PairRow = ({ pair, onSelect, isSelected, style }: PairRowProps) => {
 
 export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) => {
   const Row = useCallback(
-    ({ data, index, style }) => {
+    ({ data, index, style }: { data: any; index: number; style: CSSProperties }) => {
       const pair = data[index]
       const isSelected = Boolean(selectedPair && selectedPair.equals(pair))
       const handleSelect = () => onPairSelect(pair)
@@ -101,17 +101,19 @@ export const PairList = ({ pairs, selectedPair, onPairSelect }: PairListProps) =
   return (
     <Flex overflowY="auto" flex="1">
       <AutoSizer style={{ width: '100%', height: '100%' }}>
-        {({ width, height }) => (
-          <FixedSizeList
-            width={width}
-            height={height}
-            itemData={pairs}
-            itemCount={pairs.length}
-            itemSize={56}
-            itemKey={pairKey}
-          >
-            {Row}
-          </FixedSizeList>
+        {({ width, height }: { width: string | number; height: string | number }) => (
+          <>
+            <FixedSizeList
+              width={width}
+              height={height}
+              itemData={pairs}
+              itemCount={pairs.length}
+              itemSize={56}
+              itemKey={pairKey}
+            >
+              {Row}
+            </FixedSizeList>
+          </>
         )}
       </AutoSizer>
     </Flex>

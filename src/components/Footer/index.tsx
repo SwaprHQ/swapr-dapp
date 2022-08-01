@@ -1,4 +1,3 @@
-import React from 'react'
 import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
 
