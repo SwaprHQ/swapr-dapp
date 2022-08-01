@@ -31,10 +31,7 @@ describe('Wrapping tests', () => {
   })
 
   it('Should wrap ETH to WETH [TC-03]', () => {
-    SwapPage.openTokenToSwapMenu()
-      .chooseToken('weth')
-      .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-      .wrap()
+    SwapPage.openTokenToSwapMenu().chooseToken('weth').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString()).wrap()
     cy.confirmMetamaskTransaction({})
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
