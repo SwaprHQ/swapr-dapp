@@ -1,4 +1,4 @@
-import { exportAllImagesFilesFromRelativePath } from 'utils'
+import { exportAllImagesFilesFromRelativePath } from '../utils'
 
 export const imagesBase = exportAllImagesFilesFromRelativePath(require.context('./images', false, /\.(png|jpe?g|svg)$/))
 export const imagesAnimations = exportAllImagesFilesFromRelativePath(

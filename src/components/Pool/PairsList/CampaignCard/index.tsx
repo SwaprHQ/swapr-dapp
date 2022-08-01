@@ -1,6 +1,6 @@
 import { CurrencyAmount, LiquidityMiningCampaign, Percent, SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Card, Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -33,7 +33,7 @@ const SizedCard = styled(Card)<{ cardColor: string }>`
   `}
 `
 
-const EllipsizedText = styled(TYPE.body)`
+const EllipsizedText = styled(TYPE.Body)`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -48,7 +48,7 @@ const PercentageBar = styled.div`
   margin-top: 7px;
 `
 
-const Loaded = styled(TYPE.body)`
+const Loaded = styled(TYPE.Body)`
   background: ${props => props.theme.red1};
   border-radius: 6px;
   height: 100%;
@@ -151,7 +151,7 @@ export function CampaignCard({
           <RightSection>
             <Flex width="max-content" alignItems="center">
               <ClockSvg width={'10px'} height={'10px'} />
-              <TYPE.body marginLeft="4px" fontSize="10px" fontWeight="500">
+              <TYPE.Body marginLeft="4px" fontSize="10px" fontWeight="500">
                 <Countdown
                   to={
                     status === StatusKeys.UPCOMING
@@ -162,7 +162,7 @@ export function CampaignCard({
                   }
                   excludeSeconds
                 />
-              </TYPE.body>
+              </TYPE.Body>
             </Flex>
             {status !== undefined && (
               <Flex>
@@ -177,14 +177,14 @@ export function CampaignCard({
           <Flex justifyContent="space-between">
             <Flex>
               {campaign.locked && <LockSvg />}
-              <TYPE.body
+              <TYPE.Body
                 alignSelf={'center'}
                 marginLeft={campaign.locked ? '4px' : '0'}
                 fontSize="10px"
                 fontWeight="600"
               >
                 ${formatCurrencyAmount(usdLiquidity)} {usdLiquidityText?.toUpperCase() || 'LIQUIDITY'}
-              </TYPE.body>
+              </TYPE.Body>
             </Flex>
             {staked && (
               <Flex>

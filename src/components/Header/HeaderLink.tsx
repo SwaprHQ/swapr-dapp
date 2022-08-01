@@ -1,5 +1,5 @@
 import transparentize from 'polished/lib/color/transparentize'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { NavLink, NavLinkProps, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
