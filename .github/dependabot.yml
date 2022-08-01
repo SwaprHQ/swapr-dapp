@@ -15,4 +15,9 @@ updates:
     versioning-strategy: increase
     open-pull-requests-limit: 50
     labels:
+      - 'npm'
       - 'dependencies'
+    reviewers:
+      - 'niemam29'
+      - 'MilanVojnovic95'
+      - 'wixzi'
