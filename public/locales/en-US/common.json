@@ -88,15 +88,10 @@
   "charts": "Charts",
   "priceImpactHigh": "Price Impact High",
   "addRecipient": "Add recipient",
-  "insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
-  "enterCurrencyAmount": "Enter {{ currency }} amount",
   "viewOnBlockExplorer": "View on Block Explorer",
   "viewOnCowExplorer": "View on Cow Protocol Explorer",
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer",
-  "connectWallet": "Connect wallet",
-  "enterAmount": "Enter amount",
-  "selectToken": "Select token",
-  "enterRecipient": "Enter recipient",
   "liquidity": "Liquidity",
-  "rewards": "Rewards"
+  "rewards": "Rewards",
+  "connectWallet": "Connect wallet"
 }
