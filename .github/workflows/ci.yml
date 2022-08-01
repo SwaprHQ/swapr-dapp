@@ -330,11 +330,11 @@ jobs:
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: transactionless
+          name: 01transactionless
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: transactionfull
+          name: 02transactionfull
           path: mochawesome-report
 
       - name: Setup Node
@@ -375,8 +375,8 @@ jobs:
             SwapBoxTests
             TokenMenuTests
             TransactionSettingsTests
-            transactionless
-            transactionfull
+            01transactionless
+            02transactionfull
 
   cleanup:
     name: 🧹 Cleanup
