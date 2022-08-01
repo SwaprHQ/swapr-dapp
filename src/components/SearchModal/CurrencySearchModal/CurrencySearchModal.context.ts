@@ -1,8 +1,8 @@
-import React from 'react'
+import { createContext } from 'react'
 
 import { CurrencyModalView, CurrencySearchModalContextType } from './CurrencySearchModal.types'
 
-export const CurrencySearchModalContext = React.createContext<CurrencySearchModalContextType>({
+export const CurrencySearchModalContext = createContext<CurrencySearchModalContextType>({
   listURL: undefined,
   modalView: CurrencyModalView.MANAGE,
   setListUrl: () => null,

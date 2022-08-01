@@ -1,6 +1,6 @@
 import { currencyEquals, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

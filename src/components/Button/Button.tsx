@@ -1,5 +1,5 @@
 import { darken, lighten, transparentize } from 'polished'
-import React, { ReactNode } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -303,7 +303,7 @@ export interface ButtonLinkProps {
   /**
    * Any additional style to be added to button wrapper
    */
-  style?: React.CSSProperties
+  style?: CSSProperties
 }
 
 export function ButtonWithExternalLink({ link, children, style }: ButtonLinkProps) {
@@ -332,7 +332,7 @@ export function ButtonExternalLink({
   link: string
   disabled?: boolean
   children: ReactNode
-  style?: React.CSSProperties
+  style?: CSSProperties
 }) {
   const theme = useTheme()
   return (

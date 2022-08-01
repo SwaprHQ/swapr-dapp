@@ -1,6 +1,5 @@
 import { Currency, Price } from '@swapr/sdk'
 
-import React from 'react'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
@@ -15,13 +14,13 @@ export function PoolPriceBar({ currencies, price }: { currencies: { [field in Fi
     <AutoColumn gap="md">
       <AutoRow justify="space-around" gap="4px">
         <AutoColumn justify="center">
-          <TYPE.black>{price?.toSignificant(6) ?? '-'}</TYPE.black>
+          <TYPE.Black>{price?.toSignificant(6) ?? '-'}</TYPE.Black>
           <Text fontWeight={500} fontSize={14} color={theme.text2} pt={1}>
             {currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
         </AutoColumn>
         <AutoColumn justify="center">
-          <TYPE.black>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.black>
+          <TYPE.Black>{price?.invert()?.toSignificant(6) ?? '-'}</TYPE.Black>
           <Text fontWeight={500} fontSize={14} color={theme.text2} pt={1}>
             {currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
           </Text>

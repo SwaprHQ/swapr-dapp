@@ -65,10 +65,7 @@ export class LiquidityPage {
   }
   static switchCampaignsToogle() {
     LiquidityPage.getCampaignsAndMyPairsToggleSwitch().within(() => {
-      return cy
-        .get('label')
-        .first()
-        .click()
+      return cy.get('label').first().click()
     })
   }
 }
