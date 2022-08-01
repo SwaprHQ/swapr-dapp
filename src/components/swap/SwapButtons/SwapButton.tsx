@@ -73,15 +73,17 @@ export const SwapButton = ({
   amountInCurrencySymbol,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
-  const { t } = useTranslation('')
+  const { t } = useTranslation('swap')
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
-    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('connectWallet'),
-    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('enterAmount'),
-    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('selectToken'),
-    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('enterRecipient'),
-    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('invalidRecipient'),
-    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('insufficientCurrencyBalance', { currency: amountInCurrencySymbol }),
+    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
+    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('button.enterAmount'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('button.selectToken'),
+    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('button.enterRecipient'),
+    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('button.invalidRecipient'),
+    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
+      currency: amountInCurrencySymbol,
+    }),
   }
 
   return (
