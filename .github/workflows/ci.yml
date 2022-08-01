@@ -150,7 +150,7 @@ jobs:
     name: ⬡・IPFS Deploy
     needs: build
     runs-on: ubuntu-20.04
-    if: github.event_name != 'schedule' || github.actor != 'dependabot[bot]'
+    if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
         uses: rlespinasse/github-slug-action@4.2.5
@@ -381,7 +381,7 @@ jobs:
 
   depcleanup:
     name: 🧹 Dependabot Cleanup
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: github.actor == 'dependabot[bot]'
     needs: [install, lint, test, typecheck, build]
     runs-on: ubuntu-20.04
     steps:
