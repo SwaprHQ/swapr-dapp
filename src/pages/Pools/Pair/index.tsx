@@ -11,7 +11,6 @@ import styled from 'styled-components'
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import List from '../../../components/LiquidityMiningCampaigns/List'
-import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
@@ -21,8 +20,9 @@ import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
+import { DimBlurBgBox } from '../../../ui/DimBlurBgBox'
+import { PageWrapper } from '../../../ui/PageWrapper'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import { PageWrapper } from '../../PageWrapper'
 
 type CurrencySearchParams = {
   currencyIdA: string

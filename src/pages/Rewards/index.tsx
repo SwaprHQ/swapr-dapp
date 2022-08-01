@@ -20,8 +20,8 @@ import { useToken } from '../../hooks/Tokens'
 import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
+import { PageWrapper } from '../../ui/PageWrapper'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from '../PageWrapper'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
 
 const TitleRow = styled(RowBetween)`

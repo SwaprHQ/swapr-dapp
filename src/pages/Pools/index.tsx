@@ -24,9 +24,9 @@ import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStake
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { TYPE } from '../../theme'
+import { PageWrapper } from '../../ui/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

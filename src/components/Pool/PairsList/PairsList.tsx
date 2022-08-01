@@ -13,11 +13,14 @@ import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
+import { DimBlurBgBox } from '../../../ui/DimBlurBgBox'
+import { Header } from '../../../ui/Header'
+import { HeaderText } from '../../../ui/HeaderText'
+import { ListLayout } from '../../../ui/ListLayout'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
 import { UndecoratedLink } from '../../UndercoratedLink'
-import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
 import { PairsFilterType } from '../ListFilter'
 import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
@@ -139,27 +142,6 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
     </Flex>
   )
 }
-
-export const ListLayout = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-gap: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 10px 16px;
-  `};
-`
-
-export const HeaderText = styled(Text)`
-  font-weight: 600;
-  font-size: 10px;
-  color: ${({ theme }) => theme.purple3};
-  text-transform: uppercase;
-`
-
-export const Header = styled(Flex)`
-  border-bottom: 1px solid ${({ theme }) => theme.bg3};
-`
 
 const PaginationRow = styled(Flex)`
   width: 100%;
