@@ -1,11 +1,12 @@
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const webpack = require('webpack')
 
 // Used to make the build reproducible between different machines (IPFS-related)
 module.exports = (config, env) => {
+  const isProd = env === 'production'
+  const isAnalyze = process.env.BUNDLE_ANALYZE === 'true'
+
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
 
@@ -25,12 +26,15 @@ module.exports = (config, env) => {
   })
   config.resolve.fallback = fallback
 
-  config.plugins = (config.plugins || []).concat([
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-    }),
-  ])
+  config.plugins = (config.plugins || []).concat(
+    [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
+      isAnalyze ? new BundleAnalyzerPlugin() : false,
+    ].filter(Boolean)
+  )
 
   config.module.rules = [
     ...config.module.rules,
@@ -42,7 +46,7 @@ module.exports = (config, env) => {
     },
   ]
 
-  if (env !== 'production') {
+  if (!isProd) {
     return config
   }
 
