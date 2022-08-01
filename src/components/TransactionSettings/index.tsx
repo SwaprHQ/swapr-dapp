@@ -62,9 +62,9 @@ const useValidateTransactionSettings = (
   deadlineInput: string
 ) => {
   const [slippageError, setSlippageError] = useState<SlippageError>()
-  const [isSlippageInputValid, setIsSlippageInputValid] = useState<boolean>(true)
+  const [isSlippageInputValid, setIsSlippageInputValid] = useState(true)
   const [deadlineError, setDeadlineError] = useState<DeadlineError>()
-  const [isDeadlineInputValid, setIsDeadlineInputValid] = useState<boolean>(true)
+  const [isDeadlineInputValid, setIsDeadlineInputValid] = useState(true)
 
   useEffect(() => {
     const isInputValid =
