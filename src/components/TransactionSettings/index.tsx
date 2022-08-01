@@ -61,18 +61,22 @@ const useValidateTransactionSettings = (
   deadline: number,
   deadlineInput: string
 ) => {
-  const [slippageError, setSlippageError] = useState<SlippageError | undefined>()
-  const [deadlineError, setDeadlineError] = useState<DeadlineError | undefined>()
-  const isSlippageInputValid =
-    !Number.isNaN(Number(slippageInput)) &&
-    rawSlippage >= RawSlippageValue.Min &&
-    rawSlippage < RawSlippageValue.Max &&
-    rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2)
-
-  const isDeadlineInputValid = deadlineInput === '' || (deadline / 60).toString() === deadlineInput
+  const [slippageError, setSlippageError] = useState<SlippageError>()
+  const [isSlippageInputValid, setIsSlippageInputValid] = useState<boolean>(true)
+  const [deadlineError, setDeadlineError] = useState<DeadlineError>()
+  const [isDeadlineInputValid, setIsDeadlineInputValid] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!isSlippageInputValid && slippageInput !== '') {
+    const isInputValid =
+      slippageInput.length === 0 ||
+      (slippageInput.length > 0 &&
+        !Number.isNaN(Number(slippageInput)) &&
+        rawSlippage >= RawSlippageValue.Min &&
+        rawSlippage < RawSlippageValue.Max &&
+        rawSlippage.toFixed(2) === Math.round(Number.parseFloat(slippageInput) * 100).toFixed(2))
+
+    setIsSlippageInputValid(isInputValid)
+    if (!isSlippageInputValid) {
       setSlippageError(SlippageError.InvalidInput)
     } else {
       if (rawSlippage < RawSlippageValue.OptionMin) {
@@ -86,10 +90,9 @@ const useValidateTransactionSettings = (
   }, [isSlippageInputValid, rawSlippage, slippageInput])
 
   useEffect(() => {
-    deadlineInput !== '' && !isDeadlineInputValid
-      ? setDeadlineError(DeadlineError.InvalidInput)
-      : setDeadlineError(undefined)
-  }, [deadlineInput, isDeadlineInputValid])
+    setIsDeadlineInputValid(deadlineInput.length === 0 || (deadline / 60).toString() === deadlineInput)
+    !isDeadlineInputValid ? setDeadlineError(DeadlineError.InvalidInput) : setDeadlineError(undefined)
+  }, [deadline, deadlineInput, isDeadlineInputValid])
 
   return {
     slippageError,
@@ -99,22 +102,14 @@ const useValidateTransactionSettings = (
   }
 }
 
-export function SlippageToleranceError({
-  errorMessage,
-  isInputValid,
-}: {
-  errorMessage: string
-  isInputValid: boolean
-}) {
-  return (
-    <SlippageErrorInner isInputValid={isInputValid}>
-      <SlippageErrorInnerAlertTriangle isInputValid={isInputValid}>
-        <AlertTriangle size={20} />
-      </SlippageErrorInnerAlertTriangle>
-      <p>{errorMessage}</p>
-    </SlippageErrorInner>
-  )
-}
+const SlippageToleranceError = ({ errorMessage, isInputValid }: { errorMessage: string; isInputValid: boolean }) => (
+  <SlippageErrorInner isInputValid={isInputValid}>
+    <SlippageErrorInnerAlertTriangle isInputValid={isInputValid}>
+      <AlertTriangle size={20} />
+    </SlippageErrorInnerAlertTriangle>
+    <p>{errorMessage}</p>
+  </SlippageErrorInner>
+)
 
 export interface TransactionSettingsProps {
   rawSlippage: number
@@ -127,7 +122,7 @@ export interface TransactionSettingsProps {
   onMultihopChange: () => void
 }
 
-export default function TransactionSettings({
+export const TransactionSettings = ({
   rawSlippage,
   setRawSlippage,
   rawPreferredGasPrice,
@@ -136,7 +131,7 @@ export default function TransactionSettings({
   setDeadline,
   multihop,
   onMultihopChange,
-}: TransactionSettingsProps) {
+}: TransactionSettingsProps) => {
   const { chainId } = useActiveWeb3React()
   const formattedRawSlippage = (rawSlippage / 100).toFixed(2)
 
