@@ -31,7 +31,9 @@ describe('Bridge tests', () => {
     cy.resetMetamaskAccount()
     cy.wait(500)
   })
-  it('Should initiate a bridging ', function () {
+
+  //TODO Unskip after #1320
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -229,7 +231,8 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  //TODO Unskip after #1320
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
