@@ -4,5 +4,5 @@ export enum ChainsEnum {
   POLYGON = '137',
   GNOSIS = '100',
   RINKEBY = '4',
-  ARINKEBY = '0x66eeb',
+  ARINKEBY = '421611',
 }
