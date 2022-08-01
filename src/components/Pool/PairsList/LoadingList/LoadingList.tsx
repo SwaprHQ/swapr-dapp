@@ -1,4 +1,3 @@
-import React from 'react'
 import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'

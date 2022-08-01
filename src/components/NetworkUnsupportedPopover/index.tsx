@@ -1,5 +1,5 @@
 import { Placement } from '@popperjs/core'
-import React, { ReactNode, RefObject, useRef } from 'react'
+import { ReactNode, RefObject, useRef } from 'react'
 
 import unsupportedNetworkHintImage1x from '../../assets/images/unsupported-network-hint.png'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'

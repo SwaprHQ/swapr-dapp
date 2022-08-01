@@ -1,6 +1,5 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'

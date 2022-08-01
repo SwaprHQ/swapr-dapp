@@ -1,10 +1,11 @@
-import { ButtonPrimary } from 'components/Button'
-import Row from 'components/Row'
-import { TagFailed, TagSuccess, TagWarning } from 'components/Tag'
-import React from 'react'
+import { ExternalLink } from 'react-feather'
 import { Box } from 'rebass'
 import styled from 'styled-components'
-import { ExternalLink, TYPE } from 'theme'
+
+import { TYPE } from '../../theme'
+import { ButtonPrimary } from '../Button'
+import Row from '../Row'
+import { TagFailed, TagSuccess, TagWarning } from '../Tag'
 
 const Wrapper = styled.div`
   border-radius: 12px;
@@ -57,15 +58,15 @@ export const TaskCard = ({ duration = 'Weekly', title, description, infoLink, st
     <Wrapper>
       <Card>
         <Row justifyContent={'space-between'}>
-          <TYPE.white fontSize={'12px'} fontWeight={700}>
+          <TYPE.White fontSize={'12px'} fontWeight={700}>
             {duration}
-          </TYPE.white>
+          </TYPE.White>
           <StatusTag status={status} />
         </Row>
 
-        <TYPE.white fontSize="20px">{title}</TYPE.white>
+        <TYPE.White fontSize="20px">{title}</TYPE.White>
 
-        <TYPE.white fontSize="14px">{description}</TYPE.white>
+        <TYPE.White fontSize="14px">{description}</TYPE.White>
 
         {infoLink && <StyledExternalLink href={infoLink}>More info</StyledExternalLink>}
         <ButtonPrimary padding="8px">{buttonText}</ButtonPrimary>

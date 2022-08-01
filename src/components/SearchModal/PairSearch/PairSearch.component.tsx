@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 
@@ -90,9 +90,9 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
       <Column style={{ width: '100%', height: '100%', flex: '1 1' }}>
         <PaddedColumn gap="16px">
           <RowBetween>
-            <TYPE.body fontWeight={500} fontSize={16}>
+            <TYPE.Body fontWeight={500} fontSize={16}>
               Select a pair
-            </TYPE.body>
+            </TYPE.Body>
             <CloseIcon onClick={onDismiss} data-testid="close-search-pair" />
           </RowBetween>
           <SearchInput
@@ -105,9 +105,9 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
             onKeyDown={handleEnter}
           />
           <RowBetween>
-            <TYPE.body fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
+            <TYPE.Body fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
               NAME
-            </TYPE.body>
+            </TYPE.Body>
             <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
           </RowBetween>
         </PaddedColumn>

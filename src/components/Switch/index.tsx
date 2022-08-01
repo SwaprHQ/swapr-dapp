@@ -1,4 +1,4 @@
-import React from 'react'
+import { CSSProperties } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import './Switch.css'
@@ -20,7 +20,7 @@ interface SwitchProps {
   isRed?: boolean
   handleToggle: () => void
   label?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
 }
 
 export const Switch = ({ isOn, handleToggle, label, style, isRed = false }: SwitchProps) => {

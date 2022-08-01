@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import NavigationButton from './../../assets/images/timeline-assets/navigation-button.png'

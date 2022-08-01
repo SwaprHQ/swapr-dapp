@@ -1,4 +1,4 @@
-import React, { lazy } from 'react'
+import { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../hooks'

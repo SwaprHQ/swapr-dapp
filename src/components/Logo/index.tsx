@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ImageProps } from 'rebass'
 import { useTheme } from 'styled-components'
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled, { keyframes } from 'styled-components'
 
 import dxDaoLogo from './../../assets/images/logo-dxdao.svg'
