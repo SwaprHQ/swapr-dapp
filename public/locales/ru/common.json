@@ -76,5 +76,6 @@
   "vote": "Голосование",
   "charts": "Графики",
   "liquidity": "Ликвидность",
-  "rewards": "Награды"
+  "rewards": "Награды",
+  "connectWallet": "Connect wallet"
 }

@@ -49,7 +49,7 @@
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "aos": "^2.3.4",
-    "arb-ts": "^1.0.2",
+    "@arbitrum/sdk": "^2.0.1",
     "cids": "^1.1.9",
     "copy-to-clipboard": "^3.3.1",
     "cypress-ethereum-provider": "^0.1.7",
@@ -67,7 +67,7 @@
     "luxon": "^2.4.0",
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
-    "multiformats": "^9.7.0",
+    "multiformats": "^9.7.1",
     "multihashes": "^4.0.3",
     "node-vibrant": "^3.2.1-alpha.1",
     "polished": "^4.2.2",
@@ -169,6 +169,7 @@
     "svg-url-loader": "^7.1.1",
     "tls": "^0.0.1",
     "typescript": "^4.7.4",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
