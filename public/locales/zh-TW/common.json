@@ -76,5 +76,6 @@
   "vote": "Vote",
   "charts": "Charts",
   "liquidity": "Liquidity",
-  "rewards": "Rewards"
+  "rewards": "Rewards",
+  "connectWallet": "Connect wallet"
 }
