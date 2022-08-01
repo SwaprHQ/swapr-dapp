@@ -2,7 +2,8 @@
 
 A Contribution Guideline shall facilitate the foundation for a collaborative ground for every contributor working on Swapr codebase(s).
 
-## Project Management Software 
+## Project Management Software
+
 We use [ZenHub](https://zenhub.com), an agile project management which is tightly integrated with GitHub. Contact one of the core contributors to invite you to the ZenHub board.
 
 ## Tickets
@@ -17,11 +18,11 @@ We use [ZenHub](https://zenhub.com), an agile project management which is tightl
 
 ## Git Branches
 
-- One ticket, one branch. 
-- If the ticket involes subtasks 
+- One ticket, one branch.
+- If the ticket involes subtasks
   - Create a parent ticket
   - Branch out from parent ticket and merge from subtickets
-  - Merge parent ticket to `develop` 
+  - Merge parent ticket to `develop`
 - Use /feature/, /bug/, or /chore/ (chore to fix typo and little stuff)
 - Avoid working on the `main` branch unless absolutely necessary. Branch names should be named after what they do.
 - sub-branch like "Feature/stufspecial/otherstuff" should not happen. You can work for yourself in this structur, but please don't get others to work in your sub-branch (It's a sign that something is off. We add to much complexity to non complex stuff. The interface software is still a simple interface)
@@ -32,13 +33,13 @@ Some more toughts on branches see [Phil Hord's answer on Stack Overflow](https:/
 
 - PRs should target `develop` branch,
 - A subtask PR should target parent branch.
-- Draft PRs should be used when a PR is Work In Progress (WIP). 
+- Draft PRs should be used when a PR is Work In Progress (WIP).
 - If you make a PR from `feature/stufspecial/otherstuff` to `feature/stufspecial/` you should pull it yourself.
 - After a PR is merged, the branch can be deleted after two weeks.
- 
+
 ## Project Structure
 
-At Swapr, we are using React to build the frontend. 
+At Swapr, we are using React to build the frontend.
 
 ### General Components
 

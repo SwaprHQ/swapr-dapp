@@ -1,6 +1,6 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -67,7 +67,7 @@ export const ResetFilterIcon = styled(X)`
   color: ${props => props.theme.purple3};
 `
 
-export const StyledMediumHeader = styled(TYPE.mediumHeader)`
+export const StyledMediumHeader = styled(TYPE.MediumHeader)`
   text-transform: uppercase;
 `
 
@@ -206,8 +206,11 @@ export default function Pools() {
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
-  const handleCurrencySelect = useCallback((token: any) => {
-    setFilterToken(token)
+  const handleCurrencySelect = useCallback((token: Currency) => {
+    // Since Token extends Currency we are checking address in useSwaprSinglelSidedStakeCampaigns
+    if (token.address) {
+      setFilterToken(token as Token)
+    }
   }, [])
 
   const handleFilterTokenReset = useCallback(() => {

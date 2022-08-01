@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
@@ -157,12 +156,12 @@ export const BridgeTransactionsSummary = ({
   )
 }
 
-interface BridgeTransactionsSummaryRow {
+interface BridgeTransactionsSummaryRowProps {
   tx: BridgeTransactionSummary
   handleTriggerCollect: BridgeTransactionsSummaryProps['handleTriggerCollect']
 }
 
-const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRow) => {
+const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRowProps) => {
   const { assetName, fromChainId, status, toChainId, value, pendingReason, log } = tx
   const fromChainName = getNetworkInfo(fromChainId).name
   const toChainName = getNetworkInfo(toChainId).name

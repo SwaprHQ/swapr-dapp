@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import React, { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 
@@ -57,9 +57,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
           <RowFixed>
             <CurrencyLogo currency={token} size={'20px'} />
             <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
-              <TYPE.main ml={'10px'} fontWeight={600}>
+              <TYPE.Main ml={'10px'} fontWeight={600}>
                 {token.symbol}
-              </TYPE.main>
+              </TYPE.Main>
             </ExternalLink>
           </RowFixed>
           <RowFixed>
@@ -88,9 +88,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
               />
             </Row>
             {searchQuery !== '' && !isAddressSearch && (
-              <TYPE.error data-testid="token-manager-error-message" error={true}>
+              <TYPE.Error data-testid="token-manager-error-message" error={true}>
                 Enter valid token address
-              </TYPE.error>
+              </TYPE.Error>
             )}
             {searchToken && (
               <Card
@@ -114,9 +114,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
         <Box flex="1">
           <PaddedColumn gap="lg" style={{ overflow: 'auto', marginBottom: '10px' }}>
             <RowBetween>
-              <TYPE.main fontSize="14px">
+              <TYPE.Main fontSize="14px">
                 {userAddedTokens?.length} custom {userAddedTokens.length === 1 ? 'token' : 'tokens'}
-              </TYPE.main>
+              </TYPE.Main>
               {userAddedTokens.length > 0 && (
                 <ButtonOutlined style={{ padding: 0, width: 'auto' }} onClick={handleRemoveAll}>
                   Clear all
@@ -128,7 +128,7 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
         </Box>
         <Box>
           <Footer>
-            <TYPE.darkGray fontSize="14px">Tip: custom tokens are stored locally in your browser</TYPE.darkGray>
+            <TYPE.DarkGray fontSize="14px">Tip: custom tokens are stored locally in your browser</TYPE.DarkGray>
           </Footer>
         </Box>
       </Flex>
