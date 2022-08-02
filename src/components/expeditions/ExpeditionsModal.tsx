@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import SwprLogo from '../../assets/images/swpr-logo.png'
@@ -17,10 +17,10 @@ const UpperAutoColumn = styled(AutoColumn)`
   padding: 32px;
 `
 
-const Text: FC<PropsWithChildren> = ({ children }) => (
-  <TYPE.white fontSize="16px" lineHeight="150%">
+const Text = ({ children }: { children: ReactNode }) => (
+  <TYPE.White fontSize="16px" lineHeight="150%">
     {children}
-  </TYPE.white>
+  </TYPE.White>
 )
 
 export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void }) {
@@ -32,7 +32,7 @@ export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void 
         <UpperAutoColumn gap={'32px'}>
           <Row justifyContent={'center'} gap={'8px'}>
             <img src={SwprLogo} alt="SwprLogo" style={{ height: '40px' }} />
-            <TYPE.largeHeader>Swapr Expeditions</TYPE.largeHeader>
+            <TYPE.LargeHeader>Swapr Expeditions</TYPE.LargeHeader>
           </Row>
           <Row>
             <Text>

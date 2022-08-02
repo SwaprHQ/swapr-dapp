@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
 import debounce from 'lodash/debounce'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -10,7 +10,7 @@ import { normalizeInputValue } from '../../utils'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import {
@@ -120,9 +120,9 @@ export const CurrencyInputPanelComponent = ({
           {!hideInput && label && (
             <LabelRow>
               <RowBetween>
-                <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
+                <TYPE.Body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
                   <UppercaseHelper>{label}</UppercaseHelper>
-                </TYPE.body>
+                </TYPE.Body>
               </RowBetween>
             </LabelRow>
           )}

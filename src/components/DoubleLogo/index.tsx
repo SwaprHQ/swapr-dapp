@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
 import { transparentize } from 'polished'
-import React from 'react'
+import { CSSProperties } from 'react'
 import styled from 'styled-components'
 
 import { CurrencyLogo } from '../CurrencyLogo'
@@ -32,7 +32,7 @@ interface DoubleCurrencyLogoProps {
   currency1?: Currency
   top?: number
   spaceBetween?: number
-  style?: React.CSSProperties
+  style?: CSSProperties
 }
 
 const HigherLogo = styled(CurrencyLogo)<{ loading?: boolean }>`

@@ -1,10 +1,6 @@
 export class MenuBar {
   static connectWallet() {
-    cy.get('#connect-wallet')
-      .click()
-      .get('#connect-METAMASK')
-      .click()
-      .acceptMetamaskAccess()
+    cy.get('#connect-wallet').click().get('#connect-METAMASK').click().acceptMetamaskAccess()
   }
   static closeToastAlerts() {
     cy.get('.Toastify__close-button').click({ multiple: true, force: true })

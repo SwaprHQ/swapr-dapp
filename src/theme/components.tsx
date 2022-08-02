@@ -1,5 +1,5 @@
 import { darken } from 'polished'
-import React, { HTMLProps, useCallback } from 'react'
+import { HTMLProps, useCallback } from 'react'
 import { ArrowLeft, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Button as Base, ButtonProps } from 'rebass'
