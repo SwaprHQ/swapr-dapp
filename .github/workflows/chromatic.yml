@@ -2,13 +2,10 @@ name: 'Chromatic'
 
 on:
   push:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
 
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
