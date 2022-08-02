@@ -1,6 +1,6 @@
 import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import carrotListLogoUrl from '../../assets/images/carrot.png'
 import SWPRLogo from '../../assets/images/swpr-logo.png'

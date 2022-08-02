@@ -1,6 +1,6 @@
-import { RewardsPage } from '../../../pages/RewardsPage'
-import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 import { MenuBar } from '../../../pages/MenuBar'
+import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
+import { RewardsPage } from '../../../pages/RewardsPage'
 
 describe('Rewards Page Smoke Test', () => {
   before(() => {
@@ -22,14 +22,10 @@ describe('Rewards Page Smoke Test', () => {
     NetworkSwitcher.gnosis().click()
     RewardsPage.getExpiredCampaignsButton().should('be.visible')
     RewardsPage.getExpiredCampaignsButton().click()
-    RewardsPage.getRewardCards()
-      .first()
-      .should('be.visible')
+    RewardsPage.getRewardCards().first().should('be.visible')
     RewardsPage.getActiveCampaignsButton().should('be.visible')
     RewardsPage.getActiveCampaignsButton().click()
-    RewardsPage.getRewardCards()
-      .first()
-      .should('be.visible')
+    RewardsPage.getRewardCards().first().should('be.visible')
   })
   it('Rewards list active/expired should be displayed on Arbitrum One without connected wallet', () => {
     MenuBar.getNetworkSwitcher().click()
@@ -37,14 +33,10 @@ describe('Rewards Page Smoke Test', () => {
     NetworkSwitcher.arbitrum().click()
     RewardsPage.getExpiredCampaignsButton().should('be.visible')
     RewardsPage.getExpiredCampaignsButton().click()
-    RewardsPage.getRewardCards()
-      .first()
-      .should('be.visible')
+    RewardsPage.getRewardCards().first().should('be.visible')
     RewardsPage.getActiveCampaignsButton().should('be.visible')
     RewardsPage.getActiveCampaignsButton().click()
-    RewardsPage.getRewardCards()
-      .first()
-      .should('be.visible')
+    RewardsPage.getRewardCards().first().should('be.visible')
   })
   it('Rewards list active/expired should be displayed on Ethereum without connected wallet', () => {
     MenuBar.getNetworkSwitcher().click()
@@ -52,17 +44,13 @@ describe('Rewards Page Smoke Test', () => {
     NetworkSwitcher.ethereum().click()
     RewardsPage.getExpiredCampaignsButton().should('be.visible')
     RewardsPage.getExpiredCampaignsButton().click()
-    RewardsPage.getRewardCards()
-      .first()
-      .should('be.visible')
+    RewardsPage.getRewardCards().first().should('be.visible')
     //TODO: When Active Reward cards exist then uncomment functions down below
     //RewardsPage.getActiveCampaignsButton().should('be.visible')
     //RewardsPage.getActiveCampaignsButton().click()
     //RewardsPage.getRewardCard().first().should('be.visible')
   })
   it('Create Campaign button should be displayed and have href to Create a liquidity mining pool page', () => {
-    RewardsPage.getCreateCampaignButton()
-      .should('have.attr', 'href')
-      .and('include', '/liquidity-mining/create')
+    RewardsPage.getCreateCampaignButton().should('have.attr', 'href').and('include', '/liquidity-mining/create')
   })
 })

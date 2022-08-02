@@ -1,6 +1,6 @@
 import { GnosisProtocolTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'
@@ -63,7 +63,7 @@ export function TradeDetails({
       <>
         <AutoColumn gap="8px">
           <RowBetween alignItems="center">
-            <TYPE.body fontSize="11px" lineHeight="15px" fontWeight="500">
+            <TYPE.Body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
                 i18nKey="swap:tradeDetails.bestPriceFoundOn"
                 values={{ platform: bestPricedTrade?.platform.name }}
@@ -78,7 +78,7 @@ export function TradeDetails({
                   />
                 </>
               ) : null}
-            </TYPE.body>
+            </TYPE.Body>
             <AdvancedSwapDetailsToggle
               setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
               showAdvancedSwapDetails={showAdvancedSwapDetails}

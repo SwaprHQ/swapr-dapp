@@ -16,14 +16,18 @@ import {
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
+import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import Coinbase from '../assets/images/coinbase.svg'
 import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
+import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import WalletConnect from '../assets/images/wallet-connect.svg'
 import CoWLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
@@ -271,7 +275,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
+    iconName: RightArrow,
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
@@ -280,7 +284,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    iconName: Metamask,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
@@ -289,7 +293,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   WALLET_CONNECT: {
     connector: walletConnect,
     name: 'WalletConnect',
-    iconName: 'wallet-connect.svg',
+    iconName: WalletConnect,
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#4196FC',
@@ -298,7 +302,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   COINBASE: {
     connector: walletLink,
     name: 'Coinbase Wallet',
-    iconName: 'coinbase.svg',
+    iconName: Coinbase,
     description: 'Connect using Coinbase Wallet.',
     href: null,
     color: '#4196FC',

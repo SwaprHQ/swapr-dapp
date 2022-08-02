@@ -1,6 +1,6 @@
 import { setUseWhatChange } from '@simbathesailor/use-what-changed'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
-import React, { StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
@@ -53,8 +53,6 @@ const root = createRoot(container)
 
 root.render(
   <StrictMode>
-    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-    {/* @ts-expect-error */}
     <FixedGlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
@@ -62,8 +60,6 @@ root.render(
           <EcoBridgeProvider>
             <Updaters />
             <ThemeProvider>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-expect-error */}
               <ThemedGlobalStyle />
               <HashRouter>
                 <MultiChainLinksUpdater />

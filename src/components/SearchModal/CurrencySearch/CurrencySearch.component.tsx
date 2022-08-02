@@ -1,8 +1,9 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, {
+import {
   ChangeEvent,
   KeyboardEvent,
+  MutableRefObject,
   RefObject,
   useCallback,
   useContext,
@@ -147,7 +148,7 @@ export const CurrencySearch = ({
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
-          <TYPE.body fontWeight={500}>Select a token</TYPE.body>
+          <TYPE.Body fontWeight={500}>Select a token</TYPE.Body>
           <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <Row>
@@ -168,23 +169,24 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
+      fixedList !== undefined ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
           onCurrencySelect={onCurrencySelect}
           otherCurrency={otherSelectedCurrency}
           selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList}
+          fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
             No results found.
-          </TYPE.main>
+          </TYPE.Main>
         </Column>
       )}
       <Footer>

@@ -1,7 +1,7 @@
 import { parseUnits } from '@ethersproject/units'
 import { Pair, Price, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -14,7 +14,7 @@ import { TYPE } from '../../../../../../theme'
 import { calculatePercentage } from '../../../../../../utils'
 import useDebouncedChangeHandler from '../../../../../../utils/useDebouncedChangeHandler'
 import { NumericalInput } from '../../../../../Input/NumericalInput'
-import Loader from '../../../../../Loader'
+import { Loader } from '../../../../../Loader'
 import Slider from '../../../../../Slider'
 import { SmoothGradientCard } from '../../../../styleds'
 
@@ -225,9 +225,9 @@ export default function SimulateStaking({
           {SimulateOptions.PRICE === simulateOption && (
             <AmountFlex>
               <StyledNumericalInput placeholder="0" value={simulatedPrice} onUserInput={handleLocalStakingCapChange} />
-              <TYPE.largeHeader alignSelf={'center'} fontSize={13} color={'dark4'} letterSpacing="0.08em">
+              <TYPE.LargeHeader alignSelf={'center'} fontSize={13} color={'dark4'} letterSpacing="0.08em">
                 USD
-              </TYPE.largeHeader>
+              </TYPE.LargeHeader>
             </AmountFlex>
           )}
         </>
