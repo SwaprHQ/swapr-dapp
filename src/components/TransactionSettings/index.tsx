@@ -103,7 +103,7 @@ const useValidateTransactionSettings = (
 }
 
 const SlippageToleranceError = ({ errorMessage, isInputValid }: { errorMessage: string; isInputValid: boolean }) => (
-  <SlippageErrorInner isInputValid={isInputValid}>
+  <SlippageErrorInner data-testid="slippage-error" isInputValid={isInputValid}>
     <SlippageErrorInnerAlertTriangle isInputValid={isInputValid}>
       <AlertTriangle size={20} />
     </SlippageErrorInnerAlertTriangle>
@@ -263,7 +263,6 @@ export const TransactionSettings = ({
         </RowBetween>
         {slippageError ? (
           <SlippageToleranceError
-            data-testid="slippage-error"
             errorMessage={getSlippageErrorMessage(slippageError)}
             isInputValid={isSlippageInputValid}
           />
