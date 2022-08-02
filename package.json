@@ -118,7 +118,7 @@
     "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.182",
     "@types/luxon": "^3.0.0",
-    "@types/multicodec": "^1.0.0",
+    "@types/multicodec": "^2.1.0",
     "@types/node": "^18.0.1",
     "@types/react": "^18.0.15",
     "@types/react-datepicker": "^3.1.8",
