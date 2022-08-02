@@ -32,16 +32,16 @@ type TradesHistory = {
 export type SwaprTradesHistory = {
   pair: {
     id: string
-    burns: LiquidityTransaction[]
-    mints: LiquidityTransaction[]
-    swaps: TradesHistory[]
     token0: {
       symbol: string
     }
     token1: {
       symbol: string
     }
-  }
+    burns: LiquidityTransaction[]
+    mints: LiquidityTransaction[]
+    swaps: TradesHistory[]
+  } | null
 }
 
 export class SwaprAdapter extends AbstractTradesAdapter {
