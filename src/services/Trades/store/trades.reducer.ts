@@ -4,13 +4,19 @@ import { SwaprTradesHistory } from '../adapters/swapr.adapter'
 import { AdapterKeys } from '../adapters/trades.adapter'
 
 type InitialState = {
-  swapr: SwaprTradesHistory | undefined
-  loading: { [key in AdapterKeys]: boolean }
+  sources: {
+    swapr: {
+      transactions: SwaprTradesHistory | undefined
+      loading: boolean
+    }
+  }
 }
 const initialState: InitialState = {
-  swapr: undefined,
-  loading: {
-    swapr: false,
+  sources: {
+    swapr: {
+      transactions: undefined,
+      loading: false,
+    },
   },
 }
 
@@ -21,10 +27,10 @@ const tradesSlice = createSlice({
     setAdapterLoading: (state, action: PayloadAction<{ key: AdapterKeys; isLoading: boolean }>) => {
       const { key, isLoading } = action.payload
 
-      state.loading[key] = isLoading
+      state.sources[key].loading = isLoading
     },
-    setSwaprTradesHistory: (state, action: PayloadAction<SwaprTradesHistory>) => {
-      state.swapr = action.payload
+    setSwaprTradesHistory: (state, action: PayloadAction<SwaprTradesHistory | undefined>) => {
+      state.sources.swapr.transactions = action.payload
     },
   },
 })
