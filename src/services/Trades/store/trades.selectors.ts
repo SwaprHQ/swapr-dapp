@@ -10,16 +10,22 @@ export type Trade = {
 }
 
 // loading
-export const selectStateLoading = createSelector([(state: AppState) => state.trades.loading], loadingState =>
-  Object.values(loadingState).includes(true)
-)
+export const selectStateLoading = createSelector([(state: AppState) => state.trades.sources], sources => {
+  const loadingState = Object.values(sources).map(({ loading }) => loading)
+
+  const isNewPair = loadingState.every(loading => loading)
+  const isLoading = loadingState.includes(true)
+
+  return {
+    isLoading,
+    isNewPair,
+  }
+})
 
 // trades
-export const selectAllSwaprTrades = createSelector([(state: AppState) => state.trades.swapr], swaprTrades => {
-  if (swaprTrades) {
-    const {
-      pair: { burns, mints, swaps, token0, token1 },
-    } = swaprTrades
+export const selectAllSwaprTrades = createSelector([(state: AppState) => state.trades.sources.swapr], swaprTrades => {
+  if (swaprTrades && swaprTrades.transactions?.pair) {
+    const { burns, mints, swaps, token0, token1 } = swaprTrades.transactions.pair
 
     const liquidityHistory: Trade[] = [...burns, ...mints].map(trade => {
       const {

@@ -28,29 +28,30 @@ const Loading = () => (
   </LoaderContainer>
 )
 
+const renderTransaction = (array: Trade[], showTrades: boolean, isLoading: boolean, isNewPair: boolean) => {
+  if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
+
+  if (isNewPair) return null
+
+  if (!array.length && !isLoading)
+    return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
+
+  return array
+    .sort((firstTrade, secondTrade) => (Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1))
+    .map(({ transactionId, timestamp, amount0, amount1, amountUSD }) => (
+      <ListElement
+        key={transactionId}
+        amount0={amount0}
+        amount1={amount1}
+        amountUSD={amountUSD}
+        timestamp={timestamp}
+      />
+    ))
+}
+
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const { symbol, showTrades } = useTradesAdapter()
-  const { allLiquidityHistory, allTradeHistory, isLoading } = useAllTrades()
-
-  //TODO: loading state
-  const renderTransaction = (array: Trade[]) => {
-    if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
-
-    if (!array.length)
-      return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
-
-    return array
-      .sort((firstTrade, secondTrade) => (Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1))
-      .map(({ transactionId, timestamp, amount0, amount1, amountUSD }) => (
-        <ListElement
-          key={transactionId}
-          amount0={amount0}
-          amount1={amount1}
-          amountUSD={amountUSD}
-          timestamp={timestamp}
-        />
-      ))
-  }
+  const { allLiquidityHistory, allTradeHistory, isLoading, isNewPair } = useAllTrades()
 
   return (
     <ContainerBox>
@@ -63,7 +64,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             <TitleColumn>Trade History</TitleColumn>
             <ListTitle />
             <ListBox>
-              {renderTransaction(allTradeHistory)}
+              {renderTransaction(allTradeHistory, showTrades, isLoading, isNewPair)}
               {isLoading && <Loading />}
             </ListBox>
           </HistoryBox>
@@ -71,7 +72,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             <TitleColumn>Liquidity History</TitleColumn>
             <ListTitle />
             <ListBox>
-              {renderTransaction(allLiquidityHistory)}
+              {renderTransaction(allLiquidityHistory, showTrades, isLoading, isNewPair)}
               {isLoading && <Loading />}
             </ListBox>
           </HistoryBox>
