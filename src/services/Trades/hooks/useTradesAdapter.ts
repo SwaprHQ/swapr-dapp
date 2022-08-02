@@ -2,7 +2,7 @@ import { ChainId, Currency, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useActiveWeb3React } from 'hooks'
 import { useToken } from 'hooks/Tokens'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSwapState } from 'state/swap/hooks'
 
 import store from '../../../state'
@@ -30,6 +30,10 @@ export const useTradesAdapter = () => {
   const { chainId } = useActiveWeb3React()
   const [tradesAdapter, setTradesAdapter] = useState<TradesAdapter>()
   const [symbol, setSymbol] = useState<string>()
+  const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
+    inputTokenAddress: undefined,
+    outputTokenAddress: undefined,
+  })
 
   const {
     INPUT: { currencyId: inputCurrencyId },
@@ -57,9 +61,20 @@ export const useTradesAdapter = () => {
   }, [chainId, tradesAdapter])
 
   useEffect(() => {
-    if (tradesAdapter && inputToken && outputToken) {
+    if (
+      tradesAdapter &&
+      inputToken &&
+      outputToken &&
+      // do not fetch data if user reversed pair
+      (previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
+        previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase())
+    ) {
       setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
       tradesAdapter.fetchTradesHistory(inputToken, outputToken)
+    }
+    previousTokens.current = {
+      inputTokenAddress: inputToken?.address.toLowerCase(),
+      outputTokenAddress: outputToken?.address.toLowerCase(),
     }
   }, [inputToken, outputToken, tradesAdapter])
 
