@@ -223,7 +223,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId, hasCurrentChainDetails } = useWeb3ReactCore()
+  const { account, chainId, isCurrentChainUnsupported } = useWeb3ReactCore()
 
   const { t } = useTranslation()
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
@@ -318,12 +318,12 @@ function Header() {
             />
           )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {!hasCurrentChainDetails && (
+            {isCurrentChainUnsupported && (
               <Amount data-testid="unsupported-network-warning" zero>
                 {'UNSUPPORTED NETWORK'}
               </Amount>
             )}
-            {account && hasCurrentChainDetails && (
+            {account && isCurrentChainUnsupported && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
                 {userNativeCurrencyBalance ? (
                   `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
@@ -334,7 +334,7 @@ function Header() {
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || !hasCurrentChainDetails}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isCurrentChainUnsupported}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}

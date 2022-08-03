@@ -191,29 +191,6 @@ export const calculatePercentage = (value: number, percentage: number): number =
   return Math.round((percentage / 100) * value)
 }
 
-export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
-  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
-  window.ethereum
-    .request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: networkDetails.chainId }],
-    })
-    .catch(error => {
-      if (error.code !== 4902) {
-        console.error('error switching to chain id', networkDetails.chainId, error)
-      }
-      if (!window.ethereum || !window.ethereum.request) return
-      window.ethereum
-        .request({
-          method: 'wallet_addEthereumChain',
-          params: [{ ...networkDetails }, account],
-        })
-        .catch(error => {
-          console.error('error adding chain with id', networkDetails.chainId, error)
-        })
-    })
-}
-
 export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; padding?: string; margin?: string }>`
   min-width: ${props => (props.width ? props.width : '22px')};
   padding: ${props => (props.padding ? props.padding : '0')};

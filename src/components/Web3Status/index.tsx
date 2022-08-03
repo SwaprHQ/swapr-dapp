@@ -85,7 +85,7 @@ export enum ModalView {
 
 export default function Web3Status() {
   const dispatch = useDispatch<AppDispatch>()
-  const { account, connector: activeConnector, chainId, ENSName, hasCurrentChainDetails } = useWeb3ReactCore()
+  const { account, connector: activeConnector, chainId, ENSName, isCurrentChainUnsupported } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
 
@@ -151,12 +151,20 @@ export default function Web3Status() {
 
   // TODO unsupported chain id
   useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !hasCurrentChainDetails) {
+    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && isCurrentChainUnsupported) {
+      console.log('DUUUUUUUUUUUUUUUPAAAAAAAAAAAA')
+      console.log(
+        !isUnsupportedNetworkModal,
+        !isUnsupportedNetwork,
+        isCurrentChainUnsupported,
+        activeConnector,
+        chainId
+      )
       setUnsupportedNetwork(true)
       openUnsupportedNetworkModal()
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && hasCurrentChainDetails) {
+    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !isCurrentChainUnsupported) {
       setUnsupportedNetwork(false)
-    } else if (isUnsupportedNetworkModal && hasCurrentChainDetails) {
+    } else if (isUnsupportedNetworkModal && !isCurrentChainUnsupported) {
       closeModals()
     }
   }, [
@@ -164,14 +172,16 @@ export default function Web3Status() {
     openUnsupportedNetworkModal,
     isUnsupportedNetworkModal,
     closeModals,
-    hasCurrentChainDetails,
+    isCurrentChainUnsupported,
+    activeConnector,
+    chainId,
   ])
 
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (!isChainSupportedByConnector(activeConnector, chainId)) {
+  if (isCurrentChainUnsupported) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>

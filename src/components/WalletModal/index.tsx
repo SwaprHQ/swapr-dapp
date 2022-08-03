@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks } from 'connectors'
-import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
+import { isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
@@ -133,7 +133,6 @@ export default function WalletModal({
   const isChainSupported = isChainSupportedByConnector(pendingConnector, chainId)
 
   const previousAccount = usePrevious(account)
-  console.log('modal', account, previousAccount, connector, modal)
 
   // close on connection, when logged out before
   useEffect(() => {

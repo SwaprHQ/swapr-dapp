@@ -10,9 +10,6 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import SWAPR_LOGO from './../assets/svg/swapr.svg'
 import { ConnectorType, RPC_URLS } from './../constants'
 
-// TODO DEELTE
-export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
-
 export interface Connection {
   connector: Connector
   hooks: Web3ReactHooks

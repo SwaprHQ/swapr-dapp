@@ -14,11 +14,6 @@ import {
   WXDAI,
 } from '@swapr/sdk'
 
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { MetaMask } from '@web3-react/metamask'
-import { Connector } from '@web3-react/types'
-import { WalletConnect } from '@web3-react/walletconnect'
-import { coinbaseWallet, metaMask, walletConnect } from 'connectors'
 import { providers } from 'ethers'
 import React, { ReactNode } from 'react'
 
@@ -455,7 +450,6 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   },
 }
 
-// TODO should be taken from above rpcUrls?
 export const RPC_URLS: { [chainId: number]: string } = {
   [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
   [ChainId.XDAI]: 'https://rpc.gnosischain.com/',

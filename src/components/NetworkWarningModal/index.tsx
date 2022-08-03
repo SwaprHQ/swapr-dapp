@@ -1,3 +1,4 @@
+import { useNetworkSwitch } from 'hooks/useNetworkSwitch'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
@@ -8,7 +9,6 @@ import { NETWORK_DETAIL } from '../../constants'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
 import { TYPE } from '../../theme'
-import { switchOrAddNetwork } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
@@ -35,9 +35,9 @@ export default function NetworkWarningModal() {
   const { chainId, account } = useWeb3ReactCore()
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
+  const { selectNetwork } = useNetworkSwitch()
 
   const [open, setOpen] = useState(false)
-  console.log('url', urlLoadedChainId)
   useEffect(() => {
     setOpen(!!account && !!chainId && !!urlLoadedChainId && !!switchingToCorrectChain)
   }, [account, chainId, switchingToCorrectChain, urlLoadedChainId])
@@ -46,8 +46,8 @@ export default function NetworkWarningModal() {
 
   const handleAddClick = useCallback(() => {
     if (!urlLoadedChainId) return
-    switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
-  }, [urlLoadedChainId, account])
+    selectNetwork(urlLoadedChainId)
+  }, [urlLoadedChainId, selectNetwork])
 
   return (
     <Modal isOpen={open} onDismiss={handleDismiss} maxHeight={90}>
