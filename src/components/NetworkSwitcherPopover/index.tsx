@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
 import { Placement } from '@popperjs/core'
-import { isChainAllowed } from 'connectors/utils'
+import { isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode } from 'react'
 
@@ -19,12 +19,11 @@ interface NetworkSwitcherPopoverProps {
 
 export default function NetworkSwitcherPopover({ children, modal, placement }: NetworkSwitcherPopoverProps) {
   const closeModals = useCloseModals()
-  const { connector, chainId: activeChainId, account, isSupportedChainId } = useWeb3ReactCore()
+  const { connector, chainId: activeChainId, account } = useWeb3ReactCore()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
 
-  // TODO
   const isNetworkDisabled = (chainId: ChainId) => {
-    return (activeChainId === chainId && isSupportedChainId) || !isChainAllowed(connector, chainId)
+    return activeChainId === chainId || !isChainSupportedByConnector(connector, chainId)
   }
 
   const { selectNetwork } = useNetworkSwitch()

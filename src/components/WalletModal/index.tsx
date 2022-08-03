@@ -127,7 +127,7 @@ export default function WalletModal({
   setPendingError,
   pendingConnector,
 }: WalletModalProps) {
-  const { account, connector, isActive, isSupportedChainId } = useWeb3ReactCore()
+  const { account, connector, isActive, hasCurrentChainDetails } = useWeb3ReactCore()
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
@@ -177,14 +177,14 @@ export default function WalletModal({
             <AutoRow gap="6px">
               <StyledWarningIcon size="20px" />
               <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
-                {isSupportedChainId ? 'Error connecting' : 'Wrong Network'}
+                {hasCurrentChainDetails ? 'Error connecting' : 'Wrong Network'}
               </TYPE.main>
             </AutoRow>
           </HeaderRow>
           <ContentWrapper>
             <TYPE.yellow color="text4">
               <h5>
-                {isSupportedChainId
+                {hasCurrentChainDetails
                   ? 'Error connecting. Try refreshing the page.'
                   : 'Please connect to the appropriate network.'}
               </h5>

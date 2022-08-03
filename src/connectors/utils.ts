@@ -61,7 +61,7 @@ export function getConnectionName(connector: ConnectorType, isMetaMask?: boolean
   }
 }
 
-export function isChainAllowed(connector: Connector, chainId: number | undefined) {
+export function isChainSupportedByConnector(connector: Connector, chainId: number | undefined) {
   const connectorType = getConnection(connector).type
   if (!chainId || !connectorType) return false
   return SUPPORTED_NETWORKS[connectorType].includes(chainId)

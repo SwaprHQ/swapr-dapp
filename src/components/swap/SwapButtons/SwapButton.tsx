@@ -94,10 +94,10 @@ export const SwapButton = ({
 
 export const SwapLoadingButton = () => {
   const { t } = useTranslation()
-  const { chainId, isSupportedChainId } = useWeb3ReactCore()
+  const { chainId, hasCurrentChainDetails } = useWeb3ReactCore()
 
   const routablePlatforms =
-    chainId && isSupportedChainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
+    chainId && hasCurrentChainDetails ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
 
   return (
     <StyledSwapLoadingButton>

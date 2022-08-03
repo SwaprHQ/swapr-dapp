@@ -4,7 +4,7 @@ import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect' // TODO pack all import into one
 import { coinbaseWalletConnection, metaMaskConnection } from 'connectors'
-import { getConnection, isChainAllowed } from 'connectors/utils'
+import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -90,7 +90,7 @@ export default function Web3Status() {
     chainId,
     ENSName,
     isActive,
-    isSupportedChainId,
+    hasCurrentChainDetails,
     isActivating,
   } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
@@ -113,7 +113,7 @@ export default function Web3Status() {
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
   console.log('wallet', activeConnector, isActive, isActivating, account, chainId)
-  console.log('supported?', isChainAllowed(activeConnector, chainId))
+  console.log('supported?', isChainSupportedByConnector(activeConnector, chainId))
   const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
     if (!account) return
     if (connector?.deactivate) {
@@ -159,23 +159,29 @@ export default function Web3Status() {
 
   // TODO unsupported chain id
   useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !isSupportedChainId) {
+    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !hasCurrentChainDetails) {
       setUnsupportedNetwork(true)
       openUnsupportedNetworkModal()
       setPendingError(true)
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && isSupportedChainId) {
+    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && hasCurrentChainDetails) {
       setUnsupportedNetwork(false)
       setPendingError(undefined)
-    } else if (isUnsupportedNetworkModal && isSupportedChainId) {
+    } else if (isUnsupportedNetworkModal && hasCurrentChainDetails) {
       closeModals()
     }
-  }, [isUnsupportedNetwork, openUnsupportedNetworkModal, isUnsupportedNetworkModal, closeModals, isSupportedChainId])
+  }, [
+    isUnsupportedNetwork,
+    openUnsupportedNetworkModal,
+    isUnsupportedNetworkModal,
+    closeModals,
+    hasCurrentChainDetails,
+  ])
 
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (pendingError && !isSupportedChainId) {
+  if (pendingError && !hasCurrentChainDetails) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>

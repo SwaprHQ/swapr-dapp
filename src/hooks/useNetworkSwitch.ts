@@ -2,14 +2,14 @@ import { ChainId } from '@swapr/sdk'
 
 import { Connector } from '@web3-react/types'
 import { networkConnection, walletConnectConnection } from 'connectors'
-import { isChainAllowed } from 'connectors/utils'
+import { isChainSupportedByConnector } from 'connectors/utils'
 import { useCallback } from 'react'
 import { getNetworkInfo } from 'utils/networksList'
 
 import { useWeb3ReactCore } from './useWeb3ReactCore'
 
-export const switchNetwork = async (connector: Connector, chainId: ChainId) => {
-  if (!isChainAllowed(connector, chainId)) {
+const switchNetwork = async (connector: Connector, chainId: ChainId) => {
+  if (!isChainSupportedByConnector(connector, chainId)) {
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
   } else if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
     await connector.activate(chainId)

@@ -10,11 +10,11 @@ import {
 import { ButtonPrimary } from '../Button'
 
 export const ButtonConnect = () => {
-  const { isSupportedChainId } = useWeb3ReactCore()
+  const { hasCurrentChainDetails } = useWeb3ReactCore()
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const networkSwitcherPopoverOpen = useModalOpen(ApplicationModal.NETWORK_SWITCHER)
-  const isSwitchNetwork = networkSwitcherPopoverOpen || !isSupportedChainId
+  const isSwitchNetwork = networkSwitcherPopoverOpen || !hasCurrentChainDetails
 
   return (
     <ButtonPrimary
