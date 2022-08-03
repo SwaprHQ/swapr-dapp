@@ -50,16 +50,20 @@ export class TradesAdapter {
   public init = () => {
     this._initialized = true
 
-    Object.values(this._adapters).forEach(adapter =>
+    for (const adapter of Object.values(this._adapters)) {
       adapter.setInitialArguments({ chainId: this._chainId, store: this.store })
-    )
+    }
   }
 
   public fetchTradesHistory = (inputToken: Token, outputToken: Token) => {
-    Object.values(this._adapters).forEach(adapter => adapter.getTradesHistoryForPair(inputToken, outputToken))
+    for (const adapter of Object.values(this._adapters)) {
+      adapter.getTradesHistoryForPair(inputToken, outputToken)
+    }
   }
 
   public updateActiveChainId = (chainId: ChainId) => {
-    Object.values(this._adapters).forEach(adapter => adapter.updateActiveChainId(chainId))
+    for (const adapter of Object.values(this._adapters)) {
+      adapter.updateActiveChainId(chainId)
+    }
   }
 }
