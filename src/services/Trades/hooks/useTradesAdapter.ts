@@ -1,11 +1,11 @@
 import { ChainId, Currency, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
-import { useActiveWeb3React } from 'hooks'
-import { useToken } from 'hooks/Tokens'
 import { useEffect, useRef, useState } from 'react'
-import { useSwapState } from 'state/swap/hooks'
 
+import { useActiveWeb3React } from '../../../hooks'
+import { useToken } from '../../../hooks/Tokens'
 import store from '../../../state'
+import { useSwapState } from '../../../state/swap/hooks'
 import { SwaprAdapter } from '../adapters/swapr.adapter'
 import { Adapters, TradesAdapter } from '../adapters/trades.adapter'
 

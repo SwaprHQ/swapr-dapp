@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { AppState } from 'state'
+
+import { AppState } from '../../../state'
 
 export type Trade = {
   transactionId: string

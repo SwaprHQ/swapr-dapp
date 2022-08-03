@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
-import { breakpoints } from 'utils/theme'
+
+import { breakpoints } from '../../../utils/theme'
 
 export const ContainerBox = styled.div`
   display: flex;

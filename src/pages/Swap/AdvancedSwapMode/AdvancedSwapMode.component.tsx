@@ -1,9 +1,9 @@
 import React, { FC, PropsWithChildren } from 'react'
-import { useAllTrades } from 'services/Trades/hooks/useAllTrades'
-import { Trade } from 'services/Trades/store/trades.selectors'
 
-import Loader from '../../../components/Loader'
+import { Loader } from '../../../components/Loader'
+import { useAllTrades } from '../../../services/Trades/hooks/useAllTrades'
 import { useTradesAdapter } from '../../../services/Trades/hooks/useTradesAdapter'
+import { Trade } from '../../../services/Trades/store/trades.selectors'
 import { AdvancedChart } from './AdvancedChart'
 import {
   ColumnCellBox,

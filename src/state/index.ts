@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
-import trades from 'services/Trades/store'
 
 import {
   ecoBridgePersistedKeys,
   fixCorruptedEcoBridgeLocalStorageEntries,
 } from '../services/EcoBridge/EcoBridge.config'
 import ecoBridge from '../services/EcoBridge/store/EcoBridge.reducer'
+import trades from '../services/Trades/store'
 import application from './application/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
 import burn from './burn/reducer'

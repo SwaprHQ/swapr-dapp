@@ -1,7 +1,8 @@
 import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
-import { AppState } from 'state'
+
+import { AppState } from '../../../state'
 
 export enum AdapterKeys {
   SWAPR = 'swapr',

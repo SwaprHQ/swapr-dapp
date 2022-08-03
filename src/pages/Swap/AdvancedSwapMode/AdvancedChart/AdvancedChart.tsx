@@ -7,7 +7,7 @@ export const AdvancedChart = ({ symbol }: { symbol?: string }) => {
       <AdvancedRealTimeChart
         symbol={symbol ?? 'USDCUSD'}
         theme="dark"
-        style="3"
+        style="3" // eslint-disable-line
         autosize
         hide_top_toolbar
         copyrightStyles={{ parent: { display: 'none' } }}

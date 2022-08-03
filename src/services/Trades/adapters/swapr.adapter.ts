@@ -1,8 +1,8 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
-import { subgraphClientsUris } from 'apollo/client'
 import { request } from 'graphql-request'
 
+import { subgraphClientsUris } from '../../../apollo/client'
 import { actions } from '../store'
 import { SWAPR_PAIR_TRANSACTIONS } from './queries'
 import { AbstractTradesAdapter, AdapterInitialArguments, AdapterKeys } from './trades.adapter'
