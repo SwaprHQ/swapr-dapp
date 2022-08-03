@@ -22,6 +22,12 @@
   "button.swapWith": "Swap with",
   "button.anyway": "Anyway",
   "button.findingBestPrice": "Finding best price",
+  "button.connectWallet": "Connect wallet",
+  "button.enterAmount": "Enter amount",
+  "button.selectToken": "Select token",
+  "button.enterRecipient": "Enter recipient",
+  "button.insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
+  "button.enterCurrencyAmount": "Enter {{ currency }} amount",
   "tradeDetails.bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>."
 }

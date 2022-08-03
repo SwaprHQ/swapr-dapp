@@ -22,7 +22,7 @@ import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween, RowFixed } from '../Row'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Toggle from '../Toggle'
-import TransactionSettings from '../TransactionSettings'
+import { TransactionSettings } from '../TransactionSettings'
 
 const MenuModal = styled(Modal)`
   && {
