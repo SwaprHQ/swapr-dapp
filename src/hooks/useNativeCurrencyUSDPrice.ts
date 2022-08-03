@@ -1,23 +1,15 @@
 import { parseUnits } from '@ethersproject/units'
 import { Price, USD } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { useBundleQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
-
-const QUERY = gql`
-  query {
-    bundle(id: "1") {
-      nativeCurrencyPrice
-    }
-  }
-`
 
 export function useNativeCurrencyUSDPrice(): { loading: boolean; nativeCurrencyUSDPrice: Price } {
   const nativeCurrency = useNativeCurrency()
-  const { loading, error, data } = useQuery<{ bundle: { nativeCurrencyPrice: string } }>(QUERY)
+  const { loading, error, data } = useBundleQuery()
 
   return useMemo(() => {
     if (loading)

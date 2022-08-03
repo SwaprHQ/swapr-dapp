@@ -1,0 +1,90 @@
+query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
+  liquidityPositions(where: { user: $account, liquidityTokenBalance_gt: 0 }) {
+    pair {
+      address: id
+      reserve0
+      reserve1
+      reserveNativeCurrency
+      reserveUSD
+      totalSupply
+      token0 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+      token1 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+      liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
+        address: id
+        duration
+        startsAt
+        endsAt
+        locked
+        stakingCap
+        rewards {
+          token {
+            address: id
+            name
+            symbol
+            decimals
+            derivedNativeCurrency
+          }
+          amount
+        }
+        stakedAmount
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $account }) {
+          id
+        }
+      }
+    }
+  }
+  liquidityMiningPositions(where: { user: $account, stakedAmount_gt: 0 }) {
+    pair: targetedPair {
+      address: id
+      reserve0
+      reserve1
+      reserveNativeCurrency
+      reserveUSD
+      totalSupply
+      token0 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+      token1 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+      liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
+        address: id
+        duration
+        startsAt
+        endsAt
+        locked
+        stakingCap
+        rewards {
+          token {
+            address: id
+            name
+            symbol
+            decimals
+            derivedNativeCurrency
+          }
+          amount
+        }
+        stakedAmount
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $account }) {
+          id
+        }
+      }
+    }
+  }
+}

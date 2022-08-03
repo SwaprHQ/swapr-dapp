@@ -1,0 +1,21 @@
+query LiquidityMiningCampaign($id: ID!) {
+  liquidityMiningCampaign(id: $id) {
+    address: id
+    duration
+    startsAt
+    endsAt
+    locked
+    stakingCap
+    rewards {
+      token {
+        address: id
+        name
+        symbol
+        decimals
+        derivedNativeCurrency
+      }
+      amount
+    }
+    stakedAmount
+  }
+}

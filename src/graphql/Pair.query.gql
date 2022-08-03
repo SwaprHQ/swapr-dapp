@@ -1,0 +1,15 @@
+query Pair($pairAddress: ID!) {
+  pair(id: $pairAddress) {
+    id
+    reserve0
+    reserve1
+    reserveNativeCurrency
+    token0 {
+      derivedNativeCurrency
+    }
+    token1 {
+      derivedNativeCurrency
+    }
+    totalSupply
+  }
+}

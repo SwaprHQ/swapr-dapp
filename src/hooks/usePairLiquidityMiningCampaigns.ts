@@ -1,9 +1,9 @@
 import { BigintIsh, Pair } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
+import { useLiquidityMiningCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
@@ -17,47 +17,6 @@ import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from '.'
-
-const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
-const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
-
-const REGULAR_CAMPAIGN = gql`
-  query($userId: ID) {
-    liquidityMiningCampaigns(first: 999) {
-      address: id
-      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
-      rewards {
-        token {
-          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
-        }
-        amount
-      }
-      stakablePair {
-        id
-        reserveNativeCurrency
-        reserveUSD
-        totalSupply
-        reserve0
-        reserve1
-        token0 {
-          address: id
-          name
-          symbol
-          decimals
-        }
-        token1 {
-          address: id
-          name
-          symbol
-          decimals
-        }
-      }
-      liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
-        id
-      }
-    }
-  }
-`
 
 export function usePairLiquidityMiningCampaigns(pair?: Pair): {
   loading: boolean
@@ -76,9 +35,7 @@ export function usePairLiquidityMiningCampaigns(pair?: Pair): {
     data: pairCampaigns,
     loading: campaignLoading,
     error: campaignError,
-  } = useQuery<{
-    liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-  }>(REGULAR_CAMPAIGN, {
+  } = useLiquidityMiningCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },
@@ -129,7 +86,7 @@ export function usePairLiquidityMiningCampaigns(pair?: Pair): {
         totalSupply,
         reserveNativeCurrency,
         kpiTokens,
-        campaign,
+        campaign as SubgraphLiquidityMiningCampaign,
         nativeCurrency
       )
 

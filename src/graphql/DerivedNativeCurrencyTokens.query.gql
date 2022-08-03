@@ -1,0 +1,6 @@
+query DerivedNativeCurrencyTokens($tokenIds: [ID!]!) {
+  tokens(where: { id_in: $tokenIds }) {
+    address: id
+    derivedNativeCurrency
+  }
+}

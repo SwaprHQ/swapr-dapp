@@ -1,0 +1,34 @@
+query SingleSidedStakingCampaigns($address: String, $userId: String) {
+  singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
+    id
+    owner
+    startsAt
+    endsAt
+    duration
+    locked
+    stakeToken {
+      id
+      symbol
+      name
+      decimals
+      totalSupply
+      derivedNativeCurrency
+    }
+    rewards {
+      token {
+        address: id
+        name
+        symbol
+        decimals
+        derivedNativeCurrency
+      }
+      amount
+    }
+    singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+      id
+      stakedAmount
+    }
+    stakedAmount
+    stakingCap
+  }
+}

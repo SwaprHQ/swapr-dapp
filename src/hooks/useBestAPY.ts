@@ -1,8 +1,8 @@
 import { Pair, Percent } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 
+import { usePairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getBestApyPairCampaign,
@@ -16,53 +16,6 @@ import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from '.'
 
-const QUERY = gql`
-  query ($lowerTimeLimit: BigInt!, $pairAddress: ID) {
-    pair(id: $pairAddress) {
-      address: id
-      reserve0
-      reserve1
-      reserveNativeCurrency
-      totalSupply
-      token0 {
-        address: id
-        name
-        symbol
-        decimals
-      }
-      token1 {
-        address: id
-        name
-        symbol
-        decimals
-      }
-      liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
-        address: id
-        duration
-        startsAt
-        endsAt
-        locked
-        stakingCap
-        rewards {
-          token {
-            address: id
-            name
-            symbol
-            decimals
-            derivedNativeCurrency
-          }
-          amount
-        }
-        stakedAmount
-      }
-    }
-  }
-`
-
-interface QueryResult {
-  pair: SubgraphPair
-}
-
 export function useBestAPY(pair?: Pair | null): {
   loading: boolean
   bestAPY?: Percent
@@ -72,24 +25,24 @@ export function useBestAPY(pair?: Pair | null): {
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
 
-  const { loading, data, error } = useQuery<QueryResult>(QUERY, {
+  const { loading, data, error } = usePairLiquidityMiningCampaingsQuery({
     variables: {
-      pairAddress: pair?.liquidityToken.address.toLowerCase(),
+      pairAddress: pair?.liquidityToken.address.toLowerCase() || '',
       lowerTimeLimit: memoizedLowerTimeLimit,
     },
   })
 
   const rewardTokenAddresses = useMemo(() => {
-    return !data ? [] : getRewardTokenAddressFromPair(data.pair)
+    return !data || !data.pair ? [] : getRewardTokenAddressFromPair(data.pair as SubgraphPair)
   }, [data])
 
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
 
   if (loadingKpiTokens || loading) return { loading: true }
-  if (!chainId || error || !data) return { loading: false }
+  if (!chainId || error || !data || !data.pair) return { loading: false }
 
   const newPair = getPairWithLiquidityMiningCampaign({
-    rawPair: data.pair,
+    rawPair: data.pair as SubgraphPair,
     chainId,
     kpiTokens,
     nativeCurrency,

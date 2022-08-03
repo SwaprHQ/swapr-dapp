@@ -1,0 +1,44 @@
+query LiquidityMiningCampaigns($userId: String) {
+  liquidityMiningCampaigns(first: 999) {
+    address: id
+    duration
+    startsAt
+    endsAt
+    locked
+    stakingCap
+    stakedAmount
+    rewards {
+      token {
+        address: id
+        name
+        symbol
+        decimals
+        derivedNativeCurrency
+      }
+      amount
+    }
+    stakablePair {
+      id
+      reserveNativeCurrency
+      reserveUSD
+      totalSupply
+      reserve0
+      reserve1
+      token0 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+      token1 {
+        address: id
+        name
+        symbol
+        decimals
+      }
+    }
+    liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+      id
+    }
+  }
+}
