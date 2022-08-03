@@ -584,7 +584,7 @@ export class Connext extends EcoBridgeChildBase {
 
       const connextTransactions = connextSubgraphTransactions.reduce<ConnextTransaction[]>(
         (allTransactions, chainTransaction) => {
-          chainTransaction.transactions.map(transaction => {
+          chainTransaction.transactions.forEach(transaction => {
             allTransactions.push(transaction)
           })
           return allTransactions

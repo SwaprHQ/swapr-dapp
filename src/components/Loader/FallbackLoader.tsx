@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 
 import Logo from '../../assets/svg/logo_white.svg'

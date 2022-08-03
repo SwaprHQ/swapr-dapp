@@ -1,7 +1,7 @@
 import { Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { transparentize } from 'polished'
-import React, { MutableRefObject, useCallback, useState } from 'react'
+import { MutableRefObject, useCallback, useState } from 'react'
 import { usePopper } from 'react-popper'
 import styled, { CSSProperties } from 'styled-components'
 

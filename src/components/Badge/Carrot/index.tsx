@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as CarrotLogo } from '../../../assets/svg/carrot.svg'

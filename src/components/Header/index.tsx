@@ -1,7 +1,6 @@
 import { SWPR } from '@swapr/sdk'
 
-import ExpeditionsModal from 'components/expeditions/ExpeditionsModal'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -13,10 +12,13 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
-import { useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
+import { ApplicationModal } from '../../state/application/actions'
+import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import ClaimModal from '../claim/ClaimModal'
+import ExpeditionsModal from '../expeditions/ExpeditionsModal'
+import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
@@ -26,6 +28,7 @@ import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
+import { Amount } from './styled'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -192,7 +195,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const { gas } = useGasInfo()
   const [isDark] = useDarkModeManager()
@@ -204,7 +207,7 @@ function Header() {
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
-
+  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   const networkWithoutSWPR = !newSwpr
@@ -249,11 +252,11 @@ function Header() {
             {t('swap')}
           </HeaderLink>
           <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
-            Liquidity
+            {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
-            Rewards
+            {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
@@ -290,6 +293,13 @@ function Header() {
               <Balances />
             </>
           )}
+          <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
+            {isUnsupportedChainIdError && (
+              <Amount data-testid="unsupported-network-warning" zero>
+                {'UNSUPPORTED NETWORK'}
+              </Amount>
+            )}
+          </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
             <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isUnsupportedChainIdError}>
               <GasInfoSvg />
@@ -320,12 +330,12 @@ function Header() {
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
-              Pools
+              {t('liquidity')}
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="rewards-nav-link" to="/rewards">
-              Rewards
+              {t('rewards')}
             </HeaderMobileLink>
           )}
           <HeaderMobileLink id="bridge-nav-link" to="/bridge">

@@ -72,5 +72,10 @@
   "label": "Etiqueta",
   "decimals": "Decimales",
   "enterTokenCont": "Ingrese una dirección de token para continuar",
-  "bridge": "Bridge"
+  "bridge": "Puente",
+  "vote": "Votar",
+  "charts": "Gráficos",
+  "liquidity": "Liquidez",
+  "rewards": "Recompensas",
+  "connectWallet": "Connect wallet"
 }

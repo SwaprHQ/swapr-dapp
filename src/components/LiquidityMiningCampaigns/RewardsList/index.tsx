@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 

@@ -1,7 +1,7 @@
 import { TokenAmount } from '@swapr/sdk'
 
 import { transparentize } from 'polished'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -55,29 +55,29 @@ export default function ClaimModal({
       <ContentWrapper gap="lg">
         <UpperAutoColumn gap="26px">
           <RowBetween>
-            <TYPE.white fontWeight={500} fontSize="20px" lineHeight="24px" color="text4">
+            <TYPE.White fontWeight={500} fontSize="20px" lineHeight="24px" color="text4">
               Your SWPR details
-            </TYPE.white>
+            </TYPE.White>
             <CloseIcon onClick={wrappedOnDismiss} style={{ zIndex: 99 }} />
           </RowBetween>
           <RowBetween>
             <Flex width="50%" flexDirection="column">
-              <TYPE.white fontWeight={700} fontSize={26}>
+              <TYPE.White fontWeight={700} fontSize={26}>
                 {newSwprBalance?.toFixed(3) || '0.000'}
-              </TYPE.white>
-              <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
+              </TYPE.White>
+              <TYPE.Body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                 SWPR
-              </TYPE.body>
+              </TYPE.Body>
               <ButtonPurple onClick={handleStakeUnstakeClick}>STAKE</ButtonPurple>
             </Flex>
 
             <Flex width="50%" flexDirection="column">
-              <TYPE.white fontWeight={700} fontSize={26}>
+              <TYPE.White fontWeight={700} fontSize={26}>
                 {stakedAmount ? parseFloat(stakedAmount).toFixed(3) : '0.000'}
-              </TYPE.white>
-              <TYPE.body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
+              </TYPE.White>
+              <TYPE.Body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                 STAKED SWPR
-              </TYPE.body>
+              </TYPE.Body>
               <ButtonDark1 onClick={handleStakeUnstakeClick}>UNSTAKE</ButtonDark1>
             </Flex>
           </RowBetween>

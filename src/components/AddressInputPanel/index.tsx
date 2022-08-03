@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback } from 'react'
+import { ChangeEvent, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
@@ -80,7 +80,7 @@ export default function AddressInputPanel({
 }) {
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const { address, loading, name } = useENS(value)
 
@@ -101,9 +101,9 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
+              <TYPE.Black color={theme.text2} fontWeight={500} fontSize={14}>
                 Recipient
-              </TYPE.black>
+              </TYPE.Black>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
                   {t('viewOnBlockExplorer')}

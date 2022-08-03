@@ -1,6 +1,6 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronDown, Plus, X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -67,7 +67,7 @@ export const ResetFilterIcon = styled(X)`
   color: ${props => props.theme.purple3};
 `
 
-export const StyledMediumHeader = styled(TYPE.mediumHeader)`
+export const StyledMediumHeader = styled(TYPE.MediumHeader)`
   text-transform: uppercase;
 `
 
@@ -96,7 +96,7 @@ function Title({
   sortBy,
 }: TitleProps) {
   const [openTokenModal, setOpenTokenModal] = useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const [search] = useSearchParams()
 
   const handleAllClick = useCallback(() => {
@@ -122,7 +122,7 @@ function Title({
           {aggregatedDataFilter === PairsFilterType.MY ? (
             <Box>
               <StyledMediumHeader fontWeight="400" fontSize="26px" lineHeight="36px">
-                {t('myPairs')}
+                {t('pairsList.myPairs')}
               </StyledMediumHeader>
             </Box>
           ) : (
@@ -162,7 +162,7 @@ function Title({
         </Flex>
         <Flex data-testid="campaigns-toggle">
           <Switch
-            label={t('campaings')}
+            label={t('campaigns')}
             handleToggle={() =>
               onFilterChange(
                 aggregatedDataFilter === PairsFilterType.REWARDS ? PairsFilterType.ALL : PairsFilterType.REWARDS
@@ -171,7 +171,7 @@ function Title({
             isOn={aggregatedDataFilter === PairsFilterType.REWARDS}
           />
           <Switch
-            label={t('myPairs')}
+            label={t('pairsList.myPairs')}
             handleToggle={() =>
               onFilterChange(aggregatedDataFilter === PairsFilterType.MY ? PairsFilterType.ALL : PairsFilterType.MY)
             }
@@ -191,7 +191,7 @@ function Title({
 }
 
 export default function Pools() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const { account, chainId } = useActiveWeb3React()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
@@ -206,8 +206,11 @@ export default function Pools() {
 
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
-  const handleCurrencySelect = useCallback((token: any) => {
-    setFilterToken(token)
+  const handleCurrencySelect = useCallback((token: Currency) => {
+    // Since Token extends Currency we are checking address in useSwaprSinglelSidedStakeCampaigns
+    if (token.address) {
+      setFilterToken(token as Token)
+    }
   }, [])
 
   const handleFilterTokenReset = useCallback(() => {
@@ -249,7 +252,7 @@ export default function Pools() {
           link={getAccountAnalyticsLink(account || '', chainId)}
           style={{ marginTop: '32px', textTransform: 'uppercase' }}
         >
-          {t('accountAnalyticsAndAccruedFees')}
+          {t('pairsList.accountAnalyticsAndAccruedFees')}
         </ButtonWithExternalLink>
       )}
     </PageWrapper>

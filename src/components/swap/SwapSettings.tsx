@@ -1,5 +1,4 @@
 import { transparentize } from 'polished'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { Button } from 'rebass/styled-components'
@@ -54,11 +53,11 @@ export function SwapSettings({
   const theme = useTheme()
   const { recipient } = useSwapState()
   const toggle = useToggleSettingsMenu()
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
 
   return (
     <StyledRowFixed alignItems="center">
-      <MouseoverTooltip content={t('slippagePercentage')} placement="top">
+      <MouseoverTooltip content={t('settings.slippagePercentage')} placement="top">
         <StyledButton active={!!userSlippageTolerance} cursor="pointer" onClick={toggle}>
           <Slippage />
           <Text color={userSlippageTolerance ? transparentize(0.2, theme.green2) : theme.gray1} ml="4px">
@@ -66,12 +65,15 @@ export function SwapSettings({
           </Text>
         </StyledButton>
       </MouseoverTooltip>
-      <MouseoverTooltip content={multihop ? t('multihopEnabled') : t('multihopDisabled')} placement="top">
+      <MouseoverTooltip
+        content={multihop ? t('settings.multihopEnabled') : t('settings.multihopDisabled')}
+        placement="top"
+      >
         <StyledButton active={multihop} cursor="pointer" onClick={toggle} data-testid="multihop-icon">
           <EcoRouter />
         </StyledButton>
       </MouseoverTooltip>
-      <MouseoverTooltip content={t('alternateReceiver')} placement="top">
+      <MouseoverTooltip content={t('settings.alternateReceiver')} placement="top">
         <StyledButton
           data-testid="alternate-receiver-button"
           active={!!recipient}
@@ -81,7 +83,7 @@ export function SwapSettings({
           <Recipient />
         </StyledButton>
       </MouseoverTooltip>
-      <MouseoverTooltip content={t('MEVProtection')} placement="top">
+      <MouseoverTooltip content={t('settings.MEVProtection')} placement="top">
         <StyledButton active={isMEVProtectionEnabled}>
           <MEVProtection />
         </StyledButton>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -17,13 +17,13 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   }
 `
 
-export interface RecipientField {
+export interface RecipientFieldProps {
   recipient: string | null
   action: any
 }
 
-export const RecipientField = ({ recipient, action }: RecipientField) => {
-  const { t } = useTranslation()
+export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
+  const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
   const error = useMemo(
@@ -48,13 +48,13 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
 
   return (
     <div>
-      <TYPE.subHeader lineHeight={'11px'} color={'purple3'}>
-        {t('recipient')}
-      </TYPE.subHeader>
+      <TYPE.SubHeader lineHeight={'11px'} color={'purple3'}>
+        {t('recipientField.recipient')}
+      </TYPE.SubHeader>
       <SearchInputStyled
         data-testid="address-input"
         type="text"
-        placeholder={t('addressOrENS')}
+        placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
         error={error}
