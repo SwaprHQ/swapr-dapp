@@ -113,7 +113,8 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trades])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, allowedSlippage, chainId, deadline, library, trades])
 }
 
 /**
@@ -173,15 +174,17 @@ export function useSwapCallback({
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
+      console.log('error handling')
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
-    if (!recipient) {
-      if (recipientAddressOrName !== null) {
-        return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' }
-      } else {
-        return { state: SwapCallbackState.LOADING, callback: null, error: null }
-      }
-    }
+    // if (!recipient) {
+    //   console.log('here', recipient)
+    //   if (recipientAddressOrName !== null) {
+    //     return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' }
+    //   } else {
+    //     return { state: SwapCallbackState.LOADING, callback: null, error: null }
+    //   }
+    // }
 
     return {
       state: SwapCallbackState.VALID,
@@ -290,7 +293,7 @@ export function useSwapCallback({
           })
           .then(response => {
             addTransaction(response, {
-              summary: getSwapSummary(trade, recipient),
+              summary: getSwapSummary(trade, recipient || account),
             })
 
             return response.hash
@@ -308,16 +311,6 @@ export function useSwapCallback({
       },
       error: null,
     }
-  }, [
-    trade,
-    library,
-    account,
-    chainId,
-    recipient,
-    recipientAddressOrName,
-    swapCalls,
-    preferredGasPrice,
-    mainnetGasPrices,
-    addTransaction,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trade, library, account, chainId, swapCalls, preferredGasPrice, mainnetGasPrices, addTransaction])
 }

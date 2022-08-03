@@ -223,6 +223,7 @@ export default function Swap() {
     allowedSlippage,
     recipientAddressOrName: recipient,
   })
+  console.log('swap', swapCallbackError)
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
@@ -256,6 +257,7 @@ export default function Swap() {
         }
       })
       .catch(error => {
+        console.log('error', error)
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,

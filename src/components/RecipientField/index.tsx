@@ -1,9 +1,10 @@
-import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
+import { ChangeEvent, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import useENS from '../../hooks/useENS'
+import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { SearchInput } from '../SearchModal/shared'
 
@@ -19,32 +20,33 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
 
 export interface RecipientFieldProps {
   recipient: string | null
-  action: any
 }
 
-export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
+export const RecipientField = ({ recipient }: RecipientFieldProps) => {
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
-  const error = useMemo(
-    () => Boolean(recipient && recipient.length > 0 && !loading && !address),
-    [address, loading, recipient]
-  )
+  const error = useMemo(() => {
+    console.log('error?', recipient && recipient.length > 0 && !loading && !address)
+    return Boolean(recipient && recipient.length > 0 && !loading && !address)
+  }, [address, loading, recipient])
 
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
-      dispatch(action({ recipient: input }))
+      console.log('input', input)
+      dispatch(setRecipient({ recipient: input }))
     },
-    [action, dispatch]
+    [dispatch]
   )
 
-  // Unset recipient on unmount
-  useEffect(() => {
-    return () => {
-      dispatch(action({ recipient: null }))
-    }
-  }, [action, dispatch])
+  // // Unset recipient on unmount
+  // useEffect(() => {
+  //   console.log('here')
+  //   return () => {
+  //     dispatch(action({ recipient: null }))
+  //   }
+  // }, [action, dispatch])
 
   return (
     <div>
@@ -54,6 +56,7 @@ export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
       <SearchInputStyled
         data-testid="address-input"
         type="text"
+        // pattern="^(0x[a-fA-F0-9]{40})$"
         placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
