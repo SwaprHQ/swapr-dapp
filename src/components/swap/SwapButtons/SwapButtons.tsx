@@ -68,7 +68,7 @@ export function SwapButtons({
   wrapState,
   setWrapState,
 }: SwapButtonsProps) {
-  const { account } = useWeb3ReactCore()
+  const { account, isSupportedChainId } = useWeb3ReactCore()
   const isExpertMode = useIsExpertMode()
   const { t } = useTranslation()
 
@@ -115,7 +115,7 @@ export function SwapButtons({
     return <SwapLoadingButton />
   }
 
-  if (!account) {
+  if (!account || !isSupportedChainId) {
     return <ButtonConnect />
   }
 

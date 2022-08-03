@@ -3,7 +3,7 @@ import { getIsCoinbaseWallet } from 'connectors/utils'
 import React, { useEffect } from 'react'
 
 import { coinbaseWallet, coinbaseWalletHooks } from '../../../connectors'
-import { WalletType } from '../../../constants'
+import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
 export default function CoinbaseConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
@@ -18,7 +18,7 @@ export default function CoinbaseConnector({ tryActivation }: { tryActivation: (c
   // }, [])
   return (
     <WalletOption
-      id={WalletType.COINBASE}
+      id={ConnectorType.COINBASE}
       connector={coinbaseWallet}
       tryActivation={tryActivation}
       isActive={isActive}

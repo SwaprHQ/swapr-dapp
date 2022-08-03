@@ -5,7 +5,7 @@ import useEagerlyConnect from 'hooks/useEagerlyConnect'
 import useOrderedConnections from 'hooks/useOrderedConnections'
 import React, { ReactNode, useMemo } from 'react'
 
-import { Connection } from './../../connectors'
+import { Connection } from '../../connectors'
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
   useEagerlyConnect()

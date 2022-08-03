@@ -18,14 +18,12 @@ interface UnsupportedNetworkPopoverProps {
 export default function UnsupportedNetworkPopover({ children, show }: UnsupportedNetworkPopoverProps) {
   const closeModals = useCloseModals()
   const popoverRef = useRef(null)
-  const { isSupportedChainId } = useWeb3ReactCore()
-
   useOnClickOutside(popoverRef, show ? closeModals : undefined)
 
   return (
     <StyledPopover
       placement="bottom-end"
-      show={!isSupportedChainId}
+      show={show}
       content={
         <View ref={popoverRef} data-testid="unsupported-network-popover">
           <Row>

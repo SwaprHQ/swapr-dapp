@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { createReducer } from '@reduxjs/toolkit'
 
-import { WalletType } from './../../constants'
+import { ConnectorType } from './../../constants'
 import {
   ApplicationModal,
   MainnetGasPrice,
@@ -23,7 +23,7 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null
   readonly chainId: ChainId | undefined
   readonly account: string | null | undefined
-  errorByWalletType: Record<WalletType, string | undefined>
+  errorByConnectorType: Record<ConnectorType, string | undefined>
 }
 
 export const initialState: ApplicationState = {
@@ -33,11 +33,11 @@ export const initialState: ApplicationState = {
   openModal: null,
   chainId: undefined,
   account: null,
-  errorByWalletType: {
-    [WalletType.METAMASK]: undefined,
-    [WalletType.WALLET_CONNECT]: undefined,
-    [WalletType.COINBASE]: undefined,
-    [WalletType.NETWORK]: undefined,
+  errorByConnectorType: {
+    [ConnectorType.METAMASK]: undefined,
+    [ConnectorType.WALLET_CONNECT]: undefined,
+    [ConnectorType.COINBASE]: undefined,
+    [ConnectorType.NETWORK]: undefined,
   },
 }
 
@@ -64,6 +64,6 @@ export default createReducer(initialState, builder =>
     })
     .addCase(setConnectorError, (state, action) => {
       const { connector, connectorError } = action.payload
-      state.errorByWalletType[connector] = connectorError
+      state.errorByConnectorType[connector] = connectorError
     })
 )

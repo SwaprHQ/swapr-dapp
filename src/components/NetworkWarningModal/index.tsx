@@ -37,7 +37,7 @@ export default function NetworkWarningModal() {
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
 
   const [open, setOpen] = useState(false)
-
+  console.log('url', urlLoadedChainId)
   useEffect(() => {
     setOpen(!!account && !!chainId && !!urlLoadedChainId && !!switchingToCorrectChain)
   }, [account, chainId, switchingToCorrectChain, urlLoadedChainId])

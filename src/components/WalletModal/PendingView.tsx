@@ -2,7 +2,9 @@ import { Connector } from '@web3-react/types'
 import { metaMaskHooks } from 'connectors'
 import { getConnection } from 'connectors/utils'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Box, Flex } from 'rebass'
+import { AppState } from 'state'
 import styled from 'styled-components'
 
 import { SUPPORTED_WALLETS } from '../../constants'
@@ -62,9 +64,8 @@ export default function PendingView({
   setPendingError: (error: boolean) => void
   tryActivation: (connector: Connector) => void
 }) {
-  const walletType = getConnection(connector).type
+  const { name, logo } = SUPPORTED_WALLETS[getConnection(connector).type]
 
-  const { name, logo } = SUPPORTED_WALLETS[walletType]
   return (
     <PendingSection>
       <Flex mb="28px" justifyContent="center">

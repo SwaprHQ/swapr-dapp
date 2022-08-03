@@ -9,7 +9,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
-import { WalletType } from '../../constants'
+import { ConnectorType } from '../../constants'
 import usePrevious from '../../hooks/usePrevious'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
@@ -110,10 +110,10 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: Connector, id?: WalletType) => void
+  tryActivation: (connector: Connector, id?: ConnectorType) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
-  pendingWallet: Connector | undefined
+  pendingConnector: Connector | undefined
 }
 
 export default function WalletModal({
@@ -125,7 +125,7 @@ export default function WalletModal({
   tryActivation,
   pendingError,
   setPendingError,
-  pendingWallet,
+  pendingConnector,
 }: WalletModalProps) {
   const { account, connector, isActive, isSupportedChainId } = useWeb3ReactCore()
 
@@ -134,7 +134,7 @@ export default function WalletModal({
   const isModalVisible = modal !== null
 
   const previousAccount = usePrevious(account)
-  console.log('modal', account, previousAccount, connector)
+  console.log('modal', account, previousAccount, connector, modal)
 
   // close on connection, when logged out before
   useEffect(() => {
@@ -166,7 +166,8 @@ export default function WalletModal({
   }
 
   function getModalContent() {
-    if (pendingError || !pendingWallet) {
+    console.log('ERRRORR', pendingConnector, pendingError)
+    if (pendingError || !pendingConnector) {
       return (
         <UpperSection>
           <CloseIcon onClick={closeModal}>
@@ -228,7 +229,7 @@ export default function WalletModal({
         )}
         <ContentWrapper>
           <PendingView
-            connector={pendingWallet}
+            connector={pendingConnector}
             error={pendingError}
             setPendingError={setPendingError}
             tryActivation={tryActivation}

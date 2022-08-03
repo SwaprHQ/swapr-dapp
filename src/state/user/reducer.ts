@@ -1,10 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import {
+  ConnectorType,
   DEFAULT_DEADLINE_FROM_NOW,
   DEFAULT_USER_MULTIHOP_ENABLED,
   INITIAL_ALLOWED_SLIPPAGE,
-  WalletType,
 } from '../../constants'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
@@ -72,7 +72,7 @@ export interface UserState {
   // we want to handle that case by backfilling them manually. Once we backfill, we set the backfilled field to `true`.
   // After some period of time, our active users will have this property set so we can likely remove the backfilling logic.
   selectedWalletBackfilled: boolean
-  selectedWallet?: WalletType
+  selectedWallet?: ConnectorType
 }
 
 function pairKey(token0Address: string, token1Address: string) {

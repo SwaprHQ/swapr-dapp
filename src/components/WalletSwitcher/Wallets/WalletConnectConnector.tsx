@@ -2,7 +2,7 @@ import { Connector } from '@web3-react/types'
 import React, { useEffect } from 'react'
 
 import { walletConnect, walletConnectHooks } from '../../../connectors'
-import { WalletType } from '../../../constants'
+import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
 export default function WalletConnectConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
@@ -15,7 +15,7 @@ export default function WalletConnectConnector({ tryActivation }: { tryActivatio
   // }, [])
   return (
     <WalletOption
-      id={WalletType.WALLET_CONNECT}
+      id={ConnectorType.WALLET_CONNECT}
       connector={walletConnect}
       tryActivation={tryActivation}
       isActive={isActive}

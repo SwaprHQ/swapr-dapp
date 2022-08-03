@@ -8,7 +8,7 @@ import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 
 import SWAPR_LOGO from './../assets/svg/swapr.svg'
-import { RPC_URLS, WalletType } from './../constants'
+import { ConnectorType, RPC_URLS } from './../constants'
 
 // TODO DEELTE
 export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
@@ -16,7 +16,7 @@ export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
 export interface Connection {
   connector: Connector
   hooks: Web3ReactHooks
-  type: WalletType
+  type: ConnectorType
 }
 
 function onError(error: Error) {
@@ -36,7 +36,7 @@ export const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
 export const networkConnection: Connection = {
   connector: web3Network,
   hooks: web3NetworkHooks,
-  type: WalletType.NETWORK,
+  type: ConnectorType.NETWORK,
 }
 
 // // Injected
@@ -45,7 +45,7 @@ export const networkConnection: Connection = {
 // export const injectedConnection: Connection = {
 //   connector: injected,
 //   hooks: injectedHooks,
-//   type: WalletType.INJECTED,
+//   type: ConnectorType.INJECTED,
 // }
 
 // MetaMask
@@ -54,7 +54,7 @@ export const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(actions =
 export const metaMaskConnection: Connection = {
   connector: metaMask,
   hooks: metaMaskHooks,
-  type: WalletType.METAMASK,
+  type: ConnectorType.METAMASK,
 }
 
 //Wallet Connect
@@ -72,7 +72,7 @@ export const [walletConnect, walletConnectHooks] = initializeConnector<WalletCon
 export const walletConnectConnection: Connection = {
   connector: walletConnect,
   hooks: walletConnectHooks,
-  type: WalletType.WALLET_CONNECT,
+  type: ConnectorType.WALLET_CONNECT,
 }
 
 // Coinbase
@@ -92,7 +92,7 @@ export const [coinbaseWallet, coinbaseWalletHooks] = initializeConnector<Coinbas
 export const coinbaseWalletConnection: Connection = {
   connector: coinbaseWallet,
   hooks: coinbaseWalletHooks,
-  type: WalletType.COINBASE,
+  type: ConnectorType.COINBASE,
 }
 
 export const CONNECTIONS: Connection[] = [

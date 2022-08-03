@@ -1,4 +1,4 @@
-import { Web3Provider } from 'components/Web3ReactManager'
+import { Web3Provider } from 'components/Web3Provider'
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'

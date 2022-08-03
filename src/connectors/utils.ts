@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { SUPPORTED_NETWORKS, WalletType } from './../constants'
+import { ConnectorType, SUPPORTED_NETWORKS } from './../constants'
 
 import {
   coinbaseWalletConnection,
@@ -23,7 +23,7 @@ export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
 }
 
-export function getConnection(c: Connector | WalletType) {
+export function getConnection(c: Connector | ConnectorType) {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find(connection => connection.connector === c)
     if (!connection) {
@@ -32,37 +32,37 @@ export function getConnection(c: Connector | WalletType) {
     return connection
   } else {
     switch (c) {
-      // case WalletType.INJECTED:
+      // case ConnectorType.INJECTED:
       //   return
-      case WalletType.METAMASK:
+      case ConnectorType.METAMASK:
         return metaMaskConnection
-      case WalletType.COINBASE:
+      case ConnectorType.COINBASE:
         return coinbaseWalletConnection
-      case WalletType.WALLET_CONNECT:
+      case ConnectorType.WALLET_CONNECT:
         return walletConnectConnection
-      case WalletType.NETWORK:
+      case ConnectorType.NETWORK:
         return networkConnection
     }
   }
 }
 
-export function getConnectionName(walletType: WalletType, isMetaMask?: boolean) {
-  switch (walletType) {
-    // case WalletType.INJECTED:
+export function getConnectionName(connector: ConnectorType, isMetaMask?: boolean) {
+  switch (connector) {
+    // case ConnectorType.INJECTED:
     //   return isMetaMask ? 'MetaMask' : 'Injected'
-    case WalletType.METAMASK:
+    case ConnectorType.METAMASK:
       return 'MetaMask'
-    case WalletType.COINBASE:
+    case ConnectorType.COINBASE:
       return 'Coinbase Wallet'
-    case WalletType.WALLET_CONNECT:
+    case ConnectorType.WALLET_CONNECT:
       return 'WalletConnect'
-    case WalletType.NETWORK:
+    case ConnectorType.NETWORK:
       return 'Network'
   }
 }
 
 export function isChainAllowed(connector: Connector, chainId: number | undefined) {
-  const wallet = getConnection(connector).type
-  if (!chainId || !wallet) return false
-  return SUPPORTED_NETWORKS[wallet].includes(chainId)
+  const connectorType = getConnection(connector).type
+  if (!chainId || !connectorType) return false
+  return SUPPORTED_NETWORKS[connectorType].includes(chainId)
 }

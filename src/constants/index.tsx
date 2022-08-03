@@ -249,7 +249,7 @@ export const PINNED_PAIRS: {
 
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
-export enum WalletType {
+export enum ConnectorType {
   // INJECTED = 'INJECTED',
   METAMASK = 'METAMASK',
   COINBASE = 'COINBASE',
@@ -269,7 +269,7 @@ export interface WalletInfo {
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  [WalletType.METAMASK]: {
+  [ConnectorType.METAMASK]: {
     name: 'MetaMask',
     logo: MetaMaskLogo,
     description: 'Easy-to-use browser extension.',
@@ -277,7 +277,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#E8831D',
     mobile: true,
   },
-  [WalletType.COINBASE]: {
+  [ConnectorType.COINBASE]: {
     name: 'Coinbase Wallet',
     logo: CoinbaseWalletLogo,
     description: 'Connect using Coinbase Wallet.',
@@ -285,7 +285,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true,
   },
-  [WalletType.WALLET_CONNECT]: {
+  [ConnectorType.WALLET_CONNECT]: {
     name: 'WalletConnect',
     logo: WalletConnectLogo,
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
@@ -295,10 +295,10 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
 }
 
-export const BACKFILLABLE_WALLETS = [WalletType.METAMASK, WalletType.COINBASE, WalletType.WALLET_CONNECT]
+export const BACKFILLABLE_WALLETS = [ConnectorType.METAMASK, ConnectorType.COINBASE, ConnectorType.WALLET_CONNECT]
 
 export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
-  [WalletType.METAMASK]: [
+  [ConnectorType.METAMASK]: [
     ChainId.MAINNET,
     ChainId.RINKEBY,
     ChainId.ARBITRUM_ONE,
@@ -306,7 +306,7 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.XDAI,
     ChainId.POLYGON,
   ],
-  [WalletType.COINBASE]: [
+  [ConnectorType.COINBASE]: [
     ChainId.MAINNET,
     ChainId.RINKEBY,
     ChainId.ARBITRUM_ONE,
@@ -314,7 +314,7 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.XDAI,
     ChainId.POLYGON,
   ],
-  [WalletType.WALLET_CONNECT]: [
+  [ConnectorType.WALLET_CONNECT]: [
     ChainId.MAINNET,
     ChainId.RINKEBY,
     ChainId.ARBITRUM_ONE,
@@ -322,7 +322,7 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.XDAI,
     ChainId.POLYGON,
   ],
-  [WalletType.NETWORK]: [
+  [ConnectorType.NETWORK]: [
     ChainId.MAINNET,
     ChainId.RINKEBY,
     ChainId.ARBITRUM_ONE,

@@ -5,7 +5,7 @@ import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
-import { SUPPORTED_WALLETS, WalletType } from '../../constants'
+import { ConnectorType, SUPPORTED_WALLETS } from '../../constants'
 import { StyledConnectedIcon } from '../../utils'
 import { Connection } from './../../connectors'
 
@@ -55,7 +55,7 @@ const ListButton = styled.button`
 `
 
 interface OptionProps {
-  id: WalletType
+  id: ConnectorType
   connector: Connector
   tryActivation: (connector: Connector) => void
   isActive: boolean
