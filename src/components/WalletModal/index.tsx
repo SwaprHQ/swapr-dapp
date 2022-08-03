@@ -1,6 +1,4 @@
 import { Connector } from '@web3-react/types'
-import { WalletConnect } from '@web3-react/walletconnect'
-import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks } from 'connectors'
 import { isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect } from 'react'

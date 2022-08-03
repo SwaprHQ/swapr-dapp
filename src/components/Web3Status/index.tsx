@@ -1,10 +1,5 @@
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { MetaMask } from '@web3-react/metamask'
-import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
-import { WalletConnect } from '@web3-react/walletconnect' // TODO pack all import into one
-import { coinbaseWalletConnection, metaMaskConnection } from 'connectors'
-import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
+import { getConnection } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,9 +9,7 @@ import { updateSelectedWallet } from 'state/user/actions'
 import styled from 'styled-components'
 import { getErrorMessage } from 'utils/getErrorMessage'
 
-import { ConnectorType } from '../../constants'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import useENSName from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { ApplicationModal, setConnectorError } from '../../state/application/actions'
 import {
@@ -107,12 +100,11 @@ export default function Web3Status() {
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
-  //TODO: improve tryActivation funciton
   const tryActivation = useCallback(
     async (connector: Connector) => {
       if (!connector) return
       setPendingConnector(connector)
-      // TODO account view
+
       // show account details if pending connector is already in use
       if (connector === activeConnector) {
         setModal(ModalView.Account)
@@ -152,14 +144,6 @@ export default function Web3Status() {
   // TODO unsupported chain id
   useEffect(() => {
     if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && isCurrentChainUnsupported) {
-      console.log('DUUUUUUUUUUUUUUUPAAAAAAAAAAAA')
-      console.log(
-        !isUnsupportedNetworkModal,
-        !isUnsupportedNetwork,
-        isCurrentChainUnsupported,
-        activeConnector,
-        chainId
-      )
       setUnsupportedNetwork(true)
       openUnsupportedNetworkModal()
     } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !isCurrentChainUnsupported) {
@@ -194,7 +178,6 @@ export default function Web3Status() {
 
   return (
     <>
-      {/* TODO: pass disconnect function */}
       <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
         <Row alignItems="center" justifyContent="flex-end">
           {chainId && !account && (
@@ -213,7 +196,6 @@ export default function Web3Status() {
           />
         </Row>
       </ConnectWalletPopover>
-      {/* TODO: type it */}
       <WalletModal
         modal={modal}
         setModal={setModal}

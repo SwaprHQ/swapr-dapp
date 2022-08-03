@@ -1,10 +1,7 @@
 import { Connector } from '@web3-react/types'
-import { metaMaskHooks } from 'connectors'
 import { getConnection } from 'connectors/utils'
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Box, Flex } from 'rebass'
-import { AppState } from 'state'
 import styled from 'styled-components'
 
 import { SUPPORTED_WALLETS } from '../../constants'

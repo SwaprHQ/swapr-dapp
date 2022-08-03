@@ -258,7 +258,6 @@ export interface WalletInfo {
   description: string
   link: string | null
   color: string
-  primary?: true // TODO need this?
   mobile?: true
   mobileOnly?: true
 }

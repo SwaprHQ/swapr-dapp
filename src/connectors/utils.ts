@@ -5,7 +5,6 @@ import { ConnectorType, SUPPORTED_NETWORKS } from './../constants'
 import {
   coinbaseWalletConnection,
   CONNECTIONS,
-  // injectedConnection,
   metaMaskConnection,
   networkConnection,
   walletConnectConnection,
@@ -46,7 +45,7 @@ export const getConnection = (c: Connector | ConnectorType) => {
   }
 }
 
-export const getConnectionName = (connector: ConnectorType, isMetaMask?: boolean) => {
+export const getConnectionName = (connector: ConnectorType) => {
   switch (connector) {
     // case ConnectorType.INJECTED:
     //   return isMetaMask ? 'MetaMask' : 'Injected'

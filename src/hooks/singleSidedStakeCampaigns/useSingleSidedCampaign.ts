@@ -46,7 +46,6 @@ export function useSingleSidedCampaign(campaginAddress: string): {
   singleSidedStakingCampaign: SingleSidedLiquidityMiningCampaign | undefined
 } {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
-  // TODO xD
   const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useQuery<{

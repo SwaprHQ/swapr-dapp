@@ -11,7 +11,6 @@ import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 
 import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
-import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 // returns the checksummed address if the address is valid, otherwise returns false

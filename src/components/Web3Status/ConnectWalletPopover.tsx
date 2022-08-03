@@ -1,14 +1,11 @@
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { Connector } from '@web3-react/types'
 import CoinbaseWalletConnector from 'components/WalletSwitcher/Wallets/CoinbaseWalletConnector'
 import MetaMaskConnector from 'components/WalletSwitcher/Wallets/MetaMaskConnector'
 import WalletConnectConnector from 'components/WalletSwitcher/Wallets/WalletConnectConnector'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode, useRef } from 'react'
-import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
-import MetamaskIcon from '../../assets/images/metamask.png'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
@@ -108,7 +105,7 @@ interface ConnectWalletProps {
   children: ReactNode
 }
 
-export const ConnectWalletPopover = ({ setModal, tryActivation, tryDeactivation, children }: ConnectWalletProps) => {
+export const ConnectWalletPopover = ({ tryActivation, tryDeactivation, children }: ConnectWalletProps) => {
   const { connector, isActive, account } = useWeb3ReactCore()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
@@ -123,7 +120,6 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, tryDeactivation,
         innerRef={undefined}
         content={
           <List data-testid="wallet-connect-list">
-            {/* TODO: wrap wallets */}
             <MetaMaskConnector tryActivation={tryActivation} />
             <CoinbaseWalletConnector tryActivation={tryActivation} />
             <WalletConnectConnector tryActivation={tryActivation} />

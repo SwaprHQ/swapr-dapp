@@ -1,13 +1,9 @@
-import { Web3ReactHooks } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-import { getIsMetaMask } from 'connectors/utils'
-import React, { useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
 import styled from 'styled-components'
 
 import { ConnectorType, SUPPORTED_WALLETS } from '../../constants'
 import { StyledConnectedIcon } from '../../utils'
-import { Connection } from './../../connectors'
 
 const ListIconWrapper = styled.div<{ isActive?: boolean }>`
   display: inline-flex;

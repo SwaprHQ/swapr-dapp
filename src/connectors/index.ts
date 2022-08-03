@@ -36,7 +36,7 @@ export const networkConnection: Connection = {
   type: ConnectorType.NETWORK,
 }
 
-// // Injected
+// TODO is Injected needed?
 // export const [injected, injectedHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions }))
 
 // export const injectedConnection: Connection = {

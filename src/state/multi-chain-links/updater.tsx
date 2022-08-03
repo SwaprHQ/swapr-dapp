@@ -1,3 +1,4 @@
+import { isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -26,9 +27,9 @@ export default function Updater(): null {
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
-    //TODO supported chain ids list for every connector
-    const requiredChainIdSupported = requiredChainId
-    // && supportedChainIds[parseInt(requiredChainId)].includes(connector)
+    //TODO check if returns proper value
+    const requiredChainIdSupported =
+      requiredChainId && isChainSupportedByConnector(connector, parseInt(requiredChainId))
 
     if (!requiredChainId) updateSwitchingToCorrectChain(false)
     if (requiredChainId && requiredChainIdSupported && switchingToCorrectChain) {

@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 import { getIsMetaMask } from 'connectors/utils'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { metaMask, metaMaskHooks } from '../../../connectors'
 import { ConnectorType } from '../../../constants'

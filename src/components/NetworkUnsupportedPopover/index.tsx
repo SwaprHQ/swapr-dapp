@@ -1,5 +1,4 @@
 import { Placement } from '@popperjs/core'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode, RefObject, useRef } from 'react'
 
 import unsupportedNetworkHintImage1x from '../../assets/images/unsupported-network-hint.png'
