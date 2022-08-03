@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from 'state'
 import { updateSelectedWallet } from 'state/user/actions'
 import styled from 'styled-components'
+import { getErrorMessage } from 'utils/getErrorMessage'
 
 import { ConnectorType } from '../../constants'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
@@ -84,15 +85,7 @@ export enum ModalView {
 
 export default function Web3Status() {
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    account,
-    connector: activeConnector,
-    chainId,
-    ENSName,
-    isActive,
-    hasCurrentChainDetails,
-    isActivating,
-  } = useWeb3ReactCore()
+  const { account, connector: activeConnector, chainId, ENSName, hasCurrentChainDetails } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
 
@@ -114,16 +107,6 @@ export default function Web3Status() {
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
-  console.log('wallet', activeConnector, isActive, isActivating, account, chainId)
-  console.log('supported?', isChainSupportedByConnector(activeConnector, chainId))
-  const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
-    if (!account) return
-    if (connector?.deactivate) {
-      void connector.deactivate()
-    } else {
-      void connector.resetState()
-    }
-  }, [])
   //TODO: improve tryActivation funciton
   const tryActivation = useCallback(
     async (connector: Connector) => {
@@ -137,22 +120,28 @@ export default function Web3Status() {
       }
 
       try {
-        console.log('aktywacja', account, connector, isActive, isActivating)
-        console.log('tryactivation', pendingConnector)
         dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
         setModal(ModalView.Pending)
-
         await connector.activate()
-
         dispatch(updateSelectedWallet({ selectedWallet: getConnection(connector).type }))
-      } catch (error: any) {
+      } catch (error) {
         console.debug(`web3-react connection error: ${error}`)
-        dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: error.message }))
+        dispatch(
+          setConnectorError({ connector: getConnection(connector).type, connectorError: getErrorMessage(error) })
+        )
       }
     },
-    [account, activeConnector, dispatch, isActivating, isActive, pendingConnector]
+    [activeConnector, dispatch]
   )
 
+  const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
+    if (!account) return
+    if (connector?.deactivate) {
+      void connector.deactivate()
+    } else {
+      void connector.resetState()
+    }
+  }, [])
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { t } = useTranslation()
   const mobileByMedia = useIsMobileByMedia()
