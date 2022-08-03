@@ -1,5 +1,6 @@
 import { ChainId, CoWTrade } from '@swapr/sdk'
 
+import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -83,7 +84,7 @@ export default function Updater(): null {
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
       return retry(async () => {
         const res = await CoWTrade.getCowSdk(chainId).cowApi.getOrder(orderId)
-        if (res === null) {
+        if (!res) {
           console.debug('Retrying for order ', orderId)
           throw new RetryableError()
         }
@@ -111,7 +112,12 @@ export default function Updater(): null {
 
               const isFulfilled = orderMetadata.status === 'fulfilled'
 
-              console.log(orderMetadata)
+              // The settlement contract from COW
+              const GPv2Settlement = contractNetworks.GPv2Settlement as Record<
+                ChainId,
+                Record<'transactionHash' | 'address', string>
+              >
+              const contractAddress = GPv2Settlement[chainId]?.address
 
               dispatch(
                 finalizeTransaction({
@@ -120,7 +126,7 @@ export default function Updater(): null {
                   receipt: {
                     blockHash: '0x0',
                     blockNumber: 0,
-                    contractAddress: (orderMetadata as any).settlementContract,
+                    contractAddress,
                     from: '0x0',
                     to: orderMetadata.receiver,
                     transactionHash: '0x0',
