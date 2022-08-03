@@ -11,19 +11,19 @@ import {
   walletConnectConnection,
 } from './index'
 
-export function getIsInjected(): boolean {
+export const getIsInjected = (): boolean => {
   return Boolean(window.ethereum)
 }
 
-export function getIsMetaMask(): boolean {
+export const getIsMetaMask = (): boolean => {
   return window.ethereum?.isMetaMask ?? false
 }
 
-export function getIsCoinbaseWallet(): boolean {
+export const getIsCoinbaseWallet = (): boolean => {
   return window.ethereum?.isCoinbaseWallet ?? false
 }
 
-export function getConnection(c: Connector | ConnectorType) {
+export const getConnection = (c: Connector | ConnectorType) => {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find(connection => connection.connector === c)
     if (!connection) {
@@ -46,7 +46,7 @@ export function getConnection(c: Connector | ConnectorType) {
   }
 }
 
-export function getConnectionName(connector: ConnectorType, isMetaMask?: boolean) {
+export const getConnectionName = (connector: ConnectorType, isMetaMask?: boolean) => {
   switch (connector) {
     // case ConnectorType.INJECTED:
     //   return isMetaMask ? 'MetaMask' : 'Injected'
@@ -61,7 +61,7 @@ export function getConnectionName(connector: ConnectorType, isMetaMask?: boolean
   }
 }
 
-export function isChainSupportedByConnector(connector: Connector, chainId: number | undefined) {
+export const isChainSupportedByConnector = (connector: Connector, chainId: number | undefined) => {
   const connectorType = getConnection(connector).type
   if (!chainId || !connectorType) return false
   return SUPPORTED_NETWORKS[connectorType].includes(chainId)
