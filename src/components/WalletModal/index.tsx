@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 import { coinbaseWalletHooks, metaMaskHooks, walletConnectHooks } from 'connectors'
-import { getConnection } from 'connectors/utils'
+import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
@@ -111,9 +111,8 @@ interface WalletModalProps {
   confirmedTransactions: string[]
   ENSName?: string
   tryActivation: (connector: Connector, id?: ConnectorType) => void
-  pendingError: boolean | undefined
-  setPendingError: (value: boolean) => void
-  pendingConnector: Connector | undefined
+  connectorError: boolean | undefined
+  pendingConnector: Connector
 }
 
 export default function WalletModal({
@@ -123,15 +122,15 @@ export default function WalletModal({
   modal,
   setModal,
   tryActivation,
-  pendingError,
-  setPendingError,
+  connectorError,
   pendingConnector,
 }: WalletModalProps) {
-  const { account, connector, isActive, hasCurrentChainDetails } = useWeb3ReactCore()
+  const { account, connector, isActive, chainId } = useWeb3ReactCore()
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
   const isModalVisible = modal !== null
+  const isChainSupported = isChainSupportedByConnector(pendingConnector, chainId)
 
   const previousAccount = usePrevious(account)
   console.log('modal', account, previousAccount, connector, modal)
@@ -153,21 +152,22 @@ export default function WalletModal({
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
-    if (!!modal && ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))) {
+    if (
+      !!modal &&
+      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !connectorError))
+    ) {
       setModal(null)
     }
-  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, pendingError])
+  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, connectorError])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
-    setPendingError(false)
     setModal(null)
     toggleWalletSwitcherPopover()
   }
 
   function getModalContent() {
-    console.log('ERRRORR', pendingConnector, pendingError)
-    if (pendingError || !pendingConnector) {
+    if (!isChainSupported) {
       return (
         <UpperSection>
           <CloseIcon onClick={closeModal}>
@@ -177,14 +177,14 @@ export default function WalletModal({
             <AutoRow gap="6px">
               <StyledWarningIcon size="20px" />
               <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
-                {hasCurrentChainDetails ? 'Error connecting' : 'Wrong Network'}
+                {isChainSupported ? 'Error connecting' : 'Wrong Network'}
               </TYPE.main>
             </AutoRow>
           </HeaderRow>
           <ContentWrapper>
             <TYPE.yellow color="text4">
               <h5>
-                {hasCurrentChainDetails
+                {isChainSupported
                   ? 'Error connecting. Try refreshing the page.'
                   : 'Please connect to the appropriate network.'}
               </h5>
@@ -228,12 +228,7 @@ export default function WalletModal({
           </HeaderRow>
         )}
         <ContentWrapper>
-          <PendingView
-            connector={pendingConnector}
-            error={pendingError}
-            setPendingError={setPendingError}
-            tryActivation={tryActivation}
-          />
+          <PendingView connector={pendingConnector} error={connectorError} tryActivation={tryActivation} />
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
           <TYPE.body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">

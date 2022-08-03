@@ -8,8 +8,8 @@ import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'state'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, AppState } from 'state'
 import { updateSelectedWallet } from 'state/user/actions'
 import styled from 'styled-components'
 
@@ -17,7 +17,7 @@ import { ConnectorType } from '../../constants'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import useENSName from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
-import { ApplicationModal } from '../../state/application/actions'
+import { ApplicationModal, setConnectorError } from '../../state/application/actions'
 import {
   useCloseModals,
   useModalOpen,
@@ -106,8 +106,10 @@ export default function Web3Status() {
 
   const [modal, setModal] = useState<ModalView | null>(null)
 
-  const [pendingError, setPendingError] = useState<boolean>()
-  const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
+  const [pendingConnector, setPendingConnector] = useState(activeConnector)
+  const connectorError = useSelector((state: AppState) =>
+    pendingConnector ? state.application.errorByConnectorType[getConnection(pendingConnector).type] : undefined
+  )
 
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
@@ -127,27 +129,28 @@ export default function Web3Status() {
     async (connector: Connector) => {
       if (!connector) return
       setPendingConnector(connector)
-
       // TODO account view
+      // show account details if pending connector is already in use
       if (connector === activeConnector) {
         setModal(ModalView.Account)
         return
       }
+
       try {
         console.log('aktywacja', account, connector, isActive, isActivating)
+        console.log('tryactivation', pendingConnector)
+        dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
         setModal(ModalView.Pending)
-        setPendingError(undefined)
 
         await connector.activate()
 
         dispatch(updateSelectedWallet({ selectedWallet: getConnection(connector).type }))
-      } catch (error) {
+      } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
-        // dispatch(updateConnectionError({ connectionType, error: error.message }))
-        setPendingError(true)
+        dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: error.message }))
       }
     },
-    [account, activeConnector, dispatch, isActivating, isActive]
+    [account, activeConnector, dispatch, isActivating, isActive, pendingConnector]
   )
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
@@ -162,10 +165,8 @@ export default function Web3Status() {
     if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !hasCurrentChainDetails) {
       setUnsupportedNetwork(true)
       openUnsupportedNetworkModal()
-      setPendingError(true)
     } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && hasCurrentChainDetails) {
       setUnsupportedNetwork(false)
-      setPendingError(undefined)
     } else if (isUnsupportedNetworkModal && hasCurrentChainDetails) {
       closeModals()
     }
@@ -181,7 +182,7 @@ export default function Web3Status() {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (pendingError && !hasCurrentChainDetails) {
+  if (!isChainSupportedByConnector(activeConnector, chainId)) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>
@@ -220,9 +221,8 @@ export default function Web3Status() {
         ENSName={ENSName ?? undefined}
         pendingTransactions={pending}
         confirmedTransactions={confirmed}
-        setPendingError={setPendingError}
         pendingConnector={pendingConnector}
-        pendingError={pendingError}
+        connectorError={!!connectorError}
         tryActivation={tryActivation}
       />
     </>

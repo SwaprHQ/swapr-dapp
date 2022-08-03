@@ -56,12 +56,10 @@ const LoadingWrapper = styled.div`
 export default function PendingView({
   connector,
   error = false,
-  setPendingError,
   tryActivation,
 }: {
   connector: Connector
   error?: boolean
-  setPendingError: (error: boolean) => void
   tryActivation: (connector: Connector) => void
 }) {
   const { name, logo } = SUPPORTED_WALLETS[getConnection(connector).type]
@@ -102,7 +100,6 @@ export default function PendingView({
               <ButtonPrimary
                 padding="8px 14px"
                 onClick={() => {
-                  setPendingError(false)
                   connector && tryActivation(connector)
                 }}
               >
