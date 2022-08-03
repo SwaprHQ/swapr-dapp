@@ -92,7 +92,7 @@
     "rebass": "^4.0.7",
     "redux-localstorage-simple": "^2.4.1",
     "start-server-and-test": "^1.14.0",
-    "styled-components": "5.3.3",
+    "styled-components": "5.3.5",
     "toformat": "^2.0.0",
     "wcag-contrast": "^3.0.0"
   },
