@@ -34,7 +34,6 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
-      console.log('input', input)
       dispatch(setRecipient({ recipient: input }))
     },
     [dispatch]
