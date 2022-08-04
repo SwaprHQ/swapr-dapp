@@ -42,7 +42,6 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
 
   // Unset recipient on unmount
   useEffect(() => {
-    console.log('here')
     return () => {
       dispatch(setRecipient({ recipient: null }))
     }
