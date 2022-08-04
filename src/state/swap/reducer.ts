@@ -1,29 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import {
-  Field,
-  replaceSwapState,
-  selectCurrency,
-  setLoading,
-  setRecipient,
-  switchCurrencies,
-  typeInput,
-} from './actions'
-
-export interface SwapState {
-  readonly independentField: Field
-  readonly typedValue: string
-  readonly [Field.INPUT]: {
-    readonly currencyId: string | undefined
-  }
-  readonly [Field.OUTPUT]: {
-    readonly currencyId: string | undefined
-  }
-  // the typed recipient address or ENS name, or null if swap should go to sender
-  readonly recipient: string | null
-  readonly protocolFeeTo: string | undefined
-  readonly loading: boolean
-}
+import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import { Field, SwapState } from './types'
 
 export const initialState: SwapState = {
   independentField: Field.INPUT,
@@ -36,7 +14,6 @@ export const initialState: SwapState = {
   },
   recipient: null,
   protocolFeeTo: undefined,
-  loading: false,
 }
 
 export default createReducer<SwapState>(initialState, builder =>
@@ -68,14 +45,12 @@ export default createReducer<SwapState>(initialState, builder =>
           independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
           [field]: { currencyId: currencyId },
           [otherField]: { currencyId: state[field].currencyId },
-          loading: true,
         }
       } else {
         // the normal case
         return {
           ...state,
           [field]: { currencyId: currencyId },
-          loading: true,
         }
       }
     })
@@ -88,26 +63,13 @@ export default createReducer<SwapState>(initialState, builder =>
       }
     })
     .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-      let loading = false
-      if (
-        state[Field.INPUT].currencyId !== '' &&
-        state[Field.OUTPUT].currencyId !== '' &&
-        state.typedValue !== typedValue &&
-        Number(typedValue ?? 0) > 0
-      ) {
-        loading = true
-      }
       return {
         ...state,
         independentField: field,
         typedValue,
-        loading,
       }
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient
-    })
-    .addCase(setLoading, (state, { payload: loading }) => {
-      state.loading = loading
     })
 )

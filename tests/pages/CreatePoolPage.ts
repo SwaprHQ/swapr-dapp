@@ -25,13 +25,13 @@ export class CreatePoolPage {
     })
   }
   static confirmPoolCreation() {
-    this.getConfirmButton().click()
-    cy.get('[data-testid=modal-confirm-button]').click()
+    this.getConfirmButton().click({ scrollBehavior: 'top' })
+    cy.get('[data-testid=modal-confirm-button]').click({ scrollBehavior: 'top' })
   }
   static selectLpTokenStaking() {
-    cy.get('[data-testid=lp-token-staking-switch]').click()
+    cy.get('[data-testid=lp-token-staking-switch]').click({ scrollBehavior: 'top' })
   }
   static selectSingleTokenStaking() {
-    cy.get('[data-testid=single-token-staking-switch]').click()
+    cy.get('[data-testid=single-token-staking-switch]').click({ scrollBehavior: 'top' })
   }
 }

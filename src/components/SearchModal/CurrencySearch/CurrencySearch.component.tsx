@@ -1,15 +1,26 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  MutableRefObject,
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { ThemeContext } from 'styled-components/macro'
+import { useTheme } from 'styled-components'
 
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import useToggle from '../../../hooks/useToggle'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../../theme'
 import { isAddress } from '../../../utils'
 import { ButtonDark2 } from '../../Button'
@@ -36,9 +47,9 @@ export const CurrencySearch = ({
   showNativeCurrency,
   otherSelectedCurrency,
 }: CurrencySearchProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const { chainId } = useWeb3ReactCore()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
     useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
@@ -85,7 +96,7 @@ export const CurrencySearch = ({
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const checksummedInput = isAddress(input)
       setSearchQuery(checksummedInput || input)
@@ -137,14 +148,14 @@ export const CurrencySearch = ({
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
-          <TYPE.body fontWeight={500}>Select a token</TYPE.body>
+          <TYPE.Body fontWeight={500}>Select a token</TYPE.Body>
           <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <Row>
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('Search a name or paste address')}
+            placeholder={t('searchPlaceholder')}
             autoComplete="off"
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
@@ -158,23 +169,24 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
+      fixedList !== undefined ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
           onCurrencySelect={onCurrencySelect}
           otherCurrency={otherSelectedCurrency}
           selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList}
+          fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
             No results found.
-          </TYPE.main>
+          </TYPE.Main>
         </Column>
       )}
       <Footer>

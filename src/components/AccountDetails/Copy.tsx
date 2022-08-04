@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components'
 
@@ -39,7 +39,7 @@ const CustomCheckCircle = styled(CheckCircle)`
   color: ${({ theme }) => theme.text5};
 `
 
-export default function CopyHelper(props: { toCopy: string; children?: React.ReactNode }) {
+export default function CopyHelper(props: { toCopy: string; children?: ReactNode }) {
   const [isCopied, setCopied] = useCopyClipboard()
 
   return (

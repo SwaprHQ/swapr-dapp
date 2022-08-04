@@ -1,13 +1,12 @@
 import { ChainId, GnosisProtocolTrade, Trade } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
@@ -75,7 +74,7 @@ function TransactionSubmittedContent({
   chainId: ChainId
 }) {
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const isGnosisProtocolTrade = trade instanceof GnosisProtocolTrade
   const link =
@@ -135,7 +134,7 @@ export function ConfirmationModalContent({
     <Wrapper>
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">{title}</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">{title}</TYPE.MediumHeader>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         {topContent()}
@@ -151,7 +150,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
     <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">Error</TYPE.MediumHeader>
           <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">

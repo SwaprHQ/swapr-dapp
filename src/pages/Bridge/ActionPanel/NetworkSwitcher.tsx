@@ -1,6 +1,5 @@
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { transparentize } from 'polished'
-import React from 'react'
 import styled from 'styled-components'
 
 import { ButtonPrimary } from '../../../components/Button'

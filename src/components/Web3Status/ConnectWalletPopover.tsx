@@ -1,16 +1,16 @@
 import { Connector } from '@web3-react/types'
-import CoinbaseWalletConnector from 'components/WalletSwitcher/Wallets/CoinbaseWalletConnector'
-import MetaMaskConnector from 'components/WalletSwitcher/Wallets/MetaMaskConnector'
-import WalletConnectConnector from 'components/WalletSwitcher/Wallets/WalletConnectConnector'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { ReactNode, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import styled from 'styled-components'
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
+import CoinbaseWalletConnector from '../WalletSwitcher/Wallets/CoinbaseWalletConnector'
+import MetaMaskConnector from '../WalletSwitcher/Wallets/MetaMaskConnector'
+import WalletConnectConnector from '../WalletSwitcher/Wallets/WalletConnectConnector'
 
 import { ModalView } from './'
 

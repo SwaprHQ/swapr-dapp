@@ -1,9 +1,9 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { AppDispatch } from '../../../state'
 import { enableList, removeList } from '../../../state/lists/actions'
 import { useAllLists } from '../../../state/lists/hooks'
@@ -58,26 +58,26 @@ export function ImportList({ onBack, onDismiss }: ImportListProps) {
       </PaddedColumn>
       <AutoColumn>
         <AutoColumn gap="16px" style={{ padding: '20px', paddingTop: '12px' }}>
-          <TYPE.body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
+          <TYPE.Body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
             Anyone can create an ERC20 token list on Ethereum, including creating fake versions of existing tokens lists
             and lists that claim to represent projects that do not have an actual list.
-          </TYPE.body>
-          <TYPE.body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
+          </TYPE.Body>
+          <TYPE.Body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
             This interface can load arbitrary lists by URL. Please take extra caution and do your research when
             interacting with arbitrary token lists.
-          </TYPE.body>
-          <TYPE.body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
+          </TYPE.Body>
+          <TYPE.Body fontSize="14px" fontWeight="400" lineHeight="22px" letterSpacing="-0.02em" color="text4">
             If you purchase a token from this list, <strong>you may be unable to sell it back.</strong>
-          </TYPE.body>
+          </TYPE.Body>
         </AutoColumn>
         <BottomSectionContainer>
           <AutoColumn gap="16px">
             <AutoColumn gap="6px" justify="flex-start">
               <RowFixed>
                 {list?.logoURI && <ListLogo defaultText="List" logoURI={list.logoURI} size={'16px'} />}
-                <TYPE.main fontSize="16px" lineHeight="20px" ml="8px">
+                <TYPE.Main fontSize="16px" lineHeight="20px" ml="8px">
                   {list?.name}
-                </TYPE.main>
+                </TYPE.Main>
               </RowFixed>
               {chainId && (
                 <ExternalLink
@@ -85,9 +85,9 @@ export function ImportList({ onBack, onDismiss }: ImportListProps) {
                   style={{ fontWeight: 400 }}
                   href={`https://tokenlists.org/token-list?url=${listURI}`}
                 >
-                  <TYPE.main color="purple4" fontSize="14px" lineHeight="17px">
+                  <TYPE.Main color="purple4" fontSize="14px" lineHeight="17px">
                     View on token lists explorer
-                  </TYPE.main>
+                  </TYPE.Main>
                 </ExternalLink>
               )}
             </AutoColumn>
@@ -95,9 +95,9 @@ export function ImportList({ onBack, onDismiss }: ImportListProps) {
               Import
             </ButtonError>
             {addError && (
-              <TYPE.error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
+              <TYPE.Error title={addError} style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} error>
                 {addError}
-              </TYPE.error>
+              </TYPE.Error>
             )}
           </AutoColumn>
         </BottomSectionContainer>

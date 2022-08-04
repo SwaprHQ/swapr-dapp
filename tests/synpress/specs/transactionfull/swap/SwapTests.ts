@@ -30,6 +30,23 @@ describe('Swapping tests', () => {
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
+  it('Should reject transaction', () => {
+    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.swap().confirmSwap()
+
+    cy.wait(1000)
+
+    cy.rejectMetamaskTransaction()
+
+    SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    SwapPage.closeTransactionErrorModal()
+    cy.scrollTo('top')
+    SwapPage.getSwapBox().should('be.visible')
+    SwapPage.getSwapButton().should('be.visible')
+    SwapPage.getToInput().should('be.visible')
+    SwapPage.getFromInput().should('be.visible')
+  })
   it('Should swap XEENUS to ETH [TC-51]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY).then(
       (response: { body: { result: string } }) => {
@@ -37,9 +54,7 @@ describe('Swapping tests', () => {
         console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
       }
     )
-    SwapPage.openTokenToSwapMenu()
-      .chooseToken('xeenus')
-      .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     TransactionSettings.setMultihopOff()
 
     SwapPage.getToInput()
@@ -52,9 +67,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    SwapPage.getTransactionConfirmedModal()
-      .should('be.visible')
-      .should('contain.text', 'Transaction Submitted')
+    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', TRANSACTION_VALUE.toLocaleString(), 'ETH', 'XEENUS')
 
@@ -79,16 +92,12 @@ describe('Swapping tests', () => {
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu()
-      .getOpenTokenManagerButton()
-      .click()
+    SwapPage.openTokenToSwapMenu().getOpenTokenManagerButton().click()
     TokenMenu.getSwitchTokenManagerToTokens().click()
     TokenMenu.getSingleTokenManagerInput().type(AddressesEnum.LINK_ADDRESS_RINKEBY)
     TokenMenu.importToken('link')
     TokenMenu.confirmTokenImport()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .should('contain.text', 'LINK')
+    SwapPage.getCurrencySelectors().last().should('contain.text', 'LINK')
     SwapPage.switchTokens()
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
@@ -108,9 +117,7 @@ describe('Swapping tests', () => {
     SwapPage.confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    SwapPage.getTransactionConfirmedModal()
-      .should('be.visible')
-      .should('contain.text', 'Transaction Submitted')
+    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
@@ -138,12 +145,8 @@ describe('Swapping tests', () => {
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu()
-      .chooseToken('xeenus')
-      .switchTokens()
-    SwapPage.getCurrencySelectors()
-      .last()
-      .click()
+    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').switchTokens()
+    SwapPage.getCurrencySelectors().last().click()
     TokenMenu.chooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
@@ -158,9 +161,7 @@ describe('Swapping tests', () => {
     SwapPage.swap().confirmSwap()
     cy.confirmMetamaskTransaction({})
 
-    SwapPage.getTransactionConfirmedModal()
-      .should('be.visible')
-      .should('contain.text', 'Transaction Submitted')
+    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'XEENUS', 'WETH', TRANSACTION_VALUE.toLocaleString())
 
@@ -192,9 +193,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    SwapPage.getTransactionConfirmedModal()
-      .should('be.visible')
-      .should('contain.text', 'Transaction Submitted')
+    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'DXD', 'ETH', TRANSACTION_VALUE.toLocaleString())
 
@@ -224,9 +223,7 @@ describe('Swapping tests', () => {
 
     cy.confirmMetamaskTransaction({})
 
-    SwapPage.getTransactionConfirmedModal()
-      .should('be.visible')
-      .should('contain.text', 'Transaction Submitted')
+    SwapPage.getTransactionConfirmedModal().should('be.visible').should('contain.text', 'Transaction Submitted')
 
     MenuBar.checkToastMessage('Swap', 'XEENUS', 'ETH', TRANSACTION_VALUE.toLocaleString())
 
@@ -239,5 +236,21 @@ describe('Swapping tests', () => {
         AddressesEnum.SECOND_TEST_WALLET
       )
     })
+  })
+  // TODO unskip when #1068 is fixed
+  it.skip('Should send erc20 token to wallet address [TC-54]', () => {
+    MenuBar.getSettings().click()
+    TransactionSettings.switchExpertModeOn()
+    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.swap()
+
+    cy.rejectMetamaskTransaction()
+
+    cy.scrollTo('top')
+    SwapPage.getSwapBox().should('be.visible')
+    SwapPage.getSwapButton().should('be.visible')
+    SwapPage.getToInput().should('be.visible')
+    SwapPage.getFromInput().should('be.visible')
   })
 })

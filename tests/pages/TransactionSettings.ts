@@ -46,6 +46,20 @@ export class TransactionSettings {
   static getEnterValiErrorMesssage() {
     return cy.get('[data-testid=slippage-error]')
   }
+  static getExpertModeButton() {
+    return cy.get('#toggle-expert-mode-button')
+  }
+  static switchExpertModeOn() {
+    this.getExpertModeButton().within(() => {
+      cy.get('[data-testid=toggle-on]').click()
+    })
+    cy.get('#confirm-expert-mode').click()
+  }
+  static switchExpertModeOff() {
+    this.getExpertModeButton().within(() => {
+      cy.get('[data-testid=toggle-off]').click()
+    })
+  }
   static typeSlippageTolerance(value: string) {
     this.getSlippageToleranceField().type(value)
     return this
@@ -55,11 +69,9 @@ export class TransactionSettings {
     cy.get('[data-testid=popover]')
       .contains('Multihop')
       .then(element => {
-        if (element.text() == 'Multihop enabled') {
+        if (element.text() === 'Multihop enabled') {
           MenuBar.getSettings().click()
-          cy.get('[data-testid=toggle-off]')
-            .first()
-            .click()
+          cy.get('[data-testid=toggle-off]').first().click()
           TransactionSettings.closeModal()
         }
       })

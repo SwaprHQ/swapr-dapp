@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
   position: relative;
 `
 
-export const ClickableText = styled(TYPE.body)`
+export const ClickableText = styled(TYPE.Body)`
   cursor: pointer;
 `
 export const MaxButton = styled.button<{ width: string }>`

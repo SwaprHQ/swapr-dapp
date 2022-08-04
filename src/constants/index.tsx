@@ -15,17 +15,18 @@ import {
 } from '@swapr/sdk'
 
 import { providers } from 'ethers'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
+import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import CoinbaseWalletLogo from '../assets/images/wallets/coinbase.svg'
 import MetaMaskLogo from '../assets/images/wallets/metamask.png'
 import WalletConnectLogo from '../assets/images/wallets/wallet-connect.svg'
-import CowLogo from '../assets/svg/cow-protocol.svg'
+import CoWLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
 import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
@@ -487,6 +488,8 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.ZEROX.name,
+    RoutablePlatform.GNOSIS_PROTOCOL.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -501,12 +504,14 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.LEVINSWAP.name,
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
+    RoutablePlatform.GNOSIS_PROTOCOL.name,
   ],
   [ChainId.POLYGON]: [
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
+    RoutablePlatform.ZEROX.name,
   ],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
@@ -591,8 +596,14 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
+  [RoutablePlatform.ZEROX.name]: {
+    logo: ZeroXLogo,
+    alt: RoutablePlatform.ZEROX.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.ZEROX.name,
+  },
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
-    logo: CowLogo,
+    logo: CoWLogo,
     alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.GNOSIS_PROTOCOL.name,
@@ -617,7 +628,8 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
-  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CowLogo} alt="Cow" />,
+  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 
@@ -650,7 +662,7 @@ export const OLD_SWPR: { [key: number]: Token } = {
 }
 
 export const TESTNETS = [4, 421611]
-export const SHOW_TESTNETS = true
+export const SHOW_TESTNETS = false
 
 // addresses to filter by when querying for verified KPI tokens
 export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {
@@ -662,4 +674,13 @@ export const LIQUIDITY_SORTING_TYPES: { [key: string]: string } = {
   TVL: 'TVL',
   APY: 'APY',
   NEW: 'NEW',
+}
+
+export const SWAP_INPUT_ERRORS: Record<string, number> = {
+  CONNECT_WALLET: 1,
+  ENTER_AMOUNT: 2,
+  SELECT_TOKEN: 3,
+  ENTER_RECIPIENT: 4,
+  INVALID_RECIPIENT: 5,
+  INSUFFICIENT_BALANCE: 6,
 }

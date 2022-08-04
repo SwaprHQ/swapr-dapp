@@ -1,4 +1,4 @@
-import React from 'react'
+import { createRef, forwardRef } from 'react'
 import Datepicker from 'react-datepicker'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
@@ -44,7 +44,7 @@ const StyledCalendarIcon = styled(CalendarIcon)<{ selected: boolean }>`
   }
 `
 
-const CalendarInput = React.forwardRef((props: any) => {
+const CalendarInput = forwardRef((props: any) => {
   return (
     <Flex>
       <Input ref={props.ref} {...props} />
@@ -63,7 +63,7 @@ interface PickerProps {
 }
 
 export default function DateTimeInput({ value, placeholder, minimum, maximum, onChange }: PickerProps) {
-  const ref = React.createRef()
+  const ref = createRef()
   return (
     <>
       <StyledDatePicker

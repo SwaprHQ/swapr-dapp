@@ -1,11 +1,11 @@
 import { Token } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import { useToken } from '../../../hooks/Tokens'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useRemoveUserAddedToken, useUserAddedTokens } from '../../../state/user/hooks'
 import { ExternalLink, TYPE } from '../../../theme'
 import { getExplorerLink, isAddress } from '../../../utils'
@@ -23,11 +23,11 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
   const { chainId } = useWeb3ReactCore()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback(event => {
+  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
@@ -57,9 +57,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
           <RowFixed>
             <CurrencyLogo currency={token} size={'20px'} />
             <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
-              <TYPE.main ml={'10px'} fontWeight={600}>
+              <TYPE.Main ml={'10px'} fontWeight={600}>
                 {token.symbol}
-              </TYPE.main>
+              </TYPE.Main>
             </ExternalLink>
           </RowFixed>
           <RowFixed>
@@ -88,9 +88,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
               />
             </Row>
             {searchQuery !== '' && !isAddressSearch && (
-              <TYPE.error data-testid="token-manager-error-message" error={true}>
+              <TYPE.Error data-testid="token-manager-error-message" error={true}>
                 Enter valid token address
-              </TYPE.error>
+              </TYPE.Error>
             )}
             {searchToken && (
               <Card
@@ -114,9 +114,9 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
         <Box flex="1">
           <PaddedColumn gap="lg" style={{ overflow: 'auto', marginBottom: '10px' }}>
             <RowBetween>
-              <TYPE.main fontSize="14px">
+              <TYPE.Main fontSize="14px">
                 {userAddedTokens?.length} custom {userAddedTokens.length === 1 ? 'token' : 'tokens'}
-              </TYPE.main>
+              </TYPE.Main>
               {userAddedTokens.length > 0 && (
                 <ButtonOutlined style={{ padding: 0, width: 'auto' }} onClick={handleRemoveAll}>
                   Clear all
@@ -128,7 +128,7 @@ export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps
         </Box>
         <Box>
           <Footer>
-            <TYPE.darkGray fontSize="14px">Tip: custom tokens are stored locally in your browser</TYPE.darkGray>
+            <TYPE.DarkGray fontSize="14px">Tip: custom tokens are stored locally in your browser</TYPE.DarkGray>
           </Footer>
         </Box>
       </Flex>

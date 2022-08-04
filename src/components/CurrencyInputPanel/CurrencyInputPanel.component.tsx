@@ -2,7 +2,7 @@ import { Currency } from '@swapr/sdk'
 
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import debounce from 'lodash/debounce'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
@@ -10,7 +10,7 @@ import { normalizeInputValue } from '../../utils'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import {
@@ -18,7 +18,6 @@ import {
   Container,
   Content,
   CurrencySelect,
-  FiatRow,
   InputPanel,
   InputRow,
   LabelRow,
@@ -121,9 +120,9 @@ export const CurrencyInputPanelComponent = ({
           {!hideInput && label && (
             <LabelRow>
               <RowBetween>
-                <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
+                <TYPE.Body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
                   <UppercaseHelper>{label}</UppercaseHelper>
-                </TYPE.body>
+                </TYPE.Body>
               </RowBetween>
             </LabelRow>
           )}
@@ -165,7 +164,7 @@ export const CurrencyInputPanelComponent = ({
               </Aligner>
             </CurrencySelect>
           </InputRow>
-          <FiatRow>
+          <div>
             <RowBetween>
               <FiatValueDetails fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
               <CurrencyUserBalance
@@ -178,7 +177,7 @@ export const CurrencyInputPanelComponent = ({
                 onMax={handleOnMax}
               />
             </RowBetween>
-          </FiatRow>
+          </div>
         </Content>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (

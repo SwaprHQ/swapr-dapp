@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import { TYPE } from '../../../../theme'
@@ -8,7 +8,7 @@ interface StepProps {
   disabled: boolean
   index: number
   title: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 const Root = styled(AutoColumn)<{ disabled: boolean }>`
@@ -22,9 +22,9 @@ const Root = styled(AutoColumn)<{ disabled: boolean }>`
 export default function Step({ disabled, index, title, children, ...rest }: StepProps) {
   return (
     <Root gap="31px" disabled={disabled} {...rest}>
-      <TYPE.subHeader fontSize={18} lineHeight="22px" color="text2">
+      <TYPE.SubHeader fontSize={18} lineHeight="22px" color="text2">
         {index + 1}. {title}
-      </TYPE.subHeader>
+      </TYPE.SubHeader>
       {children}
     </Root>
   )

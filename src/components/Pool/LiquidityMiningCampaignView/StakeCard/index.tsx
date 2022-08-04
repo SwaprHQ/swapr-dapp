@@ -6,8 +6,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -15,6 +14,7 @@ import styled from 'styled-components'
 import { useLiquidityMiningActionCallbacks } from '../../../../hooks/useLiquidityMiningActionCallbacks'
 import { useLiquidityMiningCampaignPosition } from '../../../../hooks/useLiquidityMiningCampaignPosition'
 import { useLpTokensUnderlyingAssets } from '../../../../hooks/useLpTokensUnderlyingAssets'
+import { useWeb3ReactCore } from '../../../../hooks/useWeb3ReactCore'
 import { useTransactionAdder } from '../../../../state/transactions/hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { TYPE } from '../../../../theme'
@@ -341,9 +341,9 @@ export default function StakeCard({
         <AutoColumn gap="8px">
           <Flex flexDirection="column">
             <Box mb="20px">
-              <TYPE.body color="white" fontWeight="500" lineHeight="19.5px">
+              <TYPE.Body color="white" fontWeight="500" lineHeight="19.5px">
                 My stake
-              </TYPE.body>
+              </TYPE.Body>
             </Box>
             <DataRow mb="18px" justifyContent="space-between">
               <Box mr="20px">

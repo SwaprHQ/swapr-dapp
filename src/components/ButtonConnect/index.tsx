@@ -1,6 +1,4 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React from 'react'
-
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import {
   useModalOpen,

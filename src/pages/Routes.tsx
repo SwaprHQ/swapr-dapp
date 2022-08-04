@@ -1,7 +1,7 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { lazy } from 'react'
+import { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
+import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import { chainSupportsSWPR } from '../utils/chainSupportsSWPR'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'

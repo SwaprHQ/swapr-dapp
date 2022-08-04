@@ -1,24 +1,24 @@
 import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { wrappedCurrency } from 'utils/wrappedCurrency'
 
-import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import Column from '../../../components/Column'
-import Loader from '../../../components/Loader'
+import { Loader } from '../../../components/Loader'
 import ProgressSteps from '../../../components/ProgressSteps'
 import { AutoRow, RowBetween } from '../../../components/Row'
-import { SwapCallbackError } from '../../../components/swap/styleds'
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap'
-import { Field } from '../../../state/swap/actions'
+import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
+import { wrappedCurrency } from '../../../utils/wrappedCurrency'
+import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../Button'
+import { ErrorBox } from './SwabButtonsError'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
@@ -35,7 +35,7 @@ interface SwapButtonsProps {
   approvalSubmitted: boolean
   currencies: { [field in Field]?: Currency }
   trade: Trade | undefined
-  swapInputError: string | undefined
+  swapInputError: number | undefined
   swapErrorMessage: string | undefined
   loading: boolean
   handleSwap: () => void
@@ -70,7 +70,7 @@ export function SwapButtons({
 }: SwapButtonsProps) {
   const { account, isCurrentChainUnsupported } = useWeb3ReactCore()
   const isExpertMode = useIsExpertMode()
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
 
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
@@ -179,30 +179,31 @@ export function SwapButtons({
             error={isValid && priceImpactSeverity > PRICE_IMPACT_MEDIUM}
           >
             {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
-              ? t('PriceImpactHigh')
-              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('swapAnyway') : t('swap')}`}
+              ? t('button.priceImpactTooHigh')
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('button.swapAnyway') : t('button.swap')}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>
           <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
         </Column>
+        {ErrorBox({ isExpertMode, swapErrorMessage })}
       </>
     )
   }
 
-  if (isExpertMode && swapErrorMessage) {
-    return <SwapCallbackError error={swapErrorMessage} />
-  }
-
   return (
-    <SwapButton
-      onClick={onSwapClick}
-      id="swap-button"
-      disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-      platformName={trade?.platform.name}
-      swapInputError={swapInputError}
-      priceImpactSeverity={priceImpactSeverity}
-      isExpertMode={isExpertMode}
-    ></SwapButton>
+    <>
+      <SwapButton
+        onClick={onSwapClick}
+        id="swap-button"
+        disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+        platformName={trade?.platform.name}
+        swapInputError={swapInputError}
+        priceImpactSeverity={priceImpactSeverity}
+        isExpertMode={isExpertMode}
+        amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+      />
+      {ErrorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
+    </>
   )
 }

@@ -1,6 +1,5 @@
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from 'react-use'
@@ -8,6 +7,7 @@ import { useToggle } from 'react-use'
 import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useActiveListsHandlers, useBridgeSupportedLists } from '../../../services/EcoBridge/EcoBridge.hooks'
 import { AppDispatch, AppState } from '../../../state'
 import { acceptListUpdate, disableList, enableList, removeList } from '../../../state/lists/actions'
@@ -27,7 +27,7 @@ export const useManageListsContextSwap = ({
 
   const lists = useAllLists()
 
-  const handleInput = useCallback(e => {
+  const handleInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setListUrlInput(e.target.value)
   }, [])
 

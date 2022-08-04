@@ -1,9 +1,9 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback } from 'react'
+import { ChangeEvent, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import useENS from '../../hooks/useENS'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink } from '../../utils'
 import { AutoColumn } from '../Column'
@@ -80,12 +80,12 @@ export default function AddressInputPanel({
 }) {
   const { chainId } = useWeb3ReactCore()
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   const { address, loading, name } = useENS(value)
 
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const withoutSpaces = input.replace(/\s+/g, '')
       onChange(withoutSpaces)
@@ -101,9 +101,9 @@ export default function AddressInputPanel({
         <InputContainer>
           <AutoColumn gap="md">
             <RowBetween>
-              <TYPE.black color={theme.text2} fontWeight={500} fontSize={14}>
+              <TYPE.Black color={theme.text2} fontWeight={500} fontSize={14}>
                 Recipient
-              </TYPE.black>
+              </TYPE.Black>
               {address && chainId && (
                 <ExternalLink href={getExplorerLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
                   {t('viewOnBlockExplorer')}

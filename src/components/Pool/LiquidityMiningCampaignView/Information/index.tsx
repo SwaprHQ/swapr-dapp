@@ -4,7 +4,7 @@ import { commify } from 'ethers/lib/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Lock, Unlock } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
@@ -265,11 +265,11 @@ function Information({
               )}
             </Box>
             <Box>
-              <TYPE.small fontWeight="500" fontSize="14px">
+              <TYPE.Small fontWeight="500" fontSize="14px">
                 {!endsAt || !startsAt ? (
                   <Skeleton width="136px" height="14px" />
                 ) : (
-                  <TYPE.body
+                  <TYPE.Body
                     fontSize="14px"
                     fontWeight="500"
                     lineHeight="14px"
@@ -277,9 +277,9 @@ function Information({
                     style={{ whiteSpace: 'nowrap' }}
                   >
                     <Countdown to={upcoming ? startsAt : expired ? 0 : endsAt} onEnd={handleCountdownEnd} />
-                  </TYPE.body>
+                  </TYPE.Body>
                 )}
-              </TYPE.small>
+              </TYPE.Small>
             </Box>
           </Flex>
           <Box>
@@ -415,9 +415,9 @@ function Information({
       </View>
       {containsKpiToken && !!rewards && rewards.length > 0 && (
         <CarrotSectionContainer gap="13px">
-          <TYPE.small fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.06em" color="text5">
+          <TYPE.Small fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.06em" color="text5">
             CARROT CAMPAIGNS
-          </TYPE.small>
+          </TYPE.Small>
           <KpiTokenInfoContainer>
             This campaign contains Carrot KPI tokens that are redeemable for collateral upon reaching the goals
             expressed in the KPI. Learn how to use KPI tokens through Carrot by clicking{' '}
@@ -430,13 +430,12 @@ function Information({
                 <AutoRow>
                   <CurrencyLogo currency={reward.token} size={'22px'} />
                   <AutoColumn style={{ marginLeft: '8px' }}>
-                    <TYPE.white>{reward.token.symbol}</TYPE.white>
+                    <TYPE.White>{reward.token.symbol}</TYPE.White>
                   </AutoColumn>
                 </AutoRow>
-                <CarrotButton
-                  link={`https://carrot.eth.limo/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}
-                  text="Go to campaign"
-                />
+                <CarrotButton link={`https://carrot.eth.limo/#/campaigns/${reward.token.kpiId}?chainId=${chainId}`}>
+                  Go to campaign
+                </CarrotButton>
               </RowBetween>
             )
           })}

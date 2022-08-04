@@ -7,12 +7,12 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
+import { useWeb3ReactCore } from '../../../../../hooks/useWeb3ReactCore'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../../../Button'
 import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'

@@ -1,9 +1,10 @@
-import { Web3Provider } from 'components/Web3Provider'
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom'
+import { setUseWhatChange } from '@simbathesailor/use-what-changed'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
+import { Web3Provider } from './components/Web3Provider'
 import './i18n'
 import App from './pages/App'
 import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
@@ -16,6 +17,11 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
+
+// Enables use of the useWhatChanged hook in dev environment
+setUseWhatChange({
+  active: process.env.NODE_ENV === 'development',
+})
 
 if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false
@@ -38,7 +44,10 @@ function Updaters() {
   )
 }
 
-ReactDOM.render(
+const container = document.getElementById('root')!
+const root = createRoot(container)
+
+root.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Provider store={store}>
@@ -55,6 +64,5 @@ ReactDOM.render(
         </EcoBridgeProvider>
       </Web3Provider>
     </Provider>
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 )

@@ -1,13 +1,12 @@
 import { Connector } from '@web3-react/types'
-import { getConnection } from 'connectors/utils'
-import React from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { getConnection } from '../../connectors/utils'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -74,9 +73,9 @@ export default function PendingView({
           />
         </Box>
         <Box>
-          <TYPE.body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
+          <TYPE.Body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
             {name}
-          </TYPE.body>
+          </TYPE.Body>
         </Box>
       </Flex>
 
@@ -84,7 +83,7 @@ export default function PendingView({
         <LoadingWrapper>
           {error ? (
             <ErrorGroup>
-              <TYPE.body
+              <TYPE.Body
                 color="red1"
                 fontWeight="500"
                 fontSize="20px"
@@ -93,7 +92,7 @@ export default function PendingView({
                 marginBottom="24px"
               >
                 Error connecting.
-              </TYPE.body>
+              </TYPE.Body>
               <ButtonPrimary
                 padding="8px 14px"
                 onClick={() => {
@@ -106,9 +105,9 @@ export default function PendingView({
           ) : (
             <>
               <StyledLoader />
-              <TYPE.body color="text4" fontWeight="500" fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
+              <TYPE.Body color="text4" fontWeight="500" fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
                 Initializing...
-              </TYPE.body>
+              </TYPE.Body>
             </>
           )}
         </LoadingWrapper>

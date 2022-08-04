@@ -1,7 +1,7 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { ChangeWalletButton, NetworkTagRow, OptionGrid, StyledPopover } from './NetworkSwitcher.styles'

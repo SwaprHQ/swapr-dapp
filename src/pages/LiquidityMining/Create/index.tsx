@@ -1,7 +1,6 @@
 import { Pair, Percent, Token, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -16,6 +15,7 @@ import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../PageWrapper'
@@ -103,7 +103,7 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
 }
 
 export default function CreateLiquidityMining() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('liquidity')
 
   const { chainId } = useWeb3ReactCore()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
@@ -177,7 +177,6 @@ export default function CreateLiquidityMining() {
         addTransaction(transaction, {
           summary: `Create liquidity mining campaign on ${
             stakePair ? `${stakePair.token0.symbol}/${stakePair.token1.symbol}` : stakeToken ? stakeToken.symbol : ''
-          }
           }`,
         })
       })
@@ -219,7 +218,7 @@ export default function CreateLiquidityMining() {
       <PageWrapper>
         <AutoColumn gap="40px">
           <AutoColumn gap="8px">
-            <TYPE.mediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.mediumHeader>
+            <TYPE.MediumHeader lineHeight="24px">{t('liquidityMining.create.title')}</TYPE.MediumHeader>
           </AutoColumn>
           <Step title={t('liquidityMining.create.chooseCampaign')} index={0} disabled={false}>
             <SingleOrPairCampaign singleReward={campaingType} onChange={setCampaignType} />

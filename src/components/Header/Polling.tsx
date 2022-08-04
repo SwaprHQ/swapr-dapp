@@ -1,7 +1,7 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useBlockNumber } from '../../state/application/hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink } from '../../utils'
@@ -86,7 +86,7 @@ export default function Polling() {
   return (
     <ExternalLink href={chainId && blockNumber ? getExplorerLink(chainId, blockNumber.toString(), 'block') : ''}>
       <StyledPolling>
-        <TYPE.small style={{ opacity: isMounted ? '0.2' : '0.6' }}>{blockNumber}</TYPE.small>
+        <TYPE.Small style={{ opacity: isMounted ? '0.2' : '0.6' }}>{blockNumber}</TYPE.Small>
         <StyledPollingDot>{!isMounted && <Spinner />}</StyledPollingDot>
       </StyledPolling>
     </ExternalLink>

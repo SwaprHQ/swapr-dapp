@@ -1,16 +1,15 @@
 import { Currency, CurrencyAmount, Percent, Trade } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 
 // Eco Router modules
 // Web3 hooks
-import { useIsMultihop } from '../../state/user/hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
+import { useIsMultihop, useUserSlippageTolerance } from '../../state/user/hooks'
 import { getExactIn, getExactOut } from './api'
 // Types
 // eslint-disable-next-line
-import type { EcoRouterHookResults } from './types'
+import { EcoRouterHookResults } from './types'
 
 /**
  * Eco Router hook
@@ -30,30 +29,30 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyOut?.address}-${currencyAmountIn?.currency.address}`
+  // User max slippage
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   useEffect(() => {
     let isCancelled = false
 
     // Early exit and clean state if necessary
     if (!currencyAmountIn || !account || !currencyAmountIn.currency || !provider || !currencyOut || !chainId) {
-      batchedUpdates(() => {
-        setTrades([])
-        setLoading(false)
-      })
+      setTrades([])
+      setLoading(false)
+
       return
     }
 
     // Reset state
-    batchedUpdates(() => {
-      setTrades([])
-      setLoading(true)
-    })
+
+    setTrades([])
+    setLoading(true)
 
     getExactIn(
       {
         currencyAmountIn,
         currencyOut,
-        maximumSlippage: new Percent('3', '100'),
+        maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
         receiver: account ?? undefined,
       },
       {
@@ -66,10 +65,8 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
       .then(newTrades => {
         // Only update this invokation is not cancelled
         if (!isCancelled) {
-          batchedUpdates(() => {
-            setTrades(newTrades.trades)
-            setErrors(newTrades.errors)
-          })
+          setTrades(newTrades.trades)
+          setErrors(newTrades.errors)
         }
       })
       .catch(error => setErrors([error]))
@@ -86,6 +83,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
     currencyAmountIn?.toSignificant(),
     currencyInAndOutAdddress,
     account,
+    userSlippageTolerance,
   ])
 
   return {
@@ -113,30 +111,29 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
   const currencyInAndOutAdddress = `${currencyIn?.address}-${currencyAmountOut?.currency.address}`
+  // User max slippage
+  const userSlippageTolerance = useUserSlippageTolerance()
 
   useEffect(() => {
     let isCancelled = false
 
     // Early exit and clean state if necessary
     if (!currencyAmountOut || !account || !currencyAmountOut.currency || !currencyIn || !chainId) {
-      batchedUpdates(() => {
-        setTrades([])
-        setLoading(false)
-      })
+      setTrades([])
+      setLoading(false)
       return
     }
 
     // Reset state
-    batchedUpdates(() => {
-      setTrades([])
-      setLoading(true)
-    })
+
+    setTrades([])
+    setLoading(true)
 
     getExactOut(
       {
         currencyAmountOut,
         currencyIn,
-        maximumSlippage: new Percent('3', '100'),
+        maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
         receiver: account ?? undefined,
       },
       {
@@ -167,6 +164,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
     currencyAmountOut?.toSignificant(),
     currencyInAndOutAdddress,
     account,
+    userSlippageTolerance,
   ])
 
   return {

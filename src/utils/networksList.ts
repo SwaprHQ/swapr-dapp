@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
 import { NetworkOptions, networkOptionsPreset, NetworkOptionsPreset, NetworksList } from '../components/NetworkSwitcher'
-import { NETWORK_DETAIL, NETWORK_OPTIONAL_DETAIL, SHOW_TESTNETS, TESTNETS } from '../constants'
+import { NETWORK_DETAIL, NETWORK_OPTIONAL_DETAIL, TESTNETS } from '../constants'
 
 export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPreset[] = networkOptionsPreset) => {
   const network = customPreset.find(net => {
@@ -82,6 +82,7 @@ export const createNetworksList = ({
   selectedNetworkChainId,
   activeChainId,
   ignoreTags,
+  showTestnets,
 }: {
   networkOptionsPreset: NetworkOptionsPreset[]
   onNetworkChange: (chainId: ChainId) => void
@@ -89,6 +90,7 @@ export const createNetworksList = ({
   selectedNetworkChainId: ChainId
   activeChainId: ChainId | undefined
   ignoreTags?: string[]
+  showTestnets?: boolean
 }): NetworksList[] => {
   let networks = networkOptionsPreset
 
@@ -102,7 +104,7 @@ export const createNetworksList = ({
   }
 
   return networks
-    .filter(network => SHOW_TESTNETS || !TESTNETS.includes(network.chainId))
+    .filter(network => showTestnets || !TESTNETS.includes(network.chainId) || network.chainId === activeChainId)
     .reduce<NetworksList[]>((taggedList, currentNet) => {
       const tag = currentNet.tag
       const networkPreset = currentNet

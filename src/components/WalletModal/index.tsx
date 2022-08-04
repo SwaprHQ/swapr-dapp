@@ -1,14 +1,14 @@
 import { Connector } from '@web3-react/types'
-import { isChainSupportedByConnector } from 'connectors/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
+import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
+import { isChainSupportedByConnector } from '../../connectors/utils'
 import { ConnectorType } from '../../constants'
-import usePrevious from '../../hooks/usePrevious'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
 import AccountDetails from '../AccountDetails'
@@ -173,19 +173,19 @@ export default function WalletModal({
           <HeaderRow>
             <AutoRow gap="6px">
               <StyledWarningIcon size="20px" />
-              <TYPE.main fontSize="16px" lineHeight="22px" color={'text3'}>
+              <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
                 {isChainSupported ? 'Error connecting' : 'Wrong Network'}
-              </TYPE.main>
+              </TYPE.Main>
             </AutoRow>
           </HeaderRow>
           <ContentWrapper>
-            <TYPE.yellow color="text4">
+            <TYPE.Yellow color="text4">
               <h5>
                 {isChainSupported
                   ? 'Error connecting. Try refreshing the page.'
                   : 'Please connect to the appropriate network.'}
               </h5>
-            </TYPE.yellow>
+            </TYPE.Yellow>
           </ContentWrapper>
         </UpperSection>
       )
@@ -212,28 +212,28 @@ export default function WalletModal({
         {modal !== ModalView.Account ? (
           <HeaderRow color="blue">
             <HoverText onClick={onBackButtonClick}>
-              <TYPE.body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
+              <TYPE.Body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
                 Back
-              </TYPE.body>
+              </TYPE.Body>
             </HoverText>
           </HeaderRow>
         ) : (
           <HeaderRow>
-            <TYPE.body fontWeight={500} fontSize={20} color="text4">
+            <TYPE.Body fontWeight={500} fontSize={20} color="text4">
               Connect to a wallet
-            </TYPE.body>
+            </TYPE.Body>
           </HeaderRow>
         )}
         <ContentWrapper>
           <PendingView connector={pendingConnector} error={connectorError} tryActivation={tryActivation} />
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
-          <TYPE.body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
+          <TYPE.Body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
             A DXDAO PRODUCT
-          </TYPE.body>
-          <TYPE.body fontWeight={600} fontSize="8px" color="text5" letterSpacing="2px">
+          </TYPE.Body>
+          <TYPE.Body fontWeight={600} fontSize="8px" color="text5" letterSpacing="2px">
             DXDAO.ETH
-          </TYPE.body>
+          </TYPE.Body>
           <img src={DxDao} alt="dxdao" />
         </Blurb>
       </UpperSection>

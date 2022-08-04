@@ -1,9 +1,9 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
 
@@ -54,6 +54,14 @@ export function useToggleShowClaimPopup(): () => void {
   return useToggleModal(ApplicationModal.CLAIM_POPUP)
 }
 
+export function useShowExpeditionsPopup(): boolean {
+  return useModalOpen(ApplicationModal.EXPEDITIONS)
+}
+
+export function useToggleShowExpeditionsPopup(): () => void {
+  return useToggleModal(ApplicationModal.EXPEDITIONS)
+}
+
 export function useToggleSelfClaimModal(): () => void {
   return useToggleModal(ApplicationModal.SELF_CLAIM)
 }
@@ -76,6 +84,12 @@ export function useSimpleSettingsModal(): () => void {
 
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {
   return useCallback((content: PopupContent, autoClose: number | false = 15000) => {
-    toast.info(<TransactionPopup {...content} />, { autoClose })
+    toast.info(<TransactionPopup {...content} />, {
+      autoClose,
+      icon: false,
+      progressStyle: {
+        background: 'hsla(0,0%,100%,.7)',
+      },
+    })
   }, [])
 }

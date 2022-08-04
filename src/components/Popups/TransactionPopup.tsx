@@ -1,11 +1,10 @@
 import { ChainId } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { PopupContent } from '../../state/application/actions'
 import { SwapProtocol } from '../../state/transactions/reducer'
 import { TYPE } from '../../theme'
@@ -22,7 +21,7 @@ const RowNoFlex = styled(AutoRow)`
 export function TransactionPopup({ hash, success, summary, swapProtocol }: PopupContent) {
   const { chainId } = useWeb3ReactCore()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const theme = useTheme()
 
   const isGnosisProtocolHash = swapProtocol === SwapProtocol.COW
@@ -39,7 +38,7 @@ export function TransactionPopup({ hash, success, summary, swapProtocol }: Popup
         {success ? <CheckCircle color={theme.green1} size={24} /> : <AlertCircle color={theme.red1} size={24} />}
       </div>
       <AutoColumn gap="8px">
-        <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
+        <TYPE.Body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.Body>
         <ExternalLink href={link}>{popupText}</ExternalLink>
       </AutoColumn>
     </RowNoFlex>

@@ -1,4 +1,3 @@
-import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useDispatch } from 'react-redux'
 import { Box, Text } from 'rebass'

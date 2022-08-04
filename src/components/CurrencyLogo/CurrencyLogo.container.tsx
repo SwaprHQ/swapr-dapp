@@ -1,12 +1,12 @@
 import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import carrotListLogoUrl from '../../assets/images/carrot.png'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
 import DXDLogo from '../../assets/svg/dxd.svg'
 import useHttpLocations from '../../hooks/useHttpLocations'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
 import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'

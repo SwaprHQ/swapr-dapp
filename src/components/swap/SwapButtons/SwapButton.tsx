@@ -1,19 +1,19 @@
-import { isChainSupportedByConnector } from 'connectors/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import { shuffle } from 'lodash'
-import React from 'react'
+import shuffle from 'lodash/shuffle'
 import { useTranslation } from 'react-i18next'
-import { Text } from 'rebass'
+import { Box, Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
 import styled from 'styled-components'
 
+import { isChainSupportedByConnector } from '../../../connectors/utils'
 import {
   PRICE_IMPACT_HIGH,
   PRICE_IMPACT_MEDIUM,
   ROUTABLE_PLATFORM_STYLE,
   RoutablePlatformKeysByNetwork,
+  SWAP_INPUT_ERRORS,
 } from '../../../constants'
-import { ButtonPrimary } from '../../Button/index'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
+import { ButtonPrimary } from '../../Button'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
@@ -24,18 +24,11 @@ const StyledSwapLoadingButton = styled(ButtonPrimary)`
   background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
   cursor: 'wait';
   padding: 16px;
-`
 
-const StyledPlataformImage = styled.img`
-  margin-top: -3px;
-  margin-right: 6px;
-`
-
-const StyledSwapButtonText = styled(Text)<{ width?: string }>`
-  display: flex;
-  height: 16px;
-  white-space: pre-wrap;
-  width: ${({ width }) => (width ? `${width}px` : 'auto')};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    flex-direction: column;
+    row-gap: 8px;
+  `};
 `
 
 const RotatingLogo = styled.div`
@@ -67,9 +60,10 @@ const StyledPlataformText = styled(Text)`
 
 interface SwapButtonProps {
   platformName?: string
-  swapInputError?: string
+  swapInputError?: number
   priceImpactSeverity: number
   isExpertMode: boolean
+  amountInCurrencySymbol?: string
 }
 
 export const SwapButton = ({
@@ -77,36 +71,49 @@ export const SwapButton = ({
   swapInputError,
   priceImpactSeverity,
   isExpertMode,
+  amountInCurrencySymbol,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
+
+  const SWAP_INPUT_ERRORS_MESSAGE = {
+    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
+    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('button.enterAmount'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('button.selectToken'),
+    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('button.enterRecipient'),
+    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('button.invalidRecipient'),
+    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
+      currency: amountInCurrencySymbol,
+    }),
+  }
 
   return (
     <StyledSwapButton gradientColor={platformName && ROUTABLE_PLATFORM_STYLE[platformName].gradientColor} {...rest}>
-      <StyledSwapButtonText>
+      <Text marginLeft={2}>
         {swapInputError ? (
-          swapInputError
+          SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
         ) : priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode ? (
-          t('priceImpactTooHigh')
+          t('button.priceImpactTooHigh')
         ) : (
-          <>
-            {t('swapWith')}
+          <Flex alignItems="center">
+            <Text fontSize="15px">{t('button.swapWith')}</Text>
             {platformName && (
-              <>
-                {' '}
-                <StyledPlataformImage
-                  width={21}
-                  height={21}
+              <Flex alignItems="center" marginLeft={2}>
+                <img
                   src={ROUTABLE_PLATFORM_STYLE[platformName].logo}
                   alt={ROUTABLE_PLATFORM_STYLE[platformName].alt}
+                  width={21}
+                  height={21}
                 />
-                <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
-              </>
+                <Box marginLeft={2}>
+                  <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
+                </Box>
+              </Flex>
             )}
-            {priceImpactSeverity > PRICE_IMPACT_MEDIUM ? ` ${t('anyway')}` : ''}
-          </>
+            {priceImpactSeverity > PRICE_IMPACT_MEDIUM && ` ${t('button.anyway')}`}
+          </Flex>
         )}
-      </StyledSwapButtonText>
+      </Text>
     </StyledSwapButton>
   )
 }

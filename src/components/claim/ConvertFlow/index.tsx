@@ -1,11 +1,11 @@
 import { SWPR_CONVERTER_ADDRESS, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
 
 import { useConvertSwprCallback } from '../../../hooks/swpr/useConvertSwprCallback'
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { ButtonPrimary } from '../../Button'
 import { AutoColumn } from '../../Column'

@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { gql } from 'graphql-request'
 import TextyAnim from 'rc-texty'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { immediateSubgraphClients } from '../../apollo/client'

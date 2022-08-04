@@ -1,8 +1,8 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback } from 'react'
+import { ChangeEvent, useCallback } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import Radio from '../../Radio'
 
 export enum PairsFilterType {
@@ -27,7 +27,7 @@ export default function ListFilter({ disabled, filter, onFilterChange }: ListFil
   const { account } = useWeb3ReactCore()
 
   const handleFilterRadioChange = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       onFilterChange(PairsFilterType[event.target.value as keyof typeof PairsFilterType])
     },
     [onFilterChange]

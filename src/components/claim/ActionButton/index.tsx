@@ -2,10 +2,10 @@ import { CurrencyAmount } from '@swapr/sdk'
 
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { MetaMask } from '@web3-react/metamask'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { ButtonPrimary } from '../../Button'
 import { AutoColumn } from '../../Column'
 
