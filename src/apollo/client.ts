@@ -68,3 +68,37 @@ export const carrotSubgraphClient: { [chainId: number]: ApolloClient<NormalizedC
     cache: new InMemoryCache(),
   }),
 }
+
+export const subgraphBlocksClientsUris: { [chainId in SWPRSupportedChains]: string } = {
+  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
+  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/1hive/xdai-blocks',
+  // testnests
+  [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+  [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
+}
+
+export const subgraphBlocksClients: {
+  [chainId in SWPRSupportedChains]: ApolloClient<NormalizedCacheObject>
+} = {
+  [ChainId.MAINNET]: new ApolloClient({
+    uri: subgraphBlocksClientsUris[ChainId.MAINNET],
+    cache: new InMemoryCache(),
+  }),
+  [ChainId.RINKEBY]: new ApolloClient({
+    uri: subgraphBlocksClientsUris[ChainId.RINKEBY],
+    cache: new InMemoryCache(),
+  }),
+  [ChainId.XDAI]: new ApolloClient({
+    uri: subgraphBlocksClientsUris[ChainId.XDAI],
+    cache: new InMemoryCache(),
+  }),
+  [ChainId.ARBITRUM_ONE]: new ApolloClient({
+    uri: subgraphBlocksClientsUris[ChainId.ARBITRUM_ONE],
+    cache: new InMemoryCache(),
+  }),
+  [ChainId.ARBITRUM_RINKEBY]: new ApolloClient({
+    uri: subgraphBlocksClientsUris[ChainId.ARBITRUM_RINKEBY],
+    cache: new InMemoryCache(),
+  }),
+}
