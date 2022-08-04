@@ -4833,9 +4833,9 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@https://github.com/levelkdev/swapr-sdk.git#curve/factory-pools-router":
-  version "1.5.1"
-  resolved "https://github.com/levelkdev/swapr-sdk.git#49a324ebb68d27a3ae05e7cb8779e01d0599b333"
+"@swapr/sdk@https://git@github.com/levelkdev/swapr-sdk.git#release/1.6.0-rc.3":
+  version "1.6.0-rc.3"
+  resolved "https://git@github.com/levelkdev/swapr-sdk.git#c75100977c81b2cfe09ebefbb4d3ed206dd07e88"
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
