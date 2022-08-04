@@ -1,10 +1,11 @@
-import React, { FC, PropsWithChildren } from 'react'
+import { ChainId } from '@swapr/sdk'
+
+import { FC, PropsWithChildren } from 'react'
 
 import { Loader } from '../../../components/Loader'
-import { useAllTrades } from '../../../services/Trades/hooks/useAllTrades'
-import { useTradesAdapter } from '../../../services/Trades/hooks/useTradesAdapter'
-import { Trade } from '../../../services/Trades/store/trades.selectors'
-import { AdvancedChart } from './AdvancedChart'
+import { TradeHistory } from '../../../services/Trades/trades.types'
+import { useAllTrades } from '../../../services/Trades/useAllTrades.hook'
+import { useTradesAdapter } from '../../../services/Trades/useTradesAdapter.hook'
 import {
   ColumnCellBox,
   ContainerBox,
@@ -19,8 +20,8 @@ import {
   TradeContent,
   TradesAndOrderColumnBox,
 } from './AdvancedSwapMode.styles'
-import { ListElement } from './ListElement'
-import { ListTitle } from './ListTitle'
+import { Chart } from './Chart'
+import { Trade } from './Trade'
 
 const Loading = () => (
   <LoaderContainer>
@@ -28,7 +29,13 @@ const Loading = () => (
   </LoaderContainer>
 )
 
-const renderTransaction = (array: Trade[], showTrades: boolean, isLoading: boolean, isNewPair: boolean) => {
+const renderTransaction = (
+  array: TradeHistory[],
+  showTrades: boolean,
+  isLoading: boolean,
+  isNewPair: boolean,
+  chainId?: ChainId
+) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
   if (isNewPair) return null
@@ -38,41 +45,45 @@ const renderTransaction = (array: Trade[], showTrades: boolean, isLoading: boole
 
   return array
     .sort((firstTrade, secondTrade) => (Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1))
-    .map(({ transactionId, timestamp, amount0, amount1, amountUSD }) => (
-      <ListElement
-        key={transactionId}
-        amount0={amount0}
-        amount1={amount1}
-        amountUSD={amountUSD}
-        timestamp={timestamp}
-      />
-    ))
+    .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
+      return (
+        <Trade
+          key={transactionId}
+          isSell={isSell}
+          transactionId={transactionId}
+          logoKey={logoKey}
+          chainId={chainId}
+          amountIn={amountIn}
+          amountOut={amountOut}
+          timestamp={timestamp}
+          amountUSD={amountUSD}
+        />
+      )
+    })
 }
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { symbol, showTrades } = useTradesAdapter()
+  const { chainId, symbol, showTrades } = useTradesAdapter()
   const { allLiquidityHistory, allTradeHistory, isLoading, isNewPair } = useAllTrades()
 
   return (
     <ContainerBox>
       <DiagramContainerBox>
-        <AdvancedChart symbol={symbol} />
+        <Chart symbol={symbol} />
       </DiagramContainerBox>
       <InfoContainerBox>
         <HistoryColumnBox>
           <HistoryBox>
             <TitleColumn>Trade History</TitleColumn>
-            <ListTitle />
             <ListBox>
-              {renderTransaction(allTradeHistory, showTrades, isLoading, isNewPair)}
+              {renderTransaction(allTradeHistory, showTrades, isLoading, isNewPair, chainId)}
               {isLoading && <Loading />}
             </ListBox>
           </HistoryBox>
           <HistoryBox>
             <TitleColumn>Liquidity History</TitleColumn>
-            <ListTitle />
             <ListBox>
-              {renderTransaction(allLiquidityHistory, showTrades, isLoading, isNewPair)}
+              {renderTransaction(allLiquidityHistory, showTrades, isLoading, isNewPair, chainId)}
               {isLoading && <Loading />}
             </ListBox>
           </HistoryBox>
