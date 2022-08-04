@@ -236,6 +236,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       },
     }
 
+    console.log({ provider })
     // Use a static version
     const staticProvider = provider ? new StaticJsonRpcProvider(provider?.connection.url) : undefined
 
