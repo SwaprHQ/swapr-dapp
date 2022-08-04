@@ -105,7 +105,7 @@ export const SwapButton = ({
                   height={21}
                 />
                 <Box marginLeft={2}>
-                  <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>ssss
+                  <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
                 </Box>
               </Flex>
             )}

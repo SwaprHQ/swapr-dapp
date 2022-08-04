@@ -113,8 +113,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, allowedSlippage, chainId, deadline, library, trades])
+  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
 }
 
 /**
@@ -174,11 +173,9 @@ export function useSwapCallback({
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
-      console.log('error handling')
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
-      console.log('here', recipient)
       if (recipientAddressOrName !== null) {
         return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' }
       } else {
