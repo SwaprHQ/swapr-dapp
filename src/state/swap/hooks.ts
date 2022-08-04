@@ -146,7 +146,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
-  const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
@@ -154,7 +153,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const dependencyList = [
     account,
     useMultihops,
-    recipientLookupComputed,
     chainId,
     inputCurrency?.address,
     outputCurrency?.address,
@@ -164,7 +162,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     // eslint-disable-next-line react-hooks/exhaustive-deps
     relevantTokenBalances[1]?.raw.toString(),
     allowedSlippage,
-    recipient,
     isExactIn,
     provider,
     isQuoteExpired,
