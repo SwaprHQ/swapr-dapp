@@ -3,20 +3,8 @@ import { ChainId, Token } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../../state'
-
-export enum AdapterKeys {
-  SWAPR = 'swapr',
-}
-
-type TradesHistoryAdapterConstructorParams = {
-  adapters: Adapters
-  chainId: ChainId
-  store: Store<AppState>
-}
-
-export type Adapters = { [key in AdapterKeys]: AbstractTradesAdapter }
-
-export type AdapterInitialArguments = Omit<TradesHistoryAdapterConstructorParams, 'adapters'>
+import { actions } from '../trades.reducer'
+import { AdapterInitialArguments, Adapters, TradesHistoryAdapterConstructorParams } from '../trades.types'
 
 // each adapter should extend this class
 export abstract class AbstractTradesAdapter {
@@ -39,6 +27,10 @@ export class TradesAdapter {
 
   public get isInitialized() {
     return this._initialized
+  }
+
+  public get actions() {
+    return actions
   }
 
   constructor({ adapters, chainId, store }: TradesHistoryAdapterConstructorParams) {
@@ -65,5 +57,8 @@ export class TradesAdapter {
     for (const adapter of Object.values(this._adapters)) {
       adapter.updateActiveChainId(chainId)
     }
+  }
+  public setPairTokensAddresses = (addresses: { fromTokenAddress: string; toTokenAddress: string }) => {
+    this.store.dispatch(this.actions.setPairTokensAddresses(addresses))
   }
 }
