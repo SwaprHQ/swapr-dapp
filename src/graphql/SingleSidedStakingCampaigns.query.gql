@@ -1,5 +1,5 @@
-query SingleSidedStakingCampaigns($address: String, $userId: String) {
-  singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
+query SingleSidedStakingCampaigns($stakeTokenId: String, $userId: String) {
+  singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $stakeTokenId }) {
     id
     owner
     startsAt

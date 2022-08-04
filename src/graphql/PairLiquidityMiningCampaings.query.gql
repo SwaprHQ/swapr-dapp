@@ -1,5 +1,5 @@
-query PairLiquidityMiningCampaings($lowerTimeLimit: BigInt!, $pairAddress: ID!) {
-  pair(id: $pairAddress) {
+query PairLiquidityMiningCampaings($endsAtLowerLimit: BigInt!, $pairId: ID!) {
+  pair(id: $pairId) {
     address: id
     reserve0
     reserve1
@@ -20,7 +20,7 @@ query PairLiquidityMiningCampaings($lowerTimeLimit: BigInt!, $pairAddress: ID!) 
       decimals
       derivedNativeCurrency
     }
-    liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
+    liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
       address: id
       duration
       startsAt

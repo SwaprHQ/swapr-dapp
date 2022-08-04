@@ -1,5 +1,5 @@
-query LiquidityMiningCampaign($id: ID!) {
-  liquidityMiningCampaign(id: $id) {
+query LiquidityMiningCampaign($liquidityMiningCampaignId: ID!) {
+  liquidityMiningCampaign(id: $liquidityMiningCampaignId) {
     address: id
     duration
     startsAt

@@ -1,5 +1,5 @@
-query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
-  liquidityPositions(where: { user: $account, liquidityTokenBalance_gt: 0 }) {
+query UserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
+  liquidityPositions(where: { user: $userId, liquidityTokenBalance_gt: 0 }) {
     pair {
       address: id
       reserve0
@@ -19,7 +19,7 @@ query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
         symbol
         decimals
       }
-      liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
+      liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
         address: id
         duration
         startsAt
@@ -37,13 +37,13 @@ query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
           amount
         }
         stakedAmount
-        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $account }) {
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
           id
         }
       }
     }
   }
-  liquidityMiningPositions(where: { user: $account, stakedAmount_gt: 0 }) {
+  liquidityMiningPositions(where: { user: $userId, stakedAmount_gt: 0 }) {
     pair: targetedPair {
       address: id
       reserve0
@@ -63,7 +63,7 @@ query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
         symbol
         decimals
       }
-      liquidityMiningCampaigns(where: { endsAt_gt: $lowerTimeLimit }) {
+      liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
         address: id
         duration
         startsAt
@@ -81,7 +81,7 @@ query UserLiquidityPositions($account: String, $lowerTimeLimit: BigInt!) {
           amount
         }
         stakedAmount
-        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $account }) {
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
           id
         }
       }

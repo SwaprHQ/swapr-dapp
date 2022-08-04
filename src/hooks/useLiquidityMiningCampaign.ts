@@ -19,7 +19,7 @@ export function useLiquidityMiningCampaign(
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
   const { chainId } = useActiveWeb3React()
   const { loading, error, data } = useLiquidityMiningCampaignQuery({
-    variables: { id: id?.toLowerCase() || '' },
+    variables: { liquidityMiningCampaignId: id?.toLowerCase() || '' },
   })
   const nativeCurrency = useNativeCurrency()
   const rewardAddresses = useMemo(() => {

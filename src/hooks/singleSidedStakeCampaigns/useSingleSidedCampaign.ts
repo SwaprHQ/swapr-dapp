@@ -17,7 +17,7 @@ export function useSingleSidedCampaign(campaginAddress: string): {
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useSingleSidedStakingCampaignQuery({
     variables: {
-      campaignAddress: campaginAddress.toLowerCase(),
+      campaignId: campaginAddress.toLowerCase(),
     },
   })
   return useMemo(() => {

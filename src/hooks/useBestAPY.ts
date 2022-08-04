@@ -27,8 +27,8 @@ export function useBestAPY(pair?: Pair | null): {
 
   const { loading, data, error } = usePairLiquidityMiningCampaingsQuery({
     variables: {
-      pairAddress: pair?.liquidityToken.address.toLowerCase() || '',
-      lowerTimeLimit: memoizedLowerTimeLimit,
+      pairId: pair?.liquidityToken.address.toLowerCase() || '',
+      endsAtLowerLimit: memoizedLowerTimeLimit,
     },
   })
 

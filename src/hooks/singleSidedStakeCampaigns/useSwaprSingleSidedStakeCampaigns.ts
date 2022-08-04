@@ -27,7 +27,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
   const swaprAddress = SWPRToken?.address ?? undefined
   const { data, loading, error } = useSingleSidedStakingCampaignsQuery({
     variables: {
-      address: swaprAddress?.toLowerCase(),
+      stakeTokenId: swaprAddress?.toLowerCase(),
       userId: subgraphAccountId,
     },
   })

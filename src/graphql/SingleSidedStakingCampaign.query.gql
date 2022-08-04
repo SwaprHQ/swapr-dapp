@@ -1,5 +1,5 @@
-query SingleSidedStakingCampaign($campaignAddress: ID!) {
-  singleSidedStakingCampaign(id: $campaignAddress) {
+query SingleSidedStakingCampaign($campaignId: ID!) {
+  singleSidedStakingCampaign(id: $campaignId) {
     id
     owner
     startsAt

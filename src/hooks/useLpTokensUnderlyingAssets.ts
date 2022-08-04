@@ -18,7 +18,7 @@ export function useLpTokensUnderlyingAssets(
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = usePairQuery({
     variables: {
-      pairAddress: pair ? pair.liquidityToken.address.toLowerCase() : '',
+      pairId: pair ? pair.liquidityToken.address.toLowerCase() : '',
     },
   })
 

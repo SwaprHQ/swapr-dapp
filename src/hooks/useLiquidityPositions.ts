@@ -60,8 +60,8 @@ export function useLPPairs(account?: string): {
     error,
   } = useUserLiquidityPositionsQuery({
     variables: {
-      account: account?.toLowerCase() || '',
-      lowerTimeLimit: memoizedLowerTimeLimit,
+      userId: account?.toLowerCase() || '',
+      endsAtLowerLimit: memoizedLowerTimeLimit,
     },
   })
   const rewardTokenAddresses = useMemo(() => {

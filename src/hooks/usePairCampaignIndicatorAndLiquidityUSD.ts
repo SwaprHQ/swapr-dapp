@@ -15,7 +15,7 @@ export function usePairCampaignIndicatorAndLiquidityUSD(pair?: Pair | null): {
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
 
   const { loading, data, error } = usePairLiquidityMiningCampaingsQuery({
-    variables: { pairAddress: pair?.liquidityToken.address.toLowerCase() || '', lowerTimeLimit: timestamp },
+    variables: { pairId: pair?.liquidityToken.address.toLowerCase() || '', endsAtLowerLimit: timestamp },
   })
 
   return useMemo(() => {
