@@ -1,4 +1,6 @@
+import { isChainSupportedByConnector } from 'connectors/utils'
 import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
+import { shuffle } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
@@ -36,9 +38,26 @@ const StyledSwapButtonText = styled(Text)<{ width?: string }>`
   width: ${({ width }) => (width ? `${width}px` : 'auto')};
 `
 
-const StyledLoadingSwapButtonText = styled(StyledSwapButtonText)`
-  justify-content: end;
-  flex: 1.1;
+const RotatingLogo = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  min-width: 112px;
+  min-height: 22px;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
+`
+
+const LogoWithText = styled.div`
+  opacity: 0;
+  margin: auto;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const StyledPlataformText = styled(Text)`
@@ -93,30 +112,28 @@ export const SwapButton = ({
 }
 
 export const SwapLoadingButton = () => {
-  const { t } = useTranslation()
-  const { chainId, isCurrentChainUnsupported } = useWeb3ReactCore()
-
+  const { t } = useTranslation('swap')
+  const { connector, chainId } = useWeb3ReactCore()
   const routablePlatforms =
-    chainId && isCurrentChainUnsupported === false
+    chainId && isChainSupportedByConnector(connector, chainId)
       ? RoutablePlatformKeysByNetwork[chainId]
       : RoutablePlatformKeysByNetwork[1]
-
   return (
     <StyledSwapLoadingButton>
-      <StyledLoadingSwapButtonText>{t('findingBestPrice')}</StyledLoadingSwapButtonText>
-      <div className={`loading-button loading-rotation-${routablePlatforms.length}`}>
-        {routablePlatforms.map((key: string) => (
-          <div key={ROUTABLE_PLATFORM_STYLE[key].name}>
-            <StyledPlataformImage
-              width={21}
-              height={21}
+      <Text marginRight={[0, 2]}>{t('button.findingBestPrice')}</Text>
+      <RotatingLogo className={`loading-rotation-${routablePlatforms.length}`}>
+        {shuffle(routablePlatforms).map((key: string) => (
+          <LogoWithText key={ROUTABLE_PLATFORM_STYLE[key].name}>
+            <img
               src={ROUTABLE_PLATFORM_STYLE[key].logo}
               alt={ROUTABLE_PLATFORM_STYLE[key].alt}
+              width={21}
+              height={21}
             />
-            <StyledSwapButtonText width={'120'}>{ROUTABLE_PLATFORM_STYLE[key].name}</StyledSwapButtonText>
-          </div>
+            <Text marginLeft={2}>{ROUTABLE_PLATFORM_STYLE[key].name}</Text>
+          </LogoWithText>
         ))}
-      </div>
+      </RotatingLogo>
     </StyledSwapLoadingButton>
   )
 }

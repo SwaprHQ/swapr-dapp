@@ -323,7 +323,7 @@ function Header() {
                 {'UNSUPPORTED NETWORK'}
               </Amount>
             )}
-            {account && isCurrentChainUnsupported && (
+            {account && !!!isCurrentChainUnsupported && (
               <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
                 {userNativeCurrencyBalance ? (
                   `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`

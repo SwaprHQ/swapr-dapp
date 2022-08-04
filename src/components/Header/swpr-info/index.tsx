@@ -32,10 +32,9 @@ interface SwprInfoProps {
 }
 
 export function SwprInfo({ onToggleClaimPopup, newSwprBalance, hasActiveCampaigns }: SwprInfoProps) {
-  const { account } = useWeb3ReactCore()
-
+  const { account, isCurrentChainUnsupported } = useWeb3ReactCore()
   return (
-    <Wrapper onClick={onToggleClaimPopup} hide={!account}>
+    <Wrapper onClick={onToggleClaimPopup} hide={!account || isCurrentChainUnsupported}>
       <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false} clickable>
         {!account ? (
           '0.000'
