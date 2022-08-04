@@ -55,7 +55,7 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
       <SearchInputStyled
         data-testid="address-input"
         type="text"
-        // pattern="^(0x[a-fA-F0-9]{40})$"
+        pattern="^(0x[a-fA-F0-9]{40})$"
         placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
