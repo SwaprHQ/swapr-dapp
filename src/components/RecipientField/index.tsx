@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useMemo } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -40,13 +40,13 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
     [dispatch]
   )
 
-  // // Unset recipient on unmount
-  // useEffect(() => {
-  //   console.log('here')
-  //   return () => {
-  //     dispatch(action({ recipient: null }))
-  //   }
-  // }, [action, dispatch])
+  // Unset recipient on unmount
+  useEffect(() => {
+    console.log('here')
+    return () => {
+      dispatch(setRecipient({ recipient: null }))
+    }
+  }, [dispatch])
 
   return (
     <div>
