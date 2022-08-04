@@ -146,7 +146,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
-  //const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
@@ -197,8 +196,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     if (recipient !== null) {
       if (isAddress(recipientLookup.address)) {
         receiver = recipientLookup.address as string
-      } else if (account) {
-        receiver = account
       } else {
         setInputError(SWAP_INPUT_ERRORS.INVALID_RECIPIENT)
         return

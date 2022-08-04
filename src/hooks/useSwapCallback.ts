@@ -177,14 +177,14 @@ export function useSwapCallback({
       console.log('error handling')
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
-    // if (!recipient) {
-    //   console.log('here', recipient)
-    //   if (recipientAddressOrName !== null) {
-    //     return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' }
-    //   } else {
-    //     return { state: SwapCallbackState.LOADING, callback: null, error: null }
-    //   }
-    // }
+    if (!recipient) {
+      console.log('here', recipient)
+      if (recipientAddressOrName !== null) {
+        return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' }
+      } else {
+        return { state: SwapCallbackState.LOADING, callback: null, error: null }
+      }
+    }
 
     return {
       state: SwapCallbackState.VALID,
@@ -293,7 +293,7 @@ export function useSwapCallback({
           })
           .then(response => {
             addTransaction(response, {
-              summary: getSwapSummary(trade, recipient || account),
+              summary: getSwapSummary(trade, recipient),
             })
 
             return response.hash
@@ -311,6 +311,16 @@ export function useSwapCallback({
       },
       error: null,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trade, library, account, chainId, swapCalls, preferredGasPrice, mainnetGasPrices, addTransaction])
+  }, [
+    trade,
+    library,
+    account,
+    chainId,
+    swapCalls,
+    preferredGasPrice,
+    mainnetGasPrices,
+    recipientAddressOrName,
+    recipient,
+    addTransaction,
+  ])
 }

@@ -64,8 +64,7 @@ export default function ConfirmSwapModal({
         onAcceptChanges={onAcceptChanges}
       />
     ) : null
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allowedSlippage, onAcceptChanges, showAcceptChanges, trade])
+  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
 
   const modalBottom = useCallback(() => {
     return trade ? (
