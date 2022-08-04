@@ -1,8 +1,8 @@
 import { Connector } from '@web3-react/types'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { AppState } from 'state'
 
+import { AppState } from '../state'
 import { networkConnection } from './../connectors'
 import { getConnection } from './../connectors/utils'
 import { BACKFILLABLE_WALLETS } from './../constants'

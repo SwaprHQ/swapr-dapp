@@ -1,6 +1,7 @@
-import { web3Network } from 'connectors'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
+
+import { web3Network } from '../connectors'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useEagerConnect() {
   const { isActive } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { AppState } from 'state'
 
+import { AppState } from '../state'
 import { getConnection } from './../connectors/utils'
 import { BACKFILLABLE_WALLETS, ConnectorType } from './../constants'
 

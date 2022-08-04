@@ -1,10 +1,10 @@
 import { Contract } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import chunkArray from '../../utils/chunkArray'
 import { retry, RetryableError } from '../../utils/retry'
 import { useBlockNumber } from '../application/hooks'

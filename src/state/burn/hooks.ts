@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'

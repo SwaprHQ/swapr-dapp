@@ -1,6 +1,7 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { CID } from 'multiformats/cid'
 import { useEffect, useState } from 'react'
+
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
 

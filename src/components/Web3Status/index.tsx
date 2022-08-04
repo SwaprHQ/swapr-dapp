@@ -1,16 +1,14 @@
 import { Connector } from '@web3-react/types'
-import { getConnection } from 'connectors/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, AppState } from 'state'
-import { updateSelectedWallet } from 'state/user/actions'
 import styled from 'styled-components'
-import { getErrorMessage } from 'utils/getErrorMessage'
 
+import { getConnection } from '../../connectors/utils'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
+import { AppDispatch, AppState } from '../../state'
 import { ApplicationModal, setConnectorError } from '../../state/application/actions'
 import {
   useCloseModals,
@@ -21,6 +19,8 @@ import {
 } from '../../state/application/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
+import { updateSelectedWallet } from '../../state/user/actions'
+import { getErrorMessage } from '../../utils/getErrorMessage'
 import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import Row from '../Row'

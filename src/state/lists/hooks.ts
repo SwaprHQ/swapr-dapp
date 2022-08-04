@@ -1,12 +1,12 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import sortByListPriority from '../../utils/listSort'
 import { AppState } from '../index'
 import { WrappedTokenInfo } from './wrapped-token-info'

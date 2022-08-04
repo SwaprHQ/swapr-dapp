@@ -2,7 +2,6 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { ChainId, Currency, currencyEquals } from '@swapr/sdk'
 import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -11,6 +10,7 @@ import { useAllTransactions, useTransactionAdder } from '../state/transactions/h
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export enum WrapType {
   NOT_APPLICABLE,

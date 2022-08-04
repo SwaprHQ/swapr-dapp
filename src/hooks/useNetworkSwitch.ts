@@ -1,15 +1,15 @@
 import { ChainId } from '@swapr/sdk'
 
 import { Connector } from '@web3-react/types'
-import { networkConnection, walletConnectConnection } from 'connectors'
-import { getConnection, isChainSupportedByConnector } from 'connectors/utils'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'state'
-import { setConnectorError } from 'state/application/actions'
-import { getErrorMessage } from 'utils/getErrorMessage'
-import { getNetworkInfo } from 'utils/networksList'
 
+import { networkConnection, walletConnectConnection } from '../connectors'
+import { getConnection, isChainSupportedByConnector } from '../connectors/utils'
+import { AppDispatch } from '../state'
+import { setConnectorError } from '../state/application/actions'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { getNetworkInfo } from '../utils/networksList'
 import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const switchNetwork = async (connector: Connector, chainId: ChainId) => {

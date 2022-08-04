@@ -2,8 +2,9 @@ import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
+
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const QUERY = gql`
   query {

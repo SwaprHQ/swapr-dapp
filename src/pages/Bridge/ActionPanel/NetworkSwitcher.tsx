@@ -1,10 +1,10 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { transparentize } from 'polished'
 import styled from 'styled-components'
 
 import { ButtonPrimary } from '../../../components/Button'
 import { RowBetween } from '../../../components/Row'
 import { ChainLabel } from '../../../constants'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 
 interface NetworkSwitcherProps {
   sendToId: number

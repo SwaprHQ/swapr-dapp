@@ -1,9 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
 
 import { INFURA_PROJECT_ID } from '../constants'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 interface ChainGasInfo {
   [chainId: number]: {

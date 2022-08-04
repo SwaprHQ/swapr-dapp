@@ -1,8 +1,8 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { toDXSwapLiquidityToken, useTrackedTokenPairs } from '../../../state/user/hooks'
 import { useAllTokenBalances, useTokenBalances } from '../../../state/wallet/hooks'
 

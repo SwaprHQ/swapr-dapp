@@ -14,7 +14,7 @@ export default function WalletConnectConnector({ tryActivation }: { tryActivatio
       connector={walletConnect}
       tryActivation={tryActivation}
       isActive={isActive}
-      isInstalledWallet={true}
+      isInstalledWallet={true} //TODO
     />
   )
 }

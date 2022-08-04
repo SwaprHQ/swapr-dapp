@@ -1,12 +1,12 @@
 import { CurrencyAmount, Token, TokenAmount } from '@swapr/sdk'
 
 import { BigNumber, constants } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { ERC20_INTERFACE } from '../constants/abis/erc20'
 import { useMulticallContract, useTokenContract } from '../hooks/useContract'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import {
   useMultipleContractSingleData,
   useSingleCallResult,

@@ -3,7 +3,6 @@ import { getAddress } from '@ethersproject/address'
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { gql } from 'graphql-request'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -14,7 +13,7 @@ import { AppDispatch } from '../state'
 import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
-import { getNetworkLibrary } from './useWeb3ReactCore'
+import { getNetworkLibrary, useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const { chainId, provider } = useWeb3ReactCore()

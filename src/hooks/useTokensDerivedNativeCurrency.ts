@@ -3,11 +3,11 @@ import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 interface DerivedNativeCurrencyQueryResult {
   tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]

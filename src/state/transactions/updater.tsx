@@ -1,9 +1,9 @@
 import { ChainId, GnosisProtocolTrade, GnosisProtocolTradeOrderStatus } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { retry, RetryableError, RetryOptions } from '../../utils/retry'
 import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'

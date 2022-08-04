@@ -1,7 +1,6 @@
 import { KpiToken, Pair, Percent, PricedTokenAmount, Token, TokenAmount } from '@swapr/sdk'
 
 import { commify } from 'ethers/lib/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { DateTime } from 'luxon'
 import { transparentize } from 'polished'
 import { useCallback, useEffect, useState } from 'react'
@@ -11,6 +10,7 @@ import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
+import { useWeb3ReactCore } from '../../../../hooks/useWeb3ReactCore'
 import { ExternalLink, TYPE } from '../../../../theme'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { CarrotButton } from '../../../Button'

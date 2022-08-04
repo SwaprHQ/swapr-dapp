@@ -1,6 +1,6 @@
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useNativeCurrency(chainId?: ChainId): Currency {
   const { chainId: activeChainId } = useWeb3ReactCore()

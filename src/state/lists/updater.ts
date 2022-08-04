@@ -1,5 +1,4 @@
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
@@ -7,6 +6,7 @@ import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import { useFetchCarrotListCallback, useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppDispatch } from '../index'
 import { acceptListUpdate } from './actions'
 import { useActiveListUrls, useAllLists } from './hooks'

@@ -1,12 +1,12 @@
 import { ChainId } from '@swapr/sdk'
 
 import { useWeb3React, Web3ContextType } from '@web3-react/core'
-import { web3Network } from 'connectors'
 import { providers } from 'ethers'
 import { useEffect, useState } from 'react'
-import getLibrary from 'utils/getLibrary'
 
+import { web3Network } from '../connectors'
 import { NETWORK_DETAIL } from '../constants'
+import getLibrary from '../utils/getLibrary'
 
 type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
   chainId?: ChainId

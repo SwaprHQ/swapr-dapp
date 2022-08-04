@@ -1,11 +1,11 @@
 import { ChainId } from '@swapr/sdk'
 
 import { Placement } from '@popperjs/core'
-import { isChainSupportedByConnector } from 'connectors/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import React, { ReactNode } from 'react'
 
+import { isChainSupportedByConnector } from '../../connectors/utils'
 import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { createNetworksList } from '../../utils/networksList'

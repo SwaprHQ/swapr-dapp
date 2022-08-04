@@ -3,11 +3,11 @@ import IDXswapPair from '@swapr/core/build/IDXswapPair.json'
 import { Currency, Pair, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useToken } from '../hooks/Tokens'
 import { usePairContract, useTokenContract } from '../hooks/useContract'
+import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import { useFeesState } from '../state/fees/hooks'
 import { useMultipleContractSingleData, useSingleCallResult } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'

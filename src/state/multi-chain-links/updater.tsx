@@ -1,8 +1,8 @@
-import { isChainSupportedByConnector } from 'connectors/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
+import { isChainSupportedByConnector } from '../../connectors/utils'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
 export default function Updater(): null {

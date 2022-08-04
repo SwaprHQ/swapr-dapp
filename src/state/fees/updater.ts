@@ -1,9 +1,9 @@
 import { Fetcher } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { setProtocolFee, setSwapFees } from './actions'
 

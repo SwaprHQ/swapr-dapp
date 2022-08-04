@@ -1,9 +1,9 @@
 import { TransactionResponse } from '@ethersproject/providers'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'

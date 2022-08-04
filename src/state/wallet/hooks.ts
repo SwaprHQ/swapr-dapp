@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { ERC20_INTERFACE } from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useMulticallContract } from '../../hooks/useContract'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { isAddress } from '../../utils'
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../multicall/hooks'
 

@@ -2,11 +2,11 @@ import { LiquidityMiningCampaign, PricedToken, PricedTokenAmount, SingleSidedLiq
 
 import { BigNumber } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useStakingRewardsDistributionContract } from './useContract'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 interface UseLiquidityMiningCampaignUserPositionHookResult {
   stakedTokenAmount: PricedTokenAmount | null

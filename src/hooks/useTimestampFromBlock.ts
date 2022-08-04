@@ -1,5 +1,6 @@
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useState } from 'react'
+
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useTimestampFromBlock(block: number | undefined): number | undefined {
   const { provider } = useWeb3ReactCore()

@@ -1,7 +1,6 @@
 import { BigintIsh, Pair } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
@@ -16,6 +15,7 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
 const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']

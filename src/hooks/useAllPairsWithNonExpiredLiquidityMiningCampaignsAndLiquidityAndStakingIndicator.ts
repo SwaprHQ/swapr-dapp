@@ -3,7 +3,6 @@ import { CurrencyAmount, Pair, Token, USD } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { parseUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useEffect, useMemo, useState } from 'react'
 
 import { immediateSubgraphClients } from '../apollo/client'
@@ -17,6 +16,7 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const PAGE_SIZE = 1000
 

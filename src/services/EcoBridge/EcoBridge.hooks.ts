@@ -1,12 +1,12 @@
 import { ChainId, Currency, Token } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { parseStringOrBytes32 } from '../../hooks/Tokens'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppState } from '../../state'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'

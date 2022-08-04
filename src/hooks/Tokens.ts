@@ -2,7 +2,6 @@ import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, Pair, Token } from '@swapr/sdk'
 
 import { arrayify } from 'ethers/lib/utils'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { createTokenFilterFunction } from '../components/SearchModal/utils/filtering'
@@ -19,6 +18,7 @@ import { useUserAddedPairs, useUserAddedTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {

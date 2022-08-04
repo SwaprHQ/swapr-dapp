@@ -1,7 +1,8 @@
 import { SWPR, Token } from '@swapr/sdk'
 
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
+
+import { useWeb3ReactCore } from '../useWeb3ReactCore'
 
 export const useSWPRToken = () => {
   const { chainId } = useWeb3ReactCore()

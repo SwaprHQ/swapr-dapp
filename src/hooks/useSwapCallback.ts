@@ -13,7 +13,6 @@ import {
 } from '@swapr/sdk'
 
 import { UnsignedTransaction } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
@@ -26,6 +25,7 @@ import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export enum SwapCallbackState {
   INVALID,

@@ -3,10 +3,10 @@ import { ChainId, CurrencyAmount, Token } from '@swapr/sdk'
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { ethers } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useTokenDerivedNativeCurrency(token?: Token): {
   loading: boolean

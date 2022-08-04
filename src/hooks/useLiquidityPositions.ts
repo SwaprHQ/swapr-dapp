@@ -4,7 +4,6 @@ import { CurrencyAmount, KpiToken, Pair, Percent, Token, TokenAmount, USD } from
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { ethers } from 'ethers'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
 
@@ -12,6 +11,7 @@ import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 // when a user stakes their full lp share on a certain campaign, their liquidity position
 // goes to 0, and their liquidity mining position increases. In order to avoid hiding pairs where

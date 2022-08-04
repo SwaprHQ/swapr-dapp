@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import { Amount } from './styled'
@@ -55,8 +55,7 @@ const StyledBalanacesWrapper = styled.div(
 export function Balances() {
   const toggleClaimPopup = useToggleShowClaimPopup()
   const nativeCurrency = useNativeCurrency()
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, isCurrentChainUnsupported } = useWeb3ReactCore()
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
@@ -71,7 +70,7 @@ export function Balances() {
 
   return (
     <StyledBalanacesWrapper onClick={toggleClaimPopup}>
-      {!isUnsupportedChainIdError && (
+      {!!!isCurrentChainUnsupported && (
         <>
           <Amount id="eth-balance">
             {userNativeCurrencyBalance ? (

@@ -1,7 +1,6 @@
 import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
@@ -9,6 +8,7 @@ import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
+import { useWeb3ReactCore } from '../useWeb3ReactCore'
 
 const QUERY = gql`
   query ($address: ID, $userId: ID) {

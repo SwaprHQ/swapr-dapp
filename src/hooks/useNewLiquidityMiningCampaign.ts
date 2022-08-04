@@ -11,11 +11,11 @@ import {
 } from '@swapr/sdk'
 
 import Decimal from 'decimal.js-light'
-import { useWeb3ReactCore } from 'hooks/useWeb3ReactCore'
 import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
 import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useNewLiquidityMiningCampaign(
   rewards: TokenAmount[],
