@@ -11,6 +11,7 @@ import { getAccountAnalyticsLink } from '../../../../utils'
 import { currencyId } from '../../../../utils/currencyId'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
 import { ValueWithLabel } from '../ValueWithLabel'
@@ -70,14 +71,24 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             title={t('userLiquidity.poolTokens')}
             value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'}
           />
-          <ValueWithLabel
-            title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}
-            value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
-          />
-          <ValueWithLabel
-            title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}
-            value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
-          />
+          <Flex alignItems="end">
+            <Box mr="6px">
+              <CurrencyLogo size="14px" currency={currency0} />
+            </Box>
+            <ValueWithLabel
+              title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}
+              value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
+            />
+          </Flex>
+          <Flex alignItems="end">
+            <Box mr="6px">
+              <CurrencyLogo size="14px" currency={currency1} />
+            </Box>
+            <ValueWithLabel
+              title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}
+              value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
+            />
+          </Flex>
         </InfoGrid>
       </Box>
       <Flex flexDirection={['column', 'row']} alignItems="center">
