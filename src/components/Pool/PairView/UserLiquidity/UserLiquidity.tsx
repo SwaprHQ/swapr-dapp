@@ -71,24 +71,22 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             title={t('userLiquidity.poolTokens')}
             value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'}
           />
-          <Flex alignItems="end">
-            <Box mr="6px">
-              <CurrencyLogo size="14px" currency={currency0} />
-            </Box>
-            <ValueWithLabel
-              title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}
-              value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
-            />
-          </Flex>
-          <Flex alignItems="end">
-            <Box mr="6px">
-              <CurrencyLogo size="14px" currency={currency1} />
-            </Box>
-            <ValueWithLabel
-              title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}
-              value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
-            />
-          </Flex>
+          <ValueWithLabel title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}>
+            <Flex alignItems="center">
+              <Box mr="6px">
+                <CurrencyLogo size="14px" currency={currency0} />
+              </Box>
+              {token0Deposited ? token0Deposited.toSignificant(6) : '0'}
+            </Flex>
+          </ValueWithLabel>
+          <ValueWithLabel title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}>
+            <Flex alignItems="center">
+              <Box mr="6px">
+                <CurrencyLogo size="14px" currency={currency1} />
+              </Box>
+              {token1Deposited ? token1Deposited.toSignificant(6) : '0'}
+            </Flex>
+          </ValueWithLabel>
         </InfoGrid>
       </Box>
       <Flex flexDirection={['column', 'row']} alignItems="center">
