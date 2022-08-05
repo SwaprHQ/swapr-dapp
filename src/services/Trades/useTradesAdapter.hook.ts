@@ -2,12 +2,13 @@ import { ChainId, Currency, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useRef, useState } from 'react'
 
-import { useActiveWeb3React } from '../../../hooks'
-import { useToken } from '../../../hooks/Tokens'
-import store from '../../../state'
-import { useSwapState } from '../../../state/swap/hooks'
-import { SwaprAdapter } from '../adapters/swapr.adapter'
-import { Adapters, TradesAdapter } from '../adapters/trades.adapter'
+import { useActiveWeb3React } from '../../hooks'
+import { useToken } from '../../hooks/Tokens'
+import store from '../../state'
+import { useSwapState } from '../../state/swap/hooks'
+import { SwaprAdapter } from './adapters/swapr.adapter'
+import { TradesAdapter } from './adapters/trades.adapter'
+import { Adapters } from './trades.types'
 
 const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,
@@ -61,25 +62,31 @@ export const useTradesAdapter = () => {
   }, [chainId, tradesAdapter])
 
   useEffect(() => {
+    if (!tradesAdapter || !inputToken || !outputToken) return
+
     if (
-      tradesAdapter &&
-      inputToken &&
-      outputToken &&
       // do not fetch data if user reversed pair
-      (previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
-        previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase())
+      previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
+      previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
     ) {
       setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
       tradesAdapter.fetchTradesHistory(inputToken, outputToken)
     }
+
+    const fromTokenAddress = inputToken.address.toLowerCase()
+    const toTokenAddress = outputToken.address.toLowerCase()
+
     previousTokens.current = {
-      inputTokenAddress: inputToken?.address.toLowerCase(),
-      outputTokenAddress: outputToken?.address.toLowerCase(),
+      inputTokenAddress: fromTokenAddress,
+      outputTokenAddress: toTokenAddress,
     }
+
+    tradesAdapter.setPairTokensAddresses({ fromTokenAddress, toTokenAddress })
   }, [inputToken, outputToken, tradesAdapter])
 
   return {
     symbol,
     showTrades: inputToken && outputToken ? true : false,
+    chainId,
   }
 }

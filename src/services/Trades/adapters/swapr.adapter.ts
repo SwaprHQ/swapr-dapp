@@ -3,46 +3,10 @@ import { ChainId, Pair, Token } from '@swapr/sdk'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { actions } from '../store'
-import { SWAPR_PAIR_TRANSACTIONS } from './queries'
-import { AbstractTradesAdapter, AdapterInitialArguments, AdapterKeys } from './trades.adapter'
-
-type LiquidityTransaction = {
-  id: string
-  transaction: {
-    id: string
-  }
-  amount0: string
-  amount1: string
-  amountUSD: string
-  timestamp: string
-}
-
-type TradesHistory = {
-  amount0In: string
-  amount0Out: string
-  amount1In: string
-  amount1Out: string
-  amountUSD: string
-  id: string
-  timestamp: string
-  transaction: { id: string }
-}
-
-export type SwaprTradesHistory = {
-  pair: {
-    id: string
-    token0: {
-      symbol: string
-    }
-    token1: {
-      symbol: string
-    }
-    burns: LiquidityTransaction[]
-    mints: LiquidityTransaction[]
-    swaps: TradesHistory[]
-  } | null
-}
+import { SWAPR_PAIR_TRANSACTIONS } from '../trades.queries'
+import { actions } from '../trades.reducer'
+import { AdapterInitialArguments, AdapterKeys, SwaprTradesHistory } from '../trades.types'
+import { AbstractTradesAdapter } from './trades.adapter'
 
 export class SwaprAdapter extends AbstractTradesAdapter {
   private get store() {
@@ -81,7 +45,8 @@ export class SwaprAdapter extends AbstractTradesAdapter {
 
       this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
     } catch {
-      console.warn('Cannot fetch history transaction')
+      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
+      // TODO: add error state for each adapter.
     }
   }
 }

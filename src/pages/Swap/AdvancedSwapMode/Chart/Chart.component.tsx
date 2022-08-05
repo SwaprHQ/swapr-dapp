@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { AdvancedRealTimeChart } from 'react-ts-tradingview-widgets'
 
-export const AdvancedChart = ({ symbol }: { symbol?: string }) => {
-  const memoizedAdvancedRealTimeChart = useMemo(() => {
+export const Chart = ({ symbol }: { symbol?: string }) => {
+  const chart = useMemo(() => {
     return (
       <AdvancedRealTimeChart
         symbol={symbol ?? 'USDCUSD'}
@@ -15,5 +15,5 @@ export const AdvancedChart = ({ symbol }: { symbol?: string }) => {
     )
   }, [symbol])
 
-  return <>{memoizedAdvancedRealTimeChart}</>
+  return <>{chart}</>
 }

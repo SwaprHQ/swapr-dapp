@@ -5,9 +5,11 @@ export const SWAPR_PAIR_TRANSACTIONS = gql`
     pair(id: $pairId) {
       id
       token0 {
+        id
         symbol
       }
       token1 {
+        id
         symbol
       }
       mints(first: 1000) {
