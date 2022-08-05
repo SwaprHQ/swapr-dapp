@@ -15,7 +15,11 @@ import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
-import { getExactIn as getExactInFromEcoRouter, getExactOut as getExactOutFromEcoRouter } from '../../lib/eco-router'
+import {
+  EcoRouterResults,
+  getExactIn as getExactInFromEcoRouter,
+  getExactOut as getExactOutFromEcoRouter,
+} from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
@@ -329,9 +333,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     commonParams: { maximumSlippage: Percent; receiver: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
     s: StaticJsonRpcProvider | undefined
-  ):
-    | import('/home/jorge/GIT/swapr-dapp/src/lib/eco-router/types').EcoRouterResults
-    | PromiseLike<import('/home/jorge/GIT/swapr-dapp/src/lib/eco-router/types').EcoRouterResults> {
+  ): PromiseLike<EcoRouterResults> {
     return isExactIn
       ? getExactInFromEcoRouter(
           {
