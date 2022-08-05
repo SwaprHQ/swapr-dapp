@@ -46,6 +46,7 @@ export class SwaprAdapter extends AbstractTradesAdapter {
       this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
     } catch {
       this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
+      // TODO: add error state for each adapter.
     }
   }
 }

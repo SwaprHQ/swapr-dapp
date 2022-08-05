@@ -1,18 +1,13 @@
 import { ChainId } from '@swapr/sdk'
 
-import { formatDistance, subDays } from 'date-fns'
-import { CSSProperties, useLayoutEffect, useState } from 'react'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ROUTABLE_PLATFORM_LOGO } from '../../../../constants'
 import { ExternalLink } from '../../../../theme/components'
 import { getExplorerLink } from '../../../../utils'
-
-enum SizeOfTrade {
-  MIN = 1000,
-  MAX = 100000,
-}
+import { useStylingTradeBackground } from './Trade.hooks'
+import { formatDate } from './Trade.utils'
 
 const TradeWrapper = styled(ExternalLink)`
   display: flex;
@@ -45,46 +40,7 @@ export const Trade = ({
   logoKey: string
   isSell?: boolean
 }) => {
-  const [style, setStyle] = useState<CSSProperties>()
-
-  const formatDate = (timestamp: number) => {
-    try {
-      return formatDistance(subDays(new Date(timestamp), 3), new Date(), {
-        addSuffix: true,
-      })
-    } catch {
-      return '-'
-    }
-  }
-
-  useLayoutEffect(() => {
-    const color = isSell ? '#f02e51' : '#0e9f6e'
-    const background = isSell ? 'rgba(45, 24, 40, 0.5)' : 'rgb(20, 33, 36, 0.5)'
-    const amountUSDNumber = Number(amountUSD)
-
-    if (amountUSDNumber < SizeOfTrade.MIN) {
-      setStyle({
-        background: `transparent`,
-        color,
-      })
-      return
-    }
-
-    if (amountUSDNumber > SizeOfTrade.MAX) {
-      setStyle({
-        background,
-        color,
-      })
-      return
-    }
-
-    const width = (100 - amountUSDNumber / SizeOfTrade.MIN).toFixed(0).toString()
-
-    setStyle({
-      background: `linear-gradient(to right, transparent ${width}%, ${background} ${width}% 100%)`,
-      color,
-    })
-  }, [amountUSD, isSell])
+  const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell: isSell })
 
   return (
     <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
