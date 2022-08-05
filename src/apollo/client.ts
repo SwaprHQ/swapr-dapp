@@ -18,11 +18,6 @@ export const defaultSubgraphClient = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-export const oldBuildClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one',
-  cache: new InMemoryCache(),
-})
-
 export const subgraphClients: {
   [chainId in SWPRSupportedChains]: ApolloClient<NormalizedCacheObject>
 } = {
