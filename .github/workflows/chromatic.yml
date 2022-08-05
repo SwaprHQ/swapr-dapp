@@ -1,16 +1,17 @@
 name: 'Chromatic'
 
 on:
-  push:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+    types: [opened, synchronize, reopened]
 
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft }}
+    if: (!github.event.pull_request.draft && github.actor != 'dependabot[bot]')
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install dependencies
         run: yarn
 

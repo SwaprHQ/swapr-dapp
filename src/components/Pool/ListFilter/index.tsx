@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
-import React, { ChangeEvent, useCallback } from 'react'
+import { ChangeEvent, useCallback } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 

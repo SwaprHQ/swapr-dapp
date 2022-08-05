@@ -7,7 +7,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 

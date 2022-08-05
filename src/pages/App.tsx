@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
-import React, { Suspense, useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
 import styled, { useTheme } from 'styled-components'

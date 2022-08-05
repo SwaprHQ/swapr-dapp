@@ -1,5 +1,5 @@
 import { useSpring } from '@react-spring/web'
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useMeasure } from 'react-use'
 import { Box, Text } from 'rebass'
 

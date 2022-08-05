@@ -1,5 +1,5 @@
 import { transparentize } from 'polished'
-import React, { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import 'react-datepicker/dist/react-datepicker.min.css'
 import { Text, TextProps } from 'rebass'
 import styled, {
@@ -150,14 +150,7 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
 
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
 
-  return (
-    <>
-      {/* TODO: Fix types and move to Styled Components v6 */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-expect-error */}
-      <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
-    </>
-  )
+  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
 const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`
@@ -165,49 +158,49 @@ const TextWrapper = styled(({ color: _color, ...rest }) => <Text {...rest} />)`
 `
 
 export const TYPE = {
-  main(props: TextProps) {
+  Main(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'text2'} {...props} />
   },
-  link(props: TextProps) {
+  Link(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
   },
-  black(props: TextProps) {
+  Black(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'text1'} {...props} />
   },
-  white(props: TextProps) {
+  White(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'white'} {...props} />
   },
-  body(props: TextProps) {
+  Body(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={14} lineHeight="20px" color={'text5'} {...props} />
   },
-  largeHeader(props: TextProps) {
+  LargeHeader(props: TextProps) {
     return <TextWrapper fontWeight={600} fontSize={24} {...props} />
   },
-  mediumHeader(props: TextProps) {
+  MediumHeader(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={20} {...props} />
   },
-  subHeader(props: TextProps) {
+  SubHeader(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={14} {...props} />
   },
-  small(props: TextProps) {
+  Small(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={11} {...props} />
   },
-  blue(props: TextProps) {
+  Blue(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
   },
-  yellow(props: TextProps) {
+  Yellow(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
   },
-  darkGray(props: TextProps) {
+  DarkGray(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'text3'} {...props} />
   },
-  gray(props: TextProps) {
+  Gray(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'bg3'} {...props} />
   },
-  italic(props: TextProps) {
+  Italic(props: TextProps) {
     return <TextWrapper fontWeight={500} fontSize={12} fontStyle={'italic'} color={'text2'} {...props} />
   },
-  error({ error, ...props }: { error: boolean } & TextProps) {
+  Error({ error, ...props }: { error: boolean } & TextProps) {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
   },
 }
@@ -604,26 +597,7 @@ body {
   }
 }
 
-.loading-button{
-  position:relative;
-  display: flex;
-  flex: 1;
-  justify-content: start;
-  align-items: flex-end;
-  height: 20px;
-  margin-left: 11px;
-}
-
-.loading-button>div {
-  position: absolute;
-  opacity: 0;
-  display: flex;
-}
-
-.loading-button>div>div{
-  padding: 0px 5px;
-}
-
+// rotating trade plataforms logos loading
 .loading-rotation-3>div {
   animation-name: loading-rotations-3;
   animation-timing-function: ease-in-out;

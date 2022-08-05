@@ -3,13 +3,13 @@ import { CurrencyAmount, USD } from '@swapr/sdk'
 
 import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
-import { useActiveWeb3React } from 'hooks'
 import { DateTime } from 'luxon'
 import { useMemo } from 'react'
-import { SWPRSupportedChains } from 'utils/chainSupportsSWPR'
 
 import { subgraphBlocksClients } from '../apollo/client'
 import { ZERO_USD } from '../constants'
+import { useActiveWeb3React } from '../hooks'
+import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const GET_BLOCK_BY_TIMESTAMP = gql`
   query getBlockFromTimestamp($date: String!) {

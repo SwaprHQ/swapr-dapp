@@ -2,7 +2,6 @@ import { ChainId, RoutablePlatform, Trade } from '@swapr/sdk'
 
 import { formatUnits } from 'ethers/lib/utils'
 import { transparentize } from 'polished'
-import React from 'react'
 import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'

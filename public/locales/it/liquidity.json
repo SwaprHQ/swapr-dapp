@@ -1,0 +1,11 @@
+{
+  "liquidityMining.header": "Liq. Mining",
+  "liquidityMining.title": "Liquidity Mining",
+  "liquidityMining.create.title": "Create a Rewards Campaign",
+  "liquidityMining.create.chooseCampaign": "Choose Campaign Type",
+  "liquidityMining.create.selectToken": "Select Token To Stake",
+  "liquidityMining.create.selectPair": "Select Pair To Stake",
+  "liquidityMining.create.duration": "Campaign Duration",
+  "liquidityMining.create.reward": "Select Token To Reward",
+  "liquidityMining.create.preview": "Preview, approve and create mining pool"
+}
