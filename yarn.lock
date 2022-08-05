@@ -4826,16 +4826,17 @@
   dependencies:
     typescript "^3.9.5"
 
-"@swapr/periphery@^0.3.22":
+"@swapr/periphery@^0.3.21", "@swapr/periphery@^0.3.22":
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.22.tgz#d1c084e9cb186c44e24ee0757843d595e315de95"
   integrity sha512-0iBH+BYz+KHb9XOj+jO6jgU9IG1uzvb9+VH0yq8GMYTxsVcUm1eR0TdJWet6/PbxfoROZtIAwwgrtxWpxBL8yg==
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@https://git@github.com/levelkdev/swapr-sdk.git#release/1.6.0-rc.3":
-  version "1.6.0-rc.3"
-  resolved "https://git@github.com/levelkdev/swapr-sdk.git#c75100977c81b2cfe09ebefbb4d3ed206dd07e88"
+"@swapr/sdk@1.6.0-rc.2":
+  version "1.6.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0-rc.2.tgz#6127fb3ccc2cbc3c3f63355a46d8df9895ae9286"
+  integrity sha512-6Z4U5zXR+FehhGut9F5tP6NrqiO+ss9tYi3jrB6HmLg3yV9odU7mk9ZATCLTb1y1tAv7Gff0dif4qaCpd1curQ==
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
@@ -4849,7 +4850,7 @@
     "@ethersproject/transactions" "^5.4.0"
     "@ethersproject/units" "^5.4.0"
     "@swapr/core" "^0.3.19"
-    "@swapr/periphery" "^0.3.22"
+    "@swapr/periphery" "^0.3.21"
     "@uniswap/smart-order-router" "^2.6.0"
     big.js "^5.2.2"
     dayjs "^1.11.0"
