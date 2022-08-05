@@ -236,31 +236,23 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       },
     }
 
-    console.log({ provider })
     // Use a static version
-    const staticProvider = provider ? new StaticJsonRpcProvider(provider?.connection.url) : undefined
+    const staticProvider = provider
+      ? provider.getNetwork().then(n => (provider ? new StaticJsonRpcProvider(provider?.connection.url, n) : undefined))
+      : Promise.resolve(undefined)
 
     console.log('useDerivedSwapInfo: fetching trades')
 
-    const getTrades = isExactIn
-      ? getExactInFromEcoRouter(
-          {
-            currencyAmountIn: parsedAmount,
-            currencyOut: outputCurrency,
-            ...commonParams,
-          },
-          ecoRouterSourceOptionsParams,
-          staticProvider
-        )
-      : getExactOutFromEcoRouter(
-          {
-            currencyAmountOut: parsedAmount,
-            currencyIn: inputCurrency,
-            ...commonParams,
-          },
-          ecoRouterSourceOptionsParams,
-          staticProvider
-        )
+    const getTrades = staticProvider.then(staticProvider => {
+      return getTradesPromise(
+        parsedAmount,
+        inputCurrency,
+        outputCurrency,
+        commonParams,
+        ecoRouterSourceOptionsParams,
+        staticProvider
+      )
+    })
 
     // Start fetching trades from EcoRouter API
     getTrades
@@ -328,6 +320,37 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     allPlatformTrades,
     inputError: returnInputError,
     loading,
+  }
+
+  function getTradesPromise(
+    parsedAmount: CurrencyAmount,
+    inputCurrency: Currency,
+    outputCurrency: Currency,
+    commonParams: { maximumSlippage: Percent; receiver: string },
+    ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
+    s: StaticJsonRpcProvider | undefined
+  ):
+    | import('/home/jorge/GIT/swapr-dapp/src/lib/eco-router/types').EcoRouterResults
+    | PromiseLike<import('/home/jorge/GIT/swapr-dapp/src/lib/eco-router/types').EcoRouterResults> {
+    return isExactIn
+      ? getExactInFromEcoRouter(
+          {
+            currencyAmountIn: parsedAmount,
+            currencyOut: outputCurrency,
+            ...commonParams,
+          },
+          ecoRouterSourceOptionsParams,
+          s
+        )
+      : getExactOutFromEcoRouter(
+          {
+            currencyAmountOut: parsedAmount,
+            currencyIn: inputCurrency,
+            ...commonParams,
+          },
+          ecoRouterSourceOptionsParams,
+          s
+        )
   }
 }
 
