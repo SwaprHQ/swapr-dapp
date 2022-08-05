@@ -202,8 +202,10 @@ export default function Swap() {
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
+    } else {
+      setApprovalSubmitted(false)
     }
-  }, [approval, approvalSubmitted])
+  }, [approval])
 
   // Listen for changes on wrapState
   useEffect(() => {
