@@ -29,7 +29,6 @@ export default function useENSName(address?: string): { ENSName: string | null; 
     false
   )
   const name = useSingleCallResult(resolverContract, 'name', ensNodeArgument)
-
   const changed = debouncedAddress !== address
   return {
     ENSName: changed ? null : name.result?.[0] ?? null,

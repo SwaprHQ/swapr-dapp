@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
+import { ChainId } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -53,12 +54,23 @@ export function useTransactionAdder(): (
 }
 
 // returns all the transactions for the current chain
-export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
+export function useAllTransactions(all = false): { [txHash: string]: TransactionDetails } {
   const { chainId } = useActiveWeb3React()
 
-  const state = useSelector<AppState, AppState['transactions']>(state => state.transactions)
+  const allTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 
-  return chainId ? state[chainId] ?? {} : {}
+  return useMemo(() => {
+    if (all) {
+      return Object.keys(allTransactions).reduce((merged, cId: any) => {
+        const netrowkTransactions = allTransactions[cId]
+        for (const transaction in netrowkTransactions) {
+          netrowkTransactions[transaction]['network'] = cId
+        }
+        return { ...merged, ...netrowkTransactions }
+      }, {})
+    }
+    return chainId ? allTransactions[chainId] ?? {} : {}
+  }, [all, allTransactions, chainId])
 }
 
 export function useIsTransactionPending(transactionHash?: string): boolean {
