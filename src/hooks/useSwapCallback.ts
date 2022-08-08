@@ -113,7 +113,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trades])
+  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
 }
 
 /**
@@ -314,11 +314,11 @@ export function useSwapCallback({
     library,
     account,
     chainId,
-    recipient,
-    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
     mainnetGasPrices,
+    recipientAddressOrName,
+    recipient,
     addTransaction,
   ])
 }

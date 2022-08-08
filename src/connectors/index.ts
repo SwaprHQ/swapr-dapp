@@ -17,6 +17,7 @@ export const network = new CustomNetworkConnector({
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
     [ChainId.POLYGON]: 'https://polygon-rpc.com/',
+    [ChainId.ARBITRUM_GOERLI]: 'https://goerli-rollup.arbitrum.io/rpc',
   },
   defaultChainId: ChainId.MAINNET,
 })
@@ -29,6 +30,7 @@ export const injected = new InjectedConnector({
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.ARBITRUM_GOERLI,
   ],
 })
 
@@ -61,5 +63,6 @@ export const walletLink = new CustomWalletLinkConnector({
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.ARBITRUM_GOERLI,
   ],
 })
