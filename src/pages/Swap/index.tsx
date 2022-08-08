@@ -113,7 +113,6 @@ export default function Swap() {
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
-  console.log('platform override', platformOverride)
 
   const {
     trade: potentialTrade,
@@ -124,7 +123,6 @@ export default function Swap() {
     inputError: swapInputError,
     loading,
   } = useDerivedSwapInfo(platformOverride || undefined)
-  console.log('alltrades', allPlatformTrades)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
@@ -146,7 +144,6 @@ export default function Swap() {
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
 
   const trade = showWrap ? undefined : potentialTrade
-  console.log('trade', trade)
 
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
@@ -200,7 +197,6 @@ export default function Swap() {
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
-  // const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const [approvalsSubmitted, setApprovalsSubmitted] = useState<boolean[]>([])
 
   const currentTradeIndex = useMemo(() => {
@@ -325,8 +321,7 @@ export default function Swap() {
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
-      // setApprovalSubmitted(false) // reset 2 step UI for approvals
-      setApprovalsSubmitted([])
+      setApprovalsSubmitted([]) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
     [onCurrencySelection]
@@ -479,7 +474,6 @@ export default function Swap() {
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          ss
           {showAdvancedSwapDetails && (
             <AdvancedSwapDetailsDropdown
               isLoading={loading}
@@ -488,7 +482,6 @@ export default function Swap() {
               onSelectedPlatformChange={setPlatformOverride}
             />
           )}
-          ss
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>
