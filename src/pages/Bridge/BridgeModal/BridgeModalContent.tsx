@@ -99,7 +99,7 @@ export const BridgeModalContent = ({
                     {text}
                   </TYPE.Main>
                   <ButtonPrimary data-testid="close-bridge-initiated-button" onClick={onDismiss}>
-                    {t('bridgeBackText')}
+                    {t('bridge.backText')}
                   </ButtonPrimary>
                 </>
               )}
