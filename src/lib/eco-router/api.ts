@@ -177,6 +177,7 @@ export async function getExactIn(
       currencyAmountIn,
       currencyOut,
       maximumSlippage,
+      user: '', // FIXME: is this right? */
       receiver,
     })
       .then(resolve)
@@ -332,6 +333,7 @@ export async function getExactOut(
       currencyAmountOut,
       currencyIn,
       maximumSlippage,
+      user: '', // FIXME: fix this */
       receiver,
     })
       .then(resolve)

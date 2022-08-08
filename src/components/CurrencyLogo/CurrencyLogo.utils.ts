@@ -10,7 +10,11 @@ export const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
   [ChainId.RINKEBY]: EtherLogo,
   [ChainId.ARBITRUM_ONE]: EtherLogo,
   [ChainId.ARBITRUM_RINKEBY]: EtherLogo,
+  [ChainId.ARBITRUM_GOERLI]: EtherLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.OPTIMISM_GOERLI]: EtherLogo,
+  [ChainId.OPTIMISM_MAINNET]: EtherLogo,
+  [ChainId.GOERLI]: EtherLogo,
 }
 
 // From repo https://github.com/trustwallet/assets/tree/master/blockchains
