@@ -1,4 +1,4 @@
-import { GnosisProtocolTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { CoWTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { useState } from 'react'
 import { Trans } from 'react-i18next'
@@ -87,7 +87,7 @@ export function TradeDetails({
             <SwapSettings
               showAddRecipient={showAddRecipient}
               setShowAddRecipient={setShowAddRecipient}
-              isMEVProtectionEnabled={trade instanceof GnosisProtocolTrade}
+              isMEVProtectionEnabled={trade instanceof CoWTrade}
             />
             <RowFixed>
               <TradePrice price={trade?.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
