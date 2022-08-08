@@ -217,7 +217,7 @@ export default function Swap() {
       setApprovalsSubmitted(newArray)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approval, trade])
+  }, [approval])
 
   // Listen for changes on wrapState
   useEffect(() => {
