@@ -239,7 +239,9 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
     // Use a static version
     const staticProvider = provider
-      ? provider.getNetwork().then(n => (provider ? new StaticJsonRpcProvider(provider?.connection.url, n) : undefined))
+      ? provider
+          .getNetwork()
+          .then(network => (provider ? new StaticJsonRpcProvider(provider?.connection.url, network) : undefined))
       : Promise.resolve(undefined)
 
     console.log('useDerivedSwapInfo: fetching trades')
