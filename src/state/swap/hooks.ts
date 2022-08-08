@@ -330,7 +330,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     parsedAmount: CurrencyAmount,
     inputCurrency: Currency,
     outputCurrency: Currency,
-    commonParams: { maximumSlippage: Percent; receiver: string },
+    commonParams: { maximumSlippage: Percent; receiver: string; user: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
     staticJsonRpcProvider: StaticJsonRpcProvider | undefined
   ): PromiseLike<EcoRouterResults> {
