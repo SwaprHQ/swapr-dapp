@@ -12,8 +12,8 @@ import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const GET_BLOCK_BY_TIMESTAMP = gql`
-  query getBlockFromTimestamp($date: String!) {
-    blocks(first: 1, orderBy: number, orderDirection: asc, where: { timestamp_gt: $date }) {
+  query getBlockFromTimestamp($timestamp: String!) {
+    blocks(first: 10, orderBy: number, orderDirection: asc, where: { timestamp_gt: $timestamp }) {
       number
     }
   }
@@ -57,7 +57,7 @@ function useBlockByTimestamp(timestamp: string) {
   const { loading, data, error } = useQuery(GET_BLOCK_BY_TIMESTAMP, {
     client: subgraphBlocksClients[chainId as SWPRSupportedChains],
     variables: {
-      date: timestamp,
+      timestamp: timestamp,
     },
   })
 
