@@ -50,6 +50,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
 
     getExactIn(
       {
+        user: account,
         currencyAmountIn,
         currencyOut,
         maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
@@ -131,6 +132,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
 
     getExactOut(
       {
+        user: account,
         currencyAmountOut,
         currencyIn,
         maximumSlippage: new Percent(userSlippageTolerance.toString(), '10000'),
