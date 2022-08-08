@@ -329,7 +329,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     outputCurrency: Currency,
     commonParams: { maximumSlippage: Percent; receiver: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-    s: StaticJsonRpcProvider | undefined
+    staticJsonRpcProvider: StaticJsonRpcProvider | undefined
   ): PromiseLike<EcoRouterResults> {
     return isExactIn
       ? getExactInFromEcoRouter(
@@ -339,7 +339,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             ...commonParams,
           },
           ecoRouterSourceOptionsParams,
-          s
+          staticJsonRpcProvider
         )
       : getExactOutFromEcoRouter(
           {
@@ -348,7 +348,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             ...commonParams,
           },
           ecoRouterSourceOptionsParams,
-          s
+          staticJsonRpcProvider
         )
   }
 }
