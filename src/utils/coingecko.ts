@@ -36,6 +36,13 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.OPTIMISM_GOERLI]: null,
 }
 
+const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.ARBITRUM_ONE]: 'ethereum',
+  [ChainId.XDAI]: 'xdai',
+  [ChainId.POLYGON]: 'matic-network',
+}
+
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {
@@ -49,9 +56,13 @@ function _get(chainId: ChainId, url: string): Promise<Response> {
   return _fetch(chainId, url, 'GET')
 }
 
-export interface CoinGeckoUsdPriceParams {
+export interface CoinGeckoUsdPriceTokenParams {
   chainId: ChainId
-  tokenAddress: string
+  tokenAddress?: string
+}
+
+export interface CoinGeckoUsdPriceCurrencyParams {
+  chainId: ChainId
 }
 
 interface CoinGeckoUsdQuote {
@@ -60,7 +71,7 @@ interface CoinGeckoUsdQuote {
   }
 }
 
-export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise<CoinGeckoUsdQuote | null> {
+export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams): Promise<CoinGeckoUsdQuote | null> {
   const { chainId, tokenAddress } = params
 
   const assetPlatform = COINGECKO_ASSET_PLATFORM[chainId]
@@ -73,6 +84,25 @@ export async function getUSDPriceQuote(params: CoinGeckoUsdPriceParams): Promise
     chainId,
     `/simple/token_price/${assetPlatform}?contract_addresses=${tokenAddress}&vs_currencies=usd`
   ).catch(error => {
+    console.error(`Error getting ${API_NAME} USD price quote:`, error)
+    throw new Error(error)
+  })
+
+  return response.json()
+}
+
+export async function getUSDPriceCurrencyQuote(
+  params: CoinGeckoUsdPriceCurrencyParams
+): Promise<CoinGeckoUsdQuote | null> {
+  const { chainId } = params
+
+  const nativeCurrency = COINGECKO_NATIVE_CURRENCY[chainId]
+  if (nativeCurrency == null) {
+    // Unsupported
+    return null
+  }
+
+  const response = await _get(chainId, `/simple/price?ids=${nativeCurrency}&vs_currencies=usd`).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
   })
