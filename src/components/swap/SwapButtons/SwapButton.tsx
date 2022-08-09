@@ -1,8 +1,8 @@
 import shuffle from 'lodash/shuffle'
 import { useTranslation } from 'react-i18next'
-import { Box, Flex, Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import {
   PRICE_IMPACT_HIGH,
@@ -17,6 +17,10 @@ import { ButtonPrimary } from '../../Button'
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>
     !disabled && gradientColor && `linear-gradient(90deg, #2E17F2 19.74%, ${gradientColor} 120.26%)`};
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    padding: 1rem 0.5rem;
+  `};
 `
 
 const StyledSwapLoadingButton = styled(ButtonPrimary)`
@@ -52,9 +56,27 @@ const LogoWithText = styled.div`
   justify-content: center;
 `
 
-const StyledPlataformText = styled(Text)`
-  text-transform: none;
+const UnifyFontSize = css`
   font-size: 15px;
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 13px;
+  `};
+`
+
+const StyledPlatformText = styled.div`
+  text-transform: none;
+  margin-left: 0.5rem;
+  ${UnifyFontSize}
+`
+
+const UnifiedText = styled(Text)`
+  ${UnifyFontSize}
+`
+
+const AnywayText = styled.span`
+  margin-left: 0.5rem;
+  ${UnifyFontSize}
 `
 
 interface SwapButtonProps {
@@ -94,8 +116,8 @@ export const SwapButton = ({
         ) : priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode ? (
           t('button.priceImpactTooHigh')
         ) : (
-          <Flex alignItems="center">
-            <Text fontSize="15px">{t('button.swapWith')}</Text>
+          <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
+            <UnifiedText>{t('button.swapWith')}</UnifiedText>
             {platformName && (
               <Flex alignItems="center" marginLeft={2}>
                 <img
@@ -104,12 +126,10 @@ export const SwapButton = ({
                   width={21}
                   height={21}
                 />
-                <Box marginLeft={2}>
-                  <StyledPlataformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlataformText>
-                </Box>
+                <StyledPlatformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlatformText>
               </Flex>
             )}
-            {priceImpactSeverity > PRICE_IMPACT_MEDIUM && ` ${t('button.anyway')}`}
+            <AnywayText>{priceImpactSeverity > PRICE_IMPACT_MEDIUM && t('button.anyway')}</AnywayText>
           </Flex>
         )}
       </Text>
