@@ -73,10 +73,11 @@ export const carrotSubgraphClient: { [chainId: number]: ApolloClient<NormalizedC
 export const subgraphBlocksClientsUris: { [chainId in SWPRSupportedChains]: string } = {
   [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
-  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/1hive/xdai-blocks',
+  [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/1hive/xdai-blocks',
   // testnests
   [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
   [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
+  [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
 }
 
 export const subgraphBlocksClients: {
@@ -102,4 +103,8 @@ export const subgraphBlocksClients: {
     uri: subgraphBlocksClientsUris[ChainId.ARBITRUM_RINKEBY],
     cache: new InMemoryCache(),
   }),
+  [ChainId.ARBITRUM_GOERLI]: new ApolloClient({
+    uri: subgraphClientsUris[ChainId.ARBITRUM_GOERLI],
+    cache: new InMemoryCache(),
+  }), // FIXME: fix this once the subgraph is deployed
 }
