@@ -205,7 +205,7 @@ export default function Swap() {
         trade => trade && platformOverride && trade.platform.name === platformOverride.name
       )
     } else {
-      return 0
+      return -1
     }
   }, [platformOverride, allPlatformTrades])
 
@@ -409,8 +409,7 @@ export default function Swap() {
                   <SwitchIconContainer>
                     <SwitchTokensAmountsContainer
                       onClick={() => {
-                        // setApprovalSubmitted(false) // reset 2 step UI for approvals
-                        setApprovalsSubmitted([])
+                        setApprovalsSubmitted([]) // reset 2 step UI for approvals
                         onSwitchTokens()
                       }}
                     >
