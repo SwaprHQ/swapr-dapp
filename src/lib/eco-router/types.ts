@@ -11,9 +11,17 @@ export interface EcoRouterHookResults extends EcoRouterResults {
 }
 
 export interface EcoRouterHookCommonParams {
-  // Receiver address
+  /**
+   * The user address to use for the trade.
+   */
+  user: string
+  /**
+   * Receiver address
+   */
   receiver?: string
-  // Allowed percentage
+  /**
+   * Allowed percentage
+   */
   maximumSlippage: Percent
 }
 

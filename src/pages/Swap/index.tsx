@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, GnosisProtocolTrade, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -71,7 +71,7 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-export enum GnosisProtocolTradeState {
+export enum CoWTradeState {
   UNKNOWN, // default
   WRAP,
   APPROVAL,
@@ -126,7 +126,7 @@ export default function Swap() {
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
-  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(GnosisProtocolTradeState.UNKNOWN)
+  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)
   const {
     wrapType,
     execute: onWrap,
@@ -136,12 +136,12 @@ export default function Swap() {
   } = useWrapCallback(
     currencies.INPUT,
     currencies.OUTPUT,
-    potentialTrade instanceof GnosisProtocolTrade,
+    potentialTrade instanceof CoWTrade,
     potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
 
   const bestPricedTrade = allPlatformTrades?.[0]
-  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof GnosisProtocolTrade)
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
 
   const trade = showWrap ? undefined : potentialTrade
 
@@ -223,8 +223,8 @@ export default function Swap() {
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
-      else setGnosisProtocolState(GnosisProtocolTradeState.APPROVAL)
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
+      else setGnosisProtocolState(CoWTradeState.APPROVAL)
     }
   }, [wrapState, approval, trade])
 
@@ -264,8 +264,8 @@ export default function Swap() {
           txHash: hash,
         })
         //reset states, in case we want to operate again
-        if (trade instanceof GnosisProtocolTrade) {
-          setGnosisProtocolState(GnosisProtocolTradeState.WRAP)
+        if (trade instanceof CoWTrade) {
+          setGnosisProtocolState(CoWTradeState.WRAP)
           setWrapState && setWrapState(WrapState.UNKNOWN)
         }
       })
@@ -277,7 +277,7 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(GnosisProtocolTradeState.SWAP)
+        setGnosisProtocolState(CoWTradeState.SWAP)
       })
   }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
 
@@ -354,10 +354,10 @@ export default function Swap() {
   )
 
   const isInputPanelDisabled =
-    (gnosisProtocolTradeState === GnosisProtocolTradeState.APPROVAL ||
-      gnosisProtocolTradeState === GnosisProtocolTradeState.SWAP ||
+    (gnosisProtocolTradeState === CoWTradeState.APPROVAL ||
+      gnosisProtocolTradeState === CoWTradeState.SWAP ||
       wrapState === WrapState.PENDING) &&
-    trade instanceof GnosisProtocolTrade
+    trade instanceof CoWTrade
 
   return (
     <>
