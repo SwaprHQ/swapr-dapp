@@ -63,7 +63,7 @@ function useBlockByTimestamp(timestamp: string) {
 
   return useMemo(() => {
     if (loading) return { loading: true, block: 0 }
-    if (!data || error) return { loading: false, block: 0 }
+    if (!data || error) return { loading: false, block: 0, error: error }
     return {
       loading,
       block: parseInt(data.blocks[0].number, 10),
@@ -76,7 +76,8 @@ export function usePair24hVolumeUSD(
   isToken = false
 ): { loading: boolean; volume24hUSD: CurrencyAmount } {
   const timestamp24hAgo = DateTime.now().minus({ days: 1 }).toSeconds().toFixed()
-  const { block } = useBlockByTimestamp(timestamp24hAgo)
+
+  const { block, loading: blockLoading, error: blockError } = useBlockByTimestamp(timestamp24hAgo)
 
   const {
     data: volumeTill24agoData,
@@ -105,14 +106,15 @@ export function usePair24hVolumeUSD(
   const volume24hAgo = isToken ? volume24hAgoTokens() : volume24hAgoPairs()
 
   return useMemo(() => {
-    if (volumeTill24agoLoading || totalVolumeLoading) return { loading: true, volume24hUSD: ZERO_USD }
+    if (volumeTill24agoLoading || totalVolumeLoading || blockLoading) return { loading: true, volume24hUSD: ZERO_USD }
     if (
       !volumeTill24agoData ||
       !totalVolumeData ||
       volumeTill24agoData.pairs.length === 0 ||
       totalVolumeData.pairs.length === 0 ||
       volumeTill24agoError ||
-      totalVolumeError
+      totalVolumeError ||
+      blockError
     )
       return { loading: false, volume24hUSD: ZERO_USD }
     return {
@@ -129,5 +131,7 @@ export function usePair24hVolumeUSD(
     volumeTill24agoLoading,
     totalVolumeLoading,
     volume24hAgo,
+    blockLoading,
+    blockError,
   ])
 }
