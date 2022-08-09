@@ -239,20 +239,18 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     }
 
     // Use a static version
-        const staticProvider = provider ? new StaticJsonRpcProvider(provider.connection, provider.network) : undefined
+    const staticProvider = provider ? new StaticJsonRpcProvider(provider.connection, provider.network) : undefined
 
     console.log('useDerivedSwapInfo: fetching trades')
 
-    const getTrades = staticProvider.then(staticProvider => {
-      return getTradesPromise(
-        parsedAmount,
-        inputCurrency,
-        outputCurrency,
-        commonParams,
-        ecoRouterSourceOptionsParams,
-        staticProvider
-      )
-    })
+    const getTrades = getTradesPromise(
+      parsedAmount,
+      inputCurrency,
+      outputCurrency,
+      commonParams,
+      ecoRouterSourceOptionsParams,
+      staticProvider
+    )
 
     // Start fetching trades from EcoRouter API
     getTrades
@@ -329,7 +327,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     commonParams: { maximumSlippage: Percent; receiver: string; user: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
     staticJsonRpcProvider: StaticJsonRpcProvider | undefined
-  ): PromiseLike<EcoRouterResults> {
+  ): Promise<EcoRouterResults> {
     return isExactIn
       ? getExactInFromEcoRouter(
           {
