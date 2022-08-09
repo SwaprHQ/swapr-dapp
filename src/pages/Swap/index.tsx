@@ -205,7 +205,7 @@ export default function Swap() {
         trade => trade && platformOverride && trade.platform.name === platformOverride.name
       )
     } else {
-      return -1
+      return 0
     }
   }, [platformOverride, allPlatformTrades])
 
