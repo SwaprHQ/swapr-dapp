@@ -11,6 +11,7 @@ export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } =
   [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
   [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
   [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
+  [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
 }
 
 export const defaultSubgraphClient = new ApolloClient({
@@ -38,6 +39,10 @@ export const subgraphClients: {
     uri: subgraphClientsUris[ChainId.ARBITRUM_RINKEBY],
     cache: new InMemoryCache(),
   }),
+  [ChainId.ARBITRUM_GOERLI]: new ApolloClient({
+    uri: subgraphClientsUris[ChainId.ARBITRUM_GOERLI],
+    cache: new InMemoryCache(),
+  }), // FIXME: fix this once the subgraph is deployed
 }
 
 export const immediateSubgraphClients: { [chainId in SWPRSupportedChains]: GraphQLClient } = {
@@ -46,6 +51,7 @@ export const immediateSubgraphClients: { [chainId in SWPRSupportedChains]: Graph
   [ChainId.XDAI]: new GraphQLClient(subgraphClientsUris[ChainId.XDAI]),
   [ChainId.ARBITRUM_ONE]: new GraphQLClient(subgraphClientsUris[ChainId.ARBITRUM_ONE]),
   [ChainId.ARBITRUM_RINKEBY]: new GraphQLClient(subgraphClientsUris[ChainId.ARBITRUM_RINKEBY]),
+  [ChainId.ARBITRUM_GOERLI]: new GraphQLClient(subgraphClientsUris[ChainId.ARBITRUM_GOERLI]), // FIXME: fix this once the subgraph is deployed
 }
 
 export const immediateCarrotSubgraphClients: { [chainId: number]: GraphQLClient } = {

@@ -28,8 +28,12 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.RINKEBY]: null,
   [ChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [ChainId.ARBITRUM_RINKEBY]: null,
+  [ChainId.ARBITRUM_GOERLI]: null,
   [ChainId.XDAI]: 'xdai',
   [ChainId.POLYGON]: 'polygon-pos',
+  [ChainId.GOERLI]: null,
+  [ChainId.OPTIMISM_MAINNET]: 'optimistic-ethereum',
+  [ChainId.OPTIMISM_GOERLI]: null,
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
