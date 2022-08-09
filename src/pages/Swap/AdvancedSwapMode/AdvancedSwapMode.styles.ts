@@ -44,11 +44,11 @@ export const ColumnCellBox = styled.div`
   z-index: 3;
   flex: 1;
 
-  border: 1px solid rgba(41, 38, 67, 1);
-  border-top: 0;
+  // border: 1px solid rgba(41, 38, 67, 1);
+  // border-top: 0;
 
   @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
+    width: 100%;
   }
   @media screen and (max-width: ${breakpoints.s}) {
     width: 100%;
@@ -59,7 +59,7 @@ export const TitleColumn = styled.div`
   padding: 1rem 0.5rem;
   border-bottom: 1px solid ${({ theme }) => theme.purple6};
   font-weight: 600;
-  color: ${({ theme }) => theme.purple4};
+  color: ${({ theme }) => theme.purple2};
 `
 
 export const BodyColumn = styled.div`
@@ -69,7 +69,7 @@ export const BodyColumn = styled.div`
 export const DiagramContainerBox = styled.div`
   flex: 1;
   ${AdvanceSwapModeHeight}
-  ${BorderStyling}
+  // ${BorderStyling}
   @media screen and (max-width: ${breakpoints.l}) {
     width: 100%;
     flex-wrap: wrap;
@@ -80,7 +80,7 @@ export const InfoContainerBox = styled.div`
   display: flex;
   flex: 0;
   ${AdvanceSwapModeHeight}
-  border-top: 1px solid rgb(41, 38, 67);
+  // border-top: 1px solid rgb(41, 38, 67);
   @media screen and (max-width: ${breakpoints.l}) {
     width: 100%;
     height: auto;
@@ -111,23 +111,49 @@ export const HistoryColumnBox = styled.div`
 `
 
 export const HistoryBox = styled(ColumnCellBox)`
-  height: 50%;
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    height: 400px;
-  }
+  height: 100%;
 `
 
-export const ListBox = styled.div`
+export const Table = styled.div`
   overflow-y: auto;
-  height: calc(100% - 88px);
+  height: calc(100% - 79px);
   position: relative;
   ${CustomScrollBar}
+`
+
+export const TableHeader = styled.div`
+  padding: 0.5rem;
+  display: flex;
+  font-size: 13px;
+  // justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid ${({ theme }) => theme.purple6};
+  font-weight: 600;
+
+  color: ${({ theme }) => theme.purple3};
+  & > div {
+    width: calc(100% / 3);
+  }
+`
+export const TablePoolHeader = styled.div`
+  padding: 0.5rem;
+  display: flex;
+  font-size: 13px;
+  // justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid ${({ theme }) => theme.purple6};
+  font-weight: 600;
+
+  color: ${({ theme }) => theme.purple3};
+  & > div {
+    width: calc(100% / 3);
+  }
 `
 
 export const EmptyCellBody = styled.div`
   padding: 2rem 1rem;
   font-weight: 600;
+  font-size: 0.75rem;
   text-align: center;
   line-height: 1.4;
 `
@@ -153,11 +179,14 @@ export const TradesAndOrderColumnBox = styled.div`
 
 export const TradeContent = styled.div`
   padding: 1rem 0.5rem 0;
+  ${CustomScrollBar}
+  overflow-y: auto;
+  height: 100%;
 
-  @media screen and (max-width: ${breakpoints.l}) {
-    > div {
-      margin-left: auto;
-      margin-right: auto;
-    }
+  // @media screen and (max-width: ${breakpoints.l}) {
+  > div {
+    margin-left: auto;
+    margin-right: auto;
   }
+  // }
 `

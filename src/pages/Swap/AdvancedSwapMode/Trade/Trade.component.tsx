@@ -12,12 +12,15 @@ import { formatDate } from './Trade.utils'
 const TradeWrapper = styled(ExternalLink)`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  margin: 5px;
-  padding: 5px;
+  // justify-content: space-between;
+  font-size: 10px;
+  margin: 0.15rem;
   & > div {
-    flex: 1;
+    padding: 0.15rem;
+    width: calc(100% / 3);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `
 
@@ -44,11 +47,11 @@ export const Trade = ({
 
   return (
     <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
-      <Flex>
+      <Flex alignItems={'center'}>
         {ROUTABLE_PLATFORM_LOGO[logoKey]}
-        <Text sx={{ marginLeft: '10px' }}>{amountIn}</Text>
+        <Text sx={{ marginLeft: '10px', overflowX: 'hidden', textOverflow: 'ellipsis' }}>{amountIn}</Text>
       </Flex>
-      <Text sx={{ textAlign: 'center' }}>{amountOut}</Text>
+      <Text sx={{ textAlign: 'left' }}>{amountOut}</Text>
       <Text sx={{ textAlign: 'right', textTransform: 'uppercase', fontSize: '10px' }}>
         {formatDate(Number(timestamp) * 1000)}
       </Text>

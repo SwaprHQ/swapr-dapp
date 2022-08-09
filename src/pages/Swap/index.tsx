@@ -36,7 +36,14 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
+import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
+import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
+import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
+import Features from './../../components/LandingPageComponents/Features'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
+import Hero from './../../components/LandingPageComponents/layout/Hero'
+import Stats from './../../components/LandingPageComponents/Stats'
+import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
 import { NormalSwapMode } from './NormalSwapMode'
 
@@ -52,6 +59,9 @@ const SwitchIconContainer = styled.div`
   height: 0;
   position: relative;
   width: 100%;
+`
+const LandingBodyContainer = styled.section`
+  width: calc(100% + 32px) !important;
 `
 
 export enum GnosisProtocolTradeState {
@@ -453,10 +463,25 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       {isExpertMode ? (
-        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+        <>
+          <AdvancedSwapMode currencyInSymbol={currencies.INPUT?.symbol} currencyOutSymbol={currencies.OUTPUT?.symbol}>
+            {renderSwapBox()}
+          </AdvancedSwapMode>
+          <Hero />
+        </>
       ) : (
-        <NormalSwapMode>{renderSwapBox()}</NormalSwapMode>
+        <Hero>
+          <NormalSwapMode>{renderSwapBox()}</NormalSwapMode>
+        </Hero>
       )}
+      <LandingBodyContainer>
+        <Features />
+        <Stats />
+        <CommunityBanner />
+        <Timeline />
+        <CommunityLinks />
+        <BlogNavigation />
+      </LandingBodyContainer>
       <Footer />
     </>
   )

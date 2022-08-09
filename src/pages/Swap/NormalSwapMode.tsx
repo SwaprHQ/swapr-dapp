@@ -24,17 +24,17 @@ const LandingBodyContainer = styled.section`
 export const NormalSwapMode: FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
-      <Hero>
-        <AppBodyContainer>{children}</AppBodyContainer>
-      </Hero>
-      <LandingBodyContainer>
+      {/* <Hero> */}
+      <AppBodyContainer>{children}</AppBodyContainer>
+      {/* </Hero> */}
+      {/* <LandingBodyContainer>
         <Features />
         <Stats />
         <CommunityBanner />
         <Timeline />
         <CommunityLinks />
         <BlogNavigation />
-      </LandingBodyContainer>
+      </LandingBodyContainer> */}
     </>
   )
 }

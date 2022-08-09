@@ -99,7 +99,7 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper isExpertMode={isSwapPageExpertMode}>
               <Web3ReactManager>
-                <SpaceBg isExpertMode={isSwapPageExpertMode}>
+                <SpaceBg>
                   <Suspense fallback={<FallbackLoader />}>
                     <Routes />
                   </Suspense>
