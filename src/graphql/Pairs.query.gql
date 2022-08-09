@@ -1,18 +1,11 @@
 query Pairs {
   pairs(first: 1000) {
-    reserve0
-    reserve1
+    ...ReservePart
     token0 {
-      address: id
-      name
-      symbol
-      decimals
+      ...TokenFragment
     }
     token1 {
-      address: id
-      name
-      symbol
-      decimals
+      ...TokenFragment
     }
   }
 }

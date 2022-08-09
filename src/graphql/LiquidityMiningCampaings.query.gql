@@ -1,40 +1,17 @@
 query LiquidityMiningCampaigns($userId: String) {
   liquidityMiningCampaigns(first: 999) {
-    address: id
-    duration
-    startsAt
-    endsAt
-    locked
-    stakingCap
-    stakedAmount
+    ...LiquidityMiningCampaignFragment
     rewards {
-      token {
-        address: id
-        name
-        symbol
-        decimals
-        derivedNativeCurrency
-      }
-      amount
+      ...LiquidityMiningCampaignRewardFragment
     }
     stakablePair {
       id
-      reserveNativeCurrency
-      reserveUSD
-      totalSupply
-      reserve0
-      reserve1
+      ...PairFragment
       token0 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
       token1 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
     }
     liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {

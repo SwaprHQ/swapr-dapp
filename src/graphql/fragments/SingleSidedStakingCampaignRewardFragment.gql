@@ -1,0 +1,10 @@
+fragment SingleSidedStakingCampaignRewardFragment on SingleSidedStakingCampaignReward {
+  token {
+    address: id
+    name
+    symbol
+    decimals
+    derivedNativeCurrency
+  }
+  amount
+}

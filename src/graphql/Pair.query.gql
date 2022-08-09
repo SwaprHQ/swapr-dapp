@@ -1,15 +1,12 @@
 query Pair($pairId: ID!) {
   pair(id: $pairId) {
     id
-    reserve0
-    reserve1
-    reserveNativeCurrency
+    ...PairFragment
     token0 {
       derivedNativeCurrency
     }
     token1 {
       derivedNativeCurrency
     }
-    totalSupply
   }
 }

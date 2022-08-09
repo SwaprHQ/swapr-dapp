@@ -2,41 +2,18 @@ query UserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
   liquidityPositions(where: { user: $userId, liquidityTokenBalance_gt: 0 }) {
     pair {
       address: id
-      reserve0
-      reserve1
-      reserveNativeCurrency
-      reserveUSD
-      totalSupply
+      ...PairFragment
       token0 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
       token1 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
       liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
-        address: id
-        duration
-        startsAt
-        endsAt
-        locked
-        stakingCap
+        ...LiquidityMiningCampaignFragment
         rewards {
-          token {
-            address: id
-            name
-            symbol
-            decimals
-            derivedNativeCurrency
-          }
-          amount
+          ...LiquidityMiningCampaignRewardFragment
         }
-        stakedAmount
         liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
           id
         }
@@ -46,41 +23,18 @@ query UserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
   liquidityMiningPositions(where: { user: $userId, stakedAmount_gt: 0 }) {
     pair: targetedPair {
       address: id
-      reserve0
-      reserve1
-      reserveNativeCurrency
-      reserveUSD
-      totalSupply
+      ...PairFragment
       token0 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
       token1 {
-        address: id
-        name
-        symbol
-        decimals
+        ...TokenFragment
       }
       liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
-        address: id
-        duration
-        startsAt
-        endsAt
-        locked
-        stakingCap
+        ...LiquidityMiningCampaignFragment
         rewards {
-          token {
-            address: id
-            name
-            symbol
-            decimals
-            derivedNativeCurrency
-          }
-          amount
+          ...LiquidityMiningCampaignRewardFragment
         }
-        stakedAmount
         liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
           id
         }

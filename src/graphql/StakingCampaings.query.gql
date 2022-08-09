@@ -1,30 +1,11 @@
 query StakingCampaigns($userId: String) {
   singleSidedStakingCampaigns(first: 999) {
-    id
-    owner
-    duration
-    startsAt
-    endsAt
-    locked
-    stakingCap
-    stakedAmount
+    ...SingleSidedStakingCampaignFragment
     stakeToken {
-      id
-      symbol
-      name
-      decimals
-      totalSupply
-      derivedNativeCurrency
+      ...StakeTokenFragment
     }
     rewards {
-      token {
-        address: id
-        name
-        symbol
-        decimals
-        derivedNativeCurrency
-      }
-      amount
+      ...SingleSidedStakingCampaignRewardFragment
     }
     singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
       id
