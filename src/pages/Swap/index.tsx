@@ -201,10 +201,9 @@ export default function Swap() {
 
   const currentTradeIndex = useMemo(() => {
     if (allPlatformTrades) {
-      const index = allPlatformTrades.findIndex(
+     return allPlatformTrades.findIndex(
         trade => trade && platformOverride && trade.platform.name === platformOverride.name
-      )
-      return index === -1 ? 0 : index
+      ) || 0
     } else {
       return 0
     }
