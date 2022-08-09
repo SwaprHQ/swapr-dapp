@@ -65,7 +65,7 @@ const UnifyFontSize = css`
 `
 
 const StyledPlatformText = styled.div`
-  text-transform: none;
+  text-transform: uppercase;
   margin-left: 0.5rem;
   ${UnifyFontSize}
 `
