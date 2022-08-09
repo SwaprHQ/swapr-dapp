@@ -1,4 +1,4 @@
-import { SWPR } from '@swapr/sdk'
+import { ChainId, SWPR } from '@swapr/sdk'
 
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
@@ -251,7 +251,14 @@ function Header() {
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
+          <HeaderLink
+            data-testid="pool-nav-link"
+            id="pool-nav-link"
+            to="/pools"
+            disabled={
+              networkWithoutSWPR && chainId !== ChainId.ARBITRUM_GOERLI
+            } /* // FIXME: fix this once SWPR is on Arb Goerli */
+          >
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
