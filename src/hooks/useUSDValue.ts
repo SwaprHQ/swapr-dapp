@@ -87,7 +87,7 @@ export function useUSDPrice(tokenAmount?: TokenAmount) {
   }, [chainId, tokenAmount, stablecoin, tradeExactInUniswapV2])
 }
 
-export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency: boolean = false) {
+export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const [price, setPrice] = useState<Price | undefined>()
@@ -198,7 +198,7 @@ export function useUSDValue(tokenAmount?: TokenAmount) {
   return useGetPriceQuote({ price: price, tokenAmount: tokenAmount })
 }
 
-export function useCoingeckoUSDValue(tokenAmount?: TokenAmount, isNativeCurrency: boolean = false) {
+export function useCoingeckoUSDValue(tokenAmount?: TokenAmount, isNativeCurrency = false) {
   const coingeckoUsdPrice = useCoingeckoUSDPrice(tokenAmount?.token, isNativeCurrency)
 
   return useGetPriceQuote({

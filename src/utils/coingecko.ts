@@ -75,8 +75,8 @@ export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams
   const { chainId, tokenAddress } = params
 
   const assetPlatform = COINGECKO_ASSET_PLATFORM[chainId]
-  if (assetPlatform == null) {
-    // Unsupported
+  if (!assetPlatform) {
+    // Unsupported asset network
     return null
   }
 
@@ -97,8 +97,8 @@ export async function getUSDPriceCurrencyQuote(
   const { chainId } = params
 
   const nativeCurrency = COINGECKO_NATIVE_CURRENCY[chainId]
-  if (nativeCurrency == null) {
-    // Unsupported
+  if (!nativeCurrency) {
+    // Unsupported currency network
     return null
   }
 
