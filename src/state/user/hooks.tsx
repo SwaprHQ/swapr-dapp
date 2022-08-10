@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateAdvancedTradeMode,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -121,6 +122,28 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+const selectAdvancedTradeMode = createSelector(
+  (state: AppState) => state.user.advancedTradeMode,
+  advancedTradeMode => advancedTradeMode
+)
+
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, AppState['user']['advancedTradeMode']>(selectAdvancedTradeMode)
+}
+
+export function useAdvancedTradeModeManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const advancedTradeMode = useIsAdvancedTradeMode()
+
+  const toggleSetAdvancedTradeMode = useCallback(() => {
+    console.log('advance trade')
+
+    dispatch(updateAdvancedTradeMode({ advancedTradeMode: !advancedTradeMode }))
+  }, [advancedTradeMode, dispatch])
+
+  return [advancedTradeMode, toggleSetAdvancedTradeMode]
 }
 
 const selectUserSlippageTolerance = createSelector(

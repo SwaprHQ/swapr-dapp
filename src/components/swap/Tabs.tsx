@@ -58,8 +58,9 @@ export const Tabs = () => {
       <TabsRow>
         <Button className="active">
           <StyledEcoRouter />
-          Eco Router V1.5
+          Swap
         </Button>
+        <Button>Adv. Trade</Button>
         <Button disabled={true}>{t('tabs.limit')}</Button>
         <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>
       </TabsRow>

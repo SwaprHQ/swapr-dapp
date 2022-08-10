@@ -11,6 +11,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateAdvancedTradeMode,
   updateMatchesDarkMode,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
@@ -31,6 +32,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+  advancedTradeMode: boolean
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -70,6 +72,7 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
+  advancedTradeMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -123,6 +126,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateAdvancedTradeMode, (state, action) => {
+      state.advancedTradeMode = action.payload.advancedTradeMode
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

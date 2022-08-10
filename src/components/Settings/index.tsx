@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useSimpleSettingsModal, useToggleSettingsMenu } from '../../state/application/hooks'
 import {
+  useAdvancedTradeModeManager,
   useExpertModeManager,
   useMultihopManager,
   useUserPreferredGasPrice,
@@ -188,6 +189,7 @@ export function Settings({ simple }: { simple?: boolean }) {
   const [userPreferredGasPrice, setUserPreferredGasPrice] = useUserPreferredGasPrice()
   const [ttl, setTtl] = useUserTransactionTTL()
   const [expertMode, toggleExpertMode] = useExpertModeManager()
+  const [advanceTradeMode, toggleAdvancedTradeMode] = useAdvancedTradeModeManager()
   const [multihop, toggleMultihop] = useMultihopManager()
 
   // show confirmation view before turning on
@@ -299,6 +301,34 @@ export function Settings({ simple }: { simple?: boolean }) {
                             : () => {
                                 simple ? toggleSimpleSettings() : toggleSettings()
                                 setShowConfirmation(true)
+                              }
+                        }
+                      />
+                    </RowBetween>
+                    <RowBetween marginBottom="12px">
+                      <RowFixed>
+                        <TYPE.Body
+                          color="text4"
+                          fontWeight={500}
+                          fontSize="12px"
+                          lineHeight="15px"
+                          data-testid="toggle-advanced-trade-mode-text"
+                        >
+                          Toggle advanced trade mode
+                        </TYPE.Body>
+                      </RowFixed>
+                      <Toggle
+                        id="toggle-advanced-trade-mode-button"
+                        isActive={advanceTradeMode}
+                        toggle={
+                          advanceTradeMode
+                            ? () => {
+                                toggleAdvancedTradeMode()
+                                // setShowConfirmation(false)
+                              }
+                            : () => {
+                                simple ? toggleSimpleSettings() : toggleSettings()
+                                // setShowConfirmation(true)
                               }
                         }
                       />

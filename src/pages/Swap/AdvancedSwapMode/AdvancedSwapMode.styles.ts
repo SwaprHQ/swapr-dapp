@@ -2,17 +2,6 @@ import styled, { css } from 'styled-components'
 
 import { breakpoints } from '../../../utils/theme'
 
-export const ContainerBox = styled.div`
-  display: flex;
-  width: 100%;
-  margin-bottom: 2rem;
-  background: #0c0b12;
-  border-radius: 12px;
-  color: #b2b5be;
-  @media screen and (max-width: ${breakpoints.l}) {
-    display: block;
-  }
-`
 export const BorderStyling = css`
   border: 1px solid ${({ theme }) => theme.purple6};
 `
@@ -40,18 +29,113 @@ export const CustomScrollBar = css`
   scrollbar-width: thin;
 `
 
-export const ColumnCellBox = styled.div`
-  z-index: 3;
-  flex: 1;
+export const Container = styled.div`
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  ${AdvanceSwapModeHeight}
+  display: grid;
+  grid-template-columns: 50% 20% 30%;
+  grid-template-rows: 60% 40%;
 
-  // border: 1px solid rgba(41, 38, 67, 1);
-  // border-top: 0;
+  .d-1 {
+    ${BorderStyling}
+  }
 
+  .d-4 {
+    grid-column: 1 /2;
+  }
+  .d-5 {
+    grid-column: 2 /4;
+  }
+
+  .d-2 {
+    border-top: 1px solid rgba(41, 38, 67, 1);
+    border-left: 0;
+  }
+  .d-3 {
+    border-top: 1px solid rgba(41, 38, 67, 1);
+    border-bottom: 1px solid rgba(41, 38, 67, 1);
+    border-left: 1px solid rgba(41, 38, 67, 1);
+  }
+
+  .d-4,
+  .d-5 {
+    border: 1px solid rgba(41, 38, 67, 1);
+  }
+
+  @media screen and (max-width: ${breakpoints.l}) {
+    height: auto;
+    grid-template-rows: auto;
+    .d-1 {
+      grid-column: 1 /-1;
+      height: 400px;
+    }
+    .d-2,
+    .d-3 {
+      max-height: 450px;
+    }
+    d-1,
+    .d-4,
+    .d-5 {
+      height: 400px;
+    }
+    .d-1 {
+      order: 0;
+    }
+
+    .d-2 {
+      order: 2;
+      grid-column: 3 /4;
+    }
+
+    .d-3 {
+      order: 1;
+      grid-column: 1 /3;
+    }
+    .d-4 {
+      order: 4;
+    }
+    .d-5 {
+      order: 5;
+    }
+    .d-2 {
+      border-left: 1px solid rgba(41, 38, 67, 1);
+    }
+  }
+  @media screen and (min-width: ${breakpoints.s}) && (max-width: ${breakpoints.l}) {
+    .d-2 {
+      grid-row: 2 /3;
+    }
+
+    .d-3 {
+      grid-row: 2 /3;
+    }
+  }
   @media screen and (max-width: ${breakpoints.md}) {
-    width: 100%;
+    height: auto;
+    grid-template-columns: 50% 10% 40%;
   }
   @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
+    height: auto;
+    grid-template-columns: 100%;
+
+    .d-1,
+    .d-2,
+    .d-3,
+    .d-4,
+    .d-5 {
+      grid-column: auto;
+    }
+
+    .d-1,
+    .d-2,
+    .d-3,
+    .d-4,
+    .d-5 {
+      border-left: 0;
+      border-right: 0;
+    }
   }
 `
 
@@ -60,58 +144,6 @@ export const TitleColumn = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.purple6};
   font-weight: 600;
   color: ${({ theme }) => theme.purple2};
-`
-
-export const BodyColumn = styled.div`
-  padding: 0 0.5rem;
-`
-
-export const DiagramContainerBox = styled.div`
-  flex: 1;
-  ${AdvanceSwapModeHeight}
-  // ${BorderStyling}
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-`
-
-export const InfoContainerBox = styled.div`
-  display: flex;
-  flex: 0;
-  ${AdvanceSwapModeHeight}
-  // border-top: 1px solid rgb(41, 38, 67);
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
-    height: auto;
-  }
-  @media screen and (max-width: ${breakpoints.md}) {
-    flex-wrap: wrap;
-  }
-`
-
-export const ColumnBoxStyles = css`
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 100%;
-    display: flex;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    display: block;
-  }
-`
-
-export const HistoryColumnBox = styled.div`
-  width: 40%;
-  min-width: 350px;
-  ${ColumnBoxStyles}
-
-  @media screen and (max-width: ${breakpoints.md}) {
-    order: 1;
-  }
-`
-
-export const HistoryBox = styled(ColumnCellBox)`
-  height: 100%;
 `
 
 export const Table = styled.div`
@@ -125,7 +157,6 @@ export const TableHeader = styled.div`
   padding: 0.5rem;
   display: flex;
   font-size: 13px;
-  // justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.purple6};
   font-weight: 600;
@@ -139,7 +170,6 @@ export const TablePoolHeader = styled.div`
   padding: 0.5rem;
   display: flex;
   font-size: 13px;
-  // justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.purple6};
   font-weight: 600;
@@ -165,28 +195,14 @@ export const LoaderContainer = styled.div`
   margin-top: 20px;
 `
 
-export const TradesAndOrderColumnBox = styled.div`
-  width: 60%;
-  min-width: 400px;
-  display: flex;
-  flex-direction: column;
-  ${ColumnBoxStyles}
-  @media screen and (max-width: ${breakpoints.md}) {
-    order: 0;
-    flex-direction: row;
-  }
-`
-
 export const TradeContent = styled.div`
   padding: 1rem 0.5rem 0;
   ${CustomScrollBar}
   overflow-y: auto;
   height: 100%;
 
-  // @media screen and (max-width: ${breakpoints.l}) {
   > div {
     margin-left: auto;
     margin-right: auto;
   }
-  // }
 `
