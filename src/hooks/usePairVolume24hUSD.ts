@@ -71,13 +71,23 @@ function useBlockByTimestamp(timestamp: string) {
   }, [data, error, loading])
 }
 
+// timestamp is always changing this func rounds the time every 5 min
+// eg. 17:47:34 -> 17:45:00, 17:48:00 -> 17:45:00, 17:51:00 -> 17:50:00
+// that allows to only fetch data every 5 min and use cached data when in the same interval
+const getDateTimeRounded5minInterval = () => {
+  const dateTimeNow = DateTime.now().set({ second: 0, millisecond: 0 })
+  const ROUNDING_MINUTES = 5
+  const reminderMinutes = dateTimeNow.minute % ROUNDING_MINUTES
+  return dateTimeNow.minus({ minutes: reminderMinutes })
+}
+
+const getTimestamp24hAgo = () => getDateTimeRounded5minInterval().minus({ days: 1 }).toSeconds().toFixed()
+
 export function usePair24hVolumeUSD(
   pairOrTokenAddress?: string | null,
   isToken = false
 ): { loading: boolean; volume24hUSD: CurrencyAmount } {
-  const timestamp24hAgo = DateTime.now().minus({ days: 1 }).toSeconds().toFixed()
-
-  const { block, loading: blockLoading, error: blockError } = useBlockByTimestamp(timestamp24hAgo)
+  const { block, loading: blockLoading, error: blockError } = useBlockByTimestamp(getTimestamp24hAgo())
 
   const {
     data: volumeTill24agoData,
