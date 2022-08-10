@@ -50,6 +50,8 @@ export const CurrencySearch = ({
   const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
+
+  // tokenList set here
   const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
     useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
@@ -87,6 +89,8 @@ export const CurrencySearch = ({
 
     return filteredSortedTokens
   }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
+
+  console.log({ CurrencySearchContext, allTokens, filteredSortedTokens, filteredSortedTokensWithNativeCurrency })
 
   // clear the input on open
   useEffect(() => {
@@ -144,6 +148,13 @@ export const CurrencySearch = ({
     inputRef.current?.focus()
   }, [inputRef])
 
+  console.log({
+    debouncedQuery,
+    CurrencySearchContext,
+    filteredSortedTokensWithNativeCurrency,
+    filteredInactiveTokensWithFallback,
+    allTokens,
+  })
   return (
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
