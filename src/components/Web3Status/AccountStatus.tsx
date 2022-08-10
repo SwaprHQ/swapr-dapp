@@ -31,6 +31,7 @@ const ChainLogo: any = {
   [ChainId.POLYGON]: PolygonMaticLogo,
   [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
   [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
+  [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
 }
 
 const View = styled.div`

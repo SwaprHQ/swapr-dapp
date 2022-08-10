@@ -1,11 +1,10 @@
-import { GnosisProtocolTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { CoWTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { useState } from 'react'
 import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'
 
-import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { AdvancedSwapDetailsToggle } from '../AdvancedSwapDetailsToggle'
 import { AutoColumn } from '../Column'
@@ -88,14 +87,14 @@ export function TradeDetails({
             <SwapSettings
               showAddRecipient={showAddRecipient}
               setShowAddRecipient={setShowAddRecipient}
-              isMEVProtectionEnabled={trade instanceof GnosisProtocolTrade}
+              isMEVProtectionEnabled={trade instanceof CoWTrade}
             />
             <RowFixed>
               <TradePrice price={trade?.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
             </RowFixed>
           </RowBetween>
         </AutoColumn>
-        {showAddRecipient && <RecipientField recipient={recipient} action={setRecipient} />}
+        {showAddRecipient && <RecipientField recipient={recipient} />}
       </>
     )
   }

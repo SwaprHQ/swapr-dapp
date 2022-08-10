@@ -150,7 +150,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
-  const recipientLookupComputed = `${recipientLookup.loading}-${recipientLookup?.address}-${recipientLookup?.name}`
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
@@ -158,7 +157,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const dependencyList = [
     account,
     useMultihops,
-    recipientLookupComputed,
     chainId,
     inputCurrency?.address,
     outputCurrency?.address,
@@ -168,7 +166,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     // eslint-disable-next-line react-hooks/exhaustive-deps
     relevantTokenBalances[1]?.raw.toString(),
     allowedSlippage,
-    recipient,
     isExactIn,
     provider,
     isQuoteExpired,
@@ -230,6 +227,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     })
 
     const commonParams = {
+      user: account || AddressZero, // default back to zero if no account is connected.
       maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
       receiver,
     }
@@ -241,22 +239,18 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     }
 
     // Use a static version
-    const staticProvider = provider
-      ? provider.getNetwork().then(n => (provider ? new StaticJsonRpcProvider(provider?.connection.url, n) : undefined))
-      : Promise.resolve(undefined)
+    const staticProvider = provider ? new StaticJsonRpcProvider(provider.connection, provider.network) : undefined
 
     console.log('useDerivedSwapInfo: fetching trades')
 
-    const getTrades = staticProvider.then(staticProvider => {
-      return getTradesPromise(
-        parsedAmount,
-        inputCurrency,
-        outputCurrency,
-        commonParams,
-        ecoRouterSourceOptionsParams,
-        staticProvider
-      )
-    })
+    const getTrades = getTradesPromise(
+      parsedAmount,
+      inputCurrency,
+      outputCurrency,
+      commonParams,
+      ecoRouterSourceOptionsParams,
+      staticProvider
+    )
 
     // Start fetching trades from EcoRouter API
     getTrades
@@ -330,10 +324,10 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     parsedAmount: CurrencyAmount,
     inputCurrency: Currency,
     outputCurrency: Currency,
-    commonParams: { maximumSlippage: Percent; receiver: string },
+    commonParams: { maximumSlippage: Percent; receiver: string; user: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-    s: StaticJsonRpcProvider | undefined
-  ): PromiseLike<EcoRouterResults> {
+    staticJsonRpcProvider: StaticJsonRpcProvider | undefined
+  ): Promise<EcoRouterResults> {
     return isExactIn
       ? getExactInFromEcoRouter(
           {
@@ -342,7 +336,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             ...commonParams,
           },
           ecoRouterSourceOptionsParams,
-          s
+          staticJsonRpcProvider
         )
       : getExactOutFromEcoRouter(
           {
@@ -351,7 +345,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
             ...commonParams,
           },
           ecoRouterSourceOptionsParams,
-          s
+          staticJsonRpcProvider
         )
   }
 }

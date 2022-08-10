@@ -16,6 +16,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
+import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../claim/ClaimModal'
 import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
@@ -186,6 +187,10 @@ const AdditionalDataWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: end;
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    gap: 15px;
+  }
 `
 const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
