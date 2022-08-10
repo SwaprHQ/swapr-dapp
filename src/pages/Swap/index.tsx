@@ -113,6 +113,7 @@ export default function Swap() {
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
+
   const {
     trade: potentialTrade,
     allPlatformTrades,
@@ -196,14 +197,29 @@ export default function Swap() {
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const [approvalsSubmitted, setApprovalsSubmitted] = useState<boolean[]>([])
+
+  const currentTradeIndex = useMemo(() => {
+    if (allPlatformTrades) {
+      return (
+        allPlatformTrades.findIndex(
+          trade => trade && platformOverride && trade.platform.name === platformOverride.name
+        ) || 0
+      )
+    } else {
+      return 0
+    }
+  }, [platformOverride, allPlatformTrades])
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
+      const newArray = [...approvalsSubmitted]
+      newArray[currentTradeIndex] = true
+      setApprovalsSubmitted(newArray)
     }
-  }, [approval, approvalSubmitted])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [approval])
 
   // Listen for changes on wrapState
   useEffect(() => {
@@ -276,7 +292,7 @@ export default function Swap() {
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+      (approvalsSubmitted[currentTradeIndex] && approval === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
@@ -307,7 +323,7 @@ export default function Swap() {
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
+      setApprovalsSubmitted([]) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
     [onCurrencySelection]
@@ -395,7 +411,7 @@ export default function Swap() {
                   <SwitchIconContainer>
                     <SwitchTokensAmountsContainer
                       onClick={() => {
-                        setApprovalSubmitted(false) // reset 2 step UI for approvals
+                        setApprovalsSubmitted([]) // reset 2 step UI for approvals
                         onSwitchTokens()
                       }}
                     >
@@ -424,6 +440,7 @@ export default function Swap() {
                     id="swap-currency-output"
                   />
                 </AutoColumn>
+
                 <TradeDetails
                   show={!showWrap}
                   loading={loading}
@@ -442,7 +459,7 @@ export default function Swap() {
                   priceImpactSeverity={priceImpactSeverity}
                   swapCallbackError={swapCallbackError}
                   wrapType={wrapType}
-                  approvalSubmitted={approvalSubmitted}
+                  approvalSubmitted={approvalsSubmitted[currentTradeIndex]}
                   currencies={currencies}
                   trade={trade}
                   swapInputError={swapInputError}
