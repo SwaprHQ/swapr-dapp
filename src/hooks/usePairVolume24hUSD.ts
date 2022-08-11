@@ -120,8 +120,8 @@ export function usePair24hVolumeUSD(
     if (
       !volumeTill24agoData ||
       !totalVolumeData ||
-      volumeTill24agoData.pairs.length === 0 ||
-      totalVolumeData.pairs.length === 0 ||
+      !volumeTill24agoData.pairs.length ||
+      !totalVolumeData.pairs.length ||
       volumeTill24agoError ||
       totalVolumeError ||
       blockError
