@@ -4,7 +4,7 @@ import { CurrencySearchContextType } from './CurrencySearch.types'
 
 export const CurrencySearchContext = React.createContext<CurrencySearchContextType>({
   allTokens: {},
-  allTokensOnSecondChain: undefined,
+  allTokensOnSecondChain: {},
   searchQuery: '',
   searchToken: undefined,
   debouncedQuery: '',
