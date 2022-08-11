@@ -39,7 +39,7 @@ export function Pair({
   ...rest
 }: PairProps) {
   const { volume24hUSD, loading } = usePair24hVolumeUSD(pairOrStakeAddress, isSingleSidedStakingCampaign)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const isMobile = useIsMobileByMedia()
 
   return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
 

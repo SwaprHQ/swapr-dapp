@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Button } from 'rebass/styled-components'
 import styled from 'styled-components'

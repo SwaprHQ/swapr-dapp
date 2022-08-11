@@ -1,6 +1,6 @@
 import { SingleSidedLiquidityMiningCampaign } from '@swapr/sdk'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -38,7 +38,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
   const SWPRToken = useSWPRToken()
   const swprAddress = SWPRToken?.address ?? undefined
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const isMobile = useIsMobileByMedia()
 
   useEffect(() => {
@@ -102,10 +102,10 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
           </div>
         ) : (
           <div className="flex items-center justify-center flex-col my-24">
-            <p className="mb-6 text-text4">{t('noPoolsFound')}</p>
+            <p className="mb-6 text-text4">{t('pairsList.noPoolsFound')}</p>
             <div className="w-fit">
               <ButtonPrimary to="/pools/create" as={Link}>
-                {t('createAPool')}
+                {t('pairsList.createAPool')}
               </ButtonPrimary>
             </div>
           </div>

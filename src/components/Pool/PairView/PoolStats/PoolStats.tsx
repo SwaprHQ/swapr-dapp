@@ -1,6 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePrevious } from 'react-use'
 
@@ -29,7 +29,7 @@ export function PoolStats({ pair }: PairViewProps) {
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)
   const { bestAPY } = useBestAPY(pair)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
 
   const statsLink = pair?.liquidityToken.address
     ? `https://dxstats.eth.limo/#/pair/${pair?.liquidityToken.address}?chainId=${chainId}`
@@ -46,9 +46,9 @@ export function PoolStats({ pair }: PairViewProps) {
   return (
     <DimBlurBgBox padding>
       <div className="flex flex-col md:flex-row items-center justify-between">
-        <p className="md:text-lg mb-5">{t('poolStats')}</p>
+        <p className="md:text-lg mb-5">{t('poolStats.poolStats')}</p>
         <div>
-          <ButtonExternalLink link={statsLink}>{t('stats')}</ButtonExternalLink>
+          <ButtonExternalLink link={statsLink}>{t('poolStats.stats')}</ButtonExternalLink>
         </div>
       </div>
       <div className="mt-5">

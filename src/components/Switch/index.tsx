@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import React from 'react'
+import React, { CSSProperties } from 'react'
 
 import './Switch.css'
 interface SwitchProps {
@@ -7,7 +7,7 @@ interface SwitchProps {
   isRed?: boolean
   handleToggle: () => void
   label?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
 }
 
 export const Switch = ({ isOn, handleToggle, label, style, isRed = false }: SwitchProps) => {

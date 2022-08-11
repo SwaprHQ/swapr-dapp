@@ -3,6 +3,7 @@ import { ChainId, Currency } from '@swapr/sdk'
 
 import { schema, TokenList } from '@uniswap/token-lists'
 import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 import { BigNumber, Contract } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { request } from 'graphql-request'
@@ -19,7 +20,7 @@ import {
   OmniBridgeList,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
 import { HOME_AMB_ABI } from './abis/abi'
 import { BRIDGE_CONFIG, defaultTokensUrl } from './OmniBridge.config'
@@ -45,7 +46,6 @@ import {
   fetchToAmount,
   fetchTokenLimits,
   fetchToToken,
-  getErrorMessage,
   getGraphEndpoint,
   getMediatorAddress,
   getMessage,
@@ -181,7 +181,10 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMessage(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -227,12 +230,9 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Something went wrong',
-          isError: true,
-          isLoading: false,
-          isBalanceSufficient: false,
-          isApproved: false,
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
         })
       )
     }
@@ -313,7 +313,10 @@ export class OmniBridge extends EcoBridgeChildBase {
       }
     } catch (e) {
       this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.ERROR, error: getErrorMessage(e) })
+        ecoBridgeUIActions.setBridgeModalStatus({
+          status: BridgeModalStatus.ERROR,
+          error: getErrorMsg(e, this.bridgeId),
+        })
       )
     }
   }
@@ -442,7 +445,10 @@ export class OmniBridge extends EcoBridgeChildBase {
       const fetchDefaultTokens = async () => {
         const url = defaultTokensUrl[Number(from.chainId)]
 
-        const tokenListValidator = new Ajv({ allErrors: true }).compile(schema)
+        const ajv = new Ajv({ allErrors: false })
+        addFormats(ajv)
+
+        const tokenListValidator = ajv.compile(schema)
 
         const response = await fetch(url)
         if (response.ok) {

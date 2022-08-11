@@ -1,12 +1,15 @@
 import { TokenList } from '@uniswap/token-lists'
 import schema from '@uniswap/token-lists/src/tokenlist.schema.json'
 import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 
 import contenthashToUri from './contenthashToUri'
 import { parseENSAddress } from './parseENSAddress'
 import uriToHttp from './uriToHttp'
 
-const tokenListValidator = new Ajv({ allErrors: true }).compile(schema)
+const ajv = new Ajv({ allErrors: false })
+addFormats(ajv)
+const tokenListValidator = ajv.compile(schema)
 
 /**
  * Contains the logic for resolving a list URL to a validated token list
@@ -55,11 +58,11 @@ export default async function getTokenList(
       continue
     }
 
-    const json = await response.json()
+    const json: TokenList = await response.json()
     if (!tokenListValidator(json)) {
       const validationErrors: string =
         tokenListValidator.errors?.reduce<string>((memo, error) => {
-          const add = `${error.dataPath} ${error.message ?? ''}`
+          const add = `${error.schemaPath} ${error.message ?? ''}`
           return memo.length > 0 ? `${memo}; ${add}` : `${add}`
         }, '') ?? 'unknown error'
       throw new Error(`Token list failed validation: ${validationErrors}`)

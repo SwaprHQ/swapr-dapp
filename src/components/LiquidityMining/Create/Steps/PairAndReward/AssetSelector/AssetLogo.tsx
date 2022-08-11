@@ -1,6 +1,5 @@
 import { Token } from '@swapr/sdk'
 
-import React from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'

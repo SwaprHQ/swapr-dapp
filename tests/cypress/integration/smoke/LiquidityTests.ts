@@ -20,9 +20,7 @@ describe('Check Liquidity Page', () => {
   it('Check Select Token modal window on Liquidity Page', () => {
     LiquidityPage.getCreatePairButton().click()
     LiquidityPage.getCreateAPairInputField().should('be.visible')
-    LiquidityPage.getSelectTokenButton()
-      .first()
-      .click()
+    LiquidityPage.getSelectTokenButton().first().click()
     LiquidityPage.getTokenSearchField().should('be.visible')
   })
 })

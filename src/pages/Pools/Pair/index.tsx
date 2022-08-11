@@ -1,6 +1,6 @@
 import { JSBI, Pair as PairType, Percent } from '@swapr/sdk'
 
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
@@ -37,7 +37,7 @@ export default function Pair() {
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const [openPairsModal, setOpenPairsModal] = useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
   const { loading: loadingPairs, miningCampaigns } = usePairLiquidityMiningCampaigns(
     wrappedPair[1] ? wrappedPair[1] : undefined
   )
@@ -95,7 +95,7 @@ export default function Pair() {
                 as={Link}
                 to={token0 && token1 ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}` : ''}
               >
-                {t('trade')}
+                {t('pair.trade')}
               </ButtonPurpleDim>
             </ButtonRow>
           </TitleRow>
@@ -106,7 +106,7 @@ export default function Pair() {
                 <div className="flex items-center justify-between flex-col h-full">
                   <div className="mb-3">
                     <ValueWithLabel
-                      title={t('swapFee')}
+                      title={t('pair.swapFee')}
                       value={
                         wrappedPair[1]
                           ? new Percent(
@@ -120,7 +120,7 @@ export default function Pair() {
                     />
                   </div>
                   <ButtonBadge to={'#'} number={0} disabled>
-                    {t('governance')}
+                    {t('pair.governance')}
                   </ButtonBadge>
                 </div>
               </DimBlurBgBox>

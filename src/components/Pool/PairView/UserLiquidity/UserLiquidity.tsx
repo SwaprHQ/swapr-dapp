@@ -1,6 +1,5 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -25,7 +24,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
   const currency1 = unwrappedToken(pair?.token1)
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
   const totalPoolTokens = useTotalSupply(pair?.liquidityToken)
-  const { t } = useTranslation()
+  const { t } = useTranslation('pool')
 
   const poolTokenPercentage =
     !!userPoolBalance && !!totalPoolTokens
@@ -54,23 +53,26 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         <p className="md:text-lg mb-4">{t('yourLiquidity')}</p>
         <div>
           <ButtonExternalLink link={getAccountAnalyticsLink(account || '', chainId)}>
-            {t('accountAnalytics')}
+            {t('userLiquidity.accountAnalytics')}
           </ButtonExternalLink>
         </div>
       </div>
       <div className="my-6">
         <InfoGrid>
           <ValueWithLabel
-            title={t('poolShare')}
+            title={t('userLiquidity.poolShare')}
             value={poolTokenPercentage ? poolTokenPercentage.toFixed(5) + '%' : '0'}
           />
-          <ValueWithLabel title={t('poolTokens')} value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'} />
           <ValueWithLabel
-            title={t('pooledToken', { token: currency0?.symbol })}
+            title={t('userLiquidity.poolTokens')}
+            value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'}
+          />
+          <ValueWithLabel
+            title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}
             value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
           />
           <ValueWithLabel
-            title={t('pooledToken', { token: currency1?.symbol })}
+            title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}
             value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
           />
         </InfoGrid>
@@ -90,7 +92,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
             to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
           >
-            {t('removeLiquidity')}
+            {t('userLiquidity.removeLiquidity')}
           </ButtonPurpleDim>
         </div>
       </div>

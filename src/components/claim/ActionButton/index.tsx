@@ -1,7 +1,7 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
 import { InjectedConnector } from '@web3-react/injected-connector'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'

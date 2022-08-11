@@ -32,11 +32,4 @@ export const QUERY_ETH_PRICE = gql`
   }
 `
 
-export const getErrorMsg = (error: any) => {
-  if (error?.code === 4001) {
-    return 'Transaction rejected'
-  }
-  return `Bridge failed: ${error.message}`
-}
-
 export const MAX_SUBMISSION_PRICE_PERCENT_INCREASE = BigNumber.from(400)

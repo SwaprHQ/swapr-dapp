@@ -1,4 +1,3 @@
-import React from 'react'
 import { Info } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
@@ -37,7 +36,7 @@ const ResponsiveButtonPrimary = styled(ButtonPrimary)`
 `
 
 export default function Governance() {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const theme = useTheme()
   const router = useRouter()
   const nativeCurrency = useNativeCurrency()
@@ -48,16 +47,16 @@ export default function Governance() {
         <AutoColumn gap="lg" style={{ width: '100%' }}>
           <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
             {router.query.asset === undefined ? (
-              <TYPE.mediumHeader lineHeight="24px">{t('governance')}</TYPE.mediumHeader>
+              <TYPE.MediumHeader lineHeight="24px">{t('governance')}</TYPE.MediumHeader>
             ) : (
               <>
-                <TYPE.mediumHeader color={theme.text4} lineHeight="24px">
+                <TYPE.MediumHeader color={theme.text4} lineHeight="24px">
                   {t('governance')}
-                </TYPE.mediumHeader>
+                </TYPE.MediumHeader>
                 &nbsp; / &nbsp;
                 <CurrencyLogo size="20px" currency={nativeCurrency} />
                 &nbsp;
-                <TYPE.mediumHeader lineHeight="24px">{t(router.query?.asset)}</TYPE.mediumHeader>
+                <TYPE.MediumHeader lineHeight="24px">{t(router.query?.asset)}</TYPE.MediumHeader>
               </>
             )}
             <StyledSearchInput fontSize="12px" fontWeight={700} width="104px" height="32px" />
@@ -75,24 +74,24 @@ export default function Governance() {
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
         {router.query.asset === undefined && (
-          <ButtonWithExternalLink link="https://swapr.eth.limo" text="GOVERNANCE STATISTICS" />
+          <ButtonWithExternalLink link="https://swapr.eth.limo">GOVERNANCE STATISTICS</ButtonWithExternalLink>
         )}
         <LightCard>
           <AutoColumn gap="md">
             <Flex>
               <Info color={theme.text4} size={18} />
-              <TYPE.body marginLeft="10px" color={theme.text4} fontWeight={500} lineHeight="20px">
+              <TYPE.Body marginLeft="10px" color={theme.text4} fontWeight={500} lineHeight="20px">
                 Swapr Governance
-              </TYPE.body>
+              </TYPE.Body>
             </Flex>
             <RowBetween>
-              <TYPE.body fontWeight="500" fontSize="11px" lineHeight="16px" letterSpacing="-0.4px">
+              <TYPE.Body fontWeight="500" fontSize="11px" lineHeight="16px" letterSpacing="-0.4px">
                 SWP-LP tokens represent voting shares in Swapr governance. You can vote on each proposal yourself or
                 delegate your votes to a third party.
-              </TYPE.body>
+              </TYPE.Body>
             </RowBetween>
             <RowBetween>
-              <TYPE.body
+              <TYPE.Body
                 as="a"
                 color={theme.text4}
                 fontSize="17px"
@@ -100,7 +99,7 @@ export default function Governance() {
                 style={{ textDecoration: 'underline', cursor: 'pointer' }}
               >
                 Read more about Swapr Governance
-              </TYPE.body>
+              </TYPE.Body>
             </RowBetween>
           </AutoColumn>
         </LightCard>
