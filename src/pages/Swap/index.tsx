@@ -45,7 +45,6 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
-import { NormalSwapMode } from './NormalSwapMode'
 
 export type SwapData = {
   showConfirm: boolean
@@ -71,6 +70,20 @@ export enum GnosisProtocolTradeState {
   SWAP,
 }
 
+export enum SwapTabs {
+  SWAP,
+  ADVANCED_SWAP_MODE,
+  LIMIT_ORDER,
+}
+
+const AppBodyContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  min-height: calc(100vh - 340px);
+`
+
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -95,6 +108,8 @@ export default function Swap() {
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
   }, [])
+
+  const [activeTab, setActiveTab] = useState(SwapTabs.SWAP)
 
   const { chainId } = useActiveWeb3React()
 
@@ -340,7 +355,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs />
+      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -462,16 +477,15 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {isExpertMode ? (
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
         <>
-          <AdvancedSwapMode currencyInSymbol={currencies.INPUT?.symbol} currencyOutSymbol={currencies.OUTPUT?.symbol}>
-            {renderSwapBox()}
-          </AdvancedSwapMode>
+          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
-      ) : (
+      )}
+      {activeTab === SwapTabs.SWAP && (
         <Hero>
-          <NormalSwapMode>{renderSwapBox()}</NormalSwapMode>
+          <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>
       )}
       <LandingBodyContainer>
