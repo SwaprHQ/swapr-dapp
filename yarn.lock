@@ -4642,7 +4642,7 @@
     semver "^7.3.5"
     tsutils "^3.21.0"
 
-"@typescript-eslint/eslint-plugin@^5.33.0", "@typescript-eslint/eslint-plugin@^5.5.0":
+"@typescript-eslint/eslint-plugin@^5.29.0", "@typescript-eslint/eslint-plugin@^5.5.0":
   version "5.33.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.33.0.tgz#059798888720ec52ffa96c5f868e31a8f70fa3ec"
   integrity sha512-jHvZNSW2WZ31OPJ3enhLrEKvAZNyAFWZ6rx9tUwaessTc4sx9KmgMNhVcqVAl1ETnT5rU5fpXTLmY9YvC1DCNg==
@@ -4676,7 +4676,7 @@
   dependencies:
     "@typescript-eslint/utils" "5.33.0"
 
-"@typescript-eslint/parser@^5.33.0", "@typescript-eslint/parser@^5.5.0":
+"@typescript-eslint/parser@^5.20.0", "@typescript-eslint/parser@^5.5.0":
   version "5.33.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.33.0.tgz#26ec3235b74f0667414613727cb98f9b69dc5383"
   integrity sha512-cgM5cJrWmrDV2KpvlcSkelTBASAs1mgqq+IUGKJvFxWrapHpaRy5EXPQz9YaKF3nZ8KY18ILTiVpUtbIac86/w==
@@ -10488,7 +10488,7 @@ eslint@7.32.0, eslint@^7.32.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-eslint@^8.21.0, eslint@^8.3.0:
+eslint@^8.3.0:
   version "8.21.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.21.0.tgz#1940a68d7e0573cef6f50037addee295ff9be9ef"
   integrity sha512-/XJ1+Qurf1T9G2M5IHrsjp+xrGT73RZf23xA1z5wB1ZzzEAWSZKvRwhWxTFp1rvkvCfwcvAUNAP31bhKTTGfDA==
