@@ -25,7 +25,7 @@ export const selectAllSwaprTrades = createSelector(
 
       const logoKey = UniswapV2RoutablePlatform.SWAPR.name
 
-      const liquidityHistory: TradeHistory[] = [...burns, ...mints].map(trade => {
+      const swaprLiquidityHistory: TradeHistory[] = [...burns, ...mints].map(trade => {
         const {
           transaction: { id },
           amount0,
@@ -41,7 +41,7 @@ export const selectAllSwaprTrades = createSelector(
         }
       })
 
-      const tradeHistory: TradeHistory[] = swaps.map(trade => {
+      const swaprTradeHistory: TradeHistory[] = swaps.map(trade => {
         const {
           amount0In,
           amount0Out,
@@ -52,7 +52,6 @@ export const selectAllSwaprTrades = createSelector(
           amountUSD,
         } = trade
 
-        // TODO: round amount
         return {
           transactionId: id,
           amountIn: Number(amount0In) > Number(amount1In) ? amount0In : amount1In,
@@ -67,14 +66,14 @@ export const selectAllSwaprTrades = createSelector(
       })
 
       return {
-        liquidityHistory,
-        tradeHistory,
+        swaprTradeHistory,
+        swaprLiquidityHistory,
       }
     }
 
     return {
-      liquidityHistory: [],
-      tradeHistory: [],
+      swaprTradeHistory: [],
+      swaprLiquidityHistory: [],
     }
   }
 )
