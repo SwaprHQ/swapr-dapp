@@ -292,15 +292,12 @@ export async function getExactOut(
       return resolve(undefined)
     }
 
-    CurveTrade.bestTradeExactOut(
-      {
-        currencyAmountOut,
-        currencyIn,
-        maximumSlippage,
-        receiver,
-      },
-      provider
-    )
+    CurveTrade.bestTradeExactOut({
+      currencyAmountOut,
+      currencyIn,
+      maximumSlippage,
+      receiver,
+    })
       .then(resolve)
       .catch(error => {
         errors.push(error)
