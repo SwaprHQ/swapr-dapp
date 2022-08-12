@@ -20,7 +20,7 @@ describe('Swap page smoke tests', () => {
   })
   it('Should pick only eth as default from value [TC-20]', () => {
     SwapPage.getCurrencySelectors().first().should('contain.text', 'ETH')
-    SwapPage.getCurrencySelectors().last().should('contain.text', 'select Token')
+    SwapPage.getCurrencySelectors().last().should('contain.text', 'Select token')
   })
   it('Should type in numbers into FROM input [TC-21]', () => {
     SwapPage.typeValueFrom('100.32')

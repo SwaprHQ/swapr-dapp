@@ -6,7 +6,7 @@ export class SwapPage {
   }
 
   static openTokenToSwapMenu() {
-    cy.get('[data-testid=select-token-button]').click()
+    cy.get('[data-testid=select-token-button]').filter(':visible').click()
     return TokenMenu
   }
 
