@@ -4,7 +4,7 @@ import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
@@ -20,7 +20,7 @@ export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[]
     return tokenAmounts ? tokenAmounts.map(tokenAmount => tokenAmount.token.address.toLowerCase()) : []
   }, [tokenAmounts])
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(tokenIds)
-  const { loading, data, error } = useDerivedNativeCurrencyTokensQuery({ variables: { tokenIds } })
+  const { loading, data, error } = useGetDerivedNativeCurrencyTokensQuery({ variables: { tokenIds } })
 
   return useMemo(() => {
     if (loading || loadingKpiTokens) return { loading: true, pricedTokenAmounts: [] }

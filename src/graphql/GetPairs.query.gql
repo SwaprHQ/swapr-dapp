@@ -1,4 +1,4 @@
-query Pairs {
+query getPairs {
   pairs(first: 1000) {
     ...ReservePart
     token0 {

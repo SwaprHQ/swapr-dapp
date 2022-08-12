@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { PairsFilterType } from '../components/Pool/ListFilter'
-import { useLiquidityMiningCampaignsQuery, useStakingCampaignsQuery } from '../graphql/generated/schema'
+import { useGetLiquidityMiningCampaignsQuery, useGetStakingCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
@@ -42,7 +42,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
     data: singleSidedCampaigns,
     loading: singleSidedLoading,
     error: singleSidedCampaignsError,
-  } = useStakingCampaignsQuery({
+  } = useGetStakingCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },
@@ -52,7 +52,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
     data: pairCampaigns,
     loading: campaignLoading,
     error: campaignError,
-  } = useLiquidityMiningCampaignsQuery({
+  } = useGetLiquidityMiningCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },

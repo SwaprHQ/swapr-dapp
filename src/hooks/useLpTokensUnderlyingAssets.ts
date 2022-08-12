@@ -4,7 +4,7 @@ import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmo
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { usePairQuery } from '../graphql/generated/schema'
+import { useGetPairQuery } from '../graphql/generated/schema'
 import type { Pair as PairType } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
 
@@ -16,7 +16,7 @@ export function useLpTokensUnderlyingAssets(
 ): { loading: boolean; underlyingAssets?: { token0: PricedTokenAmount; token1: PricedTokenAmount } } {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const { data, loading, error } = usePairQuery({
+  const { data, loading, error } = useGetPairQuery({
     variables: {
       pairId: pair ? pair.liquidityToken.address.toLowerCase() : '',
     },

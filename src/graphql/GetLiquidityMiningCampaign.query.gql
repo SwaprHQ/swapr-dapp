@@ -1,4 +1,4 @@
-query LiquidityMiningCampaign($liquidityMiningCampaignId: ID!) {
+query getLiquidityMiningCampaign($liquidityMiningCampaignId: ID!) {
   liquidityMiningCampaign(id: $liquidityMiningCampaignId) {
     ...LiquidityMiningCampaignFragment
     rewards {

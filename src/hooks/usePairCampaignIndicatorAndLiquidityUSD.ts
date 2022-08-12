@@ -5,7 +5,7 @@ import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { ZERO_USD } from '../constants'
-import { usePairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
+import { useGetPairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
 
 export function usePairCampaignIndicatorAndLiquidityUSD(pair?: Pair | null): {
   loading: boolean
@@ -14,7 +14,7 @@ export function usePairCampaignIndicatorAndLiquidityUSD(pair?: Pair | null): {
 } {
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
 
-  const { loading, data, error } = usePairLiquidityMiningCampaingsQuery({
+  const { loading, data, error } = useGetPairLiquidityMiningCampaingsQuery({
     variables: { pairId: pair?.liquidityToken.address.toLowerCase() || '', endsAtLowerLimit: timestamp },
   })
 

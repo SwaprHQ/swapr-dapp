@@ -2,7 +2,7 @@ import { Pair, Percent } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
-import { usePairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
+import { useGetPairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getBestApyPairCampaign,
@@ -25,7 +25,7 @@ export function useBestAPY(pair?: Pair | null): {
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
 
-  const { loading, data, error } = usePairLiquidityMiningCampaingsQuery({
+  const { loading, data, error } = useGetPairLiquidityMiningCampaingsQuery({
     variables: {
       pairId: pair?.liquidityToken.address.toLowerCase() || '',
       endsAtLowerLimit: memoizedLowerTimeLimit,

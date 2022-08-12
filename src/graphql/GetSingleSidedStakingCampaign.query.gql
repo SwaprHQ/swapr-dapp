@@ -1,4 +1,4 @@
-query SingleSidedStakingCampaign($campaignId: ID!) {
+query getSingleSidedStakingCampaign($campaignId: ID!) {
   singleSidedStakingCampaign(id: $campaignId) {
     ...SingleSidedStakingCampaignFragment
     stakeToken {

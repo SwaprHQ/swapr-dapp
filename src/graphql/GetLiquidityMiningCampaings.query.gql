@@ -1,4 +1,4 @@
-query LiquidityMiningCampaigns($userId: String) {
+query getLiquidityMiningCampaigns($userId: String) {
   liquidityMiningCampaigns(first: 999) {
     ...LiquidityMiningCampaignFragment
     rewards {

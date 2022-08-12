@@ -1,4 +1,4 @@
-query DerivedNativeCurrencyTokens($tokenIds: [ID!]!) {
+query getDerivedNativeCurrencyTokens($tokenIds: [ID!]!) {
   tokens(where: { id_in: $tokenIds }) {
     address: id
     derivedNativeCurrency

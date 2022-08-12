@@ -1,4 +1,4 @@
-query UserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
+query getUserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
   liquidityPositions(where: { user: $userId, liquidityTokenBalance_gt: 0 }) {
     pair {
       address: id

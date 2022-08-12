@@ -4,7 +4,7 @@ import { ChainId, CurrencyAmount, Pair } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { usePairQuery } from '../graphql/generated/schema'
+import { useGetPairQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
@@ -13,7 +13,7 @@ export function usePairReserveNativeCurrency(pair?: Pair): { loading: boolean; r
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
 
-  const { loading, data, error } = usePairQuery({
+  const { loading, data, error } = useGetPairQuery({
     variables: { pairId: pair?.liquidityToken.address.toLowerCase() || '' },
   })
 

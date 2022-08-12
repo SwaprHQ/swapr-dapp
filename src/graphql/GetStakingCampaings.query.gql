@@ -1,4 +1,4 @@
-query StakingCampaigns($userId: String) {
+query getStakingCampaigns($userId: String) {
   singleSidedStakingCampaigns(first: 999) {
     ...SingleSidedStakingCampaignFragment
     stakeToken {

@@ -3,13 +3,13 @@ import { Pair, Token, TokenAmount } from '@swapr/sdk'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
-import { usePairsQuery } from '../graphql/generated/schema'
+import { useGetPairsQuery } from '../graphql/generated/schema'
 
 import { useActiveWeb3React } from './index'
 
 export function useAllPairs(): { loading: boolean; pairs: Pair[] } {
   const { chainId } = useActiveWeb3React()
-  const { loading, data, error } = usePairsQuery()
+  const { loading, data, error } = useGetPairsQuery()
 
   return useMemo(() => {
     if (loading || !chainId) return { loading: true, pairs: [] }

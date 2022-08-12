@@ -1,4 +1,4 @@
-query Pair($pairId: ID!) {
+query getPair($pairId: ID!) {
   pair(id: $pairId) {
     id
     ...PairFragment

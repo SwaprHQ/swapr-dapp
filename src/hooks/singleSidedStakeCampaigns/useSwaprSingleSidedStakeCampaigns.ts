@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
-import { useSingleSidedStakingCampaignsQuery } from '../../graphql/generated/schema'
+import { useGetSingleSidedStakingCampaignsQuery } from '../../graphql/generated/schema'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
@@ -25,7 +25,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
 
   const SWPRToken = useSWPRToken()
   const swaprAddress = SWPRToken?.address ?? undefined
-  const { data, loading, error } = useSingleSidedStakingCampaignsQuery({
+  const { data, loading, error } = useGetSingleSidedStakingCampaignsQuery({
     variables: {
       stakeTokenId: swaprAddress?.toLowerCase(),
       userId: subgraphAccountId,

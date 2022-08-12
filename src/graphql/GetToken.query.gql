@@ -1,4 +1,4 @@
-query Token($tokenId: ID!) {
+query getToken($tokenId: ID!) {
   token(id: $tokenId) {
     derivedNativeCurrency
   }

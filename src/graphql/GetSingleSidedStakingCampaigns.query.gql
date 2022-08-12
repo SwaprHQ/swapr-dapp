@@ -1,4 +1,4 @@
-query SingleSidedStakingCampaigns($stakeTokenId: String, $userId: String) {
+query getSingleSidedStakingCampaigns($stakeTokenId: String, $userId: String) {
   singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $stakeTokenId }) {
     ...SingleSidedStakingCampaignFragment
     stakeToken {

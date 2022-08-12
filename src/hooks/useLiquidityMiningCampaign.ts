@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
-import { useLiquidityMiningCampaignQuery } from '../graphql/generated/schema'
+import { useGetLiquidityMiningCampaignQuery } from '../graphql/generated/schema'
 import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -18,7 +18,7 @@ export function useLiquidityMiningCampaign(
   id?: string
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
   const { chainId } = useActiveWeb3React()
-  const { loading, error, data } = useLiquidityMiningCampaignQuery({
+  const { loading, error, data } = useGetLiquidityMiningCampaignQuery({
     variables: { liquidityMiningCampaignId: id?.toLowerCase() || '' },
   })
   const nativeCurrency = useNativeCurrency()

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
-import { useSingleSidedStakingCampaignQuery } from '../../graphql/generated/schema'
+import { useGetSingleSidedStakingCampaignQuery } from '../../graphql/generated/schema'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
 
@@ -15,7 +15,7 @@ export function useSingleSidedCampaign(campaginAddress: string): {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const { data, loading, error } = useSingleSidedStakingCampaignQuery({
+  const { data, loading, error } = useGetSingleSidedStakingCampaignQuery({
     variables: {
       campaignId: campaginAddress.toLowerCase(),
     },

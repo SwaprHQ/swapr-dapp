@@ -6,7 +6,7 @@ import { gql, useQuery } from '@apollo/client'
 import { Decimal } from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
@@ -76,7 +76,7 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
     loading: loadingCollateralPrices,
     data: collateralPrices,
     error: collateralError,
-  } = useDerivedNativeCurrencyTokensQuery({
+  } = useGetDerivedNativeCurrencyTokensQuery({
     variables: { tokenIds: collateralTokenAddresses },
   })
 

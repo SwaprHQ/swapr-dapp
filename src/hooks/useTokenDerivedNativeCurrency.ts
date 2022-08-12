@@ -4,7 +4,7 @@ import Decimal from 'decimal.js-light'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 
-import { useTokenQuery } from '../graphql/generated/schema'
+import { useGetTokenQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
@@ -16,7 +16,7 @@ export function useTokenDerivedNativeCurrency(token?: Token): {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
 
-  const { loading, data, error } = useTokenQuery({ variables: { tokenId: token?.address.toLowerCase() || '' } })
+  const { loading, data, error } = useGetTokenQuery({ variables: { tokenId: token?.address.toLowerCase() || '' } })
 
   return useMemo(() => {
     if (loading || !chainId)

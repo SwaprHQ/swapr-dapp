@@ -3,7 +3,7 @@ import { BigintIsh, Pair } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
-import { useLiquidityMiningCampaignsQuery } from '../graphql/generated/schema'
+import { useGetLiquidityMiningCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
@@ -35,7 +35,7 @@ export function usePairLiquidityMiningCampaigns(pair?: Pair): {
     data: pairCampaigns,
     loading: campaignLoading,
     error: campaignError,
-  } = useLiquidityMiningCampaignsQuery({
+  } = useGetLiquidityMiningCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },

@@ -7,7 +7,7 @@ import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
-import { useUserLiquidityPositionsQuery } from '../graphql/generated/schema'
+import { useGetUserLiquidityPositionsQuery } from '../graphql/generated/schema'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -58,7 +58,7 @@ export function useLPPairs(account?: string): {
     loading: loadingMyPairs,
     data,
     error,
-  } = useUserLiquidityPositionsQuery({
+  } = useGetUserLiquidityPositionsQuery({
     variables: {
       userId: account?.toLowerCase() || '',
       endsAtLowerLimit: memoizedLowerTimeLimit,

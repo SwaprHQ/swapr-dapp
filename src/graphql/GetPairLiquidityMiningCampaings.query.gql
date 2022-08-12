@@ -1,4 +1,4 @@
-query PairLiquidityMiningCampaings($endsAtLowerLimit: BigInt!, $pairId: ID!) {
+query getPairLiquidityMiningCampaings($endsAtLowerLimit: BigInt!, $pairId: ID!) {
   pair(id: $pairId) {
     address: id
     ...PairFragment

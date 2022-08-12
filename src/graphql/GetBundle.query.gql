@@ -1,4 +1,4 @@
-query Bundle {
+query getBundle {
   bundle(id: "1") {
     nativeCurrencyPrice
   }
