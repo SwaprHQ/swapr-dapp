@@ -1,24 +1,30 @@
-import { ChainId } from '@swapr/sdk'
-
+import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 
+import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
 import { TradeHistory } from '../../../services/Trades/trades.types'
 import { useAllTrades } from '../../../services/Trades/useAllTrades.hook'
 import { useTradesAdapter } from '../../../services/Trades/useTradesAdapter.hook'
 import {
+  AdvancedModeDetails,
+  AdvancedModeHeader,
+  AdvancedModeTitle,
+  ChartWrapper,
   Container,
   EmptyCellBody,
+  LiquidityWrapper,
   LoaderContainer,
-  Table,
-  TableHeader,
-  TablePoolHeader,
-  TitleColumn,
-  TradeContent,
+  OrdersWrapper,
+  SwapBox,
+  SwapBoxWrapper,
+  SwitchButton,
+  SwitcherWrapper,
+  TradesWrapper,
+  TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
-import { Title } from './Title'
 import { Trade } from './Trade'
 
 const Loading = () => (
@@ -26,95 +32,129 @@ const Loading = () => (
     <Loader size="40px" stroke="#8780BF" />
   </LoaderContainer>
 )
-
-const renderTransaction = (
-  array: TradeHistory[],
-  showTrades: boolean,
-  isLoading: boolean,
-  isNewPair: boolean,
-  chainId?: ChainId
-) => {
+const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoading: boolean) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
-  if (isNewPair) return null
+  if (isLoading) return <Loading />
 
-  if (!array.length && !isLoading)
+  if (!arr.length) {
     return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
-
-  return array
-    .sort((firstTrade, secondTrade) => (Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1))
-    .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
-      return (
-        <Trade
-          key={transactionId}
-          isSell={isSell}
-          transactionId={transactionId}
-          logoKey={logoKey}
-          chainId={chainId}
-          amountIn={amountIn}
-          amountOut={amountOut}
-          timestamp={timestamp}
-          amountUSD={amountUSD}
-        />
-      )
-    })
+  }
 }
 
-export const AdvancedSwapMode = ({
-  children,
-  currencyInSymbol,
-  currencyOutSymbol,
-}: {
-  children: React.ReactNode
-  currencyInSymbol?: string
-  currencyOutSymbol?: string
-}) => {
-  const { chainId, symbol, showTrades } = useTradesAdapter()
-  const { allLiquidityHistory, allTradeHistory, isLoading, isNewPair } = useAllTrades()
+export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
+  const { tradeHistory, liquidityHistory, isLoading, isNewPair } = useAllTrades()
+  const { chainId, inputToken, outputToken, symbol, showTrades } = useTradesAdapter()
+
   const navigate = useNavigate()
+  const [activeSwitchOption, setActiveSwitchOption] = useState('')
 
   const handleAddLiquidity = () => {
-    navigate({ pathname: '/pools/create' })
+    navigate({ pathname: `/pools/add/${inputToken?.address}/${outputToken?.address}` })
+  }
+
+  useEffect(() => {
+    if (inputToken && outputToken) {
+      setActiveSwitchOption(inputToken.address)
+    }
+  }, [inputToken, outputToken])
+
+  const handleSwitch = (option: string) => {
+    setActiveSwitchOption(option)
   }
 
   return (
     <Container>
-      <div className="d-1">
+      <ChartWrapper>
         <Chart symbol={symbol} />
-      </div>
-      <div className="d-2">
-        <Title title="Trades" tabs={[{ title: currencyInSymbol || '' }, { title: currencyOutSymbol || '' }]} />
-        <TableHeader>
-          <Text>Price ({currencyInSymbol})</Text>
-          <Text>Amount ({currencyOutSymbol})</Text>
-          <Text sx={{ textAlign: 'right' }}>Time</Text>
-        </TableHeader>
-        <Table>
-          {renderTransaction(allTradeHistory, showTrades, isLoading, isNewPair, chainId)}
-          {isLoading && <Loading />}
-        </Table>
-      </div>
-      <div className="d-3">
-        <TradeContent>{children}</TradeContent>
-      </div>
-      <div className="d-4">
-        <TitleColumn>Open Orders</TitleColumn>
-        <Table>
-          <EmptyCellBody>The feature has not been implemented yet.</EmptyCellBody>
-        </Table>
-      </div>
-      <div className="d-5">
-        <Title title="Pool Activity" isSoloTab tabs={[{ title: 'Add liquidity', callback: handleAddLiquidity }]} />
-        <TablePoolHeader>
-          <Text>Amount ({currencyOutSymbol})</Text>
-          <Text sx={{ textAlign: 'left' }}>Amount ({currencyInSymbol})</Text>
-          <Text sx={{ textAlign: 'right' }}>Time</Text>
-        </TablePoolHeader>
-        <Table>
-          {renderTransaction(allLiquidityHistory, showTrades, isLoading, isNewPair, chainId)}
-          {isLoading && <Loading />}
-        </Table>
-      </div>
+      </ChartWrapper>
+      <TradesWrapper>
+        <AdvancedModeHeader>
+          <Flex justifyContent="space-between" alignItems="center">
+            <AdvancedModeTitle>Trades</AdvancedModeTitle>
+            {showTrades && inputToken && outputToken && (
+              <SwitcherWrapper>
+                <SwitchButton
+                  onClick={() => handleSwitch(inputToken.address)}
+                  active={activeSwitchOption === inputToken.address}
+                >
+                  {inputToken.symbol}
+                </SwitchButton>
+                <SwitchButton
+                  onClick={() => handleSwitch(outputToken.address)}
+                  active={activeSwitchOption === outputToken.address}
+                >
+                  {outputToken.symbol}
+                </SwitchButton>
+              </SwitcherWrapper>
+            )}
+          </Flex>
+          <AdvancedModeDetails>
+            <Text>Price {showTrades ? `(${inputToken?.symbol})` : null}</Text>
+            <Text>Amount {showTrades ? `(${outputToken?.symbol})` : null}</Text>
+            <Text sx={{ textAlign: 'right' }}>Time</Text>
+          </AdvancedModeDetails>
+        </AdvancedModeHeader>
+        <TransactionsWrapper>
+          {!isNewPair &&
+            tradeHistory
+              .sort((firstTrade, secondTrade) =>
+                Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
+              )
+              .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
+                return (
+                  <Trade
+                    key={transactionId}
+                    isSell={isSell}
+                    transactionId={transactionId}
+                    logoKey={logoKey}
+                    chainId={chainId}
+                    amountIn={amountIn}
+                    amountOut={amountOut}
+                    timestamp={timestamp}
+                    amountUSD={amountUSD}
+                  />
+                )
+              })}
+          {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
+        </TransactionsWrapper>
+      </TradesWrapper>
+      <SwapBoxWrapper>
+        <SwapBox>{children}</SwapBox>
+      </SwapBoxWrapper>
+      <OrdersWrapper>
+        <AdvancedModeHeader>
+          <Flex>
+            <AdvancedModeTitle>Open orders</AdvancedModeTitle>
+            <AdvancedModeTitle style={{ marginLeft: '20px', fontWeight: '400' }}>Order history</AdvancedModeTitle>
+          </Flex>
+          <AdvancedModeDetails>
+            <Text>Price</Text>
+            <Text>Amount</Text>
+            <Text>Amount</Text>
+            <Text sx={{ textAlign: 'right' }}>Time</Text>
+          </AdvancedModeDetails>
+        </AdvancedModeHeader>
+      </OrdersWrapper>
+      <LiquidityWrapper>
+        <AdvancedModeHeader>
+          <Flex justifyContent="space-between">
+            <AdvancedModeTitle>Pool Activity</AdvancedModeTitle>
+            <ButtonDark
+              onClick={handleAddLiquidity}
+              disabled={!(inputToken && outputToken)}
+              style={{ fontSize: '10px', width: 'fit-content', padding: '4px 8px', marginTop: '-15px' }}
+            >
+              Add Liquidity
+            </ButtonDark>
+          </Flex>
+          <AdvancedModeDetails>
+            <Text>Amount</Text>
+            <Text>Amount </Text>
+            <Text sx={{ textAlign: 'right' }}>Time</Text>
+          </AdvancedModeDetails>
+        </AdvancedModeHeader>
+      </LiquidityWrapper>
     </Container>
   )
 }
