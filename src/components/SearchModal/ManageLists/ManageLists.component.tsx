@@ -113,7 +113,6 @@ export const ManageLists = () => {
     disableListImport,
   } = useContext(ManageListsContext)
 
-  console.log({ listUrlInput, renderableLists, tempList })
   return (
     <Wrapper>
       {!disableListImport && (

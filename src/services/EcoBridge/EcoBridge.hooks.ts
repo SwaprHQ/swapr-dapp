@@ -46,8 +46,6 @@ export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token 
   const selectedChainId = chainId ?? activeChainId
   const allTokens = useSelector(selectBridgeTokens)
 
-  console.log({ selectedChainId, allTokens, selectBridgeTokens })
-
   const tokensOnChain = allTokens[selectedChainId ?? 0]
 
   const nativeCurrency = useNativeCurrency(selectedChainId)

@@ -90,8 +90,6 @@ export const CurrencySearch = ({
     return filteredSortedTokens
   }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
 
-  console.log({ CurrencySearchContext, allTokens, filteredSortedTokens, filteredSortedTokensWithNativeCurrency })
-
   // clear the input on open
   useEffect(() => {
     if (isOpen) setSearchQuery('')
@@ -148,13 +146,6 @@ export const CurrencySearch = ({
     inputRef.current?.focus()
   }, [inputRef])
 
-  console.log({
-    debouncedQuery,
-    CurrencySearchContext,
-    filteredSortedTokensWithNativeCurrency,
-    filteredInactiveTokensWithFallback,
-    allTokens,
-  })
   return (
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">

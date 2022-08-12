@@ -24,8 +24,6 @@ export function CurrencySearchModalComponent({
   const lastOpen = useLast(isOpen)
   const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
 
-  console.log({ modalView, listURL, importToken })
-
   useLayoutEffect(() => {
     if (isOpen && !lastOpen) {
       setModalView(CurrencyModalView.SEARCH)
