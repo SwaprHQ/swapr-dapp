@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import useENS from '../../hooks/useENS'
+import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { SearchInput } from '../SearchModal/shared'
 
@@ -19,10 +20,9 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
 
 export interface RecipientFieldProps {
   recipient: string | null
-  action: any
 }
 
-export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
+export const RecipientField = ({ recipient }: RecipientFieldProps) => {
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
@@ -34,17 +34,17 @@ export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
-      dispatch(action({ recipient: input }))
+      dispatch(setRecipient({ recipient: input }))
     },
-    [action, dispatch]
+    [dispatch]
   )
 
   // Unset recipient on unmount
   useEffect(() => {
     return () => {
-      dispatch(action({ recipient: null }))
+      dispatch(setRecipient({ recipient: null }))
     }
-  }, [action, dispatch])
+  }, [dispatch])
 
   return (
     <div>
@@ -54,6 +54,7 @@ export const RecipientField = ({ recipient, action }: RecipientFieldProps) => {
       <SearchInputStyled
         data-testid="address-input"
         type="text"
+        pattern="^(0x[a-fA-F0-9]{40})$"
         placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
