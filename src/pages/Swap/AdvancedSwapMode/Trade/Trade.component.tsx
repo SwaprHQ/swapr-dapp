@@ -12,15 +12,22 @@ import { formatDate } from './Trade.utils'
 const TradeWrapper = styled(ExternalLink)`
   display: flex;
   align-items: center;
-  // justify-content: space-between;
+  justify-content: space-between;
   font-size: 10px;
-  margin: 0.15rem;
+  margin-top: 10px;
+
   & > div {
-    padding: 0.15rem;
-    width: calc(100% / 3);
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 25%;
+    margin-left: 10px;
+  }
+  & > div:nth-child(2) {
+    margin-left: 25px;
+  }
+  & > div:nth-child(3) {
+    margin-left: 0px;
   }
 `
 
@@ -43,16 +50,16 @@ export const Trade = ({
   logoKey: string
   isSell?: boolean
 }) => {
-  const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell: isSell })
+  const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell })
 
   return (
     <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
-      <Flex alignItems={'center'}>
+      <Flex alignItems="center">
         {ROUTABLE_PLATFORM_LOGO[logoKey]}
-        <Text sx={{ marginLeft: '10px', overflowX: 'hidden', textOverflow: 'ellipsis' }}>{amountIn}</Text>
+        <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>
       </Flex>
-      <Text sx={{ textAlign: 'left' }}>{amountOut}</Text>
-      <Text sx={{ textAlign: 'right', textTransform: 'uppercase', fontSize: '10px' }}>
+      <Text>{amountOut}</Text>
+      <Text sx={{ textTransform: 'uppercase', fontSize: '8px', textAlign: 'right' }}>
         {formatDate(Number(timestamp) * 1000)}
       </Text>
     </TradeWrapper>
