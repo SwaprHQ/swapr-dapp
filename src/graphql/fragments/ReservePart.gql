@@ -1,0 +1,4 @@
+fragment ReservePart on Pair {
+  reserve0
+  reserve1
+}

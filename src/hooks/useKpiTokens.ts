@@ -6,6 +6,7 @@ import { gql, useQuery } from '@apollo/client'
 import { Decimal } from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
@@ -53,19 +54,6 @@ interface KpiTokensQueryResult {
   kpiTokens: SubgraphKpiToken[]
 }
 
-const DERIVED_NATIVE_CURRENCY_QUERY = gql`
-  query getTokensDerivedNativeCurrency($tokenIds: [ID!]!) {
-    tokens(where: { id_in: $tokenIds }) {
-      address: id
-      derivedNativeCurrency
-    }
-  }
-`
-
-interface DerivedNativeCurrencyQueryResult {
-  tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
-}
-
 export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens: KpiToken[] } => {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
@@ -88,7 +76,7 @@ export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens
     loading: loadingCollateralPrices,
     data: collateralPrices,
     error: collateralError,
-  } = useQuery<DerivedNativeCurrencyQueryResult>(DERIVED_NATIVE_CURRENCY_QUERY, {
+  } = useGetDerivedNativeCurrencyTokensQuery({
     variables: { tokenIds: collateralTokenAddresses },
   })
 

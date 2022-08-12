@@ -1,0 +1,8 @@
+fragment StakeTokenFragment on Token {
+  id
+  symbol
+  name
+  decimals
+  totalSupply
+  derivedNativeCurrency
+}
