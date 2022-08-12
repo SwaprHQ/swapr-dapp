@@ -1,0 +1,7 @@
+fragment TokenFragment on Token {
+  address: id
+  name
+  symbol
+  decimals
+  derivedNativeCurrency
+}
