@@ -6,7 +6,8 @@ import { RouteCheck } from '../components/Routing/RouteCheck'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 // Dont want to lazy import swap
-import Swap from './Swap'
+import { Swap as SwapPage } from './Swap'
+import { RedirectToSwap } from './Swap/redirects'
 
 // Lazy loaded routes
 const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
@@ -23,7 +24,7 @@ const Account = lazy(() => import(/* webpackPrefetch: true */ './Account'))
 export function Routes() {
   return (
     <Switch>
-      <Route path="swap" element={<Swap />} />
+      <Route path="swap" element={<SwapPage />} />
       <Route path="swap/:outputCurrency" element={<BaseRedirect />} />
       <Route path="bridge" element={<Bridge />} />
 

@@ -1,9 +1,11 @@
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
+import { SwapContext, SwapTab } from '../../modules/swap/context'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import Row from '../Row'
 
@@ -53,24 +55,37 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = () => {
+export function Tabs() {
   const { t } = useTranslation('swap')
+  const { activeTab, setActiveTab } = useContext(SwapContext)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   return (
     <TabsColumn>
       <TabsRow>
-        <Button className="active">
+        <Button
+          onClick={() => setActiveTab(SwapTab.EcoRouter)}
+          className={activeTab === SwapTab.EcoRouter ? 'active' : ''}
+        >
           <StyledEcoRouter />
           Eco Router V1.5
         </Button>
-        <Button disabled={true}>{t('tabs.limit')}</Button>
+        <Button
+          onClick={() => setActiveTab(SwapTab.LimitOrder)}
+          className={activeTab === SwapTab.LimitOrder ? 'active' : ''}
+          disabled={true}
+        >
+          {t('tabs.limit')}
+        </Button>
         <Button
           onClick={() => {
+            setActiveTab(SwapTab.BridgeSwap)
             dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
             navigate('/bridge')
           }}
+          className={activeTab === SwapTab.BridgeSwap ? 'active' : ''}
+          disabled={true}
         >
           {t('tabs.bridgeSwap')}
         </Button>

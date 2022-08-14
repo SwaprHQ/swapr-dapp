@@ -146,3 +146,9 @@ export const SwapShowAcceptChanges = styled(AutoColumn)`
   border-radius: 12px;
   margin-top: 8px;
 `
+
+export const SwitchIconContainer = styled.div`
+  height: 0;
+  position: relative;
+  width: 100%;
+`
