@@ -4,8 +4,10 @@ import { useTheme } from 'styled-components'
 
 const BAD_SRCS: { [tokenAddress: string]: true } = {}
 
+const isSource = (source: string | undefined): source is string => !!source
+
 export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className'> {
-  sources: string[]
+  sources: (string | undefined)[]
   size?: string
   defaultText: string
 }
@@ -17,7 +19,7 @@ export default function Logo({ sources, alt, size, defaultText, ...rest }: LogoP
   const theme = useTheme()
   const [, refresh] = useState<number>(0)
 
-  const src: string | undefined = sources.find(src => !BAD_SRCS[src])
+  const src: string | undefined = sources.filter(isSource).find(src => !BAD_SRCS[src])
 
   if (src) {
     return (

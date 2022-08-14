@@ -1,6 +1,7 @@
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
+import { createSelector } from '@reduxjs/toolkit'
+import { type TokenInfo, type TokenList } from '@uniswap/token-lists/dist/types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -46,8 +47,24 @@ export function listToTokenMap(list: TokenList | null, useCache = true): TokenAd
   return map
 }
 
-export function useAllLists(): AppState['lists']['byUrl'] {
-  return useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+const selectListByUrl = (state: AppState): AppState['lists']['byUrl'] => state.lists.byUrl
+
+export function useAllLists() {
+  return useSelector(selectListByUrl)
+}
+
+const selectTokensBySymbol = createSelector(selectListByUrl, lists => {
+  const allTokens = new Map<string, TokenInfo>()
+  for (const key in lists) {
+    lists[key]?.current?.tokens?.forEach(token => {
+      allTokens.set(token.symbol.toUpperCase(), token)
+    })
+  }
+  return allTokens
+})
+
+export function useListsByToken() {
+  return useSelector(selectTokensBySymbol)
 }
 
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
