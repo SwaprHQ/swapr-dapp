@@ -90,9 +90,9 @@ export function usePair24hVolumeUSD(
   const { block, loading: blockLoading, error: blockError } = useBlockByTimestamp(getTimestamp24hAgo())
 
   const {
-    data: volumeTill24agoData,
-    loading: volumeTill24agoLoading,
-    error: volumeTill24agoError,
+    data: volume24hUsdData,
+    loading: volume24hUsdLoading,
+    error: volume24hUsdError,
   } = useQuery(isToken ? TOKEN_TOTAL_VOLUME_TILL_BLOCK : PAIR_VOLUME_TILL_BLOCK, {
     variables: {
       pairOrTokenAddress: pairOrTokenAddress?.toLowerCase(),
@@ -110,19 +110,19 @@ export function usePair24hVolumeUSD(
     },
   })
 
-  const volume24hAgoPairs = () => totalVolumeData?.pairs[0]?.volumeUSD - volumeTill24agoData?.pairs[0]?.volumeUSD
+  const volume24hAgoPairs = () => totalVolumeData?.pairs[0]?.volumeUSD - volume24hUsdData?.pairs[0]?.volumeUSD
   const volume24hAgoTokens = () =>
-    totalVolumeData?.tokens[0]?.tradeVolumeUSD - volumeTill24agoData?.tokens[0]?.tradeVolumeUSD
+    totalVolumeData?.tokens[0]?.tradeVolumeUSD - volume24hUsdData?.tokens[0]?.tradeVolumeUSD
   const volume24hAgo = isToken ? volume24hAgoTokens() : volume24hAgoPairs()
 
   return useMemo(() => {
-    if (volumeTill24agoLoading || totalVolumeLoading || blockLoading) return { loading: true, volume24hUSD: ZERO_USD }
+    if (volume24hUsdLoading || totalVolumeLoading || blockLoading) return { loading: true, volume24hUSD: ZERO_USD }
     if (
-      !volumeTill24agoData ||
+      !volume24hUsdData ||
       !totalVolumeData ||
-      !volumeTill24agoData.pairs.length ||
+      !volume24hUsdData.pairs.length ||
       !totalVolumeData.pairs.length ||
-      volumeTill24agoError ||
+      volume24hUsdError ||
       totalVolumeError ||
       blockError
     )
@@ -134,11 +134,11 @@ export function usePair24hVolumeUSD(
       ),
     }
   }, [
-    volumeTill24agoData,
+    volume24hUsdData,
     totalVolumeData,
     totalVolumeError,
-    volumeTill24agoError,
-    volumeTill24agoLoading,
+    volume24hUsdError,
+    volume24hUsdLoading,
     totalVolumeLoading,
     volume24hAgo,
     blockLoading,
