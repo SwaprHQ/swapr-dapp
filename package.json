@@ -1,12 +1,12 @@
 {
   "name": "@swapr/frontend",
-  "version": "1.0.0-beta.14.2",
+  "version": "1.0.0-beta.15",
   "private": true,
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn codegen:socket && react-app-rewired start",
-    "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "start": "yarn codegen:socket && yarn codegen:graphql && react-app-rewired start",
+    "build": "yarn codegen:socket && yarn codegen:graphql && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint src --ext js,jsx,ts,tsx",
@@ -25,7 +25,8 @@
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "chromatic --exit-zero-on-changes"
+    "chromatic": "chromatic --exit-zero-on-changes",
+    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
   },
   "resolutions": {
     "@uniswap/smart-order-router": "2.5.26"
@@ -98,6 +99,11 @@
   },
   "devDependencies": {
     "@connext/nxtp-sdk": "^0.1.36",
+    "@graphql-codegen/cli": "2.11.3",
+    "@graphql-codegen/introspection": "2.2.0",
+    "@graphql-codegen/typescript": "2.7.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@react-theming/storybook-addon": "^1.1.6",
     "@simbathesailor/use-what-changed": "^2.0.0",
@@ -115,7 +121,7 @@
     "@synthetixio/synpress": "^1.1.1",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.182",
     "@types/luxon": "^3.0.0",
     "@types/multicodec": "^2.1.0",
