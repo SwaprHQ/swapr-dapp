@@ -30,7 +30,7 @@ jobs:
       - name: ⎔・Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
           check-latest: true
           cache: 'yarn'
 
@@ -69,7 +69,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
 
       - name: Run linter
         run: yarn lint --quiet
@@ -90,7 +90,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
 
       - name: Run tests
         run: yarn test
@@ -111,7 +111,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
 
       - name: Run typescript check
         run: yarn typecheck
@@ -132,7 +132,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
 
       - name: Build app
         env:
@@ -169,7 +169,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
       - name: Start Deployment
         uses: bobheadxi/deployments@v1.3.0
         id: deployment
@@ -201,7 +201,6 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: cypress/included:9.2.0
     if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
@@ -219,8 +218,9 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
           check-latest: true
+          cache: 'yarn'
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -235,10 +235,10 @@ jobs:
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
-      - name: Install dependencies
+      - name: Codegen socket
         run: yarn codegen:socket
 
-      - name: Install dependencies
+      - name: Codegen GraphQl
         run: yarn codegen:graphql
 
       - name: Run synpress tests
@@ -350,7 +350,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14.1'
+          node-version: '16'
 
       - name: Display structure of downloaded files
         run: ls -R
