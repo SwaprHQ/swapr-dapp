@@ -220,7 +220,6 @@ jobs:
         with:
           node-version: '16.14.1'
           check-latest: true
-          cache: 'yarn'
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
