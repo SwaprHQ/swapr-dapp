@@ -5,7 +5,7 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { NetworkAdder } from '../../../../utils/NetworkAdder'
 
-describe('Wrapping tests', () => {
+describe.skip('Wrapping tests', () => {
   before(() => {
     NetworkAdder.addGnosis()
   })
