@@ -236,7 +236,10 @@ jobs:
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn codegen:socket
+
+      - name: Install dependencies
+        run: yarn codegen:graphql
 
       - name: Run synpress tests
         run: yarn synpress:ct
