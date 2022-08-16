@@ -73,7 +73,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             value={poolTokenPercentage ? poolTokenPercentage.toFixed(5) + '%' : '0'}
           />
           <ValueWithLabel
-            title={t('userLiquidity.poolTokens')}
+            title={t('userLiquidity.lpTokens')}
             value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'}
           />
           <ValueWithLabel title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}>
