@@ -201,6 +201,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    container: swapr/cypress:zstd
     if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
