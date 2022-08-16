@@ -5,7 +5,6 @@ import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
-import { SwapPage } from '../../../../pages/SwapPage'
 import { ErrorModal } from '../../../../pages/ErrorModal'
 
 describe('Bridge tests', () => {
@@ -24,6 +23,7 @@ describe('Bridge tests', () => {
     })
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
+    cy.changeMetamaskNetwork('rinkeby')
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')
