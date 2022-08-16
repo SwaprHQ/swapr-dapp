@@ -81,7 +81,7 @@ export const TradesWrapper = styled.div`
     border-left: 1px solid rgba(41, 38, 67, 1);
   }
   @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
   }
 `
 
@@ -95,7 +95,7 @@ export const SwapBoxWrapper = styled.div`
     grid-column: 1 /3;
   }
   @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
   }
 `
 
@@ -159,11 +159,20 @@ export const AdvancedModeDetails = styled.div`
   font-size: 12px;
   margin-top: 20px;
   color: ${({ theme }) => theme.purple3};
+
+  & > div:nth-child(1),
+  & > div:nth-child(2) {
+    flex-basis: 40%;
+  }
+
+  & > div:nth-child(3) {
+    flex-basis: 20%;
+  }
 `
 export const TransactionsWrapper = styled.div`
   ${CustomScrollBar}
   overflow-y: scroll;
-  max-height: 600px;
+  max-height: 650px;
 `
 export const SwitcherWrapper = styled.div`
   background: ${({ theme }) => theme.dark1};

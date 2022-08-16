@@ -20,14 +20,16 @@ const TradeWrapper = styled(ExternalLink)`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 25%;
     margin-left: 10px;
   }
+
+  & > div:nth-child(1),
   & > div:nth-child(2) {
-    margin-left: 25px;
+    flex-basis: 40%;
   }
+
   & > div:nth-child(3) {
-    margin-left: 0px;
+    flex-basis: 20%;
   }
 `
 
@@ -59,9 +61,7 @@ export const Trade = ({
         <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>
       </Flex>
       <Text>{amountOut}</Text>
-      <Text sx={{ textTransform: 'uppercase', fontSize: '8px', textAlign: 'right' }}>
-        {formatDate(Number(timestamp) * 1000)}
-      </Text>
+      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDate(Number(timestamp) * 1000)}</Text>
     </TradeWrapper>
   )
 }
