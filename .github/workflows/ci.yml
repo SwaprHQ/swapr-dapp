@@ -201,6 +201,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    container: cypress/browsers:node16.4.1-chrome78-ff70
     if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
@@ -374,7 +375,7 @@ jobs:
           path: |
             public-report
             mochawesome-report/public-report/screenshots/**
-            mochawesome-report/public-report/videos/**
+            mochawesome-report/public-report/screenshots/**
           retention-days: 3
 
       - name: Delete merged artifacts
