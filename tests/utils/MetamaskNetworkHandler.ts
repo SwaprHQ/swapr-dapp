@@ -1,4 +1,6 @@
-export class NetworkAdder {
+import { Network } from './TestTypes'
+
+export class MetamaskNetworkHandler {
   static addGnosis() {
     cy.addMetamaskNetwork({
       networkName: 'gnosis chain',
@@ -9,7 +11,7 @@ export class NetworkAdder {
       isTestnet: true,
     })
   }
-  static adARinkeby() {
+  static addARinkeby() {
     cy.addMetamaskNetwork({
       networkName: 'arbitrum rinkeby',
       rpcUrl: 'https://rinkeby.arbitrum.io/rpc',
@@ -17,6 +19,13 @@ export class NetworkAdder {
       symbol: 'ETH',
       blockExplorer: 'https://rinkeby-explorer.arbitrum.io/#/',
       isTestnet: true,
+    })
+  }
+  static switchToRinkebyIfNotConnected() {
+    cy.getNetwork().then((network?: Network) => {
+      if (network?.networkName !== 'rinkeby') {
+        cy.changeMetamaskNetwork('rinkeby')
+      }
     })
   }
 }

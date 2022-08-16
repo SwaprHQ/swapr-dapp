@@ -1,7 +1,11 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Wallet connection tests', () => {
+  before(() => {
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+  })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()

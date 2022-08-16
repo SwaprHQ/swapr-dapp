@@ -6,6 +6,7 @@ import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade, SCANNERS } from '../../../../utils/facades/ScannerFacade'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 import { ErrorModal } from '../../../../pages/ErrorModal'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Bridge tests', () => {
   let balanceBefore: number
@@ -23,7 +24,7 @@ describe('Bridge tests', () => {
     })
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
-    cy.changeMetamaskNetwork('rinkeby')
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')

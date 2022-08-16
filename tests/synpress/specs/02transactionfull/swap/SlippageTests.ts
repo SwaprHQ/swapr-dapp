@@ -1,13 +1,10 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
-import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
-import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
-import { TransactionHelper } from '../../../../utils/TransactionHelper'
-import { NetworkAdder } from '../../../../utils/NetworkAdder'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe.skip('Wrapping tests', () => {
   before(() => {
-    NetworkAdder.addGnosis()
+    MetamaskNetworkHandler.addGnosis()
   })
 
   beforeEach(() => {
@@ -16,6 +13,7 @@ describe.skip('Wrapping tests', () => {
     cy.clearCookies()
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
+    cy.changeMetamaskNetwork('rinkeby')
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')
@@ -24,5 +22,8 @@ describe.skip('Wrapping tests', () => {
     cy.wait(1000)
   })
 
-  it('Should wrap ETH to WETH [TC-03]', () => {})
+  it.only('Should wrap ETH to WETH [TC-03]', () => {
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    cy.wait(10007567567567)
+  })
 })

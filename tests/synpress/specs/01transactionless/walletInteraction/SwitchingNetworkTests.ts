@@ -2,13 +2,13 @@ import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
-import { NetworkAdder } from '../../../../utils/NetworkAdder'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Switching from mainnet tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    NetworkAdder.adARinkeby()
-    cy.changeMetamaskNetwork('rinkeby')
+    MetamaskNetworkHandler.addARinkeby()
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()

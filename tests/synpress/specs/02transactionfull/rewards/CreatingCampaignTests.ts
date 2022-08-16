@@ -10,6 +10,7 @@ import { getUnixTime } from 'date-fns'
 import { LiquidityPage } from '../../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../../utils/TestTypes'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
@@ -19,6 +20,9 @@ describe('Campaign creation tests', () => {
   const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
   let isCampaignCreated = false
 
+  before(() => {
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+  })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
     MenuBar.connectWallet()

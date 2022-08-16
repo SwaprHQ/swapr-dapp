@@ -3,6 +3,7 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
@@ -10,7 +11,7 @@ describe('Wrapping tests', () => {
   let balanceBefore: number
 
   before(() => {
-    cy.changeMetamaskNetwork('rinkeby')
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
 
   beforeEach(() => {

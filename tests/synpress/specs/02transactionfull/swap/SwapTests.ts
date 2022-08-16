@@ -5,8 +5,7 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { TransactionSettings } from '../../../../pages/TransactionSettings'
-import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
-import { NetworkAdder } from '../../../../utils/NetworkAdder'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 import { ErrorModal } from '../../../../pages/ErrorModal'
 
 describe('Swapping tests', () => {
@@ -16,10 +15,10 @@ describe('Swapping tests', () => {
   let ercBalanceBefore: number
 
   before(() => {
-    cy.changeMetamaskNetwork('rinkeby')
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    NetworkAdder.addGnosis()
+    MetamaskNetworkHandler.addGnosis()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
