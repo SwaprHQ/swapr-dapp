@@ -201,7 +201,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: cypress/browsers:node16.4.1-chrome78-ff70
+    container: cypress/browsers:node16.5.0-chrome97-ff96
     if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
