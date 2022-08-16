@@ -1,5 +1,6 @@
-import { ChainId, GnosisProtocolTrade, GnosisProtocolTradeOrderStatus } from '@swapr/sdk'
+import { ChainId, CoWTrade } from '@swapr/sdk'
 
+import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -82,12 +83,12 @@ export default function Updater(): null {
       if (!chainId) throw new Error('No library or chainId')
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
       return retry(async () => {
-        const res = await fetch(`${GnosisProtocolTrade.getApi(chainId).baseUrl}/api/v1/orders/${orderId}`)
-        if (!res.ok) {
+        const res = await CoWTrade.getCowSdk(chainId).cowApi.getOrder(orderId)
+        if (!res) {
           console.debug('Retrying for order ', orderId)
           throw new RetryableError()
         }
-        return res.json()
+        return res
       }, retryOptions)
     },
     [chainId]
@@ -109,7 +110,14 @@ export default function Updater(): null {
                 return
               }
 
-              const isFulfilled = orderMetadata.status === GnosisProtocolTradeOrderStatus.FULFILLED
+              const isFulfilled = orderMetadata.status === 'fulfilled'
+
+              // The settlement contract from COW
+              const GPv2Settlement = contractNetworks.GPv2Settlement as Record<
+                ChainId,
+                Record<'transactionHash' | 'address', string>
+              >
+              const contractAddress = GPv2Settlement[chainId]?.address
 
               dispatch(
                 finalizeTransaction({
@@ -118,9 +126,9 @@ export default function Updater(): null {
                   receipt: {
                     blockHash: '0x0',
                     blockNumber: 0,
-                    contractAddress: orderMetadata.settlementContract,
+                    contractAddress,
                     from: '0x0',
-                    to: orderMetadata.status.receiver,
+                    to: orderMetadata.receiver,
                     transactionHash: '0x0',
                     transactionIndex: 0,
                     status: isFulfilled ? 1 : 0,

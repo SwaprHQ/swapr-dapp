@@ -1,4 +1,6 @@
-import { lazy } from 'react'
+import { ChainId } from '@swapr/sdk'
+
+import React, { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../hooks'
@@ -33,7 +35,8 @@ const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './L
 const RouteWrapper = ({ element }: { element: JSX.Element }) => {
   const { chainId } = useActiveWeb3React()
   // If all features are available, render the route
-  if (chainSupportsSWPR(chainId)) {
+  if (chainSupportsSWPR(chainId) || ChainId.ARBITRUM_GOERLI) {
+    // FIXME: fix this if's condition once SWPR is on Arb Goerli
     return element
   }
   return <RedirectToSwap />

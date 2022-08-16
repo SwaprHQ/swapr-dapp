@@ -1,0 +1,10 @@
+fragment SingleSidedStakingCampaignFragment on SingleSidedStakingCampaign {
+  id
+  owner
+  duration
+  startsAt
+  endsAt
+  locked
+  stakingCap
+  stakedAmount
+}
