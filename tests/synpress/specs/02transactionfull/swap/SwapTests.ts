@@ -19,7 +19,6 @@ describe('Swapping tests', () => {
     cy.changeMetamaskNetwork('rinkeby')
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    cy.disconnectMetamaskWalletFromAllDapps()
     NetworkAdder.addGnosis()
   })
   beforeEach(() => {
