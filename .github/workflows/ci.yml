@@ -235,6 +235,9 @@ jobs:
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
+      - name: Install dependencies
+        run: yarn install
+
       - name: Run synpress tests
         run: yarn synpress:ct
         continue-on-error: true
