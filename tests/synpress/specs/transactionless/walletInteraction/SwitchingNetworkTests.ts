@@ -2,9 +2,21 @@ import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
+import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 
 describe('Switching from mainnet tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
+  before(() => {
+    cy.clearLocalStorage()
+    cy.addMetamaskNetwork({
+      networkName: 'Arbitrum Rinkeby',
+      rpcUrl: 'https://rinkeby.arbitrum.io/rpc',
+      chainId: '421611',
+      symbol: 'ETH',
+      blockExplorer: 'https://rinkeby-explorer.arbitrum.io/#/',
+      isTestnet: true,
+    })
+  })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
@@ -28,147 +40,113 @@ describe('Switching from mainnet tests', () => {
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
-  })
-  it('Should switch from mainnet to a. rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arinkeby().click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from mainnet to gnosis by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('ethereum')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
   it('Should switch from mainnet to arbitrum by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('ethereum')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from mainnet to Polygon by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('ethereum')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToAddAndSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Polygon')
-  })
-  it('Should switch from mainnet to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('ethereum')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
   it('Should switch from gnosis to mainnet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('Gnosis')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from gnosis to arbitrum by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('Gnosis')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
-  })
-  it('Should switch from gnosis to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('Gnosis')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from gnosis to polygon by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('Gnosis')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Polygon')
+    NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
   it('Should switch from rinkeby to mainnet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from rinkeby to arbitrum by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from rinkeby to gnosis by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
-  })
-  it('Should switch from rinkeby to a. rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('rinkeby')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
   it('Should switch from rinkeby to polygon by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Polygon')
+    NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
   it('Should switch from a. rinkeby to mainnet by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from a. rinkeby to arbitrum by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from a. rinkeby to gnosis by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
-  it('Should switch from a. rinkeby to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
-  })
+
   it('Should switch from a. rinkeby to Polygon by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum rinkeby')
+    cy.changeMetamaskNetwork('Arbitrum Rinkeby')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Polygon')
+    NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
   it('Should switch from arbitrum one to gnosis by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('arbitrum one')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
 
   it('Should switch from arbitrum one to mainnet by dapp [TC-55]', () => {
@@ -176,63 +154,37 @@ describe('Switching from mainnet tests', () => {
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
-  it('Should switch from arbitrum one to a. rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum one')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
-  })
+
   it('Should switch from arbitrum one to polygon by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('arbitrum one')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.polygon().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Polygon')
+    NetworkSwitcher.checkNetwork(ChainsEnum.POLYGON)
   })
-  it('Should switch from arbitrum one to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('arbitrum one')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
-  })
+
   it('Should switch from polygon to mainet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Ethereum')
+    NetworkSwitcher.checkNetwork(ChainsEnum.MAINNET)
   })
   it('Should switch from polygon to mainet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.arbitrum().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum One')
+    NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
   })
   it('Should switch from polygon to mainet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Gnosis Chain')
-  })
-  it('Should switch from polygon to a. rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('polygon mainnet')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.arinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Arbitrum Rinkeby')
-  })
-  it('Should switch from polygon to rinkeby by dapp [TC-55]', () => {
-    cy.changeMetamaskNetwork('polygon mainnet')
-    MenuBar.getNetworkSwitcher().click()
-    NetworkSwitcher.rinkeby().click()
-    cy.allowMetamaskToSwitchNetwork()
-    MenuBar.getNetworkSwitcher().should('contain.text', 'Rinkeby')
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
   it('Should switch from mainnet to rinkeby after starting the swap process [regression-test] [TC-61]', () => {
     cy.changeMetamaskNetwork('ethereum')

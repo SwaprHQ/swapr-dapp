@@ -2,7 +2,7 @@ import { MenuBar } from '../../../pages/MenuBar'
 import { SwapPage } from '../../../pages/SwapPage'
 import { LiquidityPage } from '../../../pages/LiquidityPage'
 
-describe('Add liquidity', () => {
+describe.skip('Add liquidity', () => {
   const TRANSACTION_VALUE: number = 0.000001
   let firstTokenBefore: number
   let secondTokenBefore: number
@@ -27,10 +27,7 @@ describe('Add liquidity', () => {
 
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getPairCards()
-      .contains('DXD')
-      .contains('WEENUS')
-      .click()
+    LiquidityPage.getPairCards().contains('DXD').contains('WEENUS').click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {
@@ -77,10 +74,7 @@ describe('Add liquidity', () => {
   })
   it('Should check if tokens are added to liquidity pool [TC-59]', () => {
     MenuBar.getLiquidity().click()
-    LiquidityPage.getPairCards()
-      .contains('DXD')
-      .contains('WEENUS')
-      .click()
+    LiquidityPage.getPairCards().contains('DXD').contains('WEENUS').click()
     LiquidityPage.getFirstTokenBalance()
       .invoke('text')
       .should(res => {

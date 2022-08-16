@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react'
+import { MouseEvent } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -22,31 +22,25 @@ interface BadgeProps {
   onClick?: (event: MouseEvent) => void
 }
 
-const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
+export const Badge = ({ icon: FeatherIcon, label, onClick }: BadgeProps) => {
   return (
     <Root alignItems="center" onClick={onClick}>
       {label && (
         <Box>
-          <TYPE.body fontWeight="600" fontSize="8px">
+          <TYPE.Body fontWeight="600" fontSize="8px">
             {label}
-          </TYPE.body>
+          </TYPE.Body>
         </Box>
       )}
       {FeatherIcon && (
         <Flex ml="4px" alignItems="center">
           <IconBox>
-            <TYPE.body>
+            <TYPE.Body>
               <FeatherIcon size="12px" />
-            </TYPE.body>
+            </TYPE.Body>
           </IconBox>
         </Flex>
       )}
     </Root>
   )
 }
-
-Badge.defaultProps = {
-  onIconClick: () => null,
-}
-
-export default Badge

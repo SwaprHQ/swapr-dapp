@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from './../../utils/theme'
@@ -6,6 +6,7 @@ import Button from './common/Button'
 
 const FeatureItem = props => {
   const { feature } = props
+
   const [isElementVisible, setIsElementVisible] = useState(false)
   const [isSafari, setIsSafari] = useState(false)
 
@@ -27,7 +28,6 @@ const FeatureItem = props => {
       }
     })
   }, [props.id])
-
   return (
     <StyledFeatureItem className="feature-item" data-aos="fade-up" id={props.id}>
       <div className="feature-item-content">

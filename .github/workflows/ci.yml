@@ -40,6 +40,9 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
+      - name: Generate graphql
+        run: yarn codegen:graphql
+
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
@@ -150,7 +153,7 @@ jobs:
     name: ⬡・IPFS Deploy
     needs: build
     runs-on: ubuntu-20.04
-    if: ${{ github.event_name != 'schedule' }}
+    if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
         uses: rlespinasse/github-slug-action@4.2.5
@@ -198,7 +201,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: cypress/browsers:node12.13.0-chrome78-ff70
+    if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -235,6 +238,8 @@ jobs:
       - name: Run synpress tests
         run: yarn synpress:ct
         continue-on-error: true
+        env:
+          CI: true
 
       - name: Merge test results into one
         run: |
@@ -377,11 +382,22 @@ jobs:
             transactionless
             transactionfull
 
+  depcleanup:
+    name: 🧹 Dependabot Cleanup
+    if: github.actor == 'dependabot[bot]'
+    needs: [install, lint, test, typecheck, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
+
   cleanup:
     name: 🧹 Cleanup
+    if: ${{ success() && github.actor != 'dependabot[bot]' }}
     needs: [install, lint, test, typecheck, build, cypress, cypress-report]
     runs-on: ubuntu-20.04
-    if: ${{ success() }}
     steps:
       - name: Delete workspace artifact
         uses: geekyeggo/delete-artifact@v1

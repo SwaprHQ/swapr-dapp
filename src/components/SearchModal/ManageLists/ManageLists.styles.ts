@@ -50,7 +50,7 @@ export const StyledTitleText = styled.div<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `
 
-export const StyledListUrlText = styled(TYPE.main)<{ active: boolean }>`
+export const StyledListUrlText = styled(TYPE.Main)<{ active: boolean }>`
   font-size: 12px;
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `

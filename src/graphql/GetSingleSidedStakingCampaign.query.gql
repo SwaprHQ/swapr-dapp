@@ -1,0 +1,11 @@
+query getSingleSidedStakingCampaign($campaignId: ID!) {
+  singleSidedStakingCampaign(id: $campaignId) {
+    ...SingleSidedStakingCampaignFragment
+    stakeToken {
+      ...StakeTokenFragment
+    }
+    rewards {
+      ...SingleSidedStakingCampaignRewardFragment
+    }
+  }
+}

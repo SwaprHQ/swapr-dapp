@@ -1,6 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
-import React, { ReactNode, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
@@ -130,8 +130,7 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
                 closeModals()
                 option.connector !== connector && !option.href && tryActivation(option.connector)
               }}
-              // eslint-disable-next-line
-              icon={require('../../assets/images/' + option.iconName).default}
+              icon={option.iconName}
               isActive={option.connector && option.connector === connector}
             />
           )
@@ -182,8 +181,7 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
                 : !option.href && tryActivation(option.connector)
             }}
             name={option.name}
-            // eslint-disable-next-line
-            icon={require('../../assets/images/' + option.iconName).default}
+            icon={option.iconName}
             isActive={option.connector && option.connector === connector}
           />
         )

@@ -2,10 +2,10 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
   ChainId,
+  CoWTrade,
   Currency,
   CurrencyAmount,
   CurveTrade,
-  GnosisProtocolTrade,
   TokenAmount,
   Trade,
   UniswapTrade,
@@ -18,7 +18,7 @@ import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 import { useCallback, useMemo } from 'react'
 
 import { useTokenAllowance } from '../data/Allowances'
-import { Field } from '../state/swap/actions'
+import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
@@ -122,7 +122,7 @@ export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0
     if (trade) {
       // For GPv2 trades, make sure to wrap the currency amount if
       // the trade input currency is the native one
-      if (trade instanceof GnosisProtocolTrade && Currency.isNative(trade.inputAmount.currency)) {
+      if (trade instanceof CoWTrade && Currency.isNative(trade.inputAmount.currency)) {
         return wrappedAmount(trade.inputAmount, trade.chainId)
       }
       // For any other case, return the default
@@ -136,7 +136,7 @@ export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0
   let approveAddress = AddressZero
   if (
     trade instanceof CurveTrade ||
-    trade instanceof GnosisProtocolTrade ||
+    trade instanceof CoWTrade ||
     trade instanceof UniswapTrade ||
     trade instanceof ZeroXTrade
   ) {

@@ -16,14 +16,18 @@ import {
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
+import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import Coinbase from '../assets/images/coinbase.svg'
 import CurveLogo from '../assets/images/curve-logo.svg'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
+import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import WalletConnect from '../assets/images/wallet-connect.svg'
 import CoWLogo from '../assets/svg/cow-protocol.svg'
 import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
 import SwaprLogo from '../assets/svg/logo.svg'
@@ -176,6 +180,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [
     WXDAI[ChainId.XDAI],
     WETH[ChainId.XDAI],
@@ -189,6 +194,9 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     BAO,
   ],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [],
+  [ChainId.GOERLI]: [],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -212,8 +220,12 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [],
+  [ChainId.GOERLI]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -228,8 +240,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.ARBITRUM_ONE]: [WETH[ChainId.ARBITRUM_ONE], DXD[ChainId.ARBITRUM_ONE], USDC[ChainId.ARBITRUM_ONE]],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
+  [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
 }
 
 export const PINNED_PAIRS: {
@@ -259,7 +275,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
+    iconName: RightArrow,
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
@@ -268,7 +284,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    iconName: Metamask,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
@@ -277,7 +293,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   WALLET_CONNECT: {
     connector: walletConnect,
     name: 'WalletConnect',
-    iconName: 'wallet-connect.svg',
+    iconName: WalletConnect,
     description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
     href: null,
     color: '#4196FC',
@@ -286,7 +302,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   COINBASE: {
     connector: walletLink,
     name: 'Coinbase Wallet',
-    iconName: 'coinbase.svg',
+    iconName: Coinbase,
     description: 'Connect using Coinbase Wallet.',
     href: null,
     color: '#4196FC',
@@ -395,6 +411,17 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
     blockExplorerUrls: ['https://rinkeby-explorer.arbitrum.io'],
   },
+  [ChainId.ARBITRUM_GOERLI]: {
+    chainId: `0x${ChainId.ARBITRUM_GOERLI.toString(16)}`,
+    chainName: 'Arbitrum Goerli',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://goerli-rollup.arbitrum.io/rpc'],
+    blockExplorerUrls: ['https://goerli-rollup-explorer.arbitrum.io/'],
+  },
   [ChainId.RINKEBY]: {
     chainId: `0x${ChainId.RINKEBY.toString(16)}`,
     chainName: 'Rinkeby',
@@ -492,6 +519,10 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
   ],
+  [ChainId.ARBITRUM_GOERLI]: [],
+  [ChainId.GOERLI]: [],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
@@ -622,7 +653,7 @@ export const OLD_SWPR: { [key: number]: Token } = {
 }
 
 export const TESTNETS = [4, 421611]
-export const SHOW_TESTNETS = true
+export const SHOW_TESTNETS = false
 
 // addresses to filter by when querying for verified KPI tokens
 export const KPI_TOKEN_CREATORS: { [key: number]: string[] } = {

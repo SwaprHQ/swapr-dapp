@@ -1,6 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 
 interface AutoMaxBalanceProps {
   onMax?: () => void
@@ -10,17 +11,25 @@ interface AutoMaxBalanceProps {
 export const useAutoMaxBalance = ({ onMax, onCurrencySelect }: AutoMaxBalanceProps) => {
   const [isMaxAmount, setIsMaxAmount] = useState<boolean>(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isMaxAmount && onMax) {
+      batchedUpdates(() => {
+        setIsMaxAmount(false)
+        onMax()
+      })
+    }
+
+    return () => {
       setIsMaxAmount(false)
-      onMax()
     }
   }, [isMaxAmount, onMax])
 
   const handleOnCurrencySelect = useCallback(
     (inputCurrency: Currency, isMaxAmount?: boolean) => {
-      onCurrencySelect && onCurrencySelect(inputCurrency)
-      setIsMaxAmount(isMaxAmount ?? false)
+      batchedUpdates(() => {
+        if (onCurrencySelect) onCurrencySelect(inputCurrency)
+        setIsMaxAmount(isMaxAmount ?? false)
+      })
     },
     [onCurrencySelect]
   )

@@ -1,19 +1,11 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      // Allows for the parsing of JSX
-      "jsx": true
-    }
-  },
   "ignorePatterns": [
     "node_modules/**/*",
     "cypress/**/*",
     "scripts/*.js",
     "config-overrides.js",
-    "src/**/generated/**/*"
+    "src/**/generated/**/*",
+    "tests/synpress/**/*"
   ],
   "settings": {
     "react": {
@@ -21,11 +13,10 @@
     }
   },
   "extends": [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
+    "react-app",
+    "react-app/jest",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
