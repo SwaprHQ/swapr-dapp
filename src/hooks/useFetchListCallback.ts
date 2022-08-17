@@ -8,38 +8,22 @@ import { useDispatch } from 'react-redux'
 
 import { immediateCarrotSubgraphClients } from '../apollo/client'
 import carrotListLogoUrl from '../assets/images/carrot.png'
-import { KPI_TOKEN_CREATORS } from '../constants'
+import { KPI_TOKEN_CREATORS, MAINNET_PROVIDER } from '../constants'
 import { AppDispatch } from '../state'
 import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import resolveENSContentHash from '../utils/resolveENSContentHash'
-import { getNetworkLibrary, useWeb3ReactCore } from './useWeb3ReactCore'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId, provider } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
-
-  const ensResolver = useCallback(
-    async (ensName: string) => {
-      if (!provider || chainId !== 1) {
-        const networkLibrary = getNetworkLibrary()
-        const network = await networkLibrary.getNetwork()
-        if (networkLibrary && network.chainId === 1) {
-          return resolveENSContentHash(ensName, networkLibrary)
-        }
-        throw new Error('Could not construct mainnet ENS resolver')
-      }
-      return resolveENSContentHash(ensName, provider)
-    },
-    [chainId, provider]
-  )
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(
     async (listUrl: string, sendDispatch = true) => {
       const requestId = nanoid()
       sendDispatch && dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
-      return getTokenList(listUrl, ensResolver)
+      return getTokenList(listUrl, (ensName: string) => resolveENSContentHash(ensName, MAINNET_PROVIDER))
         .then((tokenList: TokenList) => {
           sendDispatch && dispatch(fetchTokenList.fulfilled({ url: listUrl, tokenList, requestId }))
           return tokenList
@@ -50,7 +34,7 @@ export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean
           throw error
         })
     },
-    [dispatch, ensResolver]
+    [dispatch]
   )
 }
 

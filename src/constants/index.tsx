@@ -242,7 +242,7 @@ export const PINNED_PAIRS: {
     [DAI[ChainId.MAINNET], USDT[ChainId.MAINNET]],
   ],
 }
-
+export const MAINNET_PROVIDER = new providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`)
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
 export enum ConnectorType {

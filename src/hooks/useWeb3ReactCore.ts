@@ -1,21 +1,13 @@
 import { ChainId } from '@swapr/sdk'
 
 import { useWeb3React, Web3ContextType } from '@web3-react/core'
-import { providers } from 'ethers'
 import { useEffect, useState } from 'react'
 
-import { web3Network } from '../connectors'
 import { NETWORK_DETAIL } from '../constants'
-import getLibrary from '../utils/getLibrary'
 
 type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
   chainId?: ChainId
   isCurrentChainUnsupported: boolean
-}
-
-let networkLibrary: providers.Web3Provider | undefined
-export function getNetworkLibrary(): providers.Web3Provider {
-  return (networkLibrary = networkLibrary ?? getLibrary(web3Network.provider))
 }
 
 export const useWeb3ReactCore = (): Web3ReactProps => {
