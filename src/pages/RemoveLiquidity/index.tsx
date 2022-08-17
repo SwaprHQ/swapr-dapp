@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -46,7 +46,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { Wrapper } from '../Pools/styleds'
 
-const StyledInternalLinkText = styled(TYPE.body)`
+const StyledInternalLinkText = styled(TYPE.Body)`
   display: flex;
   text-transform: uppercase;
   text-decoration: underline;
@@ -391,11 +391,11 @@ export default function RemoveLiquidity() {
           </RowFixed>
         </RowBetween>
 
-        <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
+        <TYPE.Italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
           {`Output is estimated. If the price changes by more than ${
             allowedSlippage / 100
           }% your transaction will revert.`}
-        </TYPE.italic>
+        </TYPE.Italic>
       </AutoColumn>
     )
   }
@@ -520,9 +520,9 @@ export default function RemoveLiquidity() {
             <LightCard>
               <AutoColumn gap="12px">
                 <RowBetween>
-                  <TYPE.body textAlign="center" fontWeight={500} fontSize="16px" lineHeight="19.5px" width="100%">
+                  <TYPE.Body textAlign="center" fontWeight={500} fontSize="16px" lineHeight="19.5px" width="100%">
                     Amount
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <Row>
                   <Text textAlign="center" fontSize="62px" lineHeight="76px" fontWeight={500} width="100%">
@@ -582,25 +582,25 @@ export default function RemoveLiquidity() {
                 <LightCard>
                   <AutoColumn gap="10px">
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.White fontSize="22px" lineHeight="27px">
                         {formattedAmounts[Field.CURRENCY_A] || '-'}
-                      </TYPE.white>
+                      </TYPE.White>
                       <RowFixed>
                         <CurrencyLogo size="20px" currency={currencyA} style={{ marginRight: '8px' }} />
-                        <TYPE.white fontSize="16px" lineHeight="20px" id="remove-liquidity-tokena-symbol">
+                        <TYPE.White fontSize="16px" lineHeight="20px" id="remove-liquidity-tokena-symbol">
                           {currencyA?.symbol}
-                        </TYPE.white>
+                        </TYPE.White>
                       </RowFixed>
                     </RowBetween>
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.White fontSize="22px" lineHeight="27px">
                         {formattedAmounts[Field.CURRENCY_B] || '-'}
-                      </TYPE.white>
+                      </TYPE.White>
                       <RowFixed>
                         <CurrencyLogo size="20px" currency={currencyB} style={{ marginRight: '8px' }} />
-                        <TYPE.white fontSize="16px" lineHeight="20px" id="remove-liquidity-tokenb-symbol">
+                        <TYPE.White fontSize="16px" lineHeight="20px" id="remove-liquidity-tokenb-symbol">
                           {currencyB?.symbol}
-                        </TYPE.white>
+                        </TYPE.White>
                       </RowFixed>
                     </RowBetween>
                     {chainId && (oneCurrencyIsNativeWrapper || oneCurrencyIsNative) ? (
@@ -695,9 +695,9 @@ export default function RemoveLiquidity() {
             {pair && tokenA && (
               <AutoColumn gap="8px" style={{ padding: '.25rem .75rem 0 .75rem' }}>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Price
-                  </TYPE.body>
+                  </TYPE.Body>
                   <TradePrice
                     price={pair?.priceOf(tokenA)}
                     showInverted={showInverted}
@@ -705,20 +705,20 @@ export default function RemoveLiquidity() {
                   />
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Swap fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     {swapFee ? `${swapFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Protocol fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     {protocolFee ? `${protocolFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
               </AutoColumn>
             )}

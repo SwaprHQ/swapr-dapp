@@ -3,6 +3,7 @@ import { ChainId, Currency } from '@swapr/sdk'
 
 import { schema, TokenList } from '@uniswap/token-lists'
 import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
 import { BigNumber, Contract } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { request } from 'graphql-request'
@@ -444,7 +445,10 @@ export class OmniBridge extends EcoBridgeChildBase {
       const fetchDefaultTokens = async () => {
         const url = defaultTokensUrl[Number(from.chainId)]
 
-        const tokenListValidator = new Ajv({ allErrors: true }).compile(schema)
+        const ajv = new Ajv({ allErrors: false })
+        addFormats(ajv)
+
+        const tokenListValidator = ajv.compile(schema)
 
         const response = await fetch(url)
         if (response.ok) {

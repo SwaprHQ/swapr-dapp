@@ -1,4 +1,3 @@
-import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
 import styled from 'styled-components'

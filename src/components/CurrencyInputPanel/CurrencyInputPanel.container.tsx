@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useAutoMaxBalance } from '../../hooks/useAutoMaxBalance'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 import { CurrencyWrapperSource } from '../CurrencyLogo'

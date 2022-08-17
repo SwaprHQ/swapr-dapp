@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { InjectedConnector } from '@web3-react/injected-connector'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -17,7 +17,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
 import { shortenAddress } from '../../utils'
 import { TriangleIcon } from '../Icons'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import { RowBetween } from '../Row'
 
@@ -28,6 +28,7 @@ const ChainLogo: any = {
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
 }
 
 const View = styled.div`
@@ -91,6 +92,7 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '30px')};
+    width: ${({ size }) => (size ? size + 'px' : '30px')};
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -185,7 +187,7 @@ export function AccountStatus({
           )}
         </Web3StatusConnected>
       )}
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER} placement="bottom-end">
         <Web3StatusNetwork
           clickable={networkSwitchingActive}
           onClick={networkSwitchingActive ? toggleNetworkSwitcherPopover : undefined}

@@ -1,0 +1,9 @@
+fragment LiquidityMiningCampaignFragment on LiquidityMiningCampaign {
+  address: id
+  duration
+  startsAt
+  endsAt
+  locked
+  stakingCap
+  stakedAmount
+}

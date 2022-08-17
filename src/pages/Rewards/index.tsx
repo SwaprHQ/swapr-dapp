@@ -1,7 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
+import { useCallback, useEffect, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -107,10 +106,9 @@ export default function Rewards() {
   )
   const handleFilterTokenReset = useCallback(
     (e: React.MouseEvent<Element>) => {
-      batchedUpdates(() => {
-        setAggregatedDataFilter(PairsFilterType.ALL)
-        setFilterPair(null)
-      })
+      setAggregatedDataFilter(PairsFilterType.ALL)
+      setFilterPair(null)
+
       navigate(`/rewards`)
       e.stopPropagation()
     },
@@ -130,7 +128,7 @@ export default function Rewards() {
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <TYPE.mediumHeader
+                  <TYPE.MediumHeader
                     onClick={handleFilterTokenReset}
                     style={{ cursor: 'pointer' }}
                     fontWeight="400"
@@ -139,12 +137,12 @@ export default function Rewards() {
                     color="text4"
                   >
                     Rewards
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </Box>
                 <Box mr="8px">
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                  <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     /
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </Box>
                 <PointableFlex onClick={handleAllClick}>
                   {!filterPair && wrappedPair[0] === PairState.LOADING && (

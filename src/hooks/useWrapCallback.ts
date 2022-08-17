@@ -54,7 +54,7 @@ export function useWrapCallback(
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()
 
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency as Currency)
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const [inputAmount, outputAmount] = useMemo(() => {

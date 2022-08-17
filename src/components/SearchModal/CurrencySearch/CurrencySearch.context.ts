@@ -1,8 +1,8 @@
-import React from 'react'
+import { createContext } from 'react'
 
 import { CurrencySearchContextType } from './CurrencySearch.types'
 
-export const CurrencySearchContext = React.createContext<CurrencySearchContextType>({
+export const CurrencySearchContext = createContext<CurrencySearchContextType>({
   allTokens: {},
   allTokensOnSecondChain: {},
   searchQuery: '',

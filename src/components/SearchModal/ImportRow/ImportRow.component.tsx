@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTheme } from 'styled-components'
 
 import { useIsTokenActive, useIsUserAddedToken } from '../../../hooks/Tokens'
@@ -27,16 +26,16 @@ export const ImportRow = ({ token, style, dim, showImportView, setImportToken }:
 
       <AutoColumn gap="4px" style={{ opacity: dim ? '0.6' : '1' }}>
         <AutoRow>
-          <TYPE.body fontWeight={500}>{token.symbol}</TYPE.body>
-          <TYPE.darkGray ml="8px" fontWeight={300}>
+          <TYPE.Body fontWeight={500}>{token.symbol}</TYPE.Body>
+          <TYPE.DarkGray ml="8px" fontWeight={300}>
             <NameOverflow title={token.name}>{token.name}</NameOverflow>
-          </TYPE.darkGray>
+          </TYPE.DarkGray>
         </AutoRow>
         {list && list.logoURI && (
           <RowFixed>
-            <TYPE.small mr="4px" color={theme.text3}>
+            <TYPE.Small mr="4px" color={theme.text3}>
               via {list.name}
-            </TYPE.small>
+            </TYPE.Small>
             <ListLogo logoURI={list.logoURI} defaultText={list.name} size="12px" />
           </RowFixed>
         )}
@@ -58,7 +57,7 @@ export const ImportRow = ({ token, style, dim, showImportView, setImportToken }:
       ) : (
         <RowFixed style={{ minWidth: 'fit-content' }}>
           <CheckIcon />
-          <TYPE.main color={theme.green1}>Active</TYPE.main>
+          <TYPE.Main color={theme.green1}>Active</TYPE.Main>
         </RowFixed>
       )}
     </TokenSection>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -89,15 +89,15 @@ export default function LiquidityMiningCampaign() {
             <Flex alignItems="center">
               <Box mr="8px">
                 <UndecoratedLink to={{ pathname: '/rewards', search: search.toString() }}>
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                  <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     Rewards
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </UndecoratedLink>
               </Box>
               <Box mr="8px">
-                <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                   /
-                </TYPE.mediumHeader>
+                </TYPE.MediumHeader>
               </Box>
               <Box mr="4px">
                 {isSingleSidedCampaign ? (
@@ -112,7 +112,7 @@ export default function LiquidityMiningCampaign() {
                 )}
               </Box>
               <Box>
-                <TYPE.small color="text4" fontWeight="600" fontSize="16px" lineHeight="20px">
+                <TYPE.Small color="text4" fontWeight="600" fontSize="16px" lineHeight="20px">
                   {showSingleSidedCampaignLoader || showCampaignLoader ? (
                     <Skeleton width="60px" />
                   ) : isSingleSidedCampaign ? (
@@ -120,7 +120,7 @@ export default function LiquidityMiningCampaign() {
                   ) : (
                     `${unwrappedToken(token0!)?.symbol}/${unwrappedToken(token1!)?.symbol}`
                   )}
-                </TYPE.small>
+                </TYPE.Small>
               </Box>
             </Flex>
             <ButtonRow>

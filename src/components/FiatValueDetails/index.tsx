@@ -1,6 +1,5 @@
 import { CurrencyAmount, JSBI, Percent } from '@swapr/sdk'
 
-import React from 'react'
 import styled from 'styled-components'
 
 import { PRICE_IMPACT_HIGH } from '../../constants'
@@ -23,14 +22,14 @@ export function FiatValueDetails({ fiatValue, priceImpact, isFallback }: FiatVal
     const fiatPriceImpactSeverity = simpleWarningSeverity(priceImpact)
 
     return (
-      <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
+      <TYPE.Body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
         {isFallback && '~'}${fiatValue.toFixed(2, { groupSeparator: ',' })}
         {priceImpact && (
           <StyledPriceImpact warning={fiatPriceImpactSeverity === PRICE_IMPACT_HIGH}>
             {priceImpact.multiply(JSBI.BigInt(-100)).toSignificant(3)}%
           </StyledPriceImpact>
         )}
-      </TYPE.body>
+      </TYPE.Body>
     )
   }
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
@@ -52,6 +52,14 @@ export function useShowClaimPopup(): boolean {
 
 export function useToggleShowClaimPopup(): () => void {
   return useToggleModal(ApplicationModal.CLAIM_POPUP)
+}
+
+export function useShowExpeditionsPopup(): boolean {
+  return useModalOpen(ApplicationModal.EXPEDITIONS)
+}
+
+export function useToggleShowExpeditionsPopup(): () => void {
+  return useToggleModal(ApplicationModal.EXPEDITIONS)
 }
 
 export function useToggleSelfClaimModal(): () => void {

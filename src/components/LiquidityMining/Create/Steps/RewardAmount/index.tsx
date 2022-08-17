@@ -1,6 +1,6 @@
 import { Currency, currencyEquals, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
