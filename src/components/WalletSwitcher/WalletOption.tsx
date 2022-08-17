@@ -2,6 +2,7 @@ import { Connector } from '@web3-react/types'
 import React from 'react'
 import styled from 'styled-components'
 
+import { getIsInjected } from '../../connectors/utils'
 import { ConnectorType, SUPPORTED_WALLETS } from '../../constants'
 import { StyledConnectedIcon } from '../../utils'
 
@@ -55,37 +56,38 @@ interface OptionProps {
   connector: Connector
   tryActivation: (connector: Connector) => void
   isActive: boolean
-  isInstalledWallet: boolean
+  isWalletDetected?: boolean
 }
 
-export const WalletOption = ({ id, connector, isActive, isInstalledWallet, tryActivation }: OptionProps) => {
+export const WalletOption = ({ id, connector, isActive, isWalletDetected, tryActivation }: OptionProps) => {
   const { logo, link, name } = SUPPORTED_WALLETS[id]
 
-  const getContent = () => (
-    <>
-      <ListIconWrapper isActive={isActive}>
-        {isActive && <StyledConnectedIcon width="50px" padding="0 0 0 12px" />}
-        <img src={logo} alt={name + ' logo'} />
-      </ListIconWrapper>
-      {name}
-    </>
-  )
+  if (!isWalletDetected && link) {
+    return (
+      <ListItem id={name}>
+        <ListButton as="a" href={link} target="_blank" rel="noopener noreferrer">
+          <ListIconWrapper isActive={isActive}>
+            <img src={logo} alt={name + ' logo'} />
+          </ListIconWrapper>
+          INSTALL {name}
+        </ListButton>
+      </ListItem>
+    )
+  }
 
   return (
     <ListItem id={name}>
-      {!isInstalledWallet && link ? (
-        <ListButton as="a" href={link} target="_blank" rel="noopener noreferrer">
-          {getContent()}
-        </ListButton>
-      ) : (
-        <ListButton
-          onClick={() => {
-            tryActivation(connector)
-          }}
-        >
-          {getContent()}
-        </ListButton>
-      )}
+      <ListButton
+        onClick={() => {
+          tryActivation(connector)
+        }}
+      >
+        <ListIconWrapper isActive={isActive}>
+          {isActive && <StyledConnectedIcon width="50px" padding="0 0 0 12px" />}
+          <img src={logo} alt={name + ' logo'} />
+        </ListIconWrapper>
+        {name}
+      </ListButton>
     </ListItem>
   )
 }

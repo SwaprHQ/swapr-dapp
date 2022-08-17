@@ -14,7 +14,6 @@ export const WalletConnectConnector = ({ tryActivation }: { tryActivation: (conn
       connector={walletConnect}
       tryActivation={tryActivation}
       isActive={isActive}
-      isInstalledWallet={true} //TODO
     />
   )
 }

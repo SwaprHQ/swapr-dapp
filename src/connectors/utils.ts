@@ -19,7 +19,7 @@ export const getIsMetaMask = (): boolean => {
 }
 
 export const getIsCoinbaseWallet = (): boolean => {
-  return window.ethereum?.isCoinbaseWallet ?? false
+  return (window.ethereum?.isCoinbaseWallet || window.ethereum?.selectedProvider?.isCoinbaseWallet) ?? false
 }
 
 export const getConnection = (c: Connector | ConnectorType) => {

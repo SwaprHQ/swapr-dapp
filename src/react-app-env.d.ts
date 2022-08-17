@@ -18,6 +18,11 @@ interface Window {
     removeListener?: (...args: any[]) => void
     request?: (args: EthereumProviderRequestArguments) => Promise<unknown>
     isCoinbaseWallet?: boolean
+    isBraveWallet?: boolean
+    overrideIsMetaMask?: boolean
+    selectedProvider?: {
+      isCoinbaseWallet?: boolean
+    }
   }
   web3?: Record<string, unknown>
 }

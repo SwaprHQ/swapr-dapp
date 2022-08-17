@@ -2,12 +2,12 @@ import { Connector } from '@web3-react/types'
 import React from 'react'
 
 import { metaMask, metaMaskHooks } from '../../../connectors'
-import { getIsMetaMask } from '../../../connectors/utils'
+import { getIsInjected, getIsMetaMask } from '../../../connectors/utils'
 import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
 export const MetaMaskConnector = ({ tryActivation }: { tryActivation: (connector: Connector) => void }) => {
-  const isInstalledWallet = getIsMetaMask() //TODO need this?
+  const isWalletDetected = getIsInjected() && getIsMetaMask()
   const isActive = metaMaskHooks.useIsActive()
 
   return (
@@ -16,7 +16,7 @@ export const MetaMaskConnector = ({ tryActivation }: { tryActivation: (connector
       connector={metaMask}
       tryActivation={tryActivation}
       isActive={isActive}
-      isInstalledWallet={isInstalledWallet}
+      isWalletDetected={isWalletDetected}
     />
   )
 }
