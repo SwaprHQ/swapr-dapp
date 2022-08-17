@@ -32,10 +32,8 @@ export const CustomScrollBar = css`
 export const Container = styled.div`
   backdrop-filter: blur(10px);
   width: 100%;
-  min-height: 130vh;
   display: grid;
   grid-template-columns: 50% 20% 30%;
-  grid-template-rows: auto 40%;
 
   @media screen and (max-width: ${breakpoints.l}) {
     grid-template-rows: auto;
@@ -60,10 +58,12 @@ export const Container = styled.div`
 
 export const ChartWrapper = styled.div`
   ${BorderStyling}
+  min-height: 700px;
+
   @media screen and (max-width: ${breakpoints.l}) {
     grid-column: 1 / -1;
     order: 0;
-    height: 500px;
+    height: 40vh;
   }
 
   @media screen and (max-width: ${breakpoints.s}) {
@@ -171,8 +171,12 @@ export const AdvancedModeDetails = styled.div`
 `
 export const TransactionsWrapper = styled.div`
   ${CustomScrollBar}
+  max-height: 600px;
   overflow-y: scroll;
-  max-height: 650px;
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    max-height: 400px;
+  }
 `
 export const SwitcherWrapper = styled.div`
   background: ${({ theme }) => theme.dark1};
