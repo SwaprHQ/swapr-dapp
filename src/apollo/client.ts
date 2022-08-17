@@ -14,40 +14,24 @@ export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } =
   [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
 }
 
-export const defaultSubgraphClient = new ApolloClient({
-  uri: subgraphClientsUris[ChainId.MAINNET],
-  cache: new InMemoryCache(),
-})
+const setupApolloClient = (network: SWPRSupportedChains) =>
+  new ApolloClient({
+    uri: subgraphClientsUris[network],
+    cache: new InMemoryCache(),
+  })
 
-export const oldBuildClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one',
-  cache: new InMemoryCache(),
-})
+export const defaultSubgraphClient = setupApolloClient(ChainId.MAINNET)
 
 export const subgraphClients: {
   [chainId in SWPRSupportedChains]: ApolloClient<NormalizedCacheObject>
 } = {
   [ChainId.MAINNET]: defaultSubgraphClient,
-  [ChainId.RINKEBY]: new ApolloClient({
-    uri: subgraphClientsUris[ChainId.RINKEBY],
-    cache: new InMemoryCache(),
-  }),
-  [ChainId.XDAI]: new ApolloClient({
-    uri: subgraphClientsUris[ChainId.XDAI],
-    cache: new InMemoryCache(),
-  }),
-  [ChainId.ARBITRUM_ONE]: new ApolloClient({
-    uri: subgraphClientsUris[ChainId.ARBITRUM_ONE],
-    cache: new InMemoryCache(),
-  }),
-  [ChainId.ARBITRUM_RINKEBY]: new ApolloClient({
-    uri: subgraphClientsUris[ChainId.ARBITRUM_RINKEBY],
-    cache: new InMemoryCache(),
-  }),
-  [ChainId.ARBITRUM_GOERLI]: new ApolloClient({
-    uri: subgraphClientsUris[ChainId.ARBITRUM_GOERLI],
-    cache: new InMemoryCache(),
-  }), // FIXME: fix this once the subgraph is deployed
+  [ChainId.XDAI]: setupApolloClient(ChainId.XDAI),
+  [ChainId.ARBITRUM_ONE]: setupApolloClient(ChainId.ARBITRUM_ONE),
+  // testnets
+  [ChainId.RINKEBY]: setupApolloClient(ChainId.RINKEBY),
+  [ChainId.ARBITRUM_RINKEBY]: setupApolloClient(ChainId.ARBITRUM_RINKEBY),
+  [ChainId.ARBITRUM_GOERLI]: setupApolloClient(ChainId.ARBITRUM_GOERLI), // FIXME: fix this once the subgraph is deployed
 }
 
 export const immediateSubgraphClients: { [chainId in SWPRSupportedChains]: GraphQLClient } = {
@@ -73,4 +57,32 @@ export const carrotSubgraphClient: { [chainId: number]: ApolloClient<NormalizedC
     uri: 'https://api.thegraph.com/subgraphs/name/luzzif/carrot-xdai',
     cache: new InMemoryCache(),
   }),
+}
+
+export const subgraphBlocksClientsUris: { [chainId in SWPRSupportedChains]: string } = {
+  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
+  [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/1hive/xdai-blocks',
+  // testnests
+  [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks',
+  [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dodoex/arbitrum-one-blocks',
+  [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
+}
+
+const setupBlocksApolloClient = (network: SWPRSupportedChains) =>
+  new ApolloClient({
+    uri: subgraphBlocksClientsUris[network],
+    cache: new InMemoryCache(),
+  })
+
+export const subgraphBlocksClients: {
+  [chainId in SWPRSupportedChains]: ApolloClient<NormalizedCacheObject>
+} = {
+  [ChainId.MAINNET]: setupBlocksApolloClient(ChainId.MAINNET),
+  [ChainId.XDAI]: setupBlocksApolloClient(ChainId.XDAI),
+  [ChainId.ARBITRUM_ONE]: setupBlocksApolloClient(ChainId.ARBITRUM_ONE),
+  // testnets
+  [ChainId.RINKEBY]: setupBlocksApolloClient(ChainId.RINKEBY),
+  [ChainId.ARBITRUM_RINKEBY]: setupBlocksApolloClient(ChainId.ARBITRUM_RINKEBY),
+  [ChainId.ARBITRUM_GOERLI]: setupBlocksApolloClient(ChainId.ARBITRUM_GOERLI), // FIXME: fix this once the subgraph is deployed
 }
