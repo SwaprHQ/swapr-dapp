@@ -35,7 +35,7 @@ describe('Bridge tests', () => {
   })
 
   //TODO Unskip after #1320
-  it('Should initiate a bridging ', function () {
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -63,7 +63,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
   })
   //TODO Unskip after #1320
-  it('Should display transaction rejected when rejecting bridging in wallet ', () => {
+  it.skip('Should display transaction rejected when rejecting bridging in wallet ', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
     BridgePage.getNetworkToSelector().click()
@@ -234,7 +234,7 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
