@@ -35,7 +35,8 @@ const OVERRIDES = [
 ]
 
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
-  if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]
+  if (routes.length === 1 || !tokenData || !toTokenDecimals || typeof tokenData.result.tokenPrice === 'object')
+    return routes[0]
 
   const {
     result: { tokenPrice },
