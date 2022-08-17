@@ -27,7 +27,7 @@ export default function Updater(): null {
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
-    //TODO check if returns proper value
+
     const requiredChainIdSupported =
       requiredChainId && isChainSupportedByConnector(connector, parseInt(requiredChainId))
 

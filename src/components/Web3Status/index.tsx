@@ -141,7 +141,6 @@ export default function Web3Status() {
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const closeModals = useCloseModals()
 
-  // TODO unsupported chain id
   useEffect(() => {
     if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !isActiveChainSupported) {
       setUnsupportedNetwork(true)

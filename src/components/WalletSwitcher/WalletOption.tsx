@@ -2,7 +2,6 @@ import { Connector } from '@web3-react/types'
 import React from 'react'
 import styled from 'styled-components'
 
-import { getIsInjected } from '../../connectors/utils'
 import { ConnectorType, SUPPORTED_WALLETS } from '../../constants'
 import { StyledConnectedIcon } from '../../utils'
 

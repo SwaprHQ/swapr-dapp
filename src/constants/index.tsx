@@ -246,7 +246,6 @@ export const MAINNET_PROVIDER = new providers.JsonRpcProvider(`https://mainnet.i
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
 export enum ConnectorType {
-  // INJECTED = 'INJECTED',
   METAMASK = 'METAMASK',
   COINBASE = 'COINBASE',
   WALLET_CONNECT = 'WALLET_CONNECT',

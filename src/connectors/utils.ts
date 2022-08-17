@@ -31,8 +31,6 @@ export const getConnection = (c: Connector | ConnectorType) => {
     return connection
   } else {
     switch (c) {
-      // case ConnectorType.INJECTED:
-      //   return
       case ConnectorType.METAMASK:
         return metaMaskConnection
       case ConnectorType.COINBASE:
@@ -47,8 +45,6 @@ export const getConnection = (c: Connector | ConnectorType) => {
 
 export const getConnectionName = (connector: ConnectorType) => {
   switch (connector) {
-    // case ConnectorType.INJECTED:
-    //   return isMetaMask ? 'MetaMask' : 'Injected'
     case ConnectorType.METAMASK:
       return 'MetaMask'
     case ConnectorType.COINBASE:
