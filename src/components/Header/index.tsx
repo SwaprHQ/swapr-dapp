@@ -193,7 +193,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId, isCurrentChainUnsupported } = useWeb3ReactCore()
+  const { account, chainId, isActiveChainSupported } = useWeb3ReactCore()
 
   const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
@@ -288,18 +288,18 @@ function Header() {
               <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton>
-              <Balances />
+              {isActiveChainSupported && <Balances />}
             </>
           )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
-            {isCurrentChainUnsupported && (
+            {!isActiveChainSupported && (
               <Amount data-testid="unsupported-network-warning" zero>
                 {'UNSUPPORTED NETWORK'}
               </Amount>
             )}
           </UnsupportedNetworkPopover>
           {gas.normal !== 0.0 && (
-            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || isCurrentChainUnsupported}>
+            <GasInfo onClick={() => setIsGasInfoOpen(!isGasInfoOpen)} hide={!account || !isActiveChainSupported}>
               <GasInfoSvg />
               <Text marginLeft={'4px'} marginRight={'2px'} fontSize={10} fontWeight={600} lineHeight={'9px'}>
                 {gas.normal}

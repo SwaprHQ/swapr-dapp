@@ -7,23 +7,22 @@ import { NETWORK_DETAIL } from '../constants'
 
 type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
   chainId?: ChainId
-  isCurrentChainUnsupported: boolean
+  isActiveChainSupported: boolean
 }
 
 export const useWeb3ReactCore = (): Web3ReactProps => {
   const props = useWeb3React()
-  const [isCurrentChainUnsupported, setIsCurrentChainUnsupported] = useState(false)
+  const [isActiveChainSupported, setIsActiveChainSupported] = useState(true)
 
   useEffect(() => {
-    const isUnsupportedOrNotDefined = !props.chainId
-      ? undefined
-      : Object.keys(NETWORK_DETAIL).includes(props.chainId.toString())
-    setIsCurrentChainUnsupported(isUnsupportedOrNotDefined === false)
+    const isDefinedAndSupported = props.chainId ? Object.keys(NETWORK_DETAIL).includes(props.chainId.toString()) : false
+
+    setIsActiveChainSupported(isDefinedAndSupported)
   }, [props.chainId])
 
   return {
     ...props,
     chainId: (props.chainId as ChainId) ?? undefined,
-    isCurrentChainUnsupported,
+    isActiveChainSupported,
   }
 }

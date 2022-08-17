@@ -78,7 +78,7 @@ export enum ModalView {
 
 export default function Web3Status() {
   const dispatch = useDispatch<AppDispatch>()
-  const { account, connector: activeConnector, chainId, ENSName, isCurrentChainUnsupported } = useWeb3ReactCore()
+  const { account, connector: activeConnector, chainId, ENSName, isActiveChainSupported } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllTransactions()
 
@@ -143,12 +143,12 @@ export default function Web3Status() {
 
   // TODO unsupported chain id
   useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && isCurrentChainUnsupported) {
+    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !isActiveChainSupported) {
       setUnsupportedNetwork(true)
       openUnsupportedNetworkModal()
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !isCurrentChainUnsupported) {
+    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && isActiveChainSupported) {
       setUnsupportedNetwork(false)
-    } else if (isUnsupportedNetworkModal && !isCurrentChainUnsupported) {
+    } else if (isUnsupportedNetworkModal && isActiveChainSupported) {
       closeModals()
     }
   }, [
@@ -156,7 +156,7 @@ export default function Web3Status() {
     openUnsupportedNetworkModal,
     isUnsupportedNetworkModal,
     closeModals,
-    isCurrentChainUnsupported,
+    isActiveChainSupported,
     activeConnector,
     chainId,
   ])
@@ -165,7 +165,7 @@ export default function Web3Status() {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (isCurrentChainUnsupported) {
+  if (!isActiveChainSupported) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>
