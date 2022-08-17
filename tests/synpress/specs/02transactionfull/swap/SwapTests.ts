@@ -17,7 +17,6 @@ describe('Swapping tests', () => {
   before(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.addGnosis()
     cy.disconnectMetamaskWalletFromAllDapps()
   })
   beforeEach(() => {
