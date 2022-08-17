@@ -3,10 +3,12 @@ import React from 'react'
 
 import { coinbaseWallet, coinbaseWalletHooks } from '../../../connectors'
 import { ConnectorType } from '../../../constants'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WalletOption } from '../WalletOption'
 
 export const CoinbaseWalletConnector = ({ tryActivation }: { tryActivation: (connector: Connector) => void }) => {
-  const isActive = coinbaseWalletHooks.useIsActive()
+  const { connector: activeConnector } = useWeb3ReactCore()
+  const isActive = coinbaseWalletHooks.useIsActive() && activeConnector === coinbaseWallet
 
   return (
     <WalletOption
