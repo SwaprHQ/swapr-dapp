@@ -28,7 +28,10 @@ export default function useEagerlyConnect() {
 
     if (selectedWallet) {
       connect(getConnection(selectedWallet).connector)
-    } else if (!selectedWalletBackfilled) {
+      return
+    }
+
+    if (!selectedWalletBackfilled) {
       BACKFILLABLE_WALLETS.map(getConnection)
         .map(connection => connection.connector)
         .forEach(connect)

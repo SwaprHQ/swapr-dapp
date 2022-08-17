@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
 import { isChainSupportedByConnector } from '../../connectors/utils'
-import { ConnectorType } from '../../constants'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
@@ -108,8 +107,8 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: Connector, id?: ConnectorType) => void
-  connectorError: boolean | undefined
+  tryActivation: (connector: Connector) => void
+  connectorError?: boolean
   pendingConnector: Connector
 }
 

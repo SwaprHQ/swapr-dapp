@@ -8,9 +8,9 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
-import CoinbaseWalletConnector from '../WalletSwitcher/Wallets/CoinbaseWalletConnector'
-import MetaMaskConnector from '../WalletSwitcher/Wallets/MetaMaskConnector'
-import WalletConnectConnector from '../WalletSwitcher/Wallets/WalletConnectConnector'
+import { CoinbaseWalletConnector } from '../WalletSwitcher/Wallets/CoinbaseWalletConnector'
+import { MetaMaskConnector } from '../WalletSwitcher/Wallets/MetaMaskConnector'
+import { WalletConnectConnector } from '../WalletSwitcher/Wallets/WalletConnectConnector'
 
 import { ModalView } from './'
 

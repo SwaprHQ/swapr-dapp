@@ -6,7 +6,7 @@ import { getIsMetaMask } from '../../../connectors/utils'
 import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
-export default function MetaMaskConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export const MetaMaskConnector = ({ tryActivation }: { tryActivation: (connector: Connector) => void }) => {
   const isInstalledWallet = getIsMetaMask() //TODO need this?
   const isActive = metaMaskHooks.useIsActive()
 

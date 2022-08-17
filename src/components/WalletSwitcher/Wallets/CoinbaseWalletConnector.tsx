@@ -6,7 +6,7 @@ import { getIsCoinbaseWallet } from '../../../connectors/utils'
 import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
-export default function CoinbaseConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export const CoinbaseWalletConnector = ({ tryActivation }: { tryActivation: (connector: Connector) => void }) => {
   const isInstalledWallet = getIsCoinbaseWallet() //TODO need this?
   const isActive = coinbaseWalletHooks.useIsActive()
 

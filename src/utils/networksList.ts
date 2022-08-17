@@ -14,7 +14,7 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
     tag: network ? network.tag : undefined,
     chainName: NETWORK_DETAIL[chainId].chainName, //name used by metamask
     chainId: NETWORK_DETAIL[chainId].chainId,
-    rpcUrl: NETWORK_DETAIL[chainId].rpcUrls,
+    rpcUrls: NETWORK_DETAIL[chainId].rpcUrls,
     nativeCurrency: {
       name: NETWORK_DETAIL[chainId].nativeCurrency.name,
       symbol: NETWORK_DETAIL[chainId].nativeCurrency.symbol,

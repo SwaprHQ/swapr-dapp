@@ -5,7 +5,7 @@ import { walletConnect, walletConnectHooks } from '../../../connectors'
 import { ConnectorType } from '../../../constants'
 import { WalletOption } from '../WalletOption'
 
-export default function WalletConnectConnector({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export const WalletConnectConnector = ({ tryActivation }: { tryActivation: (connector: Connector) => void }) => {
   const isActive = walletConnectHooks.useIsActive()
 
   return (

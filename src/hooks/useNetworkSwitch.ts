@@ -13,21 +13,23 @@ import { getNetworkInfo } from '../utils/networksList'
 import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const switchNetwork = async (connector: Connector, chainId: ChainId) => {
-  if (!isChainSupportedByConnector(connector, chainId)) {
+  if (!isChainSupportedByConnector(connector, chainId))
     throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
-  } else if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
+
+  if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
     await connector.activate(chainId)
-  } else {
-    const info = getNetworkInfo(chainId)
-    const addChainParameter = {
-      chainId,
-      chainName: info.chainName,
-      rpcUrls: info.rpcUrl,
-      nativeCurrency: info.nativeCurrency,
-      blockExplorerUrls: info.blockExplorerUrls,
-    }
-    await connector.activate(addChainParameter)
+    return
   }
+
+  const { chainName, rpcUrls, nativeCurrency, blockExplorerUrls } = getNetworkInfo(chainId)
+  const addChainParameter = {
+    chainId,
+    chainName,
+    rpcUrls,
+    nativeCurrency,
+    blockExplorerUrls,
+  }
+  await connector.activate(addChainParameter)
 }
 
 export const useNetworkSwitch = () => {
@@ -36,8 +38,6 @@ export const useNetworkSwitch = () => {
 
   const selectNetwork = useCallback(
     async (chainId: ChainId) => {
-      if (!connector) return
-
       try {
         await switchNetwork(connector, chainId)
         dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
