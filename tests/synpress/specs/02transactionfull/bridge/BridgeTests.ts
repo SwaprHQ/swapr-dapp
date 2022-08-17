@@ -22,6 +22,7 @@ describe('Bridge tests', () => {
       console.log('ERC20 BALANCE BEFORE: ', balanceBefore)
       console.log('ERC20 BALANCE BEFORE: ', res)
     })
+    MetamaskNetworkHandler.addGnosis()
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
     MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
@@ -34,7 +35,7 @@ describe('Bridge tests', () => {
   })
 
   //TODO Unskip after #1320
-  it.skip('Should initiate a bridging ', function () {
+  it('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -62,7 +63,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
   })
   //TODO Unskip after #1320
-  it.skip('Should display transaction rejected when rejecting bridging in wallet ', () => {
+  it('Should display transaction rejected when rejecting bridging in wallet ', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
     BridgePage.getNetworkToSelector().click()
@@ -153,7 +154,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.gnosis().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Gnosis Chain').click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
+    cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
@@ -233,8 +234,7 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  //TODO Unskip after #1320
-  it.skip('Should display history of bridge', function () {
+  it('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
