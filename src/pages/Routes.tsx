@@ -10,6 +10,7 @@ import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redir
 // Dont want to lazy import swap
 import Swap from './Swap'
 import { RedirectToSwap } from './Swap/redirects'
+import Zap from './Zap'
 
 // Lazy loaded routes
 const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
@@ -82,6 +83,7 @@ export function Routes() {
       <Route path="/liquidity-mining/create" element={<RouteWrapper element={<CreateLiquidityMining />} />} />
 
       <Route path="send" element={<RedirectToSwap />} />
+      <Route path="zap" element={<Zap />} />
       <Route path="*" element={<RedirectToSwap />} />
     </Switch>
   )

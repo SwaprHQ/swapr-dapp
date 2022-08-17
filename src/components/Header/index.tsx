@@ -288,6 +288,10 @@ function Header() {
               </Text>
             </>
           </HeaderLink>
+          <HeaderLink data-testid="zap-nav-link" id="zap-nav-link" to="/zap">
+            {t('zap')}
+            <HeaderLinkBadge label="BETA" />
+          </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
       <AdditionalDataWrap>
