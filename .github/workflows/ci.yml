@@ -375,7 +375,7 @@ jobs:
           path: |
             public-report
             mochawesome-report/public-report/screenshots/**
-            mochawesome-report/public-report/screenshots/**
+            mochawesome-report/public-report/videos/**
           retention-days: 3
 
       - name: Delete merged artifacts
