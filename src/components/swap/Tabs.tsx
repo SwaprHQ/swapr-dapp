@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -5,6 +6,8 @@ import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
+  display: flex;
+  justify-content: space-between;
   max-width: 457px;
   width: 100%;
 `
@@ -50,7 +53,7 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = () => {
+export const Tabs = ({ children }: { children?: ReactNode }) => {
   const { t } = useTranslation('swap')
 
   return (
@@ -63,6 +66,7 @@ export const Tabs = () => {
         <Button disabled={true}>{t('tabs.limit')}</Button>
         <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>
       </TabsRow>
+      {children}
     </TabsColumn>
   )
 }
