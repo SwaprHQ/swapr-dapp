@@ -15,14 +15,15 @@ describe('Swapping tests', () => {
   let ercBalanceBefore: number
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
     MetamaskNetworkHandler.addGnosis()
+    cy.disconnectMetamaskWalletFromAllDapps()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
@@ -178,7 +179,7 @@ describe('Swapping tests', () => {
     })
   })
 
-  it.skip('Should send ether to ens domain address [TC-54]', () => {
+  it('Should send ether to ens domain address [TC-54]', () => {
     ScannerFacade.ethBalance(AddressesEnum.SECOND_TEST_WALLET).then((response: { body: { result: string } }) => {
       ethBalanceBefore = parseInt(response.body.result)
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
@@ -209,7 +210,7 @@ describe('Swapping tests', () => {
       )
     })
   })
-  it.skip('Should send erc20 token to wallet address [TC-54]', () => {
+  it('Should send erc20 token to wallet address [TC-54]', () => {
     ScannerFacade.erc20TokenBalance(AddressesEnum.XEENUS_TOKEN_RINKEBY, AddressesEnum.SECOND_TEST_WALLET).then(res => {
       ercBalanceBefore = parseInt(res.body.result)
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
@@ -239,8 +240,7 @@ describe('Swapping tests', () => {
       )
     })
   })
-  // TODO unskip when #1068 is fixed
-  it.skip('Should send erc20 token to wallet address [TC-54]', () => {
+  it('Should reject transaction in expert mode [TC-54]', () => {
     MenuBar.getSettings().click()
     TransactionSettings.switchExpertModeOn()
     SwapPage.chooseTokes('xeenus', 'weth')
