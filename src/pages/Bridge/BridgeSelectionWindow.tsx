@@ -1,7 +1,6 @@
 import Skeleton from 'react-loading-skeleton'
 import { useDispatch } from 'react-redux'
 import { Box, Text } from 'rebass'
-import { ecoBridgeUIActions } from 'services/EcoBridge/store/UI.reducer'
 import styled from 'styled-components'
 
 import QuestionHelper from '../../components/QuestionHelper'
@@ -17,6 +16,7 @@ import {
 import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
 import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 
 export const BridgeSelectionWindow = () => {
   const dispatch = useDispatch()
