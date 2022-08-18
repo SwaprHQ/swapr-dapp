@@ -1,0 +1,21 @@
+query getLiquidityMiningCampaigns($userId: String) {
+  liquidityMiningCampaigns(first: 999) {
+    ...LiquidityMiningCampaignFragment
+    rewards {
+      ...LiquidityMiningCampaignRewardFragment
+    }
+    stakablePair {
+      id
+      ...PairFragment
+      token0 {
+        ...TokenFragment
+      }
+      token1 {
+        ...TokenFragment
+      }
+    }
+    liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+      id
+    }
+  }
+}

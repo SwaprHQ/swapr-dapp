@@ -1,45 +1,12 @@
 import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
+import { useGetSingleSidedStakingCampaignQuery } from '../../graphql/generated/schema'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
 import { useWeb3ReactCore } from '../useWeb3ReactCore'
-
-const QUERY = gql`
-  query ($campaignAddress: ID) {
-    singleSidedStakingCampaign(id: $campaignAddress) {
-      id
-      owner
-      startsAt
-      endsAt
-      duration
-      locked
-      stakeToken {
-        id
-        symbol
-        name
-        decimals
-        totalSupply
-        derivedNativeCurrency
-      }
-      rewards {
-        token {
-          address: id
-          name
-          symbol
-          decimals
-          derivedNativeCurrency
-        }
-        amount
-      }
-      stakedAmount
-      stakingCap
-    }
-  }
-`
 
 export function useSingleSidedCampaign(campaginAddress: string): {
   loading: boolean
@@ -48,11 +15,9 @@ export function useSingleSidedCampaign(campaginAddress: string): {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
   const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
-  const { data, loading, error } = useQuery<{
-    singleSidedStakingCampaign: SubgraphSingleSidedStakingCampaign
-  }>(QUERY, {
+  const { data, loading, error } = useGetSingleSidedStakingCampaignQuery({
     variables: {
-      campaignAddress: campaginAddress.toLowerCase(),
+      campaignId: campaginAddress.toLowerCase(),
     },
   })
   return useMemo(() => {
@@ -73,7 +38,7 @@ export function useSingleSidedCampaign(campaginAddress: string): {
 
     const singleSidedStakeCampaign = toSingleSidedStakeCampaign(
       chainId,
-      wrapped,
+      wrapped as SubgraphSingleSidedStakingCampaign,
       stakeToken,
       wrapped.stakeToken.totalSupply,
       nativeCurrency,

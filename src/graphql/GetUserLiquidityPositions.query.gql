@@ -1,0 +1,44 @@
+query getUserLiquidityPositions($userId: String, $endsAtLowerLimit: BigInt!) {
+  liquidityPositions(where: { user: $userId, liquidityTokenBalance_gt: 0 }) {
+    pair {
+      address: id
+      ...PairFragment
+      token0 {
+        ...TokenFragment
+      }
+      token1 {
+        ...TokenFragment
+      }
+      liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
+        ...LiquidityMiningCampaignFragment
+        rewards {
+          ...LiquidityMiningCampaignRewardFragment
+        }
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+          id
+        }
+      }
+    }
+  }
+  liquidityMiningPositions(where: { user: $userId, stakedAmount_gt: 0 }) {
+    pair: targetedPair {
+      address: id
+      ...PairFragment
+      token0 {
+        ...TokenFragment
+      }
+      token1 {
+        ...TokenFragment
+      }
+      liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
+        ...LiquidityMiningCampaignFragment
+        rewards {
+          ...LiquidityMiningCampaignRewardFragment
+        }
+        liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+          id
+        }
+      }
+    }
+  }
+}

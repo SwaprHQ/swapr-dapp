@@ -1,0 +1,5 @@
+query getToken($tokenId: ID!) {
+  token(id: $tokenId) {
+    derivedNativeCurrency
+  }
+}

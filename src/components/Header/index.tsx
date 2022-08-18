@@ -1,4 +1,4 @@
-import { SWPR } from '@swapr/sdk'
+import { ChainId, SWPR } from '@swapr/sdk'
 
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
@@ -16,6 +16,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
+import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../claim/ClaimModal'
 import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
@@ -186,6 +187,10 @@ const AdditionalDataWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: end;
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    gap: 15px;
+  }
 `
 const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
@@ -249,7 +254,14 @@ function Header() {
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
+          <HeaderLink
+            data-testid="pool-nav-link"
+            id="pool-nav-link"
+            to="/pools"
+            disabled={
+              networkWithoutSWPR && chainId !== ChainId.ARBITRUM_GOERLI
+            } /* // FIXME: fix this once SWPR is on Arb Goerli */
+          >
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>

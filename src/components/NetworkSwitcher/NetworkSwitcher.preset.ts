@@ -43,6 +43,13 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     tag: NetworkSwitcherTags.TESTNETS,
   },
   {
+    chainId: ChainId.ARBITRUM_GOERLI,
+    name: 'A.\xa0Goerli',
+    logoSrc: ArbitrumLogo,
+    color: '#b1a5e6',
+    tag: NetworkSwitcherTags.TESTNETS,
+  },
+  {
     chainId: ChainId.XDAI,
     name: 'Gnosis Chain',
     logoSrc: GnosisLogo,

@@ -16,7 +16,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { DAI, USDC } from '../constants/index'
 import { tryParseAmount } from '../state/swap/hooks'
-import { getUSDPriceQuote, toPriceInformation } from '../utils/coingecko'
+import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
 import { useTradeExactInUniswapV2 } from './Trades'
@@ -34,7 +34,7 @@ const FETCH_PRICE_INTERVAL = 15000
 const convertToTokenAmount = (currencyAmount: CurrencyAmount | undefined, chainId: ChainId) => {
   if (!currencyAmount) return
 
-  if (Currency.isNative(currencyAmount?.currency)) return wrappedCurrencyAmount(currencyAmount, chainId)
+  if (Currency.isNative(currencyAmount.currency)) return wrappedCurrencyAmount(currencyAmount, chainId)
 
   if (!currencyAmount.currency.address) return
 
@@ -86,7 +86,7 @@ export function useUSDPrice(tokenAmount?: TokenAmount) {
   }, [chainId, tokenAmount, stablecoin, tradeExactInUniswapV2])
 }
 
-export function useCoingeckoUSDPrice(token?: Token) {
+export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
   const [price, setPrice] = useState<Price | undefined>()
@@ -98,17 +98,21 @@ export function useCoingeckoUSDPrice(token?: Token) {
   tokenRef.current = token
 
   const tokenAddress = token ? currencyId(token) : undefined
-
   useEffect(() => {
     const fetchPrice = () => {
       const baseAmount = tryParseAmount('1', tokenRef.current)
 
       if (!chainId || !tokenAddress || !baseAmount) return
 
-      getUSDPriceQuote({
-        chainId,
-        tokenAddress,
-      })
+      let getUSDPriceQuote
+
+      if (isNativeCurrency) {
+        getUSDPriceQuote = getUSDPriceCurrencyQuote({ chainId })
+      } else {
+        getUSDPriceQuote = getUSDPriceTokenQuote({ tokenAddress, chainId })
+      }
+
+      getUSDPriceQuote
         .then(toPriceInformation)
         .then(priceResponse => {
           setError(undefined)
@@ -163,7 +167,7 @@ export function useCoingeckoUSDPrice(token?: Token) {
       clearInterval(refetchPrice)
     }
     // don't depend on token (deep nested object)
-  }, [chainId, tokenAddress])
+  }, [chainId, tokenAddress, isNativeCurrency])
 
   return { price, error }
 }
@@ -193,8 +197,8 @@ export function useUSDValue(tokenAmount?: TokenAmount) {
   return useGetPriceQuote({ price: price, tokenAmount: tokenAmount })
 }
 
-export function useCoingeckoUSDValue(tokenAmount?: TokenAmount) {
-  const coingeckoUsdPrice = useCoingeckoUSDPrice(tokenAmount?.token)
+export function useCoingeckoUSDValue(tokenAmount?: TokenAmount, isNativeCurrency = false) {
+  const coingeckoUsdPrice = useCoingeckoUSDPrice(tokenAmount?.token, isNativeCurrency)
 
   return useGetPriceQuote({
     ...coingeckoUsdPrice,
@@ -213,12 +217,14 @@ export function useHigherUSDValue({
 
   const inputTokenAmount = convertToTokenAmount(inputCurrencyAmount, chainId)
   const outputTokenAmount = convertToTokenAmount(outputCurrencyAmount, chainId)
+  const inputIsNativeCurrency = inputCurrencyAmount && Currency.isNative(inputCurrencyAmount?.currency)
+  const outputIsNativeCurrency = outputCurrencyAmount && Currency.isNative(outputCurrencyAmount?.currency)
 
   const inputUSDPrice = useUSDValue(inputTokenAmount)
   const outputUSDPrice = useUSDValue(outputTokenAmount)
 
-  const inputCoingeckoUSDPrice = useCoingeckoUSDValue(inputTokenAmount)
-  const outputCoingeckoUSDPrice = useCoingeckoUSDValue(outputTokenAmount)
+  const inputCoingeckoUSDPrice = useCoingeckoUSDValue(inputTokenAmount, inputIsNativeCurrency)
+  const outputCoingeckoUSDPrice = useCoingeckoUSDValue(outputTokenAmount, outputIsNativeCurrency)
 
   return {
     fiatValueInput: inputCoingeckoUSDPrice || inputUSDPrice,

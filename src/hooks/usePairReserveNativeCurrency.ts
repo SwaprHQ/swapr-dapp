@@ -1,38 +1,25 @@
 import { parseUnits } from '@ethersproject/units'
 import { ChainId, CurrencyAmount, Pair } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { useGetPairQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
 import { useWeb3ReactCore } from './useWeb3ReactCore'
-
-const QUERY = gql`
-  query ($pairId: ID!) {
-    pair(id: $pairId) {
-      id
-      reserveNativeCurrency
-    }
-  }
-`
-
-interface QueryResult {
-  pair: { reserveNativeCurrency: string }
-}
 
 export function usePairReserveNativeCurrency(pair?: Pair): { loading: boolean; reserveNativeCurrency: CurrencyAmount } {
   const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
 
-  const { loading, data, error } = useQuery<QueryResult>(QUERY, {
-    variables: { pairId: pair?.liquidityToken.address.toLowerCase() },
+  const { loading, data, error } = useGetPairQuery({
+    variables: { pairId: pair?.liquidityToken.address.toLowerCase() || '' },
   })
 
   return useMemo(() => {
     if (loading)
       return { loading: true, reserveNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
-    if (!data || error || !chainId)
+    if (!data || error || !chainId || !data.pair)
       return { loading: false, reserveNativeCurrency: CurrencyAmount.nativeCurrency('0', chainId || ChainId.MAINNET) }
     return {
       loading: false,

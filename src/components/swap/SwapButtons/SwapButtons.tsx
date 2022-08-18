@@ -1,4 +1,4 @@
-import { Currency, GnosisProtocolTrade, Trade, UniswapV2Trade } from '@swapr/sdk'
+import { CoWTrade, Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -87,7 +87,7 @@ export function SwapButtons({
     const wrappedToken = wrappedCurrency(trade?.inputAmount.currency, trade?.chainId)
     if (
       wrappedToken &&
-      trade instanceof GnosisProtocolTrade &&
+      trade instanceof CoWTrade &&
       wrapState === WrapState.WRAPPED &&
       currencies.INPUT &&
       Currency.isNative(currencies.INPUT)

@@ -2,8 +2,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import {
   ChainId,
+  CoWTrade,
   CurveTrade,
-  GnosisProtocolTrade,
   Trade,
   TradeType,
   UniswapTrade,
@@ -112,7 +112,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, provider, recipient, trades])
+  }, [account, allowedSlippage, chainId, deadline, provider, trades, recipient])
 }
 
 /**
@@ -186,12 +186,13 @@ export function useSwapCallback({
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
         // GPv2 trade
-        if (trade instanceof GnosisProtocolTrade) {
+        if (trade instanceof CoWTrade) {
           const signer = provider.getSigner()
 
-          // Sign the order using Metamask
+          // Sign the order
           // and then submit the order to GPv2
-          const orderId = await (await trade.signOrder(signer)).submitOrder()
+          await trade.signOrder(signer)
+          const orderId = await trade.submitOrder()
 
           addTransaction(
             {
@@ -312,11 +313,11 @@ export function useSwapCallback({
     provider,
     account,
     chainId,
-    recipient,
-    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
     mainnetGasPrices,
+    recipientAddressOrName,
+    recipient,
     addTransaction,
   ])
 }
