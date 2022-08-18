@@ -288,7 +288,7 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel'
         continue-on-error: false
 
       - name: Merge test results into one

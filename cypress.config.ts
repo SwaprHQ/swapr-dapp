@@ -3,6 +3,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   videoCompression: false,
   userAgent: 'synpress',
+  projectId: 'y95h9m',
   retries: {
     runMode: 0,
     openMode: 0,
