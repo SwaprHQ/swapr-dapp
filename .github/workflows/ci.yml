@@ -289,7 +289,7 @@ jobs:
 
       - name: Run cypress tests
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
-        continue-on-error: true
+        continue-on-error: false
 
       - name: Merge test results into one
         run: |
