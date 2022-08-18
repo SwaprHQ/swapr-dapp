@@ -222,7 +222,7 @@ export const VERSION = {
 }
 
 export const SOCKET_LISTS_URL =
-  'https://raw.githubusercontent.com/SwaprDAO/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
+  'https://raw.githubusercontent.com/SwaprDAO/swapr-ecobridge-socket-lists/feature/955-optimism-tokens/lists/socketList-bidirectional.json'
 // Pairs all provided chains
 export const socketSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains

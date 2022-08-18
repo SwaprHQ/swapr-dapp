@@ -4829,7 +4829,7 @@
   dependencies:
     typescript "^3.9.5"
 
-"@swapr/periphery@^0.3.21", "@swapr/periphery@^0.3.22":
+"@swapr/periphery@^0.3.22":
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.22.tgz#d1c084e9cb186c44e24ee0757843d595e315de95"
   integrity sha512-0iBH+BYz+KHb9XOj+jO6jgU9IG1uzvb9+VH0yq8GMYTxsVcUm1eR0TdJWet6/PbxfoROZtIAwwgrtxWpxBL8yg==
