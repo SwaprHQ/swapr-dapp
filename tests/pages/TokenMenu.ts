@@ -4,7 +4,7 @@ export class TokenMenu {
     this.getSingleTokenManagerInput().should('be.visible').type(token)
     this.getTokenRow(token).should('be.visible').click({ force: true })
     cy.get('body').then(body => {
-      if (body.find('[data-testid=token-picker]').length > 0) {
+      if (body.find('[data-testid=token-picker]').length) {
         this.getTokenRow(token).filter(':visible').click({ force: true })
       }
     })
