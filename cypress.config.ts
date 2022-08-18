@@ -12,7 +12,7 @@ export default defineConfig({
   chromeWebSecurity: true,
   viewportWidth: 1366,
   viewportHeight: 768,
-  video: true,
+  video: false,
   env: {
     coverage: false,
   },
