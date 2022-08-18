@@ -231,7 +231,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  
+
 }
 
 a {
@@ -240,6 +240,19 @@ a {
 
 body.no-margin {
   margin: 0 !important;
+}
+
+/**
+ * Source: https://stackoverflow.com/a/4298216/2151050
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type=number] {
+  -moz-appearance:textfield; /* Firefox */
 }
 `
 
@@ -424,7 +437,7 @@ body {
 	    left: 12px !important;
 	    right: 12px !important;
 	}
-	
+
   .Toastify__toast-container {
 	    width: auto !important;
 	}
@@ -723,16 +736,16 @@ body {
 }
 
 .loading-rotation-7>div:nth-of-type(1) {
-  animation-delay: 12s;  
+  animation-delay: 12s;
 }
 .loading-rotation-7>div:nth-of-type(2) {
-  animation-delay: 10s;  
+  animation-delay: 10s;
 }
 .loading-rotation-7>div:nth-of-type(3) {
-  animation-delay: 8s;  
+  animation-delay: 8s;
 }
 .loading-rotation-7>div:nth-of-type(4) {
-  animation-delay: 6s;  
+  animation-delay: 6s;
 }
 .loading-rotation-7>div:nth-of-type(5) {
   animation-delay: 4s;
@@ -752,16 +765,16 @@ body {
 }
 
 .loading-rotation-8>div:nth-of-type(1) {
-  animation-delay: 14s;  
+  animation-delay: 14s;
 }
 .loading-rotation-8>div:nth-of-type(2) {
-  animation-delay: 12s;  
+  animation-delay: 12s;
 }
 .loading-rotation-8>div:nth-of-type(3) {
-  animation-delay: 10s;  
+  animation-delay: 10s;
 }
 .loading-rotation-8>div:nth-of-type(4) {
-  animation-delay: 8s;  
+  animation-delay: 8s;
 }
 .loading-rotation-8>div:nth-of-type(5) {
   animation-delay: 6s;
