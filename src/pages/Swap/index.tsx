@@ -49,6 +49,7 @@ import Footer from './../../components/LandingPageComponents/layout/Footer'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
+import SimpleChart from './SimpleChart'
 
 export type SwapData = {
   showConfirm: boolean
@@ -512,8 +513,10 @@ export default function Swap() {
           </AppBodyContainer>
           {showChart && (
             <Box ml={[0, 3]} mt={[3, 0]}>
-              <DimBlurBgBox height="400px" width={['100%', '400px']}>
-                This will be a beautiful chart
+              <DimBlurBgBox height="400px" width={['100%', '550px']}>
+                <Flex height="100%" justifyContent="center" alignItems="center">
+                  <SimpleChart />
+                </Flex>
               </DimBlurBgBox>
             </Box>
           )}

@@ -64,6 +64,7 @@
     "i18next": "^21.8.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
+    "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "merkletreejs": "^0.2.32",
