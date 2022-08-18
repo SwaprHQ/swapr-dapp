@@ -9,11 +9,7 @@ import { BACKFILLABLE_WALLETS } from './../constants'
 
 async function connect(connector: Connector) {
   try {
-    if (connector.connectEagerly) {
-      await connector.connectEagerly()
-    } else {
-      await connector.activate()
-    }
+    connector.connectEagerly ? await connector.connectEagerly() : await connector.activate()
   } catch (error) {
     console.debug(`web3-react eager connection error: ${error}`)
   }

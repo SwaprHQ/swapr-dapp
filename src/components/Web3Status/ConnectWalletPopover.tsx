@@ -117,7 +117,6 @@ export const ConnectWalletPopover = ({ tryActivation, tryDeactivation, children 
   return (
     <Wrapper>
       <StyledPopover
-        innerRef={undefined}
         content={
           <List data-testid="wallet-connect-list">
             <MetaMaskConnector tryActivation={tryActivation} />

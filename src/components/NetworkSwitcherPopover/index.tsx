@@ -22,9 +22,8 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
   const { connector, chainId: activeChainId, account } = useWeb3ReactCore()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
 
-  const isNetworkDisabled = (chainId: ChainId) => {
-    return activeChainId === chainId || !isChainSupportedByConnector(connector, chainId)
-  }
+  const isNetworkDisabled = (chainId: ChainId) =>
+    activeChainId === chainId || !isChainSupportedByConnector(connector, chainId)
 
   const { selectNetwork } = useNetworkSwitch()
 

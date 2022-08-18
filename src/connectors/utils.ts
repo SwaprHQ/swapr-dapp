@@ -10,27 +10,22 @@ import {
   walletConnectConnection,
 } from './index'
 
-export const getIsInjected = (): boolean => {
-  return Boolean(window.ethereum)
-}
+export const getIsInjected = () => Boolean(window.ethereum)
 
-export const getIsMetaMask = (): boolean => {
-  return window.ethereum?.isMetaMask ?? false
-}
+export const getIsMetaMask = () => window.ethereum?.isMetaMask ?? false
 
-export const getIsCoinbaseWallet = (): boolean => {
-  return (window.ethereum?.isCoinbaseWallet || window.ethereum?.selectedProvider?.isCoinbaseWallet) ?? false
-}
+export const getIsCoinbaseWallet = () =>
+  (window.ethereum?.isCoinbaseWallet || window.ethereum?.selectedProvider?.isCoinbaseWallet) ?? false
 
-export const getConnection = (c: Connector | ConnectorType) => {
-  if (c instanceof Connector) {
-    const connection = CONNECTIONS.find(connection => connection.connector === c)
+export const getConnection = (connector: Connector | ConnectorType) => {
+  if (connector instanceof Connector) {
+    const connection = CONNECTIONS.find(connection => connection.connector === connector)
     if (!connection) {
       throw Error('unsupported connector')
     }
     return connection
   } else {
-    switch (c) {
+    switch (connector) {
       case ConnectorType.METAMASK:
         return metaMaskConnection
       case ConnectorType.COINBASE:

@@ -102,7 +102,7 @@ export default function Web3Status() {
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
-      if (!connector) return
+      const connectorType = getConnection(connector).type
       setPendingConnector(connector)
 
       // show account details if pending connector is already in use
@@ -111,16 +111,15 @@ export default function Web3Status() {
         return
       }
 
+      dispatch(setConnectorError({ connector: connectorType, connectorError: undefined }))
+      setModal(ModalView.Pending)
+
       try {
-        dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
-        setModal(ModalView.Pending)
         await connector.activate()
-        dispatch(updateSelectedWallet({ selectedWallet: getConnection(connector).type }))
+        dispatch(updateSelectedWallet({ selectedWallet: connectorType }))
       } catch (error) {
         console.debug(`web3-react connection error: ${error}`)
-        dispatch(
-          setConnectorError({ connector: getConnection(connector).type, connectorError: getErrorMessage(error) })
-        )
+        dispatch(setConnectorError({ connector: connectorType, connectorError: getErrorMessage(error) }))
       }
     },
     [activeConnector, dispatch]
@@ -128,11 +127,11 @@ export default function Web3Status() {
 
   const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
     if (!account) return
-    if (connector?.deactivate) {
+    if (connector.deactivate) {
       void connector.deactivate()
-    } else {
-      void connector.resetState()
+      return
     }
+    void connector.resetState()
   }, [])
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { t } = useTranslation('common')
