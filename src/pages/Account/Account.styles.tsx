@@ -1,8 +1,10 @@
 import { ExternalLink } from 'react-feather'
-import { Flex, Link } from 'rebass'
+import { Flex, Link, Text } from 'rebass'
 import styled from 'styled-components'
 
+import { ButtonPurpleDim } from '../../components/Button'
 import Logo from '../../components/Logo'
+import { ListLayout } from '../../ui/ListLayout'
 
 export const Status = styled(Flex)<{ status: string }>`
   text-transform: uppercase;
@@ -16,6 +18,12 @@ export const Status = styled(Flex)<{ status: string }>`
   border-style: solid;
   height: fit-content;
   line-height: 1;
+`
+
+export const HeaderRow = styled(ListLayout)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
 `
 
 export const CustomLinkIcon = styled(ExternalLink)`
@@ -36,14 +44,18 @@ export const StyledLink = styled(Link)`
   }
 `
 
-export const GridCard = styled(Flex)<{ status: string }>`
+export const GridCard = styled(Flex)<{ status?: string }>`
   row-gap: 24px;
-  padding: 16px;
+  padding: 16px 22px;
   font-size: 14px;
   line-height: 18px;
   align-items: center;
+  color: #c0baf6;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 16px 10px
+    padding: 16px 10px;
+    &:last-of-type {
+      border-radius: 12px;
+    }
   `};
   background: ${({ status }) => {
     switch (status) {
@@ -55,23 +67,74 @@ export const GridCard = styled(Flex)<{ status: string }>`
         return 'inherit'
     }
   }};
-  border-bottom: 1px solid #41414129;
+
+  border-bottom: 1px solid #3e4259;
+
+  &:last-of-type {
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom: none;
+  }
 `
 export const TokenRow = styled(Flex)`
-  padding-right: 8px;
+  flex: 15%;
   justify-content: end;
-  flex: 14%;
   align-items: center;
+  padding-right: 8px;
 `
 
-export const TokenDetails = styled(Flex)`
-  flex: 15%;
+export const TranasctionDetails = styled(Flex)`
+  flex: 10%;
   justify-content: center;
   align-items: center;
+  padding-right: 8px;
 `
 
 export const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
   border-radius: ${({ size }) => size};
+`
+
+export const PaginationRow = styled(Flex)`
+  width: 100%;
+  justify-content: flex-end;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    justify-content: center;
+  `};
+
+  & ul {
+    margin: 22px 0;
+  }
+`
+
+export const FullAccount = styled(Text)`
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-feature-settings: 'tnum' on, 'lnum' on, 'zero' on;
+  color: #8780bf;
+  margin-top: 4px;
+`
+
+export const Button = styled(ButtonPurpleDim)`
+  max-width: 'fit-content';
+  width: fit-content;
+  padding: 7px 12px;
+  line-height: 12px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  color: #a7a0e4;
+  &:last-of-type {
+    margin-left: 12px;
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    color: #ebe9f8;
+  }
 `

@@ -20,7 +20,6 @@ export type Transaction = {
 const expressions = {
   swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>[A-Z]+)', 'g'),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
-  approve: new RegExp('Approve (?<token>[A-Z]+)'),
 }
 
 export const formattedTransactions = (transactions: { [txHash: string]: TransactionDetails }) => {
@@ -37,7 +36,7 @@ export const formattedTransactions = (transactions: { [txHash: string]: Transact
         status: confirmedTime ? 'COMPLETED' : 'PENDING',
         type,
       }
-      console.log({ summary })
+
       if (expressions.swap.test(summary) && type === 'Swap') {
         expressions.swap.lastIndex = 0
         const [from, to] = [...summary.matchAll(expressions.swap)]
@@ -53,35 +52,8 @@ export const formattedTransactions = (transactions: { [txHash: string]: Transact
           ...transaction,
         }
       }
-      if (expressions.approve.test(summary)) {
-        expressions.approve.lastIndex = 0
-        const approve = summary.match(expressions.approve)
-        return {
-          from: {
-            value: '- -',
-            token: approve?.groups?.token,
-          },
-          to: {
-            value: '- -',
-            token: approve?.groups?.token,
-          },
-          ...transaction,
-        }
-      }
 
-      expressions.swap.lastIndex = 0
-      const [from, to] = [...summary.matchAll(expressions.swap)]
-      return {
-        from: {
-          value: Number(from?.groups?.num ?? 0),
-          token: from?.groups?.token,
-        },
-        to: {
-          value: Number(to?.groups?.num ?? 0),
-          token: to?.groups?.token,
-        },
-        ...transaction,
-      }
+      return undefined
     })
     .filter(Boolean)
     .sort((txn1, txn2) => txn2!.addedTime - txn1!.addedTime) as Transaction[]

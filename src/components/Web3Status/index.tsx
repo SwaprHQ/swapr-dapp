@@ -3,6 +3,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { NetworkContextName } from '../../constants'
@@ -79,6 +80,7 @@ export default function Web3Status() {
   const { active, activate, account, error } = useWeb3React()
   const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
+  const navigate = useNavigate()
 
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
@@ -180,7 +182,7 @@ export default function Web3Status() {
             account={account}
             connector={activeConnector}
             networkConnectorChainId={networkConnectorChainId}
-            onAddressClick={() => setModal(ModalView.Account)}
+            onAddressClick={() => navigate('/account')}
             avatar={ensAvatar ?? undefined}
           />
         </Row>

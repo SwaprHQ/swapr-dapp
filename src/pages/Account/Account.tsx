@@ -2,31 +2,47 @@ import Avatar from 'boring-avatars'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
-import { Box, Flex, Heading, Text } from 'rebass'
+import { useToggle } from 'react-use'
+import { Box, Flex, Text } from 'rebass'
 
+import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
 import { useActiveWeb3React } from '../../hooks'
 import useENSName from '../../hooks/useENSName'
+import { usePage } from '../../hooks/usePage'
+import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
+import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useAllTransactions } from '../../state/transactions/hooks'
 import { DimBlurBgBox } from '../../ui/DimBlurBgBox'
 import { Header } from '../../ui/Header'
 import { HeaderText } from '../../ui/HeaderText'
-import { ListLayout } from '../../ui/ListLayout'
 import { PageWrapper } from '../../ui/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
-import { CustomLinkIcon, StyledLink, TokenDetails, TokenRow } from './Account.styles'
+import {
+  Button,
+  CustomLinkIcon,
+  FullAccount,
+  HeaderRow,
+  PaginationRow,
+  StyledLink,
+  TranasctionDetails,
+} from './Account.styles'
 import { formattedTransactions, type Transaction } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
-import { TransactionRow } from './TransactionRow'
+import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
 
 export function Account() {
   const { t } = useTranslation('common')
-  const [allNetworkTransactions, setAllNetworkTransactions] = useState<boolean>(false)
-  const allTransactions = useAllTransactions(allNetworkTransactions)
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, active, deactivate } = useActiveWeb3React()
+  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { ENSName } = useENSName(account ?? undefined)
-
   const [transactions, setTransactions] = useState<Transaction[]>([])
+
+  const [page, setPage] = useState(1)
+  const responsiveItemsPerPage = useResponsiveItemsPerPage()
+  const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
+  const allTransactions = useAllTransactions(showAllNetworkTransactions)
+  const transacationsByPage = usePage(transactions, responsiveItemsPerPage, page, 0)
 
   useEffect(() => {
     setTransactions(formattedTransactions(allTransactions))
@@ -44,65 +60,75 @@ export function Account() {
         <Flex width={'150px'}>
           <Avatar
             size={100}
-            name={`${account}`}
+            name={account}
             variant="pixel"
             colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
           />
         </Flex>
         <Flex flex="15%" flexDirection="column" justifyContent="center">
           <Box sx={{ mb: 1 }}>
-            <Heading as="h1" fontSize={[3, 4, 5]} color="primary">
+            <Text as="h1" fontSize={[3, 4, 5]} sx={{ color: '#C0BAF7', mb: 2 }}>
               {ENSName ?? account ? shortenAddress(`${account}`) : '--'}
-            </Heading>
-            <Text as="p" sx={{ fontSize: '10px', mt: 1, letterSpacing: '1px' }}>
-              {account}
             </Text>
+            <FullAccount>{account}</FullAccount>
           </Box>
-          <Box sx={{ display: 'flex', mt: 2, textTransform: 'uppercase', fontSize: '8px' }}>
+          <Box sx={{ display: 'flex', mt: 2, textTransform: 'uppercase', fontSize: '9px' }}>
             <CopyWrapper value={account} label="COPY ADDRESS" />
             <StyledLink href={externalLink} rel="noopener noreferrer" target="_blank" disabled={!externalLink}>
               <CustomLinkIcon size={12} />
               <Box sx={{ ml: 1 }}>{t('viewOnBlockExplorer')}</Box>
             </StyledLink>
           </Box>
+          <Box sx={{ mt: 3, display: 'flex' }}>
+            <Button
+              onClick={() => {
+                toggleWalletSwitcherPopover()
+              }}
+            >
+              Change Wallet
+            </Button>
+            {active && <Button onClick={deactivate}>Disconnect</Button>}
+          </Box>
         </Flex>
       </Flex>
       <Flex sx={{ mb: 2 }} justifyContent="end">
         <Flex>
-          <Switch
-            label={'ALL NETWORKS'}
-            handleToggle={() => {
-              setAllNetworkTransactions(txn => !txn)
-            }}
-            isOn={allNetworkTransactions}
-          />
+          <Switch label={'ALL NETWORKS'} handleToggle={toggleAllTransactions} isOn={showAllNetworkTransactions} />
         </Flex>
       </Flex>
       <DimBlurBgBox>
-        <ListLayout>
+        <HeaderRow>
           <HeaderText>
             <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-              {allNetworkTransactions && <Flex flex="5%">NTWK</Flex>}
-              <Flex flex="8%">Type</Flex>
-              <TokenRow>From</TokenRow>
-              <TokenRow>To</TokenRow>
-              <Flex flex="15%" justifyContent="right" sx={{ pr: 2 }}>
-                Price
-              </Flex>
-              <TokenDetails>Status</TokenDetails>
-              <TokenDetails>Time</TokenDetails>
-              <TokenDetails>Details</TokenDetails>
+              <TranasctionDetails flex="6%">Network</TranasctionDetails>
+              <TranasctionDetails flex="15%" justifyContent="start">
+                From
+              </TranasctionDetails>
+              <TranasctionDetails flex="15%" justifyContent="start">
+                To
+              </TranasctionDetails>
+              <TranasctionDetails>Type</TranasctionDetails>
+              <TranasctionDetails justifyContent="start">Price</TranasctionDetails>
+              <TranasctionDetails>Status</TranasctionDetails>
+              <TranasctionDetails>Time</TranasctionDetails>
             </Header>
           </HeaderText>
-        </ListLayout>
-        {transactions?.map(transaction => (
-          <TransactionRow
-            allNetworkTransactions={allNetworkTransactions}
-            transaction={transaction}
-            key={transaction.hash}
-          />
+        </HeaderRow>
+        {transacationsByPage?.map(transaction => (
+          <TransactionRow transaction={transaction} key={transaction.hash} />
         ))}
+        {transactions?.length === 0 && <NoDataTransactionRow />}
       </DimBlurBgBox>
+      <PaginationRow>
+        <Box>
+          <Pagination
+            page={page}
+            totalItems={transactions.length + 1}
+            itemsPerPage={responsiveItemsPerPage}
+            onPageChange={setPage}
+          />
+        </Box>
+      </PaginationRow>
     </PageWrapper>
   )
 }
