@@ -10,7 +10,6 @@ import DxDao from '../../assets/svg/dxdao.svg'
 import { useUnsupportedChainIdError } from '../../hooks'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
-import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ModalView } from '../Web3Status'
@@ -114,9 +113,6 @@ interface WalletModalProps {
 }
 
 export default function WalletModal({
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
   modal,
   setModal,
   tryActivation,
@@ -189,20 +185,7 @@ export default function WalletModal({
         </UpperSection>
       )
     }
-    if (account && modal === ModalView.Account) {
-      return (
-        <AccountDetails
-          toggleWalletModal={closeModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={() => {
-            setModal(null)
-            toggleWalletSwitcherPopover()
-          }}
-        />
-      )
-    }
+
     return (
       <UpperSection>
         <CloseIcon onClick={closeModal}>
