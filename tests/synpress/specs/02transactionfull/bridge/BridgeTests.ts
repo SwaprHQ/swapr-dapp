@@ -212,7 +212,7 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
-  it.only('Reject transaction on Gnosis', () => {
+  it('Reject transaction on Gnosis', () => {
     cy.changeMetamaskNetwork('gnosis chain')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.polygon().click()
