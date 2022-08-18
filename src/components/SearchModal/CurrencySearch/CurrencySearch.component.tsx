@@ -50,8 +50,6 @@ export const CurrencySearch = ({
   const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-
-  // tokenList set here
   const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
     useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)

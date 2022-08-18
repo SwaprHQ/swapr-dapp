@@ -45,7 +45,6 @@ export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token 
   const { chainId: activeChainId } = useActiveWeb3React()
   const selectedChainId = chainId ?? activeChainId
   const allTokens = useSelector(selectBridgeTokens)
-
   const tokensOnChain = allTokens[selectedChainId ?? 0]
 
   const nativeCurrency = useNativeCurrency(selectedChainId)
