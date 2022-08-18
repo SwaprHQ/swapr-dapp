@@ -5,7 +5,7 @@ export class TokenMenu {
     this.getTokenRow(token).should('be.visible').click({ force: true })
     cy.get('body').then(body => {
       if (body.find('[data-testid=token-picker]').length > 0) {
-        this.getTokenRow(token).click({ force: true })
+        this.getTokenRow(token).filter(':visible').click({ force: true })
       }
     })
     return SwapPage
