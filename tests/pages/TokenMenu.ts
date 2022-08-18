@@ -1,12 +1,16 @@
 import { SwapPage } from './SwapPage'
 export class TokenMenu {
+  static searchAndChooseToken(token: string) {
+    this.getSingleTokenManagerInput().should('be.visible').type(token)
+    this.getTokenRow(token).should('be.visible').click({ force: true })
+    cy.get('body').then(body => {
+      if (body.find('[data-testid=token-picker]').length > 0) {
+        this.getTokenRow(token).click({ force: true })
+      }
+    })
+    return SwapPage
+  }
   static chooseToken(token: string) {
-    this.getSingleTokenManagerInput()
-      .should('be.visible')
-      .type(token)
-    this.getTokenRow(token)
-      .should('be.visible')
-      .click({ force: true })
     cy.get('body').then(body => {
       if (body.find('[data-testid=token-picker]').length > 0) {
         this.getTokenRow(token).click({ force: true })
@@ -56,18 +60,13 @@ export class TokenMenu {
     return cy.get('data-testid=import-button')
   }
   static importToken(tokenSymbol: string) {
-    this.getTokenManagerRow(tokenSymbol)
-      .get('[data-testid=import-button]')
-      .should('be.visible')
-      .click()
+    this.getTokenManagerRow(tokenSymbol).get('[data-testid=import-button]').should('be.visible').click()
   }
   static getTokenImportWarning() {
     return cy.get('[data-testid=unknown-token-warning]')
   }
   static confirmTokenImport() {
-    this.getTokenImportWarning()
-      .get('[data-testid=confirm-import-button]')
-      .click()
+    this.getTokenImportWarning().get('[data-testid=confirm-import-button]').click()
   }
   static getTokenListsRow(tokenListName: string) {
     return cy.get('[data-testid=' + tokenListName + '-row]')

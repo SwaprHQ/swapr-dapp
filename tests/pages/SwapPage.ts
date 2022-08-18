@@ -84,8 +84,8 @@ export class SwapPage {
     return cy.get(`[data-testid=${exchange}-platform-selector]`).click()
   }
   static chooseTokes(tokenFrom: string, tokenTo: string) {
-    SwapPage.openTokenToSwapMenu().chooseToken(tokenFrom).switchTokens()
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken(tokenFrom).switchTokens()
     SwapPage.getCurrencySelectors().last().click()
-    TokenMenu.chooseToken(tokenTo)
+    TokenMenu.searchAndChooseToken(tokenTo)
   }
 }

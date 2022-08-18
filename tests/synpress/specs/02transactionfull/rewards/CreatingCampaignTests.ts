@@ -48,7 +48,7 @@ describe('Campaign creation tests', () => {
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTimeForInput(expectedEndsAt))
 
     CreatePoolPage.getRewardTokenMenuButton().first().click({ scrollBehavior: 'top' })
-    TokenMenu.chooseToken(REWARD_TOKEN)
+    TokenMenu.searchAndChooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
     CreatePoolPage.confirmPoolCreation()
@@ -85,7 +85,7 @@ describe('Campaign creation tests', () => {
     TokenMenu.getOpenTokenManagerButton().click({})
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
-    TokenMenu.chooseToken('dai')
+    TokenMenu.searchAndChooseToken('dai')
     LiquidityPage.getPairCards().contains('USDT').click({})
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(

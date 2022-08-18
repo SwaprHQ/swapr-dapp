@@ -56,7 +56,7 @@ describe('Swapping tests', () => {
         console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
       }
     )
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     TransactionSettings.setMultihopOff()
 
     SwapPage.getToInput()
@@ -147,9 +147,9 @@ describe('Swapping tests', () => {
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').switchTokens()
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus').switchTokens()
     SwapPage.getCurrencySelectors().last().click()
-    TokenMenu.chooseToken('weth')
+    TokenMenu.searchAndChooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.getToInput()
@@ -184,7 +184,7 @@ describe('Swapping tests', () => {
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('dxd')
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
     TransactionSettings.setMultihopOff()
     SwapPage.getAlternateReceiverButton().click()
@@ -215,7 +215,7 @@ describe('Swapping tests', () => {
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus')
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.getAlternateReceiverButton().click()
     SwapPage.getAlternateReceiverInput().type(AddressesEnum.SECOND_TEST_WALLET, { delay: 50 })

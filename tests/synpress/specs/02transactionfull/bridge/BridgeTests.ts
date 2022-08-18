@@ -46,7 +46,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
     BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
     BridgePage.getSelectTokenButton().click()
-    TokenMenu.chooseToken('usdc')
+    TokenMenu.searchAndChooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
     BridgePage.getBridgeSelector('arbitrum').scrollIntoView().should('be.visible')
     BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
@@ -71,7 +71,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgeButton().should('contain.text', 'Enter amount')
     BridgePage.getTransactionValueInput().type(String(TRANSACTION_VALUE))
     BridgePage.getSelectTokenButton().click()
-    TokenMenu.chooseToken('usdc')
+    TokenMenu.searchAndChooseToken('usdc')
     BridgePage.getBridgeButton().should('contain.text', 'Select bridge below')
     BridgePage.getBridgeSelector('arbitrum').scrollIntoView().should('be.visible')
     BridgePage.getBridgedAmount().should('contain.text', String(TRANSACTION_VALUE))
@@ -99,7 +99,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkToSelector().should('contain.text', 'Arbitrum one')
 
     BridgePage.getSelectTokenButton().click()
-    TokenMenu.chooseToken('eth')
+    TokenMenu.searchAndChooseToken('eth')
     BridgePage.getTokenSymbol().should('contain.text', 'ETH')
 
     BridgePage.getNetworkToSelector().click()
@@ -212,7 +212,7 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('arbitrum rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
-  it('Reject transaction on Gnosis', () => {
+  it.only('Reject transaction on Gnosis', () => {
     cy.changeMetamaskNetwork('gnosis chain')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.polygon().click()
