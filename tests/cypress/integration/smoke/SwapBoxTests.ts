@@ -84,13 +84,12 @@ describe('Swap page smoke tests', () => {
     SwapPage.getWalletConnectList().scrollIntoView().should('be.visible')
     MenuBar.getSwap().click()
   })
-  // TODO Remove skip when bug #1099 is fixed
-  it.skip('Should calculate output based on FROM and display it in TO section [TC-33]', () => {
+  it('Should calculate output based on FROM and display it in TO section [TC-33]', () => {
     SwapPage.openTokenToSwapMenu().searchAndChooseToken('usdc')
     SwapPage.typeValueFrom('100')
     SwapPage.getToInput().should('not.have.value', undefined)
   })
-  it.skip('Should calculate output based on TO and display it in FROM section [TC-34]', () => {
+  it('Should calculate output based on TO and display it in FROM section [TC-34]', () => {
     SwapPage.openTokenToSwapMenu().searchAndChooseToken('usdc')
     SwapPage.typeValueTo('100')
     SwapPage.getFromInput().should('not.have.value', undefined)

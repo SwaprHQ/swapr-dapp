@@ -5,8 +5,17 @@ export class SwapPage {
     cy.visit('/#/swap')
   }
 
+  static getSelectTokenButton() {
+    return cy.get('[data-testid=select-token-button]')
+  }
+
   static openTokenToSwapMenu() {
-    cy.get('[data-testid=select-token-button]').filter(':visible').click()
+    this.getSelectTokenButton()
+      .should(element => {
+        expect(element.length).to.be.eq(1)
+      })
+      .filter(':visible')
+      .click()
     return TokenMenu
   }
 
