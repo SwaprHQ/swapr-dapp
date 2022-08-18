@@ -13,7 +13,7 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
-import { useIsExpertMode } from '../state/user/hooks'
+import { useIsAdvancedTradeMode, useIsExpertMode } from '../state/user/hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -35,29 +35,29 @@ const HeaderWrapper = styled.div`
 `
 
 const BodyWrapper = styled.div<{
-  isExpertMode?: boolean
+  isAdvancedTradeMode?: boolean
 }>`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 172px);
   width: 100%;
-  padding-top: ${({ isExpertMode }) => (isExpertMode ? '30px' : '60px')};
+  padding-top: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '30px' : '60px')};
   align-items: center;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   overflow: visible;
   z-index: 10;
-  ${({ theme, isExpertMode }) => theme.mediaWidth.upToMedium`
+  ${({ theme, isAdvancedTradeMode }) => theme.mediaWidth.upToMedium`
     /* [PR#531]: theme.mediaWidth.upToSmall does not cover all the breakpoints smoothly
     padding: 16px;
     */
-    padding-top: ${isExpertMode ? '1rem' : '2rem'};
+    padding-top: ${isAdvancedTradeMode ? '1rem' : '2rem'};
   `};
 
   /* [PR#531] */
-  padding-left: ${({ isExpertMode }) => (isExpertMode ? '0' : '16px')};
-  padding-right: ${({ isExpertMode }) => (isExpertMode ? '0' : '16px')};
+  padding-left: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
+  padding-right: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
 
   z-index: 1;
 `
@@ -71,13 +71,13 @@ export default function App() {
   const location = useLocation()
   const theme = useTheme()
   const [isSwapPage, setIsSwapPage] = useState(false)
-  const isExpertMode = useIsExpertMode()
+  const isAdvancedTradeMode = useIsAdvancedTradeMode()
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))
   }, [location])
 
-  const isSwapPageExpertMode = isSwapPage && isExpertMode
+  const isSwapPageAdvancedTradeMode = isSwapPage && isAdvancedTradeMode
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -97,7 +97,7 @@ export default function App() {
             <HeaderWrapper>
               <Header />
             </HeaderWrapper>
-            <BodyWrapper isExpertMode={isSwapPageExpertMode}>
+            <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
               <Web3ReactManager>
                 <SpaceBg>
                   <Suspense fallback={<FallbackLoader />}>

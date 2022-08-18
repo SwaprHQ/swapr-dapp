@@ -320,17 +320,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                       <Toggle
                         id="toggle-advanced-trade-mode-button"
                         isActive={advanceTradeMode}
-                        toggle={
-                          advanceTradeMode
-                            ? () => {
-                                toggleAdvancedTradeMode()
-                                // setShowConfirmation(false)
-                              }
-                            : () => {
-                                simple ? toggleSimpleSettings() : toggleSettings()
-                                // setShowConfirmation(true)
-                              }
-                        }
+                        toggle={toggleAdvancedTradeMode}
                       />
                     </RowBetween>
                     <Divider />

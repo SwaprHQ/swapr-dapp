@@ -31,7 +31,14 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import {
+  useAdvancedSwapDetails,
+  useAdvancedTradeModeManager,
+  useIsExpertMode,
+  useSelectedSwapTab,
+  useUpdateSelectedSwapTab,
+  useUserSlippageTolerance,
+} from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -109,7 +116,7 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
-  const [activeTab, setActiveTab] = useState(SwapTabs.SWAP)
+  const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
 
   const { chainId } = useActiveWeb3React()
 
@@ -355,7 +362,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -483,7 +490,7 @@ export default function Swap() {
           <Hero />
         </>
       )}
-      {activeTab === SwapTabs.SWAP && (
+      {(activeTab === SwapTabs.SWAP || !activeTab) && (
         <Hero>
           <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>
