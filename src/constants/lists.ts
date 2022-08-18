@@ -50,4 +50,5 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
 ]
 
 // default lists to be 'active' aka searched across
+// TODO: Generalise this to have a dict of (chainId: active_list)
 export const DEFAULT_ACTIVE_LIST_URLS: string[] = [DEFAULT_TOKEN_LIST, 'CARROT', QUICKSWAP_LIST, OPTIMISM_LIST]
