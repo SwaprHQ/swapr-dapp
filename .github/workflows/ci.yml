@@ -202,7 +202,7 @@ jobs:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
     container: cypress/browsers:node16.5.0-chrome97-ff96
-    if: ${{ github.event.pull_request.merged }}
+    if: ${{ github.event.pull_request.merged || contains(github.event.head_commit.message, 'execute:synpress') }}
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
