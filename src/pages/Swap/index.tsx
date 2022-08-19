@@ -38,6 +38,7 @@ import {
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
 import { SwapTabs } from '../../state/user/reducer'
+import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -493,13 +494,13 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && (
         <>
           <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab) && (
+      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && (
         <Hero>
           <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>

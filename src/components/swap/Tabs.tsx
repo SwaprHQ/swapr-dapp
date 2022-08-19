@@ -1,8 +1,12 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { useActiveWeb3React } from '../../hooks'
 import { SwapTabs } from '../../state/user/reducer'
+import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
@@ -53,22 +57,34 @@ const StyledEcoRouter = styled(EcoRouter)`
 
 export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
   const { t } = useTranslation('swap')
+  const { chainId } = useActiveWeb3React()
+  const isSupportedChain = chainSupportsSWPR(chainId)
 
   return (
     <TabsColumn>
       <TabsRow>
-        <Button onClick={() => setActiveTab(SwapTabs.SWAP)} className={activeTab === SwapTabs.SWAP ? 'active' : ''}>
+        <Button
+          onClick={() => setActiveTab(SwapTabs.SWAP)}
+          className={activeTab === SwapTabs.SWAP || !isSupportedChain ? 'active' : ''}
+          title="Eco Router V1.5"
+        >
           <StyledEcoRouter />
           Swap
         </Button>
         <Button
+          disabled={!isSupportedChain}
           onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
-          className={activeTab === SwapTabs.ADVANCED_SWAP_MODE ? 'active' : ''}
+          className={activeTab === SwapTabs.ADVANCED_SWAP_MODE && isSupportedChain ? 'active' : ''}
+          title="Advanced Trade View"
         >
           Adv. Trade
         </Button>
-        <Button disabled={true}>{t('tabs.limit')}</Button>
-        <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>
+        <Button disabled={true} title="Limit order">
+          {t('tabs.limit')}
+        </Button>
+        <Button disabled={true} title="Bridge Swap">
+          {t('tabs.bridgeSwap')}
+        </Button>
       </TabsRow>
     </TabsColumn>
   )
