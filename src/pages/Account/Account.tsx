@@ -5,10 +5,13 @@ import { Navigate } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
+import EnsFallbackAvatar from '../../assets/images/Test_Ellipss.png'
 import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
 import { useActiveWeb3React } from '../../hooks'
+import { useENSAvatar } from '../../hooks/useENSAvatar'
 import useENSName from '../../hooks/useENSName'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -20,7 +23,10 @@ import { PageWrapper } from '../../ui/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import {
   Button,
+  CallToActionWrapper,
   CustomLinkIcon,
+  DetailActionWrapper,
+  ENSAvatar,
   FullAccount,
   HeaderRow,
   PaginationRow,
@@ -36,6 +42,7 @@ export function Account() {
   const { account, chainId, active, deactivate } = useActiveWeb3React()
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { ENSName } = useENSName(account ?? undefined)
+  const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
   const [page, setPage] = useState(1)
@@ -43,6 +50,9 @@ export function Account() {
   const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
   const allTransactions = useAllTransactions(showAllNetworkTransactions)
   const transacationsByPage = usePage(transactions, responsiveItemsPerPage, page, 0)
+
+  const isMobile = useIsMobileByMedia()
+  const avatharSize = isMobile ? 75 : 100
 
   useEffect(() => {
     setTransactions(formattedTransactions(allTransactions))
@@ -57,38 +67,36 @@ export function Account() {
   return (
     <PageWrapper>
       <Flex sx={{ mb: 4 }}>
-        <Flex width={'150px'}>
-          <Avatar
-            size={100}
-            name={account}
-            variant="pixel"
-            colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
-          />
+        <Flex>
+          {ENSName && ensAvatar ? (
+            <ENSAvatar size={avatharSize} url={ensAvatar.image ?? EnsFallbackAvatar} />
+          ) : (
+            <Avatar
+              size={avatharSize}
+              name={account}
+              variant="pixel"
+              colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
+            />
+          )}
         </Flex>
-        <Flex flex="15%" flexDirection="column" justifyContent="center">
+        <Flex flexDirection="column" justifyContent="center" marginLeft="5%">
           <Box sx={{ mb: 1 }}>
-            <Text as="h1" fontSize={[3, 4, 5]} sx={{ color: '#C0BAF7', mb: 2 }}>
+            <Text as="h1" fontSize={[4, 5]} sx={{ color: '#C0BAF7', mb: 2 }}>
               {ENSName ?? account ? shortenAddress(`${account}`) : '--'}
             </Text>
             <FullAccount>{account}</FullAccount>
           </Box>
-          <Box sx={{ display: 'flex', mt: 2, textTransform: 'uppercase', fontSize: '9px' }}>
+          <DetailActionWrapper>
             <CopyWrapper value={account} label="COPY ADDRESS" />
             <StyledLink href={externalLink} rel="noopener noreferrer" target="_blank" disabled={!externalLink}>
               <CustomLinkIcon size={12} />
               <Box sx={{ ml: 1 }}>{t('viewOnBlockExplorer')}</Box>
             </StyledLink>
-          </Box>
-          <Box sx={{ mt: 3, display: 'flex' }}>
-            <Button
-              onClick={() => {
-                toggleWalletSwitcherPopover()
-              }}
-            >
-              Change Wallet
-            </Button>
+          </DetailActionWrapper>
+          <CallToActionWrapper>
+            <Button onClick={toggleWalletSwitcherPopover}>Change Wallet</Button>
             {active && <Button onClick={deactivate}>Disconnect</Button>}
-          </Box>
+          </CallToActionWrapper>
         </Flex>
       </Flex>
       <Flex sx={{ mb: 2 }} justifyContent="end">

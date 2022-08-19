@@ -14,7 +14,26 @@ export const Status = styled(Flex)<{ status: string }>`
   color: #0e9f6e;
   font-weight: 700;
   border-width: 1.5px;
-  border-color: #0e9f6e;
+  ${({ status }) => {
+    switch (status) {
+      case 'COMPLETED':
+        return `
+        border-color: #0e9f6e;
+        color: #0e9f6e;`
+      case 'PENDING':
+        return `
+        border-color: #F2994A;
+        color: #F2994A;`
+      case 'CANCELLED':
+        return `
+        border-color: #F02E51;
+        color: #F02E51;`
+      default:
+        return `
+        border-color: #a7a0e4;
+        color: #a7a0e4;`
+    }
+  }};
   border-style: solid;
   height: fit-content;
   line-height: 1;
@@ -34,7 +53,6 @@ export const StyledLink = styled(Link)`
   font-size: inherit;
   display: flex;
   color: ${({ theme }) => theme.text4};
-  margin-left: 4px;
   align-items: center;
   :hover,
   :active,
@@ -45,12 +63,11 @@ export const StyledLink = styled(Link)`
 `
 
 export const GridCard = styled(Flex)<{ status?: string }>`
-  row-gap: 24px;
-  padding: 16px 22px;
-  font-size: 14px;
+  padding: 24px 22px;
   line-height: 18px;
   align-items: center;
   color: #c0baf6;
+  border-bottom: 1px solid #3e4259;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px;
     &:last-of-type {
@@ -63,13 +80,12 @@ export const GridCard = styled(Flex)<{ status?: string }>`
         return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 6.32%, rgba(15, 152, 106, 0) 65.79%)'
       case 'PENDING':
         return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 8.84%, rgba(242, 153, 74, 0) 55.62%)'
+      case 'CANCELLED':
+        return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2.18%, rgba(240, 46, 81, 0) 62.13%)'
       default:
         return 'inherit'
     }
   }};
-
-  border-bottom: 1px solid #3e4259;
-
   &:last-of-type {
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
@@ -110,31 +126,64 @@ export const PaginationRow = styled(Flex)`
 
 export const FullAccount = styled(Text)`
   font-weight: 500;
-  font-size: 10px;
+  font-size: 12px;
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 9px;
+  `};
   line-height: 12px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   font-feature-settings: 'tnum' on, 'lnum' on, 'zero' on;
   color: #8780bf;
-  margin-top: 4px;
 `
 
 export const Button = styled(ButtonPurpleDim)`
-  max-width: 'fit-content';
   width: fit-content;
   padding: 7px 12px;
   line-height: 12px;
   font-size: 10px;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-  color: #a7a0e4;
-  &:last-of-type {
-    margin-left: 12px;
-  }
+  backdrop-filter: none;
   &:hover,
   &:active,
   &:focus {
     text-decoration: none;
     color: #ebe9f8;
+  }
+`
+
+export const ENSAvatar = styled.div<{ url: string; size: number }>(({ url, theme, size = 100 }) => ({
+  height: `${size}px`,
+  width: `${size}px`,
+  borderRadius: `${size}px`,
+  backgroundColor: theme.bg1,
+  backgroundSize: 'cover',
+  backgroundImage: `url(${url})`,
+}))
+
+export const DetailActionWrapper = styled(Flex)`
+  margin-top: 8px !important;
+  text-transform: uppercase;
+  font-size: 10px;
+
+  & > * {
+    margin-left: 16px !important;
+  }
+  & :first-child {
+    margin-left: 0 !important;
+  }
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  & > * {
+    margin-left: 12px !important;
+  }
+`};
+`
+
+export const CallToActionWrapper = styled(Flex)`
+  margin-top: 12px !important;
+  & > * {
+    margin-left: 12px !important;
+  }
+  & :first-child {
+    margin-left: 0 !important;
   }
 `

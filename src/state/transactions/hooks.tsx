@@ -1,5 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
 
+import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -53,23 +54,27 @@ export function useTransactionAdder(): (
 }
 
 // returns all the transactions for the current chain
-export function useAllTransactions(all = false): { [txHash: string]: TransactionDetails } {
+export function useAllTransactions(allNetwork = false): { [txHash: string]: TransactionDetails } {
   const { chainId } = useActiveWeb3React()
 
   const allTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 
-  return useMemo(() => {
-    if (all) {
-      return Object.keys(allTransactions).reduce((merged, cId: any) => {
-        const netrowkTransactions = allTransactions[cId]
-        for (const transaction in netrowkTransactions) {
-          netrowkTransactions[transaction]['network'] = cId
-        }
-        return { ...merged, ...netrowkTransactions }
-      }, {})
-    }
+  const allNetworkTransactions = useMemo(() => {
+    return Object.keys(allTransactions).reduce((merged, networkId: any) => {
+      const networkTransactions = cloneDeep(allTransactions[networkId] ?? {})
+      for (const transaction in networkTransactions) {
+        networkTransactions[transaction]['network'] = networkId
+      }
+      return { ...merged, ...networkTransactions }
+    }, {})
+  }, [allTransactions])
+
+  const networkTransaction = useMemo(() => {
     return chainId ? allTransactions[chainId] ?? {} : {}
-  }, [all, allTransactions, chainId])
+  }, [allTransactions, chainId])
+  // if allNetwork is true, return all transactions for all chains
+  // otherwise, return only the transactions for the current chain
+  return allNetwork ? allNetworkTransactions : networkTransaction
 }
 
 export function useIsTransactionPending(transactionHash?: string): boolean {

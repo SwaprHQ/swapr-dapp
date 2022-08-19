@@ -5,6 +5,12 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import XDAILogo from '../../assets/images/xdai-logo.png'
 import { TransactionDetails } from '../../state/transactions/reducer'
 
+const getStatus = (status?: 0 | 1, confrimedTime?: number) => {
+  if (status === 0) return 'CANCELLED'
+  if (status === 1 || confrimedTime !== undefined) return 'COMPLETED'
+  return 'PENDING'
+}
+
 export type Transaction = {
   type: string
   from: { value: number | string; token: string }
@@ -25,15 +31,16 @@ const expressions = {
 export const formattedTransactions = (transactions: { [txHash: string]: TransactionDetails }) => {
   return Object.keys(transactions)
     ?.map(key => {
-      const { summary = '', confirmedTime, hash, addedTime, network } = transactions[key]
+      const { summary = '', confirmedTime, hash, addedTime, network, receipt } = transactions[key]
       const type = summary.match(expressions.type)?.[0]
+      const { status } = receipt || {}
       const transaction = {
         addedTime,
         confirmedTime,
         hash,
         network,
         summary,
-        status: confirmedTime ? 'COMPLETED' : 'PENDING',
+        status: getStatus(status, confirmedTime),
         type,
       }
 
