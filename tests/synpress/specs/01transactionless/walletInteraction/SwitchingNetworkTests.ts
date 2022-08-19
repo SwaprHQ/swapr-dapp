@@ -3,19 +3,14 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Switching from mainnet tests', () => {
   const TRANSACTION_VALUE: number = 0.0001
   before(() => {
     cy.clearLocalStorage()
-    cy.addMetamaskNetwork({
-      networkName: 'Arbitrum Rinkeby',
-      rpcUrl: 'https://rinkeby.arbitrum.io/rpc',
-      chainId: '421611',
-      symbol: 'ETH',
-      blockExplorer: 'https://rinkeby-explorer.arbitrum.io/#/',
-      isTestnet: true,
-    })
+    MetamaskNetworkHandler.addARinkeby()
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()
