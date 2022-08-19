@@ -32,7 +32,6 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Optimism',
     logoSrc: OptimismLogo,
     color: '#ff0420',
-    tag: NetworkSwitcherTags.COMING_SOON,
   },
 
   // TESTNETS
