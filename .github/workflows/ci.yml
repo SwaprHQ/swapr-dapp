@@ -276,13 +276,13 @@ jobs:
         containers:
           [Container01, Container02, Container03, Container04]
     steps:
+      - name: Use the value
+        run: echo "${{ github.event.commits[0].message }}"
+
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
         with:
           name: workspace
-
-      - name: Use the value
-        run: echo "${{ github.event.commits[0].message }}"
 
       - name: Extract workspace artifact
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
