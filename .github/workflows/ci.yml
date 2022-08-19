@@ -243,7 +243,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        run: yarn synpress:ct --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS
+        run: yarn synpress:ct --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'
         continue-on-error: true
         env:
           CI: true
