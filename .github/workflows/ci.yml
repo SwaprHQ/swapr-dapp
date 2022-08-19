@@ -288,7 +288,7 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        if: ${{ !(github.event.pull_request.merged) }}
+        if: ${{ !(github.event.pull_request.merged) && !(contains(github.event.head_commit.message, 'execute:synpress')) }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome'
         continue-on-error: false
 
