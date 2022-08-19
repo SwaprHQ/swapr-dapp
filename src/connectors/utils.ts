@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { ConnectorType, SUPPORTED_NETWORKS } from './../constants'
+import { ConnectorType, SUPPORTED_NETWORKS, SUPPORTED_WALLETS } from './../constants'
 
 import {
   coinbaseWalletConnection,
@@ -24,32 +24,21 @@ export const getConnection = (connector: Connector | ConnectorType) => {
       throw Error('unsupported connector')
     }
     return connection
-  } else {
-    switch (connector) {
-      case ConnectorType.METAMASK:
-        return metaMaskConnection
-      case ConnectorType.COINBASE:
-        return coinbaseWalletConnection
-      case ConnectorType.WALLET_CONNECT:
-        return walletConnectConnection
-      case ConnectorType.NETWORK:
-        return networkConnection
-    }
+  }
+
+  switch (connector) {
+    case ConnectorType.METAMASK:
+      return metaMaskConnection
+    case ConnectorType.COINBASE:
+      return coinbaseWalletConnection
+    case ConnectorType.WALLET_CONNECT:
+      return walletConnectConnection
+    case ConnectorType.NETWORK:
+      return networkConnection
   }
 }
 
-export const getConnectionName = (connector: ConnectorType) => {
-  switch (connector) {
-    case ConnectorType.METAMASK:
-      return 'MetaMask'
-    case ConnectorType.COINBASE:
-      return 'Coinbase Wallet'
-    case ConnectorType.WALLET_CONNECT:
-      return 'WalletConnect'
-    case ConnectorType.NETWORK:
-      return 'Network'
-  }
-}
+export const getConnectionName = (connector: ConnectorType) => SUPPORTED_WALLETS[connector].name
 
 export const isChainSupportedByConnector = (connector: Connector, chainId: number | undefined) => {
   const connectorType = getConnection(connector).type

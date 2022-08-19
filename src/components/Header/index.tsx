@@ -295,7 +295,7 @@ function Header() {
         </HeaderSubRow>
 
         <Flex maxHeight={'22px'} justifyContent={'end'}>
-          {account && (
+          {account && isActiveChainSupported && (
             <>
               <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions

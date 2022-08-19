@@ -8,6 +8,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
+import { TryActivationType } from '../WalletSwitcher/WalletOption.types'
 import { CoinbaseWalletConnector } from '../WalletSwitcher/Wallets/CoinbaseWalletConnector'
 import { MetaMaskConnector } from '../WalletSwitcher/Wallets/MetaMaskConnector'
 import { WalletConnectConnector } from '../WalletSwitcher/Wallets/WalletConnectConnector'
@@ -100,7 +101,7 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 
 interface ConnectWalletProps {
   setModal: (modal: ModalView | null) => void
-  tryActivation: (connector: Connector) => void
+  tryActivation: TryActivationType
   tryDeactivation: (connector: Connector, account: string | undefined) => void
   children: ReactNode
 }

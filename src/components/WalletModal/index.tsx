@@ -13,6 +13,7 @@ import { TYPE } from '../../theme'
 import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
+import { TryActivationType } from '../WalletSwitcher/WalletOption.types'
 import { ModalView } from '../Web3Status'
 import PendingView from './PendingView'
 
@@ -107,7 +108,7 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: (connector: Connector) => void
+  tryActivation: TryActivationType
   connectorError?: boolean
   pendingConnector: Connector
 }

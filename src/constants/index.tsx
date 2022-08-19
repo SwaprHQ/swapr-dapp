@@ -299,6 +299,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true,
   },
+  [ConnectorType.NETWORK]: {
+    name: 'Network',
+    logo: '',
+    description: 'Web3 Network',
+    link: null,
+    color: '#000000',
+    mobile: true,
+  },
 }
 
 export const BACKFILLABLE_WALLETS = [ConnectorType.METAMASK, ConnectorType.COINBASE, ConnectorType.WALLET_CONNECT]
