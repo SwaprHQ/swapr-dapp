@@ -243,7 +243,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        run: yarn synpress:ct
+        run: yarn synpress:ct --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS
         continue-on-error: true
         env:
           CI: true
@@ -318,27 +318,19 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: LiquidityTests
+          name: Container01
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: MenuBarTests
+          name: Container02
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: RewardsPageTests
+          name: Container03
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: SwapBoxTests
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: TokenMenuTests
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: TransactionSettingsTests
+          name: Container04
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
@@ -353,10 +345,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: mochawesome-report
 
       - name: Merge test results into one
         run: yarn run report:merge
@@ -382,12 +370,10 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            LiquidityTests
-            MenuBarTests
-            RewardsPageTests
-            SwapBoxTests
-            TokenMenuTests
-            TransactionSettingsTests
+            Container01
+            Container02
+            Container03
+            Container04
             01transactionless
             02transactionfull
 
