@@ -32,6 +32,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Optimism',
     logoSrc: OptimismLogo,
     color: '#ff0420',
+    tag: NetworkSwitcherTags.COMING_SOON,
   },
 
   // TESTNETS
@@ -64,7 +65,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.OPTIMISM_GOERLI,
-    name: 'Optimism Görli',
+    name: 'Optimism Goerli',
     logoSrc: OptimismLogo,
     color: '#ff0420',
     tag: NetworkSwitcherTags.TESTNETS,

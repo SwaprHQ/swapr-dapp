@@ -494,7 +494,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   },
   [ChainId.OPTIMISM_GOERLI]: {
     chainId: `0x${ChainId.OPTIMISM_GOERLI.toString(16)}`,
-    chainName: 'Optimism Görli Testnet',
+    chainName: 'Optimism Goerli Testnet',
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
