@@ -204,7 +204,7 @@ jobs:
     container: cypress/browsers:node16.5.0-chrome97-ff96
     if: github.actor != 'dependabot[bot]'
     env:
-      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
@@ -243,7 +243,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        run: yarn synpress:ct --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS
+        run: yarn synpress:ct
         continue-on-error: true
         env:
           CI: true
