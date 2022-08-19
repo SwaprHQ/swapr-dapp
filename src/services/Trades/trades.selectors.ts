@@ -5,17 +5,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from '../../state'
 import { TradeHistory } from './trades.types'
 
-export const selectLoading = createSelector([(state: AppState) => state.trades.sources], sources => {
-  const adaptersLoadingState = Object.values(sources).map(({ loading }) => loading)
-
-  const isNewPair = adaptersLoadingState.every(loading => loading)
-  const isLoading = adaptersLoadingState.includes(true)
-
-  return {
-    isLoading,
-    isNewPair,
-  }
-})
+//check if any adapter can fetch more data
+export const selectHasMoreData = createSelector([(state: AppState) => state.trades.sources], sources =>
+  Object.values(sources)
+    .map(adapter => adapter.fetchDetails.hasMore)
+    .includes(true)
+)
 
 export const selectAllSwaprTrades = createSelector(
   [(state: AppState) => state.trades.sources.swapr, (state: AppState) => state.trades.pair],

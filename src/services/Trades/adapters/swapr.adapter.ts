@@ -28,24 +28,24 @@ export class SwaprAdapter extends AbstractTradesAdapter {
     this._chainId = chainId
   }
 
-  public getTradesHistoryForPair = async (inputToken: Token, outputToken: Token) => {
-    // polygon is not supported
-    if (!this._chainId || this._chainId === ChainId.POLYGON) return
-
+  public getTradesHistoryForPair = async (inputToken: Token, outputToken: Token, first: number, skip: number) => {
     const pairId = Pair.getAddress(inputToken, outputToken).toLowerCase()
+    const { hasMore, pairId: previousPairId } = this.store.getState().trades.sources.swapr.fetchDetails
+
+    // polygon is not supported
+    if (!this._chainId || this._chainId === ChainId.POLYGON || (!hasMore && pairId === previousPairId)) return
 
     try {
-      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: true }))
-
       const data = await request<SwaprTradesHistory>(subgraphClientsUris[this._chainId], SWAPR_PAIR_TRANSACTIONS, {
         pairId,
+        first,
+        skip,
       })
 
-      this.store.dispatch(this.actions.setSwaprTradesHistory(data))
+      const hasMore = data.pair?.swaps.length && data.pair?.swaps.length === 50 ? true : false
 
-      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
+      this.store.dispatch(this.actions.setSwaprTradesHistory({ data, hasMore, pairId }))
     } catch {
-      this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: false }))
       // TODO: add error state for each adapter.
     }
   }
