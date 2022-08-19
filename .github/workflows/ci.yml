@@ -274,7 +274,7 @@ jobs:
       fail-fast: false
       matrix:
         containers:
-          [LiquidityTests, MenuBarTests, RewardsPageTests, SwapBoxTests, TokenMenuTests, TransactionSettingsTests]
+          [Container01, Container02, Container03, Container04]
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -288,7 +288,7 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS'
         continue-on-error: false
 
       - name: Merge test results into one
