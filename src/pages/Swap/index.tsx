@@ -31,14 +31,26 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import {
+  useAdvancedSwapDetails,
+  useIsExpertMode,
+  useUpdateSelectedSwapTab,
+  useUserSlippageTolerance,
+} from '../../state/user/hooks'
+import { SwapTabs } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
+import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
+import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
+import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
+import Features from './../../components/LandingPageComponents/Features'
 import Footer from './../../components/LandingPageComponents/layout/Footer'
+import Hero from './../../components/LandingPageComponents/layout/Hero'
+import Stats from './../../components/LandingPageComponents/Stats'
+import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
-import { NormalSwapMode } from './NormalSwapMode'
 
 export type SwapData = {
   showConfirm: boolean
@@ -53,6 +65,9 @@ const SwitchIconContainer = styled.div`
   position: relative;
   width: 100%;
 `
+const LandingBodyContainer = styled.section`
+  width: calc(100% + 32px) !important;
+`
 
 export enum GnosisProtocolTradeState {
   UNKNOWN, // default
@@ -60,6 +75,14 @@ export enum GnosisProtocolTradeState {
   APPROVAL,
   SWAP,
 }
+
+const AppBodyContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  min-height: calc(100vh - 340px);
+`
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -85,6 +108,8 @@ export default function Swap() {
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
   }, [])
+
+  const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
 
   const { chainId } = useActiveWeb3React()
 
@@ -330,7 +355,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs />
+      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -452,11 +477,25 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {isExpertMode ? (
-        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
-      ) : (
-        <NormalSwapMode>{renderSwapBox()}</NormalSwapMode>
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
+        <>
+          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+          <Hero />
+        </>
       )}
+      {(activeTab === SwapTabs.SWAP || !activeTab) && (
+        <Hero>
+          <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+        </Hero>
+      )}
+      <LandingBodyContainer>
+        <Features />
+        <Stats />
+        <CommunityBanner />
+        <Timeline />
+        <CommunityLinks />
+        <BlogNavigation />
+      </LandingBodyContainer>
       <Footer />
     </>
   )

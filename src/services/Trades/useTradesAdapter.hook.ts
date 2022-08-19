@@ -88,5 +88,7 @@ export const useTradesAdapter = () => {
     symbol,
     showTrades: inputToken && outputToken ? true : false,
     chainId,
+    inputToken: inputToken ?? undefined,
+    outputToken: outputToken ?? undefined,
   }
 }

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { SwapTabs } from '../../state/user/reducer'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
@@ -50,15 +51,21 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = () => {
+export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
   const { t } = useTranslation('swap')
 
   return (
     <TabsColumn>
       <TabsRow>
-        <Button className="active">
+        <Button onClick={() => setActiveTab(SwapTabs.SWAP)} className={activeTab === SwapTabs.SWAP ? 'active' : ''}>
           <StyledEcoRouter />
-          Eco Router V1.5
+          Swap
+        </Button>
+        <Button
+          onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
+          className={activeTab === SwapTabs.ADVANCED_SWAP_MODE ? 'active' : ''}
+        >
+          Adv. Trade
         </Button>
         <Button disabled={true}>{t('tabs.limit')}</Button>
         <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>

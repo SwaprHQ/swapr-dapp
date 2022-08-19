@@ -12,6 +12,7 @@ import {
   SerializedToken,
   toggleURLWarning,
   updateMatchesDarkMode,
+  updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -23,6 +24,12 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
+export enum SwapTabs {
+  SWAP,
+  ADVANCED_SWAP_MODE,
+  LIMIT_ORDER,
+}
+
 export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
@@ -31,6 +38,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+  selectedSwapTab: SwapTabs
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -70,6 +78,7 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
+  selectedSwapTab: 0,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -123,6 +132,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateSelectedSwapTab, (state, action) => {
+      state.selectedSwapTab = action.payload.selectedSwapTab
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

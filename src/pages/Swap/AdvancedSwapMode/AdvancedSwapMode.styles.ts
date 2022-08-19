@@ -2,17 +2,6 @@ import styled, { css } from 'styled-components'
 
 import { breakpoints } from '../../../utils/theme'
 
-export const ContainerBox = styled.div`
-  display: flex;
-  width: 100%;
-  margin-bottom: 2rem;
-  background: #0c0b12;
-  border-radius: 12px;
-  color: #b2b5be;
-  @media screen and (max-width: ${breakpoints.l}) {
-    display: block;
-  }
-`
 export const BorderStyling = css`
   border: 1px solid ${({ theme }) => theme.purple6};
 `
@@ -40,124 +29,169 @@ export const CustomScrollBar = css`
   scrollbar-width: thin;
 `
 
-export const ColumnCellBox = styled.div`
-  z-index: 3;
-  flex: 1;
+export const Container = styled.div`
+  backdrop-filter: blur(10px);
+  width: 100%;
+  display: grid;
+  grid-template-columns: 50% 20% 30%;
 
-  border: 1px solid rgba(41, 38, 67, 1);
-  border-top: 0;
+  @media screen and (max-width: ${breakpoints.l}) {
+    grid-template-rows: auto;
+  }
 
   @media screen and (max-width: ${breakpoints.md}) {
-    width: 50%;
-  }
-  @media screen and (max-width: ${breakpoints.s}) {
-    width: 100%;
-  }
-`
-
-export const TitleColumn = styled.div`
-  padding: 1rem 0.5rem;
-  border-bottom: 1px solid ${({ theme }) => theme.purple6};
-  font-weight: 600;
-  color: ${({ theme }) => theme.purple4};
-`
-
-export const BodyColumn = styled.div`
-  padding: 0 0.5rem;
-`
-
-export const DiagramContainerBox = styled.div`
-  flex: 1;
-  ${AdvanceSwapModeHeight}
-  ${BorderStyling}
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-`
-
-export const InfoContainerBox = styled.div`
-  display: flex;
-  flex: 0;
-  ${AdvanceSwapModeHeight}
-  border-top: 1px solid rgb(41, 38, 67);
-  @media screen and (max-width: ${breakpoints.l}) {
-    width: 100%;
     height: auto;
+    grid-template-columns: 50% 10% 40%;
   }
-  @media screen and (max-width: ${breakpoints.md}) {
-    flex-wrap: wrap;
-  }
-`
 
-export const ColumnBoxStyles = css`
-  @media screen and (max-width: ${breakpoints.md}) {
-    width: 100%;
-    display: flex;
-  }
   @media screen and (max-width: ${breakpoints.s}) {
-    display: block;
+    height: auto;
+    grid-template-columns: 1fr;
+
+    & > div {
+      border-left: none;
+      border-right: none;
+      grid-column: 1 / -1;
+    }
   }
 `
 
-export const HistoryColumnBox = styled.div`
-  width: 40%;
-  min-width: 350px;
-  ${ColumnBoxStyles}
-
-  @media screen and (max-width: ${breakpoints.md}) {
-    order: 1;
-  }
-`
-
-export const HistoryBox = styled(ColumnCellBox)`
-  height: 50%;
+export const ChartWrapper = styled.div`
+  ${BorderStyling}
+  min-height: 700px;
 
   @media screen and (max-width: ${breakpoints.l}) {
-    height: 400px;
+    grid-column: 1 / -1;
+    order: 0;
+    height: 40vh;
+  }
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    order: 2;
   }
 `
 
-export const ListBox = styled.div`
-  overflow-y: auto;
-  height: calc(100% - 88px);
-  position: relative;
-  ${CustomScrollBar}
+export const TradesWrapper = styled.div`
+  border-top: 1px solid rgba(41, 38, 67, 1);
+  border-left: none;
+
+  @media screen and (max-width: ${breakpoints.l}) {
+    order: 2;
+    grid-column: 3 /4;
+    border-left: 1px solid rgba(41, 38, 67, 1);
+  }
+  @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
+    grid-row: 1 / 2;
+  }
+`
+
+export const SwapBoxWrapper = styled.div`
+  border-top: 1px solid rgba(41, 38, 67, 1);
+  border-bottom: 1px solid rgba(41, 38, 67, 1);
+  border-left: 1px solid rgba(41, 38, 67, 1);
+
+  @media screen and (max-width: ${breakpoints.l}) {
+    order: 1;
+    grid-column: 1 /3;
+  }
+  @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
+    grid-row: 1 / 2;
+  }
+`
+
+export const OrdersWrapper = styled.div`
+  grid-column: 1 / 2;
+  border: 1px solid rgba(41, 38, 67, 1);
+
+  @media screen and (max-width: ${breakpoints.l}) {
+    order: 4;
+  }
+`
+
+export const LiquidityWrapper = styled.div`
+  grid-column: 2 / 4;
+  border: 1px solid rgba(41, 38, 67, 1);
+
+  @media screen and (max-width: ${breakpoints.l}) {
+    order: 5;
+  }
 `
 
 export const EmptyCellBody = styled.div`
   padding: 2rem 1rem;
   font-weight: 600;
+  font-size: 0.75rem;
   text-align: center;
   line-height: 1.4;
 `
 
 export const LoaderContainer = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  margin-top: 20px;
+  text-align: center;
 `
 
-export const TradesAndOrderColumnBox = styled.div`
-  width: 60%;
-  min-width: 400px;
-  display: flex;
-  flex-direction: column;
-  ${ColumnBoxStyles}
-  @media screen and (max-width: ${breakpoints.md}) {
-    order: 0;
-    flex-direction: row;
-  }
-`
-
-export const TradeContent = styled.div`
+export const SwapBox = styled.div`
   padding: 1rem 0.5rem 0;
+  ${CustomScrollBar}
+  height: 100%;
 
-  @media screen and (max-width: ${breakpoints.l}) {
-    > div {
-      margin-left: auto;
-      margin-right: auto;
-    }
+  > div {
+    margin-left: auto;
+    margin-right: auto;
   }
+`
+
+export const AdvancedModeHeader = styled.div`
+  padding: 15px;
+  margin-top: 10px;
+`
+
+export const AdvancedModeTitle = styled.div`
+  font-weight: 600;
+  font-size: 14px;
+  color: ${({ theme }) => theme.text4};
+  text-transform: uppercase;
+`
+
+export const AdvancedModeDetails = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 20px;
+  color: ${({ theme }) => theme.purple3};
+
+  & > div:nth-child(1),
+  & > div:nth-child(2) {
+    flex-basis: 40%;
+  }
+
+  & > div:nth-child(3) {
+    flex-basis: 20%;
+  }
+`
+export const TransactionsWrapper = styled.div`
+  ${CustomScrollBar}
+  max-height: 600px;
+  overflow-y: scroll;
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    max-height: 400px;
+  }
+`
+export const SwitcherWrapper = styled.div`
+  background: ${({ theme }) => theme.dark1};
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  position: relative;
+`
+export const SwitchButton = styled.div<{ active: boolean }>`
+  color: ${({ theme, active }) => (active ? theme.white : theme.text5)};
+  background: ${({ theme, active }) => (active ? theme.dark2 : theme.dark1)};
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: background 0.1s ease;
+  cursor: pointer;
+  text-align: center;
 `

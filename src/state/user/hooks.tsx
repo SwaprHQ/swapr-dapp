@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -27,6 +28,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
+import { SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -121,6 +123,40 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+const selectSelectedSwapTab = createSelector(
+  (state: AppState) => state.user.selectedSwapTab,
+  selectedSwapTab => selectedSwapTab
+)
+
+export function useSelectedSwapTab() {
+  return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
+}
+
+const selectIsAdvancedTradeViewTabActive = createSelector(
+  (state: AppState) => state.user.selectedSwapTab,
+  selectedSwapTab => selectedSwapTab === SwapTabs.ADVANCED_SWAP_MODE
+)
+
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, boolean>(selectIsAdvancedTradeViewTabActive)
+}
+
+export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentTab = useSelectedSwapTab()
+
+  const setSelectedTab = useCallback(
+    (selectedTab: SwapTabs) => {
+      if (currentTab !== selectedTab || !currentTab) {
+        dispatch(updateSelectedSwapTab({ selectedSwapTab: selectedTab }))
+      }
+    },
+    [currentTab, dispatch]
+  )
+
+  return [currentTab, setSelectedTab]
 }
 
 const selectUserSlippageTolerance = createSelector(

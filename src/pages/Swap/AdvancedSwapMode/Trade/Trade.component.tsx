@@ -13,11 +13,23 @@ const TradeWrapper = styled(ExternalLink)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
-  margin: 5px;
-  padding: 5px;
+  font-size: 10px;
+  margin-top: 10px;
+
   & > div {
-    flex: 1;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 10px;
+  }
+
+  & > div:nth-child(1),
+  & > div:nth-child(2) {
+    flex-basis: 40%;
+  }
+
+  & > div:nth-child(3) {
+    flex-basis: 20%;
   }
 `
 
@@ -40,18 +52,16 @@ export const Trade = ({
   logoKey: string
   isSell?: boolean
 }) => {
-  const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell: isSell })
+  const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell })
 
   return (
     <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
-      <Flex>
+      <Flex alignItems="center">
         {ROUTABLE_PLATFORM_LOGO[logoKey]}
-        <Text sx={{ marginLeft: '10px' }}>{amountIn}</Text>
+        <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>
       </Flex>
-      <Text sx={{ textAlign: 'center' }}>{amountOut}</Text>
-      <Text sx={{ textAlign: 'right', textTransform: 'uppercase', fontSize: '10px' }}>
-        {formatDate(Number(timestamp) * 1000)}
-      </Text>
+      <Text>{amountOut}</Text>
+      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDate(Number(timestamp) * 1000)}</Text>
     </TradeWrapper>
   )
 }
