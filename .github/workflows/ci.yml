@@ -28,7 +28,7 @@ jobs:
           fetch-depth: '50'
 
       - name: Use the value
-        run: echo "${{ github.event.head_commit.message }}"
+        run: echo "${{ github.event }}"
 
       - name: ⎔・Setup node
         uses: actions/setup-node@v3
