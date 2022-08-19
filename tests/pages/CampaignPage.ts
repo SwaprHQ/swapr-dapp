@@ -8,7 +8,6 @@ export class CampaignPage {
   static getCampaignStartDateText() {
     return cy.get('[data-testid=start-date]')
   }
-
   static getCampaignEndDateText() {
     return cy.get('[data-testid=end-date]')
   }
