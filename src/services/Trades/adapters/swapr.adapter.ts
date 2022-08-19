@@ -3,6 +3,7 @@ import { ChainId, Pair, Token } from '@swapr/sdk'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { SWAPR_PAIR_TRANSACTIONS } from '../trades.queries'
 import { actions } from '../trades.reducer'
 import { AdapterInitialArguments, AdapterKeys, SwaprTradesHistory } from '../trades.types'
@@ -37,9 +38,13 @@ export class SwaprAdapter extends AbstractTradesAdapter {
     try {
       this.store.dispatch(this.actions.setAdapterLoading({ key: AdapterKeys.SWAPR, isLoading: true }))
 
-      const data = await request<SwaprTradesHistory>(subgraphClientsUris[this._chainId], SWAPR_PAIR_TRANSACTIONS, {
-        pairId,
-      })
+      const data = await request<SwaprTradesHistory>(
+        subgraphClientsUris[this._chainId as SWPRSupportedChains],
+        SWAPR_PAIR_TRANSACTIONS,
+        {
+          pairId,
+        }
+      )
 
       this.store.dispatch(this.actions.setSwaprTradesHistory(data))
 

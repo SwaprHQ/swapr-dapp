@@ -6,6 +6,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import store from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
+import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 import { SwaprAdapter } from './adapters/swapr.adapter'
 import { TradesAdapter } from './adapters/trades.adapter'
 import { Adapters } from './trades.types'
@@ -16,6 +17,8 @@ const WrappedNativeCurrencyAddress = {
   [ChainId.XDAI]: WXDAI[ChainId.XDAI].address,
   [ChainId.POLYGON]: WMATIC[ChainId.POLYGON].address,
   [ChainId.RINKEBY]: WETH[ChainId.RINKEBY].address,
+  [ChainId.GOERLI]: WETH[ChainId.GOERLI].address,
+  [ChainId.ARBITRUM_GOERLI]: WETH[ChainId.ARBITRUM_GOERLI].address,
   [ChainId.ARBITRUM_RINKEBY]: WETH[ChainId.ARBITRUM_RINKEBY].address,
 }
 
@@ -24,7 +27,9 @@ const adapters: Adapters = {
 }
 
 const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
-  tokenAddress === Currency.getNative(chainId).symbol ? WrappedNativeCurrencyAddress[chainId] : tokenAddress
+  tokenAddress === Currency.getNative(chainId).symbol
+    ? WrappedNativeCurrencyAddress[chainId as SWPRSupportedChains]
+    : tokenAddress
 
 //TODO: handle loading
 export const useTradesAdapter = () => {

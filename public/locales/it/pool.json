@@ -14,7 +14,7 @@
   "userLiquidity.yourLiquidity": "Your liquidity",
   "userLiquidity.pooledToken": "Pooled {{ token }}",
   "userLiquidity.poolShare": "Pool share",
-  "userLiquidity.poolTokens": "Pool Tokens",
+  "userLiquidity.lpTokens": "LP Tokens",
   "addLiquidity": "Add Liquidity",
   "userLiquidity.removeLiquidity": "Remove Liquidity",
   "pairsList.pair": "Pair",

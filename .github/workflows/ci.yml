@@ -40,6 +40,9 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
+      - name: Generate graphql
+        run: yarn codegen:graphql
+
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
@@ -198,6 +201,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    container: cypress/browsers:node16.5.0-chrome97-ff96
     if: github.actor != 'dependabot[bot]'
     env:
       TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
@@ -205,7 +209,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [transactionfull, transactionless]
+        containers: [02transactionfull, 01transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -232,6 +236,12 @@ jobs:
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
+
       - name: Run synpress tests
         run: yarn synpress:ct
         continue-on-error: true
@@ -253,6 +263,7 @@ jobs:
           path: |
             ${{ matrix.containers }}.json
             public-report/screenshots
+            public-report/videos
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
@@ -278,7 +289,7 @@ jobs:
 
       - name: Run cypress tests
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
-        continue-on-error: true
+        continue-on-error: false
 
       - name: Merge test results into one
         run: |
@@ -331,11 +342,11 @@ jobs:
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: transactionless
+          name: 01transactionless
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: transactionfull
+          name: 02transactionfull
           path: mochawesome-report
 
       - name: Setup Node
@@ -364,6 +375,7 @@ jobs:
           path: |
             public-report
             mochawesome-report/public-report/screenshots/**
+            mochawesome-report/public-report/videos/**
           retention-days: 3
 
       - name: Delete merged artifacts
@@ -376,8 +388,8 @@ jobs:
             SwapBoxTests
             TokenMenuTests
             TransactionSettingsTests
-            transactionless
-            transactionfull
+            01transactionless
+            02transactionfull
 
   depcleanup:
     name: 🧹 Dependabot Cleanup

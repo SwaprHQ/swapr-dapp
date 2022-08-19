@@ -1,0 +1,6 @@
+fragment PairFragment on Pair {
+  ...ReservePart
+  reserveNativeCurrency
+  reserveUSD
+  totalSupply
+}

@@ -3,6 +3,7 @@ import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
+import styled from 'styled-components'
 
 import { useTotalSupply } from '../../../../data/TotalSupply'
 import { useActiveWeb3React } from '../../../../hooks'
@@ -11,9 +12,14 @@ import { getAccountAnalyticsLink } from '../../../../utils'
 import { currencyId } from '../../../../utils/currencyId'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { ButtonExternalLink, ButtonPurpleDim } from '../../../Button'
+import { CurrencyLogo } from '../../../CurrencyLogo'
 import { DimBlurBgBox } from '../../DimBlurBgBox/styleds'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
 import { ValueWithLabel } from '../ValueWithLabel'
+
+const TextWithColor = styled(Text)`
+  color: ${({ theme }) => theme.text4};
+`
 
 interface UserLiquidityProps {
   pair?: Pair
@@ -67,17 +73,29 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             value={poolTokenPercentage ? poolTokenPercentage.toFixed(5) + '%' : '0'}
           />
           <ValueWithLabel
-            title={t('userLiquidity.poolTokens')}
+            title={t('userLiquidity.lpTokens')}
             value={userPoolBalance ? userPoolBalance.toSignificant(4) : '0'}
           />
-          <ValueWithLabel
-            title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}
-            value={token0Deposited ? token0Deposited.toSignificant(6) : '0'}
-          />
-          <ValueWithLabel
-            title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}
-            value={token1Deposited ? token1Deposited.toSignificant(6) : '0'}
-          />
+          <ValueWithLabel title={t('userLiquidity.pooledToken', { token: currency0?.symbol })}>
+            <Flex alignItems="center">
+              <Box mr="6px">
+                <CurrencyLogo size="14px" currency={currency0} />
+              </Box>
+              <TextWithColor fontSize={['13px', '15px']}>
+                {token0Deposited ? token0Deposited.toSignificant(6) : '0'}
+              </TextWithColor>
+            </Flex>
+          </ValueWithLabel>
+          <ValueWithLabel title={t('userLiquidity.pooledToken', { token: currency1?.symbol })}>
+            <Flex alignItems="center">
+              <Box mr="6px">
+                <CurrencyLogo size="14px" currency={currency1} />
+              </Box>
+              <TextWithColor fontSize={['13px', '15px']}>
+                {token1Deposited ? token1Deposited.toSignificant(6) : '0'}
+              </TextWithColor>
+            </Flex>
+          </ValueWithLabel>
         </InfoGrid>
       </Box>
       <Flex flexDirection={['column', 'row']} alignItems="center">
