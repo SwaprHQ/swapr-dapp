@@ -33,12 +33,11 @@ import {
 import { Field } from '../../state/swap/types'
 import {
   useAdvancedSwapDetails,
-  useAdvancedTradeModeManager,
   useIsExpertMode,
-  useSelectedSwapTab,
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
+import { SwapTabs } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -75,12 +74,6 @@ export enum GnosisProtocolTradeState {
   WRAP,
   APPROVAL,
   SWAP,
-}
-
-export enum SwapTabs {
-  SWAP,
-  ADVANCED_SWAP_MODE,
-  LIMIT_ORDER,
 }
 
 const AppBodyContainer = styled.section`

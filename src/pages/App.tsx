@@ -13,7 +13,7 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
-import { useIsAdvancedTradeMode, useIsExpertMode } from '../state/user/hooks'
+import { useIsAdvancedTradeMode } from '../state/user/hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -71,13 +71,13 @@ export default function App() {
   const location = useLocation()
   const theme = useTheme()
   const [isSwapPage, setIsSwapPage] = useState(false)
-  const isAdvancedTradeMode = useIsAdvancedTradeMode()
+  const isAdvTrade = useIsAdvancedTradeMode()
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))
   }, [location])
 
-  const isSwapPageAdvancedTradeMode = isSwapPage && isAdvancedTradeMode
+  const isSwapPageAdvancedTradeMode = isSwapPage && isAdvTrade
 
   useEffect(() => {
     document.body.classList.add('no-margin')

@@ -9,7 +9,6 @@ import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
 import { PairState, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
-import { SwapTabs } from '../../pages/Swap'
 import { MainnetGasPrice } from '../application/actions'
 import { AppDispatch, AppState } from '../index'
 import {
@@ -20,7 +19,6 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
-  updateAdvancedTradeMode,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
@@ -30,6 +28,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
+import { SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -126,15 +125,6 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-const selectAdvancedTradeMode = createSelector(
-  (state: AppState) => state.user.advancedTradeMode,
-  advancedTradeMode => advancedTradeMode
-)
-
-export function useIsAdvancedTradeMode() {
-  return useSelector<AppState, AppState['user']['advancedTradeMode']>(selectAdvancedTradeMode)
-}
-
 const selectSelectedSwapTab = createSelector(
   (state: AppState) => state.user.selectedSwapTab,
   selectedSwapTab => selectedSwapTab
@@ -144,26 +134,21 @@ export function useSelectedSwapTab() {
   return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
 }
 
-export function useAdvancedTradeModeManager(): [boolean, () => void] {
-  const dispatch = useDispatch<AppDispatch>()
-  const advancedTradeMode = useIsAdvancedTradeMode()
-  console.log('test', advancedTradeMode)
-  const toggleSetAdvancedTradeMode = useCallback(() => {
-    console.log('advance trade')
+const selectIsAdvancedTradeViewTabActive = createSelector(
+  (state: AppState) => state.user.selectedSwapTab,
+  selectedSwapTab => selectedSwapTab === SwapTabs.ADVANCED_SWAP_MODE
+)
 
-    dispatch(updateAdvancedTradeMode({ advancedTradeMode: !advancedTradeMode }))
-  }, [advancedTradeMode, dispatch])
-
-  return [advancedTradeMode, toggleSetAdvancedTradeMode]
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, boolean>(selectIsAdvancedTradeViewTabActive)
 }
 
 export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const currentTab = useSelectedSwapTab()
-  console.log('test', currentTab)
+
   const setSelectedTab = useCallback(
     (selectedTab: SwapTabs) => {
-      console.log('advance trade', currentTab)
       if (currentTab !== selectedTab || !currentTab) {
         dispatch(updateSelectedSwapTab({ selectedSwapTab: selectedTab }))
       }

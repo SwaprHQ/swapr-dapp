@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import { DEFAULT_DEADLINE_FROM_NOW, DEFAULT_USER_MULTIHOP_ENABLED, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { SwapTabs } from '../../pages/Swap'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
 import {
@@ -12,7 +11,6 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
-  updateAdvancedTradeMode,
   updateMatchesDarkMode,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
@@ -26,6 +24,12 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
+export enum SwapTabs {
+  SWAP,
+  ADVANCED_SWAP_MODE,
+  LIMIT_ORDER,
+}
+
 export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
@@ -34,7 +38,6 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
-  advancedTradeMode: boolean
   selectedSwapTab: SwapTabs
 
   // user defined slippage tolerance in bips, used in all txns
@@ -75,8 +78,7 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
-  selectedSwapTab: SwapTabs.SWAP,
-  advancedTradeMode: false,
+  selectedSwapTab: 0,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -130,10 +132,6 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
-      state.timestamp = currentTimestamp()
-    })
-    .addCase(updateAdvancedTradeMode, (state, action) => {
-      state.advancedTradeMode = action.payload.advancedTradeMode
       state.timestamp = currentTimestamp()
     })
     .addCase(updateSelectedSwapTab, (state, action) => {

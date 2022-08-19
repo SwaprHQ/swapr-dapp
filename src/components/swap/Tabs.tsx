@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
-import { SwapTabs } from '../../pages/Swap'
+import { SwapTabs } from '../../state/user/reducer'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
