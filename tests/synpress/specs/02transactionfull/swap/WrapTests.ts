@@ -3,6 +3,7 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { AddressesEnum } from '../../../../utils/enums/AddressesEnum'
 import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
@@ -10,7 +11,7 @@ describe('Wrapping tests', () => {
   let balanceBefore: number
 
   before(() => {
-    cy.changeMetamaskNetwork('rinkeby')
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
 
   beforeEach(() => {
@@ -32,7 +33,7 @@ describe('Wrapping tests', () => {
 
   it('Should wrap ETH to WETH [TC-03]', () => {
     SwapPage.openTokenToSwapMenu()
-      .chooseToken('weth')
+      .searchAndChooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .wrap()
     cy.confirmMetamaskTransaction({})
@@ -46,9 +47,9 @@ describe('Wrapping tests', () => {
 
   it('Should unwrap WETH to ETH [TC-06]', () => {
     SwapPage.openTokenToSwapMenu()
-      .chooseToken('eth')
+      .searchAndChooseToken('eth')
       .openTokenToSwapMenu()
-      .chooseToken('weth')
+      .searchAndChooseToken('weth')
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .unwrap()
     cy.confirmMetamaskTransaction({})

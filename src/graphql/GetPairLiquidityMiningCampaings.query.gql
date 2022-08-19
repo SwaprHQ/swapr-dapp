@@ -1,0 +1,18 @@
+query getPairLiquidityMiningCampaings($endsAtLowerLimit: BigInt!, $pairId: ID!) {
+  pair(id: $pairId) {
+    address: id
+    ...PairFragment
+    token0 {
+      ...TokenFragment
+    }
+    token1 {
+      ...TokenFragment
+    }
+    liquidityMiningCampaigns(where: { endsAt_gt: $endsAtLowerLimit }) {
+      ...LiquidityMiningCampaignFragment
+      rewards {
+        ...LiquidityMiningCampaignRewardFragment
+      }
+    }
+  }
+}

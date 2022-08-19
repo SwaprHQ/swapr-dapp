@@ -5,8 +5,8 @@
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn codegen:socket && react-app-rewired start",
-    "build": "yarn codegen:socket && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "start": "yarn codegen:socket && yarn codegen:graphql && react-app-rewired start",
+    "build": "yarn codegen:socket && yarn codegen:graphql && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint src --ext js,jsx,ts,tsx",
@@ -16,8 +16,8 @@
     "cypress:run": "cross-env cypress run -r mochawesome -s 'tests/cypress/integration/smoke/*'",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
     "synpress:ct": "cross-env start-server-and-test 'react-app-rewired start' http-get://localhost:3000 'yarn synpress:run $TEST_PARAMS'",
-    "synpress:open": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='true' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.json",
-    "synpress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='true' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.json --config supportFile='tests/support/index.js',pluginsFile='tests/plugins/index.js' -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'",
+    "synpress:open": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.json",
+    "synpress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.json --config supportFile='tests/support/index.js',pluginsFile='tests/plugins/index.js' -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'",
     "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
@@ -25,7 +25,8 @@
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "chromatic --exit-zero-on-changes"
+    "chromatic": "chromatic --exit-zero-on-changes",
+    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
   },
   "resolutions": {
     "@uniswap/smart-order-router": "2.5.26"
@@ -98,6 +99,11 @@
   },
   "devDependencies": {
     "@connext/nxtp-sdk": "^0.1.36",
+    "@graphql-codegen/cli": "2.11.3",
+    "@graphql-codegen/introspection": "2.2.0",
+    "@graphql-codegen/typescript": "2.7.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@react-theming/storybook-addon": "^1.1.6",
     "@simbathesailor/use-what-changed": "^2.0.0",
@@ -112,7 +118,7 @@
     "@storybook/preset-create-react-app": "^4.1.2",
     "@storybook/react": "^6.5.9",
     "@storybook/testing-library": "^0.0.13",
-    "@synthetixio/synpress": "^1.1.1",
+    "@synthetixio/synpress": "^1.2.0",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
     "@types/jest": "^28.1.6",
@@ -141,7 +147,7 @@
     "cypress": "^10.3.1",
     "cypress-localstorage-commands": "^2.1.0",
     "cypress-mochawesome-reporter": "^3.1.0",
-    "eslint": "^8.21.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.26.0",
