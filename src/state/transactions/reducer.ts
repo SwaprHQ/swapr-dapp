@@ -60,13 +60,13 @@ export interface TransactionDetails {
   network?: ChainId
 }
 
-export interface TransactionState {
-  [chainId: number]: {
+export type TransactionState = {
+  [chainId in ChainId]: {
     [txHash: string]: TransactionDetails
   }
 }
 
-export const initialState: TransactionState = {}
+export const initialState = {} as TransactionState
 
 export default createReducer(initialState, builder =>
   builder

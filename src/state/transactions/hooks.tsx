@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
+import { ChainId } from '@swapr/sdk'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useMemo } from 'react'
@@ -53,24 +54,33 @@ export function useTransactionAdder(): (
   )
 }
 
+type AllTransactions = { [hash: string]: TransactionDetails }
+
+const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainId) => {
+  const networkTransactions = cloneDeep(transaction ?? {})
+  for (const transaction in networkTransactions) {
+    networkTransactions[transaction]['network'] = networkId
+  }
+  return networkTransactions
+}
 // returns all the transactions for the current chain
-export function useAllTransactions(allNetwork = false): { [txHash: string]: TransactionDetails } {
+export function useAllTransactions(allNetwork = false): AllTransactions {
   const { chainId } = useActiveWeb3React()
 
   const allTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 
   const allNetworkTransactions = useMemo(() => {
-    return Object.keys(allTransactions).reduce((merged, networkId: any) => {
-      const networkTransactions = cloneDeep(allTransactions[networkId] ?? {})
-      for (const transaction in networkTransactions) {
-        networkTransactions[transaction]['network'] = networkId
-      }
-      return { ...merged, ...networkTransactions }
-    }, {})
+    return (Object.keys(allTransactions) as Array<unknown> as Array<ChainId>).reduce<AllTransactions>(
+      (merged, networkId) => ({
+        ...merged,
+        ...addNetworkToTransaction(allTransactions[networkId], networkId),
+      }),
+      {}
+    )
   }, [allTransactions])
 
   const networkTransaction = useMemo(() => {
-    return chainId ? allTransactions[chainId] ?? {} : {}
+    return chainId ? addNetworkToTransaction(allTransactions[chainId], chainId) ?? {} : {}
   }, [allTransactions, chainId])
   // if allNetwork is true, return all transactions for all chains
   // otherwise, return only the transactions for the current chain

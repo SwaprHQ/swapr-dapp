@@ -1,5 +1,4 @@
 import { CheckCircle, Copy } from 'react-feather'
-import { Box } from 'rebass'
 import styled from 'styled-components'
 
 import useCopyClipboard from '../../hooks/useCopyClipboard'
@@ -14,21 +13,20 @@ const Button = styled(LinkStyledButton)`
   font-size: inherit;
   min-width: 100px;
   padding: 0;
-  :hover,
-  :active,
-  :focus {
+  :focus,
+  :hover {
     text-decoration: none;
     color: ${({ theme }) => theme.text2};
   }
 `
 
-const TransactionStatus = styled.span`
-  ${({ theme }) => theme.flexRowNoWrap};
+const Status = styled.span`
+  display: flex;
   align-items: center;
 `
 
-const TransactionStatusText = styled.span`
-  color: ${({ theme }) => theme.text4};
+const StatusText = styled.span`
+  text-decoration: none;
   margin-left: 0.25rem;
   font-size: inherit;
 `
@@ -47,16 +45,16 @@ export default function CopyWrapper({ value, label }: { value?: string | null; l
   return (
     <Button onClick={() => setCopied(value ?? '')}>
       {isCopied ? (
-        <TransactionStatus>
+        <Status>
           <CustomCheckCircle size={'12'} />
-          <TransactionStatusText>COPIED</TransactionStatusText>
-        </TransactionStatus>
+          <StatusText>COPIED</StatusText>
+        </Status>
       ) : (
-        <TransactionStatus>
+        <Status>
           <CustomCopy size={'12'} />
-        </TransactionStatus>
+          <StatusText>{label}</StatusText>
+        </Status>
       )}
-      {isCopied ? '' : <Box sx={{ ml: 1 }}>{label}</Box>}
     </Button>
   )
 }
