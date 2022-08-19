@@ -10,6 +10,7 @@ import { getUnixTime } from 'date-fns'
 import { LiquidityPage } from '../../../../pages/LiquidityPage'
 import { CampaignPage } from '../../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../../utils/TestTypes'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
@@ -19,6 +20,9 @@ describe('Campaign creation tests', () => {
   const expectedEndsAt = DateUtils.getDateTimeAndAppendMinutes(4)
   let isCampaignCreated = false
 
+  before(() => {
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+  })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
     MenuBar.connectWallet()
@@ -44,7 +48,7 @@ describe('Campaign creation tests', () => {
     CreatePoolPage.setEndTime(DateUtils.getFormattedDateTimeForInput(expectedEndsAt))
 
     CreatePoolPage.getRewardTokenMenuButton().first().click({ scrollBehavior: 'top' })
-    TokenMenu.chooseToken(REWARD_TOKEN)
+    TokenMenu.searchAndChooseToken(REWARD_TOKEN)
     CreatePoolPage.getTotalRewardInput().type(String(REWARDS_INPUT))
 
     CreatePoolPage.confirmPoolCreation()
@@ -81,7 +85,7 @@ describe('Campaign creation tests', () => {
     TokenMenu.getOpenTokenManagerButton().click({})
     TokenMenu.switchTokenList('compound')
     TokenMenu.goBack()
-    TokenMenu.chooseToken('dai')
+    TokenMenu.searchAndChooseToken('dai')
     LiquidityPage.getPairCards().contains('USDT').click({})
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(

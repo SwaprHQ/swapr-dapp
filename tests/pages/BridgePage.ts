@@ -15,7 +15,7 @@ export class BridgePage {
     return cy.get('[data-testid=transaction-value-input]')
   }
   static getSelectTokenButton() {
-    return cy.get('[data-testid=select-token-button]')
+    return cy.get('[data-testid=select-token-button]', { timeout: 420000 })
   }
   static getBridgeSelector(bridgeName: string) {
     return cy.get('[data-testid=' + bridgeName + '-bridge]')
@@ -51,9 +51,6 @@ export class BridgePage {
     return cy.get('[data-testid=transaction-error-modal]')
   }
   static closeTransactionErrorModal() {
-    return cy
-      .get('[data-testid=close-icon]')
-      .filter(':visible')
-      .click()
+    return cy.get('[data-testid=close-icon]').filter(':visible').click()
   }
 }
