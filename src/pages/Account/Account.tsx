@@ -5,7 +5,6 @@ import { Navigate } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
-import EnsFallbackAvatar from '../../assets/images/Test_Ellipss.png'
 import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
 import { useActiveWeb3React } from '../../hooks'
@@ -64,14 +63,14 @@ export function Account() {
   }
 
   const externalLink = chainId && account ? getExplorerLink(chainId, account, 'address') : undefined
-
+  console.log({ image: ensAvatar?.image, ensAvatar })
   return (
     <PageWrapper>
       <Flex sx={{ mb: 4 }}>
         <Flex>
-          {ENSName && ensAvatar ? (
+          {ENSName && ensAvatar?.image !== undefined ? (
             <AvatarWrapper>
-              <ENSAvatar url={ensAvatar.image ?? EnsFallbackAvatar} />
+              <ENSAvatar url={ensAvatar.image} />
             </AvatarWrapper>
           ) : (
             <Avatar
