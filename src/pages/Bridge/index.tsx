@@ -142,6 +142,12 @@ export default function Bridge() {
   const isUnsupportedBridgeNetwork =
     networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
 
+  useEffect(() => {
+    if (activeTab === BridgeTab.BRIDGE) {
+      setTxsFilter(BridgeTxsFilter.RECENT)
+    }
+  })
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)

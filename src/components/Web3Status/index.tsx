@@ -19,7 +19,7 @@ import {
   useOpenModal,
   useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
-import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
+import { isTransactionRecent, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
@@ -84,7 +84,7 @@ export default function Web3Status() {
 
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)

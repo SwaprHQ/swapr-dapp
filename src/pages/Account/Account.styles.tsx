@@ -17,9 +17,12 @@ export const Status = styled(Flex)<{ status: string }>`
   ${({ status }) => {
     switch (status) {
       case 'COMPLETED':
+      case 'CONFIRMED':
+      case 'CLAIMED':
         return `
         border-color: #0e9f6e;
         color: #0e9f6e;`
+      case 'REDEEM':
       case 'PENDING':
         return `
         border-color: #F2994A;
@@ -77,8 +80,11 @@ export const GridCard = styled(Flex)<{ status?: string }>`
   background: ${({ status }) => {
     switch (status) {
       case 'COMPLETED':
+      case 'CONFIRMED':
+      case 'CLAIMED':
         return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 6.32%, rgba(15, 152, 106, 0) 65.79%)'
       case 'PENDING':
+      case 'REDEEM':
         return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 8.84%, rgba(242, 153, 74, 0) 55.62%)'
       case 'CANCELLED':
         return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2.18%, rgba(240, 46, 81, 0) 62.13%)'

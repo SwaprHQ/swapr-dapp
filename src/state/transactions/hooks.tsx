@@ -6,6 +6,9 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
+import { type BridgeTransaction, TransactionBridgeTypes } from '../../pages/Account/Account.types'
+import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
+import { BridgeTransactionSummary } from '../bridgeTransactions/types'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
@@ -64,7 +67,7 @@ const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainI
   return networkTransactions
 }
 // returns all the transactions for the current chain
-export function useAllTransactions(allNetwork = false): AllTransactions {
+export function useAllSwapTransactions(allNetwork = false): AllTransactions {
   const { chainId } = useActiveWeb3React()
 
   const allSwapTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
@@ -87,8 +90,53 @@ export function useAllTransactions(allNetwork = false): AllTransactions {
   return allNetwork ? allNetworkSwapTransactions : networkSwapTransaction
 }
 
+export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[] {
+  const { chainId, account } = useActiveWeb3React()
+
+  const allBridgeTransactions = useSelector<AppState, BridgeTransactionSummary[]>(state =>
+    selectBridgeTransactions(state, account ?? undefined)
+  )
+  const allBridgeTransactionsFormatted = useMemo<BridgeTransaction[]>(
+    () =>
+      allBridgeTransactions?.map(transaction => {
+        const {
+          assetName,
+          fromChainId,
+          status,
+          toChainId,
+          value,
+          pendingReason,
+          log,
+          timestampResolved,
+          txHash,
+          bridgeId,
+        } = transaction
+
+        return {
+          type: TransactionBridgeTypes.Bridge,
+          from: { value, token: assetName, chainId: fromChainId },
+          to: { value, token: assetName, chainId: toChainId },
+          confirmedTime: timestampResolved,
+          hash: txHash,
+          status,
+          network: fromChainId,
+          logs: log,
+          pendingReason,
+          bridgeId,
+        }
+      }),
+    [allBridgeTransactions]
+  )
+
+  return useMemo(() => {
+    return allNetwork
+      ? allBridgeTransactionsFormatted
+      : allBridgeTransactionsFormatted?.filter(txn => txn.network === chainId)
+  }, [allBridgeTransactionsFormatted, allNetwork, chainId])
+}
+
 export function useIsTransactionPending(transactionHash?: string): boolean {
-  const transactions = useAllTransactions()
+  const transactions = useAllSwapTransactions()
 
   if (!transactionHash || !transactions[transactionHash]) return false
 
@@ -105,7 +153,7 @@ export function isTransactionRecent(tx: TransactionDetails): boolean {
 
 // returns whether a token has a pending approval transaction
 export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
   return useMemo(
     () =>
       typeof tokenAddress === 'string' &&
@@ -131,7 +179,7 @@ export function useUserHasSubmittedClaim(account?: string): {
   claimSubmitted: boolean
   claimTxn: TransactionDetails | undefined
 } {
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
 
   // get the txn if it has been submitted
   const claimTxn = useMemo(() => {

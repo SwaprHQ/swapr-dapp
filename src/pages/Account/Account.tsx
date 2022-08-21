@@ -1,6 +1,7 @@
 import Avatar from 'boring-avatars'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
@@ -13,8 +14,10 @@ import useENSName from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
+import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
-import { useAllTransactions } from '../../state/transactions/hooks'
+import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { DimBlurBgBox } from '../../ui/DimBlurBgBox'
 import { Header } from '../../ui/Header'
 import { HeaderText } from '../../ui/HeaderText'
@@ -33,30 +36,38 @@ import {
   StyledLink,
   TranasctionDetails,
 } from './Account.styles'
-import { formattedTransactions, type Transaction } from './accountUtils'
+import { BridgeTransaction, type Transaction } from './Account.types'
+import { formattedTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
 
 export function Account() {
   const { t } = useTranslation('common')
+  const dispatch = useDispatch()
   const { account, chainId, active, deactivate } = useActiveWeb3React()
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-
+  const [transactions, setTransactions] = useState<Transaction[] | BridgeTransaction[]>([])
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
-  const allTransactions = useAllTransactions(showAllNetworkTransactions)
-  const transacationsByPage = usePage(transactions, responsiveItemsPerPage, page, 0)
+
+  const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
+  const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
+
+  const transacationsByPage = usePage<Transaction | BridgeTransaction>(transactions, responsiveItemsPerPage, page, 0)
 
   const isMobile = useIsMobileByMedia()
   const avatharSize = isMobile ? 90 : 120
 
+  useLayoutEffect(() => {
+    dispatch(ecoBridgeUIActions.setBridgeTxsFilter(BridgeTxsFilter.NONE))
+  })
+
   useEffect(() => {
-    setTransactions(formattedTransactions(allTransactions))
-  }, [allTransactions])
+    setTransactions(formattedTransactions(allTransactions, allBridgeTransactions))
+  }, [allTransactions, allBridgeTransactions])
 
   if (!account) {
     return <Navigate to="swap" replace />
@@ -110,7 +121,7 @@ export function Account() {
         <HeaderRow>
           <HeaderText>
             <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-              <TranasctionDetails flex="6%">Network</TranasctionDetails>
+              {/* <TranasctionDetails flex="6%">Network</TranasctionDetails> */}
               <TranasctionDetails flex="15%" justifyContent="start">
                 From
               </TranasctionDetails>
@@ -118,7 +129,7 @@ export function Account() {
                 To
               </TranasctionDetails>
               <TranasctionDetails>Type</TranasctionDetails>
-              <TranasctionDetails justifyContent="start">Price</TranasctionDetails>
+              <TranasctionDetails justifyContent="start">Price / Bridge</TranasctionDetails>
               <TranasctionDetails>Status</TranasctionDetails>
               <TranasctionDetails>Time</TranasctionDetails>
             </Header>

@@ -1,43 +1,57 @@
 import { DateTime } from 'luxon'
-import { Box, Flex, Image, Text } from 'rebass'
+import { Box, Flex, Text } from 'rebass'
 
-import { networkOptionsPreset } from '../../components/NetworkSwitcher'
 import { formatNumber } from '../../utils/formatNumber'
+import { getNetworkInfo } from '../../utils/networksList'
 import { GridCard, Status, TokenRow, TranasctionDetails } from './Account.styles'
-import { Transaction } from './accountUtils'
+import { type BridgeTransaction, type Transaction, TransactionBridgeTypes, TransactionSwapTypes } from './Account.types'
 import { TokenIcon } from './TokenIcon'
 
 interface TransactionRowProps {
-  transaction: Transaction
+  transaction: Transaction | BridgeTransaction
 }
 
 export function TransactionRow({ transaction }: TransactionRowProps) {
-  const { type, status, from, to, addedTime, confirmedTime = addedTime, network } = transaction
+  const { type, status, from, to, confirmedTime, network } = transaction
   let price = typeof to.value === 'number' && typeof from.value === 'number' ? from.value / to.value : 0
   price = price === Infinity ? 0 : price
+  const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
 
-  const networkDetails = networkOptionsPreset.find(n => n.chainId.toString() === network?.toString())
   switch (type) {
-    case 'Swap':
+    case TransactionSwapTypes.Swap:
       return (
         <GridCard status={status}>
-          <TranasctionDetails flex="6%">
+          {/* <TranasctionDetails flex="6%">
             <Image sx={{ width: '32px' }} src={networkDetails?.logoSrc} alt={networkDetails?.name} />
-          </TranasctionDetails>
-
+          </TranasctionDetails> */}
           <TranasctionDetails flex="15%" justifyContent="start">
-            <TokenIcon symbol={from.token} />
             <Flex flexDirection="column">
-              <Box>{`${formatNumber(from.value, false, true)}`}</Box>
-              <Box>{from.token}</Box>
+              <Flex alignItems="center">
+                <TokenIcon symbol={from.token} />
+                <Flex flexDirection="column">
+                  <Box>{`${formatNumber(from.value, false, true)}`}</Box>
+                  <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
+                </Flex>
+              </Flex>
+              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
             </Flex>
           </TranasctionDetails>
 
           <TranasctionDetails flex="15%" justifyContent="start">
-            <TokenIcon symbol={to.token} />
+            {/* <TokenIcon symbol={to.token} />
             <Flex flexDirection="column">
               <Box>{`${formatNumber(to.value, false, true)}`}</Box>
               <Box>{to.token}</Box>
+            </Flex> */}
+            <Flex flexDirection="column">
+              <Flex alignItems="center">
+                <TokenIcon symbol={to.token} />
+                <Flex flexDirection="column">
+                  <Box>{`${formatNumber(to.value, false, true)}`}</Box>
+                  <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
+                </Flex>
+              </Flex>
+              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
             </Flex>
           </TranasctionDetails>
           <TranasctionDetails>{type}</TranasctionDetails>
@@ -65,17 +79,70 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
           </TranasctionDetails>
         </GridCard>
       )
+    case TransactionBridgeTypes.Bridge:
+      const fromNetwork = from?.chainId ? getNetworkInfo(Number(from?.chainId)) : undefined
+      const toNetwork = to?.chainId ? getNetworkInfo(Number(to?.chainId)) : undefined
+      const { bridgeId } = transaction
+      return (
+        <GridCard status={status.toUpperCase()}>
+          {/* <TranasctionDetails flex="6%">
+            <Image sx={{ width: '32px' }} src={networkDetails?.logoSrc} alt={networkDetails?.name} />
+          </TranasctionDetails> */}
+
+          <TranasctionDetails flex="15%" justifyContent="start">
+            <Flex flexDirection="column">
+              <Flex alignItems="center">
+                <TokenIcon symbol={from.token} />
+                <Flex flexDirection="column">
+                  <Box>{`${formatNumber(from.value, false, true)}`}</Box>
+                  <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
+                </Flex>
+              </Flex>
+              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{fromNetwork?.name}</Box>
+            </Flex>
+          </TranasctionDetails>
+
+          <TranasctionDetails flex="15%" justifyContent="start">
+            <Flex flexDirection="column">
+              <Flex alignItems="center">
+                <TokenIcon symbol={to.token} />
+                <Flex flexDirection="column">
+                  <Box>{`${formatNumber(to.value, false, true)}`}</Box>
+                  <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
+                </Flex>
+              </Flex>
+              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{toNetwork?.name}</Box>
+            </Flex>
+          </TranasctionDetails>
+          <TranasctionDetails>{type}</TranasctionDetails>
+
+          <TranasctionDetails justifyContent="start">
+            <Flex flexDirection="column" alignContent={'center'}>
+              <Box> {bridgeId.toUpperCase()}</Box>
+              {/* <Box sx={{ fontSize: '10px' }}>{`${from.token} / ${to.token}`}</Box> */}
+            </Flex>
+          </TranasctionDetails>
+
+          <TranasctionDetails>
+            <Status status={status.toUpperCase()}>{status}</Status>
+          </TranasctionDetails>
+
+          <TranasctionDetails>
+            {confirmedTime ? (
+              <Flex flexDirection="column" fontSize="12px">
+                <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
+                <Box>{DateTime.fromMillis(confirmedTime).toFormat('dd/MM/yyyy')}</Box>
+              </Flex>
+            ) : (
+              '- -'
+            )}
+          </TranasctionDetails>
+        </GridCard>
+      )
+
     default:
       return (
         <GridCard status={status}>
-          <TranasctionDetails>
-            <Image
-              sx={{ width: '32px' }}
-              src={networkOptionsPreset.find(n => n.chainId.toString() === network?.toString())?.logoSrc}
-              alt={network?.toString()}
-            />
-          </TranasctionDetails>
-
           <TokenRow>
             <TokenIcon symbol={from.token} />
             <Flex flexDirection="column" alignItems="end">
