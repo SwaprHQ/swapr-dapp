@@ -154,21 +154,22 @@ export const Button = styled(ButtonPurpleDim)`
 export const ENSAvatar = styled.div<{ url: string }>`
   height: calc(100% - 4px);
   width: calc(100% - 4px);
+  border-radius: calc(100% - 4px);
   background-color: ${({ theme }) => theme.bg1};
   background-size: cover;
   background-image: ${({ url }) => `url(${url})`};
-  clip-path: url(#bruh);
 `
 
 export const AvatarWrapper = styled.div`
-  clip-path: url(#bruh);
   background-color: #48436d;
   height: 120px;
   width: 120px;
+  border-radius: 120px;
   aspect-ratio: 1;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       height: 90px;
       width: 90px;
+      border-radius: 90px;
   `};
   display: flex;
   justify-content: center;

@@ -67,24 +67,24 @@ const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainI
 export function useAllTransactions(allNetwork = false): AllTransactions {
   const { chainId } = useActiveWeb3React()
 
-  const allTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
+  const allSwapTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
 
-  const allNetworkTransactions = useMemo(() => {
-    return (Object.keys(allTransactions) as Array<unknown> as Array<ChainId>).reduce<AllTransactions>(
+  const allNetworkSwapTransactions = useMemo(() => {
+    return (Object.keys(allSwapTransactions) as Array<unknown> as Array<ChainId>).reduce<AllTransactions>(
       (merged, networkId) => ({
         ...merged,
-        ...addNetworkToTransaction(allTransactions[networkId], networkId),
+        ...addNetworkToTransaction(allSwapTransactions[networkId], networkId),
       }),
       {}
     )
-  }, [allTransactions])
+  }, [allSwapTransactions])
 
-  const networkTransaction = useMemo(() => {
-    return chainId ? addNetworkToTransaction(allTransactions[chainId], chainId) ?? {} : {}
-  }, [allTransactions, chainId])
+  const networkSwapTransaction = useMemo(() => {
+    return chainId ? addNetworkToTransaction(allSwapTransactions[chainId], chainId) ?? {} : {}
+  }, [allSwapTransactions, chainId])
   // if allNetwork is true, return all transactions for all chains
   // otherwise, return only the transactions for the current chain
-  return allNetwork ? allNetworkTransactions : networkTransaction
+  return allNetwork ? allNetworkSwapTransactions : networkSwapTransaction
 }
 
 export function useIsTransactionPending(transactionHash?: string): boolean {
