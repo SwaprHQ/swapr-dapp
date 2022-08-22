@@ -1,11 +1,13 @@
+import { Token } from '@swapr/sdk'
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { InitialState, SwaprTradesHistory } from './trades.types'
 
 const initialState: InitialState = {
   pair: {
-    fromTokenAddress: undefined,
-    toTokenAddress: undefined,
+    inputToken: undefined,
+    outputToken: undefined,
   },
   sources: {
     swapr: {
@@ -24,12 +26,10 @@ const tradesSlice = createSlice({
   reducers: {
     setPairTokensAddresses: (
       state,
-      {
-        payload: { fromTokenAddress, toTokenAddress },
-      }: PayloadAction<{ fromTokenAddress: string; toTokenAddress: string }>
+      { payload: { inputToken, outputToken } }: PayloadAction<{ inputToken: Token; outputToken: Token }>
     ) => {
-      state.pair.fromTokenAddress = fromTokenAddress
-      state.pair.toTokenAddress = toTokenAddress
+      state.pair.inputToken = inputToken
+      state.pair.outputToken = outputToken
     },
     // adapters setters
     setSwaprTradesHistory: (

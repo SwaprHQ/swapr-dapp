@@ -37,7 +37,7 @@ const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoadin
 }
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { tradeHistory, liquidityHistory, hasMore } = useAllTrades()
+  const { tradeHistory, hasMore } = useAllTrades()
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } = useTradesAdapter()
 
   const navigate = useNavigate()
@@ -66,7 +66,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
         <AdvancedModeHeader>
           <Flex justifyContent="space-between" alignItems="center">
             <AdvancedModeTitle>Trades</AdvancedModeTitle>
-            {showTrades && inputToken && outputToken && (
+            {inputToken && outputToken && (
               <SwitcherWrapper>
                 <SwitchButton
                   onClick={() => handleSwitch(inputToken.address)}
@@ -109,21 +109,41 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
-                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
-                  return (
-                    <Trade
-                      key={transactionId}
-                      isSell={isSell}
-                      transactionId={transactionId}
-                      logoKey={logoKey}
-                      chainId={chainId}
-                      amountIn={amountIn}
-                      amountOut={amountOut}
-                      timestamp={timestamp}
-                      amountUSD={amountUSD}
-                    />
-                  )
-                })}
+                .map(
+                  ({
+                    transactionId,
+                    timestamp,
+                    amountToken0,
+                    addressToken0,
+                    amountToken1,
+                    addressToken1,
+                    isSell,
+                    amountUSD,
+                    logoKey,
+                  }) => {
+                    return (
+                      <Trade
+                        key={transactionId}
+                        isSell={isSell}
+                        transactionId={transactionId}
+                        logoKey={logoKey}
+                        chainId={chainId}
+                        amountIn={
+                          inputToken?.address.toLowerCase() === addressToken0?.toLowerCase()
+                            ? String(amountToken0)
+                            : String(amountToken1)
+                        }
+                        amountOut={
+                          outputToken?.address.toLowerCase() === addressToken1?.toLowerCase()
+                            ? String(amountToken1)
+                            : String(amountToken0)
+                        }
+                        timestamp={timestamp}
+                        amountUSD={amountUSD}
+                      />
+                    )
+                  }
+                )}
           </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>

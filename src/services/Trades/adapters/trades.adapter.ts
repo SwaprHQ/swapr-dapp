@@ -60,7 +60,7 @@ export class TradesAdapter {
       adapter.updateActiveChainId(chainId)
     }
   }
-  public setPairTokensAddresses = (addresses: { fromTokenAddress: string; toTokenAddress: string }) => {
-    this.store.dispatch(this.actions.setPairTokensAddresses(addresses))
+  public setPairTokensAddresses = (inputToken: Token, outputToken: Token) => {
+    this.store.dispatch(this.actions.setPairTokensAddresses({ inputToken, outputToken }))
   }
 }

@@ -83,6 +83,7 @@ export const useTradesAdapter = () => {
   useEffect(() => {
     const fetchTrades = async () => {
       if (!tradesAdapter || !inputToken || !outputToken) return
+      tradesAdapter.setPairTokensAddresses(inputToken, outputToken)
       if (
         // do not fetch data if user reversed pair
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
@@ -103,7 +104,6 @@ export const useTradesAdapter = () => {
         inputTokenAddress: fromTokenAddress,
         outputTokenAddress: toTokenAddress,
       }
-      tradesAdapter.setPairTokensAddresses({ fromTokenAddress, toTokenAddress })
     }
 
     fetchTrades()
@@ -111,7 +111,7 @@ export const useTradesAdapter = () => {
 
   return {
     symbol,
-    showTrades: inputToken && outputToken ? true : false,
+    showTrades: inputToken && outputToken ? true : false, // Boolean(inputToken && outputToken) ?
     chainId,
     inputToken: inputToken ?? undefined,
     outputToken: outputToken ?? undefined,

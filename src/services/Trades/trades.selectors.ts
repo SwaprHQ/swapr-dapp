@@ -14,9 +14,18 @@ export const selectHasMoreData = createSelector([(state: AppState) => state.trad
 
 export const selectAllSwaprTrades = createSelector(
   [(state: AppState) => state.trades.sources.swapr, (state: AppState) => state.trades.pair],
-  (swaprTrades, { fromTokenAddress }) => {
+  (swaprTrades, { inputToken, outputToken }) => {
+    if (!inputToken || !outputToken)
+      return {
+        swaprTradeHistory: [],
+        swaprLiquidityHistory: [],
+      }
+
+    const sortedTokens = inputToken?.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+    const [token0, token1] = sortedTokens
+
     if (swaprTrades && swaprTrades.transactions?.pair) {
-      const { burns, mints, swaps, token0, token1 } = swaprTrades.transactions.pair
+      const { burns, mints, swaps } = swaprTrades.transactions.pair
 
       const logoKey = UniswapV2RoutablePlatform.SWAPR.name
 
@@ -51,11 +60,17 @@ export const selectAllSwaprTrades = createSelector(
           transactionId: id,
           amountIn: Number(amount0In) > Number(amount1In) ? amount0In : amount1In,
           amountOut: Number(amount0Out) > Number(amount1Out) ? amount0Out : amount1Out,
+          amountToken0: Number(amount0In) > Number(amount0Out) ? amount0In : amount0Out,
+          amountToken1: Number(amount1In) > Number(amount1Out) ? amount1In : amount1Out,
+          addressToken0: token0.address,
+          addressToken1: token1.address,
           timestamp,
           amountUSD,
           isSell:
-            (token0.id.toLowerCase() === fromTokenAddress?.toLowerCase() && Number(amount0In) > Number(amount1In)) ||
-            (token1.id.toLowerCase() === fromTokenAddress?.toLowerCase() && Number(amount1In) > Number(amount0In)),
+            (token0.address.toLowerCase() === inputToken.address?.toLowerCase() &&
+              Number(amount0In) > Number(amount1In)) ||
+            (token1.address.toLowerCase() === inputToken.address?.toLowerCase() &&
+              Number(amount1In) > Number(amount0In)),
           logoKey,
         }
       })

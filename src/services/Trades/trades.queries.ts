@@ -4,14 +4,6 @@ export const SWAPR_PAIR_TRANSACTIONS = gql`
   query getPairTransactions($pairId: Bytes!, $first: Int!, $skip: Int!) {
     pair(id: $pairId) {
       id
-      token0 {
-        id
-        symbol
-      }
-      token1 {
-        id
-        symbol
-      }
       mints(first: $first, skip: $skip) {
         id
         transaction {
