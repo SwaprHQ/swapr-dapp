@@ -109,41 +109,21 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
-                .map(
-                  ({
-                    transactionId,
-                    timestamp,
-                    amountToken0,
-                    addressToken0,
-                    amountToken1,
-                    addressToken1,
-                    isSell,
-                    amountUSD,
-                    logoKey,
-                  }) => {
-                    return (
-                      <Trade
-                        key={transactionId}
-                        isSell={isSell}
-                        transactionId={transactionId}
-                        logoKey={logoKey}
-                        chainId={chainId}
-                        amountIn={
-                          inputToken?.address.toLowerCase() === addressToken0?.toLowerCase()
-                            ? String(amountToken0)
-                            : String(amountToken1)
-                        }
-                        amountOut={
-                          outputToken?.address.toLowerCase() === addressToken1?.toLowerCase()
-                            ? String(amountToken1)
-                            : String(amountToken0)
-                        }
-                        timestamp={timestamp}
-                        amountUSD={amountUSD}
-                      />
-                    )
-                  }
-                )}
+                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
+                  return (
+                    <Trade
+                      key={transactionId}
+                      isSell={isSell}
+                      transactionId={transactionId}
+                      logoKey={logoKey}
+                      chainId={chainId}
+                      amountIn={amountIn}
+                      amountOut={amountOut}
+                      timestamp={timestamp}
+                      amountUSD={amountUSD}
+                    />
+                  )
+                })}
           </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>

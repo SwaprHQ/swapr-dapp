@@ -58,12 +58,14 @@ export const selectAllSwaprTrades = createSelector(
 
         return {
           transactionId: id,
-          amountIn: Number(amount0In) > Number(amount1In) ? amount0In : amount1In,
-          amountOut: Number(amount0Out) > Number(amount1Out) ? amount0Out : amount1Out,
-          amountToken0: Number(amount0In) > Number(amount0Out) ? amount0In : amount0Out,
-          amountToken1: Number(amount1In) > Number(amount1Out) ? amount1In : amount1Out,
-          addressToken0: token0.address,
-          addressToken1: token1.address,
+          amountIn:
+            inputToken?.address.toLowerCase() === token0.address.toLowerCase()
+              ? String(Number(amount0In) > Number(amount0Out) ? amount0In : amount0Out)
+              : String(Number(amount1In) > Number(amount1Out) ? amount1In : amount1Out),
+          amountOut:
+            outputToken?.address.toLowerCase() === token0.address.toLowerCase()
+              ? String(Number(amount0In) > Number(amount0Out) ? amount0In : amount0Out)
+              : String(Number(amount1In) > Number(amount1Out) ? amount1In : amount1Out),
           timestamp,
           amountUSD,
           isSell:

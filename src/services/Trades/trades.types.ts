@@ -48,12 +48,6 @@ export type TradeHistory = {
   transactionId: string
   amountIn: string
   amountOut: string
-  amountToken0?: string
-  addressToken0?: string
-  amountToken1?: string
-  addressToken1?: string
-  token0Address?: string
-  token1Address?: string
   timestamp: string
   logoKey: string
   isSell?: boolean
