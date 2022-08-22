@@ -3,15 +3,16 @@ import { Box, Flex, Text } from 'rebass'
 
 import { formatNumber } from '../../utils/formatNumber'
 import { getNetworkInfo } from '../../utils/networksList'
-import { GridCard, Status, TokenRow, TranasctionDetails } from './Account.styles'
+import { GridCard, Status, TokenRow, TranasctionDetails, TypeDetails } from './Account.styles'
 import { type BridgeTransaction, type Transaction, TransactionBridgeTypes, TransactionSwapTypes } from './Account.types'
 import { TokenIcon } from './TokenIcon'
 
 interface TransactionRowProps {
   transaction: Transaction | BridgeTransaction
+  showAllNetworkTransactions: boolean
 }
 
-export function TransactionRow({ transaction }: TransactionRowProps) {
+export function TransactionRow({ transaction, showAllNetworkTransactions }: TransactionRowProps) {
   const { type, status, from, to, confirmedTime, network } = transaction
   let price = typeof to.value === 'number' && typeof from.value === 'number' ? from.value / to.value : 0
   price = price === Infinity ? 0 : price
@@ -21,9 +22,6 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
     case TransactionSwapTypes.Swap:
       return (
         <GridCard status={status}>
-          {/* <TranasctionDetails flex="6%">
-            <Image sx={{ width: '32px' }} src={networkDetails?.logoSrc} alt={networkDetails?.name} />
-          </TranasctionDetails> */}
           <TranasctionDetails flex="15%" justifyContent="start">
             <Flex flexDirection="column">
               <Flex alignItems="center">
@@ -33,16 +31,13 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
                   <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
                 </Flex>
               </Flex>
-              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+              {showAllNetworkTransactions && (
+                <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+              )}
             </Flex>
           </TranasctionDetails>
 
           <TranasctionDetails flex="15%" justifyContent="start">
-            {/* <TokenIcon symbol={to.token} />
-            <Flex flexDirection="column">
-              <Box>{`${formatNumber(to.value, false, true)}`}</Box>
-              <Box>{to.token}</Box>
-            </Flex> */}
             <Flex flexDirection="column">
               <Flex alignItems="center">
                 <TokenIcon symbol={to.token} />
@@ -51,10 +46,11 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
                   <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
                 </Flex>
               </Flex>
-              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+              {showAllNetworkTransactions && (
+                <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+              )}
             </Flex>
           </TranasctionDetails>
-          <TranasctionDetails>{type}</TranasctionDetails>
 
           <TranasctionDetails justifyContent="start">
             <Flex flexDirection="column" alignContent={'center'}>
@@ -62,6 +58,12 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
               <Box sx={{ fontSize: '10px' }}>{`${from.token} / ${to.token}`}</Box>
             </Flex>
           </TranasctionDetails>
+
+          <TypeDetails>
+            <Box color="#8780BF" fontWeight="600" fontSize="12px">
+              {type}
+            </Box>
+          </TypeDetails>
 
           <TranasctionDetails>
             <Status status={status}>{status}</Status>
@@ -85,10 +87,6 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
       const { bridgeId } = transaction
       return (
         <GridCard status={status.toUpperCase()}>
-          {/* <TranasctionDetails flex="6%">
-            <Image sx={{ width: '32px' }} src={networkDetails?.logoSrc} alt={networkDetails?.name} />
-          </TranasctionDetails> */}
-
           <TranasctionDetails flex="15%" justifyContent="start">
             <Flex flexDirection="column">
               <Flex alignItems="center">
@@ -111,17 +109,20 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
                   <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
                 </Flex>
               </Flex>
-              <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{toNetwork?.name}</Box>
+              <Box sx={{ fontSize: '10px', mt: 1, fontWeight: 600 }}>{toNetwork?.name}</Box>
             </Flex>
           </TranasctionDetails>
-          <TranasctionDetails>{type}</TranasctionDetails>
 
           <TranasctionDetails justifyContent="start">
             <Flex flexDirection="column" alignContent={'center'}>
-              <Box> {bridgeId.toUpperCase()}</Box>
-              {/* <Box sx={{ fontSize: '10px' }}>{`${from.token} / ${to.token}`}</Box> */}
+              <Box>- -</Box>
             </Flex>
           </TranasctionDetails>
+
+          <TypeDetails>
+            <Box color="#8780BF">{type}</Box>
+            <Box fontWeight="600">{bridgeId}</Box>
+          </TypeDetails>
 
           <TranasctionDetails>
             <Status status={status.toUpperCase()}>{status}</Status>
@@ -158,9 +159,10 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
               <Box>{to.token}</Box>
             </Flex>
           </TokenRow>
-          <Flex flex="8%">{type}</Flex>
-
           <Flex flex="15%" justifyContent="right" sx={{ pr: 2 }}>{`${formatNumber(price, true, true)}`}</Flex>
+          <Flex flex="8%" sx={{ textTransform: 'uppercase' }}>
+            {type}
+          </Flex>
 
           <TranasctionDetails>
             <Status status={status}>{status}</Status>

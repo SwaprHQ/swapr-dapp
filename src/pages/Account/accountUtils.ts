@@ -17,7 +17,8 @@ const expressions = {
 
 export const formattedTransactions = (
   transactions: { [txHash: string]: TransactionDetails },
-  bridgeTransactions: BridgeTransaction[]
+  bridgeTransactions: BridgeTransaction[],
+  showPendingTransactions: boolean
 ) => {
   const swapTransactions = Object.keys(transactions)
     ?.map(key => {
@@ -54,9 +55,17 @@ export const formattedTransactions = (
     })
     .filter(Boolean)
 
-  return [...swapTransactions, ...bridgeTransactions].sort(
+  const sortedTransactions = [...swapTransactions, ...bridgeTransactions].sort(
     (txn1, txn2) => (txn2?.confirmedTime ?? 0) - (txn1?.confirmedTime ?? 0)
-  ) as Transaction[] | BridgeTransaction[]
+  ) as (Transaction | BridgeTransaction)[]
+
+  if (showPendingTransactions) {
+    return sortedTransactions.filter(
+      txn => txn.status.toUpperCase() === 'PENDING' || txn.status.toUpperCase() === 'REDEEM'
+    )
+  }
+
+  return sortedTransactions
 }
 
 export function getTokenURLWithNetwork(symbol: string, url?: string) {

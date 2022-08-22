@@ -71,6 +71,7 @@ export const GridCard = styled(Flex)<{ status?: string }>`
   align-items: center;
   color: #c0baf6;
   border-bottom: 1px solid #3e4259;
+  height: 100px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px;
     &:last-of-type {
@@ -110,6 +111,12 @@ export const TranasctionDetails = styled(Flex)`
   justify-content: center;
   align-items: center;
   padding-right: 8px;
+  text-transform: uppercase;
+`
+
+export const TypeDetails = styled(TranasctionDetails)`
+  flex-direction: column;
+  font-size: 10px;
 `
 
 export const StyledLogo = styled(Logo)<{ size: string }>`

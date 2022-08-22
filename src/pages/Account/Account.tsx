@@ -43,22 +43,22 @@ import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
 
 export function Account() {
   const { t } = useTranslation('common')
-  const dispatch = useDispatch()
   const { account, chainId, active, deactivate } = useActiveWeb3React()
-  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const [transactions, setTransactions] = useState<Transaction[] | BridgeTransaction[]>([])
+  const [transactions, setTransactions] = useState<(Transaction | BridgeTransaction)[]>([])
   const [page, setPage] = useState(1)
-  const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
+  const [showPendingTransactions, togglePendingTransactions] = useToggle(false)
 
+  const dispatch = useDispatch()
+  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
+  const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
   const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
-
   const transacationsByPage = usePage<Transaction | BridgeTransaction>(transactions, responsiveItemsPerPage, page, 0)
-
   const isMobile = useIsMobileByMedia()
+
   const avatharSize = isMobile ? 90 : 120
 
   useLayoutEffect(() => {
@@ -66,8 +66,18 @@ export function Account() {
   })
 
   useEffect(() => {
-    setTransactions(formattedTransactions(allTransactions, allBridgeTransactions))
-  }, [allTransactions, allBridgeTransactions])
+    setTransactions(formattedTransactions(allTransactions, allBridgeTransactions, showPendingTransactions))
+  }, [allTransactions, allBridgeTransactions, showPendingTransactions])
+
+  const handlePendingToggle = () => {
+    setPage(1)
+    togglePendingTransactions()
+  }
+
+  const handleAllNetworkTransations = () => {
+    setPage(1)
+    toggleAllTransactions()
+  }
 
   if (!account) {
     return <Navigate to="swap" replace />
@@ -114,29 +124,33 @@ export function Account() {
       </Flex>
       <Flex sx={{ mb: 2 }} justifyContent="end">
         <Flex>
-          <Switch label={'ALL NETWORKS'} handleToggle={toggleAllTransactions} isOn={showAllNetworkTransactions} />
+          <Switch label={'PENDING TXNS'} handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
+          <Switch label={'ALL NETWORKS'} handleToggle={handleAllNetworkTransations} isOn={showAllNetworkTransactions} />
         </Flex>
       </Flex>
       <DimBlurBgBox>
         <HeaderRow>
           <HeaderText>
             <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-              {/* <TranasctionDetails flex="6%">Network</TranasctionDetails> */}
               <TranasctionDetails flex="15%" justifyContent="start">
                 From
               </TranasctionDetails>
               <TranasctionDetails flex="15%" justifyContent="start">
                 To
               </TranasctionDetails>
+              <TranasctionDetails justifyContent="start">Price</TranasctionDetails>
               <TranasctionDetails>Type</TranasctionDetails>
-              <TranasctionDetails justifyContent="start">Price / Bridge</TranasctionDetails>
               <TranasctionDetails>Status</TranasctionDetails>
               <TranasctionDetails>Time</TranasctionDetails>
             </Header>
           </HeaderText>
         </HeaderRow>
         {transacationsByPage?.map(transaction => (
-          <TransactionRow transaction={transaction} key={transaction.hash} />
+          <TransactionRow
+            transaction={transaction}
+            key={transaction.hash}
+            showAllNetworkTransactions={showAllNetworkTransactions}
+          />
         ))}
         {transactions?.length === 0 && <NoDataTransactionRow />}
       </DimBlurBgBox>
