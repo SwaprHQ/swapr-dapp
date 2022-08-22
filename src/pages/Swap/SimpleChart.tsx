@@ -1,32 +1,53 @@
-import { ColorType, createChart } from 'lightweight-charts'
+import { BusinessDay, createChart, UTCTimestamp } from 'lightweight-charts'
 import React, { useEffect, useRef } from 'react'
+// import { useTheme } from 'styled-components'
 
 const chartColors = {
   backgroundColor: 'white',
-  lineColor: '#2962FF',
+  lineColor: '#C8BDFF',
   textColor: 'black',
-  areaTopColor: '#2962FF',
-  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+  areaTopColor: 'rgba(255, 255, 255, 1)',
+  areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
 const initialChartData = [
-  { time: '2018-12-01', value: 32.51 },
-  { time: '2018-12-02', value: 31.11 },
-  { time: '2018-12-03', value: 27.02 },
-  { time: '2018-12-04', value: 27.32 },
-  { time: '2018-12-05', value: 25.17 },
-  { time: '2018-12-06', value: 28.89 },
-  { time: '2018-12-07', value: 25.46 },
-  { time: '2018-12-08', value: 23.92 },
-  { time: '2018-12-09', value: 22.68 },
-  { time: '2018-12-10', value: 22.67 },
-  { time: '2018-12-11', value: 27.57 },
-  { time: '2018-12-12', value: 24.11 },
-  { time: '2018-12-13', value: 30.74 },
+  { time: '2019-04-22', value: 77.4 },
+  { time: '2019-04-23', value: 78.2 },
+  { time: '2019-04-24', value: 78.68 },
+  { time: '2019-04-25', value: 78.66 },
+  { time: '2019-04-26', value: 77.88 },
+  { time: '2019-04-29', value: 78.02 },
+  { time: '2019-04-30', value: 78.68 },
+  { time: '2019-05-02', value: 78.14 },
+  { time: '2019-05-03', value: 78.3 },
+  { time: '2019-05-06', value: 80.06 },
+  { time: '2019-05-07', value: 80.5 },
+  { time: '2019-05-08', value: 80.76 },
+  { time: '2019-05-10', value: 82.1 },
+  { time: '2019-05-13', value: 83.72 },
+  { time: '2019-05-14', value: 83.55 },
+  { time: '2019-05-15', value: 84.92 },
+  { time: '2019-05-16', value: 83.32 },
+  { time: '2019-05-17', value: 83.04 },
+  { time: '2019-05-20', value: 83.92 },
+  { time: '2019-05-21', value: 84.24 },
+  { time: '2019-05-22', value: 84.0 },
+  { time: '2019-05-23', value: 84.26 },
+  { time: '2019-05-24', value: 84.0 },
+  { time: '2019-05-27', value: 83.8 },
+  { time: '2019-05-28', value: 84.32 },
+  { time: '2019-05-29', value: 83.88 },
+  { time: '2019-05-30', value: 84.58 },
+  { time: '2019-05-31', value: 81.2 },
+  { time: '2019-06-03', value: 84.35 },
+  { time: '2019-06-04', value: 85.66 },
+  { time: '2019-06-05', value: 86.51 },
 ]
+
 // { data }: { data: Array }
 const SimpleChart = () => {
   const chartRef = useRef<HTMLDivElement>(null)
+  // const theme = useTheme()
 
   useEffect(() => {
     if (
@@ -46,18 +67,21 @@ const SimpleChart = () => {
       layout: {
         backgroundColor: 'transparent',
         textColor: '#565A69',
-        fontFamily: 'Inter var',
+      },
+      leftPriceScale: {
+        visible: false,
       },
       rightPriceScale: {
-        scaleMargins: {
-          top: 0.1,
-          bottom: 0.1,
-        },
-        drawTicks: false,
-        borderVisible: false,
+        visible: false,
       },
       timeScale: {
+        fixLeftEdge: true,
+        fixRightEdge: true,
         borderVisible: false,
+        tickMarkFormatter: (time: BusinessDay) => {
+          const date = new Date(time.year, time.month, time.day)
+          return date.toLocaleString('default', { month: 'short' }) + '-' + date.getDate()
+        },
       },
       watermark: {
         color: 'rgba(0, 0, 0, 0)',
@@ -70,6 +94,16 @@ const SimpleChart = () => {
           visible: false,
         },
       },
+      // handleScroll: {
+      //   mouseWheel: false,
+      //   pressedMouseMove: false,
+      //   horzTouchDrag: false,
+      // },
+      handleScale: {
+        axisPressedMouseMove: false,
+        pinch: false,
+        mouseWheel: false,
+      },
       crosshair: {
         horzLine: {
           visible: false,
@@ -78,8 +112,8 @@ const SimpleChart = () => {
         vertLine: {
           visible: true,
           style: 0,
-          width: 2,
-          color: '#505050',
+          width: 1,
+          color: chartColors.lineColor,
           labelVisible: false,
         },
       },
@@ -90,6 +124,7 @@ const SimpleChart = () => {
       lineColor: chartColors.lineColor,
       topColor: chartColors.areaTopColor,
       bottomColor: chartColors.areaBottomColor,
+      lineWidth: 3,
     })
     newSeries.setData(initialChartData)
 
