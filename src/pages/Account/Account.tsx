@@ -10,7 +10,7 @@ import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
 import { useActiveWeb3React } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import useENSName from '../../hooks/useENSName'
+import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
@@ -59,8 +59,6 @@ export function Account() {
   const transacationsByPage = usePage<Transaction | BridgeTransaction>(transactions, responsiveItemsPerPage, page, 0)
   const isMobile = useIsMobileByMedia()
 
-  const avatharSize = isMobile ? 90 : 120
-
   useLayoutEffect(() => {
     dispatch(ecoBridgeUIActions.setBridgeTxsFilter(BridgeTxsFilter.NONE))
   })
@@ -95,7 +93,7 @@ export function Account() {
             </AvatarWrapper>
           ) : (
             <Avatar
-              size={avatharSize}
+              size={isMobile ? 90 : 120}
               name={account}
               variant="pixel"
               colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}

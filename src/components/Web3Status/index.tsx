@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { NetworkContextName } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import useENSName from '../../hooks/useENSName'
+import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { ApplicationModal } from '../../state/application/actions'
 import {
