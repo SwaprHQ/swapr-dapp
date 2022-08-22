@@ -111,7 +111,7 @@ export const useTradesAdapter = () => {
 
   return {
     symbol,
-    showTrades: inputToken && outputToken ? true : false, // Boolean(inputToken && outputToken) ?
+    showTrades: Boolean(inputToken && outputToken),
     chainId,
     inputToken: inputToken ?? undefined,
     outputToken: outputToken ?? undefined,
