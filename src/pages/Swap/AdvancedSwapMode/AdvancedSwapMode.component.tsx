@@ -37,7 +37,7 @@ const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoadin
 }
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { tradeHistory, liquidityHistory, hasMore } = useAllTrades()
+  const { tradeHistory, hasMore } = useAllTrades()
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } = useTradesAdapter()
 
   const navigate = useNavigate()
@@ -66,7 +66,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
         <AdvancedModeHeader>
           <Flex justifyContent="space-between" alignItems="center">
             <AdvancedModeTitle>Trades</AdvancedModeTitle>
-            {showTrades && inputToken && outputToken && (
+            {inputToken && outputToken && (
               <SwitcherWrapper>
                 <SwitchButton
                   onClick={() => handleSwitch(inputToken.address)}
