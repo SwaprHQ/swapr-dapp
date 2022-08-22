@@ -5,6 +5,13 @@ import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 import { useActiveWeb3React } from '.'
 
+export const DATE_INTERVALS_IN_TIMESTAMP = {
+  DAY: new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getTime(),
+  WEEK: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).getTime(),
+  MONTH: new Date().setMonth(new Date().getMonth() - 1),
+  YEAR: new Date().setFullYear(new Date().getFullYear() - 1),
+}
+
 type PairTokenPriceByTimestampProps = {
   token0?: Currency
   token1?: Currency
