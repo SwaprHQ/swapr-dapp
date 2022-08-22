@@ -5,6 +5,8 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { TokenMenu } from '../../../../pages/TokenMenu'
 import { TransactionSettings } from '../../../../pages/TransactionSettings'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
+import { ErrorModal } from '../../../../pages/ErrorModal'
 
 describe('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.00000001
@@ -13,7 +15,6 @@ describe('Swapping tests', () => {
   let ercBalanceBefore: number
 
   before(() => {
-    cy.changeMetamaskNetwork('rinkeby')
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
     cy.disconnectMetamaskWalletFromAllDapps()
@@ -21,6 +22,7 @@ describe('Swapping tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
@@ -30,7 +32,7 @@ describe('Swapping tests', () => {
     MenuBar.getConnectWalletButton().should('be.visible')
     cy.resetMetamaskAccount()
   })
-  it('Should reject transaction', () => {
+  it('Should reject transaction on rinkeby', () => {
     SwapPage.chooseTokes('xeenus', 'weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap().confirmSwap()
@@ -39,8 +41,8 @@ describe('Swapping tests', () => {
 
     cy.rejectMetamaskTransaction()
 
-    SwapPage.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
-    SwapPage.closeTransactionErrorModal()
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.closeTransactionErrorModal()
     cy.scrollTo('top')
     SwapPage.getSwapBox().should('be.visible')
     SwapPage.getSwapButton().should('be.visible')
@@ -54,7 +56,7 @@ describe('Swapping tests', () => {
         console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
       }
     )
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus').typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     TransactionSettings.setMultihopOff()
 
     SwapPage.getToInput()
@@ -145,9 +147,9 @@ describe('Swapping tests', () => {
       console.log('BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus').switchTokens()
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus').switchTokens()
     SwapPage.getCurrencySelectors().last().click()
-    TokenMenu.chooseToken('weth')
+    TokenMenu.searchAndChooseToken('weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
 
     SwapPage.getToInput()
@@ -182,7 +184,7 @@ describe('Swapping tests', () => {
       console.log('ETH BALANCE BEFORE TEST: ', ethBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('dxd')
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
     TransactionSettings.setMultihopOff()
     SwapPage.getAlternateReceiverButton().click()
@@ -213,7 +215,7 @@ describe('Swapping tests', () => {
       console.log('ERC BALANCE BEFORE TEST: ', ercBalanceBefore)
     })
 
-    SwapPage.openTokenToSwapMenu().chooseToken('xeenus')
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('xeenus')
     SwapPage.getToInput().type(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.getAlternateReceiverButton().click()
     SwapPage.getAlternateReceiverInput().type(AddressesEnum.SECOND_TEST_WALLET, { delay: 50 })
@@ -237,8 +239,7 @@ describe('Swapping tests', () => {
       )
     })
   })
-  // TODO unskip when #1068 is fixed
-  it.skip('Should send erc20 token to wallet address [TC-54]', () => {
+  it('Should reject transaction in expert mode [TC-54]', () => {
     MenuBar.getSettings().click()
     TransactionSettings.switchExpertModeOn()
     SwapPage.chooseTokes('xeenus', 'weth')

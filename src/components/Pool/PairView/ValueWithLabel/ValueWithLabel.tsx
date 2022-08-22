@@ -9,9 +9,11 @@ export const ValueWithLabel = ({
   big = false,
   center = false,
   labelDesktop = true,
+  children,
 }: {
   title: string
-  value: string
+  children?: React.ReactNode
+  value?: string
   big?: boolean
   center?: boolean
   labelDesktop?: boolean
@@ -25,9 +27,13 @@ export const ValueWithLabel = ({
           {title}
         </Title>
       )}
-      <Value big={big} textAlign={center ? 'center' : 'left'}>
-        {value}
-      </Value>
+      {children ? (
+        children
+      ) : (
+        <Value big={big} textAlign={center ? 'center' : 'left'}>
+          {value}
+        </Value>
+      )}
     </div>
   )
 }
