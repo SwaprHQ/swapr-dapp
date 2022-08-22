@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren, useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 
@@ -27,24 +28,17 @@ import {
 import { Chart } from './Chart'
 import { Trade } from './Trade'
 
-const Loading = () => (
-  <LoaderContainer>
-    <Loader size="40px" stroke="#8780BF" />
-  </LoaderContainer>
-)
 const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoading: boolean) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
-  if (isLoading) return <Loading />
-
-  if (!arr.length) {
+  if (!arr.length && !isLoading) {
     return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
   }
 }
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { tradeHistory, liquidityHistory, isLoading, isNewPair } = useAllTrades()
-  const { chainId, inputToken, outputToken, symbol, showTrades } = useTradesAdapter()
+  const { tradeHistory, liquidityHistory, hasMore } = useAllTrades()
+  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } = useTradesAdapter()
 
   const navigate = useNavigate()
   const [activeSwitchOption, setActiveSwitchOption] = useState('')
@@ -95,27 +89,42 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             <Text sx={{ textAlign: 'right' }}>Time</Text>
           </AdvancedModeDetails>
         </AdvancedModeHeader>
-        <TransactionsWrapper>
-          {!isNewPair &&
-            tradeHistory
-              .sort((firstTrade, secondTrade) =>
-                Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
+        <TransactionsWrapper id="transactions-wrapper-scrollable">
+          <InfiniteScroll
+            dataLength={tradeHistory.length}
+            next={fetchTrades}
+            hasMore={hasMore}
+            scrollableTarget="transactions-wrapper-scrollable"
+            loader={
+              showTrades && (
+                <LoaderContainer>
+                  <Loader size="40px" stroke="#8780BF" />
+                </LoaderContainer>
               )
-              .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
-                return (
-                  <Trade
-                    key={transactionId}
-                    isSell={isSell}
-                    transactionId={transactionId}
-                    logoKey={logoKey}
-                    chainId={chainId}
-                    amountIn={amountIn}
-                    amountOut={amountOut}
-                    timestamp={timestamp}
-                    amountUSD={amountUSD}
-                  />
+            }
+            scrollThreshold={1}
+          >
+            {!isLoading &&
+              tradeHistory
+                .sort((firstTrade, secondTrade) =>
+                  Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
-              })}
+                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
+                  return (
+                    <Trade
+                      key={transactionId}
+                      isSell={isSell}
+                      transactionId={transactionId}
+                      logoKey={logoKey}
+                      chainId={chainId}
+                      amountIn={amountIn}
+                      amountOut={amountOut}
+                      timestamp={timestamp}
+                      amountUSD={amountUSD}
+                    />
+                  )
+                })}
+          </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>
       </TradesWrapper>

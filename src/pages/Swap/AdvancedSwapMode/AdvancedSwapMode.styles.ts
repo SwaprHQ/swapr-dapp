@@ -127,6 +127,8 @@ export const EmptyCellBody = styled.div`
 
 export const LoaderContainer = styled.div`
   text-align: center;
+  width: 100%;
+  margin: 20px 0;
 `
 
 export const SwapBox = styled.div`

@@ -1,6 +1,7 @@
 import { ChainId, Currency, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
@@ -41,6 +42,11 @@ export const useTradesAdapter = () => {
     outputTokenAddress: undefined,
   })
 
+  const dispatch = useDispatch()
+
+  const [skip, setSkip] = useState(50)
+  const [isLoading, setIsLoading] = useState(false)
+
   const {
     INPUT: { currencyId: inputCurrencyId },
     OUTPUT: { currencyId: outputCurrencyId },
@@ -66,28 +72,42 @@ export const useTradesAdapter = () => {
     }
   }, [chainId, tradesAdapter])
 
-  useEffect(() => {
+  const fetchTrades = async () => {
     if (!tradesAdapter || !inputToken || !outputToken) return
 
-    if (
-      // do not fetch data if user reversed pair
-      previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
-      previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
-    ) {
-      setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
-      tradesAdapter.fetchTradesHistory(inputToken, outputToken)
+    await tradesAdapter.fetchTradesHistory(inputToken, outputToken, 50, skip)
+
+    setSkip(prev => prev + 50)
+  }
+
+  useEffect(() => {
+    const fetchTrades = async () => {
+      if (!tradesAdapter || !inputToken || !outputToken) return
+      if (
+        // do not fetch data if user reversed pair
+        previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
+        previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
+      ) {
+        setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
+
+        setIsLoading(true)
+
+        await tradesAdapter.fetchTradesHistory(inputToken, outputToken, 50, 0)
+
+        setIsLoading(false)
+      }
+      const fromTokenAddress = inputToken.address.toLowerCase()
+      const toTokenAddress = outputToken.address.toLowerCase()
+
+      previousTokens.current = {
+        inputTokenAddress: fromTokenAddress,
+        outputTokenAddress: toTokenAddress,
+      }
+      tradesAdapter.setPairTokensAddresses({ fromTokenAddress, toTokenAddress })
     }
 
-    const fromTokenAddress = inputToken.address.toLowerCase()
-    const toTokenAddress = outputToken.address.toLowerCase()
-
-    previousTokens.current = {
-      inputTokenAddress: fromTokenAddress,
-      outputTokenAddress: toTokenAddress,
-    }
-
-    tradesAdapter.setPairTokensAddresses({ fromTokenAddress, toTokenAddress })
-  }, [inputToken, outputToken, tradesAdapter])
+    fetchTrades()
+  }, [dispatch, inputToken, outputToken, tradesAdapter])
 
   return {
     symbol,
@@ -95,5 +115,7 @@ export const useTradesAdapter = () => {
     chainId,
     inputToken: inputToken ?? undefined,
     outputToken: outputToken ?? undefined,
+    fetchTrades,
+    isLoading,
   }
 }

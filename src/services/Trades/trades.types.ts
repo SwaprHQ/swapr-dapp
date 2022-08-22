@@ -36,7 +36,10 @@ export type InitialState = {
   sources: {
     swapr: {
       transactions: SwaprTradesHistory | undefined
-      loading: boolean
+      fetchDetails: {
+        pairId?: string
+        hasMore: boolean
+      }
     }
   }
 }
