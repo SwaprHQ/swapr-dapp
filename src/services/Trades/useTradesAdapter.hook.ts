@@ -10,7 +10,6 @@ import { useSwapState } from '../../state/swap/hooks'
 import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 import { SwaprAdapter } from './adapters/swapr.adapter'
 import { TradesAdapter } from './adapters/trades.adapter'
-import { actions } from './trades.reducer'
 import { Adapters } from './trades.types'
 
 const WrappedNativeCurrencyAddress = {
