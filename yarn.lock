@@ -5291,10 +5291,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.6.0-rc.3":
-  version "1.6.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0-rc.3.tgz#af840743e04abfc79533cafbfe91379f7b44a2af"
-  integrity sha512-Lq2lIoxOWoUoDffurAZZtVVvE2TFpctuAYMgMBVl5LPF+DN0ckrBga5BLa53en2HzsE1dON5ZHEu6SfbU6LqcA==
+"@swapr/sdk@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0.tgz#d85991276a8a68dd54151490b05785a2710cccae"
+  integrity sha512-KbXnRcnQmhBCx8HkAgrMyo4vI07OSRZ6GnroZp6GiFk1dhr0OHHXLYBeUFAyqA7eYiP97Tqaf4vMQMqXb+Jl8g==
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
@@ -5309,7 +5309,7 @@
     "@ethersproject/units" "^5.4.0"
     "@swapr/core" "^0.3.19"
     "@swapr/periphery" "^0.3.22"
-    "@uniswap/smart-order-router" "^2.6.0"
+    "@uniswap/smart-order-router" "^2.8.2"
     big.js "^5.2.2"
     dayjs "^1.11.0"
     debug "^4.3.4"
@@ -6510,7 +6510,7 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@uniswap/smart-order-router@2.5.26", "@uniswap/smart-order-router@^2.6.0":
+"@uniswap/smart-order-router@2.5.26", "@uniswap/smart-order-router@^2.8.2":
   version "2.5.26"
   resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.5.26.tgz#8954cd1bca476bf821aaffe81071bcf89bc869b8"
   integrity sha512-KCjxZoPawBEkvt5pJutsPC1Db61f6qrnSpWUPeC8fRJEKXc72msbtzopqB4q4ex5S0Ax3ck4gbA1qRO7zBeixQ==

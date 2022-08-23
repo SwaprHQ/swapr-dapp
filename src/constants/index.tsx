@@ -588,8 +588,8 @@ export const RoutablePlatformKeysByNetwork = {
   ],
   [ChainId.ARBITRUM_GOERLI]: [],
   [ChainId.GOERLI]: [],
-  [ChainId.OPTIMISM_GOERLI]: [RoutablePlatform.UNISWAP.name],
-  [ChainId.OPTIMISM_MAINNET]: [RoutablePlatform.UNISWAP.name],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [RoutablePlatform.UNISWAP.name, UniswapV2RoutablePlatform.SUSHISWAP.name],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
