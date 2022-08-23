@@ -1,17 +1,7 @@
-import { setDate } from 'date-fns'
 import { BusinessDay, createChart, UTCTimestamp } from 'lightweight-charts'
 import React, { useEffect, useRef, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
-// import { useTheme } from 'styled-components'
-
-const chartColors = {
-  backgroundColor: 'white',
-  lineColor: '#C8BDFF',
-  textColor: 'black',
-  areaTopColor: 'rgba(255, 255, 255, 1)',
-  areaBottomColor: 'rgba(204, 144, 255, 0)',
-}
 
 const data = [
   { time: '2019-04-22', value: 77.4 },
@@ -46,16 +36,23 @@ const data = [
   { time: '2019-06-04', value: 85.66 },
   { time: '2019-06-05', value: 86.51 },
 ]
-//  add missing types
-const buildDate = time => {
-  const date = new Date(time.year, time.month, time.day)
-  return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
-}
 
-//  will change to timestamp when we connect real data
-const buildDateFromTimestamp = timestamp => {
-  const date = new Date(timestamp)
-  return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
+const formatDateShort = (date: Date) => date.toLocaleString('default', { month: 'short' }) + '-' + date.getDate()
+const formatDate = (date: Date) =>
+  `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
+
+const buildDateFromObj = (time: { year: number; month: number; day: number }) =>
+  new Date(time.year, time.month - 1, time.day)
+
+const buildDate = (time: number | string) =>
+  formatDate(typeof time === 'number' || typeof time === 'string' ? new Date(time) : buildDateFromObj(time))
+
+const chartColors = {
+  backgroundColor: 'transparent',
+  lineColor: '#C8BDFF',
+  textColor: '#565A69',
+  areaTopColor: 'rgba(255, 255, 255, 1)',
+  areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 // { data }: { data: Array }
 const SimpleChart = () => {
@@ -65,7 +62,7 @@ const SimpleChart = () => {
   const lastDataElementTime = lastDataElement.time
 
   const [price, setPrice] = useState(lastDataElementValue)
-  const [date, setDate] = useState(buildDateFromTimestamp(lastDataElementTime))
+  const [date, setDate] = useState(buildDate(lastDataElementTime))
 
   useEffect(() => {
     if (
@@ -83,8 +80,8 @@ const SimpleChart = () => {
       height: 300,
       width: chartRef.current.parentElement.clientWidth - 32,
       layout: {
-        backgroundColor: 'transparent',
-        textColor: '#565A69',
+        backgroundColor: chartColors.backgroundColor,
+        textColor: chartColors.textColor,
       },
       leftPriceScale: {
         visible: false,
@@ -96,10 +93,7 @@ const SimpleChart = () => {
         fixLeftEdge: true,
         fixRightEdge: true,
         borderVisible: false,
-        tickMarkFormatter: (time: BusinessDay) => {
-          const date = new Date(time.year, time.month, time.day)
-          return date.toLocaleString('default', { month: 'short' }) + '-' + date.getDate()
-        },
+        tickMarkFormatter: (time: BusinessDay) => formatDateShort(buildDateFromObj(time)),
       },
       watermark: {
         color: 'rgba(0, 0, 0, 0)',
@@ -142,10 +136,10 @@ const SimpleChart = () => {
     })
     newSeries.setData(data)
     chart.subscribeCrosshairMove(function (param) {
-      const time = param?.time ? buildDate(param?.time) : buildDateFromTimestamp(lastDataElementTime)
+      const time = param?.time ? param?.time : lastDataElementTime
       const price = param?.seriesPrices.get(newSeries) ?? lastDataElementValue
       setPrice(price)
-      setDate(time)
+      setDate(buildDate(time))
     })
     window.addEventListener('resize', handleResize)
 
