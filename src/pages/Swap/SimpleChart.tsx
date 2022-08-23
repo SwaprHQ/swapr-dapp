@@ -1,5 +1,8 @@
+import { setDate } from 'date-fns'
 import { BusinessDay, createChart, UTCTimestamp } from 'lightweight-charts'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Flex } from 'rebass'
+import styled from 'styled-components'
 // import { useTheme } from 'styled-components'
 
 const chartColors = {
@@ -10,7 +13,7 @@ const chartColors = {
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
-const initialChartData = [
+const data = [
   { time: '2019-04-22', value: 77.4 },
   { time: '2019-04-23', value: 78.2 },
   { time: '2019-04-24', value: 78.68 },
@@ -43,11 +46,26 @@ const initialChartData = [
   { time: '2019-06-04', value: 85.66 },
   { time: '2019-06-05', value: 86.51 },
 ]
+//  add missing types
+const buildDate = time => {
+  const date = new Date(time.year, time.month, time.day)
+  return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
+}
 
+//  will change to timestamp when we connect real data
+const buildDateFromTimestamp = timestamp => {
+  const date = new Date(timestamp)
+  return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
+}
 // { data }: { data: Array }
 const SimpleChart = () => {
   const chartRef = useRef<HTMLDivElement>(null)
-  // const theme = useTheme()
+  const lastDataElement = data[data.length - 1]
+  const lastDataElementValue = lastDataElement.value
+  const lastDataElementTime = lastDataElement.time
+
+  const [price, setPrice] = useState(lastDataElementValue)
+  const [date, setDate] = useState(buildDateFromTimestamp(lastDataElementTime))
 
   useEffect(() => {
     if (
@@ -94,11 +112,6 @@ const SimpleChart = () => {
           visible: false,
         },
       },
-      // handleScroll: {
-      //   mouseWheel: false,
-      //   pressedMouseMove: false,
-      //   horzTouchDrag: false,
-      // },
       handleScale: {
         axisPressedMouseMove: false,
         pinch: false,
@@ -125,9 +138,15 @@ const SimpleChart = () => {
       topColor: chartColors.areaTopColor,
       bottomColor: chartColors.areaBottomColor,
       lineWidth: 3,
+      priceLineVisible: false,
     })
-    newSeries.setData(initialChartData)
-
+    newSeries.setData(data)
+    chart.subscribeCrosshairMove(function (param) {
+      const time = param?.time ? buildDate(param?.time) : buildDateFromTimestamp(lastDataElementTime)
+      const price = param?.seriesPrices.get(newSeries) ?? lastDataElementValue
+      setPrice(price)
+      setDate(time)
+    })
     window.addEventListener('resize', handleResize)
 
     return () => {
@@ -137,7 +156,31 @@ const SimpleChart = () => {
     }
   }, [])
 
-  return <div ref={chartRef} />
+  return (
+    <Flex flexDirection="column" alignItems="center" width="100%">
+      <Flex justifyContent="space-between" width="100%" px={4}>
+        <div>
+          <BigPriceText>{price}</BigPriceText>
+          <DateText>{date}</DateText>
+        </div>
+        <p>date filters</p>
+      </Flex>
+      <div ref={chartRef} />
+    </Flex>
+  )
 }
+
+const BigPriceText = styled.p`
+  font-size: 36px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text3};
+
+  margin-bottom: 4px;
+`
+
+const DateText = styled.p`
+  font-size: 12px;
+  color: ${({ theme }) => theme.text4};
+`
 
 export default SimpleChart
