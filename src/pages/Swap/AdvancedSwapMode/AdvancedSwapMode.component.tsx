@@ -5,9 +5,9 @@ import { Flex, Text } from 'rebass'
 
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
-import { TradeHistory } from '../../../services/Trades/trades.types'
-import { useAllTrades } from '../../../services/Trades/useAllTrades.hook'
-import { useTradesAdapter } from '../../../services/Trades/useTradesAdapter.hook'
+import { AdvancedViewTradeHistory } from '../../../services/AdvancedTradingView/advancedTradingView.types'
+import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
+import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
 import {
   AdvancedModeDetails,
   AdvancedModeHeader,
@@ -28,7 +28,7 @@ import {
 import { Chart } from './Chart'
 import { Trade } from './Trade'
 
-const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoading: boolean) => {
+const renderStatusOfTrades = (arr: AdvancedViewTradeHistory[], showTrades: boolean, isLoading: boolean) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
   if (!arr.length && !isLoading) {
@@ -37,14 +37,20 @@ const renderStatusOfTrades = (arr: TradeHistory[], showTrades: boolean, isLoadin
 }
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
-  const { tradeHistory, hasMore } = useAllTrades()
-  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } = useTradesAdapter()
+  const {
+    tradeHistory,
+    hasMore: { hasMoreTrades },
+  } = useAllTrades()
+  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
+    useAdvancedTradingViewAdapter()
 
   const navigate = useNavigate()
   const [activeSwitchOption, setActiveSwitchOption] = useState('')
 
   const handleAddLiquidity = () => {
-    navigate({ pathname: `/pools/add/${inputToken?.address}/${outputToken?.address}` })
+    if (inputToken && outputToken) {
+      navigate({ pathname: `/pools/add/${inputToken.address}/${outputToken.address}` })
+    }
   }
 
   useEffect(() => {
@@ -93,7 +99,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
           <InfiniteScroll
             dataLength={tradeHistory.length}
             next={fetchTrades}
-            hasMore={hasMore}
+            hasMore={hasMoreTrades}
             scrollableTarget="transactions-wrapper-scrollable"
             loader={
               showTrades && (
