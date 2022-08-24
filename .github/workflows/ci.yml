@@ -222,16 +222,14 @@ jobs:
           fi
 
       - name: Check how tests should be executed
+        if: ${{ (github.event.pull_request.assignee.login == 'niemam29') }}
         run: |
-              echo "$ASSIGNEE_LOGIN"
+              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
       - name: Check how tests should be executed
+        if: ${{ (github.event.pull_request.merged) }}
         run: |
-              echo $TEST_PARAMS
-
-      - name: Check how tests should be executed
-        run: |
-              echo ${{ env.GITHUB_SHA_SHORT }}
+              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
 
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
