@@ -1,4 +1,4 @@
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
@@ -121,7 +121,7 @@ export function useTokenInfoFromActiveListOnCurrentChain(currency?: Currency): W
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
 
   return useMemo(() => {
-    if (!currency || !(currency instanceof Token)) return undefined
+    if (!currency || !currency.address) return undefined
     const list = combinedList[chainId || ChainId.MAINNET]
     if (!list) return undefined
     const tokenFromList = list[currency.address]
