@@ -204,13 +204,22 @@ jobs:
     container: cypress/browsers:node16.5.0-chrome97-ff96
     if: ${{ github.event.pull_request.merged || (github.event.pull_request.assignee.login == 'niemam29') }}
     env:
-      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
+      ASSIGNEE_LOGIN: ${{ github.event.pull_request.assignee.login }}
+      IF_MERGED: ${{ github.event.pull_request.merged }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
         containers: [02transactionfull, 01transactionless]
     steps:
+      - name: Check how tests should be executed
+        run: |
+          if [[ $ASSIGNEE_LOGIN == 'niemam29' ]]; then
+              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
+          else
+              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
+          fi
+
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
