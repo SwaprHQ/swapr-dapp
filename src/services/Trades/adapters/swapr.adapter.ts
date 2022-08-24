@@ -1,6 +1,6 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
-import { request } from 'graphql-request'
+import { GraphQLClient, RequestOptions } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
 import { SWAPR_PAIR_TRANSACTIONS } from '../trades.queries'
@@ -28,7 +28,13 @@ export class SwaprAdapter extends AbstractTradesAdapter {
     this._chainId = chainId
   }
 
-  public getTradesHistoryForPair = async (inputToken: Token, outputToken: Token, first: number, skip: number) => {
+  public getTradesHistoryForPair = async (
+    inputToken: Token,
+    outputToken: Token,
+    first: number,
+    skip: number,
+    abort: (id: string) => AbortSignal
+  ) => {
     const pairId = Pair.getAddress(inputToken, outputToken).toLowerCase()
     const { hasMore, pairId: previousPairId } = this.store.getState().trades.sources.swapr.fetchDetails
 
@@ -44,7 +50,11 @@ export class SwaprAdapter extends AbstractTradesAdapter {
       return
 
     try {
-      const data = await request<SwaprTradesHistory>(subgraphClientsUris[this._chainId], SWAPR_PAIR_TRANSACTIONS, {
+      const graphQLClient = new GraphQLClient(subgraphClientsUris[this._chainId], {
+        signal: abort('swapr') as RequestOptions['signal'],
+      })
+
+      const data = await graphQLClient.request<SwaprTradesHistory>(SWAPR_PAIR_TRANSACTIONS, {
         pairId,
         first,
         skip,
@@ -53,8 +63,8 @@ export class SwaprAdapter extends AbstractTradesAdapter {
       const hasMore = data.pair?.swaps.length && data.pair?.swaps.length === 50 ? true : false
 
       this.store.dispatch(this.actions.setSwaprTradesHistory({ data, hasMore, pairId }))
-    } catch {
-      // TODO: add error state for each adapter.
+    } catch (e) {
+      console.error('Cannot fetch swapr trade history:', e)
     }
   }
 }

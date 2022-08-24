@@ -15,13 +15,20 @@ export abstract class AbstractTradesAdapter {
 
   abstract setInitialArguments({ chainId, store }: AdapterInitialArguments): void
 
-  abstract getTradesHistoryForPair(inputToken: Token, outputToken: Token, first: number, skip: number): Promise<void>
+  abstract getTradesHistoryForPair(
+    inputToken: Token,
+    outputToken: Token,
+    first: number,
+    skip: number,
+    abort: (id: string) => AbortSignal
+  ): Promise<void>
 }
 
 export class TradesAdapter {
   private _chainId: ChainId
   private _adapters: Adapters
   public readonly store: Store<AppState>
+  private _abortControllers: { [id: string]: AbortController } = {}
 
   private _initialized = false
 
@@ -47,9 +54,19 @@ export class TradesAdapter {
     }
   }
 
+  private renewAbortController = (key: string) => {
+    if (this._abortControllers[key]) {
+      this._abortControllers[key].abort()
+    }
+
+    this._abortControllers[key] = new AbortController()
+
+    return this._abortControllers[key].signal
+  }
+
   public fetchTradesHistory = async (inputToken: Token, outputToken: Token, first: number, skip: number) => {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getTradesHistoryForPair(inputToken, outputToken, first, skip)
+      adapter.getTradesHistoryForPair(inputToken, outputToken, first, skip, this.renewAbortController)
     )
 
     return await Promise.all(promises)
