@@ -214,14 +214,6 @@ jobs:
         containers: [02transactionfull, 01transactionless]
     steps:
       - name: Check how tests should be executed
-        run: |
-          if [ $ASSIGNEE_LOGIN == "niemam29" ]; then
-              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
-          else
-              echo "TEST_PARAMS=asdasdasdas" >> "$GITHUB_ENV"
-          fi
-
-      - name: Check how tests should be executed
         if: ${{ (github.event.pull_request.assignee.login == 'niemam29') }}
         run: |
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
