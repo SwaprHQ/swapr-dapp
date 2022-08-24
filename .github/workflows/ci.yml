@@ -300,7 +300,7 @@ jobs:
 
       - name: Run cypress tests
         if: ${{ !(github.event.pull_request.merged) }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record false --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: false
 
       - name: Run cypress tests after merge
