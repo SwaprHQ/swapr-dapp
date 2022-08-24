@@ -205,6 +205,7 @@ jobs:
     if: ${{ github.event.pull_request.merged || (github.event.pull_request.assignee.login == 'niemam29') }}
     env:
       ASSIGNEE_LOGIN: ${{ github.event.pull_request.assignee.login }}
+      QA_LOGIN: niemam29
       IF_MERGED: ${{ github.event.pull_request.merged }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
@@ -214,7 +215,7 @@ jobs:
     steps:
       - name: Check how tests should be executed
         run: |
-          if [[ $ASSIGNEE_LOGIN == niemam29 ]]; then
+          if [[ $ASSIGNEE_LOGIN == $QA_LOGIN ]]; then
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
           else
               echo "TEST_PARAMS=asdasdasdas" >> "$GITHUB_ENV"
