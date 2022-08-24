@@ -5,6 +5,7 @@ import { type TokenInfo, type TokenList } from '@uniswap/token-lists/dist/types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+import { NETWORK_DETAIL } from '../../constants'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
 import { useActiveWeb3React } from '../../hooks'
@@ -63,8 +64,41 @@ const selectTokensBySymbol = createSelector(selectListByUrl, lists => {
   return allTokens
 })
 
+const selectTokensByAddress = createSelector(selectListByUrl, lists => {
+  const allTokensByChain = new Map<ChainId, Map<string, TokenInfo>>()
+  for (const key in lists) {
+    lists[key]?.current?.tokens?.forEach(token => {
+      if (allTokensByChain.has(token.chainId)) {
+        const tokenMap = allTokensByChain.get(token.chainId)
+        if (tokenMap) {
+          tokenMap.set(token.address, token)
+        }
+      } else {
+        allTokensByChain.set(token.chainId, new Map<string, TokenInfo>())
+      }
+    })
+  }
+  for (const key of allTokensByChain.keys()) {
+    const network = NETWORK_DETAIL[key]
+    if (network) {
+      const tokenMap = allTokensByChain.get(key)
+      tokenMap?.set('0x0000000000000000000000000000000000000000', {
+        chainId: key,
+        address: '0x0000000000000000000000000000000000000000',
+        ...network.nativeCurrency,
+      })
+    }
+  }
+
+  return allTokensByChain
+})
+
 export function useListsByToken() {
   return useSelector(selectTokensBySymbol)
+}
+
+export function useListsByAddress() {
+  return useSelector(selectTokensByAddress)
 }
 
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {

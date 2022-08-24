@@ -105,6 +105,14 @@ export class SocketBridge extends EcoBridgeChildBase {
 
       if (!tx) return
 
+      // @TODO: can be improved later with a better way to get the toValue
+      const routeId = this.store.getState().ecoBridge.common.activeRouteId
+      const routes = this.selectors.selectRoutes(this.store.getState())
+      const selectedRoute = routes.find(route => route.routeId === routeId)
+
+      const toValue = (parseUnits(selectedRoute?.toAmount ?? '0', to.decimals) ?? 0).toString()
+      const fromValue = Number(value ?? 0).toString()
+
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
       this.store.dispatch(
@@ -112,10 +120,13 @@ export class SocketBridge extends EcoBridgeChildBase {
           sender: this._account,
           txHash: tx.hash,
           assetName: from.symbol,
-          value: from.value,
+          fromValue,
+          toValue,
           fromChainId: from.chainId,
           toChainId: to.chainId,
           bridgeId: this.bridgeId,
+          assetAddressL1: from.address,
+          assetAddressL2: to.address,
         })
       )
     } catch (e) {

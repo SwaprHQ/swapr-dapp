@@ -34,6 +34,14 @@ export const formatNumber = (number: number | string, usd = false, ignoreZero = 
     }
   }
 
+  if (num > 0 && num < 1) {
+    return Number(num.toFixed(4)).toString()
+  }
+
+  if (num > 1 && num < 10) {
+    return Number(num.toFixed(3)).toString()
+  }
+
   return Number(num.toFixed(5)).toLocaleString()
 }
 

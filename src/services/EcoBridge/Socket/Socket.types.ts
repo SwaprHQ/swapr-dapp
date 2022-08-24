@@ -25,13 +25,16 @@ export type SocketTx = {
   txHash: string
   partnerTxHash?: string
   assetName: string
-  value: string
+  fromValue: string
+  toValue: string
   fromChainId: ChainId
   toChainId: ChainId
   bridgeId: BridgeList
   timestampResolved?: number
   status: SocketTxStatus
   sender: string
+  assetAddressL1: string
+  assetAddressL2: string
 }
 
 export interface SocketBridgeState {

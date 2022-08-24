@@ -36,17 +36,18 @@ import {
   StyledLink,
   TranasctionDetails,
 } from './Account.styles'
-import { BridgeTransaction, type Transaction } from './Account.types'
+import { type Transaction } from './Account.types'
 import { formattedTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
+import { TransactionRowSmallLayout } from './TransactionRowSmallLayout'
 
 export function Account() {
   const { t } = useTranslation('common')
   const { account, chainId, active, deactivate } = useActiveWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const [transactions, setTransactions] = useState<(Transaction | BridgeTransaction)[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [page, setPage] = useState(1)
   const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
   const [showPendingTransactions, togglePendingTransactions] = useToggle(false)
@@ -56,10 +57,11 @@ export function Account() {
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
   const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
-  const transacationsByPage = usePage<Transaction | BridgeTransaction>(transactions, responsiveItemsPerPage, page, 0)
+  const transacationsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
   const isMobile = useIsMobileByMedia()
 
   useLayoutEffect(() => {
+    // Resetting Eco Bridge transaction filtering in selectors
     dispatch(ecoBridgeUIActions.setBridgeTxsFilter(BridgeTxsFilter.NONE))
   })
 
@@ -143,13 +145,21 @@ export function Account() {
             </Header>
           </HeaderText>
         </HeaderRow>
-        {transacationsByPage?.map(transaction => (
-          <TransactionRow
-            transaction={transaction}
-            key={transaction.hash}
-            showAllNetworkTransactions={showAllNetworkTransactions}
-          />
-        ))}
+        {transacationsByPage?.map(transaction => {
+          return isMobile ? (
+            <TransactionRowSmallLayout
+              transaction={transaction}
+              key={transaction.hash}
+              showAllNetworkTransactions={showAllNetworkTransactions}
+            />
+          ) : (
+            <TransactionRow
+              transaction={transaction}
+              key={transaction.hash}
+              showAllNetworkTransactions={showAllNetworkTransactions}
+            />
+          )
+        })}
         {transactions?.length === 0 && <NoDataTransactionRow />}
       </DimBlurBgBox>
       <PaginationRow>

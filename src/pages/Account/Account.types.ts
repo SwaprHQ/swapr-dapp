@@ -1,7 +1,6 @@
 import { type ChainId } from '@swapr/sdk'
 
 import { type BridgeList } from '../../services/EcoBridge/EcoBridge.types'
-import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 
 export enum TransactionSwapTypes {
   Swap = 'Swap',
@@ -11,10 +10,17 @@ export enum TransactionBridgeTypes {
   Bridge = 'Bridge',
 }
 
-export interface Transaction {
+interface Token {
+  value: number
+  token: string
+  chainId?: ChainId
+  tokenAddress?: string
+}
+
+export interface SwapTransaction {
   type: keyof typeof TransactionSwapTypes
-  from: { value: number | string; token: string; chainId?: ChainId }
-  to: { value: number | string; token: string; chainId?: ChainId }
+  from: Token
+  to: Token
   summary: string
   addedTime: number
   confirmedTime?: number
@@ -23,9 +29,10 @@ export interface Transaction {
   network?: ChainId
 }
 
-export interface BridgeTransaction extends Omit<Transaction, 'summary' | 'type' | 'addedTime'> {
+export interface BridgeTransaction extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime'> {
   type: keyof typeof TransactionBridgeTypes
-  logs: BridgeTransactionLog[]
   pendingReason?: string
   bridgeId: BridgeList
 }
+
+export type Transaction = SwapTransaction | BridgeTransaction

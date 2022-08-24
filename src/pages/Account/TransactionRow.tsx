@@ -4,19 +4,24 @@ import { Box, Flex, Text } from 'rebass'
 import { formatNumber } from '../../utils/formatNumber'
 import { getNetworkInfo } from '../../utils/networksList'
 import { GridCard, Status, TokenRow, TranasctionDetails, TypeDetails } from './Account.styles'
-import { type BridgeTransaction, type Transaction, TransactionBridgeTypes, TransactionSwapTypes } from './Account.types'
+import {
+  type BridgeTransaction,
+  type SwapTransaction,
+  TransactionBridgeTypes,
+  TransactionSwapTypes,
+} from './Account.types'
 import { TokenIcon } from './TokenIcon'
 
 interface TransactionRowProps {
-  transaction: Transaction | BridgeTransaction
+  transaction: SwapTransaction | BridgeTransaction
   showAllNetworkTransactions: boolean
 }
 
 export function TransactionRow({ transaction, showAllNetworkTransactions }: TransactionRowProps) {
   const { type, status, from, to, confirmedTime, network } = transaction
+  const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   let price = typeof to.value === 'number' && typeof from.value === 'number' ? from.value / to.value : 0
   price = price === Infinity ? 0 : price
-  const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
 
   switch (type) {
     case TransactionSwapTypes.Swap:
@@ -85,12 +90,13 @@ export function TransactionRow({ transaction, showAllNetworkTransactions }: Tran
       const fromNetwork = from?.chainId ? getNetworkInfo(Number(from?.chainId)) : undefined
       const toNetwork = to?.chainId ? getNetworkInfo(Number(to?.chainId)) : undefined
       const { bridgeId } = transaction
+
       return (
         <GridCard status={status.toUpperCase()}>
           <TranasctionDetails flex="15%" justifyContent="start">
             <Flex flexDirection="column">
               <Flex alignItems="center">
-                <TokenIcon symbol={from.token} />
+                <TokenIcon symbol={from.token} address={from.tokenAddress} chainId={from.chainId} />
                 <Flex flexDirection="column">
                   <Box>{`${formatNumber(from.value, false, true)}`}</Box>
                   <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
@@ -103,7 +109,7 @@ export function TransactionRow({ transaction, showAllNetworkTransactions }: Tran
           <TranasctionDetails flex="15%" justifyContent="start">
             <Flex flexDirection="column">
               <Flex alignItems="center">
-                <TokenIcon symbol={to.token} />
+                <TokenIcon symbol={to.token} address={to.tokenAddress} chainId={to.chainId} />
                 <Flex flexDirection="column">
                   <Box>{`${formatNumber(to.value, false, true)}`}</Box>
                   <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
@@ -159,17 +165,27 @@ export function TransactionRow({ transaction, showAllNetworkTransactions }: Tran
               <Box>{to.token}</Box>
             </Flex>
           </TokenRow>
+
           <Flex flex="15%" justifyContent="right" sx={{ pr: 2 }}>{`${formatNumber(price, true, true)}`}</Flex>
-          <Flex flex="8%" sx={{ textTransform: 'uppercase' }}>
-            {type}
-          </Flex>
+          <TypeDetails>
+            <Box color="#8780BF" fontWeight="600" fontSize="12px">
+              {type}
+            </Box>
+          </TypeDetails>
 
           <TranasctionDetails>
-            <Status status={status}>{status}</Status>
+            <Status status={status.toUpperCase()}>{status}</Status>
           </TranasctionDetails>
 
           <TranasctionDetails flex="16%">
-            {confirmedTime ? DateTime.fromMillis(confirmedTime).toFormat('yyyy-MM-dd HH:mm:ss') : '- -'}
+            {confirmedTime ? (
+              <Flex flexDirection="column" fontSize="12px">
+                <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
+                <Box>{DateTime.fromMillis(confirmedTime).toFormat('dd/MM/yyyy')}</Box>
+              </Flex>
+            ) : (
+              '- -'
+            )}
           </TranasctionDetails>
         </GridCard>
       )

@@ -61,14 +61,7 @@ export enum BridgeTransactionStatus {
 
 export type BridgeTransactionSummary = Pick<
   ArbitrumBridgeTxn,
-  | 'txHash'
-  | 'assetName'
-  | 'value'
-  | 'batchIndex'
-  | 'batchNumber'
-  | 'timestampResolved'
-  | 'assetAddressL1'
-  | 'assetAddressL2'
+  'txHash' | 'assetName' | 'batchIndex' | 'batchNumber' | 'timestampResolved' | 'assetAddressL1' | 'assetAddressL2'
 > & {
   fromChainId: ChainId
   toChainId: ChainId
@@ -76,6 +69,9 @@ export type BridgeTransactionSummary = Pick<
   status: BridgeTransactionStatus
   bridgeId: BridgeList
   pendingReason?: string
+  fromValue: string
+  toValue: string
+  // timestampCreated: number
 }
 
 export type BridgeTransactionLog = Pick<ArbitrumBridgeTxn, 'txHash' | 'chainId'>

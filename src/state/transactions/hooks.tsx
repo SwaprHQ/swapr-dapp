@@ -10,6 +10,7 @@ import { type BridgeTransaction, TransactionBridgeTypes } from '../../pages/Acco
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { BridgeTransactionSummary } from '../bridgeTransactions/types'
 import { AppDispatch, AppState } from '../index'
+import { useListsByAddress } from '../lists/hooks'
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
 
@@ -92,6 +93,7 @@ export function useAllSwapTransactions(allNetwork = false): AllTransactions {
 
 export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[] {
   const { chainId, account } = useActiveWeb3React()
+  const listByAddress = useListsByAddress()
 
   const allBridgeTransactions = useSelector<AppState, BridgeTransactionSummary[]>(state =>
     selectBridgeTransactions(state, account ?? undefined)
@@ -101,12 +103,14 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
       allBridgeTransactions?.map(transaction => {
         const {
           assetName,
+          assetAddressL1,
+          assetAddressL2,
           fromChainId,
           status,
           toChainId,
-          value,
+          fromValue,
+          toValue,
           pendingReason,
-          log,
           timestampResolved,
           txHash,
           bridgeId,
@@ -114,17 +118,27 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
 
         return {
           type: TransactionBridgeTypes.Bridge,
-          from: { value, token: assetName, chainId: fromChainId },
-          to: { value, token: assetName, chainId: toChainId },
+          from: {
+            value: Number(fromValue ?? 0),
+            token: listByAddress.get(fromChainId)?.get(`${assetAddressL1}`)?.symbol ?? assetName,
+            chainId: fromChainId,
+            tokenAddress: assetAddressL1,
+          },
+          to: {
+            value: Number(toValue ?? 0),
+            token: listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
+            chainId: toChainId,
+            tokenAddress: assetAddressL2,
+          },
           confirmedTime: timestampResolved,
           hash: txHash,
           status,
           network: fromChainId,
-          logs: log,
           pendingReason,
           bridgeId,
         }
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [allBridgeTransactions]
   )
 

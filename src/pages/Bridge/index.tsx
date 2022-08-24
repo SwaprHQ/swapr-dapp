@@ -224,7 +224,7 @@ export default function Bridge() {
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
       if (!tx) return
-      const { toChainId, value, assetName, fromChainId, txHash } = tx
+      const { toChainId, fromValue, assetName, fromChainId, txHash } = tx
 
       setCollectableTx(txHash)
       setIsCollecting(true)
@@ -234,7 +234,7 @@ export default function Bridge() {
         fromChainId,
         toChainId,
         symbol: assetName,
-        typedValue: value,
+        typedValue: fromValue,
       })
     },
     [setCollectableTx, setIsCollecting, setModalData, setTxsFilter]
@@ -333,7 +333,7 @@ export default function Bridge() {
             </AssetWrapper>
           </Row>
           <CurrencyInputPanelBridge
-            value={isCollecting && collectableTx ? collectableTx.value : typedValue}
+            value={isCollecting && collectableTx ? collectableTx.fromValue : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
             currency={isCollecting ? collectableCurrency : bridgeCurrency}

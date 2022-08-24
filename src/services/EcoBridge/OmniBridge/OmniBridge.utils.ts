@@ -580,7 +580,8 @@ export const combineTransactions = (
       txHash,
       assetName: symbol,
       assetAddressL1: token,
-      value: formatUnits(amount, decimals),
+      fromValue: formatUnits(amount, decimals),
+      toValue: '0', // @TODO: add toValue
       fromChainId: chainId,
       toChainId: bridgeChainId,
       sender: user,

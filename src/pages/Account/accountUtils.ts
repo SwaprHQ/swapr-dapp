@@ -57,7 +57,7 @@ export const formattedTransactions = (
 
   const sortedTransactions = [...swapTransactions, ...bridgeTransactions].sort(
     (txn1, txn2) => (txn2?.confirmedTime ?? 0) - (txn1?.confirmedTime ?? 0)
-  ) as (Transaction | BridgeTransaction)[]
+  ) as Transaction[]
 
   if (showPendingTransactions) {
     return sortedTransactions.filter(

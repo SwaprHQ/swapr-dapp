@@ -75,12 +75,13 @@ const createSelectBridgeTransactionsSummary = (
           ? SOCKET_PENDING_REASONS.TO_PENDING
           : undefined
 
-      const normalizedValue = normalizeInputValue(tx.value, true)
+      const normalizedFromValue = tx.fromValue ? normalizeInputValue(tx.fromValue, true) : '0'
+      const normalizedToValue = tx.toValue ? normalizeInputValue(tx.toValue, true) : '0'
 
       const summary: BridgeTransactionSummary = {
         assetName: tx.assetName,
-        assetAddressL1: '', // not applicable, socket doesn't implement collect flow for now
-        assetAddressL2: '', // not applicable, socket doesn't implement collect flow for now
+        assetAddressL1: tx.assetAddressL1,
+        assetAddressL2: tx.assetAddressL2,
         fromChainId: tx.fromChainId,
         toChainId: tx.toChainId,
         status: tx.partnerTxHash
@@ -88,7 +89,8 @@ const createSelectBridgeTransactionsSummary = (
           : tx.status === SocketTxStatus.ERROR
           ? BridgeTransactionStatus.FAILED
           : BridgeTransactionStatus.PENDING,
-        value: normalizedValue,
+        fromValue: normalizedFromValue,
+        toValue: normalizedToValue,
         txHash: tx.txHash,
         pendingReason,
         timestampResolved: tx.timestampResolved,
