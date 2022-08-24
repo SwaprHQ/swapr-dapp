@@ -1,16 +1,21 @@
+import { Token } from '@swapr/sdk'
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { AdapterKeys, InitialState, SwaprTradesHistory } from './trades.types'
+import { InitialState, SwaprTradesHistory } from './trades.types'
 
 const initialState: InitialState = {
   pair: {
-    fromTokenAddress: undefined,
-    toTokenAddress: undefined,
+    inputToken: undefined,
+    outputToken: undefined,
   },
   sources: {
     swapr: {
       transactions: undefined,
-      loading: false,
+      fetchDetails: {
+        pairId: undefined,
+        hasMore: true,
+      },
     },
   },
 }
@@ -19,23 +24,39 @@ const tradesSlice = createSlice({
   name: 'trades',
   initialState,
   reducers: {
-    setAdapterLoading: (state, action: PayloadAction<{ key: AdapterKeys; isLoading: boolean }>) => {
-      const { key, isLoading } = action.payload
-
-      state.sources[key].loading = isLoading
-    },
     setPairTokensAddresses: (
       state,
-      {
-        payload: { fromTokenAddress, toTokenAddress },
-      }: PayloadAction<{ fromTokenAddress: string; toTokenAddress: string }>
+      { payload: { inputToken, outputToken } }: PayloadAction<{ inputToken: Token; outputToken: Token }>
     ) => {
-      state.pair.fromTokenAddress = fromTokenAddress
-      state.pair.toTokenAddress = toTokenAddress
+      state.pair.inputToken = inputToken
+      state.pair.outputToken = outputToken
     },
     // adapters setters
-    setSwaprTradesHistory: (state, action: PayloadAction<SwaprTradesHistory | undefined>) => {
-      state.sources.swapr.transactions = action.payload
+    setSwaprTradesHistory: (
+      state,
+      action: PayloadAction<{ data: SwaprTradesHistory; hasMore: boolean; pairId: string }>
+    ) => {
+      const { data, hasMore, pairId } = action.payload
+
+      const {
+        sources: { swapr },
+      } = state
+
+      swapr.fetchDetails = {
+        hasMore,
+        pairId,
+      }
+
+      // set new pair
+      if (swapr.transactions?.pair?.id.toLowerCase() !== data.pair?.id.toLowerCase()) {
+        state.sources.swapr.transactions = data
+        return
+      }
+
+      // update pair swaps
+      if (swapr.transactions && swapr.transactions.pair && data.pair) {
+        swapr.transactions.pair.swaps = [...swapr.transactions.pair.swaps, ...data.pair?.swaps]
+      }
     },
   },
 })

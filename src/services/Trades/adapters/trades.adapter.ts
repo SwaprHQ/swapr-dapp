@@ -15,7 +15,7 @@ export abstract class AbstractTradesAdapter {
 
   abstract setInitialArguments({ chainId, store }: AdapterInitialArguments): void
 
-  abstract getTradesHistoryForPair(inputToken: Token, outputToken: Token): Promise<void>
+  abstract getTradesHistoryForPair(inputToken: Token, outputToken: Token, first: number, skip: number): Promise<void>
 }
 
 export class TradesAdapter {
@@ -47,10 +47,12 @@ export class TradesAdapter {
     }
   }
 
-  public fetchTradesHistory = (inputToken: Token, outputToken: Token) => {
-    for (const adapter of Object.values(this._adapters)) {
-      adapter.getTradesHistoryForPair(inputToken, outputToken)
-    }
+  public fetchTradesHistory = async (inputToken: Token, outputToken: Token, first: number, skip: number) => {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getTradesHistoryForPair(inputToken, outputToken, first, skip)
+    )
+
+    return await Promise.all(promises)
   }
 
   public updateActiveChainId = (chainId: ChainId) => {
@@ -58,7 +60,7 @@ export class TradesAdapter {
       adapter.updateActiveChainId(chainId)
     }
   }
-  public setPairTokensAddresses = (addresses: { fromTokenAddress: string; toTokenAddress: string }) => {
-    this.store.dispatch(this.actions.setPairTokensAddresses(addresses))
+  public setPairTokensAddresses = (inputToken: Token, outputToken: Token) => {
+    this.store.dispatch(this.actions.setPairTokensAddresses({ inputToken, outputToken }))
   }
 }

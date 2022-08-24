@@ -1,18 +1,10 @@
 import { gql } from 'graphql-request'
 
 export const SWAPR_PAIR_TRANSACTIONS = gql`
-  query getPairTransactions($pairId: Bytes!) {
+  query getPairTransactions($pairId: Bytes!, $first: Int!, $skip: Int!) {
     pair(id: $pairId) {
       id
-      token0 {
-        id
-        symbol
-      }
-      token1 {
-        id
-        symbol
-      }
-      mints(first: 1000) {
+      mints(first: $first, skip: $skip) {
         id
         transaction {
           id
@@ -22,7 +14,7 @@ export const SWAPR_PAIR_TRANSACTIONS = gql`
         amountUSD
         timestamp
       }
-      burns(first: 1000) {
+      burns(first: $first, skip: $skip) {
         id
         transaction {
           id
@@ -32,7 +24,7 @@ export const SWAPR_PAIR_TRANSACTIONS = gql`
         amountUSD
         timestamp
       }
-      swaps(first: 1000) {
+      swaps(first: $first, skip: $skip) {
         id
         transaction {
           id

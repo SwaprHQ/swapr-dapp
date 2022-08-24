@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
@@ -30,13 +30,16 @@ type TradesHistory = {
 // trades adapter store
 export type InitialState = {
   pair: {
-    fromTokenAddress?: string
-    toTokenAddress?: string
+    inputToken?: Token
+    outputToken?: Token
   }
   sources: {
     swapr: {
       transactions: SwaprTradesHistory | undefined
-      loading: boolean
+      fetchDetails: {
+        pairId?: string
+        hasMore: boolean
+      }
     }
   }
 }
