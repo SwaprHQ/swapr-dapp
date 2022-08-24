@@ -4,7 +4,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ChevronsDown, ChevronsLeft, ChevronsRight, ChevronsUp } from 'react-feather'
-import { Box, Flex } from 'rebass'
+import { Flex } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
@@ -12,7 +12,7 @@ import { ButtonGrey } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { DimBlurBgBox } from '../../components/Pool/DimBlurBgBox/styleds'
+import SimpleSimpleChart from '../../components/SimpleChart/SimpleSimpleChart'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -511,15 +511,7 @@ export default function Swap() {
               />
             )}
           </AppBodyContainer>
-          {showChart && (
-            <Box ml={[0, 3]} mt={[3, 0]}>
-              <DimBlurBgBox height="400px" width={['100%', '550px']}>
-                <Flex height="100%" justifyContent="center" alignItems="center">
-                  <SimpleChart />
-                </Flex>
-              </DimBlurBgBox>
-            </Box>
-          )}
+          {showChart && <SimpleSimpleChart />}
         </Flex>
       </Hero>
       <LandingBodyContainer>

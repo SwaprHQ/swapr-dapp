@@ -1,0 +1,25 @@
+query getBlockPairTokenPrice($pairAddress: ID, $timestamp: BigInt, $skip: Int) {
+  blockPairTokenPrices(
+    first: 999
+    skip: $skip
+    where: { pair_: { id: $pairAddress }, blockTimestamp_gt: $timestamp }
+    orderBy: blockNumber
+    orderDirection: asc
+  ) {
+    id
+    pair {
+      token1 {
+        symbol
+      }
+      token0 {
+        symbol
+      }
+    }
+    token0Address
+    token1Address
+    token0Price
+    token1Price
+    blockNumber
+    blockTimestamp
+  }
+}
