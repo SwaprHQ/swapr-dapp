@@ -216,8 +216,6 @@ jobs:
         run: |
           if [[ $ASSIGNEE_LOGIN == 'niemam29' ]]; then
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
-          else
-              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
           fi
 
       - name: ⬇️ ・Checkout repo
