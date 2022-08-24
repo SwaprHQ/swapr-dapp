@@ -1,5 +1,3 @@
-import { ChainId } from '@swapr/sdk'
-
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -66,7 +64,7 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
         <Button
           onClick={() => setActiveTab(SwapTabs.SWAP)}
           className={activeTab === SwapTabs.SWAP || !isSupportedChain ? 'active' : ''}
-          title="Eco Router V1.5"
+          title="Swap with Eco Router V1.5"
         >
           <StyledEcoRouter />
           Swap
