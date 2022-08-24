@@ -222,6 +222,14 @@ jobs:
         run: |
               echo "$TEST_PARAMS"
 
+      - name: Check how tests should be executed
+        run: |
+              echo $TEST_PARAMS
+
+      - name: Check how tests should be executed
+        run: |
+              echo ${{ env.GITHUB_SHA_SHORT }}
+
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
