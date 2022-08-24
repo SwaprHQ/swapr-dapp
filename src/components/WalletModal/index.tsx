@@ -103,9 +103,6 @@ const HoverText = styled.div`
 interface WalletModalProps {
   modal: ModalView | null
   setModal: (modal: ModalView | null) => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
   tryActivation: (connector: AbstractConnector | undefined) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void

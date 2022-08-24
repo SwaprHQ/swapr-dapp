@@ -86,13 +86,14 @@ export default function Web3Status() {
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllSwapTransactions()
 
-  const sortedRecentTransactions = useMemo(() => {
+  const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+    return txs
+      .filter(isTransactionRecent)
+      .filter(tx => !tx.receipt)
+      .sort(newTransactionsFirst)
+      .map(tx => tx.hash)
   }, [allTransactions])
-
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
-  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
 
   const [modal, setModal] = useState<ModalView | null>(null)
 
@@ -190,9 +191,6 @@ export default function Web3Status() {
       <WalletModal
         modal={modal}
         setModal={setModal}
-        ENSName={ENSName ?? undefined}
-        pendingTransactions={pending}
-        confirmedTransactions={confirmed}
         setPendingError={setPendingError}
         pendingWallet={pendingWallet}
         pendingError={pendingError}

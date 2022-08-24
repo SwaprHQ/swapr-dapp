@@ -37,28 +37,35 @@ import {
   TranasctionDetails,
 } from './Account.styles'
 import { type Transaction } from './Account.types'
-import { formattedTransactions } from './accountUtils'
+import { formattedTransactions as formatTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
 import { TransactionRowSmallLayout } from './TransactionRowSmallLayout'
 
 export function Account() {
   const { t } = useTranslation('common')
+  const dispatch = useDispatch()
+  const isMobile = useIsMobileByMedia()
+
+  // Account details
   const { account, chainId, active, deactivate } = useActiveWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [page, setPage] = useState(1)
+
+  // Toggles
   const [showAllNetworkTransactions, toggleAllTransactions] = useToggle(false)
   const [showPendingTransactions, togglePendingTransactions] = useToggle(false)
-
-  const dispatch = useDispatch()
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
-  const responsiveItemsPerPage = useResponsiveItemsPerPage()
+
+  // Get all transactions
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
   const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
+
+  // Pagination
+  const [page, setPage] = useState(1)
+  const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const transacationsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
-  const isMobile = useIsMobileByMedia()
 
   useLayoutEffect(() => {
     // Resetting Eco Bridge transaction filtering in selectors
@@ -66,7 +73,8 @@ export function Account() {
   })
 
   useEffect(() => {
-    setTransactions(formattedTransactions(allTransactions, allBridgeTransactions, showPendingTransactions))
+    // format and merge transactions
+    setTransactions(formatTransactions(allTransactions, allBridgeTransactions, showPendingTransactions))
   }, [allTransactions, allBridgeTransactions, showPendingTransactions])
 
   const handlePendingToggle = () => {
