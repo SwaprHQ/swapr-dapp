@@ -501,7 +501,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.ETHER.decimals || 18,
     },
     rpcUrls: ['https://goerli.optimism.io'],
-    blockExplorerUrls: ['https://goerli.etherscan.io/'], //['https://blockscout.com/optimism/goerli'],
+    blockExplorerUrls: ['https://blockscout.com/optimism/goerli'],
   },
 }
 

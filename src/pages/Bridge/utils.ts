@@ -10,6 +10,5 @@ export enum BridgeTab {
 
 export const isNetworkDisabled = (optionChainId: ChainId, selectedNetworkChainId: ChainId) => {
   const { tag } = getNetworkInfo(optionChainId)
-  console.log(tag)
   return selectedNetworkChainId === optionChainId || tag === 'coming soon'
 }

@@ -51,7 +51,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.ARBITRUM_GOERLI,
-    name: 'A.\xa0Goerli',
+    name: 'A.\xa0Görli',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
@@ -64,7 +64,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.OPTIMISM_GOERLI,
-    name: 'Optimism Goerli',
+    name: 'Optimism Görli',
     logoSrc: OptimismLogo,
     color: '#ff0420',
     tag: NetworkSwitcherTags.TESTNETS,
