@@ -218,6 +218,10 @@ jobs:
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
           fi
 
+      - name: Check how tests should be executed
+        run: |
+              echo "$TEST_PARAMS"
+
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
