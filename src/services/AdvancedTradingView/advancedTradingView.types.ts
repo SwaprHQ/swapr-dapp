@@ -3,7 +3,7 @@ import { ChainId, Token } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
-import { AbstractTradesAdapter } from './adapters/trades.adapter'
+import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 
 type LiquidityTransaction = {
   id: string
@@ -27,24 +27,27 @@ type TradesHistory = {
   transaction: { id: string }
 }
 
-// trades adapter store
 export type InitialState = {
   pair: {
     inputToken?: Token
     outputToken?: Token
   }
-  sources: {
+  adapters: {
     swapr: {
-      transactions: SwaprTradesHistory | undefined
+      pair: {
+        id?: string
+        swaps: TradesHistory[]
+        burnsAndMints: LiquidityTransaction[]
+      }
       fetchDetails: {
-        pairId?: string
-        hasMore: boolean
+        hasMoreTrades: boolean
+        hasMoreActivity: boolean
       }
     }
   }
 }
 
-export type TradeHistory = {
+export type AdvancedViewTradeHistory = {
   transactionId: string
   amountIn: string
   amountOut: string
@@ -59,30 +62,26 @@ export enum AdapterKeys {
   SWAPR = 'swapr',
 }
 
-export type TradesHistoryAdapterConstructorParams = {
+export type AdvancedTradingViewAdapterConstructorParams = {
   adapters: Adapters
   chainId: ChainId
   store: Store<AppState>
 }
 
-export type Adapters = { [key in AdapterKeys]: AbstractTradesAdapter }
+export type Adapters = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter }
 
-export type AdapterInitialArguments = Omit<TradesHistoryAdapterConstructorParams, 'adapters'>
+export type AdapterInitialArguments = Omit<AdvancedTradingViewAdapterConstructorParams, 'adapters'>
 
-// adapter transaction type
-export type SwaprTradesHistory = {
+// swapr query type
+export type SwaprTrades = {
   pair: {
-    id: string
-    token0: {
-      id: string
-      symbol: string
-    }
-    token1: {
-      id: string
-      symbol: string
-    }
+    swaps: TradesHistory[]
+  } | null
+}
+
+export type SwaprActivity = {
+  pair: {
     burns: LiquidityTransaction[]
     mints: LiquidityTransaction[]
-    swaps: TradesHistory[]
   } | null
 }
