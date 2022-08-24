@@ -21,14 +21,13 @@ const chartColors = {
 }
 
 const lastDataElement = (data: Array<{ value: number; time: number }>) => data[data.length - 1]
+const lastElementValueOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.value ?? 0
+const lastElementTimeOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.time ?? 0
 
 const SimpleChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
-  const lastDataElementValue = lastDataElement(data)?.value ?? 0
-  const lastDataElementTime = lastDataElement(data)?.time ?? 0
-
-  const [price, setPrice] = useState(lastDataElementValue)
-  const [date, setDate] = useState(formatDate(buildDate(lastDataElementTime)))
+  const [price, setPrice] = useState(lastElementValueOrDefault(data))
+  const [date, setDate] = useState(formatDate(buildDate(lastElementTimeOrDefault(data))))
 
   useEffect(() => {
     if (
@@ -100,10 +99,15 @@ const SimpleChart = ({ data }: { data: ChartData[] }) => {
       lineWidth: 3,
       priceLineVisible: false,
     })
-    if (data && data.length > 0) newSeries.setData(data)
+    if (data && data.length > 0) {
+      setPrice(lastElementValueOrDefault(data))
+      setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
+      newSeries.setData(data)
+    }
+
     chart.subscribeCrosshairMove(function (param) {
-      const price = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
-      setPrice(price as BarPrice)
+      const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
+      setPrice(currentPrice as BarPrice)
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(formatDate(buildDate(time as UTCTimestamp)))
     })
@@ -111,7 +115,8 @@ const SimpleChart = ({ data }: { data: ChartData[] }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize)
-
+      setPrice(0)
+      setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
       chart.remove()
     }
   }, [data])
