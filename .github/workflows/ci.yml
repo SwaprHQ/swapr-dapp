@@ -211,12 +211,12 @@ jobs:
       matrix:
         containers: [02transactionfull, 01transactionless]
     steps:
-      - name: Check how tests should be executed
+      - name: Check how tests should be executed #1
         if: ${{ (github.event.pull_request.assignee.login == 'niemam29') }}
         run: |
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
-      - name: Check how tests should be executed
+      - name: Check how tests should be executed #2
         if: ${{ (github.event.pull_request.merged) }}
         run: |
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
@@ -370,10 +370,6 @@ jobs:
 
       - name: Generate HTML report
         run: yarn run report:generate
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
