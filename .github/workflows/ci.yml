@@ -219,10 +219,13 @@ jobs:
           else
               echo "TEST_PARAMS=asdasdasdas" >> "$GITHUB_ENV"
           fi
+        with:
+          ASSIGNEE_LOGIN: ${{ github.event.pull_request.assignee.login }}
+
 
       - name: Check how tests should be executed
         run: |
-              echo "$TEST_PARAMS"
+              echo "$ASSIGNEE_LOGIN"
 
       - name: Check how tests should be executed
         run: |
