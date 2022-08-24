@@ -136,15 +136,12 @@ export async function getExactIn(
       return resolve(undefined)
     }
 
-    CurveTrade.bestTradeExactIn(
-      {
-        currencyAmountIn,
-        currencyOut,
-        maximumSlippage,
-        receiver,
-      },
-      provider
-    )
+    CurveTrade.bestTradeExactIn({
+      currencyAmountIn,
+      currencyOut,
+      maximumSlippage,
+      receiver,
+    })
       .then(resolve)
       .catch(error => {
         errors.push(error)
@@ -292,15 +289,12 @@ export async function getExactOut(
       return resolve(undefined)
     }
 
-    CurveTrade.bestTradeExactOut(
-      {
-        currencyAmountOut,
-        currencyIn,
-        maximumSlippage,
-        receiver,
-      },
-      provider
-    )
+    CurveTrade.bestTradeExactOut({
+      currencyAmountOut,
+      currencyIn,
+      maximumSlippage,
+      receiver,
+    })
       .then(resolve)
       .catch(error => {
         errors.push(error)
