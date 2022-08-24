@@ -215,7 +215,7 @@ jobs:
     steps:
       - name: Check how tests should be executed
         run: |
-          if [[ $ASSIGNEE_LOGIN == $QA_LOGIN ]]; then
+          if [ $ASSIGNEE_LOGIN == "niemam29" ]; then
               echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
           else
               echo "TEST_PARAMS=asdasdasdas" >> "$GITHUB_ENV"
