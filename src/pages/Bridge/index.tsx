@@ -120,8 +120,9 @@ export default function Bridge() {
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
+  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
-  const [activeTab, setActiveTab] = useState<BridgeTab>(BridgeTab.BRIDGE)
+  const [activeTab, setActiveTab] = useState<BridgeTab>(isBridgeSwapActive ? BridgeTab.BRIDGE_SWAP : BridgeTab.BRIDGE)
 
   const toPanelRef = useRef(null)
   const fromPanelRef = useRef(null)
