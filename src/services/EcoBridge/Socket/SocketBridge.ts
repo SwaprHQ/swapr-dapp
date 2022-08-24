@@ -336,6 +336,8 @@ export class SocketBridge extends EcoBridgeChildBase {
     fromAmount: string
     helperRequestId: number
   }) => {
+    if (!this._account) return
+
     let quote: QuoteOutputDTO | undefined
 
     try {
@@ -346,7 +348,7 @@ export class SocketBridge extends EcoBridgeChildBase {
           toTokenAddress,
           toChainId,
           fromAmount,
-          userAddress: this._account ?? '',
+          userAddress: this._account,
           uniqueRoutesPerBridge: false,
           disableSwapping: false,
           sort: QuoteControllerGetQuoteSortEnum.Output,
@@ -417,8 +419,11 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
-    const isBridgeSwapActive = this.store.getState().ecoBridge.ui.isBridgeSwapActive
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as SocketList].lastMetadataCt
+    const ecoBridgeState = this.store.getState().ecoBridge
+
+    const { isBridgeSwapActive, from, to } = ecoBridgeState.ui
+
+    const requestId = ecoBridgeState[this.bridgeId as SocketList].lastMetadataCt
 
     const helperRequestId = (requestId ?? 0) + 1
 
@@ -437,8 +442,6 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.store.dispatch(this.actions.setRoutes([]))
 
     this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
-
-    const { from, to } = this.store.getState().ecoBridge.ui
 
     if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
@@ -576,7 +579,7 @@ export class SocketBridge extends EcoBridgeChildBase {
             address,
             chainId: Number(chainId),
             symbol,
-            decimals: decimals ?? 0,
+            decimals: decimals ?? 18,
             name: name ?? '',
             logoURI: icon,
           })
