@@ -265,6 +265,9 @@ jobs:
         continue-on-error: true
         env:
           CI: true
+        with:
+            COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+            COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
         if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-pipe')) }}
@@ -308,11 +311,17 @@ jobs:
         if: ${{ !(github.event.pull_request.merged) }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: true
+        with:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Run cypress tests after merge
         if: ${{ (github.event.pull_request.merged) }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS'
         continue-on-error: true
+        with:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
         run: |
