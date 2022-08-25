@@ -365,10 +365,12 @@ jobs:
         with:
           name: 01transactionless
           path: mochawesome-report
+          continue-on-error: true
       - uses: actions/download-artifact@v3
         with:
           name: 02transactionfull
           path: mochawesome-report
+          continue-on-error: true
 
       - name: Setup Node
         uses: actions/setup-node@v3
