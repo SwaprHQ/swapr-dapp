@@ -14,6 +14,21 @@ export const AdvanceSwapModeHeight = css`
   }
 `
 
+export const AdvancedModeDetailsItems = css`
+  & > div:nth-child(1) {
+    flex-basis: 30%;
+  }
+
+  & > div:nth-child(2),
+  & > div:nth-child(3) {
+    flex-basis: 25%;
+  }
+
+  & > div:nth-child(4) {
+    flex-basis: 20%;
+  }
+`
+
 export const CustomScrollBar = css`
   &&::-webkit-scrollbar {
     width: 10px;
@@ -162,14 +177,7 @@ export const AdvancedModeDetails = styled.div`
   margin-top: 20px;
   color: ${({ theme }) => theme.purple3};
 
-  & > div:nth-child(1),
-  & > div:nth-child(2) {
-    flex-basis: 40%;
-  }
-
-  & > div:nth-child(3) {
-    flex-basis: 20%;
-  }
+  ${AdvancedModeDetailsItems};
 `
 export const TransactionsWrapper = styled.div`
   ${CustomScrollBar}

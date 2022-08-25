@@ -55,6 +55,7 @@ export type AdvancedViewTradeHistory = {
   logoKey: string
   isSell?: boolean
   amountUSD?: string
+  price?: string
 }
 
 // adapters types

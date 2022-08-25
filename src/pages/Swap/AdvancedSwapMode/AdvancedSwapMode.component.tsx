@@ -90,8 +90,9 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             )}
           </Flex>
           <AdvancedModeDetails>
-            <Text>Price {showTrades ? `(${inputToken?.symbol})` : null}</Text>
+            <Text>Amount {showTrades ? `(${inputToken?.symbol})` : null}</Text>
             <Text>Amount {showTrades ? `(${outputToken?.symbol})` : null}</Text>
+            <Text>Price {showTrades ? `(${outputToken?.symbol})` : null}</Text>
             <Text sx={{ textAlign: 'right' }}>Time</Text>
           </AdvancedModeDetails>
         </AdvancedModeHeader>
@@ -115,7 +116,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
-                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey }) => {
+                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey, price }) => {
                   return (
                     <Trade
                       key={transactionId}
@@ -127,6 +128,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                       amountOut={amountOut}
                       timestamp={timestamp}
                       amountUSD={amountUSD}
+                      price={price}
                     />
                   )
                 })}

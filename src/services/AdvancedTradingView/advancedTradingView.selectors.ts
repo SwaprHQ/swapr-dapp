@@ -72,16 +72,23 @@ export const selectAllSwaprTrades = createSelector(
         outputTokenAddress: outputToken.address.toLowerCase(),
       }
 
+      const amount0 = Math.max(normalizedValues.amount0In, normalizedValues.amount0Out)
+      const amount1 = Math.max(normalizedValues.amount1In, normalizedValues.amount1Out)
+
       return {
         transactionId: id,
-        amountIn:
-          normalizedValues.inputTokenAddress === normalizedValues.token0Address
-            ? Math.max(normalizedValues.amount0In, normalizedValues.amount0Out).toString()
-            : Math.max(normalizedValues.amount1In, normalizedValues.amount1Out).toString(),
-        amountOut:
-          normalizedValues.outputTokenAddress === normalizedValues.token0Address
-            ? Math.max(normalizedValues.amount0In, normalizedValues.amount0Out).toString()
-            : Math.max(normalizedValues.amount1In, normalizedValues.amount1Out).toString(),
+        amountIn: (normalizedValues.inputTokenAddress === normalizedValues.token0Address
+          ? amount0
+          : amount1
+        ).toString(),
+        amountOut: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
+          ? amount0
+          : amount1
+        ).toString(),
+        price: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
+          ? (1 / Number(amount0)) * Number(amount1)
+          : (1 / Number(amount1)) * Number(amount0)
+        ).toString(),
         timestamp,
         amountUSD,
         isSell:
