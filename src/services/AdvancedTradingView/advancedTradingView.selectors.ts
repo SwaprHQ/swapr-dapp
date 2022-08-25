@@ -1,4 +1,4 @@
-import { UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 
@@ -18,6 +18,10 @@ export const selectHasMoreData = createSelector([(state: AppState) => state.adva
   return { hasMoreTrades, hasMoreActivity }
 })
 
+export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) => {
+  return inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+}
+
 export const selectAllSwaprTrades = createSelector(
   [(state: AppState) => state.advancedTradingView.adapters.swapr, (state: AppState) => state.advancedTradingView.pair],
   ({ pair }, { inputToken, outputToken }) => {
@@ -28,7 +32,7 @@ export const selectAllSwaprTrades = createSelector(
       }
     }
 
-    const [token0, token1] = inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+    const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
 
     const { burnsAndMints, swaps } = pair
 
@@ -103,6 +107,8 @@ export const selectAllSwaprTrades = createSelector(
     return {
       swaprTradeHistory,
       swaprLiquidityHistory,
+      token0,
+      token1,
     }
   }
 )

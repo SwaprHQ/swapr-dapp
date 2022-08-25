@@ -353,6 +353,11 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
+  const handleSwitchTokens = () => {
+    setApprovalsSubmitted([]) // reset 2 step UI for approvals
+    onSwitchTokens()
+  }
+
   const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
     inputCurrencyAmount: parsedAmounts[Field.INPUT],
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
@@ -406,12 +411,7 @@ export default function Swap() {
                 id="swap-currency-input"
               />
               <SwitchIconContainer>
-                <SwitchTokensAmountsContainer
-                  onClick={() => {
-                    setApprovalsSubmitted([]) // reset 2 step UI for approvals
-                    onSwitchTokens()
-                  }}
-                >
+                <SwitchTokensAmountsContainer onClick={handleSwitchTokens}>
                   <ArrowWrapper
                     clickable={!loading}
                     data-testid="switch-tokens-button"
@@ -495,7 +495,7 @@ export default function Swap() {
       />
       {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
         <>
-          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+          <AdvancedSwapMode onClickSwapTokens={handleSwitchTokens}>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}

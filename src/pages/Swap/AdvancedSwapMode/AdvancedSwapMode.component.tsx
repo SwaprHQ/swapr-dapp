@@ -1,10 +1,11 @@
-import { FC, PropsWithChildren, useEffect, useState } from 'react'
+import { FC, ReactNode, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
+import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
 import { AdvancedViewTradeHistory } from '../../../services/AdvancedTradingView/advancedTradingView.types'
 import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
@@ -36,9 +37,16 @@ const renderStatusOfTrades = (arr: AdvancedViewTradeHistory[], showTrades: boole
   }
 }
 
-export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
+interface AdvancedSwapModeProps {
+  onClickSwapTokens: () => void
+  children: ReactNode
+}
+
+export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickSwapTokens }) => {
   const {
     tradeHistory,
+    token0,
+    token1,
     hasMore: { hasMoreTrades },
   } = useAllTrades()
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
@@ -61,6 +69,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
 
   const handleSwitch = (option: string) => {
     setActiveSwitchOption(option)
+    onClickSwapTokens()
   }
 
   return (
@@ -72,19 +81,19 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
         <AdvancedModeHeader>
           <Flex justifyContent="space-between" alignItems="center">
             <AdvancedModeTitle>Trades</AdvancedModeTitle>
-            {inputToken && outputToken && (
+            {token0 && token1 && (
               <SwitcherWrapper>
                 <SwitchButton
-                  onClick={() => handleSwitch(inputToken.address)}
-                  active={activeSwitchOption === inputToken.address}
+                  onClick={() => handleSwitch(token0.address)}
+                  active={activeSwitchOption === token1.address}
                 >
-                  {inputToken.symbol}
+                  {token0.symbol}
                 </SwitchButton>
                 <SwitchButton
-                  onClick={() => handleSwitch(outputToken.address)}
-                  active={activeSwitchOption === outputToken.address}
+                  onClick={() => handleSwitch(token1.address)}
+                  active={activeSwitchOption === token0.address}
                 >
-                  {outputToken.symbol}
+                  {token1.symbol}
                 </SwitchButton>
               </SwitcherWrapper>
             )}
