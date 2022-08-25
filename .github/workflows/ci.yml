@@ -260,20 +260,20 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: contains(env.COMMIT_MSG, 'trigger-pipe')
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-pipe')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
           CI: true
 
       - name: Merge test results into one
-        if: contains(env.COMMIT_MSG, 'trigger-pipe')
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-pipe')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
       - name: Save code coverage results
-        if: contains(env.COMMIT_MSG, 'trigger-pipe')
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-pipe')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
