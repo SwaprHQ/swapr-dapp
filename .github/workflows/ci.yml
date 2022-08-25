@@ -362,15 +362,16 @@ jobs:
           name: Container04
           path: mochawesome-report
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
           name: 01transactionless
           path: mochawesome-report
-          continue-on-error: true
+
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
           name: 02transactionfull
           path: mochawesome-report
-          continue-on-error: true
 
       - name: Setup Node
         uses: actions/setup-node@v3
