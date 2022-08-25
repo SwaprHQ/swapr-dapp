@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
+import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
@@ -17,7 +17,7 @@ import {
 import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
 import { commonActions } from '../store/Common.reducer'
 import { ecoBridgeUIActions } from '../store/UI.reducer'
-import { ApprovalsAPI, QuoteAPI, ServerAPI } from './api'
+import { ApprovalsAPI, QuoteAPI, ServerAPI, TokenListsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
   QuoteControllerGetQuoteSortEnum,
@@ -309,108 +309,45 @@ export class SocketBridge extends EcoBridgeChildBase {
         }
       }
     } catch (e) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(e, this.bridgeId),
-        })
-      )
+      const isValid = getStatusOfResponse(e)
+      if (!isValid) {
+        this.store.dispatch(
+          ecoBridgeUIActions.setBridgeModalStatus({
+            status: BridgeModalStatus.ERROR,
+            error: getErrorMsg(e, this.bridgeId),
+          })
+        )
+      }
     }
   }
 
-  public getBridgingMetadata = async () => {
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as SocketList].lastMetadataCt
-
-    const helperRequestId = (requestId ?? 0) + 1
-
-    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
-
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
-
-    const { from, to } = this.store.getState().ecoBridge.ui
-
-    if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
-
-    const socketTokens = this.store.getState().ecoBridge.socket.lists[this.bridgeId]
-    const fromNativeCurrency = Currency.getNative(from.chainId)
-
-    let fromTokenAddress = ''
-    let toTokenAddress = ''
-
-    const overrideTokens = overrideTokensAddresses({
-      toChainId: to.chainId,
-      fromChainId: from.chainId,
-      fromAddress: from.address,
-    })
-
-    if (overrideTokens) {
-      const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
-
-      fromTokenAddress = fromTokenAddressOverride
-      toTokenAddress = toTokenAddressOverride
-    }
-
-    // Default pairing
-    if (!toTokenAddress && !fromTokenAddress) {
-      if (from.address === fromNativeCurrency.symbol) {
-        fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-        toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
-      } else {
-        const fromToken = socketTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
-
-        if (!fromToken) {
-          this.store.dispatch(
-            this.actions.setBridgeDetailsStatus({
-              status: SyncState.FAILED,
-              errorMessage: 'No available routes / details',
-            })
-          )
-          return
-        }
-
-        const toToken = socketTokens.tokens.find(
-          token => token.symbol === fromToken.symbol && token.chainId === to.chainId
-        )
-
-        if (!toToken) {
-          this.store.dispatch(
-            this.actions.setBridgeDetailsStatus({
-              status: SyncState.FAILED,
-              errorMessage: 'No available routes / details',
-            })
-          )
-          return
-        }
-
-        fromTokenAddress = fromToken.address
-        toTokenAddress = toToken.address
-      }
-    }
-
-    let value = BigNumber.from(0)
-    //handling small amounts
-    try {
-      value = parseUnits(from.value, from.decimals)
-    } catch (e) {
-      this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({
-          status: SyncState.FAILED,
-          errorMessage: 'No available routes / details',
-        })
-      )
-      return
-    }
+  private _fetchSocketRoutes = async ({
+    fromChainId,
+    fromTokenAddress,
+    toTokenAddress,
+    toChainId,
+    fromAmount,
+    helperRequestId,
+  }: {
+    fromChainId: string
+    fromTokenAddress: string
+    toTokenAddress: string
+    toChainId: string
+    fromAmount: string
+    helperRequestId: number
+  }) => {
+    if (!this._account) return
 
     let quote: QuoteOutputDTO | undefined
 
     try {
       quote = await QuoteAPI.quoteControllerGetQuote(
         {
-          fromChainId: from.chainId.toString(),
+          fromChainId,
           fromTokenAddress,
           toTokenAddress,
-          toChainId: to.chainId.toString(),
-          fromAmount: value.toString(),
+          toChainId,
+          fromAmount,
           userAddress: this._account,
           uniqueRoutesPerBridge: false,
           disableSwapping: false,
@@ -432,7 +369,6 @@ export class SocketBridge extends EcoBridgeChildBase {
         return
       }
     }
-
     if (!quote) return
 
     const { success, result } = quote
@@ -468,42 +404,215 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
 
+    const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals)).toFixed(2).toString()
+
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 
     const details = {
       gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
       estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-      receiveAmount: Number(formatUnits(toAmount, toAsset.decimals)).toFixed(2).toString(),
+      receiveAmount: formattedToAmount,
       requestId: helperRequestId,
     }
 
     this.store.dispatch(this.actions.setBridgeDetails(details))
   }
 
+  public getBridgingMetadata = async () => {
+    const ecoBridgeState = this.store.getState().ecoBridge
+
+    const { isBridgeSwapActive, from, to } = ecoBridgeState.ui
+
+    const requestId = ecoBridgeState[this.bridgeId as SocketList].lastMetadataCt
+
+    const helperRequestId = (requestId ?? 0) + 1
+
+    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+
+    // reset previous data
+    this.store.dispatch(
+      this.actions.setApprovalData({
+        allowanceTarget: undefined,
+        amount: undefined,
+        chainId: undefined,
+        owner: undefined,
+        tokenAddress: undefined,
+      })
+    )
+    this.store.dispatch(this.actions.setRoutes([]))
+
+    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
+
+    if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
+
+    let value = BigNumber.from(0)
+
+    //handling small amounts
+    try {
+      value = parseUnits(from.value, from.decimals)
+    } catch (e) {
+      this.store.dispatch(
+        this.actions.setBridgeDetailsStatus({
+          status: SyncState.FAILED,
+          errorMessage: 'No available routes / details',
+        })
+      )
+      return
+    }
+
+    if (isBridgeSwapActive) {
+      await this._fetchSocketRoutes({
+        fromChainId: from.chainId.toString(),
+        fromTokenAddress:
+          from.address === Currency.getNative(from.chainId).symbol ? SOCKET_NATIVE_TOKEN_ADDRESS : from.address,
+        toTokenAddress: to.address === Currency.getNative(to.chainId).symbol ? SOCKET_NATIVE_TOKEN_ADDRESS : to.address,
+        toChainId: to.chainId.toString(),
+        fromAmount: value.toString(),
+        helperRequestId,
+      })
+    } else {
+      const socketTokens = this.store.getState().ecoBridge.socket.lists[this.bridgeId]
+      const fromNativeCurrency = Currency.getNative(from.chainId)
+
+      let fromTokenAddress = ''
+      let toTokenAddress = ''
+
+      const overrideTokens = overrideTokensAddresses({
+        toChainId: to.chainId,
+        fromChainId: from.chainId,
+        fromAddress: from.address,
+      })
+
+      if (overrideTokens) {
+        const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
+
+        fromTokenAddress = fromTokenAddressOverride
+        toTokenAddress = toTokenAddressOverride
+      }
+
+      // Default pairing
+      if (!toTokenAddress && !fromTokenAddress) {
+        if (from.address === fromNativeCurrency.symbol) {
+          fromTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+          toTokenAddress = SOCKET_NATIVE_TOKEN_ADDRESS
+        } else {
+          const fromToken = socketTokens.tokens.find(
+            token => token.address.toLowerCase() === from.address.toLowerCase()
+          )
+
+          if (!fromToken) {
+            this.store.dispatch(
+              this.actions.setBridgeDetailsStatus({
+                status: SyncState.FAILED,
+                errorMessage: 'No available routes / details',
+              })
+            )
+            return
+          }
+
+          const toToken = socketTokens.tokens.find(
+            token => token.symbol === fromToken.symbol && token.chainId === to.chainId
+          )
+
+          if (!toToken) {
+            this.store.dispatch(
+              this.actions.setBridgeDetailsStatus({
+                status: SyncState.FAILED,
+                errorMessage: 'No available routes / details',
+              })
+            )
+            return
+          }
+
+          fromTokenAddress = fromToken.address
+          toTokenAddress = toToken.address
+        }
+      }
+
+      await this._fetchSocketRoutes({
+        fromChainId: from.chainId.toString(),
+        fromTokenAddress,
+        toTokenAddress,
+        toChainId: to.chainId.toString(),
+        fromAmount: value.toString(),
+        helperRequestId,
+      })
+    }
+  }
+
   public fetchDynamicLists = async () => {
     const {
       from: { chainId: fromChainId },
       to: { chainId: toChainId },
+      isBridgeSwapActive,
     } = this.store.getState().ecoBridge.ui
 
     if (!fromChainId || !toChainId) return
 
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
 
-    const tokenListKey = `${Math.min(Number(fromChainId), Number(toChainId))}-${Math.max(
-      Number(fromChainId),
-      Number(toChainId)
-    )}`
+    let tokenList: TokenList | undefined
 
-    const tokenList: TokenList = {
-      name: 'Socket',
-      timestamp: new Date().toISOString(),
-      version: VERSION,
-      tokens: this._tokenLists[tokenListKey] ?? [],
-      logoURI: SocketLogo,
+    if (isBridgeSwapActive) {
+      const tokenListParameters = {
+        fromChainId: fromChainId.toString(),
+        toChainId: toChainId.toString(),
+        isShortList: false,
+        disableSwapping: false,
+        singleTxOnly: true,
+      }
+
+      try {
+        const [fromTokenList, toTokenList] = await Promise.all([
+          TokenListsAPI.tokenListControllerGetfromTokenList(tokenListParameters),
+          TokenListsAPI.tokenListControllerGetToTokenList(tokenListParameters),
+        ])
+
+        const tokens = [...fromTokenList.result, ...toTokenList.result].reduce<TokenInfo[]>((allTokens, token) => {
+          const { address, chainId, symbol, decimals, icon, name } = token
+
+          // remove native currency from fromTokenList
+          if (address === SOCKET_NATIVE_TOKEN_ADDRESS && symbol === Currency.getNative(fromChainId).symbol)
+            return allTokens
+
+          allTokens.push({
+            address,
+            chainId: Number(chainId),
+            symbol,
+            decimals: decimals ?? 18,
+            name: name ?? '',
+            logoURI: icon,
+          })
+
+          return allTokens
+        }, [])
+
+        tokenList = {
+          name: 'Socket',
+          timestamp: new Date().toISOString(),
+          version: VERSION,
+          logoURI: SocketLogo,
+          tokens,
+        }
+      } catch (e) {
+        throw new Error('Failed to fetch Socket token lists')
+      }
+    } else {
+      const tokenListKey = `${Math.min(Number(fromChainId), Number(toChainId))}-${Math.max(
+        Number(fromChainId),
+        Number(toChainId)
+      )}`
+
+      tokenList = {
+        name: 'Socket',
+        timestamp: new Date().toISOString(),
+        version: VERSION,
+        logoURI: SocketLogo,
+        tokens: this._tokenLists[tokenListKey] ?? [],
+      }
     }
 
-    this.store.dispatch(this.actions.addTokenLists({ socket: tokenList }))
+    this.store.dispatch(this.actions.addTokenLists({ socket: tokenList as TokenList }))
     this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
   }
 
