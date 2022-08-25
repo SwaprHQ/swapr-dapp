@@ -89,7 +89,7 @@ export default function Swap() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
-  const [showChart, setShowChart] = useState(true)
+  const [showChart, setShowChart] = useState(false)
   const theme = useTheme()
   const isMobile = useIsMobileByMedia()
 
@@ -386,20 +386,22 @@ export default function Swap() {
         <Flex justifyContent="center" flexDirection={['column', 'row']}>
           <AppBodyContainer>
             <Tabs>
-              <ButtonGrey ml={2} mb="10px" onClick={() => setShowChart(!showChart)}>
-                chart
-                {showChart ? (
-                  isMobile ? (
-                    <ChevronsUp size={16} color={theme.purple3} />
+              {
+                <ButtonGrey disabled={!currencies.OUTPUT} ml={2} mb="10px" onClick={() => setShowChart(!showChart)}>
+                  chart
+                  {showChart ? (
+                    isMobile ? (
+                      <ChevronsUp size={16} color={theme.purple3} />
+                    ) : (
+                      <ChevronsLeft size={18} color={theme.purple3} />
+                    )
+                  ) : isMobile ? (
+                    <ChevronsDown size={16} color={theme.purple3} />
                   ) : (
-                    <ChevronsLeft size={18} color={theme.purple3} />
-                  )
-                ) : isMobile ? (
-                  <ChevronsDown size={16} color={theme.purple3} />
-                ) : (
-                  <ChevronsRight size={18} color={theme.purple3} />
-                )}
-              </ButtonGrey>
+                    <ChevronsRight size={18} color={theme.purple3} />
+                  )}
+                </ButtonGrey>
+              }
             </Tabs>
             <AppBody tradeDetailsOpen={!!trade}>
               <SwapPoolTabs active={'swap'} />
