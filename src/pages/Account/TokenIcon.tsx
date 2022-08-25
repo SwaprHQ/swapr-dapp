@@ -19,7 +19,6 @@ interface TokenIconProps {
 }
 export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, marginRight = 6 }: TokenIconProps) {
   const allTokens = useListsByToken()
-  console.log({ address, chainId })
   const token = allTokens.get(symbol)
   let sources: string[] = []
 
@@ -46,7 +45,7 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
   if (token) {
     sources.push(getTokenLogoURL(token.address))
   }
-  console.log({ sources })
+
   return (
     <Box sx={{ width: `${width}px`, height: `${height}px`, marginRight: `${marginRight}px`, position: 'relative' }}>
       <Box

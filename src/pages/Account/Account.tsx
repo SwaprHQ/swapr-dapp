@@ -18,9 +18,7 @@ import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
-import { DimBlurBgBox } from '../../ui/DimBlurBgBox'
-import { Header } from '../../ui/Header'
-import { HeaderText } from '../../ui/HeaderText'
+import { BlurBox } from '../../ui/BlurBox'
 import { PageWrapper } from '../../ui/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import {
@@ -31,16 +29,13 @@ import {
   DetailActionWrapper,
   ENSAvatar,
   FullAccount,
-  HeaderRow,
   PaginationRow,
   StyledLink,
-  TranasctionDetails,
 } from './Account.styles'
 import { type Transaction } from './Account.types'
 import { formattedTransactions as formatTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
-import { NoDataTransactionRow, TransactionRow } from './TransactionRow'
-import { TransactionRowSmallLayout } from './TransactionRowSmallLayout'
+import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
 
 export function Account() {
   const { t } = useTranslation('common')
@@ -136,45 +131,16 @@ export function Account() {
           <Switch label={'ALL NETWORKS'} handleToggle={handleAllNetworkTransations} isOn={showAllNetworkTransactions} />
         </Flex>
       </Flex>
-      <DimBlurBgBox>
-        <HeaderRow>
-          <HeaderText>
-            <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
-              <TranasctionDetails flex="15%" justifyContent="start">
-                From
-              </TranasctionDetails>
-              <TranasctionDetails flex="15%" justifyContent="start">
-                To
-              </TranasctionDetails>
-              <TranasctionDetails justifyContent="start">Price</TranasctionDetails>
-              <TranasctionDetails>Type</TranasctionDetails>
-              <TranasctionDetails>Status</TranasctionDetails>
-              <TranasctionDetails>Time</TranasctionDetails>
-            </Header>
-          </HeaderText>
-        </HeaderRow>
-        {transacationsByPage?.map(transaction => {
-          return isMobile ? (
-            <TransactionRowSmallLayout
-              transaction={transaction}
-              key={transaction.hash}
-              showAllNetworkTransactions={showAllNetworkTransactions}
-            />
-          ) : (
-            <TransactionRow
-              transaction={transaction}
-              key={transaction.hash}
-              showAllNetworkTransactions={showAllNetworkTransactions}
-            />
-          )
-        })}
-        {transactions?.length === 0 && <NoDataTransactionRow />}
-      </DimBlurBgBox>
+      <BlurBox>
+        <TransactionHeaders />
+        <TransactionRows transactions={transacationsByPage} showAllNetworkTransactions={showAllNetworkTransactions} />
+        <NoDataTransactionRow data={transactions} />
+      </BlurBox>
       <PaginationRow>
         <Box>
           <Pagination
             page={page}
-            totalItems={transactions.length + 1}
+            totalItems={transactions.length}
             itemsPerPage={responsiveItemsPerPage}
             onPageChange={setPage}
           />

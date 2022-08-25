@@ -20,7 +20,7 @@ import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
-import { DimBlurBgBox } from '../../../ui/DimBlurBgBox'
+import { BlurBox } from '../../../ui/BlurBox'
 import { PageWrapper } from '../../../ui/PageWrapper'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 
@@ -102,7 +102,7 @@ export default function Pair() {
           <ContentGrid>
             <TwoColumnsGrid>
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-              <DimBlurBgBox padding={'24px'}>
+              <BlurBox padding={'24px'}>
                 <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
                   <Box mb={3}>
                     <ValueWithLabel
@@ -123,7 +123,7 @@ export default function Pair() {
                     {t('pair.governance')}
                   </ButtonBadge>
                 </Flex>
-              </DimBlurBgBox>
+              </BlurBox>
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>

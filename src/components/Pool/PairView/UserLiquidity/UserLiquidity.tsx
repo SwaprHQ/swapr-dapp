@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { useTotalSupply } from '../../../../data/TotalSupply'
 import { useActiveWeb3React } from '../../../../hooks'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
-import { DimBlurBgBox } from '../../../../ui/DimBlurBgBox'
+import { BlurBox } from '../../../../ui/BlurBox'
 import { getAccountAnalyticsLink } from '../../../../utils'
 import { currencyId } from '../../../../utils/currencyId'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
@@ -55,7 +55,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
     : [undefined, undefined]
 
   return (
-    <DimBlurBgBox padding={'24px'}>
+    <BlurBox padding={'24px'}>
       <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
         <Text fontSize="16px" mb="16px">
           {t('userLiquidity.yourLiquidity')}
@@ -117,6 +117,6 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
           </ButtonPurpleDim>
         </Box>
       </Flex>
-    </DimBlurBgBox>
+    </BlurBox>
   )
 }

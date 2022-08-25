@@ -13,7 +13,7 @@ import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
-import { DimBlurBgBox } from '../../../ui/DimBlurBgBox'
+import { BlurBox } from '../../../ui/BlurBox'
 import { Header } from '../../../ui/Header'
 import { HeaderText } from '../../../ui/HeaderText'
 import { ListLayout } from '../../../ui/ListLayout'
@@ -54,7 +54,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
 
   return (
     <Flex flexDirection="column">
-      <DimBlurBgBox>
+      <BlurBox>
         {loading ? (
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
@@ -126,7 +126,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
             </div>
           </Flex>
         )}
-      </DimBlurBgBox>
+      </BlurBox>
       {aggregatedPairs.length > responsiveItemsPerPage && (
         <PaginationRow>
           <Box>

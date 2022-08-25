@@ -11,7 +11,7 @@ import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePa
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { useRouter } from '../../../../hooks/useRouter'
 import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
-import { DimBlurBgBox } from '../../../../ui/DimBlurBgBox'
+import { BlurBox } from '../../../../ui/BlurBox'
 import { formatCurrencyAmount } from '../../../../utils'
 import { ButtonExternalLink } from '../../../Button'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'
@@ -45,7 +45,7 @@ export function PoolStats({ pair }: PairViewProps) {
   }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
-    <DimBlurBgBox padding={'24px'}>
+    <BlurBox padding={'24px'}>
       <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
         <Text fontSize="16px" mb="16px">
           {t('poolStats.poolStats')}
@@ -61,6 +61,6 @@ export function PoolStats({ pair }: PairViewProps) {
           <ValueWithLabel title={t('APY')} value={`${bestAPY?.toFixed(2) || 0}%`} big />
         </InfoGrid>
       </Box>
-    </DimBlurBgBox>
+    </BlurBox>
   )
 }
