@@ -233,6 +233,13 @@ jobs:
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
 
+      - uses: vishnudxb/cancel-gh-workflow@v1.0
+        if: ${{ !(github.event.pull_request.merged) && !(contains(env.COMMIT_MSG, 'trigger-pipe')) }}
+        with:
+          repo: levelkdev/swapr-dapp
+          branch_name: ${{ steps.extract_branch.outputs.branch }}
+          workflow_file_name: ci.yml
+          access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
