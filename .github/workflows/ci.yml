@@ -205,7 +205,6 @@ jobs:
     env:
       IF_MERGED: ${{ github.event.pull_request.merged }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
-      ASSIGNEE: ${{ github.event.pull_request.assignee.login }}
     strategy:
       fail-fast: false
       matrix:
