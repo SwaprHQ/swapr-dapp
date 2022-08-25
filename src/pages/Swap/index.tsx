@@ -9,10 +9,10 @@ import styled, { useTheme } from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { ButtonGrey } from '../../components/Button'
+import SimpleChart from '../../components/Charts/SimpleChart'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import SimpleSimpleChart from '../../components/SimpleChart/SimpleSimpleChart'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -49,7 +49,6 @@ import Footer from './../../components/LandingPageComponents/layout/Footer'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
-import SimpleChart from './SimpleChart'
 
 export type SwapData = {
   showConfirm: boolean
@@ -511,7 +510,7 @@ export default function Swap() {
               />
             )}
           </AppBodyContainer>
-          {showChart && <SimpleSimpleChart />}
+          {showChart && <SimpleChart />}
         </Flex>
       </Hero>
       <LandingBodyContainer>

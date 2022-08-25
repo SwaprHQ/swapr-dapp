@@ -24,7 +24,7 @@ const lastDataElement = (data: Array<{ value: number; time: number }>) => data[d
 const lastElementValueOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.value ?? 0
 const lastElementTimeOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.time ?? 0
 
-const SimpleChart = ({ data }: { data: ChartData[] }) => {
+const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(formatDate(buildDate(lastElementTimeOrDefault(data))))
@@ -145,4 +145,4 @@ const DateText = styled.p`
   color: ${({ theme }) => theme.text4};
 `
 
-export default SimpleChart
+export default TradingViewAreaChart

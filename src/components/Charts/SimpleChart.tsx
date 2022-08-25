@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChevronDown } from 'react-feather'
+import { ExternalLink } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -9,14 +9,14 @@ import {
   DATE_INTERVALS_IN_TIMESTAMP,
   usePairTokenPriceByTimestamp,
 } from '../../hooks/usePairTokenPriceByTimestamp'
-import SimpleChart from '../../pages/Swap/SimpleChart'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
 import { ButtonGrey } from '../Button'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
+import TradingViewAreaChart from './TradingViewAreaChart'
 
-export default function SimpleSimpleChart() {
+export default function SimpleChart() {
   const [selectedInterval, setSelectedInterval] = React.useState<number>(DATE_INTERVALS.DAY)
 
   const { currencies } = useDerivedSwapInfo()
@@ -55,8 +55,8 @@ export default function SimpleSimpleChart() {
                   {!token0 || !token1 ? <Skeleton width="60px" /> : `${token0.symbol}/${token1.symbol}`}
                 </Text>
               </Box>
-              <Box>
-                <ChevronDown size={12} />
+              <Box ml={2}>
+                <ExternalLink size={14} />
               </Box>
             </PointableFlex>
             <Flex>
@@ -75,7 +75,7 @@ export default function SimpleSimpleChart() {
             </Flex>
           </Flex>
           <Box p={3} width="100%">
-            <SimpleChart data={data} />
+            <TradingViewAreaChart data={data} />
           </Box>
         </Flex>
       </DimBlurBgBox>
