@@ -221,7 +221,6 @@ jobs:
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "COMMIT_MSG=$MSG" >> "$GITHUB_ENV"
 
-
       - name: Check how tests should be executed #1
         if: contains(env.COMMIT_MSG, 'trigger-synpress')
         run: |
@@ -306,7 +305,7 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        if: ${{ !(github.event.pull_request.merged) && !(contains(env.COMMIT_MSG, 'skip-cypress'))}}
+        if: ${{ !(github.event.pull_request.merged) }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: true
         env:
