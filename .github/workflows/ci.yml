@@ -266,8 +266,8 @@ jobs:
         env:
           CI: true
         with:
-            COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-            COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
         if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-pipe')) }}
