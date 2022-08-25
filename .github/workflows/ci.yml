@@ -231,7 +231,7 @@ jobs:
         run: |
           SUB='trigger-pipe'
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          echo "COMMIT_MSG=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
+          echo "COMMIT_MSG=$MSG" >> "$GITHUB_ENV"
           echo "${MSG}"
           
 
