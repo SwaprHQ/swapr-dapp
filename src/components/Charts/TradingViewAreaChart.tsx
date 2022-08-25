@@ -9,14 +9,16 @@ import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
 const formatDateShort = (date: Date) => date.toLocaleString('default', { month: 'short' }) + ' ' + date.getDate()
 
 const formatDate = (date: Date) =>
-  `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}, ${date.getFullYear()}`
+  `${date.toLocaleString('default', {
+    month: 'short',
+  })} ${date.getDate()}, ${date.getFullYear()}  ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
 
 const buildDate = (time: number) => new Date(time * 1000)
 
 const chartColors = {
   backgroundColor: 'transparent',
-  lineColor: '#C8BDFF',
-  textColor: '#565A69',
+  lineColor: 'rgba(200, 189, 255, 1)',
+  textColor: 'rgba(135, 128, 191, 1)',
   areaTopColor: 'rgba(255, 255, 255, 1)',
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
@@ -29,7 +31,6 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(formatDate(buildDate(lastElementTimeOrDefault(data))))
-  const theme = useTheme()
 
   useEffect(() => {
     if (
@@ -39,9 +40,6 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       !chartRef.current.parentElement.clientWidth
     )
       return
-    const handleResize = () => {
-      chart.applyOptions({ width: chartRef.current.parentElement.clientWidth - 32, height: 200 })
-    }
 
     const chart = createChart(chartRef.current, {
       height: 246,
@@ -113,10 +111,8 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(formatDate(buildDate(time as UTCTimestamp)))
     })
-    window.addEventListener('resize', handleResize)
 
     return () => {
-      window.removeEventListener('resize', handleResize)
       setPrice(0)
       setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
       chart.remove()
