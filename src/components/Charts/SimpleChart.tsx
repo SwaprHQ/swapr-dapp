@@ -1,9 +1,12 @@
+import { Pair } from '@swapr/sdk'
+
 import React from 'react'
-import { ExternalLink } from 'react-feather'
+import { ExternalLink as ExternalLinkIcon } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
+import { useActiveWeb3React } from '../../hooks'
 import {
   DATE_INTERVALS,
   DATE_INTERVALS_IN_TIMESTAMP,
@@ -11,17 +14,28 @@ import {
 } from '../../hooks/usePairTokenPriceByTimestamp'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
+import { ExternalLink } from '../../theme'
+import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { ButtonGrey } from '../Button'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
 export default function SimpleChart() {
+  const { chainId } = useActiveWeb3React()
   const [selectedInterval, setSelectedInterval] = React.useState<number>(DATE_INTERVALS.DAY)
-
   const { currencies } = useDerivedSwapInfo()
   const token0 = currencies[Field.INPUT]
   const token1 = currencies[Field.OUTPUT]
+  const theme = useTheme()
+
+  const wrappedToken0 = wrappedCurrency(token0, chainId)
+  const wrappedToken1 = wrappedCurrency(token1, chainId)
+  const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
+  const statsLink = pairAddress
+    ? `https://dxstats.eth.limo/#/pair/${pairAddress}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/pairs?chainId=${chainId}`
+
   const { data, loading, error } = usePairTokenPriceByTimestamp({
     token0,
     token1,
@@ -41,7 +55,7 @@ export default function SimpleChart() {
       <DimBlurBgBox height="400px" width={['100%', '550px']} py={3}>
         <Flex flexDirection="column" width="100%" justifyContent="center" alignItems="center">
           <Flex width="100%" justifyContent="space-between" px={3}>
-            <PointableFlex onClick={() => {}}>
+            <PairExternalLink href={statsLink}>
               <Box mr="4px">
                 <DoubleCurrencyLogo
                   loading={!token0 || !token1}
@@ -50,15 +64,13 @@ export default function SimpleChart() {
                   size={20}
                 />
               </Box>
-              <Box mr="4px">
-                <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                  {!token0 || !token1 ? <Skeleton width="60px" /> : `${token0.symbol}/${token1.symbol}`}
+              <Flex alignItems="center">
+                <Text fontWeight="600" fontSize="14px" color={theme.text2}>
+                  {!token0 || !token1 ? <Skeleton width="69px" /> : `${token0.symbol}/${token1.symbol}`}
                 </Text>
-              </Box>
-              <Box ml={2}>
-                <ExternalLink size={14} />
-              </Box>
-            </PointableFlex>
+                <Box ml={2}>{token0 && token1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
+              </Flex>
+            </PairExternalLink>
             <Flex>
               <ButtonGrey ml={2} mb="10px" onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}>
                 1d
@@ -83,11 +95,12 @@ export default function SimpleChart() {
   )
 }
 
-const PointableFlex = styled(Flex)`
+const PairExternalLink = styled(ExternalLink)`
+  display: flex;
+  align-items: center;
   border: solid 1px ${props => props.theme.bg3};
   border-radius: 8px;
   height: 36px;
-  align-items: center;
   padding: 0 10px;
   cursor: pointer;
 `
