@@ -212,16 +212,6 @@ jobs:
       matrix:
         containers: [02transactionfull, 01transactionless]
     steps:
-      - name: Check how tests should be executed #1
-        if: ${{ (github.event.pull_request.assignee.login == 'niemam29') }}
-        run: |
-              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
-
-      - name: Check how tests should be executed #2
-        if: ${{ (github.event.pull_request.merged) }}
-        run: |
-              echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
-
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
@@ -229,16 +219,19 @@ jobs:
 
       - name: Get Commit Message
         run: |
-          SUB='trigger-pipe'
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "COMMIT_MSG=$MSG" >> "$GITHUB_ENV"
-          echo "${MSG}"
-          
 
-      - name: Get Commit Message
+
+      - name: Check how tests should be executed #1
+        if: contains(env.COMMIT_MSG, 'trigger-pipe')
         run: |
-          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          echo ${MSG}
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
+
+      - name: Check how tests should be executed #2
+        if: ${{ (github.event.pull_request.merged) }}
+        run: |
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
 
 
       - name: ⎔ Setup node
