@@ -229,8 +229,9 @@ jobs:
 
       - name: Get Commit Message
         run: |
+          SUB='trigger-pipe'
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          if [[ "$MSG" == *"trigger-pipe"* ]]; then
+          if [[ "$MSG" == *"$SUB"* ]]; then
             echo "It's there."
           fi
           echo "${MSG}"
