@@ -1,7 +1,8 @@
 import { BarPrice, createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
+import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
 
@@ -28,6 +29,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(formatDate(buildDate(lastElementTimeOrDefault(data))))
+  const theme = useTheme()
 
   useEffect(() => {
     if (
@@ -123,11 +125,24 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
 
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
-      <Box width="100%">
-        <BigPriceText>{price}</BigPriceText>
-        <DateText>{date}</DateText>
-      </Box>
-      <div ref={chartRef} />
+      {data.length > 0 ? (
+        <>
+          <Box width="100%">
+            <BigPriceText>{price}</BigPriceText>
+            <DateText>{date}</DateText>
+          </Box>
+          <div ref={chartRef} />
+        </>
+      ) : (
+        <>
+          <Box width="100%">
+            <Skeleton baseColor="rgb(182 175 242 / 32%)" width="114px" height="54px"></Skeleton>
+            <Box mt={5}>
+              <Skeleton baseColor="rgb(182 175 242 / 32%)" width="100%" height="138px"></Skeleton>
+            </Box>
+          </Box>
+        </>
+      )}
     </Flex>
   )
 }
