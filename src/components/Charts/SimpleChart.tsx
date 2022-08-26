@@ -16,7 +16,6 @@ import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
 import { ExternalLink } from '../../theme'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import { ButtonGrey } from '../Button'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
 import TradingViewAreaChart from './TradingViewAreaChart'
@@ -72,18 +71,30 @@ export default function SimpleChart() {
               </Flex>
             </PairExternalLink>
             <Flex>
-              <ButtonGrey ml={2} mb="10px" onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.DAY}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
+              >
                 1d
-              </ButtonGrey>
-              <ButtonGrey ml={2} mb="10px" onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}>
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.WEEK}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
+              >
                 1w
-              </ButtonGrey>
-              <ButtonGrey ml={2} mb="10px" onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}>
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.MONTH}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
+              >
                 1m
-              </ButtonGrey>
-              <ButtonGrey ml={2} mb="10px" onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}>
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.YEAR}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
+              >
                 1y
-              </ButtonGrey>
+              </DateFilterButton>
             </Flex>
           </Flex>
           <Box p={3} width="100%">
@@ -94,6 +105,32 @@ export default function SimpleChart() {
     </Box>
   )
 }
+
+const DateFilterButton = styled.button<{ active?: boolean }>`
+  margin-left: 4px;
+  padding: 10px 12px;
+  height: fit-content;
+  border: ${({ active }) => (active ? '1px solid #464366' : 'transparent')};
+
+  color: ${({ theme }) => theme.text4};
+  font-size: 10px;
+  text-transform: uppercase;
+
+  background: ${({ active }) =>
+    active
+      ? 'linear-gradient(143.3deg,rgba(46,23,242,0.3) -185.11%,rgb(46 23 242 / 4%) 49.63%),linear-gradient(113.18deg,rgb(255 255 255 / 22%) -0.1%,rgb(0 0 0 / 18%) 98.9%),rgb(57 51 88 / 80%)'
+      : 'transparent'};
+  background-blend-mode: normal, overlay, normal;
+  backdrop-filter: ${({ active }) => (active ? ' blur(25px)' : '0')};
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(143.3deg, rgba(46, 23, 242, 0.3) -185.11%, rgb(46 23 242 / 4%) 49.63%),
+      linear-gradient(113.18deg, rgb(255 255 255 / 22%) -0.1%, rgb(0 0 0 / 18%) 98.9%), rgb(57 51 88 / 80%);
+  }
+`
 
 const PairExternalLink = styled(ExternalLink)`
   display: flex;
