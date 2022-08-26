@@ -71,11 +71,15 @@ export const GridCard = styled(Flex)<{ status?: string }>`
   align-items: center;
   color: #c0baf6;
   border-bottom: 1px solid #3e4259;
+  font-size: 16px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px;
     &:last-of-type {
       border-radius: 12px;
     }
+    flex-wrap: wrap;
+    gap: 12px 4px;
+    font-size: 14px;
   `};
   background: ${({ status }) => {
     switch (status) {
@@ -105,8 +109,19 @@ export const TokenRow = styled(Flex)`
   padding-right: 8px;
 `
 
+export const TokenDetails = styled(Flex)`
+  flex: 15%;
+  min-width: 100px !important;
+  width: 40%;
+  justify-content: start;
+  align-items: center;
+  padding-right: 8px;
+  text-transform: uppercase;
+`
+
 export const TranasctionDetails = styled(Flex)`
   flex: 10%;
+  min-width: 80px !important;
   justify-content: center;
   align-items: center;
   padding-right: 8px;
@@ -116,6 +131,9 @@ export const TranasctionDetails = styled(Flex)`
 export const TypeDetails = styled(TranasctionDetails)`
   flex-direction: column;
   font-size: 10px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    align-items: start;
+  `}
 `
 
 export const StyledLogo = styled(Logo)<{ size: string }>`

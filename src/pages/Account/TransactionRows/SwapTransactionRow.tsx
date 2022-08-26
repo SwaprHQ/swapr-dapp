@@ -3,7 +3,7 @@ import { Box, Flex } from 'rebass'
 
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { GridCard, Status, TranasctionDetails, TypeDetails } from '../Account.styles'
+import { GridCard, Status, TokenDetails, TranasctionDetails, TypeDetails } from '../Account.styles'
 import { SwapTransaction } from '../Account.types'
 import { TokenIcon } from '../TokenIcon'
 
@@ -19,7 +19,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
   price = price === Infinity ? 0 : price
   return (
     <GridCard status={status}>
-      <TranasctionDetails flex="15%" justifyContent="start">
+      <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} />
@@ -32,9 +32,9 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
             <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
           )}
         </Flex>
-      </TranasctionDetails>
+      </TokenDetails>
 
-      <TranasctionDetails flex="15%" justifyContent="start">
+      <TokenDetails justifyContent="start">
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} />
@@ -47,7 +47,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
             <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
           )}
         </Flex>
-      </TranasctionDetails>
+      </TokenDetails>
 
       <TranasctionDetails justifyContent="start">
         <Flex flexDirection="column" alignContent={'center'}>
@@ -57,7 +57,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
       </TranasctionDetails>
 
       <TypeDetails>
-        <Box color="#8780BF" fontWeight="600" fontSize="12px">
+        <Box color="#8780BF" fontWeight="600">
           {type}
         </Box>
       </TypeDetails>

@@ -3,7 +3,7 @@ import { Box, Flex } from 'rebass'
 
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { GridCard, Status, TranasctionDetails, TypeDetails } from '../Account.styles'
+import { GridCard, Status, TokenDetails, TranasctionDetails, TypeDetails } from '../Account.styles'
 import { type BridgeTransaction } from '../Account.types'
 import { TokenIcon } from '../TokenIcon'
 
@@ -20,31 +20,31 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
 
   return (
     <GridCard status={status.toUpperCase()}>
-      <TranasctionDetails flex="15%" justifyContent="start">
+      <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} address={from.tokenAddress} chainId={from.chainId} />
             <Flex flexDirection="column">
               <Box>{`${formatNumber(from.value, false, true)}`}</Box>
-              <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>{from.token}</Box>
             </Flex>
           </Flex>
           <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{fromNetwork?.name}</Box>
         </Flex>
-      </TranasctionDetails>
+      </TokenDetails>
 
-      <TranasctionDetails flex="15%" justifyContent="start">
+      <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} address={to.tokenAddress} chainId={to.chainId} />
             <Flex flexDirection="column">
               <Box>{`${formatNumber(to.value, false, true)}`}</Box>
-              <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>{to.token}</Box>
             </Flex>
           </Flex>
           <Box sx={{ fontSize: '10px', mt: 1, fontWeight: 600 }}>{toNetwork?.name}</Box>
         </Flex>
-      </TranasctionDetails>
+      </TokenDetails>
 
       <TranasctionDetails justifyContent="start">
         <Flex flexDirection="column" alignContent={'center'}>
