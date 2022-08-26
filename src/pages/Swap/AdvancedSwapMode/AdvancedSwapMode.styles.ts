@@ -178,6 +178,13 @@ export const AdvancedModeDetails = styled.div`
   color: ${({ theme }) => theme.purple3};
 
   ${AdvancedModeDetailsItems};
+
+  & div {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.125rem 0;
+  }
 `
 export const TransactionsWrapper = styled.div`
   ${CustomScrollBar}

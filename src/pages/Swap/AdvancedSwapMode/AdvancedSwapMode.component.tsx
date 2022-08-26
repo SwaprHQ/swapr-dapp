@@ -1,3 +1,5 @@
+import { Token } from '@swapr/sdk'
+
 import { FC, ReactNode, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
@@ -45,12 +47,18 @@ interface AdvancedSwapModeProps {
 export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickSwapTokens }) => {
   const {
     tradeHistory,
-    token0,
-    token1,
     hasMore: { hasMoreTrades },
   } = useAllTrades()
+  const [tokens, setTokens] = useState<Token[]>([])
+  const [token0, token1] = tokens
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
     useAdvancedTradingViewAdapter()
+
+  useEffect(() => {
+    if (inputToken && outputToken) {
+      setTokens(sortsBeforeTokens(inputToken, outputToken))
+    }
+  }, [inputToken, outputToken])
 
   const navigate = useNavigate()
   const [activeSwitchOption, setActiveSwitchOption] = useState('')

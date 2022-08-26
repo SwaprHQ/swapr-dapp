@@ -107,8 +107,6 @@ export const selectAllSwaprTrades = createSelector(
     return {
       swaprTradeHistory,
       swaprLiquidityHistory,
-      token0,
-      token1,
     }
   }
 )
