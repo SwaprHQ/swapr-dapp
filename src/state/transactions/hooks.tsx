@@ -114,6 +114,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
           timestampResolved,
           txHash,
           bridgeId,
+          log,
         } = transaction
 
         return {
@@ -136,6 +137,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
           network: fromChainId,
           pendingReason,
           bridgeId,
+          logs: log,
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

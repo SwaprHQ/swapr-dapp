@@ -11,7 +11,6 @@ export const Status = styled(Flex)<{ status: string }>`
   padding: 4px;
   font-size: 9px;
   border-radius: 6px;
-  color: #0e9f6e;
   font-weight: 700;
   border-width: 1.5px;
   ${({ status }) => {
@@ -90,6 +89,7 @@ export const GridCard = styled(Flex)<{ status?: string }>`
       case 'PENDING':
       case 'REDEEM':
         return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 8.84%, rgba(242, 153, 74, 0) 55.62%)'
+      case 'FAILED':
       case 'CANCELLED':
         return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2.18%, rgba(240, 46, 81, 0) 62.13%)'
       default:
@@ -231,5 +231,34 @@ export const CallToActionWrapper = styled(Flex)`
   }
   & :first-child {
     margin-left: 0 !important;
+  }
+`
+
+export const NetworkName = styled(Flex)`
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+`
+
+export const NetworkLink = styled(Link)`
+  color: #c0baf6;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  & > svg {
+    margin-right: 4px;
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    color: #ebe9f8;
+    & > svg {
+      color: #ebe9f8;
+    }
   }
 `

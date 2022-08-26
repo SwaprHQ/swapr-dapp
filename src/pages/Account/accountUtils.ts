@@ -55,9 +55,16 @@ export const formattedTransactions = (
     })
     .filter(Boolean)
 
-  const sortedTransactions = [...swapTransactions, ...bridgeTransactions].sort(
-    (txn1, txn2) => (txn2?.confirmedTime ?? 0) - (txn1?.confirmedTime ?? 0)
-  ) as Transaction[]
+  const sortedTransactions = [...swapTransactions, ...bridgeTransactions].sort((txn1, txn2) => {
+    if (txn1?.status === 'pending' && txn2?.status !== 'pending') return -1
+    if (txn1?.status === 'pending' && txn2?.status === 'pending') {
+      if (!txn1.confirmedTime || !txn2.confirmedTime) return 0
+      if (txn1.confirmedTime > txn2.confirmedTime) return -1
+    }
+    if (txn1?.status === 'redeem' && txn2?.status !== 'pending') return -1
+
+    return (txn2?.confirmedTime ?? 0) - (txn1?.confirmedTime ?? 0)
+  }) as Transaction[]
 
   if (showPendingTransactions) {
     return sortedTransactions.filter(

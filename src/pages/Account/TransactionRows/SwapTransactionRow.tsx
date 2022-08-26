@@ -1,9 +1,18 @@
 import { DateTime } from 'luxon'
 import { Box, Flex } from 'rebass'
 
+import { getExplorerLink } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { GridCard, Status, TokenDetails, TranasctionDetails, TypeDetails } from '../Account.styles'
+import {
+  CustomLinkIcon,
+  GridCard,
+  NetworkLink,
+  Status,
+  TokenDetails,
+  TranasctionDetails,
+  TypeDetails,
+} from '../Account.styles'
 import { SwapTransaction } from '../Account.types'
 import { TokenIcon } from '../TokenIcon'
 
@@ -13,10 +22,12 @@ interface SwapTransactionRowProps {
 }
 
 export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: SwapTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, network } = transaction
+  const { type, status, from, to, confirmedTime, network, hash } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   let price = typeof to.value === 'number' && typeof from.value === 'number' ? from.value / to.value : 0
   price = price === Infinity ? 0 : price
+  const link = network ? getExplorerLink(Number(network), hash, 'transaction') : '#'
+
   return (
     <GridCard status={status}>
       <TokenDetails>
@@ -29,7 +40,12 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
             </Flex>
           </Flex>
           {showAllNetworkTransactions && (
-            <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+            <Box sx={{ mt: 1 }}>
+              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+                <CustomLinkIcon size={12} />
+                {networkDetails?.name}
+              </NetworkLink>
+            </Box>
           )}
         </Flex>
       </TokenDetails>
@@ -44,7 +60,12 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
             </Flex>
           </Flex>
           {showAllNetworkTransactions && (
-            <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{networkDetails?.name}</Box>
+            <Box sx={{ mt: 1 }}>
+              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+                <CustomLinkIcon size={12} />
+                {networkDetails?.name}
+              </NetworkLink>
+            </Box>
           )}
         </Flex>
       </TokenDetails>

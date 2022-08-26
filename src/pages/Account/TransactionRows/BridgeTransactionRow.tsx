@@ -1,9 +1,19 @@
 import { DateTime } from 'luxon'
 import { Box, Flex } from 'rebass'
 
+import { getExplorerLink } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { GridCard, Status, TokenDetails, TranasctionDetails, TypeDetails } from '../Account.styles'
+import {
+  CustomLinkIcon,
+  GridCard,
+  NetworkLink,
+  NetworkName,
+  Status,
+  TokenDetails,
+  TranasctionDetails,
+  TypeDetails,
+} from '../Account.styles'
 import { type BridgeTransaction } from '../Account.types'
 import { TokenIcon } from '../TokenIcon'
 
@@ -12,11 +22,17 @@ interface BridgeTransactionRowProps {
 }
 
 export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps) {
-  const { type, status, from, to, confirmedTime } = transaction
+  const { type, status, from, to, confirmedTime, logs } = transaction
 
   const fromNetwork = from?.chainId ? getNetworkInfo(Number(from?.chainId)) : undefined
   const toNetwork = to?.chainId ? getNetworkInfo(Number(to?.chainId)) : undefined
   const { bridgeId } = transaction
+
+  const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction')
+  const toLink =
+    logs[1]?.chainId !== undefined && logs[1]?.txHash !== undefined
+      ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction')
+      : undefined
 
   return (
     <GridCard status={status.toUpperCase()}>
@@ -29,7 +45,12 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
               <Box sx={{ fontSize: '0.8em' }}>{from.token}</Box>
             </Flex>
           </Flex>
-          <Box sx={{ textTransform: 'uppercase', fontSize: '10px', mt: 1 }}>{fromNetwork?.name}</Box>
+          <Box sx={{ mt: 1 }}>
+            <NetworkLink href={fromLink} rel="noopener noreferrer" target="_blank">
+              <CustomLinkIcon size={12} />
+              {fromNetwork?.name}
+            </NetworkLink>
+          </Box>
         </Flex>
       </TokenDetails>
 
@@ -42,7 +63,16 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
               <Box sx={{ fontSize: '0.8em' }}>{to.token}</Box>
             </Flex>
           </Flex>
-          <Box sx={{ fontSize: '10px', mt: 1, fontWeight: 600 }}>{toNetwork?.name}</Box>
+          <Box sx={{ mt: 1 }}>
+            {toLink ? (
+              <NetworkLink href={toLink} rel="noopener noreferrer" target="_blank">
+                <CustomLinkIcon size={12} />
+                {toNetwork?.name}
+              </NetworkLink>
+            ) : (
+              <NetworkName>{toNetwork?.name}</NetworkName>
+            )}
+          </Box>
         </Flex>
       </TokenDetails>
 
