@@ -1,7 +1,6 @@
-query getBlockPairTokenPrice($pairAddress: ID, $timestamp: BigInt, $skip: Int) {
-  blockPairTokenPrices(
-    first: 999
-    skip: $skip
+query getFiveMinutesPairTokenPrices($pairAddress: ID, $timestamp: BigInt) {
+  fiveMinutesPairTokenPrices(
+    first: 1000
     where: { pair_: { id: $pairAddress }, blockTimestamp_gt: $timestamp }
     orderBy: blockNumber
     orderDirection: asc

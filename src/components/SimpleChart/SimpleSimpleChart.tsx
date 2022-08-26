@@ -20,20 +20,23 @@ export default function SimpleSimpleChart() {
   const [selectedInterval, setSelectedInterval] = React.useState<number>(DATE_INTERVALS.DAY)
 
   const { currencies } = useDerivedSwapInfo()
-  const token0 = currencies[Field.INPUT]
-  const token1 = currencies[Field.OUTPUT]
+  const currency0 = currencies[Field.INPUT]
+  const currency1 = currencies[Field.OUTPUT]
+
   const { data, loading, error } = usePairTokenPriceByTimestamp({
-    token0,
-    token1,
+    currency0,
+    currency1,
     timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
+    timeframe: selectedInterval,
   })
 
   console.log({
-    token0: currencies[Field.INPUT],
-    token1: currencies[Field.OUTPUT],
+    currency0,
+    currency1,
     timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
     loading,
     data,
+    error,
   })
 
   return (
@@ -44,15 +47,15 @@ export default function SimpleSimpleChart() {
             <PointableFlex onClick={() => {}}>
               <Box mr="4px">
                 <DoubleCurrencyLogo
-                  loading={!token0 || !token1}
-                  currency0={token0 || undefined}
-                  currency1={token1 || undefined}
+                  loading={!currency0 || !currency1}
+                  currency0={currency0 || undefined}
+                  currency1={currency1 || undefined}
                   size={20}
                 />
               </Box>
               <Box mr="4px">
                 <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                  {!token0 || !token1 ? <Skeleton width="60px" /> : `${token0.symbol}/${token1.symbol}`}
+                  {!currency0 || !currency1 ? <Skeleton width="60px" /> : `${currency0.symbol}/${currency1.symbol}`}
                 </Text>
               </Box>
               <Box>
@@ -75,7 +78,17 @@ export default function SimpleSimpleChart() {
             </Flex>
           </Flex>
           <Box p={3} width="100%">
-            <SimpleChart data={data} />
+            {currency0 && currency1 ? (
+              loading ? (
+                'Loading'
+              ) : data ? (
+                <SimpleChart data={data} />
+              ) : (
+                'No data'
+              )
+            ) : (
+              'Choose token pair'
+            )}
           </Box>
         </Flex>
       </DimBlurBgBox>

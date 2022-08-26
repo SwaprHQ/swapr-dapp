@@ -20,9 +20,9 @@ const chartColors = {
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
-const lastDataElement = (data: Array<{ value: number; time: number }>) => data[data.length - 1]
-const lastElementValueOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.value ?? 0
-const lastElementTimeOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.time ?? 0
+const lastDataElement = (data: ChartData[]) => data[data.length - 1]
+const lastElementValueOrDefault = (data: ChartData[]) => lastDataElement(data)?.value ?? 0
+const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(data)?.time ?? 0
 
 const SimpleChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
@@ -37,12 +37,14 @@ const SimpleChart = ({ data }: { data: ChartData[] }) => {
       !chartRef.current.parentElement.clientWidth
     )
       return
+
     const handleResize = () => {
-      chart.applyOptions({ width: chartRef.current.parentElement.clientWidth - 32, height: 200 })
+      if (chartRef?.current?.parentElement)
+        chart.applyOptions({ width: chartRef.current.parentElement.clientWidth, height: 200 })
     }
 
     const chart = createChart(chartRef.current, {
-      height: 246,
+      height: 200,
       width: chartRef.current.parentElement.clientWidth,
       layout: {
         backgroundColor: chartColors.backgroundColor,
@@ -107,7 +109,7 @@ const SimpleChart = ({ data }: { data: ChartData[] }) => {
 
     chart.subscribeCrosshairMove(function (param) {
       const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
-      setPrice(currentPrice as BarPrice)
+      setPrice(currentPrice as string)
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(formatDate(buildDate(time as UTCTimestamp)))
     })
@@ -115,7 +117,7 @@ const SimpleChart = ({ data }: { data: ChartData[] }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      setPrice(0)
+      setPrice('0')
       setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
       chart.remove()
     }
