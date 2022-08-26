@@ -1,8 +1,8 @@
-import { BarPrice, createChart, UTCTimestamp } from 'lightweight-charts'
+import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
 
@@ -23,9 +23,9 @@ const chartColors = {
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
-const lastDataElement = (data: Array<{ value: number; time: number }>) => data[data.length - 1]
-const lastElementValueOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.value ?? 0
-const lastElementTimeOrDefault = (data: Array<{ value: number; time: number }>) => lastDataElement(data)?.time ?? 0
+const lastDataElement = (data: ChartData[]) => data[data.length - 1]
+const lastElementValueOrDefault = (data: ChartData[]) => lastDataElement(data)?.value ?? 0
+const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(data)?.time ?? 0
 
 const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
@@ -107,13 +107,13 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
 
     chart.subscribeCrosshairMove(function (param) {
       const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
-      setPrice(currentPrice as BarPrice)
+      setPrice(currentPrice as string)
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(formatDate(buildDate(time as UTCTimestamp)))
     })
 
     return () => {
-      setPrice(0)
+      setPrice('0')
       setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
       chart.remove()
     }

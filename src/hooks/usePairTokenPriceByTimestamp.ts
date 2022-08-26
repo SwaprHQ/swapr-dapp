@@ -3,7 +3,12 @@ import { Currency, Pair } from '@swapr/sdk'
 import { UTCTimestamp } from 'lightweight-charts'
 import { useEffect } from 'react'
 
-import { useGetBlockPairTokenPriceQuery } from '../graphql/generated/schema'
+import {
+  useGetFifteenMinutesPairTokenPricesQuery,
+  useGetFiveMinutesPairTokenPricesQuery,
+  useGetOneHourPairTokenPricesQuery,
+  useGetTwelveHoursPairTokenPricesQuery,
+} from '../graphql/generated/schema'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 import { useActiveWeb3React } from '.'
@@ -15,28 +20,27 @@ export const DATE_INTERVALS = {
   YEAR: 365,
 }
 
+const mayTimestamp = 1621928700 * 1000
+
 export const DATE_INTERVALS_IN_TIMESTAMP = {
-  [DATE_INTERVALS.DAY]: (
-    new Date(new Date(1621928700 * 1000).getTime() - 24 * 60 * 60 * 1000).getTime() / 1000
-  ).toString(),
+  [DATE_INTERVALS.DAY]: (new Date(new Date(mayTimestamp).getTime() - 24 * 60 * 60 * 1000).getTime() / 1000).toString(),
   [DATE_INTERVALS.WEEK]: (
-    new Date(new Date(1621928700 * 1000).getTime() - 7 * 24 * 60 * 60 * 1000).getTime() / 1000
+    new Date(new Date(mayTimestamp).getTime() - 7 * 24 * 60 * 60 * 1000).getTime() / 1000
   ).toString(),
-  [DATE_INTERVALS.MONTH]: (
-    new Date(1621928700 * 1000).setMonth(new Date(1621928700 * 1000).getMonth() - 1) / 1000
-  ).toString(),
+  [DATE_INTERVALS.MONTH]: (new Date(mayTimestamp).setMonth(new Date(mayTimestamp).getMonth() - 1) / 1000).toString(),
   [DATE_INTERVALS.YEAR]: (
-    new Date(1621928700 * 1000).setFullYear(new Date(1621928700 * 1000).getFullYear() - 1) / 1000
+    new Date(mayTimestamp).setFullYear(new Date(mayTimestamp).getFullYear() - 1) / 1000
   ).toString(),
 }
 
 type PairTokenPriceByTimestampProps = {
-  token0?: Currency
-  token1?: Currency
+  currency0?: Currency
+  currency1?: Currency
   timestamp: string
+  timeframe: number
 }
 
-export type ChartData = { time: UTCTimestamp; value: number }
+export type ChartData = { time: UTCTimestamp; value: string }
 type GetBlockPairTokenPriceQueryData = { blockTimestamp: string; token1Price: string }
 
 const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[]) => {
@@ -44,46 +48,88 @@ const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[]) => {
     data?.reduce<ChartData[]>((newArray, { blockTimestamp, token1Price }) => {
       newArray.push({
         time: parseInt(blockTimestamp, 10) as UTCTimestamp,
-        value: parseInt(token1Price, 10),
+        value: token1Price,
       })
       return newArray
     }, []) || []
   )
 }
 
-export function usePairTokenPriceByTimestamp({ token0, token1, timestamp }: PairTokenPriceByTimestampProps) {
+export function usePairTokenPriceByTimestamp({
+  currency0,
+  currency1,
+  timestamp,
+  timeframe,
+}: PairTokenPriceByTimestampProps) {
   const { chainId } = useActiveWeb3React()
 
-  const wrappedToken0 = wrappedCurrency(token0, chainId)
-  const wrappedToken1 = wrappedCurrency(token1, chainId)
+  const wrappedToken0 = wrappedCurrency(currency0, chainId)
+  const wrappedToken1 = wrappedCurrency(currency1, chainId)
+  const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
 
-  const { data, loading, error, fetchMore } = useGetBlockPairTokenPriceQuery({
+  const {
+    data: fiveMinutesData,
+    loading: fiveMinutesLoading,
+    error: fiveMinutesError,
+  } = useGetFiveMinutesPairTokenPricesQuery({
     variables: {
-      pairAddress: wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase(),
-      timestamp,
-      skip: 0,
+      pairAddress,
+      timestamp: 0,
+    },
+  })
+  const {
+    data: fifteenMinutesData,
+    loading: fifteenMinutesLoading,
+    error: fifteenMinutesError,
+  } = useGetFifteenMinutesPairTokenPricesQuery({
+    variables: {
+      pairAddress,
+      timestamp: 0,
+    },
+  })
+  const {
+    data: oneHourData,
+    loading: oneHourLoading,
+    error: oneHourError,
+  } = useGetOneHourPairTokenPricesQuery({
+    variables: {
+      pairAddress,
+      timestamp: 0,
+    },
+  })
+  const {
+    data: twelveHoursData,
+    loading: twelveHoursLoading,
+    error: twelveHoursError,
+  } = useGetTwelveHoursPairTokenPricesQuery({
+    variables: {
+      pairAddress,
+      timestamp: 0,
     },
   })
 
-  // useEffect(() => {
-  //   if (data?.blockPairTokenPrices.length === 1000) {
-  //     fetchMore({
-  //       variables: {
-  //         offset: data.blockPairTokenPrices.length,
-  //       },
-  //       updateQuery: (prev, { fetchMoreResult }) => {
-  //         if (!fetchMoreResult) return prev
-  //         return Object.assign({}, prev, {
-  //           blockPairTokenPrices: [...fetchMoreResult.blockPairTokenPrices, ...prev.blockPairTokenPrices],
-  //         })
-  //       },
-  //     })
-  //   }
-  // }, [data, fetchMore])
-
-  return {
-    loading,
-    data: convertToChartData(data?.blockPairTokenPrices as GetBlockPairTokenPriceQueryData[]),
-    error,
+  const CHART_INFO_BY_TIMEFRAME = {
+    [DATE_INTERVALS.DAY]: {
+      loading: fiveMinutesLoading,
+      data: convertToChartData(fiveMinutesData?.fiveMinutesPairTokenPrices as GetBlockPairTokenPriceQueryData[]),
+      error: fiveMinutesError,
+    },
+    [DATE_INTERVALS.WEEK]: {
+      loading: fifteenMinutesLoading,
+      data: convertToChartData(fifteenMinutesData?.fifteenMinutesPairTokenPrices as GetBlockPairTokenPriceQueryData[]),
+      error: fifteenMinutesError,
+    },
+    [DATE_INTERVALS.MONTH]: {
+      loading: oneHourLoading,
+      data: convertToChartData(oneHourData?.oneHourPairTokenPrices as GetBlockPairTokenPriceQueryData[]),
+      error: oneHourError,
+    },
+    [DATE_INTERVALS.YEAR]: {
+      loading: twelveHoursLoading,
+      data: convertToChartData(twelveHoursData?.twelveHoursPairTokenPrices as GetBlockPairTokenPriceQueryData[]),
+      error: twelveHoursError,
+    },
   }
+
+  return CHART_INFO_BY_TIMEFRAME[timeframe]
 }

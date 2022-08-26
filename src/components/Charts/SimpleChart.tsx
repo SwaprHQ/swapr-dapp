@@ -24,26 +24,27 @@ export default function SimpleChart() {
   const { chainId } = useActiveWeb3React()
   const [selectedInterval, setSelectedInterval] = React.useState<number>(DATE_INTERVALS.DAY)
   const { currencies } = useDerivedSwapInfo()
-  const token0 = currencies[Field.INPUT]
-  const token1 = currencies[Field.OUTPUT]
+  const currency0 = currencies[Field.INPUT]
+  const currency1 = currencies[Field.OUTPUT]
   const theme = useTheme()
 
-  const wrappedToken0 = wrappedCurrency(token0, chainId)
-  const wrappedToken1 = wrappedCurrency(token1, chainId)
+  const wrappedToken0 = wrappedCurrency(currency0, chainId)
+  const wrappedToken1 = wrappedCurrency(currency1, chainId)
   const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
   const statsLink = pairAddress
     ? `https://dxstats.eth.limo/#/pair/${pairAddress}?chainId=${chainId}`
     : `https://dxstats.eth.limo/#/pairs?chainId=${chainId}`
 
   const { data, loading, error } = usePairTokenPriceByTimestamp({
-    token0,
-    token1,
+    currency0,
+    currency1,
     timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
+    timeframe: selectedInterval,
   })
 
   console.log({
-    token0: currencies[Field.INPUT],
-    token1: currencies[Field.OUTPUT],
+    currency0,
+    currency1,
     timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
     loading,
     data,
@@ -57,17 +58,17 @@ export default function SimpleChart() {
             <PairExternalLink href={statsLink}>
               <Box mr="4px">
                 <DoubleCurrencyLogo
-                  loading={!token0 || !token1}
-                  currency0={token0 || undefined}
-                  currency1={token1 || undefined}
+                  loading={!currency0 || !currency1}
+                  currency0={currency0 || undefined}
+                  currency1={currency1 || undefined}
                   size={20}
                 />
               </Box>
               <Flex alignItems="center">
                 <Text fontWeight="600" fontSize="14px" color={theme.text2}>
-                  {!token0 || !token1 ? <Skeleton width="69px" /> : `${token0.symbol}/${token1.symbol}`}
+                  {!currency0 || !currency1 ? <Skeleton width="69px" /> : `${currency0.symbol}/${currency1.symbol}`}
                 </Text>
-                <Box ml={2}>{token0 && token1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
+                <Box ml={2}>{currency0 && currency1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
               </Flex>
             </PairExternalLink>
             <Flex>
