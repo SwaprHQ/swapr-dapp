@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { useCheckIsAdvTradeViewFlagOn } from '../../pages/Swap/AdvancedSwapMode/AdvancedSwapMode.hooks'
 import { SwapTabs } from '../../state/user/reducer'
 import Row from '../Row'
 
@@ -52,18 +53,23 @@ const StyledEcoRouter = styled(EcoRouter)`
 `
 
 export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
+  const isAdvTradeViewFlagOn = useCheckIsAdvTradeViewFlagOn()
   const { t } = useTranslation('swap')
 
   return (
     <TabsColumn>
       <TabsRow>
-        <Button onClick={() => setActiveTab(SwapTabs.SWAP)} className={activeTab === SwapTabs.SWAP ? 'active' : ''}>
+        <Button
+          onClick={() => setActiveTab(SwapTabs.SWAP)}
+          className={activeTab === SwapTabs.SWAP || !isAdvTradeViewFlagOn ? 'active' : ''}
+        >
           <StyledEcoRouter />
           Swap
         </Button>
         <Button
           onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
           className={activeTab === SwapTabs.ADVANCED_SWAP_MODE ? 'active' : ''}
+          disabled={!isAdvTradeViewFlagOn}
         >
           Adv. Trade
         </Button>

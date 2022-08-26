@@ -20,6 +20,7 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { useParsedQueryString } from '../../hooks/useParsedQueryString'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -51,6 +52,7 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
+import { useCheckIsAdvTradeViewFlagOn } from './AdvancedSwapMode/AdvancedSwapMode.hooks'
 
 export type SwapData = {
   showConfirm: boolean
@@ -89,6 +91,9 @@ export default function Swap() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
+
+  const isAdvTradeViewFlagOn = useCheckIsAdvTradeViewFlagOn()
+
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -376,7 +381,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
+      <Tabs activeTab={(isAdvTradeViewFlagOn && activeTab) || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -493,13 +498,15 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && isAdvTradeViewFlagOn && (
         <>
           <AdvancedSwapMode onClickSwapTokens={handleSwitchTokens}>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab) && (
+      {(activeTab === SwapTabs.SWAP ||
+        !activeTab ||
+        (activeTab === SwapTabs.ADVANCED_SWAP_MODE && !isAdvTradeViewFlagOn)) && (
         <Hero>
           <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>
