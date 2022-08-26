@@ -7,7 +7,7 @@ import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
 import { Loader } from '../Loader'
-import { TryActivationType } from '../WalletSwitcher/WalletOption.types'
+import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -57,8 +57,7 @@ export default function PendingView({
 }: {
   connector: Connector
   error?: boolean
-  tryActivation: TryActivationType
-}) {
+} & Pick<ConnectorProps, 'tryActivation'>) {
   const { name, logo } = SUPPORTED_WALLETS[getConnection(connector).type]
 
   return (

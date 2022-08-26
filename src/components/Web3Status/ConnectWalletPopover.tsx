@@ -8,7 +8,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
-import { TryActivationType } from '../WalletSwitcher/WalletOption.types'
+import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
 import { CoinbaseWalletConnector } from '../WalletSwitcher/Wallets/CoinbaseWalletConnector'
 import { MetaMaskConnector } from '../WalletSwitcher/Wallets/MetaMaskConnector'
 import { WalletConnectConnector } from '../WalletSwitcher/Wallets/WalletConnectConnector'
@@ -101,12 +101,15 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 
 interface ConnectWalletProps {
   setModal: (modal: ModalView | null) => void
-  tryActivation: TryActivationType
   tryDeactivation: (connector: Connector, account: string | undefined) => void
   children: ReactNode
 }
 
-export const ConnectWalletPopover = ({ tryActivation, tryDeactivation, children }: ConnectWalletProps) => {
+export const ConnectWalletPopover = ({
+  tryActivation,
+  tryDeactivation,
+  children,
+}: ConnectWalletProps & Pick<ConnectorProps, 'tryActivation'>) => {
   const { connector, isActive, account } = useWeb3ReactCore()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)

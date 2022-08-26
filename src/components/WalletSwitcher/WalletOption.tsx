@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { ConnectorType, SUPPORTED_WALLETS } from '../../constants'
 import { StyledConnectedIcon } from '../../utils'
-import { TryActivationType } from './WalletOption.types'
+import { ConnectorProps } from './WalletOption.types'
 
 const ListIconWrapper = styled.div<{ isActive?: boolean }>`
   display: inline-flex;
@@ -54,12 +54,17 @@ const ListButton = styled.button`
 interface OptionProps {
   id: ConnectorType
   connector: Connector
-  tryActivation: TryActivationType
   isActive: boolean
   isWalletDetected?: boolean
 }
 
-export const WalletOption = ({ id, connector, isActive, isWalletDetected, tryActivation }: OptionProps) => {
+export const WalletOption = ({
+  id,
+  connector,
+  isActive,
+  isWalletDetected,
+  tryActivation,
+}: OptionProps & Pick<ConnectorProps, 'tryActivation'>) => {
   const { logo, link, name } = SUPPORTED_WALLETS[id]
 
   if (!isWalletDetected && link) {

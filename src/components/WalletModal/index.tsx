@@ -13,7 +13,7 @@ import { TYPE } from '../../theme'
 import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
-import { TryActivationType } from '../WalletSwitcher/WalletOption.types'
+import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
 import { ModalView } from '../Web3Status'
 import PendingView from './PendingView'
 
@@ -108,7 +108,6 @@ interface WalletModalProps {
   pendingTransactions: string[]
   confirmedTransactions: string[]
   ENSName?: string
-  tryActivation: TryActivationType
   connectorError?: boolean
   pendingConnector: Connector
 }
@@ -122,7 +121,7 @@ export default function WalletModal({
   tryActivation,
   connectorError,
   pendingConnector,
-}: WalletModalProps) {
+}: WalletModalProps & Pick<ConnectorProps, 'tryActivation'>) {
   const { account, connector, isActive, chainId } = useWeb3ReactCore()
 
   const closeModal = useCallback(() => setModal(null), [setModal])

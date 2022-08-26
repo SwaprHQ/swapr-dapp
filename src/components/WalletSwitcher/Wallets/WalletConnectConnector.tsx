@@ -2,9 +2,9 @@ import { walletConnect, walletConnectHooks } from '../../../connectors'
 import { ConnectorType } from '../../../constants'
 import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WalletOption } from '../WalletOption'
-import { TryActivationType } from '../WalletOption.types'
+import { ConnectorProps } from '../WalletOption.types'
 
-export const WalletConnectConnector = ({ tryActivation }: { tryActivation: TryActivationType }) => {
+export const WalletConnectConnector = ({ tryActivation }: ConnectorProps) => {
   const { connector: activeConnector } = useWeb3ReactCore()
   const isActive = walletConnectHooks.useIsActive() && activeConnector === walletConnect
 
