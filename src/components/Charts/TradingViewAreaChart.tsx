@@ -30,7 +30,7 @@ const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(data)?.t
 const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
-  const [date, setDate] = useState(formatDate(buildDate(lastElementTimeOrDefault(data))))
+  const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))
 
   useEffect(() => {
     if (
@@ -101,7 +101,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
     })
     if (data && data.length > 0) {
       setPrice(lastElementValueOrDefault(data))
-      setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
+      setDate(buildDate(lastElementTimeOrDefault(data)))
       newSeries.setData(data)
     }
 
@@ -109,12 +109,12 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
       setPrice(currentPrice as string)
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
-      setDate(formatDate(buildDate(time as UTCTimestamp)))
+      setDate(buildDate(time as UTCTimestamp))
     })
 
     return () => {
       setPrice('0')
-      setDate(formatDate(buildDate(lastElementTimeOrDefault(data))))
+      setDate(buildDate(lastElementTimeOrDefault(data)))
       chart.remove()
     }
   }, [data])
@@ -125,7 +125,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
         <>
           <Box width="100%">
             <BigPriceText>{price}</BigPriceText>
-            <DateText>{date}</DateText>
+            <DateText>{formatDate(date)}</DateText>
           </Box>
           <div ref={chartRef} />
         </>
