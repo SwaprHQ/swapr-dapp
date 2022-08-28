@@ -1,10 +1,14 @@
+import _Decimal from 'decimal.js-light'
 import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
+import toFormat from 'toformat'
 
 import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
+
+const Decimal = toFormat(_Decimal)
 
 const formatDateShort = (date: Date) => date.toLocaleString('default', { month: 'short' }) + ' ' + date.getDate()
 
@@ -26,6 +30,14 @@ const chartColors = {
 const lastDataElement = (data: ChartData[]) => data[data.length - 1]
 const lastElementValueOrDefault = (data: ChartData[]) => lastDataElement(data)?.value ?? 0
 const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(data)?.time ?? 0
+
+const formatPrice = (price: string) => {
+  const floatPrice = parseFloat(price)
+  const significantDigits = 6
+  const format = { groupSeparator: '' }
+  const quotient = new Decimal(floatPrice).toSignificantDigits(significantDigits)
+  return quotient.toFormat(quotient.decimalPlaces(), format)
+}
 
 const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   const chartRef = useRef<HTMLDivElement>(null)
@@ -124,7 +136,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       {data.length > 0 ? (
         <>
           <Box width="100%">
-            <BigPriceText>{price}</BigPriceText>
+            <BigPriceText>{formatPrice(price)}</BigPriceText>
             <DateText>{formatDate(date)}</DateText>
           </Box>
           <div ref={chartRef} />
