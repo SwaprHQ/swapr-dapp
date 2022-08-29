@@ -2,8 +2,8 @@ import _Decimal from 'decimal.js-light'
 import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
+import { Box, Flex, Text } from 'rebass'
+import styled, { useTheme } from 'styled-components'
 import toFormat from 'toformat'
 
 import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
@@ -22,7 +22,7 @@ const buildDate = (time: number) => new Date(time * 1000)
 const chartColors = {
   backgroundColor: 'transparent',
   lineColor: 'rgba(200, 189, 255, 1)',
-  textColor: 'rgba(135, 128, 191, 1)',
+  textColor: 'rgba(135,128, 191, 1)',
   areaTopColor: 'rgba(255, 255, 255, 1)',
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
@@ -136,7 +136,10 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       {data.length > 0 ? (
         <>
           <Box width="100%">
-            <BigPriceText>{formatPrice(price)}</BigPriceText>
+            <Flex alignItems="center">
+              <BigPriceText>{formatPrice(price)}</BigPriceText>
+              <PricePercentualDifference data={data} />
+            </Flex>
             <DateText>{formatDate(date)}</DateText>
           </Box>
           <div ref={chartRef} />
@@ -167,5 +170,30 @@ const DateText = styled.p`
   font-size: 12px;
   color: ${({ theme }) => theme.text4};
 `
+
+const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
+  const theme = useTheme()
+
+  const pricePercentualDifference = () =>
+    (100 - (parseFloat(data[0].value) * 100) / parseFloat(lastDataElement(data).value)).toPrecision(3)
+
+  const isPricePercentualDifferencePositive = () => parseFloat(pricePercentualDifference()) > 0
+  const isPricePercentualDifferenceZero = () => parseFloat(pricePercentualDifference()) === 0
+
+  const greenOrRed = () => (isPricePercentualDifferencePositive() ? theme.green1 : theme.red1)
+  const correctColor = () => (isPricePercentualDifferenceZero() ? theme.gray1 : greenOrRed())
+  const plusOrMinus = () => (isPricePercentualDifferencePositive() ? '+ ' : '- ')
+  const correctOperator = () => (isPricePercentualDifferenceZero() ? ' ' : plusOrMinus())
+
+  const showPricePercentualDifference = () =>
+    isPricePercentualDifferenceZero() ? '0%' : `${Math.abs(parseFloat(pricePercentualDifference()))}%`
+
+  return (
+    <Text color={correctColor()} ml={2}>
+      {correctOperator()}
+      {showPricePercentualDifference()}
+    </Text>
+  )
+}
 
 export default TradingViewAreaChart
