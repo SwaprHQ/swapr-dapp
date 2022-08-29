@@ -231,7 +231,7 @@ describe('Bridge tests', () => {
     cy.wait(5000)
     cy.rejectMetamaskTransaction()
 
-    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected transaction')
     ErrorModal.closeTransactionErrorModal()
   })
   it.skip('Should display history of bridge', function () {
