@@ -89,8 +89,7 @@ export default function Web3Status() {
   const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
     return txs
-      .filter(isTransactionRecent)
-      .filter(tx => !tx.receipt)
+      .filter(tx => isTransactionRecent(tx) && !tx.receipt)
       .sort(newTransactionsFirst)
       .map(tx => tx.hash)
   }, [allTransactions])

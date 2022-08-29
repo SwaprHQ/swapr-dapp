@@ -60,7 +60,7 @@ export function Account() {
   // Pagination
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
-  const transacationsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
+  const transactionsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
 
   useLayoutEffect(() => {
     // Resetting Eco Bridge transaction filtering in selectors
@@ -69,15 +69,17 @@ export function Account() {
 
   useEffect(() => {
     // format and merge transactions
-    setTransactions(formatTransactions(allTransactions, allBridgeTransactions, showPendingTransactions))
-  }, [allTransactions, allBridgeTransactions, showPendingTransactions])
+    if (account) {
+      setTransactions(formatTransactions(allTransactions, allBridgeTransactions, showPendingTransactions, account))
+    }
+  }, [allTransactions, allBridgeTransactions, showPendingTransactions, account])
 
   const handlePendingToggle = () => {
     setPage(1)
     togglePendingTransactions()
   }
 
-  const handleAllNetworkTransations = () => {
+  const handleAllNetworkTransactions = () => {
     setPage(1)
     toggleAllTransactions()
   }
@@ -92,7 +94,7 @@ export function Account() {
     <PageWrapper>
       <Flex sx={{ mb: 4 }}>
         <Flex>
-          {ENSName && ensAvatar?.image !== undefined ? (
+          {ENSName && ensAvatar?.image ? (
             <AvatarWrapper>
               <ENSAvatar url={ensAvatar.image} />
             </AvatarWrapper>
@@ -127,13 +129,13 @@ export function Account() {
       </Flex>
       <Flex sx={{ mb: 2 }} justifyContent="end">
         <Flex>
-          <Switch label={'PENDING TXNS'} handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
-          <Switch label={'ALL NETWORKS'} handleToggle={handleAllNetworkTransations} isOn={showAllNetworkTransactions} />
+          <Switch label="PENDING TXNS" handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
+          <Switch label="ALL NETWORKS" handleToggle={handleAllNetworkTransactions} isOn={showAllNetworkTransactions} />
         </Flex>
       </Flex>
       <BlurBox>
         <TransactionHeaders />
-        <TransactionRows transactions={transacationsByPage} showAllNetworkTransactions={showAllNetworkTransactions} />
+        <TransactionRows transactions={transactionsByPage} showAllNetworkTransactions={showAllNetworkTransactions} />
         <NoDataTransactionRow data={transactions} />
       </BlurBox>
       <PaginationRow>
@@ -143,6 +145,7 @@ export function Account() {
             totalItems={transactions.length}
             itemsPerPage={responsiveItemsPerPage}
             onPageChange={setPage}
+            hideOnSinglePage={transactions.length <= responsiveItemsPerPage}
           />
         </Box>
       </PaginationRow>

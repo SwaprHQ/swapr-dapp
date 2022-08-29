@@ -71,7 +71,6 @@ export type BridgeTransactionSummary = Pick<
   pendingReason?: string
   fromValue: string
   toValue: string
-  // timestampCreated: number
 }
 
 export type BridgeTransactionLog = Pick<ArbitrumBridgeTxn, 'txHash' | 'chainId'>

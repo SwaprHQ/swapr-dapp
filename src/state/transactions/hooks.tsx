@@ -6,9 +6,8 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
-import { type BridgeTransaction, TransactionBridgeTypes } from '../../pages/Account/Account.types'
+import { type BridgeTransaction, TransactionTypes } from '../../pages/Account/Account.types'
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
-import { BridgeTransactionSummary } from '../bridgeTransactions/types'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
 import { addTransaction } from './actions'
@@ -71,13 +70,13 @@ const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainI
 export function useAllSwapTransactions(allNetwork = false): AllTransactions {
   const { chainId } = useActiveWeb3React()
 
-  const allSwapTransactions = useSelector<AppState, AppState['transactions']>(state => state.transactions)
+  const allSwapTransactions = useSelector((state: AppState) => state.transactions)
 
   const allNetworkSwapTransactions = useMemo(() => {
-    return (Object.keys(allSwapTransactions) as Array<unknown> as Array<ChainId>).reduce<AllTransactions>(
-      (merged, networkId) => ({
+    return Object.entries(allSwapTransactions).reduce<AllTransactions>(
+      (merged, [networkId, txn]) => ({
         ...merged,
-        ...addNetworkToTransaction(allSwapTransactions[networkId], networkId),
+        ...addNetworkToTransaction(txn, Number(networkId) as ChainId),
       }),
       {}
     )
@@ -95,12 +94,10 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
   const { chainId, account } = useActiveWeb3React()
   const listByAddress = useListsByAddress()
 
-  const allBridgeTransactions = useSelector<AppState, BridgeTransactionSummary[]>(state =>
-    selectBridgeTransactions(state, account ?? undefined)
-  )
+  const allBridgeTransactions = useSelector((state: AppState) => selectBridgeTransactions(state, account ?? undefined))
   const allBridgeTransactionsFormatted = useMemo<BridgeTransaction[]>(
     () =>
-      allBridgeTransactions?.map(transaction => {
+      allBridgeTransactions.map(transaction => {
         const {
           assetName,
           assetAddressL1,
@@ -118,9 +115,9 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
         } = transaction
 
         return {
-          type: TransactionBridgeTypes.Bridge,
+          type: TransactionTypes.Bridge,
           from: {
-            value: Number(fromValue ?? 0),
+            value: Number(fromValue),
             token: listByAddress.get(fromChainId)?.get(`${assetAddressL1}`)?.symbol ?? assetName,
             chainId: fromChainId,
             tokenAddress: assetAddressL1,

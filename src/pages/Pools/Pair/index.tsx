@@ -102,7 +102,7 @@ export default function Pair() {
           <ContentGrid>
             <TwoColumnsGrid>
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-              <BlurBox padding={'24px'}>
+              <BlurBox padding="24px">
                 <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
                   <Box mb={3}>
                     <ValueWithLabel

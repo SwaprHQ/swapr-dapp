@@ -110,8 +110,8 @@ export class SocketBridge extends EcoBridgeChildBase {
       const routes = this.selectors.selectRoutes(this.store.getState())
       const selectedRoute = routes.find(route => route.routeId === routeId)
 
-      const toValue = (parseUnits(selectedRoute?.toAmount ?? '0', to.decimals) ?? 0).toString()
-      const fromValue = Number(value ?? 0).toString()
+      const toValue = (formatUnits(selectedRoute?.toAmount ?? '0', to.decimals) ?? 0).toString()
+      const fromValue = Number(from.value ?? 0).toString()
 
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 

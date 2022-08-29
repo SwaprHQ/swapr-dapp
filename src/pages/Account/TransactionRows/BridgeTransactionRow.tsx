@@ -11,7 +11,7 @@ import {
   NetworkName,
   Status,
   TokenDetails,
-  TranasctionDetails,
+  TransactionDetails,
   TypeDetails,
 } from '../Account.styles'
 import { type BridgeTransaction } from '../Account.types'
@@ -22,17 +22,14 @@ interface BridgeTransactionRowProps {
 }
 
 export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, logs } = transaction
+  const { type, status, from, to, confirmedTime, logs, bridgeId } = transaction
 
-  const fromNetwork = from?.chainId ? getNetworkInfo(Number(from?.chainId)) : undefined
+  const fromNetwork = from.chainId ? getNetworkInfo(Number(from.chainId)) : undefined
   const toNetwork = to?.chainId ? getNetworkInfo(Number(to?.chainId)) : undefined
-  const { bridgeId } = transaction
 
   const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction')
   const toLink =
-    logs[1]?.chainId !== undefined && logs[1]?.txHash !== undefined
-      ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction')
-      : undefined
+    logs[1]?.chainId && logs[1]?.txHash ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction') : undefined
 
   return (
     <GridCard status={status.toUpperCase()}>
@@ -41,7 +38,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} address={from.tokenAddress} chainId={from.chainId} />
             <Flex flexDirection="column">
-              <Box>{`${formatNumber(from.value, false, true)}`}</Box>
+              <Box>{formatNumber(from.value, false, true)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{from.token}</Box>
             </Flex>
           </Flex>
@@ -59,7 +56,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} address={to.tokenAddress} chainId={to.chainId} />
             <Flex flexDirection="column">
-              <Box>{`${formatNumber(to.value, false, true)}`}</Box>
+              <Box>{formatNumber(to.value, false, true)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{to.token}</Box>
             </Flex>
           </Flex>
@@ -76,22 +73,22 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
         </Flex>
       </TokenDetails>
 
-      <TranasctionDetails justifyContent="start">
-        <Flex flexDirection="column" alignContent={'center'}>
+      <TransactionDetails justifyContent="start">
+        <Flex flexDirection="column" alignContent="center">
           <Box>- -</Box>
         </Flex>
-      </TranasctionDetails>
+      </TransactionDetails>
 
       <TypeDetails>
         <Box color="#8780BF">{type}</Box>
         <Box fontWeight="600">{bridgeId}</Box>
       </TypeDetails>
 
-      <TranasctionDetails>
+      <TransactionDetails>
         <Status status={status.toUpperCase()}>{status}</Status>
-      </TranasctionDetails>
+      </TransactionDetails>
 
-      <TranasctionDetails>
+      <TransactionDetails>
         {confirmedTime ? (
           <Flex flexDirection="column" fontSize="12px">
             <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
@@ -100,7 +97,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
         ) : (
           '- -'
         )}
-      </TranasctionDetails>
+      </TransactionDetails>
     </GridCard>
   )
 }

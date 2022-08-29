@@ -5,6 +5,7 @@ import { Box } from 'rebass'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
 import DXDLogo from '../../assets/svg/dxd.svg'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/CurrencyLogo/CurrencyLogo.utils'
+import { ZERO_ADDRESS } from '../../constants'
 import { useListsByToken } from '../../state/lists/hooks'
 import { StyledLogo } from './Account.styles'
 import { getTokenURLWithNetwork } from './accountUtils'
@@ -22,15 +23,15 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
   const token = allTokens.get(symbol)
   let sources: string[] = []
 
-  if (address === '0x0000000000000000000000000000000000000000') {
+  if (address === ZERO_ADDRESS) {
     sources.push(NATIVE_CURRENCY_LOGO[chainId ?? ChainId.MAINNET])
   }
 
-  if (chainId && DXD[chainId] && DXD[chainId].address === address) {
+  if (chainId && DXD[chainId]?.address === address) {
     sources = [DXDLogo]
   }
 
-  if (chainId && SWPR[chainId] && SWPR[chainId].address === address) {
+  if (chainId && SWPR[chainId]?.address === address) {
     sources = [SWPRLogo]
   }
 

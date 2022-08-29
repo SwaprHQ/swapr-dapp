@@ -581,7 +581,7 @@ export const combineTransactions = (
       assetName: symbol,
       assetAddressL1: token,
       fromValue: formatUnits(amount, decimals),
-      toValue: '0', // @TODO: add toValue
+      toValue: formatUnits(amount, decimals),
       fromChainId: chainId,
       toChainId: bridgeChainId,
       sender: user,

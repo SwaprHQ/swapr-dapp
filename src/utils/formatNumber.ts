@@ -7,8 +7,12 @@ export const formatNumber = (number: number | string, usd = false, ignoreZero = 
 
   let num = parseFloat(number.toString())
 
-  if (num > 500000000) {
+  if (num > 1000000 && num < 10000000) {
     return (usd ? '$' : '') + toK(num.toFixed(0))
+  }
+
+  if (num >= 10000000) {
+    return (usd ? '$' : '') + toM(num.toFixed(0))
   }
 
   if (num === 0) {
@@ -46,6 +50,10 @@ export const formatNumber = (number: number | string, usd = false, ignoreZero = 
 }
 
 export const toK = (num: string) => {
+  return Numeral(num).format('0.[000]a').toUpperCase()
+}
+
+export const toM = (num: string) => {
   return Numeral(num).format('0.[00]a').toUpperCase()
 }
 

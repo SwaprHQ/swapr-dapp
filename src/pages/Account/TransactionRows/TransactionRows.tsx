@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-import { type Transaction, TransactionBridgeTypes, TransactionSwapTypes } from '../Account.types'
+import { type Transaction, TransactionTypes } from '../Account.types'
 import { BridgeTransactionRow } from './BridgeTransactionRow'
 import { SwapTransactionRow } from './SwapTransactionRow'
 
@@ -12,10 +12,10 @@ interface TransactionRowProps {
 export function TransactionRows({ transactions, showAllNetworkTransactions }: TransactionRowProps) {
   return (
     <Fragment>
-      {transactions?.map(transaction => {
+      {transactions.map(transaction => {
         const { type, hash } = transaction
         switch (type) {
-          case TransactionSwapTypes.Swap:
+          case TransactionTypes.Swap:
             return (
               <SwapTransactionRow
                 transaction={transaction}
@@ -23,10 +23,10 @@ export function TransactionRows({ transactions, showAllNetworkTransactions }: Tr
                 key={hash}
               />
             )
-          case TransactionBridgeTypes.Bridge:
+          case TransactionTypes.Bridge:
             return <BridgeTransactionRow transaction={transaction} key={hash} />
           default:
-            return <Fragment key={`${type}_${hash}`} />
+            return <Fragment key={hash} />
         }
       })}
     </Fragment>

@@ -5,7 +5,7 @@ import { type TokenInfo, type TokenList } from '@uniswap/token-lists/dist/types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { NETWORK_DETAIL } from '../../constants'
+import { NETWORK_DETAIL, ZERO_ADDRESS } from '../../constants'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
 import { useActiveWeb3React } from '../../hooks'
@@ -82,9 +82,9 @@ const selectTokensByAddress = createSelector(selectListByUrl, lists => {
     const network = NETWORK_DETAIL[key]
     if (network) {
       const tokenMap = allTokensByChain.get(key)
-      tokenMap?.set('0x0000000000000000000000000000000000000000', {
+      tokenMap?.set(ZERO_ADDRESS, {
         chainId: key,
-        address: '0x0000000000000000000000000000000000000000',
+        address: ZERO_ADDRESS,
         ...network.nativeCurrency,
       })
     }

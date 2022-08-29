@@ -3,12 +3,20 @@ import { type ChainId } from '@swapr/sdk'
 import { type BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 
-export enum TransactionSwapTypes {
+export enum TransactionTypes {
   Swap = 'Swap',
+  Bridge = 'Bridge',
 }
 
-export enum TransactionBridgeTypes {
-  Bridge = 'Bridge',
+export enum TransactionStatus {
+  COMPLETED = 'COMPLETED',
+  CONFIRMED = 'CONFIRMED',
+  CLAIMED = 'CLAIMED',
+  REDEEM = 'REDEEM',
+  PENDING = 'PENDING',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+  LOADING = 'LOADING',
 }
 
 interface Token {
@@ -19,7 +27,7 @@ interface Token {
 }
 
 export interface SwapTransaction {
-  type: keyof typeof TransactionSwapTypes
+  type: TransactionTypes.Swap
   from: Token
   to: Token
   summary: string
@@ -31,7 +39,7 @@ export interface SwapTransaction {
 }
 
 export interface BridgeTransaction extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime'> {
-  type: keyof typeof TransactionBridgeTypes
+  type: TransactionTypes.Bridge
   pendingReason?: string
   bridgeId: BridgeList
   logs: BridgeTransactionLog[]

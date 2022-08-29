@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { ButtonPurpleDim } from '../../components/Button'
 import Logo from '../../components/Logo'
 import { ListLayout } from '../../ui/ListLayout'
+import { TransactionStatus } from './Account.types'
 
 export const Status = styled(Flex)<{ status: string }>`
   text-transform: uppercase;
@@ -15,18 +16,20 @@ export const Status = styled(Flex)<{ status: string }>`
   border-width: 1.5px;
   ${({ status }) => {
     switch (status) {
-      case 'COMPLETED':
-      case 'CONFIRMED':
-      case 'CLAIMED':
+      case TransactionStatus.COMPLETED:
+      case TransactionStatus.CONFIRMED:
+      case TransactionStatus.CLAIMED:
         return `
         border-color: #0e9f6e;
         color: #0e9f6e;`
-      case 'REDEEM':
-      case 'PENDING':
+      case TransactionStatus.REDEEM:
+      case TransactionStatus.PENDING:
+      case TransactionStatus.LOADING:
         return `
         border-color: #F2994A;
         color: #F2994A;`
-      case 'CANCELLED':
+      case TransactionStatus.CANCELLED:
+      case TransactionStatus.FAILED:
         return `
         border-color: #F02E51;
         color: #F02E51;`
@@ -82,16 +85,17 @@ export const GridCard = styled(Flex)<{ status?: string }>`
   `};
   background: ${({ status }) => {
     switch (status) {
-      case 'COMPLETED':
-      case 'CONFIRMED':
-      case 'CLAIMED':
-        return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 6.32%, rgba(15, 152, 106, 0) 65.79%)'
-      case 'PENDING':
-      case 'REDEEM':
-        return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 8.84%, rgba(242, 153, 74, 0) 55.62%)'
-      case 'FAILED':
-      case 'CANCELLED':
-        return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2.18%, rgba(240, 46, 81, 0) 62.13%)'
+      case TransactionStatus.COMPLETED:
+      case TransactionStatus.CONFIRMED:
+      case TransactionStatus.CLAIMED:
+        return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 7%, rgba(15, 152, 106, 0) 66%)'
+      case TransactionStatus.REDEEM:
+      case TransactionStatus.PENDING:
+      case TransactionStatus.LOADING:
+        return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 9%, rgba(242, 153, 74, 0) 56%)'
+      case TransactionStatus.CANCELLED:
+      case TransactionStatus.FAILED:
+        return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2%, rgba(240, 46, 81, 0) 62%)'
       default:
         return 'inherit'
     }
@@ -119,7 +123,7 @@ export const TokenDetails = styled(Flex)`
   text-transform: uppercase;
 `
 
-export const TranasctionDetails = styled(Flex)`
+export const TransactionDetails = styled(Flex)`
   flex: 10%;
   min-width: 80px !important;
   justify-content: center;
@@ -128,7 +132,7 @@ export const TranasctionDetails = styled(Flex)`
   text-transform: uppercase;
 `
 
-export const TypeDetails = styled(TranasctionDetails)`
+export const TypeDetails = styled(TransactionDetails)`
   flex-direction: column;
   font-size: 10px;
   ${({ theme }) => theme.mediaWidth.upToSmall`

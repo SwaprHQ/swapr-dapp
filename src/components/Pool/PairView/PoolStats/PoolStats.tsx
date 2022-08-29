@@ -45,7 +45,7 @@ export function PoolStats({ pair }: PairViewProps) {
   }, [chainId, navigate, previousChainId, switchingToCorrectChain])
 
   return (
-    <BlurBox padding={'24px'}>
+    <BlurBox padding="24px">
       <Flex flexDirection={['column', 'row']} alignItems="center" justifyContent="space-between">
         <Text fontSize="16px" mb="16px">
           {t('poolStats.poolStats')}

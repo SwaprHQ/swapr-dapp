@@ -10,7 +10,7 @@ import {
   NetworkLink,
   Status,
   TokenDetails,
-  TranasctionDetails,
+  TransactionDetails,
   TypeDetails,
 } from '../Account.styles'
 import { SwapTransaction } from '../Account.types'
@@ -24,8 +24,7 @@ interface SwapTransactionRowProps {
 export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: SwapTransactionRowProps) {
   const { type, status, from, to, confirmedTime, network, hash } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
-  let price = typeof to.value === 'number' && typeof from.value === 'number' ? from.value / to.value : 0
-  price = price === Infinity ? 0 : price
+  const price = to?.value === 0 ? 0 : from.value / to.value
   const link = network ? getExplorerLink(Number(network), hash, 'transaction') : '#'
 
   return (
@@ -70,12 +69,14 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
         </Flex>
       </TokenDetails>
 
-      <TranasctionDetails justifyContent="start">
+      <TransactionDetails justifyContent="start">
         <Flex flexDirection="column" alignContent={'center'}>
           <Box> {`${formatNumber(price, false, true)}`}</Box>
-          <Box sx={{ fontSize: '10px' }}>{`${from.token} / ${to.token}`}</Box>
+          <Box sx={{ fontSize: '10px' }}>
+            {from.token} / {to.token}
+          </Box>
         </Flex>
-      </TranasctionDetails>
+      </TransactionDetails>
 
       <TypeDetails>
         <Box color="#8780BF" fontWeight="600">
@@ -83,11 +84,11 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
         </Box>
       </TypeDetails>
 
-      <TranasctionDetails>
-        <Status status={status}>{status}</Status>
-      </TranasctionDetails>
+      <TransactionDetails>
+        <Status status={status.toUpperCase()}>{status}</Status>
+      </TransactionDetails>
 
-      <TranasctionDetails>
+      <TransactionDetails>
         {confirmedTime ? (
           <Flex flexDirection="column" fontSize="12px">
             <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
@@ -96,7 +97,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
         ) : (
           '- -'
         )}
-      </TranasctionDetails>
+      </TransactionDetails>
     </GridCard>
   )
 }

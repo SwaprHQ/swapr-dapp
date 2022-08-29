@@ -19,7 +19,7 @@ export default function Logo({ sources, alt, size, defaultText, ...rest }: LogoP
   const theme = useTheme()
   const [, refresh] = useState<number>(0)
 
-  const src: string | undefined = sources.filter(isSource).find(src => !BAD_SRCS[src])
+  const src = sources.filter(isSource).find(src => !BAD_SRCS[src])
 
   if (src) {
     return (

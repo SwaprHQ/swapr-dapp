@@ -3,7 +3,7 @@ import { Flex, Text } from 'rebass'
 import { GridCard } from '../Account.styles'
 
 export function NoDataTransactionRow({ data }: { data: unknown[] }) {
-  if (data?.length === 0) {
+  if (data.length === 0) {
     return (
       <GridCard>
         <Flex flex={1}>
