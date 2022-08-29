@@ -1,16 +1,16 @@
 import { useSelector } from 'react-redux'
 
 import { selectAllSwaprTrades, selectHasMoreData } from './advancedTradingView.selectors'
-import { AdvancedViewTradeHistory } from './advancedTradingView.types'
+import { AdvancedViewTransaction } from './advancedTradingView.types'
 
 export const useAllTrades = (): {
-  tradeHistory: AdvancedViewTradeHistory[]
-  liquidityHistory: AdvancedViewTradeHistory[]
+  tradeHistory: AdvancedViewTransaction[]
+  liquidityHistory: AdvancedViewTransaction[]
   hasMore: { hasMoreActivity: boolean; hasMoreTrades: boolean }
 } => {
   const { swaprTradeHistory, swaprLiquidityHistory } = useSelector(selectAllSwaprTrades)
 
-  const { hasMoreActivity, hasMoreTrades } = useSelector(selectHasMoreData)
+  const hasMore = useSelector(selectHasMoreData)
 
   const tradeHistory = [...swaprTradeHistory]
   const liquidityHistory = [...swaprLiquidityHistory]
@@ -18,6 +18,6 @@ export const useAllTrades = (): {
   return {
     tradeHistory,
     liquidityHistory,
-    hasMore: { hasMoreActivity, hasMoreTrades },
+    hasMore,
   }
 }

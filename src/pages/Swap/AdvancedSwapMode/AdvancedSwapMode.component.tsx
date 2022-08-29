@@ -8,7 +8,7 @@ import { Flex, Text } from 'rebass'
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
 import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
-import { AdvancedViewTradeHistory } from '../../../services/AdvancedTradingView/advancedTradingView.types'
+import { AdvancedViewTransaction } from '../../../services/AdvancedTradingView/advancedTradingView.types'
 import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
 import {
@@ -31,7 +31,7 @@ import {
 import { Chart } from './Chart'
 import { Trade } from './Trade'
 
-const renderStatusOfTrades = (arr: AdvancedViewTradeHistory[], showTrades: boolean, isLoading: boolean) => {
+const renderStatusOfTrades = (arr: AdvancedViewTransaction[], showTrades: boolean, isLoading: boolean) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
   if (!arr.length && !isLoading) {
@@ -129,6 +129,7 @@ export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickS
             scrollThreshold={1}
           >
             {!isLoading &&
+              showTrades &&
               tradeHistory
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1

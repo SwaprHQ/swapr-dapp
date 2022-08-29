@@ -4,28 +4,7 @@ import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
 import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
-
-type LiquidityTransaction = {
-  id: string
-  transaction: {
-    id: string
-  }
-  amount0: string
-  amount1: string
-  amountUSD: string
-  timestamp: string
-}
-
-type TradesHistory = {
-  amount0In: string
-  amount0Out: string
-  amount1In: string
-  amount1Out: string
-  amountUSD: string
-  id: string
-  timestamp: string
-  transaction: { id: string }
-}
+import { SwaprPair } from './adapters/swapr/swapr.types'
 
 export type InitialState = {
   pair: {
@@ -34,20 +13,12 @@ export type InitialState = {
   }
   adapters: {
     swapr: {
-      pair: {
-        id?: string
-        swaps: TradesHistory[]
-        burnsAndMints: LiquidityTransaction[]
-      }
-      fetchDetails: {
-        hasMoreTrades: boolean
-        hasMoreActivity: boolean
-      }
+      [pairId: string]: SwaprPair | undefined
     }
   }
 }
 
-export type AdvancedViewTradeHistory = {
+export type AdvancedViewTransaction = {
   transactionId: string
   amountIn: string
   amountOut: string
@@ -58,9 +29,13 @@ export type AdvancedViewTradeHistory = {
   price?: string
 }
 
-// adapters types
 export enum AdapterKeys {
   SWAPR = 'swapr',
+}
+
+export enum AdapterPayloadType {
+  swaps = 'swaps',
+  burnsAndMints = 'burnsAndMints',
 }
 
 export type AdvancedTradingViewAdapterConstructorParams = {
@@ -68,21 +43,21 @@ export type AdvancedTradingViewAdapterConstructorParams = {
   chainId: ChainId
   store: Store<AppState>
 }
+export type AdapterInitialArguments = Omit<
+  AdvancedTradingViewAdapterConstructorParams,
+  'adapters' | 'amountOfPairTrades' | 'amountOfPairActivity'
+>
 
 export type Adapters = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter }
 
-export type AdapterInitialArguments = Omit<AdvancedTradingViewAdapterConstructorParams, 'adapters'>
-
-// swapr query type
-export type SwaprTrades = {
-  pair: {
-    swaps: TradesHistory[]
-  } | null
+export type AdapterFetchDetails = {
+  inputToken: Token
+  outputToken: Token
+  amountToFetch: number
+  isFirstFetch: boolean
 }
 
-export type SwaprActivity = {
-  pair: {
-    burns: LiquidityTransaction[]
-    mints: LiquidityTransaction[]
-  } | null
+export enum AdapterAmountToFetch {
+  pairTrades = 50,
+  pairActivity = 25,
 }
