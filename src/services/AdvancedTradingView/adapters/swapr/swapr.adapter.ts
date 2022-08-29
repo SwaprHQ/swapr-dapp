@@ -1,6 +1,6 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
-import { request } from 'graphql-request'
+import { request, RequestOptions } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../../apollo/client'
 import { actions } from '../../advancedTradingView.reducer'
@@ -19,7 +19,7 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     this._store = store
   }
 
-  public async getPairTrades({ inputToken, outputToken, amountToFetch, isFirstFetch }: AdapterFetchDetails) {
+  public async getPairTrades({ inputToken, outputToken, amountToFetch, isFirstFetch, abortCall }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
     const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
@@ -29,10 +29,15 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((swaprPair && !isFirstFetch && !swaprPair.swaps?.hasMore) || (swaprPair && isFirstFetch)) return
 
     try {
-      const { pair } = await request<SwaprPairTrades>(subgraphClientsUris[this._chainId], SWAPR_PAIR_TRADES, {
-        pairId: subgraphPairId,
-        first: amountToFetch,
-        skip: swaprPair?.swaps?.data.length ?? 0,
+      const { pair } = await request<SwaprPairTrades>({
+        url: subgraphClientsUris[this._chainId],
+        document: SWAPR_PAIR_TRADES,
+        variables: {
+          pairId: subgraphPairId,
+          first: amountToFetch,
+          skip: swaprPair?.swaps?.data.length ?? 0,
+        },
+        signal: abortCall('swapr-pair-trades') as RequestOptions['signal'],
       })
 
       const hasMore = pair?.swaps.length === amountToFetch
@@ -48,7 +53,13 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     } catch {}
   }
 
-  public async getPairActivity({ inputToken, outputToken, amountToFetch, isFirstFetch }: AdapterFetchDetails) {
+  public async getPairActivity({
+    inputToken,
+    outputToken,
+    amountToFetch,
+    isFirstFetch,
+    abortCall,
+  }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
     const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
@@ -58,10 +69,15 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((swaprPair && !isFirstFetch && !swaprPair.burnsAndMints?.hasMore) || (swaprPair && isFirstFetch)) return
 
     try {
-      const { pair } = await request<SwaprPairActivity>(subgraphClientsUris[this._chainId], SWAPR_PAIR_ACTIVITY, {
-        pairId: subgraphPairId,
-        first: amountToFetch,
-        skip: swaprPair?.burnsAndMints?.data.length ?? 0,
+      const { pair } = await request<SwaprPairActivity>({
+        url: subgraphClientsUris[this._chainId],
+        document: SWAPR_PAIR_ACTIVITY,
+        variables: {
+          pairId: subgraphPairId,
+          first: amountToFetch,
+          skip: swaprPair?.burnsAndMints?.data.length ?? 0,
+        },
+        signal: abortCall('swapr-pair-activity') as RequestOptions['signal'],
       })
 
       const hasMore = Boolean(pair?.burns.length === amountToFetch || pair?.mints.length === amountToFetch)
