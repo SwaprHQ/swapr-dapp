@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import { FC, ReactNode, useEffect, useState } from 'react'
+import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useNavigate } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
@@ -8,7 +8,7 @@ import { Flex, Text } from 'rebass'
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
 import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
-import { AdvancedViewTradeHistory } from '../../../services/AdvancedTradingView/advancedTradingView.types'
+import { AdvancedViewTransaction } from '../../../services/AdvancedTradingView/advancedTradingView.types'
 import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
 import {
@@ -31,7 +31,7 @@ import {
 import { Chart } from './Chart'
 import { Trade } from './Trade'
 
-const renderStatusOfTrades = (arr: AdvancedViewTradeHistory[], showTrades: boolean, isLoading: boolean) => {
+const renderStatusOfTrades = (arr: AdvancedViewTransaction[], showTrades: boolean, isLoading: boolean) => {
   if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
 
   if (!arr.length && !isLoading) {
@@ -39,12 +39,7 @@ const renderStatusOfTrades = (arr: AdvancedViewTradeHistory[], showTrades: boole
   }
 }
 
-interface AdvancedSwapModeProps {
-  onClickSwapTokens: () => void
-  children: ReactNode
-}
-
-export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickSwapTokens }) => {
+export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const {
     tradeHistory,
     hasMore: { hasMoreTrades },
@@ -61,7 +56,7 @@ export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickS
   }, [inputToken, outputToken])
 
   const navigate = useNavigate()
-  const [activeSwitchOption, setActiveSwitchOption] = useState('')
+  const [activeSwitchOption, setActiveSwitchOption] = useState<Token>()
 
   const handleAddLiquidity = () => {
     if (inputToken && outputToken) {
@@ -70,14 +65,16 @@ export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickS
   }
 
   useEffect(() => {
-    if (inputToken && outputToken) {
-      setActiveSwitchOption(inputToken.address)
+    if (outputToken) {
+      setActiveSwitchOption(outputToken.address === token0.address ? token0 : token1)
     }
-  }, [inputToken, outputToken])
+    // eslint-disable-next-line
+  }, [token0, token1])
 
-  const handleSwitch = (option: string) => {
-    setActiveSwitchOption(option)
-    onClickSwapTokens()
+  const handleSwitch = (option: Token) => {
+    if (activeSwitchOption?.address !== option.address) {
+      setActiveSwitchOption(option)
+    }
   }
 
   return (
@@ -89,29 +86,31 @@ export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickS
         <AdvancedModeHeader>
           <Flex justifyContent="space-between" alignItems="center">
             <AdvancedModeTitle>Trades</AdvancedModeTitle>
-            {token0 && token1 && (
+            {token0 && token1 && activeSwitchOption && (
               <SwitcherWrapper>
                 <SwitchButton
-                  onClick={() => handleSwitch(token0.address)}
-                  active={activeSwitchOption === token1.address}
+                  onClick={() => handleSwitch(token0)}
+                  active={activeSwitchOption.address === token0.address}
                 >
                   {token0.symbol}
                 </SwitchButton>
                 <SwitchButton
-                  onClick={() => handleSwitch(token1.address)}
-                  active={activeSwitchOption === token0.address}
+                  onClick={() => handleSwitch(token1)}
+                  active={activeSwitchOption.address === token1.address}
                 >
                   {token1.symbol}
                 </SwitchButton>
               </SwitcherWrapper>
             )}
           </Flex>
-          <AdvancedModeDetails>
-            <Text>Amount {showTrades ? `(${inputToken?.symbol})` : null}</Text>
-            <Text>Amount {showTrades ? `(${outputToken?.symbol})` : null}</Text>
-            <Text>Price {showTrades ? `(${outputToken?.symbol})` : null}</Text>
-            <Text sx={{ textAlign: 'right' }}>Time</Text>
-          </AdvancedModeDetails>
+          {showTrades && (
+            <AdvancedModeDetails>
+              <Text>Amount {`(${inputToken?.symbol})`}</Text>
+              <Text>Amount {`(${outputToken?.symbol})`}</Text>
+              <Text>Price {`(${activeSwitchOption?.symbol})`}</Text>
+              <Text sx={{ textAlign: 'right' }}>Time</Text>
+            </AdvancedModeDetails>
+          )}
         </AdvancedModeHeader>
         <TransactionsWrapper id="transactions-wrapper-scrollable">
           <InfiniteScroll
@@ -129,26 +128,42 @@ export const AdvancedSwapMode: FC<AdvancedSwapModeProps> = ({ children, onClickS
             scrollThreshold={1}
           >
             {!isLoading &&
+              showTrades &&
               tradeHistory
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
-                .map(({ transactionId, timestamp, amountIn, amountOut, isSell, amountUSD, logoKey, price }) => {
-                  return (
-                    <Trade
-                      key={transactionId}
-                      isSell={isSell}
-                      transactionId={transactionId}
-                      logoKey={logoKey}
-                      chainId={chainId}
-                      amountIn={amountIn}
-                      amountOut={amountOut}
-                      timestamp={timestamp}
-                      amountUSD={amountUSD}
-                      price={price}
-                    />
-                  )
-                })}
+                .map(
+                  (
+                    {
+                      transactionId,
+                      timestamp,
+                      amountIn,
+                      amountOut,
+                      isSell,
+                      amountUSD,
+                      logoKey,
+                      priceToken0,
+                      priceToken1,
+                    },
+                    index
+                  ) => {
+                    return (
+                      <Trade
+                        key={`${transactionId}-${index}`}
+                        isSell={isSell}
+                        transactionId={transactionId}
+                        logoKey={logoKey}
+                        chainId={chainId}
+                        amountIn={amountIn}
+                        amountOut={amountOut}
+                        timestamp={timestamp}
+                        amountUSD={amountUSD}
+                        price={activeSwitchOption?.address === token0.address ? priceToken0 : priceToken1}
+                      />
+                    )
+                  }
+                )}
           </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>

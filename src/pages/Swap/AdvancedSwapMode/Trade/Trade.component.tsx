@@ -43,10 +43,10 @@ export const Trade = ({
   amountIn: string
   amountOut: string
   amountUSD?: string
-  price?: string
+  price: string
   timestamp: string
   logoKey: string
-  isSell?: boolean
+  isSell: boolean
 }) => {
   const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell })
 
@@ -57,7 +57,7 @@ export const Trade = ({
         <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>
       </Flex>
       <Text>{amountOut}</Text>
-      {price && <Text>{price}</Text>}
+      <Text>{price}</Text>
       <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDate(Number(timestamp) * 1000)}</Text>
     </TradeWrapper>
   )

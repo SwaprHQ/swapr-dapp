@@ -1,36 +1,52 @@
-import { Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
-import { AdvancedViewTradeHistory } from './advancedTradingView.types'
+import { AdvancedViewTransaction } from './advancedTradingView.types'
+
+export const selectCurrentSwaprPair = createSelector(
+  [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters.swapr],
+  ({ inputToken, outputToken }, swaprPairs) => {
+    if (inputToken && outputToken) {
+      const pairId = Pair.getAddress(inputToken, outputToken).toLowerCase()
+
+      return swaprPairs[pairId]
+    }
+  }
+)
+
+export const selectHasSwaprPairMoreData = createSelector([selectCurrentSwaprPair], pair => ({
+  hasMoreTrades: pair?.swaps?.hasMore ?? true,
+  hasMoreActivity: pair?.burnsAndMints?.hasMore ?? true,
+}))
 
 //check if any adapter can fetch more data
-export const selectHasMoreData = createSelector([(state: AppState) => state.advancedTradingView.adapters], adapters => {
-  const hasMoreTrades = Object.values(adapters)
-    .map(adapter => adapter.fetchDetails.hasMoreTrades)
-    .includes(true)
-
-  const hasMoreActivity = Object.values(adapters)
-    .map(adapter => adapter.fetchDetails.hasMoreActivity)
-    .includes(true)
-
-  return { hasMoreTrades, hasMoreActivity }
-})
+export const selectHasMoreData = createSelector([selectHasSwaprPairMoreData], (...adapters) =>
+  adapters.reduce<{
+    hasMoreTrades: boolean
+    hasMoreActivity: boolean
+  }>(
+    (adaptersHasMore, adapter) => ({
+      hasMoreTrades: adaptersHasMore.hasMoreTrades || adapter.hasMoreTrades,
+      hasMoreActivity: adaptersHasMore.hasMoreActivity || adapter.hasMoreActivity,
+    }),
+    { hasMoreTrades: false, hasMoreActivity: false }
+  )
+)
 
 export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) => {
   return inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 }
 
 export const selectAllSwaprTrades = createSelector(
-  [(state: AppState) => state.advancedTradingView.adapters.swapr, (state: AppState) => state.advancedTradingView.pair],
-  ({ pair }, { inputToken, outputToken }) => {
-    if (!inputToken || !outputToken) {
+  [selectCurrentSwaprPair, (state: AppState) => state.advancedTradingView.pair],
+  (pair, { inputToken, outputToken }) => {
+    if (!inputToken || !outputToken || !pair)
       return {
         swaprTradeHistory: [],
         swaprLiquidityHistory: [],
       }
-    }
 
     const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
 
@@ -38,7 +54,7 @@ export const selectAllSwaprTrades = createSelector(
 
     const logoKey = UniswapV2RoutablePlatform.SWAPR.name
 
-    const swaprLiquidityHistory: AdvancedViewTradeHistory[] = burnsAndMints.map(trade => {
+    const swaprLiquidityHistory: AdvancedViewTransaction[] = (burnsAndMints?.data ?? []).map(trade => {
       const {
         transaction: { id },
         amount0,
@@ -53,8 +69,7 @@ export const selectAllSwaprTrades = createSelector(
         logoKey,
       }
     })
-
-    const swaprTradeHistory: AdvancedViewTradeHistory[] = swaps.map(trade => {
+    const swaprTradeHistory: Required<AdvancedViewTransaction>[] = (swaps?.data ?? []).map(trade => {
       const {
         amount0In,
         amount0Out,
@@ -64,7 +79,6 @@ export const selectAllSwaprTrades = createSelector(
         timestamp,
         amountUSD,
       } = trade
-
       const normalizedValues = {
         amount0In: Number(amount0In),
         amount0Out: Number(amount0Out),
@@ -89,10 +103,8 @@ export const selectAllSwaprTrades = createSelector(
           ? amount0
           : amount1
         ).toString(),
-        price: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
-          ? (1 / Number(amount0)) * Number(amount1)
-          : (1 / Number(amount1)) * Number(amount0)
-        ).toString(),
+        priceToken0: (amount1 / amount0).toString(),
+        priceToken1: (amount0 / amount1).toString(),
         timestamp,
         amountUSD,
         isSell:
@@ -103,7 +115,6 @@ export const selectAllSwaprTrades = createSelector(
         logoKey,
       }
     })
-
     return {
       swaprTradeHistory,
       swaprLiquidityHistory,

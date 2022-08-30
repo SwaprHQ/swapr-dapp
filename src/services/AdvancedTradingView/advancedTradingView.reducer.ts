@@ -2,7 +2,8 @@ import { Token } from '@swapr/sdk'
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { InitialState, SwaprActivity, SwaprTrades } from './advancedTradingView.types'
+import { SwaprActionPayload } from './adapters/swapr/swapr.types'
+import { InitialState } from './advancedTradingView.types'
 
 const initialState: InitialState = {
   pair: {
@@ -10,17 +11,7 @@ const initialState: InitialState = {
     outputToken: undefined,
   },
   adapters: {
-    swapr: {
-      pair: {
-        id: undefined,
-        swaps: [],
-        burnsAndMints: [],
-      },
-      fetchDetails: {
-        hasMoreTrades: true,
-        hasMoreActivity: true,
-      },
-    },
+    swapr: {},
   },
 }
 
@@ -32,42 +23,27 @@ const advancedTradingViewSlice = createSlice({
       state,
       { payload: { inputToken, outputToken } }: PayloadAction<{ inputToken: Token; outputToken: Token }>
     ) => {
-      state.pair.inputToken = inputToken
-      state.pair.outputToken = outputToken
-    },
-    // adapters setters
-    setSwaprPairInitialArguments: (state, action: PayloadAction<string>) => {
-      state.adapters.swapr.pair = {
-        id: action.payload,
-        swaps: [],
-        burnsAndMints: [],
-      }
-      state.adapters.swapr.fetchDetails = {
-        hasMoreActivity: true,
-        hasMoreTrades: true,
+      state.pair = {
+        inputToken,
+        outputToken,
       }
     },
-    setSwaprPairTrades: (state, action: PayloadAction<{ data: SwaprTrades; hasMore: boolean }>) => {
-      const {
-        data: { pair },
-        hasMore,
-      } = action.payload
-
-      state.adapters.swapr.pair.swaps = [...state.adapters.swapr.pair.swaps, ...(pair?.swaps ?? [])]
-
-      state.adapters.swapr.fetchDetails.hasMoreTrades = hasMore
+    resetAdapterStore: state => {
+      state.pair = {}
+      state.adapters.swapr = {}
     },
-    setSwaprPairActivity: (state, action: PayloadAction<{ data: SwaprActivity; hasMore: boolean }>) => {
-      const {
-        data: { pair },
-        hasMore,
-      } = action.payload
+    setSwaprPairData: (state, action: PayloadAction<SwaprActionPayload>) => {
+      const { data, pairId, payloadType, hasMore } = action.payload
 
-      const burnsAndMints = [...(pair?.mints ?? []), ...(pair?.burns ?? [])]
+      const previousPairData = state.adapters.swapr[pairId]?.[payloadType]?.data ?? []
 
-      state.adapters.swapr.pair.burnsAndMints = [...state.adapters.swapr.pair.burnsAndMints, ...burnsAndMints]
-
-      state.adapters.swapr.fetchDetails.hasMoreActivity = hasMore
+      state.adapters.swapr[pairId] = {
+        ...state.adapters.swapr[pairId],
+        [payloadType]: {
+          data: [...previousPairData, ...data],
+          hasMore,
+        },
+      }
     },
   },
 })

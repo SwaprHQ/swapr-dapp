@@ -23,6 +23,7 @@ export const SWAPR_PAIR_ACTIVITY = gql`
   query getPairActivity($pairId: Bytes!, $first: Int!, $skip: Int!) {
     pair(id: $pairId) {
       mints(first: $first, skip: $skip, orderDirection: "desc", orderBy: "timestamp") {
+        id
         transaction {
           id
         }
