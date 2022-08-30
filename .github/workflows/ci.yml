@@ -324,6 +324,7 @@ jobs:
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
+        continue-on-error: true
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
