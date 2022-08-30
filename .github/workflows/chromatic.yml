@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
