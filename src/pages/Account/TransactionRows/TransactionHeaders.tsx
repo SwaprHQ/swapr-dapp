@@ -1,12 +1,12 @@
-import { Header } from '../../../ui/Header'
-import { HeaderText } from '../../../ui/HeaderText'
+import { TableHeader } from '../../../ui/TableHeader'
+import { TableHeaderText } from '../../../ui/TableHeaderText'
 import { HeaderRow, TransactionDetails } from '../Account.styles'
 
 export function TransactionHeaders() {
   return (
     <HeaderRow>
-      <HeaderText>
-        <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
+      <TableHeaderText>
+        <TableHeader justifyContent="space-between" paddingX="22px" paddingY="12px">
           <TransactionDetails flex="15%" justifyContent="start">
             From
           </TransactionDetails>
@@ -17,8 +17,8 @@ export function TransactionHeaders() {
           <TransactionDetails>Type</TransactionDetails>
           <TransactionDetails>Status</TransactionDetails>
           <TransactionDetails>Time</TransactionDetails>
-        </Header>
-      </HeaderText>
+        </TableHeader>
+      </TableHeaderText>
     </HeaderRow>
   )
 }

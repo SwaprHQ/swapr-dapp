@@ -14,9 +14,9 @@ import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPr
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { BlurBox } from '../../../ui/BlurBox'
-import { Header } from '../../../ui/Header'
-import { HeaderText } from '../../../ui/HeaderText'
 import { ListLayout } from '../../../ui/ListLayout'
+import { TableHeader } from '../../../ui/TableHeader'
+import { TableHeaderText } from '../../../ui/TableHeaderText'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
@@ -60,8 +60,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
             {!isMobile && (
-              <HeaderText>
-                <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
+              <TableHeaderText>
+                <TableHeader justifyContent="space-between" paddingX="22px" paddingY="12px">
                   <Flex flex="25%">{t('pairsList.pair')}</Flex>
                   <Flex flex="25%">{t('campaigns')}</Flex>
                   <Flex flex="45%">
@@ -69,8 +69,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                     <Flex flex="30%">{t('24hVolume')}</Flex>
                     <Flex flex="10%">{t('APY')}</Flex>
                   </Flex>
-                </Header>
-              </HeaderText>
+                </TableHeader>
+              </TableHeaderText>
             )}
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <StyledUndecoratedLink

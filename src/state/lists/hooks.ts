@@ -65,23 +65,26 @@ const selectTokensBySymbol = createSelector(selectListByUrl, lists => {
 })
 
 const selectTokensByAddress = createSelector(selectListByUrl, lists => {
-  const allTokensByChain = new Map<ChainId, Map<string, TokenInfo>>()
+  // Create a Map of ChainId and tokens in each network by Address
+  const allTokensByChainId = new Map<ChainId, Map<string, TokenInfo>>()
   for (const key in lists) {
     lists[key]?.current?.tokens?.forEach(token => {
-      if (allTokensByChain.has(token.chainId)) {
-        const tokenMap = allTokensByChain.get(token.chainId)
+      if (allTokensByChainId.has(token.chainId)) {
+        const tokenMap = allTokensByChainId.get(token.chainId)
         if (tokenMap) {
           tokenMap.set(token.address, token)
         }
       } else {
-        allTokensByChain.set(token.chainId, new Map<string, TokenInfo>())
+        allTokensByChainId.set(token.chainId, new Map<string, TokenInfo>())
       }
     })
   }
-  for (const key of allTokensByChain.keys()) {
+
+  // For each ChainId setting the default Token in ZeroAddress
+  for (const key of allTokensByChainId.keys()) {
     const network = NETWORK_DETAIL[key]
     if (network) {
-      const tokenMap = allTokensByChain.get(key)
+      const tokenMap = allTokensByChainId.get(key)
       tokenMap?.set(ZERO_ADDRESS, {
         chainId: key,
         address: ZERO_ADDRESS,
@@ -90,7 +93,7 @@ const selectTokensByAddress = createSelector(selectListByUrl, lists => {
     }
   }
 
-  return allTokensByChain
+  return allTokensByChainId
 })
 
 export function useListsByToken() {
