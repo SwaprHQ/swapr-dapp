@@ -26,6 +26,8 @@ export type AdvancedViewTransaction = {
   logoKey: string
   isSell?: boolean
   amountUSD?: string
+  priceToken0?: string
+  priceToken1?: string
 }
 
 export enum AdapterKeys {

@@ -1,4 +1,4 @@
-import { Pair, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 
@@ -35,6 +35,10 @@ export const selectHasMoreData = createSelector([selectHasSwaprPairMoreData], (.
   )
 )
 
+export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) => {
+  return inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+}
+
 export const selectAllSwaprTrades = createSelector(
   [selectCurrentSwaprPair, (state: AppState) => state.advancedTradingView.pair],
   (pair, { inputToken, outputToken }) => {
@@ -44,7 +48,7 @@ export const selectAllSwaprTrades = createSelector(
         swaprLiquidityHistory: [],
       }
 
-    const [token0, token1] = inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+    const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
 
     const { burnsAndMints, swaps } = pair
 
@@ -65,7 +69,7 @@ export const selectAllSwaprTrades = createSelector(
         logoKey,
       }
     })
-    const swaprTradeHistory: AdvancedViewTransaction[] = (swaps?.data ?? []).map(trade => {
+    const swaprTradeHistory: Required<AdvancedViewTransaction>[] = (swaps?.data ?? []).map(trade => {
       const {
         amount0In,
         amount0Out,
@@ -85,16 +89,22 @@ export const selectAllSwaprTrades = createSelector(
         inputTokenAddress: inputToken.address.toLowerCase(),
         outputTokenAddress: outputToken.address.toLowerCase(),
       }
+
+      const amount0 = Math.max(normalizedValues.amount0In, normalizedValues.amount0Out)
+      const amount1 = Math.max(normalizedValues.amount1In, normalizedValues.amount1Out)
+
       return {
         transactionId: id,
-        amountIn:
-          normalizedValues.inputTokenAddress === normalizedValues.token0Address
-            ? Math.max(normalizedValues.amount0In, normalizedValues.amount0Out).toString()
-            : Math.max(normalizedValues.amount1In, normalizedValues.amount1Out).toString(),
-        amountOut:
-          normalizedValues.outputTokenAddress === normalizedValues.token0Address
-            ? Math.max(normalizedValues.amount0In, normalizedValues.amount0Out).toString()
-            : Math.max(normalizedValues.amount1In, normalizedValues.amount1Out).toString(),
+        amountIn: (normalizedValues.inputTokenAddress === normalizedValues.token0Address
+          ? amount0
+          : amount1
+        ).toString(),
+        amountOut: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
+          ? amount0
+          : amount1
+        ).toString(),
+        priceToken0: (amount1 / amount0).toString(),
+        priceToken1: (amount0 / amount1).toString(),
         timestamp,
         amountUSD,
         isSell:
