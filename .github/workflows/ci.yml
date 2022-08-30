@@ -218,8 +218,7 @@ jobs:
       - name: Get Commit Message
         run: |
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          
-          printf "COMMIT_MSG<<EOF\n%s\nEOF\n" "$MSG"
+          echo "$MSG" | tr '\n' ' '" >> COMMIT_MSG
           echo "COMMIT_MSG" >> "$GITHUB_ENV"
 
       - name: Check how tests should be executed #1
