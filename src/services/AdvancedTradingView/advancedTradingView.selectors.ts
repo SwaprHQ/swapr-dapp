@@ -16,13 +16,6 @@ export const selectCurrentSwaprPair = createSelector(
   }
 )
 
-export const selectCurrentTradeToggleToken = createSelector(
-  (state: AppState) => state.advancedTradingView.pair,
-  ({ currentTradeToggleToken }) => {
-    return currentTradeToggleToken
-  }
-)
-
 export const selectHasSwaprPairMoreData = createSelector([selectCurrentSwaprPair], pair => ({
   hasMoreTrades: pair?.swaps?.hasMore ?? true,
   hasMoreActivity: pair?.burnsAndMints?.hasMore ?? true,
@@ -76,7 +69,7 @@ export const selectAllSwaprTrades = createSelector(
         logoKey,
       }
     })
-    const swaprTradeHistory: AdvancedViewTransaction[] = (swaps?.data ?? []).map(trade => {
+    const swaprTradeHistory: Required<AdvancedViewTransaction>[] = (swaps?.data ?? []).map(trade => {
       const {
         amount0In,
         amount0Out,

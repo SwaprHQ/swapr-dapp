@@ -102,7 +102,6 @@ export const useAdvancedTradingViewAdapter = () => {
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
-        advancedTradingViewAdapter.setCurrentTradeToggleToken(outputToken)
 
         setIsLoading(true)
         try {

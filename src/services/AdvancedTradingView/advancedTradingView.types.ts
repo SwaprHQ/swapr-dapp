@@ -8,7 +8,6 @@ import { SwaprPair } from './adapters/swapr/swapr.types'
 
 export type InitialState = {
   pair: {
-    currentTradeToggleToken?: Token
     inputToken?: Token
     outputToken?: Token
   }

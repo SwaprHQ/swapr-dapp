@@ -149,7 +149,7 @@ export const SwapBox = styled.div`
 `
 
 export const AdvancedModeHeader = styled.div`
-  padding: 15px;
+  padding: 0.625rem;
   margin-top: 10px;
 `
 
@@ -175,6 +175,10 @@ export const AdvancedModeDetails = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     padding: 0.125rem 0;
+  }
+
+  & div:not(:first-child) {
+    margin-left: 0.625rem;
   }
 `
 export const TransactionsWrapper = styled.div`

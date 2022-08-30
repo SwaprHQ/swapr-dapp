@@ -4,7 +4,7 @@ import { selectAllSwaprTrades, selectHasMoreData } from './advancedTradingView.s
 import { AdvancedViewTransaction } from './advancedTradingView.types'
 
 export const useAllTrades = (): {
-  tradeHistory: AdvancedViewTransaction[]
+  tradeHistory: Required<AdvancedViewTransaction>[]
   liquidityHistory: AdvancedViewTransaction[]
   hasMore: { hasMoreActivity: boolean; hasMoreTrades: boolean }
 } => {

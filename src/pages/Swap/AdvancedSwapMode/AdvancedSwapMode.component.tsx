@@ -2,18 +2,15 @@ import { Token } from '@swapr/sdk'
 
 import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
-import { actions } from '../../../services/AdvancedTradingView/advancedTradingView.reducer'
 import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
 import { AdvancedViewTransaction } from '../../../services/AdvancedTradingView/advancedTradingView.types'
 import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
-import { AppDispatch } from '../../../state'
 import {
   AdvancedModeDetails,
   AdvancedModeHeader,
@@ -47,7 +44,6 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
     tradeHistory,
     hasMore: { hasMoreTrades },
   } = useAllTrades()
-  const dispatch = useDispatch<AppDispatch>()
   const [tokens, setTokens] = useState<Token[]>([])
   const [token0, token1] = tokens
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
@@ -69,7 +65,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (token0 && token1 && outputToken) {
+    if (outputToken) {
       setActiveSwitchOption(outputToken.address === token0.address ? token0 : token1)
     }
     // eslint-disable-next-line
@@ -78,7 +74,6 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const handleSwitch = (option: Token) => {
     if (activeSwitchOption?.address !== option.address) {
       setActiveSwitchOption(option)
-      dispatch(actions.setCurrentTradeToggleToken({ currentTradeToggleToken: option }))
     }
   }
 
@@ -139,20 +134,23 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
                 )
                 .map(
-                  ({
-                    transactionId,
-                    timestamp,
-                    amountIn,
-                    amountOut,
-                    isSell,
-                    amountUSD,
-                    logoKey,
-                    priceToken0,
-                    priceToken1,
-                  }) => {
+                  (
+                    {
+                      transactionId,
+                      timestamp,
+                      amountIn,
+                      amountOut,
+                      isSell,
+                      amountUSD,
+                      logoKey,
+                      priceToken0,
+                      priceToken1,
+                    },
+                    index
+                  ) => {
                     return (
                       <Trade
-                        key={transactionId}
+                        key={`${transactionId}-${index}`}
                         isSell={isSell}
                         transactionId={transactionId}
                         logoKey={logoKey}

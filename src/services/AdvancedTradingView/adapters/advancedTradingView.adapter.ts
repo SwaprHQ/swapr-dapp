@@ -60,10 +60,6 @@ export class AdvancedTradingViewAdapter {
     this.store.dispatch(this.actions.setPairTokens({ inputToken, outputToken }))
   }
 
-  public setCurrentTradeToggleToken(currentTradeToggleToken: Token) {
-    this.store.dispatch(this.actions.setCurrentTradeToggleToken({ currentTradeToggleToken }))
-  }
-
   public updateActiveChainId(chainId: ChainId) {
     this.store.dispatch(this.actions.resetAdapterStore())
 
