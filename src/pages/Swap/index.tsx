@@ -85,7 +85,7 @@ const AppBodyContainer = styled.section`
   min-height: calc(100vh - 340px);
 `
 
-export default function Swap() {
+export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: boolean }) {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -372,7 +372,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
+      {!isAdvancedTradePage && <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />}
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -494,13 +494,13 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && (
+      {((activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId)) || isAdvancedTradePage) && (
         <>
           <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && (
+      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && !isAdvancedTradePage && (
         <Hero>
           <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>

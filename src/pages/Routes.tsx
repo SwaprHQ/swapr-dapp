@@ -45,7 +45,8 @@ const RouteWrapper = ({ element }: { element: JSX.Element }) => {
 export function Routes() {
   return (
     <Switch>
-      <Route path="swap" element={<Swap />} />
+      <Route path="swap" element={<Swap isAdvancedTradePage={false} />} />
+      <Route path="swap/pro" element={<Swap isAdvancedTradePage={true} />} />
       <Route path="swap/:outputCurrency" element={<RedirectToSwap />} />
       <Route path="bridge" element={<Bridge />} />
 
