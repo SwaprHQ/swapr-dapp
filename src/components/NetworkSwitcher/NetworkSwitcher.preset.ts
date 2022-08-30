@@ -44,14 +44,14 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.ARBITRUM_RINKEBY,
-    name: 'A.\xa0Rinkeby',
+    name: 'A. Rinkeby',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
   },
   {
     chainId: ChainId.ARBITRUM_GOERLI,
-    name: 'A.\xa0Görli',
+    name: 'A. Görli',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
