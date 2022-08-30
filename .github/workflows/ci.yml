@@ -218,9 +218,7 @@ jobs:
       - name: Get Commit Message
         run: |
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          printf "$MSG" | xargs
-          printf "COMMIT_MSG<<%s" "$MSG"
-          echo "COMMIT_MSG" >> "$GITHUB_ENV"
+          echo "COMMIT_MSG=$(printf "$MSG" | xargs") >> "$GITHUB_ENV"
 
       - name: Check how tests should be executed #1
         if: contains(env.COMMIT_MSG, 'trigger-synpress')
