@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import useENS from '../../hooks/useENS'
+import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { SearchInput } from '../SearchModal/shared'
 
@@ -17,13 +18,12 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
   }
 `
 
-export interface RecipientField {
+export interface RecipientFieldProps {
   recipient: string | null
-  action: any
 }
 
-export const RecipientField = ({ recipient, action }: RecipientField) => {
-  const { t } = useTranslation()
+export const RecipientField = ({ recipient }: RecipientFieldProps) => {
+  const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
   const error = useMemo(
@@ -32,29 +32,30 @@ export const RecipientField = ({ recipient, action }: RecipientField) => {
   )
 
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
-      dispatch(action({ recipient: input }))
+      dispatch(setRecipient({ recipient: input }))
     },
-    [action, dispatch]
+    [dispatch]
   )
 
   // Unset recipient on unmount
   useEffect(() => {
     return () => {
-      dispatch(action({ recipient: null }))
+      dispatch(setRecipient({ recipient: null }))
     }
-  }, [action, dispatch])
+  }, [dispatch])
 
   return (
     <div>
-      <TYPE.subHeader lineHeight={'11px'} color={'purple3'}>
-        {t('recipient')}
-      </TYPE.subHeader>
+      <TYPE.SubHeader lineHeight={'11px'} color={'purple3'}>
+        {t('recipientField.recipient')}
+      </TYPE.SubHeader>
       <SearchInputStyled
         data-testid="address-input"
         type="text"
-        placeholder={t('addressOrENS')}
+        pattern="^(0x[a-fA-F0-9]{40})$"
+        placeholder={t('recipientField.addressOrENS')}
         value={(address || recipient) ?? ''}
         onChange={handleInput}
         error={error}

@@ -2,8 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Plus } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -25,6 +24,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useWrappingToken } from '../../hooks/useContract'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useRouter } from '../../hooks/useRouter'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { Field } from '../../state/mint/actions'
@@ -239,11 +239,11 @@ export default function AddLiquidity() {
             {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + ' Pool Tokens'}
           </Text>
         </Row>
-        <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
+        <TYPE.Italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
           {`Output is estimated. If the price changes by more than ${
             allowedSlippage / 100
           }% your transaction will revert.`}
-        </TYPE.italic>
+        </TYPE.Italic>
       </AutoColumn>
     )
   }
@@ -330,15 +330,15 @@ export default function AddLiquidity() {
                 <ColumnCenter>
                   <BlueCard>
                     <AutoColumn gap="10px">
-                      <TYPE.link fontWeight={600} color={'primaryText1'}>
+                      <TYPE.Link fontWeight={600} color={'primaryText1'}>
                         You are the first liquidity provider.
-                      </TYPE.link>
-                      <TYPE.link fontWeight={400} color={'primaryText1'}>
+                      </TYPE.Link>
+                      <TYPE.Link fontWeight={400} color={'primaryText1'}>
                         The ratio of tokens you add will set the price of this pool.
-                      </TYPE.link>
-                      <TYPE.link fontWeight={400} color={'primaryText1'}>
+                      </TYPE.Link>
+                      <TYPE.Link fontWeight={400} color={'primaryText1'}>
                         Once you are happy with the rate click supply to review.
-                      </TYPE.link>
+                      </TYPE.Link>
                     </AutoColumn>
                   </BlueCard>
                 </ColumnCenter>
@@ -373,34 +373,34 @@ export default function AddLiquidity() {
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
               <AutoColumn gap="8px" style={{ padding: '0 16px' }}>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     Price
-                  </TYPE.body>
+                  </TYPE.Body>
                   <TradePrice price={price} showInverted={invertedPrice} setShowInverted={setInvertedPrice} />
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     Pool&apos;s share
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     {poolTokenPercentage ? `${poolTokenPercentage.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     Swap fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     {swapFee ? `${swapFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     Protocol fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize={12}>
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize={12}>
                     {protocolFee ? `${protocolFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
               </AutoColumn>
             )}

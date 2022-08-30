@@ -1,5 +1,5 @@
 import { darken } from 'polished'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -70,7 +70,7 @@ export default function MobileOptions() {
   const open = useModalOpen(ApplicationModal.MOBILE)
   const toggle = useToggleMobileMenu()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   useOnClickOutside(popoverRef, open ? toggle : undefined)
   return (
     <div ref={popoverRef}>

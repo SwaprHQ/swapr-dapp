@@ -1,10 +1,11 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
-import React, { CSSProperties, useCallback, useContext, useMemo, useState } from 'react'
+import { ComponentType, CSSProperties, useCallback, useMemo, useState } from 'react'
 import { Plus, X } from 'react-feather'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { FixedSizeListProps } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
+import { useTheme } from 'styled-components'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
 import { useActiveWeb3React } from '../../../hooks'
@@ -14,10 +15,10 @@ import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/ho
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { TYPE } from '../../../theme'
 import { isTokenOnList } from '../../../utils'
-import Badge from '../../Badge'
+import { Badge } from '../../Badge'
 import { DarkCard } from '../../Card'
 import { CurrencyLogo } from '../../CurrencyLogo'
-import Loader from '../../Loader'
+import { Loader } from '../../Loader'
 import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 import { ImportRow } from '../ImportRow'
@@ -38,6 +39,7 @@ const CurrencyRow = ({
   isSelected,
   otherSelected,
   selectedTokenList,
+  hideBalance,
 }: CurrencyRowProps) => {
   const { account, chainId } = useActiveWeb3React()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
@@ -63,9 +65,9 @@ const CurrencyRow = ({
           </Text>
         </AutoRow>
         <AutoRow>
-          <TYPE.body marginTop={'4px'} fontSize="9px" color="text4" fontWeight={600}>
+          <TYPE.Body marginTop={'4px'} fontSize="9px" color="text4" fontWeight={600}>
             {currency.name?.toUpperCase()}
-          </TYPE.body>
+          </TYPE.Body>
         </AutoRow>
       </Box>
 
@@ -90,24 +92,24 @@ const CurrencyRow = ({
           </Box>
         )}
       </Flex>
-      <Box style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </Box>
+      {!hideBalance && (
+        <Box style={{ justifySelf: 'flex-end' }}>{balance ? <Balance balance={balance} /> : account && <Loader />}</Box>
+      )}
     </TokenPickerItem>
   )
 }
 
 const BreakLineComponent = ({ style }: { style: CSSProperties }) => {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   return (
     <FixedContentRow style={style}>
       <DarkCard padding="8px 12px" borderRadius="8px">
         <RowBetween>
           <RowFixed>
             <TokenListLogoWrapper src={TokenListLogo} />
-            <TYPE.main ml="6px" fontSize="12px" color={theme.text1}>
+            <TYPE.Main ml="6px" fontSize="12px" color={theme.text1}>
               Expanded results from inactive token lists
-            </TYPE.main>
+            </TYPE.Main>
           </RowFixed>
           <QuestionHelper text="Tokens from inactive lists. Import specific tokens below or click 'Manage' to activate more lists." />
         </RowBetween>
@@ -126,6 +128,7 @@ export const CurrencyList = ({
   selectedCurrency,
   onCurrencySelect,
   selectedTokenList,
+  hideBalance,
 }: CurrencyListProps) => {
   const { account } = useActiveWeb3React()
   const [hasBreakLine, setHasBreakLine] = useState(false)
@@ -148,14 +151,18 @@ export const CurrencyList = ({
     (hasBreakLine ? itemData.slice(1) : itemData) as Currency[]
   )
 
+  type RowProps = { data: Currency[] | (string | Token)[]; index: number; style: CSSProperties }
+
   const Row = useCallback(
-    ({ data, index, style }) => {
-      const currency: Currency = data[index]
-      if (isBreakLine(currency)) return <BreakLineComponent style={style} />
-      const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-      const otherSelected = Boolean(otherCurrency && otherCurrency.some(c => currencyEquals(c, currency)))
+    ({ data, index, style }: RowProps) => {
+      const currency = data[index]
+
+      if (typeof currency === 'string' && isBreakLine(currency)) {
+        return <BreakLineComponent style={style} />
+      }
+
       const showImport = index >= currencies.length
-      const handleSelect = () => onCurrencySelect(currency)
+
       if (showImport && currency && currency instanceof Token) {
         return (
           <ImportRow
@@ -166,7 +173,12 @@ export const CurrencyList = ({
             dim
           />
         )
-      } else if (currency) {
+      }
+
+      if (currency && currency instanceof Currency) {
+        const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
+        const otherSelected = Boolean(otherCurrency && otherCurrency.some(c => currencyEquals(c, currency)))
+        const handleSelect = () => onCurrencySelect(currency)
         return (
           <CurrencyRow
             selectedTokenList={selectedTokenList}
@@ -176,9 +188,11 @@ export const CurrencyList = ({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             style={style}
+            hideBalance={hideBalance}
           />
         )
       }
+
       return null
     },
     [
@@ -191,6 +205,7 @@ export const CurrencyList = ({
       selectedTokenList,
       setImportToken,
       showImportView,
+      hideBalance,
     ]
   )
 
@@ -198,8 +213,8 @@ export const CurrencyList = ({
     <Flex overflowY="auto" flex="1">
       <AutoSizer style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
         {({ width, height }) => (
-          <StyledFixedSizeList
-            ref={fixedListRef as any}
+          <StyledFixedSizeList<ComponentType<FixedSizeListProps<Currency[] | (string | Token)[]>>>
+            ref={fixedListRef}
             width={width}
             height={height}
             itemData={itemData}

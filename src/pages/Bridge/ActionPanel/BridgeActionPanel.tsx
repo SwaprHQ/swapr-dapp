@@ -1,11 +1,11 @@
 import { ChainId } from '@swapr/sdk'
 
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
-import Loader from '../../../components/Loader'
+import { Loader } from '../../../components/Loader'
 import { networkOptionsPreset } from '../../../components/NetworkSwitcher'
 import { RowBetween } from '../../../components/Row'
 import { isToken } from '../../../hooks/Tokens'
@@ -96,9 +96,7 @@ export const BridgeActionPanel = ({
               width="100%"
               altDisabledStyle={false}
               confirmed={false}
-            >
-              Approve {bridgeCurrency?.symbol}
-            </ButtonConfirmed>
+            >{`Approve ${bridgeCurrency?.symbol}`}</ButtonConfirmed>
           </RowBetween>
         )
       }

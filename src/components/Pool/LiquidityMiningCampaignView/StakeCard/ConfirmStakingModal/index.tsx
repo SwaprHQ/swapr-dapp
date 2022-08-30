@@ -1,6 +1,6 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import TransactionConfirmationModal, {
@@ -52,7 +52,7 @@ export default function ConfirmStakingModal({
       : stakablePair instanceof Pair
       ? `${stakablePair.token0.symbol}/${stakablePair.token1.symbol}`
       : ''
-  const handleStakedAmountChange = useCallback(amount => {
+  const handleStakedAmountChange = useCallback((amount: TokenAmount) => {
     setStakedAmount(amount)
   }, [])
 

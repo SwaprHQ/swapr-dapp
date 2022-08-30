@@ -40,6 +40,9 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
+      - name: Generate graphql
+        run: yarn codegen:graphql
+
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
@@ -150,7 +153,7 @@ jobs:
     name: ⬡・IPFS Deploy
     needs: build
     runs-on: ubuntu-20.04
-    if: ${{ github.event_name != 'schedule' }}
+    if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
         uses: rlespinasse/github-slug-action@4.2.5
@@ -198,19 +201,34 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    container: cypress/browsers:node12.13.0-chrome78-ff70
+    container: cypress/browsers:node16.5.0-chrome97-ff96
     env:
-      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
+      IF_MERGED: ${{ github.event.pull_request.merged }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
-        containers: [transactionfull, transactionless]
+        containers: [02transactionfull, 01transactionless]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
           fetch-depth: '50'
+
+      - name: Get Commit Message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+          echo "COMMIT_MSG=$(printf "$MSG" | xargs)" >> "$GITHUB_ENV"
+
+      - name: Check how tests should be executed #1
+        if: contains(env.COMMIT_MSG, 'trigger-synpress')
+        run: |
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
+
+      - name: Check how tests should be executed #2
+        if: ${{ (github.event.pull_request.merged) }}
+        run: |
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -232,25 +250,36 @@ jobs:
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
+
       - name: Run synpress tests
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
+        env:
+          CI: true
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Merge test results into one
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Save code coverage results
+        if: ${{ (github.event.pull_request.merged) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
             ${{ matrix.containers }}.json
             public-report/screenshots
+            public-report/videos
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
@@ -261,7 +290,7 @@ jobs:
       fail-fast: false
       matrix:
         containers:
-          [LiquidityTests, MenuBarTests, RewardsPageTests, SwapBoxTests, TokenMenuTests, TransactionSettingsTests]
+          [Container01, Container02, Container03, Container04]
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -275,10 +304,23 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
+        if: ${{ !(github.event.pull_request.merged) }}
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: true
+        env:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+
+      - name: Run cypress tests after merge
+        if: ${{ (github.event.pull_request.merged) }}
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS'
+        continue-on-error: true
+        env:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
+        if: ${{ !(contains(env.COMMIT_MSG, 'skip-cypress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
@@ -305,35 +347,30 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: LiquidityTests
+          name: Container01
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: MenuBarTests
+          name: Container02
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: RewardsPageTests
+          name: Container03
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: SwapBoxTests
+          name: Container04
           path: mochawesome-report
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
-          name: TokenMenuTests
+          name: 01transactionless
           path: mochawesome-report
+
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
-          name: TransactionSettingsTests
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionless
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionfull
+          name: 02transactionfull
           path: mochawesome-report
 
       - name: Setup Node
@@ -341,19 +378,11 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: mochawesome-report
-
       - name: Merge test results into one
         run: yarn run report:merge
 
       - name: Generate HTML report
         run: yarn run report:generate
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
@@ -362,26 +391,34 @@ jobs:
           path: |
             public-report
             mochawesome-report/public-report/screenshots/**
+            mochawesome-report/public-report/videos/**
           retention-days: 3
 
       - name: Delete merged artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            LiquidityTests
-            MenuBarTests
-            RewardsPageTests
-            SwapBoxTests
-            TokenMenuTests
-            TransactionSettingsTests
-            transactionless
-            transactionfull
+            Container01
+            Container02
+            Container03
+            Container04
+
+  depcleanup:
+    name: 🧹 Dependabot Cleanup
+    if: github.actor == 'dependabot[bot]'
+    needs: [install, lint, test, typecheck, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Delete workspace artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: workspace
 
   cleanup:
     name: 🧹 Cleanup
+    if: ${{ success() && github.actor != 'dependabot[bot]' }}
     needs: [install, lint, test, typecheck, build, cypress, cypress-report]
     runs-on: ubuntu-20.04
-    if: ${{ success() }}
     steps:
       - name: Delete workspace artifact
         uses: geekyeggo/delete-artifact@v1

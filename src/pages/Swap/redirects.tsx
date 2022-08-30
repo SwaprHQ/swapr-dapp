@@ -1,4 +1,3 @@
-import React from 'react'
 import { Navigate, useParams, useSearchParams } from 'react-router-dom'
 
 // Redirects from the /swap/:outputCurrency path to the /swap?outputCurrency=:outputCurrency format

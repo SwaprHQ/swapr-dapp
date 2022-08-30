@@ -1,0 +1,8 @@
+query getLiquidityMiningCampaign($liquidityMiningCampaignId: ID!) {
+  liquidityMiningCampaign(id: $liquidityMiningCampaignId) {
+    ...LiquidityMiningCampaignFragment
+    rewards {
+      ...LiquidityMiningCampaignRewardFragment
+    }
+  }
+}

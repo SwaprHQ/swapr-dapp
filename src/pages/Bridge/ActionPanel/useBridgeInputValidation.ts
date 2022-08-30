@@ -7,27 +7,38 @@ import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (isCollecting: boolean) => {
-  const value = useSelector((state: AppState) => state.ecoBridge.ui.from.value)
-
+export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: boolean) => {
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
+  const { from, to, showAvailableBridges, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
+
+  const { address: fromTokenAddress, value: fromValue } = from
+  const { address: toTokenAddress } = to
+
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
-    if (showAvailableBridges) {
+    if (showAvailableBridges || !isOutputPanel) {
       ecoBridge.getSupportedBridges()
     }
-  }, [showAvailableBridges, ecoBridge, value, from.address, to.address, from.chainId, to.chainId])
+  }, [
+    showAvailableBridges,
+    ecoBridge,
+    fromValue,
+    fromTokenAddress,
+    toTokenAddress,
+    from.chainId,
+    to.chainId,
+    isOutputPanel,
+  ])
 
   useEffect(() => {
-    if (isCollecting) return
+    if (isCollecting || isOutputPanel) return
 
     const validateInput = () => {
-      if (Number(value) === 0 || isNaN(Number(value))) {
+      if (Number(fromValue) === 0 || isNaN(Number(fromValue))) {
         dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: 'Enter amount',
@@ -42,7 +53,10 @@ export const useBridgeInputValidation = (isCollecting: boolean) => {
         dispatch(ecoBridgeUIActions.setTo({ value: '' }))
         return false
       }
-      if (Number(value) > 0 && !from.address && !to.address) {
+      if (
+        (isBridgeSwapActive && (!fromTokenAddress || !toTokenAddress)) ||
+        (!isBridgeSwapActive && !fromTokenAddress)
+      ) {
         dispatch(
           ecoBridgeUIActions.setStatusButton({
             label: 'Select token',
@@ -92,5 +106,16 @@ export const useBridgeInputValidation = (isCollecting: boolean) => {
     if (isValid) {
       ecoBridge.validate()
     }
-  }, [value, ecoBridge, activeBridge, isBalanceSufficient, dispatch, from.address, to.address, isCollecting])
+  }, [
+    fromValue,
+    ecoBridge,
+    activeBridge,
+    isBalanceSufficient,
+    dispatch,
+    fromTokenAddress,
+    toTokenAddress,
+    isCollecting,
+    isBridgeSwapActive,
+    isOutputPanel,
+  ])
 }

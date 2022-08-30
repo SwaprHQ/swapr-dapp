@@ -1,0 +1,12 @@
+query getPair($pairId: ID!) {
+  pair(id: $pairId) {
+    id
+    ...PairFragment
+    token0 {
+      derivedNativeCurrency
+    }
+    token1 {
+      derivedNativeCurrency
+    }
+  }
+}

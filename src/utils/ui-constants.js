@@ -1,12 +1,5 @@
 import TextyAnim from 'rc-texty'
-import React from 'react'
 
-import SwapAnim from './../assets/images/animations/01_Swap.svg'
-import EcoRoutingAnim from './../assets/images/animations/02_Eco_Routing.svg'
-import VoteAnim from './../assets/images/animations/03_Vote.svg'
-import FarmingAnim from './../assets/images/animations/04_Farming.svg'
-import DiyFarmAnim from './../assets/images/animations/05_DIY_Farm.svg'
-import BridgeAnim from './../assets/images/animations/06_Bridge.svg'
 import Entry1 from './../assets/images/blog/blog-entry-1.jpg'
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
 import Entry3 from './../assets/images/blog/blog-entry-3.jpg'
@@ -30,6 +23,8 @@ import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
+import RoutingCoW from './../assets/images/routing-cow.svg'
+import RoutingCurve from './../assets/images/routing-curve.png'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
@@ -38,10 +33,6 @@ import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
 import { scrollTo } from './helper-functions'
 
 export const mainNavigation = [
-  // {
-  //     label: 'Features',
-  //     href: '/#features',
-  // },
   {
     label: 'Documentation',
     href: 'http://dxdocs.eth.limo.ipns.localhost:8080/docs/Products/swapr/',
@@ -121,8 +112,27 @@ export const RoutingThroughContent = {
     },
     { title: 'QuickSwap', img: RoutingQuickSwap },
     { title: 'DFYN', img: RoutingDFYN },
+    {
+      title: 'CoW',
+      img: RoutingCoW,
+    },
+    {
+      title: 'Curve',
+      img: RoutingCurve,
+    },
   ],
 }
+
+function importAll(folderArray) {
+  const images = {}
+  folderArray.keys().forEach(item => {
+    const name = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
+    images[name] = folderArray(item)
+  })
+  return images
+}
+
+const animations = importAll(require.context('./../assets/images/animations', false, /\.(svg)$/))
 
 export const FeaturesContent = {
   topBanner: {
@@ -136,7 +146,7 @@ export const FeaturesContent = {
       title: 'SWAP',
       content: 'Trade your favorite pairs on your favorite chains through the Swapr interface.',
       image: Swap,
-      animation: SwapAnim,
+      animation: animations['01_Swap'],
       buttons: [
         {
           label: 'SWAP',
@@ -156,7 +166,7 @@ export const FeaturesContent = {
     {
       title: 'ECO-ROUTING',
       content: 'The eco-router ensures the best price through established DEXes with no extra fees!',
-      animation: EcoRoutingAnim,
+      animation: animations['02_Eco_Routing'],
       image: EcoRouting,
       buttons: [
         {
@@ -178,7 +188,7 @@ export const FeaturesContent = {
       title: 'VOTE',
       content: 'LPs on the Swapr protocol can vote to adjust the fees on their pools.',
       image: Vote,
-      animation: VoteAnim,
+      animation: animations['03_Vote'],
       buttons: [
         {
           label: 'VOTE',
@@ -198,7 +208,7 @@ export const FeaturesContent = {
       title: 'FARMING',
       content: 'Users can participate in permissionless farming campaigns directly in the Swapr interface.',
       image: Farming,
-      animation: FarmingAnim,
+      animation: animations['04_Farming'],
       buttons: [
         {
           label: 'FARM',
@@ -217,7 +227,7 @@ export const FeaturesContent = {
       title: 'DIY FARM',
       content: 'The Swapr protocol allows anyone to create farming campaigns. Any pair, any reward.',
       image: DiyFarm,
-      animation: DiyFarmAnim,
+      animation: animations['05_DIY_Farm'],
       buttons: [
         {
           label: 'CREATE CAMPAIGN',
@@ -236,7 +246,7 @@ export const FeaturesContent = {
       title: 'BRIDGE',
       content: 'Bridge directly to or from any chain where Swapr is deployed.',
       image: Bridge,
-      animation: BridgeAnim,
+      animation: animations['06_Bridge'],
       buttons: [
         {
           label: 'BRIDGE',

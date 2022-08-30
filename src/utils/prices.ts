@@ -2,19 +2,21 @@ import { parseUnits } from '@ethersproject/units'
 import {
   _100,
   _10000,
+  CoWTrade,
   Currency,
   CurrencyAmount,
   CurveTrade,
   Fraction,
-  GnosisProtocolTrade,
   JSBI,
   Pair,
   Percent,
   Price,
   TokenAmount,
   Trade,
+  UniswapTrade,
   UniswapV2Trade,
   ZERO,
+  ZeroXTrade,
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
@@ -32,7 +34,7 @@ import {
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_NON_EXPERT,
 } from '../constants'
-import { Field } from '../state/swap/actions'
+import { Field } from '../state/swap/types'
 
 const Decimal = toFormat(_Decimal)
 
@@ -66,9 +68,11 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
         ONE_HUNDRED_PERCENT
       )
       return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-    } else if (trade instanceof GnosisProtocolTrade) return trade.fee
-    else if (trade instanceof CurveTrade) return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
-    else return undefined
+    } else if (trade instanceof CoWTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
+      return trade.fee
+    } else if (trade instanceof CurveTrade) {
+      return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
+    } else return undefined
   }
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
@@ -81,7 +85,7 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
   function computeRealizedLPFeeAmount(trade: Trade, realizedLPFee?: Fraction) {
     if (!realizedLPFee) return undefined
 
-    if (trade instanceof GnosisProtocolTrade) return (trade as GnosisProtocolTrade).feeAmount
+    if (trade instanceof CoWTrade) return (trade as CoWTrade).feeAmount
     else if (trade.inputAmount instanceof TokenAmount)
       return new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
     else return CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
