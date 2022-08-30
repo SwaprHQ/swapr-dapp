@@ -19,7 +19,13 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     this._store = store
   }
 
-  public async getPairTrades({ inputToken, outputToken, amountToFetch, isFirstFetch, abortCall }: AdapterFetchDetails) {
+  public async getPairTrades({
+    inputToken,
+    outputToken,
+    amountToFetch,
+    isFirstFetch,
+    abortController,
+  }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
     const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
@@ -37,7 +43,7 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
           first: amountToFetch,
           skip: swaprPair?.swaps?.data.length ?? 0,
         },
-        signal: abortCall('swapr-pair-trades') as RequestOptions['signal'],
+        signal: abortController('swapr-pair-trades') as RequestOptions['signal'],
       })
 
       const hasMore = pair?.swaps.length === amountToFetch
@@ -58,7 +64,7 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     outputToken,
     amountToFetch,
     isFirstFetch,
-    abortCall,
+    abortController,
   }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
@@ -77,7 +83,7 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
           first: amountToFetch,
           skip: swaprPair?.burnsAndMints?.data.length ?? 0,
         },
-        signal: abortCall('swapr-pair-activity') as RequestOptions['signal'],
+        signal: abortController('swapr-pair-activity') as RequestOptions['signal'],
       })
 
       const hasMore = Boolean(pair?.burns.length === amountToFetch || pair?.mints.length === amountToFetch)

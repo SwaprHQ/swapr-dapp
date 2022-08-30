@@ -79,17 +79,17 @@ export class AdvancedTradingViewAdapter {
     }
   }
 
-  public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortCall'>) {
+  public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairTrades({ ...fetchDetails, abortCall: this.renewAbortController })
+      adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
     return await Promise.all(promises)
   }
 
-  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortCall'>) {
+  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairActivity({ ...fetchDetails, abortCall: this.renewAbortController })
+      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
     return await Promise.all(promises)
