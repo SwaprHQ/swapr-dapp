@@ -581,14 +581,14 @@ export const combineTransactions = (
       assetName: symbol,
       assetAddressL1: token,
       fromValue: formatUnits(amount, decimals),
-      toValue: formatUnits(amount, decimals),
+      toValue: formatUnits(execution?.amount ?? 0, decimals),
       fromChainId: chainId,
       toChainId: bridgeChainId,
       sender: user,
       timestampResolved: Number(timestamp) * 1000,
       message,
       partnerTxHash: execution?.txHash,
-      status: execution?.status,
+      status: execution?.token,
     }
   })
 

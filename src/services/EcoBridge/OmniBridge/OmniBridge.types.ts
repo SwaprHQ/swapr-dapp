@@ -82,6 +82,7 @@ export type OmnibridgeExecution = {
   status: boolean | undefined
   token: string
   txHash: string
+  amount: string | null
 }
 export type OmnibridgeSubgraphRequests = {
   requests: OmnibridgeRequest[]
