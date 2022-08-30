@@ -16,6 +16,13 @@ export const selectCurrentSwaprPair = createSelector(
   }
 )
 
+export const selectCurrentTradeToggleToken = createSelector(
+  (state: AppState) => state.advancedTradingView.pair,
+  ({ currentTradeToggleToken }) => {
+    return currentTradeToggleToken
+  }
+)
+
 export const selectHasSwaprPairMoreData = createSelector([selectCurrentSwaprPair], pair => ({
   hasMoreTrades: pair?.swaps?.hasMore ?? true,
   hasMoreActivity: pair?.burnsAndMints?.hasMore ?? true,
@@ -103,10 +110,8 @@ export const selectAllSwaprTrades = createSelector(
           ? amount0
           : amount1
         ).toString(),
-        price: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
-          ? amount1 / amount0
-          : amount0 / amount1
-        ).toString(),
+        priceToken0: (amount1 / amount0).toString(),
+        priceToken1: (amount0 / amount1).toString(),
         timestamp,
         amountUSD,
         isSell:

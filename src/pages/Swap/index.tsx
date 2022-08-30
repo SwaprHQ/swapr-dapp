@@ -495,7 +495,7 @@ export default function Swap() {
       />
       {activeTab === SwapTabs.ADVANCED_SWAP_MODE && (
         <>
-          <AdvancedSwapMode onClickSwapTokens={handleSwitchTokens}>{renderSwapBox()}</AdvancedSwapMode>
+          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}

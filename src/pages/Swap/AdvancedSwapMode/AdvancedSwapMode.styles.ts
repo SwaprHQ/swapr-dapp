@@ -15,17 +15,8 @@ export const AdvanceSwapModeHeight = css`
 `
 
 export const AdvancedModeDetailsItems = css`
-  & > div:nth-child(1) {
-    flex-basis: 30%;
-  }
-
-  & > div:nth-child(2),
-  & > div:nth-child(3) {
+  & > div {
     flex-basis: 25%;
-  }
-
-  & > div:nth-child(4) {
-    flex-basis: 20%;
   }
 `
 

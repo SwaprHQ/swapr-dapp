@@ -8,6 +8,7 @@ import { SwaprPair } from './adapters/swapr/swapr.types'
 
 export type InitialState = {
   pair: {
+    currentTradeToggleToken?: Token
     inputToken?: Token
     outputToken?: Token
   }
@@ -26,7 +27,8 @@ export type AdvancedViewTransaction = {
   logoKey: string
   isSell?: boolean
   amountUSD?: string
-  price?: string
+  priceToken0?: string
+  priceToken1?: string
 }
 
 export enum AdapterKeys {

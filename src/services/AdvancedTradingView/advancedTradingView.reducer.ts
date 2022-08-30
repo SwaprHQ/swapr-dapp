@@ -7,6 +7,7 @@ import { InitialState } from './advancedTradingView.types'
 
 const initialState: InitialState = {
   pair: {
+    currentTradeToggleToken: undefined,
     inputToken: undefined,
     outputToken: undefined,
   },
@@ -27,6 +28,12 @@ const advancedTradingViewSlice = createSlice({
         inputToken,
         outputToken,
       }
+    },
+    setCurrentTradeToggleToken: (
+      state,
+      { payload: { currentTradeToggleToken } }: PayloadAction<{ currentTradeToggleToken: Token }>
+    ) => {
+      state.pair.currentTradeToggleToken = currentTradeToggleToken
     },
     resetAdapterStore: state => {
       state.pair = {}
