@@ -219,6 +219,7 @@ jobs:
         run: |
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "COMMIT_MSG=$MSG" >> "$GITHUB_ENV"
+          echo 'EOF' >> $GITHUB_ENV
 
       - name: Check how tests should be executed #1
         if: contains(env.COMMIT_MSG, 'trigger-synpress')
