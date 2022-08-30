@@ -56,6 +56,7 @@ export type AdapterFetchDetails = {
   outputToken: Token
   amountToFetch: number
   isFirstFetch: boolean
+  abortController: (id: string) => AbortSignal
 }
 
 export enum AdapterAmountToFetch {

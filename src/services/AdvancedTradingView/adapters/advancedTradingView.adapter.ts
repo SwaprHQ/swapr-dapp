@@ -29,12 +29,23 @@ export class AdvancedTradingViewAdapter {
   private _chainId: ChainId
   private _adapters: Adapters
   private _initialized = false
+  private _abortControllers: { [id: string]: AbortController } = {}
   public readonly store: Store<AppState>
 
   constructor({ store, chainId, adapters }: AdvancedTradingViewAdapterConstructorParams) {
     this.store = store
     this._chainId = chainId
     this._adapters = adapters
+  }
+
+  private renewAbortController = (key: string) => {
+    if (this._abortControllers[key]) {
+      this._abortControllers[key].abort()
+    }
+
+    this._abortControllers[key] = new AbortController()
+
+    return this._abortControllers[key].signal
   }
 
   public get actions() {
@@ -68,14 +79,18 @@ export class AdvancedTradingViewAdapter {
     }
   }
 
-  public async fetchPairTrades(fetchDetails: AdapterFetchDetails) {
-    const promises = Object.values(this._adapters).map(adapter => adapter.getPairTrades(fetchDetails))
+  public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
+    )
 
     return await Promise.all(promises)
   }
 
-  public async fetchPairActivity(fetchDetails: AdapterFetchDetails) {
-    const promises = Object.values(this._adapters).map(adapter => adapter.getPairActivity(fetchDetails))
+  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
+    )
 
     return await Promise.all(promises)
   }
