@@ -1,5 +1,5 @@
-import { TableHeader } from '../../../ui/TableHeader'
-import { TableHeaderText } from '../../../ui/TableHeaderText'
+import { TableHeader } from '../../../ui/StyledElements/TableHeader'
+import { TableHeaderText } from '../../../ui/StyledElements/TableHeaderText'
 import { HeaderRow, TransactionDetails } from '../Account.styles'
 
 export function TransactionHeaders() {

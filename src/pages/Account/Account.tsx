@@ -18,8 +18,8 @@ import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
-import { BlurBox } from '../../ui/BlurBox'
-import { PageWrapper } from '../../ui/PageWrapper'
+import { BlurBox } from '../../ui/StyledElements/BlurBox'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import {
   AvatarWrapper,

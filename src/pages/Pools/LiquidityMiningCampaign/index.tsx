@@ -19,7 +19,7 @@ import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCam
 import { useRouter } from '../../../hooks/useRouter'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../../ui/PageWrapper'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 import { currencyId } from '../../../utils/currencyId'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { ResponsiveButtonPrimary, ResponsiveButtonSecondary } from '../../LiquidityMining/styleds'

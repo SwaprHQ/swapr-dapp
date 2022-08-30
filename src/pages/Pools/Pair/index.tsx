@@ -20,8 +20,8 @@ import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
-import { BlurBox } from '../../../ui/BlurBox'
-import { PageWrapper } from '../../../ui/PageWrapper'
+import { BlurBox } from '../../../ui/StyledElements/BlurBox'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 
 type CurrencySearchParams = {

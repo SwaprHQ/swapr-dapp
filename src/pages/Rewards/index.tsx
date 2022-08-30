@@ -20,7 +20,7 @@ import { useToken } from '../../hooks/Tokens'
 import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFeatureFlag'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
-import { PageWrapper } from '../../ui/PageWrapper'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
 

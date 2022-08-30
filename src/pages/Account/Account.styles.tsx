@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { ButtonPurpleDim } from '../../components/Button'
 import Logo from '../../components/Logo'
-import { ListLayout } from '../../ui/ListLayout'
+import { ListLayout } from '../../ui/StyledElements/ListLayout'
 import { TransactionStatus } from './Account.types'
 
 export const Status = styled(Flex)<{ status: string }>`

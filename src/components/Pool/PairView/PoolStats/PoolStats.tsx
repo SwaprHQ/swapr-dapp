@@ -11,7 +11,7 @@ import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePa
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { useRouter } from '../../../../hooks/useRouter'
 import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
-import { BlurBox } from '../../../../ui/BlurBox'
+import { BlurBox } from '../../../../ui/StyledElements/BlurBox'
 import { formatCurrencyAmount } from '../../../../utils'
 import { ButtonExternalLink } from '../../../Button'
 import { InfoGrid } from '../InfoGrid/InfoGrid.styles'

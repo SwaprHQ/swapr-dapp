@@ -11,7 +11,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../../ui/PageWrapper'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

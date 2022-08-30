@@ -18,7 +18,7 @@ import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquid
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../../ui/PageWrapper'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 
 const LastStep = styled(Step)`
   z-index: 0;
