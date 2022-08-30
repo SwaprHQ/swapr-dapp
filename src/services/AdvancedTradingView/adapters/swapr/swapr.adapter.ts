@@ -6,8 +6,8 @@ import { subgraphClientsUris } from '../../../../apollo/client'
 import { actions } from '../../advancedTradingView.reducer'
 import { AdapterFetchDetails, AdapterInitialArguments, AdapterPayloadType } from '../../advancedTradingView.types'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { SWAPR_PAIR_ACTIVITY, SWAPR_PAIR_TRADES } from './swapr.queries'
-import { SwaprPairActivity, SwaprPairTrades } from './swapr.types'
+import { SWAPR_PAIR_BURNS_AND_MINTS, SWAPR_PAIR_SWAPS } from './swapr.queries'
+import { SwaprPairBurnsAndMints, SwaprPairSwaps } from './swapr.types'
 
 export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
   public updateActiveChainId(chainId: ChainId) {
@@ -35,9 +35,9 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((swaprPair && !isFirstFetch && !swaprPair.swaps?.hasMore) || (swaprPair && isFirstFetch)) return
 
     try {
-      const { pair } = await request<SwaprPairTrades>({
+      const { swaps } = await request<SwaprPairSwaps>({
         url: subgraphClientsUris[this._chainId],
-        document: SWAPR_PAIR_TRADES,
+        document: SWAPR_PAIR_SWAPS,
         variables: {
           pairId: subgraphPairId,
           first: amountToFetch,
@@ -46,11 +46,11 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
         signal: abortController('swapr-pair-trades') as RequestOptions['signal'],
       })
 
-      const hasMore = pair?.swaps.length === amountToFetch
+      const hasMore = swaps.length === amountToFetch
 
       this.store.dispatch(
         this.actions.setSwaprPairData({
-          data: pair?.swaps ?? [],
+          data: swaps,
           pairId: subgraphPairId,
           hasMore,
           payloadType: AdapterPayloadType.swaps,
@@ -75,9 +75,9 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((swaprPair && !isFirstFetch && !swaprPair.burnsAndMints?.hasMore) || (swaprPair && isFirstFetch)) return
 
     try {
-      const { pair } = await request<SwaprPairActivity>({
+      const { burns, mints } = await request<SwaprPairBurnsAndMints>({
         url: subgraphClientsUris[this._chainId],
-        document: SWAPR_PAIR_ACTIVITY,
+        document: SWAPR_PAIR_BURNS_AND_MINTS,
         variables: {
           pairId: subgraphPairId,
           first: amountToFetch,
@@ -86,11 +86,11 @@ export class SwaprAdapter extends AbstractAdvancedTradingViewAdapter {
         signal: abortController('swapr-pair-activity') as RequestOptions['signal'],
       })
 
-      const hasMore = Boolean(pair?.burns.length === amountToFetch || pair?.mints.length === amountToFetch)
+      const hasMore = Boolean(burns.length === amountToFetch || mints.length === amountToFetch)
 
       this.store.dispatch(
         this.actions.setSwaprPairData({
-          data: [...(pair?.burns ?? []), ...(pair?.mints ?? [])],
+          data: [...burns, ...mints],
           pairId: subgraphPairId,
           hasMore,
           payloadType: AdapterPayloadType.burnsAndMints,

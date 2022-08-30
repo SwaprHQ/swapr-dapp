@@ -1,7 +1,7 @@
 import { AdapterPayloadType } from '../../advancedTradingView.types'
 
 // subgraph types
-export type SwaprLiquidityTransaction = {
+type SwaprPairBurnsAndMintsTransaction = {
   id: string
   transaction: {
     id: string
@@ -12,7 +12,7 @@ export type SwaprLiquidityTransaction = {
   timestamp: string
 }
 
-export type SwaprTradeTransaction = {
+type SwaprPairSwapTransaction = {
   amount0In: string
   amount0Out: string
   amount1In: string
@@ -23,17 +23,13 @@ export type SwaprTradeTransaction = {
   transaction: { id: string }
 }
 
-export type SwaprPairTrades = {
-  pair: {
-    swaps: SwaprTradeTransaction[]
-  } | null
+export type SwaprPairSwaps = {
+  swaps: SwaprPairSwapTransaction[]
 }
 
-export type SwaprPairActivity = {
-  pair: {
-    burns: SwaprLiquidityTransaction[]
-    mints: SwaprLiquidityTransaction[]
-  } | null
+export type SwaprPairBurnsAndMints = {
+  burns: SwaprPairBurnsAndMintsTransaction[]
+  mints: SwaprPairBurnsAndMintsTransaction[]
 }
 
 // swapr reducer types
@@ -42,19 +38,19 @@ type BasePayload = {
   pairId: string
 }
 
-export type SwaprTradesPayload = {
-  data: SwaprTradeTransaction[]
+type SwaprPairSwapsPayload = {
+  data: SwaprPairSwapTransaction[]
   payloadType: AdapterPayloadType.swaps
 } & BasePayload
 
-export type SwaprActivityPayload = {
-  data: SwaprLiquidityTransaction[]
+type SwaprPairBurnsAndMintsPayload = {
+  data: SwaprPairBurnsAndMintsTransaction[]
   payloadType: AdapterPayloadType.burnsAndMints
 } & BasePayload
 
 export type SwaprPair = {
-  swaps?: { data: SwaprTradeTransaction[]; hasMore: boolean }
-  burnsAndMints?: { data: SwaprLiquidityTransaction[]; hasMore: boolean }
+  swaps?: { data: SwaprPairSwapTransaction[]; hasMore: boolean }
+  burnsAndMints?: { data: SwaprPairBurnsAndMintsTransaction[]; hasMore: boolean }
 }
 
-export type SwaprActionPayload = SwaprTradesPayload | SwaprActivityPayload
+export type SwaprActionPayload = SwaprPairSwapsPayload | SwaprPairBurnsAndMintsPayload
