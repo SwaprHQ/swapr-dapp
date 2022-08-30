@@ -85,11 +85,19 @@ export enum CoWTradeState {
 }
 
 export default function Swap() {
+  const showSimpleChartLocalStorageKey = 'showSimpleChart'
+  const getShowSimpleChartPreference = () => window.localStorage.getItem(showSimpleChartLocalStorageKey) == 'true'
+  const [showChart, setShowChart] = useState(getShowSimpleChartPreference())
+
+  const setSimpleChartPreferences = () => {
+    window.localStorage.setItem(showSimpleChartLocalStorageKey, (!showChart).toString())
+    setShowChart(!showChart)
+  }
+
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
-  const [showChart, setShowChart] = useState(false)
   const theme = useTheme()
   const isMobile = useIsMobileByMedia()
 
@@ -387,7 +395,7 @@ export default function Swap() {
           <AppBodyContainer>
             <Tabs>
               {
-                <ButtonGrey disabled={!currencies.OUTPUT} ml={2} mb="10px" onClick={() => setShowChart(!showChart)}>
+                <ButtonGrey disabled={!currencies.OUTPUT} ml={2} mb="10px" onClick={setSimpleChartPreferences}>
                   chart
                   {showChart ? (
                     isMobile ? (
