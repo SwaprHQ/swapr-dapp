@@ -53,10 +53,10 @@
     ts-node "^10.2.1"
     typechain "7.0.0"
 
-"@arbitrum/sdk-nitro@npm:@arbitrum/sdk@3.0.0-beta.10":
-  version "3.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-3.0.0-beta.10.tgz#2b622a228f5a0a81d221e8553fcc44b665f19c94"
-  integrity sha512-6e5UeUTQg/GovDolL48+ybBU33gBnsRtCOu1P/Lh0+t+198yJKxnSQp8aaDd8OzoOyCxqDrS16c85aHE4zDFEg==
+"@arbitrum/sdk-nitro@npm:@arbitrum/sdk@3.0.0-beta.11":
+  version "3.0.0-beta.11"
+  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-3.0.0-beta.11.tgz#54bd4fb150911fcc83f7b50e23bfab8be97971dc"
+  integrity sha512-Lq+c3v4W9lNz3Q68XZFu1+iaAdAr2m9i7mTkdRm/Sk0QD1nX8IAOwxyCruph6JLB/PJtx+QUsdOpwNiIc9IZAQ==
   dependencies:
     "@ethersproject/address" "^5.0.8"
     "@ethersproject/bignumber" "^5.1.1"
@@ -70,12 +70,12 @@
     typechain "7.0.0"
 
 "@arbitrum/sdk@^2.0.1":
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-2.0.15.tgz#cd698af0470a20729e818045b3141c1dbcbcf521"
-  integrity sha512-eCb9Cb/nvVRgvuX8fuIpbCFai4o4ARlYFdeqWpRwf8YEslcbDR7uEAHVqrNhSWGSHFeGEMs6lliotFbPcpSO8w==
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-2.0.17.tgz#95e3c1ca74abd2462693eeb0db11554d7a1e61aa"
+  integrity sha512-uVfRAtM3KS1lnAmiyVCE7nGddgpuRJO09FeyS+0x0ebOU0i6c4plSV4tMzX5BRqvP4JkKxBcKSYF9kElvSM1Lw==
   dependencies:
     "@arbitrum/sdk-classic" "npm:@arbitrum/sdk@1.1.13"
-    "@arbitrum/sdk-nitro" "npm:@arbitrum/sdk@3.0.0-beta.10"
+    "@arbitrum/sdk-nitro" "npm:@arbitrum/sdk@3.0.0-beta.11"
     "@ethersproject/address" "^5.0.8"
     "@ethersproject/bignumber" "^5.1.1"
     "@ethersproject/bytes" "^5.0.8"
@@ -4088,9 +4088,9 @@
   integrity sha512-bl1omaQJ7RKyEmhfQGGIqv9XxwngP0P1MpUFhyBQZcLpFQyNu213DRva8NMorkf+YpX833IUZL5VrqSkaCOL7Q==
 
 "@sinclair/typebox@^0.24.1":
-  version "0.24.28"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.28.tgz#15aa0b416f82c268b1573ab653e4413c965fe794"
-  integrity sha512-dgJd3HLOkLmz4Bw50eZx/zJwtBq65nms3N9VBYu5LTjJ883oBFkTyXRlCB/ZGGwqYpJJHA5zW2Ibhl5ngITfow==
+  version "0.24.30"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.30.tgz#70d94661a065373b7330cc2dce79424bc8e957a1"
+  integrity sha512-YTlUf5iAfDZEVmI4SWOBGcxpufY2XQhWqSwyLeR2Qg1pkjlM6+Pvc+9MA/+zUaiEFuuX3F3KdhqS5bcasgLc5A==
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -18877,9 +18877,9 @@ ltgt@~2.2.0:
   integrity sha512-AI2r85+4MquTw9ZYqabu4nMwy9Oftlfa/e/52t9IjtfG+mGBbTNdAoZ3RQKLHR6r0wQnwZnPIEh/Ya6XTWAKNA==
 
 luxon@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.2.tgz#88f7b31dadb524af9dee87a9dd9d6124a8fdcc73"
-  integrity sha512-pfgTG/TMWzVKZ2XC4RBq3jNcidG3wxUt7ztC98Vpo5qy16uUhZrRPx8/AfVfX3LCj6I2YFSpY+vaVVVgWaDkXA==
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.3.tgz#573e65531efd3d92265feb640f02ba7a192e2388"
+  integrity sha512-+EfHWnF+UT7GgTnq5zXg3ldnTKL2zdv7QJgsU5bjjpbH17E3qi/puMhQyJVYuCq+FRkogvB5WB6iVvUr+E4a7w==
 
 lz-string@^1.4.4:
   version "1.4.4"
@@ -25498,9 +25498,9 @@ terser-webpack-plugin@^4.2.3:
     webpack-sources "^1.4.3"
 
 terser-webpack-plugin@^5.0.3, terser-webpack-plugin@^5.1.3, terser-webpack-plugin@^5.2.5:
-  version "5.3.5"
-  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.3.5.tgz#f7d82286031f915a4f8fb81af4bd35d2e3c011bc"
-  integrity sha512-AOEDLDxD2zylUGf/wxHxklEkOe2/r+seuyOWujejFrIxHf11brA1/dWQNIgXa1c6/Wkxgu7zvv0JhOWfc2ELEA==
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.3.6.tgz#5590aec31aa3c6f771ce1b1acca60639eab3195c"
+  integrity sha512-kfLFk+PoLUQIbLmB1+PZDMRSZS99Mp+/MHqDNmMA6tOItzRt+Npe3E+fsMs5mfcM0wCtrrdU387UnV+vnSffXQ==
   dependencies:
     "@jridgewell/trace-mapping" "^0.3.14"
     jest-worker "^27.4.5"
@@ -27328,9 +27328,9 @@ webpack-dev-middleware@^5.3.1:
     schema-utils "^4.0.0"
 
 webpack-dev-server@^4.6.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.10.0.tgz#de270d0009eba050546912be90116e7fd740a9ca"
-  integrity sha512-7dezwAs+k6yXVFZ+MaL8VnE+APobiO3zvpp3rBHe/HmWQ+avwh0Q3d0xxacOiBybZZ3syTZw9HXzpa3YNbAZDQ==
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.10.1.tgz#124ac9ac261e75303d74d95ab6712b4aec3e12ed"
+  integrity sha512-FIzMq3jbBarz3ld9l7rbM7m6Rj1lOsgq/DyLGMX/fPEB1UBUPtf5iL/4eNfhx8YYJTRlzfv107UfWSWcBK5Odw==
   dependencies:
     "@types/bonjour" "^3.5.9"
     "@types/connect-history-api-fallback" "^1.3.5"

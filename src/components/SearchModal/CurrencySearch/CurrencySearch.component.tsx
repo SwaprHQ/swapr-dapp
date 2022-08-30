@@ -94,8 +94,8 @@ export const CurrencySearch = ({
       nativeCurrency &&
       new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
     ) {
-      const processedTokens = filteredSortedTokens.filter(token => token.address !== nativeCurrency.address)
-      return [nativeCurrency, ...processedTokens]
+      const tokensWithoutNativeCurrency = filteredSortedTokens.filter(token => token.address !== nativeCurrency.address)
+      return [nativeCurrency, ...tokensWithoutNativeCurrency]
     }
     return filteredSortedTokens
   }, [showNativeCurrency, nativeCurrency, isOutputPanel, filteredSortedTokens, debouncedQuery])
