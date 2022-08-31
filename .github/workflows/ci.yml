@@ -205,7 +205,7 @@ jobs:
     runs-on: ubuntu-20.04
     container: cypress/browsers:node16.5.0-chrome97-ff96
     env:
-      IF_MERGED: ${{ github.event.event_name }}
+      IF_MERGED: ${{ github.event.event_name == 'push' }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
