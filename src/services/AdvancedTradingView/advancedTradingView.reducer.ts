@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { SwaprActionPayload } from './adapters/swapr/swapr.types'
+import { SwaprActionPayload } from './adapters/baseAdapter/base.types'
 import { InitialState } from './advancedTradingView.types'
 
 const initialState: InitialState = {
@@ -12,6 +12,7 @@ const initialState: InitialState = {
   },
   adapters: {
     swapr: {},
+    sushiswap: {},
   },
 }
 
@@ -32,13 +33,13 @@ const advancedTradingViewSlice = createSlice({
       state.pair = {}
       state.adapters.swapr = {}
     },
-    setSwaprPairData: (state, action: PayloadAction<SwaprActionPayload>) => {
-      const { data, pairId, payloadType, hasMore } = action.payload
+    setPairData: (state, action: PayloadAction<SwaprActionPayload>) => {
+      const { data, pairId, payloadType, hasMore, key } = action.payload
 
-      const previousPairData = state.adapters.swapr[pairId]?.[payloadType]?.data ?? []
+      const previousPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []
 
-      state.adapters.swapr[pairId] = {
-        ...state.adapters.swapr[pairId],
+      state.adapters[key][pairId] = {
+        ...state.adapters[key][pairId],
         [payloadType]: {
           data: [...previousPairData, ...data],
           hasMore,
