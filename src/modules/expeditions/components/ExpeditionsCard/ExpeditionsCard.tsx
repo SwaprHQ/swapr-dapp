@@ -1,33 +1,8 @@
-import { ExternalLink } from 'react-feather'
-import { Box } from 'rebass'
-import styled from 'styled-components'
-
-import { TYPE } from '../../theme'
-import { ButtonPrimary } from '../Button'
-import Row from '../Row'
-import { TagFailed, TagSuccess, TagWarning } from '../Tag'
-
-const Wrapper = styled.div`
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.bg1And2};
-`
-
-const Card = styled(Box)`
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 24px;
-  gap: 16px;
-`
-
-export const StyledExternalLink = styled(ExternalLink)`
-  font-size: 13px;
-  font-style: italic;
-  text-decoration: underline;
-
-  &:hover {
-    color: white;
-  }
-`
+import { ButtonPrimary } from '../../../../components/Button'
+import Row from '../../../../components/Row'
+import { TagFailed, TagSuccess, TagWarning } from '../../../../components/Tag'
+import { TYPE } from '../../../../theme'
+import { Card, StyledExternalLink, Wrapper } from './ExpeditionsCard.styled'
 
 type StatusTags = 'active' | 'upcoming' | 'expired'
 
@@ -37,7 +12,9 @@ export interface TaskCardProps {
   title: string
   description: string
   buttonText: string
+  butttonDisabled?: boolean
   infoLink?: string
+  onClick?: () => void
 }
 
 const StatusTag = ({ status }: Pick<TaskCardProps, 'status'>) => {
@@ -53,7 +30,16 @@ const StatusTag = ({ status }: Pick<TaskCardProps, 'status'>) => {
 
 // Buttons to be implemented as needed. Maybe fixed set of buttons or button can be passed as child
 
-export const TaskCard = ({ duration = 'Weekly', title, description, infoLink, status, buttonText }: TaskCardProps) => {
+export function TaskCard({
+  duration = 'Weekly',
+  title,
+  description,
+  infoLink,
+  status,
+  buttonText,
+  butttonDisabled = false,
+  onClick,
+}: TaskCardProps) {
   return (
     <Wrapper>
       <Card>
@@ -63,13 +49,12 @@ export const TaskCard = ({ duration = 'Weekly', title, description, infoLink, st
           </TYPE.White>
           <StatusTag status={status} />
         </Row>
-
         <TYPE.White fontSize="20px">{title}</TYPE.White>
-
         <TYPE.White fontSize="14px">{description}</TYPE.White>
-
         {infoLink && <StyledExternalLink href={infoLink}>More info</StyledExternalLink>}
-        <ButtonPrimary padding="8px">{buttonText}</ButtonPrimary>
+        <ButtonPrimary padding="8px" onClick={onClick} disabled={butttonDisabled}>
+          {buttonText}
+        </ButtonPrimary>
       </Card>
     </Wrapper>
   )
