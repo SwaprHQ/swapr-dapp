@@ -62,6 +62,7 @@ export interface SocketBridgeState {
   }
   routes: Route[]
   lastMetadataCt: number
+  assetDecimals: number
 }
 
 type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; asset: { decimals: number } } }] }]

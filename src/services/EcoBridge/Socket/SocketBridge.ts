@@ -109,9 +109,10 @@ export class SocketBridge extends EcoBridgeChildBase {
       const routeId = this.store.getState().ecoBridge.common.activeRouteId
       const routes = this.selectors.selectRoutes(this.store.getState())
       const selectedRoute = routes.find(route => route.routeId === routeId)
+      const assetDecimals = this.store.getState().ecoBridge.socket.assetDecimals
 
-      const toValue = (formatUnits(selectedRoute?.toAmount ?? '0', to.decimals) ?? 0).toString()
-      const fromValue = Number(from.value ?? 0).toString()
+      const toValue = (formatUnits(selectedRoute?.toAmount ?? '0', assetDecimals) ?? 0).toString()
+      const fromValue = Number(from.value).toString()
 
       this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
 
@@ -398,6 +399,8 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.store.dispatch(this.actions.setRoutes(routes))
 
     let tokenData: TokenPriceResponseDTO | undefined
+
+    this.store.dispatch(this.actions.setToAssetDecimals(toAsset.decimals))
 
     try {
       tokenData = await ServerAPI.appControllerGetTokenPrice({

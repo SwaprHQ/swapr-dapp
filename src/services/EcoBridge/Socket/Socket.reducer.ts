@@ -17,6 +17,7 @@ const initialState: SocketBridgeState = {
   lists: {},
   routes: [],
   lastMetadataCt: 0,
+  assetDecimals: 18,
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -116,6 +117,9 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
         state.lastMetadataCt = action.payload.id
+      },
+      setToAssetDecimals: (state, action: PayloadAction<number | undefined>) => {
+        state.assetDecimals = action.payload ?? 18
       },
     },
   })
