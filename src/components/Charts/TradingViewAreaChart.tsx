@@ -1,7 +1,6 @@
 import _Decimal from 'decimal.js-light'
 import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 import toFormat from 'toformat'
@@ -133,27 +132,14 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
 
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
-      {data.length > 0 ? (
-        <>
-          <Box width="100%">
-            <Flex alignItems="center">
-              <BigPriceText>{formatPrice(price)}</BigPriceText>
-              <PricePercentualDifference data={data} />
-            </Flex>
-            <DateText>{formatDate(date)}</DateText>
-          </Box>
-          <div ref={chartRef} />
-        </>
-      ) : (
-        <>
-          <Box width="100%">
-            <Skeleton baseColor="rgb(182 175 242 / 32%)" width="114px" height="54px"></Skeleton>
-            <Box mt={5}>
-              <Skeleton baseColor="rgb(182 175 242 / 32%)" width="100%" height="138px"></Skeleton>
-            </Box>
-          </Box>
-        </>
-      )}
+      <Box width="100%">
+        <Flex alignItems="center">
+          <BigPriceText>{formatPrice(price)}</BigPriceText>
+          <PricePercentualDifference data={data} />
+        </Flex>
+        <DateText>{formatDate(date)}</DateText>
+      </Box>
+      <div ref={chartRef} />
     </Flex>
   )
 }
@@ -182,7 +168,7 @@ const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
 
   const greenOrRed = () => (isPricePercentualDifferencePositive() ? theme.green1 : theme.red1)
   const correctColor = () => (isPricePercentualDifferenceZero() ? theme.gray1 : greenOrRed())
-  const plusOrMinus = () => (isPricePercentualDifferencePositive() ? '+ ' : '- ')
+  const plusOrMinus = () => (isPricePercentualDifferencePositive() ? '+' : '-')
   const correctOperator = () => (isPricePercentualDifferenceZero() ? ' ' : plusOrMinus())
 
   const showPricePercentualDifference = () =>

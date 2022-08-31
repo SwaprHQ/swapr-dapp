@@ -1,7 +1,7 @@
-query getFiveMinutesPairTokenPrices($pairAddress: ID, $timestamp: BigInt) {
-  fiveMinutesPairTokenPrices(
+query getPairTokenPrices($pairAddress: ID, $timestamp: BigInt, $timeframe: PairTokenPriceTimeframe) {
+  pairTokenPrices(
     first: 1000
-    where: { pair_: { id: $pairAddress }, blockTimestamp_gt: $timestamp }
+    where: { pair_: { id: $pairAddress }, blockTimestamp_gt: $timestamp, timeframe: $timeframe }
     orderBy: blockNumber
     orderDirection: asc
   ) {
@@ -20,5 +20,6 @@ query getFiveMinutesPairTokenPrices($pairAddress: ID, $timestamp: BigInt) {
     token1Price
     blockNumber
     blockTimestamp
+    timeframe
   }
 }

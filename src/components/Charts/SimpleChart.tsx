@@ -7,14 +7,10 @@ import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
-import {
-  DATE_INTERVALS,
-  DATE_INTERVALS_IN_TIMESTAMP,
-  usePairTokenPriceByTimestamp,
-} from '../../hooks/usePairTokenPriceByTimestamp'
+import { DATE_INTERVALS, usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { ExternalLink } from '../../theme'
+import { ExternalLink, TYPE } from '../../theme'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
@@ -22,7 +18,7 @@ import TradingViewAreaChart from './TradingViewAreaChart'
 
 export default function SimpleChart() {
   const { chainId } = useActiveWeb3React()
-  const [selectedInterval, setSelectedInterval] = React.useState<number>(DATE_INTERVALS.DAY)
+  const [selectedInterval, setSelectedInterval] = React.useState<string>(DATE_INTERVALS.DAY)
   const { currencies } = useDerivedSwapInfo()
   const currency0 = currencies[Field.INPUT]
   const currency1 = currencies[Field.OUTPUT]
@@ -38,68 +34,71 @@ export default function SimpleChart() {
   const { data, loading, error } = usePairTokenPriceByTimestamp({
     currency0,
     currency1,
-    timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
-    timeframe: selectedInterval,
-  })
-
-  console.log({
-    currency0,
-    currency1,
-    timestamp: DATE_INTERVALS_IN_TIMESTAMP[selectedInterval],
-    loading,
-    data,
+    dateInterval: selectedInterval,
   })
 
   return (
-    <DimBlurBgBox height="376px" width={['100%', '632px']} py={3}>
-      <Flex flexDirection="column" width="100%" justifyContent="center" alignItems="center">
-        <Flex width="100%" justifyContent="space-between" px={3}>
-          <PairExternalLink href={statsLink}>
-            <Box mr="4px">
-              <DoubleCurrencyLogo
-                loading={!currency0 || !currency1}
-                currency0={currency0 || undefined}
-                currency1={currency1 || undefined}
-                size={20}
-              />
-            </Box>
-            <Flex alignItems="center">
-              <Text fontWeight="600" fontSize="14px" color={theme.text2}>
-                {!currency0 || !currency1 ? <Skeleton width="69px" /> : `${currency0.symbol}/${currency1.symbol}`}
-              </Text>
-              <Box ml={2}>{currency0 && currency1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
+    <DimBlurBgBox height="400px" width={['100%', '550px']} py={3}>
+      <Flex flexDirection="column" width="100%" height="100%" justifyContent="center" alignItems="center">
+        {currency0 && currency1 && (
+          <Flex width="100%" justifyContent="space-between" px={3}>
+            <PairExternalLink href={statsLink}>
+              <Box mr="4px">
+                <DoubleCurrencyLogo
+                  loading={!currency0 || !currency1}
+                  currency0={currency0 || undefined}
+                  currency1={currency1 || undefined}
+                  size={20}
+                />
+              </Box>
+              <Flex alignItems="center">
+                <Text fontWeight="600" fontSize="14px" color={theme.text2}>
+                  {!currency0 || !currency1 ? <Skeleton width="69px" /> : `${currency0.symbol}/${currency1.symbol}`}
+                </Text>
+                <Box ml={2}>{currency0 && currency1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
+              </Flex>
+            </PairExternalLink>
+            <Flex>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.DAY}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
+              >
+                1d
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.WEEK}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
+              >
+                1w
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.MONTH}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
+              >
+                1m
+              </DateFilterButton>
+              <DateFilterButton
+                active={selectedInterval === DATE_INTERVALS.YEAR}
+                onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
+              >
+                1y
+              </DateFilterButton>
             </Flex>
-          </PairExternalLink>
-          <Flex>
-            <DateFilterButton
-              active={selectedInterval === DATE_INTERVALS.DAY}
-              onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
-            >
-              1d
-            </DateFilterButton>
-            <DateFilterButton
-              active={selectedInterval === DATE_INTERVALS.WEEK}
-              onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
-            >
-              1w
-            </DateFilterButton>
-            <DateFilterButton
-              active={selectedInterval === DATE_INTERVALS.MONTH}
-              onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
-            >
-              1m
-            </DateFilterButton>
-            <DateFilterButton
-              active={selectedInterval === DATE_INTERVALS.YEAR}
-              onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
-            >
-              1y
-            </DateFilterButton>
           </Flex>
+        )}
+        <Flex p={3} width="100%" height="100%" justifyContent="center" alignItems="center">
+          {currency0 && currency1 ? (
+            loading ? (
+              <TYPE.DarkGray>Fetching new data...</TYPE.DarkGray>
+            ) : data?.length > 0 ? (
+              <TradingViewAreaChart data={data} />
+            ) : (
+              <TYPE.DarkGray>Sorry, this pair doesn't have enough data.</TYPE.DarkGray>
+            )
+          ) : (
+            <TYPE.DarkGray>Select token</TYPE.DarkGray>
+          )}
         </Flex>
-        <Box p={3} width="100%">
-          <TradingViewAreaChart data={data} />
-        </Box>
       </Flex>
     </DimBlurBgBox>
   )
@@ -109,7 +108,7 @@ const DateFilterButton = styled.button<{ active?: boolean }>`
   margin-left: 4px;
   padding: 10px 12px;
   height: fit-content;
-  border: ${({ active }) => (active ? '1px solid #464366' : 'transparent')};
+  border: ${({ active }) => (active ? '1px solid #464366' : '1px solid transparent')};
 
   color: ${({ theme }) => theme.text4};
   font-size: 10px;
