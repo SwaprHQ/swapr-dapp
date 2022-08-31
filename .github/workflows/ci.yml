@@ -222,6 +222,12 @@ jobs:
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "COMMIT_MSG=$(printf "$MSG" | xargs)" >> "$GITHUB_ENV"
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
       - name: Check how tests should be executed #1
         if: contains(env.COMMIT_MSG, 'trigger-synpress')
         run: |
