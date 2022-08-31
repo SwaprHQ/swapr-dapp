@@ -1,7 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
-import cloneDeep from 'lodash/cloneDeep'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -60,7 +59,7 @@ export function useTransactionAdder(): (
 type AllTransactions = { [hash: string]: TransactionDetails }
 
 const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainId) => {
-  const networkTransactions = cloneDeep(transaction ?? {})
+  const networkTransactions = structuredClone(transaction ?? {})
   for (const transaction in networkTransactions) {
     networkTransactions[transaction]['network'] = networkId
   }
