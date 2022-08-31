@@ -133,27 +133,14 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
 
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
-      {data.length > 0 ? (
-        <>
-          <Box width="100%">
-            <Flex alignItems="center">
-              <BigPriceText>{formatPrice(price)}</BigPriceText>
-              <PricePercentualDifference data={data} />
-            </Flex>
-            <DateText>{formatDate(date)}</DateText>
-          </Box>
-          <div ref={chartRef} />
-        </>
-      ) : (
-        <>
-          <Box width="100%">
-            <Skeleton baseColor="rgb(182 175 242 / 32%)" width="114px" height="54px"></Skeleton>
-            <Box mt={5}>
-              <Skeleton baseColor="rgb(182 175 242 / 32%)" width="100%" height="138px"></Skeleton>
-            </Box>
-          </Box>
-        </>
-      )}
+      <Box width="100%">
+        <Flex alignItems="center">
+          <BigPriceText>{formatPrice(price)}</BigPriceText>
+          <PricePercentualDifference data={data} />
+        </Flex>
+        <DateText>{formatDate(date)}</DateText>
+      </Box>
+      <div ref={chartRef} />
     </Flex>
   )
 }

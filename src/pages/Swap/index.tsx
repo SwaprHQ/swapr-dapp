@@ -395,7 +395,7 @@ export default function Swap() {
           <AppBodyContainer>
             <Tabs>
               {
-                <ButtonGrey disabled={!currencies.OUTPUT} ml={2} mb="10px" onClick={setSimpleChartPreferences}>
+                <ButtonGrey ml={2} mb="10px" onClick={setSimpleChartPreferences}>
                   chart
                   {showChart ? (
                     isMobile ? (
