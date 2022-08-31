@@ -189,6 +189,16 @@ export const BAO = new Token(
 
 export const AGAVE = new Token(ChainId.XDAI, '0x3a97704a1b25F08aa230ae53B352e2e72ef52843', 18, 'AGVE', 'Agave token')
 
+export const OP: { [key: number]: Token } = {
+  [ChainId.OPTIMISM_MAINNET]: new Token(
+    ChainId.OPTIMISM_MAINNET,
+    '0x4200000000000000000000000000000000000042',
+    18,
+    'OP',
+    'Optimism'
+  ),
+}
+
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MAINNET]: [
@@ -257,6 +267,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
+    OP[ChainId.OPTIMISM_MAINNET],
     DAI[ChainId.OPTIMISM_MAINNET],
     USDC[ChainId.OPTIMISM_MAINNET],
     USDT[ChainId.OPTIMISM_MAINNET],
@@ -589,7 +600,11 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.ARBITRUM_GOERLI]: [],
   [ChainId.GOERLI]: [],
   [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [RoutablePlatform.UNISWAP.name, UniswapV2RoutablePlatform.SUSHISWAP.name],
+  [ChainId.OPTIMISM_MAINNET]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
