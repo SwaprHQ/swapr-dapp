@@ -1,4 +1,3 @@
-import shuffle from 'lodash/shuffle'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
@@ -13,6 +12,14 @@ import {
 } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
 import { ButtonPrimary } from '../../Button'
+
+function shuffle<T>(array: T[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1)) // random index from 0 to i
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
   background-image: ${({ gradientColor, disabled }) =>

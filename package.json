@@ -28,9 +28,6 @@
     "chromatic": "chromatic --exit-zero-on-changes",
     "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
   },
-  "resolutions": {
-    "@uniswap/smart-order-router": "2.5.26"
-  },
   "dependencies": {
     "@apollo/client": "^3.4.7",
     "@arbitrum/sdk": "^2.0.17",
@@ -42,6 +39,7 @@
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
     "@swapr/sdk": "1.6.0-rc.4",
+    "@uniswap/smart-order-router": "^2.9.3",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
@@ -65,7 +63,6 @@
     "i18next": "^21.8.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
-    "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
