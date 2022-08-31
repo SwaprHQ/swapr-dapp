@@ -33,7 +33,12 @@ const advancedTradingViewSlice = createSlice({
     },
     resetAdapterStore: state => {
       state.pair = {}
-      state.adapters.swapr = {}
+      state.adapters = {
+        swapr: {},
+        sushiswap: {},
+        uniswapV2: {},
+        honeyswap: {},
+      }
     },
     setPairData: (state, action: PayloadAction<SwaprActionPayload>) => {
       const { data, pairId, payloadType, hasMore, key } = action.payload
