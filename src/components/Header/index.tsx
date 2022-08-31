@@ -1,3 +1,4 @@
+import type { Web3Provider } from '@ethersproject/providers'
 import { ChainId, SWPR } from '@swapr/sdk'
 
 import { useEffect, useMemo, useState } from 'react'
@@ -12,13 +13,13 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
+import { App as ExpeditionsApp } from '../../modules/expeditions/app'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../claim/ClaimModal'
-import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -198,7 +199,7 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 `
 
 function Header() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
 
   const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
@@ -208,7 +209,6 @@ function Header() {
   const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
   const toggleClaimPopup = useToggleShowClaimPopup()
-  const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
@@ -246,7 +246,6 @@ function Header() {
           data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
-      <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
       <HeaderRow isDark={isDark}>
         <Title to="/swap">
           <SwaprVersionLogo />
@@ -299,9 +298,7 @@ function Header() {
         <Flex maxHeight={'22px'} justifyContent={'end'}>
           {account && (
             <>
-              <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
-                &#10024;&nbsp;Expeditions
-              </HeaderButton>
+              <ExpeditionsApp account={account} provider={library as Web3Provider} />
               <Balances />
             </>
           )}
