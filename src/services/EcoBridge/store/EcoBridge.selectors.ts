@@ -340,6 +340,6 @@ export const selectSupportedBridgesForUI = createSelector(
       return total
     }, [])
 
-    return supportedBridges.filter(bridge => bridge.status !== SyncState.FAILED)
+    return supportedBridges.filter(bridge => bridge.status && bridge.status !== SyncState.FAILED)
   }
 )

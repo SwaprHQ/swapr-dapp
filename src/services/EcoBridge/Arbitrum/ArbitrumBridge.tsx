@@ -818,7 +818,12 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    if (!this.l1Signer.provider || !this.l2Signer.provider || !this._activeChainId) return
+    try {
+      if (!this.l1Signer.provider || !this.l2Signer.provider || !this._activeChainId) return
+    } catch (e) {
+      console.warn('There was a problem getting a signer or the chainId.')
+      return
+    }
 
     const requestId = this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].lastMetadataCt
 
