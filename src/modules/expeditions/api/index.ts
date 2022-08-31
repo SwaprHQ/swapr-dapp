@@ -46,8 +46,9 @@ export function claimUserWeeklyFragments(payload: ClaimUserWeeklyFragmentsParams
 
   return fetch(url, {
     method: 'POST',
-    body: JSON.stringify({
-      payload,
-    }),
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   }).then(res => res.json())
 }

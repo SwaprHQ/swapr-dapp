@@ -1,4 +1,4 @@
-const apiBaseURLDev = 'http://localhost:4000' // development: see
+const apiBaseURLDev = 'http://localhost:4000'
 const apiBaseURLProd = 'https://api.swapr.site/v1.0'
 
 /**
