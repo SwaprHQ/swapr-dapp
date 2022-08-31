@@ -13,6 +13,8 @@ const initialState: InitialState = {
   adapters: {
     swapr: {},
     sushiswap: {},
+    uniswapV2: {},
+    honeyswap: {},
   },
 }
 

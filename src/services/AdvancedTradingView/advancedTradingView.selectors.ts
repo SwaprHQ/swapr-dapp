@@ -9,60 +9,67 @@ import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.type
 const adapterLogos: { [key in AdapterKeys]: string } = {
   swapr: UniswapV2RoutablePlatform.SWAPR.name,
   sushiswap: UniswapV2RoutablePlatform.SUSHISWAP.name,
+  uniswapV2: UniswapV2RoutablePlatform.UNISWAP.name,
+  honeyswap: UniswapV2RoutablePlatform.HONEYSWAP.name,
 }
 
-export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) => {
-  return inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
-}
+export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
+  inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 
 const getAdapterPair = (key: AdapterKeys, platform: UniswapV2RoutablePlatform) =>
   createSelector(
     [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters[key]],
     ({ inputToken, outputToken }, adapterPairs) => {
       if (inputToken && outputToken) {
-        const pairId = Pair.getAddress(inputToken, outputToken, platform).toLowerCase()
-
-        return {
-          pair: adapterPairs[pairId],
-          logoKey: adapterLogos[key],
-        }
+        try {
+          const pairId = Pair.getAddress(inputToken, outputToken, platform).toLowerCase()
+          return {
+            pair: adapterPairs[pairId],
+            logoKey: adapterLogos[key],
+          }
+        } catch {}
       }
     }
   )
 
 const selectCurrentSwaprPair = getAdapterPair(AdapterKeys.SWAPR, UniswapV2RoutablePlatform.SWAPR)
 const selectCurrentSushiPair = getAdapterPair(AdapterKeys.SUSHISWAP, UniswapV2RoutablePlatform.SUSHISWAP)
+const selectCurrentUniswapV2Pair = getAdapterPair(AdapterKeys.UNISWAPV2, UniswapV2RoutablePlatform.UNISWAP)
+const selectCurrentHoneyPair = getAdapterPair(AdapterKeys.HONEYSWAP, UniswapV2RoutablePlatform.HONEYSWAP)
 
-const selectAllCurrentPairs = createSelector([selectCurrentSwaprPair, selectCurrentSushiPair], (...pairs) =>
-  pairs.reduce<AllTradesAndLiquidityFromAdapters>(
-    (total, next) => {
-      if (next?.pair?.swaps) {
-        total.swaps = [...total.swaps, ...next.pair.swaps.data.map(tx => ({ ...tx, logoKey: next.logoKey }))]
-      }
+const selectAllCurrentPairs = createSelector(
+  [selectCurrentSwaprPair, selectCurrentSushiPair, selectCurrentUniswapV2Pair, selectCurrentHoneyPair],
+  (...pairs) =>
+    pairs.reduce<AllTradesAndLiquidityFromAdapters>(
+      (dataFromAllAdapters, adapterPair) => {
+        if (adapterPair?.pair?.swaps) {
+          dataFromAllAdapters.swaps = [
+            ...dataFromAllAdapters.swaps,
+            ...adapterPair.pair.swaps.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })),
+          ]
+        }
 
-      if (next?.pair?.burnsAndMints) {
-        total.burnsAndMints = [
-          ...total.burnsAndMints,
-          ...next.pair.burnsAndMints.data.map(tx => ({ ...tx, logoKey: next.logoKey })),
-        ]
-      }
+        if (adapterPair?.pair?.burnsAndMints) {
+          dataFromAllAdapters.burnsAndMints = [
+            ...dataFromAllAdapters.burnsAndMints,
+            ...adapterPair.pair.burnsAndMints.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })),
+          ]
+        }
 
-      return total
-    },
-    { swaps: [], burnsAndMints: [] }
-  )
+        return dataFromAllAdapters
+      },
+      { swaps: [], burnsAndMints: [] }
+    )
 )
 
-export const selectHasMoreData = createSelector([selectCurrentSwaprPair, selectCurrentSushiPair], (...pairs) =>
-  pairs.reduce<{ hasMoreTrades: boolean; hasMoreActivity: boolean }>(
-    (total, next) => {
-      total.hasMoreTrades = total.hasMoreTrades || (next?.pair?.swaps?.hasMore ?? true)
-      total.hasMoreActivity = total.hasMoreActivity || (next?.pair?.burnsAndMints?.hasMore ?? true)
+const identity = (x: boolean) => x
 
-      return total
-    },
-    { hasMoreTrades: false, hasMoreActivity: false }
-  )
+export const selectHasMoreData = createSelector(
+  [selectCurrentSwaprPair, selectCurrentSushiPair, selectCurrentUniswapV2Pair, selectCurrentHoneyPair],
+  (...pairs) => ({
+    hasMoreTrades: pairs.map(pair => pair?.pair?.swaps?.hasMore ?? true).some(identity),
+    hasMoreActivity: pairs.map(pair => pair?.pair?.burnsAndMints?.hasMore ?? true).some(identity),
+  })
 )
 
 export const selectAllDataFromAdapters = createSelector(

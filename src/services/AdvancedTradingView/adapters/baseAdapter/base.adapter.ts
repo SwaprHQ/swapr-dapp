@@ -17,7 +17,11 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
   private _key: AdapterKeys
   private _adapterSupportedChains: ChainId[]
   private _platform: UniswapV2RoutablePlatform
-  private _subgraphUrls: { [key in ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS]: string }
+  private _subgraphUrls: {
+    [ChainId.GNOSIS]: string
+    [ChainId.MAINNET]: string
+    [ChainId.ARBITRUM_ONE]: string
+  }
 
   constructor({
     key,
@@ -28,7 +32,11 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
     key: AdapterKeys
     adapterSupportedChains: ChainId[]
     platform: UniswapV2RoutablePlatform
-    subgraphUrls: { [key in ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS]: string }
+    subgraphUrls: {
+      [ChainId.GNOSIS]: string
+      [ChainId.MAINNET]: string
+      [ChainId.ARBITRUM_ONE]: string
+    }
   }) {
     super()
 
@@ -85,7 +93,9 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
           hasMore,
         })
       )
-    } catch {}
+    } catch (e) {
+      console.warn(`${this._key}${e}`)
+    }
   }
 
   public async getPairActivity({
@@ -126,7 +136,9 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
           hasMore,
         })
       )
-    } catch {}
+    } catch (e) {
+      console.warn(`${this._key}${e}`)
+    }
   }
 
   private get actions() {

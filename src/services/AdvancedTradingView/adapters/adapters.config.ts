@@ -24,4 +24,24 @@ export const adapters: Adapters = {
       [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/sushiswap/xdai-exchange',
     },
   }),
+  uniswapV2: new BaseAdapter({
+    key: AdapterKeys.UNISWAPV2,
+    adapterSupportedChains: [ChainId.MAINNET],
+    platform: UniswapV2RoutablePlatform.UNISWAP,
+    subgraphUrls: {
+      [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
+      [ChainId.ARBITRUM_ONE]: '',
+      [ChainId.GNOSIS]: '',
+    },
+  }),
+  honeyswap: new BaseAdapter({
+    key: AdapterKeys.HONEYSWAP,
+    adapterSupportedChains: [ChainId.GNOSIS],
+    platform: UniswapV2RoutablePlatform.HONEYSWAP,
+    subgraphUrls: {
+      [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/kirkins/honeyswap',
+      [ChainId.ARBITRUM_ONE]: '',
+      [ChainId.MAINNET]: '',
+    },
+  }),
 }

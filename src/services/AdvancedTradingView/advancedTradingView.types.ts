@@ -9,6 +9,8 @@ import { BasePair } from './adapters/baseAdapter/base.types'
 export enum AdapterKeys {
   SWAPR = 'swapr',
   SUSHISWAP = 'sushiswap',
+  UNISWAPV2 = 'uniswapV2',
+  HONEYSWAP = 'honeyswap',
 }
 
 export type InitialState = {
@@ -21,6 +23,12 @@ export type InitialState = {
       [pairId: string]: BasePair | undefined
     }
     [AdapterKeys.SUSHISWAP]: {
+      [pairId: string]: BasePair | undefined
+    }
+    [AdapterKeys.UNISWAPV2]: {
+      [pairId: string]: BasePair | undefined
+    }
+    [AdapterKeys.HONEYSWAP]: {
       [pairId: string]: BasePair | undefined
     }
   }
