@@ -66,6 +66,8 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
 
     const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
 
+    if (!subgraphPairId) return
+
     const pair = this.store.getState().advancedTradingView.adapters[this._key][subgraphPairId]
 
     if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
@@ -108,6 +110,8 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
     if (!this._isSupportedChainId(this._chainId)) return
 
     const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
+
+    if (!subgraphPairId) return
 
     const pair = this.store.getState().advancedTradingView.adapters[this._key][subgraphPairId]
 
@@ -152,7 +156,9 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
   }
 
   private _getSubgraphPairId(inputToken: Token, outputToken: Token) {
-    return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
+    try {
+      return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
+    } catch {}
   }
 
   private _isSupportedChainId(chainId?: ChainId): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE {
