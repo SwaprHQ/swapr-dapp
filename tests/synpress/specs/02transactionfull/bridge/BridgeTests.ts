@@ -8,7 +8,8 @@ import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 import { ErrorModal } from '../../../../pages/ErrorModal'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-describe('Bridge tests', () => {
+//TODO - unskip after #1379 is fixed
+describe.skip('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
