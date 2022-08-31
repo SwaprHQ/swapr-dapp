@@ -203,7 +203,6 @@ jobs:
     runs-on: ubuntu-20.04
     container: cypress/browsers:node16.5.0-chrome97-ff96
     env:
-      IF_MERGED: ${{ github.event.pull_request.merged == true }}
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
@@ -220,13 +219,19 @@ jobs:
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "COMMIT_MSG=$(printf "$MSG" | xargs)" >> "$GITHUB_ENV"
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
       - name: Check how tests should be executed #1
         if: contains(env.COMMIT_MSG, 'trigger-synpress')
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
       - name: Check how tests should be executed #2
-        if: ${{ (github.event.pull_request.merged == true) }}
+        if: ${{ (github.event_name == 'push') }}
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
 
@@ -257,7 +262,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: ${{ (github.event.pull_request.merged == true) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
@@ -266,13 +271,13 @@ jobs:
           COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Merge test results into one
-        if: ${{ (github.event.pull_request.merged == true) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
       - name: Save code coverage results
-        if: ${{ (github.event.pull_request.merged == true) || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
@@ -304,7 +309,7 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        if: ${{ !(github.event.pull_request.merged == true) }}
+        if: ${{ !(github.event_name == 'push') }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: true
         env:
@@ -312,7 +317,7 @@ jobs:
           COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Run cypress tests after merge
-        if: ${{ (github.event.pull_request.merged == true) }}
+        if: ${{ (github.event_name == 'push') }}
         run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS'
         continue-on-error: true
         env:
