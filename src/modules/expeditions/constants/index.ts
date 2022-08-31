@@ -1,3 +1,5 @@
+import { ClaimWeeklyFragmentsResponseDTOTypeEnum } from '../api/generated'
+
 const apiBaseURLDev = 'http://localhost:4000'
 const apiBaseURLProd = 'https://api.swapr.site/v1.0'
 
@@ -13,12 +15,7 @@ export const CLAIM_DAILY_VISIT_FRAGMENTS_MESSAGE = 'Claim Swapr daily visit frag
 export const CLAIM_WEEKLY_LIQUIDITY_PROVISION_FRAGMENTS_MESSAGE = 'Claim Swapr weekly liquidity provision fragments'
 export const CLAIM_WEEKLY_LIQUIDITY_STAKING_FRAGMENTS_MESSAGE = 'Claim Swapr weekly liquidity staking fragments'
 
-export enum WeeklyFragmentType {
-  LIQUIDITY_PROVISION = 'LIQUIDITY_PROVISION',
-  LIQUIDITY_STAKING = 'LIQUIDITY_STAKING',
-}
-
-export const signatureMessageByType: Record<WeeklyFragmentType, string> = {
-  [WeeklyFragmentType.LIQUIDITY_PROVISION]: CLAIM_WEEKLY_LIQUIDITY_PROVISION_FRAGMENTS_MESSAGE,
-  [WeeklyFragmentType.LIQUIDITY_STAKING]: CLAIM_WEEKLY_LIQUIDITY_STAKING_FRAGMENTS_MESSAGE,
+export const signatureMessageByType: Record<ClaimWeeklyFragmentsResponseDTOTypeEnum, string> = {
+  [ClaimWeeklyFragmentsResponseDTOTypeEnum.Provision]: CLAIM_WEEKLY_LIQUIDITY_PROVISION_FRAGMENTS_MESSAGE,
+  [ClaimWeeklyFragmentsResponseDTOTypeEnum.Staking]: CLAIM_WEEKLY_LIQUIDITY_STAKING_FRAGMENTS_MESSAGE,
 }

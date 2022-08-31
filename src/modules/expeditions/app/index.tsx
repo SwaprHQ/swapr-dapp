@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { HeaderButton } from '../../../components/Header/HeaderButton'
 import { useToggleShowExpeditionsPopup } from '../../../state/application/hooks'
-import { getUserExpeditionsRewards } from '../api'
+import { ExpeditionsAPI } from '../api'
 import { ExpeditionsModal } from '../components/ExpeditionsModal'
 import { ExpeditionsContext } from '../contexts/ExpeditionsContext'
 
@@ -28,9 +28,9 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
   const [rewards, setRewards] = useState<ExpeditionsContext['rewards']>()
 
   useEffect(() => {
-    getUserExpeditionsRewards(account as string)
+    ExpeditionsAPI.getExpeditionsWeeklyfragments({ address: account })
       .then(userRewards => {
-        setRewards(userRewards.data)
+        setRewards(userRewards)
       })
       .catch(error => {
         console.error(error)

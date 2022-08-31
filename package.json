@@ -5,7 +5,7 @@
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn codegen:socket && yarn codegen:graphql && react-app-rewired start",
+    "start": "yarn codegen && react-app-rewired start",
     "build": "yarn codegen:socket && yarn codegen:graphql && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5000",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
@@ -18,15 +18,17 @@
     "synpress:ct": "cross-env start-server-and-test 'react-app-rewired start' http-get://localhost:3000 'yarn synpress:run $TEST_PARAMS'",
     "synpress:open": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.json",
     "synpress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.json --config supportFile='tests/support/index.js',pluginsFile='tests/plugins/index.js' -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'",
+    "codegen": "yarn codegen:socket && yarn codegen:expeditions && yarn codegen:graphql",
     "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
+    "codegen:expeditions": "TARGET=src/modules/expeditions/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/modules/expeditions/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
+    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom",
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "chromatic --exit-zero-on-changes",
-    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "resolutions": {
     "@uniswap/smart-order-router": "2.5.26"

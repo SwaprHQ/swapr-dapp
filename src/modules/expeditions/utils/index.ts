@@ -1,6 +1,6 @@
-import { WeeklyFragmentRewards } from '../api'
+import { WeeklyFragmentsRewards } from '../api/generated'
 
-export function computeFragmentState(rewards: WeeklyFragmentRewards) {
+export function computeFragmentState(rewards: WeeklyFragmentsRewards) {
   const isClaimed = rewards.claimedFragments > 0
   const isAvailableToClaim = rewards.claimableFragments > 0
   const isIncomplete = !isClaimed && !isAvailableToClaim

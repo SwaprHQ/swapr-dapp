@@ -1,0 +1,200 @@
+{
+  "swagger": "2.0",
+  "host": "localhost:3000",
+  "basePath": "/v1.0",
+  "schemes": ["http"],
+  "info": {
+    "title": "Swapr Expeditions API Documentation",
+    "version": "1.0"
+  },
+  "tags": [],
+  "paths": {
+    "/expeditions/daily-visits": {
+      "get": {
+        "summary": "Get daily rewards (fragments) state for an address",
+        "operationId": "getExpeditionsDailyvisits",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Ethereum address",
+            "name": "address",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/DailyVisitsResponseDTO"
+            },
+            "description": "Successful"
+          }
+        }
+      },
+      "post": {
+        "summary": "Claim all daily fragments available for an address",
+        "operationId": "postExpeditionsDailyvisits",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DailyVisitsRequestDTO"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/DailyVisitsResponseDTO"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/weekly-fragments": {
+      "get": {
+        "summary": "Get weekly rewards (fragments) state for an address",
+        "operationId": "getExpeditionsWeeklyfragments",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Ethereum address",
+            "name": "address",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "week",
+            "in": "query",
+            "required": false
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetWeeklyFragmentsResponseDTO"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/weekly-fragments/claim": {
+      "post": {
+        "summary": "Claim weekly liquidity provision fragments for an address",
+        "operationId": "postExpeditionsWeeklyfragmentsClaim",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ClaimWeeklyFragmentsResponseDTO"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ClaimWeeklyLiquidityProvisionFragmentsResponseDTO"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DailyVisitsResponseDTO": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "allVisits": {
+          "type": "number"
+        },
+        "lastVisit": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": ["address", "allVisits", "lastVisit"]
+    },
+    "WeeklyFragmentsRewards": {
+      "type": "object",
+      "properties": {
+        "totalAmountUSD": {
+          "type": "number"
+        },
+        "claimableFragments": {
+          "type": "number"
+        },
+        "claimedFragments": {
+          "type": "number"
+        }
+      },
+      "required": ["totalAmountUSD", "claimableFragments", "claimedFragments"]
+    },
+    "GetWeeklyFragmentsResponseDTO": {
+      "type": "object",
+      "properties": {
+        "liquidityProvision": {
+          "$ref": "#/definitions/WeeklyFragmentsRewards"
+        },
+        "liquidityStaking": {
+          "$ref": "#/definitions/WeeklyFragmentsRewards"
+        }
+      },
+      "required": ["liquidityProvision", "liquidityStaking"]
+    },
+    "DailyVisitsRequestDTO": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Return value signer.signMessage()"
+        }
+      },
+      "required": ["address", "signature"]
+    },
+    "ClaimWeeklyFragmentsResponseDTO": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Return value signer.signMessage()"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING"]
+        }
+      },
+      "required": ["address", "signature", "type"]
+    },
+    "ClaimWeeklyLiquidityProvisionFragmentsResponseDTO": {
+      "type": "object",
+      "properties": {
+        "claimedFragments": {
+          "type": "number"
+        }
+      },
+      "required": ["claimedFragments"]
+    }
+  }
+}
