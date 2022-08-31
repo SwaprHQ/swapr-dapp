@@ -69,8 +69,18 @@ const AppBodyContainer = styled.section`
   flex-direction: column;
   align-items: center;
   z-index: 3;
-  // min-height: calc(100vh - 340px);
-  min-width: 400px;
+  min-height: calc(100vh - 340px);
+  min-width: 600px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    min-height: 0;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-height: 0;
+    min-width: 100%;
+    width: 100%;
+  `};
 `
 
 const LandingBodyContainer = styled.section`
@@ -391,7 +401,7 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       <Hero>
-        <Flex justifyContent="center" flexDirection={['column', 'row']}>
+        <Flex justifyContent="center" flexDirection={['column', 'column', 'column', 'row']}>
           <AppBodyContainer>
             <Tabs>
               {
@@ -520,7 +530,11 @@ export default function Swap() {
               />
             )}
           </AppBodyContainer>
-          {showChart && <SimpleChart />}
+          {showChart && (
+            <Flex justifyContent="center" mt={[4, 4, 4, 0]} ml={[0, 0, 0, -4]}>
+              <SimpleChart />
+            </Flex>
+          )}
         </Flex>
       </Hero>
       <LandingBodyContainer>

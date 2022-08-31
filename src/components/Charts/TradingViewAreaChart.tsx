@@ -54,7 +54,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       return
 
     const chart = createChart(chartRef.current, {
-      height: 246,
+      height: 248,
       width: chartRef.current.parentElement.clientWidth,
       layout: {
         backgroundColor: chartColors.backgroundColor,

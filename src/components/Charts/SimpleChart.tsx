@@ -51,59 +51,57 @@ export default function SimpleChart() {
   })
 
   return (
-    <Box ml={[0, 3]} mt={[3, 0]}>
-      <DimBlurBgBox height="400px" width={['100%', '550px']} py={3}>
-        <Flex flexDirection="column" width="100%" justifyContent="center" alignItems="center">
-          <Flex width="100%" justifyContent="space-between" px={3}>
-            <PairExternalLink href={statsLink}>
-              <Box mr="4px">
-                <DoubleCurrencyLogo
-                  loading={!currency0 || !currency1}
-                  currency0={currency0 || undefined}
-                  currency1={currency1 || undefined}
-                  size={20}
-                />
-              </Box>
-              <Flex alignItems="center">
-                <Text fontWeight="600" fontSize="14px" color={theme.text2}>
-                  {!currency0 || !currency1 ? <Skeleton width="69px" /> : `${currency0.symbol}/${currency1.symbol}`}
-                </Text>
-                <Box ml={2}>{currency0 && currency1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
-              </Flex>
-            </PairExternalLink>
-            <Flex>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.DAY}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
-              >
-                1d
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.WEEK}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
-              >
-                1w
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.MONTH}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
-              >
-                1m
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.YEAR}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
-              >
-                1y
-              </DateFilterButton>
+    <DimBlurBgBox height="376px" width={['100%', '632px']} py={3}>
+      <Flex flexDirection="column" width="100%" justifyContent="center" alignItems="center">
+        <Flex width="100%" justifyContent="space-between" px={3}>
+          <PairExternalLink href={statsLink}>
+            <Box mr="4px">
+              <DoubleCurrencyLogo
+                loading={!currency0 || !currency1}
+                currency0={currency0 || undefined}
+                currency1={currency1 || undefined}
+                size={20}
+              />
+            </Box>
+            <Flex alignItems="center">
+              <Text fontWeight="600" fontSize="14px" color={theme.text2}>
+                {!currency0 || !currency1 ? <Skeleton width="69px" /> : `${currency0.symbol}/${currency1.symbol}`}
+              </Text>
+              <Box ml={2}>{currency0 && currency1 && <ExternalLinkIcon size={12} color={theme.text3} />}</Box>
             </Flex>
+          </PairExternalLink>
+          <Flex>
+            <DateFilterButton
+              active={selectedInterval === DATE_INTERVALS.DAY}
+              onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
+            >
+              1d
+            </DateFilterButton>
+            <DateFilterButton
+              active={selectedInterval === DATE_INTERVALS.WEEK}
+              onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
+            >
+              1w
+            </DateFilterButton>
+            <DateFilterButton
+              active={selectedInterval === DATE_INTERVALS.MONTH}
+              onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
+            >
+              1m
+            </DateFilterButton>
+            <DateFilterButton
+              active={selectedInterval === DATE_INTERVALS.YEAR}
+              onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
+            >
+              1y
+            </DateFilterButton>
           </Flex>
-          <Box p={3} width="100%">
-            <TradingViewAreaChart data={data} />
-          </Box>
         </Flex>
-      </DimBlurBgBox>
-    </Box>
+        <Box p={3} width="100%">
+          <TradingViewAreaChart data={data} />
+        </Box>
+      </Flex>
+    </DimBlurBgBox>
   )
 }
 
