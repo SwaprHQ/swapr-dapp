@@ -5,11 +5,13 @@ on:
     branches:
       - develop
       - master
+      - base-test
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - develop
       - master
+      - base-test
   schedule:
     - cron: '0 0 * * *'
 
