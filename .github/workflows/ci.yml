@@ -310,7 +310,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ contains(needs.prepare.outputs.commit-message, 'skip-cypress') }}
+    if: ${{ !(contains(needs.prepare.outputs.commit-message, 'skip-cypress')) && !(github.actor == 'dependabot[bot]') }}
     strategy:
       fail-fast: false
       matrix:
