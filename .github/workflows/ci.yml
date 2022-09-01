@@ -253,7 +253,7 @@ jobs:
       - name: Check if synpress should be reported to dashboard
         if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-synpress-dashboard')) }}
         run: |
-          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --ci-build-id ${{ needs.prepare.outputs.uuid }} --tag SYNPRESS'" >> "$GITHUB_ENV"
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
