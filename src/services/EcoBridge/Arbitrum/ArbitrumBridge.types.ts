@@ -2,7 +2,8 @@ import { ChainId } from '@swapr/sdk'
 
 import { EntityState } from '@reduxjs/toolkit'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
-import { ArbitrumBridgeTxn } from 'state/bridgeTransactions/types'
+
+import { ArbitrumBridgeTxn } from '../../../state/bridgeTransactions/types'
 
 export enum ArbitrumPendingReasons {
   TX_UNCONFIRMED = 'Transaction has not been confirmed yet',
