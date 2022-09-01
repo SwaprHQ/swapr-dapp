@@ -312,7 +312,6 @@ jobs:
     needs: install
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ !(contains(env.COMMIT_MSG, 'trigger-cypress')) }}
     strategy:
       fail-fast: false
       matrix:
