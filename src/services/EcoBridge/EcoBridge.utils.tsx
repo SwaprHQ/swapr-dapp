@@ -175,6 +175,7 @@ export abstract class EcoBridgeChildBase {
                 isLoading: true,
                 isError: false,
                 isApproved: false,
+                isBalanceSufficient: false,
               }
               break
           }
