@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       uuid: ${{ steps.uuid.outputs.value }}
+      commit-message: ${{ steps.commit-message.outputs.value }}
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -446,7 +447,7 @@ jobs:
   cleanup:
     name: 🧹 Cleanup
     if: ${{ success() && github.actor != 'dependabot[bot]' }}
-    needs: [install, lint, test, typecheck, build, cypress, cypress-report]
+    needs: [install, lint, test, typecheck, build]
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact
