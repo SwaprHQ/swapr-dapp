@@ -433,6 +433,17 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://rinkeby.infura.io/v3'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io'],
   },
+  [ChainId.GOERLI]: {
+    chainId: `0x${ChainId.GOERLI.toString(16)}`,
+    chainName: 'Görli',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://goerli.infura.io/v3'],
+    blockExplorerUrls: ['https://goerli.etherscan.io'],
+  },
   [ChainId.POLYGON]: {
     chainId: `0x${ChainId.POLYGON.toString(16)}`,
     chainName: 'Polygon Mainnet',
