@@ -4,6 +4,12 @@ import { SettingsDialog } from '../../../pages/SettingsDialog'
 
 describe('Menu bar smoke tests', () => {
   before(() => {
+    Cypress.on('uncaught:exception', err => {
+      // returning false here prevents Cypress from
+      // failing the test
+      console.log('Cypress detected uncaught exception: ', err)
+      return false
+    })
     cy.visit('/')
   })
   it('Should display nav items on every page [TC-16]', () => {
@@ -22,8 +28,8 @@ describe('Menu bar smoke tests', () => {
   it('Should redirect to correct page after clicking on nav item [TC-16]', () => {
     MenuBar.getRewards().click().url().should('include', 'rewards')
     MenuBar.getLiquidity().click().url().should('include', 'pools')
-    MenuBar.getBridge().click().url().should('include', 'bridge')
     MenuBar.getSwap().click().url().should('include', 'swap')
+    MenuBar.getBridge().click().url().should('include', 'bridge')
   })
   it('Should open network switcher with all networks [TC-17]', () => {
     MenuBar.getNetworkSwitcher().click()
