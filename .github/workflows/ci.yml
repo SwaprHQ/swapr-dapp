@@ -227,6 +227,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    needs: [prepare]
     container: cypress/browsers:node16.5.0-chrome97-ff96
     if: ${{ (contains(steps.commit-message.outputs.value, 'trigger-synpress') || github.event_name == 'push') }}
     env:
