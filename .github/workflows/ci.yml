@@ -18,6 +18,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare:
+    runs-on: ubuntu-20.04
+    outputs:
+      uuid: ${{ steps.uuid.outputs.value }}
+    steps:
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
+
+      - name: Generate unique ID 💎
+        id: uuid
+        # take the current commit + timestamp together
+        # the typical value would be something like
+        # "sha-5d3fe...35d3-time-1620841214"
+        run: echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
+
+      - name: Get Commit Message
+        id: commit-message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+          echo "::set-output name=value::$(printf "$MSG" | xargs)"
+      - name: Echo commit message
+        run: echo "${{ steps.commit-message.outputs.value }}"
+  
+
   install:
     name: Install
     runs-on: ubuntu-20.04
@@ -214,11 +240,6 @@ jobs:
         with:
           fetch-depth: '50'
 
-      - name: Get Commit Message
-        run: |
-          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          echo "COMMIT_MSG=$(printf "$MSG" | xargs)" >> "$GITHUB_ENV"
-
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -291,6 +312,7 @@ jobs:
     needs: install
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
+    if: ${{ !(contains(env.COMMIT_MSG, 'trigger-cypress')) }}
     strategy:
       fail-fast: false
       matrix:
