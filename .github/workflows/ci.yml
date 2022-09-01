@@ -248,7 +248,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
 
       - name: Check how tests should be executed #1
-        if: contains(steps.commit-message.outputs.value, 'trigger-synpress')
+        if: ${{contains( steps.prepare.commit-message.outputs.value , 'trigger-synpress')}}
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
@@ -284,7 +284,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains( steps.prepare.commit-message.outputs.value , 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
@@ -293,13 +293,13 @@ jobs:
           COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
       - name: Save code coverage results
-        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
