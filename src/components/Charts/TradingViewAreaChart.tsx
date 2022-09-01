@@ -52,6 +52,12 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
     )
       return
 
+    const handleResize = () => {
+      chart.timeScale().fitContent()
+      if (chartRef?.current?.parentElement) {
+        chart.applyOptions({ width: chartRef.current.parentElement.clientWidth })
+      }
+    }
     const chart = createChart(chartRef.current, {
       height: 248,
       width: chartRef.current.parentElement.clientWidth,
@@ -123,7 +129,10 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
       setDate(buildDate(time as UTCTimestamp))
     })
 
+    window.addEventListener('resize', handleResize)
+
     return () => {
+      window.removeEventListener('resize', handleResize)
       setPrice('0')
       setDate(buildDate(lastElementTimeOrDefault(data)))
       chart.remove()

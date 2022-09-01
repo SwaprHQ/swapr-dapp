@@ -531,7 +531,7 @@ export default function Swap() {
             )}
           </AppBodyContainer>
           {showChart && (
-            <Flex justifyContent="center" mt={[4, 4, 4, 0]} ml={[0, 0, 0, -4]}>
+            <Flex justifyContent="center" mt={[4, 4, 4, 0]} ml={[0, 0, 0, '-48px']}>
               <SimpleChart />
             </Flex>
           )}
