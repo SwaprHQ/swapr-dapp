@@ -228,7 +228,7 @@ jobs:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
     container: cypress/browsers:node16.5.0-chrome97-ff96
-    if: ${{ (contains(env.COMMIT_MSG, 'trigger-synpress') || github.event_name == 'push') }}
+    if: ${{ (contains(steps.commit-message.outputs.value, 'trigger-synpress') || github.event_name == 'push') }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
@@ -248,7 +248,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
 
       - name: Check how tests should be executed #1
-        if: contains(env.COMMIT_MSG, 'trigger-synpress')
+        if: contains(steps.commit-message.outputs.value, 'trigger-synpress')
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
@@ -284,7 +284,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
@@ -293,13 +293,13 @@ jobs:
           COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
       - name: Save code coverage results
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
@@ -313,7 +313,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ contains(needs.prepare.outputs.uuid, 'skip-cypress') }}
+    if: ${{ contains(needs.prepare.outputs.commit-message, 'skip-cypress') }}
     strategy:
       fail-fast: false
       matrix:
@@ -348,7 +348,7 @@ jobs:
           COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
-        if: ${{ !(contains(env.COMMIT_MSG, 'skip-cypress')) }}
+        if: ${{ !(steps.commit-message.outputs.value, 'skip-cypress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
