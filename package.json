@@ -174,7 +174,7 @@
     "svg-react-loader": "^0.4.6",
     "svg-url-loader": "^7.1.1",
     "tls": "^0.0.1",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.2",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.5.0"
   }
