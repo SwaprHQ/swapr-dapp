@@ -249,12 +249,11 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
 
-      - name: Check how tests should be executed #1
-        if: ${{contains( steps.prepare.commit-message.outputs.value , 'trigger-synpress')}}
+      - name: Set synpress default params
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
-      - name: Check how tests should be executed #2
+      - name: Check if pr is merged
         if: ${{ (github.event_name == 'push') }}
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
