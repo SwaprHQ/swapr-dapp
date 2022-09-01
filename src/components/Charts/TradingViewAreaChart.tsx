@@ -169,24 +169,27 @@ const DateText = styled.p`
 const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
   const theme = useTheme()
 
-  const pricePercentualDifference = () =>
-    (100 - (parseFloat(data[0].value) * 100) / parseFloat(lastDataElement(data).value)).toPrecision(3)
+  const pricePercentualDifference = (
+    100 -
+    (parseFloat(data[0].value) * 100) / parseFloat(lastDataElement(data).value)
+  ).toPrecision(3)
 
-  const isPricePercentualDifferencePositive = () => parseFloat(pricePercentualDifference()) > 0
-  const isPricePercentualDifferenceZero = () => parseFloat(pricePercentualDifference()) === 0
+  const isPricePercentualDifferencePositive = parseFloat(pricePercentualDifference) > 0
+  const isPricePercentualDifferenceZero = parseFloat(pricePercentualDifference) === 0
 
-  const greenOrRed = () => (isPricePercentualDifferencePositive() ? theme.green1 : theme.red1)
-  const correctColor = () => (isPricePercentualDifferenceZero() ? theme.gray1 : greenOrRed())
-  const plusOrMinus = () => (isPricePercentualDifferencePositive() ? '+' : '-')
-  const correctOperator = () => (isPricePercentualDifferenceZero() ? ' ' : plusOrMinus())
+  const greenOrRed = isPricePercentualDifferencePositive ? theme.green1 : theme.red1
+  const correctColor = isPricePercentualDifferenceZero ? theme.gray1 : greenOrRed
+  const plusOrMinus = isPricePercentualDifferencePositive ? '+' : '-'
+  const correctOperator = isPricePercentualDifferenceZero ? ' ' : plusOrMinus
 
-  const showPricePercentualDifference = () =>
-    isPricePercentualDifferenceZero() ? '0%' : `${Math.abs(parseFloat(pricePercentualDifference()))}%`
+  const showPricePercentualDifference = isPricePercentualDifferenceZero
+    ? '0%'
+    : `${Math.abs(parseFloat(pricePercentualDifference))}%`
 
   return (
-    <Text color={correctColor()} ml={2}>
-      {correctOperator()}
-      {showPricePercentualDifference()}
+    <Text color={correctColor} ml={2}>
+      {correctOperator}
+      {showPricePercentualDifference}
     </Text>
   )
 }
