@@ -309,8 +309,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this._ethBridger &&
       !chains.includes(this._activeChainId) &&
       (!previousChainId || (previousChainId && !chains.includes(previousChainId)))
-    )
+    ) {
+      console.warn('Could not build all necessary objects.')
       return
+    }
 
     if (this._activeChainId === this.l1ChainId) {
       l1Signer = this._activeProvider.getSigner()
@@ -819,9 +821,22 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
   public getBridgingMetadata = async () => {
     try {
-      if (!this.l1Signer.provider || !this.l2Signer.provider || !this._activeChainId) return
+      if (!this.l1Signer.provider) return
     } catch (e) {
-      console.warn('There was a problem getting a signer or the chainId.')
+      console.warn(e)
+      console.warn('No L1 Provider.')
+      return
+    }
+    try {
+      if (!this.l2Signer.provider) return
+    } catch (e) {
+      console.warn('No L2 Provider.')
+      return
+    }
+    try {
+      if (!this._activeChainId) return
+    } catch (e) {
+      console.warn('No active chain.')
       return
     }
 
