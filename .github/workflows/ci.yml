@@ -442,7 +442,7 @@ jobs:
   cleanup:
     name: 🧹 Cleanup
     if: ${{ success() && github.actor != 'dependabot[bot]' }}
-    needs: [install, lint, test, typecheck, build]
+    needs: [install, lint, test, typecheck, build, cypress, cypress-report]
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact
