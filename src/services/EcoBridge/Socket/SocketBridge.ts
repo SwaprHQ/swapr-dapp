@@ -419,6 +419,11 @@ export class SocketBridge extends EcoBridgeChildBase {
   }
 
   public getBridgingMetadata = async () => {
+    if (!this.store) {
+      console.warn('No store found.')
+      return
+    }
+
     const ecoBridgeState = this.store.getState().ecoBridge
 
     const { isBridgeSwapActive, from, to } = ecoBridgeState.ui
