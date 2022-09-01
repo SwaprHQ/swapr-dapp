@@ -254,7 +254,7 @@ jobs:
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
       - name: Check if pr is merged
-        if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-dashboard-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-synpress-dashboard')) }}
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --ci-build-id ${{ needs.prepare.outputs.uuid }} --tag SYNPRESS'" >> "$GITHUB_ENV"
 
