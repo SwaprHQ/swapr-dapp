@@ -349,7 +349,6 @@ jobs:
           COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
 
       - name: Merge test results into one
-        if: ${{ !(steps.commit-message.outputs.value), 'skip-cypress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
