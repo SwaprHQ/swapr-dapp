@@ -98,7 +98,7 @@
     "wcag-contrast": "^3.0.0"
   },
   "devDependencies": {
-    "@connext/nxtp-sdk": "^0.1.36",
+    "@connext/nxtp-sdk": "^0.1.40",
     "@graphql-codegen/cli": "2.11.3",
     "@graphql-codegen/introspection": "2.2.0",
     "@graphql-codegen/typescript": "2.7.2",
