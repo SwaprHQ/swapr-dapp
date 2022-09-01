@@ -58,22 +58,22 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
   // Typed setters
   public get ethBridger() {
-    if (!this._ethBridger) throw new Error('ArbBridge: No Eth bridge set')
+    if (!this._ethBridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No Eth bridge set')
     return this._ethBridger
   }
   // Typed setters
   public get erc20Bridger() {
-    if (!this._erc20Bridger) throw new Error('ArbBridge: No ERC20 bridge set')
+    if (!this._erc20Bridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No ERC20 bridge set')
     return this._erc20Bridger
   }
 
   private get l1Signer() {
-    if (!this._l1Signer) throw new Error('ArbBridge: No L1Signer set')
+    if (!this._l1Signer) throw this.ecoBridgeUtils.logger.error('ArbBridge: No L1Signer set')
     return this._l1Signer
   }
 
   private get l2Signer() {
-    if (!this._l2Signer) throw new Error('ArbBridge: No L2Signer set')
+    if (!this._l2Signer) throw this.ecoBridgeUtils.logger.error('ArbBridge: No L2Signer set')
     return this._l2Signer
   }
 
@@ -487,13 +487,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     if (!this._account) return
 
     this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
-
-    this.ecoBridgeUtils.ui.modal.setBridgeModalData({
-      symbol: 'ETH',
-      typedValue: value,
-      fromChainId: this.l2ChainId,
-      toChainId: this.l1ChainId,
-    })
 
     const weiValue = parseEther(value)
     const transaction = await this.ethBridger.withdraw({ l2Signer: this.l2Signer, amount: weiValue })
