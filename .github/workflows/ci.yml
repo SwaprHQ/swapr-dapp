@@ -254,9 +254,9 @@ jobs:
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
       - name: Check if pr is merged
-        if: ${{ (github.event_name == 'push') }}
+        if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-synpress-dashboard')) }}
         run: |
-          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS --ci-build-id ${{ needs.prepare.outputs.uuid }}'" >> "$GITHUB_ENV"
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -285,7 +285,6 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: ${{ (github.event_name == 'push') || (contains( steps.prepare.commit-message.outputs.value , 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
