@@ -823,7 +823,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     try {
       if (!this.l1Signer.provider) return
     } catch (e) {
-      console.warn(e)
       console.warn('No L1 Provider.')
       return
     }
