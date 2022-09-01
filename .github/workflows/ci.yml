@@ -31,9 +31,6 @@ jobs:
 
       - name: Generate unique ID 💎
         id: uuid
-        # take the current commit + timestamp together
-        # the typical value would be something like
-        # "sha-5d3fe...35d3-time-1620841214"
         run: echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
 
       - name: Get Commit Message
@@ -290,7 +287,7 @@ jobs:
         env:
           CI: true
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-          COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
         if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
@@ -333,19 +330,19 @@ jobs:
 
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id ${{ needs.prepare.outputs.uuid }}'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Run cypress tests after merge
         if: ${{ (github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --ci-build-id ${{ needs.prepare.outputs.uuid }} --tag SMOKE_TESTS'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel }} --tag SMOKE_TESTS'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
         run: |
