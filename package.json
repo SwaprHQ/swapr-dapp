@@ -38,7 +38,7 @@
     "@reach/dialog": "^0.17.0",
     "@reach/portal": "^0.17.0",
     "@react-spring/web": "^9.2.4",
-    "@reduxjs/toolkit": "^1.8.3",
+    "@reduxjs/toolkit": "^1.8.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
     "@swapr/sdk": "1.6.0-rc.3",
