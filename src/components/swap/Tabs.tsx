@@ -8,7 +8,6 @@ import Row from '../Row'
 const TabsColumn = styled.div`
   display: flex;
   justify-content: space-between;
-  max-width: 457px;
   width: 100%;
 `
 

@@ -38,7 +38,7 @@ export default function SimpleChart() {
   })
 
   return (
-    <DimBlurBgBox height="400px" width={['100%', '550px']} py={3}>
+    <DimBlurBgBox height="400px" width="100%" py={3}>
       <Flex flexDirection="column" width="100%" height="100%" justifyContent="center" alignItems="center">
         {currency0 && currency1 && (
           <Flex width="100%" justifyContent="space-between" px={3}>

@@ -70,16 +70,17 @@ const AppBodyContainer = styled.section`
   align-items: center;
   z-index: 3;
   min-height: calc(100vh - 340px);
-  min-width: 600px;
+  width: 100%;
+  max-width: 460px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     min-height: 0;
+    max-width: 550px;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     min-height: 0;
     min-width: 100%;
-    width: 100%;
   `};
 `
 
@@ -96,6 +97,7 @@ export enum CoWTradeState {
 
 export default function Swap() {
   const showSimpleChartLocalStorageKey = 'showSimpleChart'
+  // eslint-disable-next-line eqeqeq
   const getShowSimpleChartPreference = () => window.localStorage.getItem(showSimpleChartLocalStorageKey) == 'true'
   const [showChart, setShowChart] = useState(getShowSimpleChartPreference())
 
@@ -401,7 +403,11 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       <Hero>
-        <Flex justifyContent="center" flexDirection={['column', 'column', 'column', 'row']}>
+        <Flex
+          justifyContent="center"
+          alignItems={['center', 'center', 'center', 'start', 'start', 'start']}
+          flexDirection={['column', 'column', 'column', 'row']}
+        >
           <AppBodyContainer>
             <Tabs>
               {
@@ -531,7 +537,12 @@ export default function Swap() {
             )}
           </AppBodyContainer>
           {showChart && (
-            <Flex justifyContent="center" mt={[4, 4, 4, 0]} ml={[0, 0, 0, '-48px']}>
+            <Flex
+              width={['100%', '550px', '550px', '600px', '650px']}
+              justifyContent="center"
+              mt={[4, 4, 4, 0]}
+              ml={[0, 0, 0, 3]}
+            >
               <SimpleChart />
             </Flex>
           )}
