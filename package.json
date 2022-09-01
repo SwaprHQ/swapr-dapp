@@ -137,7 +137,7 @@
     "@types/testing-library__cypress": "^5.0.9",
     "@types/wcag-contrast": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.20.0",
+    "@typescript-eslint/parser": "^5.36.1",
     "assert": "^2.0.0",
     "browserslist": "^4.21.1",
     "buffer": "^6.0.3",
