@@ -1,6 +1,7 @@
 import { Currency, Token } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
+import { ReactNode } from 'react'
 
 import { CurrencySearchContextType } from '../CurrencySearch/CurrencySearch.types'
 import { ListRowContextType, ManageListsContextType } from '../ManageLists/ManageLists.types'
@@ -13,6 +14,7 @@ export interface CurrencySearchModalProps {
   selectedCurrency?: Currency | null
   showNativeCurrency?: boolean
   otherSelectedCurrency?: Currency[] | null
+  isOutputPanel?: boolean
 }
 
 export enum CurrencyModalView {
@@ -39,4 +41,5 @@ export interface CurrencySearchModalProviderProps {
   manageListsContext: ManageListsContextType
   currencySearchContext: CurrencySearchContextType
   currencySearchModalContext: CurrencySearchModalContextType
+  children: ReactNode
 }

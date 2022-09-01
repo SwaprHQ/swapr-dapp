@@ -1,8 +1,8 @@
 import { TransactionReceipt } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { OutgoingMessageState } from 'arb-ts'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList } from '../EcoBridge.types'
@@ -76,20 +76,16 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
         action: PayloadAction<{
           chainId: ChainId
           txHash: string
-          batchIndex?: string
-          batchNumber?: string
-          outgoingMessageState: OutgoingMessageState
+          l2ToL1MessageStatus: L2ToL1MessageStatus
         }>
       ) => {
-        const { outgoingMessageState, txHash, batchIndex, batchNumber } = action.payload
+        const { l2ToL1MessageStatus, txHash } = action.payload
 
         arbitrumTransactionsAdapter.updateOne(state.transactions, {
           id: txHash,
           changes: {
-            outgoingMessageState,
-            timestampResolved: outgoingMessageState === OutgoingMessageState.EXECUTED ? now() : undefined,
-            batchIndex,
-            batchNumber,
+            l2ToL1MessageStatus,
+            timestampResolved: l2ToL1MessageStatus === L2ToL1MessageStatus.EXECUTED ? now() : undefined,
           },
         })
       },

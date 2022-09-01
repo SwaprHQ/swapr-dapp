@@ -6,10 +6,11 @@ import { gql, useQuery } from '@apollo/client'
 import { Decimal } from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 const KPI_TOKENS_QUERY = gql`
   query kpiTokens($ids: [ID!]!) {
@@ -53,36 +54,29 @@ interface KpiTokensQueryResult {
   kpiTokens: SubgraphKpiToken[]
 }
 
-const DERIVED_NATIVE_CURRENCY_QUERY = gql`
-  query getTokensDerivedNativeCurrency($tokenIds: [ID!]!) {
-    tokens(where: { id_in: $tokenIds }) {
-      address: id
-      derivedNativeCurrency
-    }
-  }
-`
-
-interface DerivedNativeCurrencyQueryResult {
-  tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
-}
-
 export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens: KpiToken[] } => {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const carrotSubgraphClient = useCarrotSubgraphClient()
 
   const lowercaseAddresses = useMemo(() => addresses.map(address => address.toLowerCase()), [addresses])
-  const { loading: loadingRawKpiTokens, data: rawKpiTokens, error: rawKpiTokensError } = useQuery<KpiTokensQueryResult>(
-    KPI_TOKENS_QUERY,
-    { variables: { ids: lowercaseAddresses }, client: carrotSubgraphClient }
-  )
+  const {
+    loading: loadingRawKpiTokens,
+    data: rawKpiTokens,
+    error: rawKpiTokensError,
+  } = useQuery<KpiTokensQueryResult>(KPI_TOKENS_QUERY, {
+    variables: { ids: lowercaseAddresses },
+    client: carrotSubgraphClient,
+  })
   const collateralTokenAddresses = useMemo(() => {
     if (loadingRawKpiTokens || rawKpiTokensError || !rawKpiTokens) return []
     return rawKpiTokens.kpiTokens.map(rawKpiToken => rawKpiToken.collateral.token.address.toLowerCase())
   }, [loadingRawKpiTokens, rawKpiTokens, rawKpiTokensError])
-  const { loading: loadingCollateralPrices, data: collateralPrices, error: collateralError } = useQuery<
-    DerivedNativeCurrencyQueryResult
-  >(DERIVED_NATIVE_CURRENCY_QUERY, {
+  const {
+    loading: loadingCollateralPrices,
+    data: collateralPrices,
+    error: collateralError,
+  } = useGetDerivedNativeCurrencyTokensQuery({
     variables: { tokenIds: collateralTokenAddresses },
   })
 

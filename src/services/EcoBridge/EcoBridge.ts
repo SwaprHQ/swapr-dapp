@@ -14,7 +14,6 @@ import {
 } from './EcoBridge.types'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 import { selectBridgeCollectableTx, selectSupportedBridges } from './store/EcoBridge.selectors'
-
 export class EcoBridge {
   public readonly staticProviders: EcoBridgeProviders
   public readonly store: EcoBridgeConstructorParams['store']

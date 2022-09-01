@@ -1,39 +1,26 @@
 import { parseUnits } from '@ethersproject/units'
 import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
-interface DerivedNativeCurrencyQueryResult {
-  tokens: [{ address: string; name: string; symbol: string; decimals: string; derivedNativeCurrency: string }]
-}
-
-export function useNativeCurrencyPricedTokenAmounts(
-  tokenAmounts?: TokenAmount[] | null
-): { loading: boolean; pricedTokenAmounts: PricedTokenAmount[] } {
+export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[] | null): {
+  loading: boolean
+  pricedTokenAmounts: PricedTokenAmount[]
+} {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const tokenIds = useMemo(() => {
     return tokenAmounts ? tokenAmounts.map(tokenAmount => tokenAmount.token.address.toLowerCase()) : []
   }, [tokenAmounts])
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(tokenIds)
-  const { loading, data, error } = useQuery<DerivedNativeCurrencyQueryResult>(
-    gql`
-      query getTokensDerivedNativeCurrency($tokenIds: [ID!]!) {
-        tokens(where: { id_in: $tokenIds }) {
-          address: id
-          derivedNativeCurrency
-        }
-      }
-    `,
-    { variables: { tokenIds } }
-  )
+  const { loading, data, error } = useGetDerivedNativeCurrencyTokensQuery({ variables: { tokenIds } })
 
   return useMemo(() => {
     if (loading || loadingKpiTokens) return { loading: true, pricedTokenAmounts: [] }

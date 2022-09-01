@@ -1,53 +1,15 @@
 import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '.'
+import { useGetPairsQuery } from '../graphql/generated/schema'
 
-const QUERY = gql`
-  query {
-    pairs(first: 1000) {
-      reserve0
-      reserve1
-      token0 {
-        address: id
-        name
-        symbol
-        decimals
-      }
-      token1 {
-        address: id
-        name
-        symbol
-        decimals
-      }
-    }
-  }
-`
-
-interface SubgraphToken {
-  address: string
-  name: string
-  symbol: string
-  decimals: string
-}
-
-interface RawPair {
-  reserve0: string
-  reserve1: string
-  token0: SubgraphToken
-  token1: SubgraphToken
-}
-
-interface QueryResult {
-  pairs: RawPair[]
-}
+import { useActiveWeb3React } from './index'
 
 export function useAllPairs(): { loading: boolean; pairs: Pair[] } {
   const { chainId } = useActiveWeb3React()
-  const { loading, data, error } = useQuery<QueryResult>(QUERY)
+  const { loading, data, error } = useGetPairsQuery()
 
   return useMemo(() => {
     if (loading || !chainId) return { loading: true, pairs: [] }

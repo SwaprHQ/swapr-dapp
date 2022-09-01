@@ -1,7 +1,6 @@
 import { Pair } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
+import { useCallback, useEffect, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -22,8 +21,8 @@ import { useLiquidityMiningFeatureFlag } from '../../hooks/useLiquidityMiningFea
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
+import { PageWrapper } from '../PageWrapper'
 import { ResetFilterIcon, ResetFilterIconContainer } from '../Pools'
-import { PageWrapper } from '../Pools/styleds'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -99,18 +98,17 @@ export default function Rewards() {
   }, [])
 
   const handlePairSelect = useCallback(
-    pair => {
+    (pair: Pair) => {
       navigate(`/rewards/${pair.token0.address}/${pair.token1.address}`)
       setFilterPair(pair)
     },
     [navigate]
   )
   const handleFilterTokenReset = useCallback(
-    e => {
-      batchedUpdates(() => {
-        setAggregatedDataFilter(PairsFilterType.ALL)
-        setFilterPair(null)
-      })
+    (e: React.MouseEvent<Element>) => {
+      setAggregatedDataFilter(PairsFilterType.ALL)
+      setFilterPair(null)
+
       navigate(`/rewards`)
       e.stopPropagation()
     },
@@ -124,14 +122,13 @@ export default function Rewards() {
   return (
     <>
       <PageWrapper>
-        <SwapPoolTabs active={'pool'} />
-
+        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
               <Flex alignItems="center">
                 <Box mr="8px">
-                  <TYPE.mediumHeader
+                  <TYPE.MediumHeader
                     onClick={handleFilterTokenReset}
                     style={{ cursor: 'pointer' }}
                     fontWeight="400"
@@ -140,12 +137,12 @@ export default function Rewards() {
                     color="text4"
                   >
                     Rewards
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </Box>
                 <Box mr="8px">
-                  <TYPE.mediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
+                  <TYPE.MediumHeader fontWeight="400" fontSize="26px" lineHeight="32px" color="text4">
                     /
-                  </TYPE.mediumHeader>
+                  </TYPE.MediumHeader>
                 </Box>
                 <PointableFlex onClick={handleAllClick}>
                   {!filterPair && wrappedPair[0] === PairState.LOADING && (
@@ -195,7 +192,10 @@ export default function Rewards() {
                   <ResponsiveButtonSecondary
                     as={Link}
                     padding="8px 14px"
-                    to={{ pathname: '/liquidity-mining/create', search: search.toString() }}
+                    to={{
+                      pathname: '/liquidity-mining/create',
+                      search: search.toString(),
+                    }}
                     data-testid="create-campaign"
                   >
                     <Text fontWeight={700} fontSize={12} lineHeight="15px">

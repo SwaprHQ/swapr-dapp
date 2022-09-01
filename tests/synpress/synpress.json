@@ -8,6 +8,7 @@
   "chromeWebSecurity": true,
   "viewportWidth": 1366,
   "viewportHeight": 768,
+  "projectId": "bqro4k",
   "videoCompression": 3,
   "video": false,
   "component": {
@@ -20,5 +21,6 @@
   "defaultCommandTimeout": 30000,
   "pageLoadTimeout": 30000,
   "requestTimeout": 30000,
-  "pluginsFile": "tests/plugins/index.js"
+  "pluginsFile": "tests/plugins/index.js",
+  "scrollBehavior": false
 }

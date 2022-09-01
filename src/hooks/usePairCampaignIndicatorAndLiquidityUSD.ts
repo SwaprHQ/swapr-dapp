@@ -1,35 +1,21 @@
 import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Pair, USD } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { ZERO_USD } from '../constants'
+import { useGetPairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
 
-const QUERY = gql`
-  query($id: ID!, $timestamp: BigInt!) {
-    pair(id: $id) {
-      id
-      reserveUSD
-      liquidityMiningCampaigns(where: { endsAt_gt: $timestamp }) {
-        id
-      }
-    }
-  }
-`
-
-interface QueryResult {
-  pair: { reserveUSD: string; liquidityMiningCampaigns: { id: string }[] }
-}
-
-export function usePairCampaignIndicatorAndLiquidityUSD(
-  pair?: Pair | null
-): { loading: boolean; liquidityUSD: CurrencyAmount; numberOfCampaigns: number } {
+export function usePairCampaignIndicatorAndLiquidityUSD(pair?: Pair | null): {
+  loading: boolean
+  liquidityUSD: CurrencyAmount
+  numberOfCampaigns: number
+} {
   const timestamp = useMemo(() => Math.floor(Date.now() / 1000), [])
 
-  const { loading, data, error } = useQuery<QueryResult>(QUERY, {
-    variables: { id: pair?.liquidityToken.address.toLowerCase(), timestamp: timestamp },
+  const { loading, data, error } = useGetPairLiquidityMiningCampaingsQuery({
+    variables: { pairId: pair?.liquidityToken.address.toLowerCase() || '', endsAtLowerLimit: timestamp },
   })
 
   return useMemo(() => {

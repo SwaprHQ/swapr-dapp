@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { CurrencyLogo } from '../CurrencyLogo'
@@ -13,7 +12,7 @@ export const CurrencyView = ({
   currencyWrapperSource,
   disableCurrencySelect,
 }: CurrencyViewProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
 
   if (pair) {
     return (
@@ -46,7 +45,7 @@ export const CurrencyView = ({
           ? currency.symbol.slice(0, 4) +
             '...' +
             currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-          : currency?.symbol) || <div data-testid="select-token-button"> {t('select Token')}</div>}
+          : currency?.symbol) || <div data-testid="select-token-button"> {t('currencyView.selectToken')}</div>}
       </StyledTokenName>
       {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}
     </>

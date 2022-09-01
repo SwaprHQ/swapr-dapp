@@ -1,0 +1,14 @@
+query getStakingCampaigns($userId: String) {
+  singleSidedStakingCampaigns(first: 999) {
+    ...SingleSidedStakingCampaignFragment
+    stakeToken {
+      ...StakeTokenFragment
+    }
+    rewards {
+      ...SingleSidedStakingCampaignRewardFragment
+    }
+    singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
+      id
+    }
+  }
+}

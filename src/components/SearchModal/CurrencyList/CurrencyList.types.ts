@@ -8,13 +8,13 @@ import { TokenAddressMap } from '../../../state/lists/hooks'
 export const BREAK_LINE = 'BREAK'
 type BreakLine = typeof BREAK_LINE
 
-export function isBreakLine(x: unknown): x is BreakLine {
+export function isBreakLine(x: string): x is BreakLine {
   return x === BREAK_LINE
 }
 
 export interface CurrencyListProps {
   currencies: Currency[]
-  fixedListRef?: MutableRefObject<FixedSizeList | undefined>
+  fixedListRef?: MutableRefObject<FixedSizeList>
   otherCurrency?: Currency[] | null
   setImportToken: (token: Token) => void
   showImportView: () => void
@@ -22,6 +22,7 @@ export interface CurrencyListProps {
   onCurrencySelect: (currency: Currency) => void
   selectedCurrency?: Currency | null
   selectedTokenList: TokenAddressMap
+  hideBalance?: boolean
 }
 
 export interface CurrencyRowProps {
@@ -32,4 +33,5 @@ export interface CurrencyRowProps {
   isSelected: boolean
   otherSelected: boolean
   selectedTokenList: TokenAddressMap
+  hideBalance?: boolean
 }

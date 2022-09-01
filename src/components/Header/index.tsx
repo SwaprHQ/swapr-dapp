@@ -1,33 +1,35 @@
-import { SWPR } from '@swapr/sdk'
+import { ChainId, SWPR } from '@swapr/sdk'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import Skeleton from 'react-loading-skeleton'
 import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
-import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
+import { useTokenBalance } from '../../state/wallet/hooks'
+import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../claim/ClaimModal'
-import UnsupportedNetworkPopover from '../NetworkUnsupportedPopover'
+import ExpeditionsModal from '../expeditions/ExpeditionsModal'
+import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
-import SwaprVersionLogo from '../SwaprVersionLogo'
+import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
+import { Balances } from './Balances'
+import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
-import { SwprInfo } from './swpr-info'
+import { Amount } from './styled'
 
 const HeaderFrame = styled.div`
   position: relative;
@@ -128,33 +130,6 @@ const Title = styled(Link)`
   }
 `
 
-export const Amount = styled.p<{ clickable?: boolean; zero: boolean; borderRadius?: string }>`
-  padding: 6px 8px;
-  margin: 0;
-  max-height: 22px;
-  display: inline-flex;
-  font-weight: bold;
-  font-size: 10px;
-  line-height: 11px;
-  text-align: center;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.text4};
-  background: ${({ theme }) => theme.bg1};
-  border-radius: ${props => (props.borderRadius ? props.borderRadius : '12px')};
-  cursor: ${props => (props.clickable ? 'pointer' : 'initial')};
-  white-space: nowrap;
-  ${props =>
-    props.zero &&
-    css`
-      color: ${props => props.theme.red1};
-      background: rgba(240, 46, 81, 0.2);
-    `};
-
-  & + & {
-    margin-left: 7px;
-  }
-`
 const GasInfo = styled.div<{ hide: boolean }>`
   display: ${({ hide }) => (hide ? 'none' : 'flex')};
   margin-left: 6px;
@@ -212,6 +187,10 @@ const AdditionalDataWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: end;
+
+  @media screen and (max-width: ${breakpoints.s}) {
+    gap: 15px;
+  }
 `
 const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
@@ -221,20 +200,18 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
 function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
-  const nativeCurrency = useNativeCurrency()
   const { gas } = useGasInfo()
-  const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const [isDark] = useDarkModeManager()
   const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
   const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
   const toggleClaimPopup = useToggleShowClaimPopup()
+  const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
-
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -269,6 +246,7 @@ function Header() {
           data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
+      <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
       <HeaderRow isDark={isDark}>
         <Title to="/swap">
           <SwaprVersionLogo />
@@ -278,26 +256,37 @@ function Header() {
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderLink>
-          <HeaderLink data-testid="pool-nav-link" id="pool-nav-link" to="/pools" disabled={networkWithoutSWPR}>
-            Liquidity
+          <HeaderLink
+            data-testid="pool-nav-link"
+            id="pool-nav-link"
+            to="/pools"
+            disabled={
+              networkWithoutSWPR && chainId !== ChainId.ARBITRUM_GOERLI
+            } /* // FIXME: fix this once SWPR is on Arb Goerli */
+          >
+            {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
-            Rewards
+            {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-            <HeaderLinkBadge label="BETA" />
+            <>
+              {t('bridge')}
+              <HeaderLinkBadge label="BETA" />
+            </>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
           </HeaderLink>
           <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
@@ -308,26 +297,18 @@ function Header() {
         </HeaderSubRow>
 
         <Flex maxHeight={'22px'} justifyContent={'end'}>
-          {!networkWithoutSWPR && (
-            <SwprInfo
-              hasActiveCampaigns={!loading && !!data}
-              newSwprBalance={newSwprBalance}
-              onToggleClaimPopup={toggleClaimPopup}
-            />
+          {account && (
+            <>
+              <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
+                &#10024;&nbsp;Expeditions
+              </HeaderButton>
+              <Balances />
+            </>
           )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>
             {isUnsupportedChainIdError && (
               <Amount data-testid="unsupported-network-warning" zero>
                 {'UNSUPPORTED NETWORK'}
-              </Amount>
-            )}
-            {account && !isUnsupportedChainIdError && (
-              <Amount zero={!!userNativeCurrencyBalance?.equalTo('0')}>
-                {userNativeCurrencyBalance ? (
-                  `${userNativeCurrencyBalance.toFixed(3)} ${nativeCurrency.symbol}`
-                ) : (
-                  <Skeleton width="37px" style={{ marginRight: '3px' }} />
-                )}
               </Amount>
             )}
           </UnsupportedNetworkPopover>
@@ -342,7 +323,12 @@ function Header() {
           )}
         </Flex>
         {gas.fast !== 0 && gas.slow !== 0 && (
-          <HeaderSubRow style={{ visibility: isGasInfoOpen ? 'visible' : 'hidden', gap: '4px' }}>
+          <HeaderSubRow
+            style={{
+              visibility: isGasInfoOpen ? 'visible' : 'hidden',
+              gap: '4px',
+            }}
+          >
             <ColoredGas color={'fast'}>FAST {gas.fast}</ColoredGas>
             <ColoredGas color={'normal'}>NORMAL {gas.normal}</ColoredGas>
             <ColoredGas color={'slow'}>SLOW {gas.slow}</ColoredGas>
@@ -356,12 +342,12 @@ function Header() {
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
-              Pools
+              {t('liquidity')}
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="rewards-nav-link" to="/rewards">
-              Rewards
+              {t('rewards')}
             </HeaderMobileLink>
           )}
           <HeaderMobileLink id="bridge-nav-link" to="/bridge">
@@ -371,10 +357,12 @@ function Header() {
             {t('vote')}
           </HeaderMobileLink>
           <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="11px">
-              ↗
-            </Text>
+            <>
+              {t('charts')}
+              <Text ml="4px" fontSize="11px">
+                ↗
+              </Text>
+            </>
           </HeaderMobileLink>
         </Flex>
 

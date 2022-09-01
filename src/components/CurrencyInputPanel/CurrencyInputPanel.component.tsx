@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
 import debounce from 'lodash/debounce'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -10,7 +10,7 @@ import { normalizeInputValue } from '../../utils'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
-import Loader from '../Loader'
+import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import {
@@ -18,7 +18,6 @@ import {
   Container,
   Content,
   CurrencySelect,
-  FiatRow,
   InputPanel,
   InputRow,
   LabelRow,
@@ -52,6 +51,7 @@ export const CurrencyInputPanelComponent = ({
   maxAmount,
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
+  isOutputPanel,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -121,9 +121,9 @@ export const CurrencyInputPanelComponent = ({
           {!hideInput && label && (
             <LabelRow>
               <RowBetween>
-                <TYPE.body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
+                <TYPE.Body fontWeight="600" fontSize="11px" lineHeight="13px" letterSpacing="0.08em">
                   <UppercaseHelper>{label}</UppercaseHelper>
-                </TYPE.body>
+                </TYPE.Body>
               </RowBetween>
             </LabelRow>
           )}
@@ -165,7 +165,7 @@ export const CurrencyInputPanelComponent = ({
               </Aligner>
             </CurrencySelect>
           </InputRow>
-          <FiatRow>
+          <div>
             <RowBetween>
               <FiatValueDetails fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
               <CurrencyUserBalance
@@ -178,7 +178,7 @@ export const CurrencyInputPanelComponent = ({
                 onMax={handleOnMax}
               />
             </RowBetween>
-          </FiatRow>
+          </div>
         </Content>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (
@@ -189,6 +189,7 @@ export const CurrencyInputPanelComponent = ({
           selectedCurrency={currency}
           otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
+          isOutputPanel={isOutputPanel}
         />
       )}
     </InputPanel>

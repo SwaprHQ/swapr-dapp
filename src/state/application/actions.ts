@@ -6,6 +6,7 @@ export type PopupContent = {
   hash: string
   success: boolean
   summary?: string
+  swapProtocol?: string
 }
 
 export enum ApplicationModal {
@@ -22,6 +23,7 @@ export enum ApplicationModal {
   NETWORK_SWITCHER_TO,
   UNSUPPORTED_NETWORK,
   SIMPLE_SETTINGS,
+  EXPEDITIONS,
 }
 
 export enum MainnetGasPrice {
@@ -35,6 +37,5 @@ export const updateMainnetGasPrices = createAction<{ [variant in MainnetGasPrice
   'application/updateMainnetGasPrices'
 )
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
-export const setConnectorInfo = createAction<Pick<ApplicationState, 'account' | 'chainId'>>(
-  'application/setConnectorInfo'
-)
+export const setConnectorInfo =
+  createAction<Pick<ApplicationState, 'account' | 'chainId'>>('application/setConnectorInfo')

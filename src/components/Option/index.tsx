@@ -2,7 +2,11 @@ import styled from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
 
-export const Option = styled.button<{ active?: boolean; width?: string; transparent?: boolean }>`
+export const Option = styled.button<{
+  active?: boolean
+  width?: string
+  transparent?: boolean
+}>`
   color: ${({ theme }) => theme.text1};
   align-items: center;
   height: 2rem;

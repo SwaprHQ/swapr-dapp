@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { abi as IDXswapPairABI } from '@swapr/core/build/IDXswapPair.json'
+import IDXswapPair from '@swapr/core/build/IDXswapPair.json'
 import {
   ChainId,
   Currency,
@@ -118,7 +118,7 @@ export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossi
 }
 
 export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(pairAddress, IDXswapPairABI, withSignerIfPossible)
+  return useContract(pairAddress, IDXswapPair.abi, withSignerIfPossible)
 }
 
 export function useMulticallContract(): Contract | null {

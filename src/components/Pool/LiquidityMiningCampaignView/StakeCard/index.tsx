@@ -6,7 +6,7 @@ import {
   TokenAmount,
 } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -126,12 +126,8 @@ export default function StakeCard({
   )
 
   const callbacks = useLiquidityMiningActionCallbacks(campaign?.address)
-  const {
-    stakedTokenAmount,
-    claimableRewardAmounts,
-    claimedRewardAmounts,
-    totalRewardedAmounts,
-  } = useLiquidityMiningCampaignPosition(campaign, account || undefined)
+  const { stakedTokenAmount, claimableRewardAmounts, claimedRewardAmounts, totalRewardedAmounts } =
+    useLiquidityMiningCampaignPosition(campaign, account || undefined)
   const addTransaction = useTransactionAdder()
   const { loading: loadingLpTokensUnderlyingAssets, underlyingAssets } = useLpTokensUnderlyingAssets(
     campaign instanceof LiquidityMiningCampaign ? campaign?.targetedPair : undefined,
@@ -345,9 +341,9 @@ export default function StakeCard({
         <AutoColumn gap="8px">
           <Flex flexDirection="column">
             <Box mb="20px">
-              <TYPE.body color="white" fontWeight="500" lineHeight="19.5px">
+              <TYPE.Body color="white" fontWeight="500" lineHeight="19.5px">
                 My stake
-              </TYPE.body>
+              </TYPE.Body>
             </Box>
             <DataRow mb="18px" justifyContent="space-between">
               <Box mr="20px">

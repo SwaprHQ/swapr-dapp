@@ -2,12 +2,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import {
   ChainId,
+  CoWTrade,
   CurveTrade,
   Trade,
   TradeType,
   UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
+  ZeroXTrade,
 } from '@swapr/sdk'
 
 import { UnsignedTransaction } from 'ethers'
@@ -17,6 +19,7 @@ import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
+import { SwapProtocol } from '../state/transactions/reducer'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
@@ -75,8 +78,8 @@ export function useSwapsCallArguments(
       }
 
       const swapMethods = []
-      // Curve and Uniswap v3
-      if (trade instanceof CurveTrade || trade instanceof UniswapTrade) {
+      // Curve, Uniswap v3, ZeroX
+      if (trade instanceof CurveTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
         return [
           {
             transactionParameters: trade.swapTransaction(),
@@ -110,7 +113,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trades])
+  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
 }
 
 /**
@@ -183,6 +186,28 @@ export function useSwapCallback({
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+        // GPv2 trade
+        if (trade instanceof CoWTrade) {
+          const signer = library.getSigner()
+
+          // Sign the order
+          // and then submit the order to GPv2
+          await trade.signOrder(signer)
+          const orderId = await trade.submitOrder()
+
+          addTransaction(
+            {
+              hash: orderId,
+            },
+            {
+              summary: getSwapSummary(trade, recipientAddressOrName ?? null),
+              swapProtocol: SwapProtocol.COW,
+            }
+          )
+
+          return orderId
+        }
+
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
             const transactionRequest = await call.transactionParameters
@@ -213,7 +238,7 @@ export function useSwapCallback({
                       error: new Error('Unexpected issue with estimating the gas. Please try again.'),
                     }
                   })
-                  .catch(callError => {
+                  .catch((callError: { reason: string }) => {
                     console.debug('Call threw error', call, callError)
                     let errorMessage: string
                     switch (callError.reason) {
@@ -264,14 +289,14 @@ export function useSwapCallback({
             gasPrice: normalizedGasPrice,
             ...((await transactionParameters) as any),
           })
-          .then((response: any) => {
+          .then(response => {
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
 
             return response.hash
           })
-          .catch((error: any) => {
+          .catch(error => {
             // if the user rejected the tx, pass this along
             if (error?.code === 4001) {
               throw new Error('Transaction rejected.')
@@ -289,11 +314,11 @@ export function useSwapCallback({
     library,
     account,
     chainId,
-    recipient,
-    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
     mainnetGasPrices,
+    recipientAddressOrName,
+    recipient,
     addTransaction,
   ])
 }

@@ -2,7 +2,6 @@ import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducer
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { getErrorMsg } from './Arbitrum/ArbitrumBridge.utils'
 import {
   BridgeDetails,
   BridgeList,
@@ -18,6 +17,29 @@ import {
 } from './EcoBridge.types'
 import { commonActions } from './store/Common.reducer'
 import { ecoBridgeUIActions } from './store/UI.reducer'
+
+const getIndexOfSpecialCharacter = (message: string) => {
+  for (let index = 0; index < message.length; index++) {
+    if ("/[!@#$%^&*()_+-=[]{};':\\|,.<>/?]+/".indexOf(message[index]) !== -1) return index
+  }
+  return
+}
+
+const reduceMessage = (message?: string) => {
+  if (!message) return ''
+
+  return message.slice(0, getIndexOfSpecialCharacter(message))
+}
+
+export const getErrorMsg = (error: any, bridgeId?: BridgeList) => {
+  if (error?.code === 4001) {
+    return 'Transaction rejected'
+  }
+  if (bridgeId === 'socket' && error.status === 500 && !error.ok) {
+    return 'Socket API is temporarily unavailable'
+  }
+  return `Bridge failed: ${reduceMessage(error.message)}`
+}
 
 export abstract class EcoBridgeChildBase {
   public readonly bridgeId: BridgeList
@@ -100,11 +122,11 @@ export abstract class EcoBridgeChildBase {
     logger: this._loggerUtils,
     ui: {
       modal: {
-        setBridgeModalStatus: (status: BridgeModalStatus, error?: any) => {
+        setBridgeModalStatus: (status: BridgeModalStatus, bridgeId?: BridgeList, error?: any) => {
           this.store.dispatch(
             this.ecoBridgeUIActions.setBridgeModalStatus({
               status,
-              error: error && getErrorMsg(error),
+              error: error && getErrorMsg(error, bridgeId),
             })
           )
         },

@@ -1,14 +1,14 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, CoWTrade, Trade } from '@swapr/sdk'
 
-import React from 'react'
 import { AlertTriangle, ArrowUpCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
-import { getExplorerLink } from '../../utils'
+import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
@@ -63,15 +63,33 @@ export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismi
 }
 
 function TransactionSubmittedContent({
+  trade,
   onDismiss,
   chainId,
   hash,
 }: {
+  trade?: Trade
   onDismiss: () => void
   hash: string | undefined
   chainId: ChainId
 }) {
   const theme = useTheme()
+  const { t } = useTranslation('common')
+
+  const isCoWTrade = trade instanceof CoWTrade
+  const link =
+    chainId &&
+    hash &&
+    (isCoWTrade ? getGnosisProtocolExplorerOrderLink(chainId, hash) : getExplorerLink(chainId, hash, 'transaction'))
+
+  const externalLinkText = `${isCoWTrade ? t('viewOnCowExplorer') : t('viewOnBlockExplorer')}`
+  const explorerExternalLink = chainId && hash && (
+    <ExternalLink href={link as string}>
+      <Text fontWeight={500} fontSize="13px">
+        {externalLinkText}
+      </Text>
+    </ExternalLink>
+  )
 
   return (
     <Wrapper data-testid="transaction-confirmed-modal">
@@ -87,13 +105,7 @@ function TransactionSubmittedContent({
           <Text fontWeight={500} fontSize="22px">
             Transaction Submitted
           </Text>
-          {chainId && hash && (
-            <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
-              <Text fontWeight={500} fontSize="13px">
-                View on block explorer
-              </Text>
-            </ExternalLink>
-          )}
+          {explorerExternalLink}
           <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }} data-testid="close-modal-button">
             <Text fontWeight={600} fontSize="13px">
               Close
@@ -120,7 +132,7 @@ export function ConfirmationModalContent({
     <Wrapper>
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">{title}</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">{title}</TYPE.MediumHeader>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         {topContent()}
@@ -136,7 +148,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
     <Wrapper data-testid="transaction-error-modal">
       <Section>
         <RowBetween>
-          <TYPE.mediumHeader color="text4">Error</TYPE.mediumHeader>
+          <TYPE.MediumHeader color="text4">Error</TYPE.MediumHeader>
           <CloseIcon data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
@@ -160,6 +172,7 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
+  trade?: Trade
 }
 
 export default function TransactionConfirmationModal({
@@ -169,6 +182,7 @@ export default function TransactionConfirmationModal({
   hash,
   pendingText,
   content,
+  trade,
 }: ConfirmationModalProps) {
   const { chainId } = useActiveWeb3React()
 
@@ -180,7 +194,7 @@ export default function TransactionConfirmationModal({
       {attemptingTxn ? (
         <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
       ) : hash ? (
-        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
+        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} trade={trade} />
       ) : (
         content()
       )}

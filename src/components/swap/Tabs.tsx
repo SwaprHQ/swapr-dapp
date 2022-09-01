@@ -1,8 +1,10 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
@@ -52,7 +54,9 @@ const StyledEcoRouter = styled(EcoRouter)`
 `
 
 export const Tabs = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('swap')
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   return (
     <TabsColumn>
@@ -61,8 +65,15 @@ export const Tabs = () => {
           <StyledEcoRouter />
           Eco Router V1.5
         </Button>
-        <Button disabled={true}>{t('limit')}</Button>
-        <Button disabled={true}>{t('bridgeSwap')}</Button>
+        <Button disabled={true}>{t('tabs.limit')}</Button>
+        <Button
+          onClick={() => {
+            dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
+            navigate('/bridge')
+          }}
+        >
+          {t('tabs.bridgeSwap')}
+        </Button>
       </TabsRow>
     </TabsColumn>
   )

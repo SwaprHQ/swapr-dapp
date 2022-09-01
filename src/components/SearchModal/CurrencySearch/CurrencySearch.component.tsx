@@ -1,9 +1,20 @@
 import { Currency, Token } from '@swapr/sdk'
 
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  MutableRefObject,
+  RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
-import { ThemeContext } from 'styled-components/macro'
+import { useTheme } from 'styled-components'
 
 import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
@@ -35,12 +46,14 @@ export const CurrencySearch = ({
   onCurrencySelect,
   showNativeCurrency,
   otherSelectedCurrency,
+  isOutputPanel,
 }: CurrencySearchProps) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
   const {
     allTokens,
+    allTokensOnSecondChain,
     searchToken,
     searchQuery,
     setSearchQuery,
@@ -49,6 +62,8 @@ export const CurrencySearch = ({
     showFallbackTokens,
   } = useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
+
+  const tokens = isOutputPanel ? allTokensOnSecondChain : allTokens
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -62,8 +77,8 @@ export const CurrencySearch = ({
   const tokenComparator = useTokenComparator(invertSearchOrder)
 
   const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(Object.values(allTokens), debouncedQuery)
-  }, [allTokens, debouncedQuery])
+    return filterTokens(Object.values(tokens ?? {}), debouncedQuery)
+  }, [tokens, debouncedQuery])
 
   const sortedTokens: Token[] = useMemo(() => {
     return filteredTokens.sort(tokenComparator)
@@ -72,7 +87,8 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name || isOutputPanel)
+      return filteredSortedTokens
 
     if (
       nativeCurrency &&
@@ -82,7 +98,7 @@ export const CurrencySearch = ({
     }
 
     return filteredSortedTokens
-  }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
+  }, [showNativeCurrency, nativeCurrency, isOutputPanel, filteredSortedTokens, debouncedQuery])
 
   // clear the input on open
   useEffect(() => {
@@ -92,7 +108,7 @@ export const CurrencySearch = ({
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback(
-    event => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       const checksummedInput = isAddress(input)
       setSearchQuery(checksummedInput || input)
@@ -144,14 +160,14 @@ export const CurrencySearch = ({
     <ContentWrapper data-testid="token-picker">
       <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
         <RowBetween>
-          <TYPE.body fontWeight={500}>Select a token</TYPE.body>
+          <TYPE.Body fontWeight={500}>Select a token</TYPE.Body>
           <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
         </RowBetween>
         <Row>
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('Search a name or paste address')}
+            placeholder={t('searchPlaceholder')}
             autoComplete="off"
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
@@ -165,23 +181,25 @@ export const CurrencySearch = ({
         )}
       </AutoColumn>
       <Separator />
-      {filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0 ? (
+      {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
+      fixedList !== undefined ? (
         <CurrencyList
           currencies={filteredSortedTokensWithNativeCurrency}
           otherListTokens={filteredInactiveTokensWithFallback}
           onCurrencySelect={onCurrencySelect}
           otherCurrency={otherSelectedCurrency}
           selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList}
+          fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
+          hideBalance={isOutputPanel}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.main color={theme.text3} textAlign="center" mb="20px">
+          <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
             No results found.
-          </TYPE.main>
+          </TYPE.Main>
         </Column>
       )}
       <Footer>

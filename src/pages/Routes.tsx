@@ -1,3 +1,5 @@
+import { ChainId } from '@swapr/sdk'
+
 import React, { lazy } from 'react'
 import { Route, Routes as Switch } from 'react-router-dom'
 
@@ -14,6 +16,13 @@ const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
 const Pools = lazy(() => import(/* webpackPrefetch: true */ './Pools'))
 const LiquidityMiningCampaign = lazy(() => import(/* webpackPrefetch: true */ './Pools/LiquidityMiningCampaign'))
 const Pair = lazy(() => import(/* webpackPrefetch: true */ './Pools/Pair'))
+
+// const Pair = lazy(() =>
+//   import(/* webpackPrefetch: true */ './Pools/Pair').then(({ Pair }) => ({
+//     default: Pair,
+//   }))
+// )
+
 const MyPairs = lazy(() => import(/* webpackPrefetch: true */ './Pools/Mine'))
 const Bridge = lazy(() => import(/* webpackPrefetch: true */ './Bridge'))
 const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './AddLiquidity'))
@@ -26,7 +35,8 @@ const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './L
 const RouteWrapper = ({ element }: { element: JSX.Element }) => {
   const { chainId } = useActiveWeb3React()
   // If all features are available, render the route
-  if (chainSupportsSWPR(chainId)) {
+  if (chainSupportsSWPR(chainId) || ChainId.ARBITRUM_GOERLI) {
+    // FIXME: fix this if's condition once SWPR is on Arb Goerli
     return element
   }
   return <RedirectToSwap />

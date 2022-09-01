@@ -5,8 +5,17 @@ export class SwapPage {
     cy.visit('/#/swap')
   }
 
+  static getSelectTokenButton() {
+    return cy.get('[data-testid=select-token-button]')
+  }
+
   static openTokenToSwapMenu() {
-    cy.get('[data-testid=select-token-button]').click()
+    this.getSelectTokenButton()
+      .should(element => {
+        expect(element.length).to.be.eq(1)
+      })
+      .filter(':visible')
+      .click()
     return TokenMenu
   }
 
@@ -20,22 +29,20 @@ export class SwapPage {
   }
 
   static wrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Wrap')
-      .click()
+    cy.get('[data-testid=wrap-button]').should('contain.text', 'Wrap').click()
     return this
   }
   static unwrap() {
-    cy.get('[data-testid=wrap-button]')
-      .should('contain.text', 'Unwrap')
-      .click({ force: true })
+    cy.get('[data-testid=wrap-button]').should('contain.text', 'Unwrap').click({ force: true })
     return this
   }
 
+  static getSwapButton() {
+    return cy.get('#swap-button')
+  }
+
   static swap() {
-    cy.get('#swap-button')
-      .should('contain.text', 'Swap')
-      .click({ force: true })
+    this.getSwapButton().should('contain.text', 'Swap').click({ force: true })
     return this
   }
 
@@ -84,5 +91,10 @@ export class SwapPage {
   }
   static chooseExchange(exchange: string) {
     return cy.get(`[data-testid=${exchange}-platform-selector]`).click()
+  }
+  static chooseTokes(tokenFrom: string, tokenTo: string) {
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken(tokenFrom).switchTokens()
+    SwapPage.getCurrencySelectors().last().click()
+    TokenMenu.searchAndChooseToken(tokenTo)
   }
 }

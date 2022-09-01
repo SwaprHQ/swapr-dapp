@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-import { abi as IDXswapRouterABI } from '@swapr/periphery/build/IDXswapRouter.json'
+import IDXswapRouter from '@swapr/periphery/build/IDXswapRouter.json'
 import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import Decimal from 'decimal.js-light'
@@ -39,6 +39,8 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return 'https://testnet.arbiscan.io'
     case ChainId.XDAI:
       return 'https://blockscout.com/xdai/mainnet'
+    case ChainId.POLYGON:
+      return 'https://polygonscan.com/'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
@@ -73,6 +75,12 @@ export function getExplorerLink(
   }
 }
 
+export function getAccountAnalyticsLink(account: string, chainId: ChainId | undefined): string {
+  return account
+    ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
+    : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
+}
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, charsBefore = 4, charsAfter = 4): string {
   const parsed = isAddress(address)
@@ -80,6 +88,13 @@ export function shortenAddress(address: string, charsBefore = 4, charsAfter = 4)
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
   return `${parsed.substring(0, charsBefore + 2)}...${parsed.substring(42 - charsAfter)}`
+}
+
+//get component name with spacing between camel case
+export function componentName(component: React.FunctionComponent): string {
+  const componentName = component.displayName
+  if (componentName) return componentName.replace(/([a-z])([A-Z])/g, '$1 $2')
+  return ''
 }
 
 // add 10%
@@ -133,7 +148,7 @@ export function getRouterContract(
 ): Contract {
   return getContract(
     platform.routerAddress[chainId ? chainId : ChainId.MAINNET] as string,
-    IDXswapRouterABI,
+    IDXswapRouter.abi,
     library,
     account
   )
@@ -141,6 +156,22 @@ export function getRouterContract(
 
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
+interface ImageType {
+  name: string
+  location: string
+}
+export function exportAllImagesFilesFromRelativePath(folderArray: any): ImageType[] | [] {
+  const images: ImageType[] = []
+
+  folderArray.keys().forEach((item: string) => {
+    const imageName = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
+    const imageLocation = folderArray(item)
+
+    images.push({ name: imageName, location: imageLocation })
+  })
+  return images
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency: Currency): boolean {
@@ -217,4 +248,42 @@ export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
   return strictFormat
     ? normalizedValue.replace(/^([\d,]+)$|^([\d,]+)\.0*$|^([\d,]+\.[0-9]*?)0*$/, '$1$2$3')
     : normalizedValue
+}
+
+/**
+ * Gnosis Protocol Explorer Base URL list
+ */
+const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
+  [ChainId.MAINNET]: 'https://explorer.cow.fi',
+  [ChainId.RINKEBY]: 'https://explorer.cow.fi/rinkeby',
+  [ChainId.XDAI]: 'https://explorer.cow.fi/xdai',
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer Base link
+ * @param chainId the chain Id
+ * @returns the explorer URL for given chain ID
+ */
+export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
+  return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param orderId the order ID
+ * @returns the order link
+ */
+export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/orders/${orderId}`
+}
+
+/**
+ * Returns the Gnosis Protocol Explorer order link
+ * @param chainId the chain Id
+ * @param address the order address
+ * @returns the order link
+ */
+export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
+  return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`
 }

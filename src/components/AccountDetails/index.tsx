@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { ButtonProps } from 'rebass'
 import styled from 'styled-components'
@@ -10,7 +11,7 @@ import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
-import { ButtonInvisbile } from '../Button'
+import { ButtonInvisible } from '../Button'
 import { AutoRow } from '../Row'
 import Copy from './Copy'
 import Transaction from './Transaction'
@@ -151,9 +152,9 @@ const StyledCloseIcon = styled.div`
 `
 export const CloseIcon = (props: ButtonProps) => {
   return (
-    <ButtonInvisbile {...props}>
+    <ButtonInvisible {...props}>
       <StyledCloseIcon />
-    </ButtonInvisbile>
+    </ButtonInvisible>
   )
 }
 
@@ -214,10 +215,13 @@ export default function AccountDetails({
 }: AccountDetailsProps) {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
+  const { t } = useTranslation('common')
 
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) dispatch(clearAllTransactions({ chainId }))
   }, [dispatch, chainId])
+
+  const addressLinkText = t('viewOnBlockExplorer')
 
   return (
     <>
@@ -226,9 +230,9 @@ export default function AccountDetails({
           <CloseColor />
         </CloseIcon>
         <HeaderRow>
-          <TYPE.body fontWeight={500} fontSize={20} color={'text4'}>
+          <TYPE.Body fontWeight={500} fontSize={20} color={'text4'}>
             Account
-          </TYPE.body>
+          </TYPE.Body>
         </HeaderRow>
         <AccountSection>
           <YourAccount>
@@ -249,9 +253,9 @@ export default function AccountDetails({
                       <div>
                         {' '}
                         {account && (
-                          <TYPE.body fontSize="22px" fontWeight="500" color={'text1'}>
+                          <TYPE.Body fontSize="22px" fontWeight="500" color={'text1'}>
                             {shortenAddress(account)}
-                          </TYPE.body>
+                          </TYPE.Body>
                         )}
                       </div>
                     </>
@@ -275,7 +279,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, ENSName, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -297,7 +301,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, 'address')}
                           >
                             <CustomLinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on block explorer</span>
+                            <span style={{ marginLeft: '4px' }}>{addressLinkText}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -312,9 +316,9 @@ export default function AccountDetails({
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body fontSize="14px" color="text4">
+            <TYPE.Body fontSize="14px" color="text4">
               Recent Transactions
-            </TYPE.body>
+            </TYPE.Body>
             <LinkStyledButton onClick={clearAllTransactionsCallback}>(clear all)</LinkStyledButton>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
@@ -322,7 +326,7 @@ export default function AccountDetails({
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body fontSize="14px">Your transactions will appear here...</TYPE.body>
+          <TYPE.Body fontSize="14px">Your transactions will appear here...</TYPE.Body>
         </LowerSection>
       )}
     </>

@@ -4,8 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, CurrencyAmount, currencyEquals, JSBI, Percent, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useRouter } from 'hooks/useRouter'
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ArrowDown, Plus, Repeat } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
@@ -31,6 +30,7 @@ import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallbac
 import { usePairContract, useWrappingToken } from '../../hooks/useContract'
 import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useRouter } from '../../hooks/useRouter'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { Field } from '../../state/burn/actions'
@@ -46,7 +46,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { Wrapper } from '../Pools/styleds'
 
-const StyledInternalLinkText = styled(TYPE.body)`
+const StyledInternalLinkText = styled(TYPE.Body)`
   display: flex;
   text-transform: uppercase;
   text-decoration: underline;
@@ -65,11 +65,10 @@ export default function RemoveLiquidity() {
   const { account, chainId, library } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
-  const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
-    currencyA,
-    currencyB,
-    chainId,
-  ])
+  const [tokenA, tokenB] = useMemo(
+    () => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)],
+    [currencyA, currencyB, chainId]
+  )
 
   const theme = useTheme()
 
@@ -120,7 +119,12 @@ export default function RemoveLiquidity() {
   const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
 
   // allowance handling
-  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
+  const [signatureData, setSignatureData] = useState<{
+    v: number
+    r: string
+    s: string
+    deadline: number
+  } | null>(null)
   const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], routerAddress)
 
@@ -202,15 +206,18 @@ export default function RemoveLiquidity() {
     [_onUserInput]
   )
 
-  const onLiquidityInput = useCallback((typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue), [
-    onUserInput,
-  ])
-  const onCurrencyAInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue), [
-    onUserInput,
-  ])
-  const onCurrencyBInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue), [
-    onUserInput,
-  ])
+  const onLiquidityInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue),
+    [onUserInput]
+  )
+  const onCurrencyAInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue),
+    [onUserInput]
+  )
+  const onCurrencyBInput = useCallback(
+    (typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue),
+    [onUserInput]
+  )
 
   // tx sending
   const addTransaction = useTransactionAdder()
@@ -384,10 +391,11 @@ export default function RemoveLiquidity() {
           </RowFixed>
         </RowBetween>
 
-        <TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
-          {`Output is estimated. If the price changes by more than ${allowedSlippage /
-            100}% your transaction will revert.`}
-        </TYPE.italic>
+        <TYPE.Italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
+          {`Output is estimated. If the price changes by more than ${
+            allowedSlippage / 100
+          }% your transaction will revert.`}
+        </TYPE.Italic>
       </AutoColumn>
     )
   }
@@ -512,9 +520,9 @@ export default function RemoveLiquidity() {
             <LightCard>
               <AutoColumn gap="12px">
                 <RowBetween>
-                  <TYPE.body textAlign="center" fontWeight={500} fontSize="16px" lineHeight="19.5px" width="100%">
+                  <TYPE.Body textAlign="center" fontWeight={500} fontSize="16px" lineHeight="19.5px" width="100%">
                     Amount
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <Row>
                   <Text textAlign="center" fontSize="62px" lineHeight="76px" fontWeight={500} width="100%">
@@ -574,25 +582,25 @@ export default function RemoveLiquidity() {
                 <LightCard>
                   <AutoColumn gap="10px">
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.White fontSize="22px" lineHeight="27px">
                         {formattedAmounts[Field.CURRENCY_A] || '-'}
-                      </TYPE.white>
+                      </TYPE.White>
                       <RowFixed>
                         <CurrencyLogo size="20px" currency={currencyA} style={{ marginRight: '8px' }} />
-                        <TYPE.white fontSize="16px" lineHeight="20px" id="remove-liquidity-tokena-symbol">
+                        <TYPE.White fontSize="16px" lineHeight="20px" id="remove-liquidity-tokena-symbol">
                           {currencyA?.symbol}
-                        </TYPE.white>
+                        </TYPE.White>
                       </RowFixed>
                     </RowBetween>
                     <RowBetween>
-                      <TYPE.white fontSize="22px" lineHeight="27px">
+                      <TYPE.White fontSize="22px" lineHeight="27px">
                         {formattedAmounts[Field.CURRENCY_B] || '-'}
-                      </TYPE.white>
+                      </TYPE.White>
                       <RowFixed>
                         <CurrencyLogo size="20px" currency={currencyB} style={{ marginRight: '8px' }} />
-                        <TYPE.white fontSize="16px" lineHeight="20px" id="remove-liquidity-tokenb-symbol">
+                        <TYPE.White fontSize="16px" lineHeight="20px" id="remove-liquidity-tokenb-symbol">
                           {currencyB?.symbol}
-                        </TYPE.white>
+                        </TYPE.White>
                       </RowFixed>
                     </RowBetween>
                     {chainId && (oneCurrencyIsNativeWrapper || oneCurrencyIsNative) ? (
@@ -687,9 +695,9 @@ export default function RemoveLiquidity() {
             {pair && tokenA && (
               <AutoColumn gap="8px" style={{ padding: '.25rem .75rem 0 .75rem' }}>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Price
-                  </TYPE.body>
+                  </TYPE.Body>
                   <TradePrice
                     price={pair?.priceOf(tokenA)}
                     showInverted={showInverted}
@@ -697,20 +705,20 @@ export default function RemoveLiquidity() {
                   />
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Swap fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     {swapFee ? `${swapFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
                 <RowBetween align="center">
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     Protocol fee
-                  </TYPE.body>
-                  <TYPE.body fontWeight="500" fontSize="12px" lineHeight="15px">
+                  </TYPE.Body>
+                  <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="15px">
                     {protocolFee ? `${protocolFee.toSignificant(2)}%` : '-'}
-                  </TYPE.body>
+                  </TYPE.Body>
                 </RowBetween>
               </AutoColumn>
             )}
@@ -735,6 +743,7 @@ export default function RemoveLiquidity() {
                       'Approve'
                     )}
                   </ButtonConfirmed>
+
                   <ButtonError
                     onClick={() => {
                       setShowConfirm(true)
@@ -752,7 +761,14 @@ export default function RemoveLiquidity() {
       </AppBody>
 
       {pair ? (
-        <AutoColumn style={{ minWidth: '20rem', width: '100%', maxWidth: '400px', marginTop: '1rem' }}>
+        <AutoColumn
+          style={{
+            minWidth: '20rem',
+            width: '100%',
+            maxWidth: '400px',
+            marginTop: '1rem',
+          }}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsNativeWrapper} pair={pair} />
         </AutoColumn>
       ) : null}

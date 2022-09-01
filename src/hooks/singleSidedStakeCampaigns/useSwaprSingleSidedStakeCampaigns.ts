@@ -1,51 +1,14 @@
 import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 
 import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
+import { useGetSingleSidedStakingCampaignsQuery } from '../../graphql/generated/schema'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useSWPRToken } from '../swpr/useSWPRToken'
 import { useNativeCurrency } from '../useNativeCurrency'
-
-const QUERY = gql`
-  query($address: ID, $userId: ID) {
-    singleSidedStakingCampaigns(first: 100, orderBy: endsAt, where: { stakeToken: $address }) {
-      id
-      owner
-      startsAt
-      endsAt
-      duration
-      locked
-      stakeToken {
-        id
-        symbol
-        name
-        decimals
-        totalSupply
-        derivedNativeCurrency
-      }
-      rewards {
-        token {
-          address: id
-          name
-          symbol
-          decimals
-          derivedNativeCurrency
-        }
-        amount
-      }
-      singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
-        id
-        stakedAmount
-      }
-      stakedAmount
-      stakingCap
-    }
-  }
-`
 
 export function useSwaprSinglelSidedStakeCampaigns(
   filterToken?: Token,
@@ -57,16 +20,14 @@ export function useSwaprSinglelSidedStakeCampaigns(
 } {
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
-  const subgraphAccountId = useMemo(() => account?.toLowerCase() || '', [account])
-  const filterTokenAddress = useMemo(() => filterToken?.address.toLowerCase(), [filterToken])
+  const subgraphAccountId = account?.toLowerCase() || ''
+  const filterTokenAddress = filterToken?.address?.toLowerCase()
 
   const SWPRToken = useSWPRToken()
   const swaprAddress = SWPRToken?.address ?? undefined
-  const { data, loading, error } = useQuery<{
-    singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
-  }>(QUERY, {
+  const { data, loading, error } = useGetSingleSidedStakingCampaignsQuery({
     variables: {
-      address: swaprAddress?.toLowerCase(),
+      stakeTokenId: swaprAddress?.toLowerCase(),
       userId: subgraphAccountId,
     },
   })
@@ -88,7 +49,7 @@ export function useSwaprSinglelSidedStakeCampaigns(
 
     const singleSidedStakeCampaign = toSingleSidedStakeCampaign(
       chainId,
-      wrapped,
+      wrapped as SubgraphSingleSidedStakingCampaign,
       stakeToken,
       wrapped.stakeToken.totalSupply,
       nativeCurrency,

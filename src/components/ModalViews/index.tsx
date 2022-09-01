@@ -1,5 +1,5 @@
-import React from 'react'
 import { ArrowUpCircle } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
@@ -31,7 +31,7 @@ export function LoadingView({ children, onDismiss }: { children: any; onDismiss:
       </ConfirmedIcon>
       <AutoColumn gap="100px" justify={'center'}>
         {children}
-        <TYPE.subHeader>Confirm this transaction in your wallet</TYPE.subHeader>
+        <TYPE.SubHeader>Confirm this transaction in your wallet</TYPE.SubHeader>
       </AutoColumn>
     </ConfirmOrLoadingWrapper>
   )
@@ -48,6 +48,7 @@ export function SubmittedView({
 }) {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
+  const { t } = useTranslation('common')
 
   return (
     <ConfirmOrLoadingWrapper>
@@ -62,7 +63,7 @@ export function SubmittedView({
         {children}
         {chainId && hash && (
           <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')} style={{ marginLeft: '4px' }}>
-            <TYPE.subHeader>View transaction on block explorer</TYPE.subHeader>
+            <TYPE.SubHeader>{t('viewTransactionOnBlockExplorer')}</TYPE.SubHeader>
           </ExternalLink>
         )}
       </AutoColumn>

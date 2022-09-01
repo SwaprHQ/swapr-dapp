@@ -1,4 +1,3 @@
-import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import { TagFailed, TagPending, TagSuccess, TagSuccessArrow } from '../../components/Tag'
@@ -26,6 +25,8 @@ export const BridgeStatusTag = ({ status, pendingReason, handleTriggerCollect }:
       return <Skeleton width="67px" />
     case 'failed':
       return <TagFailed style={{ width: '67px' }}>Failed</TagFailed>
+    case 'cancelled':
+      return <TagFailed style={{ width: '67px' }}>Cancelled</TagFailed>
     default:
       return null
   }

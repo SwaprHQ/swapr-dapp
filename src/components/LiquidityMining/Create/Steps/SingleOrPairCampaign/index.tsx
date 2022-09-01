@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -48,8 +48,8 @@ export function AdjustableDiamondSize({ pairOrToken, active }: CircleProps) {
 
 export default function SingleOrPairCampaign({ singleReward, onChange }: SingleOrPairCampaignProps) {
   const handleRewardClick = useCallback(
-    event => {
-      onChange(event)
+    (type: CampaignType) => {
+      onChange(type)
     },
     [onChange]
   )

@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
+import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 import { createSelector } from '@reduxjs/toolkit'
-import { OutgoingMessageState } from 'arb-ts'
 
 import { AppState } from '../../../state'
 import {
@@ -56,7 +56,7 @@ const createSelectL1Deposits = (
       if (tx.chainId === l1ChainId && (tx.type === 'deposit' || tx.type === 'deposit-l1') && tx.receipt?.status === 1) {
         return tx
       }
-      return []
+      return false
     })
   })
 
@@ -70,7 +70,7 @@ const createSelectPendingWithdrawals = (
 
     return txs.filter(
       tx =>
-        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.outgoingMessageState !== OutgoingMessageState.EXECUTED
+        tx.chainId === l2ChainId && tx.type === 'withdraw' && tx.l2ToL1MessageStatus !== L2ToL1MessageStatus.EXECUTED
     )
   })
 
@@ -101,16 +101,8 @@ const createSelectBridgeTransactionsSummary = (
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-      const {
-        assetName,
-        assetAddressL1,
-        assetAddressL2,
-        value,
-        txHash,
-        batchIndex,
-        batchNumber,
-        timestampResolved,
-      } = tx
+      const { assetName, assetAddressL1, assetAddressL2, value, txHash, batchIndex, batchNumber, timestampResolved } =
+        tx
 
       const normalizedValue = normalizeInputValue(value, true)
 
@@ -178,16 +170,8 @@ const createSelectBridgeTransactionsSummary = (
       const from = txnTypeToOrigin(tx.type) === 1 ? l1ChainId : l2ChainId
       const to = from === l1ChainId ? l2ChainId : l1ChainId
 
-      const {
-        assetAddressL1,
-        assetAddressL2,
-        assetName,
-        value,
-        txHash,
-        batchIndex,
-        batchNumber,
-        timestampResolved,
-      } = tx
+      const { assetAddressL1, assetAddressL2, assetName, value, txHash, batchIndex, batchNumber, timestampResolved } =
+        tx
 
       const normalizedValue = normalizeInputValue(value, true)
 
@@ -217,12 +201,12 @@ const createSelectBridgeTransactionsSummary = (
             summary.status = BridgeTransactionStatus.LOADING
           } else {
             if (tx.receipt?.status !== 0) {
-              switch (tx.outgoingMessageState) {
-                case OutgoingMessageState.CONFIRMED:
+              switch (tx.l2ToL1MessageStatus) {
+                case L2ToL1MessageStatus.CONFIRMED:
                   summary.status = BridgeTransactionStatus.REDEEM
                   summary.timestampResolved = undefined
                   break
-                case OutgoingMessageState.EXECUTED:
+                case L2ToL1MessageStatus.EXECUTED:
                   summary.status = BridgeTransactionStatus.CLAIMED
                   break
                 default:

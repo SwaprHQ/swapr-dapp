@@ -1,44 +1,16 @@
 import { LiquidityMiningCampaign, Pair } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
+import { useGetLiquidityMiningCampaignQuery } from '../graphql/generated/schema'
 import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 
-import { useActiveWeb3React } from '.'
-
-const QUERY = gql`
-  query($id: ID) {
-    liquidityMiningCampaign(id: $id) {
-      address: id
-      duration
-      startsAt
-      endsAt
-      locked
-      stakingCap
-      rewards {
-        token {
-          address: id
-          name
-          symbol
-          decimals
-          derivedNativeCurrency
-        }
-        amount
-      }
-      stakedAmount
-    }
-  }
-`
-
-interface QueryResult {
-  liquidityMiningCampaign: SubgraphLiquidityMiningCampaign
-}
+import { useActiveWeb3React } from './index'
 
 // the id is the campaign's smart contract address
 export function useLiquidityMiningCampaign(
@@ -46,8 +18,8 @@ export function useLiquidityMiningCampaign(
   id?: string
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
   const { chainId } = useActiveWeb3React()
-  const { loading, error, data } = useQuery<QueryResult>(QUERY, {
-    variables: { id: id?.toLowerCase() || '' },
+  const { loading, error, data } = useGetLiquidityMiningCampaignQuery({
+    variables: { liquidityMiningCampaignId: id?.toLowerCase() || '' },
   })
   const nativeCurrency = useNativeCurrency()
   const rewardAddresses = useMemo(() => {
@@ -70,7 +42,7 @@ export function useLiquidityMiningCampaign(
         lpTokenTotalSupply.raw.toString(),
         targetedPairReserveNativeCurrency.raw.toString(),
         kpiTokens,
-        data.liquidityMiningCampaign,
+        data.liquidityMiningCampaign as SubgraphLiquidityMiningCampaign,
         nativeCurrency
       ),
       containsKpiToken: kpiTokens.length > 0,

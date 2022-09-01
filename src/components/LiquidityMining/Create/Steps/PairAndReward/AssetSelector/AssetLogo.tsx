@@ -1,6 +1,5 @@
 import { Token } from '@swapr/sdk'
 
-import React from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
@@ -42,7 +41,12 @@ interface AssetLogoProps {
   campaingType: CampaignType
 }
 
-export const Circle = styled.div<{ size: string; active: boolean; top?: string; left?: string }>`
+export const Circle = styled.div<{
+  size: string
+  active: boolean
+  top?: string
+  left?: string
+}>`
   position: absolute;
   display: flex;
   align-items: center;

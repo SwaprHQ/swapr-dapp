@@ -2,18 +2,23 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
   ChainId,
+  CoWTrade,
+  Currency,
   CurrencyAmount,
   CurveTrade,
   TokenAmount,
+  Trade,
   UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
+  ZeroXTrade,
 } from '@swapr/sdk'
+import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 import { useCallback, useMemo } from 'react'
 
 import { useTokenAllowance } from '../data/Allowances'
-import { Field } from '../state/swap/actions'
+import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
@@ -110,16 +115,31 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: UniswapV2Trade /* allowedSlippage = 0 */) {
+export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0 */) {
   const { chainId } = useActiveWeb3React()
-  const amountToApprove = useMemo(() => (trade ? computeSlippageAdjustedAmounts(trade)[Field.INPUT] : undefined), [
-    trade,
-    // allowedSlippage,
-  ])
+
+  const amountToApprove = useMemo(() => {
+    if (trade) {
+      // For GPv2 trades, make sure to wrap the currency amount if
+      // the trade input currency is the native one
+      if (trade instanceof CoWTrade && Currency.isNative(trade.inputAmount.currency)) {
+        return wrappedAmount(trade.inputAmount, trade.chainId)
+      }
+      // For any other case, return the default
+      return computeSlippageAdjustedAmounts(trade)[Field.INPUT]
+    }
+
+    return undefined
+  }, [trade])
 
   // Find the approve address for the trade
   let approveAddress = AddressZero
-  if (trade instanceof CurveTrade || trade instanceof UniswapTrade) {
+  if (
+    trade instanceof CurveTrade ||
+    trade instanceof CoWTrade ||
+    trade instanceof UniswapTrade ||
+    trade instanceof ZeroXTrade
+  ) {
     approveAddress = trade.approveAddress
   } else if (trade instanceof UniswapV2Trade) {
     /**

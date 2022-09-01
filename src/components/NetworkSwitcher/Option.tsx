@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import { StyledConnectedIcon } from '../../utils'
@@ -31,6 +30,7 @@ const OptionCardClickable = styled(OptionCard)`
   transition: border 0.3s ease;
   color: white;
   cursor: pointer;
+  margin-bottom: 8px;
 
   &:disabled {
     cursor: not-allowed;
@@ -66,12 +66,7 @@ export default function Option({
           <HeaderText
             connected={connected}
             data-testid={
-              preset.name
-                ?.valueOf()
-                .toString()
-                .toLowerCase()
-                .replace(/\s/g, '-')
-                .replace('.', '') + '-network-button'
+              preset.name?.valueOf().toString().toLowerCase().replace(/\s/g, '-').replace('.', '') + '-network-button'
             }
           >
             {name}

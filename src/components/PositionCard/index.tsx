@@ -1,6 +1,6 @@
 import { JSBI, Pair, Percent, TokenAmount } from '@swapr/sdk'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ArrowUpRight } from 'react-feather'
 import Skeleton from 'react-loading-skeleton'
 import { Link } from 'react-router-dom'
@@ -12,6 +12,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink, TYPE } from '../../theme'
+import { getAccountAnalyticsLink } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import { ButtonDark, ButtonGrey } from '../Button'
@@ -86,56 +87,56 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Min
           <AutoColumn gap="12px">
             <FixedHeightRow>
               <RowFixed>
-                <TYPE.body color="text4" fontSize="15px" lineHeight="19px">
+                <TYPE.Body color="text4" fontSize="15px" lineHeight="19px">
                   My position
-                </TYPE.body>
+                </TYPE.Body>
               </RowFixed>
             </FixedHeightRow>
             <FixedHeightRow onClick={() => setShowMore(!showMore)}>
               <RowFixed>
                 <DoubleCurrencyLogo marginRight={6} currency0={currency0} currency1={currency1} size={20} />
-                <TYPE.white fontSize="16px" lineHeight="20px">
+                <TYPE.White fontSize="16px" lineHeight="20px">
                   {currency0 && currency1 ? `${currency0.symbol}/${currency1.symbol}` : <Skeleton width="36px" />}
-                </TYPE.white>
+                </TYPE.White>
               </RowFixed>
               <RowFixed>
-                <TYPE.white fontSize="16px" lineHeight="22px">
+                <TYPE.White fontSize="16px" lineHeight="22px">
                   {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
-                </TYPE.white>
+                </TYPE.White>
               </RowFixed>
             </FixedHeightRow>
             <AutoColumn gap="4px">
               <FixedHeightRow>
-                <TYPE.body color="text4" fontSize="15px" lineHeight="19px">
+                <TYPE.Body color="text4" fontSize="15px" lineHeight="19px">
                   Your pool&apos;s share:
-                </TYPE.body>
-                <TYPE.body color="text4" fontSize="15px" lineHeight="19px">
+                </TYPE.Body>
+                <TYPE.Body color="text4" fontSize="15px" lineHeight="19px">
                   {poolTokenPercentage ? poolTokenPercentage.toFixed(6) + '%' : '-'}
-                </TYPE.body>
+                </TYPE.Body>
               </FixedHeightRow>
               <FixedHeightRow>
-                <TYPE.body color="text4" fontSize="15px" lineHeight="19px">
+                <TYPE.Body color="text4" fontSize="15px" lineHeight="19px">
                   {currency0 ? currency0.symbol : <Skeleton width="36px" />}:
-                </TYPE.body>
+                </TYPE.Body>
                 {token0Deposited ? (
                   <RowFixed>
-                    <TYPE.body color="text4" fontSize="14px" lineHeight="17px" marginLeft={'6px'}>
+                    <TYPE.Body color="text4" fontSize="14px" lineHeight="17px" marginLeft={'6px'}>
                       {token0Deposited?.toSignificant(6)}
-                    </TYPE.body>
+                    </TYPE.Body>
                   </RowFixed>
                 ) : (
                   '-'
                 )}
               </FixedHeightRow>
               <FixedHeightRow>
-                <TYPE.body color="text4" fontSize="15px" lineHeight="19px">
+                <TYPE.Body color="text4" fontSize="15px" lineHeight="19px">
                   {currency1 ? currency1.symbol : <Skeleton width="36px" />}:
-                </TYPE.body>
+                </TYPE.Body>
                 {token1Deposited ? (
                   <RowFixed>
-                    <TYPE.body color="text4" fontSize="15px" lineHeight="19px" marginLeft={'6px'}>
+                    <TYPE.Body color="text4" fontSize="15px" lineHeight="19px" marginLeft={'6px'}>
                       {token1Deposited?.toSignificant(6)}
-                    </TYPE.body>
+                    </TYPE.Body>
                   </RowFixed>
                 ) : (
                   '-'
@@ -146,11 +147,11 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Min
         </OutlineCard>
       ) : (
         <OutlineCard>
-          <TYPE.body fontWeight="500" fontSize="12px" lineHeight="20px">
+          <TYPE.Body fontWeight="500" fontSize="12px" lineHeight="20px">
             By adding liquidity you&apos;ll earn {pairSwapFee ? pairSwapFee.toSignificant(3) : '0.25'}% of all trades on
             this pair proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be
             claimed by withdrawing your liquidity.
-          </TYPE.body>
+          </TYPE.Body>
         </OutlineCard>
       )}
     </>
@@ -170,17 +171,13 @@ const AccountAnalyticsButton = ({
     width={fullWidth ? undefined : 'auto'}
     style={{ padding: '8px 12px' }}
     as={ExternalLink}
-    href={
-      account
-        ? `https://dxstats.eth.limo/#/account/${account}?chainId=${chainId}`
-        : `https://dxstats.eth.limo/#/accounts?chainId=${chainId}`
-    }
+    href={getAccountAnalyticsLink(account || '', chainId)}
   >
     <Flex alignItems="center">
       <Box mr="4px">
-        <TYPE.small color="text4" fontSize="12px" letterSpacing="0.08em">
+        <TYPE.Small color="text4" fontSize="12px" letterSpacing="0.08em">
           Account analytics
-        </TYPE.small>
+        </TYPE.Small>
       </Box>
       <Box>
         <StyledStatsLinkIcon size="12px" />
@@ -234,17 +231,17 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
       <AutoColumn gap="12px">
         <AutoColumn gap="11px">
           <FixedHeightRow justifyContent="space-between">
-            <TYPE.body color="white" fontSize="16px" lineHeight="20px" fontWeight="500">
+            <TYPE.Body color="white" fontSize="16px" lineHeight="20px" fontWeight="500">
               My position
-            </TYPE.body>
+            </TYPE.Body>
             {!mobile && <AccountAnalyticsButton account={account} chainId={chainId} />}
           </FixedHeightRow>
           <FixedHeightRow marginTop="12px">
-            <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+            <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
               Your pool tokens:
-            </TYPE.body>
+            </TYPE.Body>
             <RowFixed>
-              <TYPE.body
+              <TYPE.Body
                 color="text4"
                 fontWeight="500"
                 fontSize="14px"
@@ -253,18 +250,18 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 data-testid="user-pool-balance"
               >
                 {userPoolBalance ? userPoolBalance.toSignificant(4) : <Skeleton width="50px" />}
-              </TYPE.body>
+              </TYPE.Body>
               <DoubleCurrencyLogo loading={!userPoolBalance} size={16} currency0={currency0} currency1={currency1} />
             </RowFixed>
           </FixedHeightRow>
           <FixedHeightRow>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+              <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
                 Pooled {currency0 ? `${currency0.symbol}:` : <Skeleton width="24px" />}
-              </TYPE.body>
+              </TYPE.Body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body
+              <TYPE.Body
                 color="text4"
                 fontWeight="500"
                 fontSize="14px"
@@ -273,19 +270,19 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 data-testid="first-token-balance"
               >
                 {token0Deposited ? token0Deposited.toSignificant(6) : <Skeleton width="50px" />}
-              </TYPE.body>
+              </TYPE.Body>
               <CurrencyLogo loading={!currency0} size="16px" currency={currency0} />
             </RowFixed>
           </FixedHeightRow>
 
           <FixedHeightRow>
             <RowFixed>
-              <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+              <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
                 Pooled {currency1 ? `${currency1.symbol}:` : <Skeleton width="24px" />}
-              </TYPE.body>
+              </TYPE.Body>
             </RowFixed>
             <RowFixed>
-              <TYPE.body
+              <TYPE.Body
                 color="text4"
                 fontWeight="500"
                 fontSize="14px"
@@ -294,30 +291,30 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 data-testid="second-token-balance"
               >
                 {token1Deposited ? token1Deposited.toSignificant(6) : <Skeleton width="50px" />}
-              </TYPE.body>
+              </TYPE.Body>
               <CurrencyLogo loading={!currency1} size="16px" currency={currency1} />
             </RowFixed>
           </FixedHeightRow>
 
           <FixedHeightRow>
-            <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+            <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
               Your pool share:
-            </TYPE.body>
-            <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+            </TYPE.Body>
+            <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
               {poolTokenPercentage ? poolTokenPercentage.toFixed(2) + '%' : <Skeleton width="50px" />}
-            </TYPE.body>
+            </TYPE.Body>
           </FixedHeightRow>
           <FixedHeightRow>
-            <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+            <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
               Swap fee:
-            </TYPE.body>
-            <TYPE.body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
+            </TYPE.Body>
+            <TYPE.Body color="text4" fontWeight="500" fontSize="14px" lineHeight="17px">
               {pair ? (
                 new Percent(JSBI.BigInt(pair.swapFee.toString()), JSBI.BigInt(10000)).toSignificant(3) + '%'
               ) : (
                 <Skeleton width="50px" />
               )}
-            </TYPE.body>
+            </TYPE.Body>
           </FixedHeightRow>
 
           <RowBetween marginTop="16px">
@@ -325,7 +322,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
               padding="8px"
               as={Link}
               to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-              style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+              style={{
+                fontSize: '12px',
+                fontWeight: 'bold',
+                lineHeight: '15px',
+              }}
               width={showRemoveButton ? '48%' : '100%'}
               data-testid="add-liquidity"
             >
@@ -337,7 +338,11 @@ export default function FullPositionCard({ pair, border }: FullPositionCardProps
                 as={Link}
                 width="48%"
                 to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
-                style={{ fontSize: '12px', fontWeight: 'bold', lineHeight: '15px' }}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  lineHeight: '15px',
+                }}
               >
                 REMOVE LIQUIDITY
               </ButtonDark>

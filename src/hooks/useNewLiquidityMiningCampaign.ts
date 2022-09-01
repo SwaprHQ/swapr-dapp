@@ -16,7 +16,7 @@ import { useMemo } from 'react'
 import { useNativeCurrency } from './useNativeCurrency'
 import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
 
-import { useActiveWeb3React } from '.'
+import { useActiveWeb3React } from './index'
 
 export function useNewLiquidityMiningCampaign(
   rewards: TokenAmount[],

@@ -1,4 +1,4 @@
-import React from 'react'
+import { CSSProperties } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 import './Switch.css'
@@ -10,6 +10,7 @@ const StyledLabel = styled.label<{ isOn: boolean; isRed: boolean }>`
 `
 const StyledText = styled(Text)<{ isOn: boolean }>`
   color: ${({ theme, isOn }) => (isOn ? theme.text2 : theme.purple2)};
+  text-transform: uppercase;
 `
 const StyledSpan = styled.span<{ isOn: boolean; isRed: boolean }>`
   background: ${({ isOn, isRed }) => (isOn && isRed ? 'black' : isOn ? '#fff' : '#c0baf6')};
@@ -19,7 +20,7 @@ interface SwitchProps {
   isRed?: boolean
   handleToggle: () => void
   label?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
 }
 
 export const Switch = ({ isOn, handleToggle, label, style, isRed = false }: SwitchProps) => {
