@@ -312,7 +312,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ needs.prepare.outputs.uuid != 'skip-cypress'}}
+    if: ${{ contains(needs.prepare.outputs.uuid, 'skip-cypress') }}
     strategy:
       fail-fast: false
       matrix:
