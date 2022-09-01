@@ -228,6 +228,7 @@ jobs:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
     container: cypress/browsers:node16.5.0-chrome97-ff96
+    if: ${{ (contains(env.COMMIT_MSG, 'trigger-synpress') || github.event_name == 'push') }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
