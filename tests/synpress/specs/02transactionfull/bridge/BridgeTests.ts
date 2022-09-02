@@ -8,8 +8,7 @@ import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 import { ErrorModal } from '../../../../pages/ErrorModal'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-//TODO - unskip after #1379 is fixed
-describe.skip('Bridge tests', () => {
+describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
@@ -35,8 +34,7 @@ describe.skip('Bridge tests', () => {
     cy.wait(500)
   })
 
-  //TODO Unskip after #1320
-  it.skip('Should initiate a bridging ', function () {
+  it('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -63,8 +61,7 @@ describe.skip('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
   })
-  //TODO Unskip after #1320
-  it.skip('Should display transaction rejected when rejecting bridging in wallet ', () => {
+  it('Should display transaction rejected when rejecting bridging in wallet ', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
     BridgePage.getNetworkToSelector().click()
@@ -81,10 +78,7 @@ describe.skip('Bridge tests', () => {
     BridgePage.confirmBridging()
     cy.wait(5000) //METAMASK MODAL IS OPENING WITH 5 SEC DELAY WHICH IS TOO LONG FOR SYNPRESS
     cy.rejectMetamaskTransaction()
-    ErrorModal.getTransactionErrorModal()
-      .scrollIntoView()
-      .should('be.visible')
-      .should('contain.text', 'Transaction rejected')
+    ErrorModal.getTransactionErrorModal().scrollIntoView().should('be.visible').should('contain.text', 'rejected')
     BridgePage.closeTransactionErrorModal()
     BridgePage.getNetworkFromSelector().scrollIntoView().should('be.visible')
     BridgePage.getNetworkToSelector().scrollIntoView().should('be.visible')
@@ -232,10 +226,10 @@ describe.skip('Bridge tests', () => {
     cy.wait(5000)
     cy.rejectMetamaskTransaction()
 
-    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it.skip('Should display history of bridge', function () {
+  it('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
