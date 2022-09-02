@@ -20,9 +20,9 @@ const buildDate = (time: number) => new Date(time * 1000)
 
 const chartColors = {
   backgroundColor: 'transparent',
+  textColor: '#8780BF',
   lineColor: 'rgba(200, 189, 255, 1)',
-  textColor: 'rgba(135,128, 191, 1)',
-  areaTopColor: 'rgba(255, 255, 255, 1)',
+  areaTopColor: 'rgba(255, 255, 255, 0.6)',
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
@@ -38,7 +38,7 @@ const formatPrice = (price: string) => {
   return quotient.toFormat(quotient.decimalPlaces(), format)
 }
 
-const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
+const TradingViewAreaChart = ({ data, tokenSymbol }: { data: ChartData[]; tokenSymbol?: string }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))
@@ -142,11 +142,10 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
       <Box width="100%">
+        <BigPriceText>{`${formatPrice(price)} ${tokenSymbol}`}</BigPriceText>
         <Flex alignItems="center">
-          <BigPriceText>{formatPrice(price)}</BigPriceText>
-          <PricePercentualDifference data={data} />
+          <DateText>{formatDate(date)}</DateText> <PricePercentualDifference data={data} />
         </Flex>
-        <DateText>{formatDate(date)}</DateText>
       </Box>
       <div ref={chartRef} />
     </Flex>
@@ -154,7 +153,7 @@ const TradingViewAreaChart = ({ data }: { data: ChartData[] }) => {
 }
 
 const BigPriceText = styled.p`
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 600;
   color: ${({ theme }) => theme.text3};
 
@@ -187,7 +186,7 @@ const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
     : `${Math.abs(parseFloat(pricePercentualDifference))}%`
 
   return (
-    <Text color={correctColor} ml={2}>
+    <Text fontSize="12px" color={correctColor} ml={2}>
       {correctOperator}
       {showPricePercentualDifference}
     </Text>
