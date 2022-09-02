@@ -33,6 +33,7 @@ export const injected = new InjectedConnector({
     ChainId.XDAI,
     ChainId.POLYGON,
     ChainId.ARBITRUM_GOERLI,
+    ChainId.GOERLI,
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
   ],
