@@ -279,9 +279,9 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(CoWTradeState.SWAP)
+        if (trade instanceof CoWTrade) setGnosisProtocolState(CoWTradeState.SWAP)
       })
-  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
+  }, [priceImpactWithoutFee, swapCallback, tradeToConfirm, showConfirm, trade, setWrapState])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
