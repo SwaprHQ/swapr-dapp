@@ -27,10 +27,10 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
     isTokenSwitched ? `${currency0.symbol}/${currency1.symbol}` : `${currency1.symbol}/${currency0.symbol}`
 
   return (
-    <DimBlurBgBox height="400px" width="100%" p={3}>
+    <DimBlurBgBox minHeight="312px" width="100%" p={3}>
       <Flex flexDirection="column" width="100%" height="100%" justifyContent="center" alignItems="center">
         {currency0 && currency1 && (
-          <Flex width="100%" justifyContent="space-between">
+          <Flex width="100%" justifyContent="space-between" mb={2}>
             <PairSwitcher alignItems="center" color={theme.text5} onClick={() => setIsTokenSwitched(!isTokenSwitched)}>
               <Text fontSize="12px" fontWeight={600}>
                 {pairAddressText(currency0, currency1)}
