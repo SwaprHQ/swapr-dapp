@@ -36,7 +36,7 @@ export const CurrencyInputPanelBridge = (currencyInputPanelProps: CurrencyInputP
     onCurrencySelect,
   })
 
-  useBridgeInputValidation(!!disableCurrencySelect, isOutputPanel)
+  useBridgeInputValidation(!!disableCurrencySelect, Boolean(isOutputPanel))
 
   return (
     <CurrencySearchModalProvider {...searchModalContexts}>
