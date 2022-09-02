@@ -78,7 +78,7 @@ export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterva
   })
 
   return {
-    data: convertToChartData(data?.pairTokenPrices as GetBlockPairTokenPriceQueryData[]),
+    data: convertToChartData(data?.pairTokenPrices as GetBlockPairTokenPriceQueryData[], wrappedToken0),
     loading,
     error,
   }
