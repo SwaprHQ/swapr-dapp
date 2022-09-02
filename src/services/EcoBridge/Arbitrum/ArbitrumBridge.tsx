@@ -75,6 +75,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     return this._store
   }
 
+  // TODO: Handle exception throws properly over all the codebase.
+  // uncaught exceptions can be thrown through the application
+  // if we call some of the methods without setting up the classe's properties
+
   private get l1Signer() {
     if (!this._l1Signer) throw new Error('ArbBridge: No L1Signer set')
     return this._l1Signer
