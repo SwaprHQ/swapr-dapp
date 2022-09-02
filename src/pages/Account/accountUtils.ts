@@ -22,9 +22,9 @@ export const formattedTransactions = (
   account: string
 ) => {
   const swapTransactions = Object.keys(transactions)
-    ?.map(key => {
+    .map(key => {
       const { summary = '', confirmedTime, hash, addedTime, network, receipt, from } = transactions[key]
-      if (from !== account) {
+      if (from.toLowerCase() !== account.toLowerCase()) {
         return undefined
       }
       const type = summary.match(expressions.type)?.[0]
@@ -63,20 +63,30 @@ export const formattedTransactions = (
     if (
       txn1?.status.toUpperCase() === TransactionStatus.PENDING &&
       txn2?.status.toUpperCase() !== TransactionStatus.PENDING
-    )
+    ) {
       return -1
+    }
+
     if (
       txn1?.status.toUpperCase() === TransactionStatus.PENDING &&
       txn2?.status.toUpperCase() === TransactionStatus.PENDING
     ) {
-      if (!txn1.confirmedTime || !txn2.confirmedTime) return 0
-      if (txn1.confirmedTime > txn2.confirmedTime) return -1
+      if (!txn1.confirmedTime || !txn2.confirmedTime) {
+        return 0
+      }
+      if (txn1.confirmedTime > txn2.confirmedTime) {
+        return -1
+      }
     }
-    if (txn1?.status.toUpperCase() === TransactionStatus.REDEEM && txn2?.status !== TransactionStatus.PENDING) return -1
+
+    if (txn1?.status.toUpperCase() === TransactionStatus.REDEEM && txn2?.status !== TransactionStatus.PENDING) {
+      return -1
+    }
 
     if ((txn1?.confirmedTime ?? 0) > (txn2?.confirmedTime ?? 0)) {
       return -1
     }
+
     return 0
   }) as Transaction[]
 

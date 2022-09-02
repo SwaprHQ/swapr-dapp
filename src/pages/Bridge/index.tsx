@@ -146,7 +146,7 @@ export default function Bridge() {
     if (activeTab === BridgeTab.BRIDGE) {
       setTxsFilter(BridgeTxsFilter.RECENT)
     }
-  })
+  }, [activeTab, setTxsFilter])
 
   //reset state
   useEffect(() => {

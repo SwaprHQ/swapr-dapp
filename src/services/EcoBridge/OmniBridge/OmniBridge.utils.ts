@@ -588,7 +588,7 @@ export const combineTransactions = (
       timestampResolved: Number(timestamp) * 1000,
       message,
       partnerTxHash: execution?.txHash,
-      status: execution?.token,
+      status: execution?.status,
     }
   })
 
