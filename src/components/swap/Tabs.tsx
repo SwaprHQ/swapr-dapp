@@ -7,14 +7,15 @@ import Row from '../Row'
 
 const TabsColumn = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
+  margin: 0 0 10px;
 `
 
 const TabsRow = styled(Row)`
   display: inline-flex;
   width: auto;
-  margin: 0 0 10px;
   padding: 2px;
   background: ${({ theme }) => theme.bg6};
   border-radius: 12px;
