@@ -34,7 +34,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} />
             <Flex flexDirection="column">
-              <Box>{`${formatNumber(from.value, false, true)}`}</Box>
+              <Box>{formatNumber(from.value, false, true)}</Box>
               <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
             </Flex>
           </Flex>
@@ -54,7 +54,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} />
             <Flex flexDirection="column">
-              <Box>{`${formatNumber(to.value, false, true)}`}</Box>
+              <Box>{formatNumber(to.value, false, true)}</Box>
               <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
             </Flex>
           </Flex>
@@ -70,8 +70,8 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
       </TokenDetails>
 
       <TransactionDetails justifyContent="start">
-        <Flex flexDirection="column" alignContent={'center'}>
-          <Box> {`${formatNumber(price, false, true)}`}</Box>
+        <Flex flexDirection="column" alignContent="center">
+          <Box> {formatNumber(price, false, true)}</Box>
           <Box sx={{ fontSize: '10px' }}>
             {from.token} / {to.token}
           </Box>

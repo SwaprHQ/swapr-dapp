@@ -74,7 +74,10 @@ export const formattedTransactions = (
     }
     if (txn1?.status.toUpperCase() === TransactionStatus.REDEEM && txn2?.status !== TransactionStatus.PENDING) return -1
 
-    return (txn2?.confirmedTime ?? 0) - (txn1?.confirmedTime ?? 0)
+    if ((txn1?.confirmedTime ?? 0) > (txn2?.confirmedTime ?? 0)) {
+      return -1
+    }
+    return 0
   }) as Transaction[]
 
   if (showPendingTransactions) {

@@ -46,12 +46,12 @@ export default function CopyWrapper({ value, label }: { value?: string | null; l
     <Button onClick={() => setCopied(value ?? '')}>
       {isCopied ? (
         <Status>
-          <CustomCheckCircle size={'12'} />
+          <CustomCheckCircle size="12" />
           <StatusText>COPIED</StatusText>
         </Status>
       ) : (
         <Status>
-          <CustomCopy size={'12'} />
+          <CustomCopy size="12" />
           <StatusText>{label}</StatusText>
         </Status>
       )}
