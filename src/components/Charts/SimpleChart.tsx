@@ -31,7 +31,7 @@ export default function SimpleChart() {
     ? `https://dxstats.eth.limo/#/pair/${pairAddress}?chainId=${chainId}`
     : `https://dxstats.eth.limo/#/pairs?chainId=${chainId}`
 
-  const { data, loading, error } = usePairTokenPriceByTimestamp({
+  const { data, loading } = usePairTokenPriceByTimestamp({
     currency0,
     currency1,
     dateInterval: selectedInterval,

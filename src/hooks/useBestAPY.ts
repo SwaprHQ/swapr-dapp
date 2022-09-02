@@ -33,7 +33,7 @@ export function useBestAPY(pair?: Pair | null): {
   })
 
   const rewardTokenAddresses = useMemo(() => {
-    return !data || !data.pair ? [] : getRewardTokenAddressFromPair(data.pair as SubgraphPair)
+    return !data || !data.pair ? [] : getRewardTokenAddressFromPair(data.pair as unknown as SubgraphPair)
   }, [data])
 
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
@@ -42,7 +42,7 @@ export function useBestAPY(pair?: Pair | null): {
   if (!chainId || error || !data || !data.pair) return { loading: false }
 
   const newPair = getPairWithLiquidityMiningCampaign({
-    rawPair: data.pair as SubgraphPair,
+    rawPair: data.pair as unknown as SubgraphPair,
     chainId,
     kpiTokens,
     nativeCurrency,

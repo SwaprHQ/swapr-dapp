@@ -6,9 +6,9 @@ import { GraphQLClient } from 'graphql-request'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } = {
-  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
+  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/berteotti/swapr-block-data-mainnet',
   [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
-  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
+  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/berteotti/swapr-block-data-v2',
   [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
   [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
   [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
