@@ -7,7 +7,7 @@ import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: boolean) => {
+export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: boolean) => {
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
@@ -20,7 +20,7 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: 
   const { isBalanceSufficient } = useBridgeInfo()
 
   useEffect(() => {
-    if (showAvailableBridges || !isOutputPanel) {
+    if (showAvailableBridges && !isOutputPanel) {
       ecoBridge.getSupportedBridges()
     }
   }, [

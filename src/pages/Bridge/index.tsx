@@ -345,6 +345,7 @@ export default function Bridge() {
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
             maxAmount={maxAmountInput}
+            isOutputPanel={false}
           />
           {activeTab === BridgeTab.BRIDGE_SWAP && (
             <OutputPanelContainer>

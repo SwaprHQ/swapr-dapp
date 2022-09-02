@@ -18,6 +18,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare:
+    runs-on: ubuntu-20.04
+    outputs:
+      uuid: ${{ steps.uuid.outputs.value }}
+      commit-message: ${{ steps.commit-message.outputs.value }}
+    steps:
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
+
+      - name: Generate unique ID 💎
+        id: uuid
+        run: echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
+
+      - name: Get Commit Message
+        id: commit-message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+          echo "::set-output name=value::$(printf "$MSG" | xargs)"
+      - name: Echo commit message
+        run: echo "${{ steps.commit-message.outputs.value }}"
+  
+
   install:
     name: Install
     runs-on: ubuntu-20.04
@@ -201,7 +225,9 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    needs: [prepare]
     container: cypress/browsers:node16.5.0-chrome97-ff96
+    if: ${{ (contains(needs.prepare.outputs.commit-message, 'trigger-synpress') || github.event_name == 'push') }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
@@ -214,26 +240,20 @@ jobs:
         with:
           fetch-depth: '50'
 
-      - name: Get Commit Message
-        run: |
-          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          echo "COMMIT_MSG=$(printf "$MSG" | xargs)" >> "$GITHUB_ENV"
-
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
 
-      - name: Check how tests should be executed #1
-        if: contains(env.COMMIT_MSG, 'trigger-synpress')
+      - name: Set synpress default params
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
-      - name: Check how tests should be executed #2
-        if: ${{ (github.event_name == 'push') }}
+      - name: Check if synpress should be reported to dashboard
+        if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-synpress-dashboard')) }}
         run: |
-          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'"
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -262,22 +282,21 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
         run: yarn synpress:ct
         continue-on-error: true
         env:
           CI: true
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
-          COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
       - name: Save code coverage results
-        if: ${{ (github.event_name == 'push') || (contains(env.COMMIT_MSG, 'trigger-synpress')) }}
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
@@ -288,9 +307,10 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: install
+    needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
+    if: ${{ !(contains(needs.prepare.outputs.commit-message, 'skip-cypress')) && !(github.actor == 'dependabot[bot]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -314,18 +334,17 @@ jobs:
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Run cypress tests after merge
         if: ${{ (github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag SMOKE_TESTS'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel }} --tag SMOKE_TESTS'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{github.event.pull_request.head.sha}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
-        if: ${{ !(contains(env.COMMIT_MSG, 'skip-cypress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
