@@ -5336,6 +5336,13 @@
   dependencies:
     typescript "^3.9.5"
 
+"@swapr/core@^0.3.20":
+  version "0.3.20"
+  resolved "https://registry.yarnpkg.com/@swapr/core/-/core-0.3.20.tgz#2ba381565b09298a1c298fbf3939788783a2fa83"
+  integrity sha512-wUBRsb+Oahm4HUHBP1Ou/X3wY+6gLKjj0Zz6+G5nqDmtkpQhYSGRQvmtNZXbVKFtQAsNlLo2mGNF1T1haMOWSQ==
+  dependencies:
+    typescript "^3.9.5"
+
 "@swapr/periphery@^0.3.22":
   version "0.3.23"
   resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.23.tgz#250090655cf9f02a485890763334e5101c0b3a4f"
@@ -5343,10 +5350,17 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.6.0-rc.3":
-  version "1.6.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0-rc.3.tgz#af840743e04abfc79533cafbfe91379f7b44a2af"
-  integrity sha512-Lq2lIoxOWoUoDffurAZZtVVvE2TFpctuAYMgMBVl5LPF+DN0ckrBga5BLa53en2HzsE1dON5ZHEu6SfbU6LqcA==
+"@swapr/periphery@^0.3.23":
+  version "0.3.23"
+  resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.23.tgz#250090655cf9f02a485890763334e5101c0b3a4f"
+  integrity sha512-6ihqkdWkiEaVJ+hM4vBreoMA9er6RM+iD8T54tOfCvcR50aWbgRlfxTzFY6iZjR3IwAqph3ww/+QcJXv+mLemw==
+  dependencies:
+    "@swapr/core" "^0.3.17"
+
+"@swapr/sdk@1.6.0-rc.4":
+  version "1.6.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0-rc.4.tgz#e3f502f1db4bc5866d6211e9eb01ef12326a2df6"
+  integrity sha512-spBuAxqh7cVl+hF4g16l5dkML0yi5LV2qGNGzysb9tNCa1gp9QBCeSyG4Tpl7ey7lLYyZeIDPrQt+13uNsMpXw==
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
@@ -5359,9 +5373,9 @@
     "@ethersproject/solidity" "^5.4.0"
     "@ethersproject/transactions" "^5.4.0"
     "@ethersproject/units" "^5.4.0"
-    "@swapr/core" "^0.3.19"
-    "@swapr/periphery" "^0.3.22"
-    "@uniswap/smart-order-router" "^2.6.0"
+    "@swapr/core" "^0.3.20"
+    "@swapr/periphery" "^0.3.23"
+    "@uniswap/smart-order-router" "^2.8.2"
     big.js "^5.2.2"
     dayjs "^1.11.0"
     debug "^4.3.4"
@@ -6574,7 +6588,7 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@uniswap/smart-order-router@2.5.26", "@uniswap/smart-order-router@^2.6.0":
+"@uniswap/smart-order-router@2.5.26", "@uniswap/smart-order-router@^2.8.2":
   version "2.5.26"
   resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.5.26.tgz#8954cd1bca476bf821aaffe81071bcf89bc869b8"
   integrity sha512-KCjxZoPawBEkvt5pJutsPC1Db61f6qrnSpWUPeC8fRJEKXc72msbtzopqB4q4ex5S0Ax3ck4gbA1qRO7zBeixQ==
