@@ -820,24 +820,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     }
   }
   public getBridgingMetadata = async () => {
-    try {
-      if (!this.l1Signer.provider) return
-    } catch (e) {
-      console.warn('No L1 Provider.')
-      return
-    }
-    try {
-      if (!this.l2Signer.provider) return
-    } catch (e) {
-      console.warn('No L2 Provider.')
-      return
-    }
-    try {
-      if (!this._activeChainId) return
-    } catch (e) {
-      console.warn('No active chain.')
-      return
-    }
+    if (!this.l1Signer.provider || !this.l2Signer.provider || !this._activeChainId) return
 
     const requestId = this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].lastMetadataCt
 
