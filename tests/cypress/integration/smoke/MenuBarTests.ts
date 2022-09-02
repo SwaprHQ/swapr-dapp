@@ -4,12 +4,6 @@ import { SettingsDialog } from '../../../pages/SettingsDialog'
 
 describe('Menu bar smoke tests', () => {
   before(() => {
-    Cypress.on('uncaught:exception', err => {
-      // returning false here prevents Cypress from
-      // failing the test
-      console.log('Cypress detected uncaught exception: ', err)
-      return false
-    })
     cy.visit('/')
   })
   it('Should display nav items on every page [TC-16]', () => {

@@ -13,12 +13,6 @@ describe('Bridge tests', () => {
   const TRANSACTION_VALUE = 1
 
   before(() => {
-    Cypress.on('uncaught:exception', err => {
-      // returning false here prevents Cypress from
-      // failing the test
-      console.log('Cypress detected uncaught exception: ', err)
-      return false
-    })
     ScannerFacade.erc20TokenBalance(
       AddressesEnum.USDC_TOKEN_ARINKEBY,
       AddressesEnum.WALLET_PUBLIC,
