@@ -3,12 +3,11 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { ChevronsDown, ChevronsLeft, ChevronsRight, ChevronsUp } from 'react-feather'
 import { Flex } from 'rebass'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { ButtonGrey } from '../../components/Button'
+import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup'
 import SimpleChart from '../../components/Charts/SimpleChart'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
@@ -24,7 +23,6 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -101,17 +99,15 @@ export default function Swap() {
   const getShowSimpleChartPreference = () => window.localStorage.getItem(showSimpleChartLocalStorageKey) == 'true'
   const [showChart, setShowChart] = useState(getShowSimpleChartPreference())
 
-  const setSimpleChartPreferences = () => {
+  const setSimpleChartPreferences = (show: boolean) => {
     window.localStorage.setItem(showSimpleChartLocalStorageKey, (!showChart).toString())
-    setShowChart(!showChart)
+    setShowChart(show)
   }
 
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
-  const theme = useTheme()
-  const isMobile = useIsMobileByMedia()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -391,6 +387,8 @@ export default function Swap() {
       wrapState === WrapState.PENDING) &&
     trade instanceof CoWTrade
 
+  const hasBothCurrenciesInput = currencies[Field.INPUT] && currencies[Field.OUTPUT]
+
   return (
     <>
       <TokenWarningModal
@@ -410,22 +408,16 @@ export default function Swap() {
         >
           <AppBodyContainer>
             <Tabs>
-              {
-                <ButtonGrey ml={2} mb="10px" onClick={setSimpleChartPreferences}>
-                  chart
-                  {showChart ? (
-                    isMobile ? (
-                      <ChevronsUp size={16} color={theme.purple3} />
-                    ) : (
-                      <ChevronsLeft size={18} color={theme.purple3} />
-                    )
-                  ) : isMobile ? (
-                    <ChevronsDown size={16} color={theme.purple3} />
-                  ) : (
-                    <ChevronsRight size={18} color={theme.purple3} />
-                  )}
-                </ButtonGrey>
-              }
+              {hasBothCurrenciesInput && (
+                <ButtonGroup>
+                  <ButtonGroupOption active={showChart} onClick={() => setSimpleChartPreferences(true)}>
+                    Chart
+                  </ButtonGroupOption>
+                  <ButtonGroupOption active={!showChart} onClick={() => setSimpleChartPreferences(false)}>
+                    Off
+                  </ButtonGroupOption>
+                </ButtonGroup>
+              )}
             </Tabs>
             <AppBody tradeDetailsOpen={!!trade}>
               <SwapPoolTabs active={'swap'} />
@@ -536,14 +528,14 @@ export default function Swap() {
               />
             )}
           </AppBodyContainer>
-          {showChart && (
+          {hasBothCurrenciesInput && showChart && (
             <Flex
               width={['100%', '550px', '550px', '600px', '650px']}
               justifyContent="center"
               mt={[4, 4, 4, 0]}
               ml={[0, 0, 0, 3]}
             >
-              <SimpleChart />
+              <SimpleChart currency0={currencies[Field.INPUT]} currency1={currencies[Field.OUTPUT]} />
             </Flex>
           )}
         </Flex>
