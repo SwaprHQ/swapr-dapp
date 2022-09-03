@@ -1,6 +1,6 @@
 {
   "swagger": "2.0",
-  "host": "localhost:3000",
+  "host": "0.0.0.0:4000",
   "basePath": "/v1.0",
   "schemes": ["http"],
   "info": {
@@ -26,7 +26,7 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/DailyVisitsResponseDTO"
+              "$ref": "#/definitions/DailyVisitsResponse"
             },
             "description": "Successful"
           }
@@ -40,7 +40,7 @@
             "in": "body",
             "name": "body",
             "schema": {
-              "$ref": "#/definitions/DailyVisitsRequestDTO"
+              "$ref": "#/definitions/DailyVisitsRequest"
             }
           }
         ],
@@ -48,7 +48,7 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/DailyVisitsResponseDTO"
+              "$ref": "#/definitions/DailyVisitsResponse"
             },
             "description": "Successful"
           }
@@ -78,7 +78,7 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/GetWeeklyFragmentsResponseDTO"
+              "$ref": "#/definitions/GetWeeklyFragmentsResponse"
             },
             "description": "Successful"
           }
@@ -87,14 +87,14 @@
     },
     "/expeditions/weekly-fragments/claim": {
       "post": {
-        "summary": "Claim weekly liquidity provision fragments for an address",
+        "summary": "Claim weekly fragments for an address",
         "operationId": "postExpeditionsWeeklyfragmentsClaim",
         "parameters": [
           {
             "in": "body",
             "name": "body",
             "schema": {
-              "$ref": "#/definitions/ClaimWeeklyFragmentsResponseDTO"
+              "$ref": "#/definitions/ClaimWeeklyFragments"
             }
           }
         ],
@@ -102,7 +102,7 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/ClaimWeeklyLiquidityProvisionFragmentsResponseDTO"
+              "$ref": "#/definitions/ClaimWeeklyFragmentsResponse"
             },
             "description": "Successful"
           }
@@ -111,7 +111,7 @@
     }
   },
   "definitions": {
-    "DailyVisitsResponseDTO": {
+    "DailyVisitsResponse": {
       "type": "object",
       "properties": {
         "address": {
@@ -128,7 +128,7 @@
       },
       "required": ["address", "allVisits", "lastVisit"]
     },
-    "WeeklyFragmentsRewards": {
+    "WeeklyFragments": {
       "type": "object",
       "properties": {
         "totalAmountUSD": {
@@ -143,19 +143,19 @@
       },
       "required": ["totalAmountUSD", "claimableFragments", "claimedFragments"]
     },
-    "GetWeeklyFragmentsResponseDTO": {
+    "GetWeeklyFragmentsResponse": {
       "type": "object",
       "properties": {
         "liquidityProvision": {
-          "$ref": "#/definitions/WeeklyFragmentsRewards"
+          "$ref": "#/definitions/WeeklyFragments"
         },
         "liquidityStaking": {
-          "$ref": "#/definitions/WeeklyFragmentsRewards"
+          "$ref": "#/definitions/WeeklyFragments"
         }
       },
       "required": ["liquidityProvision", "liquidityStaking"]
     },
-    "DailyVisitsRequestDTO": {
+    "DailyVisitsRequest": {
       "type": "object",
       "properties": {
         "address": {
@@ -169,7 +169,7 @@
       },
       "required": ["address", "signature"]
     },
-    "ClaimWeeklyFragmentsResponseDTO": {
+    "ClaimWeeklyFragments": {
       "type": "object",
       "properties": {
         "address": {
@@ -187,7 +187,7 @@
       },
       "required": ["address", "signature", "type"]
     },
-    "ClaimWeeklyLiquidityProvisionFragmentsResponseDTO": {
+    "ClaimWeeklyFragmentsResponse": {
       "type": "object",
       "properties": {
         "claimedFragments": {

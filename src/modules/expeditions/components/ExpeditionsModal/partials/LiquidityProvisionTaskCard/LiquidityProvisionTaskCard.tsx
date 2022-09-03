@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 
 import { ExpeditionsAPI } from '../../../../api'
-import { ClaimWeeklyFragmentsResponseDTOTypeEnum } from '../../../../api/generated'
+import { ClaimWeeklyFragmentsTypeEnum } from '../../../../api/generated'
 import { signatureMessageByType } from '../../../../constants'
 import { ExpeditionsContext } from '../../../../contexts/ExpeditionsContext'
 import { computeFragmentState } from '../../../../utils'
@@ -40,7 +40,7 @@ export function LiquidityProvisionTaskCard() {
         body: {
           address,
           signature,
-          type: ClaimWeeklyFragmentsResponseDTOTypeEnum.Provision,
+          type: ClaimWeeklyFragmentsTypeEnum.Provision,
         },
       })
 
