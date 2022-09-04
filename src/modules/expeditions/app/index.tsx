@@ -3,7 +3,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
 
 import { HeaderButton } from '../../../components/Header/HeaderButton'
-import { useToggleShowExpeditionsPopup } from '../../../state/application/hooks'
+import { useShowExpeditionsPopup, useToggleShowExpeditionsPopup } from '../../../state/application/hooks'
 import { ExpeditionsAPI } from '../api'
 import { ExpeditionsModal } from '../components/ExpeditionsModal'
 import { ExpeditionsContext } from '../contexts/ExpeditionsContext'
@@ -14,6 +14,7 @@ export interface SwaprExpeditionsAppProps {
 }
 
 export function App({ provider, account }: SwaprExpeditionsAppProps) {
+  const isOpen = useShowExpeditionsPopup()
   const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
 
   if (!account) {
@@ -28,21 +29,20 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
   const [rewards, setRewards] = useState<ExpeditionsContext['rewards']>()
 
   useEffect(() => {
-    ExpeditionsAPI.getExpeditionsWeeklyfragments({ address: account })
-      .then(userRewards => {
-        setRewards(userRewards)
-      })
-      .catch(error => {
-        console.error(error)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [account])
-
-  if (isLoading) {
-    return null
-  }
+    if (isOpen) {
+      setIsLoading(true)
+      ExpeditionsAPI.getExpeditionsWeeklyfragments({ address: account })
+        .then(userRewards => {
+          setRewards(userRewards)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    }
+  }, [account, isOpen])
 
   return (
     <ExpeditionsContext.Provider
@@ -52,6 +52,7 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
           userAddress: account,
           isLoading,
           rewards,
+          setRewards,
         } as ExpeditionsContext
       }
     >
