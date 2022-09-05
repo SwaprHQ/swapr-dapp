@@ -18,6 +18,8 @@ export const network = new CustomNetworkConnector({
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
     [ChainId.POLYGON]: 'https://polygon-rpc.com/',
     [ChainId.ARBITRUM_GOERLI]: 'https://goerli-rollup.arbitrum.io/rpc',
+    [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
+    [ChainId.OPTIMISM_GOERLI]: 'https://goerli.optimism.io',
   },
   defaultChainId: ChainId.MAINNET,
 })
@@ -32,6 +34,8 @@ export const injected = new InjectedConnector({
     ChainId.POLYGON,
     ChainId.ARBITRUM_GOERLI,
     ChainId.GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
 })
 
@@ -65,5 +69,7 @@ export const walletLink = new CustomWalletLinkConnector({
     ChainId.XDAI,
     ChainId.POLYGON,
     ChainId.ARBITRUM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
 })
