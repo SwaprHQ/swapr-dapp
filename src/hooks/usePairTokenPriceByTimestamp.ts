@@ -15,23 +15,23 @@ export const DATE_INTERVALS = {
   YEAR: 'YEAR',
 }
 
-const mayTimestamp = 1622548484 * 1000
+const convertToSecondsTimestamp = (timestamp: number): string => Math.floor(timestamp / 1000).toString()
 
 export const TIMEFRAME_PROPRETIES = {
   [DATE_INTERVALS.DAY]: {
-    timestamp: (new Date(new Date(mayTimestamp).getTime() - 24 * 60 * 60 * 1000).getTime() / 1000).toString(),
+    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getTime()),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.FiveMinutes,
   },
   [DATE_INTERVALS.WEEK]: {
-    timestamp: (new Date(new Date(mayTimestamp).getTime() - 7 * 24 * 60 * 60 * 1000).getTime() / 1000).toString(),
+    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).getTime()),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.FifteenMinutes,
   },
   [DATE_INTERVALS.MONTH]: {
-    timestamp: (new Date(mayTimestamp).setMonth(new Date(mayTimestamp).getMonth() - 1) / 1000).toString(),
+    timestamp: convertToSecondsTimestamp(new Date().setMonth(new Date().getMonth() - 1)),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.OneHour,
   },
   [DATE_INTERVALS.YEAR]: {
-    timestamp: (new Date(mayTimestamp).setFullYear(new Date(mayTimestamp).getFullYear() - 1) / 1000).toString(),
+    timestamp: convertToSecondsTimestamp(new Date().setFullYear(new Date().getFullYear() - 1)),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.TwelveHours,
   },
 }
