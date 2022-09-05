@@ -1,9 +1,11 @@
 import { ChainId, Currency } from '@swapr/sdk'
 
-import { TokenList } from '@uniswap/token-lists'
+import { createSelector } from '@reduxjs/toolkit'
+import { type TokenInfo, type TokenList } from '@uniswap/token-lists/dist/types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+import { NETWORK_DETAIL, ZERO_ADDRESS } from '../../constants'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
 import { useActiveWeb3React } from '../../hooks'
@@ -46,8 +48,60 @@ export function listToTokenMap(list: TokenList | null, useCache = true): TokenAd
   return map
 }
 
-export function useAllLists(): AppState['lists']['byUrl'] {
-  return useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+const selectListByUrl = (state: AppState): AppState['lists']['byUrl'] => state.lists.byUrl
+
+export function useAllLists() {
+  return useSelector(selectListByUrl)
+}
+
+const selectTokensBySymbol = createSelector(selectListByUrl, lists => {
+  const allTokens = new Map<string, TokenInfo>()
+  for (const key in lists) {
+    lists[key]?.current?.tokens?.forEach(token => {
+      allTokens.set(token.symbol.toUpperCase(), token)
+    })
+  }
+  return allTokens
+})
+
+const selectTokensByAddress = createSelector(selectListByUrl, lists => {
+  // Create a Map of ChainId and tokens in each network by Address
+  const allTokensByChainId = new Map<ChainId, Map<string, TokenInfo>>()
+  for (const key in lists) {
+    lists[key]?.current?.tokens?.forEach(token => {
+      if (allTokensByChainId.has(token.chainId)) {
+        const tokenMap = allTokensByChainId.get(token.chainId)
+        if (tokenMap) {
+          tokenMap.set(token.address, token)
+        }
+      } else {
+        allTokensByChainId.set(token.chainId, new Map<string, TokenInfo>())
+      }
+    })
+  }
+
+  // For each ChainId setting the default Token in ZeroAddress
+  for (const key of allTokensByChainId.keys()) {
+    const network = NETWORK_DETAIL[key]
+    if (network) {
+      const tokenMap = allTokensByChainId.get(key)
+      tokenMap?.set(ZERO_ADDRESS, {
+        chainId: key,
+        address: ZERO_ADDRESS,
+        ...network.nativeCurrency,
+      })
+    }
+  }
+
+  return allTokensByChainId
+})
+
+export function useListsByToken() {
+  return useSelector(selectTokensBySymbol)
+}
+
+export function useListsByAddress() {
+  return useSelector(selectTokensByAddress)
 }
 
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {

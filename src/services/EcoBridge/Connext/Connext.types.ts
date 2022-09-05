@@ -66,6 +66,7 @@ export type ConnextTransactionsSubgraph = {
 
 export type ConnextTransaction = {
   amount: string
+  amountReceived: string
   bidSignature?: string
   callData: null | string
   callDataHash: string
