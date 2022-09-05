@@ -1,4 +1,21 @@
+import { Logger } from '@connext/nxtp-utils'
 import { gql } from 'graphql-request'
+
+/**
+ * Used to suppress logs from connext sdk
+ */
+export class SilentLogger extends Logger {
+  constructor(...args: any[]) {
+    super(args)
+    this['print'] = () => {
+      return
+    }
+
+    this.child = (...any: any[]) => {
+      return new SilentLogger(...any)
+    }
+  }
+}
 
 export const QUERY_NATIVE_PRICE = gql`
   query {
