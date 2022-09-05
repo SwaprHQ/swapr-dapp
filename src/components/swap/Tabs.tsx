@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
 import { useActiveWeb3React } from '../../hooks'
+import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { SwapTabs } from '../../state/user/reducer'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import Row from '../Row'
@@ -57,6 +60,8 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
   const { t } = useTranslation('swap')
   const { chainId } = useActiveWeb3React()
   const isSupportedChain = chainSupportsSWPR(chainId)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   return (
     <TabsColumn>
@@ -80,7 +85,13 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
         <Button disabled={true} title="Limit order">
           {t('tabs.limit')}
         </Button>
-        <Button disabled={true} title="Bridge Swap">
+        <Button
+          title="Bridge Swap"
+          onClick={() => {
+            dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
+            navigate('/bridge')
+          }}
+        >
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
