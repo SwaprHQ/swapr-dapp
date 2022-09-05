@@ -163,8 +163,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
-    const { batchIndex, batchNumber, value, assetAddressL2, log } = l2Tx
-    if (!this._account || !batchIndex || !batchNumber || !value) return
+    const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
+    if (!this._account || !batchIndex || !batchNumber || !fromValue) return
 
     this.store.dispatch(
       ecoBridgeUIActions.setBridgeModalStatus({
@@ -196,7 +196,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
           assetName: assetAddressL2 ? l2Tx.assetName : Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH',
           assetType: assetAddressL2 ? BridgeAssetType.ERC20 : BridgeAssetType.ETH,
           type: 'outbox',
-          value,
+          value: fromValue,
           txHash: l1CollectTransaction.hash,
           chainId: this.l1ChainId,
           sender: this._account,

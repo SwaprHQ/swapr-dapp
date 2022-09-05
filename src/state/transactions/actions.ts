@@ -10,12 +10,12 @@ export interface SerializableGeneralTransactionReceipt {
   blockHash: string
   transactionHash: string
   blockNumber: number
-  status?: number
+  status?: 0 | 1
 }
 
 export interface SerializableSwapTransactionReceipt {
   hash: string
-  status?: number
+  status?: 0 | 1
 }
 
 export type SerializableTransactionReceipt = SerializableGeneralTransactionReceipt | SerializableSwapTransactionReceipt

@@ -16,18 +16,12 @@ const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))
 const Pools = lazy(() => import(/* webpackPrefetch: true */ './Pools'))
 const LiquidityMiningCampaign = lazy(() => import(/* webpackPrefetch: true */ './Pools/LiquidityMiningCampaign'))
 const Pair = lazy(() => import(/* webpackPrefetch: true */ './Pools/Pair'))
-
-// const Pair = lazy(() =>
-//   import(/* webpackPrefetch: true */ './Pools/Pair').then(({ Pair }) => ({
-//     default: Pair,
-//   }))
-// )
-
 const MyPairs = lazy(() => import(/* webpackPrefetch: true */ './Pools/Mine'))
 const Bridge = lazy(() => import(/* webpackPrefetch: true */ './Bridge'))
 const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './AddLiquidity'))
 const RemoveLiquidity = lazy(() => import(/* webpackPrefetch: true */ './RemoveLiquidity'))
 const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './LiquidityMining/Create'))
+const Account = lazy(() => import(/* webpackPrefetch: true */ './Account'))
 
 /**
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain
@@ -82,6 +76,8 @@ export function Routes() {
       <Route path="/liquidity-mining/create" element={<RouteWrapper element={<CreateLiquidityMining />} />} />
 
       <Route path="send" element={<RedirectToSwap />} />
+      <Route path="account" element={<Account />} />
+
       <Route path="*" element={<RedirectToSwap />} />
     </Switch>
   )

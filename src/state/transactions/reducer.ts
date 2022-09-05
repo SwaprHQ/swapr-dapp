@@ -1,4 +1,4 @@
-import { BaseRoutablePlatform, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { BaseRoutablePlatform, ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { createReducer } from '@reduxjs/toolkit'
 
@@ -57,15 +57,16 @@ export interface TransactionDetails {
   confirmedTime?: number
   from: string
   swapProtocol?: string
+  network?: ChainId
 }
 
-export interface TransactionState {
-  [chainId: number]: {
+export type TransactionState = {
+  [chainId in ChainId]: {
     [txHash: string]: TransactionDetails
   }
 }
 
-export const initialState: TransactionState = {}
+export const initialState = {} as TransactionState
 
 export default createReducer(initialState, builder =>
   builder

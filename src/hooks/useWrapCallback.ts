@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { tryParseAmount } from '../state/swap/hooks'
-import { useAllTransactions, useTransactionAdder } from '../state/transactions/hooks'
+import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -89,7 +89,7 @@ export function useWrapCallback(
     currencyEquals(nativeCurrency, outputCurrency) &&
     currencyEquals(inputCurrency as Currency, nativeCurrencyWrapperToken as Currency)
 
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
   useEffect(() => {
     const isTransactionSuccessful =
       transactionReceipt && allTransactions[transactionReceipt.transactionHash]?.receipt?.status === 1
