@@ -1,4 +1,4 @@
-import { ChainId, Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, Pair, RoutablePlatform, Token } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
@@ -10,38 +10,31 @@ import {
   AdapterPayloadType,
 } from '../../advancedTradingView.types'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
-import { PairBurnsAndMints, PairSwaps } from './base.types'
+import { UNISWAP_PAIR_BURNS_AND_MINTS, UNISWAP_PAIR_SWAPS } from './uniswapV3.queries'
+import { UniswapV3PairBurnsAndMints, UniswapV3PairSwaps } from './uniswapV3.types'
 
-export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
+export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
   private _key: AdapterKeys
   private _adapterSupportedChains: ChainId[]
-  private _platform: UniswapV2RoutablePlatform | RoutablePlatform
   private _subgraphUrls: {
-    [ChainId.GNOSIS]: string
     [ChainId.MAINNET]: string
-    [ChainId.ARBITRUM_ONE]: string
   }
 
   constructor({
     key,
     adapterSupportedChains,
-    platform,
     subgraphUrls,
   }: {
     key: AdapterKeys
     adapterSupportedChains: ChainId[]
-    platform: UniswapV2RoutablePlatform | RoutablePlatform
+    platform: RoutablePlatform
     subgraphUrls: {
-      [ChainId.GNOSIS]: string
       [ChainId.MAINNET]: string
-      [ChainId.ARBITRUM_ONE]: string
     }
   }) {
     super()
 
     this._key = key
-    this._platform = platform
     this._subgraphUrls = subgraphUrls
     this._adapterSupportedChains = adapterSupportedChains
   }
@@ -73,11 +66,12 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
 
     try {
-      const { swaps } = await request<PairSwaps>({
+      const { swaps } = await request<UniswapV3PairSwaps>({
         url: this._subgraphUrls[this._chainId],
-        document: PAIR_SWAPS,
+        document: UNISWAP_PAIR_SWAPS,
         variables: {
-          pairId: subgraphPairId,
+          token0_in: [inputToken.address.toLowerCase(), outputToken.address.toLowerCase()],
+          token1_in: [inputToken.address.toLowerCase(), outputToken.address.toLowerCase()],
           first: amountToFetch,
           skip: pair?.swaps?.data.length ?? 0,
         },
@@ -118,11 +112,12 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
     if ((pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) || (pair && isFirstFetch)) return
 
     try {
-      const { burns, mints } = await request<PairBurnsAndMints>({
+      const { burns, mints } = await request<UniswapV3PairBurnsAndMints>({
         url: this._subgraphUrls[this._chainId],
-        document: PAIR_BURNS_AND_MINTS,
+        document: UNISWAP_PAIR_BURNS_AND_MINTS,
         variables: {
-          pairId: subgraphPairId,
+          token0_in: [inputToken.address.toLowerCase(), outputToken.address.toLowerCase()],
+          token1_in: [inputToken.address.toLowerCase(), outputToken.address.toLowerCase()],
           first: amountToFetch,
           skip: pair?.burnsAndMints?.data.length ?? 0,
         },
@@ -157,15 +152,11 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
 
   private _getSubgraphPairId(inputToken: Token, outputToken: Token) {
     try {
-      return Pair.getAddress(
-        inputToken,
-        outputToken,
-        (this._platform instanceof UniswapV2RoutablePlatform && this._platform) || undefined
-      ).toLowerCase()
+      return Pair.getAddress(inputToken, outputToken).toLowerCase()
     } catch {}
   }
 
-  private _isSupportedChainId(chainId?: ChainId): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE {
+  private _isSupportedChainId(chainId?: ChainId): chainId is ChainId.MAINNET {
     if (!chainId) return false
 
     return this._adapterSupportedChains.includes(chainId)

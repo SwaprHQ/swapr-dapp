@@ -11,6 +11,7 @@ export enum AdapterKeys {
   SUSHISWAP = 'sushiswap',
   UNISWAPV2 = 'uniswapV2',
   HONEYSWAP = 'honeyswap',
+  UNISWAPV3 = 'uniswapV3',
 }
 
 export type InitialState = {
@@ -29,6 +30,9 @@ export type InitialState = {
       [pairId: string]: BasePair | undefined
     }
     [AdapterKeys.HONEYSWAP]: {
+      [pairId: string]: BasePair | undefined
+    }
+    [AdapterKeys.UNISWAPV3]: {
       [pairId: string]: BasePair | undefined
     }
   }
