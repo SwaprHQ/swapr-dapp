@@ -39,6 +39,7 @@ const CurrencyRow = ({
   isSelected,
   otherSelected,
   selectedTokenList,
+  hideBalance,
 }: CurrencyRowProps) => {
   const { account, chainId } = useActiveWeb3React()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
@@ -91,9 +92,9 @@ const CurrencyRow = ({
           </Box>
         )}
       </Flex>
-      <Box style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </Box>
+      {!hideBalance && (
+        <Box style={{ justifySelf: 'flex-end' }}>{balance ? <Balance balance={balance} /> : account && <Loader />}</Box>
+      )}
     </TokenPickerItem>
   )
 }
@@ -127,6 +128,7 @@ export const CurrencyList = ({
   selectedCurrency,
   onCurrencySelect,
   selectedTokenList,
+  hideBalance,
 }: CurrencyListProps) => {
   const { account } = useActiveWeb3React()
   const [hasBreakLine, setHasBreakLine] = useState(false)
@@ -186,6 +188,7 @@ export const CurrencyList = ({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             style={style}
+            hideBalance={hideBalance}
           />
         )
       }
@@ -202,6 +205,7 @@ export const CurrencyList = ({
       selectedTokenList,
       setImportToken,
       showImportView,
+      hideBalance,
     ]
   )
 
