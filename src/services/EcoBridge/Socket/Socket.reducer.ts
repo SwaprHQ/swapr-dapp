@@ -74,11 +74,11 @@ const createSocketSlice = (bridgeId: SocketList) =>
       setApprovalData: (
         state,
         action: PayloadAction<{
-          chainId: ChainId
-          owner: string
-          allowanceTarget: string
-          tokenAddress: string
-          amount: string
+          chainId?: ChainId
+          owner?: string
+          allowanceTarget?: string
+          tokenAddress?: string
+          amount?: string
         }>
       ) => {
         state.approvalData = action.payload

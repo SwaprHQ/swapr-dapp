@@ -36,6 +36,13 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     tag: NetworkSwitcherTags.TESTNETS,
   },
   {
+    chainId: ChainId.GOERLI,
+    name: 'Görli',
+    logoSrc: EthereumLogo,
+    color: '#443780',
+    tag: NetworkSwitcherTags.TESTNETS,
+  },
+  {
     chainId: ChainId.ARBITRUM_RINKEBY,
     name: 'A.\xa0Rinkeby',
     logoSrc: ArbitrumLogo,

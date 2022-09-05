@@ -150,7 +150,9 @@ export function useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAnd
         return {
           pair,
           // campaign.liquidityMiningPositions only has length > 0 if the user has staked positions in the campaign itself
-          staked: rawPair.liquidityMiningCampaigns.some(campaign => campaign.liquidityMiningPositions.length > 0),
+          staked: rawPair.liquidityMiningCampaigns.some(
+            campaign => campaign.liquidityMiningPositions && campaign.liquidityMiningPositions.length > 0
+          ),
           hasFarming: pair.liquidityMiningCampaigns.some(campaign => campaign.currentlyActive),
           reserveUSD: CurrencyAmount.usd(
             parseUnits(new Decimal(reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
