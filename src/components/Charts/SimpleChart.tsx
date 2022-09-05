@@ -8,6 +8,7 @@ import styled, { useTheme } from 'styled-components'
 import { DATE_INTERVALS, usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { TYPE } from '../../theme'
 import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
+import { SimpleChartLoading } from './SimpleChartLoading'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
 export default function SimpleChart({ currency0, currency1 }: { currency0?: Currency; currency1?: Currency }) {
@@ -69,7 +70,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
         <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
           {currency0 && currency1 ? (
             loading ? (
-              <TYPE.DarkGray>Fetching new data...</TYPE.DarkGray>
+              <SimpleChartLoading />
             ) : data && data.length > 0 ? (
               <TradingViewAreaChart data={data} tokenSymbol={switchedCurrencies.currency1?.symbol} />
             ) : (

@@ -21,7 +21,7 @@ const buildDate = (time: number) => new Date(time * 1000)
 const chartColors = {
   backgroundColor: 'transparent',
   textColor: '#8780BF',
-  lineColor: 'rgba(200, 189, 255, 1)',
+  lineColor: '#c8bdff',
   areaTopColor: 'rgba(255, 255, 255, 0.6)',
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
