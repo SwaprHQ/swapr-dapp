@@ -35,7 +35,7 @@ import {
   ConnextTransactionsSubgraph,
   ConnextTransactionStatus,
 } from './Connext.types'
-import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE } from './Connext.utils'
+import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE, SilentLogger } from './Connext.utils'
 
 export class Connext extends EcoBridgeChildBase {
   private _connextSdk: NxtpSdk | undefined
@@ -86,11 +86,13 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   private _createConnextSdk = async (signer: Signer) => {
+    const silentLogger = new SilentLogger()
     try {
       const connextSdk = await NxtpSdk.create({
         chainConfig: connextSdkChainConfig,
         signer,
         skipPolling: false,
+        logger: silentLogger,
       })
 
       if (connextSdk) {
