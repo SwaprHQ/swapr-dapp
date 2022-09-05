@@ -1,6 +1,7 @@
 import { Currency, Pair, Token } from '@swapr/sdk'
 
 import { UTCTimestamp } from 'lightweight-charts'
+import { useEffect, useState } from 'react'
 
 import { PairTokenPriceTimeframe, useGetPairTokenPricesQuery } from '../graphql/generated/schema'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
@@ -64,10 +65,8 @@ const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[], token0?: T
 
 export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterval }: PairTokenPriceByTimestampProps) {
   const { chainId } = useActiveWeb3React()
-
-  const wrappedToken0 = wrappedCurrency(currency0, chainId)
-  const wrappedToken1 = wrappedCurrency(currency1, chainId)
-  const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
+  const [wrappedToken1, setWrappedToken1] = useState<Token>()
+  const [pairAddress, setPairAddress] = useState<string>()
 
   const { data, loading, error } = useGetPairTokenPricesQuery({
     variables: {
@@ -77,8 +76,19 @@ export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterva
     },
   })
 
+  useEffect(() => {
+    try {
+      const wrappedToken0 = wrappedCurrency(currency0, chainId)
+      const wrappedToken1 = wrappedCurrency(currency1, chainId)
+
+      const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
+      setWrappedToken1(wrappedToken1)
+      setPairAddress(pairAddress)
+    } catch (e) {}
+  }, [chainId, currency0, currency1])
+
   return {
-    data: convertToChartData(data?.pairTokenPrices as GetBlockPairTokenPriceQueryData[], wrappedToken0),
+    data: convertToChartData(data?.pairTokenPrices as GetBlockPairTokenPriceQueryData[], wrappedToken1),
     loading,
     error,
   }

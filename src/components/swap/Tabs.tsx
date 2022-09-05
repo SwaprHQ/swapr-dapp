@@ -61,7 +61,7 @@ export const Tabs = ({ children }: { children?: ReactNode }) => {
       <TabsRow>
         <Button className="active">
           <StyledEcoRouter />
-          Eco Router V1.5
+          Swap
         </Button>
         <Button disabled={true}>{t('tabs.limit')}</Button>
         <Button disabled={true}>{t('tabs.bridgeSwap')}</Button>

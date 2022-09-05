@@ -17,14 +17,13 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
 
   useLayoutEffect(() => setIsTokenSwitched(false), [currency0, currency1])
 
-  const { data, loading, error } = usePairTokenPriceByTimestamp({
-    currency0: isTokenSwitched ? currency1 : currency0,
-    currency1: isTokenSwitched ? currency0 : currency1,
+  const switchedCurrencies = isTokenSwitched ? { currency0: currency1, currency1: currency0 } : { currency0, currency1 }
+
+  const { data, loading } = usePairTokenPriceByTimestamp({
+    currency0: switchedCurrencies.currency0,
+    currency1: switchedCurrencies.currency1,
     dateInterval: selectedInterval,
   })
-
-  const pairAddressText = (currency0: Currency, currency1: Currency) =>
-    isTokenSwitched ? `${currency0.symbol}/${currency1.symbol}` : `${currency1.symbol}/${currency0.symbol}`
 
   return (
     <DimBlurBgBox minHeight="312px" width="100%" p={3}>
@@ -33,7 +32,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
           <Flex width="100%" justifyContent="space-between" mb={2}>
             <PairSwitcher alignItems="center" color={theme.text5} onClick={() => setIsTokenSwitched(!isTokenSwitched)}>
               <Text fontSize="12px" fontWeight={600}>
-                {pairAddressText(currency0, currency1)}
+                {switchedCurrencies.currency0?.symbol}/{switchedCurrencies.currency1?.symbol}
               </Text>
               <Box ml={1}>
                 <RepeatIcon size="12" />
@@ -71,8 +70,8 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
           {currency0 && currency1 ? (
             loading ? (
               <TYPE.DarkGray>Fetching new data...</TYPE.DarkGray>
-            ) : data?.length > 0 ? (
-              <TradingViewAreaChart data={data} tokenSymbol={isTokenSwitched ? currency1.symbol : currency0.symbol} />
+            ) : data && data.length > 0 ? (
+              <TradingViewAreaChart data={data} tokenSymbol={switchedCurrencies.currency1?.symbol} />
             ) : (
               <TYPE.DarkGray>Sorry, this pair doesn't have enough data.</TYPE.DarkGray>
             )
