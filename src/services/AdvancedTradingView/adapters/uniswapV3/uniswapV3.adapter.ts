@@ -1,8 +1,9 @@
-import { ChainId, Pair, RoutablePlatform, Token } from '@swapr/sdk'
+import { ChainId, RoutablePlatform, Token } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
 import { actions } from '../../advancedTradingView.reducer'
+import { sortsBeforeTokens } from '../../advancedTradingView.selectors'
 import {
   AdapterFetchDetails,
   AdapterInitialArguments,
@@ -57,7 +58,7 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
   }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
-    const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
+    const subgraphPairId = this._getPairId(inputToken, outputToken)
 
     if (!subgraphPairId) return
 
@@ -81,7 +82,7 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
       const hasMore = swaps.length === amountToFetch
 
       this.store.dispatch(
-        this.actions.setPairData({
+        this.actions.setPairDataUniswapV3({
           key: this._key,
           pairId: subgraphPairId,
           payloadType: AdapterPayloadType.swaps,
@@ -103,11 +104,11 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
   }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
-    const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
+    const pairId = this._getPairId(inputToken, outputToken)
 
-    if (!subgraphPairId) return
+    if (!pairId) return
 
-    const pair = this.store.getState().advancedTradingView.adapters[this._key][subgraphPairId]
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
     if ((pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) || (pair && isFirstFetch)) return
 
@@ -127,9 +128,9 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
       const hasMore = Boolean(burns.length === amountToFetch || mints.length === amountToFetch)
 
       this.store.dispatch(
-        this.actions.setPairData({
+        this.actions.setPairDataUniswapV3({
           key: this._key,
-          pairId: subgraphPairId,
+          pairId: pairId,
           payloadType: AdapterPayloadType.burnsAndMints,
           data: [...burns, ...mints],
           hasMore,
@@ -150,9 +151,10 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
     return this._store
   }
 
-  private _getSubgraphPairId(inputToken: Token, outputToken: Token) {
+  private _getPairId(inputToken: Token, outputToken: Token) {
     try {
-      return Pair.getAddress(inputToken, outputToken).toLowerCase()
+      const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
+      return `${token0.address}-${token1.address}`
     } catch {}
   }
 

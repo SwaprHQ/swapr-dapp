@@ -1,4 +1,4 @@
-import { ChainId, Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
@@ -16,7 +16,7 @@ import { PairBurnsAndMints, PairSwaps } from './base.types'
 export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
   private _key: AdapterKeys
   private _adapterSupportedChains: ChainId[]
-  private _platform: UniswapV2RoutablePlatform | RoutablePlatform
+  private _platform: UniswapV2RoutablePlatform
   private _subgraphUrls: {
     [ChainId.GNOSIS]: string
     [ChainId.MAINNET]: string
@@ -31,7 +31,7 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
   }: {
     key: AdapterKeys
     adapterSupportedChains: ChainId[]
-    platform: UniswapV2RoutablePlatform | RoutablePlatform
+    platform: UniswapV2RoutablePlatform
     subgraphUrls: {
       [ChainId.GNOSIS]: string
       [ChainId.MAINNET]: string
@@ -157,11 +157,7 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
 
   private _getSubgraphPairId(inputToken: Token, outputToken: Token) {
     try {
-      return Pair.getAddress(
-        inputToken,
-        outputToken,
-        (this._platform instanceof UniswapV2RoutablePlatform && this._platform) || undefined
-      ).toLowerCase()
+      return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
     } catch {}
   }
 

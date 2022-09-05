@@ -22,7 +22,7 @@ const adapterLogos: { [key in AdapterKeys]: string } = {
 export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
   inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 
-const getAdapterPair = (key: AdapterKeys, platform?: UniswapV2RoutablePlatform) =>
+const getAdapterPair = (key: AdapterKeys, platform: UniswapV2RoutablePlatform) =>
   createSelector(
     [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters[key]],
     ({ inputToken, outputToken }, adapterPairs) => {
@@ -30,7 +30,23 @@ const getAdapterPair = (key: AdapterKeys, platform?: UniswapV2RoutablePlatform) 
         try {
           const pairId = Pair.getAddress(inputToken, outputToken, platform).toLowerCase()
           return {
-            pair: adapterPairs[pairId] as BasePair | BasePairUniswapV3,
+            pair: adapterPairs[pairId] as BasePair,
+            logoKey: adapterLogos[key],
+          }
+        } catch {}
+      }
+    }
+  )
+const getAdapterPairUniswapV3 = (key: AdapterKeys) =>
+  createSelector(
+    [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters[key]],
+    ({ inputToken, outputToken }, adapterPairs) => {
+      if (inputToken && outputToken) {
+        const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
+        try {
+          const pairId = `${token0.address}-${token1.address}`
+          return {
+            pair: adapterPairs[pairId] as BasePairUniswapV3,
             logoKey: adapterLogos[key],
           }
         } catch {}
@@ -42,7 +58,7 @@ const selectCurrentSwaprPair = getAdapterPair(AdapterKeys.SWAPR, UniswapV2Routab
 const selectCurrentSushiPair = getAdapterPair(AdapterKeys.SUSHISWAP, UniswapV2RoutablePlatform.SUSHISWAP)
 const selectCurrentUniswapV2Pair = getAdapterPair(AdapterKeys.UNISWAPV2, UniswapV2RoutablePlatform.UNISWAP)
 const selectCurrentHoneyPair = getAdapterPair(AdapterKeys.HONEYSWAP, UniswapV2RoutablePlatform.HONEYSWAP)
-const selectCurrentUniswapV3Pair = getAdapterPair(AdapterKeys.UNISWAPV3)
+const selectCurrentUniswapV3Pair = getAdapterPairUniswapV3(AdapterKeys.UNISWAPV3)
 
 const selectAllCurrentPairs = createSelector(
   [selectCurrentSwaprPair, selectCurrentSushiPair, selectCurrentUniswapV2Pair, selectCurrentHoneyPair],

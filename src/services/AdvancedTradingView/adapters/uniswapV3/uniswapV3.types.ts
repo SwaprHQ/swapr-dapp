@@ -1,5 +1,4 @@
-import { AdapterPayloadType } from '../../advancedTradingView.types'
-import { BasePayload, BurnsAndMintsWithLogo, PairBurnsAndMintsTransaction } from '../baseAdapter/base.types'
+import { AdapterKeys, AdapterPayloadType } from '../../advancedTradingView.types'
 
 type UniswapV3PairSwapTransaction = {
   amount0: string
@@ -10,7 +9,22 @@ type UniswapV3PairSwapTransaction = {
   transaction: { id: string }
 }
 
+export interface PairBurnsAndMintsTransaction {
+  id: string
+  transaction: {
+    id: string
+  }
+  amount0: string
+  amount1: string
+  amountUSD: string
+  timestamp: string
+}
+
 export interface UniswapV3SwapsWithLogo extends UniswapV3PairSwapTransaction {
+  logoKey: string
+}
+
+export interface BurnsAndMintsWithLogo extends PairBurnsAndMintsTransaction {
   logoKey: string
 }
 
@@ -26,6 +40,12 @@ export type UniswapV3PairSwaps = {
 export type UniswapV3PairBurnsAndMints = {
   burns: PairBurnsAndMintsTransaction[]
   mints: PairBurnsAndMintsTransaction[]
+}
+
+export type BasePayload = {
+  key: AdapterKeys
+  hasMore: boolean
+  pairId: string
 }
 
 type UniswapV3PairSwapsPayload = {
