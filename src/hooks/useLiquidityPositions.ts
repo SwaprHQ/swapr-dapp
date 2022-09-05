@@ -87,9 +87,9 @@ export function useLPPairs(account?: string): {
     )
       return { loading: false, data: [] }
     // normalize double pairs (case in which a user has staked only part of their lp tokens)
-    const liquidityMiningPositions = data.liquidityMiningPositions as unknown as { pair: SubgraphPair }[]
+    const liquidityMiningPositions = data.liquidityMiningPositions as { pair: SubgraphPair }[]
     const allPairsWithoutDuplicates = liquidityMiningPositions
-      .concat(data.liquidityPositions as unknown as { pair: SubgraphPair }[])
+      .concat(data.liquidityPositions as { pair: SubgraphPair }[])
       .reduce(
         (
           accumulator: { pair: SubgraphPair }[],
@@ -156,7 +156,9 @@ export function useLPPairs(account?: string): {
             parseUnits(new Decimal(reserveUSD).toFixed(USD.decimals), USD.decimals).toString()
           ),
           hasFarming: pair.liquidityMiningCampaigns.some(campaign => campaign.currentlyActive),
-          staked: position.pair.liquidityMiningCampaigns.some(campaign => campaign.liquidityMiningPositions.length > 0),
+          staked: position.pair.liquidityMiningCampaigns.some(
+            campaign => campaign.liquidityMiningPositions && campaign.liquidityMiningPositions.length > 0
+          ),
           maximumApy: bestCampaign ? bestCampaign.apy : new Percent('0', '100'),
           containsKpiToken: !!bestCampaign?.rewards.some(reward => reward.token instanceof KpiToken),
         }
