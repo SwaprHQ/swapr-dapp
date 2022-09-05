@@ -24,6 +24,7 @@ import { RowBetween } from '../Row'
 const ChainLogo: any = {
   [ChainId.MAINNET]: EthereumLogo,
   [ChainId.RINKEBY]: EthereumLogo,
+  [ChainId.GOERLI]: EthereumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
