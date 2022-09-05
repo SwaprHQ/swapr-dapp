@@ -1,4 +1,4 @@
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 
 import { TokenList } from '@uniswap/token-lists'
 import { useMemo } from 'react'
@@ -51,14 +51,17 @@ export function useAllLists(): AppState['lists']['byUrl'] {
 }
 
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
-  return {
-    [ChainId.MAINNET]: { ...map1[ChainId.MAINNET], ...map2[ChainId.MAINNET] },
-    [ChainId.RINKEBY]: { ...map1[ChainId.RINKEBY], ...map2[ChainId.RINKEBY] },
-    [ChainId.XDAI]: { ...map1[ChainId.XDAI], ...map2[ChainId.XDAI] },
-    [ChainId.POLYGON]: { ...map1[ChainId.POLYGON], ...map2[ChainId.POLYGON] },
-    [ChainId.ARBITRUM_ONE]: { ...map1[ChainId.ARBITRUM_ONE], ...map2[ChainId.ARBITRUM_ONE] },
-    [ChainId.ARBITRUM_RINKEBY]: { ...map1[ChainId.ARBITRUM_RINKEBY], ...map2[ChainId.ARBITRUM_RINKEBY] },
-  }
+  const chainList = [
+    ChainId.MAINNET,
+    ChainId.RINKEBY,
+    ChainId.XDAI,
+    ChainId.POLYGON,
+    ChainId.ARBITRUM_ONE,
+    ChainId.ARBITRUM_RINKEBY,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
+  ]
+  return Object.assign({}, ...chainList.map(chain => ({ [chain]: { ...map1[chain], ...map2[chain] } })))
 }
 
 // merge tokens contained within lists from urls
@@ -118,7 +121,7 @@ export function useTokenInfoFromActiveListOnCurrentChain(currency?: Currency): W
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
 
   return useMemo(() => {
-    if (!currency || !(currency instanceof Token)) return undefined
+    if (!currency || !currency.address) return undefined
     const list = combinedList[chainId || ChainId.MAINNET]
     if (!list) return undefined
     const tokenFromList = list[currency.address]

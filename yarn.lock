@@ -5329,28 +5329,14 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
-"@swapr/core@^0.3.17", "@swapr/core@^0.3.19":
+"@swapr/core@^0.3.17", "@swapr/core@^0.3.19", "@swapr/core@^0.3.20":
   version "0.3.20"
   resolved "https://registry.yarnpkg.com/@swapr/core/-/core-0.3.20.tgz#2ba381565b09298a1c298fbf3939788783a2fa83"
   integrity sha512-wUBRsb+Oahm4HUHBP1Ou/X3wY+6gLKjj0Zz6+G5nqDmtkpQhYSGRQvmtNZXbVKFtQAsNlLo2mGNF1T1haMOWSQ==
   dependencies:
     typescript "^3.9.5"
 
-"@swapr/core@^0.3.20":
-  version "0.3.20"
-  resolved "https://registry.yarnpkg.com/@swapr/core/-/core-0.3.20.tgz#2ba381565b09298a1c298fbf3939788783a2fa83"
-  integrity sha512-wUBRsb+Oahm4HUHBP1Ou/X3wY+6gLKjj0Zz6+G5nqDmtkpQhYSGRQvmtNZXbVKFtQAsNlLo2mGNF1T1haMOWSQ==
-  dependencies:
-    typescript "^3.9.5"
-
-"@swapr/periphery@^0.3.22":
-  version "0.3.23"
-  resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.23.tgz#250090655cf9f02a485890763334e5101c0b3a4f"
-  integrity sha512-6ihqkdWkiEaVJ+hM4vBreoMA9er6RM+iD8T54tOfCvcR50aWbgRlfxTzFY6iZjR3IwAqph3ww/+QcJXv+mLemw==
-  dependencies:
-    "@swapr/core" "^0.3.17"
-
-"@swapr/periphery@^0.3.23":
+"@swapr/periphery@^0.3.22", "@swapr/periphery@^0.3.23":
   version "0.3.23"
   resolved "https://registry.yarnpkg.com/@swapr/periphery/-/periphery-0.3.23.tgz#250090655cf9f02a485890763334e5101c0b3a4f"
   integrity sha512-6ihqkdWkiEaVJ+hM4vBreoMA9er6RM+iD8T54tOfCvcR50aWbgRlfxTzFY6iZjR3IwAqph3ww/+QcJXv+mLemw==

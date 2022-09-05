@@ -54,7 +54,7 @@ export function useWrapCallback(
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()
 
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency as Currency)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('swap')
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const [inputAmount, outputAmount] = useMemo(() => {
@@ -138,8 +138,8 @@ export function useWrapCallback(
         inputError: sufficientBalance
           ? undefined
           : !typedValue
-          ? t('enterCurrencyAmount', { currency: nativeCurrency.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
+          ? t('button.enterCurrencyAmount', { currency: nativeCurrency.symbol })
+          : t('button.insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
         wrapState,
         setWrapState,
       }
@@ -166,8 +166,8 @@ export function useWrapCallback(
         inputError: sufficientBalance
           ? undefined
           : !typedValue
-          ? t('enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
+          ? t('button.enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
+          : t('button.insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
         wrapState,
         setWrapState,
       }
