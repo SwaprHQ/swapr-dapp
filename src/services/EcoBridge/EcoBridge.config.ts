@@ -25,7 +25,13 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new SocketBridge({
     bridgeId: 'socket',
     displayName: 'Socket',
-    supportedChains: socketSupportedChains([ChainId.ARBITRUM_ONE, ChainId.MAINNET, ChainId.POLYGON, ChainId.XDAI]),
+    supportedChains: socketSupportedChains([
+      ChainId.ARBITRUM_ONE,
+      ChainId.MAINNET,
+      ChainId.POLYGON,
+      ChainId.XDAI,
+      ChainId.OPTIMISM_MAINNET,
+    ]),
   }),
   new XdaiBridge({
     bridgeId: 'xdai',

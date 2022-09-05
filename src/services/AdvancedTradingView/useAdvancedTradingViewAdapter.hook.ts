@@ -7,18 +7,14 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import store from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
+import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
-import { SwaprAdapter } from './adapters/swapr/swapr.adapter'
-import { AdapterAmountToFetch, Adapters } from './advancedTradingView.types'
+import { AdapterAmountToFetch } from './advancedTradingView.types'
 
 const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,
   [ChainId.ARBITRUM_ONE]: WETH[ChainId.ARBITRUM_ONE].address,
   [ChainId.GNOSIS]: WXDAI[ChainId.GNOSIS].address,
-}
-
-const adapters: Adapters = {
-  swapr: new SwaprAdapter(),
 }
 
 const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>

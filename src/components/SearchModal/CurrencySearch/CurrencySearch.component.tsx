@@ -46,13 +46,24 @@ export const CurrencySearch = ({
   onCurrencySelect,
   showNativeCurrency,
   otherSelectedCurrency,
+  isOutputPanel,
 }: CurrencySearchProps) => {
   const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { allTokens, searchToken, searchQuery, setSearchQuery, debouncedQuery, selectedTokenList, showFallbackTokens } =
-    useContext(CurrencySearchContext)
+  const {
+    allTokens,
+    allTokensOnSecondChain,
+    searchToken,
+    searchQuery,
+    setSearchQuery,
+    debouncedQuery,
+    selectedTokenList,
+    showFallbackTokens,
+  } = useContext(CurrencySearchContext)
   const { setImportToken } = useContext(CurrencySearchModalContext)
+
+  const tokens = isOutputPanel ? allTokensOnSecondChain : allTokens
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -66,8 +77,8 @@ export const CurrencySearch = ({
   const tokenComparator = useTokenComparator(invertSearchOrder)
 
   const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(Object.values(allTokens), debouncedQuery)
-  }, [allTokens, debouncedQuery])
+    return filterTokens(Object.values(tokens ?? {}), debouncedQuery)
+  }, [tokens, debouncedQuery])
 
   const sortedTokens: Token[] = useMemo(() => {
     return filteredTokens.sort(tokenComparator)
@@ -76,17 +87,18 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
-    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredSortedTokens
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name || isOutputPanel)
+      return filteredSortedTokens
 
     if (
       nativeCurrency &&
       new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
     ) {
-      return [nativeCurrency, ...filteredSortedTokens]
+      const tokensWithoutNativeCurrency = filteredSortedTokens.filter(token => token.address !== nativeCurrency.address)
+      return [nativeCurrency, ...tokensWithoutNativeCurrency]
     }
-
     return filteredSortedTokens
-  }, [showNativeCurrency, filteredSortedTokens, debouncedQuery, nativeCurrency])
+  }, [showNativeCurrency, nativeCurrency, isOutputPanel, filteredSortedTokens, debouncedQuery])
 
   // clear the input on open
   useEffect(() => {
@@ -181,6 +193,7 @@ export const CurrencySearch = ({
           showImportView={showImportView}
           setImportToken={setImportToken}
           selectedTokenList={selectedTokenList}
+          hideBalance={isOutputPanel}
         />
       ) : (
         <Column style={{ padding: '20px', height: '100%' }}>
