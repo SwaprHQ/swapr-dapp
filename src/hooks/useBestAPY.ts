@@ -9,17 +9,18 @@ import {
   getLowerTimeLimit,
   getPairWithLiquidityMiningCampaign,
   getRewardTokenAddressFromPair,
-  SubgraphPair,
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from '.'
 
-export function useBestAPY(pair?: Pair | null): {
+interface UseBestAPYReturn {
   loading: boolean
   bestAPY?: Percent
-} {
+}
+
+export function useBestAPY(pair?: Pair | null): UseBestAPYReturn {
   const { chainId } = useActiveWeb3React()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
@@ -33,7 +34,7 @@ export function useBestAPY(pair?: Pair | null): {
   })
 
   const rewardTokenAddresses = useMemo(() => {
-    return !data || !data.pair ? [] : getRewardTokenAddressFromPair(data.pair as SubgraphPair)
+    return !data || !data.pair ? [] : getRewardTokenAddressFromPair(data.pair as any)
   }, [data])
 
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
@@ -42,7 +43,7 @@ export function useBestAPY(pair?: Pair | null): {
   if (!chainId || error || !data || !data.pair) return { loading: false }
 
   const newPair = getPairWithLiquidityMiningCampaign({
-    rawPair: data.pair as SubgraphPair,
+    rawPair: data.pair as any,
     chainId,
     kpiTokens,
     nativeCurrency,

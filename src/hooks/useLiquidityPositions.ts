@@ -32,7 +32,7 @@ interface SubgraphPair {
   liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
 }
 
-export function useLPPairs(account?: string): {
+export interface UseLPPairsReturn {
   loading: boolean
   data: {
     pair: Pair
@@ -42,7 +42,9 @@ export function useLPPairs(account?: string): {
     hasFarming: boolean
     containsKpiToken: boolean
   }[]
-} {
+}
+
+export function useLPPairs(account?: string): UseLPPairsReturn {
   const { chainId } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(
@@ -54,28 +56,29 @@ export function useLPPairs(account?: string): {
       ),
     []
   )
-  const {
-    loading: loadingMyPairs,
-    data,
-    error,
-  } = useGetUserLiquidityPositionsQuery({
+
+  const useGetUserLiquidityPositionsQueryResult = useGetUserLiquidityPositionsQuery({
     variables: {
       userId: account?.toLowerCase() || '',
       endsAtLowerLimit: memoizedLowerTimeLimit,
     },
   })
+
+  const { loading: loadingLiquidityPositions, data, error } = useGetUserLiquidityPositionsQueryResult
+
   const rewardTokenAddresses = useMemo(() => {
-    if (loadingMyPairs || !data) return []
+    if (loadingLiquidityPositions || !data) return []
     return data.liquidityMiningPositions.flatMap(position =>
       position.pair.liquidityMiningCampaigns.flatMap(campaign =>
         campaign.rewards.map(reward => reward.token.address.toLowerCase())
       )
     )
-  }, [data, loadingMyPairs])
+  }, [data, loadingLiquidityPositions])
+
   const { loading: loadingKpiTokens, kpiTokens } = useKpiTokens(rewardTokenAddresses)
 
   return useMemo(() => {
-    if (loadingMyPairs || loadingKpiTokens) return { loading: true, data: [] }
+    if (loadingLiquidityPositions || loadingKpiTokens) return { loading: true, data: [] }
     if (
       !data ||
       !data.liquidityPositions ||
@@ -87,23 +90,21 @@ export function useLPPairs(account?: string): {
     )
       return { loading: false, data: [] }
     // normalize double pairs (case in which a user has staked only part of their lp tokens)
-    const liquidityMiningPositions = data.liquidityMiningPositions as { pair: SubgraphPair }[]
-    const allPairsWithoutDuplicates = liquidityMiningPositions
-      .concat(data.liquidityPositions as { pair: SubgraphPair }[])
-      .reduce(
-        (
-          accumulator: { pair: SubgraphPair }[],
-          rawWrappedPair: { pair: SubgraphPair }
-        ): {
-          pair: SubgraphPair
-        }[] => {
-          if (!accumulator.find(p => p.pair.address === rawWrappedPair.pair.address)) {
-            accumulator.push(rawWrappedPair)
-          }
-          return accumulator
-        },
-        []
-      )
+    const liquidityMiningPositions = data.liquidityMiningPositions as { pair: any }[]
+    const allPairsWithoutDuplicates = [...liquidityMiningPositions, ...data.liquidityPositions].reduce(
+      (
+        accumulator: { pair: any }[],
+        rawWrappedPair: { pair: any }
+      ): {
+        pair: SubgraphPair
+      }[] => {
+        if (!accumulator.find(p => p.pair.address === rawWrappedPair.pair.address)) {
+          accumulator.push(rawWrappedPair)
+        }
+        return accumulator
+      },
+      []
+    )
     return {
       loading: false,
       data: allPairsWithoutDuplicates.map(position => {
@@ -162,5 +163,5 @@ export function useLPPairs(account?: string): {
         }
       }),
     }
-  }, [chainId, data, error, kpiTokens, loadingKpiTokens, loadingMyPairs, nativeCurrency])
+  }, [chainId, data, error, kpiTokens, loadingKpiTokens, loadingLiquidityPositions, nativeCurrency])
 }
