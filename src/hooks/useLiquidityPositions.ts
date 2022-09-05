@@ -87,9 +87,9 @@ export function useLPPairs(account?: string): {
     )
       return { loading: false, data: [] }
     // normalize double pairs (case in which a user has staked only part of their lp tokens)
-    const liquidityMiningPositions = data.liquidityMiningPositions as unknown as { pair: SubgraphPair }[]
+    const liquidityMiningPositions = data.liquidityMiningPositions as { pair: SubgraphPair }[]
     const allPairsWithoutDuplicates = liquidityMiningPositions
-      .concat(data.liquidityPositions as unknown as { pair: SubgraphPair }[])
+      .concat(data.liquidityPositions as { pair: SubgraphPair }[])
       .reduce(
         (
           accumulator: { pair: SubgraphPair }[],
