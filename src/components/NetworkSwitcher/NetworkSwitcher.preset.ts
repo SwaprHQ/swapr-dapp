@@ -4,6 +4,7 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
+import OptimismLogo from '../../assets/svg/optimism-logo.svg'
 import { NetworkOptionsPreset, NetworkSwitcherTags } from './NetworkSwitcher.types'
 
 export const networkOptionsPreset: NetworkOptionsPreset[] = [
@@ -26,6 +27,12 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     logoSrc: PolygonMaticLogo,
     color: '#8361DE',
   },
+  {
+    chainId: ChainId.OPTIMISM_MAINNET,
+    name: 'Optimism',
+    logoSrc: OptimismLogo,
+    color: '#ff0420',
+  },
 
   // TESTNETS
   {
@@ -44,14 +51,14 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.ARBITRUM_RINKEBY,
-    name: 'A.\xa0Rinkeby',
+    name: 'A. Rinkeby',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
   },
   {
     chainId: ChainId.ARBITRUM_GOERLI,
-    name: 'A.\xa0Goerli',
+    name: 'A. Görli',
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
@@ -61,5 +68,12 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Gnosis Chain',
     logoSrc: GnosisLogo,
     color: '#49A9A7',
+  },
+  {
+    chainId: ChainId.OPTIMISM_GOERLI,
+    name: 'Optimism Görli',
+    logoSrc: OptimismLogo,
+    color: '#ff0420',
+    tag: NetworkSwitcherTags.TESTNETS,
   },
 ]

@@ -13,8 +13,6 @@ import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { StyledConnectedIcon } from '../../utils'
 import Popover from '../Popover'
 
-import { ModalView } from '.'
-
 const Wrapper = styled.div`
   width: 100%;
 `
@@ -100,12 +98,11 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 `
 
 interface ConnectWalletProps {
-  setModal: (modal: ModalView | null) => void
   tryActivation: (connector: AbstractConnector | undefined) => void
   children: ReactNode
 }
 
-export const ConnectWalletPopover = ({ setModal, tryActivation, children }: ConnectWalletProps) => {
+export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletProps) => {
   const { connector, active, deactivate } = useWeb3React()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
@@ -176,9 +173,7 @@ export const ConnectWalletPopover = ({ setModal, tryActivation, children }: Conn
             id={`connect-${key}`}
             onClick={() => {
               closeModals()
-              option.connector === connector
-                ? setModal(ModalView.Account)
-                : !option.href && tryActivation(option.connector)
+              option.connector !== connector && !option.href && tryActivation(option.connector)
             }}
             name={option.name}
             icon={option.iconName}

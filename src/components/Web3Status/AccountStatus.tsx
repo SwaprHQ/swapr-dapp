@@ -10,6 +10,7 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
+import OptimismLogo from '../../assets/svg/optimism-logo.svg'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
@@ -29,6 +30,8 @@ const ChainLogo: any = {
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
+  [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
   [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
 }
 

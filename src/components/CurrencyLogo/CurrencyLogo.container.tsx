@@ -54,7 +54,11 @@ export const CurrencyLogo = ({
           carrotListLogoUrl.startsWith('.') ? carrotListLogoUrl.substring(1) : carrotListLogoUrl
         }`,
       ]
-    return []
+
+    if (!currency || !currency.address) {
+      return uriLocations
+    }
+    return [getTokenLogoURL(currency.address, selectedChainId), ...uriLocations]
   }, [currency, nativeCurrencyLogo, selectedChainId, uriLocations])
 
   return <CurrencyLogoComponent sources={sources} currency={currency} {...componentProps} />
