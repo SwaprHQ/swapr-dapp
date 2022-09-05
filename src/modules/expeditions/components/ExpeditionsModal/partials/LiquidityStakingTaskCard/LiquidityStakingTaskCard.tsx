@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 
+import { Loader } from '../../../../../../components/Loader'
 import { ExpeditionsAPI } from '../../../../api'
 import { ClaimWeeklyFragmentsTypeEnum } from '../../../../api/generated'
 import { signatureMessageByType } from '../../../../constants'
@@ -21,11 +22,11 @@ export function LiquidityStakingTaskCard() {
   const { rewards, setRewards, isLoading, provider } = useContext(ExpeditionsContext)
 
   if (isLoading) {
-    return <TaskCard buttonText={'Loading...'} status={'upcoming'} />
+    return <TaskCard buttonText={<Loader style={{ width: '97.25px' }} />} buttonDisabled status="loading" />
   }
 
   const { liquidityStaking } = rewards
-  const { isAvailableToClaim, isClaimed, isIncomplete } = computeFragmentState(liquidityStaking)
+  const { isAvailableToClaim, isClaimed, isIncomplete, buttonText } = computeFragmentState(liquidityStaking, isClaiming)
 
   const claimFrgments = async () => {
     if (isClaimed || !isAvailableToClaim || isClaiming) {
@@ -58,23 +59,12 @@ export function LiquidityStakingTaskCard() {
     }
   }
 
-  let buttonText: string = ''
-
-  if (isClaiming) {
-    buttonText = 'Claiming...'
-  } else if (isClaimed) {
-    buttonText = 'Claimed'
-  } else if (isAvailableToClaim) {
-    buttonText = `Claim ${liquidityStaking.claimableFragments} Fragments`
-  } else if (isIncomplete) {
-    buttonText = 'TASK NOT YET COMPLETED'
-  }
-
   return (
     <TaskCard
       buttonText={buttonText}
-      status={rewards.liquidityStaking.claimableFragments > 0 ? 'active' : 'upcoming'}
-      butttonDisabled={isIncomplete}
+      status={'active'}
+      buttonDisabled={isClaimed || isClaiming || isIncomplete}
+      claimed={isClaimed}
       onClick={claimFrgments}
     />
   )

@@ -1,20 +1,23 @@
-import { ButtonPrimary } from '../../../../components/Button'
+import Skeleton from 'react-loading-skeleton'
+
+import { ButtonConfirmed } from '../../../../components/Button'
 import Row from '../../../../components/Row'
 import { TagFailed, TagSuccess, TagWarning } from '../../../../components/Tag'
 import { TYPE } from '../../../../theme'
 import { Card, StyledExternalLink, Wrapper } from './ExpeditionsCard.styled'
 
-type StatusTags = 'active' | 'upcoming' | 'expired'
+type StatusTags = 'active' | 'upcoming' | 'expired' | 'loading'
 
 export interface TaskCardProps {
   duration?: 'Weekly' | 'Daily'
   status: StatusTags
   title: string
   description: string
-  buttonText: string
-  butttonDisabled?: boolean
+  buttonText: React.ReactNode
+  buttonDisabled?: boolean
   infoLink?: string
   onClick?: () => void
+  claimed?: boolean
 }
 
 const StatusTag = ({ status }: Pick<TaskCardProps, 'status'>) => {
@@ -25,6 +28,10 @@ const StatusTag = ({ status }: Pick<TaskCardProps, 'status'>) => {
       return <TagWarning>Upcoming</TagWarning>
     case 'expired':
       return <TagFailed>Expired</TagFailed>
+    case 'loading':
+      return <Skeleton width="57.5px" />
+    default:
+      return null
   }
 }
 
@@ -37,8 +44,9 @@ export function TaskCard({
   infoLink,
   status,
   buttonText,
-  butttonDisabled = false,
+  buttonDisabled = false,
   onClick,
+  claimed = false,
 }: TaskCardProps) {
   return (
     <Wrapper>
@@ -52,9 +60,9 @@ export function TaskCard({
         <TYPE.White fontSize="20px">{title}</TYPE.White>
         <TYPE.White fontSize="14px">{description}</TYPE.White>
         {infoLink && <StyledExternalLink href={infoLink}>More info</StyledExternalLink>}
-        <ButtonPrimary padding="8px" onClick={onClick} disabled={butttonDisabled}>
+        <ButtonConfirmed padding="8px" onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
           {buttonText}
-        </ButtonPrimary>
+        </ButtonConfirmed>
       </Card>
     </Wrapper>
   )
