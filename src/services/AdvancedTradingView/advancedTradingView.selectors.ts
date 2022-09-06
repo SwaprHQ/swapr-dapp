@@ -3,12 +3,8 @@ import { Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr
 import { createSelector } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
-import { AllTradesAndLiquidityFromAdapters, BasePair, SwapsWithLogo } from './adapters/baseAdapter/base.types'
-import {
-  AllTradesAndLiquidityFromUniswapV3Adapters,
-  BasePair as BasePairUniswapV3,
-  UniswapV3SwapsWithLogo,
-} from './adapters/uniswapV3/uniswapV3.types'
+import { AllTradesAndLiquidityFromAdapters, BasePair } from './adapters/baseAdapter/base.types'
+import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.types'
 
 const adapterLogos: { [key in AdapterKeys]: string } = {
@@ -43,10 +39,12 @@ const getAdapterPairUniswapV3 = (key: AdapterKeys) =>
     ({ inputToken, outputToken }, adapterPairs) => {
       if (inputToken && outputToken) {
         const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
+
         try {
           const pairId = `${token0.address}-${token1.address}`
+
           return {
-            pair: adapterPairs[pairId] as BasePairUniswapV3,
+            pair: adapterPairs[pairId] as UniswapV3Pair,
             logoKey: adapterLogos[key],
           }
         } catch {}
@@ -68,7 +66,7 @@ const selectAllCurrentPairs = createSelector(
         if (adapterPair?.pair?.swaps) {
           dataFromAllAdapters.swaps = [
             ...dataFromAllAdapters.swaps,
-            ...(adapterPair.pair.swaps.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })) as SwapsWithLogo[]),
+            ...adapterPair.pair.swaps.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })),
           ]
         }
 
@@ -83,32 +81,6 @@ const selectAllCurrentPairs = createSelector(
       },
       { swaps: [], burnsAndMints: [] }
     )
-)
-
-const selectAllUniswapV3CurrentPairs = createSelector([selectCurrentUniswapV3Pair], (...pairs) =>
-  pairs.reduce<AllTradesAndLiquidityFromUniswapV3Adapters>(
-    (dataFromAllAdapters, adapterPair) => {
-      if (adapterPair?.pair?.swaps) {
-        dataFromAllAdapters.swaps = [
-          ...dataFromAllAdapters.swaps,
-          ...(adapterPair.pair.swaps.data.map(tx => ({
-            ...tx,
-            logoKey: adapterPair.logoKey,
-          })) as UniswapV3SwapsWithLogo[]),
-        ]
-      }
-
-      if (adapterPair?.pair?.burnsAndMints) {
-        dataFromAllAdapters.burnsAndMints = [
-          ...dataFromAllAdapters.burnsAndMints,
-          ...adapterPair.pair.burnsAndMints.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })),
-        ]
-      }
-
-      return dataFromAllAdapters
-    },
-    { swaps: [], burnsAndMints: [] }
-  )
 )
 
 const identity = (x: boolean) => x
@@ -210,8 +182,8 @@ export const selectAllDataFromAdapters = createSelector(
   }
 )
 
-export const selectUniswapV3AllDataFromAdapters = createSelector(
-  [selectAllUniswapV3CurrentPairs, (state: AppState) => state.advancedTradingView.pair],
+export const selectUniswapV3AllData = createSelector(
+  [selectCurrentUniswapV3Pair, (state: AppState) => state.advancedTradingView.pair],
   (uniswapV3Pair, { inputToken, outputToken }) => {
     if (!inputToken || !outputToken || !uniswapV3Pair)
       return {
@@ -221,60 +193,62 @@ export const selectUniswapV3AllDataFromAdapters = createSelector(
 
     const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
 
-    const { burnsAndMints, swaps } = uniswapV3Pair
+    const { pair, logoKey } = uniswapV3Pair
 
-    const uniswapV3LiquidityHistory: AdvancedViewTransaction[] = burnsAndMints.map(trade => {
-      const {
-        transaction: { id },
-        amount0,
-        amount1,
-        timestamp,
-        logoKey,
-      } = trade
-      return {
-        transactionId: id,
-        amountIn: `${amount0} ${token0.symbol}`,
-        amountOut: `${amount1} ${token1.symbol}`,
-        timestamp,
-        logoKey,
-      }
-    })
+    const uniswapV3LiquidityHistory: AdvancedViewTransaction[] = pair?.burnsAndMints
+      ? pair.burnsAndMints.data.map(trade => {
+          const {
+            transaction: { id },
+            amount0,
+            amount1,
+            timestamp,
+          } = trade
+          return {
+            transactionId: id,
+            amountIn: `${amount0} ${token0.symbol}`,
+            amountOut: `${amount1} ${token1.symbol}`,
+            timestamp,
+            logoKey,
+          }
+        })
+      : []
 
-    const uniswapV3TradeHistory: Required<AdvancedViewTransaction>[] = swaps.map(trade => {
-      const {
-        amount0,
-        amount1,
-        transaction: { id },
-        timestamp,
-        amountUSD,
-        logoKey,
-      } = trade
-      const normalizedValues = {
-        amount0: Number(amount0),
-        amount1: Number(amount1),
-        token0Address: token0.address.toLowerCase(),
-        token1Address: token1.address.toLowerCase(),
-        inputTokenAddress: inputToken.address.toLowerCase(),
-        outputTokenAddress: outputToken.address.toLowerCase(),
-      }
+    const uniswapV3TradeHistory: Required<AdvancedViewTransaction>[] = pair?.swaps
+      ? pair.swaps.data.map(trade => {
+          const {
+            amount0,
+            amount1,
+            transaction: { id },
+            timestamp,
+            amountUSD,
+          } = trade
+          const normalizedValues = {
+            amount0: Number(amount0),
+            amount1: Number(amount1),
+            token0Address: token0.address.toLowerCase(),
+            token1Address: token1.address.toLowerCase(),
+            inputTokenAddress: inputToken.address.toLowerCase(),
+            outputTokenAddress: outputToken.address.toLowerCase(),
+          }
 
-      // UniswapV3 returns one amount negative
-      const absoluteAmount0 = Math.abs(normalizedValues.amount0)
-      const absoluteAmount1 = Math.abs(normalizedValues.amount1)
-      const isSell = normalizedValues.amount0 < 0
+          // UniswapV3 returns one amount negative
+          const absoluteAmount0 = Math.abs(normalizedValues.amount0)
+          const absoluteAmount1 = Math.abs(normalizedValues.amount1)
+          const isSell = normalizedValues.amount0 < 0
 
-      return {
-        transactionId: id,
-        amountIn: (isSell ? absoluteAmount0 : absoluteAmount1).toString(),
-        amountOut: (isSell ? absoluteAmount1 : absoluteAmount0).toString(),
-        priceToken0: (absoluteAmount1 / absoluteAmount0).toString(),
-        priceToken1: (absoluteAmount0 / absoluteAmount1).toString(),
-        timestamp,
-        amountUSD,
-        isSell,
-        logoKey,
-      }
-    })
+          return {
+            transactionId: id,
+            amountIn: (isSell ? absoluteAmount0 : absoluteAmount1).toString(),
+            amountOut: (isSell ? absoluteAmount1 : absoluteAmount0).toString(),
+            priceToken0: (absoluteAmount1 / absoluteAmount0).toString(),
+            priceToken1: (absoluteAmount0 / absoluteAmount1).toString(),
+            timestamp,
+            amountUSD,
+            isSell,
+            logoKey,
+          }
+        })
+      : []
 
     return {
       uniswapV3TradeHistory,

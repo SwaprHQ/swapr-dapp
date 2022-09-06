@@ -1,7 +1,7 @@
 import { AdapterKeys, AdapterPayloadType } from '../../advancedTradingView.types'
 
 // subgraph types
-interface PairBurnsAndMintsTransaction {
+export interface PairBurnsAndMintsTransaction {
   id: string
   transaction: {
     id: string
@@ -45,7 +45,7 @@ export type PairBurnsAndMints = {
 }
 
 // swapr reducer types
-type BasePayload = {
+export type BasePayload = {
   key: AdapterKeys
   hasMore: boolean
   pairId: string
@@ -56,7 +56,7 @@ type BasePairSwapsPayload = {
   payloadType: AdapterPayloadType.swaps
 } & BasePayload
 
-type BasePairBurnsAndMintsPayload = {
+export type BasePairBurnsAndMintsPayload = {
   data: PairBurnsAndMintsTransaction[]
   payloadType: AdapterPayloadType.burnsAndMints
 } & BasePayload

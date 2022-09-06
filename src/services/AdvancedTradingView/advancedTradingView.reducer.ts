@@ -43,7 +43,8 @@ const advancedTradingViewSlice = createSlice({
         uniswapV3: {},
       }
     },
-    setPairData: (state, action: PayloadAction<BaseActionPayload>) => {
+
+    setPairDataUniswapV3: (state, action: PayloadAction<UniswapV3ActionPayload>) => {
       const { data, pairId, payloadType, hasMore, key } = action.payload
 
       const previousPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []
@@ -56,7 +57,7 @@ const advancedTradingViewSlice = createSlice({
         },
       }
     },
-    setPairDataUniswapV3: (state, action: PayloadAction<UniswapV3ActionPayload>) => {
+    setPairData: (state, action: PayloadAction<BaseActionPayload>) => {
       const { data, pairId, payloadType, hasMore, key } = action.payload
 
       const previousPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []

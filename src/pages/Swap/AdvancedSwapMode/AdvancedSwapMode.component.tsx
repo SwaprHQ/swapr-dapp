@@ -77,7 +77,6 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
     }
   }
 
-  console.log(showTrades, isLoading, activeSwitchOption, tradeHistory)
   return (
     <Container>
       <ChartWrapper>
