@@ -41,6 +41,7 @@ const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.ARBITRUM_ONE]: 'ethereum',
   [ChainId.XDAI]: 'xdai',
   [ChainId.POLYGON]: 'matic-network',
+  [ChainId.OPTIMISM_MAINNET]: 'ethereum',
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {

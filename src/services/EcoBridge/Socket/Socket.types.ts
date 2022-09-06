@@ -25,13 +25,16 @@ export type SocketTx = {
   txHash: string
   partnerTxHash?: string
   assetName: string
-  value: string
+  fromValue: string
+  toValue: string
   fromChainId: ChainId
   toChainId: ChainId
   bridgeId: BridgeList
   timestampResolved?: number
   status: SocketTxStatus
   sender: string
+  assetAddressL1: string
+  assetAddressL2: string
 }
 
 export interface SocketBridgeState {
@@ -59,6 +62,7 @@ export interface SocketBridgeState {
   }
   routes: Route[]
   lastMetadataCt: number
+  assetDecimals: number
 }
 
 type UserTxs = [{ steps: [{ protocolFees: { amount: string; feesInUsd: number; asset: { decimals: number } } }] }]
