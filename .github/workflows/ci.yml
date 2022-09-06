@@ -237,6 +237,8 @@ jobs:
     steps:
       - name: Setup chrome version
         uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
 
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
