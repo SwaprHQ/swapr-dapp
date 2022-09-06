@@ -1,11 +1,12 @@
 import _Decimal from 'decimal.js-light'
 import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
-import { Box, Flex, Text } from 'rebass'
-import styled, { useTheme } from 'styled-components'
+import { Box, Flex } from 'rebass'
+import styled from 'styled-components'
 import toFormat from 'toformat'
 
 import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
+import PricePercentualDifference from './PricePercentualDifference'
 
 const Decimal = toFormat(_Decimal)
 
@@ -174,32 +175,5 @@ const DateText = styled.p`
   font-size: 12px;
   color: ${({ theme }) => theme.text4};
 `
-
-const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
-  const theme = useTheme()
-
-  const originalPrice = parseFloat(data[0].value)
-  const lastPrice = parseFloat(lastDataElement(data).value)
-  const pricePercentualDifference = (((lastPrice - originalPrice) / originalPrice) * 100).toPrecision(3)
-
-  const isPricePercentualDifferencePositive = parseFloat(pricePercentualDifference) > 0
-  const isPricePercentualDifferenceZero = parseFloat(pricePercentualDifference) === 0
-
-  const greenOrRed = isPricePercentualDifferencePositive ? theme.green1 : theme.red1
-  const correctColor = isPricePercentualDifferenceZero ? theme.gray1 : greenOrRed
-  const plusOrMinus = isPricePercentualDifferencePositive ? '+' : '-'
-  const correctOperator = isPricePercentualDifferenceZero ? ' ' : plusOrMinus
-
-  const showPricePercentualDifference = isPricePercentualDifferenceZero
-    ? '0%'
-    : `${Math.abs(parseFloat(pricePercentualDifference))}%`
-
-  return (
-    <Text fontSize="12px" color={correctColor} ml={2} fontWeight="600">
-      {correctOperator}
-      {showPricePercentualDifference}
-    </Text>
-  )
-}
 
 export default TradingViewAreaChart
