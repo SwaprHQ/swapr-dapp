@@ -15,7 +15,7 @@ export interface NetworkSwitcherProps {
 
 export type NetworkOptionsPreset = {
   chainId: ChainId
-  name: React.ReactNode
+  name: string
   logoSrc: string
   color: string
   tag?: NetworkSwitcherTags

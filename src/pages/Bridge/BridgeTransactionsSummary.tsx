@@ -162,7 +162,7 @@ interface BridgeTransactionsSummaryRowProps {
 }
 
 const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRowProps) => {
-  const { assetName, fromChainId, status, toChainId, value, pendingReason, log } = tx
+  const { assetName, fromChainId, status, toChainId, fromValue, pendingReason, log } = tx
   const fromChainName = getNetworkInfo(fromChainId).name
   const toChainName = getNetworkInfo(toChainId).name
 
@@ -170,7 +170,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
     <Row>
       <ColumnBridging data-testid="bridged-asset-name">
         <TextBridging>
-          {value} {assetName}
+          {fromValue} {assetName}
         </TextBridging>
       </ColumnBridging>
       <ColumnFrom data-testid="bridged-from-chain">

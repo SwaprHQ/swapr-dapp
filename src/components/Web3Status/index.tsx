@@ -3,12 +3,13 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { NetworkContextName } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import useENSName from '../../hooks/useENSName'
+import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { ApplicationModal } from '../../state/application/actions'
 import {
@@ -18,7 +19,7 @@ import {
   useOpenModal,
   useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
-import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
+import { isTransactionRecent, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
@@ -79,18 +80,19 @@ export default function Web3Status() {
   const { active, activate, account, error } = useWeb3React()
   const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
+  const navigate = useNavigate()
 
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
 
-  const sortedRecentTransactions = useMemo(() => {
+  const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+    return txs
+      .filter(tx => isTransactionRecent(tx) && !tx.receipt)
+      .sort(newTransactionsFirst)
+      .map(tx => tx.hash)
   }, [allTransactions])
-
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
-  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
 
   const [modal, setModal] = useState<ModalView | null>(null)
 
@@ -167,7 +169,7 @@ export default function Web3Status() {
 
   return (
     <>
-      <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation}>
+      <ConnectWalletPopover tryActivation={tryActivation}>
         <Row alignItems="center" justifyContent="flex-end">
           {networkConnectorChainId && !account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
@@ -180,7 +182,7 @@ export default function Web3Status() {
             account={account}
             connector={activeConnector}
             networkConnectorChainId={networkConnectorChainId}
-            onAddressClick={() => setModal(ModalView.Account)}
+            onAddressClick={() => navigate('/account')}
             avatar={ensAvatar ?? undefined}
           />
         </Row>
@@ -188,9 +190,6 @@ export default function Web3Status() {
       <WalletModal
         modal={modal}
         setModal={setModal}
-        ENSName={ENSName ?? undefined}
-        pendingTransactions={pending}
-        confirmedTransactions={confirmed}
         setPendingError={setPendingError}
         pendingWallet={pendingWallet}
         pendingError={pendingError}

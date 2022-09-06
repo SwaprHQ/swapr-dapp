@@ -7,7 +7,7 @@ import styled, { useTheme } from 'styled-components'
 
 import { DATE_INTERVALS, usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { TYPE } from '../../theme'
-import { DimBlurBgBox } from '../Pool/DimBlurBgBox/styleds'
+import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { SimpleChartLoading } from './SimpleChartLoading'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
@@ -27,7 +27,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
   })
 
   return (
-    <DimBlurBgBox minHeight="312px" width="100%" p={3}>
+    <BlurBox minHeight="312px" width="100%" p={3}>
       <Flex flexDirection="column" width="100%" height="100%" justifyContent="center" alignItems="center">
         {currency0 && currency1 && (
           <Flex width="100%" justifyContent="space-between" mb={2}>
@@ -85,7 +85,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
           )}
         </Flex>
       </Flex>
-    </DimBlurBgBox>
+    </BlurBox>
   )
 }
 
