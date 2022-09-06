@@ -168,10 +168,9 @@ const DateText = styled.p`
 const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
   const theme = useTheme()
 
-  const pricePercentualDifference = (
-    100 -
-    (parseFloat(data[0].value) * 100) / parseFloat(lastDataElement(data).value)
-  ).toPrecision(3)
+  const originalPrice = parseFloat(data[0].value)
+  const lastPrice = parseFloat(lastDataElement(data).value)
+  const pricePercentualDifference = (((lastPrice - originalPrice) / originalPrice) * 100).toPrecision(3)
 
   const isPricePercentualDifferencePositive = parseFloat(pricePercentualDifference) > 0
   const isPricePercentualDifferenceZero = parseFloat(pricePercentualDifference) === 0
