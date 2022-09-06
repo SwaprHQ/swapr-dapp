@@ -258,7 +258,7 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '16.5.0'
           check-latest: true
           cache: 'yarn'
       - uses: actions/setup-java@v3
