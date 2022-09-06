@@ -226,7 +226,7 @@ jobs:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
     needs: [prepare]
-    container: cypress/browsers:node16.5.0-chrome97-ff96
+    container: cypress/browsers:node16.14.0-chrome99-ff97
     if: ${{ (contains(needs.prepare.outputs.commit-message, 'trigger-synpress') || github.event_name == 'push') }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
