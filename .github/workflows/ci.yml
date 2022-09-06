@@ -236,7 +236,7 @@ jobs:
         containers: [02transactionfull, 01transactionless]
     steps:
       - name: Setup chrome version
-        uses: browser-actions/setup-chrome@stable
+        uses: browser-actions/setup-chrome@latest
 
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
