@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { SwapCallbackError } from '../styleds'
 
 export const ErrorBox = ({
