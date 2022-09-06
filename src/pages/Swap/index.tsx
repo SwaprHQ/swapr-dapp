@@ -7,7 +7,7 @@ import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
-import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup'
+import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup/ButtonGroup'
 import SimpleChart from '../../components/Charts/SimpleChart'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
@@ -408,16 +408,24 @@ export default function Swap() {
         >
           <AppBodyContainer>
             <Tabs>
-              {hasBothCurrenciesInput && (
+              {
                 <ButtonGroup>
-                  <ButtonGroupOption active={showChart} onClick={() => setSimpleChartPreferences(true)}>
+                  <ButtonGroupOption
+                    disabled={!hasBothCurrenciesInput}
+                    active={showChart}
+                    onClick={() => setSimpleChartPreferences(true)}
+                  >
                     Chart
                   </ButtonGroupOption>
-                  <ButtonGroupOption active={!showChart} onClick={() => setSimpleChartPreferences(false)}>
+                  <ButtonGroupOption
+                    disabled={!hasBothCurrenciesInput}
+                    active={!showChart}
+                    onClick={() => setSimpleChartPreferences(false)}
+                  >
                     Off
                   </ButtonGroupOption>
                 </ButtonGroup>
-              )}
+              }
             </Tabs>
             <AppBody tradeDetailsOpen={!!trade}>
               <SwapPoolTabs active={'swap'} />
