@@ -226,7 +226,7 @@ jobs:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
     needs: [prepare]
-    container: cypress/browsers:node16.14.2-slim-chrome103-ff102
+    container: cypress/browsers:node16.5.0-chrome97-ff96
     if: ${{ (contains(needs.prepare.outputs.commit-message, 'trigger-synpress') || github.event_name == 'push') }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -235,6 +235,9 @@ jobs:
       matrix:
         containers: [02transactionfull, 01transactionless]
     steps:
+      - name: Setup chrome version
+        uses: browser-actions/setup-chrome@100
+
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
