@@ -7,7 +7,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three-blurred-circles.svg'
 import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'

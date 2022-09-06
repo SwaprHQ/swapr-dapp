@@ -5,7 +5,7 @@ import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
+import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
