@@ -186,7 +186,7 @@ const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
     : `${Math.abs(parseFloat(pricePercentualDifference))}%`
 
   return (
-    <Text fontSize="12px" color={correctColor} ml={2}>
+    <Text fontSize="12px" color={correctColor} ml={2} fontWeight="600">
       {correctOperator}
       {showPricePercentualDifference}
     </Text>
