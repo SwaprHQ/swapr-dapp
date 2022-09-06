@@ -10,6 +10,7 @@ import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
 const Decimal = toFormat(_Decimal)
 
 const formatDateShort = (date: Date) => date.toLocaleString('default', { month: 'short' }) + ' ' + date.getDate()
+const formatDateHours = (date: Date) => date.toLocaleString('default', { hour: 'numeric', minute: 'numeric' })
 
 const formatDate = (date: Date) =>
   `${date.toLocaleString('default', {
@@ -38,7 +39,15 @@ const formatPrice = (price: string) => {
   return quotient.toFormat(quotient.decimalPlaces(), format)
 }
 
-const TradingViewAreaChart = ({ data, tokenSymbol }: { data: ChartData[]; tokenSymbol?: string }) => {
+const TradingViewAreaChart = ({
+  data,
+  tokenSymbol,
+  showHours,
+}: {
+  data: ChartData[]
+  tokenSymbol?: string
+  showHours?: boolean
+}) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))
@@ -75,7 +84,8 @@ const TradingViewAreaChart = ({ data, tokenSymbol }: { data: ChartData[]; tokenS
         fixLeftEdge: true,
         fixRightEdge: true,
         borderVisible: false,
-        tickMarkFormatter: (time: UTCTimestamp) => formatDateShort(buildDate(time)),
+        tickMarkFormatter: (time: UTCTimestamp) =>
+          showHours ? formatDateHours(buildDate(time)) : formatDateShort(buildDate(time)),
       },
       watermark: {
         color: 'rgba(0, 0, 0, 0)',

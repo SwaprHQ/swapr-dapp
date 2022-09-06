@@ -52,7 +52,11 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
             loading ? (
               <SimpleChartLoading />
             ) : data && data.length > 0 ? (
-              <TradingViewAreaChart data={data} tokenSymbol={currencies.currency1?.symbol} />
+              <TradingViewAreaChart
+                data={data}
+                tokenSymbol={currencies.currency1?.symbol}
+                showHours={selectedInterval === DATE_INTERVALS.DAY}
+              />
             ) : (
               <TYPE.DarkGray>Sorry, this pair doesn't have enough data.</TYPE.DarkGray>
             )
