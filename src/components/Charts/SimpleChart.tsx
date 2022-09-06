@@ -8,6 +8,7 @@ import styled, { useTheme } from 'styled-components'
 import { DATE_INTERVALS, usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
+import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { SimpleChartLoading } from './SimpleChartLoading'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
@@ -43,32 +44,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
                 <RepeatIcon size="12" />
               </Box>
             </PairSwitcher>
-            <Flex>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.DAY}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.DAY)}
-              >
-                1d
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.WEEK}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.WEEK)}
-              >
-                1w
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.MONTH}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.MONTH)}
-              >
-                1m
-              </DateFilterButton>
-              <DateFilterButton
-                active={selectedInterval === DATE_INTERVALS.YEAR}
-                onClick={() => setSelectedInterval(DATE_INTERVALS.YEAR)}
-              >
-                1y
-              </DateFilterButton>
-            </Flex>
+            <SimpleChartDateFilters setInterval={setSelectedInterval} selectedInterval={selectedInterval} />
           </Flex>
         )}
         <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
@@ -94,24 +70,5 @@ const PairSwitcher = styled(Flex)`
 
   &:hover {
     color: ${({ theme }) => theme.text4};
-  }
-`
-
-const DateFilterButton = styled.button<{ active?: boolean }>`
-  margin-left: 4px;
-  padding: 8px 10px;
-  height: fit-content;
-  border: none;
-
-  color: ${({ theme, active }) => (active ? theme.white : theme.text4)};
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: 700;
-  background: transparent;
-
-  cursor: pointer;
-
-  &:hover {
-    color: white;
   }
 `
