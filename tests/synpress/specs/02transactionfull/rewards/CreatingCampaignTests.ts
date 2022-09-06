@@ -100,8 +100,7 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  // WILL BE FIXED IN #1364
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
+  it('Should open a campaign through Rewards page [TC-60]', function () {
     if (!isCampaignCreated) {
       this.skip()
     }
