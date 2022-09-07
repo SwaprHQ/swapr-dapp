@@ -65,7 +65,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (outputToken) {
+    if (outputToken && token0 && token1) {
       setActiveSwitchOption(outputToken.address === token0.address ? token0 : token1)
     }
     // eslint-disable-next-line
@@ -103,7 +103,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
               </SwitcherWrapper>
             )}
           </Flex>
-          {showTrades && (
+          {showTrades && activeSwitchOption && (
             <AdvancedModeDetails>
               <Text>Amount {`(${inputToken?.symbol})`}</Text>
               <Text>Amount {`(${outputToken?.symbol})`}</Text>
@@ -127,8 +127,8 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             }
             scrollThreshold={1}
           >
-            {!isLoading &&
-              showTrades &&
+            {showTrades &&
+              activeSwitchOption &&
               tradeHistory
                 .sort((firstTrade, secondTrade) =>
                   Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
