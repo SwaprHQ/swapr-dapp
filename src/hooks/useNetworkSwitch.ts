@@ -51,6 +51,12 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
   }
 }
 
+/**
+ * Checks if the conditions for the pools and rewards are available and, if not, redirects to '/swap', the default page
+ * @param optionChainId chainId to which we are changing
+ * @param navigate react method for changing the location
+ * @param pathname current page pathname
+ */
 export function unavailableRedirect(optionChainId: ChainId, navigate: NavigateFunction, pathname: string) {
   if (
     !SWPR[optionChainId] &&
