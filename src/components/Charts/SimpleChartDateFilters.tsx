@@ -1,7 +1,7 @@
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { DATE_INTERVALS } from '../../hooks/usePairTokenPriceByTimestamp'
+import { DATE_INTERVALS } from './simpleChartUtils'
 
 export const SimpleChartDateFilters = ({
   selectedInterval,

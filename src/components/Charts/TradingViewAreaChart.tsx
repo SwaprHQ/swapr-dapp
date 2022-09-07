@@ -1,24 +1,27 @@
-import _Decimal from 'decimal.js-light'
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import {
+  AreaStyleOptions,
+  ChartOptions,
+  createChart,
+  DeepPartial,
+  SeriesOptionsCommon,
+  UTCTimestamp,
+} from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
-import toFormat from 'toformat'
 
-import { ChartData } from '../../hooks/usePairTokenPriceByTimestamp'
-import PricePercentualDifference from './PricePercentualDifference'
-
-const Decimal = toFormat(_Decimal)
-
-const formatDateShort = (date: Date) => date.toLocaleString('default', { month: 'short' }) + ' ' + date.getDate()
-const formatDateHours = (date: Date) => date.toLocaleString('default', { hour: 'numeric', minute: 'numeric' })
-
-const formatDate = (date: Date) =>
-  `${date.toLocaleString('default', {
-    month: 'short',
-  })} ${date.getDate()}, ${date.getFullYear()}  ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-
-const buildDate = (time: number) => new Date(time * 1000)
+import { PricePercentualDifference } from './PricePercentualDifference'
+import {
+  buildDate,
+  ChartData,
+  formatDate,
+  formatDateHours,
+  formatDateShort,
+  formatPrice,
+  lastDataElement,
+  lastElementTimeOrDefault,
+  lastElementValueOrDefault,
+} from './simpleChartUtils'
 
 const chartColors = {
   backgroundColor: 'transparent',
@@ -28,27 +31,13 @@ const chartColors = {
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
-const lastDataElement = (data: ChartData[]) => data[data.length - 1]
-const lastElementValueOrDefault = (data: ChartData[]) => lastDataElement(data)?.value ?? 0
-const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(data)?.time ?? 0
-
-const formatPrice = (price: string) => {
-  const floatPrice = parseFloat(price)
-  const significantDigits = 6
-  const format = { groupSeparator: '' }
-  const quotient = new Decimal(floatPrice).toSignificantDigits(significantDigits)
-  return quotient.toFormat(quotient.decimalPlaces(), format)
-}
-
-const TradingViewAreaChart = ({
-  data,
-  tokenSymbol,
-  showHours,
-}: {
+type TradingViewAreaChartProps = {
   data: ChartData[]
   tokenSymbol?: string
   showHours?: boolean
-}) => {
+}
+
+const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaChartProps) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))
@@ -62,12 +51,6 @@ const TradingViewAreaChart = ({
     )
       return
 
-    const handleResize = () => {
-      chart.timeScale().fitContent()
-      if (chartRef?.current?.parentElement) {
-        chart.applyOptions({ width: chartRef.current.parentElement.clientWidth })
-      }
-    }
     const chart = createChart(chartRef.current, {
       height: 248,
       width: chartRef.current.parentElement.clientWidth,
@@ -118,7 +101,6 @@ const TradingViewAreaChart = ({
         },
       },
     })
-    chart.timeScale().fitContent()
 
     const newSeries = chart.addAreaSeries({
       lineColor: chartColors.lineColor,
@@ -127,11 +109,13 @@ const TradingViewAreaChart = ({
       lineWidth: 3,
       priceLineVisible: false,
     })
+
     if (data && data.length > 0) {
       setPrice(lastElementValueOrDefault(data))
       setDate(buildDate(lastElementTimeOrDefault(data)))
       newSeries.setData(data)
     }
+    chart.timeScale().fitContent()
 
     chart.subscribeCrosshairMove(function (param) {
       const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
@@ -139,6 +123,14 @@ const TradingViewAreaChart = ({
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(buildDate(time as UTCTimestamp))
     })
+
+    const handleResize = () => {
+      chart.timeScale().fitContent()
+      if (chartRef?.current?.parentElement) {
+        chart.applyOptions({ width: chartRef.current.parentElement.clientWidth })
+        chart.timeScale().fitContent()
+      }
+    }
 
     window.addEventListener('resize', handleResize)
 
@@ -148,7 +140,7 @@ const TradingViewAreaChart = ({
       setDate(buildDate(lastElementTimeOrDefault(data)))
       chart.remove()
     }
-  }, [data])
+  }, [data, showHours])
 
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">

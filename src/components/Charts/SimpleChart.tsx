@@ -5,11 +5,12 @@ import { Repeat as RepeatIcon } from 'react-feather'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { DATE_INTERVALS, usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
+import { usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { SimpleChartLoading } from './SimpleChartLoading'
+import { DATE_INTERVALS } from './simpleChartUtils'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
 export default function SimpleChart({ currency0, currency1 }: { currency0?: Currency; currency1?: Currency }) {

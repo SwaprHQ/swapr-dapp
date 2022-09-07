@@ -1,66 +1,21 @@
 import { Currency, Pair, Token } from '@swapr/sdk'
 
-import { UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useState } from 'react'
 
-import { PairTokenPriceTimeframe, useGetPairTokenPricesQuery } from '../graphql/generated/schema'
+import {
+  convertToChartData,
+  GetBlockPairTokenPriceQueryData,
+  TIMEFRAME_PROPRETIES,
+} from '../components/Charts/simpleChartUtils'
+import { useGetPairTokenPricesQuery } from '../graphql/generated/schema'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 import { useActiveWeb3React } from '.'
-
-export const DATE_INTERVALS = {
-  DAY: 'DAY',
-  WEEK: 'WEEK',
-  MONTH: 'MONTH',
-  YEAR: 'YEAR',
-}
-
-const convertToSecondsTimestamp = (timestamp: number): string => Math.floor(timestamp / 1000).toString()
-
-export const TIMEFRAME_PROPRETIES = {
-  [DATE_INTERVALS.DAY]: {
-    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getTime()),
-    pairTokenPriceTimeframe: PairTokenPriceTimeframe.FiveMinutes,
-  },
-  [DATE_INTERVALS.WEEK]: {
-    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).getTime()),
-    pairTokenPriceTimeframe: PairTokenPriceTimeframe.FifteenMinutes,
-  },
-  [DATE_INTERVALS.MONTH]: {
-    timestamp: convertToSecondsTimestamp(new Date().setMonth(new Date().getMonth() - 1)),
-    pairTokenPriceTimeframe: PairTokenPriceTimeframe.OneHour,
-  },
-  [DATE_INTERVALS.YEAR]: {
-    timestamp: convertToSecondsTimestamp(new Date().setFullYear(new Date().getFullYear() - 1)),
-    pairTokenPriceTimeframe: PairTokenPriceTimeframe.TwelveHours,
-  },
-}
 
 type PairTokenPriceByTimestampProps = {
   currency0?: Currency
   currency1?: Currency
   dateInterval: string
-}
-
-export type ChartData = { time: UTCTimestamp; value: string }
-
-type GetBlockPairTokenPriceQueryData = {
-  blockTimestamp: string
-  token0Address: string
-  token0Price: string
-  token1Price: string
-}
-
-const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[], token0?: Token) => {
-  return (
-    data?.reduce<ChartData[]>((newArray, { blockTimestamp, token0Address, token0Price, token1Price }) => {
-      newArray.push({
-        time: parseInt(blockTimestamp, 10) as UTCTimestamp,
-        value: token0?.address.toLowerCase() === token0Address.toLowerCase() ? token0Price : token1Price,
-      })
-      return newArray
-    }, []) || []
-  )
 }
 
 export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterval }: PairTokenPriceByTimestampProps) {
