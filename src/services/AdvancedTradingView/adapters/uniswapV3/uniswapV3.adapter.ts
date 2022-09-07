@@ -11,10 +11,11 @@ import {
   AdapterPayloadType,
 } from '../../advancedTradingView.types'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
+import { BaseAppState } from '../baseAdapter/base.adapter'
 import { UNISWAP_PAIR_BURNS_AND_MINTS, UNISWAP_PAIR_SWAPS } from './uniswapV3.queries'
 import { UniswapV3PairBurnsAndMints, UniswapV3PairSwaps } from './uniswapV3.types'
 
-export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
+export class UniswapV3Adapter<AppState extends BaseAppState> extends AbstractAdvancedTradingViewAdapter<AppState> {
   private _key: AdapterKeys
   private _adapterSupportedChains: ChainId[]
   private _subgraphUrls: {
@@ -44,7 +45,7 @@ export class UniswapV3Adapter extends AbstractAdvancedTradingViewAdapter {
     this._chainId = chainId
   }
 
-  public setInitialArguments({ chainId, store }: AdapterInitialArguments) {
+  public setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>) {
     this._chainId = chainId
     this._store = store
   }
