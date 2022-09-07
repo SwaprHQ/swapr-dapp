@@ -12,7 +12,7 @@ import { SimpleChartLoading } from './SimpleChartLoading'
 import { ChartData, DATE_INTERVALS } from './simpleChartUtils'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
-export default function SimpleChart({
+export function SimpleChart({
   data,
   loading,
   currency0,

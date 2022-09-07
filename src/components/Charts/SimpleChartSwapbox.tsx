@@ -3,7 +3,7 @@ import { Currency } from '@swapr/sdk'
 import React, { useLayoutEffect } from 'react'
 
 import { usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
-import SimpleChart from './SimpleChart'
+import { SimpleChart } from './SimpleChart'
 import { DATE_INTERVALS } from './simpleChartUtils'
 
 export default function SimpleChartSwapbox({ currency0, currency1 }: { currency0?: Currency; currency1?: Currency }) {
