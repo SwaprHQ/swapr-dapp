@@ -1,7 +1,8 @@
-import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { AdapterKeys, Adapters } from '../advancedTradingView.types'
 import { BaseAdapter } from './baseAdapter/base.adapter'
+import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
 
 export const adapters: Adapters = {
   swapr: new BaseAdapter({
@@ -42,6 +43,14 @@ export const adapters: Adapters = {
       [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/kirkins/honeyswap',
       [ChainId.ARBITRUM_ONE]: '',
       [ChainId.MAINNET]: '',
+    },
+  }),
+  uniswapV3: new UniswapV3Adapter({
+    key: AdapterKeys.UNISWAPV3,
+    adapterSupportedChains: [ChainId.MAINNET],
+    platform: RoutablePlatform.UNISWAP,
+    subgraphUrls: {
+      [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
     },
   }),
 }

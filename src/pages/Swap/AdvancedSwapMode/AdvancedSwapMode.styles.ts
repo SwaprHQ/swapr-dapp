@@ -17,6 +17,7 @@ export const AdvanceSwapModeHeight = css`
 export const AdvancedModeDetailsItems = css`
   & > div {
     flex-basis: 25%;
+    line-height: 1.4;
   }
 `
 
@@ -52,7 +53,7 @@ export const Container = styled.div`
 
   @media screen and (max-width: ${breakpoints.s}) {
     height: auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
 
     & > div {
       border-left: none;
