@@ -3,12 +3,12 @@ import { ChainId, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { configureStore, Store } from '@reduxjs/toolkit'
 import { request as graphqlRequest } from 'graphql-request'
 
-import advancedTradingView from '../../advancedTradingView.reducer'
-import { selectCurrentSwaprPair } from '../../advancedTradingView.selectors'
-import { AdapterKeys } from '../../advancedTradingView.types'
-import { adapters } from '../adapters.config'
-import { AdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { BaseAdapter, BaseAppState } from '../baseAdapter/base.adapter'
+import advancedTradingView from '../advancedTradingView.reducer'
+import { selectCurrentSwaprPair } from '../advancedTradingView.selectors'
+import { AdapterKeys } from '../advancedTradingView.types'
+import { adapters } from './adapters.config'
+import { AdvancedTradingViewAdapter } from './advancedTradingView.adapter'
+import { BaseAdapter, BaseAppState } from './baseAdapter/base.adapter'
 
 jest.mock('graphql-request')
 
@@ -237,5 +237,66 @@ describe('AdvancedTradingView - adapters', () => {
     })
 
     expect(graphqlRequest).toHaveBeenCalledTimes(2)
+  })
+  it("adapter doesn't update store when fetch fails", async () => {
+    advancedTradingViewAdapter.setPairTokens(USDC_TOKEN, USDT_TOKEN)
+
+    graphqlRequestMock.mockImplementationOnce(() => Promise.reject())
+
+    await baseAdapter.getPairTrades({
+      inputToken: USDC_TOKEN,
+      outputToken: USDT_TOKEN,
+      isFirstFetch: true,
+      amountToFetch: 50,
+      abortController: () => new AbortController().signal,
+    })
+
+    graphqlRequestMock.mockImplementationOnce(() => Promise.reject())
+
+    await baseAdapter.getPairActivity({
+      inputToken: USDC_TOKEN,
+      outputToken: USDT_TOKEN,
+      isFirstFetch: true,
+      amountToFetch: 25,
+      abortController: () => new AbortController().signal,
+    })
+
+    expect(store.getState().advancedTradingView).toMatchSnapshot()
+  })
+
+  it('adapters sets hasMore to false when response is empty', async () => {
+    advancedTradingViewAdapter.setPairTokens(USDC_TOKEN, USDT_TOKEN)
+
+    graphqlRequestMock.mockImplementationOnce(() =>
+      Promise.resolve({
+        swaps: [],
+      })
+    )
+
+    await baseAdapter.getPairTrades({
+      inputToken: USDC_TOKEN,
+      outputToken: USDT_TOKEN,
+      isFirstFetch: true,
+      amountToFetch: 50,
+      abortController: () => new AbortController().signal,
+    })
+
+    graphqlRequestMock.mockImplementationOnce(() =>
+      Promise.resolve({
+        burns: [],
+        mints: [],
+      })
+    )
+
+    await baseAdapter.getPairActivity({
+      inputToken: USDC_TOKEN,
+      outputToken: USDT_TOKEN,
+      isFirstFetch: true,
+      amountToFetch: 25,
+      abortController: () => new AbortController().signal,
+    })
+
+    expect(selectCurrentSwaprPair(store.getState())?.pair?.swaps?.hasMore).toBeFalsy()
+    expect(selectCurrentSwaprPair(store.getState())?.pair?.burnsAndMints?.hasMore).toBeFalsy()
   })
 })
