@@ -150,6 +150,7 @@ const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaC
 }
 
 const BigPriceText = styled.p`
+  font-family: 'Inter', Arial, Helvetica;
   font-size: 30px;
   font-weight: 600;
   color: ${({ theme }) => theme.text3};

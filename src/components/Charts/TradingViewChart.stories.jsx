@@ -106,7 +106,7 @@ export default {
 
 //👇 We create a “template” of how args map to rendering
 const Template = args => (
-  <Flex width={['100%', '550px', '550px', '600px', '650px']}>
+  <Flex bg="#1e1e55" p={4} width={['100%', '550px', '550px', '600px', '650px']}>
     <TradingViewAreaChart {...args} />
   </Flex>
 )
