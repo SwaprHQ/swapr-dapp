@@ -4,12 +4,14 @@ import { Store } from '@reduxjs/toolkit'
 
 import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { BasePair } from './adapters/baseAdapter/base.types'
+import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 
 export enum AdapterKeys {
   SWAPR = 'swapr',
   SUSHISWAP = 'sushiswap',
   UNISWAPV2 = 'uniswapV2',
   HONEYSWAP = 'honeyswap',
+  UNISWAPV3 = 'uniswapV3',
 }
 
 export type InitialState = {
@@ -29,6 +31,9 @@ export type InitialState = {
     }
     [AdapterKeys.HONEYSWAP]: {
       [pairId: string]: BasePair | undefined
+    }
+    [AdapterKeys.UNISWAPV3]: {
+      [pairId: string]: UniswapV3Pair | undefined
     }
   }
 }
