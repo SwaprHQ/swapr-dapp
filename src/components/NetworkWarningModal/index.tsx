@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { AlertTriangle } from 'react-feather'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { NETWORK_DETAIL } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
+import { unavailableRedirect } from '../../hooks/useNetworkSwitch'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
 import { TYPE } from '../../theme'
@@ -35,6 +37,8 @@ export default function NetworkWarningModal() {
   const { chainId, account } = useActiveWeb3React()
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const [open, setOpen] = useState(false)
 
@@ -47,7 +51,8 @@ export default function NetworkWarningModal() {
   const handleAddClick = useCallback(() => {
     if (!urlLoadedChainId) return
     switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
-  }, [urlLoadedChainId, account])
+    unavailableRedirect(urlLoadedChainId, navigate, pathname)
+  }, [urlLoadedChainId, account, navigate, pathname])
 
   return (
     <Modal isOpen={open} onDismiss={handleDismiss} maxHeight={90}>

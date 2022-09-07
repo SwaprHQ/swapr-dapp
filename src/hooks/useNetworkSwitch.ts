@@ -51,7 +51,7 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
   }
 }
 
-function unavailableRedirect(optionChainId: ChainId, navigate: NavigateFunction, pathname: string) {
+export function unavailableRedirect(optionChainId: ChainId, navigate: NavigateFunction, pathname: string) {
   if (
     !SWPR[optionChainId] &&
     // check if the URL includes any of these
