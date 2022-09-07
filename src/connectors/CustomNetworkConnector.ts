@@ -126,7 +126,7 @@ export class CustomNetworkConnector extends AbstractConnector {
   public changeChainId(chainId: number) {
     invariant(Object.keys(this.providers).includes(chainId.toString()), `No url found for chainId ${chainId}`)
     this.currentChainId = chainId
-    return this.emitUpdate({ provider: this.providers[this.currentChainId], chainId })
+    this.emitUpdate({ provider: this.providers[this.currentChainId], chainId })
   }
 
   public switchUnsupportedNetwork(networkDetails?: NetworkDetails) {
