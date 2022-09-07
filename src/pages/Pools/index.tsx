@@ -24,9 +24,9 @@ import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../theme'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

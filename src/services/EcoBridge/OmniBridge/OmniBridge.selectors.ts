@@ -51,7 +51,8 @@ const createSelectBridgeTransactionsSummary = (
     const summaries = txs.map(tx => {
       const {
         txHash,
-        value,
+        fromValue,
+        toValue,
         timestampResolved,
         assetName,
         fromChainId,
@@ -71,12 +72,14 @@ const createSelectBridgeTransactionsSummary = (
 
       const pendingReason = status === BridgeTransactionStatus.PENDING ? 'Transaction has not been confirmed yet' : ''
 
-      const normalizedValue = normalizeInputValue(value, true)
+      const normalizedFromValue = normalizeInputValue(fromValue, true)
+      const normalizedToValue = normalizeInputValue(toValue, true)
 
       const summary: BridgeTransactionSummary = {
         txHash,
         assetName,
-        value: normalizedValue,
+        fromValue: normalizedFromValue,
+        toValue: normalizedToValue,
         fromChainId,
         toChainId,
         log: [{ chainId: fromChainId, txHash: txHash }],

@@ -2,6 +2,7 @@ import { Connector } from '@web3-react/types'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { getConnection } from '../../connectors/utils'
@@ -17,7 +18,7 @@ import {
   useOpenModal,
   useWalletSwitcherPopoverToggle,
 } from '../../state/application/hooks'
-import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
+import { isTransactionRecent, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { updateSelectedWallet } from '../../state/user/actions'
 import { getErrorMessage } from '../../utils/getErrorMessage'
@@ -80,15 +81,16 @@ export default function Web3Status() {
   const dispatch = useDispatch<AppDispatch>()
   const { account, connector: activeConnector, chainId, ENSName, isActiveChainSupported } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
+  const navigate = useNavigate()
 
-  const sortedRecentTransactions = useMemo(() => {
+  const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+    return txs
+      .filter(tx => isTransactionRecent(tx) && !tx.receipt)
+      .sort(newTransactionsFirst)
+      .map(tx => tx.hash)
   }, [allTransactions])
-
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
-  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
 
   const [modal, setModal] = useState<ModalView | null>(null)
 
@@ -189,7 +191,7 @@ export default function Web3Status() {
             account={account}
             connector={activeConnector}
             networkConnectorChainId={chainId}
-            onAddressClick={() => setModal(ModalView.Account)}
+            onAddressClick={() => navigate('/account')}
             avatar={ensAvatar ?? undefined}
           />
         </Row>

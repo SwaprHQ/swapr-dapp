@@ -10,7 +10,6 @@ import { isChainSupportedByConnector } from '../../connectors/utils'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
-import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
@@ -113,9 +112,6 @@ interface WalletModalProps {
 }
 
 export default function WalletModal({
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
   modal,
   setModal,
   tryActivation,
@@ -189,20 +185,7 @@ export default function WalletModal({
         </UpperSection>
       )
     }
-    if (account && modal === ModalView.Account) {
-      return (
-        <AccountDetails
-          toggleWalletModal={closeModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={() => {
-            setModal(null)
-            toggleWalletSwitcherPopover()
-          }}
-        />
-      )
-    }
+
     return (
       <UpperSection>
         <CloseIcon onClick={closeModal}>

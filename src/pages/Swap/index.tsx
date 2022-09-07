@@ -266,10 +266,8 @@ export default function Swap() {
           txHash: hash,
         })
         //reset states, in case we want to operate again
-        if (trade instanceof CoWTrade) {
-          setGnosisProtocolState(CoWTradeState.WRAP)
-          setWrapState && setWrapState(WrapState.UNKNOWN)
-        }
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
+        setWrapState && setWrapState(WrapState.UNKNOWN)
       })
       .catch(error => {
         setSwapState({
@@ -279,9 +277,9 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(CoWTradeState.SWAP)
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
       })
-  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
+  }, [priceImpactWithoutFee, swapCallback, tradeToConfirm, showConfirm, setWrapState])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)

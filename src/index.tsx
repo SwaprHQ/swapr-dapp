@@ -17,6 +17,7 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
+import './theme/fonts.css'
 
 // Enables use of the useWhatChanged hook in dev environment
 setUseWhatChange({

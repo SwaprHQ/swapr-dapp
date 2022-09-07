@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { tryParseAmount } from '../state/swap/hooks'
-import { useAllTransactions, useTransactionAdder } from '../state/transactions/hooks'
+import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
@@ -53,7 +53,7 @@ export function useWrapCallback(
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()
 
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency as Currency)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('swap')
   const [wrapState, setWrapState] = useState(WrapState.UNKNOWN)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const [inputAmount, outputAmount] = useMemo(() => {
@@ -88,7 +88,7 @@ export function useWrapCallback(
     currencyEquals(nativeCurrency, outputCurrency) &&
     currencyEquals(inputCurrency as Currency, nativeCurrencyWrapperToken as Currency)
 
-  const allTransactions = useAllTransactions()
+  const allTransactions = useAllSwapTransactions()
   useEffect(() => {
     const isTransactionSuccessful =
       transactionReceipt && allTransactions[transactionReceipt.transactionHash]?.receipt?.status === 1
@@ -137,8 +137,8 @@ export function useWrapCallback(
         inputError: sufficientBalance
           ? undefined
           : !typedValue
-          ? t('enterCurrencyAmount', { currency: nativeCurrency.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
+          ? t('button.enterCurrencyAmount', { currency: nativeCurrency.symbol })
+          : t('button.insufficientCurrencyBalance', { currency: nativeCurrency.symbol }),
         wrapState,
         setWrapState,
       }
@@ -165,8 +165,8 @@ export function useWrapCallback(
         inputError: sufficientBalance
           ? undefined
           : !typedValue
-          ? t('enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
-          : t('insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
+          ? t('button.enterCurrencyAmount', { currency: nativeCurrencyWrapperToken.symbol })
+          : t('button.insufficientCurrencyBalance', { currency: nativeCurrencyWrapperToken.symbol }),
         wrapState,
         setWrapState,
       }

@@ -28,6 +28,7 @@ export const executionsQuery = gql`
       messageId
       token
       status
+      amount
     }
   }
 `

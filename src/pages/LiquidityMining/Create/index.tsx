@@ -18,7 +18,7 @@ import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMin
 import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../PageWrapper'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 
 const LastStep = styled(Step)`
   z-index: 0;

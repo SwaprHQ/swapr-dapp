@@ -45,6 +45,21 @@ const gasInfoChainUrls: ChainGasInfo = {
       }),
     },
   },
+  [ChainId.OPTIMISM_MAINNET]: {
+    url: 'https://opt-mainnet.g.alchemy.com/v2/aUooVzDMm5Vp134Wi07WBlpWeJPq97yX',
+    requestConfig: {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'eth_gasPrice',
+        id: 1,
+      }),
+    },
+  },
 }
 
 interface Gas {

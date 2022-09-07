@@ -90,6 +90,10 @@ const HistoryMessage = styled(Title)`
   margin: 5px;
 `
 
+const OutputPanelContainer = styled.div`
+  margin-top: 12px;
+`
+
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useWeb3ReactCore()
@@ -104,14 +108,21 @@ export default function Bridge() {
   const showAvailableBridges = useShowAvailableBridges()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
-  const { bridgeCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
-  const { onCurrencySelection, onUserInput, onToNetworkChange, onFromNetworkChange, onSwapBridgeNetworks } =
-    useBridgeActionHandlers()
+  const { bridgeCurrency, bridgeOutputCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
+  const {
+    onCurrencySelection,
+    onCurrencyOutputSelection,
+    onUserInput,
+    onToNetworkChange,
+    onFromNetworkChange,
+    onSwapBridgeNetworks,
+  } = useBridgeActionHandlers()
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
+  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
-  const [activeTab, setActiveTab] = useState<BridgeTab>(BridgeTab.BRIDGE)
+  const [activeTab, setActiveTab] = useState<BridgeTab>(isBridgeSwapActive ? BridgeTab.BRIDGE_SWAP : BridgeTab.BRIDGE)
 
   const toPanelRef = useRef(null)
   const fromPanelRef = useRef(null)
@@ -131,6 +142,12 @@ export default function Bridge() {
   const isUnsupportedBridgeNetwork =
     networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
 
+  useEffect(() => {
+    if (activeTab === BridgeTab.BRIDGE) {
+      setTxsFilter(BridgeTxsFilter.RECENT)
+    }
+  }, [activeTab, setTxsFilter])
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
@@ -139,8 +156,9 @@ export default function Bridge() {
       onUserInput('')
       setDisplayedValue('')
       onCurrencySelection('')
+      onCurrencyOutputSelection('')
     }
-  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput])
+  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
 
   useEffect(() => {
     if (isUnsupportedBridgeNetwork) return
@@ -148,19 +166,38 @@ export default function Bridge() {
     dispatch(ecoBridgeUIActions.setFrom({ chainId }))
   }, [chainId, dispatch, isUnsupportedBridgeNetwork])
 
+  const toggleBridgeSwap = (isActive: boolean) => {
+    dispatch(ecoBridgeUIActions.setBridgeSwapStatus(isActive))
+  }
+
   const handleResetBridge = useCallback(() => {
     if (!chainId) return
-    setDisplayedValue('')
-    onUserInput('')
-    onCurrencySelection('')
 
-    setActiveTab(BridgeTab.BRIDGE)
+    onUserInput('')
+    setDisplayedValue('')
+    dispatch(ecoBridgeUIActions.setTo({ value: '' }))
+
+    onCurrencySelection('')
+    onCurrencyOutputSelection('')
+
     setTxsFilter(BridgeTxsFilter.RECENT)
     setModalState(BridgeModalStatus.CLOSED)
+
     if (isCollecting) {
       setIsCollecting(false)
+      setActiveTab(BridgeTab.COLLECT)
     }
-  }, [chainId, isCollecting, onCurrencySelection, onUserInput, setIsCollecting, setModalState, setTxsFilter])
+  }, [
+    chainId,
+    dispatch,
+    isCollecting,
+    onCurrencyOutputSelection,
+    onCurrencySelection,
+    onUserInput,
+    setIsCollecting,
+    setModalState,
+    setTxsFilter,
+  ])
 
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(isNetworkConnected ? maxAmountInput.toExact() : '')
@@ -187,7 +224,7 @@ export default function Bridge() {
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
       if (!tx) return
-      const { toChainId, value, assetName, fromChainId, txHash } = tx
+      const { toChainId, fromValue, assetName, fromChainId, txHash } = tx
 
       setCollectableTx(txHash)
       setIsCollecting(true)
@@ -197,7 +234,7 @@ export default function Bridge() {
         fromChainId,
         toChainId,
         symbol: assetName,
-        typedValue: value,
+        typedValue: fromValue,
       })
     },
     [setCollectableTx, setIsCollecting, setModalData, setTxsFilter]
@@ -245,6 +282,7 @@ export default function Bridge() {
         handleResetBridge={handleResetBridge}
         handleTriggerCollect={handleTriggerCollect}
         firstTxnToCollect={collectableTx}
+        toggleBridgeSwap={toggleBridgeSwap}
       />
       {activeTab !== BridgeTab.HISTORY && (
         <AppBody>
@@ -295,7 +333,7 @@ export default function Bridge() {
             </AssetWrapper>
           </Row>
           <CurrencyInputPanelBridge
-            value={isCollecting && collectableTx ? collectableTx.value : typedValue}
+            value={isCollecting && collectableTx ? collectableTx.fromValue : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
             currency={isCollecting ? collectableCurrency : bridgeCurrency}
@@ -313,7 +351,24 @@ export default function Bridge() {
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
             maxAmount={maxAmountInput}
+            isOutputPanel={false}
           />
+          {activeTab === BridgeTab.BRIDGE_SWAP && (
+            <OutputPanelContainer>
+              <CurrencyInputPanelBridge
+                id="bridge-currency-output"
+                value={to.value}
+                onUserInput={onUserInput}
+                disabled={true}
+                currency={bridgeOutputCurrency}
+                onCurrencySelect={onCurrencyOutputSelection}
+                isOutputPanel={true}
+                disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+                isLoading={!!account && isNetworkConnected && listsLoading}
+              />
+            </OutputPanelContainer>
+          )}
+
           <BridgeActionPanel
             account={account}
             fromNetworkChainId={fromChainId}
@@ -326,7 +381,9 @@ export default function Bridge() {
           />
         </AppBody>
       )}
-      {activeTab === BridgeTab.BRIDGE && showAvailableBridges && <BridgeSelectionWindow />}
+      {(activeTab === BridgeTab.BRIDGE || activeTab === BridgeTab.BRIDGE_SWAP) && showAvailableBridges && (
+        <BridgeSelectionWindow />
+      )}
       {!!bridgeSummaries.length && (
         <BridgeTransactionsSummary
           extraMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}

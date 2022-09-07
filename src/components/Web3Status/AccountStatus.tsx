@@ -12,6 +12,7 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
 import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
+import OptimismLogo from '../../assets/svg/optimism-logo.svg'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
 import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -24,10 +25,13 @@ import { RowBetween } from '../Row'
 const ChainLogo: any = {
   [ChainId.MAINNET]: EthereumLogo,
   [ChainId.RINKEBY]: EthereumLogo,
+  [ChainId.GOERLI]: EthereumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
+  [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
   [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
 }
 

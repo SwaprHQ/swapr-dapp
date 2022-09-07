@@ -161,7 +161,7 @@ export default function Updater(): null {
                     blockNumber: receipt.blockNumber,
                     contractAddress: receipt.contractAddress,
                     from: receipt.from,
-                    status: receipt.status,
+                    status: receipt.status as 0 | 1 | undefined,
                     to: receipt.to,
                     transactionHash: receipt.transactionHash,
                     transactionIndex: receipt.transactionIndex,
