@@ -3,6 +3,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
@@ -10,6 +11,7 @@ import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
+import { ChartTabs } from '../../components/swap/ChartTabs'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
@@ -34,10 +36,11 @@ import { Field } from '../../state/swap/types'
 import {
   useAdvancedSwapDetails,
   useIsExpertMode,
+  useUpdateSelectedChartTab,
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
-import { SwapTabs } from '../../state/user/reducer'
+import { ChartTabs as ChartTabsOptions, SwapTabs } from '../../state/user/reducer'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -111,6 +114,7 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
   }, [])
 
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
+  const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
 
   const { chainId } = useActiveWeb3React()
 
@@ -198,8 +202,9 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
+  const hasBothCurrenciesInput = currencies[Field.INPUT] && currencies[Field.OUTPUT]
   const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+    hasBothCurrenciesInput && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
 
   // check whether the user has approved the router on the input token
@@ -372,7 +377,11 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
 
   const renderSwapBox = () => (
     <>
-      {!isAdvancedTradePage && <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />}
+      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab}>
+        {hasBothCurrenciesInput && (
+          <ChartTabs activeChartTab={activeChartTab || ChartTabsOptions.OFF} setActiveChartTab={setSelectedChartTab} />
+        )}
+      </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -483,6 +492,7 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
     </>
   )
 
+  console.log(activeChartTab, isAdvancedTradePage, chainSupportsSWPR(chainId))
   return (
     <>
       <TokenWarningModal
@@ -494,7 +504,7 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {((activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId)) || isAdvancedTradePage) && (
+      {chainSupportsSWPR(chainId) && isAdvancedTradePage && (
         <>
           <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />

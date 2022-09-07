@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateSelectedChartTab,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
@@ -28,7 +29,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
-import { SwapTabs } from './reducer'
+import { ChartTabs, SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -130,13 +131,23 @@ const selectSelectedSwapTab = createSelector(
   selectedSwapTab => selectedSwapTab
 )
 
+const selectSelectedChartTab = createSelector(
+  (state: AppState) => state.user.selectedChartTab,
+  selectedChartTab => selectedChartTab
+)
+
 export function useSelectedSwapTab() {
   return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
 }
 
+export function useSelectedChartTab() {
+  return useSelector<AppState, AppState['user']['selectedChartTab']>(selectSelectedChartTab)
+}
+
+//  remove
 const selectIsAdvancedTradeViewTabActive = createSelector(
   (state: AppState) => state.user.selectedSwapTab,
-  selectedSwapTab => selectedSwapTab === SwapTabs.ADVANCED_SWAP_MODE
+  selectedSwapTab => selectedSwapTab === SwapTabs.SWAP
 )
 
 export function useIsAdvancedTradeMode() {
@@ -157,6 +168,24 @@ export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) =
   )
 
   return [currentTab, setSelectedTab]
+}
+
+export function useUpdateSelectedChartTab(): [ChartTabs, (selectedTab: ChartTabs) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentChartTab = useSelectedChartTab()
+
+  const setSelectedChartTab = useCallback(
+    (selectedChartTab: ChartTabs) => {
+      if (!currentChartTab || currentChartTab !== selectedChartTab) {
+        console.log(currentChartTab, selectedChartTab)
+
+        dispatch(updateSelectedChartTab({ selectedChartTab: selectedChartTab }))
+      }
+    },
+    [currentChartTab, dispatch]
+  )
+
+  return [currentChartTab, setSelectedChartTab]
 }
 
 const selectUserSlippageTolerance = createSelector(

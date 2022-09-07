@@ -12,6 +12,7 @@ import {
   SerializedToken,
   toggleURLWarning,
   updateMatchesDarkMode,
+  updateSelectedChartTab,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
@@ -26,8 +27,13 @@ const currentTimestamp = () => new Date().getTime()
 
 export enum SwapTabs {
   SWAP,
-  ADVANCED_SWAP_MODE,
   LIMIT_ORDER,
+  BRIDGE_SWAP,
+}
+export enum ChartTabs {
+  OFF,
+  SIMPLE,
+  PRO,
 }
 
 export interface UserState {
@@ -39,6 +45,7 @@ export interface UserState {
 
   userExpertMode: boolean
   selectedSwapTab: SwapTabs
+  selectedChartTab: ChartTabs
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -79,6 +86,7 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   userExpertMode: false,
   selectedSwapTab: 0,
+  selectedChartTab: 0,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -136,6 +144,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateSelectedSwapTab, (state, action) => {
       state.selectedSwapTab = action.payload.selectedSwapTab
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateSelectedChartTab, (state, action) => {
+      state.selectedChartTab = action.payload.selectedChartTab
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {
