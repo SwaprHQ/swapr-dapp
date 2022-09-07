@@ -34,7 +34,12 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
 
       if (onSelectNetworkCallback) onSelectNetworkCallback()
       changeChainId.then(() => {
-        if (!SWPR[optionChainId]) window.location.replace('../swap')
+        if (
+          !SWPR[optionChainId] &&
+          // check if the URL includes any of these
+          ['/pools', '/rewards'].reduce((state, str) => state || window.location.href.includes(str), false)
+        )
+          window.location.replace('../swap')
       })
     },
     [account, chainId, connector, onSelectNetworkCallback, unsupportedChainIdError]
