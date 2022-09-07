@@ -5,7 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SwaprActionPayload } from './adapters/baseAdapter/base.types'
 import { InitialState } from './advancedTradingView.types'
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
   pair: {
     inputToken: undefined,
     outputToken: undefined,

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
-import store from '../../state'
+import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
@@ -24,7 +24,7 @@ const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
 
 export const useAdvancedTradingViewAdapter = () => {
   const { chainId } = useActiveWeb3React()
-  const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter>()
+  const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
   const [symbol, setSymbol] = useState<string>()
   const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
     inputTokenAddress: undefined,
@@ -47,7 +47,7 @@ export const useAdvancedTradingViewAdapter = () => {
 
   useEffect(() => {
     if (!advancedTradingViewAdapter && chainId) {
-      const tradesHistoryAdapter = new AdvancedTradingViewAdapter({
+      const tradesHistoryAdapter = new AdvancedTradingViewAdapter<AppState>({
         adapters,
         chainId,
         store,
