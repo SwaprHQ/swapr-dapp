@@ -1,14 +1,12 @@
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { ChartData, lastDataElement } from './simpleChartUtils'
-
-export const PricePercentualDifference = ({ data }: { data: ChartData[] }) => {
+export const PricePercentualDifference = ({ firstValue, lastValue }: { firstValue: string; lastValue: string }) => {
   const theme = useTheme()
 
-  const originalPrice = parseFloat(data[0].value)
-  const lastPrice = parseFloat(lastDataElement(data).value)
-  const pricePercentualDifference = parseFloat((((lastPrice - originalPrice) / originalPrice) * 100).toPrecision(3))
+  const firstPrice = parseFloat(firstValue)
+  const lastPrice = parseFloat(lastValue)
+  const pricePercentualDifference = parseFloat((((lastPrice - firstPrice) / firstPrice) * 100).toPrecision(3))
 
   const isPricePercentualDifferencePositive = pricePercentualDifference > 0
   const isPricePercentualDifferenceZero = pricePercentualDifference === 0

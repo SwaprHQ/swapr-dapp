@@ -1,32 +1,37 @@
 import { Currency } from '@swapr/sdk'
 
-import React, { useLayoutEffect } from 'react'
+import React from 'react'
 import { Repeat as RepeatIcon } from 'react-feather'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { SimpleChartLoading } from './SimpleChartLoading'
-import { DATE_INTERVALS } from './simpleChartUtils'
+import { ChartData, DATE_INTERVALS } from './simpleChartUtils'
 import TradingViewAreaChart from './TradingViewAreaChart'
 
-export default function SimpleChart({ currency0, currency1 }: { currency0?: Currency; currency1?: Currency }) {
+export default function SimpleChart({
+  data,
+  loading,
+  currency0,
+  currency1,
+  selectedInterval,
+  setSelectedInterval,
+  isCurrenciesSwitched,
+  setIsCurrenciesSwitched,
+}: {
+  data: ChartData[]
+  loading: boolean
+  currency0?: Currency
+  currency1?: Currency
+  selectedInterval: string
+  isCurrenciesSwitched: boolean
+  setIsCurrenciesSwitched: Function
+  setSelectedInterval: Function
+}) {
   const theme = useTheme()
-  const [selectedInterval, setSelectedInterval] = React.useState<string>(DATE_INTERVALS.DAY)
-  const [isCurrenciesSwitched, setIsCurrenciesSwitched] = React.useState(false)
-
-  useLayoutEffect(() => setIsCurrenciesSwitched(false), [currency0, currency1])
-
-  const currencies = isCurrenciesSwitched ? { currency0: currency1, currency1: currency0 } : { currency0, currency1 }
-
-  const { data, loading } = usePairTokenPriceByTimestamp({
-    currency0: currencies.currency0,
-    currency1: currencies.currency1,
-    dateInterval: selectedInterval,
-  })
 
   return (
     <BlurBox minHeight="312px" width="100%" p={3}>
@@ -39,7 +44,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
               onClick={() => setIsCurrenciesSwitched(!isCurrenciesSwitched)}
             >
               <Text fontSize="12px" fontWeight={600}>
-                {currencies.currency0?.symbol}/{currencies.currency1?.symbol}
+                {currency0?.symbol}/{currency1?.symbol}
               </Text>
               <Box ml={1}>
                 <RepeatIcon size="12" />
@@ -55,7 +60,7 @@ export default function SimpleChart({ currency0, currency1 }: { currency0?: Curr
             ) : data && data.length > 0 ? (
               <TradingViewAreaChart
                 data={data}
-                tokenSymbol={currencies.currency1?.symbol}
+                tokenSymbol={currency1?.symbol}
                 showHours={selectedInterval === DATE_INTERVALS.DAY}
               />
             ) : (

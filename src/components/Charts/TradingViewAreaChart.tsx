@@ -1,11 +1,4 @@
-import {
-  AreaStyleOptions,
-  ChartOptions,
-  createChart,
-  DeepPartial,
-  SeriesOptionsCommon,
-  UTCTimestamp,
-} from 'lightweight-charts'
+import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -147,7 +140,8 @@ const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaC
       <Box width="100%">
         <BigPriceText>{`${formatPrice(price)} ${tokenSymbol}`}</BigPriceText>
         <Flex alignItems="center">
-          <DateText>{formatDate(date)}</DateText> <PricePercentualDifference data={data} />
+          <DateText>{formatDate(date)}</DateText>{' '}
+          <PricePercentualDifference firstValue={data[0].value} lastValue={lastElementValueOrDefault(data)} />
         </Flex>
       </Box>
       <div ref={chartRef} />
