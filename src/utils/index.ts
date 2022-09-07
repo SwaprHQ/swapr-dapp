@@ -217,8 +217,9 @@ export const calculatePercentage = (value: number, percentage: number): number =
 }
 
 export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
-  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
-  window.ethereum
+  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account)
+    return new Promise(() => {})
+  return window.ethereum
     .request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: networkDetails.chainId }],
