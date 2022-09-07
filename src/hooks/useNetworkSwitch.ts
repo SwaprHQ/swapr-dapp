@@ -6,7 +6,6 @@ import { useCallback } from 'react'
 import { CustomNetworkConnector } from '../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../connectors/CustomWalletLinkConnector'
 import { NETWORK_DETAIL } from '../constants'
-// import { RedirectToSwap } from '../pages/Swap/redirects'
 import { switchOrAddNetwork } from '../utils'
 
 import { useActiveWeb3React, useUnsupportedChainIdError } from '.'
