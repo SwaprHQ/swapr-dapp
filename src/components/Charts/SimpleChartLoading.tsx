@@ -13,11 +13,11 @@ export const SimpleChartLoading = () => {
       <svg width="100%" preserveAspectRatio="xMinYMin slice" viewBox="0 0 766 300">
         <defs>
           <linearGradient id="linear-gradient">
-            <stop offset="0%" stop-color="#c8bdff"></stop>
-            <stop offset="33%" stop-color="#c8bdff"></stop>
+            <stop offset="0%" stop-color="#c8bdff" stop-opacity="0.4"></stop>
+            <stop offset="33%" stop-color="#c8bdff" stop-opacity="0.4"></stop>
             <stop offset="50%" stop-color="#ffffff"></stop>
-            <stop offset="67%" stop-color="#c8bdff"></stop>
-            <stop offset="100%" stop-color="#c8bdff"></stop>
+            <stop offset="67%" stop-color="#c8bdff" stop-opacity="0.4"></stop>
+            <stop offset="100%" stop-color="#c8bdff" stop-opacity="0.4"></stop>
             <animateTransform
               attributeName="gradientTransform"
               type="translate"
@@ -29,7 +29,7 @@ export const SimpleChartLoading = () => {
             ></animateTransform>
           </linearGradient>
           <linearGradient id="area" x1="50%" y1="-104.497044%" x2="50%" y2="85.1203676%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="1"></stop>
+            <stop offset="0%" stop-color="#c8bdff" stop-opacity="0.4"></stop>
             <stop offset="100%" stop-color="#cc90ff" stop-opacity="0"></stop>
           </linearGradient>
         </defs>
