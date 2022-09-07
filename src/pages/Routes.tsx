@@ -30,7 +30,6 @@ const RouteWrapper = ({ element }: { element: JSX.Element }) => {
   const { chainId } = useActiveWeb3React()
   // If all features are available, render the route
   if (chainSupportsSWPR(chainId) || ChainId.ARBITRUM_GOERLI) {
-    console.log('Returning the element')
     // FIXME: fix this if's condition once SWPR is on Arb Goerli
     return element
   }
