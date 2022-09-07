@@ -127,7 +127,7 @@ export default function Pair() {
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
-          <Flex my={3}>
+          <Flex my={3} data-testid="open-rewards-button">
             <ButtonBadge
               number={miningCampaigns.active.length}
               color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}
