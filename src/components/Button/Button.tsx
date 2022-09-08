@@ -100,8 +100,8 @@ export const ButtonGrey = styled(Base)`
   border: 1px solid #2a2f42;
   background-color: ${props => props.theme.bg1And2};
   color: ${({ theme }) => theme.text5};
-  font-size: 10px;
-  padding: 9px 10px;
+  font-size: 16px;
+  padding: ${({ padding }) => (padding ? padding : '10px')};
   width: fit-content;
 
   &:disabled {
