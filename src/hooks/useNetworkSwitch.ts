@@ -25,22 +25,20 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
     async (optionChainId?: ChainId) => {
       if (optionChainId === undefined || (optionChainId === chainId && !unsupportedChainIdError)) return
 
-      let changeChainIdPromise: Promise<unknown> | undefined
-      if (!account && !unsupportedChainIdError && connector instanceof CustomNetworkConnector)
+      let changeChainIdResult: unknown | undefined
+      if (!account && !unsupportedChainIdError && connector instanceof CustomNetworkConnector) {
         connector.changeChainId(optionChainId)
-      else if (!account && unsupportedChainIdError && connector instanceof CustomNetworkConnector)
-        changeChainIdPromise = connector.switchUnsupportedNetwork(NETWORK_DETAIL[optionChainId])
+        unavailableRedirect(optionChainId, navigate, pathname)
+      } else if (!account && unsupportedChainIdError && connector instanceof CustomNetworkConnector)
+        changeChainIdResult = await connector.switchUnsupportedNetwork(NETWORK_DETAIL[optionChainId])
       else if (connector instanceof InjectedConnector)
-        changeChainIdPromise = switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
+        changeChainIdResult = await switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
       else if (connector instanceof CustomWalletLinkConnector)
-        changeChainIdPromise = connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
+        changeChainIdResult = await connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
 
       if (onSelectNetworkCallback) onSelectNetworkCallback()
-      if (changeChainIdPromise) {
-        const result = await changeChainIdPromise
-        // success scenario - user accepts the change on the popup window
-        if (result === null) unavailableRedirect(optionChainId, navigate, pathname)
-      }
+      // success scenario - user accepts the change on the popup window
+      if (changeChainIdResult === null) unavailableRedirect(optionChainId, navigate, pathname)
     },
     [account, chainId, connector, navigate, onSelectNetworkCallback, pathname, unsupportedChainIdError]
   )
