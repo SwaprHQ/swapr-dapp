@@ -131,7 +131,7 @@ export class CustomNetworkConnector extends AbstractConnector {
 
   public switchUnsupportedNetwork(networkDetails?: NetworkDetails) {
     if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails)
-      return Promise.reject(() => {})
+      return Promise.reject()
     return window.ethereum
       .request({
         method: 'wallet_switchEthereumChain',

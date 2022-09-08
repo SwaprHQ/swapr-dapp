@@ -48,10 +48,11 @@ export default function NetworkWarningModal() {
 
   const handleDismiss = useCallback(() => null, [])
 
-  const handleAddClick = useCallback(() => {
+  const handleAddClick = useCallback(async () => {
     if (!urlLoadedChainId) return
-    switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
-    unavailableRedirect(urlLoadedChainId, navigate, pathname)
+    const result = await switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
+    // success scenario
+    if (result === null) unavailableRedirect(urlLoadedChainId, navigate, pathname)
   }, [urlLoadedChainId, account, navigate, pathname])
 
   return (

@@ -36,11 +36,10 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
         changeChainId = connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
 
       if (onSelectNetworkCallback) onSelectNetworkCallback()
-      try {
-        if (changeChainId) await changeChainId
-        unavailableRedirect(optionChainId, navigate, pathname)
-      } catch (e) {
-        throw e
+      if (changeChainId) {
+        const result = await changeChainId
+        // success scenario
+        if (result === null) unavailableRedirect(optionChainId, navigate, pathname)
       }
     },
     [account, chainId, connector, navigate, onSelectNetworkCallback, pathname, unsupportedChainIdError]
