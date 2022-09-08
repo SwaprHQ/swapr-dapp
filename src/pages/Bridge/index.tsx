@@ -25,7 +25,10 @@ import {
 } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { useEcoBridge } from '../../services/EcoBridge/EcoBridgeProvider'
-import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
+import {
+  selectBridgeFilteredTransactions,
+  selectSupportedBridges,
+} from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../state'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
@@ -102,6 +105,7 @@ export default function Bridge() {
   const bridgeSummaries = useSelector((state: AppState) =>
     selectBridgeFilteredTransactions(state, account ?? undefined)
   )
+  const possibleBridges = useSelector((state: AppState) => selectSupportedBridges(state))
 
   useBridgeFetchDynamicLists()
 
@@ -134,6 +138,7 @@ export default function Bridge() {
 
   const collectableTxAmount = bridgeSummaries.filter(tx => tx.status === 'redeem').length
   const isNetworkConnected = fromChainId === chainId
+  const hasBridges = possibleBridges.length > 0
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
   const { from, to } = useSelector((state: AppState) => state.ecoBridge.ui)
 
@@ -340,7 +345,7 @@ export default function Bridge() {
             onUserInput={onUserInput}
             onMax={isCollecting ? undefined : handleMaxInput}
             onCurrencySelect={onCurrencySelection}
-            disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+            disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
             disabled={!account || isCollecting || !isNetworkConnected}
             id="bridge-currency-input"
             hideBalance={
