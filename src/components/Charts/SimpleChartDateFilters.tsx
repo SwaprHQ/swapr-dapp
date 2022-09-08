@@ -3,13 +3,12 @@ import styled from 'styled-components'
 
 import { DATE_INTERVALS } from './simpleChartUtils'
 
-export const SimpleChartDateFilters = ({
-  selectedInterval,
-  setInterval,
-}: {
+type SimpleChartDateFiltersProps = {
   selectedInterval: string
   setInterval: Function
-}) => (
+}
+
+export const SimpleChartDateFilters = ({ selectedInterval, setInterval }: SimpleChartDateFiltersProps) => (
   <Flex>
     <DateFilterButton active={selectedInterval === DATE_INTERVALS.DAY} onClick={() => setInterval(DATE_INTERVALS.DAY)}>
       1d

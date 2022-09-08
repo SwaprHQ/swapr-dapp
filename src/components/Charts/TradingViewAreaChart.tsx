@@ -1,8 +1,8 @@
 import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import { Box, Flex } from 'rebass'
-import styled from 'styled-components'
 
+import { TYPE } from '../../theme/index'
 import { PricePercentualDifference } from './PricePercentualDifference'
 import {
   buildDate,
@@ -30,7 +30,7 @@ type TradingViewAreaChartProps = {
   showHours?: boolean
 }
 
-const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaChartProps) => {
+export const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaChartProps) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))
@@ -138,9 +138,11 @@ const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaC
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
       <Box width="100%">
-        <BigPriceText>{`${formatPrice(price)} ${tokenSymbol}`}</BigPriceText>
-        <Flex alignItems="center">
-          <DateText>{formatDate(date)}</DateText>{' '}
+        <TYPE.DarkGray fontWeight={600} fontSize={30}>{`${formatPrice(price)} ${tokenSymbol}`}</TYPE.DarkGray>
+        <Flex alignItems="center" mt="4px">
+          <TYPE.Main fontSize={12} color="text4">
+            {formatDate(date)}
+          </TYPE.Main>
           <PricePercentualDifference firstValue={data[0].value} lastValue={lastElementValueOrDefault(data)} />
         </Flex>
       </Box>
@@ -148,19 +150,3 @@ const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaC
     </Flex>
   )
 }
-
-const BigPriceText = styled.p`
-  font-family: 'Inter', Arial, Helvetica;
-  font-size: 30px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.text3};
-
-  margin-bottom: 4px;
-`
-
-const DateText = styled.p`
-  font-size: 12px;
-  color: ${({ theme }) => theme.text4};
-`
-
-export default TradingViewAreaChart

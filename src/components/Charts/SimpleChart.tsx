@@ -10,18 +10,9 @@ import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { SimpleChartLoading } from './SimpleChartLoading'
 import { ChartData, DATE_INTERVALS } from './simpleChartUtils'
-import TradingViewAreaChart from './TradingViewAreaChart'
+import { TradingViewAreaChart } from './TradingViewAreaChart'
 
-export function SimpleChart({
-  data,
-  loading,
-  currency0,
-  currency1,
-  selectedInterval,
-  setSelectedInterval,
-  isCurrenciesSwitched,
-  setIsCurrenciesSwitched,
-}: {
+type SimpleChartProps = {
   data: ChartData[]
   loading: boolean
   currency0?: Currency
@@ -30,7 +21,18 @@ export function SimpleChart({
   isCurrenciesSwitched: boolean
   setIsCurrenciesSwitched: Function
   setSelectedInterval: Function
-}) {
+}
+
+export const SimpleChart = ({
+  data,
+  loading,
+  currency0,
+  currency1,
+  selectedInterval,
+  setSelectedInterval,
+  isCurrenciesSwitched,
+  setIsCurrenciesSwitched,
+}: SimpleChartProps) => {
   const theme = useTheme()
 
   return (

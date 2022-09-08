@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
 import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup/ButtonGroup'
-import SimpleChartSwapbox from '../../components/Charts/SimpleChartSwapbox'
+import { SimpleChartContainer } from '../../components/Charts/SimpleChartContainer'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
@@ -543,7 +543,7 @@ export default function Swap() {
               mt={[4, 4, 4, 0]}
               ml={[0, 0, 0, 3]}
             >
-              <SimpleChartSwapbox currency0={currencies[Field.INPUT]} currency1={currencies[Field.OUTPUT]} />
+              <SimpleChartContainer currency0={currencies[Field.INPUT]} currency1={currencies[Field.OUTPUT]} />
             </Flex>
           )}
         </Flex>

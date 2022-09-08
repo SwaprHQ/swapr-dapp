@@ -6,7 +6,9 @@ import { usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTim
 import { SimpleChart } from './SimpleChart'
 import { DATE_INTERVALS } from './simpleChartUtils'
 
-export default function SimpleChartSwapbox({ currency0, currency1 }: { currency0?: Currency; currency1?: Currency }) {
+type SimpleChartContainerProps = { currency0?: Currency; currency1?: Currency }
+
+export const SimpleChartContainer = ({ currency0, currency1 }: SimpleChartContainerProps) => {
   const [selectedInterval, setSelectedInterval] = React.useState<string>(DATE_INTERVALS.DAY)
   const [isCurrenciesSwitched, setIsCurrenciesSwitched] = React.useState(false)
 

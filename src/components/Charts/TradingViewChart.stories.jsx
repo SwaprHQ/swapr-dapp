@@ -2,7 +2,7 @@ import { DAI } from '@swapr/sdk'
 
 import { Flex } from 'rebass'
 
-import TradingViewAreaChart from './TradingViewAreaChart'
+import { TradingViewAreaChart } from './TradingViewAreaChart'
 
 const data = [
   {
@@ -114,10 +114,8 @@ const Template = args => (
 //👇 Each story then reuses that template
 export const TradingViewAreaChartTemplate = Template.bind({})
 
-const currencies = { currency1: DAI[1] }
-
 TradingViewAreaChartTemplate.args = {
   data: data,
-  tokenSymbol: currencies.currency1.symbol,
+  tokenSymbol: DAI[1].symbol,
   showHours: false,
 }
