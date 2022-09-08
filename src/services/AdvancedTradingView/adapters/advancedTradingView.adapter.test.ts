@@ -117,27 +117,4 @@ describe('AdvancedTradingView - adapter', () => {
       }
     `)
   })
-
-  it('fetchPairTrades and fetchPairActivity are called with correct parameters', async () => {
-    advancedTradingViewAdapter.fetchPairTrades = jest.fn()
-    advancedTradingViewAdapter.fetchPairActivity = jest.fn()
-
-    const parameters = {
-      amountToFetch: 25,
-      inputToken: USDC_TOKEN,
-      outputToken: USDT_TOKEN,
-      isFirstFetch: true,
-    }
-
-    await Promise.all([
-      advancedTradingViewAdapter.fetchPairTrades(parameters),
-      advancedTradingViewAdapter.fetchPairActivity(parameters),
-    ])
-
-    expect(advancedTradingViewAdapter.fetchPairTrades).toHaveBeenCalledTimes(1)
-    expect(advancedTradingViewAdapter.fetchPairTrades).toHaveBeenCalledWith(parameters)
-
-    expect(advancedTradingViewAdapter.fetchPairActivity).toHaveBeenCalledTimes(1)
-    expect(advancedTradingViewAdapter.fetchPairActivity).toHaveBeenCalledWith(parameters)
-  })
 })

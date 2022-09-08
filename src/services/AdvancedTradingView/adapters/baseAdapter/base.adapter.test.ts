@@ -71,14 +71,6 @@ describe('BaseAdapter', () => {
     store.dispatch(actions.setPairTokens({ inputToken: USDC_TOKEN, outputToken: USDT_TOKEN }))
   })
 
-  it('baseAdapter is able update chain id', () => {
-    baseAdapter.updateActiveChainId = jest.fn()
-
-    baseAdapter.updateActiveChainId(ChainId.GNOSIS)
-
-    expect(baseAdapter.updateActiveChainId).toHaveBeenCalledWith(ChainId.GNOSIS)
-  })
-
   it('getPairTrades function fetches data and checks hasMore property', async () => {
     graphqlRequestMock.mockImplementationOnce(() =>
       Promise.resolve({
@@ -98,9 +90,13 @@ describe('BaseAdapter', () => {
 
     expect(graphqlRequestMock).toHaveBeenCalledTimes(1)
 
-    expect(store.getState().advancedTradingView).toMatchSnapshot()
+    const pairAfterFirstFetch = selectCurrentSwaprPair(store.getState())?.pair
 
-    expect(selectCurrentSwaprPair(store.getState())?.pair?.swaps?.hasMore).toBeTruthy()
+    expect(pairAfterFirstFetch?.swaps?.data.length).toBe(50)
+
+    expect(pairAfterFirstFetch?.swaps?.hasMore).toBeTruthy()
+
+    expect(pairAfterFirstFetch?.swaps?.data).toStrictEqual(new Array(50).fill(FAKE_SWAP_DATA))
 
     graphqlRequestMock.mockImplementationOnce(() =>
       Promise.resolve({
@@ -116,11 +112,13 @@ describe('BaseAdapter', () => {
       abortController: () => new AbortController().signal,
     })
 
-    expect(graphqlRequestMock).toHaveBeenCalledTimes(2)
+    const pairAfterSecondFetch = selectCurrentSwaprPair(store.getState())?.pair
 
-    expect(store.getState().advancedTradingView).toMatchSnapshot()
+    expect(pairAfterSecondFetch?.swaps?.data.length).toBe(60)
 
-    expect(selectCurrentSwaprPair(store.getState())?.pair?.swaps?.hasMore).toBeFalsy()
+    expect(pairAfterSecondFetch?.swaps?.hasMore).toBeFalsy()
+
+    expect(pairAfterSecondFetch?.swaps?.data).toStrictEqual(new Array(60).fill(FAKE_SWAP_DATA))
 
     await baseAdapter.getPairTrades({
       inputToken: USDC_TOKEN,
@@ -153,9 +151,13 @@ describe('BaseAdapter', () => {
 
     expect(graphqlRequestMock).toHaveBeenCalledTimes(1)
 
-    expect(store.getState().advancedTradingView).toMatchSnapshot()
+    const pairAfterFirstFetch = selectCurrentSwaprPair(store.getState())?.pair
 
-    expect(selectCurrentSwaprPair(store.getState())?.pair?.burnsAndMints?.hasMore).toBeTruthy()
+    expect(pairAfterFirstFetch?.burnsAndMints?.data.length).toBe(50)
+
+    expect(pairAfterFirstFetch?.burnsAndMints?.hasMore).toBeTruthy()
+
+    expect(pairAfterFirstFetch?.burnsAndMints?.data).toStrictEqual(new Array(50).fill(FAKE_BURNS_AND_MINTS_DATA))
 
     graphqlRequestMock.mockImplementationOnce(() =>
       Promise.resolve({
@@ -174,9 +176,13 @@ describe('BaseAdapter', () => {
 
     expect(graphqlRequestMock).toHaveBeenCalledTimes(2)
 
-    expect(store.getState().advancedTradingView).toMatchSnapshot()
+    const pairAfterSecondFetch = selectCurrentSwaprPair(store.getState())?.pair
 
-    expect(selectCurrentSwaprPair(store.getState())?.pair?.burnsAndMints?.hasMore).toBeFalsy()
+    expect(pairAfterSecondFetch?.burnsAndMints?.data.length).toBe(70)
+
+    expect(pairAfterSecondFetch?.burnsAndMints?.hasMore).toBeFalsy()
+
+    expect(pairAfterSecondFetch?.burnsAndMints?.data).toStrictEqual(new Array(70).fill(FAKE_BURNS_AND_MINTS_DATA))
 
     await baseAdapter.getPairActivity({
       inputToken: USDC_TOKEN,
@@ -207,7 +213,15 @@ describe('BaseAdapter', () => {
       abortController: () => new AbortController().signal,
     })
 
-    expect(store.getState().advancedTradingView).toMatchSnapshot()
+    expect(store.getState().advancedTradingView.adapters).toMatchInlineSnapshot(`
+      Object {
+        "honeyswap": Object {},
+        "sushiswap": Object {},
+        "swapr": Object {},
+        "uniswapV2": Object {},
+        "uniswapV3": Object {},
+      }
+    `)
   })
 
   it('adapters sets hasMore to false when response is empty array (incorrect pairId)', async () => {

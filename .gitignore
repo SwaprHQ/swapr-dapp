@@ -38,5 +38,3 @@ mochawesome-report
 .eslintcache
 
 **/generated/**/*
-
-__snapshots__/
