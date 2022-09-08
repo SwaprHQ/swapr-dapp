@@ -25,19 +25,19 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
     async (optionChainId?: ChainId) => {
       if (optionChainId === undefined || (optionChainId === chainId && !unsupportedChainIdError)) return
 
-      let changeChainId: Promise<unknown> | undefined
+      let changeChainIdPromise: Promise<unknown> | undefined
       if (!account && !unsupportedChainIdError && connector instanceof CustomNetworkConnector)
         connector.changeChainId(optionChainId)
       else if (!account && unsupportedChainIdError && connector instanceof CustomNetworkConnector)
-        changeChainId = connector.switchUnsupportedNetwork(NETWORK_DETAIL[optionChainId])
+        changeChainIdPromise = connector.switchUnsupportedNetwork(NETWORK_DETAIL[optionChainId])
       else if (connector instanceof InjectedConnector)
-        changeChainId = switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
+        changeChainIdPromise = switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
       else if (connector instanceof CustomWalletLinkConnector)
-        changeChainId = connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
+        changeChainIdPromise = connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
 
       if (onSelectNetworkCallback) onSelectNetworkCallback()
-      if (changeChainId) {
-        const result = await changeChainId
+      if (changeChainIdPromise) {
+        const result = await changeChainIdPromise
         // success scenario
         if (result === null) unavailableRedirect(optionChainId, navigate, pathname)
       }
