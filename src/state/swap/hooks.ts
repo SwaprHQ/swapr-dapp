@@ -315,7 +315,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     },
     parsedAmount,
     trade,
-    allPlatformTrades,
+    allPlatformTrades: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTrades,
     inputError: returnInputError,
     loading,
   }
