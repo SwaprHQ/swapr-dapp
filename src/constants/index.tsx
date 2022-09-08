@@ -367,6 +367,10 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.GOERLI,
+    ChainId.ARBITRUM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
   [ConnectorType.COINBASE]: [
     ChainId.MAINNET,
@@ -375,6 +379,10 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.GOERLI,
+    ChainId.ARBITRUM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
   [ConnectorType.WALLET_CONNECT]: [
     ChainId.MAINNET,
@@ -383,6 +391,10 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.GOERLI,
+    ChainId.ARBITRUM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
   [ConnectorType.NETWORK]: [
     ChainId.MAINNET,
@@ -391,6 +403,10 @@ export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
     ChainId.ARBITRUM_RINKEBY,
     ChainId.XDAI,
     ChainId.POLYGON,
+    ChainId.GOERLI,
+    ChainId.ARBITRUM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.OPTIMISM_GOERLI,
   ],
 }
 
