@@ -51,7 +51,7 @@ export default function NetworkWarningModal() {
   const handleAddClick = useCallback(async () => {
     if (!urlLoadedChainId) return
     const result = await switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
-    // success scenario
+    // success scenario - user accepts the change on the popup window
     if (result === null) unavailableRedirect(urlLoadedChainId, navigate, pathname)
   }, [urlLoadedChainId, account, navigate, pathname])
 

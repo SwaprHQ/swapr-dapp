@@ -38,7 +38,7 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
       if (onSelectNetworkCallback) onSelectNetworkCallback()
       if (changeChainIdPromise) {
         const result = await changeChainIdPromise
-        // success scenario
+        // success scenario - user accepts the change on the popup window
         if (result === null) unavailableRedirect(optionChainId, navigate, pathname)
       }
     },
