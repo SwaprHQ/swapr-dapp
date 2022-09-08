@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 
-import { ReactComponent as ChartLoading } from '../../assets/svg/chart-loading.svg'
+import { ReactComponent as ChartLoading } from '../../assets/images/chart-loading.svg'
 
 export const SimpleChartLoading = () => {
   return (
