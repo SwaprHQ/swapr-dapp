@@ -112,7 +112,16 @@ export default function Bridge() {
   const showAvailableBridges = useShowAvailableBridges()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
-  const { bridgeCurrency, bridgeOutputCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
+  const {
+    bridgeCurrency,
+    bridgeOutputCurrency,
+    currencyBalance,
+    typedValue,
+    fromChainId,
+    toChainId,
+    isBridgeSwapActive,
+    toValue,
+  } = useBridgeInfo()
   const {
     onCurrencySelection,
     onCurrencyOutputSelection,
@@ -124,7 +133,6 @@ export default function Bridge() {
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
-  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
   const [activeTab, setActiveTab] = useState<BridgeTab>(isBridgeSwapActive ? BridgeTab.BRIDGE_SWAP : BridgeTab.BRIDGE)
 
@@ -140,7 +148,6 @@ export default function Bridge() {
   const isNetworkConnected = fromChainId === chainId
   const hasBridges = possibleBridges.length > 0
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
-  const { from, to } = useSelector((state: AppState) => state.ecoBridge.ui)
 
   const [displayedValue, setDisplayedValue] = useState('')
 
@@ -163,7 +170,7 @@ export default function Bridge() {
       onCurrencySelection('')
       onCurrencyOutputSelection('')
     }
-  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
+  }, [fromChainId, toChainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
 
   useEffect(() => {
     if (isUnsupportedBridgeNetwork) return
@@ -362,7 +369,7 @@ export default function Bridge() {
             <OutputPanelContainer>
               <CurrencyInputPanelBridge
                 id="bridge-currency-output"
-                value={to.value}
+                value={toValue}
                 onUserInput={onUserInput}
                 disabled={true}
                 currency={bridgeOutputCurrency}
