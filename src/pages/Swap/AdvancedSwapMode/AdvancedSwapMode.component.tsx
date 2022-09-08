@@ -42,11 +42,12 @@ const renderStatusOfTrades = (arr: AdvancedViewTransaction[], showTrades: boolea
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const {
     tradeHistory,
-    hasMore: { hasMoreTrades },
+    liquidityHistory,
+    hasMore: { hasMoreTrades, hasMoreActivity },
   } = useAllTrades()
   const [tokens, setTokens] = useState<Token[]>([])
   const [token0, token1] = tokens
-  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
+  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades, fetchActivity } =
     useAdvancedTradingViewAdapter()
 
   useEffect(() => {
@@ -130,40 +131,23 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             {showTrades &&
               activeSwitchOption &&
               tradeHistory
-                .sort((firstTrade, secondTrade) =>
-                  Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
-                )
-                .map(
-                  (
-                    {
-                      transactionId,
-                      timestamp,
-                      amountIn,
-                      amountOut,
-                      isSell,
-                      amountUSD,
-                      logoKey,
-                      priceToken0,
-                      priceToken1,
-                    },
-                    index
-                  ) => {
-                    return (
-                      <Trade
-                        key={`${transactionId}-${index}`}
-                        isSell={isSell}
-                        transactionId={transactionId}
-                        logoKey={logoKey}
-                        chainId={chainId}
-                        amountIn={amountIn}
-                        amountOut={amountOut}
-                        timestamp={timestamp}
-                        amountUSD={amountUSD}
-                        price={activeSwitchOption?.address === token0.address ? priceToken0 : priceToken1}
-                      />
-                    )
-                  }
-                )}
+                .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
+                .map((tx, index) => {
+                  return (
+                    <Trade
+                      key={`${tx.transactionId}-${index}`}
+                      isSell={tx.isSell}
+                      transactionId={tx.transactionId}
+                      logoKey={tx.logoKey}
+                      chainId={chainId}
+                      amountIn={tx.amountIn}
+                      amountOut={tx.amountOut}
+                      timestamp={tx.timestamp}
+                      amountUSD={tx.amountUSD}
+                      price={activeSwitchOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
+                    />
+                  )
+                })}
           </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>
@@ -191,17 +175,52 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             <AdvancedModeTitle>Pool Activity</AdvancedModeTitle>
             <ButtonDark
               onClick={handleAddLiquidity}
-              disabled={!(inputToken && outputToken)}
+              disabled={!showTrades}
               style={{ fontSize: '10px', width: 'fit-content', padding: '4px 8px', marginTop: '-15px' }}
             >
               Add Liquidity
             </ButtonDark>
           </Flex>
           <AdvancedModeDetails>
-            <Text>Amount</Text>
-            <Text>Amount </Text>
+            <Text>Amount {token0?.symbol ? `(${token0.symbol})` : ''}</Text>
+            <Text>Amount {token1?.symbol ? `(${token1.symbol})` : ''}</Text>
             <Text sx={{ textAlign: 'right' }}>Time</Text>
           </AdvancedModeDetails>
+          <TransactionsWrapper maxHeight="400px" id="liquidity-wrapper-scrollable">
+            <InfiniteScroll
+              dataLength={liquidityHistory.length}
+              next={fetchActivity}
+              hasMore={hasMoreActivity}
+              scrollableTarget="liquidity-wrapper-scrollable"
+              loader={
+                showTrades && (
+                  <LoaderContainer>
+                    <Loader size="40px" stroke="#8780BF" />
+                  </LoaderContainer>
+                )
+              }
+              scrollThreshold={1}
+            >
+              {showTrades &&
+                liquidityHistory
+                  .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
+                  .map((tx, index) => {
+                    return (
+                      <Trade
+                        key={`${tx.transactionId}-${index}`}
+                        isSell={Boolean(tx.isSell)}
+                        transactionId={tx.transactionId}
+                        logoKey={tx.logoKey}
+                        chainId={chainId}
+                        amountIn={tx.amountIn}
+                        amountOut={tx.amountOut}
+                        timestamp={tx.timestamp}
+                        amountUSD={tx.amountUSD}
+                      />
+                    )
+                  })}
+            </InfiniteScroll>
+          </TransactionsWrapper>
         </AdvancedModeHeader>
       </LiquidityWrapper>
     </Container>

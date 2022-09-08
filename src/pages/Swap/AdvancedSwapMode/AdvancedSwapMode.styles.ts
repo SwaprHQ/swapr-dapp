@@ -182,9 +182,10 @@ export const AdvancedModeDetails = styled.div`
     margin-left: 0.625rem;
   }
 `
-export const TransactionsWrapper = styled.div`
+export const TransactionsWrapper = styled.div<{ maxHeight?: string }>`
   ${CustomScrollBar}
-  max-height: 600px;
+  min-height: 200px;
+  max-height: ${({ maxHeight }) => maxHeight || '600px'};
   overflow-y: scroll;
 
   @media screen and (max-width: ${breakpoints.s}) {

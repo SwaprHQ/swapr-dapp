@@ -38,6 +38,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
     burns(
       where: { token0_in: $token0_in, token1_in: $token1_in }
@@ -54,6 +55,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
   }
 `

@@ -28,6 +28,7 @@ export const PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
     burns(where: { pair: $pairId }, first: $first, skip: $skip, orderDirection: "desc", orderBy: "timestamp") {
       id
@@ -38,6 +39,7 @@ export const PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
   }
 `
