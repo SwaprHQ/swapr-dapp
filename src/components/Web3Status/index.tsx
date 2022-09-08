@@ -127,17 +127,6 @@ export default function Web3Status() {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (!isActiveChainSupported) {
-    return (
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
-        <SwitchNetworkButton onClick={clickHandler}>
-          Switch network
-          <TriangleIcon />
-        </SwitchNetworkButton>
-      </NetworkSwitcherPopover>
-    )
-  }
-
   return (
     <>
       <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
@@ -147,15 +136,24 @@ export default function Web3Status() {
               {mobileByMedia ? 'Connect' : t('connectWallet')}
             </Button>
           )}
-          <AccountStatus
-            pendingTransactions={pending}
-            ENSName={ENSName ?? undefined}
-            account={account}
-            connector={connector}
-            networkConnectorChainId={chainId}
-            onAddressClick={() => navigate('/account')}
-            avatar={ensAvatar ?? undefined}
-          />
+          {isActiveChainSupported ? (
+            <AccountStatus
+              pendingTransactions={pending}
+              ENSName={ENSName ?? undefined}
+              account={account}
+              connector={connector}
+              networkConnectorChainId={chainId}
+              onAddressClick={() => navigate('/account')}
+              avatar={ensAvatar ?? undefined}
+            />
+          ) : (
+            <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+              <SwitchNetworkButton onClick={clickHandler}>
+                Switch network
+                <TriangleIcon />
+              </SwitchNetworkButton>
+            </NetworkSwitcherPopover>
+          )}
         </Row>
       </ConnectWalletPopover>
       <WalletModal modal={modal} setModal={setModal} tryActivation={tryActivation} />
