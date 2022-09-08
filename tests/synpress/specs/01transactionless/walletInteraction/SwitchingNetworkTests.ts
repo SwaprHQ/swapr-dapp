@@ -3,8 +3,10 @@ import { SwapPage } from '../../../../pages/SwapPage'
 import { NetworkSwitcher } from '../../../../pages/NetworkSwitcher'
 import { ChainsEnum } from '../../../../utils/enums/ChainsEnum'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
+import { TokenMenu } from '../../../../pages/TokenMenu'
 
 describe('Switching from mainnet tests', () => {
+  const TRANSACTION_VALUE: number = 0.00000001
   before(() => {
     cy.clearLocalStorage()
     MetamaskNetworkHandler.addARinkeby()
@@ -174,6 +176,17 @@ describe('Switching from mainnet tests', () => {
   })
   it('Should switch from polygon to mainet by dapp [TC-55]', () => {
     cy.changeMetamaskNetwork('polygon mainnet')
+    MenuBar.getNetworkSwitcher().click()
+    NetworkSwitcher.gnosis().click()
+    cy.allowMetamaskToSwitchNetwork()
+    NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
+  })
+  it.only('Should switch from mainnet to rinkeby after starting the swap process [regression-test] [TC-61]', () => {
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
+    SwapPage.getCurrencySelectors().first().click()
+    TokenMenu.searchAndChooseToken('weth')
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
+    SwapPage.chooseExchange('swapr').click()
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.gnosis().click()
     cy.allowMetamaskToSwitchNetwork()
