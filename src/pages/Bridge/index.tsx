@@ -368,7 +368,7 @@ export default function Bridge() {
                 currency={bridgeOutputCurrency}
                 onCurrencySelect={onCurrencyOutputSelection}
                 isOutputPanel={true}
-                disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+                disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
                 isLoading={!!account && isNetworkConnected && listsLoading}
               />
             </OutputPanelContainer>
