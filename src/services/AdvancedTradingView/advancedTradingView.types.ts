@@ -46,7 +46,7 @@ export type AdvancedViewTransaction = {
   timestamp: string
   logoKey: string
   isSell?: boolean
-  amountUSD?: string
+  amountUSD: string
   priceToken0?: string
   priceToken1?: string
 }
