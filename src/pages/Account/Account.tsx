@@ -8,12 +8,11 @@ import { Box, Flex, Text } from 'rebass'
 
 import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
-import { useActiveWeb3React } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -43,8 +42,7 @@ export function Account() {
   const isMobile = useIsMobileByMedia()
 
   // Account details
-  const { account, chainId, active, deactivate } = useActiveWeb3React()
-  const { ENSName } = useENSName(account ?? undefined)
+  const { account, chainId, ENSName, isActive, connector, tryDeactivation } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
 
   // Toggles
@@ -123,7 +121,7 @@ export function Account() {
           </DetailActionWrapper>
           <CallToActionWrapper>
             <Button onClick={toggleWalletSwitcherPopover}>Change Wallet</Button>
-            {active && <Button onClick={deactivate}>Disconnect</Button>}
+            {isActive && <Button onClick={() => tryDeactivation(connector, account)}>Disconnect</Button>}
           </CallToActionWrapper>
         </Flex>
       </Flex>

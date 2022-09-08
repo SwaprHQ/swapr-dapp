@@ -90,7 +90,7 @@ export function useAllSwapTransactions(allNetwork = false): AllTransactions {
 }
 
 export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[] {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const listByAddress = useListsByAddress()
 
   const allBridgeTransactions = useSelector((state: AppState) => selectBridgeTransactions(state, account ?? undefined))

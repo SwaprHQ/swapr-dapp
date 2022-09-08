@@ -104,21 +104,15 @@ const HoverText = styled.div`
 interface WalletModalProps {
   modal: ModalView | null
   setModal: (modal: ModalView | null) => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
-  connectorError?: boolean
-  pendingConnector: Connector
 }
 
 export default function WalletModal({
   modal,
   setModal,
   tryActivation,
-  connectorError,
-  pendingConnector,
 }: WalletModalProps & Pick<ConnectorProps, 'tryActivation'>) {
-  const { account, connector, isActive, chainId } = useWeb3ReactCore()
+  const { account, connector, isActive, chainId, connectorError, pendingConnector } = useWeb3ReactCore()
+  const isConnectorError = !!connectorError
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
@@ -146,11 +140,11 @@ export default function WalletModal({
   useEffect(() => {
     if (
       !!modal &&
-      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !connectorError))
+      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !isConnectorError))
     ) {
       setModal(null)
     }
-  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, connectorError])
+  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, isConnectorError])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
@@ -207,7 +201,7 @@ export default function WalletModal({
           </HeaderRow>
         )}
         <ContentWrapper>
-          <PendingView connector={pendingConnector} error={connectorError} tryActivation={tryActivation} />
+          <PendingView connector={pendingConnector} error={isConnectorError} tryActivation={tryActivation} />
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
           <TYPE.Body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">

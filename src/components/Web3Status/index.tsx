@@ -1,16 +1,12 @@
-import { Connector } from '@web3-react/types'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { getConnection } from '../../connectors/utils'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
-import { AppDispatch, AppState } from '../../state'
-import { ApplicationModal, setConnectorError } from '../../state/application/actions'
+import { ApplicationModal } from '../../state/application/actions'
 import {
   useCloseModals,
   useModalOpen,
@@ -20,8 +16,6 @@ import {
 } from '../../state/application/hooks'
 import { isTransactionRecent, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
-import { updateSelectedWallet } from '../../state/user/actions'
-import { getErrorMessage } from '../../utils/getErrorMessage'
 import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import Row from '../Row'
@@ -78,8 +72,17 @@ export enum ModalView {
 }
 
 export default function Web3Status() {
-  const dispatch = useDispatch<AppDispatch>()
-  const { account, connector: activeConnector, chainId, ENSName, isActiveChainSupported } = useWeb3ReactCore()
+  const {
+    account,
+    connector,
+    chainId,
+    ENSName,
+    isActiveChainSupported,
+    tryActivation,
+    tryDeactivation,
+    modal,
+    setModal,
+  } = useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllSwapTransactions()
   const navigate = useNavigate()
@@ -92,49 +95,8 @@ export default function Web3Status() {
       .map(tx => tx.hash)
   }, [allTransactions])
 
-  const [modal, setModal] = useState<ModalView | null>(null)
-
-  const [pendingConnector, setPendingConnector] = useState(activeConnector)
-  const connectorError = useSelector((state: AppState) =>
-    pendingConnector ? state.application.errorByConnectorType[getConnection(pendingConnector).type] : undefined
-  )
-
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
-
-  const tryActivation = useCallback(
-    async (connector: Connector) => {
-      const connectorType = getConnection(connector).type
-      setPendingConnector(connector)
-
-      // show account details if pending connector is already in use
-      if (connector === activeConnector) {
-        setModal(ModalView.Account)
-        return
-      }
-
-      dispatch(setConnectorError({ connector: connectorType, connectorError: undefined }))
-      setModal(ModalView.Pending)
-
-      try {
-        await connector.activate()
-        dispatch(updateSelectedWallet({ selectedWallet: connectorType }))
-      } catch (error) {
-        console.debug(`web3-react connection error: ${error}`)
-        dispatch(setConnectorError({ connector: connectorType, connectorError: getErrorMessage(error) }))
-      }
-    },
-    [activeConnector, dispatch]
-  )
-
-  const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
-    if (!account) return
-    if (connector.deactivate) {
-      void connector.deactivate()
-      return
-    }
-    void connector.resetState()
-  }, [])
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const { t } = useTranslation('common')
   const mobileByMedia = useIsMobileByMedia()
@@ -157,7 +119,7 @@ export default function Web3Status() {
     isUnsupportedNetworkModal,
     closeModals,
     isActiveChainSupported,
-    activeConnector,
+    connector,
     chainId,
   ])
 
@@ -189,23 +151,14 @@ export default function Web3Status() {
             pendingTransactions={pending}
             ENSName={ENSName ?? undefined}
             account={account}
-            connector={activeConnector}
+            connector={connector}
             networkConnectorChainId={chainId}
             onAddressClick={() => navigate('/account')}
             avatar={ensAvatar ?? undefined}
           />
         </Row>
       </ConnectWalletPopover>
-      <WalletModal
-        modal={modal}
-        setModal={setModal}
-        ENSName={ENSName ?? undefined}
-        pendingTransactions={pending}
-        confirmedTransactions={confirmed}
-        pendingConnector={pendingConnector}
-        connectorError={!!connectorError}
-        tryActivation={tryActivation}
-      />
+      <WalletModal modal={modal} setModal={setModal} tryActivation={tryActivation} />
     </>
   )
 }
