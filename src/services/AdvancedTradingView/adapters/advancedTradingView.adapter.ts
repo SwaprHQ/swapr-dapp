@@ -84,7 +84,7 @@ export class AdvancedTradingViewAdapter {
       adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
-    return await Promise.all(promises)
+    return await Promise.allSettled(promises)
   }
 
   public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
@@ -92,6 +92,6 @@ export class AdvancedTradingViewAdapter {
       adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
-    return await Promise.all(promises)
+    return await Promise.allSettled(promises)
   }
 }

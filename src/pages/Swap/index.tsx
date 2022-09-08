@@ -2,8 +2,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
@@ -153,6 +152,14 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
     potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
 
+  useLayoutEffect(() => {
+    if (!isAdvancedTradePage) {
+      setSelectedChartTab(ChartTabsOptions.OFF)
+    } else {
+      setSelectedChartTab(ChartTabsOptions.PRO)
+    }
+  })
+
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
 
@@ -202,7 +209,7 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  const hasBothCurrenciesInput = currencies[Field.INPUT] && currencies[Field.OUTPUT]
+  const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
   const userHasSpecifiedInputOutput = Boolean(
     hasBothCurrenciesInput && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
@@ -378,9 +385,11 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
   const renderSwapBox = () => (
     <>
       <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab}>
-        {hasBothCurrenciesInput && (
-          <ChartTabs activeChartTab={activeChartTab || ChartTabsOptions.OFF} setActiveChartTab={setSelectedChartTab} />
-        )}
+        <ChartTabs
+          hasBothCurrenciesInput={hasBothCurrenciesInput}
+          activeChartTab={activeChartTab || ChartTabsOptions.OFF}
+          setActiveChartTab={setSelectedChartTab}
+        />
       </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
@@ -504,13 +513,13 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {chainSupportsSWPR(chainId) && isAdvancedTradePage && (
+      {chainSupportsSWPR(chainId) && isAdvancedTradePage && activeChartTab === ChartTabsOptions.PRO && (
         <>
           <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
           <Hero />
         </>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && !isAdvancedTradePage && (
+      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId) || !isAdvancedTradePage) && (
         <Hero>
           <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
         </Hero>

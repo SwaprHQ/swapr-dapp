@@ -114,6 +114,14 @@ const selectExpertMode = createSelector(
 export function useIsExpertMode() {
   return useSelector<AppState, AppState['user']['userExpertMode']>(selectExpertMode)
 }
+const selectAdvTradeMode = createSelector(
+  (state: AppState) => state.user.selectedChartTab,
+  selectedChartTab => !!(selectedChartTab === ChartTabs.PRO)
+)
+
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, boolean>(selectAdvTradeMode)
+}
 
 export function useExpertModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()
@@ -142,16 +150,6 @@ export function useSelectedSwapTab() {
 
 export function useSelectedChartTab() {
   return useSelector<AppState, AppState['user']['selectedChartTab']>(selectSelectedChartTab)
-}
-
-//  remove
-const selectIsAdvancedTradeViewTabActive = createSelector(
-  (state: AppState) => state.user.selectedSwapTab,
-  selectedSwapTab => selectedSwapTab === SwapTabs.SWAP
-)
-
-export function useIsAdvancedTradeMode() {
-  return useSelector<AppState, boolean>(selectIsAdvancedTradeViewTabActive)
 }
 
 export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {

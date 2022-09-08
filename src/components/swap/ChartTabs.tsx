@@ -22,6 +22,12 @@ export const Tab = styled.button<{ active?: boolean }>`
     color: ${({ theme }) => theme.text4};
     background: rgba(104, 110, 148, 0.25);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: ${({ theme }) => theme.text6};
+    background: rgba(104, 110, 148, 0.1);
+  }
   border-radius: 0;
 
   &:first-child {
@@ -36,9 +42,11 @@ export const Tab = styled.button<{ active?: boolean }>`
 export const ChartTabs = ({
   activeChartTab,
   setActiveChartTab,
+  hasBothCurrenciesInput,
 }: {
   activeChartTab: ChartTabsOptions
   setActiveChartTab: (tab: ChartTabsOptions) => void
+  hasBothCurrenciesInput: boolean
 }) => {
   const navigate = useNavigate()
 
@@ -53,6 +61,7 @@ export const ChartTabs = ({
           }
         }}
         title="Advanced Trade View"
+        disabled={!hasBothCurrenciesInput}
       >
         Pro
       </Tab>
@@ -65,6 +74,7 @@ export const ChartTabs = ({
           }
         }}
         title="Switch of charts"
+        disabled={!hasBothCurrenciesInput}
       >
         Off
       </Tab>
