@@ -45,7 +45,7 @@ export type AdvancedViewTransaction = {
   timestamp: string
   logoKey: string
   isSell?: boolean
-  amountUSD?: string
+  amountUSD: string
   priceToken0?: string
   priceToken1?: string
 }
@@ -76,6 +76,6 @@ export type AdapterFetchDetails = {
 }
 
 export enum AdapterAmountToFetch {
-  pairTrades = 50,
-  pairActivity = 25,
+  pairTrades = 10,
+  pairActivity = 3,
 }

@@ -4,7 +4,7 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
 import { BaseAppState } from './adapters/baseAdapter/base.adapter'
-import { AllTradesAndLiquidityFromAdapters, BasePair } from './adapters/baseAdapter/base.types'
+import { AllTradesAndLiquidityFromAdapters, BasePair, LiquidityTypename } from './adapters/baseAdapter/base.types'
 import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.types'
 
@@ -113,69 +113,58 @@ export const selectAllDataFromAdapters = createSelector(
 
     const { burnsAndMints, swaps } = pair
 
-    const baseAdapterLiquidityHistory: AdvancedViewTransaction[] = burnsAndMints.map(trade => {
-      const {
-        transaction: { id },
-        amount0,
-        amount1,
-        timestamp,
-        logoKey,
-      } = trade
-      return {
-        transactionId: id,
-        amountIn: `${amount0} ${token0.symbol}`,
-        amountOut: `${amount1} ${token1.symbol}`,
-        timestamp,
-        logoKey,
+    const baseAdapterLiquidityHistory: AdvancedViewTransaction[] = burnsAndMints.map(
+      ({ transaction: { id }, amount0, amount1, timestamp, amountUSD, logoKey, type }) => {
+        return {
+          transactionId: id,
+          amountIn: amount0,
+          amountOut: amount1,
+          timestamp,
+          logoKey,
+          amountUSD,
+          isSell: type === LiquidityTypename.burn,
+        }
       }
-    })
-    const baseAdapterTradeHistory: Required<AdvancedViewTransaction>[] = swaps.map(trade => {
-      const {
-        amount0In,
-        amount0Out,
-        amount1In,
-        amount1Out,
-        transaction: { id },
-        timestamp,
-        amountUSD,
-        logoKey,
-      } = trade
-      const normalizedValues = {
-        amount0In: Number(amount0In),
-        amount0Out: Number(amount0Out),
-        amount1In: Number(amount1In),
-        amount1Out: Number(amount1Out),
-        token0Address: token0.address.toLowerCase(),
-        token1Address: token1.address.toLowerCase(),
-        inputTokenAddress: inputToken.address.toLowerCase(),
-        outputTokenAddress: outputToken.address.toLowerCase(),
-      }
+    )
+    const baseAdapterTradeHistory: Required<AdvancedViewTransaction>[] = swaps.map(
+      ({ amount0In, amount0Out, amount1In, amount1Out, transaction: { id }, timestamp, amountUSD, logoKey }) => {
+        const normalizedValues = {
+          amount0In: Number(amount0In),
+          amount0Out: Number(amount0Out),
+          amount1In: Number(amount1In),
+          amount1Out: Number(amount1Out),
+          token0Address: token0.address.toLowerCase(),
+          token1Address: token1.address.toLowerCase(),
+          inputTokenAddress: inputToken.address.toLowerCase(),
+          outputTokenAddress: outputToken.address.toLowerCase(),
+        }
 
-      const amount0 = Math.max(normalizedValues.amount0In, normalizedValues.amount0Out)
-      const amount1 = Math.max(normalizedValues.amount1In, normalizedValues.amount1Out)
+        const amount0 = Math.max(normalizedValues.amount0In, normalizedValues.amount0Out)
+        const amount1 = Math.max(normalizedValues.amount1In, normalizedValues.amount1Out)
 
-      return {
-        transactionId: id,
-        amountIn: (normalizedValues.inputTokenAddress === normalizedValues.token0Address
-          ? amount0
-          : amount1
-        ).toString(),
-        amountOut: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
-          ? amount0
-          : amount1
-        ).toString(),
-        priceToken0: (amount1 / amount0).toString(),
-        priceToken1: (amount0 / amount1).toString(),
-        timestamp,
-        amountUSD,
-        isSell:
-          (normalizedValues.token0Address === normalizedValues.inputTokenAddress &&
-            normalizedValues.amount0In > normalizedValues.amount1In) ||
-          (normalizedValues.token1Address === normalizedValues.inputTokenAddress &&
-            normalizedValues.amount1In > normalizedValues.amount0In),
-        logoKey,
+        return {
+          transactionId: id,
+          amountIn: (normalizedValues.inputTokenAddress === normalizedValues.token0Address
+            ? amount0
+            : amount1
+          ).toString(),
+          amountOut: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
+            ? amount0
+            : amount1
+          ).toString(),
+          priceToken0: (amount1 / amount0).toString(),
+          priceToken1: (amount0 / amount1).toString(),
+          timestamp,
+          amountUSD,
+          isSell:
+            (normalizedValues.token0Address === normalizedValues.inputTokenAddress &&
+              normalizedValues.amount0In > normalizedValues.amount1In) ||
+            (normalizedValues.token1Address === normalizedValues.inputTokenAddress &&
+              normalizedValues.amount1In > normalizedValues.amount0In),
+          logoKey,
+        }
       }
-    })
+    )
     return {
       baseAdapterTradeHistory,
       baseAdapterLiquidityHistory,
@@ -197,19 +186,15 @@ export const selectUniswapV3AllData = createSelector(
     const { pair, logoKey } = uniswapV3Pair
 
     const uniswapV3LiquidityHistory: AdvancedViewTransaction[] = pair?.burnsAndMints
-      ? pair.burnsAndMints.data.map(trade => {
-          const {
-            transaction: { id },
-            amount0,
-            amount1,
-            timestamp,
-          } = trade
+      ? pair.burnsAndMints.data.map(({ transaction: { id }, amount0, amount1, timestamp, type, amountUSD }) => {
           return {
             transactionId: id,
-            amountIn: `${amount0} ${token0.symbol}`,
-            amountOut: `${amount1} ${token1.symbol}`,
+            amountIn: amount0,
+            amountOut: amount1,
             timestamp,
             logoKey,
+            amountUSD,
+            isSell: type === LiquidityTypename.burn,
           }
         })
       : []

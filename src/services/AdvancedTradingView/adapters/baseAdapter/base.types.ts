@@ -1,5 +1,10 @@
 import { AdapterKeys, AdapterPayloadType } from '../../advancedTradingView.types'
 
+export enum LiquidityTypename {
+  burn = 'Burn',
+  mint = 'Mint',
+}
+
 // subgraph types
 export interface PairBurnsAndMintsTransaction {
   id: string
@@ -10,6 +15,7 @@ export interface PairBurnsAndMintsTransaction {
   amount1: string
   amountUSD: string
   timestamp: string
+  type: LiquidityTypename
 }
 
 interface PairSwapTransaction {
