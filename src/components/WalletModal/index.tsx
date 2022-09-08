@@ -1,4 +1,3 @@
-import { Connector } from '@web3-react/types'
 import { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
