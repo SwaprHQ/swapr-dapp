@@ -77,6 +77,6 @@ export type AdapterFetchDetails = {
 }
 
 export enum AdapterAmountToFetch {
-  pairTrades = 50,
-  pairActivity = 25,
+  pairTrades = 10,
+  pairActivity = 3,
 }
