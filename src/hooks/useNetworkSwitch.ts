@@ -25,7 +25,7 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
     async (optionChainId?: ChainId) => {
       if (optionChainId === undefined || (optionChainId === chainId && !unsupportedChainIdError)) return
 
-      let changeChainIdResult: unknown | undefined
+      let changeChainIdResult: unknown
       if (!account && !unsupportedChainIdError && connector instanceof CustomNetworkConnector) {
         connector.changeChainId(optionChainId)
         unavailableRedirect(optionChainId, navigate, pathname)
