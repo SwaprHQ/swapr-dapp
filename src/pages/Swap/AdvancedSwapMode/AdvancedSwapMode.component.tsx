@@ -132,22 +132,20 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
               activeSwitchOption &&
               tradeHistory
                 .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
-                .map((tx, index) => {
-                  return (
-                    <Trade
-                      key={`${tx.transactionId}-${index}`}
-                      isSell={tx.isSell}
-                      transactionId={tx.transactionId}
-                      logoKey={tx.logoKey}
-                      chainId={chainId}
-                      amountIn={tx.amountIn}
-                      amountOut={tx.amountOut}
-                      timestamp={tx.timestamp}
-                      amountUSD={tx.amountUSD}
-                      price={activeSwitchOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
-                    />
-                  )
-                })}
+                .map((tx, index) => (
+                  <Trade
+                    key={`${tx.transactionId}-${index}`}
+                    isSell={tx.isSell}
+                    transactionId={tx.transactionId}
+                    logoKey={tx.logoKey}
+                    chainId={chainId}
+                    amountIn={tx.amountIn}
+                    amountOut={tx.amountOut}
+                    timestamp={tx.timestamp}
+                    amountUSD={tx.amountUSD}
+                    price={activeSwitchOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
+                  />
+                ))}
           </InfiniteScroll>
           {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
         </TransactionsWrapper>
@@ -204,21 +202,19 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
               {showTrades &&
                 liquidityHistory
                   .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
-                  .map((tx, index) => {
-                    return (
-                      <Trade
-                        key={`${tx.transactionId}-${index}`}
-                        isSell={Boolean(tx.isSell)}
-                        transactionId={tx.transactionId}
-                        logoKey={tx.logoKey}
-                        chainId={chainId}
-                        amountIn={tx.amountIn}
-                        amountOut={tx.amountOut}
-                        timestamp={tx.timestamp}
-                        amountUSD={tx.amountUSD}
-                      />
-                    )
-                  })}
+                  .map((tx, index) => (
+                    <Trade
+                      key={`${tx.transactionId}-${index}`}
+                      isSell={Boolean(tx.isSell)}
+                      transactionId={tx.transactionId}
+                      logoKey={tx.logoKey}
+                      chainId={chainId}
+                      amountIn={tx.amountIn}
+                      amountOut={tx.amountOut}
+                      timestamp={tx.timestamp}
+                      amountUSD={tx.amountUSD}
+                    />
+                  ))}
             </InfiniteScroll>
           </TransactionsWrapper>
         </AdvancedModeHeader>
