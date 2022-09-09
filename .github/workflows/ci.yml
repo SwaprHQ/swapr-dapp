@@ -44,8 +44,7 @@ jobs:
   check-if-tests-should-run:
     runs-on: ubuntu-20.04
     outputs:
-      uuid: ${{ steps.uuid.outputs.value }}
-      commit-message: ${{ steps.commit-message.outputs.value }}
+      is-label-present: ${{ steps.label-present.outputs.value }}
     steps:
     - uses: docker://agilepathway/pull-request-label-checker:latest
       id: check-if-tests-should-run
@@ -341,7 +340,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ ((github.event_name == 'push') ||((steps.check-if-tests-should-run.outcome == 'success')&& !(github.actor == 'dependabot[bot]')) }}
+    if: ${{ ((github.event_name == 'push') ||((needs.check-if-tests-should-run.outputs.uuid steps.check-if-tests-should-run.outcome == 'success')&& !(github.actor == 'dependabot[bot]')) }}
     strategy:
       fail-fast: false
       matrix:
