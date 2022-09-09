@@ -34,10 +34,17 @@ jobs:
         with:
           fetch-depth: '50'
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
       - name: Generate unique ID 💎
         id: uuid
-        run: echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
-
+        run: |
+          echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
+          echo "sha-$GITHUB_SHA-time-$(date +"%s")"
       - name: Get Commit Message
         id: commit-message
         run: |
@@ -50,7 +57,7 @@ jobs:
         id: check-if-tests-should-run
         continue-on-error: true
         with:
-          one_of: ready-for-tests
+          one_of: ready-for-tests, QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if label is present
@@ -276,12 +283,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: '50'
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
 
       - name: Set synpress default params
         run: |
