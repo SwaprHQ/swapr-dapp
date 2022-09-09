@@ -43,12 +43,30 @@ jobs:
 
   check-if-tests-should-run:
     runs-on: ubuntu-20.04
+    outputs:
+      uuid: ${{ steps.uuid.outputs.value }}
+      commit-message: ${{ steps.commit-message.outputs.value }}
     steps:
     - uses: docker://agilepathway/pull-request-label-checker:latest
       id: check-if-tests-should-run
       with:
         one_of: ready-for-tests
         repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create comment if build is ok
+      if: ${{ success() }}
+      id: label-present
+      run: |
+        echo "Label present"
+        echo "::set-output name=value::true"
+
+    - name: Create comment if build is ok
+      if: ${{ failure() }}
+      id: label-present
+      run: |
+        echo "Label not present"
+        echo "::set-output name=value::false"
+
 
   install:
     name: Install
