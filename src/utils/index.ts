@@ -53,11 +53,11 @@ export function getExplorerLink(
   chainId: ChainId,
   hash: string,
   type: 'transaction' | 'token' | 'address' | 'block',
-  swapProtocol?: string
+  protocol?: string
 ): string {
   //exception with using cow swap. Need to show cow explorer
-  if (swapProtocol?.toUpperCase() === SwapProtocol.COW) {
-    return getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
+  if (protocol?.toUpperCase() === SwapProtocol.COW) {
+    return getGnosisProtocolExplorerOrderLink(chainId, hash)
   }
 
   const prefix = getExplorerPrefix(chainId)
