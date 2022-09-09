@@ -55,16 +55,15 @@ export function getExplorerLink(
   type: 'transaction' | 'token' | 'address' | 'block',
   swapProtocol?: string
 ): string {
-  let prefix = getExplorerPrefix(chainId)
-
-  // exception. blockscout doesn't have a token-specific address
-  if (chainId === ChainId.XDAI && type === 'token') {
-    return `${prefix}/address/${hash}`
-  }
-
   //exception with using cow swap. Need to show cow explorer
   if (swapProtocol === SwapProtocol.COW) {
     return getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
+  }
+
+  const prefix = getExplorerPrefix(chainId)
+  // exception. blockscout doesn't have a token-specific address
+  if (chainId === ChainId.XDAI && type === 'token') {
+    return `${prefix}/address/${hash}`
   }
 
   switch (type) {
