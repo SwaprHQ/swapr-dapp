@@ -1,3 +1,5 @@
+import { _10000 } from '@swapr/sdk'
+
 import { Trans } from 'react-i18next'
 import { useTheme } from 'styled-components'
 
@@ -21,7 +23,11 @@ export const CurrencyUserBalance = ({
 
   if (!account) return null
 
-  const trimmedBalance: string = limitNumberOfDecimalPlaces(balance || selectedCurrencyBalance) || '0'
+  const availableBalance = balance || selectedCurrencyBalance
+
+  const trimmedBalance: string = availableBalance?.greaterThan(_10000)
+    ? availableBalance.toFixed(2)
+    : limitNumberOfDecimalPlaces(availableBalance) || '0'
 
   return (
     <TYPE.Body
@@ -33,11 +39,11 @@ export const CurrencyUserBalance = ({
       style={{
         display: 'inline',
         marginLeft: 'auto',
-        cursor: !hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) ? 'pointer' : 'auto',
+        cursor: !hideBalance && !!(currency || pair) && availableBalance ? 'pointer' : 'auto',
       }}
     >
       <UppercaseHelper>
-        {!hideBalance && !!(currency || pair) && (balance || selectedCurrencyBalance) && (
+        {!hideBalance && !!(currency || pair) && availableBalance && (
           <>
             {customBalanceText ? (
               <>
