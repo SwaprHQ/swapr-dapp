@@ -96,7 +96,7 @@ describe('BaseAdapter', () => {
 
     expect(pairAfterFirstFetch?.swaps?.hasMore).toBeTruthy()
 
-    expect(pairAfterFirstFetch?.swaps?.data).toStrictEqual(new Array(50).fill(FAKE_SWAP_DATA))
+    expect(pairAfterFirstFetch?.swaps?.data).toEqual(new Array(50).fill(FAKE_SWAP_DATA))
 
     graphqlRequestMock.mockImplementationOnce(() =>
       Promise.resolve({
@@ -118,7 +118,7 @@ describe('BaseAdapter', () => {
 
     expect(pairAfterSecondFetch?.swaps?.hasMore).toBeFalsy()
 
-    expect(pairAfterSecondFetch?.swaps?.data).toStrictEqual(new Array(60).fill(FAKE_SWAP_DATA))
+    expect(pairAfterSecondFetch?.swaps?.data).toEqual(new Array(60).fill(FAKE_SWAP_DATA))
 
     await baseAdapter.getPairTrades({
       inputToken: USDC_TOKEN,
@@ -157,7 +157,7 @@ describe('BaseAdapter', () => {
 
     expect(pairAfterFirstFetch?.burnsAndMints?.hasMore).toBeTruthy()
 
-    expect(pairAfterFirstFetch?.burnsAndMints?.data).toStrictEqual(new Array(50).fill(FAKE_BURNS_AND_MINTS_DATA))
+    expect(pairAfterFirstFetch?.burnsAndMints?.data).toEqual(new Array(50).fill(FAKE_BURNS_AND_MINTS_DATA))
 
     graphqlRequestMock.mockImplementationOnce(() =>
       Promise.resolve({
@@ -182,7 +182,7 @@ describe('BaseAdapter', () => {
 
     expect(pairAfterSecondFetch?.burnsAndMints?.hasMore).toBeFalsy()
 
-    expect(pairAfterSecondFetch?.burnsAndMints?.data).toStrictEqual(new Array(70).fill(FAKE_BURNS_AND_MINTS_DATA))
+    expect(pairAfterSecondFetch?.burnsAndMints?.data).toEqual(new Array(70).fill(FAKE_BURNS_AND_MINTS_DATA))
 
     await baseAdapter.getPairActivity({
       inputToken: USDC_TOKEN,
