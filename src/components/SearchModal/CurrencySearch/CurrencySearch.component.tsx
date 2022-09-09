@@ -25,9 +25,9 @@ import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import useToggle from '../../../hooks/useToggle'
 import { TYPE } from '../../../theme'
 import { isAddress } from '../../../utils'
-import { ButtonDark2 } from '../../Button'
 import Column, { AutoColumn } from '../../Column'
 import Row from '../../Row'
+import { BalanceTokens } from '../BalanceTokens'
 import { CommonTokens } from '../CommonTokens'
 import { CurrencyList } from '../CurrencyList'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
@@ -159,7 +159,7 @@ export const CurrencySearch = ({
 
   return (
     <ContentWrapper data-testid="token-picker">
-      <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px', width: '100%' }} gap="15px">
+      <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px', width: '100%' }} gap="15px" justify="center">
         <Row style={{ position: 'relative' }}>
           <SearchInput
             height={49}
@@ -179,6 +179,13 @@ export const CurrencySearch = ({
             </InputCloseButton>
           )}
         </Row>
+        {searchQuery.length === 0 && (
+          <BalanceTokens
+            onCurrencySelect={onCurrencySelect}
+            filteredSortedTokensWithNativeCurrency={filteredSortedTokensWithNativeCurrency}
+            selectedCurrency={selectedCurrency}
+          />
+        )}
         {searchQuery.length === 0 && showCommonBases && (
           <CommonTokens chainId={chainId} onCurrencySelect={onCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
