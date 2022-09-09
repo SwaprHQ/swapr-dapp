@@ -41,13 +41,12 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-      - uses: snow-actions/unanimously-approved@v2.0.0
-        id: unanimously-approved
-      - run: echo "Approved !!"
-        if: ${{ steps.approved.outputs.approved == 'true' }}
-
-      - run: echo "Disapproved !!"
-        if: ${{ steps.approved.outputs.approved == 'false' }}
+      - uses: taichi/approved-event-action@v1.2.1
+        id: approved
+        with:
+          approvals: '2'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   install:
     name: Install
