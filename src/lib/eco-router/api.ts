@@ -74,6 +74,7 @@ export async function getExactIn(
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
+  console.log('uniswapv2Platfrom', uniswapV2PlatformList)
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
@@ -105,10 +106,13 @@ export async function getExactIn(
         })[0] ?? undefined
       )
     } catch (error) {
+      console.log('erroros', error)
       errors.push(error)
       return undefined
     }
   })
+  const trades = uniswapV2TradesList
+  console.log(trades)
 
   const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
     if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
@@ -129,6 +133,8 @@ export async function getExactIn(
         resolve(undefined)
       })
   })
+  const awaited = await uniswapTrade
+  console.log('uniswapNormal', awaited)
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {

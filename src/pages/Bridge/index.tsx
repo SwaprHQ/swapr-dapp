@@ -160,6 +160,20 @@ export default function Bridge() {
     }
   }, [activeTab, setTxsFilter])
 
+  useEffect(() => {
+    if (!hasBridges) {
+      dispatch(
+        ecoBridgeUIActions.setStatusButton({
+          label: 'Invalid Chain Pair',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
+      )
+    }
+  }, [dispatch, hasBridges])
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)

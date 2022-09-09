@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useBridgeInfo } from '../../../services/EcoBridge/EcoBridge.hooks'
 import { useEcoBridge } from '../../../services/EcoBridge/EcoBridgeProvider'
 import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
-import { selectSupportedBridges } from '../../../services/EcoBridge/store/EcoBridge.selectors'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
@@ -12,7 +11,6 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: b
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
-  const possibleBridges = useSelector((state: AppState) => selectSupportedBridges(state))
 
   const { showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
 
@@ -42,20 +40,7 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: b
   ])
 
   useEffect(() => {
-    if (isCollecting || isOutputPanel) {
-      if (possibleBridges.length === 0) {
-        dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Invalid Chain Pair',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: false,
-            isApproved: false,
-          })
-        )
-      }
-      return
-    }
+    if (isCollecting || isOutputPanel) return
 
     const validateInput = () => {
       if (Number(fromValue) === 0 || isNaN(Number(fromValue))) {
@@ -127,7 +112,6 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: b
       ecoBridge.validate()
     }
   }, [
-    possibleBridges,
     fromValue,
     ecoBridge,
     activeBridge,
