@@ -71,7 +71,7 @@ jobs:
 
       - name: Check if cypress tests should be executed
         id: cypress
-        if: ${{ ((github.event_name == 'push') || ((steps.label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]') && !(contains(steps.commit-message.outputs.value,'skip-cypress'))) }}
+        if: ${{ ((github.event_name == 'push') || ((steps.label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]') && !(contains(steps.commit-message.outputs.value,'skip-cypress')))) }}
         run: |
           echo "Cypress tests should be executed"
           echo "::set-output name=value::true"
