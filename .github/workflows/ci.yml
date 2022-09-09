@@ -41,15 +41,8 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-      - name: multi-approved-event
-        uses: sakhnovict/multi-approved-event-action@1.0.9
-        id: approved
-        with:
-          approvalsCount: '2'
-          onlyEqual: 'false'
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+      - uses: snow-actions/unanimously-approved@v2.0.0
+        id: unanimously-approved
       - run: echo "Approved !!"
         if: ${{ steps.approved.outputs.approved == 'true' }}
 
