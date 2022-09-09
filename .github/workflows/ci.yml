@@ -69,7 +69,7 @@ jobs:
 
       - name: Check if synpress tests should be executed
         id: synpress
-        if: ${{ (steps.label-present.outputs.value == 'true' || github.event_name == 'push') }}
+        if: ${{ contains(needs.prepare.outputs.commit-message,'trigger-synpress' || github.event_name == 'push') }}
         run: |
           echo "Synpress tests should be executed"
           echo "::set-output name=value::true"
