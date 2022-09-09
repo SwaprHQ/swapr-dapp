@@ -47,6 +47,7 @@ jobs:
         with:
           approvalsCount: '2'
           onlyEqual: 'false'
+        env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - run: echo "Approved !!"
