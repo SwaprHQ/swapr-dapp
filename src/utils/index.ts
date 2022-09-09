@@ -56,7 +56,7 @@ export function getExplorerLink(
   swapProtocol?: string
 ): string {
   //exception with using cow swap. Need to show cow explorer
-  if (swapProtocol === SwapProtocol.COW) {
+  if (swapProtocol?.toUpperCase() === SwapProtocol.COW) {
     return getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
   }
 

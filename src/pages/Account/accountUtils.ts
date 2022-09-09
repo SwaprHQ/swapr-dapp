@@ -11,7 +11,7 @@ const getStatus = (status?: 0 | 1, confrimedTime?: number) => {
 }
 
 const expressions = {
-  swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)', 'g'),
+  swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)|(?<protocol>(?:on [a-zA-z]+))', 'g'),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
 }
 
@@ -37,13 +37,24 @@ export const formattedTransactions = (
         summary,
         status: getStatus(status, confirmedTime),
         type,
-        swapProtocol,
       }
 
       if (expressions.swap.test(summary) && type === 'Swap') {
         expressions.swap.lastIndex = 0
-        const [from, to] = [...summary.matchAll(expressions.swap)]
+        const [from, to, platform] = [...summary.matchAll(expressions.swap)]
+
+        /*  Getting protocol name from transaction string
+            `Swap 0.1 XDAI for 0.099975 USDC on Curve`
+            Curve will be taken from above transaction string
+         */
+        const protocol = swapProtocol
+          ? swapProtocol
+          : platform?.groups?.protocol
+          ? platform.groups.protocol.slice(3)
+          : undefined
+
         return {
+          ...transaction,
           from: {
             value: Number(from?.groups?.num ?? 0),
             token: from?.groups?.token,
@@ -52,7 +63,7 @@ export const formattedTransactions = (
             value: Number(to?.groups?.num ?? 0),
             token: to?.groups?.token,
           },
-          ...transaction,
+          swapProtocol: protocol,
         }
       }
 
