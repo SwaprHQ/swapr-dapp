@@ -7,7 +7,7 @@ import { FixedSizeListProps } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import TokenListLogo from '../../../assets/svg/tokenlist.svg'
+import TokenListLogo from '../../../assets/images/tokenlist.svg'
 import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'

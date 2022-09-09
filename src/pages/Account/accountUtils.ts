@@ -11,7 +11,7 @@ const getStatus = (status?: 0 | 1, confrimedTime?: number) => {
 }
 
 const expressions = {
-  swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>[A-Z]+)', 'g'),
+  swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)|(?<protocol>(?:on [a-zA-z]+))', 'g'),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
 }
 
@@ -23,7 +23,7 @@ export const formattedTransactions = (
 ) => {
   const swapTransactions = Object.keys(transactions)
     .map(key => {
-      const { summary = '', confirmedTime, hash, addedTime, network, receipt, from } = transactions[key]
+      const { summary = '', confirmedTime, hash, addedTime, network, receipt, from, swapProtocol } = transactions[key]
       if (from.toLowerCase() !== account.toLowerCase()) {
         return undefined
       }
@@ -41,8 +41,20 @@ export const formattedTransactions = (
 
       if (expressions.swap.test(summary) && type === 'Swap') {
         expressions.swap.lastIndex = 0
-        const [from, to] = [...summary.matchAll(expressions.swap)]
+        const [from, to, platform] = [...summary.matchAll(expressions.swap)]
+
+        /*  Getting protocol name from transaction string
+            `Swap 0.1 XDAI for 0.099975 USDC on Curve`
+            Curve will be taken from above transaction string
+         */
+        const protocol = swapProtocol
+          ? swapProtocol
+          : platform?.groups?.protocol
+          ? platform.groups.protocol.slice(3)
+          : undefined
+
         return {
+          ...transaction,
           from: {
             value: Number(from?.groups?.num ?? 0),
             token: from?.groups?.token,
@@ -51,7 +63,7 @@ export const formattedTransactions = (
             value: Number(to?.groups?.num ?? 0),
             token: to?.groups?.token,
           },
-          ...transaction,
+          swapProtocol: protocol,
         }
       }
 
@@ -100,7 +112,7 @@ export const formattedTransactions = (
   return sortedTransactions
 }
 
-export function getTokenURLWithNetwork(symbol: string, url?: string) {
+export function getNetworkDefaultTokenUrl(symbol: string, url?: string) {
   switch (symbol?.toUpperCase()) {
     case 'XDAI':
       return XDAILogo

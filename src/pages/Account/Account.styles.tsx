@@ -64,6 +64,9 @@ export const StyledLink = styled(Link)`
   :focus {
     text-decoration: none;
     color: ${({ theme }) => theme.text2};
+    & svg {
+      color: ${({ theme }) => theme.text2};
+    }
   }
 `
 
