@@ -340,7 +340,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ ((github.event_name == 'push') ||((needs.check-if-tests-should-run.outputs.uuid steps.check-if-tests-should-run.outcome == 'success')&& !(github.actor == 'dependabot[bot]')) }}
+    if: ${{ ((github.event_name == 'push') ||((needs.check-if-tests-should-run.outputs.uuid == 'true')&& !(github.actor == 'dependabot[bot]')) }}
     strategy:
       fail-fast: false
       matrix:
