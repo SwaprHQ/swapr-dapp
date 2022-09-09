@@ -19,10 +19,15 @@ concurrency:
 
 jobs:
   prepare:
+    name: Check how tests should be executed
     runs-on: ubuntu-20.04
     outputs:
       uuid: ${{ steps.uuid.outputs.value }}
       commit-message: ${{ steps.commit-message.outputs.value }}
+      is-label-present: ${{ steps.label-present.outputs.value }}
+      cypress: ${{ steps.cypress.outputs.value }}
+      synpress: ${{ steps.synpress.outputs.value }}
+
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -41,28 +46,33 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-  check-if-tests-should-run:
-    runs-on: ubuntu-20.04
-    outputs:
-      is-label-present: ${{ steps.label-present.outputs.value }}
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        id: check-if-tests-should-run
+        continue-on-error: true
+        with:
+          one_of: ready-for-tests
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-    steps:
-    - uses: docker://agilepathway/pull-request-label-checker:latest
-      id: check-if-tests-should-run
-      continue-on-error: true
-      with:
-        one_of: ready-for-tests
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if label is present
+        if: steps.check-if-tests-should-run.outcome == 'success'
+        id: label-present
+        run: |
+          echo "Label present"
+          echo "::set-output name=value::true"
 
+      - name: Check if cypress tests should be executed
+        id: cypress
+        if: ${{ ((github.event_name == 'push') || ((steps.label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]'))) }}
+        run: |
+          echo "Cypress tests should be executed"
+          echo "::set-output name=value::true"
 
-
-    - name: Create comment if build is ok
-      if: steps.check-if-tests-should-run.outcome == 'success'
-      id: label-present
-      run: |
-        echo "Label present"
-        echo "::set-output name=value::true"
-
+      - name: Check if synpress tests should be executed
+        id: synpress
+        if: ${{ (steps.label-present.outputs.value == 'true' || github.event_name == 'push') }}
+        run: |
+          echo "Synpress tests should be executed"
+          echo "::set-output name=value::true"
 
   install:
     name: Install
@@ -249,7 +259,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [prepare]
     container: cypress/base:16.5.0
-    if: ${{ (contains(needs.prepare.outputs.commit-message, 'trigger-synpress') || github.event_name == 'push') }}
+    if:
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
