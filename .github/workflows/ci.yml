@@ -41,13 +41,13 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-      - name: approved-event-checker
-        uses: taichi/approved-event-action@v1.2.1
+      - name: multi-approved-event
+      - uses: sakhnovict/multi-approved-event-action@1.0.9
         id: approved
         with:
-          approvals: 1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          approvalsCount: '2'
+          onlyEqual: 'false'
+
       - run: echo "Approved !!"
         if: ${{ steps.approved.outputs.approved == 'true' }}
 
