@@ -1,3 +1,4 @@
+import { Connector } from '@web3-react/types'
 import { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
@@ -101,16 +102,18 @@ const HoverText = styled.div`
 `
 
 interface WalletModalProps {
+  pendingConnector: Connector
   modal: ModalView | null
   setModal: (modal: ModalView | null) => void
 }
 
 export default function WalletModal({
+  pendingConnector,
   modal,
   setModal,
   tryActivation,
 }: WalletModalProps & Pick<ConnectorProps, 'tryActivation'>) {
-  const { account, connector, isActive, chainId, connectorError, pendingConnector } = useWeb3ReactCore()
+  const { account, connector, isActive, chainId, connectorError } = useWeb3ReactCore()
   const isConnectorError = !!connectorError
 
   const closeModal = useCallback(() => setModal(null), [setModal])

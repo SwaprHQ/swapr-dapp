@@ -37,17 +37,12 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
     setIsActiveChainSupported(isDefinedAndSupported)
   }, [chainId])
 
-  const connectorError = useSelector((state: AppState) =>
-    pendingConnector ? state.application.errorByConnectorType[getConnection(pendingConnector).type] : undefined
-  )
-
   const tryActivation = useCallback(
     async (connector: Connector) => {
       const connectorType = getConnection(connector).type
       setPendingConnector(connector)
 
       dispatch(setConnectorError({ connector: connectorType, connectorError: undefined }))
-      setModal(ModalView.Pending)
 
       try {
         await connector.activate()
@@ -68,6 +63,10 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
     }
     void connector.resetState()
   }, [])
+
+  const connectorError = useSelector((state: AppState) =>
+    pendingConnector ? state.application.errorByConnectorType[getConnection(pendingConnector).type] : undefined
+  )
 
   return {
     ...props,
