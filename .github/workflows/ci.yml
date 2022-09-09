@@ -41,12 +41,11 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-      - uses: taichi/approved-event-action@v1.2.1
-        id: approved
-        with:
-          approvals: '2'
+      - name: Dump GitHub context
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - run: echo ${{ github.event.review.state }}
 
   install:
     name: Install
