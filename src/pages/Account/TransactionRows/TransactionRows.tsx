@@ -13,13 +13,14 @@ export function TransactionRows({ transactions }: TransactionRowProps) {
     <Fragment>
       {transactions.map((transaction, index) => {
         const { type, hash } = transaction
+        const key = `row__${hash ?? index}`
         switch (type) {
           case TransactionTypes.Swap:
-            return <SwapTransactionRow transaction={transaction} key={`row__${hash}__${index}`} />
+            return <SwapTransactionRow transaction={transaction} key={key} />
           case TransactionTypes.Bridge:
-            return <BridgeTransactionRow transaction={transaction} key={`row__${hash}__${index}`} />
+            return <BridgeTransactionRow transaction={transaction} key={key} />
           default:
-            return <Fragment key={`row__${index}`} />
+            return <Fragment key={key} />
         }
       })}
     </Fragment>
