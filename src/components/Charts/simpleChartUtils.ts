@@ -41,13 +41,15 @@ export const DATE_INTERVALS = {
 
 export const convertToSecondsTimestamp = (timestamp: number): string => Math.floor(timestamp / 1000).toString()
 
+const oneDayInMilliseconds = 24 * 60 * 60 * 1000
+
 export const TIMEFRAME_PROPRETIES = {
   [DATE_INTERVALS.DAY]: {
-    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getTime()),
+    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - oneDayInMilliseconds).getTime()),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.FiveMinutes,
   },
   [DATE_INTERVALS.WEEK]: {
-    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).getTime()),
+    timestamp: convertToSecondsTimestamp(new Date(new Date().getTime() - 7 * oneDayInMilliseconds).getTime()),
     pairTokenPriceTimeframe: PairTokenPriceTimeframe.FifteenMinutes,
   },
   [DATE_INTERVALS.MONTH]: {
@@ -67,14 +69,11 @@ export type GetBlockPairTokenPriceQueryData = {
   token1Price: string
 }
 
-export const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[], token0?: Token) => {
-  return (
-    data?.reduce<ChartData[]>((newArray, { blockTimestamp, token0Address, token0Price, token1Price }) => {
-      newArray.push({
-        time: parseInt(blockTimestamp, 10) as UTCTimestamp,
-        value: token0?.address.toLowerCase() === token0Address.toLowerCase() ? token0Price : token1Price,
-      })
-      return newArray
-    }, []) || []
-  )
-}
+export const convertToChartData = (data?: GetBlockPairTokenPriceQueryData[], token0?: Token) =>
+  data?.reduce<ChartData[]>((newArray, { blockTimestamp, token0Address, token0Price, token1Price }) => {
+    newArray.push({
+      time: parseInt(blockTimestamp, 10) as UTCTimestamp,
+      value: token0?.address.toLowerCase() === token0Address.toLowerCase() ? token0Price : token1Price,
+    })
+    return newArray
+  }, []) || []

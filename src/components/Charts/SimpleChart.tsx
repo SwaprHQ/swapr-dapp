@@ -1,7 +1,7 @@
 import { Currency } from '@swapr/sdk'
 
-import React from 'react'
 import { Repeat as RepeatIcon } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
@@ -34,11 +34,16 @@ export const SimpleChart = ({
   setIsCurrenciesSwitched,
 }: SimpleChartProps) => {
   const theme = useTheme()
+  const { t } = useTranslation('simpleChart')
+
+  const hasBothCurrencies = currency0 && currency1
+  const pairSlashed = `${currency0?.symbol}/${currency1?.symbol}`
+  const hasData = data && data.length > 0
 
   return (
     <BlurBox minHeight="312px" width="100%" p={3}>
       <Flex flexDirection="column" width="100%" height="100%" justifyContent="center" alignItems="center">
-        {currency0 && currency1 && (
+        {hasBothCurrencies && (
           <Flex width="100%" justifyContent="space-between" mb={2}>
             <PairSwitcher
               alignItems="center"
@@ -46,7 +51,7 @@ export const SimpleChart = ({
               onClick={() => setIsCurrenciesSwitched(!isCurrenciesSwitched)}
             >
               <Text fontSize="12px" fontWeight={600}>
-                {currency0?.symbol}/{currency1?.symbol}
+                {pairSlashed}
               </Text>
               <Box ml={1}>
                 <RepeatIcon size="12" />
@@ -56,20 +61,20 @@ export const SimpleChart = ({
           </Flex>
         )}
         <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
-          {currency0 && currency1 ? (
+          {hasBothCurrencies ? (
             loading ? (
               <SimpleChartLoading />
-            ) : data && data.length > 0 ? (
+            ) : hasData ? (
               <TradingViewAreaChart
                 data={data}
                 tokenSymbol={currency1?.symbol}
                 showHours={selectedInterval === DATE_INTERVALS.DAY}
               />
             ) : (
-              <TYPE.DarkGray>Sorry, this pair doesn't have enough data.</TYPE.DarkGray>
+              <TYPE.DarkGray>{t('pairNoData')}</TYPE.DarkGray>
             )
           ) : (
-            <TYPE.DarkGray>Select token</TYPE.DarkGray>
+            <TYPE.DarkGray>{t('selectToken')}</TYPE.DarkGray>
           )}
         </Flex>
       </Flex>

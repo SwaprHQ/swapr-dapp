@@ -14,10 +14,14 @@ type TradingViewAreaChartProps = {
 export const TradingViewAreaChart = ({ data, tokenSymbol, showHours }: TradingViewAreaChartProps) => {
   const { price, date, chartRef } = useChart({ data, showHours })
 
+  const tokenPriceWithSymbol = `${formatPrice(price)} ${tokenSymbol}`
+
   return (
     <Flex flexDirection="column" alignItems="center" width="100%">
       <Box width="100%">
-        <TYPE.DarkGray fontWeight={600} fontSize={30}>{`${formatPrice(price)} ${tokenSymbol}`}</TYPE.DarkGray>
+        <TYPE.DarkGray fontWeight={600} fontSize={30}>
+          {tokenPriceWithSymbol}
+        </TYPE.DarkGray>
         <Flex alignItems="center" mt="4px">
           <TYPE.Main fontSize={12} color="text4">
             {formatDate(date)}

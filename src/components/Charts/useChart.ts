@@ -19,7 +19,9 @@ const chartColors = {
   areaBottomColor: 'rgba(204, 144, 255, 0)',
 }
 
-export function useChart({ data, showHours }: { data: ChartData[]; showHours: boolean | undefined }) {
+type ChartProps = { data: ChartData[]; showHours: boolean | undefined }
+
+export function useChart({ data, showHours }: ChartProps) {
   const chartRef = useRef<HTMLDivElement>(null)
   const [price, setPrice] = useState(lastElementValueOrDefault(data))
   const [date, setDate] = useState(buildDate(lastElementTimeOrDefault(data)))

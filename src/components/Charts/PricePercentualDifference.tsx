@@ -1,7 +1,9 @@
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-export const PricePercentualDifference = ({ firstValue, lastValue }: { firstValue: string; lastValue: string }) => {
+type PricePercentualDifferenceProps = { firstValue: string; lastValue: string }
+
+export const PricePercentualDifference = ({ firstValue, lastValue }: PricePercentualDifferenceProps) => {
   const theme = useTheme()
 
   const firstPrice = parseFloat(firstValue)
