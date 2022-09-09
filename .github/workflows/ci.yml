@@ -45,6 +45,7 @@ jobs:
         run: |
           echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
           echo "sha-$GITHUB_SHA-time-$(date +"%s")"
+
       - name: Get Commit Message
         id: commit-message
         run: |
