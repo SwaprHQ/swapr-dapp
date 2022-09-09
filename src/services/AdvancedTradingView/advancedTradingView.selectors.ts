@@ -3,6 +3,7 @@ import { Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr
 import { createSelector } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
+import { BaseAppState } from './adapters/baseAdapter/base.adapter'
 import { AllTradesAndLiquidityFromAdapters, BasePair, LiquidityTypename } from './adapters/baseAdapter/base.types'
 import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.types'
@@ -18,9 +19,9 @@ const adapterLogos: { [key in AdapterKeys]: string } = {
 export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
   inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 
-const getAdapterPair = (key: AdapterKeys, platform: UniswapV2RoutablePlatform) =>
+export const getAdapterPair = <T extends BaseAppState>(key: AdapterKeys, platform: UniswapV2RoutablePlatform) =>
   createSelector(
-    [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters[key]],
+    [(state: T) => state.advancedTradingView.pair, (state: T) => state.advancedTradingView.adapters[key]],
     ({ inputToken, outputToken }, adapterPairs) => {
       if (inputToken && outputToken) {
         try {
@@ -52,7 +53,7 @@ const getAdapterPairUniswapV3 = (key: AdapterKeys) =>
     }
   )
 
-const selectCurrentSwaprPair = getAdapterPair(AdapterKeys.SWAPR, UniswapV2RoutablePlatform.SWAPR)
+export const selectCurrentSwaprPair = getAdapterPair(AdapterKeys.SWAPR, UniswapV2RoutablePlatform.SWAPR)
 const selectCurrentSushiPair = getAdapterPair(AdapterKeys.SUSHISWAP, UniswapV2RoutablePlatform.SUSHISWAP)
 const selectCurrentUniswapV2Pair = getAdapterPair(AdapterKeys.UNISWAPV2, UniswapV2RoutablePlatform.UNISWAP)
 const selectCurrentHoneyPair = getAdapterPair(AdapterKeys.HONEYSWAP, UniswapV2RoutablePlatform.HONEYSWAP)

@@ -2,7 +2,6 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
-import { AppState } from '../../../state'
 import { actions } from '../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
@@ -12,27 +11,27 @@ import {
 } from '../advancedTradingView.types'
 
 // each adapter should extend this class
-export abstract class AbstractAdvancedTradingViewAdapter {
+export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
   protected _chainId: ChainId | undefined
   protected _store: Store<AppState> | undefined
 
   abstract updateActiveChainId(chainId: ChainId): void
 
-  abstract setInitialArguments({ chainId, store }: AdapterInitialArguments): void
+  abstract setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>): void
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
 }
 
-export class AdvancedTradingViewAdapter {
+export class AdvancedTradingViewAdapter<AppState> {
   private _chainId: ChainId
-  private _adapters: Adapters
+  private _adapters: Adapters<AppState>
   private _initialized = false
   private _abortControllers: { [id: string]: AbortController } = {}
   public readonly store: Store<AppState>
 
-  constructor({ store, chainId, adapters }: AdvancedTradingViewAdapterConstructorParams) {
+  constructor({ store, chainId, adapters }: AdvancedTradingViewAdapterConstructorParams<AppState>) {
     this.store = store
     this._chainId = chainId
     this._adapters = adapters

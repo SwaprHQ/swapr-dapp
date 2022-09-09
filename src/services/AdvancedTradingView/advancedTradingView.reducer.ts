@@ -6,7 +6,7 @@ import { BaseActionPayload } from './adapters/baseAdapter/base.types'
 import { UniswapV3ActionPayload } from './adapters/uniswapV3/uniswapV3.types'
 import { InitialState } from './advancedTradingView.types'
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
   pair: {
     inputToken: undefined,
     outputToken: undefined,

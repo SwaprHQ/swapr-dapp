@@ -2,7 +2,6 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
-import { AppState } from '../../state'
 import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { BasePair } from './adapters/baseAdapter/base.types'
 import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
@@ -56,17 +55,17 @@ export enum AdapterPayloadType {
   burnsAndMints = 'burnsAndMints',
 }
 
-export type AdvancedTradingViewAdapterConstructorParams = {
-  adapters: Adapters
+export type AdvancedTradingViewAdapterConstructorParams<AppState> = {
+  adapters: Adapters<AppState>
   chainId: ChainId
   store: Store<AppState>
 }
-export type AdapterInitialArguments = Omit<
-  AdvancedTradingViewAdapterConstructorParams,
+export type AdapterInitialArguments<AppState> = Omit<
+  AdvancedTradingViewAdapterConstructorParams<AppState>,
   'adapters' | 'amountOfPairTrades' | 'amountOfPairActivity'
 >
 
-export type Adapters = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter }
+export type Adapters<AppState> = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter<AppState> }
 
 export type AdapterFetchDetails = {
   inputToken: Token

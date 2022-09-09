@@ -2,7 +2,7 @@ import { ChainId, Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
-import { actions } from '../../advancedTradingView.reducer'
+import { actions, initialState as advancedTradingViewInitialState } from '../../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
   AdapterInitialArguments,
@@ -13,7 +13,11 @@ import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapt
 import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
 import { PairBurnsAndMints, PairSwaps } from './base.types'
 
-export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
+export interface BaseAppState {
+  advancedTradingView: typeof advancedTradingViewInitialState
+}
+
+export class BaseAdapter<AppState extends BaseAppState> extends AbstractAdvancedTradingViewAdapter<AppState> {
   private _key: AdapterKeys
   private _adapterSupportedChains: ChainId[]
   private _platform: UniswapV2RoutablePlatform
@@ -50,7 +54,7 @@ export class BaseAdapter extends AbstractAdvancedTradingViewAdapter {
     this._chainId = chainId
   }
 
-  public setInitialArguments({ chainId, store }: AdapterInitialArguments) {
+  public setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>) {
     this._chainId = chainId
     this._store = store
   }

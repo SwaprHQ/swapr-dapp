@@ -1,10 +1,11 @@
 import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { AppState } from '../../../state'
 import { AdapterKeys, Adapters } from '../advancedTradingView.types'
 import { BaseAdapter } from './baseAdapter/base.adapter'
 import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
 
-export const adapters: Adapters = {
+export const adapters: Adapters<AppState> = {
   swapr: new BaseAdapter({
     key: AdapterKeys.SWAPR,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
