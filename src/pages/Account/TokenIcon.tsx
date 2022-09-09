@@ -8,7 +8,7 @@ import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/Currency
 import { ZERO_ADDRESS } from '../../constants'
 import { useListsByToken } from '../../state/lists/hooks'
 import { StyledLogo } from './Account.styles'
-import { getTokenURLWithNetwork } from './accountUtils'
+import { getNetworkDefaultTokenUrl } from './accountUtils'
 
 interface TokenIconProps {
   symbol: string
@@ -39,7 +39,7 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
     sources.push(getTokenLogoURL(address, chainId))
   }
 
-  const urlSource = getTokenURLWithNetwork(symbol, token?.logoURI)
+  const urlSource = getNetworkDefaultTokenUrl(symbol, token?.logoURI)
   if (urlSource) {
     sources.push(urlSource)
   }

@@ -6,27 +6,20 @@ import { SwapTransactionRow } from './SwapTransactionRow'
 
 interface TransactionRowProps {
   transactions: Transaction[]
-  showAllNetworkTransactions: boolean
 }
 
-export function TransactionRows({ transactions, showAllNetworkTransactions }: TransactionRowProps) {
+export function TransactionRows({ transactions }: TransactionRowProps) {
   return (
     <Fragment>
       {transactions.map((transaction, index) => {
         const { type, hash } = transaction
         switch (type) {
           case TransactionTypes.Swap:
-            return (
-              <SwapTransactionRow
-                transaction={transaction}
-                showAllNetworkTransactions={showAllNetworkTransactions}
-                key={hash ?? index}
-              />
-            )
+            return <SwapTransactionRow transaction={transaction} key={`row__${hash}__${index}`} />
           case TransactionTypes.Bridge:
-            return <BridgeTransactionRow transaction={transaction} key={hash ?? index} />
+            return <BridgeTransactionRow transaction={transaction} key={`row__${hash}__${index}`} />
           default:
-            return <Fragment key={hash ?? index} />
+            return <Fragment key={`row__${index}`} />
         }
       })}
     </Fragment>
