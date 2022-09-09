@@ -40,7 +40,18 @@ jobs:
           echo "::set-output name=value::$(printf "$MSG" | xargs)"
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
-  
+
+      - uses: luisrjaeger/approved-event-checker@v1.0.0
+        id: approved
+        with:
+          approvals: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Approved !!"
+        if: ${{ steps.approved.outputs.approved == 'true' }}
+
+      - run: echo "Disapproved !!"
+        if: ${{ steps.approved.outputs.approved == 'false' }}
 
   install:
     name: Install
