@@ -2,8 +2,8 @@ import { ChainId, DXD, SWPR } from '@swapr/sdk'
 
 import { Box } from 'rebass'
 
+import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
-import DXDLogo from '../../assets/svg/dxd.svg'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/CurrencyLogo/CurrencyLogo.utils'
 import { ZERO_ADDRESS } from '../../constants'
 import { useListsByToken } from '../../state/lists/hooks'

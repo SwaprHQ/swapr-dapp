@@ -6,7 +6,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three-blurred-circles.svg'
 import { ButtonSecondary } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'

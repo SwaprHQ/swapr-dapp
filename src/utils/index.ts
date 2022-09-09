@@ -10,7 +10,7 @@ import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 
-import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
+import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
 import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 

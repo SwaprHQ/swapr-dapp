@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 
-import Logo from '../../assets/svg/logo_white.svg'
+import Logo from '../../assets/images/logo_white.svg'
 
 const pulse = keyframes`
   0% { transform: scale(1); }
