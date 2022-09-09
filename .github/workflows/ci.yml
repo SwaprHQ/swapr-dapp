@@ -259,7 +259,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [prepare]
     container: cypress/base:16.5.0
-    if:
+    if: ${{ needs.prepare.outputs.synpress }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
