@@ -42,7 +42,7 @@ jobs:
         run: echo "${{ steps.commit-message.outputs.value }}"
 
       - name: approved-event-checker
-        uses: luisrjaeger/approved-event-checker@1.0.0
+        uses: taichi/approved-event-action@v1.2.1
         id: approved
         with:
           approvals: 1
