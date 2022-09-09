@@ -12,10 +12,12 @@ import {
   useRef,
   useState,
 } from 'react'
+import { X } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { useTheme } from 'styled-components'
 
+import { ReactComponent as SettingsIcon } from '../../../assets/svg/settings.svg'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
@@ -25,17 +27,16 @@ import { TYPE } from '../../../theme'
 import { isAddress } from '../../../utils'
 import { ButtonDark2 } from '../../Button'
 import Column, { AutoColumn } from '../../Column'
-import Row, { RowBetween } from '../../Row'
+import Row from '../../Row'
 import { CommonTokens } from '../CommonTokens'
 import { CurrencyList } from '../CurrencyList'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-import { SearchInput, Separator } from '../shared'
+import { SearchInput } from '../shared'
 import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
 import { useTokenComparator } from '../utils/sorting'
 import { CurrencySearchContext } from './CurrencySearch.context'
-import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
+import { ContentWrapper, Footer, FooterButton, InputCloseButton } from './CurrencySearch.styles'
 import { CurrencySearchProps } from './CurrencySearch.types'
-
 export const CurrencySearch = ({
   isOpen,
   onDismiss,
@@ -158,13 +159,10 @@ export const CurrencySearch = ({
 
   return (
     <ContentWrapper data-testid="token-picker">
-      <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px' }} gap="15px">
-        <RowBetween>
-          <TYPE.Body fontWeight={500}>Select a token</TYPE.Body>
-          <CloseIconStyled data-testid="close-icon" onClick={onDismiss} />
-        </RowBetween>
-        <Row>
+      <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px', width: '100%' }} gap="15px">
+        <Row style={{ position: 'relative' }}>
           <SearchInput
+            height={49}
             type="text"
             id="token-search-input"
             placeholder={t('searchPlaceholder')}
@@ -175,38 +173,51 @@ export const CurrencySearch = ({
             onKeyDown={handleEnter}
             fontWeight={500}
           />
+          {searchQuery.length > 0 && (
+            <InputCloseButton onClick={() => setSearchQuery('')}>
+              <X />
+            </InputCloseButton>
+          )}
         </Row>
-        {showCommonBases && (
+        {searchQuery.length === 0 && showCommonBases && (
           <CommonTokens chainId={chainId} onCurrencySelect={onCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
       </AutoColumn>
-      <Separator />
-      {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
-      fixedList !== undefined ? (
-        <CurrencyList
-          currencies={filteredSortedTokensWithNativeCurrency}
-          otherListTokens={filteredInactiveTokensWithFallback}
-          onCurrencySelect={onCurrencySelect}
-          otherCurrency={otherSelectedCurrency}
-          selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
-          showImportView={showImportView}
-          setImportToken={setImportToken}
-          selectedTokenList={selectedTokenList}
-          hideBalance={isOutputPanel}
-        />
-      ) : (
-        <Column style={{ padding: '20px', height: '100%' }}>
-          <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
-            No results found.
-          </TYPE.Main>
-        </Column>
+
+      {searchQuery.length > 0 && (
+        <>
+          {(filteredSortedTokens?.length > 0 || filteredInactiveTokensWithFallback.length > 0) &&
+          fixedList !== undefined ? (
+            <CurrencyList
+              currencies={filteredSortedTokensWithNativeCurrency}
+              otherListTokens={filteredInactiveTokensWithFallback}
+              onCurrencySelect={onCurrencySelect}
+              otherCurrency={otherSelectedCurrency}
+              selectedCurrency={selectedCurrency}
+              fixedListRef={fixedList as MutableRefObject<FixedSizeList>}
+              showImportView={showImportView}
+              setImportToken={setImportToken}
+              selectedTokenList={selectedTokenList}
+              hideBalance={isOutputPanel}
+            />
+          ) : (
+            <Column style={{ padding: '20px', height: '100%' }}>
+              <TYPE.Main color={theme.text3} textAlign="center" mb="20px">
+                No results found.
+              </TYPE.Main>
+            </Column>
+          )}
+        </>
       )}
+
       <Footer>
-        <Row justify="center">
-          <ButtonDark2 onClick={showManageView} data-testid="manage-token-lists-button">
-            Manage token lists
-          </ButtonDark2>
+        <Row justify="center" gap={'24px'}>
+          <FooterButton onClick={showManageView} data-testid="manage-token-lists-button">
+            <SettingsIcon />
+          </FooterButton>
+          <FooterButton onClick={onDismiss} data-testid="close-icon">
+            <X />
+          </FooterButton>
         </Row>
       </Footer>
     </ContentWrapper>
