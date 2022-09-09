@@ -42,7 +42,7 @@ jobs:
         run: echo "${{ steps.commit-message.outputs.value }}"
 
       - name: multi-approved-event
-      - uses: sakhnovict/multi-approved-event-action@1.0.9
+        uses: sakhnovict/multi-approved-event-action@1.0.9
         id: approved
         with:
           approvalsCount: '2'
