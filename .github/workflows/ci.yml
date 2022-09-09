@@ -51,6 +51,7 @@ jobs:
         run: |
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
           echo "::set-output name=value::$(printf "$MSG" | xargs)"
+
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
@@ -77,7 +78,7 @@ jobs:
 
       - name: Check if synpress tests should be executed
         id: synpress
-        if: ${{ contains(needs.prepare.outputs.commit-message,'trigger-synpress' || github.event_name == 'push') }}
+        if: ${{ contains(steps.commit-message.outputs.value,'trigger-synpress' || github.event_name == 'push') }}
         run: |
           echo "Synpress tests should be executed"
           echo "::set-output name=value::true"
