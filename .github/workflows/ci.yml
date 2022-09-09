@@ -57,7 +57,7 @@ jobs:
 
 
     - name: Create comment if build is ok
-      if: ${{ success() }}
+      if: steps.check-if-tests-should-run.outcome == 'success'
       id: label-present
       run: |
         echo "Label present"
