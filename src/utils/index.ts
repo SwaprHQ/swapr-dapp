@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
 import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
+import { SwapProtocol } from '../state/transactions/reducer'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -50,29 +51,35 @@ const getExplorerPrefix = (chainId: ChainId) => {
 
 export function getExplorerLink(
   chainId: ChainId,
-  data: string,
-  type: 'transaction' | 'token' | 'address' | 'block'
+  hash: string,
+  type: 'transaction' | 'token' | 'address' | 'block',
+  swapProtocol?: string
 ): string {
-  const prefix = getExplorerPrefix(chainId)
+  let prefix = getExplorerPrefix(chainId)
 
   // exception. blockscout doesn't have a token-specific address
   if (chainId === ChainId.XDAI && type === 'token') {
-    return `${prefix}/address/${data}`
+    return `${prefix}/address/${hash}`
+  }
+
+  //exception with using cow swap. Need to show cow explorer
+  if (swapProtocol === SwapProtocol.COW) {
+    return getGnosisProtocolExplorerOrderLink(chainId as ChainId, hash)
   }
 
   switch (type) {
     case 'transaction': {
-      return `${prefix}/tx/${data}`
+      return `${prefix}/tx/${hash}`
     }
     case 'token': {
-      return `${prefix}/token/${data}`
+      return `${prefix}/token/${hash}`
     }
     case 'block': {
-      return `${prefix}/block/${data}`
+      return `${prefix}/block/${hash}`
     }
     case 'address':
     default: {
-      return `${prefix}/address/${data}`
+      return `${prefix}/address/${hash}`
     }
   }
 }
