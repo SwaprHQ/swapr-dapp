@@ -41,10 +41,14 @@ jobs:
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
 
-      - uses: docker://agilepathway/pull-request-label-checker:latest
-        with:
-          one_of: major,minor,patch
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+  check-if-tests-should-run:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: docker://agilepathway/pull-request-label-checker:latest
+      id: check-if-tests-should-run
+      with:
+        one_of: ready-for-tests
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
 
   install:
     name: Install
@@ -319,7 +323,7 @@ jobs:
     needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
-    if: ${{ !(contains(needs.prepare.outputs.commit-message, 'skip-cypress')) && !(github.actor == 'dependabot[bot]') }}
+    if: ${{ ((github.event_name == 'push') }}) ||((steps.check-if-tests-should-run.outcome == 'success')&& !(github.actor == 'dependabot[bot]')) }}
     strategy:
       fail-fast: false
       matrix:
