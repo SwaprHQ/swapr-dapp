@@ -181,7 +181,7 @@ describe('Switching from mainnet tests', () => {
     cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
-  it.only('Should switch from mainnet to rinkeby after starting the swap process [regression-test] [TC-61]', () => {
+  it('Should switch from mainnet to gnosis after starting the swap process [regression-test] [TC-61]', () => {
     SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
     SwapPage.getCurrencySelectors().first().click()
     TokenMenu.searchAndChooseToken('weth')
