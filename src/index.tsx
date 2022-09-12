@@ -20,7 +20,7 @@ import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 import './theme/fonts.css'
-
+__webpack_nonce__ = 'c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM='
 // Enables use of the useWhatChanged hook in dev environment
 setUseWhatChange({
   active: process.env.NODE_ENV === 'development',
