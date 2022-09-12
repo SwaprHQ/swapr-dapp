@@ -237,19 +237,13 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
         useMultihops,
       },
     }
-
-    // Use a static version
-    const staticProvider = provider ? new StaticJsonRpcProvider(provider.connection, provider.network) : undefined
-
-    console.log('useDerivedSwapInfo: fetching trades')
-
     const getTrades = getTradesPromise(
       parsedAmount,
       inputCurrency,
       outputCurrency,
       commonParams,
       ecoRouterSourceOptionsParams,
-      staticProvider
+      provider
     )
 
     // Start fetching trades from EcoRouter API
