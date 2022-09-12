@@ -56,29 +56,43 @@ jobs:
         run: echo "${{ steps.commit-message.outputs.value }}"
 
       - uses: docker://agilepathway/pull-request-label-checker:latest
-        id: check-if-tests-should-run
+        id: check-if-cypress-tests-should-run
         continue-on-error: true
         with:
           one_of: ready-for-tests, QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if label is present
-        if: steps.check-if-tests-should-run.outcome == 'success'
-        id: label-present
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        id: check-if-synpress-tests-should-run
+        continue-on-error: true
+        with:
+          one_of: ready-for-synpress-tests, QA
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if cypress label is present
+        if: steps.check-if-cypress-tests-should-run.outcome == 'success'
+        id: cypress-label-present
+        run: |
+          echo "Label present"
+          echo "::set-output name=value::true"
+
+      - name: Check if synpress label is present
+        if: steps.check-if-synpress-tests-should-run.outcome == 'success'
+        id: synpress-label-present
         run: |
           echo "Label present"
           echo "::set-output name=value::true"
 
       - name: Check if cypress tests should be executed
         id: cypress
-        if: ${{ ((github.event_name == 'push') || ((steps.label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]'))) }}
+        if: ${{ ((github.event_name == 'push') || ((steps.cypress-label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]'))) }}
         run: |
           echo "Cypress tests should be executed"
           echo "::set-output name=value::true"
 
       - name: Check if synpress tests should be executed
         id: synpress
-        if: ${{ contains(steps.commit-message.outputs.value,'trigger-synpress' || github.event_name == 'push') }}
+        if: ${{ contains(steps.commit-message.outputs.value,'trigger-synpress') || github.event_name == 'push' || (steps.synpress-label-present.outputs.value == 'true') }}
         run: |
           echo "Synpress tests should be executed"
           echo "::set-output name=value::true"
@@ -291,7 +305,7 @@ jobs:
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
 
       - name: Check if synpress should be reported to dashboard
-        if: ${{ (github.event_name == 'push') || (contains(needs.prepare.outputs.commit-message,'trigger-synpress-dashboard')) }}
+        if: ${{ (github.event_name == 'push') || !(contains(needs.prepare.outputs.commit-message,'skip-synpress-dashboard')) }}
         run: |
           echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
 
