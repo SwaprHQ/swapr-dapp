@@ -101,7 +101,7 @@ export const useAdvancedTradingViewAdapter = () => {
 
         setIsLoading(true)
         try {
-          await Promise.all([
+          await Promise.allSettled([
             advancedTradingViewAdapter.fetchPairTrades({
               inputToken,
               outputToken,

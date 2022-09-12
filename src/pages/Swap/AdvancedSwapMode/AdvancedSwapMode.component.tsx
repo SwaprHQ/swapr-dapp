@@ -46,6 +46,8 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
     hasMore: { hasMoreTrades, hasMoreActivity },
   } = useAllTrades()
   const [tokens, setTokens] = useState<Token[]>([])
+  const [isFirstLoadingFetchTrades, setFirstLoadingFetchTrades] = useState<boolean>(true)
+  const [isFirstLoadingFetchActivity, setFirstLoadingFetchActivity] = useState<boolean>(true)
   const [token0, token1] = tokens
   const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades, fetchActivity } =
     useAdvancedTradingViewAdapter()
@@ -53,11 +55,21 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     if (inputToken && outputToken) {
       setTokens(sortsBeforeTokens(inputToken, outputToken))
+      setFirstLoadingFetchTrades(true)
     }
   }, [inputToken, outputToken])
 
   const navigate = useNavigate()
   const [activeSwitchOption, setActiveSwitchOption] = useState<Token>()
+
+  const handleFetchTrades = () => {
+    setFirstLoadingFetchTrades(false)
+    fetchTrades()
+  }
+  const handleFetchActivity = () => {
+    setFirstLoadingFetchActivity(false)
+    fetchActivity()
+  }
 
   const handleAddLiquidity = () => {
     if (inputToken && outputToken) {
@@ -116,8 +128,8 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
         <TransactionsWrapper id="transactions-wrapper-scrollable">
           <InfiniteScroll
             dataLength={tradeHistory.length}
-            next={fetchTrades}
-            hasMore={hasMoreTrades}
+            next={handleFetchTrades}
+            hasMore={hasMoreTrades || isFirstLoadingFetchTrades}
             scrollableTarget="transactions-wrapper-scrollable"
             loader={
               showTrades && (
@@ -187,8 +199,8 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
           <TransactionsWrapper maxHeight="400px" id="liquidity-wrapper-scrollable">
             <InfiniteScroll
               dataLength={liquidityHistory.length}
-              next={fetchActivity}
-              hasMore={hasMoreActivity}
+              next={handleFetchActivity}
+              hasMore={hasMoreActivity || isFirstLoadingFetchActivity}
               scrollableTarget="liquidity-wrapper-scrollable"
               loader={
                 showTrades && (
