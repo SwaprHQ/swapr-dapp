@@ -3,6 +3,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMedia } from 'react-use'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
@@ -42,6 +43,7 @@ import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import { breakpoints } from '../../utils/theme'
 import AppBody from '../AppBody'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
@@ -86,6 +88,7 @@ const AppBodyContainer = styled.section`
 `
 
 export default function Swap() {
+  const isDesktop = useMedia(`(min-width: ${breakpoints.l})`)
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -111,6 +114,12 @@ export default function Swap() {
   }, [])
 
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
+
+  useEffect(() => {
+    if (activeTab === SwapTabs.ADVANCED_SWAP_MODE && !isDesktop) {
+      setSelectedTab(SwapTabs.SWAP)
+    }
+  }, [isDesktop, activeTab, setSelectedTab])
 
   const { chainId } = useActiveWeb3React()
 
@@ -494,10 +503,10 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && (
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && isDesktop && (
         <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && (
+      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId) || !isDesktop) && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
