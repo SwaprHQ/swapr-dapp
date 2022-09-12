@@ -5,21 +5,22 @@ import { Connector } from '@web3-react/types'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { ModalView } from '../components/Web3Status'
 import { getConnection } from '../connectors/utils'
 import { NETWORK_DETAIL } from '../constants'
 import { AppDispatch, AppState } from '../state'
-import { setConnectorError } from '../state/application/actions'
-import { updateSelectedWallet } from '../state/user/actions'
+import {
+  ApplicationModal,
+  setConnectorError,
+  updatePendingConnector,
+  updateSelectedConnector,
+} from '../state/application/actions'
+import { useOpenModal } from '../state/application/hooks'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
   chainId?: ChainId
   isActiveChainSupported: boolean
-  pendingConnector: Connector
   connectorError: string | undefined
-  modal: ModalView | null
-  setModal: (modal: ModalView | null) => void
   tryActivation: (connector: Connector) => void
   tryDeactivation: (connector: Connector, account: string | undefined) => void
 }
@@ -27,32 +28,33 @@ type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
 export const useWeb3ReactCore = (): Web3ReactProps => {
   const dispatch = useDispatch<AppDispatch>()
   const props = useWeb3React()
-  const { connector: activeConnector, chainId } = props
+  const { chainId, isActive } = props
   const [isActiveChainSupported, setIsActiveChainSupported] = useState(true)
-  const [pendingConnector, setPendingConnector] = useState(activeConnector)
-  const [modal, setModal] = useState<ModalView | null>(null)
+  const openPendingWalletModal = useOpenModal(ApplicationModal.WALLET_PENDING)
 
   useEffect(() => {
-    const isDefinedAndSupported = chainId ? Object.keys(NETWORK_DETAIL).includes(chainId.toString()) : false
+    const isDefinedAndSupported = isActive && chainId ? Object.keys(NETWORK_DETAIL).includes(chainId.toString()) : false
     setIsActiveChainSupported(isDefinedAndSupported)
-  }, [chainId])
+  }, [chainId, isActive])
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
       const connectorType = getConnection(connector).type
-      setPendingConnector(connector)
+
+      dispatch(updatePendingConnector({ pendingConnector: connectorType }))
 
       dispatch(setConnectorError({ connector: connectorType, connectorError: undefined }))
+      openPendingWalletModal()
 
       try {
         await connector.activate()
-        dispatch(updateSelectedWallet({ selectedWallet: connectorType }))
+        dispatch(updateSelectedConnector({ selectedConnector: connectorType }))
       } catch (error) {
         console.debug(`web3-react connection error: ${error}`)
         dispatch(setConnectorError({ connector: connectorType, connectorError: getErrorMessage(error) }))
       }
     },
-    [dispatch]
+    [dispatch, openPendingWalletModal]
   )
 
   const tryDeactivation = useCallback(async (connector: Connector, account: string | undefined) => {
@@ -64,18 +66,16 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
     void connector.resetState()
   }, [])
 
-  const connectorError = useSelector((state: AppState) =>
-    pendingConnector ? state.application.errorByConnectorType[getConnection(pendingConnector).type] : undefined
-  )
+  const connectorError = useSelector((state: AppState) => {
+    const { pending } = state.application.connector
+    return pending ? state.application.connector.errorByType[pending] : undefined
+  })
 
   return {
     ...props,
     chainId: (props.chainId as ChainId) ?? undefined,
     isActiveChainSupported,
-    pendingConnector,
     connectorError,
-    modal,
-    setModal,
     tryActivation,
     tryDeactivation,
   }

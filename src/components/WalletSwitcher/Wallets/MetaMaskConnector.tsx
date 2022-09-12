@@ -5,7 +5,7 @@ import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WalletOption } from '../WalletOption'
 import { ConnectorProps } from '../WalletOption.types'
 
-export const MetaMaskConnector = ({ tryActivation }: ConnectorProps) => {
+export const MetaMaskConnector = ({ tryActivation }: Pick<ConnectorProps, 'tryActivation'>) => {
   const { connector: activeConnector } = useWeb3ReactCore()
   const isWalletDetected = getIsInjected() && getIsMetaMask()
   const isActive = metaMaskHooks.useIsActive() && activeConnector === metaMask

@@ -66,24 +66,9 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
 }
 
-export enum ModalView {
-  Pending,
-  Account,
-}
-
 export default function Web3Status() {
-  const {
-    account,
-    connector,
-    chainId,
-    ENSName,
-    isActiveChainSupported,
-    tryActivation,
-    tryDeactivation,
-    modal,
-    setModal,
-    pendingConnector,
-  } = useWeb3ReactCore()
+  const { account, connector, chainId, ENSName, isActiveChainSupported, tryActivation, tryDeactivation } =
+    useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllSwapTransactions()
   const navigate = useNavigate()
@@ -124,17 +109,13 @@ export default function Web3Status() {
     chainId,
   ])
 
-  useEffect(() => {
-    if (connector !== pendingConnector) setModal(ModalView.Pending)
-  }, [connector, pendingConnector, setModal])
-
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
   return (
     <>
-      <ConnectWalletPopover setModal={setModal} tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
+      <ConnectWalletPopover tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
         <Row alignItems="center" justifyContent="flex-end">
           {!account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
@@ -161,12 +142,7 @@ export default function Web3Status() {
           )}
         </Row>
       </ConnectWalletPopover>
-      <WalletModal
-        pendingConnector={pendingConnector}
-        modal={modal}
-        setModal={setModal}
-        tryActivation={tryActivation}
-      />
+      <WalletModal />
     </>
   )
 }

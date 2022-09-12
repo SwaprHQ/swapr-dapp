@@ -25,6 +25,7 @@ export enum ApplicationModal {
   UNSUPPORTED_NETWORK,
   SIMPLE_SETTINGS,
   EXPEDITIONS,
+  WALLET_PENDING,
 }
 
 export enum MainnetGasPrice {
@@ -43,3 +44,7 @@ export const setConnectorInfo =
 export const setConnectorError = createAction<{ connector: ConnectorType; connectorError: string | undefined }>(
   'application/setConnectorError'
 )
+export const updateSelectedConnector = createAction<{ selectedConnector: ConnectorType }>(
+  'user/updateSelectedConnector'
+)
+export const updatePendingConnector = createAction<{ pendingConnector: ConnectorType }>('user/updatePendingConnector')

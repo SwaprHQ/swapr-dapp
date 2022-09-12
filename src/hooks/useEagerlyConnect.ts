@@ -16,18 +16,18 @@ async function connect(connector: Connector) {
 }
 
 export default function useEagerlyConnect() {
-  const selectedWalletBackfilled = useSelector((state: AppState) => state.user.selectedWalletBackfilled)
-  const selectedWallet = useSelector((state: AppState) => state.user.selectedWallet)
+  const selectedConnectorBackfilled = useSelector((state: AppState) => state.application.connector.selectedBackfilled)
+  const selectedConnector = useSelector((state: AppState) => state.application.connector.selected)
 
   useEffect(() => {
     connect(networkConnection.connector)
 
-    if (selectedWallet) {
-      connect(getConnection(selectedWallet).connector)
+    if (selectedConnector) {
+      connect(getConnection(selectedConnector).connector)
       return
     }
 
-    if (!selectedWalletBackfilled) {
+    if (!selectedConnectorBackfilled) {
       BACKFILLABLE_WALLETS.map(getConnection)
         .map(connection => connection.connector)
         .forEach(connect)

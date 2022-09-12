@@ -40,8 +40,12 @@ export const getConnection = (connector: Connector | ConnectorType) => {
 
 export const getConnectionName = (connector: ConnectorType) => SUPPORTED_WALLETS[connector].name
 
-export const isChainSupportedByConnector = (connector: Connector, chainId: number | undefined) => {
-  const connectorType = getConnection(connector).type
-  if (!chainId || !connectorType) return false
-  return SUPPORTED_NETWORKS[connectorType].includes(chainId)
+export const isChainSupportedByConnector = (connector: Connector | ConnectorType, chainId: number | undefined) => {
+  if (!chainId) return false
+  if (connector instanceof Connector) {
+    const connectorType = getConnection(connector).type
+    return SUPPORTED_NETWORKS[connectorType].includes(chainId)
+  }
+
+  return SUPPORTED_NETWORKS[connector].includes(chainId)
 }

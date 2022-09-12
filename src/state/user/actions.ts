@@ -1,7 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
 import { MainnetGasPrice } from '../application/actions'
-import { ConnectorType } from './../../constants'
 
 export interface SerializedToken {
   chainId: number
@@ -35,4 +34,3 @@ export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const updateUserAdvancedSwapDetails = createAction<{ userAdvancedSwapDetails: boolean }>(
   'user/updateUserAdvancedSwapDetails'
 )
-export const updateSelectedWallet = createAction<{ selectedWallet: ConnectorType }>('user/updateSelectedWallet')

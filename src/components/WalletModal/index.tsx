@@ -1,19 +1,19 @@
-import { Connector } from '@web3-react/types'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
+import { useSelector } from 'react-redux'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
-import { isChainSupportedByConnector } from '../../connectors/utils'
+import { getConnection, isChainSupportedByConnector } from '../../connectors/utils'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
-import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
+import { AppState } from '../../state'
+import { ApplicationModal } from '../../state/application/actions'
+import { useCloseModals, useModalOpen, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
-import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
-import { ModalView } from '../Web3Status'
 import PendingView from './PendingView'
 
 const CloseIcon = styled.div`
@@ -101,56 +101,47 @@ const HoverText = styled.div`
   }
 `
 
-interface WalletModalProps {
-  pendingConnector: Connector
-  modal: ModalView | null
-  setModal: (modal: ModalView | null) => void
-}
-
-export default function WalletModal({
-  pendingConnector,
-  modal,
-  setModal,
-  tryActivation,
-}: WalletModalProps & Pick<ConnectorProps, 'tryActivation'>) {
-  const { account, connector, isActive, chainId, connectorError } = useWeb3ReactCore()
+export default function WalletModal() {
+  const { account, connector, isActive, chainId, connectorError, tryActivation } = useWeb3ReactCore()
   const isConnectorError = !!connectorError
-
-  const closeModal = useCallback(() => setModal(null), [setModal])
-
-  const isModalVisible = modal !== null
-  const isChainSupported = isChainSupportedByConnector(pendingConnector, chainId)
-
   const previousAccount = usePrevious(account)
+  const isWalletPendingModalOpen = useModalOpen(ApplicationModal.WALLET_PENDING)
+  const { pending, selected } = useSelector((state: AppState) => state.application.connector)
+  const isChainSupported = pending ? isChainSupportedByConnector(pending, chainId) : false
+  const pendingConnector = pending ? getConnection(pending).connector : undefined
+  const closeModal = useCloseModals()
 
   // close on connection, when logged out before
   useEffect(() => {
-    if (account && !previousAccount && isModalVisible) {
+    if (account && !previousAccount && isWalletPendingModalOpen) {
       closeModal()
     }
-  }, [account, previousAccount, closeModal, isModalVisible])
+  }, [account, previousAccount, closeModal, isWalletPendingModalOpen])
 
-  // close on wallet change
+  // close on wallet change or if the same wallet selected
   useEffect(() => {
-    if (account && previousAccount && previousAccount !== account && isModalVisible) {
+    if (
+      ((account && previousAccount && previousAccount !== account) || pending === selected) &&
+      isWalletPendingModalOpen
+    ) {
       closeModal()
     }
-  }, [account, previousAccount, closeModal, isModalVisible])
+  }, [account, previousAccount, closeModal, isWalletPendingModalOpen, pending, selected])
 
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
     if (
-      !!modal &&
+      isWalletPendingModalOpen &&
       ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !isConnectorError))
     ) {
-      setModal(null)
+      closeModal()
     }
-  }, [setModal, connector, modal, activePrevious, connectorPrevious, isActive, isConnectorError])
+  }, [connector, activePrevious, connectorPrevious, isActive, isConnectorError, closeModal, isWalletPendingModalOpen])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
-    setModal(null)
+    closeModal()
     toggleWalletSwitcherPopover()
   }
 
@@ -187,23 +178,17 @@ export default function WalletModal({
         <CloseIcon onClick={closeModal}>
           <CloseColor />
         </CloseIcon>
-        {modal !== ModalView.Account ? (
-          <HeaderRow color="blue">
-            <HoverText onClick={onBackButtonClick}>
-              <TYPE.Body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
-                Back
-              </TYPE.Body>
-            </HoverText>
-          </HeaderRow>
-        ) : (
-          <HeaderRow>
-            <TYPE.Body fontWeight={500} fontSize={20} color="text4">
-              Connect to a wallet
+        <HeaderRow color="blue">
+          <HoverText onClick={onBackButtonClick}>
+            <TYPE.Body color="text4" fontWeight={500} fontSize="20px" lineHeight="24px" letterSpacing="-0.01em">
+              Back
             </TYPE.Body>
-          </HeaderRow>
-        )}
+          </HoverText>
+        </HeaderRow>
         <ContentWrapper>
-          <PendingView connector={pendingConnector} error={isConnectorError} tryActivation={tryActivation} />
+          {pendingConnector && (
+            <PendingView connector={pendingConnector} error={isConnectorError} tryActivation={tryActivation} />
+          )}
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
           <TYPE.Body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
@@ -219,7 +204,7 @@ export default function WalletModal({
   }
 
   return (
-    <Modal isOpen={isModalVisible} onDismiss={closeModal} minHeight={false} maxHeight={90}>
+    <Modal isOpen={isWalletPendingModalOpen} onDismiss={closeModal} minHeight={false} maxHeight={90}>
       <Wrapper>{getModalContent()}</Wrapper>
     </Modal>
   )
