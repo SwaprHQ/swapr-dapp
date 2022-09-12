@@ -12,7 +12,7 @@ import { SimpleChartLoading } from './SimpleChartLoading'
 import { ChartData, DATE_INTERVALS } from './simpleChartUtils'
 import { TradingViewAreaChart } from './TradingViewAreaChart'
 
-type SimpleChartProps = {
+interface SimpleChartProps {
   data: ChartData[]
   loading: boolean
   currency0?: Currency

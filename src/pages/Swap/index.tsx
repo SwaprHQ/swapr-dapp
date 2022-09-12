@@ -428,7 +428,7 @@ export default function Swap() {
               }
             </Tabs>
             <AppBody tradeDetailsOpen={!!trade}>
-              <SwapPoolTabs active={'swap'} />
+              <SwapPoolTabs active="swap" />
               <Wrapper id="swap-page">
                 <ConfirmSwapModal
                   isOpen={showConfirm}

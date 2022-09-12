@@ -6,9 +6,7 @@ type PricePercentualDifferenceProps = { firstValue: string; lastValue: string }
 export const PricePercentualDifference = ({ firstValue, lastValue }: PricePercentualDifferenceProps) => {
   const theme = useTheme()
 
-  const firstPrice = parseFloat(firstValue)
-  const lastPrice = parseFloat(lastValue)
-  const pricePercentualDifference = parseFloat((((lastPrice - firstPrice) / firstPrice) * 100).toPrecision(3))
+  const pricePercentualDifference = parseFloat((((+lastValue - +firstValue) / +firstValue) * 100).toPrecision(3))
 
   const isPricePercentualDifferencePositive = pricePercentualDifference > 0
   const isPricePercentualDifferenceZero = pricePercentualDifference === 0

@@ -39,7 +39,9 @@ export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterva
       const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
       setWrappedToken1(wrappedToken1)
       setPairAddress(pairAddress)
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
   }, [chainId, currency0, currency1])
 
   return {
