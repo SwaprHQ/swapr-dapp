@@ -182,6 +182,7 @@ describe('Switching from mainnet tests', () => {
     NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
   it('Should switch from mainnet to gnosis after starting the swap process [regression-test] [TC-61]', () => {
+    cy.changeMetamaskNetwork('ethereum')
     SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
     SwapPage.getCurrencySelectors().first().click()
     TokenMenu.searchAndChooseToken('weth')
