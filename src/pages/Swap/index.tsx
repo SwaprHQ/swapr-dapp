@@ -495,25 +495,24 @@ export default function Swap() {
         onConfirm={handleConfirmTokenWarning}
       />
       {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && (
-        <>
-          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
-          <Hero />
-        </>
+        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
       )}
       {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId)) && (
-        <Hero>
-          <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
-        </Hero>
+        <>
+          <Hero>
+            <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+          </Hero>
+          <LandingBodyContainer>
+            <Features />
+            <Stats />
+            <CommunityBanner />
+            <Timeline />
+            <CommunityLinks />
+            <BlogNavigation />
+          </LandingBodyContainer>
+          <Footer />
+        </>
       )}
-      <LandingBodyContainer>
-        <Features />
-        <Stats />
-        <CommunityBanner />
-        <Timeline />
-        <CommunityLinks />
-        <BlogNavigation />
-      </LandingBodyContainer>
-      <Footer />
     </>
   )
 }
