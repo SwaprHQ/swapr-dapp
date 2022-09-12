@@ -6,22 +6,51 @@ import { actions } from '../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
   AdapterInitialArguments,
+  AdapterKeys,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
+  protected _key: AdapterKeys
   protected _chainId: ChainId | undefined
   protected _store: Store<AppState> | undefined
+  protected _adapterSupportedChains: ChainId[]
 
-  abstract updateActiveChainId(chainId: ChainId): void
-
-  abstract setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>): void
+  constructor({ key, adapterSupportedChains }: { key: AdapterKeys; adapterSupportedChains: ChainId[] }) {
+    this._key = key
+    this._adapterSupportedChains = adapterSupportedChains
+  }
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
+
+  public updateActiveChainId(chainId: ChainId) {
+    this._chainId = chainId
+  }
+
+  public setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>) {
+    this._chainId = chainId
+    this._store = store
+  }
+
+  protected get actions() {
+    return actions
+  }
+
+  protected get store() {
+    if (!this._store) throw new Error('No store set')
+
+    return this._store
+  }
+
+  protected _isSupportedChainId(chainId?: ChainId): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE {
+    if (!chainId) return false
+
+    return this._adapterSupportedChains.includes(chainId)
+  }
 }
 
 export class AdvancedTradingViewAdapter<AppState> {

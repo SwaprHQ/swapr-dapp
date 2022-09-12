@@ -4,7 +4,7 @@ import { Store } from '@reduxjs/toolkit'
 
 import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { BasePair } from './adapters/baseAdapter/base.types'
-import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
+import { UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 
 export enum AdapterKeys {
   SWAPR = 'swapr',
@@ -78,4 +78,12 @@ export type AdapterFetchDetails = {
 export enum AdapterAmountToFetch {
   pairTrades = 10,
   pairActivity = 3,
+}
+
+export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {
+  pairId: string
+  pair: BasePair | UniswapV3Pair | undefined
+  chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS
+  inputTokenAddress: string
+  outputTokenAddress: string
 }
