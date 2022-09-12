@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -303,6 +303,14 @@ export default function AddLiquidity() {
   }, [onFieldAInput, onFieldBInput, txHash])
 
   const isCreate = location.pathname.includes('/create')
+
+  useEffect(() => {
+    //input cleanup on component unmount
+    return () => {
+      onFieldAInput('')
+      onFieldBInput('')
+    }
+  }, [onFieldAInput, onFieldBInput])
 
   return (
     <>
