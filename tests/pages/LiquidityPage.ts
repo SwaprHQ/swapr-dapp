@@ -60,6 +60,9 @@ export class LiquidityPage {
   static getPairCards() {
     return cy.get('[data-testid=pair-card]')
   }
+  static getOpenRewardsButton() {
+    return cy.get('[data-testid=open-rewards-button]')
+  }
   static getRewardsCampaignButton() {
     return cy.get('#rewards-campaign-for-pair')
   }

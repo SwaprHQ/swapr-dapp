@@ -27,6 +27,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
         contract_address: USDT[ChainId.POLYGON].address,
         contract_decimals: USDT[ChainId.POLYGON].decimals,
       },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: USDT[ChainId.OPTIMISM_MAINNET].address,
+        contract_decimals: USDT[ChainId.OPTIMISM_MAINNET].decimals,
+      },
     },
   },
   {
@@ -50,6 +54,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
       [ChainId.POLYGON]: {
         contract_address: USDC[ChainId.POLYGON].address,
         contract_decimals: USDC[ChainId.POLYGON].decimals,
+      },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: USDC[ChainId.OPTIMISM_MAINNET].address,
+        contract_decimals: USDC[ChainId.OPTIMISM_MAINNET].decimals,
       },
     },
   },

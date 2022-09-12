@@ -87,6 +87,10 @@ describe('Campaign creation tests', () => {
     TokenMenu.goBack()
     TokenMenu.searchAndChooseToken('dai')
     LiquidityPage.getPairCards().contains('USDT').click({})
+    LiquidityPage.getOpenRewardsButton().should(button => {
+      const rewardAmount = parseInt(button.text().replace(/\D+/g, ''))
+      expect(rewardAmount).to.be.greaterThan(0)
+    })
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
@@ -96,8 +100,7 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  // WILL BE FIXED IN #1364
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
+  it('Should open a campaign through Rewards page [TC-60]', function () {
     if (!isCampaignCreated) {
       this.skip()
     }
