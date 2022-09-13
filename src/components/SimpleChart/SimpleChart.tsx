@@ -7,10 +7,10 @@ import styled, { useTheme } from 'styled-components'
 
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
+import { AreaChartTokenPrice } from '../Charts/AreaChartTokenPrice'
+import { ChartData, DATE_INTERVALS } from '../Charts/chartUtils'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { SimpleChartLoading } from './SimpleChartLoading'
-import { ChartData, DATE_INTERVALS } from './simpleChartUtils'
-import { TradingViewAreaChart } from './TradingViewAreaChart'
 
 interface SimpleChartProps {
   data: ChartData[]
@@ -65,7 +65,7 @@ export const SimpleChart = ({
             loading ? (
               <SimpleChartLoading />
             ) : hasData ? (
-              <TradingViewAreaChart
+              <AreaChartTokenPrice
                 data={data}
                 tokenSymbol={currency1?.symbol}
                 showHours={selectedInterval === DATE_INTERVALS.DAY}

@@ -9,7 +9,7 @@ import {
   lastDataElement,
   lastElementTimeOrDefault,
   lastElementValueOrDefault,
-} from './simpleChartUtils'
+} from './chartUtils'
 
 const chartColors = {
   backgroundColor: 'transparent',

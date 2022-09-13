@@ -1,7 +1,7 @@
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { DATE_INTERVALS } from './simpleChartUtils'
+import { DATE_INTERVALS } from '../Charts/chartUtils'
 
 type SimpleChartDateFiltersProps = {
   selectedInterval: string

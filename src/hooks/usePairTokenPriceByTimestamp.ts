@@ -6,7 +6,7 @@ import {
   convertToChartData,
   GetBlockPairTokenPriceQueryData,
   TIMEFRAME_PROPRETIES,
-} from '../components/Charts/simpleChartUtils'
+} from '../components/Charts/chartUtils'
 import { useGetPairTokenPricesQuery } from '../graphql/generated/schema'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 

@@ -2,7 +2,7 @@ import { DAI } from '@swapr/sdk'
 
 import { Flex } from 'rebass'
 
-import { TradingViewAreaChart } from './TradingViewAreaChart'
+import { AreaChartTokenPrice } from './AreaChartTokenPrice'
 
 const data = [
   {
@@ -100,21 +100,21 @@ const data = [
 ]
 
 export default {
-  title: 'TradingViewAreaChart',
-  component: TradingViewAreaChart,
+  title: 'AreaChartTokenPrice',
+  component: AreaChartTokenPrice,
 }
 
 //👇 We create a “template” of how args map to rendering
 const Template = args => (
-  <Flex bg="#1e1e55" p={4} width={['100%', '550px', '550px', '600px', '650px']}>
-    <TradingViewAreaChart {...args} />
+  <Flex bg="#1e1e55" width={['100%', '550px', '550px', '600px', '650px']}>
+    <AreaChartTokenPrice {...args} />
   </Flex>
 )
 
 //👇 Each story then reuses that template
-export const TradingViewAreaChartTemplate = Template.bind({})
+export const AreaChartTemplate = Template.bind({})
 
-TradingViewAreaChartTemplate.args = {
+AreaChartTemplate.args = {
   data: data,
   tokenSymbol: DAI[1].symbol,
   showHours: false,
