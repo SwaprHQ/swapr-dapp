@@ -31,5 +31,12 @@
   "button.insufficientCurrencyBalance": "Insufficient {{ currency }} balance",
   "button.enterCurrencyAmount": "Enter {{ currency }} amount",
   "tradeDetails.bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
-  "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>."
+  "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
+  "column.trades": "Trades",
+  "column.openOrder": "Open orders",
+  "column.orderHistory": "Order history",
+  "column.poolActivity": "Pool activity",
+  "details.amount": "Amount",
+  "details.price": "Price",
+  "details.time": "Time"
 }
