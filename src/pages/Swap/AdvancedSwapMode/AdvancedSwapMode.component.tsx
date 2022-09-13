@@ -20,7 +20,7 @@ import {
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
-import { InfiniteScroll } from './InfiniteScroll/InfiniteScroll.component'
+import { InfiniteScroll } from './InfiniteScroll'
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const {
