@@ -23,12 +23,12 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
 
   return (
     <AutoColumn gap="15px" data-testid="common-tokens">
-      <AutoRow>
+      <AutoRow justifyContent="center">
         <TYPE.Body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
           COMMON TOKENS
         </TYPE.Body>
       </AutoRow>
-      <AutoRow gap="4px">
+      <AutoRow gap="4px" justifyContent="center">
         <BaseWrapper
           onClick={handleClick}
           disabled={selectedCurrency === nativeCurrency || selectedCurrency === undefined}

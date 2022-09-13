@@ -59,7 +59,7 @@ export const SearchInput = styled.input<{ fontSize?: string; fontWeight?: number
   border-radius: 8px;
   border: 8px solid transparent;
   border-image: url(${border8pxRadius}) 8;
-  padding: 8px 12px;
+  padding: 8px 50px 8px 12px;
   :focus {
     border: solid 1px ${({ theme }) => theme.bg5};
     padding: 15px 19px;
