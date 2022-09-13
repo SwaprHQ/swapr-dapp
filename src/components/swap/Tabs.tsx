@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
 import { useActiveWeb3React } from '../../hooks'
+import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { SwapTabs } from '../../state/user/reducer'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
@@ -58,6 +59,7 @@ const StyledEcoRouter = styled(EcoRouter)`
 
 export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
   const { t } = useTranslation('swap')
+  const isDesktop = useIsDesktopByMedia()
   const { chainId } = useActiveWeb3React()
   const isSupportedChain = chainSupportsSWPR(chainId)
   const dispatch = useDispatch()
@@ -75,7 +77,7 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
           Swap
         </Button>
         <Button
-          disabled={!isSupportedChain}
+          disabled={!isSupportedChain || !isDesktop}
           onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
           className={activeTab === SwapTabs.ADVANCED_SWAP_MODE && isSupportedChain ? 'active' : ''}
           title="Advanced Trade View"
