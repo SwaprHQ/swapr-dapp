@@ -6,10 +6,26 @@ export const BaseWrapper = styled.div`
   padding: 10px;
 `
 export const AdvancedModeDetailsItems = css`
+  & > div:nth-child(1),
+  & > div:nth-child(2) {
+    flex-basis: 25%;
+  }
+  & > div:nth-child(3) {
+    flex-basis: 20%;
+  }
+  & > div:nth-child(4) {
+    flex-basis: 10%;
+  }
   & > div {
-    flex-basis: 18%;
     line-height: 1.4;
   }
+`
+
+const TitleBase = css`
+  font-weight: 600;
+  font-size: 14px;
+  color: ${({ theme }) => theme.text4};
+  text-transform: uppercase;
 `
 
 export const AdvancedSwapModeContainer = styled.div`
@@ -53,15 +69,23 @@ export const SwapBox = styled.div`
   }
 `
 
+export const OrderButton = styled.button<{ isActive?: boolean }>`
+  background: none;
+  border: none;
+  ${TitleBase}
+  font-weight: ${({ isActive }) => (isActive ? 600 : 400)};
+  cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+  }
+`
+
 export const AdvancedModeHeader = styled.div`
   margin-top: 10px;
 `
 
 export const AdvancedModeTitle = styled.div`
-  font-weight: 600;
-  font-size: 14px;
-  color: ${({ theme }) => theme.text4};
-  text-transform: uppercase;
+  ${TitleBase}
 `
 
 export const AdvancedModeDetails = styled.div`
