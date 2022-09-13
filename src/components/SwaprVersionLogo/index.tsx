@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import packageJson from '../../../package.json'
-import logoImage from '../../assets/svg/swapr_white_no_badge.svg'
+import logoImage from '../../assets/images/swapr_white_no_badge.svg'
 import { breakpoints } from '../../utils/theme'
 
 const Logo = styled.img.attrs({ src: logoImage })`

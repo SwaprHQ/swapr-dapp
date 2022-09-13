@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { ReactComponent as CarrotLogo } from '../../../assets/svg/carrot.svg'
+import { ReactComponent as CarrotLogo } from '../../../assets/images/carrot.svg'
 import { MouseoverTooltip } from '../../Tooltip'
 
 const KpiBadge = styled.div<{ isGreyed: boolean }>`
