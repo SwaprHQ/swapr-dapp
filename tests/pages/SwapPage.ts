@@ -20,11 +20,11 @@ export class SwapPage {
   }
 
   static typeValueFrom(value: string) {
-    this.getFromInput().type(value)
+    this.getFromInput().type(value, { delay: 200 })
     return this
   }
   static typeValueTo(value: string) {
-    this.getToInput().type(value)
+    this.getToInput().type(value, { delay: 200 })
     return this
   }
 

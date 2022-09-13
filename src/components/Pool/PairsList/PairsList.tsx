@@ -13,11 +13,14 @@ import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
+import { BlurBox } from '../../../ui/StyledElements/BlurBox'
+import { ListLayout } from '../../../ui/StyledElements/ListLayout'
+import { TableHeader } from '../../../ui/StyledElements/TableHeader'
+import { TableHeaderText } from '../../../ui/StyledElements/TableHeaderText'
 import { getStakedAmountUSD } from '../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
 import { UndecoratedLink } from '../../UndercoratedLink'
-import { DimBlurBgBox } from '../DimBlurBgBox/styleds'
 import { PairsFilterType } from '../ListFilter'
 import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
@@ -51,14 +54,14 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
 
   return (
     <Flex flexDirection="column">
-      <DimBlurBgBox>
+      <BlurBox>
         {loading ? (
           <LoadingList />
         ) : itemsPage.length > 0 || singleSidedStake ? (
           <ListLayout>
             {!isMobile && (
-              <HeaderText>
-                <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
+              <TableHeaderText>
+                <TableHeader justifyContent="space-between" paddingX="22px" paddingY="12px">
                   <Flex flex="25%">{t('pairsList.pair')}</Flex>
                   <Flex flex="25%">{t('campaigns')}</Flex>
                   <Flex flex="45%">
@@ -66,8 +69,8 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
                     <Flex flex="30%">{t('24hVolume')}</Flex>
                     <Flex flex="10%">{t('APY')}</Flex>
                   </Flex>
-                </Header>
-              </HeaderText>
+                </TableHeader>
+              </TableHeaderText>
             )}
             {singleSidedStake && !loadingNativeCurrencyUsdPrice && page === 1 && (
               <StyledUndecoratedLink
@@ -123,7 +126,7 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
             </div>
           </Flex>
         )}
-      </DimBlurBgBox>
+      </BlurBox>
       {aggregatedPairs.length > responsiveItemsPerPage && (
         <PaginationRow>
           <Box>
@@ -139,27 +142,6 @@ export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }
     </Flex>
   )
 }
-
-export const ListLayout = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-gap: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 10px 16px;
-  `};
-`
-
-export const HeaderText = styled(Text)`
-  font-weight: 600;
-  font-size: 10px;
-  color: ${({ theme }) => theme.purple3};
-  text-transform: uppercase;
-`
-
-export const Header = styled(Flex)`
-  border-bottom: 1px solid ${({ theme }) => theme.bg3};
-`
 
 const PaginationRow = styled(Flex)`
   width: 100%;

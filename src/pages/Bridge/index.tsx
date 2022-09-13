@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import ArrowIcon from '../../assets/svg/arrow.svg'
+import ArrowIcon from '../../assets/images/arrow.svg'
 import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
 import {
   networkOptionsPreset,
@@ -142,6 +142,12 @@ export default function Bridge() {
   const isUnsupportedBridgeNetwork =
     networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
 
+  useEffect(() => {
+    if (activeTab === BridgeTab.BRIDGE) {
+      setTxsFilter(BridgeTxsFilter.RECENT)
+    }
+  }, [activeTab, setTxsFilter])
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
@@ -218,7 +224,7 @@ export default function Bridge() {
   const handleTriggerCollect = useCallback(
     (tx: BridgeTransactionSummary) => {
       if (!tx) return
-      const { toChainId, value, assetName, fromChainId, txHash } = tx
+      const { toChainId, fromValue, assetName, fromChainId, txHash } = tx
 
       setCollectableTx(txHash)
       setIsCollecting(true)
@@ -228,7 +234,7 @@ export default function Bridge() {
         fromChainId,
         toChainId,
         symbol: assetName,
-        typedValue: value,
+        typedValue: fromValue,
       })
     },
     [setCollectableTx, setIsCollecting, setModalData, setTxsFilter]
@@ -327,7 +333,7 @@ export default function Bridge() {
             </AssetWrapper>
           </Row>
           <CurrencyInputPanelBridge
-            value={isCollecting && collectableTx ? collectableTx.value : typedValue}
+            value={isCollecting && collectableTx ? collectableTx.fromValue : typedValue}
             displayedValue={displayedValue}
             setDisplayedValue={setDisplayedValue}
             currency={isCollecting ? collectableCurrency : bridgeCurrency}
@@ -345,6 +351,7 @@ export default function Bridge() {
             isLoading={!!account && isNetworkConnected && listsLoading}
             chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
             maxAmount={maxAmountInput}
+            isOutputPanel={false}
           />
           {activeTab === BridgeTab.BRIDGE_SWAP && (
             <OutputPanelContainer>

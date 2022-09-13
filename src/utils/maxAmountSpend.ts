@@ -1,4 +1,4 @@
-import { CurrencyAmount, ETHER, JSBI } from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI } from '@swapr/sdk'
 
 import { MIN_ETH } from '../constants'
 
@@ -12,7 +12,7 @@ export function maxAmountSpend(
   minimumETHLeft = true
 ): CurrencyAmount | undefined {
   if (!currencyAmount || !chainId) return undefined
-  if (currencyAmount.currency === ETHER && minimumETHLeft) {
+  if (Currency.isNative(currencyAmount.currency) && minimumETHLeft) {
     if (JSBI.greaterThan(currencyAmount.raw, MIN_ETH)) {
       return CurrencyAmount.nativeCurrency(JSBI.subtract(currencyAmount.raw, MIN_ETH), chainId)
     } else {

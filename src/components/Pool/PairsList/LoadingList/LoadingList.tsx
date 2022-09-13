@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 
 import { useResponsiveItemsPerPage } from '../../../../hooks/useResponsiveItemsPerPage'
-import { Header, HeaderText, ListLayout } from '../PairsList'
+import { ListLayout } from '../../../../ui/StyledElements/ListLayout'
+import { TableHeader } from '../../../../ui/StyledElements/TableHeader'
+import { TableHeaderText } from '../../../../ui/StyledElements/TableHeaderText'
 import { LoadingRow } from './LoadingRow'
 
 export function LoadingList() {
@@ -13,8 +15,8 @@ export function LoadingList() {
   return (
     <ListLayout>
       {!isMobile && (
-        <HeaderText>
-          <Header justifyContent="space-between" paddingX="22px" paddingY="12px">
+        <TableHeaderText>
+          <TableHeader justifyContent="space-between" paddingX="22px" paddingY="12px">
             <Flex flex="25%">{t('pairsList.pair')}</Flex>
             <Flex flex="25%">{t('campaigns')}</Flex>
             <Flex flex="45%">
@@ -22,8 +24,8 @@ export function LoadingList() {
               <Flex flex="30%">{t('24hVolume')}</Flex>
               <Flex flex="10%">{t('APY')}</Flex>
             </Flex>
-          </Header>
-        </HeaderText>
+          </TableHeader>
+        </TableHeaderText>
       )}
       {new Array(responsiveItemsPerPage).fill(null).map((_, index) => (
         <LoadingRow key={index} />

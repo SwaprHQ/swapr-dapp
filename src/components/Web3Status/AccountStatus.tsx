@@ -6,10 +6,11 @@ import { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
+import ArbitrumLogo from '../../assets/images/arbitrum-one-logo.svg'
+import EthereumLogo from '../../assets/images/ethereum-logo.svg'
+import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
+import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
-import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
-import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
-import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
@@ -24,10 +25,13 @@ import { RowBetween } from '../Row'
 const ChainLogo: any = {
   [ChainId.MAINNET]: EthereumLogo,
   [ChainId.RINKEBY]: EthereumLogo,
+  [ChainId.GOERLI]: EthereumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
   [ChainId.XDAI]: GnosisLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
+  [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
   [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
 }
 
