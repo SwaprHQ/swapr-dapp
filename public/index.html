@@ -30,10 +30,10 @@
     <meta http-equiv="Referrer-Policy" content="no-referrer, strict-origin-when-cross-origin" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'nonce-c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM=' 'unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' data: ws: wss: https:; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: https:; frame-src 'self' blob:; object-src 'none'"
+      content="default-src 'self'; script-src 'self' 'nonce-<%= CSP_NONCE %>' 'unsafe-eval'; script-src-attr 'none'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' data: ws: wss: https:; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: https:; frame-src 'self' blob:; object-src 'none'"
     />
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
-    <script nonce="c29tZSBjb29sIHN0cmluZyB3aWxsIHBvcCB1cCAxMjM=">
+    <script nonce="<%= CSP_NONCE %>">
       ;(function () {
         const { pathname, hostname, protocol } = window.location
 

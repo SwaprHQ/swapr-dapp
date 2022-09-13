@@ -1,6 +1,8 @@
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const crypto = require('crypto')
 
 // Used to make the build reproducible between different machines (IPFS-related)
 module.exports = (config, env) => {
@@ -10,6 +12,7 @@ module.exports = (config, env) => {
 
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
+  const CSP_NONCE = JSON.stringify(crypto.randomBytes(16).toString('base64'))
 
   const fallback = config.resolve.fallback || {}
   Object.assign(fallback, {
@@ -32,6 +35,14 @@ module.exports = (config, env) => {
       new webpack.ProvidePlugin({
         process: 'process/browser',
         Buffer: ['buffer', 'Buffer'],
+      }),
+      new webpack.DefinePlugin({
+        CSP_NONCE: CSP_NONCE,
+        'process.env.REACT_APP_CSP_NONCE': CSP_NONCE,
+      }),
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: './public/index.html',
       }),
       isAnalyze ? new BundleAnalyzerPlugin() : false,
     ].filter(Boolean)
