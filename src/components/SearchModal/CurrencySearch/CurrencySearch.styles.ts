@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { SvgButton } from '../../Button'
 import Column from '../../Column'
+import { SwaprV2AssetMixin } from '../shared/swaprV2styles'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;
@@ -24,6 +25,7 @@ export const Footer = styled.div`
 `
 
 const SwaprV2SvgButton = styled(SvgButton)`
+  ${SwaprV2AssetMixin}
   display: flex;
   background: rgba(60, 56, 100, 0.1);
   border: 1px solid #2a2f42;

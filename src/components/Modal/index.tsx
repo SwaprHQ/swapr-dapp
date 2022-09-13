@@ -2,7 +2,6 @@ import '@reach/dialog/styles.css'
 
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated, config, useTransition } from '@react-spring/web'
-import { transparentize } from 'polished'
 import { isMobile } from 'react-device-detect'
 import styled, { css } from 'styled-components'
 
@@ -34,7 +33,6 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, maxWidth, mobile, is
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
     background: none;
-    // box-shadow: 0px 16px 12px ${({ theme }) => transparentize(0.55, theme.boxShadow)};
     padding: 0px;
     width: 50vw;
     overflow-y: ${({ mobile }) => (mobile ? 'scroll' : 'hidden')};

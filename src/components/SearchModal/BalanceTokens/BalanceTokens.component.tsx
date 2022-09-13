@@ -1,6 +1,6 @@
 import { Currency, currencyEquals, Token } from '@swapr/sdk'
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Text } from 'rebass'
 
 import { useActiveWeb3React } from '../../../hooks'
@@ -9,8 +9,9 @@ import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { TYPE } from '../../../theme'
 import { AutoColumn } from '../../Column'
 import { CurrencyLogo } from '../../CurrencyLogo'
-import { AutoRow } from '../../Row'
-import { BaseWrapper } from './BalanceTokens.styles'
+import { Loader } from '../../Loader'
+import Row from '../../Row'
+import { BaseWrapper } from '../shared'
 import { BalanceTokensProps } from './BalanceTokens.types'
 
 export const BalanceTokens = ({
@@ -28,26 +29,31 @@ export const BalanceTokens = ({
     }
   }, [nativeCurrency, onCurrencySelect, selectedCurrency])
 
-  let sortedTokensWithBalance: { currency: Currency; balance: string }[] = []
+  const sortedTokensWithBalance = useMemo(() => {
+    let sortedTokensWithBalance: { currency: Currency; balance?: string }[] = []
 
-  for (const [index, balance] of balances.entries()) {
-    let mockBalance
-    if (balance?.equalTo(BigInt(0))) {
-      // -- Mock --
-      if (index < 6) {
-        mockBalance = '100'
-      } else {
-        break
+    for (const [index, balance] of balances.entries()) {
+      let mockBalance
+
+      if (balance?.equalTo(BigInt(0))) {
+        // -- Mock --
+        if (index < 6) {
+          mockBalance = '100'
+        } else {
+          break
+        }
+        // -- End of Mock --
+        // break
       }
-      // -- End of Mock --
-      // break
+      sortedTokensWithBalance.push({
+        currency: filteredSortedTokensWithNativeCurrency[index],
+        // balance: balance?.toSignificant(4),
+        balance: mockBalance,
+      })
     }
-    sortedTokensWithBalance.push({
-      currency: filteredSortedTokensWithNativeCurrency[index],
-      // balance: balance?.toSignificant(4) || '0',
-      balance: mockBalance || '0',
-    })
-  }
+
+    return sortedTokensWithBalance
+  }, [balances, filteredSortedTokensWithNativeCurrency])
 
   const limitedTokensWithBalance = sortedTokensWithBalance.splice(0, limit)
   const restTokensWithBalanceLength = sortedTokensWithBalance.length
@@ -58,12 +64,12 @@ export const BalanceTokens = ({
 
   return (
     <AutoColumn gap="15px" data-testid="balance-tokens">
-      <AutoRow justifyContent="center">
+      <Row justifyContent="center">
         <TYPE.Body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
           YOUR BALANCE
         </TYPE.Body>
-      </AutoRow>
-      <AutoRow gap="4px" justifyContent="center">
+      </Row>
+      <Row justifyContent="center" flexWrap={'wrap'} gap={'8px'}>
         {limitedTokensWithBalance.map(({ balance, currency }, index) => {
           const selected = selectedCurrency instanceof Token && selectedCurrency.address === currency.address
           const selectedNativeCurrency = selectedCurrency === nativeCurrency || selectedCurrency === undefined
@@ -77,8 +83,15 @@ export const BalanceTokens = ({
               key={currency.address}
             >
               <CurrencyLogo size="20px" currency={currency} marginRight={8} />
-              <Text fontWeight={500} fontSize={16}>
-                {`${balance} ${currency.symbol}`}
+              {balance ? (
+                <Text fontWeight={500} fontSize={16}>
+                  {balance}
+                </Text>
+              ) : (
+                <Loader />
+              )}
+              <Text fontWeight={500} fontSize={16} pl={'4px'}>
+                {` ${currency.symbol}`}
               </Text>
             </BaseWrapper>
           )
@@ -90,7 +103,7 @@ export const BalanceTokens = ({
             </Text>
           </BaseWrapper>
         )}
-      </AutoRow>
+      </Row>
     </AutoColumn>
   )
 }

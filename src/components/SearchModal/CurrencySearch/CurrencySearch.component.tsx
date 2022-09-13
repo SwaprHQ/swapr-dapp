@@ -159,8 +159,21 @@ export const CurrencySearch = ({
 
   return (
     <ContentWrapper data-testid="token-picker">
-      <AutoColumn style={{ padding: '22px 18.5px 20px 18.5px', width: '100%' }} gap="15px" justify="center">
-        <Row style={{ position: 'relative' }}>
+      <AutoColumn
+        style={{
+          padding: '22px 18.5px 20px 18.5px',
+          width: '100%',
+        }}
+        gap="34px"
+        justify="center"
+      >
+        <Row
+          style={{
+            position: 'relative',
+            maxWidth: '480px',
+            marginBottom: '44px',
+          }}
+        >
           <SearchInput
             height={49}
             type="text"

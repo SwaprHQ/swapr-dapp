@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import border8pxRadius from '../../../assets/images/border-8px-radius.png'
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'
+import { SwaprV2AssetMixin } from './swaprV2styles'
 
 export const ModalInfo = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -98,4 +99,15 @@ export const TextDot = styled.div`
   width: 3px;
   background-color: ${({ theme }) => theme.text2};
   border-radius: 50%;
+`
+
+export const BaseWrapper = styled.div<{ disabled?: boolean }>`
+  border: 1px solid #464366;
+  border-radius: 12px;
+  display: flex;
+  line-height: 19.5px;
+  padding: 10px 14px;
+  align-items: center;
+  ${SwaprV2AssetMixin}
+  color: ${({ theme, disabled }) => disabled && theme.text3};
 `
