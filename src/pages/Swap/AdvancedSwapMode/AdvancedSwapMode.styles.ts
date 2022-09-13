@@ -1,135 +1,40 @@
 import styled, { css } from 'styled-components'
 
-import { breakpoints } from '../../../utils/theme'
-
-export const BorderStyling = css`
-  border: 1px solid ${({ theme }) => theme.purple6};
+export const BaseWrapper = styled.div`
+  background: #101019;
+  border-radius: 12px;
+  padding: 10px;
 `
-
-export const AdvanceSwapModeHeight = css`
-  height: calc(100vh - 130px);
-
-  @media screen and (max-width: ${breakpoints.md}) {
-    height: calc(100vh - 188px);
-  }
-`
-
 export const AdvancedModeDetailsItems = css`
   & > div {
-    flex-basis: 25%;
+    flex-basis: 18%;
     line-height: 1.4;
   }
 `
 
-export const CustomScrollBar = css`
-  &&::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &&::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.bg3};
-    border-radius: 8px;
-    border: 2px solid ${({ theme }) => theme.bg2};
-  }
-  //firefox support
-  scrollbar-color: ${({ theme }) => theme.bg3 + ' ' + theme.bg2};
-  scrollbar-width: thin;
-`
-
-export const Container = styled.div`
+export const AdvancedSwapModeContainer = styled.div`
   backdrop-filter: blur(10px);
   width: 100%;
   display: grid;
-  grid-template-columns: 50% 20% 30%;
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    grid-template-rows: auto;
-  }
-
-  @media screen and (max-width: ${breakpoints.md}) {
-    height: auto;
-    grid-template-columns: 50% 10% 40%;
-  }
-
-  @media screen and (max-width: ${breakpoints.s}) {
-    height: auto;
-    grid-template-columns: 100%;
-
-    & > div {
-      border-left: none;
-      border-right: none;
-      grid-column: 1 / -1;
-    }
-  }
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 0 20px;
 `
 
-export const ChartWrapper = styled.div`
-  ${BorderStyling}
-  min-height: 700px;
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    grid-column: 1 / -1;
-    order: 0;
-    height: 40vh;
-  }
-
-  @media screen and (max-width: ${breakpoints.s}) {
-    order: 2;
-  }
+export const ChartWrapper = styled(BaseWrapper)`
+  grid-column: 1 / 3;
+  overflow: hidden;
+  min-height: 560px;
+  padding: 0;
 `
 
-export const TradesWrapper = styled.div`
-  border-top: 1px solid rgba(41, 38, 67, 1);
-  border-left: none;
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    order: 2;
-    grid-column: 3 /4;
-    border-left: 1px solid rgba(41, 38, 67, 1);
-  }
-  @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
-    grid-row: 1 / 2;
-  }
+export const OrdersWrapper = styled(BaseWrapper)`
+  grid-column: 1 / 4;
+  height: 280px;
 `
 
-export const SwapBoxWrapper = styled.div`
-  border-top: 1px solid rgba(41, 38, 67, 1);
-  border-bottom: 1px solid rgba(41, 38, 67, 1);
-  border-left: 1px solid rgba(41, 38, 67, 1);
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    order: 1;
-    grid-column: 1 /3;
-  }
-  @media screen and (min-width: ${breakpoints.s}) and (max-width: ${breakpoints.l}) {
-    grid-row: 1 / 2;
-  }
-`
-
-export const OrdersWrapper = styled.div`
-  grid-column: 1 / 2;
-  border: 1px solid rgba(41, 38, 67, 1);
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    order: 4;
-  }
-`
-
-export const LiquidityWrapper = styled.div`
-  grid-column: 2 / 4;
-  border: 1px solid rgba(41, 38, 67, 1);
-
-  @media screen and (max-width: ${breakpoints.l}) {
-    order: 5;
-  }
-`
-
-export const EmptyCellBody = styled.div`
-  padding: 2rem 1rem;
-  font-weight: 600;
-  font-size: 0.75rem;
-  text-align: center;
-  line-height: 1.4;
+export const LiquidityWrapper = styled(BaseWrapper)`
+  grid-column: 4 / 5;
 `
 
 export const LoaderContainer = styled.div`
@@ -140,7 +45,6 @@ export const LoaderContainer = styled.div`
 
 export const SwapBox = styled.div`
   padding: 1rem 0.5rem 0;
-  ${CustomScrollBar}
   height: 100%;
 
   > div {
@@ -150,7 +54,6 @@ export const SwapBox = styled.div`
 `
 
 export const AdvancedModeHeader = styled.div`
-  padding: 0.625rem;
   margin-top: 10px;
 `
 
@@ -175,21 +78,14 @@ export const AdvancedModeDetails = styled.div`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 0.125rem 0;
-  }
-
-  & div:not(:first-child) {
-    margin-left: 0.625rem;
   }
 `
 export const TransactionsWrapper = styled.div<{ maxHeight?: string }>`
-  ${CustomScrollBar}
-  min-height: 200px;
-  max-height: ${({ maxHeight }) => maxHeight || '600px'};
   overflow-y: scroll;
+  max-height: ${({ maxHeight }) => (maxHeight ? maxHeight : '400px')};
 
-  @media screen and (max-width: ${breakpoints.s}) {
-    max-height: 400px;
+  &&::-webkit-scrollbar {
+    display: none;
   }
 `
 export const SwitcherWrapper = styled.div`
