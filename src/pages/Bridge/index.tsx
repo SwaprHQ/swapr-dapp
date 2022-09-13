@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import ArrowIcon from '../../assets/svg/arrow.svg'
+import ArrowIcon from '../../assets/images/arrow.svg'
 import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
 import {
   networkOptionsPreset,

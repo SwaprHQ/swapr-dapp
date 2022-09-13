@@ -1,7 +1,6 @@
 import { ChainId, Pair, Token } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
-import flatMap from 'lodash/flatMap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
@@ -302,7 +301,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const generatedPairs: [Token, Token][] = useMemo(
     () =>
       chainId
-        ? flatMap(Object.keys(tokens), tokenAddress => {
+        ? Object.keys(tokens).flatMap(tokenAddress => {
             const token = tokens[tokenAddress]
             // for each token on the current chain,
             return (

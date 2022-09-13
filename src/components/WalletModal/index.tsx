@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
+import DxDao from '../../assets/images/dxdao.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import DxDao from '../../assets/svg/dxdao.svg'
 import { getConnection, isChainSupportedByConnector } from '../../connectors/utils'

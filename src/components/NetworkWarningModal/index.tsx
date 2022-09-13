@@ -4,7 +4,6 @@ import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components'
 
 import { NETWORK_DETAIL } from '../../constants'
-import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
@@ -44,7 +43,7 @@ export default function NetworkWarningModal() {
 
   const handleDismiss = useCallback(() => null, [])
 
-  const handleAddClick = useCallback(() => {
+  const handleAddClick = useCallback(async () => {
     if (!urlLoadedChainId) return
     selectNetwork(urlLoadedChainId)
   }, [urlLoadedChainId, selectNetwork])

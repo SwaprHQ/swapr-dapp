@@ -1,4 +1,3 @@
-import shuffle from 'lodash/shuffle'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
@@ -12,7 +11,7 @@ import {
   RoutablePlatformKeysByNetwork,
   SWAP_INPUT_ERRORS,
 } from '../../../constants'
-import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
+import { shuffle } from '../../../utils/shuffleArray'
 import { ButtonPrimary } from '../../Button'
 
 const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`

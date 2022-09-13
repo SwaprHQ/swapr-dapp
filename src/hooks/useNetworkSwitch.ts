@@ -1,8 +1,8 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, SWPR } from '@swapr/sdk'
 
 import { Connector } from '@web3-react/types'
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 
 import { networkConnection, walletConnectConnection } from '../connectors'
 import { getConnection, isChainSupportedByConnector } from '../connectors/utils'
@@ -39,6 +39,7 @@ export const useNetworkSwitch = () => {
   const selectNetwork = useCallback(
     async (chainId: ChainId) => {
       try {
+        unavailableRedirect(optionChainId, navigate, pathname)
         await switchNetwork(connector, chainId)
         dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
       } catch (error) {
@@ -48,10 +49,25 @@ export const useNetworkSwitch = () => {
         )
       }
     },
-    [connector, dispatch]
+    [account, chainId, connector, navigate, onSelectNetworkCallback, pathname, unsupportedChainIdError]
   )
 
   return {
     selectNetwork,
   }
+}
+
+/**
+ * Checks if the conditions for the pools and rewards are available and, if not, redirects to '/swap', the default page
+ * @param optionChainId chainId to which we are changing
+ * @param navigate react method for changing the location
+ * @param pathname current page pathname
+ */
+export function unavailableRedirect(optionChainId: ChainId, navigate: NavigateFunction, pathname: string) {
+  if (
+    !SWPR[optionChainId] &&
+    // check if the URL includes any of these
+    ['/pools', '/rewards'].reduce((state, str) => state || pathname.includes(str), false)
+  )
+    navigate('/swap')
 }
