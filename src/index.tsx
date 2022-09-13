@@ -19,7 +19,6 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
-
 import './theme/fonts.css'
 
 // Add Content Security Policy nonce to the scripts

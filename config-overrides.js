@@ -5,15 +5,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const crypto = require('crypto')
 
 class NonceInjector {
-  constructor(nonce) {
-    this.nonce = nonce
+  constructor(base64Hash) {
+    this.base64Hash = base64Hash
   }
   apply(compiler) {
     compiler.hooks.thisCompilation.tap('NonceInjector', compilation => {
       HtmlWebpackPlugin.getHooks(compilation).afterTemplateExecution.tapAsync('NonceInjector', (data, cb) => {
         const { headTags } = data
         headTags.forEach(x => {
-          x.attributes.nonce = this.nonce
+          x.attributes.nonce = this.base64Hash
         })
         cb(null, data)
       })
@@ -29,8 +29,8 @@ module.exports = (config, env) => {
 
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
-  const NONCE = crypto.randomBytes(16).toString('base64')
-  const CSP_NONCE = JSON.stringify(NONCE)
+  const base64Hash = crypto.randomBytes(16).toString('base64')
+  const CSP_NONCE = JSON.stringify(base64Hash)
 
   const fallback = config.resolve.fallback || {}
   Object.assign(fallback, {
@@ -65,7 +65,7 @@ module.exports = (config, env) => {
           })
         : false,
       isAnalyze ? new BundleAnalyzerPlugin() : false,
-      new NonceInjector(NONCE),
+      new NonceInjector(base64Hash),
     ].filter(Boolean)
   )
 
