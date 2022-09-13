@@ -16,7 +16,7 @@ export function TransactionHeaders() {
           <TransactionDetails justifyContent="start">Price</TransactionDetails>
           <TransactionDetails>Type</TransactionDetails>
           <TransactionDetails>Status</TransactionDetails>
-          <TransactionDetails>Time</TransactionDetails>
+          <TransactionDetails>Confirmed Time</TransactionDetails>
         </TableHeader>
       </TableHeaderText>
     </HeaderRow>

@@ -21,7 +21,7 @@ interface SwapTransactionRowProps {
 }
 
 export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, network, hash, swapProtocol } = transaction
+  const { type, status, from, to, confirmedTime, network, hash, swapProtocol, addedTime } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   const price = to?.value === 0 ? 0 : from.value / to.value
   const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
@@ -85,10 +85,11 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
       </TransactionDetails>
 
       <TransactionDetails>
-        {confirmedTime ? (
+        {confirmedTime ?? addedTime ? (
           <Flex flexDirection="column" fontSize="12px">
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('dd/MM/yyyy')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('HH:mm:ss')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('dd/MM/yyyy')}</Box>
+            {!confirmedTime && <Box fontSize="8px">( ADDED TIME )</Box>}
           </Flex>
         ) : (
           '- -'
