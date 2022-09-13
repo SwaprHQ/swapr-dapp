@@ -34,7 +34,13 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import {
+  useAdvancedSwapDetails,
+  useIsExpertMode,
+  useUpdateSelectedChartOption,
+  useUserSlippageTolerance,
+} from '../../state/user/hooks'
+import { ChartOptions } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -94,16 +100,6 @@ export enum CoWTradeState {
 }
 
 export default function Swap() {
-  const showSimpleChartLocalStorageKey = 'showSimpleChart'
-  // eslint-disable-next-line eqeqeq
-  const getShowSimpleChartPreference = () => window.localStorage.getItem(showSimpleChartLocalStorageKey) == 'true'
-  const [showChart, setShowChart] = useState(getShowSimpleChartPreference())
-
-  const setSimpleChartPreferences = (show: boolean) => {
-    window.localStorage.setItem(showSimpleChartLocalStorageKey, (!showChart).toString())
-    setShowChart(show)
-  }
-
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -130,6 +126,7 @@ export default function Swap() {
   }, [])
 
   const { chainId } = useActiveWeb3React()
+  const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
 
   // for expert mode
   const isExpertMode = useIsExpertMode()
@@ -412,15 +409,15 @@ export default function Swap() {
                 <ButtonGroup>
                   <ButtonGroupOption
                     disabled={!hasBothCurrenciesInput}
-                    active={showChart}
-                    onClick={() => setSimpleChartPreferences(true)}
+                    active={selectedChartOption === ChartOptions.SIMPLE_CHART}
+                    onClick={() => setselectedChartOption(ChartOptions.SIMPLE_CHART)}
                   >
                     Chart
                   </ButtonGroupOption>
                   <ButtonGroupOption
                     disabled={!hasBothCurrenciesInput}
-                    active={!showChart}
-                    onClick={() => setSimpleChartPreferences(false)}
+                    active={selectedChartOption === ChartOptions.OFF}
+                    onClick={() => setselectedChartOption(ChartOptions.OFF)}
                   >
                     Off
                   </ButtonGroupOption>
@@ -536,7 +533,7 @@ export default function Swap() {
               />
             )}
           </AppBodyContainer>
-          {hasBothCurrenciesInput && showChart && (
+          {hasBothCurrenciesInput && selectedChartOption === ChartOptions.SIMPLE_CHART && (
             <Flex
               width={['100%', '550px', '550px', '600px', '650px']}
               justifyContent="center"

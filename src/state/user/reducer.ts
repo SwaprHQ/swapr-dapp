@@ -12,6 +12,7 @@ import {
   SerializedToken,
   toggleURLWarning,
   updateMatchesDarkMode,
+  updateSelectedChartOption,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -22,6 +23,11 @@ import {
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
+
+export enum ChartOptions {
+  OFF,
+  SIMPLE_CHART,
+}
 
 export interface UserState {
   // the timestamp of the last updateVersion action
@@ -43,6 +49,9 @@ export interface UserState {
 
   // the gas price the user would like to use on mainnet
   userPreferredGasPrice: MainnetGasPrice | string | null
+
+  //user chart option preference
+  selectedChartOption?: ChartOptions
 
   tokens: {
     [chainId: number]: {
@@ -79,6 +88,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   userAdvancedSwapDetails: true,
+  selectedChartOption: 0,
 }
 
 export default createReducer(initialState, builder =>
@@ -170,5 +180,8 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserAdvancedSwapDetails, (state, action) => {
       state.userAdvancedSwapDetails = action.payload.userAdvancedSwapDetails
+    })
+    .addCase(updateSelectedChartOption, (state, action) => {
+      state.selectedChartOption = action.payload.selectedChartOption
     })
 )

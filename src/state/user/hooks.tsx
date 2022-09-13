@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateSelectedChartOption,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -27,6 +28,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
+import { ChartOptions } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -123,12 +125,40 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
+const selectSelectedChartOption = createSelector(
+  (state: AppState) => state.user.selectedChartOption,
+  selectedChartOption => selectedChartOption
+)
+
+export function useSelectedChartOption() {
+  return useSelector<AppState, AppState['user']['selectedChartOption']>(selectSelectedChartOption)
+}
+
 const selectUserSlippageTolerance = createSelector(
   (state: AppState) => state.user.userSlippageTolerance,
   userSlippageTolerance => userSlippageTolerance
 )
 export function useUserSlippageTolerance() {
   return useSelector<AppState, AppState['user']['userSlippageTolerance']>(selectUserSlippageTolerance)
+}
+
+export function useUpdateSelectedChartOption(): [
+  ChartOptions | undefined,
+  (selectedChartOption: ChartOptions) => void
+] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentSelectedOption = useSelectedChartOption()
+
+  const setSelectedChartOption = useCallback(
+    (selectedChartOption: ChartOptions) => {
+      if (currentSelectedOption !== selectedChartOption || !currentSelectedOption) {
+        dispatch(updateSelectedChartOption({ selectedChartOption: selectedChartOption }))
+      }
+    },
+    [currentSelectedOption, dispatch]
+  )
+
+  return [currentSelectedOption, setSelectedChartOption]
 }
 
 export function useUserSlippageToleranceManager(): [number, (slippage: number) => void] {
