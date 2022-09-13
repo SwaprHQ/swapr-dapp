@@ -12,7 +12,7 @@ interface InfiniteScrollProps {
   fetchMore: () => Promise<void>
   hasMore: boolean
   showTrades: boolean
-  activeSwitchOption?: Token
+  activeCurrencyOption?: Token
   isLoading: boolean
   chainId?: ChainId
   token0: Token
@@ -26,7 +26,7 @@ export const InfiniteScroll = ({
   hasMore,
   isLoading,
   showTrades,
-  activeSwitchOption,
+  activeCurrencyOption,
   token0,
   scrollableTarget,
 }: InfiniteScrollProps) => {
@@ -41,7 +41,7 @@ export const InfiniteScroll = ({
         scrollThreshold={1}
       >
         {showTrades &&
-          activeSwitchOption &&
+          activeCurrencyOption &&
           data
             .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
             .map((tx, index) => (
@@ -55,7 +55,7 @@ export const InfiniteScroll = ({
                 amountOut={tx.amountOut}
                 timestamp={tx.timestamp}
                 amountUSD={tx.amountUSD}
-                price={activeSwitchOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
+                price={activeCurrencyOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
               />
             ))}
       </InfiniteScrollCom>

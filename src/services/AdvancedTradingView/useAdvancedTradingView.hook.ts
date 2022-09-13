@@ -31,7 +31,7 @@ export const useAdvancedTradingView = () => {
 
   const [pairTokens, setPairTokens] = useState<Token[]>([])
 
-  const [activeSwitchOption, setActiveSwitchOption] = useState<Token>()
+  const [activeCurrencyOption, setActiveCurrencyOption] = useState<Token>()
 
   const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
 
@@ -82,7 +82,7 @@ export const useAdvancedTradingView = () => {
 
       setPairTokens(sortedTokens)
 
-      setActiveSwitchOption(sortedTokens[0])
+      setActiveCurrencyOption(sortedTokens[0])
     }
   }, [inputToken, outputToken])
 
@@ -143,8 +143,8 @@ export const useAdvancedTradingView = () => {
   }
 
   const handleSwitchCurrency = (option: Token) => {
-    if (activeSwitchOption?.address !== option.address) {
-      setActiveSwitchOption(option)
+    if (activeCurrencyOption?.address !== option.address) {
+      setActiveCurrencyOption(option)
     }
   }
 
@@ -189,14 +189,14 @@ export const useAdvancedTradingView = () => {
     pairTokens,
     showTrades: Boolean(inputToken && outputToken),
     chainId,
-    inputToken,
-    outputToken,
+    inputTokenSymbol: inputToken?.symbol ?? '',
+    outputTokenSymbol: outputToken?.symbol ?? '',
     fetchTrades,
     fetchActivity,
     isLoadingTrades,
     isLoadingActivity,
     handleAddLiquidity,
     handleSwitchCurrency,
-    activeSwitchOption,
+    activeCurrencyOption,
   }
 }
