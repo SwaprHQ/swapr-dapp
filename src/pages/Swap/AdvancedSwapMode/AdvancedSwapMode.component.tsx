@@ -8,7 +8,6 @@ import { Flex, Text } from 'rebass'
 import { ButtonDark } from '../../../components/Button'
 import { Loader } from '../../../components/Loader'
 import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
-import { AdvancedViewTransaction } from '../../../services/AdvancedTradingView/advancedTradingView.types'
 import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
 import {
@@ -17,7 +16,6 @@ import {
   AdvancedModeTitle,
   ChartWrapper,
   Container,
-  EmptyCellBody,
   LiquidityWrapper,
   LoaderContainer,
   OrdersWrapper,
@@ -46,8 +44,8 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
     outputToken,
     symbol,
     showTrades,
-    isFirstLoadingFetchActivity,
-    isFirstLoadingFetchTrades,
+    isLoadingTrades,
+    isLoadingActivity,
     fetchTrades,
     fetchActivity,
   } = useAdvancedTradingViewAdapter()
@@ -119,15 +117,9 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
           <InfiniteScroll
             dataLength={tradeHistory.length}
             next={fetchTrades}
-            hasMore={hasMoreTrades || isFirstLoadingFetchTrades}
+            hasMore={hasMoreTrades}
             scrollableTarget="transactions-wrapper-scrollable"
-            loader={
-              showTrades && (
-                <LoaderContainer>
-                  <Loader size="40px" stroke="#8780BF" />
-                </LoaderContainer>
-              )
-            }
+            loader={null}
             scrollThreshold={1}
           >
             {showTrades &&
@@ -149,6 +141,11 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                   />
                 ))}
           </InfiniteScroll>
+          {isLoadingTrades && (
+            <LoaderContainer>
+              <Loader size="40px" stroke="#8780BF" />
+            </LoaderContainer>
+          )}
         </TransactionsWrapper>
       </TradesWrapper>
       <SwapBoxWrapper>
@@ -189,15 +186,9 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             <InfiniteScroll
               dataLength={liquidityHistory.length}
               next={fetchActivity}
-              hasMore={hasMoreActivity || isFirstLoadingFetchActivity}
+              hasMore={hasMoreActivity}
               scrollableTarget="liquidity-wrapper-scrollable"
-              loader={
-                showTrades && (
-                  <LoaderContainer>
-                    <Loader size="40px" stroke="#8780BF" />
-                  </LoaderContainer>
-                )
-              }
+              loader={null}
               scrollThreshold={1}
             >
               {showTrades &&
@@ -217,6 +208,11 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
                     />
                   ))}
             </InfiniteScroll>
+            {isLoadingActivity && (
+              <LoaderContainer>
+                <Loader size="40px" stroke="#8780BF" />
+              </LoaderContainer>
+            )}
           </TransactionsWrapper>
         </AdvancedModeHeader>
       </LiquidityWrapper>
