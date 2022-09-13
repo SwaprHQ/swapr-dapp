@@ -11,6 +11,7 @@ import {
   RoutablePlatformKeysByNetwork,
   SWAP_INPUT_ERRORS,
 } from '../../../constants'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { shuffle } from '../../../utils/shuffleArray'
 import { ButtonPrimary } from '../../Button'
 

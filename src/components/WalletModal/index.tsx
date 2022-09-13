@@ -6,7 +6,6 @@ import styled from 'styled-components'
 
 import DxDao from '../../assets/images/dxdao.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import DxDao from '../../assets/svg/dxdao.svg'
 import { getConnection, isChainSupportedByConnector } from '../../connectors/utils'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppState } from '../../state'
@@ -107,7 +106,7 @@ export default function WalletModal() {
   const isConnectorError = !!connectorError
   const previousAccount = usePrevious(account)
   const isWalletPendingModalOpen = useModalOpen(ApplicationModal.WALLET_PENDING)
-  const { pending, selected } = useSelector((state: AppState) => state.application.connector)
+  const { pending, selected } = useSelector((state: AppState) => state.user.connector)
   const isChainSupported = pending ? isChainSupportedByConnector(pending, chainId) : false
   const pendingConnector = pending ? getConnection(pending).connector : undefined
   const closeModal = useCloseModals()

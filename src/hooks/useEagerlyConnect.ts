@@ -16,8 +16,8 @@ async function connect(connector: Connector) {
 }
 
 export default function useEagerlyConnect() {
-  const selectedConnectorBackfilled = useSelector((state: AppState) => state.application.connector.selectedBackfilled)
-  const selectedConnector = useSelector((state: AppState) => state.application.connector.selected)
+  const selectedConnectorBackfilled = useSelector((state: AppState) => state.user.connector.selectedBackfilled)
+  const selectedConnector = useSelector((state: AppState) => state.user.connector.selected)
 
   useEffect(() => {
     connect(networkConnection.connector)

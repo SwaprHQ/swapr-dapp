@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { ConnectorType } from './../../constants'
 import { ApplicationState } from './reducer'
 
 export type PopupContent = {
@@ -41,10 +40,3 @@ export const updateMainnetGasPrices = createAction<{ [variant in MainnetGasPrice
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const setConnectorInfo =
   createAction<Pick<ApplicationState, 'account' | 'chainId'>>('application/setConnectorInfo')
-export const setConnectorError = createAction<{ connector: ConnectorType; connectorError: string | undefined }>(
-  'application/setConnectorError'
-)
-export const updateSelectedConnector = createAction<{ selectedConnector: ConnectorType }>(
-  'user/updateSelectedConnector'
-)
-export const updatePendingConnector = createAction<{ pendingConnector: ConnectorType }>('user/updatePendingConnector')

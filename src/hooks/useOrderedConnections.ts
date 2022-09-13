@@ -6,7 +6,7 @@ import { getConnection } from './../connectors/utils'
 import { BACKFILLABLE_WALLETS, ConnectorType } from './../constants'
 
 export default function useOrderedConnections() {
-  const selectedConnector = useSelector((state: AppState) => state.application.connector.selected)
+  const selectedConnector = useSelector((state: AppState) => state.user.connector.selected)
   return useMemo(() => {
     const orderedConnectionTypes: ConnectorType[] = []
 

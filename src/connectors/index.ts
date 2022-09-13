@@ -7,7 +7,7 @@ import { Network } from '@web3-react/network'
 import { Connector } from '@web3-react/types'
 import { WalletConnect } from '@web3-react/walletconnect'
 
-import SWAPR_LOGO from './../assets/svg/swapr.svg'
+import SWAPR_LOGO from './../assets/images/swapr.svg'
 import { ConnectorType, RPC_URLS } from './../constants'
 
 export interface Connection {

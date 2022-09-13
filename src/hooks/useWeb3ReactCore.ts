@@ -8,13 +8,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getConnection } from '../connectors/utils'
 import { NETWORK_DETAIL } from '../constants'
 import { AppDispatch, AppState } from '../state'
-import {
-  ApplicationModal,
-  setConnectorError,
-  updatePendingConnector,
-  updateSelectedConnector,
-} from '../state/application/actions'
+import { ApplicationModal } from '../state/application/actions'
 import { useOpenModal } from '../state/application/hooks'
+import { setConnectorError, updatePendingConnector, updateSelectedConnector } from '../state/user/actions'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
@@ -28,9 +24,14 @@ type Web3ReactProps = Omit<Web3ContextType, 'chainId'> & {
 export const useWeb3ReactCore = (): Web3ReactProps => {
   const dispatch = useDispatch<AppDispatch>()
   const props = useWeb3React()
-  const { chainId, isActive } = props
+  const { chainId, isActive, connector } = props
   const [isActiveChainSupported, setIsActiveChainSupported] = useState(true)
   const openPendingWalletModal = useOpenModal(ApplicationModal.WALLET_PENDING)
+
+  // needed to update if connected eagerly
+  useEffect(() => {
+    dispatch(updateSelectedConnector({ selectedConnector: getConnection(connector).type }))
+  }, [connector, dispatch])
 
   useEffect(() => {
     const isDefinedAndSupported = isActive && chainId ? Object.keys(NETWORK_DETAIL).includes(chainId.toString()) : false
@@ -42,7 +43,6 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
       const connectorType = getConnection(connector).type
 
       dispatch(updatePendingConnector({ pendingConnector: connectorType }))
-
       dispatch(setConnectorError({ connector: connectorType, connectorError: undefined }))
       openPendingWalletModal()
 
@@ -67,8 +67,8 @@ export const useWeb3ReactCore = (): Web3ReactProps => {
   }, [])
 
   const connectorError = useSelector((state: AppState) => {
-    const { pending } = state.application.connector
-    return pending ? state.application.connector.errorByType[pending] : undefined
+    const { pending } = state.user.connector
+    return pending ? state.user.connector.errorByType[pending] : undefined
   })
 
   return {

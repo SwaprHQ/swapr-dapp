@@ -11,7 +11,6 @@ import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 
 import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
-import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
 

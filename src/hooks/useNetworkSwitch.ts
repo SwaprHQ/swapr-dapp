@@ -2,12 +2,13 @@ import { ChainId, SWPR } from '@swapr/sdk'
 
 import { Connector } from '@web3-react/types'
 import { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 
 import { networkConnection, walletConnectConnection } from '../connectors'
 import { getConnection, isChainSupportedByConnector } from '../connectors/utils'
 import { AppDispatch } from '../state'
-import { setConnectorError } from '../state/application/actions'
+import { setConnectorError } from '../state/user/actions'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { getNetworkInfo } from '../utils/networksList'
 import { useWeb3ReactCore } from './useWeb3ReactCore'
@@ -35,11 +36,13 @@ const switchNetwork = async (connector: Connector, chainId: ChainId) => {
 export const useNetworkSwitch = () => {
   const { connector } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const selectNetwork = useCallback(
     async (chainId: ChainId) => {
       try {
-        unavailableRedirect(optionChainId, navigate, pathname)
+        unavailableRedirect(chainId, navigate, pathname)
         await switchNetwork(connector, chainId)
         dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
       } catch (error) {
@@ -49,7 +52,7 @@ export const useNetworkSwitch = () => {
         )
       }
     },
-    [account, chainId, connector, navigate, onSelectNetworkCallback, pathname, unsupportedChainIdError]
+    [connector, dispatch, navigate, pathname]
   )
 
   return {

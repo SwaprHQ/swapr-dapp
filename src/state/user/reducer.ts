@@ -1,6 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { DEFAULT_DEADLINE_FROM_NOW, DEFAULT_USER_MULTIHOP_ENABLED, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
+import {
+  ConnectorType,
+  DEFAULT_DEADLINE_FROM_NOW,
+  DEFAULT_USER_MULTIHOP_ENABLED,
+  INITIAL_ALLOWED_SLIPPAGE,
+} from '../../constants'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
 import {
@@ -10,8 +15,11 @@ import {
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
+  setConnectorError,
   toggleURLWarning,
   updateMatchesDarkMode,
+  updatePendingConnector,
+  updateSelectedConnector,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -60,6 +68,17 @@ export interface UserState {
   timestamp: number
   URLWarningVisible: boolean
   userAdvancedSwapDetails: boolean
+
+  // We want the user to be able to define which wallet they want to use, even if there are multiple connected wallets via web3-react.
+  // If a user had previously connected a wallet but didn't have a wallet override set (because they connected prior to this field being added),
+  // we want to handle that case by backfilling them manually. Once we backfill, we set the backfilled field to `true`.
+  // After some period of time, our active users will have this property set so we can likely remove the backfilling logic.
+  connector: {
+    pending?: ConnectorType
+    selected?: ConnectorType
+    selectedBackfilled: boolean
+    errorByType: Record<ConnectorType, string | undefined>
+  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -79,6 +98,17 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   userAdvancedSwapDetails: true,
+  connector: {
+    pending: undefined,
+    selected: undefined,
+    selectedBackfilled: false,
+    errorByType: {
+      [ConnectorType.METAMASK]: undefined,
+      [ConnectorType.WALLET_CONNECT]: undefined,
+      [ConnectorType.COINBASE]: undefined,
+      [ConnectorType.NETWORK]: undefined,
+    },
+  },
 }
 
 export default createReducer(initialState, builder =>
@@ -170,5 +200,16 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserAdvancedSwapDetails, (state, action) => {
       state.userAdvancedSwapDetails = action.payload.userAdvancedSwapDetails
+    })
+    .addCase(updateSelectedConnector, (state, action) => {
+      state.connector.selected = action.payload.selectedConnector
+      state.connector.selectedBackfilled = true
+    })
+    .addCase(updatePendingConnector, (state, action) => {
+      state.connector.pending = action.payload.pendingConnector
+    })
+    .addCase(setConnectorError, (state, action) => {
+      const { connector, connectorError } = action.payload
+      state.connector.errorByType[connector] = connectorError
     })
 )
