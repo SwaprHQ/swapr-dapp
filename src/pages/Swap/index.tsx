@@ -21,6 +21,7 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -88,7 +89,7 @@ const AppBodyContainer = styled.section`
 `
 
 export default function Swap() {
-  const isDesktop = useMedia(`(min-width: ${breakpoints.l})`)
+  const isDesktop = useIsDesktopByMedia()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
