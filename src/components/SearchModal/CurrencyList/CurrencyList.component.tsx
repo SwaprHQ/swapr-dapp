@@ -178,7 +178,8 @@ export const CurrencyList = ({
       if (currency && currency instanceof Currency) {
         const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
         const otherSelected = Boolean(otherCurrency && otherCurrency.some(c => currencyEquals(c, currency)))
-        const handleSelect = () => onCurrencySelect(currency)
+        const handleSelect = () => !isSelected && onCurrencySelect(currency)
+
         return (
           <CurrencyRow
             selectedTokenList={selectedTokenList}

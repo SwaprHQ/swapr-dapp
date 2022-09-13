@@ -29,10 +29,7 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
         </TYPE.Body>
       </AutoRow>
       <AutoRow gap="4px">
-        <BaseWrapper
-          onClick={handleClick}
-          disabled={selectedCurrency === nativeCurrency || selectedCurrency === undefined}
-        >
+        <BaseWrapper onClick={handleClick} disabled={selectedCurrency === nativeCurrency}>
           <CurrencyLogo size="20px" currency={nativeCurrency} marginRight={8} />
           <Text fontWeight={500} fontSize={16}>
             {nativeCurrency.symbol}
