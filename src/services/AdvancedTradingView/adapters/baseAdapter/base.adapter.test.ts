@@ -7,6 +7,7 @@ import advancedTradingView, { actions } from '../../advancedTradingView.reducer'
 import { selectCurrentSwaprPair } from '../../advancedTradingView.selectors'
 import { AdapterKeys } from '../../advancedTradingView.types'
 import { BaseAdapter, BaseAppState } from './base.adapter'
+import { PairBurnsAndMints, PairSwaps } from './base.types'
 
 const FAKE_SWAP_DATA = {
   id: '1',
@@ -41,7 +42,7 @@ const graphqlRequestMock = graphqlRequest as jest.Mock
 
 describe('BaseAdapter', () => {
   let store: Store<BaseAppState>
-  let baseAdapter: BaseAdapter<BaseAppState>
+  let baseAdapter: BaseAdapter<BaseAppState, PairSwaps, PairBurnsAndMints>
 
   beforeEach(() => {
     store = configureStore({

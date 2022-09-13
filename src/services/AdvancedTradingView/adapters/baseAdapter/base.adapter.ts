@@ -2,26 +2,27 @@ import { ChainId, Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
-import { actions, initialState as advancedTradingViewInitialState } from '../../advancedTradingView.reducer'
+import { initialState as advancedTradingViewInitialState } from '../../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
-  AdapterInitialArguments,
+  AdapterFetchMethodArguments,
   AdapterKeys,
   AdapterPayloadType,
 } from '../../advancedTradingView.types'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
 import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
-import { PairBurnsAndMints, PairSwaps } from './base.types'
 
 export interface BaseAppState {
   advancedTradingView: typeof advancedTradingViewInitialState
 }
 
-export class BaseAdapter<AppState extends BaseAppState> extends AbstractAdvancedTradingViewAdapter<AppState> {
-  private _key: AdapterKeys
-  private _adapterSupportedChains: ChainId[]
-  private _platform: UniswapV2RoutablePlatform
-  private _subgraphUrls: {
+export class BaseAdapter<
+  AppState extends BaseAppState,
+  GenericPairSwaps extends { swaps: unknown[] },
+  GenericPairBurnsAndMints extends { burns: unknown[]; mints: unknown[] }
+> extends AbstractAdvancedTradingViewAdapter<AppState> {
+  protected _platform: UniswapV2RoutablePlatform | undefined
+  protected _subgraphUrls: {
     [ChainId.GNOSIS]: string
     [ChainId.MAINNET]: string
     [ChainId.ARBITRUM_ONE]: string
@@ -29,34 +30,23 @@ export class BaseAdapter<AppState extends BaseAppState> extends AbstractAdvanced
 
   constructor({
     key,
-    adapterSupportedChains,
     platform,
     subgraphUrls,
+    adapterSupportedChains,
   }: {
     key: AdapterKeys
-    adapterSupportedChains: ChainId[]
-    platform: UniswapV2RoutablePlatform
+    platform?: UniswapV2RoutablePlatform
     subgraphUrls: {
       [ChainId.GNOSIS]: string
       [ChainId.MAINNET]: string
       [ChainId.ARBITRUM_ONE]: string
     }
+    adapterSupportedChains: ChainId[]
   }) {
-    super()
+    super({ adapterSupportedChains, key })
 
-    this._key = key
     this._platform = platform
     this._subgraphUrls = subgraphUrls
-    this._adapterSupportedChains = adapterSupportedChains
-  }
-
-  public updateActiveChainId(chainId: ChainId) {
-    this._chainId = chainId
-  }
-
-  public setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>) {
-    this._chainId = chainId
-    this._store = store
   }
 
   public async getPairTrades({
@@ -68,37 +58,26 @@ export class BaseAdapter<AppState extends BaseAppState> extends AbstractAdvanced
   }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
-    const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
+    const pairId = this._getPairId(inputToken, outputToken)
 
-    if (!subgraphPairId) return
+    if (!pairId) return
 
-    const pair = this.store.getState().advancedTradingView.adapters[this._key][subgraphPairId]
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
     if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
 
     try {
-      const { swaps } = await request<PairSwaps>({
-        url: this._subgraphUrls[this._chainId],
-        document: PAIR_SWAPS,
-        variables: {
-          pairId: subgraphPairId,
-          first: amountToFetch,
-          skip: pair?.swaps?.data.length ?? 0,
-        },
-        signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
+      const swaps = await this._fetchSwaps({
+        pairId,
+        pair,
+        chainId: this._chainId,
+        amountToFetch,
+        abortController,
+        inputTokenAddress: inputToken.address,
+        outputTokenAddress: outputToken.address,
       })
 
-      const hasMore = swaps.length === amountToFetch
-
-      this.store.dispatch(
-        this.actions.setPairData({
-          key: this._key,
-          pairId: subgraphPairId,
-          payloadType: AdapterPayloadType.swaps,
-          data: swaps,
-          hasMore,
-        })
-      )
+      this._dispatchSwaps(pairId, swaps, amountToFetch)
     } catch (e) {
       console.warn(`${this._key}${e}`)
     }
@@ -113,61 +92,94 @@ export class BaseAdapter<AppState extends BaseAppState> extends AbstractAdvanced
   }: AdapterFetchDetails) {
     if (!this._isSupportedChainId(this._chainId)) return
 
-    const subgraphPairId = this._getSubgraphPairId(inputToken, outputToken)
+    const pairId = this._getPairId(inputToken, outputToken)
 
-    if (!subgraphPairId) return
+    if (!pairId) return
 
-    const pair = this.store.getState().advancedTradingView.adapters[this._key][subgraphPairId]
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
     if ((pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) || (pair && isFirstFetch)) return
 
     try {
-      const { burns, mints } = await request<PairBurnsAndMints>({
-        url: this._subgraphUrls[this._chainId],
-        document: PAIR_BURNS_AND_MINTS,
-        variables: {
-          pairId: subgraphPairId,
-          first: amountToFetch,
-          skip: pair?.burnsAndMints?.data.length ?? 0,
-        },
-        signal: abortController(`${this._key}-pair-activity`) as RequestOptions['signal'],
+      const burnsAndMints = await this._fetchBurnsAndMints({
+        pairId,
+        pair,
+        chainId: this._chainId,
+        amountToFetch,
+        abortController,
+        inputTokenAddress: inputToken.address,
+        outputTokenAddress: outputToken.address,
       })
 
-      const hasMore = Boolean(burns.length === amountToFetch || mints.length === amountToFetch)
-
-      this.store.dispatch(
-        this.actions.setPairData({
-          key: this._key,
-          pairId: subgraphPairId,
-          payloadType: AdapterPayloadType.burnsAndMints,
-          data: [...burns, ...mints],
-          hasMore,
-        })
-      )
+      this._dispatchBurnsAndMints(pairId, burnsAndMints, amountToFetch)
     } catch (e) {
       console.warn(`${this._key}${e}`)
     }
   }
 
-  private get actions() {
-    return actions
-  }
-
-  private get store() {
-    if (!this._store) throw new Error('No store set')
-
-    return this._store
-  }
-
-  private _getSubgraphPairId(inputToken: Token, outputToken: Token) {
+  protected _getPairId(inputToken: Token, outputToken: Token) {
     try {
       return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
     } catch {}
   }
 
-  private _isSupportedChainId(chainId?: ChainId): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE {
-    if (!chainId) return false
+  protected async _fetchSwaps({ pairId, pair, chainId, amountToFetch, abortController }: AdapterFetchMethodArguments) {
+    return await request<GenericPairSwaps>({
+      url: this._subgraphUrls[chainId],
+      document: PAIR_SWAPS,
+      variables: {
+        pairId,
+        first: amountToFetch,
+        skip: pair?.swaps?.data.length ?? 0,
+      },
+      signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
+    })
+  }
 
-    return this._adapterSupportedChains.includes(chainId)
+  protected async _fetchBurnsAndMints({
+    pairId,
+    pair,
+    chainId,
+    amountToFetch,
+    abortController,
+  }: AdapterFetchMethodArguments) {
+    return await request<GenericPairBurnsAndMints>({
+      url: this._subgraphUrls[chainId],
+      document: PAIR_BURNS_AND_MINTS,
+      variables: {
+        pairId,
+        first: amountToFetch,
+        skip: pair?.burnsAndMints?.data.length ?? 0,
+      },
+      signal: abortController(`${this._key}-pair-activity`) as RequestOptions['signal'],
+    })
+  }
+
+  protected _dispatchSwaps(pairId: string, { swaps }: GenericPairSwaps, amountToFetch: number) {
+    const hasMore = swaps.length === amountToFetch
+
+    this.store.dispatch(
+      this.actions.setPairData({
+        key: this._key,
+        pairId,
+        payloadType: AdapterPayloadType.swaps,
+        data: swaps,
+        hasMore,
+      })
+    )
+  }
+
+  protected _dispatchBurnsAndMints(pairId: string, { burns, mints }: GenericPairBurnsAndMints, amountToFetch: number) {
+    const hasMore = Boolean(burns.length === amountToFetch || mints.length === amountToFetch)
+
+    this.store.dispatch(
+      this.actions.setPairData({
+        key: this._key,
+        pairId,
+        payloadType: AdapterPayloadType.burnsAndMints,
+        data: [...burns, ...mints],
+        hasMore,
+      })
+    )
   }
 }

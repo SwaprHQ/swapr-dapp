@@ -5,7 +5,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from '../../state'
 import { BaseAppState } from './adapters/baseAdapter/base.adapter'
 import { AllTradesAndLiquidityFromAdapters, BasePair, LiquidityTypename } from './adapters/baseAdapter/base.types'
-import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
+import { UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.types'
 
 const adapterLogos: { [key in AdapterKeys]: string } = {

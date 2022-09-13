@@ -1,12 +1,14 @@
-import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { AppState } from '../../../state'
 import { AdapterKeys, Adapters } from '../advancedTradingView.types'
 import { BaseAdapter } from './baseAdapter/base.adapter'
+import { PairBurnsAndMints, PairSwaps } from './baseAdapter/base.types'
 import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
+import { UniswapV3PairBurnsAndMints, UniswapV3PairSwaps } from './uniswapV3/uniswapV3.types'
 
 export const adapters: Adapters<AppState> = {
-  swapr: new BaseAdapter({
+  swapr: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
     key: AdapterKeys.SWAPR,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SWAPR,
@@ -16,7 +18,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
     },
   }),
-  sushiswap: new BaseAdapter({
+  sushiswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
     key: AdapterKeys.SUSHISWAP,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SUSHISWAP,
@@ -26,7 +28,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/sushiswap/xdai-exchange',
     },
   }),
-  uniswapV2: new BaseAdapter({
+  uniswapV2: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
     key: AdapterKeys.UNISWAPV2,
     adapterSupportedChains: [ChainId.MAINNET],
     platform: UniswapV2RoutablePlatform.UNISWAP,
@@ -36,7 +38,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.GNOSIS]: '',
     },
   }),
-  honeyswap: new BaseAdapter({
+  honeyswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
     key: AdapterKeys.HONEYSWAP,
     adapterSupportedChains: [ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.HONEYSWAP,
@@ -46,12 +48,13 @@ export const adapters: Adapters<AppState> = {
       [ChainId.MAINNET]: '',
     },
   }),
-  uniswapV3: new UniswapV3Adapter({
+  uniswapV3: new UniswapV3Adapter<AppState, UniswapV3PairSwaps, UniswapV3PairBurnsAndMints>({
     key: AdapterKeys.UNISWAPV3,
     adapterSupportedChains: [ChainId.MAINNET],
-    platform: RoutablePlatform.UNISWAP,
     subgraphUrls: {
       [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+      [ChainId.ARBITRUM_ONE]: '',
+      [ChainId.GNOSIS]: '',
     },
   }),
 }
