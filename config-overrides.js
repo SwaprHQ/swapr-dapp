@@ -40,10 +40,12 @@ module.exports = (config, env) => {
         CSP_NONCE: CSP_NONCE,
         'process.env.REACT_APP_CSP_NONCE': CSP_NONCE,
       }),
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: './public/index.html',
-      }),
+      !isProd
+        ? new HtmlWebpackPlugin({
+            inject: true,
+            template: './public/index.html',
+          })
+        : false,
       isAnalyze ? new BundleAnalyzerPlugin() : false,
     ].filter(Boolean)
   )
