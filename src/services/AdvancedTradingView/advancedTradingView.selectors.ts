@@ -95,8 +95,8 @@ export const selectHasMoreData = createSelector(
     selectCurrentUniswapV3Pair,
   ],
   (...pairs) => ({
-    hasMoreTrades: pairs.map(pair => pair?.pair?.swaps?.hasMore ?? true).some(identity),
-    hasMoreActivity: pairs.map(pair => pair?.pair?.burnsAndMints?.hasMore ?? true).some(identity),
+    hasMoreTrades: pairs.map(pair => Boolean(pair?.pair?.swaps?.hasMore)).some(identity),
+    hasMoreActivity: pairs.map(pair => Boolean(pair?.pair?.burnsAndMints?.hasMore)).some(identity),
   })
 )
 
