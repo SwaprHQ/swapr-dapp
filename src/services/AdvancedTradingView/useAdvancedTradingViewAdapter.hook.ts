@@ -30,10 +30,10 @@ export const useAdvancedTradingViewAdapter = () => {
     inputTokenAddress: undefined,
     outputTokenAddress: undefined,
   })
+  const [isFirstLoadingFetchTrades, setFirstLoadingFetchTrades] = useState(true)
+  const [isFirstLoadingFetchActivity, setFirstLoadingFetchActivity] = useState(true)
 
   const dispatch = useDispatch()
-
-  const [isLoading, setIsLoading] = useState(false)
 
   const {
     INPUT: { currencyId: inputCurrencyId },
@@ -66,6 +66,7 @@ export const useAdvancedTradingViewAdapter = () => {
 
   const fetchTrades = async () => {
     if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
+    setFirstLoadingFetchTrades(false)
 
     await advancedTradingViewAdapter.fetchPairTrades({
       inputToken,
@@ -77,6 +78,7 @@ export const useAdvancedTradingViewAdapter = () => {
 
   const fetchActivity = async () => {
     if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
+    setFirstLoadingFetchActivity(false)
 
     await advancedTradingViewAdapter.fetchPairActivity({
       inputToken,
@@ -98,8 +100,8 @@ export const useAdvancedTradingViewAdapter = () => {
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
-
-        setIsLoading(true)
+        setFirstLoadingFetchTrades(true)
+        setFirstLoadingFetchActivity(true)
         try {
           await Promise.allSettled([
             advancedTradingViewAdapter.fetchPairTrades({
@@ -115,8 +117,8 @@ export const useAdvancedTradingViewAdapter = () => {
               isFirstFetch: true,
             }),
           ])
-        } finally {
-          setIsLoading(false)
+        } catch (e) {
+          console.error(e)
         }
       }
 
@@ -140,6 +142,7 @@ export const useAdvancedTradingViewAdapter = () => {
     outputToken,
     fetchTrades,
     fetchActivity,
-    isLoading,
+    isFirstLoadingFetchTrades,
+    isFirstLoadingFetchActivity,
   }
 }
