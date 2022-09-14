@@ -326,9 +326,6 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
-
       - name: Codegen socket
         run: yarn codegen:socket
 
