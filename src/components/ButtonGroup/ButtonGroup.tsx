@@ -1,6 +1,14 @@
-import React, { ReactNode } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
+
+export const ButtonGroup = styled(Flex)`
+  background: ${({ theme }) => theme.dark1};
+  border-radius: 12px;
+  padding: 3px;
+  > * {
+    margin-right: 3px;
+  }
+`
 
 export const ButtonGroupOption = styled.button<{
   active?: boolean
@@ -8,37 +16,32 @@ export const ButtonGroupOption = styled.button<{
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
   height: fit-content;
-  font-size: 10px;
+  padding: 8px;
+
+  background: ${({ active, theme }) => (active ? theme.dark2 : theme.dark1)};
+  border: 0;
+  border-radius: 10px;
+
+  font-size: 8px;
   font-weight: 600;
-  color: ${({ active }) => (active ? '#EBE9F8' : '#464366')};
+  color: ${({ active, theme }) => (active ? 'white' : theme.purple5)};
+  text-transform: uppercase;
 
   cursor: pointer;
 
-  background: ${({ active }) => (active ? 'rgba(104, 110, 148, 0.25)' : 'rgba(62, 65, 87, 0.2)')};
-  border: 1px solid #2c2b42;
-
-  &:first-child {
-    border-radius: 8px 0px 0px 8px;
-  }
-
   &:last-child {
-    border-radius: 0 8px 8px 0;
+    margin: 0;
   }
 
   &:hover {
-    color: ${({ theme }) => theme.text4};
-    background: rgba(104, 110, 148, 0.25);
+    color: ${({ theme }) => theme.text3};
+    background: ${({ theme }) => theme.dark2};
   }
 
   &:disabled {
-    cursor: not-allowed;
-    color: ${({ theme }) => theme.text6};
-    background: rgba(104, 110, 148, 0.1);
+    pointer-events: none;
+    color: ${({ theme }) => theme.dark2};
+    background: ${({ theme }) => theme.dark1};
   }
 `
-
-export const ButtonGroup = ({ children }: { children: ReactNode }) => {
-  return <Flex>{children}</Flex>
-}

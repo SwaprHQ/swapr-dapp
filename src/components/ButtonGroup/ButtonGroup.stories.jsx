@@ -8,7 +8,7 @@ export default {
 }
 
 const Template = args => (
-  <Box bg="#141524" p={5}>
+  <Box bg="#716d98" p={5}>
     <ButtonGroup>
       <ButtonGroupOption {...args}>Chart</ButtonGroupOption>
       <ButtonGroupOption {...args}>Pro</ButtonGroupOption>
