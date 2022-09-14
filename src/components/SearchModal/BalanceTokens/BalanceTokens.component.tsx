@@ -23,32 +23,17 @@ export const BalanceTokens = ({
   const nativeCurrency = useNativeCurrency()
   const { account } = useActiveWeb3React()
   const balances = useCurrencyBalances(account || undefined, filteredSortedTokensWithNativeCurrency)
-  const handleClick = useCallback(() => {
-    if (!selectedCurrency || !currencyEquals(selectedCurrency, nativeCurrency)) {
-      onCurrencySelect(nativeCurrency)
-    }
-  }, [nativeCurrency, onCurrencySelect, selectedCurrency])
 
   const sortedTokensWithBalance = useMemo(() => {
     let sortedTokensWithBalance: { currency: Currency; balance?: string }[] = []
 
     for (const [index, balance] of balances.entries()) {
-      let mockBalance
-
-      if (balance?.equalTo(BigInt(0))) {
-        // -- Mock --
-        if (index < 6) {
-          mockBalance = '100'
-        } else {
-          break
-        }
-        // -- End of Mock --
-        // break
+      if (balance && balance.equalTo(BigInt(0))) {
+        break
       }
       sortedTokensWithBalance.push({
         currency: filteredSortedTokensWithNativeCurrency[index],
-        // balance: balance?.toSignificant(4),
-        balance: mockBalance,
+        balance: balance?.toSignificant(4),
       })
     }
 
@@ -97,7 +82,7 @@ export const BalanceTokens = ({
           )
         })}
         {restTokensWithBalanceLength > 0 && (
-          <BaseWrapper onClick={() => console.log('elo')}>
+          <BaseWrapper onClick={() => console.log('handler needed')}>
             <Text fontWeight={500} fontSize={16}>
               {`+${restTokensWithBalanceLength}`}
             </Text>
