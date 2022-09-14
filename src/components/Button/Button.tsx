@@ -7,7 +7,7 @@ import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
 import styled, { useTheme } from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
+import { ReactComponent as CarrotIcon } from '../../assets/images/carrot.svg'
 import { ExternalLink } from '../../theme'
 import { gradients } from '../../utils/theme'
 import { NumberBadge } from '../NumberBadge'

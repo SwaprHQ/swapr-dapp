@@ -18,14 +18,13 @@ import { TokenIcon } from '../TokenIcon'
 
 interface SwapTransactionRowProps {
   transaction: SwapTransaction
-  showAllNetworkTransactions: boolean
 }
 
-export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: SwapTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, network, hash } = transaction
+export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
+  const { type, status, from, to, confirmedTime, network, hash, swapProtocol } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   const price = to?.value === 0 ? 0 : from.value / to.value
-  const link = network ? getExplorerLink(Number(network), hash, 'transaction') : '#'
+  const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
 
   return (
     <GridCard status={status}>
@@ -34,18 +33,16 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(from.value, false, true)}</Box>
+              <Box>{formatNumber(from.value, false)}</Box>
               <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
             </Flex>
           </Flex>
-          {showAllNetworkTransactions && (
-            <Box sx={{ mt: 1 }}>
-              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
-                <CustomLinkIcon size={12} />
-                {networkDetails?.name}
-              </NetworkLink>
-            </Box>
-          )}
+          <Box sx={{ mt: 1 }}>
+            <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+              <CustomLinkIcon size={12} />
+              {networkDetails?.name}
+            </NetworkLink>
+          </Box>
         </Flex>
       </TokenDetails>
 
@@ -54,18 +51,16 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(to.value, false, true)}</Box>
+              <Box>{formatNumber(to.value, false)}</Box>
               <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
             </Flex>
           </Flex>
-          {showAllNetworkTransactions && (
-            <Box sx={{ mt: 1 }}>
-              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
-                <CustomLinkIcon size={12} />
-                {networkDetails?.name}
-              </NetworkLink>
-            </Box>
-          )}
+          <Box sx={{ mt: 1 }}>
+            <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+              <CustomLinkIcon size={12} />
+              {networkDetails?.name}
+            </NetworkLink>
+          </Box>
         </Flex>
       </TokenDetails>
 
@@ -82,6 +77,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
         <Box color="#8780BF" fontWeight="600">
           {type}
         </Box>
+        {swapProtocol && <Box fontWeight="600">{swapProtocol}</Box>}
       </TypeDetails>
 
       <TransactionDetails>

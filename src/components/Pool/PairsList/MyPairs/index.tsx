@@ -1,7 +1,7 @@
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import blurredCircle from '../../../../assets/svg/blurred-circle.svg'
+import blurredCircle from '../../../../assets/images/blurred-circle.svg'
 import { TYPE } from '../../../../theme'
 import { DarkCard } from '../../../Card'
 import { UndecoratedLink } from '../../../UndercoratedLink'

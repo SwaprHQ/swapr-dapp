@@ -135,7 +135,7 @@ export function Account() {
       </Flex>
       <BlurBox>
         <TransactionHeaders />
-        <TransactionRows transactions={transactionsByPage} showAllNetworkTransactions={showAllNetworkTransactions} />
+        <TransactionRows transactions={transactionsByPage} />
         <NoDataTransactionRow data={transactions} />
       </BlurBox>
       <PaginationRow>

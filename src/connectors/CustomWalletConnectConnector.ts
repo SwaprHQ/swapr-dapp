@@ -39,12 +39,12 @@ export class CustomWalletConnectConnector extends AbstractConnector {
 
     this.config = config
 
-    this.handleChainChanged = this.handleChainChanged.bind(this)
+    this.changeChainId = this.changeChainId.bind(this)
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this)
     this.handleDisconnect = this.handleDisconnect.bind(this)
   }
 
-  private handleChainChanged(chainId: number | string): void {
+  public changeChainId(chainId: number | string): void {
     this.emitUpdate({ chainId })
   }
 
@@ -57,7 +57,7 @@ export class CustomWalletConnectConnector extends AbstractConnector {
     // we have to do this because of a @walletconnect/web3-provider bug
     if (this.walletConnectProvider) {
       this.walletConnectProvider.stop()
-      this.walletConnectProvider.removeListener('chainChanged', this.handleChainChanged)
+      this.walletConnectProvider.removeListener('chainChanged', this.changeChainId)
       this.walletConnectProvider.removeListener('accountsChanged', this.handleAccountsChanged)
       this.walletConnectProvider = undefined
     }
@@ -87,8 +87,8 @@ export class CustomWalletConnectConnector extends AbstractConnector {
         throw error
       })
 
+    this.walletConnectProvider.on('chainChanged', this.changeChainId)
     this.walletConnectProvider.on('disconnect', this.handleDisconnect)
-    this.walletConnectProvider.on('chainChanged', this.handleChainChanged)
     this.walletConnectProvider.on('accountsChanged', this.handleAccountsChanged)
 
     return { provider: this.walletConnectProvider, account }
@@ -109,8 +109,8 @@ export class CustomWalletConnectConnector extends AbstractConnector {
   public deactivate() {
     if (this.walletConnectProvider) {
       this.walletConnectProvider.stop()
+      this.walletConnectProvider.removeListener('chainChanged', this.changeChainId)
       this.walletConnectProvider.removeListener('disconnect', this.handleDisconnect)
-      this.walletConnectProvider.removeListener('chainChanged', this.handleChainChanged)
       this.walletConnectProvider.removeListener('accountsChanged', this.handleAccountsChanged)
     }
   }

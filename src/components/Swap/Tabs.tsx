@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import Row from '../Row'
 
