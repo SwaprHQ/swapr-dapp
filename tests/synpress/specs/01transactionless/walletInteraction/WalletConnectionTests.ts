@@ -4,7 +4,7 @@ import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler
 
 describe('Wallet connection tests', () => {
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   beforeEach(() => {
     SwapPage.visitSwapPage()

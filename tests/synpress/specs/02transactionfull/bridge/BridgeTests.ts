@@ -25,7 +25,7 @@ describe('Bridge tests', () => {
     MetamaskNetworkHandler.addGnosis()
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')

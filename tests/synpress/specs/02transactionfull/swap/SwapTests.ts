@@ -22,7 +22,7 @@ describe('Swapping tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()

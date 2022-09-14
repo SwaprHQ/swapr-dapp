@@ -21,7 +21,7 @@ describe('Campaign creation tests', () => {
   let isCampaignCreated = false
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()

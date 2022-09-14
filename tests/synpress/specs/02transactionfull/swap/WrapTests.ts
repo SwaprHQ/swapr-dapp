@@ -11,7 +11,7 @@ describe('Wrapping tests', () => {
   let balanceBefore: number
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
 
   beforeEach(() => {
