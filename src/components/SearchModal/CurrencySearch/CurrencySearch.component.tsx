@@ -171,7 +171,6 @@ export const CurrencySearch = ({
           style={{
             position: 'relative',
             maxWidth: '480px',
-            marginBottom: '44px',
           }}
         >
           <SearchInput

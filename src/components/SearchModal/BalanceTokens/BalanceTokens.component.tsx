@@ -63,9 +63,9 @@ export const BalanceTokens = ({
   }
 
   return (
-    <AutoColumn gap="15px" data-testid="balance-tokens">
+    <AutoColumn gap="15px" data-testid="balance-tokens" style={{ marginTop: '44px' }}>
       <Row justifyContent="center">
-        <TYPE.Body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
+        <TYPE.Body fontWeight={700} fontSize="11px" lineHeight="13px" letterSpacing="0.06em" color={'#C0BAF6'}>
           YOUR BALANCE
         </TYPE.Body>
       </Row>

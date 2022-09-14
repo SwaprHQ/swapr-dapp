@@ -1,6 +1,6 @@
 import { currencyEquals, Token } from '@swapr/sdk'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { Text } from 'rebass'
 
 import { SUGGESTED_BASES } from '../../../constants'
@@ -14,6 +14,7 @@ import { CommonTokensProps } from './CommonTokens.types'
 
 export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: CommonTokensProps) => {
   const nativeCurrency = useNativeCurrency()
+  const [activeTab, setActiveTab] = useState(0)
 
   const handleClick = useCallback(() => {
     if (!selectedCurrency || !currencyEquals(selectedCurrency, nativeCurrency)) {
@@ -23,10 +24,22 @@ export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: Co
 
   return (
     <AutoColumn gap="15px" data-testid="common-tokens">
-      <Row justifyContent="center">
-        <TYPE.Body fontWeight={500} fontSize="11px" lineHeight="13px" letterSpacing="0.06em">
-          COMMON TOKENS
-        </TYPE.Body>
+      <Row justifyContent="center" gap={'24px'}>
+        {['COMMON TOKENS', 'FAVORITES', 'CARROTS'].map((item, index) => (
+          <TYPE.Body
+            key={index}
+            fontWeight={700}
+            fontSize="11px"
+            lineHeight="13px"
+            letterSpacing="0.06em"
+            style={{ color: activeTab === index ? '#C0BAF6' : '#8780BF' }}
+            onClick={() => {
+              setActiveTab(index)
+            }}
+          >
+            {item}
+          </TYPE.Body>
+        ))}
       </Row>
       <Row gap="8px" justifyContent="center" flexWrap={'wrap'}>
         <BaseWrapper
