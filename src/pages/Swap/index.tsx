@@ -3,7 +3,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Flex } from 'rebass'
+import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
@@ -402,8 +402,15 @@ export default function Swap() {
           flexDirection={['column', 'column', 'column', 'row']}
         >
           <AppBodyContainer>
-            <Tabs>
-              {
+            <Flex
+              mb={3}
+              alignItems="center"
+              justifyContent="space-between"
+              width="100%"
+              flexDirection={['column-reverse', 'row']}
+            >
+              <Tabs />
+              <Box mb={[3, 0]}>
                 <ButtonGroup>
                   <ButtonGroupOption
                     disabled={!hasBothCurrenciesInput}
@@ -420,8 +427,8 @@ export default function Swap() {
                     Off
                   </ButtonGroupOption>
                 </ButtonGroup>
-              }
-            </Tabs>
+              </Box>
+            </Flex>
             <AppBody tradeDetailsOpen={!!trade}>
               <SwapPoolTabs active="swap" />
               <Wrapper id="swap-page">
