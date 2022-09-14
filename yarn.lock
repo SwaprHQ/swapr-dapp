@@ -5688,7 +5688,7 @@
 
 "@synthetixio/synpress@niemam29/synpress-x#sorry-cypress":
   version "2.2.0"
-  resolved "https://codeload.github.com/niemam29/synpress-x/tar.gz/3a95f0ff1a3bf57182f2d01ab47b8ee257779ba2"
+  resolved "https://codeload.github.com/niemam29/synpress-x/tar.gz/cff7be95eecd0d20770b548e47e8c36eca9a5e7e"
   dependencies:
     "@cypress/code-coverage" "^3.10.0"
     "@cypress/react" "^6.2.0"
