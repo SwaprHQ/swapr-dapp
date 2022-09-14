@@ -56,14 +56,16 @@ export const SearchInput = styled.input<{ fontSize?: string; fontWeight?: number
   width: ${({ width }) => (width ? width : '100%')};
   height: ${({ height }) => (height ? height : '44px')};
   white-space: nowrap;
-  background: ${({ theme }) => transparentize(0.75, theme.purpleBase)};
-  border-radius: 8px;
-  border: 8px solid transparent;
-  border-image: url(${border8pxRadius}) 8;
-  padding: 8px 50px 8px 12px;
+  background: rgba(20, 18, 31, 0.5);
+  border-radius: 12px;
+  border: 2px solid #8780bf;
+  backdrop-filter: blur(25px);
+  padding: 15px 60px 15px 20px;
+
   :focus {
-    border: solid 1px ${({ theme }) => theme.bg5};
-    padding: 15px 19px;
+    background: #0c0b16;
+    border: 2px solid #c0baf7;
+    color: #dddaf8;
   }
   outline: none;
   color: ${({ theme }) => theme.white};
@@ -73,7 +75,7 @@ export const SearchInput = styled.input<{ fontSize?: string; fontWeight?: number
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 'normal')};
 
   ::placeholder {
-    color: ${({ theme }) => theme.purple5};
+    color: #464366;
   }
 `
 export const Separator = styled.div`
