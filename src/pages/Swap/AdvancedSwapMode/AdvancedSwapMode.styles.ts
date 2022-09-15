@@ -36,6 +36,42 @@ export const AdvancedSwapModeContainer = styled.div`
   gap: 15px;
   padding: 0 20px;
 `
+export const PairDetailsWrapper = styled(BaseWrapper)`
+  grid-column: 1 / -1;
+  padding: 15px 20px;
+`
+export const PairSymbols = styled.div`
+  color: ${({ theme }) => theme.text2};
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 5px;
+`
+
+export const PairInfo = styled.div`
+  margin-left: 60px;
+
+  & > div:nth-child(2) {
+    margin-top: 10px;
+  }
+`
+
+export const PairTab = styled.div<{ size?: string }>`
+  color: ${({ theme }) => theme.purple3};
+  font-size: ${({ size }) => (size ? size : '11px')};
+  font-weight: 500;
+  letter-spacing: 0.08em;
+`
+
+export const PairValue = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text3};
+`
+
+export const PairValueChange = styled(PairValue)<{ positive: boolean; size?: string; space?: boolean }>`
+  color: ${({ positive }) => (positive ? '#0E9F6E' : '#F02E51')};
+  font-size: ${({ size }) => (size ? size : '14px')};
+`
 
 export const ChartWrapper = styled(BaseWrapper)`
   grid-column: 1 / 3;
@@ -46,7 +82,7 @@ export const ChartWrapper = styled(BaseWrapper)`
 
 export const OrdersWrapper = styled(BaseWrapper)`
   grid-column: 1 / 4;
-  height: 280px;
+  height: 380px;
 `
 
 export const LiquidityWrapper = styled(BaseWrapper)`
@@ -128,4 +164,15 @@ export const SwitchButton = styled.div<{ active: boolean }>`
   transition: background 0.1s ease;
   cursor: pointer;
   text-align: center;
+`
+
+export const NoDataMessage = styled.div`
+  color: ${({ theme }) => theme.purple2};
+  text-align: center;
+  margin-top: 30px;
+  font-size: 14px;
+
+  & > span {
+    font-weight: 700;
+  }
 `
