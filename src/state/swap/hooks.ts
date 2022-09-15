@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import useENS from '../../hooks/useENS'
@@ -432,12 +432,16 @@ export function useDefaultsFromURLSearch():
     if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs, currencyId(nativeCurrency))
 
+    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
+      ? parsed[Field.OUTPUT].currencyId
+      : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
         inputCurrencyId: parsed[Field.INPUT].currencyId,
-        outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+        outputCurrencyId,
         recipient: parsed.recipient,
       })
     )
