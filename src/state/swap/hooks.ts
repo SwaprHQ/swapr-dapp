@@ -154,7 +154,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
-  const [getAbortController, setNewAbortController] = useAbortController()
+  const { abortControllerSignal } = useAbortController()
 
   const dependencyList = [
     account,
@@ -181,10 +181,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   useEffect(() => {
     const [inputCurrencyBalance] = relevantTokenBalances
 
-    // Abort previous controller and create new one
-    getAbortController().abort()
-    setNewAbortController()
-    const signal = getAbortController().signal
+    const signal = abortControllerSignal()
 
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
@@ -222,16 +219,14 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     }
 
     // Update swap state with the new input
-    unstable_batchedUpdates(() => {
-      setInputError(inputErrorNextState)
-      setLoading(true)
-      setAllPlatformTrades([])
+    setInputError(inputErrorNextState)
+    setLoading(true)
+    setAllPlatformTrades([])
 
-      setIsQuoteExpired(false)
-      if (quoteExpiryTimeout.current) {
-        clearTimeout(quoteExpiryTimeout.current)
-      }
-    })
+    setIsQuoteExpired(false)
+    if (quoteExpiryTimeout.current) {
+      clearTimeout(quoteExpiryTimeout.current)
+    }
 
     const commonParams = {
       user: account || AddressZero, // default back to zero if no account is connected.
@@ -257,13 +252,11 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     // Start fetching trades from EcoRouter API
     getTrades
       .then(trades => {
-        unstable_batchedUpdates(() => {
-          setAllPlatformTrades(trades.trades)
-          setLoading(false)
-          quoteExpiryTimeout.current = setTimeout(() => {
-            setIsQuoteExpired(true)
-          }, quoteTTL)
-        })
+        setAllPlatformTrades(trades.trades)
+        setLoading(false)
+        quoteExpiryTimeout.current = setTimeout(() => {
+          setIsQuoteExpired(true)
+        }, quoteTTL)
       })
       .catch(error => {
         if (error.name !== 'AbortError') {
@@ -274,14 +267,12 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       })
 
     return function useDerivedSwapInfoCleanUp() {
-      unstable_batchedUpdates(() => {
-        setAllPlatformTrades([])
-        setLoading(false)
-        setInputError(undefined)
-        if (quoteExpiryTimeout.current) {
-          clearTimeout(quoteExpiryTimeout.current)
-        }
-      })
+      setAllPlatformTrades([])
+      setLoading(false)
+      setInputError(undefined)
+      if (quoteExpiryTimeout.current) {
+        clearTimeout(quoteExpiryTimeout.current)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencyList)
