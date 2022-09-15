@@ -20,6 +20,7 @@ import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceIm
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { CurrencyInputPanel } from '../CurrencyInputPanel'
+import AdvancedSwapDetailsDropdown from '../Swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../Swap/ConfirmSwapModal'
 import SwapButtons from '../Swap/SwapButtons'
@@ -299,106 +300,116 @@ export function Swapbox() {
     trade instanceof CoWTrade
 
   return (
-    <AppBody tradeDetailsOpen={!!trade}>
-      <SwapPoolTabs active="swap" />
-      <Wrapper id="swap-page">
-        <ConfirmSwapModal
-          isOpen={showConfirm}
-          trade={trade}
-          originalTrade={tradeToConfirm}
-          onAcceptChanges={handleAcceptChanges}
-          attemptingTxn={attemptingTxn}
-          txHash={txHash}
-          recipient={recipient}
-          allowedSlippage={allowedSlippage}
-          onConfirm={handleSwap}
-          swapErrorMessage={swapErrorMessage}
-          onDismiss={handleConfirmDismiss}
-        />
+    <>
+      <AppBody tradeDetailsOpen={!!trade}>
+        <SwapPoolTabs active="swap" />
+        <Wrapper id="swap-page">
+          <ConfirmSwapModal
+            isOpen={showConfirm}
+            trade={trade}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleSwap}
+            swapErrorMessage={swapErrorMessage}
+            onDismiss={handleConfirmDismiss}
+          />
 
-        <AutoColumn gap="12px">
-          <AutoColumn gap="3px">
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.INPUT]}
-              currency={currencies[Field.INPUT]}
-              onUserInput={handleTypeInput}
-              onMax={handleMaxInput(Field.INPUT)}
-              onCurrencySelect={handleInputSelect}
-              otherCurrency={currencies[Field.OUTPUT]}
-              fiatValue={fiatValueInput}
-              isFallbackFiatValue={isFallbackFiatValueInput}
-              maxAmount={maxAmountInput}
-              showCommonBases
-              disabled={isInputPanelDisabled}
-              id="swap-currency-input"
-            />
-            <SwitchIconContainer>
-              <SwitchTokensAmountsContainer
-                onClick={() => {
-                  setApprovalsSubmitted([]) // reset 2 step UI for approvals
-                  onSwitchTokens()
-                }}
-              >
-                <ArrowWrapper
-                  clickable={!loading}
-                  data-testid="switch-tokens-button"
-                  className={loading ? 'rotate' : ''}
+          <AutoColumn gap="12px">
+            <AutoColumn gap="3px">
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.INPUT]}
+                currency={currencies[Field.INPUT]}
+                onUserInput={handleTypeInput}
+                onMax={handleMaxInput(Field.INPUT)}
+                onCurrencySelect={handleInputSelect}
+                otherCurrency={currencies[Field.OUTPUT]}
+                fiatValue={fiatValueInput}
+                isFallbackFiatValue={isFallbackFiatValueInput}
+                maxAmount={maxAmountInput}
+                showCommonBases
+                disabled={isInputPanelDisabled}
+                id="swap-currency-input"
+              />
+              <SwitchIconContainer>
+                <SwitchTokensAmountsContainer
+                  onClick={() => {
+                    setApprovalsSubmitted([]) // reset 2 step UI for approvals
+                    onSwitchTokens()
+                  }}
                 >
-                  <SwapIcon />
-                </ArrowWrapper>
-              </SwitchTokensAmountsContainer>
-            </SwitchIconContainer>
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.OUTPUT]}
-              onUserInput={handleTypeOutput}
-              onMax={handleMaxInput(Field.OUTPUT)}
-              currency={currencies[Field.OUTPUT]}
-              onCurrencySelect={handleOutputSelect}
-              otherCurrency={currencies[Field.INPUT]}
-              fiatValue={fiatValueOutput}
-              priceImpact={priceImpact}
-              isFallbackFiatValue={isFallbackFiatValueOutput}
-              maxAmount={maxAmountOutput}
-              showCommonBases
-              disabled={isInputPanelDisabled}
-              id="swap-currency-output"
+                  <ArrowWrapper
+                    clickable={!loading}
+                    data-testid="switch-tokens-button"
+                    className={loading ? 'rotate' : ''}
+                  >
+                    <SwapIcon />
+                  </ArrowWrapper>
+                </SwitchTokensAmountsContainer>
+              </SwitchIconContainer>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onUserInput={handleTypeOutput}
+                onMax={handleMaxInput(Field.OUTPUT)}
+                currency={currencies[Field.OUTPUT]}
+                onCurrencySelect={handleOutputSelect}
+                otherCurrency={currencies[Field.INPUT]}
+                fiatValue={fiatValueOutput}
+                priceImpact={priceImpact}
+                isFallbackFiatValue={isFallbackFiatValueOutput}
+                maxAmount={maxAmountOutput}
+                showCommonBases
+                disabled={isInputPanelDisabled}
+                id="swap-currency-output"
+              />
+            </AutoColumn>
+
+            <TradeDetails
+              show={!showWrap}
+              loading={loading}
+              trade={trade}
+              bestPricedTrade={bestPricedTrade}
+              showAdvancedSwapDetails={showAdvancedSwapDetails}
+              setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+              recipient={recipient}
+            />
+            <SwapButtons
+              wrapInputError={wrapInputError}
+              showApproveFlow={showApproveFlow}
+              userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
+              approval={approval}
+              setSwapState={setSwapState}
+              priceImpactSeverity={priceImpactSeverity}
+              swapCallbackError={swapCallbackError}
+              wrapType={wrapType}
+              approvalSubmitted={approvalsSubmitted[currentTradeIndex]}
+              currencies={currencies}
+              trade={trade}
+              swapInputError={swapInputError}
+              swapErrorMessage={swapErrorMessage}
+              loading={loading}
+              onWrap={onWrap}
+              approveCallback={approveCallback}
+              handleSwap={handleSwap}
+              handleInputSelect={handleInputSelect}
+              wrapState={wrapState}
+              setWrapState={setWrapState}
             />
           </AutoColumn>
-
-          <TradeDetails
-            show={!showWrap}
-            loading={loading}
-            trade={trade}
-            bestPricedTrade={bestPricedTrade}
-            showAdvancedSwapDetails={showAdvancedSwapDetails}
-            setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-            recipient={recipient}
-          />
-          <SwapButtons
-            wrapInputError={wrapInputError}
-            showApproveFlow={showApproveFlow}
-            userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
-            approval={approval}
-            setSwapState={setSwapState}
-            priceImpactSeverity={priceImpactSeverity}
-            swapCallbackError={swapCallbackError}
-            wrapType={wrapType}
-            approvalSubmitted={approvalsSubmitted[currentTradeIndex]}
-            currencies={currencies}
-            trade={trade}
-            swapInputError={swapInputError}
-            swapErrorMessage={swapErrorMessage}
-            loading={loading}
-            onWrap={onWrap}
-            approveCallback={approveCallback}
-            handleSwap={handleSwap}
-            handleInputSelect={handleInputSelect}
-            wrapState={wrapState}
-            setWrapState={setWrapState}
-          />
-        </AutoColumn>
-      </Wrapper>
-    </AppBody>
+        </Wrapper>
+      </AppBody>
+      {showAdvancedSwapDetails && (
+        <AdvancedSwapDetailsDropdown
+          isLoading={loading}
+          trade={trade}
+          allPlatformTrades={allPlatformTrades}
+          onSelectedPlatformChange={setPlatformOverride}
+        />
+      )}
+    </>
   )
 }
 

@@ -1,23 +1,20 @@
-import { CoWTrade, RoutablePlatform, Token } from '@swapr/sdk'
+import { RoutablePlatform, Token } from '@swapr/sdk'
 
 import './../../theme/landingPageTheme/stylesheet.css'
 import { useCallback, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup/ButtonGroup'
 import { SimpleChartContainer } from '../../components/SimpleChart/SimpleChartContainer'
-import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
 import { Tabs } from '../../components/Swap/Tabs'
 import { Swapbox } from '../../components/Swapbox/Swapbox'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import { useWrapCallback, WrapType } from '../../hooks/useWrapCallback'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapState } from '../../state/swap/hooks'
+import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useUpdateSelectedChartOption } from '../../state/user/hooks'
+import { useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOptions } from '../../state/user/reducer'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
@@ -27,8 +24,9 @@ import Footer from './../../components/LandingPageComponents/layout/Footer'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
+import { ChartOptionsButtons } from './ChartOptionsButtons'
 
-const AppBodyContainer = styled.section`
+const AppBody = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,9 +52,8 @@ const LandingBodyContainer = styled.section`
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
+  const [platformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-  const [showAdvancedSwapDetails] = useAdvancedSwapDetails()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -81,28 +78,9 @@ export default function Swap() {
   const { chainId } = useActiveWeb3React()
   const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
 
-  // swap state
-  const { typedValue } = useSwapState()
+  const { currencies } = useDerivedSwapInfo(platformOverride || undefined)
 
-  const {
-    trade: potentialTrade,
-    allPlatformTrades,
-    currencies,
-    loading,
-  } = useDerivedSwapInfo(platformOverride || undefined)
-
-  const { wrapType } = useWrapCallback(
-    currencies.INPUT,
-    currencies.OUTPUT,
-    potentialTrade instanceof CoWTrade,
-    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
-  )
-
-  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
-
-  const trade = showWrap ? undefined : potentialTrade
-
-  const hasBothCurrenciesInput = currencies[Field.INPUT] && currencies[Field.OUTPUT]
+  const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
 
   return (
     <>
@@ -121,7 +99,7 @@ export default function Swap() {
           alignItems={['center', 'center', 'center', 'start', 'start', 'start']}
           flexDirection={['column', 'column', 'column', 'row']}
         >
-          <AppBodyContainer>
+          <AppBody>
             <Flex
               mb={3}
               alignItems="center"
@@ -130,34 +108,14 @@ export default function Swap() {
               flexDirection={['column-reverse', 'row']}
             >
               <Tabs />
-
-              <ButtonGroup mb={[3, 0]}>
-                <ButtonGroupOption
-                  disabled={!hasBothCurrenciesInput}
-                  active={selectedChartOption === ChartOptions.SIMPLE_CHART}
-                  onClick={() => setselectedChartOption(ChartOptions.SIMPLE_CHART)}
-                >
-                  Chart
-                </ButtonGroupOption>
-                <ButtonGroupOption
-                  disabled={!hasBothCurrenciesInput}
-                  active={selectedChartOption === ChartOptions.OFF}
-                  onClick={() => setselectedChartOption(ChartOptions.OFF)}
-                >
-                  Off
-                </ButtonGroupOption>
-              </ButtonGroup>
+              <ChartOptionsButtons
+                hasBothCurrenciesInput={hasBothCurrenciesInput}
+                selectedChartOption={selectedChartOption}
+                setselectedChartOption={setselectedChartOption}
+              />
             </Flex>
             <Swapbox />
-            {showAdvancedSwapDetails && (
-              <AdvancedSwapDetailsDropdown
-                isLoading={loading}
-                trade={trade}
-                allPlatformTrades={allPlatformTrades}
-                onSelectedPlatformChange={setPlatformOverride}
-              />
-            )}
-          </AppBodyContainer>
+          </AppBody>
           {hasBothCurrenciesInput && selectedChartOption === ChartOptions.SIMPLE_CHART && (
             <Flex
               width={['100%', '550px', '550px', '600px', '650px']}
