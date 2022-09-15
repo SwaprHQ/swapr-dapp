@@ -21,7 +21,6 @@ const TradeWrapper = styled(ExternalLink)`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-left: 10px;
   }
 
   ${AdvancedModeDetailsItems}
