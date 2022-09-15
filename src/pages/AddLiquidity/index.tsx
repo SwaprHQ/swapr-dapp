@@ -305,8 +305,7 @@ export default function AddLiquidity() {
   const isCreate = location.pathname.includes('/create')
 
   useEffect(() => {
-    //input cleanup on component unmount
-    return () => {
+    return function inputCleanup() {
       onFieldAInput('')
       onFieldBInput('')
     }
