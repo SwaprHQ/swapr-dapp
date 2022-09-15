@@ -268,10 +268,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       .catch(error => {
         if (error.name !== 'AbortError') {
           console.error(error)
-          unstable_batchedUpdates(() => {
-            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
-            setLoading(false)
-          })
+          setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+          setLoading(false)
         }
       })
 
