@@ -15,6 +15,7 @@ import {
 import { UnsignedTransaction } from 'ethers'
 import { useMemo } from 'react'
 
+import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
@@ -50,6 +51,26 @@ interface FailedCall {
 }
 
 type EstimatedSwapCall = SuccessfulCall | FailedCall
+
+/**
+ *
+export async function sendSwapVolumeToFathom(trade: Trade): void {
+  // Get use value for input amount
+  const tradeUSDValue = await getTradeUSDValue(trade)
+
+  if (tradeUSDValue && tradeUSDValue.amount) {
+    console.log('volumeUSD', tradeUSDValue.amount)
+
+    const volumeUSD = parseFloat(tradeUSDValue.amount) * parseFloat(trade.inputAmount.toExact())
+
+    trackEcoRouterVolumeUSD({
+      networkId: chainId as number,
+      protocolName: trade.platform.name,
+      volumeUSD: tradeUSDValue.amount,
+    })
+  }
+}
+*/
 
 /**
  * Returns the swap calls that can be used to make the trade
@@ -163,6 +184,8 @@ export function useSwapCallback({
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
 
+  const { trackEcoEcoRouterTradeVolume } = useAnalytics()
+
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
   const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipientAddressOrName)
 
@@ -194,6 +217,8 @@ export function useSwapCallback({
           // and then submit the order to GPv2
           await trade.signOrder(signer)
           const orderId = await trade.submitOrder()
+
+          trackEcoEcoRouterTradeVolume(trade)
 
           addTransaction(
             {
@@ -289,7 +314,8 @@ export function useSwapCallback({
             gasPrice: normalizedGasPrice,
             ...((await transactionParameters) as any),
           })
-          .then(response => {
+          .then(async response => {
+            trackEcoEcoRouterTradeVolume(trade)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -320,5 +346,6 @@ export function useSwapCallback({
     recipientAddressOrName,
     recipient,
     addTransaction,
+    trackEcoEcoRouterTradeVolume,
   ])
 }
