@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ReactComponent as EcoRouter } from '../../assets/svg/eco-router.svg'
+import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
