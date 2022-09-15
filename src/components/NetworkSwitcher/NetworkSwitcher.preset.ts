@@ -1,10 +1,10 @@
 import { ChainId } from '@swapr/sdk'
 
+import ArbitrumLogo from '../../assets/images/arbitrum-one-logo.svg'
+import EthereumLogo from '../../assets/images/ethereum-logo.svg'
+import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
+import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
-import ArbitrumLogo from '../../assets/svg/arbitrum-one-logo.svg'
-import EthereumLogo from '../../assets/svg/ethereum-logo.svg'
-import GnosisLogo from '../../assets/svg/gnosis-chain-logo.svg'
-import OptimismLogo from '../../assets/svg/optimism-logo.svg'
 import { NetworkOptionsPreset, NetworkSwitcherTags } from './NetworkSwitcher.types'
 
 export const networkOptionsPreset: NetworkOptionsPreset[] = [

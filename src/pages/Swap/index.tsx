@@ -6,17 +6,17 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMedia } from 'react-use'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
+import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
-import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
-import SwapButtons from '../../components/swap/SwapButtons'
-import { Tabs } from '../../components/swap/Tabs'
-import { TradeDetails } from '../../components/swap/TradeDetails'
+import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
+import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
+import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
+import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
+import SwapButtons from '../../components/Swap/SwapButtons'
+import { Tabs } from '../../components/Swap/Tabs'
+import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
@@ -285,10 +285,8 @@ export default function Swap() {
           txHash: hash,
         })
         //reset states, in case we want to operate again
-        if (trade instanceof CoWTrade) {
-          setGnosisProtocolState(CoWTradeState.WRAP)
-          setWrapState && setWrapState(WrapState.UNKNOWN)
-        }
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
+        setWrapState && setWrapState(WrapState.UNKNOWN)
       })
       .catch(error => {
         setSwapState({
@@ -298,9 +296,9 @@ export default function Swap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(CoWTradeState.SWAP)
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
       })
-  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
+  }, [priceImpactWithoutFee, swapCallback, tradeToConfirm, showConfirm, setWrapState])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)

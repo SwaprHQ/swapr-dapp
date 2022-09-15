@@ -17,6 +17,9 @@ const Button = styled(LinkStyledButton)`
   :hover {
     text-decoration: none;
     color: ${({ theme }) => theme.text2};
+    & svg {
+      color: ${({ theme }) => theme.text2};
+    }
   }
 `
 
