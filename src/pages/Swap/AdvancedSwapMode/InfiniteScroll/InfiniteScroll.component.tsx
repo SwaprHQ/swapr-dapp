@@ -4,7 +4,7 @@ import { default as InfiniteScrollCom } from 'react-infinite-scroll-component'
 
 import { Loader } from '../../../../components/Loader'
 import { AdvancedViewTransaction } from '../../../../services/AdvancedTradingView/advancedTradingView.types'
-import { LoaderContainer } from '../AdvancedSwapMode.styles'
+import { LoaderContainer, NoDataMessage } from '../AdvancedSwapMode.styles'
 import { Trade } from '../Trade/Trade.component'
 
 interface InfiniteScrollProps {
@@ -16,6 +16,7 @@ interface InfiniteScrollProps {
   isLoading: boolean
   chainId?: ChainId
   token0: Token
+  isFetched: boolean
   scrollableTarget: string
 }
 
@@ -29,6 +30,7 @@ export const InfiniteScroll = ({
   activeCurrencyOption,
   token0,
   scrollableTarget,
+  isFetched,
 }: InfiniteScrollProps) => {
   return (
     <>
@@ -63,6 +65,11 @@ export const InfiniteScroll = ({
         <LoaderContainer>
           <Loader size="40px" stroke="#8780BF" />
         </LoaderContainer>
+      )}
+      {!isLoading && isFetched && showTrades && !data.length && (
+        <NoDataMessage>
+          There is no data for this <span>pair</span>
+        </NoDataMessage>
       )}
     </>
   )

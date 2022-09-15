@@ -44,6 +44,7 @@ export const useAdvancedTradingView = () => {
 
   const [isLoadingTrades, setIsLoadingTrades] = useState(false)
   const [isLoadingActivity, setIsLoadingActivity] = useState(false)
+  const [isFetched, setIsFetched] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -100,6 +101,7 @@ export const useAdvancedTradingView = () => {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
         setIsLoadingTrades(true)
         setIsLoadingActivity(true)
+        setIsFetched(false)
 
         try {
           await Promise.allSettled([
@@ -121,6 +123,7 @@ export const useAdvancedTradingView = () => {
         } finally {
           setIsLoadingTrades(false)
           setIsLoadingActivity(false)
+          setIsFetched(true)
         }
       }
 
@@ -189,6 +192,7 @@ export const useAdvancedTradingView = () => {
     pairTokens,
     showTrades: Boolean(inputToken && outputToken),
     chainId,
+    isFetched,
     inputTokenSymbol: inputToken?.symbol ?? '',
     outputTokenSymbol: outputToken?.symbol ?? '',
     fetchTrades,
