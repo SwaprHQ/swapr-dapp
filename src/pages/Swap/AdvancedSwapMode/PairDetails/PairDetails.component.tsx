@@ -1,6 +1,7 @@
 import { Token } from '@swapr/sdk'
 
 import { ChevronDown, Repeat } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
@@ -22,6 +23,8 @@ interface PairDetailsProps {
 }
 
 export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitchCurrency }: PairDetailsProps) => {
+  const { t } = useTranslation('swap')
+
   if (!token0 || !token1 || !activeCurrencyOption) return null
 
   return (
@@ -43,26 +46,26 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
         <PairInfo>
           <PairTab>
             <Flex alignItems="center" justifyContent="space-between">
-              <span>24H Change</span>
+              <span>{t('advancedTradingView.Change24')}</span>
               <Repeat size={12} />
             </Flex>
           </PairTab>
           <PairValueChange positive={false}>55 | -3.42%</PairValueChange>
         </PairInfo>
         <PairInfo>
-          <PairTab>24H High</PairTab>
+          <PairTab>{t('advancedTradingView.High24')}</PairTab>
           <PairValue>1690</PairValue>
         </PairInfo>
         <PairInfo>
-          <PairTab>24H Low</PairTab>
+          <PairTab>{t('advancedTradingView.Low24')}</PairTab>
           <PairValue>1569</PairValue>
         </PairInfo>
         <PairInfo>
-          <PairTab>24H Volume</PairTab>
+          <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
           <PairValue>2569 USDT</PairValue>
         </PairInfo>
         <PairInfo>
-          <PairTab>24H Volume</PairTab>
+          <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
           <PairValue>2569$</PairValue>
         </PairInfo>
       </Flex>

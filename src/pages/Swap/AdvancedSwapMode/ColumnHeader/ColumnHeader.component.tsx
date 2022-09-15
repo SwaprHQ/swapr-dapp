@@ -22,17 +22,17 @@ export const ColumnHeader = ({
   return (
     <AdvancedModeDetails>
       <Text>
-        {t('details.amount')} {showTrades ? `(${inputTokenSymbol})` : ''}
+        {t('advancedTradingView.details.amount')} {showTrades ? `(${inputTokenSymbol})` : ''}
       </Text>
       <Text>
-        {t('details.amount')} {showTrades ? `(${outputTokenSymbol})` : ''}
+        {t('advancedTradingView.details.amount')} {showTrades ? `(${outputTokenSymbol})` : ''}
       </Text>
       {showPrice && (
         <Text>
-          {t('details.price')} {showTrades ? `(${activeCurrencySymbolOption})` : ''}
+          {t('advancedTradingView.details.price')} {showTrades ? `(${activeCurrencySymbolOption})` : ''}
         </Text>
       )}
-      <Text sx={{ textAlign: 'right' }}>{t('details.time')}</Text>
+      <Text sx={{ textAlign: 'right' }}>{t('advancedTradingView.details.time')}</Text>
     </AdvancedModeDetails>
   )
 }

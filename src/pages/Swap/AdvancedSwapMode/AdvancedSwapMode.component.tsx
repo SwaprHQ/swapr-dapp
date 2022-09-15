@@ -5,6 +5,7 @@ import { Flex } from 'rebass'
 import { ButtonDark } from '../../../components/Button'
 import { useAdvancedTradingView } from '../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
+import { TransactionRows } from '../../Account/TransactionRows'
 import {
   AdvancedModeHeader,
   AdvancedModeTitle,
@@ -14,17 +15,22 @@ import {
   LiquidityWrapper,
   OrderButton,
   OrdersWrapper,
+  PairDetailsWrapper,
   SwapBox,
-  SwitchButton,
-  SwitcherWrapper,
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
 import { ColumnHeader } from './ColumnHeader'
 import { InfiniteScroll } from './InfiniteScroll'
+import { PairDetails } from './PairDetails'
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
+  const { t } = useTranslation('swap')
+
+  const tradesWrapper = useRef<HTMLDivElement>(null)
+
   const {
+    transactions,
     tradeHistory,
     liquidityHistory,
     hasMore: { hasMoreTrades, hasMoreActivity },
@@ -44,39 +50,27 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
     activeCurrencyOption,
     handleAddLiquidity,
     handleSwitchCurrency,
+    isFetched,
   } = useAdvancedTradingView()
 
   const [token0, token1] = pairTokens
 
-  const { t } = useTranslation(['swap', 'liquidity'])
-  const tradesWrapper = useRef<HTMLDivElement>(null)
-
   return (
     <AdvancedSwapModeContainer>
+      <PairDetailsWrapper>
+        <PairDetails
+          token0={token0}
+          token1={token1}
+          activeCurrencyOption={activeCurrencyOption}
+          handleSwitchCurrency={handleSwitchCurrency}
+        />
+      </PairDetailsWrapper>
       <ChartWrapper>
         <Chart symbol={symbol} />
       </ChartWrapper>
       <BaseWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
-          <Flex justifyContent="space-between" alignItems="center">
-            <AdvancedModeTitle>{t('column.trades')}</AdvancedModeTitle>
-            {showTrades && !!pairTokens.length && activeCurrencyOption && (
-              <SwitcherWrapper>
-                <SwitchButton
-                  onClick={() => handleSwitchCurrency(token0)}
-                  active={activeCurrencyOption.address === token0.address}
-                >
-                  {token0.symbol}
-                </SwitchButton>
-                <SwitchButton
-                  onClick={() => handleSwitchCurrency(token1)}
-                  active={activeCurrencyOption.address === token1.address}
-                >
-                  {token1.symbol}
-                </SwitchButton>
-              </SwitcherWrapper>
-            )}
-          </Flex>
+          <AdvancedModeTitle>{t('advancedTradingView.column.trades')}</AdvancedModeTitle>
           <ColumnHeader
             showTrades={showTrades}
             inputTokenSymbol={inputTokenSymbol}
@@ -98,6 +92,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             hasMore={hasMoreTrades}
             isLoading={isLoadingTrades}
             activeCurrencyOption={activeCurrencyOption}
+            isFetched={isFetched}
             scrollableTarget="transactions-wrapper-scrollable"
           />
         </TransactionsWrapper>
@@ -108,21 +103,24 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
       <OrdersWrapper>
         <AdvancedModeHeader>
           <Flex>
-            <OrderButton isActive>{t('column.orderHistory')}</OrderButton>
-            <OrderButton disabled>{t('column.openOrder')}</OrderButton>
+            <OrderButton isActive>{t('advancedTradingView.column.orderHistory')}</OrderButton>
+            <OrderButton disabled>{t('advancedTradingView.column.openOrder')}</OrderButton>
           </Flex>
+          <TransactionsWrapper style={{ marginTop: '20px' }} maxHeight="300px">
+            <TransactionRows transactions={transactions} showBackgroundStatus={false} />
+          </TransactionsWrapper>
         </AdvancedModeHeader>
       </OrdersWrapper>
       <LiquidityWrapper>
         <AdvancedModeHeader>
           <Flex justifyContent="space-between" alignItems="center">
-            <AdvancedModeTitle>{t('column.poolActivity')}</AdvancedModeTitle>
+            <AdvancedModeTitle>{t('advancedTradingView.column.poolActivity')}</AdvancedModeTitle>
             <ButtonDark
               onClick={handleAddLiquidity}
               disabled={!showTrades}
               style={{ fontSize: '10px', width: 'fit-content', padding: '4px 8px', margin: '0' }}
             >
-              {t('addLiquidity')}
+              {t('advancedTradingView.addLiquidity')}
             </ButtonDark>
           </Flex>
           <ColumnHeader
@@ -133,7 +131,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             showTrades={showTrades}
           />
         </AdvancedModeHeader>
-        <TransactionsWrapper maxHeight="170px" id="liquidity-wrapper-scrollable">
+        <TransactionsWrapper maxHeight="280px" id="liquidity-wrapper-scrollable">
           <InfiniteScroll
             token0={token0}
             chainId={chainId}
@@ -142,6 +140,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
             fetchMore={fetchActivity}
             hasMore={hasMoreActivity}
             isLoading={isLoadingActivity}
+            isFetched={isFetched}
             activeCurrencyOption={activeCurrencyOption}
             scrollableTarget="liquidity-wrapper-scrollable"
           />
