@@ -19,9 +19,10 @@ import { TokenIcon } from '../TokenIcon'
 
 interface BridgeTransactionRowProps {
   transaction: BridgeTransaction
+  showBackgroundStatus: boolean
 }
 
-export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps) {
+export function BridgeTransactionRow({ transaction, showBackgroundStatus }: BridgeTransactionRowProps) {
   const { type, status, from, to, confirmedTime, logs, bridgeId } = transaction
 
   const fromNetwork = from.chainId ? getNetworkInfo(Number(from.chainId)) : undefined
@@ -32,7 +33,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
     logs[1]?.chainId && logs[1]?.txHash ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction') : undefined
 
   return (
-    <GridCard status={status.toUpperCase()}>
+    <GridCard status={showBackgroundStatus ? status.toUpperCase() : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">

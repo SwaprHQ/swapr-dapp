@@ -3,7 +3,6 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useMedia } from 'react-use'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
@@ -44,7 +43,6 @@ import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import { breakpoints } from '../../utils/theme'
 import AppBody from '../AppBody'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
