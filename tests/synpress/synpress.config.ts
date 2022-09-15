@@ -15,8 +15,8 @@ export default defineConfig({
   viewportWidth: 1366,
   viewportHeight: 768,
   projectId: 'bqro4k',
-  videoCompression: 3,
-  video: false,
+  videoCompression: 0,
+  video: true,
   env: {
     coverage: false,
   },
