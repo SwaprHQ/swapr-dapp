@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { ReactComponent as Cross } from '../../../../../../assets/svg/plusIcon.svg'
+import { ReactComponent as Cross } from '../../../../../../assets/images/plusIcon.svg'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { CurrencyLogo } from '../../../../../CurrencyLogo'
 import DoubleCurrencyLogo from '../../../../../DoubleLogo'

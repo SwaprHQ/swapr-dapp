@@ -9,7 +9,6 @@ import {
   UniswapV2Trade,
 } from '@swapr/sdk'
 
-import flatMap from 'lodash/flatMap'
 import { useMemo } from 'react'
 
 import { BASES_TO_CHECK_TRADES_AGAINST } from '../constants'
@@ -35,9 +34,9 @@ function useAllCommonPairs(
 
   const basePairs: [Token, Token][] = useMemo(
     () =>
-      flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])).filter(
-        ([t0, t1]) => t0.address !== t1.address
-      ),
+      bases
+        .flatMap((base): [Token, Token][] => bases.map(otherBase => [base, otherBase]))
+        .filter(([t0, t1]) => t0.address !== t1.address),
     [bases]
   )
 

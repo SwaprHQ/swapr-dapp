@@ -1,22 +1,25 @@
+import { useTranslation } from 'react-i18next'
+
 import { TableHeader } from '../../../ui/StyledElements/TableHeader'
 import { TableHeaderText } from '../../../ui/StyledElements/TableHeaderText'
 import { HeaderRow, TransactionDetails } from '../Account.styles'
 
 export function TransactionHeaders() {
+  const { t } = useTranslation('account')
   return (
     <HeaderRow>
       <TableHeaderText>
         <TableHeader justifyContent="space-between" paddingX="22px" paddingY="12px">
           <TransactionDetails flex="15%" justifyContent="start">
-            From
+            {t('from')}
           </TransactionDetails>
           <TransactionDetails flex="15%" justifyContent="start">
-            To
+            {t('to')}
           </TransactionDetails>
-          <TransactionDetails justifyContent="start">Price</TransactionDetails>
-          <TransactionDetails>Type</TransactionDetails>
-          <TransactionDetails>Status</TransactionDetails>
-          <TransactionDetails>Time</TransactionDetails>
+          <TransactionDetails justifyContent="start">{t('price')}</TransactionDetails>
+          <TransactionDetails>{t('type')}</TransactionDetails>
+          <TransactionDetails>{t('status')}</TransactionDetails>
+          <TransactionDetails>{t('confirmedTime')}</TransactionDetails>
         </TableHeader>
       </TableHeaderText>
     </HeaderRow>
