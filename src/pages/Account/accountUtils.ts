@@ -11,7 +11,10 @@ const getStatus = (status?: 0 | 1, confrimedTime?: number) => {
 }
 
 const expressions = {
-  swap: new RegExp('(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)|(?<protocol>(?:on [a-zA-z]+))', 'g'),
+  swap: new RegExp(
+    '(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)|on\\s+(?<protocol>\\w+)|(to (?<alternate>[\\S]*)$)',
+    'g'
+  ),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
 }
 
@@ -41,17 +44,15 @@ export const formattedTransactions = (
 
       if (expressions.swap.test(summary) && type === 'Swap') {
         expressions.swap.lastIndex = 0
-        const [from, to, platform] = [...summary.matchAll(expressions.swap)]
+        const [from, to, matchProtocol, matchAlternate] = [...summary.matchAll(expressions.swap)]
 
         /*  Getting protocol name from transaction string
             `Swap 0.1 XDAI for 0.099975 USDC on Curve`
             Curve will be taken from above transaction string
          */
-        const protocol = swapProtocol
-          ? swapProtocol
-          : platform?.groups?.protocol
-          ? platform.groups.protocol.slice(3)
-          : undefined
+        const protocol = swapProtocol ? swapProtocol : matchProtocol?.groups?.protocol
+
+        const alternateReceiver = matchAlternate?.groups?.alternate
 
         return {
           ...transaction,
@@ -64,6 +65,7 @@ export const formattedTransactions = (
             token: to?.groups?.token,
           },
           swapProtocol: protocol,
+          alternateReceiver,
         }
       }
 
@@ -72,34 +74,16 @@ export const formattedTransactions = (
     .filter(Boolean)
 
   const sortedTransactions = [...swapTransactions, ...bridgeTransactions].sort((txn1, txn2) => {
+    if (txn1?.confirmedTime && txn2?.confirmedTime && txn1.confirmedTime > txn2.confirmedTime) {
+      return -1
+    }
     if (
       txn1?.status.toUpperCase() === TransactionStatus.PENDING &&
       txn2?.status.toUpperCase() !== TransactionStatus.PENDING
     ) {
       return -1
     }
-
-    if (
-      txn1?.status.toUpperCase() === TransactionStatus.PENDING &&
-      txn2?.status.toUpperCase() === TransactionStatus.PENDING
-    ) {
-      if (!txn1.confirmedTime || !txn2.confirmedTime) {
-        return 0
-      }
-      if (txn1.confirmedTime > txn2.confirmedTime) {
-        return -1
-      }
-    }
-
-    if (txn1?.status.toUpperCase() === TransactionStatus.REDEEM && txn2?.status !== TransactionStatus.PENDING) {
-      return -1
-    }
-
-    if ((txn1?.confirmedTime ?? 0) > (txn2?.confirmedTime ?? 0)) {
-      return -1
-    }
-
-    return 0
+    return 1
   }) as Transaction[]
 
   if (showPendingTransactions) {
