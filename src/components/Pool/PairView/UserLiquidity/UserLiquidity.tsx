@@ -99,7 +99,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
         </InfoGrid>
       </Box>
       <Flex flexDirection={['column', 'row']} alignItems="center">
-        <Box marginBottom={[3, 0]} width="100%">
+        <Box marginBottom={[3, 0]} width="100%" data-testid="add-liquidity-button">
           <ButtonPurpleDim
             as={Link}
             to={currency0 && currency1 ? `/pools/add/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
@@ -107,7 +107,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             {t('addLiquidity')}
           </ButtonPurpleDim>
         </Box>
-        <Box marginLeft={[0, 3]} width="100%">
+        <Box marginLeft={[0, 3]} width="100%" data-testid="remove-liquidity-button">
           <ButtonPurpleDim
             disabled={token0Deposited?.equalTo('0')}
             as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
