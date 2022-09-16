@@ -6,7 +6,6 @@ import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, Token
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { SWAP_INPUT_ERRORS } from '../../constants/index'
@@ -154,7 +153,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
-  const { abortControllerSignal } = useAbortController()
+  const { getAbortSignal } = useAbortController()
 
   const dependencyList = [
     account,
@@ -181,7 +180,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   useEffect(() => {
     const [inputCurrencyBalance] = relevantTokenBalances
 
-    const signal = abortControllerSignal()
+    const signal = getAbortSignal()
 
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
@@ -322,7 +321,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
     signal: AbortSignal
   ): Promise<EcoRouterResults> {
-    const abortPromise = new Promise<EcoRouterResults>((resolve, reject) => {
+    const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
       signal.onabort = () => {
         reject(new DOMException('Aborted', 'AbortError'))
       }
