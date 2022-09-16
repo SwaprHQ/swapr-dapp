@@ -280,6 +280,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
+    container: synthetixio/docker-e2e
     needs: [prepare]
     if: ${{ needs.prepare.outputs.synpress }}
     env:
