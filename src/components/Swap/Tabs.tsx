@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
-import { useActiveWeb3React } from '../../hooks'
+import { TESTNETS } from '../../constants'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { SwapTabs } from '../../state/user/reducer'
-import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
@@ -61,25 +61,36 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktopByMedia()
   const { chainId } = useActiveWeb3React()
-  const isSupportedChain = chainSupportsSWPR(chainId)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   return (
     <TabsColumn>
       <TabsRow>
         <Button
           onClick={() => setActiveTab(SwapTabs.SWAP)}
-          className={activeTab === SwapTabs.SWAP || !isSupportedChain ? 'active' : ''}
+          className={
+            activeTab === SwapTabs.SWAP || !isUnsupportedChainIdError || (chainId && TESTNETS.includes(chainId))
+              ? 'active'
+              : ''
+          }
           title="Swap with Eco Router V1.5"
         >
           <StyledEcoRouter />
           Swap
         </Button>
         <Button
-          disabled={!isSupportedChain || !isDesktop}
+          disabled={isUnsupportedChainIdError || (chainId && TESTNETS.includes(chainId)) || !isDesktop}
           onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
-          className={activeTab === SwapTabs.ADVANCED_SWAP_MODE && isSupportedChain ? 'active' : ''}
+          className={
+            activeTab === SwapTabs.ADVANCED_SWAP_MODE &&
+            !isUnsupportedChainIdError &&
+            chainId &&
+            !TESTNETS.includes(chainId)
+              ? 'active'
+              : ''
+          }
           title="Advanced Trade View"
         >
           Adv. Trade

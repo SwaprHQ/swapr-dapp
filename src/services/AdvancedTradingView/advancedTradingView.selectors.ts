@@ -180,7 +180,7 @@ export const selectUniswapV3AllData = createSelector(
         uniswapV3TradeHistory: [],
         uniswapV3LiquidityHistory: [],
       }
-
+    console.log('Cos sie dzieje?')
     const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
 
     const { pair, logoKey } = uniswapV3Pair

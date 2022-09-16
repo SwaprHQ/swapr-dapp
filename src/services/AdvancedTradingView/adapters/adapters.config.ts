@@ -58,7 +58,7 @@ export const adapters: Adapters<AppState> = {
   }),
   uniswapV3: new UniswapV3Adapter<AppState, UniswapV3PairSwaps, UniswapV3PairBurnsAndMints>({
     key: AdapterKeys.UNISWAPV3,
-    adapterSupportedChains: [ChainId.MAINNET],
+    adapterSupportedChains: [ChainId.MAINNET, ChainId.POLYGON, ChainId.OPTIMISM_MAINNET],
     subgraphUrls: {
       [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
       [ChainId.ARBITRUM_ONE]: '',
