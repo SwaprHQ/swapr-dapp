@@ -117,7 +117,7 @@ const Hero = props => {
             <div className="right-line"></div>
           </div>
           <div className="routing-through-body">
-            <Marquee speed={50} gradientColor={[12, 11, 18]}>
+            <Marquee speed={30} gradientColor={[12, 11, 18]}>
               <div className="marquee-inner">
                 {[...Array(3)].map((_, index) => (
                   <Fragment key={index}>

@@ -18,6 +18,85 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare:
+    name: Check how tests should be executed
+    runs-on: ubuntu-20.04
+    outputs:
+      uuid: ${{ steps.uuid.outputs.value }}
+      commit-message: ${{ steps.commit-message.outputs.value }}
+      is-label-present: ${{ steps.label-present.outputs.value }}
+      cypress: ${{ steps.cypress.outputs.value }}
+      synpress: ${{ steps.synpress.outputs.value }}
+
+    steps:
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '50'
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
+      - name: Generate unique ID 💎
+        id: uuid
+        run: |
+          echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
+          echo "sha-$GITHUB_SHA-time-$(date +"%s")"
+
+      - name: Get Commit Message
+        id: commit-message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+          echo "::set-output name=value::$(printf "$MSG" | xargs)"
+
+      - name: Echo commit message
+        run: echo "${{ steps.commit-message.outputs.value }}"
+
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        id: check-if-cypress-tests-should-run
+        continue-on-error: true
+        with:
+          one_of: ready-for-tests, QA
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        id: check-if-synpress-tests-should-run
+        continue-on-error: true
+        with:
+          one_of: ready-for-synpress-tests, QA
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if cypress label is present
+        if: steps.check-if-cypress-tests-should-run.outcome == 'success'
+        id: cypress-label-present
+        run: |
+          echo "Label present"
+          echo "::set-output name=value::true"
+
+      - name: Check if synpress label is present
+        if: steps.check-if-synpress-tests-should-run.outcome == 'success'
+        id: synpress-label-present
+        run: |
+          echo "Label present"
+          echo "::set-output name=value::true"
+
+      - name: Check if cypress tests should be executed
+        id: cypress
+        if: ${{ ((github.event_name == 'push') || ((steps.cypress-label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]'))) }}
+        run: |
+          echo "Cypress tests should be executed"
+          echo "::set-output name=value::true"
+
+      - name: Check if synpress tests should be executed
+        id: synpress
+        if: ${{ contains(steps.commit-message.outputs.value,'trigger-synpress') || github.event_name == 'push' || (steps.synpress-label-present.outputs.value == 'true') }}
+        run: |
+          echo "Synpress tests should be executed"
+          echo "::set-output name=value::true"
+
   install:
     name: Install
     runs-on: ubuntu-20.04
@@ -201,19 +280,34 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-20.04
-    if: github.actor != 'dependabot[bot]'
+    needs: [prepare]
+    container: cypress/base:16.5.0
+    if: ${{ needs.prepare.outputs.synpress }}
     env:
-      TEST_PARAMS: "-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'"
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
     strategy:
       fail-fast: false
       matrix:
-        containers: [transactionfull, transactionless]
+        containers: [02transactionfull, 01transactionless]
     steps:
+      - name: Setup chrome version
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
           fetch-depth: '50'
+
+      - name: Set synpress default params
+        run: |
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts'" >> "$GITHUB_ENV"
+
+      - name: Check if synpress should be reported to dashboard
+        if: ${{ (github.event_name == 'push') || !(contains(needs.prepare.outputs.commit-message,'skip-synpress-dashboard')) }}
+        run: |
+          echo "TEST_PARAMS=-s 'tests/synpress/specs/${{ matrix.containers }}/*/*.ts --record --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --tag SYNPRESS'" >> "$GITHUB_ENV"
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
@@ -235,38 +329,47 @@ jobs:
       - name: Install cypress
         run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
 
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
+
       - name: Run synpress tests
         run: yarn synpress:ct
         continue-on-error: true
         env:
           CI: true
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Save code coverage results
+        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
             ${{ matrix.containers }}.json
             public-report/screenshots
+            public-report/videos
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: install
+    needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
+    if: ${{ needs.prepare.outputs.cypress }}
     strategy:
       fail-fast: false
       matrix:
         containers:
-          [LiquidityTests, MenuBarTests, RewardsPageTests, SwapBoxTests, TokenMenuTests, TransactionSettingsTests]
+          [Container01, Container02, Container03, Container04]
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -280,13 +383,26 @@ jobs:
         run: yarn cypress install && yarn cypress verify
 
       - name: Run cypress tests
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome -s tests/cypress/integration/smoke/${{ matrix.containers }}.ts'
+        if: ${{ !(github.event_name == 'push') }}
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
         continue-on-error: true
+        env:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
+
+      - name: Run cypress tests after merge
+        if: ${{ (github.event_name == 'push') }}
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel }} --tag SMOKE_TESTS --ci-build-id=${{ needs.prepare.outputs.uuid }}'
+        continue-on-error: true
+        env:
+          COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
+          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
 
       - name: Merge test results into one
         run: |
           yarn run report:merge
           mv index.json ${{ matrix.containers }}.json
+        continue-on-error: true
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
@@ -310,35 +426,30 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: LiquidityTests
+          name: Container01
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: MenuBarTests
+          name: Container02
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: RewardsPageTests
+          name: Container03
           path: mochawesome-report
       - uses: actions/download-artifact@v3
         with:
-          name: SwapBoxTests
+          name: Container04
           path: mochawesome-report
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
-          name: TokenMenuTests
+          name: 01transactionless
           path: mochawesome-report
+
       - uses: actions/download-artifact@v3
+        continue-on-error: true
         with:
-          name: TransactionSettingsTests
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionless
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: transactionfull
+          name: 02transactionfull
           path: mochawesome-report
 
       - name: Setup Node
@@ -346,19 +457,11 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: mochawesome-report
-
       - name: Merge test results into one
         run: yarn run report:merge
 
       - name: Generate HTML report
         run: yarn run report:generate
-
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: public-report
 
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
@@ -367,20 +470,17 @@ jobs:
           path: |
             public-report
             mochawesome-report/public-report/screenshots/**
+            mochawesome-report/public-report/videos/**
           retention-days: 3
 
       - name: Delete merged artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
-            LiquidityTests
-            MenuBarTests
-            RewardsPageTests
-            SwapBoxTests
-            TokenMenuTests
-            TransactionSettingsTests
-            transactionless
-            transactionfull
+            Container01
+            Container02
+            Container03
+            Container04
 
   depcleanup:
     name: 🧹 Dependabot Cleanup

@@ -7,7 +7,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three-blurred-circles.svg'
 import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
@@ -24,9 +24,9 @@ import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStake
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { TYPE } from '../../theme'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

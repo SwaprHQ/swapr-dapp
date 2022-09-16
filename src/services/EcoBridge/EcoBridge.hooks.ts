@@ -128,19 +128,23 @@ export const useBridgeActiveTokenMap = () => useSelector(selectBridgeActiveToken
 export const useBridgeSupportedLists = () => {
   const supportedLists = useSelector(selectSupportedLists)
 
+  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
+
   // satisfy existing interface
   return useMemo(
     () =>
-      Object.entries(supportedLists).reduce<WritableListsState>((total, [id, tokenList]) => {
-        total[id] = {
-          current: tokenList,
-          pendingUpdate: null,
-          loadingRequestId: null,
-          error: null,
-        }
-        return total
-      }, {}),
-    [supportedLists]
+      isBridgeSwapActive
+        ? {}
+        : Object.entries(supportedLists).reduce<WritableListsState>((total, [id, tokenList]) => {
+            total[id] = {
+              current: tokenList,
+              pendingUpdate: null,
+              loadingRequestId: null,
+              error: null,
+            }
+            return total
+          }, {}),
+    [supportedLists, isBridgeSwapActive]
   )
 }
 
@@ -159,13 +163,17 @@ export const useActiveListsHandlers = () => {
 
 export const useBridgeFetchDynamicLists = () => {
   const ecoBridge = useEcoBridge()
-  const { from, to } = useSelector((state: AppState) => state.ecoBridge.ui)
+  const { from, to, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
 
   useEffect(() => {
     if (from.chainId && to.chainId) {
-      ecoBridge.fetchDynamicLists()
+      if (isBridgeSwapActive) {
+        ecoBridge.bridges['socket'].fetchDynamicLists()
+      } else {
+        ecoBridge.fetchDynamicLists()
+      }
     }
-  }, [from.chainId, ecoBridge, to.chainId])
+  }, [from.chainId, ecoBridge, to.chainId, isBridgeSwapActive])
 }
 
 export const useShowAvailableBridges = () => useSelector((state: AppState) => state.ecoBridge.ui.showAvailableBridges)
@@ -176,6 +184,7 @@ export const useActiveBridge = () => useSelector((state: AppState) => state.ecoB
 
 export function useBridgeActionHandlers(): {
   onCurrencySelection: (currency: Currency | string) => void
+  onCurrencyOutputSelection: (currency: Currency | string) => void
   onUserInput: (typedValue: string) => void
   onFromNetworkChange: (chainId: ChainId) => void
   onToNetworkChange: (chainId: ChainId) => void
@@ -185,6 +194,7 @@ export function useBridgeActionHandlers(): {
 
   const fromChainId = useSelector((state: AppState) => state.ecoBridge.ui.from.chainId)
   const toChainId = useSelector((state: AppState) => state.ecoBridge.ui.to.chainId)
+  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
   const onFromNetworkChange = useCallback(
     (chainId: ChainId) => {
@@ -227,17 +237,37 @@ export function useBridgeActionHandlers(): {
     [dispatch]
   )
 
-  const onUserInput = useCallback(
-    (typedValue: string) => {
-      dispatch(ecoBridgeUIActions.setFrom({ value: typedValue }))
-
+  const onCurrencyOutputSelection = useCallback(
+    (currency: Currency | string) => {
+      dispatch(
+        ecoBridgeUIActions.setTo({
+          address: currency instanceof Currency ? currencyId(currency) : currency,
+          decimals: currency instanceof Currency ? currency.decimals : undefined,
+          name: currency instanceof Currency ? currency.name : '',
+          symbol: currency instanceof Currency ? currency.symbol : '',
+        })
+      )
       dispatch(commonActions.setActiveBridge(undefined))
     },
     [dispatch]
   )
 
+  const onUserInput = useCallback(
+    (typedValue: string) => {
+      dispatch(ecoBridgeUIActions.setFrom({ value: typedValue }))
+
+      if (isBridgeSwapActive) {
+        dispatch(ecoBridgeUIActions.setTo({ value: '' }))
+      }
+
+      dispatch(commonActions.setActiveBridge(undefined))
+    },
+    [dispatch, isBridgeSwapActive]
+  )
+
   return {
     onCurrencySelection,
+    onCurrencyOutputSelection,
     onUserInput,
     onFromNetworkChange,
     onToNetworkChange,
@@ -248,12 +278,14 @@ export function useBridgeActionHandlers(): {
 export const useBridgeInfo = () => {
   const { account, chainId } = useActiveWeb3React()
 
-  const fromNetwork = useSelector((state: AppState) => state.ecoBridge.ui.from)
-  const toChainId = useSelector((state: AppState) => state.ecoBridge.ui.to.chainId)
+  const { from, to, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
 
-  const { address: currencyId, value: typedValue, chainId: fromChainId } = fromNetwork
+  const { address: fromTokenAddress, value: typedValue, chainId: fromChainId } = from
+  const { address: toTokenAddress, chainId: toChainId, value: toValue } = to
 
-  const bridgeCurrency = useBridgeCurrency(currencyId, fromChainId)
+  const bridgeCurrency = useBridgeCurrency(fromTokenAddress, fromChainId)
+
+  const bridgeOutputCurrency = useBridgeCurrency(toTokenAddress, toChainId)
 
   const parsedAmount = useMemo(
     () => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId),
@@ -269,13 +301,17 @@ export const useBridgeInfo = () => {
 
   return {
     isBalanceSufficient,
-    currencyId,
+    fromTokenAddress,
+    toTokenAddress,
     bridgeCurrency,
+    bridgeOutputCurrency,
     currencyBalance,
     parsedAmount,
     typedValue,
     fromChainId,
     toChainId,
+    isBridgeSwapActive,
+    toValue,
   }
 }
 

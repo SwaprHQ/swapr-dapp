@@ -66,7 +66,8 @@ const createSelectBridgeTransactionsSummary = (
       const summary: BridgeTransactionSummary = {
         txHash,
         assetName,
-        value: normalizedValue,
+        fromValue: normalizedValue,
+        toValue: normalizedValue, // No fees for xDai Bridge
         assetAddressL1,
         assetAddressL2,
         fromChainId,
