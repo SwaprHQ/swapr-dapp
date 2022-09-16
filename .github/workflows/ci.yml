@@ -334,7 +334,7 @@ jobs:
 
       - name: Run synpress tests
         run: |
-          Xvfb -screen 0 1080x1920x24 :99 & export DISPLAY=:99
+          Xvfb -screen 0 2560x1440x24 :99 & export DISPLAY=:99
           git config --global --add safe.directory /__w/swapr-dapp/swapr-dapp
           yarn synpress:ct
         continue-on-error: true
