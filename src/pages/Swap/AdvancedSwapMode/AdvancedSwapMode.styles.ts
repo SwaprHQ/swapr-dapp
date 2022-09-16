@@ -155,15 +155,17 @@ export const SwitcherWrapper = styled.div`
   border-radius: 20px;
   position: relative;
 `
-export const SwitchButton = styled.div<{ active: boolean }>`
+export const SwitchButton = styled.button<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text5)};
   background: ${({ theme, active }) => (active ? theme.dark2 : theme.dark1)};
   font-size: 12px;
-  padding: 8px 12px;
   border-radius: 20px;
-  transition: background 0.1s ease;
+  transition: background 0.3s ease;
   cursor: pointer;
   text-align: center;
+  width: 50px;
+  height: 25px;
+  border: none;
 `
 
 export const NoDataMessage = styled.div`
