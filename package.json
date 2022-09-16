@@ -118,7 +118,7 @@
     "@storybook/react": "^6.5.9",
     "@storybook/testing-library": "^0.0.13",
     "@synthetixio/synpress": "^2.3.2",
-    "@testing-library/cypress": "^8.0.2",
+    "@testing-library/cypress": "^8.0.3",
     "@types/aos": "^3.0.4",
     "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.182",

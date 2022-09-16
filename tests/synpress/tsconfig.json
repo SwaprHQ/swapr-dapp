@@ -1,11 +1,14 @@
 {
     "compilerOptions": {
-        "strict": true,
-        "baseUrl": "tsconfig",
-        "types": ["cypress","cypress-localstorage-commands", "@types/puppeteer-core", "@synthetixio/synpress/support", "cypress-wait-until", "@testing-library/cypress"],
-        "outDir": "./output",
-        "target": "es5",
-        "lib": ["es5", "dom"]
+        "allowJs": true,
+        "baseUrl": "../../node_modules",
+        "types": [
+            "cypress",
+            "@synthetixio/synpress/support",
+            "cypress-wait-until",
+            "@testing-library/cypress"
+        ],
+        "outDir": "./output"
     },
     "include": ["**/*.*"]
 }
