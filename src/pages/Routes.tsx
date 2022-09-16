@@ -23,8 +23,8 @@ const Account = lazy(() => import(/* webpackPrefetch: true */ './Account'))
 export function Routes() {
   return (
     <Switch>
-      <Route path="swap" element={<Swap isAdvancedTradePage={false} />} />
-      <Route path="swap/pro" element={<Swap isAdvancedTradePage={true} />} />
+      <Route path="swap" element={<Swap />} />
+      <Route path="swap/pro" element={<Swap />} />
       <Route path="swap/:outputCurrency" element={<BaseRedirect />} />
       <Route path="bridge" element={<Bridge />} />
 

@@ -2,7 +2,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
@@ -42,7 +42,6 @@ import {
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
 import { ChartTabs as ChartTabsOptions, SwapTabs } from '../../state/user/reducer'
-import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -89,7 +88,7 @@ const AppBodyContainer = styled.section`
   min-height: calc(100vh - 340px);
 `
 
-export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: boolean }) {
+export default function Swap() {
   const isDesktop = useIsDesktopByMedia()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -119,12 +118,6 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
 
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
   const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
-
-  // useEffect(() => {
-  //   if (activeTab === SwapTabs.ADVANCED_SWAP_MODE && !isDesktop) {
-  //     setSelectedTab(SwapTabs.SWAP)
-  //   }
-  // }, [isDesktop, activeTab, setSelectedTab])
 
   const { chainId } = useActiveWeb3React()
 
@@ -162,14 +155,6 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
     potentialTrade instanceof CoWTrade,
     potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
-
-  useLayoutEffect(() => {
-    if (!isAdvancedTradePage) {
-      setSelectedChartTab(ChartTabsOptions.OFF)
-    } else {
-      setSelectedChartTab(ChartTabsOptions.PRO)
-    }
-  })
 
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
@@ -510,7 +495,6 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
     </>
   )
 
-  console.log(activeChartTab, isAdvancedTradePage, chainSupportsSWPR(chainId))
   return (
     <>
       <TokenWarningModal
@@ -522,17 +506,12 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {isAdvancedTradePage &&
-        activeChartTab === ChartTabsOptions.PRO &&
+      {activeChartTab === ChartTabsOptions.PRO &&
         chainId &&
         !isUnsupportedChainIdError &&
         !TESTNETS.includes(chainId) &&
         isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {(activeTab === SwapTabs.SWAP ||
-        !activeTab ||
-        isUnsupportedChainIdError ||
-        (chainId && TESTNETS.includes(chainId)) ||
-        !isDesktop) && (
+      {activeTab === SwapTabs.SWAP && activeChartTab !== ChartTabsOptions.PRO && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>

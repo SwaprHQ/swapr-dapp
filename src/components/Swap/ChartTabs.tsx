@@ -53,6 +53,19 @@ export const ChartTabs = ({
   return (
     <Root>
       <Tab
+        active={activeChartTab === ChartTabsOptions.SIMPLE}
+        onClick={() => {
+          if (activeChartTab !== ChartTabsOptions.SIMPLE) {
+            setActiveChartTab(ChartTabsOptions.SIMPLE)
+            navigate({ pathname: '/swap' })
+          }
+        }}
+        title="Simple chart"
+        disabled={!hasBothCurrenciesInput}
+      >
+        Simple
+      </Tab>
+      <Tab
         active={activeChartTab === ChartTabsOptions.PRO}
         onClick={() => {
           if (activeChartTab !== ChartTabsOptions.PRO) {
@@ -73,7 +86,7 @@ export const ChartTabs = ({
             navigate({ pathname: '/swap' })
           }
         }}
-        title="Switch of charts"
+        title="Switch off charts"
         disabled={!hasBothCurrenciesInput}
       >
         Off
