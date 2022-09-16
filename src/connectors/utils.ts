@@ -1,3 +1,5 @@
+import { ChainId } from '@swapr/sdk'
+
 import { Connector } from '@web3-react/types'
 
 import { ConnectorType, SUPPORTED_NETWORKS, SUPPORTED_WALLETS } from './../constants'
@@ -12,10 +14,10 @@ import {
 
 export const getIsInjected = () => Boolean(window.ethereum)
 
-export const getIsMetaMask = () => window.ethereum?.isMetaMask ?? false
+export const getIsMetaMask = () => !!window.ethereum?.isMetaMask
 
 export const getIsCoinbaseWallet = () =>
-  (window.ethereum?.isCoinbaseWallet || window.ethereum?.selectedProvider?.isCoinbaseWallet) ?? false
+  !!(window.ethereum?.isCoinbaseWallet || window.ethereum?.selectedProvider?.isCoinbaseWallet)
 
 export const getConnection = (connector: Connector | ConnectorType) => {
   if (connector instanceof Connector) {
@@ -40,7 +42,7 @@ export const getConnection = (connector: Connector | ConnectorType) => {
 
 export const getConnectionName = (connector: ConnectorType) => SUPPORTED_WALLETS[connector].name
 
-export const isChainSupportedByConnector = (connector: Connector | ConnectorType, chainId: number | undefined) => {
+export const isChainSupportedByConnector = (connector: Connector | ConnectorType, chainId: ChainId | undefined) => {
   if (!chainId) return false
   if (connector instanceof Connector) {
     const connectorType = getConnection(connector).type

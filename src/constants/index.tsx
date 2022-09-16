@@ -359,56 +359,25 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
 
 export const BACKFILLABLE_WALLETS = [ConnectorType.METAMASK, ConnectorType.COINBASE, ConnectorType.WALLET_CONNECT]
 
-export const SUPPORTED_NETWORKS: { [key: string]: number[] } = {
-  [ConnectorType.METAMASK]: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.GOERLI,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-  ],
-  [ConnectorType.COINBASE]: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.GOERLI,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-  ],
-  [ConnectorType.WALLET_CONNECT]: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.GOERLI,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-  ],
-  [ConnectorType.NETWORK]: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.GOERLI,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-  ],
+const getSupportedChainsByConnector = () => {
+  const CONNECTOR_SUPPORTED_NETWORKS: { [key in ConnectorType]: ChainId[] } = {
+    COINBASE: [],
+    METAMASK: [],
+    NETWORK: [],
+    WALLET_CONNECT: [],
+  }
+
+  const networks = Object.values(ChainId).filter(v => typeof v !== 'string') as ChainId[]
+
+  // note: if network is NOT supported by connector it has to be excluded
+  for (const connector of Object.values(ConnectorType)) {
+    CONNECTOR_SUPPORTED_NETWORKS[connector] = networks
+  }
+
+  return CONNECTOR_SUPPORTED_NETWORKS
 }
+
+export const SUPPORTED_NETWORKS = getSupportedChainsByConnector()
 
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
@@ -459,7 +428,6 @@ export interface NetworkDetails {
 }
 
 export interface NetworkOptionalDetails {
-  iconUrls?: string[] // Currently ignored.
   partnerChainId?: ChainId //arbitrum chainId if supported
   isArbitrum: boolean
 }

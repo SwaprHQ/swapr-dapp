@@ -1,19 +1,17 @@
 import { useEffect } from 'react'
-import { AlertTriangle } from 'react-feather'
 import { useSelector } from 'react-redux'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
 import DxDao from '../../assets/images/dxdao.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import { getConnection, isChainSupportedByConnector } from '../../connectors/utils'
+import { getConnection } from '../../connectors/utils'
 import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppState } from '../../state'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
 import Modal from '../Modal'
-import { AutoRow } from '../Row'
 import PendingView from './PendingView'
 
 const CloseIcon = styled.div`
@@ -27,10 +25,6 @@ const CloseColor = styled(Close)`
   width: 16px;
   height: 16px;
   color: ${({ theme }) => theme.text3};
-`
-
-const StyledWarningIcon = styled(AlertTriangle)`
-  stroke: ${({ theme }) => theme.text3};
 `
 
 const Wrapper = styled.div`
@@ -102,77 +96,47 @@ const HoverText = styled.div`
 `
 
 export default function WalletModal() {
-  const { account, connector, isActive, chainId, connectorError, tryActivation } = useWeb3ReactCore()
+  const { account, connector, isActive, connectorError, tryActivation } = useWeb3ReactCore()
   const isConnectorError = !!connectorError
+
   const previousAccount = usePrevious(account)
+  const previousConnector = usePrevious(connector)
+
   const isWalletPendingModalOpen = useModalOpen(ApplicationModal.WALLET_PENDING)
   const { pending, selected } = useSelector((state: AppState) => state.user.connector)
-  const isChainSupported = pending ? isChainSupportedByConnector(pending, chainId) : false
   const pendingConnector = pending ? getConnection(pending).connector : undefined
   const closeModal = useCloseModals()
-
-  // close on connection, when logged out before
-  useEffect(() => {
-    if (account && !previousAccount && isWalletPendingModalOpen) {
-      closeModal()
-    }
-  }, [account, previousAccount, closeModal, isWalletPendingModalOpen])
-
-  // close on wallet change or if the same wallet selected
-  useEffect(() => {
-    if (
-      ((account && previousAccount && previousAccount !== account) || pending === selected) &&
-      isWalletPendingModalOpen
-    ) {
-      closeModal()
-    }
-  }, [account, previousAccount, closeModal, isWalletPendingModalOpen, pending, selected])
-
-  const activePrevious = usePrevious(isActive)
-  const connectorPrevious = usePrevious(connector)
-  useEffect(() => {
-    if (
-      isWalletPendingModalOpen &&
-      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !isConnectorError))
-    ) {
-      closeModal()
-    }
-  }, [connector, activePrevious, connectorPrevious, isActive, isConnectorError, closeModal, isWalletPendingModalOpen])
-
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
     closeModal()
     toggleWalletSwitcherPopover()
   }
 
-  function getModalContent() {
-    if (!isChainSupported) {
-      return (
-        <UpperSection>
-          <CloseIcon onClick={closeModal}>
-            <CloseColor />
-          </CloseIcon>
-          <HeaderRow>
-            <AutoRow gap="6px">
-              <StyledWarningIcon size="20px" />
-              <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
-                {isChainSupported ? 'Error connecting' : 'Wrong Network'}
-              </TYPE.Main>
-            </AutoRow>
-          </HeaderRow>
-          <ContentWrapper>
-            <TYPE.Yellow color="text4">
-              <h5>
-                {isChainSupported
-                  ? 'Error connecting. Try refreshing the page.'
-                  : 'Please connect to the appropriate network.'}
-              </h5>
-            </TYPE.Yellow>
-          </ContentWrapper>
-        </UpperSection>
-      )
+  // close pending wallet modal
+  useEffect(() => {
+    if (
+      isWalletPendingModalOpen &&
+      (pending === selected ||
+        (account && !previousAccount) ||
+        (previousAccount && previousAccount !== account) ||
+        (connector && connector !== previousConnector && !isConnectorError))
+    ) {
+      closeModal()
     }
+  }, [
+    account,
+    previousAccount,
+    closeModal,
+    isWalletPendingModalOpen,
+    pending,
+    selected,
+    isActive,
+    connector,
+    previousConnector,
+    isConnectorError,
+  ])
 
+  function getModalContent() {
     return (
       <UpperSection>
         <CloseIcon onClick={closeModal}>

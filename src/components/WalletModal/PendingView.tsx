@@ -64,13 +64,7 @@ export default function PendingView({
     <PendingSection>
       <Flex mb="28px" justifyContent="center">
         <Box mr="10px">
-          <img
-            // eslint-disable-next-line
-            src={logo}
-            alt="logo"
-            width="24px"
-            height="24px"
-          />
+          <img src={logo} alt="logo" width="24px" height="24px" />
         </Box>
         <Box>
           <TYPE.Body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">

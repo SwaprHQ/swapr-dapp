@@ -89,7 +89,7 @@ export default function NetworkWarningModal() {
                     >
                       To add/switch to the requested network, click the button below.
                     </TYPE.Body>
-                    <ButtonPrimary onClick={handleAddClick}>Add</ButtonPrimary>
+                    <ButtonPrimary onClick={handleAddClick}>Add or switch</ButtonPrimary>
                   </>
                 )}
             </UpperSectionContainer>

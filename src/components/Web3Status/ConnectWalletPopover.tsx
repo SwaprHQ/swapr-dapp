@@ -100,12 +100,8 @@ interface ConnectWalletProps {
   children: ReactNode
 }
 
-export const ConnectWalletPopover = ({
-  tryActivation,
-  tryDeactivation,
-  children,
-}: ConnectWalletProps & ConnectorProps) => {
-  const { connector, isActive, account } = useWeb3ReactCore()
+export const ConnectWalletPopover = ({ children }: ConnectWalletProps & ConnectorProps) => {
+  const { connector, isActive, account, tryActivation, tryDeactivation } = useWeb3ReactCore()
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
   const closeModals = useCloseModals()

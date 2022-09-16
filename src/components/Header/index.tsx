@@ -269,10 +269,10 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" disabled={networkWithoutSWPR}>
             <>
               {t('bridge')}
-              <HeaderLinkBadge label="BETA" />
+              {networkWithoutSWPR ? <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" /> : <HeaderLinkBadge label="BETA" />}
             </>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
@@ -300,7 +300,7 @@ function Header() {
               <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton>
-              {isActiveChainSupported && <Balances />}
+              <Balances />
             </>
           )}
           <UnsupportedNetworkPopover show={isUnsupportedNetworkModal}>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -9,7 +9,6 @@ import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import {
   useCloseModals,
-  useModalOpen,
   useNetworkSwitcherPopoverToggle,
   useOpenModal,
   useWalletSwitcherPopoverToggle,
@@ -72,6 +71,12 @@ export default function Web3Status() {
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllSwapTransactions()
   const navigate = useNavigate()
+  const { t } = useTranslation('common')
+  const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
+  const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
+  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
+  const mobileByMedia = useIsMobileByMedia()
+  const closeModals = useCloseModals()
 
   const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -81,33 +86,13 @@ export default function Web3Status() {
       .map(tx => tx.hash)
   }, [allTransactions])
 
-  const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
-  const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
-  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
-  const { t } = useTranslation('common')
-  const mobileByMedia = useIsMobileByMedia()
-  const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
-  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  const closeModals = useCloseModals()
-
   useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && !isActiveChainSupported) {
-      setUnsupportedNetwork(true)
+    if (!isActiveChainSupported) {
       openUnsupportedNetworkModal()
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && isActiveChainSupported) {
-      setUnsupportedNetwork(false)
-    } else if (isUnsupportedNetworkModal && isActiveChainSupported) {
+    } else {
       closeModals()
     }
-  }, [
-    isUnsupportedNetwork,
-    openUnsupportedNetworkModal,
-    isUnsupportedNetworkModal,
-    closeModals,
-    isActiveChainSupported,
-    connector,
-    chainId,
-  ])
+  }, [closeModals, isActiveChainSupported, openUnsupportedNetworkModal])
 
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
