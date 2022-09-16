@@ -11,7 +11,7 @@ export const PercentualDifferenceText = ({
   fontsize = '12px',
 }: PricePercentualDifferenceProps) => {
   const theme = useTheme()
-  let PricePercentualDifference = new PercentualDifference(firstValue, lastValue, theme)
+  const PricePercentualDifference = new PercentualDifference(+firstValue, +lastValue, theme)
 
   return (
     <Text fontSize={fontsize} color={PricePercentualDifference.color()} ml={2} fontWeight="600">

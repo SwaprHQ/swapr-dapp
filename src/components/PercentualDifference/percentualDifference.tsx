@@ -1,11 +1,11 @@
 export class PercentualDifference {
-  firstValue: number
-  lastValue: number
-  theme: { green1: string; red1: string; gray1: string }
+  private firstValue: number
+  private lastValue: number
+  private theme: { green1: string; red1: string; gray1: string }
 
-  constructor(firstValue: string, lastValue: string, theme: { green1: string; red1: string; gray1: string }) {
-    this.firstValue = +firstValue
-    this.lastValue = +lastValue
+  constructor(firstValue: number, lastValue: number, theme: { green1: string; red1: string; gray1: string }) {
+    this.firstValue = firstValue
+    this.lastValue = lastValue
     this.theme = theme
   }
 

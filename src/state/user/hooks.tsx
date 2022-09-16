@@ -130,7 +130,7 @@ const selectSelectedChartOption = createSelector(
 )
 
 export function useSelectedChartOption() {
-  return useSelector<AppState, AppState['user']['selectedChartOption']>(selectSelectedChartOption)
+  return useSelector(selectSelectedChartOption)
 }
 
 const selectUserSlippageTolerance = createSelector(
