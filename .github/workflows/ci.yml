@@ -29,9 +29,6 @@ jobs:
       synpress: ${{ steps.synpress.outputs.value }}
 
     steps:
-      - run: |
-          xrandr -q
-
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
