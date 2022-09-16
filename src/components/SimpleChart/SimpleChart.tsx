@@ -7,10 +7,9 @@ import styled, { useTheme } from 'styled-components'
 
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
-import { AreaChartTokenPrice } from '../Charts/AreaChartTokenPrice'
 import { ChartData, DATE_INTERVALS } from '../Charts/chartUtils'
+import { ShowChart } from './ShowChart'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
-import { SimpleChartLoading } from './SimpleChartLoading'
 
 interface SimpleChartProps {
   data: ChartData[]
@@ -38,7 +37,6 @@ export const SimpleChart = ({
 
   const hasBothCurrencies = currency0 && currency1
   const pairSlashed = `${currency0?.symbol}/${currency1?.symbol}`
-  const hasData = data && data.length > 0
 
   return (
     <BlurBox minHeight="312px" width="100%" p={3}>
@@ -62,17 +60,12 @@ export const SimpleChart = ({
         )}
         <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
           {hasBothCurrencies ? (
-            loading ? (
-              <SimpleChartLoading />
-            ) : hasData ? (
-              <AreaChartTokenPrice
-                data={data}
-                tokenSymbol={currency1?.symbol}
-                showHours={selectedInterval === DATE_INTERVALS.DAY}
-              />
-            ) : (
-              <TYPE.DarkGray>{t('pairNoData')}</TYPE.DarkGray>
-            )
+            <ShowChart
+              loading={loading}
+              tokenSymbol={currency1?.symbol || ''}
+              data={data}
+              showHours={selectedInterval === DATE_INTERVALS.DAY}
+            />
           ) : (
             <TYPE.DarkGray>{t('selectToken')}</TYPE.DarkGray>
           )}

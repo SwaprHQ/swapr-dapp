@@ -74,7 +74,6 @@ const AppBodyContainer = styled.section`
   align-items: center;
   z-index: 3;
   min-height: calc(100vh - 340px);
-  width: 100%;
   max-width: 460px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`

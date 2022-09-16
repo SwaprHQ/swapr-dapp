@@ -33,10 +33,9 @@ export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterva
 
   useEffect(() => {
     try {
-      const wrappedToken0 = wrappedCurrency(currency0, chainId)
-      const wrappedToken1 = wrappedCurrency(currency1, chainId)
-
+      const [wrappedToken0, wrappedToken1] = [wrappedCurrency(currency0, chainId), wrappedCurrency(currency1, chainId)]
       const pairAddress = wrappedToken0 && wrappedToken1 && Pair.getAddress(wrappedToken0, wrappedToken1).toLowerCase()
+
       setWrappedToken1(wrappedToken1)
       setPairAddress(pairAddress)
     } catch (e) {
