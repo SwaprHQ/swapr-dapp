@@ -334,6 +334,7 @@ jobs:
 
       - name: Run synpress tests
         run: |
+          apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
           git config --global --add safe.directory /__w/swapr-dapp/swapr-dapp
           yarn synpress:ct
         continue-on-error: true
