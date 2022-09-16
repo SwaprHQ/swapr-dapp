@@ -83,7 +83,7 @@ export enum AdapterAmountToFetch {
 export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {
   pairId: string
   pair: BasePair | UniswapV3Pair | undefined
-  chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS
+  chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS | ChainId.POLYGON | ChainId.OPTIMISM_MAINNET
   inputTokenAddress: string
   outputTokenAddress: string
 }

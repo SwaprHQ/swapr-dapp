@@ -26,6 +26,8 @@ export class BaseAdapter<
     [ChainId.GNOSIS]: string
     [ChainId.MAINNET]: string
     [ChainId.ARBITRUM_ONE]: string
+    [ChainId.POLYGON]: string
+    [ChainId.OPTIMISM_MAINNET]: string
   }
 
   constructor({
@@ -40,6 +42,8 @@ export class BaseAdapter<
       [ChainId.GNOSIS]: string
       [ChainId.MAINNET]: string
       [ChainId.ARBITRUM_ONE]: string
+      [ChainId.POLYGON]: string
+      [ChainId.OPTIMISM_MAINNET]: string
     }
     adapterSupportedChains: ChainId[]
   }) {
