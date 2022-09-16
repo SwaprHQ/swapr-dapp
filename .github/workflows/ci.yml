@@ -333,6 +333,7 @@ jobs:
 
       - name: Run synpress tests
         run: |
+          pkill Xvfb
           Xvfb -screen 0 1920x1080x24 :99 & export DISPLAY=:99
           yarn synpress:ct
         continue-on-error: true
@@ -341,6 +342,7 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
           SLOW_MODE: true
+          DISPLAY: ':99'
 
       - name: Merge test results into one
         if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
