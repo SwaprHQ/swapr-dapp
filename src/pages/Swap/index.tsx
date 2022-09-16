@@ -17,7 +17,8 @@ import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { useActiveWeb3React } from '../../hooks'
+import { TESTNETS } from '../../constants'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
@@ -39,7 +40,6 @@ import {
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
 import { SwapTabs } from '../../state/user/reducer'
-import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -92,6 +92,8 @@ export default function Swap() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
+
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -500,10 +502,16 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE && chainSupportsSWPR(chainId) && isDesktop && (
-        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
-      )}
-      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId) || !isDesktop) && (
+      {activeTab === SwapTabs.ADVANCED_SWAP_MODE &&
+        chainId &&
+        !isUnsupportedChainIdError &&
+        !TESTNETS.includes(chainId) &&
+        isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
+      {(activeTab === SwapTabs.SWAP ||
+        !activeTab ||
+        isUnsupportedChainIdError ||
+        (chainId && TESTNETS.includes(chainId)) ||
+        !isDesktop) && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>

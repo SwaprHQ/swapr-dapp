@@ -74,13 +74,13 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
           onClick={() => handleSwitchCurrency(token0)}
           active={activeCurrencyOption.address === token0.address}
         >
-          {token0.symbol}
+          {token0.symbol?.substring(0, 4)}
         </SwitchButton>
         <SwitchButton
           onClick={() => handleSwitchCurrency(token1)}
           active={activeCurrencyOption.address === token1.address}
         >
-          {token1.symbol}
+          {token1.symbol?.substring(0, 4)}
         </SwitchButton>
       </SwitcherWrapper>
     </Flex>

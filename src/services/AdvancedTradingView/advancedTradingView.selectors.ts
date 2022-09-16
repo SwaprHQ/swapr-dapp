@@ -220,12 +220,19 @@ export const selectUniswapV3AllData = createSelector(
           // UniswapV3 returns one amount negative
           const absoluteAmount0 = Math.abs(normalizedValues.amount0)
           const absoluteAmount1 = Math.abs(normalizedValues.amount1)
-          const isSell = normalizedValues.amount0 < 0
-
+          const isSell =
+            (normalizedValues.token0Address === normalizedValues.inputTokenAddress && normalizedValues.amount0 < 0) ||
+            (normalizedValues.token1Address === normalizedValues.inputTokenAddress && normalizedValues.amount1 < 0)
           return {
             transactionId: id,
-            amountIn: (isSell ? absoluteAmount0 : absoluteAmount1).toString(),
-            amountOut: (isSell ? absoluteAmount1 : absoluteAmount0).toString(),
+            amountIn: (normalizedValues.token0Address === normalizedValues.inputTokenAddress
+              ? absoluteAmount0
+              : absoluteAmount1
+            ).toString(),
+            amountOut: (normalizedValues.token0Address === normalizedValues.outputTokenAddress
+              ? absoluteAmount0
+              : absoluteAmount1
+            ).toString(),
             priceToken0: (absoluteAmount1 / absoluteAmount0).toString(),
             priceToken1: (absoluteAmount0 / absoluteAmount1).toString(),
             timestamp,

@@ -1,4 +1,4 @@
-import { ChainId, Currency, Token, WETH, WXDAI } from '@swapr/sdk'
+import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -17,6 +17,8 @@ const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,
   [ChainId.ARBITRUM_ONE]: WETH[ChainId.ARBITRUM_ONE].address,
   [ChainId.GNOSIS]: WXDAI[ChainId.GNOSIS].address,
+  [ChainId.POLYGON]: WMATIC[ChainId.POLYGON].address,
+  [ChainId.OPTIMISM_MAINNET]: WETH[ChainId.OPTIMISM_MAINNET].address,
 }
 
 const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>

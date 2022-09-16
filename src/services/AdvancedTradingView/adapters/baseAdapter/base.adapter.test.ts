@@ -61,6 +61,8 @@ describe('BaseAdapter', () => {
         [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
         [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
         [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
+        [ChainId.POLYGON]: '',
+        [ChainId.OPTIMISM_MAINNET]: '',
       },
     })
 
