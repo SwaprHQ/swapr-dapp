@@ -64,14 +64,16 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
-
   return (
     <TabsColumn>
       <TabsRow>
         <Button
           onClick={() => setActiveTab(SwapTabs.SWAP)}
           className={
-            activeTab === SwapTabs.SWAP || !isUnsupportedChainIdError || (chainId && TESTNETS.includes(chainId))
+            activeTab === SwapTabs.SWAP ||
+            isUnsupportedChainIdError ||
+            (chainId && TESTNETS.includes(chainId)) ||
+            !isDesktop
               ? 'active'
               : ''
           }
@@ -87,7 +89,8 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
             activeTab === SwapTabs.ADVANCED_SWAP_MODE &&
             !isUnsupportedChainIdError &&
             chainId &&
-            !TESTNETS.includes(chainId)
+            !TESTNETS.includes(chainId) &&
+            isDesktop
               ? 'active'
               : ''
           }
