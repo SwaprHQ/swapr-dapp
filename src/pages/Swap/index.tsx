@@ -10,6 +10,7 @@ import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
+import { ChartTabs } from '../../components/Swap/ChartTabs'
 import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
@@ -36,10 +37,11 @@ import { Field } from '../../state/swap/types'
 import {
   useAdvancedSwapDetails,
   useIsExpertMode,
+  useUpdateSelectedChartTab,
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
-import { SwapTabs } from '../../state/user/reducer'
+import { ChartTabs as ChartTabsOptions, SwapTabs } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -115,12 +117,7 @@ export default function Swap() {
   }, [])
 
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
-
-  useEffect(() => {
-    if (activeTab === SwapTabs.ADVANCED_SWAP_MODE && !isDesktop) {
-      setSelectedTab(SwapTabs.SWAP)
-    }
-  }, [isDesktop, activeTab, setSelectedTab])
+  const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
 
   const { chainId } = useActiveWeb3React()
 
@@ -208,8 +205,9 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
+  const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
   const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+    hasBothCurrenciesInput && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
 
   // check whether the user has approved the router on the input token
@@ -380,7 +378,13 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab} />
+      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab}>
+        <ChartTabs
+          hasBothCurrenciesInput={hasBothCurrenciesInput}
+          activeChartTab={activeChartTab || ChartTabsOptions.OFF}
+          setActiveChartTab={setSelectedChartTab}
+        />
+      </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <SwapPoolTabs active={'swap'} />
         <Wrapper id="swap-page">
@@ -502,16 +506,12 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeTab === SwapTabs.ADVANCED_SWAP_MODE &&
+      {activeChartTab === ChartTabsOptions.PRO &&
         chainId &&
         !isUnsupportedChainIdError &&
         !TESTNETS.includes(chainId) &&
         isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {(activeTab === SwapTabs.SWAP ||
-        !activeTab ||
-        isUnsupportedChainIdError ||
-        (chainId && TESTNETS.includes(chainId)) ||
-        !isDesktop) && (
+      {activeTab === SwapTabs.SWAP && activeChartTab !== ChartTabsOptions.PRO && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>

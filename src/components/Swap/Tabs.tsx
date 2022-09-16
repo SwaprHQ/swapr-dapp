@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -13,13 +14,17 @@ import Row from '../Row'
 
 const TabsColumn = styled.div`
   max-width: 457px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  margin: 0 0 10px;
 `
 
 const TabsRow = styled(Row)`
   display: inline-flex;
   width: auto;
-  margin: 0 0 10px;
+  // margin: 0 0 10px;
   padding: 2px;
   background: ${({ theme }) => theme.bg6};
   border-radius: 12px;
@@ -57,7 +62,15 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
+export const Tabs = ({
+  activeTab,
+  setActiveTab,
+  children,
+}: {
+  activeTab: SwapTabs
+  setActiveTab: (tab: SwapTabs) => void
+  children?: ReactNode
+}) => {
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktopByMedia()
   const { chainId } = useActiveWeb3React()
@@ -82,22 +95,6 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
           <StyledEcoRouter />
           Swap
         </Button>
-        <Button
-          disabled={isUnsupportedChainIdError || (chainId && TESTNETS.includes(chainId)) || !isDesktop}
-          onClick={() => setActiveTab(SwapTabs.ADVANCED_SWAP_MODE)}
-          className={
-            activeTab === SwapTabs.ADVANCED_SWAP_MODE &&
-            !isUnsupportedChainIdError &&
-            chainId &&
-            !TESTNETS.includes(chainId) &&
-            isDesktop
-              ? 'active'
-              : ''
-          }
-          title="Advanced Trade View"
-        >
-          Adv. Trade
-        </Button>
         <Button disabled={true} title="Limit order">
           {t('tabs.limit')}
         </Button>
@@ -111,6 +108,7 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
+      {children}
     </TabsColumn>
   )
 }

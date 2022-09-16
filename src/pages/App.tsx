@@ -13,7 +13,8 @@ import NetworkWarningModal from '../components/NetworkWarningModal'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
-import { useIsAdvancedTradeMode } from '../state/user/hooks'
+import { useSelectedChartTab } from '../state/user/hooks'
+import { ChartTabs } from '../state/user/reducer'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -71,13 +72,13 @@ export default function App() {
   const location = useLocation()
   const theme = useTheme()
   const [isSwapPage, setIsSwapPage] = useState(false)
-  const isAdvTrade = useIsAdvancedTradeMode()
+  const selectedChartTab = useSelectedChartTab()
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))
   }, [location])
 
-  const isSwapPageAdvancedTradeMode = isSwapPage && isAdvTrade
+  const isSwapPageAdvancedTradeMode = isSwapPage && selectedChartTab === ChartTabs.PRO
 
   useEffect(() => {
     document.body.classList.add('no-margin')

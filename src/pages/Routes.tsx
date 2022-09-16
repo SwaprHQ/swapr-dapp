@@ -24,6 +24,7 @@ export function Routes() {
   return (
     <Switch>
       <Route path="swap" element={<Swap />} />
+      <Route path="swap/pro" element={<Swap />} />
       <Route path="swap/:outputCurrency" element={<BaseRedirect />} />
       <Route path="bridge" element={<Bridge />} />
 
