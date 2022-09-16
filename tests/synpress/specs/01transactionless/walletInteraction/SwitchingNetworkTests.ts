@@ -10,18 +10,16 @@ describe('Switching from mainnet tests', () => {
     MetamaskNetworkHandler.addARinkeby()
     MetamaskNetworkHandler.addGnosis()
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
-  })
-  beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
+  })
+  beforeEach(() => {
     cy.wait(5000)
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
-  afterEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
-  })
+  afterEach(() => {})
   after(() => {
-    cy.resetMetamaskAccount()
+    cy.disconnectMetamaskWalletFromAllDapps()
     cy.wait(500)
   })
 
@@ -30,7 +28,7 @@ describe('Switching from mainnet tests', () => {
     MenuBar.getUnsupportedNetworkWarning().should('be.visible')
     MenuBar.getUnsupportedNetworkPopover().should('be.visible')
   })
-  it('Should switch from unsupported network to mainnet wallet [TC-57]', () => {
+  it.skip('Should switch from unsupported network to mainnet wallet [TC-57]', () => {
     MetamaskNetworkHandler.switchToNetworkIfNotConnected('ropsten')
     MenuBar.getNetworkSwitcher().click()
     NetworkSwitcher.ethereum().click()
