@@ -53,26 +53,6 @@ interface FailedCall {
 type EstimatedSwapCall = SuccessfulCall | FailedCall
 
 /**
- *
-export async function sendSwapVolumeToFathom(trade: Trade): void {
-  // Get use value for input amount
-  const tradeUSDValue = await getTradeUSDValue(trade)
-
-  if (tradeUSDValue && tradeUSDValue.amount) {
-    console.log('volumeUSD', tradeUSDValue.amount)
-
-    const volumeUSD = parseFloat(tradeUSDValue.amount) * parseFloat(trade.inputAmount.toExact())
-
-    trackEcoRouterVolumeUSD({
-      networkId: chainId as number,
-      protocolName: trade.platform.name,
-      volumeUSD: tradeUSDValue.amount,
-    })
-  }
-}
-*/
-
-/**
  * Returns the swap calls that can be used to make the trade
  * @param trade trade to execute
  * @param allowedSlippage user allowed slippage
