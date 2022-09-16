@@ -25,8 +25,8 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
   query getPairActivity($token0_in: [Bytes]!, $token1_in: [Bytes]!, $first: Int!, $skip: Int!) {
     mints(
       where: { token0_in: $token0_in, token1_in: $token1_in }
-      first: 50
-      skip: 0
+      first: $first
+      skip: $skip
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
@@ -38,6 +38,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
     burns(
       where: { token0_in: $token0_in, token1_in: $token1_in }
@@ -54,6 +55,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
   }
 `

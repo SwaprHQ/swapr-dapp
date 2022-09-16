@@ -21,7 +21,6 @@ const TradeWrapper = styled(ExternalLink)`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-left: 10px;
   }
 
   ${AdvancedModeDetailsItems}
@@ -42,8 +41,8 @@ export const Trade = ({
   transactionId: string
   amountIn: string
   amountOut: string
-  amountUSD?: string
-  price: string
+  amountUSD: string
+  price?: string
   timestamp: string
   logoKey: string
   isSell: boolean
@@ -57,7 +56,7 @@ export const Trade = ({
         <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>
       </Flex>
       <Text>{amountOut}</Text>
-      <Text>{price}</Text>
+      {price && <Text>{price}</Text>}
       <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDate(Number(timestamp) * 1000)}</Text>
     </TradeWrapper>
   )

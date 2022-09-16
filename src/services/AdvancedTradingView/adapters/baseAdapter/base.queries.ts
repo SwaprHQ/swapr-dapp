@@ -19,7 +19,7 @@ export const PAIR_SWAPS = gql`
 
 export const PAIR_BURNS_AND_MINTS = gql`
   query getPairActivity($pairId: Bytes!, $first: Int!, $skip: Int!) {
-    mints(where: { pair: $pairId }, first: 50, skip: 0, orderDirection: "desc", orderBy: "timestamp") {
+    mints(where: { pair: $pairId }, first: $first, skip: $skip, orderDirection: "desc", orderBy: "timestamp") {
       id
       transaction {
         id
@@ -28,6 +28,7 @@ export const PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
     burns(where: { pair: $pairId }, first: $first, skip: $skip, orderDirection: "desc", orderBy: "timestamp") {
       id
@@ -38,6 +39,7 @@ export const PAIR_BURNS_AND_MINTS = gql`
       amount1
       amountUSD
       timestamp
+      type: __typename
     }
   }
 `

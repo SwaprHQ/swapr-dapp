@@ -2,10 +2,9 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
-import { AppState } from '../../state'
 import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { BasePair } from './adapters/baseAdapter/base.types'
-import { BasePair as UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
+import { UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 
 export enum AdapterKeys {
   SWAPR = 'swapr',
@@ -46,7 +45,7 @@ export type AdvancedViewTransaction = {
   timestamp: string
   logoKey: string
   isSell?: boolean
-  amountUSD?: string
+  amountUSD: string
   priceToken0?: string
   priceToken1?: string
 }
@@ -56,17 +55,17 @@ export enum AdapterPayloadType {
   burnsAndMints = 'burnsAndMints',
 }
 
-export type AdvancedTradingViewAdapterConstructorParams = {
-  adapters: Adapters
+export type AdvancedTradingViewAdapterConstructorParams<AppState> = {
+  adapters: Adapters<AppState>
   chainId: ChainId
   store: Store<AppState>
 }
-export type AdapterInitialArguments = Omit<
-  AdvancedTradingViewAdapterConstructorParams,
+export type AdapterInitialArguments<AppState> = Omit<
+  AdvancedTradingViewAdapterConstructorParams<AppState>,
   'adapters' | 'amountOfPairTrades' | 'amountOfPairActivity'
 >
 
-export type Adapters = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter }
+export type Adapters<AppState> = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter<AppState> }
 
 export type AdapterFetchDetails = {
   inputToken: Token
@@ -77,6 +76,14 @@ export type AdapterFetchDetails = {
 }
 
 export enum AdapterAmountToFetch {
-  pairTrades = 50,
-  pairActivity = 25,
+  pairTrades = 10,
+  pairActivity = 3,
+}
+
+export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {
+  pairId: string
+  pair: BasePair | UniswapV3Pair | undefined
+  chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS | ChainId.POLYGON | ChainId.OPTIMISM_MAINNET
+  inputTokenAddress: string
+  outputTokenAddress: string
 }

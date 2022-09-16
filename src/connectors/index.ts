@@ -42,6 +42,9 @@ export const injected = new InjectedConnector({
 // mainnet only
 export const walletConnect = new CustomWalletConnectConnector({
   rpc: {
+    [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
+    [ChainId.POLYGON]: 'https://polygon-rpc.com',
+    [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
   },

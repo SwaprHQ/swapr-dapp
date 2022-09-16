@@ -50,6 +50,7 @@ export class RewardsPage {
   }
 
   static clickOnRewardCardUntilCampaignOpen(startingAt: Date) {
+    cy.reload()
     RewardsPage.getRewardCardByStartingAt(getUnixTime(startingAt).toString()).click()
   }
 }

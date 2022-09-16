@@ -1,5 +1,10 @@
 import { AdapterKeys, AdapterPayloadType } from '../../advancedTradingView.types'
 
+export enum LiquidityTypename {
+  burn = 'Burn',
+  mint = 'Mint',
+}
+
 // subgraph types
 export interface PairBurnsAndMintsTransaction {
   id: string
@@ -10,6 +15,7 @@ export interface PairBurnsAndMintsTransaction {
   amount1: string
   amountUSD: string
   timestamp: string
+  type: LiquidityTypename
 }
 
 interface PairSwapTransaction {
@@ -44,26 +50,15 @@ export type PairBurnsAndMints = {
   mints: PairBurnsAndMintsTransaction[]
 }
 
-// swapr reducer types
-export type BasePayload = {
+export type BaseActionPayload<DataType> = {
   key: AdapterKeys
   hasMore: boolean
   pairId: string
+  data: DataType
+  payloadType: AdapterPayloadType.swaps | AdapterPayloadType.burnsAndMints
 }
-
-type BasePairSwapsPayload = {
-  data: PairSwapTransaction[]
-  payloadType: AdapterPayloadType.swaps
-} & BasePayload
-
-export type BasePairBurnsAndMintsPayload = {
-  data: PairBurnsAndMintsTransaction[]
-  payloadType: AdapterPayloadType.burnsAndMints
-} & BasePayload
 
 export type BasePair = {
   swaps?: { data: PairSwapTransaction[]; hasMore: boolean }
   burnsAndMints?: { data: PairBurnsAndMintsTransaction[]; hasMore: boolean }
 }
-
-export type BaseActionPayload = BasePairSwapsPayload | BasePairBurnsAndMintsPayload

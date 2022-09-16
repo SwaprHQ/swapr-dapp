@@ -41,7 +41,7 @@ describe('Swapping tests', () => {
 
     cy.rejectMetamaskTransaction()
 
-    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'Transaction rejected')
+    ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
     cy.scrollTo('top')
     SwapPage.getSwapBox().should('be.visible')

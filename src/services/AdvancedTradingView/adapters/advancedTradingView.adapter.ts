@@ -2,37 +2,67 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
-import { AppState } from '../../../state'
 import { actions } from '../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
   AdapterInitialArguments,
+  AdapterKeys,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 
 // each adapter should extend this class
-export abstract class AbstractAdvancedTradingViewAdapter {
+export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
+  protected _key: AdapterKeys
   protected _chainId: ChainId | undefined
   protected _store: Store<AppState> | undefined
+  protected _adapterSupportedChains: ChainId[]
 
-  abstract updateActiveChainId(chainId: ChainId): void
-
-  abstract setInitialArguments({ chainId, store }: AdapterInitialArguments): void
+  constructor({ key, adapterSupportedChains }: { key: AdapterKeys; adapterSupportedChains: ChainId[] }) {
+    this._key = key
+    this._adapterSupportedChains = adapterSupportedChains
+  }
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
+
+  public updateActiveChainId(chainId: ChainId) {
+    this._chainId = chainId
+  }
+
+  public setInitialArguments({ chainId, store }: AdapterInitialArguments<AppState>) {
+    this._chainId = chainId
+    this._store = store
+  }
+
+  protected get actions() {
+    return actions
+  }
+
+  protected get store() {
+    if (!this._store) throw new Error('No store set')
+
+    return this._store
+  }
+
+  protected _isSupportedChainId(
+    chainId?: ChainId
+  ): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE | ChainId.OPTIMISM_MAINNET | ChainId.POLYGON {
+    if (!chainId) return false
+
+    return this._adapterSupportedChains.includes(chainId)
+  }
 }
 
-export class AdvancedTradingViewAdapter {
+export class AdvancedTradingViewAdapter<AppState> {
   private _chainId: ChainId
-  private _adapters: Adapters
+  private _adapters: Adapters<AppState>
   private _initialized = false
   private _abortControllers: { [id: string]: AbortController } = {}
   public readonly store: Store<AppState>
 
-  constructor({ store, chainId, adapters }: AdvancedTradingViewAdapterConstructorParams) {
+  constructor({ store, chainId, adapters }: AdvancedTradingViewAdapterConstructorParams<AppState>) {
     this.store = store
     this._chainId = chainId
     this._adapters = adapters

@@ -1,209 +1,151 @@
-import { Token } from '@swapr/sdk'
-
-import { FC, PropsWithChildren, useEffect, useState } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { useNavigate } from 'react-router-dom'
-import { Flex, Text } from 'rebass'
+import { FC, PropsWithChildren, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Flex } from 'rebass'
 
 import { ButtonDark } from '../../../components/Button'
-import { Loader } from '../../../components/Loader'
-import { sortsBeforeTokens } from '../../../services/AdvancedTradingView/advancedTradingView.selectors'
-import { AdvancedViewTransaction } from '../../../services/AdvancedTradingView/advancedTradingView.types'
-import { useAdvancedTradingViewAdapter } from '../../../services/AdvancedTradingView/useAdvancedTradingViewAdapter.hook'
+import { useAdvancedTradingView } from '../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
+import { TransactionRows } from '../../Account/TransactionRows'
 import {
-  AdvancedModeDetails,
   AdvancedModeHeader,
   AdvancedModeTitle,
+  AdvancedSwapModeContainer,
+  BaseWrapper,
   ChartWrapper,
-  Container,
-  EmptyCellBody,
   LiquidityWrapper,
-  LoaderContainer,
+  OrderButton,
   OrdersWrapper,
+  PairDetailsWrapper,
   SwapBox,
-  SwapBoxWrapper,
-  SwitchButton,
-  SwitcherWrapper,
-  TradesWrapper,
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
-import { Trade } from './Trade'
-
-const renderStatusOfTrades = (arr: AdvancedViewTransaction[], showTrades: boolean, isLoading: boolean) => {
-  if (!showTrades) return <EmptyCellBody>Please select the token which you want to get data</EmptyCellBody>
-
-  if (!arr.length && !isLoading) {
-    return <EmptyCellBody>There are no data for this token pair. Please try again later.</EmptyCellBody>
-  }
-}
+import { ColumnHeader } from './ColumnHeader'
+import { InfiniteScroll } from './InfiniteScroll'
+import { PairDetails } from './PairDetails'
 
 export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
+  const { t } = useTranslation('swap')
+
+  const tradesWrapper = useRef<HTMLDivElement>(null)
+
   const {
+    transactions,
     tradeHistory,
-    hasMore: { hasMoreTrades },
+    liquidityHistory,
+    hasMore: { hasMoreTrades, hasMoreActivity },
   } = useAllTrades()
-  const [tokens, setTokens] = useState<Token[]>([])
-  const [token0, token1] = tokens
-  const { chainId, inputToken, outputToken, symbol, showTrades, isLoading, fetchTrades } =
-    useAdvancedTradingViewAdapter()
 
-  useEffect(() => {
-    if (inputToken && outputToken) {
-      setTokens(sortsBeforeTokens(inputToken, outputToken))
-    }
-  }, [inputToken, outputToken])
+  const {
+    chainId,
+    inputTokenSymbol,
+    outputTokenSymbol,
+    symbol,
+    showTrades,
+    isLoadingTrades,
+    isLoadingActivity,
+    fetchTrades,
+    fetchActivity,
+    pairTokens,
+    activeCurrencyOption,
+    handleAddLiquidity,
+    handleSwitchCurrency,
+    isFetched,
+  } = useAdvancedTradingView()
 
-  const navigate = useNavigate()
-  const [activeSwitchOption, setActiveSwitchOption] = useState<Token>()
-
-  const handleAddLiquidity = () => {
-    if (inputToken && outputToken) {
-      navigate({ pathname: `/pools/add/${inputToken.address}/${outputToken.address}` })
-    }
-  }
-
-  useEffect(() => {
-    if (outputToken && token0 && token1) {
-      setActiveSwitchOption(outputToken.address === token0.address ? token0 : token1)
-    }
-    // eslint-disable-next-line
-  }, [token0, token1])
-
-  const handleSwitch = (option: Token) => {
-    if (activeSwitchOption?.address !== option.address) {
-      setActiveSwitchOption(option)
-    }
-  }
+  const [token0, token1] = pairTokens
 
   return (
-    <Container>
+    <AdvancedSwapModeContainer>
+      <PairDetailsWrapper>
+        <PairDetails
+          token0={token0}
+          token1={token1}
+          activeCurrencyOption={activeCurrencyOption}
+          handleSwitchCurrency={handleSwitchCurrency}
+        />
+      </PairDetailsWrapper>
       <ChartWrapper>
         <Chart symbol={symbol} />
       </ChartWrapper>
-      <TradesWrapper>
+      <BaseWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
-          <Flex justifyContent="space-between" alignItems="center">
-            <AdvancedModeTitle>Trades</AdvancedModeTitle>
-            {token0 && token1 && activeSwitchOption && (
-              <SwitcherWrapper>
-                <SwitchButton
-                  onClick={() => handleSwitch(token0)}
-                  active={activeSwitchOption.address === token0.address}
-                >
-                  {token0.symbol}
-                </SwitchButton>
-                <SwitchButton
-                  onClick={() => handleSwitch(token1)}
-                  active={activeSwitchOption.address === token1.address}
-                >
-                  {token1.symbol}
-                </SwitchButton>
-              </SwitcherWrapper>
-            )}
-          </Flex>
-          {showTrades && activeSwitchOption && (
-            <AdvancedModeDetails>
-              <Text>Amount {`(${inputToken?.symbol})`}</Text>
-              <Text>Amount {`(${outputToken?.symbol})`}</Text>
-              <Text>Price {`(${activeSwitchOption?.symbol})`}</Text>
-              <Text sx={{ textAlign: 'right' }}>Time</Text>
-            </AdvancedModeDetails>
-          )}
+          <AdvancedModeTitle>{t('advancedTradingView.column.trades')}</AdvancedModeTitle>
+          <ColumnHeader
+            showTrades={showTrades}
+            inputTokenSymbol={inputTokenSymbol}
+            outputTokenSymbol={outputTokenSymbol}
+            activeCurrencySymbolOption={activeCurrencyOption?.symbol ?? ''}
+            showPrice
+          />
         </AdvancedModeHeader>
-        <TransactionsWrapper id="transactions-wrapper-scrollable">
+        <TransactionsWrapper
+          maxHeight={`${tradesWrapper?.current?.clientHeight ? tradesWrapper?.current?.clientHeight - 100 : 560}px`}
+          id="transactions-wrapper-scrollable"
+        >
           <InfiniteScroll
-            dataLength={tradeHistory.length}
-            next={fetchTrades}
+            token0={token0}
+            chainId={chainId}
+            data={tradeHistory}
+            showTrades={showTrades}
+            fetchMore={fetchTrades}
             hasMore={hasMoreTrades}
+            isLoading={isLoadingTrades}
+            activeCurrencyOption={activeCurrencyOption}
+            isFetched={isFetched}
             scrollableTarget="transactions-wrapper-scrollable"
-            loader={
-              showTrades && (
-                <LoaderContainer>
-                  <Loader size="40px" stroke="#8780BF" />
-                </LoaderContainer>
-              )
-            }
-            scrollThreshold={1}
-          >
-            {showTrades &&
-              activeSwitchOption &&
-              tradeHistory
-                .sort((firstTrade, secondTrade) =>
-                  Number(firstTrade.timestamp) < Number(secondTrade.timestamp) ? 1 : -1
-                )
-                .map(
-                  (
-                    {
-                      transactionId,
-                      timestamp,
-                      amountIn,
-                      amountOut,
-                      isSell,
-                      amountUSD,
-                      logoKey,
-                      priceToken0,
-                      priceToken1,
-                    },
-                    index
-                  ) => {
-                    return (
-                      <Trade
-                        key={`${transactionId}-${index}`}
-                        isSell={isSell}
-                        transactionId={transactionId}
-                        logoKey={logoKey}
-                        chainId={chainId}
-                        amountIn={amountIn}
-                        amountOut={amountOut}
-                        timestamp={timestamp}
-                        amountUSD={amountUSD}
-                        price={activeSwitchOption?.address === token0.address ? priceToken0 : priceToken1}
-                      />
-                    )
-                  }
-                )}
-          </InfiniteScroll>
-          {renderStatusOfTrades(tradeHistory, showTrades, isLoading)}
+          />
         </TransactionsWrapper>
-      </TradesWrapper>
-      <SwapBoxWrapper>
+      </BaseWrapper>
+      <BaseWrapper>
         <SwapBox>{children}</SwapBox>
-      </SwapBoxWrapper>
+      </BaseWrapper>
       <OrdersWrapper>
         <AdvancedModeHeader>
           <Flex>
-            <AdvancedModeTitle>Open orders</AdvancedModeTitle>
-            <AdvancedModeTitle style={{ marginLeft: '20px', fontWeight: '400' }}>Order history</AdvancedModeTitle>
+            <OrderButton isActive>{t('advancedTradingView.column.orderHistory')}</OrderButton>
+            <OrderButton disabled>{t('advancedTradingView.column.openOrder')}</OrderButton>
           </Flex>
-          <AdvancedModeDetails>
-            <Text>Price</Text>
-            <Text>Amount</Text>
-            <Text>Amount</Text>
-            <Text sx={{ textAlign: 'right' }}>Time</Text>
-          </AdvancedModeDetails>
+          <TransactionsWrapper style={{ marginTop: '20px' }} maxHeight="300px">
+            <TransactionRows transactions={transactions} showBackgroundStatus={false} />
+          </TransactionsWrapper>
         </AdvancedModeHeader>
       </OrdersWrapper>
       <LiquidityWrapper>
         <AdvancedModeHeader>
-          <Flex justifyContent="space-between">
-            <AdvancedModeTitle>Pool Activity</AdvancedModeTitle>
+          <Flex justifyContent="space-between" alignItems="center">
+            <AdvancedModeTitle>{t('advancedTradingView.column.poolActivity')}</AdvancedModeTitle>
             <ButtonDark
               onClick={handleAddLiquidity}
-              disabled={!(inputToken && outputToken)}
-              style={{ fontSize: '10px', width: 'fit-content', padding: '4px 8px', marginTop: '-15px' }}
+              disabled={!showTrades}
+              style={{ fontSize: '10px', width: 'fit-content', padding: '4px 8px', margin: '0' }}
             >
-              Add Liquidity
+              {t('advancedTradingView.addLiquidity')}
             </ButtonDark>
           </Flex>
-          <AdvancedModeDetails>
-            <Text>Amount</Text>
-            <Text>Amount </Text>
-            <Text sx={{ textAlign: 'right' }}>Time</Text>
-          </AdvancedModeDetails>
+          <ColumnHeader
+            activeCurrencySymbolOption={activeCurrencyOption?.symbol ?? ''}
+            showPrice={false}
+            inputTokenSymbol={inputTokenSymbol}
+            outputTokenSymbol={outputTokenSymbol}
+            showTrades={showTrades}
+          />
         </AdvancedModeHeader>
+        <TransactionsWrapper maxHeight="280px" id="liquidity-wrapper-scrollable">
+          <InfiniteScroll
+            token0={token0}
+            chainId={chainId}
+            data={liquidityHistory}
+            showTrades={showTrades}
+            fetchMore={fetchActivity}
+            hasMore={hasMoreActivity}
+            isLoading={isLoadingActivity}
+            isFetched={isFetched}
+            activeCurrencyOption={activeCurrencyOption}
+            scrollableTarget="liquidity-wrapper-scrollable"
+          />
+        </TransactionsWrapper>
       </LiquidityWrapper>
-    </Container>
+    </AdvancedSwapModeContainer>
   )
 }

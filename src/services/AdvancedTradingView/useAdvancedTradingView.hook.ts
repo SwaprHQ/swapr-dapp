@@ -1,20 +1,24 @@
-import { ChainId, Currency, WETH, WXDAI } from '@swapr/sdk'
+import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
-import store from '../../state'
+import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
+import { sortsBeforeTokens } from './advancedTradingView.selectors'
 import { AdapterAmountToFetch } from './advancedTradingView.types'
 
 const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,
   [ChainId.ARBITRUM_ONE]: WETH[ChainId.ARBITRUM_ONE].address,
   [ChainId.GNOSIS]: WXDAI[ChainId.GNOSIS].address,
+  [ChainId.POLYGON]: WMATIC[ChainId.POLYGON].address,
+  [ChainId.OPTIMISM_MAINNET]: WETH[ChainId.OPTIMISM_MAINNET].address,
 }
 
 const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
@@ -22,18 +26,29 @@ const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
     ? WrappedNativeCurrencyAddress[chainId as ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS]
     : tokenAddress
 
-export const useAdvancedTradingViewAdapter = () => {
+export const useAdvancedTradingView = () => {
   const { chainId } = useActiveWeb3React()
-  const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter>()
+
+  const navigate = useNavigate()
+
+  const [pairTokens, setPairTokens] = useState<Token[]>([])
+
+  const [activeCurrencyOption, setActiveCurrencyOption] = useState<Token>()
+
+  const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
+
   const [symbol, setSymbol] = useState<string>()
+
   const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
     inputTokenAddress: undefined,
     outputTokenAddress: undefined,
   })
 
-  const dispatch = useDispatch()
+  const [isLoadingTrades, setIsLoadingTrades] = useState(false)
+  const [isLoadingActivity, setIsLoadingActivity] = useState(false)
+  const [isFetched, setIsFetched] = useState(false)
 
-  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
 
   const {
     INPUT: { currencyId: inputCurrencyId },
@@ -47,7 +62,7 @@ export const useAdvancedTradingViewAdapter = () => {
 
   useEffect(() => {
     if (!advancedTradingViewAdapter && chainId) {
-      const tradesHistoryAdapter = new AdvancedTradingViewAdapter({
+      const tradesHistoryAdapter = new AdvancedTradingViewAdapter<AppState>({
         adapters,
         chainId,
         store,
@@ -64,27 +79,15 @@ export const useAdvancedTradingViewAdapter = () => {
     }
   }, [chainId, advancedTradingViewAdapter])
 
-  const fetchTrades = async () => {
-    if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
+  useEffect(() => {
+    if (inputToken && outputToken) {
+      const sortedTokens = sortsBeforeTokens(inputToken, outputToken)
 
-    await advancedTradingViewAdapter.fetchPairTrades({
-      inputToken,
-      outputToken,
-      amountToFetch: AdapterAmountToFetch.pairTrades,
-      isFirstFetch: false,
-    })
-  }
+      setPairTokens(sortedTokens)
 
-  const fetchActivity = async () => {
-    if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
-
-    await advancedTradingViewAdapter.fetchPairActivity({
-      inputToken,
-      outputToken,
-      amountToFetch: AdapterAmountToFetch.pairActivity,
-      isFirstFetch: false,
-    })
-  }
+      setActiveCurrencyOption(sortedTokens[0])
+    }
+  }, [inputToken, outputToken])
 
   useEffect(() => {
     const fetchTrades = async () => {
@@ -98,10 +101,12 @@ export const useAdvancedTradingViewAdapter = () => {
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
+        setIsLoadingTrades(true)
+        setIsLoadingActivity(true)
+        setIsFetched(false)
 
-        setIsLoading(true)
         try {
-          await Promise.all([
+          await Promise.allSettled([
             advancedTradingViewAdapter.fetchPairTrades({
               inputToken,
               outputToken,
@@ -115,8 +120,12 @@ export const useAdvancedTradingViewAdapter = () => {
               isFirstFetch: true,
             }),
           ])
+        } catch (e) {
+          console.error(e)
         } finally {
-          setIsLoading(false)
+          setIsLoadingTrades(false)
+          setIsLoadingActivity(false)
+          setIsFetched(true)
         }
       }
 
@@ -132,14 +141,68 @@ export const useAdvancedTradingViewAdapter = () => {
     fetchTrades()
   }, [dispatch, inputToken, outputToken, advancedTradingViewAdapter])
 
+  const handleAddLiquidity = () => {
+    if (inputToken && outputToken) {
+      navigate({ pathname: `/pools/add/${inputToken.address}/${outputToken.address}` })
+    }
+  }
+
+  const handleSwitchCurrency = (option: Token) => {
+    if (activeCurrencyOption?.address !== option.address) {
+      setActiveCurrencyOption(option)
+    }
+  }
+
+  const fetchTrades = async () => {
+    if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
+
+    setIsLoadingTrades(true)
+    try {
+      await advancedTradingViewAdapter.fetchPairTrades({
+        inputToken,
+        outputToken,
+        amountToFetch: AdapterAmountToFetch.pairTrades,
+        isFirstFetch: false,
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsLoadingTrades(false)
+    }
+  }
+
+  const fetchActivity = async () => {
+    if (!advancedTradingViewAdapter || !inputToken || !outputToken) return
+
+    setIsLoadingActivity(true)
+    try {
+      await advancedTradingViewAdapter.fetchPairActivity({
+        inputToken,
+        outputToken,
+        amountToFetch: AdapterAmountToFetch.pairActivity,
+        isFirstFetch: false,
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsLoadingActivity(false)
+    }
+  }
+
   return {
     symbol,
+    pairTokens,
     showTrades: Boolean(inputToken && outputToken),
     chainId,
-    inputToken,
-    outputToken,
+    isFetched,
+    inputTokenSymbol: inputToken?.symbol ?? '',
+    outputTokenSymbol: outputToken?.symbol ?? '',
     fetchTrades,
     fetchActivity,
-    isLoading,
+    isLoadingTrades,
+    isLoadingActivity,
+    handleAddLiquidity,
+    handleSwitchCurrency,
+    activeCurrencyOption,
   }
 }

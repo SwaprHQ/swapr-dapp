@@ -19,9 +19,10 @@ import { TokenIcon } from '../TokenIcon'
 
 interface BridgeTransactionRowProps {
   transaction: BridgeTransaction
+  showBackgroundStatus: boolean
 }
 
-export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps) {
+export function BridgeTransactionRow({ transaction, showBackgroundStatus }: BridgeTransactionRowProps) {
   const { type, status, from, to, confirmedTime, logs, bridgeId } = transaction
 
   const fromNetwork = from.chainId ? getNetworkInfo(Number(from.chainId)) : undefined
@@ -32,13 +33,13 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
     logs[1]?.chainId && logs[1]?.txHash ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction') : undefined
 
   return (
-    <GridCard status={status.toUpperCase()}>
+    <GridCard status={showBackgroundStatus ? status.toUpperCase() : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} address={from.tokenAddress} chainId={from.chainId} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(from.value, false, true)}</Box>
+              <Box>{formatNumber(from.value, false)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{from.token}</Box>
             </Flex>
           </Flex>
@@ -56,7 +57,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} address={to.tokenAddress} chainId={to.chainId} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(to.value, false, true)}</Box>
+              <Box>{formatNumber(to.value, false)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{to.token}</Box>
             </Flex>
           </Flex>
@@ -80,7 +81,9 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
       </TransactionDetails>
 
       <TypeDetails>
-        <Box color="#8780BF">{type}</Box>
+        <Box color="#8780BF" fontWeight="600">
+          {type}
+        </Box>
         <Box fontWeight="600">{bridgeId}</Box>
       </TypeDetails>
 

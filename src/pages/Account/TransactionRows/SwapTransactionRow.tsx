@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
 import { Box, Flex } from 'rebass'
 
-import { getExplorerLink } from '../../../utils'
+import { useActiveWeb3React } from '../../../hooks'
+import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
 import {
@@ -18,34 +20,37 @@ import { TokenIcon } from '../TokenIcon'
 
 interface SwapTransactionRowProps {
   transaction: SwapTransaction
-  showAllNetworkTransactions: boolean
+  showBackgroundStatus: boolean
 }
 
-export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: SwapTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, network, hash } = transaction
+export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTransactionRowProps) {
+  const { t } = useTranslation('account')
+  const { account } = useActiveWeb3React()
+  const fromAddress = shortenAddress(`${account}`)
+  const { type, status, from, to, confirmedTime, network, hash, swapProtocol, addedTime, alternateReceiver } =
+    transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   const price = to?.value === 0 ? 0 : from.value / to.value
-  const link = network ? getExplorerLink(Number(network), hash, 'transaction') : '#'
+  const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
 
   return (
-    <GridCard status={status}>
+    <GridCard status={showBackgroundStatus ? status : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
             <TokenIcon symbol={from.token} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(from.value, false, true)}</Box>
+              <Box>{formatNumber(from.value, false)}</Box>
               <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
             </Flex>
           </Flex>
-          {showAllNetworkTransactions && (
-            <Box sx={{ mt: 1 }}>
-              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
-                <CustomLinkIcon size={12} />
-                {networkDetails?.name}
-              </NetworkLink>
-            </Box>
-          )}
+          {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{fromAddress}</Box>}
+          <Box sx={{ mt: 1 }}>
+            <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+              <CustomLinkIcon size={12} />
+              {networkDetails?.name}
+            </NetworkLink>
+          </Box>
         </Flex>
       </TokenDetails>
 
@@ -54,18 +59,17 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
           <Flex alignItems="center">
             <TokenIcon symbol={to.token} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(to.value, false, true)}</Box>
+              <Box>{formatNumber(to.value, false)}</Box>
               <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
             </Flex>
           </Flex>
-          {showAllNetworkTransactions && (
-            <Box sx={{ mt: 1 }}>
-              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
-                <CustomLinkIcon size={12} />
-                {networkDetails?.name}
-              </NetworkLink>
-            </Box>
-          )}
+          {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{alternateReceiver}</Box>}
+          <Box sx={{ mt: 1 }}>
+            <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+              <CustomLinkIcon size={12} />
+              {networkDetails?.name}
+            </NetworkLink>
+          </Box>
         </Flex>
       </TokenDetails>
 
@@ -82,6 +86,7 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
         <Box color="#8780BF" fontWeight="600">
           {type}
         </Box>
+        {swapProtocol && <Box fontWeight="600">{swapProtocol}</Box>}
       </TypeDetails>
 
       <TransactionDetails>
@@ -89,10 +94,11 @@ export function SwapTransactionRow({ transaction, showAllNetworkTransactions }: 
       </TransactionDetails>
 
       <TransactionDetails>
-        {confirmedTime ? (
+        {confirmedTime ?? addedTime ? (
           <Flex flexDirection="column" fontSize="12px">
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('dd/MM/yyyy')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('HH:mm:ss')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('dd/MM/yyyy')}</Box>
+            {!confirmedTime && <Box fontSize="9px">{t('createdTime')}</Box>}
           </Flex>
         ) : (
           '- -'

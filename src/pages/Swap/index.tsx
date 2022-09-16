@@ -5,22 +5,24 @@ import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../assets/svg/swap-icon.svg'
+import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
-import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
-import { ChartTabs } from '../../components/swap/ChartTabs'
-import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
-import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
-import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/swap/styleds'
-import SwapButtons from '../../components/swap/SwapButtons'
-import { Tabs } from '../../components/swap/Tabs'
-import { TradeDetails } from '../../components/swap/TradeDetails'
+import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
+import { ChartTabs } from '../../components/Swap/ChartTabs'
+import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
+import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
+import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
+import SwapButtons from '../../components/Swap/SwapButtons'
+import { Tabs } from '../../components/Swap/Tabs'
+import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { useActiveWeb3React } from '../../hooks'
+import { TESTNETS } from '../../constants'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -88,10 +90,13 @@ const AppBodyContainer = styled.section`
 `
 
 export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: boolean }) {
+  const isDesktop = useIsDesktopByMedia()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
+
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -114,6 +119,12 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
 
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
   const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
+
+  // useEffect(() => {
+  //   if (activeTab === SwapTabs.ADVANCED_SWAP_MODE && !isDesktop) {
+  //     setSelectedTab(SwapTabs.SWAP)
+  //   }
+  // }, [isDesktop, activeTab, setSelectedTab])
 
   const { chainId } = useActiveWeb3React()
 
@@ -287,10 +298,8 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
           txHash: hash,
         })
         //reset states, in case we want to operate again
-        if (trade instanceof CoWTrade) {
-          setGnosisProtocolState(CoWTradeState.WRAP)
-          setWrapState && setWrapState(WrapState.UNKNOWN)
-        }
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
+        setWrapState && setWrapState(WrapState.UNKNOWN)
       })
       .catch(error => {
         setSwapState({
@@ -300,9 +309,9 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(CoWTradeState.SWAP)
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
       })
-  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
+  }, [priceImpactWithoutFee, swapCallback, tradeToConfirm, showConfirm, setWrapState])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
@@ -513,26 +522,32 @@ export default function Swap({ isAdvancedTradePage }: { isAdvancedTradePage?: bo
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {chainSupportsSWPR(chainId) && isAdvancedTradePage && activeChartTab === ChartTabsOptions.PRO && (
+      {isAdvancedTradePage &&
+        activeChartTab === ChartTabsOptions.PRO &&
+        chainId &&
+        !isUnsupportedChainIdError &&
+        !TESTNETS.includes(chainId) &&
+        isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
+      {(activeTab === SwapTabs.SWAP ||
+        !activeTab ||
+        isUnsupportedChainIdError ||
+        (chainId && TESTNETS.includes(chainId)) ||
+        !isDesktop) && (
         <>
-          <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
-          <Hero />
+          <Hero>
+            <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+          </Hero>
+          <LandingBodyContainer>
+            <Features />
+            <Stats />
+            <CommunityBanner />
+            <Timeline />
+            <CommunityLinks />
+            <BlogNavigation />
+          </LandingBodyContainer>
+          <Footer />
         </>
       )}
-      {(activeTab === SwapTabs.SWAP || !activeTab || !chainSupportsSWPR(chainId) || !isAdvancedTradePage) && (
-        <Hero>
-          <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
-        </Hero>
-      )}
-      <LandingBodyContainer>
-        <Features />
-        <Stats />
-        <CommunityBanner />
-        <Timeline />
-        <CommunityLinks />
-        <BlogNavigation />
-      </LandingBodyContainer>
-      <Footer />
     </>
   )
 }

@@ -99,7 +99,7 @@ export default function App() {
             </HeaderWrapper>
             <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
               <Web3ReactManager>
-                <SpaceBg>
+                <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
                   <Suspense fallback={<FallbackLoader />}>
                     <Routes />
                   </Suspense>
