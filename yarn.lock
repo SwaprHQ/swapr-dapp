@@ -5686,10 +5686,10 @@
     synthetix "2.41.0"
     web3-utils "1.2.11"
 
-"@synthetixio/synpress@^2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@synthetixio/synpress/-/synpress-2.3.1.tgz#4b45114ee1f88e34a46c723ec147daf2d8ecb374"
-  integrity sha512-fwkFkfbfulK3ArUOIRNlWhfNm41daGxa9M6Uyebb4ROD6a3h7bM78bOLAetUqsGAQDdFUgyiwWp6UyOkhowI8A==
+"@synthetixio/synpress@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@synthetixio/synpress/-/synpress-2.3.2.tgz#b26af3935d57494b75985c383130131af8b6a3b2"
+  integrity sha512-FvObKt1zzlNchX5rat5Vxxa/bm601UjXQpDDGfDSsVXtE8c3e4dhBmFvWn6KSd574CG88SfIRSuJmX5V7kkqyw==
   dependencies:
     "@cypress/code-coverage" "^3.10.0"
     "@cypress/react" "^6.2.0"
