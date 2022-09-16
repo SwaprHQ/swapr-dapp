@@ -14,6 +14,7 @@ describe('Switching from mainnet tests', () => {
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()
+    cy.wait(5000)
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   afterEach(() => {
