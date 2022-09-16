@@ -7,20 +7,25 @@ import { commonActions } from '../../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../../state'
 
-export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: boolean) => {
+export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: boolean) => {
   const ecoBridge = useEcoBridge()
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
+  const { showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
 
-  const { address: fromTokenAddress, value: fromValue } = from
-  const { address: toTokenAddress } = to
-
-  const { isBalanceSufficient } = useBridgeInfo()
+  const {
+    isBalanceSufficient,
+    fromChainId,
+    toChainId,
+    isBridgeSwapActive,
+    fromTokenAddress,
+    toTokenAddress,
+    typedValue: fromValue,
+  } = useBridgeInfo()
 
   useEffect(() => {
-    if (showAvailableBridges || !isOutputPanel) {
+    if (showAvailableBridges && !isOutputPanel) {
       ecoBridge.getSupportedBridges()
     }
   }, [
@@ -29,8 +34,8 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel?: 
     fromValue,
     fromTokenAddress,
     toTokenAddress,
-    from.chainId,
-    to.chainId,
+    fromChainId,
+    toChainId,
     isOutputPanel,
   ])
 

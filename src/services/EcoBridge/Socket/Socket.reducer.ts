@@ -12,6 +12,7 @@ const initialState: SocketBridgeState = {
   approvalData: {},
   txBridgingData: {},
   routes: [],
+  assetDecimals: 18,
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
@@ -61,6 +62,9 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload
+      },
+      setToAssetDecimals: (state, action: PayloadAction<number | undefined>) => {
+        state.assetDecimals = action.payload ?? 18
       },
     },
   })

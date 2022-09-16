@@ -10,21 +10,16 @@ export class SwapPage {
   }
 
   static openTokenToSwapMenu() {
-    this.getSelectTokenButton()
-      .should(element => {
-        expect(element.length).to.be.eq(1)
-      })
-      .filter(':visible')
-      .click()
+    SwapPage.getCurrencySelectors().last().click()
     return TokenMenu
   }
 
   static typeValueFrom(value: string) {
-    this.getFromInput().type(value)
+    this.getFromInput().type(value, { delay: 200 })
     return this
   }
   static typeValueTo(value: string) {
-    this.getToInput().type(value)
+    this.getToInput().type(value, { delay: 200 })
     return this
   }
 

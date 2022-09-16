@@ -88,7 +88,7 @@ export class CustomWalletLinkConnector extends AbstractConnector {
   }
 
   public changeChainId(networkDetails: NetworkDetails, account?: string | undefined) {
-    this.provider
+    return this.provider
       .request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: networkDetails.chainId }],

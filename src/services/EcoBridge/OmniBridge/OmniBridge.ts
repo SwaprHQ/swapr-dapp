@@ -114,7 +114,13 @@ export class OmniBridge extends EcoBridgeChildBase {
       decimals: fromTokenDecimals,
     } = fromToken
 
-    const { chainId: toChainId, address: toTokenAddress, mode: toTokenMode } = toToken
+    const {
+      chainId: toChainId,
+      address: toTokenAddress,
+      mode: toTokenMode,
+      amount: toTokenAmount,
+      decimals: toTokenDecimals,
+    } = toToken
 
     if (!fromTokenMode || !fromMediator || !toTokenMode) return
 
@@ -146,8 +152,6 @@ export class OmniBridge extends EcoBridgeChildBase {
       { shouldReceiveNativeCurrency, foreignChainId: this._foreignChainId }
     )
 
-    this.store.dispatch(this.ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
-
     this.store.dispatch(
       this.actions.addTransaction({
         assetName: fromToken.symbol ?? '',
@@ -157,7 +161,8 @@ export class OmniBridge extends EcoBridgeChildBase {
         toChainId,
         sender: this._account,
         txHash: tx.hash,
-        value: formatUnits(fromAmount.toString(), fromTokenDecimals),
+        fromValue: formatUnits(fromAmount.toString(), fromTokenDecimals),
+        toValue: formatUnits(toTokenAmount.toString(), toTokenDecimals),
         needsClaiming,
         status: BridgeTransactionStatus.PENDING,
       })
@@ -605,6 +610,8 @@ export class OmniBridge extends EcoBridgeChildBase {
         decimals: toTokenDecimals,
         mode: toTokenMode,
         mediator: toMediator,
+        amount: toAmount,
+        symbol: toTokenName,
       },
     }
 

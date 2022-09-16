@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
-import { ReactComponent as FarmingLogo } from '../../../../assets/svg/farming.svg'
+import { ReactComponent as FarmingLogo } from '../../../../assets/images/farming.svg'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { TYPE } from '../../../../theme'

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import arrowIcon from '../../assets/svg/arrow-bright.svg'
+import arrowIcon from '../../assets/images/arrow-bright.svg'
 import QuestionHelper from '../QuestionHelper'
 
 const Tag = styled.div`

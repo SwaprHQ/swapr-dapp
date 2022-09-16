@@ -81,9 +81,13 @@ const createSelectBridgeTransactionsSummary = (
           { chainId: Number(sendingTransaction?.chainId), txHash: sendingTransaction?.prepareTransactionHash ?? '' },
         ],
         txHash: sendingTransaction?.prepareTransactionHash ?? '',
-        value: formatUnits(
+        fromValue: formatUnits(
           sendingTransaction?.amount ?? 0,
           token?.contracts[sendingTransaction?.chainId ?? '1'].contract_decimals
+        ),
+        toValue: formatUnits(
+          receivingTransaction?.amount ?? 0,
+          token?.contracts[receivingTransaction?.chainId ?? '1'].contract_decimals
         ),
         assetAddressL1: transaction.sendingAssetId,
         assetAddressL2: transaction.receivingAssetId,
