@@ -334,6 +334,7 @@ jobs:
 
       - name: Run synpress tests
         run: |
+          xrandr -q
           Xvfb -screen 0 1920x1080x24 :99 & export DISPLAY=:99
           yarn synpress:ct
         continue-on-error: true
