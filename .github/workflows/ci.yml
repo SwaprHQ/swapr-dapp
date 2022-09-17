@@ -122,14 +122,14 @@ jobs:
       - name: Generate graphql
         run: yarn codegen:graphql
 
-      - name: Compress workspace artifact
-        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
-
       - name: Generate Fathom files
         run: yarn codegen:fathom
         env:
           FATHOM_TOKEN: ${{ secrets.FATHOM_TOKEN }}
           FATHOM_SITE_ID: ${{ secrets.FATHOM_SITE_ID }}
+
+      - name: Compress workspace artifact
+        run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
 
       - name: Upload workspace artifact
         uses: actions/upload-artifact@v3
@@ -374,8 +374,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [Container01, Container02, Container03, Container04]
+        containers: [Container01, Container02, Container03, Container04]
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
