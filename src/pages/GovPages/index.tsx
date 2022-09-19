@@ -69,7 +69,6 @@ export default function Governance() {
         </AutoColumn>
         <Container
           currentPage={router.query.asset === undefined ? MainPage : PairPage}
-          // @ts-expect-error: currency is passed as location state
           currency={router.location.state.currency}
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}
