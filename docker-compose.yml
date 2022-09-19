@@ -19,7 +19,7 @@ services:
       - ./docker/videos:/app/tests/e2e/videos
       - ./docker/screenshots:/app/tests/e2e/screenshots
     command: >
-      yarn synpress run -s 'tests/synpress/specs/Initialize.ts'
+      yarn synpress:init || true
       yarn synpress:ct
     networks:
       - x11
