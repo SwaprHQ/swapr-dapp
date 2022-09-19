@@ -24,7 +24,7 @@ describe('Wallet connection tests', () => {
     MenuBar.getWeb3Status().should('be.visible')
   })
   it('Should display that wallet is not connected to rinkeby', () => {
-    cy.disconnectMetamaskWalletFromAllDapps()
+    cy.changeMetamaskNetwork('ropsten')
     SwapPage.getConnectOrSwitchButton().should('be.visible')
   })
 })

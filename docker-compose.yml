@@ -8,7 +8,7 @@ services:
       - DISPLAY=display:0.0
       - PRIVATE_KEY=${PRIVATE_KEY}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - TEST_PARAMS=${TEST_PARAMS}
+      - TEST_PARAMS="--configFile tests/synpress/synpress.config.ts"
       - STABLE_MODE=true
     depends_on:
       - display
@@ -22,7 +22,7 @@ services:
       yarn synpress:ct
     networks:
       - x11
-  
+
   display:
     container_name: display
     image: synthetixio/display:b2643097e891906524e52e7ee956260b20fa01fb-base

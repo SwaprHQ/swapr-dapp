@@ -279,8 +279,7 @@ jobs:
 
   synpress:
     name: 👘 ・Synpress
-    runs-on: ubuntu-20.04
-    container: synthetixio/docker-e2e:18.8-ubuntu
+    runs-on: ubuntu-22.04
     needs: [prepare]
     if: ${{ needs.prepare.outputs.synpress }}
     env:
@@ -334,14 +333,13 @@ jobs:
 
       - name: Run synpress tests
         run: |
-          Xvfb -screen 0 5120x2880x24 :99 & export DISPLAY=:99
-          git config --global --add safe.directory /__w/swapr-dapp/swapr-dapp
-          yarn synpress:ct
+          sudo ./start-tests-ci.sh
         continue-on-error: true
         env:
           CI: true
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
+          TEST_PARAMS: ${{ env.TEST_PARAMS }}
           SLOW_MODE: true
           DISPLAY: ':99'
 
