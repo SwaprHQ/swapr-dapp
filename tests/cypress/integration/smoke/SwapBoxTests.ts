@@ -11,16 +11,12 @@ describe('Swap page smoke tests', () => {
   it('Should display swap box with 2 inputs and 2 currency selectors [TC-20]', () => {
     SwapPage.getSwapBox().should('be.visible')
     SwapPage.getCurrencySelectors().should('have.length', 2)
-    SwapPage.getToInput().should('be.visible')
-    SwapPage.getFromInput().should('be.visible')
+    SwapPage.getCurrencySelectors().first().should('contain.text', 'ETH')
+    SwapPage.getCurrencySelectors().last().should('contain.text', 'DAI')
   })
-  it('Should display token menu after clicking select token [TC-20]', () => {
+  it('Should display token menu after clicking on to token [TC-20]', () => {
     SwapPage.openTokenToSwapMenu()
     TokenMenu.getPicker().should('be.visible')
-  })
-  it('Should pick only eth as default from value [TC-20]', () => {
-    SwapPage.getCurrencySelectors().first().should('contain.text', 'ETH')
-    SwapPage.getCurrencySelectors().last().should('contain.text', 'Select token')
   })
   it('Should type in numbers into FROM input [TC-21]', () => {
     SwapPage.typeValueFrom('100.32')

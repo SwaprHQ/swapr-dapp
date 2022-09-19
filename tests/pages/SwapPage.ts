@@ -10,12 +10,7 @@ export class SwapPage {
   }
 
   static openTokenToSwapMenu() {
-    this.getSelectTokenButton()
-      .should(element => {
-        expect(element.length).to.be.eq(1)
-      })
-      .filter(':visible')
-      .click()
+    SwapPage.getCurrencySelectors().last().click()
     return TokenMenu
   }
 

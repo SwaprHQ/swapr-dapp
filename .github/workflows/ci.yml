@@ -368,8 +368,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [Container01, Container02, Container03, Container04]
+        containers: [Container01, Container02, Container03, Container04]
     steps:
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3

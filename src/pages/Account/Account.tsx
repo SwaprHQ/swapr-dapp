@@ -38,7 +38,7 @@ import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
 
 export function Account() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
   const dispatch = useDispatch()
   const isMobile = useIsMobileByMedia()
 
@@ -91,7 +91,7 @@ export function Account() {
   const externalLink = chainId && account ? getExplorerLink(chainId, account, 'address') : undefined
 
   return (
-    <PageWrapper>
+    <PageWrapper my="-20px">
       <Flex sx={{ mb: 4 }}>
         <Flex>
           {ENSName && ensAvatar?.image ? (
@@ -100,7 +100,7 @@ export function Account() {
             </AvatarWrapper>
           ) : (
             <Avatar
-              size={isMobile ? 90 : 120}
+              size={isMobile ? 80 : 120}
               name={account}
               variant="pixel"
               colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
@@ -115,22 +115,26 @@ export function Account() {
             <FullAccount>{account}</FullAccount>
           </Box>
           <DetailActionWrapper>
-            <CopyWrapper value={account} label="COPY ADDRESS" />
+            <CopyWrapper value={account} label={t('copyAddress')} />
             <StyledLink href={externalLink} rel="noopener noreferrer" target="_blank" disabled={!externalLink}>
               <CustomLinkIcon size={12} />
-              <Box sx={{ ml: 1 }}>{t('viewOnBlockExplorer')}</Box>
+              <Box sx={{ ml: 1 }}>{t('viewOnExplorer')}</Box>
             </StyledLink>
           </DetailActionWrapper>
           <CallToActionWrapper>
-            <Button onClick={toggleWalletSwitcherPopover}>Change Wallet</Button>
-            {active && <Button onClick={deactivate}>Disconnect</Button>}
+            <Button onClick={toggleWalletSwitcherPopover}>{t('changeWallet')}</Button>
+            {active && <Button onClick={deactivate}>{t('disconnect')}</Button>}
           </CallToActionWrapper>
         </Flex>
       </Flex>
       <Flex sx={{ mb: 2 }} justifyContent="end">
         <Flex>
-          <Switch label="PENDING TXNS" handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
-          <Switch label="ALL NETWORKS" handleToggle={handleAllNetworkTransactions} isOn={showAllNetworkTransactions} />
+          <Switch label={t('pendingTransactions')} handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
+          <Switch
+            label={t('allNetworks')}
+            handleToggle={handleAllNetworkTransactions}
+            isOn={showAllNetworkTransactions}
+          />
         </Flex>
       </Flex>
       <BlurBox>
