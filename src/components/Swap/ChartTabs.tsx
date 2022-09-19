@@ -1,41 +1,44 @@
-import { useNavigate } from 'react-router-dom'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
+import { useRouter } from '../../hooks/useRouter'
 import { ChartTabs as ChartTabsOptions } from '../../state/user/reducer'
 
-const Root = styled(Flex)``
+const Root = styled(Flex)`
+  background: ${({ theme }) => theme.dark1};
+  border-radius: 12px;
+  padding: 3px;
+  > * {
+    margin-right: 3px;
+  }
+`
 
 export const Tab = styled.button<{ active?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
   height: fit-content;
-  font-size: 10px;
+  padding: 8px;
+  background: ${({ active, theme }) => (active ? theme.dark2 : theme.dark1)};
+  border: 0;
+  border-radius: 10px;
+  font-size: 8px;
   font-weight: 600;
-  color: ${({ active }) => (active ? '#EBE9F8' : '#464366')};
+  color: ${({ active, theme }) => (active ? 'white' : theme.purple5)};
+  text-transform: uppercase;
   cursor: pointer;
-  background: ${({ active }) => (active ? 'rgba(104, 110, 148, 0.25)' : 'rgba(62, 65, 87, 0.2)')};
-  border: 1px solid #2c2b42;
-  &:hover {
-    color: ${({ theme }) => theme.text4};
-    background: rgba(104, 110, 148, 0.25);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    color: ${({ theme }) => theme.text6};
-    background: rgba(104, 110, 148, 0.1);
-  }
-  border-radius: 0;
-
-  &:first-child {
-    border-radius: 8px 0px 0px 8px;
-  }
-
   &:last-child {
-    border-radius: 0 8px 8px 0;
+    margin: 0;
+  }
+  &:hover {
+    color: ${({ theme }) => theme.text3};
+    background: ${({ theme }) => theme.dark2};
+  }
+  &:disabled {
+    pointer-events: none;
+    color: ${({ theme }) => theme.dark2};
+    background: ${({ theme }) => theme.dark1};
   }
 `
 
@@ -48,7 +51,9 @@ export const ChartTabs = ({
   setActiveChartTab: (tab: ChartTabsOptions) => void
   hasBothCurrenciesInput: boolean
 }) => {
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
+  const isDesktop = useIsDesktopByMedia()
+  const proOptionsDisabled = !hasBothCurrenciesInput || !isDesktop
 
   return (
     <Root>
@@ -57,7 +62,7 @@ export const ChartTabs = ({
         onClick={() => {
           if (activeChartTab !== ChartTabsOptions.SIMPLE) {
             setActiveChartTab(ChartTabsOptions.SIMPLE)
-            navigate({ pathname: '/swap' })
+            navigate('/swap')
           }
         }}
         title="Simple chart"
@@ -70,11 +75,11 @@ export const ChartTabs = ({
         onClick={() => {
           if (activeChartTab !== ChartTabsOptions.PRO) {
             setActiveChartTab(ChartTabsOptions.PRO)
-            navigate({ pathname: '/swap/pro' })
+            navigate('/swap/pro')
           }
         }}
-        title="Advanced Trade View"
-        disabled={!hasBothCurrenciesInput}
+        title={`Advanced Trade View${proOptionsDisabled && ' is disabled on mobile, try desktop version'}`}
+        disabled={proOptionsDisabled}
       >
         Pro
       </Tab>
@@ -83,7 +88,7 @@ export const ChartTabs = ({
         onClick={() => {
           if (activeChartTab !== ChartTabsOptions.OFF) {
             setActiveChartTab(ChartTabsOptions.OFF)
-            navigate({ pathname: '/swap' })
+            navigate('/swap')
           }
         }}
         title="Switch off charts"
