@@ -260,4 +260,16 @@ describe('BaseAdapter', () => {
     expect(selectCurrentSwaprPair(store.getState())?.pair?.swaps?.hasMore).toBeFalsy()
     expect(selectCurrentSwaprPair(store.getState())?.pair?.burnsAndMints?.hasMore).toBeFalsy()
   })
+
+  it('isSupportedChainId works correctly', () => {
+    // base adapter supported chains [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS]
+    expect(baseAdapter.isSupportedChainId(ChainId.MAINNET)).toBeTruthy()
+    expect(baseAdapter.isSupportedChainId(ChainId.ARBITRUM_ONE)).toBeTruthy()
+    expect(baseAdapter.isSupportedChainId(ChainId.GNOSIS)).toBeTruthy()
+
+    expect(baseAdapter.isSupportedChainId(ChainId.GOERLI)).toBeFalsy()
+    expect(baseAdapter.isSupportedChainId(ChainId.POLYGON)).toBeFalsy()
+    expect(baseAdapter.isSupportedChainId(ChainId.OPTIMISM_GOERLI)).toBeFalsy()
+    expect(baseAdapter.isSupportedChainId(ChainId.OPTIMISM_MAINNET)).toBeFalsy()
+  })
 })
