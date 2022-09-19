@@ -9,7 +9,6 @@ services:
       - PRIVATE_KEY=${PRIVATE_KEY}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - TEST_PARAMS=${TEST_PARAMS}
-      - STABLE_MODE=true
     depends_on:
       - display
       - video
