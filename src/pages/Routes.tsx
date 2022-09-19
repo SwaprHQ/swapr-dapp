@@ -7,7 +7,6 @@ import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from 
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 // Dont want to lazy import swap
 import Swap from './Swap'
-import { RedirectToSwap } from './Swap/redirects'
 import Zap from './Zap'
 
 // Lazy loaded routes
@@ -63,10 +62,9 @@ export function Routes() {
 
       <Route path="send" element={<BaseRedirect />} />
       <Route path="account" element={<Account />} />
-
-      <Route path="send" element={<RedirectToSwap />} />
       <Route path="zap" element={<Zap />} />
-      <Route path="*" element={<RedirectToSwap />} />
+
+      <Route path="*" element={<BaseRedirect />} />
     </Switch>
   )
 }
