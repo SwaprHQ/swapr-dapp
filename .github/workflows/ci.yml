@@ -359,6 +359,7 @@ jobs:
             ${{ matrix.containers }}.json
             public-report/screenshots
             public-report/videos
+            docker
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
