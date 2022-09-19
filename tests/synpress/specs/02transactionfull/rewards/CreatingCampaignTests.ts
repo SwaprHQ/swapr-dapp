@@ -22,6 +22,8 @@ describe('Campaign creation tests', () => {
 
   before(() => {
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
+    RewardsPage.visitRewardsPage()
+    MenuBar.connectWallet()
   })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
