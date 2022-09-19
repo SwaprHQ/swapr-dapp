@@ -278,15 +278,14 @@ export function useBridgeActionHandlers(): {
 export const useBridgeInfo = () => {
   const { account, chainId } = useWeb3ReactCore()
 
-  const fromNetwork = useSelector((state: AppState) => state.ecoBridge.ui.from)
-  const toNetwork = useSelector((state: AppState) => state.ecoBridge.ui.to)
+  const { from, to, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
 
-  const { address: currencyId, value: typedValue, chainId: fromChainId } = fromNetwork
-  const { address: toCurrencyId, chainId: toChainId } = toNetwork
+  const { address: fromTokenAddress, value: typedValue, chainId: fromChainId } = from
+  const { address: toTokenAddress, chainId: toChainId, value: toValue } = to
 
-  const bridgeCurrency = useBridgeCurrency(currencyId, fromChainId)
+  const bridgeCurrency = useBridgeCurrency(fromTokenAddress, fromChainId)
 
-  const bridgeOutputCurrency = useBridgeCurrency(toCurrencyId, toChainId)
+  const bridgeOutputCurrency = useBridgeCurrency(toTokenAddress, toChainId)
 
   const parsedAmount = useMemo(
     () => tryParseAmount(typedValue, bridgeCurrency ?? undefined, chainId),
@@ -302,7 +301,8 @@ export const useBridgeInfo = () => {
 
   return {
     isBalanceSufficient,
-    currencyId,
+    fromTokenAddress,
+    toTokenAddress,
     bridgeCurrency,
     bridgeOutputCurrency,
     currencyBalance,
@@ -310,6 +310,8 @@ export const useBridgeInfo = () => {
     typedValue,
     fromChainId,
     toChainId,
+    isBridgeSwapActive,
+    toValue,
   }
 }
 

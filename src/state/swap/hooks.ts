@@ -6,11 +6,11 @@ import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, Token
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useCurrency } from '../../hooks/Tokens'
+import { useAbortController } from '../../hooks/useAbortController'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
@@ -152,6 +152,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
+  const { getAbortSignal } = useAbortController()
 
   const dependencyList = [
     account,
@@ -177,6 +178,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
   useEffect(() => {
     const [inputCurrencyBalance] = relevantTokenBalances
+
+    const signal = getAbortSignal()
 
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
@@ -214,16 +217,14 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     }
 
     // Update swap state with the new input
-    unstable_batchedUpdates(() => {
-      setInputError(inputErrorNextState)
-      setLoading(true)
-      setAllPlatformTrades([])
+    setInputError(inputErrorNextState)
+    setLoading(true)
+    setAllPlatformTrades([])
 
-      setIsQuoteExpired(false)
-      if (quoteExpiryTimeout.current) {
-        clearTimeout(quoteExpiryTimeout.current)
-      }
-    })
+    setIsQuoteExpired(false)
+    if (quoteExpiryTimeout.current) {
+      clearTimeout(quoteExpiryTimeout.current)
+    }
 
     const commonParams = {
       user: account || AddressZero, // default back to zero if no account is connected.
@@ -242,37 +243,34 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       outputCurrency,
       commonParams,
       ecoRouterSourceOptionsParams,
-      provider
+      provider,
+      signal
     )
 
     // Start fetching trades from EcoRouter API
     getTrades
       .then(trades => {
-        unstable_batchedUpdates(() => {
-          setAllPlatformTrades(trades.trades)
-          setLoading(false)
-          quoteExpiryTimeout.current = setTimeout(() => {
-            setIsQuoteExpired(true)
-          }, quoteTTL)
-        })
+        setAllPlatformTrades(trades.trades)
+        setLoading(false)
+        quoteExpiryTimeout.current = setTimeout(() => {
+          setIsQuoteExpired(true)
+        }, quoteTTL)
       })
       .catch(error => {
-        console.error(error)
-        unstable_batchedUpdates(() => {
+        if (error.name !== 'AbortError') {
+          console.error(error)
           setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
           setLoading(false)
-        })
+        }
       })
 
     return function useDerivedSwapInfoCleanUp() {
-      unstable_batchedUpdates(() => {
-        setAllPlatformTrades([])
-        setLoading(false)
-        setInputError(undefined)
-        if (quoteExpiryTimeout.current) {
-          clearTimeout(quoteExpiryTimeout.current)
-        }
-      })
+      setAllPlatformTrades([])
+      setLoading(false)
+      setInputError(undefined)
+      if (quoteExpiryTimeout.current) {
+        clearTimeout(quoteExpiryTimeout.current)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencyList)
@@ -313,15 +311,22 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     loading,
   }
 
-  function getTradesPromise(
+  async function getTradesPromise(
     parsedAmount: CurrencyAmount,
     inputCurrency: Currency,
     outputCurrency: Currency,
     commonParams: { maximumSlippage: Percent; receiver: string; user: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-    staticJsonRpcProvider: StaticJsonRpcProvider | undefined
+    staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
+    signal: AbortSignal
   ): Promise<EcoRouterResults> {
-    return isExactIn
+    const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
+      signal.onabort = () => {
+        reject(new DOMException('Aborted', 'AbortError'))
+      }
+    })
+
+    const ecoRouterPromise = isExactIn
       ? getExactInFromEcoRouter(
           {
             currencyAmountIn: parsedAmount,
@@ -340,6 +345,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
           ecoRouterSourceOptionsParams,
           staticJsonRpcProvider
         )
+
+    return await Promise.race([abortPromise, ecoRouterPromise])
   }
 }
 
@@ -431,12 +438,16 @@ export function useDefaultsFromURLSearch():
     if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs, currencyId(nativeCurrency))
 
+    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
+      ? parsed[Field.OUTPUT].currencyId
+      : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
         inputCurrencyId: parsed[Field.INPUT].currencyId,
-        outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+        outputCurrencyId,
         recipient: parsed.recipient,
       })
     )

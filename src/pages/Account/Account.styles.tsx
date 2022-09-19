@@ -71,7 +71,7 @@ export const StyledLink = styled(Link)`
 `
 
 export const GridCard = styled(Flex)<{ status?: string }>`
-  padding: 24px 22px;
+  padding: 20px 22px;
   line-height: 18px;
   align-items: center;
   color: #c0baf6;
@@ -165,7 +165,7 @@ export const FullAccount = styled(Text)`
   font-weight: 500;
   font-size: 12px;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 9px;
+    font-size: 8.5px;
   `};
   line-height: 12px;
   letter-spacing: 0.02em;

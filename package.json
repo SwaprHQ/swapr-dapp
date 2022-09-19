@@ -19,6 +19,7 @@
     "synpress:open": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.json",
     "synpress:run": "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.json -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'",
     "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
+    "codegen:fathom": "./node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/fathom-generate-events/index.ts  --out ./src/analytics/generated/",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom",
@@ -30,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.7",
-    "@arbitrum/sdk": "^3.0.0-beta.11",
+    "@arbitrum/sdk": "3.0.0-beta.11",
     "@coinbase/wallet-sdk": "^3.3.0",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.17.0",
@@ -60,6 +61,7 @@
     "copy-to-clipboard": "^3.3.1",
     "cypress-ethereum-provider": "^0.1.7",
     "date-fns": "^2.28.0",
+    "debug": "^4.3.4",
     "decimal.js-light": "^2.5.1",
     "ethers": "^5.4.4",
     "etherscan-api": "10.2.0",
@@ -126,6 +128,7 @@
     "@synthetixio/synpress": "^1.2.0",
     "@testing-library/cypress": "^8.0.2",
     "@types/aos": "^3.0.4",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^28.1.6",
     "@types/lodash": "^4.14.182",
     "@types/luxon": "^3.0.0",
@@ -168,6 +171,7 @@
     "mochawesome-merge": "^4.2.1",
     "mochawesome-report-generator": "^6.1.1",
     "net": "^1.0.2",
+    "node-fetch": "^2.6.7",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
@@ -182,6 +186,7 @@
     "tls": "^0.0.1",
     "typescript": "^4.7.4",
     "url": "^0.11.0",
-    "webpack-bundle-analyzer": "^4.5.0"
+    "webpack-bundle-analyzer": "^4.5.0",
+    "yargs": "^17.5.1"
   }
 }

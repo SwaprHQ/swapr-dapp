@@ -15,6 +15,7 @@ import {
 import { UnsignedTransaction } from 'ethers'
 import { useMemo } from 'react'
 
+import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
@@ -162,6 +163,8 @@ export function useSwapCallback({
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
 
+  const { trackEcoEcoRouterTradeVolume } = useAnalytics()
+
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
   const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipientAddressOrName)
 
@@ -193,6 +196,8 @@ export function useSwapCallback({
           // and then submit the order to GPv2
           await trade.signOrder(signer)
           const orderId = await trade.submitOrder()
+
+          trackEcoEcoRouterTradeVolume(trade)
 
           addTransaction(
             {
@@ -288,7 +293,8 @@ export function useSwapCallback({
             gasPrice: normalizedGasPrice,
             ...((await transactionParameters) as any),
           })
-          .then(response => {
+          .then(async response => {
+            trackEcoEcoRouterTradeVolume(trade)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -319,5 +325,6 @@ export function useSwapCallback({
     recipientAddressOrName,
     recipient,
     addTransaction,
+    trackEcoEcoRouterTradeVolume,
   ])
 }

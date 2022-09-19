@@ -25,7 +25,10 @@ import {
 } from '../../services/EcoBridge/EcoBridge.hooks'
 import { BridgeModalStatus, BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { useEcoBridge } from '../../services/EcoBridge/EcoBridgeProvider'
-import { selectBridgeFilteredTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
+import {
+  selectBridgeFilteredTransactions,
+  selectSupportedBridges,
+} from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { AppState } from '../../state'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
@@ -102,13 +105,23 @@ export default function Bridge() {
   const bridgeSummaries = useSelector((state: AppState) =>
     selectBridgeFilteredTransactions(state, account ?? undefined)
   )
+  const possibleBridges = useSelector((state: AppState) => selectSupportedBridges(state))
 
   useBridgeFetchDynamicLists()
 
   const showAvailableBridges = useShowAvailableBridges()
 
   const { modalData, setModalData, setModalState } = useBridgeModal()
-  const { bridgeCurrency, bridgeOutputCurrency, currencyBalance, typedValue, fromChainId, toChainId } = useBridgeInfo()
+  const {
+    bridgeCurrency,
+    bridgeOutputCurrency,
+    currencyBalance,
+    typedValue,
+    fromChainId,
+    toChainId,
+    isBridgeSwapActive,
+    toValue,
+  } = useBridgeInfo()
   const {
     onCurrencySelection,
     onCurrencyOutputSelection,
@@ -120,7 +133,6 @@ export default function Bridge() {
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
   const listsLoading = useBridgeListsLoadingStatus()
-  const isBridgeSwapActive = useSelector((state: AppState) => state.ecoBridge.ui.isBridgeSwapActive)
 
   const [activeTab, setActiveTab] = useState<BridgeTab>(isBridgeSwapActive ? BridgeTab.BRIDGE_SWAP : BridgeTab.BRIDGE)
 
@@ -134,8 +146,8 @@ export default function Bridge() {
 
   const collectableTxAmount = bridgeSummaries.filter(tx => tx.status === 'redeem').length
   const isNetworkConnected = fromChainId === chainId
+  const hasBridges = possibleBridges.length > 0
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalance, chainId)
-  const { from, to } = useSelector((state: AppState) => state.ecoBridge.ui)
 
   const [displayedValue, setDisplayedValue] = useState('')
 
@@ -148,6 +160,20 @@ export default function Bridge() {
     }
   }, [activeTab, setTxsFilter])
 
+  useEffect(() => {
+    if (!hasBridges) {
+      dispatch(
+        ecoBridgeUIActions.setStatusButton({
+          label: 'Invalid Chain Pair',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
+      )
+    }
+  }, [dispatch, hasBridges])
+
   //reset state
   useEffect(() => {
     //when user change chain we will get error because address of token isn't on the list (we have to fetch tokens again and then we can correct pair tokens)
@@ -158,7 +184,7 @@ export default function Bridge() {
       onCurrencySelection('')
       onCurrencyOutputSelection('')
     }
-  }, [from.chainId, to.chainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
+  }, [fromChainId, toChainId, dispatch, onCurrencySelection, isCollecting, onUserInput, onCurrencyOutputSelection])
 
   useEffect(() => {
     if (isUnsupportedBridgeNetwork) return
@@ -340,7 +366,7 @@ export default function Bridge() {
             onUserInput={onUserInput}
             onMax={isCollecting ? undefined : handleMaxInput}
             onCurrencySelect={onCurrencySelection}
-            disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+            disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
             disabled={!account || isCollecting || !isNetworkConnected}
             id="bridge-currency-input"
             hideBalance={
@@ -357,13 +383,13 @@ export default function Bridge() {
             <OutputPanelContainer>
               <CurrencyInputPanelBridge
                 id="bridge-currency-output"
-                value={to.value}
+                value={toValue}
                 onUserInput={onUserInput}
                 disabled={true}
                 currency={bridgeOutputCurrency}
                 onCurrencySelect={onCurrencyOutputSelection}
                 isOutputPanel={true}
-                disableCurrencySelect={!account || isCollecting || !isNetworkConnected}
+                disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
                 isLoading={!!account && isNetworkConnected && listsLoading}
               />
             </OutputPanelContainer>
