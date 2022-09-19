@@ -2,10 +2,10 @@ import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
+import { useRouter } from '../../hooks/useRouter'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
@@ -29,7 +29,7 @@ const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
 export const useAdvancedTradingView = () => {
   const { chainId } = useActiveWeb3React()
 
-  const navigate = useNavigate()
+  const { navigate } = useRouter()
 
   const [pairTokens, setPairTokens] = useState<Token[]>([])
 
@@ -143,7 +143,7 @@ export const useAdvancedTradingView = () => {
 
   const handleAddLiquidity = () => {
     if (inputToken && outputToken) {
-      navigate({ pathname: `/pools/add/${inputToken.address}/${outputToken.address}` })
+      navigate(`/pools/add/${inputToken.address}/${outputToken.address}`)
     }
   }
 

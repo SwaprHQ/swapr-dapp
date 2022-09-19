@@ -174,8 +174,6 @@ export function useUpdateSelectedChartTab(): [ChartTabs, (selectedTab: ChartTabs
   const setSelectedChartTab = useCallback(
     (selectedChartTab: ChartTabs) => {
       if (!currentChartTab || currentChartTab !== selectedChartTab) {
-        console.log(currentChartTab, selectedChartTab)
-
         dispatch(updateSelectedChartTab({ selectedChartTab: selectedChartTab }))
       }
     },

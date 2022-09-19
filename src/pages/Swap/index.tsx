@@ -23,6 +23,7 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
+import { useRouter } from '../../hooks/useRouter'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -116,8 +117,22 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
+  const { navigate, pathname } = useRouter()
   const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
   const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
+
+  useEffect(() => {
+    if (activeChartTab === ChartTabsOptions.PRO) {
+      if (!isDesktop) {
+        setSelectedChartTab(ChartTabsOptions.OFF)
+        navigate('/swap')
+      }
+      if (!pathname.includes('swapr/pro')) {
+        setSelectedChartTab(ChartTabsOptions.PRO)
+        navigate('/swap/pro')
+      }
+    }
+  }, [isDesktop, pathname, navigate, activeChartTab, setSelectedChartTab])
 
   const { chainId } = useActiveWeb3React()
 
@@ -511,7 +526,7 @@ export default function Swap() {
         !isUnsupportedChainIdError &&
         !TESTNETS.includes(chainId) &&
         isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {activeTab === SwapTabs.SWAP && activeChartTab !== ChartTabsOptions.PRO && (
+      {activeChartTab !== ChartTabsOptions.PRO && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
