@@ -3,11 +3,10 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Box, Flex } from 'rebass'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
-import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup/ButtonGroup'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
@@ -53,6 +52,7 @@ import Footer from './../../components/LandingPageComponents/layout/Footer'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
+import { ChartToggle } from './ChartToggle'
 
 export type SwapData = {
   showConfirm: boolean
@@ -381,7 +381,7 @@ export default function Swap() {
       wrapState === WrapState.PENDING) &&
     trade instanceof CoWTrade
 
-  const hasBothCurrenciesInput = currencies[Field.INPUT] && currencies[Field.OUTPUT]
+  const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
 
   return (
     <>
@@ -401,32 +401,13 @@ export default function Swap() {
           flexDirection={['column', 'column', 'column', 'row']}
         >
           <AppBodyContainer>
-            <Flex
-              mb={3}
-              alignItems="center"
-              justifyContent="space-between"
-              width="100%"
-              flexDirection={['column-reverse', 'row']}
-            >
+            <Flex mb={3} alignItems="center" justifyContent="space-between" width="100%">
               <Tabs />
-              <Box mb={[3, 0]}>
-                <ButtonGroup>
-                  <ButtonGroupOption
-                    disabled={!hasBothCurrenciesInput}
-                    active={selectedChartOption === ChartOptions.SIMPLE_CHART}
-                    onClick={() => setselectedChartOption(ChartOptions.SIMPLE_CHART)}
-                  >
-                    Chart
-                  </ButtonGroupOption>
-                  <ButtonGroupOption
-                    disabled={!hasBothCurrenciesInput}
-                    active={selectedChartOption === ChartOptions.OFF}
-                    onClick={() => setselectedChartOption(ChartOptions.OFF)}
-                  >
-                    Off
-                  </ButtonGroupOption>
-                </ButtonGroup>
-              </Box>
+              <ChartToggle
+                hasBothCurrenciesInput={hasBothCurrenciesInput}
+                selectedChartOption={selectedChartOption}
+                setselectedChartOption={setselectedChartOption}
+              />
             </Flex>
             <AppBody tradeDetailsOpen={!!trade}>
               <SwapPoolTabs active="swap" />
