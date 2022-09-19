@@ -1,7 +1,6 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
 import { Suspense, useEffect } from 'react'
-import { Helmet } from 'react-helmet'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { Slide, ToastContainer } from 'react-toastify'
 import styled, { useTheme } from 'styled-components'
@@ -10,6 +9,7 @@ import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import { FallbackLoader } from '../components/Loader/FallbackLoader'
 import NetworkWarningModal from '../components/NetworkWarningModal'
+import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
@@ -78,7 +78,12 @@ export default function App() {
 
   return (
     <>
-      <Helmet>{process.env.NODE_ENV !== 'production' && <meta name="robots" content="noindex, nofollow" />}</Helmet>
+      {/* All pages contain the same meta, move it to proper pages when content is ready */}
+      <PageMetaData
+        title="Swap"
+        description="A governance-enabled automated market maker with adjustable fees."
+        noIndex={process.env.REACT_APP_BUILD_ENV !== 'production'}
+      />
       <Suspense fallback={null}>
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
           <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
