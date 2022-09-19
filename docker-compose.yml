@@ -16,8 +16,8 @@ services:
     entrypoint: []
     working_dir: /app
     volumes:
-      - ./docker/videos:/app/tests/e2e/videos
-      - ./docker/screenshots:/app/tests/e2e/screenshots
+      - ./docker/videos:/app/public-report/screenshots
+      - ./docker/screenshots:/app/public-report/videos
     command: >
       yarn synpress:ct
     networks:
@@ -55,7 +55,7 @@ services:
       - FILE_NAME=CI-full-video.mp4
     depends_on:
       - display
-    networks:
+    networks:`
       - x11
 
 networks:
