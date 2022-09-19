@@ -78,11 +78,10 @@ export default function App() {
 
   return (
     <>
-      {/* All pages contain the same meta, move it to proper pages when content is ready */}
       <PageMetaData
         title="Swap"
         description="A governance-enabled automated market maker with adjustable fees."
-        noIndex={process.env.REACT_APP_BUILD_ENV !== 'production'}
+        noIndex={process.env.REACT_APP_BUILD_ENV === 'staging'}
       />
       <Suspense fallback={null}>
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
