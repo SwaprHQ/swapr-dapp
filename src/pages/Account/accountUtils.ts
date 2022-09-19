@@ -1,6 +1,7 @@
 import EtherLogo from '../../assets/images/ether-logo.png'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import XDAILogo from '../../assets/images/xdai-logo.png'
+import { BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { type BridgeTransaction, type Transaction, TransactionStatus } from './Account.types'
 
@@ -16,6 +17,22 @@ const expressions = {
     'g'
   ),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
+}
+
+export const mapBridgeIdToDisplayName = (bridgeId: BridgeList) => {
+  switch (bridgeId) {
+    case 'arbitrum:mainnet':
+    case 'arbitrum:testnet':
+      return 'Arbitrum'
+    case 'connext':
+      return 'Connext'
+    case 'omnibridge:eth-xdai':
+      return 'Omnibridge'
+    case 'socket':
+      return 'Socket'
+    case 'xdai':
+      return 'xDai'
+  }
 }
 
 export const formattedTransactions = (
