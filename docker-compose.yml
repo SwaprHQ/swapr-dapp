@@ -19,7 +19,7 @@ services:
       - ./docker/videos:/app/tests/e2e/videos
       - ./docker/screenshots:/app/tests/e2e/screenshots
     command: >
-      yarn synpress:init || true
+      yarn synpress:init:ci || true
       yarn synpress:ct
     networks:
       - x11
