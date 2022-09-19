@@ -27,7 +27,6 @@ describe('Campaign creation tests', () => {
   })
   beforeEach(() => {
     RewardsPage.visitRewardsPage()
-    MenuBar.connectWallet()
   })
   afterEach(() => {
     cy.clearCookies()
