@@ -67,7 +67,7 @@ export const SimpleChart = ({
               showHours={selectedInterval === DATE_INTERVALS.DAY}
             />
           ) : (
-            <TYPE.DarkGray>{t('selectToken')}</TYPE.DarkGray>
+            <TYPE.DarkGray textAlign="center">{t('selectToken')}</TYPE.DarkGray>
           )}
         </Flex>
       </Flex>

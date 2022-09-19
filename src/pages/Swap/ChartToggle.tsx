@@ -62,7 +62,7 @@ const ToggleChartButton = styled.button<{ active?: boolean }>`
   width: 32px;
   border: 1px solid ${({ active, theme }) => (active ? theme.text4 : 'transparent')};
 
-  background: ${({ theme }) => theme.bg6};
+  background: ${({ active, theme }) => (active ? theme.bg2 : theme.bg6)};
   color: ${({ active, theme }) => (active ? theme.white : theme.text2)};
   border-radius: 12px;
   cursor: pointer;
