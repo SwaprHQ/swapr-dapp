@@ -1,6 +1,6 @@
 import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -26,6 +26,23 @@ const getTokenAddress = (chainId: ChainId, tokenAddress: string | undefined) =>
     ? WrappedNativeCurrencyAddress[chainId as ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS]
     : tokenAddress
 
+const calculateAmountToFetch = (chainId: ChainId | undefined, amountToFetch: number) => {
+  const { supportedAdaptersByChain, unsupportedAdaptersByChain } = Object.values(adapters).reduce(
+    (totalAdapters, adapter) => {
+      adapter.isSupportedChainId(chainId)
+        ? totalAdapters.supportedAdaptersByChain++
+        : totalAdapters.unsupportedAdaptersByChain++
+
+      return totalAdapters
+    },
+    { supportedAdaptersByChain: 0, unsupportedAdaptersByChain: 0 }
+  )
+
+  const amount = Math.floor((amountToFetch * unsupportedAdaptersByChain) / supportedAdaptersByChain) + amountToFetch
+
+  return amount > AdapterAmountToFetch.limit ? AdapterAmountToFetch.limit : amount
+}
+
 export const useAdvancedTradingView = () => {
   const { chainId } = useActiveWeb3React()
 
@@ -38,6 +55,14 @@ export const useAdvancedTradingView = () => {
   const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
 
   const [symbol, setSymbol] = useState<string>()
+
+  const [pairTradesAmountToFetch, pairActivityAmountToFetch] = useMemo(
+    () => [
+      calculateAmountToFetch(chainId, AdapterAmountToFetch.pairTrades),
+      calculateAmountToFetch(chainId, AdapterAmountToFetch.pairActivity),
+    ],
+    [chainId]
+  )
 
   const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
     inputTokenAddress: undefined,
@@ -110,13 +135,13 @@ export const useAdvancedTradingView = () => {
             advancedTradingViewAdapter.fetchPairTrades({
               inputToken,
               outputToken,
-              amountToFetch: AdapterAmountToFetch.pairTrades,
+              amountToFetch: pairTradesAmountToFetch,
               isFirstFetch: true,
             }),
             advancedTradingViewAdapter.fetchPairActivity({
               inputToken,
               outputToken,
-              amountToFetch: AdapterAmountToFetch.pairActivity,
+              amountToFetch: pairActivityAmountToFetch,
               isFirstFetch: true,
             }),
           ])
@@ -139,7 +164,14 @@ export const useAdvancedTradingView = () => {
     }
 
     fetchTrades()
-  }, [dispatch, inputToken, outputToken, advancedTradingViewAdapter])
+  }, [
+    dispatch,
+    inputToken,
+    outputToken,
+    advancedTradingViewAdapter,
+    pairTradesAmountToFetch,
+    pairActivityAmountToFetch,
+  ])
 
   const handleAddLiquidity = () => {
     if (inputToken && outputToken) {

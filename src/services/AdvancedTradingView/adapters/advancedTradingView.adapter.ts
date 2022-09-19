@@ -46,7 +46,7 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
     return this._store
   }
 
-  protected _isSupportedChainId(
+  public isSupportedChainId(
     chainId?: ChainId
   ): chainId is ChainId.MAINNET | ChainId.GNOSIS | ChainId.ARBITRUM_ONE | ChainId.OPTIMISM_MAINNET | ChainId.POLYGON {
     if (!chainId) return false
