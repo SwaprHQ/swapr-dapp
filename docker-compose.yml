@@ -55,7 +55,7 @@ services:
       - FILE_NAME=CI-full-video.mp4
     depends_on:
       - display
-    networks:`
+    networks:
       - x11
 
 networks:
