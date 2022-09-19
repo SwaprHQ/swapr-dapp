@@ -28,6 +28,7 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
   [ChainId.POLYGON]: { stablecoin: USDC[ChainId.POLYGON], platform: UniswapV2RoutablePlatform.QUICKSWAP },
   [ChainId.ARBITRUM_ONE]: { stablecoin: USDC[ChainId.ARBITRUM_ONE], platform: UniswapV2RoutablePlatform.UNISWAP },
   [ChainId.XDAI]: { stablecoin: USDC[ChainId.XDAI], platform: UniswapV2RoutablePlatform.SWAPR },
+  [ChainId.BSC_MAINNET]: { stablecoin: USDC[ChainId.ARBITRUM_ONE], platform: UniswapV2RoutablePlatform.PANCAKESWAP },
 }
 
 const FETCH_PRICE_INTERVAL = 15000

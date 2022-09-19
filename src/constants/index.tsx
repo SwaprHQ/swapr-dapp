@@ -20,6 +20,7 @@ import { ReactNode } from 'react'
 
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import PancakeSwapLogo from '../assets/images/bunny-mono.png'
 import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
 import CurveLogo from '../assets/images/curve-logo.png'
@@ -72,6 +73,13 @@ export const DAI: { [key: number]: Token } = {
     'DAI',
     'Dai Stablecoin'
   ),
+  [ChainId.BSC_MAINNET]: new Token(
+    ChainId.BSC_MAINNET,
+    '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+    18,
+    'DAI',
+    'Binance-Peg Dai Stablecoin'
+  ),
 }
 
 export const USDC: { [key: number]: Token } = {
@@ -98,6 +106,13 @@ export const USDC: { [key: number]: Token } = {
     'USDC',
     'USD//C'
   ),
+  [ChainId.BSC_MAINNET]: new Token(
+    ChainId.BSC_MAINNET,
+    '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+    6,
+    'USDC',
+    ' Binance-Peg USD Coin'
+  ),
 }
 
 export const USDT: { [key: number]: Token } = {
@@ -123,6 +138,13 @@ export const USDT: { [key: number]: Token } = {
     6,
     'USDT',
     'Tether USD'
+  ),
+  [ChainId.BSC_MAINNET]: new Token(
+    ChainId.BSC_MAINNET,
+    '0x55d398326f99059ff775485246999027b3197955',
+    6,
+    'USDT',
+    'Binance-Peg BSC-USD (BSC-USD)'
   ),
 }
 
@@ -239,6 +261,13 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
   [ChainId.GOERLI]: [],
+  [ChainId.BSC_MAINNET]: [
+    DAI[ChainId.BSC_MAINNET],
+    Token.WBNB[ChainId.BSC_MAINNET],
+    USDC[ChainId.BSC_MAINNET],
+    USDT[ChainId.BSC_MAINNET],
+  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -274,6 +303,13 @@ export const SUGGESTED_BASES: ChainTokenList = {
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
   [ChainId.GOERLI]: [],
+  [ChainId.BSC_MAINNET]: [
+    Token.WBNB[ChainId.BSC_MAINNET],
+    DAI[ChainId.BSC_MAINNET],
+    USDC[ChainId.BSC_MAINNET],
+    USDT[ChainId.BSC_MAINNET],
+  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -294,6 +330,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
   [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.BSC_MAINNET]: [Token.WBNB[ChainId.BSC_MAINNET]],
+  [ChainId.BSC_TESTNET]: [Token.WBNB[ChainId.BSC_TESTNET]],
 }
 
 export const PINNED_PAIRS: {
@@ -525,6 +563,28 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://goerli.optimism.io'],
     blockExplorerUrls: ['https://blockscout.com/optimism/goerli'],
   },
+  [ChainId.BSC_MAINNET]: {
+    chainId: `0x${ChainId.BSC_MAINNET.toString(16)}`,
+    chainName: 'BSC Mainnet',
+    nativeCurrency: {
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
+    },
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://testnet.bscscan.com'],
+  },
+  [ChainId.BSC_TESTNET]: {
+    chainId: `0x${ChainId.BSC_TESTNET.toString(16)}`,
+    chainName: 'BSC Testnet',
+    nativeCurrency: {
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
+    },
+    rpcUrls: ['https://goerli.optimism.io'],
+    blockExplorerUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+  },
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {
@@ -543,6 +603,10 @@ export const NETWORK_OPTIONAL_DETAIL: {
   },
   [ChainId.OPTIMISM_MAINNET]: {
     partnerChainId: ChainId.MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.BSC_MAINNET]: {
+    partnerChainId: ChainId.BSC_MAINNET,
     isArbitrum: false,
   },
   [ChainId.ARBITRUM_RINKEBY]: {
@@ -589,6 +653,12 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
   ],
+  [ChainId.OPTIMISM_MAINNET]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.BSC_MAINNET]: [UniswapV2RoutablePlatform.SUSHISWAP.name, UniswapV2RoutablePlatform.PANCAKESWAP.name],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -611,11 +681,7 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.ARBITRUM_GOERLI]: [],
   [ChainId.GOERLI]: [],
   [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.CURVE.name,
-  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
@@ -674,6 +740,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.DFYN.name,
   },
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
+    logo: PancakeSwapLogo,
+    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+  },
   [RoutablePlatform.CURVE.name]: {
     logo: CurveLogo,
     alt: RoutablePlatform.CURVE.name,
@@ -711,6 +783,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
   [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
@@ -725,6 +798,7 @@ export const ChainLabel: any = {
   [ChainId.XDAI]: 'Gnosis Chain',
   [ChainId.POLYGON]: 'Polygon',
   [ChainId.OPTIMISM_MAINNET]: 'Optimism',
+  [ChainId.BSC_MAINNET]: 'Binance Chain',
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {

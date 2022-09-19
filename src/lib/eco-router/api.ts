@@ -75,6 +75,8 @@ export async function getExactIn(
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
 
+  console.log({ uniswapV2PlatformList })
+
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
       let pairs: Pair[] = []
@@ -195,6 +197,7 @@ export async function getExactIn(
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
+  console.log({ unsortedTradesWithUndefined, unsortedTrades })
   // Return the list of sorted trades
   return {
     errors,

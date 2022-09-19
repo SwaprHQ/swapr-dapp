@@ -3,6 +3,7 @@ import TextyAnim from 'rc-texty'
 import Entry1 from './../assets/images/blog/blog-entry-1.jpg'
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
 import Entry3 from './../assets/images/blog/blog-entry-3.jpg'
+import RoutingPancakeSwap from './../assets/images/bunny-mono.png'
 import Bridge from './../assets/images/features/bridge.png'
 import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
@@ -119,6 +120,10 @@ export const RoutingThroughContent = {
     {
       title: 'Curve',
       img: RoutingCurve,
+    },
+    {
+      title: 'PancakeSwap',
+      img: RoutingPancakeSwap,
     },
   ],
 }
