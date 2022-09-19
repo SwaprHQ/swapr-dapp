@@ -28,7 +28,6 @@ describe('Campaign creation tests', () => {
     MenuBar.connectWallet()
   })
   afterEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
     cy.clearCookies()
     cy.clearLocalStorage()
   })
