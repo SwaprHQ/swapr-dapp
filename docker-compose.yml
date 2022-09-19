@@ -8,7 +8,7 @@ services:
       - DISPLAY=display:0.0
       - PRIVATE_KEY=${PRIVATE_KEY}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - TEST_PARAMS="--configFile tests/synpress/synpress.config.ts"
+      - TEST_PARAMS=${TEST_PARAMS}
       - STABLE_MODE=true
     depends_on:
       - display

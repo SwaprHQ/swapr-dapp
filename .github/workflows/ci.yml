@@ -333,7 +333,7 @@ jobs:
 
       - name: Run synpress tests
         run: |
-          sudo ./start-tests.sh
+          sudo -E ./start-tests.sh
         continue-on-error: true
         env:
           CI: true
