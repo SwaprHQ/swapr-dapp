@@ -340,6 +340,7 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
           TEST_PARAMS: ${{ env.TEST_PARAMS }}
+          PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
           SLOW_MODE: true
           DISPLAY: ':99'
 
