@@ -7,7 +7,7 @@ import { FixedSizeListProps } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import TokenListLogo from '../../../assets/svg/tokenlist.svg'
+import TokenListLogo from '../../../assets/images/tokenlist.svg'
 import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
@@ -39,6 +39,7 @@ const CurrencyRow = ({
   isSelected,
   otherSelected,
   selectedTokenList,
+  hideBalance,
 }: CurrencyRowProps) => {
   const { account, chainId } = useActiveWeb3React()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
@@ -91,9 +92,9 @@ const CurrencyRow = ({
           </Box>
         )}
       </Flex>
-      <Box style={{ justifySelf: 'flex-end' }}>
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </Box>
+      {!hideBalance && (
+        <Box style={{ justifySelf: 'flex-end' }}>{balance ? <Balance balance={balance} /> : account && <Loader />}</Box>
+      )}
     </TokenPickerItem>
   )
 }
@@ -127,6 +128,7 @@ export const CurrencyList = ({
   selectedCurrency,
   onCurrencySelect,
   selectedTokenList,
+  hideBalance,
 }: CurrencyListProps) => {
   const { account } = useActiveWeb3React()
   const [hasBreakLine, setHasBreakLine] = useState(false)
@@ -186,6 +188,7 @@ export const CurrencyList = ({
             onSelect={handleSelect}
             otherSelected={otherSelected}
             style={style}
+            hideBalance={hideBalance}
           />
         )
       }
@@ -202,6 +205,7 @@ export const CurrencyList = ({
       selectedTokenList,
       setImportToken,
       showImportView,
+      hideBalance,
     ]
   )
 

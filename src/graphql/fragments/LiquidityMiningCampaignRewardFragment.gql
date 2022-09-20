@@ -1,0 +1,10 @@
+fragment LiquidityMiningCampaignRewardFragment on LiquidityMiningCampaignReward {
+  token {
+    address: id
+    name
+    symbol
+    decimals
+    derivedNativeCurrency
+  }
+  amount
+}

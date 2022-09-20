@@ -29,10 +29,10 @@ export const useCurrencySearchContextSwap = () => {
 }
 
 export const useCurrencySearchContextBridge = () => {
+  const { tokensOnFromChainId, tokensOnToChainId } = useBridgeSupportedTokens()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const searchToken = useBridgeToken(debouncedQuery)
-  const allTokens = useBridgeSupportedTokens()
   const selectedTokenList = useBridgeActiveTokenMap()
   const showFallbackTokens = false
 
@@ -41,8 +41,9 @@ export const useCurrencySearchContextBridge = () => {
     setSearchQuery,
     debouncedQuery,
     searchToken,
-    allTokens,
+    allTokens: tokensOnFromChainId,
     selectedTokenList,
     showFallbackTokens,
+    allTokensOnSecondChain: tokensOnToChainId,
   }
 }

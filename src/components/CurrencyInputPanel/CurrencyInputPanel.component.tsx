@@ -1,12 +1,12 @@
 import { Currency } from '@swapr/sdk'
 
-import debounce from 'lodash/debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { normalizeInputValue } from '../../utils'
+import { debounce } from '../../utils/debounce'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
@@ -51,6 +51,7 @@ export const CurrencyInputPanelComponent = ({
   maxAmount,
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
+  isOutputPanel,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -188,6 +189,7 @@ export const CurrencyInputPanelComponent = ({
           selectedCurrency={currency}
           otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
+          isOutputPanel={isOutputPanel}
         />
       )}
     </InputPanel>

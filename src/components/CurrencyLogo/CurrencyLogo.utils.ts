@@ -23,6 +23,7 @@ const trustWalletChainMapping: { [chainId in ChainId]?: string } = {
   [ChainId.POLYGON]: 'polygon',
   [ChainId.MAINNET]: 'ethereum',
   [ChainId.ARBITRUM_ONE]: 'arbitrum',
+  [ChainId.OPTIMISM_MAINNET]: 'optimism',
 }
 
 export const getTokenLogoURL = (address: string, chainId = ChainId.MAINNET) => {

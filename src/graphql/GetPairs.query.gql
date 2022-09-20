@@ -1,0 +1,11 @@
+query getPairs {
+  pairs(first: 1000) {
+    ...ReservePart
+    token0 {
+      ...TokenFragment
+    }
+    token1 {
+      ...TokenFragment
+    }
+  }
+}

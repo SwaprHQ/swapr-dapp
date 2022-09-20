@@ -6,6 +6,7 @@ const webpack = require('webpack')
 module.exports = (config, env) => {
   const isProd = env === 'production'
   const isAnalyze = process.env.BUNDLE_ANALYZE === 'true'
+  const lazyCompilation = process.env.LAZY_COMPILATION === 'true'
 
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
@@ -45,6 +46,10 @@ module.exports = (config, env) => {
       },
     },
   ]
+  config.experiments = {
+    ...config.experiments,
+    lazyCompilation,
+  }
 
   if (!isProd) {
     return config

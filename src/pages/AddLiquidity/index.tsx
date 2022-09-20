@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId, Currency, currencyEquals, JSBI, Percent, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -16,7 +16,7 @@ import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFlat } from '../../components/Row'
-import TradePrice from '../../components/swap/TradePrice'
+import TradePrice from '../../components/Swap/TradePrice'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { PairState } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -303,6 +303,13 @@ export default function AddLiquidity() {
   }, [onFieldAInput, onFieldBInput, txHash])
 
   const isCreate = location.pathname.includes('/create')
+
+  useEffect(() => {
+    return function inputCleanup() {
+      onFieldAInput('')
+      onFieldBInput('')
+    }
+  }, [onFieldAInput, onFieldBInput])
 
   return (
     <>

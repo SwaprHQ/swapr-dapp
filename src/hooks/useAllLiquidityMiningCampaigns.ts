@@ -1,10 +1,10 @@
 import { BigintIsh, Pair, Token } from '@swapr/sdk'
 
-import { gql, useQuery } from '@apollo/client'
 import { useCallback, useMemo } from 'react'
 
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { PairsFilterType } from '../components/Pool/ListFilter'
+import { useGetLiquidityMiningCampaignsQuery, useGetStakingCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
@@ -20,74 +20,6 @@ import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
-
-// Native fragments will not be resovled
-const CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS = ['address: id', 'name', 'symbol', 'decimals', 'derivedNativeCurrency']
-const CAMPAIGN_COMMON_FIEDLDS = ['duration', 'startsAt', 'endsAt', 'locked', 'stakingCap', 'stakedAmount']
-
-const SINGLE_SIDED_CAMPAIGNS = gql`
-  query($userId: ID) {
-    singleSidedStakingCampaigns(first: 999) {
-      id
-      owner
-      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
-      stakeToken {
-        id
-        symbol
-        name
-        decimals
-        totalSupply
-        derivedNativeCurrency
-      }
-      rewards {
-        token {
-          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
-        }
-        amount
-      }
-      singleSidedStakingPositions(where: { stakedAmount_gt: 0, user: $userId }) {
-        id
-      }
-    }
-  }
-`
-const REGULAR_CAMPAIGN = gql`
-  query($userId: ID) {
-    liquidityMiningCampaigns(first: 999) {
-      address: id
-      ${CAMPAIGN_COMMON_FIEDLDS.join('\r\n')}
-      rewards {
-        token {
-          ${CAMPAIGN_REWARDS_TOKEN_COMMON_FIEDLDS.join('\r\n')}
-        }
-        amount
-      }
-      stakablePair {
-        id
-        reserveNativeCurrency
-        reserveUSD
-        totalSupply
-        reserve0
-        reserve1
-        token0 {
-          address: id
-          name
-          symbol
-          decimals
-        }
-        token1 {
-          address: id
-          name
-          symbol
-          decimals
-        }
-      }
-      liquidityMiningPositions(where: { stakedAmount_gt: 0, user: $userId }) {
-        id
-      }
-    }
-  }
-`
 
 export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFilterType) {
   const token0Address = pair?.token0?.address.toLowerCase()
@@ -110,9 +42,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
     data: singleSidedCampaigns,
     loading: singleSidedLoading,
     error: singleSidedCampaignsError,
-  } = useQuery<{
-    singleSidedStakingCampaigns: SubgraphSingleSidedStakingCampaign[]
-  }>(SINGLE_SIDED_CAMPAIGNS, {
+  } = useGetStakingCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },
@@ -122,9 +52,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
     data: pairCampaigns,
     loading: campaignLoading,
     error: campaignError,
-  } = useQuery<{
-    liquidityMiningCampaigns: SubgraphLiquidityMiningCampaign[]
-  }>(REGULAR_CAMPAIGN, {
+  } = useGetLiquidityMiningCampaignsQuery({
     variables: {
       userId: subgraphAccountId,
     },
@@ -182,7 +110,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
         totalSupply,
         reserveNativeCurrency,
         kpiTokens,
-        campaign,
+        campaign as SubgraphLiquidityMiningCampaign,
         nativeCurrency
       )
 
@@ -215,7 +143,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
       )
         continue
       const containsKpiToken = !!campaign.rewards.find(
-        reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward.token.address.toLowerCase())
+        reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward?.token.address.toLowerCase())
       )
       const stakeToken = new Token(
         chainId,
@@ -229,7 +157,7 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
       try {
         singleSidedStakeCampaign = toSingleSidedStakeCampaign(
           chainId,
-          campaign,
+          campaign as SubgraphSingleSidedStakingCampaign,
           stakeToken,
           campaign.stakeToken.totalSupply,
           nativeCurrency,

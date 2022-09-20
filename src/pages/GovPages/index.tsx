@@ -12,7 +12,7 @@ import { SearchInputWithIcon } from '../../components/SearchInputWithIcon'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
-import { PageWrapper } from '../PageWrapper'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { MainPage, PairPage } from './constant'
 import Container from './Container'
 
@@ -69,7 +69,6 @@ export default function Governance() {
         </AutoColumn>
         <Container
           currentPage={router.query.asset === undefined ? MainPage : PairPage}
-          // @ts-expect-error: currency is passed as location state
           currency={router.location.state.currency}
         />
         {/** need to pass all informations to container like pairs, currencies etc  */}

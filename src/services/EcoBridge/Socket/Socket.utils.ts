@@ -35,7 +35,8 @@ const OVERRIDES = [
 ]
 
 export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO, toTokenDecimals?: number) => {
-  if (routes.length === 1 || !tokenData || !toTokenDecimals) return routes[0]
+  if (routes.length === 1 || !tokenData || !toTokenDecimals || typeof tokenData.result.tokenPrice !== 'number')
+    return routes[0]
 
   const {
     result: { tokenPrice },
@@ -221,9 +222,9 @@ export const VERSION = {
   patch: 0,
 }
 
+// TODO: To be reverted later
 export const SOCKET_LISTS_URL =
   'https://raw.githubusercontent.com/SwaprDAO/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
-
 // Pairs all provided chains
 export const socketSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains

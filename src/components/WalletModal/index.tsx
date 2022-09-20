@@ -5,12 +5,11 @@ import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
+import DxDao from '../../assets/images/dxdao.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import DxDao from '../../assets/svg/dxdao.svg'
 import { useUnsupportedChainIdError } from '../../hooks'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
-import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ModalView } from '../Web3Status'
@@ -104,9 +103,6 @@ const HoverText = styled.div`
 interface WalletModalProps {
   modal: ModalView | null
   setModal: (modal: ModalView | null) => void
-  pendingTransactions: string[]
-  confirmedTransactions: string[]
-  ENSName?: string
   tryActivation: (connector: AbstractConnector | undefined) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
@@ -114,9 +110,6 @@ interface WalletModalProps {
 }
 
 export default function WalletModal({
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
   modal,
   setModal,
   tryActivation,
@@ -189,20 +182,7 @@ export default function WalletModal({
         </UpperSection>
       )
     }
-    if (account && modal === ModalView.Account) {
-      return (
-        <AccountDetails
-          toggleWalletModal={closeModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={() => {
-            setModal(null)
-            toggleWalletSwitcherPopover()
-          }}
-        />
-      )
-    }
+
     return (
       <UpperSection>
         <CloseIcon onClick={closeModal}>

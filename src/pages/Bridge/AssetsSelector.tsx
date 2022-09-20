@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import TriangleIcon from '../../assets/svg/triangle.svg'
+import TriangleIcon from '../../assets/images/triangle.svg'
 import { NetworkOptions } from '../../components/NetworkSwitcher'
 import { RowBetween } from '../../components/Row'
 import { TagSuccess } from '../../components/Tag'

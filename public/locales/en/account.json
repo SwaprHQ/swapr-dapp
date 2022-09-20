@@ -1,0 +1,15 @@
+{
+  "copyAddress": "COPY ADDRESS",
+  "viewOnExplorer": "VIEW ON EXPLORER",
+  "pendingTransactions": "PENDING TRANSACTIONS",
+  "allNetworks": "ALL NETWORKS",
+  "from": "FROM",
+  "to": "TO",
+  "price": "PRICE",
+  "type": "TYPE",
+  "status": "STATUS",
+  "confirmedTime": "CONFIRMED TIME",
+  "createdTime": "CREATED TIME",
+  "changeWallet": "CHANGE WALLET",
+  "disconnect": "DISCONNECT"
+}

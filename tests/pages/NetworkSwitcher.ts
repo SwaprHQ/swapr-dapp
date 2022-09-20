@@ -14,13 +14,18 @@ export class NetworkSwitcher {
     return cy.get('[data-testid=rinkeby-network-button]').filter(':visible')
   }
   static arinkeby() {
-    return cy.get('[data-testid=a-rinkeby-network-button]').filter(':visible')
+    return cy
+      .get('[data-testid=a-rinkeby-network-button]')
+      .filter(':visible')
+      .should(element => {
+        expect(element.length).to.be.eq(1)
+      })
   }
   static getNetworkSwitcher() {
     return cy.get('[data-testid=network-switcher]').filter(':visible')
   }
   static polygon() {
-    return cy.get('[data-testid=polygon-network-button]')
+    return cy.get('[data-testid=polygon-network-button]').filter(':visible')
   }
   static checkNetwork(networkId: ChainsEnum) {
     cy.window().should(win => {
