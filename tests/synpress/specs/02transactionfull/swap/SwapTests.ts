@@ -25,6 +25,7 @@ describe('Swapping tests', () => {
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   afterEach(() => {
+    SwapPage.visitSwapPage()
     cy.disconnectMetamaskWalletFromAllDapps()
   })
   it('Should reject transaction on rinkeby', () => {
