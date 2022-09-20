@@ -48,7 +48,9 @@ export const PairSymbols = styled.div`
 `
 
 export const PairInfo = styled.div`
-  margin-left: 60px;
+  width: 10%;
+  margin-left: 20px;
+  overflow: hidden;
 
   & > div:nth-child(2) {
     margin-top: 10px;
