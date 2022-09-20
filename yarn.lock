@@ -5327,10 +5327,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.6.0-rc.4":
-  version "1.6.0-rc.4"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.0-rc.4.tgz#e3f502f1db4bc5866d6211e9eb01ef12326a2df6"
-  integrity sha512-spBuAxqh7cVl+hF4g16l5dkML0yi5LV2qGNGzysb9tNCa1gp9QBCeSyG4Tpl7ey7lLYyZeIDPrQt+13uNsMpXw==
+"@swapr/sdk@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.6.1.tgz#0316f8fad3ca5bc8e4c23b7861253c8ed4bb320b"
+  integrity sha512-eJ7XUTjHQo7D7az9Tn1TBblPp3KAYOvQOj+xh5cDEWj769PEVf5XRoLTz6HKqXf2rFjARp/d3RJtozPf3eWIJg==
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
