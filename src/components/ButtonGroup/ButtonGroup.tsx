@@ -2,6 +2,7 @@ import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 export const ButtonGroup = styled(Flex)`
+  width: fit-content;
   background: ${({ theme }) => theme.dark1};
   border-radius: 12px;
   padding: 3px;
