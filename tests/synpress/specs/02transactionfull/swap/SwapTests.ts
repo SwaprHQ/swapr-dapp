@@ -27,10 +27,6 @@ describe('Swapping tests', () => {
   afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
-  after(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
-    MenuBar.getConnectWalletButton().should('be.visible')
-  })
   it('Should reject transaction on rinkeby', () => {
     SwapPage.chooseTokes('xeenus', 'weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
