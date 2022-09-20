@@ -35,8 +35,6 @@ describe('Wrapping tests', () => {
       .wrap()
     cy.confirmMetamaskTransaction({})
 
-    TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
-
     MenuBar.checkToastMessage('Wrap')
 
     TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE, true)
@@ -50,8 +48,6 @@ describe('Wrapping tests', () => {
       .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
       .unwrap()
     cy.confirmMetamaskTransaction({})
-
-    TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
     MenuBar.checkToastMessage('Unwrap')
 
