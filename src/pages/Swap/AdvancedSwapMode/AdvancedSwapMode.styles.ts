@@ -32,7 +32,7 @@ export const AdvancedSwapModeContainer = styled.div`
   backdrop-filter: blur(10px);
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 0.9fr)) minmax(0, 1.1fr);
   gap: 15px;
   padding: 0 20px;
 `

@@ -78,6 +78,7 @@ export type AdapterFetchDetails = {
 export enum AdapterAmountToFetch {
   pairTrades = 10,
   pairActivity = 3,
+  limit = 30,
 }
 
 export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {

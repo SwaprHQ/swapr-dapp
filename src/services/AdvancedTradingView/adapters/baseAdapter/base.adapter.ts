@@ -60,7 +60,7 @@ export class BaseAdapter<
     isFirstFetch,
     abortController,
   }: AdapterFetchDetails) {
-    if (!this._isSupportedChainId(this._chainId)) return
+    if (!this.isSupportedChainId(this._chainId)) return
 
     const pairId = this._getPairId(inputToken, outputToken)
 
@@ -94,7 +94,7 @@ export class BaseAdapter<
     isFirstFetch,
     abortController,
   }: AdapterFetchDetails) {
-    if (!this._isSupportedChainId(this._chainId)) return
+    if (!this.isSupportedChainId(this._chainId)) return
 
     const pairId = this._getPairId(inputToken, outputToken)
 
