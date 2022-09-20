@@ -4,7 +4,8 @@ import debugFactory from 'debug'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 
 import { loadFathom } from '../fathom'
-import { FathomSiteInformation, siteEvents } from '../generated'
+import { siteEvents as siteEventsDev } from '../generated/dev'
+import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
 import * as trackers from '../trackers'
 import { computeTradeId } from '../utils'
 import { AnalyticsContext, IAnalyticsContext } from './analytics.context'
@@ -62,6 +63,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
 
     const siteId = process.env.REACT_APP_FATHOM_SITE_ID
     const siteScriptURL = process.env.REACT_APP_FATHOM_SITE_SCRIPT_URL
+    const siteEvents = process.env.NODE_ENV === 'production' ? siteEventsProd : siteEventsDev
 
     debug('Loading Fathom', { siteId, siteScriptURL })
 
@@ -86,7 +88,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     loadFathom(siteId, siteScriptURL)
       .then(() => {
         debug('loadFathom: Fathom loaded. Setting siteEvents', { siteEvents })
-        setSite(siteEvents)
+        setSite(siteEvents as FathomSiteInformation)
         startQueueProcessing() // Start the queue processing
       })
       .catch(error => {

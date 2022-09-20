@@ -38,4 +38,4 @@ mochawesome-report
 .eslintcache
 
 **/generated/**/*
-!src/analytics/generated/*
+!src/analytics/generated/**/*
