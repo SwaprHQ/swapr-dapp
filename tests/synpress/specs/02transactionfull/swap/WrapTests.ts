@@ -15,7 +15,6 @@ describe('Wrapping tests', () => {
   })
 
   beforeEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
     cy.clearLocalStorage()
     cy.clearCookies()
     SwapPage.visitSwapPage()
