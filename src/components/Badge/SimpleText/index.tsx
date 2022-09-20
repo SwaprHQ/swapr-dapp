@@ -7,7 +7,7 @@ const BadgeText = styled.div<{ color: string }>`
   color: ${props => props.color};
   border-radius: 4px;
   width: fit-content;
-  padding: 0 4px;
+  padding: 2px 4px;
   font-size: 9px;
   font-weight: bold;
 `

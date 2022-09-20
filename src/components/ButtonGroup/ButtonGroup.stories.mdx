@@ -1,0 +1,18 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
+import { Flex } from 'rebass'
+
+import { ButtonGroup, ButtonGroupOption } from './ButtonGroup'
+
+<Meta title="ButtonGroup" component={ButtonGroup} />
+
+<Canvas>
+  <Story name="ButtonGroup">
+    <Flex bg="#a4a1ca" p={5} justifyContent="center" alignItems="center">
+      <ButtonGroup>
+        <ButtonGroupOption active={false}>Chart</ButtonGroupOption>
+        <ButtonGroupOption active={false}>Pro</ButtonGroupOption>
+        <ButtonGroupOption active={false}>Off</ButtonGroupOption>
+      </ButtonGroup>
+    </Flex>
+  </Story>
+</Canvas>

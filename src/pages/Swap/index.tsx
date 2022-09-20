@@ -24,7 +24,7 @@ import Footer from './../../components/LandingPageComponents/layout/Footer'
 import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
-import { ChartOptionsButtons } from './ChartOptionsButtons'
+import { ChartToggle } from './ChartToggle'
 
 const AppBody = styled.section`
   display: flex;
@@ -99,15 +99,9 @@ export default function Swap() {
           flexDirection={['column', 'column', 'column', 'row']}
         >
           <AppBody>
-            <Flex
-              mb={3}
-              alignItems="center"
-              justifyContent="space-between"
-              width="100%"
-              flexDirection={['column-reverse', 'row']}
-            >
+            <Flex mb={3} alignItems="center" justifyContent="space-between" width="100%">
               <Tabs />
-              <ChartOptionsButtons
+              <ChartToggle
                 hasBothCurrenciesInput={hasBothCurrenciesInput}
                 selectedChartOption={selectedChartOption}
                 setselectedChartOption={setselectedChartOption}

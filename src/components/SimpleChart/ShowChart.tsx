@@ -21,6 +21,6 @@ export const ShowChart = ({ loading, data, tokenSymbol, showHours }: ShowChartPr
   ) : hasData ? (
     <AreaChartTokenPrice data={data} tokenSymbol={tokenSymbol} showHours={showHours} />
   ) : (
-    <TYPE.DarkGray>{t('pairNoData')}</TYPE.DarkGray>
+    <TYPE.DarkGray textAlign="center">{t('pairNoData')}</TYPE.DarkGray>
   )
 }
