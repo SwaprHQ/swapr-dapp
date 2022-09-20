@@ -11,8 +11,13 @@ type ActiveCurrencyDetails = {
   relativePrice: number | undefined
 }
 
-const calculate24hVolumeForActiveCurrencyOption = (volume24hUSD: CurrencyAmount, price: Price) =>
-  volume24hUSD.divide(price.toFixed(0)).toFixed(0)
+const calculate24hVolumeForActiveCurrencyOption = (volume24hUSD: CurrencyAmount, price: Price) => {
+  try {
+    return volume24hUSD.divide(price.toFixed(0)).toFixed(0)
+  } catch (e) {
+    return '0'
+  }
+}
 
 export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOption?: Token) => {
   const [pairAddress, setPairAddress] = useState('')
@@ -76,7 +81,6 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     token0?.address,
     token0Price.price,
     token1Price.price,
-    token1Price,
     activeCurrencyOption,
     token0,
   ])
