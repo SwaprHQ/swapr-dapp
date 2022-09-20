@@ -24,7 +24,7 @@ describe('Wrapping tests', () => {
       balanceBefore = parseInt(response.body.result)
     })
   })
-  after(() => {
+  afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
   })
 
@@ -41,12 +41,8 @@ describe('Wrapping tests', () => {
   })
 
   it('Should unwrap WETH to ETH [TC-06]', () => {
-    SwapPage.openTokenToSwapMenu()
-      .searchAndChooseToken('eth')
-      .openTokenToSwapMenu()
-      .searchAndChooseToken('weth')
-      .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-      .unwrap()
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('weth').switchTokens()
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString()).unwrap()
     cy.confirmMetamaskTransaction({})
 
     MenuBar.checkToastMessage('Unwrap')
