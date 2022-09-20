@@ -19,20 +19,13 @@ const expressions = {
   type: new RegExp('^(?<type>[A-Za-z]+)'),
 }
 
-export const mapBridgeIdToDisplayName = (bridgeId: BridgeList) => {
-  switch (bridgeId) {
-    case 'arbitrum:mainnet':
-    case 'arbitrum:testnet':
-      return 'Arbitrum'
-    case 'connext':
-      return 'Connext'
-    case 'omnibridge:eth-xdai':
-      return 'Omnibridge'
-    case 'socket':
-      return 'Socket'
-    case 'xdai':
-      return 'xDai'
-  }
+export const bridgeIdToDisplayNameMap: { [k in BridgeList]: string } = {
+  'arbitrum:mainnet': 'Arbitrum',
+  'arbitrum:testnet': 'Arbitrum Testnet',
+  'omnibridge:eth-xdai': 'Omnibridge',
+  connext: 'Connext',
+  socket: 'Socket',
+  xdai: 'xDai',
 }
 
 export const formattedTransactions = (
