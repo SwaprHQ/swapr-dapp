@@ -1,6 +1,7 @@
 import { MenuBar } from '../../../../pages/MenuBar'
 import { SwapPage } from '../../../../pages/SwapPage'
 import { LiquidityPage } from '../../../../pages/LiquidityPage'
+import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
 describe('Add liquidity', () => {
   const TRANSACTION_VALUE: number = 0.000001
@@ -14,15 +15,21 @@ describe('Add liquidity', () => {
   let secondTokenBalance: number = 0
 
   before(() => {
-    cy.clearLocalStorage()
-    cy.clearCookies()
-    SwapPage.visitSwapPage()
+    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+  })
+  beforeEach(() => {
+    LiquidityPage.visitLiquidityPage()
     MenuBar.connectWallet()
+  })
+  afterEach(() => {
+    cy.disconnectMetamaskWalletFromAllDapps()
+    cy.clearCookies()
+    cy.clearLocalStorage()
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    //TODO: delete wait after synpress resolve bug
-    cy.wait(1000)
+    cy.resetMetamaskAccount()
+    cy.wait(500)
   })
 
   it('Should get balance of tokens from liquidity pool [TC-59]', () => {

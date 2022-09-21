@@ -30,7 +30,7 @@ export const ValueWithLabel = ({
       {children ? (
         children
       ) : (
-        <Value big={big} textAlign={center ? 'center' : 'left'} data-testid="token-balance">
+        <Value big={big} textAlign={center ? 'center' : 'left'}>
           {value}
         </Value>
       )}

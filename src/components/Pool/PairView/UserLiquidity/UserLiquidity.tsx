@@ -81,7 +81,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
               <Box mr="6px">
                 <CurrencyLogo size="14px" currency={currency0} />
               </Box>
-              <TextWithColor fontSize={['13px', '15px']}>
+              <TextWithColor fontSize={['13px', '15px']} data-testid="token-balance">
                 {token0Deposited ? token0Deposited.toSignificant(6) : '0'}
               </TextWithColor>
             </Flex>
@@ -91,7 +91,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
               <Box mr="6px">
                 <CurrencyLogo size="14px" currency={currency1} />
               </Box>
-              <TextWithColor fontSize={['13px', '15px']}>
+              <TextWithColor fontSize={['13px', '15px']} data-testid="token-balance">
                 {token1Deposited ? token1Deposited.toSignificant(6) : '0'}
               </TextWithColor>
             </Flex>
