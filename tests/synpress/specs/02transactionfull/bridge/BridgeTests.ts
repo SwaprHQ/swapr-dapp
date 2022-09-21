@@ -12,6 +12,10 @@ describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
+  beforeEach(() => {
+    BridgePage.visitBridgePage()
+  })
+
   before(() => {
     ScannerFacade.erc20TokenBalance(
       AddressesEnum.USDC_TOKEN_ARINKEBY,
