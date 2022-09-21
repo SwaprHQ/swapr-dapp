@@ -1,6 +1,7 @@
 export class BridgePage {
   static visitBridgePage() {
     cy.visit('/#/bridge')
+    BridgePage.getBridgeButton().should('be.visible')
   }
   static getNetworkFromSelector() {
     return cy.get('[data-testid=from-network-selector]')
