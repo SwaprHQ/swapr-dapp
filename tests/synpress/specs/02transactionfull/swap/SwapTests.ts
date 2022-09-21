@@ -14,11 +14,6 @@ describe('Swapping tests', () => {
   let ethBalanceBefore: number
   let ercBalanceBefore: number
 
-  before(() => {
-    SwapPage.visitSwapPage()
-    MenuBar.connectWallet()
-    cy.disconnectMetamaskWalletFromAllDapps()
-  })
   beforeEach(() => {
     SwapPage.visitSwapPage()
     MenuBar.connectWallet()

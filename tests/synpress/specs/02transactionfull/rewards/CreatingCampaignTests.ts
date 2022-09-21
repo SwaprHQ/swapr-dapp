@@ -34,7 +34,6 @@ describe('Campaign creation tests', () => {
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.resetMetamaskAccount()
     cy.wait(500)
   })
 

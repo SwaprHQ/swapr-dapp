@@ -21,13 +21,17 @@ export class MetamaskNetworkHandler {
       isTestnet: true,
     })
   }
-  static switchToNetworkIfNotConnected(desiredNetwork: string = 'rinkeby') {
-    cy.getNetwork().then((network?: Network) => {
-      cy.log('!!!!!!!!!!!!!!!!!!!!!!')
-      cy.log(desiredNetwork)
-      cy.log(network?.networkName!)
-      if (network?.networkName.toLowerCase() !== desiredNetwork.toLowerCase()) {
-        cy.changeMetamaskNetwork(desiredNetwork)
+  static switchToNetworkIfNotConnected(desiredNetwork: string = 'rinkeby', retries = 0) {
+    cy.getNetwork().then((network: Network | undefined) => {
+      try {
+        if (network?.networkName.toLowerCase() === desiredNetwork.toLowerCase()) {
+          return true
+        }
+        this.switchToNetworkIfNotConnected(desiredNetwork, ++retries)
+      } catch (err) {
+        if (retries > 10) {
+          throw new Error('Retried too many times to fetch current network from metamask')
+        }
       }
     })
   }
