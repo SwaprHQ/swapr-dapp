@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
+import { AnalyticsProvider } from './analytics'
 import { NetworkContextName } from './constants'
 import './i18n'
 import App from './pages/App'
@@ -55,21 +56,23 @@ const root = createRoot(container)
 root.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <EcoBridgeProvider>
-            <Updaters />
-            <ThemeProvider>
-              <ThemedGlobalStyle />
-              <HashRouter>
-                <MultiChainLinksUpdater />
-                <App />
-              </HashRouter>
-            </ThemeProvider>
-          </EcoBridgeProvider>
-        </Provider>
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
+    <AnalyticsProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ProviderNetwork getLibrary={getLibrary}>
+          <Provider store={store}>
+            <EcoBridgeProvider>
+              <Updaters />
+              <ThemeProvider>
+                <ThemedGlobalStyle />
+                <HashRouter>
+                  <MultiChainLinksUpdater />
+                  <App />
+                </HashRouter>
+              </ThemeProvider>
+            </EcoBridgeProvider>
+          </Provider>
+        </Web3ProviderNetwork>
+      </Web3ReactProvider>
+    </AnalyticsProvider>
   </StrictMode>
 )
