@@ -48,9 +48,9 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
           <PairSymbols>
             {token0.symbol}/{token1.symbol}
           </PairSymbols>
-          <ChevronDown style={{ cursor: 'pointer' }} onClick={handleOpenModal} size="40px" />
+          <ChevronDown style={{ cursor: 'pointer' }} onClick={handleOpenModal} />
         </Flex>
-        <Flex flexBasis="100%" sx={{ marginLeft: '40px' }}>
+        <Flex flexBasis="80%">
           <PairInfo>
             <PairValueChange size="16px" positive={true}>
               {isLoadingVolume24hUSD ? (
