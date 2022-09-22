@@ -232,7 +232,7 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }

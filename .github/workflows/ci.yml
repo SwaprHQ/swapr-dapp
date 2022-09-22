@@ -343,6 +343,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
           SLOW_MODE: true
           DISPLAY: ':99'
+          CYPRESS_RESOURCES_WAIT: true
 
       - name: Merge test results into one
         if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
