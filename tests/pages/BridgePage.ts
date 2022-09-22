@@ -1,7 +1,7 @@
 export class BridgePage {
   static visitBridgePage() {
     cy.visit('/#/bridge')
-    BridgePage.getBridgeButton().should('be.visible')
+    BridgePage.getBridgeInput().should('be.visible')
   }
   static getNetworkFromSelector() {
     return cy.get('[data-testid=from-network-selector]')
@@ -53,5 +53,8 @@ export class BridgePage {
   }
   static closeTransactionErrorModal() {
     return cy.get('[data-testid=close-icon]').filter(':visible').click()
+  }
+  static getBridgeInput() {
+    return cy.get('#bridge-currency-input')
   }
 }
