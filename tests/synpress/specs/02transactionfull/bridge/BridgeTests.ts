@@ -12,9 +12,7 @@ describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
-  beforeEach(() => {
-    BridgePage.visitBridgePage()
-  })
+  beforeEach(() => {})
 
   before(() => {
     ScannerFacade.erc20TokenBalance(
