@@ -240,7 +240,9 @@ describe('Swapping tests', () => {
   it('Should reject transaction in expert mode [TC-54]', () => {
     MenuBar.getSettings().click()
     TransactionSettings.switchExpertModeOn()
-    SwapPage.chooseTokes('xeenus', 'weth')
+
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
+
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap()
 

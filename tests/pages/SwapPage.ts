@@ -37,7 +37,7 @@ export class SwapPage {
   }
 
   static swap() {
-    this.getSwapButton().should('contain.text', 'Swap').click({ force: true })
+    this.getSwapButton().should('contain.text', 'Swap').click()
     return this
   }
 
