@@ -37,7 +37,8 @@ describe('Bridge tests', () => {
     cy.wait(500)
   })
 
-  it('Should initiate a bridging ', function () {
+  //TODO Change network to Goerli and uncomment
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }

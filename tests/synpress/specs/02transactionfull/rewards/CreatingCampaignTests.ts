@@ -12,7 +12,8 @@ import { CampaignPage } from '../../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../../utils/TestTypes'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-describe('Campaign creation tests', () => {
+// TODO unskip and change network to Goerli when contracts are deployed
+describe.skip('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
@@ -75,7 +76,7 @@ describe('Campaign creation tests', () => {
       isCampaignCreated = true
     })
   })
-  it.skip('Should open a campaign through liquidity pair [TC-60]', function () {
+  it('Should open a campaign through liquidity pair [TC-60]', function () {
     if (!isCampaignCreated) {
       this.skip()
     }
@@ -99,7 +100,7 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
+  it('Should open a campaign through Rewards page [TC-60]', function () {
     if (!isCampaignCreated) {
       this.skip()
     }
