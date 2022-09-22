@@ -7,7 +7,6 @@ import styled from 'styled-components'
 
 import { SimpleChartContainer } from '../../components/SimpleChart/SimpleChartContainer'
 import { Tabs } from '../../components/Swap/Tabs'
-import { Swapbox } from '../../components/Swapbox/Swapbox'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
@@ -25,6 +24,7 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
 import { ChartToggle } from './ChartToggle'
+import { Swapbox } from './Swapbox/Swapbox'
 
 const AppBody = styled.section`
   display: flex;
