@@ -40,7 +40,7 @@
     "@reduxjs/toolkit": "^1.8.3",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "git+https://git@github.com/levelkdev/swapr-sdk.git#v1.7.0-rc.1",
+    "@swapr/sdk": "git+ssh://git@github.com/levelkdev/swapr-sdk.git#v1.7.0-rc.1",
     "@uniswap/v3-periphery": "1.4.1",
     "@uniswap/smart-order-router": "^2.9.3",
     "@types/react-helmet": "^6.1.5",
