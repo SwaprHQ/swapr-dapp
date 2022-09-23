@@ -70,7 +70,13 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
                 <Repeat size={12} />
               </Flex>
             </PairTab>
-            <PairValueChange positive={false}>55 | -3.42%</PairValueChange>
+            {!activeCurrencyDetails.priceChange24h ? (
+              <Skeleton width="100px" height="14px" />
+            ) : (
+              <PairValueChange positive={Boolean(activeCurrencyDetails.isIncome24h)}>
+                ${activeCurrencyDetails.priceChange24h} | {activeCurrencyDetails.percentPriceChange24h}%
+              </PairValueChange>
+            )}
           </PairInfo>
           <PairInfo>
             <PairTab>{t('advancedTradingView.High24')}</PairTab>

@@ -1,4 +1,4 @@
-import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Route, Token, Trade } from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'

@@ -91,6 +91,8 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   const [price, setPrice] = useState<Price | undefined>()
+  const [priceChange24h, setPriceChange24h] = useState<Price | undefined>()
+  const [isIncome24h, setIsIncome24h] = useState<boolean | undefined>()
   const [error, setError] = useState<Error | undefined>()
 
   // token is deep nested and we only really care about token address changing
@@ -118,9 +120,13 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
         .then(priceResponse => {
           setError(undefined)
 
-          if (!priceResponse?.amount) return
+          if (!priceResponse?.amount || !priceResponse.amountChange24h) return
 
-          const { amount: apiUsdPrice } = priceResponse
+          const {
+            amount: apiUsdPrice,
+            amountChange24h: apiUsdChangePrice24h,
+            isIncome24h: apiIsIncome24h,
+          } = priceResponse
           // api returns converted units e.g $2.25 instead of 2255231233312312 (atoms)
           // we need to parse all USD returned amounts
           // and convert to the same currencyRef.current for both sides (SDK math invariant)
@@ -146,6 +152,35 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
           })
 
           setPrice(usdPrice)
+
+          setIsIncome24h(apiIsIncome24h)
+
+          // TODO: move to separate method
+          const quoteAmountChange24h = tryParseAmount(
+            apiUsdChangePrice24h,
+            STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].stablecoin,
+            chainId
+          )
+
+          // parse failure is unlikely - type safe
+          if (!quoteAmountChange24h) return
+          // create a new Price object
+          // we need to calculate the scalar
+          // to take the different decimal places
+          // between tokens into account
+          const scalarChange24h = new Fraction(
+            JSBI.exponentiate(TEN, JSBI.BigInt(baseAmount.currency.decimals)),
+            JSBI.exponentiate(TEN, JSBI.BigInt(quoteAmountChange24h.currency.decimals))
+          )
+          const resultChange24h = quoteAmountChange24h.divide(scalarChange24h).divide(baseAmount)
+          const usdPriceChange24h = new Price({
+            baseCurrency: baseAmount.currency,
+            quoteCurrency: quoteAmountChange24h.currency,
+            denominator: resultChange24h.denominator,
+            numerator: resultChange24h.numerator,
+          })
+
+          setPriceChange24h(usdPriceChange24h)
         })
         .catch(error => {
           console.error(
@@ -170,7 +205,7 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
     // don't depend on token (deep nested object)
   }, [chainId, tokenAddress, isNativeCurrency])
 
-  return { price, error }
+  return { price, priceChange24h, isIncome24h, error }
 }
 
 interface GetPriceQuoteParams {
