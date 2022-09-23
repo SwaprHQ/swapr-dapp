@@ -22,6 +22,9 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 import './theme/fonts.css'
 
+// Add Content Security Policy nonce to the scripts
+__webpack_nonce__ = process.env.REACT_APP_CSP_NONCE!
+
 // Enables use of the useWhatChanged hook in dev environment
 setUseWhatChange({
   active: process.env.NODE_ENV === 'development',
