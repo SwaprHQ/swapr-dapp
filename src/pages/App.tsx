@@ -9,6 +9,7 @@ import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import { FallbackLoader } from '../components/Loader/FallbackLoader'
 import NetworkWarningModal from '../components/NetworkWarningModal'
+import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
@@ -76,35 +77,42 @@ export default function App() {
   }, [])
 
   return (
-    <Suspense fallback={null}>
-      <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
-        <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
-          <NetworkWarningModal />
-          <AppWrapper id="app-wrapper">
-            <HeaderWrapper>
-              <Header />
-            </HeaderWrapper>
-            <BodyWrapper>
-              <Web3ReactManager>
-                <SpaceBg>
-                  <Suspense fallback={<FallbackLoader />}>
-                    <Routes />
-                  </Suspense>
-                </SpaceBg>
-              </Web3ReactManager>
-              <Marginer />
-            </BodyWrapper>
-          </AppWrapper>
-          <ToastContainer
-            draggable={false}
-            className="custom-toast-root"
-            toastClassName="custom-toast-container"
-            bodyClassName="custom-toast-body"
-            position="top-right"
-            transition={Slide}
-          />
-        </ApolloProvider>
-      </SkeletonTheme>
-    </Suspense>
+    <>
+      <PageMetaData
+        title="Swap"
+        description="A governance-enabled automated market maker with adjustable fees."
+        noIndex={process.env.REACT_APP_BUILD_ENV === 'staging'}
+      />
+      <Suspense fallback={null}>
+        <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
+          <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
+            <NetworkWarningModal />
+            <AppWrapper id="app-wrapper">
+              <HeaderWrapper>
+                <Header />
+              </HeaderWrapper>
+              <BodyWrapper>
+                <Web3ReactManager>
+                  <SpaceBg>
+                    <Suspense fallback={<FallbackLoader />}>
+                      <Routes />
+                    </Suspense>
+                  </SpaceBg>
+                </Web3ReactManager>
+                <Marginer />
+              </BodyWrapper>
+            </AppWrapper>
+            <ToastContainer
+              draggable={false}
+              className="custom-toast-root"
+              toastClassName="custom-toast-container"
+              bodyClassName="custom-toast-body"
+              position="top-right"
+              transition={Slide}
+            />
+          </ApolloProvider>
+        </SkeletonTheme>
+      </Suspense>
+    </>
   )
 }

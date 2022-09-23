@@ -10,17 +10,12 @@ export class SwapPage {
   }
 
   static openTokenToSwapMenu() {
-    this.getSelectTokenButton()
-      .should(element => {
-        expect(element.length).to.be.eq(1)
-      })
-      .filter(':visible')
-      .click()
+    SwapPage.getCurrencySelectors().last().click()
     return TokenMenu
   }
 
   static typeValueFrom(value: string) {
-    this.getFromInput().type(value, { delay: 200 })
+    this.getFromInput().type(value)
     return this
   }
   static typeValueTo(value: string) {
@@ -42,7 +37,7 @@ export class SwapPage {
   }
 
   static swap() {
-    this.getSwapButton().should('contain.text', 'Swap').click({ force: true })
+    this.getSwapButton().should('contain.text', 'Swap').click()
     return this
   }
 

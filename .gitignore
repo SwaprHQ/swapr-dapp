@@ -12,7 +12,7 @@
 # misc
 .DS_Store
 .env.local
-.env.test.local
+.env.development.local
 .env.production.local
 
 /.netlify
@@ -38,3 +38,4 @@ mochawesome-report
 .eslintcache
 
 **/generated/**/*
+!src/analytics/generated/**/*
