@@ -20,6 +20,7 @@ describe('Swapping tests', () => {
   })
   beforeEach(() => {
     MetamaskNetworkHandler.switchToNetworkIfNotConnected()
+    SwapPage.visitSwapPage()
   })
   afterEach(() => {
     SwapPage.visitSwapPage()
@@ -29,7 +30,7 @@ describe('Swapping tests', () => {
   })
 
   it('Should reject transaction on rinkeby', () => {
-    SwapPage.chooseTokes('xeenus', 'weth')
+    SwapPage.chooseTokes('weenus', 'weth')
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap().confirmSwap()
 
@@ -241,7 +242,7 @@ describe('Swapping tests', () => {
     MenuBar.getSettings().click()
     TransactionSettings.switchExpertModeOn()
 
-    SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('weenus')
 
     SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
     SwapPage.swap()
