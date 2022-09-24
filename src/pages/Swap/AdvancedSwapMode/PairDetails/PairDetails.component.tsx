@@ -74,7 +74,7 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
               <Skeleton width="100px" height="14px" />
             ) : (
               <PairValueChange positive={Boolean(activeCurrencyDetails.isIncome24h)}>
-                ${activeCurrencyDetails.priceChange24h} | {activeCurrencyDetails.percentPriceChange24h}%
+                {activeCurrencyDetails.priceChange24h} | {activeCurrencyDetails.percentPriceChange24h}%
               </PairValueChange>
             )}
           </PairInfo>

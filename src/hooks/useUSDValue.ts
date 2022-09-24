@@ -94,6 +94,7 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   const [priceChange24h, setPriceChange24h] = useState<Price | undefined>()
   const [isIncome24h, setIsIncome24h] = useState<boolean | undefined>()
   const [error, setError] = useState<Error | undefined>()
+  const [loading, setLoading] = useState<boolean | undefined>()
 
   // token is deep nested and we only really care about token address changing
   // so we ref it here as to avoid updating useEffect
@@ -104,11 +105,13 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   useEffect(() => {
     const fetchPrice = () => {
       const baseAmount = tryParseAmount('1', tokenRef.current)
+      console.log(baseAmount)
 
       if (!chainId || !tokenAddress || !baseAmount) return
 
       let getUSDPriceQuote
 
+      setLoading(true)
       if (isNativeCurrency) {
         getUSDPriceQuote = getUSDPriceCurrencyQuote({ chainId })
       } else {
@@ -179,8 +182,9 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
             denominator: resultChange24h.denominator,
             numerator: resultChange24h.numerator,
           })
-
+          console.log(usdPriceChange24h.toFixed(2))
           setPriceChange24h(usdPriceChange24h)
+          setLoading(false)
         })
         .catch(error => {
           console.error(
@@ -205,7 +209,7 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
     // don't depend on token (deep nested object)
   }, [chainId, tokenAddress, isNativeCurrency])
 
-  return { price, priceChange24h, isIncome24h, error }
+  return { price, priceChange24h, isIncome24h, error, loading }
 }
 
 interface GetPriceQuoteParams {
