@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 import { Loader } from '../../../../../../components/Loader'
 import { ExpeditionsAPI } from '../../../../api'
 import { ClaimWeeklyFragmentsTypeEnum } from '../../../../api/generated'
 import { signatureMessageByType } from '../../../../constants'
-import { ExpeditionsContext } from '../../../../contexts/ExpeditionsContext'
+import { useExpeditions } from '../../../../contexts/ExpeditionsContext'
 import { computeFragmentState } from '../../../../utils'
 import { TaskCard as TaskCardBase, TaskCardProps } from '../../../ExpeditionsCard'
 
@@ -19,7 +19,7 @@ const TaskCard = (props: Omit<TaskCardProps, 'description' | 'duration' | 'title
 
 export function LiquidityProvisionTaskCard() {
   const [isClaiming, setIsClaiming] = useState(false)
-  const { rewards, isLoading, provider, setRewards } = useContext(ExpeditionsContext)
+  const { rewards, isLoading, provider, setRewards } = useExpeditions()
 
   if (isLoading) {
     return <TaskCard buttonText={<Loader style={{ width: '97.25px' }} />} buttonDisabled status="loading" />
