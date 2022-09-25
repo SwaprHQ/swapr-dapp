@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 
-import SwprLogo from '../../../../assets/images/swpr-logo.png'
+import { ReactComponent as SwaprLogo } from '../../../../assets/images/swapr-logo.svg'
 import { AutoColumn } from '../../../../components/Column'
+import { HeaderButton } from '../../../../components/Header/HeaderButton'
 import Modal from '../../../../components/Modal'
 import Row from '../../../../components/Row'
 import { useShowExpeditionsPopup } from '../../../../state/application/hooks'
-import { TYPE } from '../../../../theme'
+import { CloseIcon, TYPE } from '../../../../theme'
 import { LiquidityProvisionTaskCard } from './partials/LiquidityProvisionTaskCard/LiquidityProvisionTaskCard'
 import { LiquidityStakingTaskCard } from './partials/LiquidityStakingTaskCard'
 
@@ -34,9 +35,13 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
     <Modal maxWidth={630} onDismiss={onDismiss} isOpen={open}>
       <ContentWrapper gap="lg">
         <AutoColumn gap={'32px'}>
-          <Row justifyContent={'center'} gap={'8px'}>
-            <img src={SwprLogo} alt="SwprLogo" style={{ height: '40px' }} />
-            <TYPE.LargeHeader>Swapr Expeditions</TYPE.LargeHeader>
+          <Row>
+            <CloseIcon style={{ visibility: 'hidden' }} />
+            <Row justifyContent={'center'} gap={'16px'}>
+              <SwaprLogo />
+              <HeaderButton glow>&#10024;&nbsp;Expeditions</HeaderButton>
+            </Row>
+            <CloseIcon onClick={onDismiss} />
           </Row>
           <Row>
             <Text>
