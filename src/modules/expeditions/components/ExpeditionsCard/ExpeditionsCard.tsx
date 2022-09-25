@@ -4,7 +4,7 @@ import { ButtonConfirmed } from '../../../../components/Button'
 import Row from '../../../../components/Row'
 import { TagFailed, TagSuccess, TagWarning } from '../../../../components/Tag'
 import { TYPE } from '../../../../theme'
-import { Card, StyledExternalLink, Wrapper } from './ExpeditionsCard.styled'
+import { Card, StyledExternalLink, Wrapper } from '../shared'
 
 type StatusTags = 'active' | 'upcoming' | 'expired' | 'loading'
 
