@@ -3,6 +3,7 @@ import {
   Currency,
   CurrencyAmount,
   DXD,
+  GNO,
   JSBI,
   Percent,
   RoutablePlatform,
@@ -169,7 +170,7 @@ export const MATIC: { [key: number]: Token } = {
   ),
 }
 
-export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
+export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
   ChainId.XDAI,
@@ -197,6 +198,19 @@ export const OP: { [key: number]: Token } = {
     'OP',
     'Optimism'
   ),
+}
+
+export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
+  [ChainId.GNOSIS]: GNO.address,
+  [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
+  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
+  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
+  [ChainId.RINKEBY]: '',
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.GOERLI]: '',
+  [ChainId.ARBITRUM_GOERLI]: '',
+  [ChainId.OPTIMISM_GOERLI]: '',
 }
 
 // used to construct intermediary pairs for trading

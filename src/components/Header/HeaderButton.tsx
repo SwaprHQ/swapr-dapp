@@ -8,24 +8,29 @@ const gradientAnimation = keyframes`
 
 export const HeaderButton = styled.div<{
   glow?: boolean
-}>`
+}>(
+  ({ theme, glow }) => ` 
   display: flex;
   flex-wrap: no-wrap;
   align-items: center;
-  background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
   border-radius: 8px;
   padding: 6px 12px;
   font-weight: bold;
   font-size: 10px;
-  line-height: 10px;
+  line-height: 11px;
   text-transform: uppercase;
   cursor: pointer;
-  position: relative;
-  z-index: 1;
+  color: ${theme.text4};
+  background: ${theme.bg1};
 
-  ${({ glow }) =>
+  ${
     glow &&
     css`
+      color: #fff;
+      background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
+      position: relative;
+      z-index: 1;
+
       &:before {
         content: '';
         z-index: -1;
@@ -43,5 +48,7 @@ export const HeaderButton = styled.div<{
         border-radius: inherit;
         animation: ${gradientAnimation} 4s infinite linear;
       }
-    `}
+    `
+  }
 `
+)
