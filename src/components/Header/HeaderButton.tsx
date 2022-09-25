@@ -46,7 +46,7 @@ export const HeaderButton = styled.div<{
         opacity: 1;
         transition: opacity 0.3s;
         border-radius: inherit;
-        animation: ${gradientAnimation} 4s infinite linear;
+        animation: ${gradientAnimation.getName()} 4s infinite linear;
       }
     `
   }
