@@ -116,11 +116,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
-      - name: Generate open-api
-        run: yarn codegen:socket
-
-      - name: Generate graphql
-        run: yarn codegen:graphql
+      - name: Generate code
+        run: yarn codegen
 
       - name: Compress workspace artifact
         run: tar --create --use-compress-program='zstd -T0' --file=/tmp/workspace.tar.zst .
