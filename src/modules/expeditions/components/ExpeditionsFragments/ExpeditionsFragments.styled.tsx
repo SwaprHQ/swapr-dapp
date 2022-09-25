@@ -8,4 +8,5 @@ export const FragmentsBalance = styled(Base)`
   backdrop-filter: blur(12px);
   padding: 8px 14px;
   width: auto;
+  font-size: 18px;
 `

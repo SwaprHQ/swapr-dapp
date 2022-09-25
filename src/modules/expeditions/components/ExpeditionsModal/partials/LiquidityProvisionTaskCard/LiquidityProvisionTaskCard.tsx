@@ -6,7 +6,7 @@ import { ClaimWeeklyFragmentsTypeEnum } from '../../../../api/generated'
 import { signatureMessageByType } from '../../../../constants'
 import { useExpeditions } from '../../../../contexts/ExpeditionsContext'
 import { computeFragmentState } from '../../../../utils'
-import { TaskCard as TaskCardBase, TaskCardProps } from '../../../ExpeditionsCard'
+import { TaskCard as TaskCardBase, TaskCardProps } from '../../../ExpeditionsCards'
 
 const TaskCard = (props: Omit<TaskCardProps, 'description' | 'duration' | 'title'>) => (
   <TaskCardBase

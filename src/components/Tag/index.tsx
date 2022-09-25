@@ -27,6 +27,12 @@ export const TagSuccess = styled(Tag)`
   background: rgba(14, 159, 110, 0.15);
 `
 
+export const CustomOutlinedTag = styled(TagSuccess)<{ backgroundColor?: string; color: string }>`
+  background-color: ${({ backgroundColor }) => backgroundColor ?? 'transparent'};
+  color: ${({ color }) => color};
+  border: ${({ color }) => `1px solid ${color}`};
+`
+
 export const TagSuccessArrow = styled(TagSuccess)`
   position: relative;
   padding-right: 20px;

@@ -17,7 +17,7 @@ const ContentWrapper = styled(AutoColumn)`
   width: 100%;
   background-color: ${({ theme }) => theme.dark1};
   padding: 32px;
-  overflow-y: auto;
+  overflow-y: hidden;
 `
 
 const Text = ({ children }: { children: ReactNode }) => (
@@ -57,7 +57,7 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
           </Row>
           <ExpeditionsFragmentsBalance balance={9999} />
         </AutoColumn>
-        <AutoColumn justify={'center'} gap="32px">
+        <AutoColumn justify={'center'} gap="32px" style={{ overflowY: 'scroll' }}>
           {activeTab === ExpeditionsTabs.TASKS ? <ExpeditionsTasks /> : <ExpeditionsRewards />}
         </AutoColumn>
       </ContentWrapper>
