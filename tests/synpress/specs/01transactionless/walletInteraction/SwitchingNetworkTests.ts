@@ -6,7 +6,7 @@ import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler
 import { TokenMenu } from '../../../../pages/TokenMenu'
 
 describe('Switching from mainnet tests', () => {
-  const TRANSACTION_VALUE: number = 0.00000001
+  const TRANSACTION_VALUE: number = 1
   before(() => {
     cy.clearLocalStorage()
     MetamaskNetworkHandler.addARinkeby()
