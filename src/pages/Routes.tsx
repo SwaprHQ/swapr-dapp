@@ -7,7 +7,6 @@ import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from 
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 // Dont want to lazy import swap
 import { Swap as SwapPage } from './Swap'
-import { RedirectToSwap } from './Swap/redirects'
 
 // Lazy loaded routes
 const Rewards = lazy(() => import(/* webpackPrefetch: true */ './Rewards'))

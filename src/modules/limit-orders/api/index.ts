@@ -18,6 +18,8 @@ export interface SignLimitOrderParams {
   chainId: number
 }
 
+type GetLimitOrderQuoteParams = SignLimitOrderParams
+
 // const quoteResponse = await fetch(
 //   cowSdk.cowApi.API_BASE_URL[chainId as keyof typeof cowSdk.cowApi.API_BASE_URL] +
 //     '/v1/feeAndQuote/' +
@@ -32,22 +34,15 @@ export interface SignLimitOrderParams {
 
 // const feeAmount = quoteResponse.fee.amount
 
-/**
- * Signs a limit order to produce a EIP712-compliant signature
- */
-export async function signLimitOrder({
-  order,
-  signer,
-  chainId,
-}: SignLimitOrderParams): Promise<SerializableSignedLimitOrder> {
-  // create an order via CoW API
-  const cowSdk = CoWTrade.getCowSdk(chainId, {
+const getCoWSdk = (chainId: number, signer: Signer) =>
+  CoWTrade.getCowSdk(chainId, {
     signer,
   })
 
-  // Get feeAmount from CoW
-  const { buyAmount, buyToken, receiverAddress, userAddress, expiresAt, sellAmount, sellToken, kind } = order
-  // const [baseToken, quoteToken] = kind === LimitOrderKind.SELL ? [sellToken, buyToken] : [buyToken, sellToken]
+export async function getQuote({ order, signer, chainId }: GetLimitOrderQuoteParams) {
+  const { buyToken, receiverAddress, userAddress, expiresAt, sellAmount, sellToken, kind } = order
+
+  const cowSdk = getCoWSdk(chainId, signer)
 
   const cowQuote = await cowSdk.cowApi.getQuote({
     buyToken,
@@ -59,7 +54,33 @@ export async function signLimitOrder({
     userAddress: userAddress,
   })
 
-  const feeAmount = '1'
+  return cowQuote
+}
+
+/**
+ * Signs a limit order to produce a EIP712-compliant signature
+ */
+export async function signLimitOrder({
+  order,
+  signer,
+  chainId,
+}: SignLimitOrderParams): Promise<SerializableSignedLimitOrder> {
+  // create an order via CoW API
+  const cowSdk = getCoWSdk(chainId, signer)
+
+  // Get feeAmount from CoW
+  const { buyAmount, buyToken, receiverAddress, feeAmount, expiresAt, sellAmount, sellToken, kind } = order
+  // const [baseToken, quoteToken] = kind === LimitOrderKind.SELL ? [sellToken, buyToken] : [buyToken, sellToken]
+
+  // const cowQuote = await cowSdk.cowApi.getQuote({
+  //   buyToken,
+  //   sellToken,
+  //   amount: sellAmount,
+  //   validTo: expiresAt,
+  //   kind: kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
+  //   receiver: receiverAddress,
+  //   userAddress: userAddress,
+  // })
 
   const cowOrder: Omit<UnsignedOrder, 'appData'> = {
     buyAmount,

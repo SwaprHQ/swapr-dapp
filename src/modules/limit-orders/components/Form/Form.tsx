@@ -2,23 +2,23 @@ import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 
+import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
-import { useEffect, useState } from 'react'
-import { unstable_batchedUpdates } from 'react-dom'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../../../assets/svg/swap-icon.svg'
+import { ReactComponent as SwapIcon } from '../../../../assets/images/swap-icon.svg'
 import { ButtonPrimary } from '../../../../components/Button'
 import { AutoColumn } from '../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
 import { AutoRow as AutoRowBase } from '../../../../components/Row'
-import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from '../../../../components/swap/styleds'
+import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from '../../../../components/Swap/styleds'
 import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import AppBody from '../../../../pages/AppBody'
 import { useCurrencyBalances } from '../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
-import { signLimitOrder, submitLimitOrder } from '../../api'
+import { getQuote, signLimitOrder, submitLimitOrder } from '../../api'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
@@ -43,6 +43,13 @@ export interface LimitOrderFormProps {
   account: string
 }
 
+interface HandleCurrenyAmountChangeParams {
+  currency: Currency
+  amountWei: string
+  amountFormatted: string
+  updatedLimitOrder?: SerializableLimitOrder
+}
+
 /**
  * The Limit Order Form is the base component for all limit order forms.
  */
@@ -50,7 +57,7 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
   const [loading, setLoading] = useState(false)
 
   // Get the initial values and set the state
-  const initialState = getInitialState(chainId, account)
+  const initialState = useRef(getInitialState(chainId, account)).current
 
   // Local state
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
@@ -66,27 +73,74 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
   // Final limit order to be sent to the internal API
   const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
 
-  // Handles chainId change to update initial sell and buy currency amounts
+  const setToMarket = async () => {
+    const signer = provider.getSigner()
+    const cowQuote = await getQuote({
+      chainId,
+      signer,
+      order: { ...limitOrder, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
+    })
+    if (cowQuote !== undefined) {
+      const {
+        quote: { buyAmount, feeAmount },
+      } = cowQuote
+      const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
+      console.log(buyTokenFormattedAmount)
+      console.log({ cowQuote, feeAmount })
+      const updatedLimitOrder = { ...limitOrder, limitPrice: buyAmount, feeAmount }
+      setLimitOrder(updatedLimitOrder)
+      handleBuyCurrenyAmountChange({
+        currency: buyTokenAmount.currency,
+        amountWei: buyAmount,
+        amountFormatted: buyTokenFormattedAmount,
+        updatedLimitOrder,
+      })
+      setFormattedLimitPrice(buyTokenFormattedAmount)
+    }
+  }
+
   useEffect(() => {
-    // Get the initial values and set the state
-    const initialState = getInitialState(chainId, account)
-    setSellTokenAmount(initialState.sellTokenAmount)
-    setBuyTokenAmount(initialState.buyTokenAmount)
-    setPrice(initialState.price)
-    setLimitOrder(initialState.limitOrder)
-  }, [chainId, account])
+    setToMarket().catch(console.error)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // // Handles chainId change to update initial sell and buy currency amounts
+  // useEffect(() => {
+  //   // Get the initial values and set the state
+  //   const initialState = getInitialState(chainId, account)
+  //   setSellTokenAmount(initialState.sellTokenAmount)
+  //   setBuyTokenAmount(initialState.buyTokenAmount)
+  //   setPrice(initialState.price)
+  //   setLimitOrder(initialState.limitOrder)
+  //   handleInputOnChange(initialState.limitOrder.sellAmount)
+  // }, [chainId, account, handleInputOnChange])
 
   const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(account, [
     sellTokenAmount.currency,
     buyTokenAmount?.currency,
   ])
 
+  const swapTokens = useCallback(() => {
+    setSellTokenAmount(buyTokenAmount)
+    setBuyTokenAmount(sellTokenAmount)
+    if (buyTokenAmount.currency.address && sellTokenAmount.currency.address) {
+      setLimitOrder({
+        ...limitOrder,
+        sellToken: buyTokenAmount.currency.address,
+        buyToken: sellTokenAmount.currency.address,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buyTokenAmount, sellTokenAmount])
+
   // Fetch the maximum amount of tokens that can be bought or sold
   const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
   const buyCurrencyMaxAmount = maxAmountSpend(buyCurrencyBalance, chainId, false)
 
   // Display formatted sell/buy amounts
-  const [formattedSellAmount, setFormattedSellAmount] = useState<string>('0')
+  const [formattedSellAmount, setFormattedSellAmount] = useState<string>(
+    formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals)
+  )
   const [formattedBuyAmount, setFormattedBuyAmount] = useState<string>('0')
   // Display formatted sell/buy amounts
   const [formattedLimitPrice, setFormattedLimitPrice] = useState<string>('0')
@@ -108,15 +162,13 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
-
       const signedOrder = await signLimitOrder({
         order: finalizedLimitOrder,
         chainId,
         signer,
       })
-      console.log({ signedOrder })
-      // send the order to the API
 
+      // send the order to the API
       const response = await submitLimitOrder({
         order: signedOrder,
         chainId,
@@ -131,97 +183,141 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
     }
   }
 
-  interface HandleCurrenyAmountChangeParams {
-    currency: Currency
-    amountWei: string
-    amountFormatted: string
-  }
-
   /**
    * Aggregate the sell currency amount state variables into a single value
    */
-  const handleSellCurrenyAmountChange = ({ amountWei, currency, amountFormatted }: HandleCurrenyAmountChangeParams) => {
-    unstable_batchedUpdates(() => {
-      // Construct a new token amount and format it
-      const newLimitOrder = {
-        ...limitOrder,
-        sellAmount: amountWei,
-      }
-      setFormattedSellAmount(amountFormatted) // update the token amount input
-      // Update the buy currency amount if the user has selected a token
-      newLimitOrder.sellToken = currency.address as string
-      // Update relevant state variables
-      const newSellTokenAmount = new TokenAmount(currency as Token, amountWei)
-      setSellTokenAmount(newSellTokenAmount)
+  const handleSellCurrenyAmountChange = ({
+    amountWei,
+    currency,
+    amountFormatted,
+    updatedLimitOrder = limitOrder,
+  }: HandleCurrenyAmountChangeParams) => {
+    // Construct a new token amount and format it
+    const newLimitOrder = {
+      ...updatedLimitOrder,
+      sellAmount: amountWei,
+    }
+    setFormattedSellAmount(amountFormatted) // update the token amount input
+    // Update the buy currency amount if the user has selected a token
+    newLimitOrder.sellToken = currency.address as string
+    // Update relevant state variables
+    const newSellTokenAmount = new TokenAmount(currency as Token, amountWei)
+    setSellTokenAmount(newSellTokenAmount)
+    console.log('SELL TOKEN')
+    console.log(limitOrder.limitPrice + ' * ' + amountFormatted)
 
-      console.log(limitOrder.limitPrice + ' * ' + amountFormatted)
+    ////////////////////////////////
+    // Compute the buy amount based on the new sell amount
+    const newBuyAmountFormattedNumber =
+      parseFloat(amountFormatted) * parseFloat(formatUnits(limitOrder.limitPrice, buyTokenAmount.currency.decimals))
+    const newBuyTokenAmountBN = parseUnits(newBuyAmountFormattedNumber.toString(), buyTokenAmount.currency.decimals)
+    // Format the buy amount
+    // Update buy amount state variables
+    setBuyTokenAmount(new TokenAmount(buyTokenAmount.currency as Token, newBuyTokenAmountBN.toString()))
+    setFormattedBuyAmount(newBuyAmountFormattedNumber.toString()) // update the token amount input
+    ////////////////////////////////
 
-      ////////////////////////////////
-      // Compute the buy amount based on the new sell amount
-      const newBuyAmountFormattedNumber =
-        parseFloat(amountFormatted) * parseFloat(formatUnits(limitOrder.limitPrice, buyTokenAmount.currency.decimals))
-      const newBuyTokenAmountBN = parseUnits(newBuyAmountFormattedNumber.toString(), buyTokenAmount.currency.decimals)
-      // Format the buy amount
-      // Update buy amount state variables
-      setBuyTokenAmount(new TokenAmount(buyTokenAmount.currency as Token, newBuyTokenAmountBN.toString()))
-      setFormattedBuyAmount(newBuyAmountFormattedNumber.toString()) // update the token amount input
-      ////////////////////////////////
-
-      // Re-compute the limit order boy
-      setLimitOrder(newLimitOrder)
-    })
+    // Re-compute the limit order boy
+    setLimitOrder(newLimitOrder)
   }
+
+  useWhatChanged([limitOrder], `limitOrder`)
 
   /**
    * Aggregate the buy currency amount state variables into a single value
    */
-  const handleBuyCurrenyAmountChange = ({ amountWei, currency, amountFormatted }: HandleCurrenyAmountChangeParams) => {
-    unstable_batchedUpdates(() => {
-      // Construct a new token amount and format it
-      const newLimitOrder = {
-        ...limitOrder,
-        buyAmount: amountWei,
-      }
+  const handleBuyCurrenyAmountChange = ({
+    amountWei,
+    currency,
+    amountFormatted,
+    updatedLimitOrder = limitOrder,
+  }: HandleCurrenyAmountChangeParams) => {
+    // Construct a new token amount and format it
 
-      console.log({ amountWei, currency, amountFormatted })
+    const newLimitOrder = {
+      ...updatedLimitOrder,
+      buyAmount: amountWei,
+    }
+    console.log('BUY TOKEN')
+    console.log(limitOrder.limitPrice + ' * ' + amountFormatted)
 
-      setFormattedBuyAmount(amountFormatted) // update the token amount input
+    setFormattedBuyAmount(amountFormatted) // update the token amount input
 
-      // Update the buy currency amount if the user has selected a token
-      // to prevent `TokenAmount` constructor from throwing an error
-      newLimitOrder.buyToken = currency.address as string
-      // Update relevant state variables
-      const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
-      setBuyTokenAmount(newBuyTokenAmount)
+    // Update the buy currency amount if the user has selected a token
+    // to prevent `TokenAmount` constructor from throwing an error
+    newLimitOrder.buyToken = currency.address as string
+    // Update relevant state variables
+    const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
+    setBuyTokenAmount(newBuyTokenAmount)
 
-      if (limitOrder.kind === LimitOrderKind.SELL) {
-        const sellTokenAmountFormatted = parseFloat(
-          formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
-        )
-        const buyTokenAmountFormatted = parseFloat(amountFormatted)
-        const newLimitPriceFormatted = buyTokenAmountFormatted / sellTokenAmountFormatted
+    if (limitOrder.kind === LimitOrderKind.SELL) {
+      const sellTokenAmountFormatted = parseFloat(
+        formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
+      )
+      const buyTokenAmountFormatted = parseFloat(amountFormatted)
+      const newLimitPriceFormatted = buyTokenAmountFormatted / sellTokenAmountFormatted
 
-        console.log({ sellTokenAmountFormatted, buyTokenAmountFormatted, newLimitPriceFormatted })
+      console.log({ sellTokenAmountFormatted, buyTokenAmountFormatted, newLimitPriceFormatted })
 
-        console.log({ newLimitPriceFormatted })
-        // multiply the sell amount by the new price
-        newLimitOrder.limitPrice = parseUnits(
-          newLimitPriceFormatted !== Infinity ? newLimitPriceFormatted.toFixed(4) : '0',
-          currency.decimals
-        ).toString()
-      } else {
-        // divide the buy amount by the new price
-        newLimitOrder.limitPrice = JSBI.multiply(newBuyTokenAmount.raw, buyTokenAmount.raw).toString()
-      }
+      console.log({ newLimitPriceFormatted })
+      // multiply the sell amount by the new price
+      newLimitOrder.limitPrice = parseUnits(
+        newLimitPriceFormatted !== Infinity ? newLimitPriceFormatted.toFixed(4) : '0',
+        currency.decimals
+      ).toString()
+    } else {
+      // divide the buy amount by the new price
+      newLimitOrder.limitPrice = JSBI.multiply(newBuyTokenAmount.raw, buyTokenAmount.raw).toString()
+    }
 
-      console.log('newLimitOrder.limitPrice: ', newLimitOrder.limitPrice)
-      // update the price input
-      setFormattedLimitPrice(formatUnits(newLimitOrder.limitPrice, newBuyTokenAmount.currency.decimals))
+    console.log('newLimitOrder.limitPrice: ', newLimitOrder.limitPrice)
+    // update the price input
+    setFormattedLimitPrice(formatUnits(newLimitOrder.limitPrice, newBuyTokenAmount.currency.decimals))
 
-      // Re-compute the limit order boy
-      setLimitOrder(newLimitOrder)
-    })
+    // Re-compute the limit order boy
+    setLimitOrder(newLimitOrder)
   }
+
+  const handleInputOnChange = async (formatedValue: string) => {
+    const amountFormatted = formatedValue.trim() === '' ? '0' : formatedValue
+    const amountWei = parseUnits(formatedValue, sellTokenAmount?.currency?.decimals).toString()
+    handleSellCurrenyAmountChange({
+      currency: sellTokenAmount?.currency as Token,
+      amountWei,
+      amountFormatted,
+    })
+    // const signer = provider.getSigner()
+    // const cowQuote = await getQuote({ chainId, signer, order: limitOrder })
+    // if (cowQuote) {
+    //   const {
+    //     quote: { buyAmount, feeAmount },
+    //   } = cowQuote
+    //   const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
+    //   setLimitOrder({ ...limitOrder, limitPrice: buyAmount })
+    //   console.log({ buyTokenFormattedAmount })
+    //   handleBuyCurrenyAmountChange({
+    //     currency: buyTokenAmount.currency,
+    //     amountWei: buyAmount,
+    //     amountFormatted: buyTokenFormattedAmount,
+    //   })
+    //   setFormattedLimitPrice(buyTokenFormattedAmount)
+    // }
+  }
+
+  // Handles chainId change to update initial sell and buy currency amounts
+  // useEffect(() => {
+  //   // Get the initial values and set the state
+  //   const initialState = getInitialState(chainId, account)
+  //   setSellTokenAmount(initialState.sellTokenAmount)
+  //   setBuyTokenAmount(initialState.buyTokenAmount)
+  //   setPrice(initialState.price)
+  //   const { sellToken, buyToken } = initialState.limitOrder
+  //   setLimitOrder(limitOrder => ({ ...limitOrder, sellToken, buyToken }))
+  // handleInputOnChange(formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals))
+  // const getValueQuote = async () => {
+
+  // getValueQuote()
+  // }, [chainId, account])
 
   // In the event that user choose native token as sell currency, offer to wrap it
   const handleCurrencyWrap = () => {}
@@ -263,15 +359,7 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
                 handleSellCurrenyAmountChange({ currency, amountWei, amountFormatted: formattedSellAmount })
               }}
               value={formattedSellAmount}
-              onUserInput={formatedValue => {
-                const amountFormatted = formatedValue.trim() === '' ? '0' : formatedValue
-                const amountWei = parseUnits(formatedValue, sellTokenAmount?.currency?.decimals).toString()
-                handleSellCurrenyAmountChange({
-                  currency: sellTokenAmount?.currency as Token,
-                  amountWei,
-                  amountFormatted,
-                })
-              }}
+              onUserInput={handleInputOnChange}
               onMax={() => {
                 if (!sellCurrencyMaxAmount) return
 
@@ -285,7 +373,11 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
               fiatValue={fiatValueInput}
               isFallbackFiatValue={isFallbackFiatValueInput}
             />
-            <SwitchIconContainer>
+            <SwitchIconContainer
+              onClick={() => {
+                swapTokens()
+              }}
+            >
               <SwitchTokensAmountsContainer>
                 <ArrowWrapper
                   clickable={!loading}

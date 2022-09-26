@@ -24,7 +24,7 @@ interface InitialState {
  * @param chainId The chain id of the network
  */
 export function getInitialState(chainId: ChainId, account: string): InitialState {
-  const sellTokenAmount = new TokenAmount(Token.getNativeWrapper(chainId), '0')
+  const sellTokenAmount = new TokenAmount(Token.getNativeWrapper(chainId), '1000000000000000000')
   const buyTokenAmount = new TokenAmount(USDC[chainId], '0')
   const price = new Price({
     baseCurrency: sellTokenAmount.currency,
@@ -34,13 +34,13 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
   })
 
   const limitOrder: SerializableLimitOrder = {
-    sellAmount: '0',
+    sellAmount: '1000000000000000000',
     buyAmount: '0',
     feeAmount: '0',
     sellToken: sellTokenAmount.currency.address || AddressZero,
     buyToken: buyTokenAmount?.currency?.address || AddressZero,
     createdAt: 0,
-    expiresAt: 0,
+    expiresAt: Date.now(),
     limitPrice: '0',
     userAddress: account,
     receiverAddress: account, // default reciver is the account itself
@@ -75,5 +75,5 @@ export function computeLimitPrice(baseTokenAmount: TokenAmount, quoteTokenAmount
     limitPriceJSBI: limitPriceJSBI.toString(),
   })
 
-  return limitPriceJSBI
+  return limitPriceJSBI.toString()
 }

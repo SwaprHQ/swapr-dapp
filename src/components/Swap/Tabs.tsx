@@ -79,12 +79,10 @@ export function Tabs() {
         </Button>
         <Button
           onClick={() => {
-            setActiveTab(SwapTab.BridgeSwap)
             dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
             navigate('/bridge')
           }}
           className={activeTab === SwapTab.BridgeSwap ? 'active' : ''}
-          disabled={true}
         >
           {t('tabs.bridgeSwap')}
         </Button>

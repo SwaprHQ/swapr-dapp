@@ -1,10 +1,10 @@
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 
 import Hero from '../../components/LandingPageComponents/layout/Hero'
-import { Tabs } from '../../components/swap/Tabs'
+import { Tabs } from '../../components/Swap/Tabs'
 import { SwapContext, SwapTab } from '../../modules/swap/context'
 import { LandingSections } from './partials/LandingSections'
 import { LimitOrderBox } from './partials/LimitOrderBox'

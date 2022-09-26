@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { LimitOrderFormContext } from '../../../contexts'
@@ -29,28 +29,50 @@ export interface OrderExpirayFieldProps {
 
 export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
   const { expiresIn, setExpiresIn, expiresInUnit, setExpiresInUnit } = useContext(LimitOrderFormContext)
+  const [inputExpiresIn, setInputExpiresIn] = useState<string | number>(expiresIn)
 
   const expiresInChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
-    const newExpiresIn = parseInt(event.target.value)
+    const newExpiresIn = event.target.value
     // Update local state
-    setExpiresIn(newExpiresIn)
+    if (newExpiresIn === '') {
+      setInputExpiresIn(newExpiresIn)
+    } else {
+      const value = parseFloat(newExpiresIn ?? 0)
+      // Don't want to set negative time
+      if (value >= 0) {
+        setInputExpiresIn(value)
+      }
+    }
   }
+
+  useEffect(() => {
+    if (inputExpiresIn !== '' && parseFloat(inputExpiresIn.toString()) > 0) {
+      setExpiresIn(parseFloat(inputExpiresIn.toString()))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputExpiresIn])
 
   return (
     <InputGroup>
       <Label htmlFor={id}>Expires In</Label>
       <InnerWrapper>
         <Input
-          value={expiresIn}
+          value={inputExpiresIn}
           id={id}
           onKeyDown={e => {
             if (invalidChars.includes(e.key)) {
               e.preventDefault()
             }
           }}
+          onBlur={e => {
+            if (e.target.value === '' || e.target.value === '0') {
+              setInputExpiresIn(1)
+            }
+          }}
           max={300}
           type="number"
           onChange={expiresInChangeHandler}
+          required
         />
         <ButtonAddonsWrapper>
           <ExpiryUnitButton

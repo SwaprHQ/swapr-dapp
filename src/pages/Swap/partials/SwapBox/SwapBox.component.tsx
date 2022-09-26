@@ -1,80 +1,46 @@
 import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token } from '@swapr/sdk'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
-import { AutoColumn } from '../../components/Column'
-import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
-import { PageMetaData } from '../../components/PageMetaData'
-import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
-import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
-import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
-import SwapButtons from '../../components/Swap/SwapButtons'
-import { Tabs } from '../../components/Swap/Tabs'
-import { TradeDetails } from '../../components/Swap/TradeDetails'
-import TokenWarningModal from '../../components/TokenWarningModal'
-import { useActiveWeb3React } from '../../hooks'
-import { useAllTokens, useCurrency } from '../../hooks/Tokens'
-import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
-import { useSwapCallback } from '../../hooks/useSwapCallback'
-import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
+import { ReactComponent as SwapIcon } from '../../../../assets/images/swap-icon.svg'
+import { AutoColumn } from '../../../../components/Column'
+import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
+import { SwapPoolTabs } from '../../../../components/NavigationTabs'
+import { PageMetaData } from '../../../../components/PageMetaData'
+import AdvancedSwapDetailsDropdown from '../../../../components/Swap/AdvancedSwapDetailsDropdown'
+import confirmPriceImpactWithoutFee from '../../../../components/Swap/confirmPriceImpactWithoutFee'
+import ConfirmSwapModal from '../../../../components/Swap/ConfirmSwapModal'
+import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../../../components/Swap/styleds'
+import SwapButtons from '../../../../components/Swap/SwapButtons'
+import { TradeDetails } from '../../../../components/Swap/TradeDetails'
+import TokenWarningModal from '../../../../components/TokenWarningModal'
+import { useActiveWeb3React } from '../../../../hooks'
+import { useAllTokens, useCurrency } from '../../../../hooks/Tokens'
+import { ApprovalState, useApproveCallbackFromTrade } from '../../../../hooks/useApproveCallback'
+import { useSwapCallback } from '../../../../hooks/useSwapCallback'
+import { useTargetedChainIdFromUrl } from '../../../../hooks/useTargetedChainIdFromUrl'
+import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
+import { useWrapCallback, WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-} from '../../state/swap/hooks'
-import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
-import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
-import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import AppBody from '../AppBody'
-import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
-import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
-import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
-import Features from './../../components/LandingPageComponents/Features'
-import Footer from './../../components/LandingPageComponents/layout/Footer'
-import Hero from './../../components/LandingPageComponents/layout/Hero'
-import Stats from './../../components/LandingPageComponents/Stats'
-import Timeline from './../../components/LandingPageComponents/Timeline'
-
-export type SwapData = {
-  showConfirm: boolean
-  tradeToConfirm: Trade | undefined
-  attemptingTxn: boolean
-  swapErrorMessage: string | undefined
-  txHash: string | undefined
-}
+} from '../../../../state/swap/hooks'
+import { Field } from '../../../../state/swap/types'
+import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../../state/user/hooks'
+import { computeFiatValuePriceImpact } from '../../../../utils/computeFiatValuePriceImpact'
+import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
+import { computeTradePriceBreakdown, warningSeverity } from '../../../../utils/prices'
+import AppBody from '../../../AppBody'
+import { CoWTradeState, SwapData } from './SwapBox.types'
 
 const SwitchIconContainer = styled.div`
   height: 0;
   position: relative;
   width: 100%;
 `
-
-const AppBodyContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 3;
-  min-height: calc(100vh - 340px);
-`
-
-const LandingBodyContainer = styled.section`
-  width: calc(100% + 32px) !important;
-`
-
-export enum CoWTradeState {
-  UNKNOWN, // default
-  WRAP,
-  APPROVAL,
-  SWAP,
-}
 
 export function SwapBox() {
   const loadedUrlParams = useDefaultsFromURLSearch()
