@@ -23,6 +23,7 @@
     "codegen:socket": "TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o \"$TARGET\" --additional-properties=typescriptThreePlus=true",
     "codegen:fathom:dev": "./node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/fathom-generate-events/index.ts --out ./src/analytics/generated/dev",
     "codegen:fathom:prod": "./node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/fathom-generate-events/index.ts --out ./src/analytics/generated/prod",
+    "codegen:cow-limit-order-app-data": "./node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/generate-cow-limit-order-app-data/index.ts ",
     "report:merge": "mochawesome-merge mochawesome-report/*.json > index.json --charts true",
     "report:generate": "marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html",
     "test": "react-scripts test --env=jsdom",
