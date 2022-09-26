@@ -195,7 +195,6 @@ export async function getExactIn(
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
-  console.log({ uniswapV2TradesList, unsortedTradesWithUndefined, unsortedTrades })
   // Return the list of sorted trades
   return {
     errors,
