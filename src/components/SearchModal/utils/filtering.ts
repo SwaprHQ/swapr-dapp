@@ -1,4 +1,4 @@
-import { Currency, Pair, Token } from '@swapr/sdk'
+import { ChainId, Currency, Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'
@@ -142,4 +142,54 @@ export const useSortedTokensByQuery = (tokens: Token[] | undefined, searchQuery:
 
     return [...exactMatches, ...symbolSubtrings, ...rest]
   }, [tokens, searchQuery])
+}
+
+export const filterPairsForZap = (pair: Pair, chainId: ChainId): boolean => {
+  const WETH_XDAI_ADDRESS = '0x1865d5445010E0baf8Be2eB410d3Eae4A68683c2'
+  const SWPR_XDAI_ADDRESS = '0xa82029c1E11eA0aC18dd3551c6E670787e12E45E'
+  const WETH_GNO_ADDRESS = '0x5fCA4cBdC182e40aeFBCb91AFBDE7AD8d3Dc18a8'
+  const GNO_XDAI_ADDRESS = '0xD7b118271B1B7d26C9e044Fc927CA31DccB22a5a'
+  const DXD_WETH_ADDRESS = '0x1bDe964eCd52429004CbC5812C07C28bEC9147e9'
+  const GNO_DXD_ADDRESS = '0x558d777b24366f011e35a9f59114d1b45110d67b'
+  const COW_WETH_ADDRESS = '0x8028457E452D7221dB69B1e0563AA600A059fab1'
+
+  const RINKEBY_DXD_WEENUS = '0x02Ac3d66A788ed486D4dDF5D2b8176340CE091Fe' //calculated by platform swapr
+  const RINK_DXD_WEENUS = '0xc2f8EafCA46b9793829f3FB1F012A4267C4f5D27'
+  const RINKEBY_DXD_WETH = '0x41C22F1852721Bf7e6a6d40ff88c51c55E719CbC'
+  const RINKEBY_WEENUS_WETH = '0x7144e5FfD506f4Cc04867930D40Cfd208911eddD'
+  const RINKEBY_USDC_USDT = '0xc0bbe88f4B087E44d84355B358d63A1ec7072C67'
+  const RINKEBY_USDC_WETH = '0x4E990Bebd8DEeB551B86613d564577DF23A68ac0'
+  const RINKEBY_MINT_USDC = '0x92c30b3ba8ea0d0F14528a77946763488c63794F'
+  const RINKEBY_MATH_WETH = '0x8f86A36a6D7a0ddE0f8f00cDA3dF5088c8d950C2'
+  const RINKEBY_WEENUS_YEENUS = '0x3402087D8C80B1Ca60fF29FD0D56aa2d42d35047'
+  const R_BAT_WETH = '0x75b663B0D819d7658A35C97F323b5a58764cE3d7'
+  const R_XEENUS_WEENUS = '0x5f5e477913B1f7Dd3d8f40fA211155679E7EC061'
+  const supportedZapPairs: { [chainId: number]: string[] } = {
+    [ChainId.MAINNET]: [],
+    [ChainId.GNOSIS]: [
+      WETH_XDAI_ADDRESS,
+      SWPR_XDAI_ADDRESS,
+      WETH_GNO_ADDRESS,
+      GNO_XDAI_ADDRESS,
+      DXD_WETH_ADDRESS,
+      COW_WETH_ADDRESS,
+      GNO_DXD_ADDRESS,
+    ],
+    [ChainId.RINKEBY]: [
+      RINK_DXD_WEENUS,
+      RINKEBY_DXD_WEENUS,
+      RINKEBY_DXD_WETH,
+      RINKEBY_WEENUS_WETH,
+      RINKEBY_USDC_USDT,
+      RINKEBY_USDC_WETH,
+      RINKEBY_MATH_WETH,
+      RINKEBY_MINT_USDC,
+      RINKEBY_WEENUS_YEENUS,
+      R_BAT_WETH,
+      R_XEENUS_WEENUS,
+    ],
+  }
+
+  const pairAddress = Pair.getAddress(pair.token0, pair.token1, UniswapV2RoutablePlatform.SWAPR)
+  return supportedZapPairs[chainId].includes(pairAddress)
 }

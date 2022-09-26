@@ -28,6 +28,8 @@ export interface PairSelectPanelProps {
   displayedValue?: string
   setDisplayedValue?: (val: string) => void
   maxAmount?: CurrencyAmount
+  onPairSelect?: (pair: Pair) => void
+  filterPairs?: (pair: Pair) => boolean
 }
 
 export type PairViewProps = Pick<

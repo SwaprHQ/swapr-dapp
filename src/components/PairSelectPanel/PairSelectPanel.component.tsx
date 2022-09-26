@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { Currency, Pair } from '@swapr/sdk'
 
 import debounce from 'lodash/debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -7,6 +7,8 @@ import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { normalizeInputValue } from '../../utils'
+import { CurrencyUserBalance } from '../CurrencyInputPanel/CurrencyUserBalance'
+import { CurrencyView } from '../CurrencyInputPanel/CurrencyView'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
@@ -51,12 +53,15 @@ export const PairSelectPanelComponent = ({
   maxAmount,
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disablePairSelect = false,
+  onPairSelect,
+  filterPairs,
 }: PairSelectPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const [localValue, setLocalValue] = useState(value)
   const { account } = useActiveWeb3React()
   const [isMaxAmount, setIsMaxAmount] = useState(false)
+  const [pairZap, setPairZap] = useState<Pair>()
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
@@ -95,9 +100,17 @@ export const PairSelectPanelComponent = ({
     [maxAmount, onUserInput]
   )
 
-  const handleOnPairSelect = useCallback(() => {
+  const handleOnPairSelect = useCallback((pair: Pair) => {
     console.log('pair selected')
+    setPairZap(pair)
   }, [])
+
+  const handleOnMax = useCallback(() => {
+    if (onMax) {
+      onMax()
+      setIsMaxAmount(true)
+    }
+  }, [onMax])
 
   const debouncedUserInput = useMemo(() => {
     return debounce(handleOnUserInput, 250)
@@ -156,7 +169,6 @@ export const PairSelectPanelComponent = ({
                     currency={currency}
                     chainIdOverride={chainIdOverride}
                     currencyWrapperSource={currencyWrapperSource}
-                    disablePairSelect={disablePairSelect}
                   />
                 )}
               </Aligner>
@@ -165,12 +177,21 @@ export const PairSelectPanelComponent = ({
           <div>
             <RowBetween>
               <FiatValueDetails fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
+              <CurrencyUserBalance
+                hideBalance={hideBalance}
+                currency={currency}
+                pair={pair}
+                balance={balance}
+                selectedCurrencyBalance={selectedCurrencyBalance}
+                customBalanceText={customBalanceText}
+                onMax={handleOnMax}
+              />
             </RowBetween>
           </div>
         </Content>
       </Container>
-      {!disablePairSelect && onCurrencySelect && (
-        <PairSearchModal isOpen={isOpen} onDismiss={onDismiss} onPairSelect={handleOnPairSelect} />
+      {!disablePairSelect && onPairSelect && (
+        <PairSearchModal isOpen={isOpen} onDismiss={onDismiss} onPairSelect={onPairSelect} filterPairs={filterPairs} />
       )}
     </InputPanel>
   )

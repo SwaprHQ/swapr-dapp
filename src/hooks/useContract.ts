@@ -20,7 +20,7 @@ import {
 import { constants } from 'ethers'
 import { useMemo } from 'react'
 
-import { ARBITRUM_ONE_PROVIDER } from '../constants'
+import { ARBITRUM_ONE_PROVIDER, ZAP_CONTRACT_ADDRESS } from '../constants'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
@@ -32,6 +32,7 @@ import SWPR_CONVERTER_ABI from '../constants/abis/swpr-converter.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import WMATIC_ABI from '../constants/abis/wmatic.json'
 import WXDAI_ABI from '../constants/abis/wxdai.json'
+import ZAP_ABI from '../constants/abis/zap.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
 import { useNativeCurrency } from './useNativeCurrency'
 
@@ -167,4 +168,9 @@ export function useSWPRConverterContract(withSignerIfPossible?: boolean): Contra
   const { chainId } = useActiveWeb3React()
   const address = useMemo(() => (chainId ? SWPR_CONVERTER_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, SWPR_CONVERTER_ABI, withSignerIfPossible)
+}
+
+export function useZapContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
+  const zapAddress = address ?? ZAP_CONTRACT_ADDRESS
+  return useContract(zapAddress, ZAP_ABI, withSignerIfPossible)
 }

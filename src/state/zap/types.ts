@@ -1,15 +1,18 @@
-export enum Asset {
-  TOKEN = 'TOKEN',
-  PAIR = 'PAIR',
+import { Pair } from '@swapr/sdk'
+
+export enum Field {
+  INPUT = 'INPUT',
+  OUTPUT = 'OUTPUT',
 }
 
 export interface ZapState {
-  readonly inputAsset: Asset
+  readonly independentField: Field
   readonly typedValue: string
-  readonly [Asset.TOKEN]: {
+  readonly [Field.INPUT]: {
     readonly tokenId: string | undefined
   }
-  readonly [Asset.PAIR]: {
+  readonly [Field.OUTPUT]: {
+    readonly pairId: string | undefined
     readonly token0Id: string | undefined
     readonly token1Id: string | undefined
   }

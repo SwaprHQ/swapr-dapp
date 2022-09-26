@@ -143,6 +143,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   const [inputError, setInputError] = useState<number | undefined>()
   // const [trade, setTrade] = useState<Trade>()
   const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
+  console.log('swap trades', allPlatformTrades)
   // Computed on the fly state
   const isExactIn = useMemo(() => independentField === Field.INPUT, [independentField])
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)

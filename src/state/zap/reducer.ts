@@ -1,15 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { selectPair, selectToken, setRecipient, typeInput, updateZapState } from './actions'
-import { Asset, ZapState } from './types'
+import { selectPair, selectToken, setRecipient, switchZapDirection, typeInput, updateZapState } from './actions'
+import { Field, ZapState } from './types'
 
 export const initialState: ZapState = {
-  inputAsset: Asset.TOKEN,
+  independentField: Field.INPUT,
   typedValue: '',
-  [Asset.TOKEN]: {
+  [Field.INPUT]: {
     tokenId: '',
   },
-  [Asset.PAIR]: {
+  [Field.OUTPUT]: {
+    pairId: '',
     token0Id: '',
     token1Id: '',
   },
@@ -21,17 +22,21 @@ export default createReducer<ZapState>(initialState, builder =>
   builder
     .addCase(
       updateZapState,
-      (state, { payload: { tokenId, pairToken0Id, pairToken1Id, typedValue, recipient, inputAsset } }) => {
+      (
+        state,
+        { payload: { tokenId, pairId, pairToken0Id, pairToken1Id, typedValue, recipient, independentField } }
+      ) => {
         return {
           ...state,
-          [Asset.TOKEN]: {
+          [Field.INPUT]: {
             tokenId: tokenId,
           },
-          [Asset.PAIR]: {
+          [Field.OUTPUT]: {
+            pairId: pairId,
             token0Id: pairToken0Id,
             token1Id: pairToken1Id,
           },
-          inputAsset: inputAsset,
+          independentField: independentField,
           typedValue: typedValue,
           recipient,
         }
@@ -40,26 +45,33 @@ export default createReducer<ZapState>(initialState, builder =>
     .addCase(selectToken, (state, { payload: { tokenId } }) => {
       return {
         ...state,
-        [Asset.TOKEN]: { tokenId: tokenId },
+        [Field.INPUT]: { tokenId: tokenId },
       }
     })
-    .addCase(selectPair, (state, { payload: { token0Id, token1Id } }) => {
+    .addCase(selectPair, (state, { payload: { pairId, token0Id, token1Id } }) => {
       return {
         ...state,
-        [Asset.PAIR]: {
+        [Field.OUTPUT]: {
+          pairId: pairId,
           token0Id: token0Id,
           token1Id: token1Id,
         },
       }
     })
-    .addCase(typeInput, (state, { payload: { inputAsset, typedValue } }) => {
+    .addCase(typeInput, (state, { payload: { independentField, typedValue } }) => {
       return {
         ...state,
-        inputAsset: inputAsset,
+        independentField: independentField,
         typedValue,
       }
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient
+    })
+    .addCase(switchZapDirection, state => {
+      return {
+        ...state,
+        independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+      }
     })
 )

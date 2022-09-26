@@ -61,7 +61,8 @@ export const Tabs = () => {
   return (
     <TabsColumn>
       <TabsRow>
-        <Button className="active">
+        <Button className="active">ZAP</Button>
+        <Button>
           <StyledEcoRouter />
           Eco Router V1.5
         </Button>

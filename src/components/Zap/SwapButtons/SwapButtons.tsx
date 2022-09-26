@@ -44,6 +44,7 @@ interface SwapButtonsProps {
   handleInputSelect: (inputCurrency: Currency) => void
   wrapState?: WrapState | undefined
   setWrapState: ((wrapState: WrapState) => void) | undefined
+  onZap: (() => Promise<void>) | undefined
 }
 
 export function SwapButtons({
@@ -67,6 +68,7 @@ export function SwapButtons({
   handleInputSelect,
   wrapState,
   setWrapState,
+  onZap,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -98,18 +100,10 @@ export function SwapButtons({
   }, [currencies, trade, handleInputSelect, wrapState, setWrapState])
 
   const onSwapClick = useCallback(() => {
-    if (isExpertMode) {
-      handleSwap()
-    } else {
-      setSwapState({
-        tradeToConfirm: trade,
-        attemptingTxn: false,
-        swapErrorMessage: undefined,
-        showConfirm: true,
-        txHash: undefined,
-      })
-    }
-  }, [isExpertMode, handleSwap, setSwapState, trade])
+    if (onZap) {
+      onZap()
+    } else handleSwap()
+  }, [handleSwap, onZap])
 
   if (loading) {
     return <SwapLoadingButton />
@@ -180,7 +174,7 @@ export function SwapButtons({
           >
             {priceImpactSeverity > PRICE_IMPACT_HIGH && !isExpertMode
               ? t('button.priceImpactTooHigh')
-              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('button.swapAnyway') : t('button.swap')}`}
+              : `${priceImpactSeverity > PRICE_IMPACT_MEDIUM ? t('button.swapAnyway') : 'ZAP'}`}
           </ButtonError>
         </RowBetween>
         <Column style={{ marginTop: '1rem' }}>
@@ -196,7 +190,7 @@ export function SwapButtons({
       <SwapButton
         onClick={onSwapClick}
         id="swap-button"
-        disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+        disabled={!isValid}
         platformName={trade?.platform.name}
         swapInputError={swapInputError}
         priceImpactSeverity={priceImpactSeverity}
