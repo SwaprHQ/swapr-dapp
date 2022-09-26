@@ -279,6 +279,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ],
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
+    Token.BUSD[ChainId.BSC_MAINNET],
+    Token.CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
     Token.WBNB[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
@@ -322,6 +324,8 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
     Token.WBNB[ChainId.BSC_MAINNET],
+    Token.BUSD[ChainId.BSC_MAINNET],
+    Token.CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
     USDT[ChainId.BSC_MAINNET],
