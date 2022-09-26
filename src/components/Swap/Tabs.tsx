@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
+import { useActiveWeb3React } from '../../hooks'
+import { supportedChainIdList } from '../../modules/limit-orders'
 import { SwapContext, SwapTab } from '../../modules/swap/context'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import Row from '../Row'
@@ -60,6 +62,9 @@ export function Tabs() {
   const { activeTab, setActiveTab } = useContext(SwapContext)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { chainId } = useActiveWeb3React()
+
+  const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
 
   return (
     <TabsColumn>
@@ -74,6 +79,7 @@ export function Tabs() {
         <Button
           onClick={() => setActiveTab(SwapTab.LimitOrder)}
           className={activeTab === SwapTab.LimitOrder ? 'active' : ''}
+          disabled={noLimitOrderSupport}
         >
           {t('tabs.limit')}
         </Button>
