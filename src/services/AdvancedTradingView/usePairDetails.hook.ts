@@ -42,10 +42,11 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
   const { chainId } = useActiveWeb3React()
 
   useEffect(() => {
-    if (token0 && token1 && chainId !== ChainId.OPTIMISM_MAINNET) {
+    if (token0 && token1 && chainId !== ChainId.OPTIMISM_MAINNET && chainId !== ChainId.POLYGON) {
       setPairAddress(Pair.getAddress(token0, token1))
     }
-  }, [token0, token1, chainId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token0, token1])
   const { loading: isLoadingVolume24hUSD, volume24hUSD } = usePair24hVolumeUSD(pairAddress)
   const [token0Price, token1Price] = [useCoingeckoUSDPrice(token0), useCoingeckoUSDPrice(token1)]
 
