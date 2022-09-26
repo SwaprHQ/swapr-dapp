@@ -18,6 +18,7 @@ import { CurrencyLogo } from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { Option } from '../../components/Option'
+import { PageMetaData } from '../../components/PageMetaData'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
@@ -498,6 +499,7 @@ export default function RemoveLiquidity() {
 
   return (
     <>
+      <PageMetaData title="Liquidity | Swapr" />
       <AppBody>
         <AddRemoveTabs creating={false} adding={false} />
         <Wrapper>

@@ -3,6 +3,7 @@ import { Trade } from '@swapr/sdk'
 import debugFactory from 'debug'
 import { useEffect, useRef, useState } from 'react'
 
+import { useEnvironment } from '../../hooks/useEnvironment'
 import { loadFathom } from '../fathom'
 import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
@@ -24,17 +25,17 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
   const timeoutRef = useRef<NodeJS.Timeout>()
   const [site, setSite] = useState<FathomSiteInformation>()
   const [tradeQueue, setTradeQueue] = useState<AnalyticsTradeQueueState>({})
-
+  const { isProduction, isDevelopment } = useEnvironment()
   // Load the fathom site information
   useEffect(() => {
     const siteId = process.env.REACT_APP_FATHOM_SITE_ID
     const siteScriptURL = process.env.REACT_APP_FATHOM_SITE_SCRIPT_URL
-    const siteEvents = process.env.NODE_ENV === 'production' ? siteEventsProd : siteEventsDev
+    const siteEvents = isProduction ? siteEventsProd : siteEventsDev
 
     debug('Loading Fathom', { siteId, siteScriptURL })
 
     if (!siteId) {
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopment) {
         console.warn('REACT_APP_FATHOM_SITE_ID not set, skipping Fathom analytics')
       }
       return
@@ -58,9 +59,8 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     return () => {
       setSite(undefined)
       setTradeQueue({})
-      // tradeQueueDispatch({ type: ActionType.CLEAR })
     }
-  }, [])
+  }, [isDevelopment, isProduction])
 
   // Queue processing
   useEffect(() => {
