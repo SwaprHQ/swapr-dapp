@@ -1,6 +1,6 @@
 import { Token } from '@swapr/sdk'
 
-import { ChevronDown, Repeat } from 'react-feather'
+import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
@@ -12,6 +12,7 @@ import {
   PairInfo,
   PairSymbols,
   PairTab,
+  PairTabIcon,
   PairValue,
   PairValueChange,
   SwitchButton,
@@ -67,7 +68,7 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
             <PairTab>
               <Flex alignItems="center">
                 <span>{t('advancedTradingView.Change24')}</span>
-                <Repeat size={12} />
+                <PairTabIcon size={12} />
               </Flex>
             </PairTab>
             <PairValueChange positive={false}>55 | -3.42%</PairValueChange>

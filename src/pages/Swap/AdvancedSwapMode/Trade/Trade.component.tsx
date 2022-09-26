@@ -8,7 +8,7 @@ import { ExternalLink } from '../../../../theme/components'
 import { getExplorerLink } from '../../../../utils'
 import { AdvancedModeDetailsItems } from '../AdvancedSwapMode.styles'
 import { useStylingTradeBackground } from './Trade.hooks'
-import { formatDate } from './Trade.utils'
+import { formatDistanceDate } from './Trade.utils'
 
 const TradeWrapper = styled(ExternalLink)`
   display: flex;
@@ -48,6 +48,7 @@ export const Trade = ({
   isSell: boolean
 }) => {
   const style = useStylingTradeBackground({ amountUSDNumber: Number(amountUSD), isSell })
+  const timestampInMilliseconds = Number(timestamp) * 1000
 
   return (
     <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
@@ -57,7 +58,7 @@ export const Trade = ({
       </Flex>
       <Text>{amountOut}</Text>
       {price && <Text>{price}</Text>}
-      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDate(Number(timestamp) * 1000)}</Text>
+      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDistanceDate(timestampInMilliseconds)}</Text>
     </TradeWrapper>
   )
 }
