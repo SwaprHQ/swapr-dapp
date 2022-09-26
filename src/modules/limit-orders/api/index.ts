@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 /**
  * @module limit-orders/api
  * @description LimitOrders API: a set of generic functions to create and manage limit orders.
@@ -5,8 +6,9 @@
  */
 
 import type { Signer } from '@ethersproject/abstract-signer'
-import { CoWTrade } from '@swapr/sdk'
+import { ChainId, CoWTrade } from '@swapr/sdk'
 
+import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
 import type { UnsignedOrder } from '@cowprotocol/cow-sdk/dist/utils/sign'
 
@@ -153,4 +155,19 @@ export async function submitLimitOrder({ order, signer, chainId }: SubmitLimitOr
     },
     owner: userAddress,
   })
+}
+
+/**
+ * Returns the vault relayer contract address for the given chain.
+ * ERC20 tokens must approve this address.
+ * @param chainId The chain Id
+ * @returns The vault relayer address
+ */
+export function getVaultRelayerAddress(chainId: ChainId) {
+  const GPv2VaultRelayer = contractNetworks.GPv2VaultRelayer as Record<
+    ChainId,
+    Record<'transactionHash' | 'address', string>
+  >
+
+  return GPv2VaultRelayer[chainId]?.address
 }

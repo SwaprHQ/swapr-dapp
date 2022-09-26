@@ -5,26 +5,29 @@ import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../../../assets/images/swap-icon.svg'
 import { ButtonPrimary } from '../../../../components/Button'
 import { AutoColumn } from '../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
+import { Loader } from '../../../../components/Loader'
+import ProgressSteps from '../../../../components/ProgressSteps'
 import { AutoRow as AutoRowBase } from '../../../../components/Row'
 import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from '../../../../components/Swap/styleds'
+import { useTokenAllowance } from '../../../../data/Allowances'
+import { ApprovalState, useApproveCallback } from '../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import AppBody from '../../../../pages/AppBody'
 import { useCurrencyBalances } from '../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
-import { getQuote, signLimitOrder, submitLimitOrder } from '../../api'
+import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
 import { OrderExpirayField } from '../partials/OrderExpirayField'
 import { OrderLimitPriceField } from '../partials/OrderLimitPriceField'
-
 dayjs.extend(dayjsUTCPlugin)
 
 const AutoRow = styled(AutoRowBase)`
@@ -50,6 +53,43 @@ interface HandleCurrenyAmountChangeParams {
   updatedLimitOrder?: SerializableLimitOrder
 }
 
+interface ApprovalFlowProps {
+  approval: ApprovalState
+  approveCallback: () => Promise<void>
+  // approvalSubmitted: boolean
+  tokenInSymbol: string
+}
+
+export const ApprovalFlow: FC<ApprovalFlowProps> = ({
+  approval,
+  // approvalSubmitted,
+  approveCallback,
+  tokenInSymbol,
+}) => (
+  <>
+    <ButtonPrimary
+      onClick={approveCallback}
+      disabled={approval !== ApprovalState.NOT_APPROVED /* || approvalSubmitted */}
+      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
+      //   confirmed={approval === ApprovalState.APPROVED}
+    >
+      {approval === ApprovalState.PENDING ? (
+        <AutoRow gap="6px" justify="center">
+          Approving <Loader />
+        </AutoRow>
+      ) : (
+        // : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+        // 'Approved'
+        // ) :
+        'Approve ' + tokenInSymbol
+      )}
+    </ButtonPrimary>
+    <div style={{ marginTop: '1rem' }}>
+      <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
+    </div>
+  </>
+)
+
 /**
  * The Limit Order Form is the base component for all limit order forms.
  */
@@ -70,6 +110,11 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
   // State holding the limit/order price
   const [price, setPrice] = useState<Price>(initialState.price)
 
+  // const tokenInAllowance = useTokenAllowance(sellTokenAmount?.token, account, getVaultRelayerAddress(chainId))
+  const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
+    sellTokenAmount,
+    getVaultRelayerAddress(chainId)
+  )
   // Final limit order to be sent to the internal API
   const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
 
@@ -150,13 +195,45 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
     outputCurrencyAmount: buyTokenAmount,
   })
 
+  // Determine if the token has to be approved first
+  const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
+
   // Form submission handler
   const reviewOrder = async () => {
     setLoading(true)
 
     // sign the order
     try {
+      // // try to get allowance
+      // const allowance = await tokenInAllowance
+      // if (allowance === undefined) {
+      //   throw new Error('Could not get allowance')
+      // }
+
+      // // if allowance is not enough, try to approve
+      // if (allowance.lessThan(sellTokenAmount.raw)) {
+      //   const approveTx = await approveCallback()
+      //   if (approveTx === undefined) {
+      //     throw new Error('Could not approve')
+      //   }
+
+      //   // check allowance again
+      //   const allowance = await tokenInAllowance
+      //   if (allowance === undefined) {
+      //     throw new Error('Could not get allowance')
+      //   }
+
+      //   // if allowance is not enough, throw error
+      //   if (allowance.lt(sellTokenAmount.raw)) {
+      //     throw new Error('Could not approve')
+      //   }
+
+      //   // if allowance is enough, continue
+      // }
+
       const signer = provider.getSigner()
+
+      // get the quote and set the fee amount
 
       const finalizedLimitOrder = {
         ...limitOrder,
@@ -425,6 +502,13 @@ export function Form({ account, provider, chainId }: LimitOrderFormProps) {
           </AutoRow>
           {Currency.isNative(sellTokenAmount.currency) ? (
             <ButtonPrimary onClick={handleCurrencyWrap}>Wrap</ButtonPrimary> // @todo remove this as Swapbox handles wrapping native tokens
+          ) : showApproveFlow ? (
+            <ApprovalFlow
+              tokenInSymbol={sellTokenAmount.currency.symbol as string}
+              approval={tokenInApproval}
+              approveCallback={tokenInApprovalCallback}
+              // approvalSubmitted={approvalSubmitted}
+            />
           ) : (
             <ButtonPrimary onClick={reviewOrder}>Review Order</ButtonPrimary>
           )}
