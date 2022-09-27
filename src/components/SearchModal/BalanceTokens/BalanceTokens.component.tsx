@@ -1,6 +1,6 @@
-import { Currency, currencyEquals, Token } from '@swapr/sdk'
+import { Currency, Token } from '@swapr/sdk'
 
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Text } from 'rebass'
 
 import { useActiveWeb3React } from '../../../hooks'
