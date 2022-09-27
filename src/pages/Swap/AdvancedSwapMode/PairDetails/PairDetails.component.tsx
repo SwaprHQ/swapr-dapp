@@ -57,7 +57,7 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
               {isLoadingVolume24hUSD ? (
                 <Skeleton width="100px" height="14px" />
               ) : (
-                activeCurrencyDetails.relativePrice?.toPrecision(6)
+                activeCurrencyDetails.relativePrice.toPrecision(6)
               )}
             </PairValueChange>
             <PairTab>

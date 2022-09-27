@@ -6,16 +6,16 @@ import { usePair24hVolumeUSD } from '../../hooks/usePairVolume24hUSD'
 import { useCoingeckoUSDPrice } from '../../hooks/useUSDValue'
 
 type ActiveCurrencyDetails = {
-  price: string | undefined
-  volume24h: string | undefined
-  relativePrice: number | undefined
+  price: number
+  volume24h: number
+  relativePrice: number
 }
 
 const calculate24hVolumeForActiveCurrencyOption = (volume24hUSD: CurrencyAmount, price: Price) => {
   try {
-    return volume24hUSD.divide(price.toFixed(0)).toFixed(0)
+    return Number(volume24hUSD.divide(price.toFixed(0)).toFixed(0))
   } catch (e) {
-    return '0'
+    return 0
   }
 }
 
@@ -24,7 +24,9 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
 
   useEffect(() => {
     if (token0 && token1) {
-      setPairAddress(Pair.getAddress(token0, token1))
+      try {
+        setPairAddress(Pair.getAddress(token0, token1))
+      } catch {}
     }
   }, [token0, token1])
 
@@ -34,9 +36,9 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
   const [isPairModalOpen, setIsPairModalOpen] = useState(false)
 
   const [activeCurrencyDetails, setActiveCurrencyDetails] = useState<ActiveCurrencyDetails>({
-    price: undefined,
-    volume24h: undefined,
-    relativePrice: undefined,
+    price: 0,
+    volume24h: 0,
+    relativePrice: 0,
   })
 
   const handleOpenModal = () => {
@@ -62,28 +64,25 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     ) {
       if (token0.address.toLowerCase() === activeCurrencyOption.address.toLowerCase()) {
         setActiveCurrencyDetails({
-          price: token1Price.price.toFixed(0),
+          price: Number(token1Price.price.toFixed(0)),
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0Price.price),
           relativePrice: Number(token1Price.price.toFixed(0)) / Number(token0Price.price.toFixed(0)),
         })
       } else {
         setActiveCurrencyDetails({
-          price: token0Price.price.toFixed(0),
+          price: Number(token0Price.price.toFixed(0)),
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1Price.price),
           relativePrice: Number(token0Price.price.toFixed(0)) / Number(token1Price.price.toFixed(0)),
         })
       }
+    } else {
+      setActiveCurrencyDetails({
+        price: 0,
+        volume24h: 0,
+        relativePrice: 0,
+      })
     }
-  }, [
-    isLoadingVolume24hUSD,
-    volume24hUSD,
-    activeCurrencyOption?.address,
-    token0?.address,
-    token0Price.price,
-    token1Price.price,
-    activeCurrencyOption,
-    token0,
-  ])
+  }, [activeCurrencyOption, isLoadingVolume24hUSD, token0, token0Price.price, token1Price.price, volume24hUSD])
 
   return {
     onDismiss,
