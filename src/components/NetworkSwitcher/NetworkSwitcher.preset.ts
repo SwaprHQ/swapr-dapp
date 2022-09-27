@@ -36,7 +36,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.BSC_MAINNET,
-    name: 'BSC',
+    name: 'BNB Chain',
     logoSrc: BinanceChainLogo,
     color: '#F3BA2F',
   },
@@ -85,7 +85,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
   },
   {
     chainId: ChainId.BSC_TESTNET,
-    name: 'BSC Testnet',
+    name: 'BNB Testnet',
     logoSrc: BinanceChainLogo,
     color: '#F3BA2F',
     tag: NetworkSwitcherTags.TESTNETS,
