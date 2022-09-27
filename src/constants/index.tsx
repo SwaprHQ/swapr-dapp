@@ -3,6 +3,7 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
+  DAI,
   DXD,
   GNO,
   JSBI,
@@ -11,6 +12,9 @@ import {
   SWPR,
   Token,
   UniswapV2RoutablePlatform,
+  USDC,
+  USDT,
+  WBTC,
   WETH,
   WMATIC,
   WXDAI,
@@ -44,136 +48,6 @@ export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 // a list of tokens by chain
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
-}
-
-export const DAI: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.POLYGON]: new Token(
-    ChainId.POLYGON,
-    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.BSC_MAINNET]: new Token(
-    ChainId.BSC_MAINNET,
-    '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
-    18,
-    'DAI',
-    'Binance-Peg Dai Stablecoin'
-  ),
-}
-
-export const USDC: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C'),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-    6,
-    'USDC',
-    'USD//C'
-  ),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
-    6,
-    'USDC',
-    'USD//C from Ethereum'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-    6,
-    'USDC',
-    'USD//C'
-  ),
-  [ChainId.BSC_MAINNET]: new Token(
-    ChainId.BSC_MAINNET,
-    '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-    6,
-    'USDC',
-    ' Binance-Peg USD Coin'
-  ),
-}
-
-export const USDT: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6, 'USDT', 'Tether USD'),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
-    6,
-    'USDT',
-    'Tether USD from Ethereum'
-  ),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
-    6,
-    'USDT',
-    'Tether USD'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
-    6,
-    'USDT',
-    'Tether USD'
-  ),
-  [ChainId.BSC_MAINNET]: new Token(
-    ChainId.BSC_MAINNET,
-    '0x55d398326f99059ff775485246999027b3197955',
-    6,
-    'USDT',
-    'Binance-Peg BSC-USD (BSC-USD)'
-  ),
-}
-
-export const WBTC: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', 8, 'WBTC', 'Wrapped BTC'),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
-    8,
-    'WBTC',
-    'Wrapped BTC'
-  ),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252',
-    8,
-    'WBTC',
-    'Wrapped BTC from Ethereum'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x68f180fcCe6836688e9084f035309E29Bf0A2095',
-    8,
-    'WBTC',
-    'Wrapped BTC'
-  ),
 }
 
 export const MATIC: { [key: number]: Token } = {

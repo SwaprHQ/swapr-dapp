@@ -3,6 +3,7 @@ import {
   Currency,
   CurrencyAmount,
   currencyEquals,
+  DAI,
   Fraction,
   JSBI,
   Price,
@@ -10,11 +11,11 @@ import {
   Token,
   TokenAmount,
   UniswapV2RoutablePlatform,
+  USDC,
 } from '@swapr/sdk'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { DAI, USDC } from '../constants/index'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
