@@ -467,7 +467,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.BNB.decimals || 18,
     },
     rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://testnet.bscscan.com'],
+    blockExplorerUrls: ['https://bscscan.com'],
   },
   [ChainId.BSC_TESTNET]: {
     chainId: `0x${ChainId.BSC_TESTNET.toString(16)}`,
@@ -477,8 +477,8 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       symbol: Currency.BNB.symbol || 'BNB',
       decimals: Currency.BNB.decimals || 18,
     },
-    rpcUrls: ['https://goerli.optimism.io'],
-    blockExplorerUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+    blockExplorerUrls: ['https://testnet.bscscan.com/'],
   },
 }
 
