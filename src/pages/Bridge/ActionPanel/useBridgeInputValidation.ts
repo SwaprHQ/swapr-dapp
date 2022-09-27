@@ -12,12 +12,17 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: b
   const dispatch = useDispatch()
   const activeBridge = useSelector<AppState>(state => state.ecoBridge.common.activeBridge)
 
-  const { from, to, showAvailableBridges, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
+  const { showAvailableBridges } = useSelector((state: AppState) => state.ecoBridge.ui)
 
-  const { address: fromTokenAddress, value: fromValue } = from
-  const { address: toTokenAddress } = to
-
-  const { isBalanceSufficient } = useBridgeInfo()
+  const {
+    isBalanceSufficient,
+    fromChainId,
+    toChainId,
+    isBridgeSwapActive,
+    fromTokenAddress,
+    toTokenAddress,
+    typedValue: fromValue,
+  } = useBridgeInfo()
 
   useEffect(() => {
     if (showAvailableBridges && !isOutputPanel) {
@@ -29,8 +34,8 @@ export const useBridgeInputValidation = (isCollecting: boolean, isOutputPanel: b
     fromValue,
     fromTokenAddress,
     toTokenAddress,
-    from.chainId,
-    to.chainId,
+    fromChainId,
+    toChainId,
     isOutputPanel,
   ])
 

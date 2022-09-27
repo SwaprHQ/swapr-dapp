@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 
 import { CustomNetworkConnector } from '../connectors/CustomNetworkConnector'
+import { CustomWalletConnectConnector } from '../connectors/CustomWalletConnectConnector'
 import { CustomWalletLinkConnector } from '../connectors/CustomWalletLinkConnector'
 import { NETWORK_DETAIL } from '../constants'
 import { switchOrAddNetwork } from '../utils'
@@ -35,6 +36,10 @@ export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchPr
         changeChainIdResult = await switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
       else if (connector instanceof CustomWalletLinkConnector)
         changeChainIdResult = await connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
+      else if (connector instanceof CustomWalletConnectConnector) {
+        connector.changeChainId(optionChainId)
+        unavailableRedirect(optionChainId, navigate, pathname)
+      }
 
       if (onSelectNetworkCallback) onSelectNetworkCallback()
       // success scenario - user accepts the change on the popup window

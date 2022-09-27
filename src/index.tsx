@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
+import { AnalyticsProvider } from './analytics'
 import { NetworkContextName } from './constants'
 import './i18n'
 import App from './pages/App'
@@ -20,6 +21,9 @@ import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 import './theme/fonts.css'
+
+// Add Content Security Policy nonce to the scripts
+__webpack_nonce__ = process.env.REACT_APP_CSP_NONCE!
 
 // Enables use of the useWhatChanged hook in dev environment
 setUseWhatChange({
@@ -55,21 +59,23 @@ const root = createRoot(container)
 root.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <EcoBridgeProvider>
-            <Updaters />
-            <ThemeProvider>
-              <ThemedGlobalStyle />
-              <HashRouter>
-                <MultiChainLinksUpdater />
-                <App />
-              </HashRouter>
-            </ThemeProvider>
-          </EcoBridgeProvider>
-        </Provider>
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
+    <AnalyticsProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ProviderNetwork getLibrary={getLibrary}>
+          <Provider store={store}>
+            <EcoBridgeProvider>
+              <Updaters />
+              <ThemeProvider>
+                <ThemedGlobalStyle />
+                <HashRouter>
+                  <MultiChainLinksUpdater />
+                  <App />
+                </HashRouter>
+              </ThemeProvider>
+            </EcoBridgeProvider>
+          </Provider>
+        </Web3ProviderNetwork>
+      </Web3ReactProvider>
+    </AnalyticsProvider>
   </StrictMode>
 )
