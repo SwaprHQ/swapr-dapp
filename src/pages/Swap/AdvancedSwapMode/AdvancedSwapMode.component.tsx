@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useRef } from 'react'
+import { PropsWithChildren, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 
@@ -9,7 +9,7 @@ import { TransactionRows } from '../../Account/TransactionRows'
 import {
   AdvancedModeHeader,
   AdvancedModeTitle,
-  AdvancedSwapModeContainer,
+  AdvancedSwapModeWrapper,
   BaseWrapper,
   ChartWrapper,
   LiquidityWrapper,
@@ -24,7 +24,7 @@ import { ColumnHeader } from './ColumnHeader'
 import { InfiniteScroll } from './InfiniteScroll'
 import { PairDetails } from './PairDetails'
 
-export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
+export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation('swap')
 
   const tradesWrapper = useRef<HTMLDivElement>(null)
@@ -56,7 +56,7 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
   const [token0, token1] = pairTokens
 
   return (
-    <AdvancedSwapModeContainer>
+    <AdvancedSwapModeWrapper>
       <PairDetailsWrapper>
         <PairDetails
           token0={token0}
@@ -146,6 +146,6 @@ export const AdvancedSwapMode: FC<PropsWithChildren> = ({ children }) => {
           />
         </TransactionsWrapper>
       </LiquidityWrapper>
-    </AdvancedSwapModeContainer>
+    </AdvancedSwapModeWrapper>
   )
 }

@@ -19,19 +19,20 @@ export const ColumnHeader = ({
   showTrades,
 }: ColumnHeaderProps) => {
   const { t } = useTranslation('swap')
+  const translationAmountInput = `${t('advancedTradingView.details.amount')} ${
+    showTrades ? `(${inputTokenSymbol})` : ''
+  }`
+  const translationAmountOutput = `${t('advancedTradingView.details.amount')} ${
+    showTrades ? `(${outputTokenSymbol})` : ''
+  }`
+  const translationPrice = `${t('advancedTradingView.details.price')} ${
+    showTrades ? `(${activeCurrencySymbolOption})` : ''
+  }`
   return (
     <AdvancedModeDetails>
-      <Text>
-        {t('advancedTradingView.details.amount')} {showTrades ? `(${inputTokenSymbol})` : ''}
-      </Text>
-      <Text>
-        {t('advancedTradingView.details.amount')} {showTrades ? `(${outputTokenSymbol})` : ''}
-      </Text>
-      {showPrice && (
-        <Text>
-          {t('advancedTradingView.details.price')} {showTrades ? `(${activeCurrencySymbolOption})` : ''}
-        </Text>
-      )}
+      <Text title={translationAmountInput}>{translationAmountInput}</Text>
+      <Text title={translationAmountOutput}>{translationAmountOutput}</Text>
+      {showPrice && <Text title={translationPrice}>{translationPrice}</Text>}
       <Text sx={{ textAlign: 'right' }}>{t('advancedTradingView.details.time')}</Text>
     </AdvancedModeDetails>
   )

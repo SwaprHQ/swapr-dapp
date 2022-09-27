@@ -1,9 +1,11 @@
 import { ChainId, Token } from '@swapr/sdk'
 
+import { Trans } from 'react-i18next'
 import { default as InfiniteScrollCom } from 'react-infinite-scroll-component'
 
 import { Loader } from '../../../../components/Loader'
 import { AdvancedViewTransaction } from '../../../../services/AdvancedTradingView/advancedTradingView.types'
+import { sortByTimeStamp } from '../../../../utils/sortByTimestamp'
 import { LoaderContainer, NoDataMessage } from '../AdvancedSwapMode.styles'
 import { Trade } from '../Trade/Trade.component'
 
@@ -45,7 +47,7 @@ export const InfiniteScroll = ({
         {showTrades &&
           activeCurrencyOption &&
           data
-            .sort((firstTrade, secondTrade) => Number(secondTrade.timestamp) - Number(firstTrade.timestamp))
+            .sort((firstTrade, secondTrade) => sortByTimeStamp(secondTrade.timestamp, firstTrade.timestamp))
             .map((tx, index) => (
               <Trade
                 key={`${tx.transactionId}-${index}`}
@@ -68,7 +70,7 @@ export const InfiniteScroll = ({
       )}
       {!isLoading && isFetched && showTrades && !data.length && (
         <NoDataMessage>
-          There is no data for this <span>pair</span>
+          <Trans i18nKey="swap:advancedTradingView.infiniteScroll.noData" components={[<span key="0"></span>]} />
         </NoDataMessage>
       )}
     </>
