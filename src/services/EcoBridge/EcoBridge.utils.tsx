@@ -18,6 +18,13 @@ import {
 import { commonActions } from './store/Common.reducer'
 import { ecoBridgeUIActions } from './store/UI.reducer'
 
+export enum ButtonStatus {
+  APPROVE = 'Approve',
+  APPROVING = 'Approving',
+  BRIDGE = 'Bridge',
+  LOADING = 'Loading',
+}
+
 const getIndexOfSpecialCharacter = (message: string) => {
   for (let index = 0; index < message.length; index++) {
     if ("/[!@#$%^&*()_+-=[]{};':\\|,.<>/?]+/".indexOf(message[index]) !== -1) return index
@@ -132,7 +139,7 @@ export abstract class EcoBridgeChildBase {
         },
       },
       statusButton: {
-        setStatus: (status: 'Approve' | 'Approving' | 'Bridge' | 'Loading') => {
+        setStatus: (status: ButtonStatus) => {
           let payload: {
             isError?: boolean
             isLoading?: boolean
@@ -142,7 +149,7 @@ export abstract class EcoBridgeChildBase {
           } = {}
 
           switch (status) {
-            case 'Approve':
+            case ButtonStatus.APPROVE:
               payload = {
                 label: 'Approve',
                 isLoading: false,
@@ -151,7 +158,7 @@ export abstract class EcoBridgeChildBase {
                 isBalanceSufficient: true,
               }
               break
-            case 'Approving':
+            case ButtonStatus.APPROVING:
               payload = {
                 label: 'Approving',
                 isError: false,
@@ -160,7 +167,7 @@ export abstract class EcoBridgeChildBase {
                 isApproved: false,
               }
               break
-            case 'Bridge':
+            case ButtonStatus.BRIDGE:
               payload = {
                 label: 'Bridge',
                 isError: false,
@@ -169,7 +176,7 @@ export abstract class EcoBridgeChildBase {
                 isApproved: true,
               }
               break
-            case 'Loading':
+            case ButtonStatus.LOADING:
               payload = {
                 label: 'Loading',
                 isLoading: true,
@@ -226,6 +233,12 @@ export abstract class EcoBridgeChildBase {
     return this._store
   }
 
+  protected get baseActions() {
+    if (!this._baseActions) throw new Error('No baseActions set')
+
+    return this._baseActions
+  }
+
   // To be implemented by bridge
   abstract init({
     account,
@@ -274,8 +287,7 @@ export const createEcoBridgeChildBaseSlice = <T, Reducers extends SliceCaseReduc
 }) => {
   return createSlice({
     name,
-    // TODO: double-check lazy loading
-    initialState: () => createBridgeChildBaseInitialState(initialState),
+    initialState: createBridgeChildBaseInitialState(initialState),
     reducers: {
       requestStarted: (state, action: PayloadAction<{ id: number }>) => {
         state.lastMetadataCt = action.payload.id
