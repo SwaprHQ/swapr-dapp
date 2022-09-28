@@ -78,11 +78,7 @@ export default function App() {
 
   return (
     <>
-      <PageMetaData
-        title="Swap"
-        description="A governance-enabled automated market maker with adjustable fees."
-        noIndex={process.env.REACT_APP_BUILD_ENV === 'staging'}
-      />
+      <PageMetaData />
       <Suspense fallback={null}>
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
           <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
