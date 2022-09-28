@@ -73,13 +73,17 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
         setActiveCurrencyDetails({
           price: `$${token1Price.price.toFixed(4)}`,
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0Price.price, activeCurrencyOption),
-          relativePrice: token1Price.price.divide(token0Price.price).toFixed(4),
+          relativePrice: (
+            Number(token1Price.price.toSignificant()) / Number(token0Price.price.toSignificant())
+          ).toFixed(4),
         })
       } else {
         setActiveCurrencyDetails({
           price: `$${token0Price.price.toFixed(4)}`,
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1Price.price, activeCurrencyOption),
-          relativePrice: token0Price.price.divide(token1Price.price).toFixed(4),
+          relativePrice: (
+            Number(token0Price.price.toSignificant()) / Number(token1Price.price.toSignificant())
+          ).toFixed(4),
         })
       }
     } else {
