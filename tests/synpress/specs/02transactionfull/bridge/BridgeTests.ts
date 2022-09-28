@@ -12,6 +12,8 @@ describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
+  beforeEach(() => {})
+
   before(() => {
     ScannerFacade.erc20TokenBalance(
       AddressesEnum.USDC_TOKEN_ARINKEBY,
@@ -25,16 +27,16 @@ describe('Bridge tests', () => {
     MetamaskNetworkHandler.addGnosis()
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.resetMetamaskAccount()
     cy.wait(500)
   })
 
-  it('Should initiate a bridging ', function () {
+  //TODO Change network to Goerli and uncomment
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -229,7 +231,7 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
