@@ -14,8 +14,7 @@ import {
   SocketList,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { ApprovalsAPI, QuoteAPI, ServerAPI, TokenListsAPI } from './api'
 import {
   BridgeStatusResponseSourceTxStatusEnum,
@@ -34,6 +33,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
   constructor({ supportedChains, bridgeId, displayName = 'Socket' }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
+    this.setBaseActions(this.actions)
   }
 
   private get actions() {
@@ -148,11 +148,11 @@ export class SocketBridge extends EcoBridgeChildBase {
       data: transaction.result.data,
     })
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus('Approving')
+    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
     const receipt = await txn?.wait()
     if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
     }
   }
 
@@ -170,7 +170,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     //build txn
 
     try {
-      this.ecoBridgeUtils.ui.statusButton.setStatus('Loading')
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
       const transaction = await ServerAPI.appControllerGetSingleTx(
         {
@@ -194,7 +194,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
       if (!approvalData) {
         //when approvalData === null user can bridge
-        this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
       } else {
         //check allowance
 
@@ -229,11 +229,11 @@ export class SocketBridge extends EcoBridgeChildBase {
               })
             )
 
-            this.ecoBridgeUtils.ui.statusButton.setStatus('Approve')
+            this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
             return
           }
 
-          this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+          this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
         } else {
           this.ecoBridgeUtils.ui.statusButton.setError()
         }
@@ -323,24 +323,19 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals)).toFixed(2).toString()
 
-    this.store.dispatch(commonActions.setActiveRouteId(routeId))
+    this.store.dispatch(this.commonActions.setActiveRouteId(routeId))
 
-    const details = {
-      gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
-      estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
-      receiveAmount: formattedToAmount,
-      requestId,
-    }
-
-    this._baseActions?.setBridgeDetails(details)
+    this.store.dispatch(
+      this.baseActions.setBridgeDetails({
+        gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
+        estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
+        receiveAmount: formattedToAmount,
+        requestId,
+      })
+    )
   }
 
   public getBridgingMetadata = async () => {
-    if (!this.store) {
-      console.warn('No store found.')
-      return
-    }
-
     const ecoBridgeState = this.store.getState().ecoBridge
 
     const { isBridgeSwapActive, from, to } = ecoBridgeState.ui
@@ -450,7 +445,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     if (!fromChainId || !toChainId) return
 
-    this._baseActions?.setTokenListsStatus(SyncState.LOADING)
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.LOADING))
 
     let tokenList: TokenList | undefined
 
@@ -513,8 +508,8 @@ export class SocketBridge extends EcoBridgeChildBase {
       }
     }
 
-    this._baseActions?.addTokenLists({ socket: tokenList as TokenList })
-    this._baseActions?.setTokenListsStatus(SyncState.READY)
+    this.store.dispatch(this.baseActions.addTokenLists({ socket: tokenList as TokenList }))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.READY))
   }
 
   public fetchStaticLists = async () => {
@@ -526,7 +521,7 @@ export class SocketBridge extends EcoBridgeChildBase {
       throw this.ecoBridgeUtils.logger.error('Failed to fetch Socket token lists')
     }
 
-    this.store.dispatch(commonActions.activateLists(['socket']))
+    this.store.dispatch(this.commonActions.activateLists(['socket']))
   }
 
   private pendingTxListener = async () => {
@@ -557,16 +552,20 @@ export class SocketBridge extends EcoBridgeChildBase {
             })
           )
         } else {
+          this.store.dispatch(
+            this.actions.updateTx({
+              txHash: tx.txHash,
+              status: SocketTxStatus.ERROR,
+            })
+          )
+        }
+      } catch (e) {
+        this.store.dispatch(
           this.actions.updateTx({
             txHash: tx.txHash,
             status: SocketTxStatus.ERROR,
           })
-        }
-      } catch (e) {
-        this.actions.updateTx({
-          txHash: tx.txHash,
-          status: SocketTxStatus.ERROR,
-        })
+        )
       }
     })
 

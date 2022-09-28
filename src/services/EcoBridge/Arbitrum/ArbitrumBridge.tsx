@@ -31,7 +31,7 @@ import {
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
@@ -56,20 +56,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     return arbitrumSelectors[this.bridgeId as ArbitrumList]
   }
 
-  // Typed setters
   public get ethBridger() {
     if (!this._ethBridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No Eth bridge set')
     return this._ethBridger
   }
-  // Typed setters
+
   public get erc20Bridger() {
     if (!this._erc20Bridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No ERC20 bridge set')
     return this._erc20Bridger
-  }
-
-  public get store() {
-    if (!this._store) throw new Error('ArbBridge: No store set')
-    return this._store
   }
 
   // TODO: Handle exception throws properly over all the codebase.
@@ -94,13 +88,13 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     super({ supportedChains: supportedChainsArr, bridgeId, displayName })
     this.setBaseActions(this.actions)
 
-    if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error('Invalid config')
+    if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error(`${this.bridgeId}: Invalid config`)
 
     const [supportedChains] = supportedChainsArr
 
     const { l1ChainId, l2ChainId } = getChainPair(supportedChains.from)
 
-    if (!l1ChainId || !l2ChainId) throw this.ecoBridgeUtils.logger.error('Wrong config')
+    if (!l1ChainId || !l2ChainId) throw this.ecoBridgeUtils.logger.error(`${this.bridgeId}: Invalid config`)
 
     this.l1ChainId = l1ChainId
     this.l2ChainId = l2ChainId
@@ -221,7 +215,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       erc20L1Address,
     })
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus('Approving')
+    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
     this.store.dispatch(
       addTransaction({
@@ -239,7 +233,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     const receipt = await transaction.wait()
 
     if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
     }
   }
 
@@ -532,15 +526,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     const erc20L1Address = await this.erc20Bridger.getL1ERC20Address(erc20L2Address, this.l2Signer.provider)
 
-    if (!erc20L1Address) {
-      throw this.ecoBridgeUtils.logger.error('Token address not recognized')
-    }
+    if (!erc20L1Address) throw this.ecoBridgeUtils.logger.error('Token address not recognized')
 
     const l1Token = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, erc20L1Address)
 
-    if (!l1Token) {
-      throw this.ecoBridgeUtils.logger.error("Can't withdraw: token not found")
-    }
+    if (!l1Token) throw this.ecoBridgeUtils.logger.error("Can't withdraw: token not found")
 
     const [symbol, decimals] = await Promise.all([l1Token.symbol(), l1Token.decimals()])
 
@@ -581,7 +571,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
-    this._baseActions?.setTokenListsStatus(SyncState.LOADING)
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.LOADING))
 
     const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.lists.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
@@ -641,9 +631,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       { tokenLists: {}, defaultListsIds: [] }
     )
 
-    this._baseActions?.addTokenLists(tokenLists)
-    this._baseActions?.setTokenListsStatus(SyncState.READY)
-    this.commonActions.activateLists(defaultListsIds)
+    this.store.dispatch(this.baseActions.addTokenLists(tokenLists))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.READY))
+
+    this.store.dispatch(this.commonActions.activateLists(defaultListsIds))
   }
 
   // No need to implement
@@ -658,10 +649,10 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       value: fromValue,
     } = this.store.getState().ecoBridge.ui.from
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus('Loading')
+    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
     if (fromTokenAddress === Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
-      this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
       return
     }
 
@@ -689,11 +680,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       // Don't check allowance for l2 => l1
       if (fromChainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
-        this.ecoBridgeUtils.ui.statusButton.setStatus('Approve')
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
         return
       }
 
-      this.ecoBridgeUtils.ui.statusButton.setStatus('Bridge')
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
     }
   }
   public triggerBridging = () => {
@@ -779,12 +770,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       totalTxnGasCostInUSD = undefined //when Arbitrum cannot estimate gas
     }
 
-    this._baseActions?.setBridgeDetails({
-      gas: totalTxnGasCostInUSD,
-      fee: '0%',
-      estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-      receiveAmount: Number(value).toFixed(2).toString(),
-      requestId,
-    })
+    this.store.dispatch(
+      this.baseActions.setBridgeDetails({
+        gas: totalTxnGasCostInUSD,
+        fee: '0%',
+        estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
+        receiveAmount: Number(value).toFixed(2).toString(),
+        requestId,
+      })
+    )
   }
 }
