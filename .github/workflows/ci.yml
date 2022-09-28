@@ -345,20 +345,11 @@ jobs:
           DISPLAY: ':99'
           CYPRESS_RESOURCES_WAIT: true
 
-      - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
-
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
-            ${{ matrix.containers }}.json
-            public-report/screenshots
-            public-report/videos
             docker/videos-ci
 
   cypress:
