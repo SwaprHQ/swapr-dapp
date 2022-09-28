@@ -29,15 +29,8 @@ interface PairDetailsProps {
 export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitchCurrency }: PairDetailsProps) => {
   const { t } = useTranslation('swap')
 
-  const {
-    activeCurrencyDetails,
-    handleOpenModal,
-    isLoadingVolume24hUSD,
-    isPairModalOpen,
-    onDismiss,
-    onPairSelect,
-    volume24hUSD,
-  } = usePairDetails(token0, token1, activeCurrencyOption)
+  const { activeCurrencyDetails, handleOpenModal, isLoading, isPairModalOpen, onDismiss, onPairSelect, volume24hUSD } =
+    usePairDetails(token0, token1, activeCurrencyOption)
 
   if (!token0 || !token1 || !activeCurrencyOption) return null
 
@@ -54,15 +47,9 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
         <Flex flexBasis="80%">
           <PairInfo>
             <PairValueChange size="16px" positive={true}>
-              {isLoadingVolume24hUSD ? (
-                <Skeleton width="100px" height="14px" />
-              ) : (
-                activeCurrencyDetails.relativePrice.toPrecision(6)
-              )}
+              {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
             </PairValueChange>
-            <PairTab>
-              {isLoadingVolume24hUSD ? <Skeleton width="100px" height="14px" /> : `$${activeCurrencyDetails.price}`}
-            </PairTab>
+            <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
           </PairInfo>
           <PairInfo>
             <PairTab>
@@ -84,18 +71,12 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
           <PairInfo>
             <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
             <PairValue>
-              {isLoadingVolume24hUSD ? (
-                <Skeleton width="100px" height="14px" />
-              ) : (
-                `${activeCurrencyDetails.volume24h} ${activeCurrencyOption.symbol}`
-              )}
+              {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.volume24h}
             </PairValue>
           </PairInfo>
           <PairInfo>
             <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
-            <PairValue>
-              {isLoadingVolume24hUSD ? <Skeleton width="100px" height="14px" /> : `${volume24hUSD.toFixed(0)}$`}
-            </PairValue>
+            <PairValue>{isLoading ? <Skeleton width="100px" height="14px" /> : volume24hUSD}</PairValue>
           </PairInfo>
         </Flex>
         <SwitcherWrapper>

@@ -2,20 +2,27 @@ import { CurrencyAmount, Pair, Price, Token } from '@swapr/sdk'
 
 import { useEffect, useState } from 'react'
 
+import { ZERO_USD } from '../../constants'
 import { usePair24hVolumeUSD } from '../../hooks/usePairVolume24hUSD'
 import { useCoingeckoUSDPrice } from '../../hooks/useUSDValue'
 
 type ActiveCurrencyDetails = {
-  price: number
-  volume24h: number
-  relativePrice: number
+  price: string
+  volume24h: string
+  relativePrice: string
 }
 
-const calculate24hVolumeForActiveCurrencyOption = (volume24hUSD: CurrencyAmount, price: Price) => {
+const calculate24hVolumeForActiveCurrencyOption = (
+  volume24hUSD: CurrencyAmount,
+  price: Price,
+  activeCurrencyOption: Token | undefined
+) => {
   try {
-    return Number(volume24hUSD.divide(price.toFixed(0)).toFixed(0))
-  } catch (e) {
-    return 0
+    if (volume24hUSD === ZERO_USD) throw new Error('Advanced Trading View: cannot fetch volume24h')
+
+    return `${Number(volume24hUSD.divide(price).toSignificant(6)).toFixed(2)} ${activeCurrencyOption?.symbol ?? ''}`
+  } catch {
+    return '-'
   }
 }
 
@@ -36,9 +43,9 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
   const [isPairModalOpen, setIsPairModalOpen] = useState(false)
 
   const [activeCurrencyDetails, setActiveCurrencyDetails] = useState<ActiveCurrencyDetails>({
-    price: 0,
-    volume24h: 0,
-    relativePrice: 0,
+    price: '',
+    volume24h: '',
+    relativePrice: '',
   })
 
   const handleOpenModal = () => {
@@ -64,22 +71,22 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     ) {
       if (token0.address.toLowerCase() === activeCurrencyOption.address.toLowerCase()) {
         setActiveCurrencyDetails({
-          price: Number(token1Price.price.toFixed(0)),
-          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0Price.price),
-          relativePrice: Number(token1Price.price.toFixed(0)) / Number(token0Price.price.toFixed(0)),
+          price: `$${token1Price.price.toFixed(4)}`,
+          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0Price.price, activeCurrencyOption),
+          relativePrice: token1Price.price.divide(token0Price.price).toFixed(4),
         })
       } else {
         setActiveCurrencyDetails({
-          price: Number(token0Price.price.toFixed(0)),
-          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1Price.price),
-          relativePrice: Number(token0Price.price.toFixed(0)) / Number(token1Price.price.toFixed(0)),
+          price: `$${token0Price.price.toFixed(4)}`,
+          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1Price.price, activeCurrencyOption),
+          relativePrice: token0Price.price.divide(token1Price.price).toFixed(4),
         })
       }
     } else {
       setActiveCurrencyDetails({
-        price: 0,
-        volume24h: 0,
-        relativePrice: 0,
+        price: '-',
+        volume24h: '-',
+        relativePrice: '-',
       })
     }
   }, [activeCurrencyOption, isLoadingVolume24hUSD, token0, token0Price.price, token1Price.price, volume24hUSD])
@@ -89,8 +96,8 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     onPairSelect,
     handleOpenModal,
     isPairModalOpen,
-    isLoadingVolume24hUSD,
-    volume24hUSD,
+    isLoading: isLoadingVolume24hUSD,
+    volume24hUSD: volume24hUSD === ZERO_USD ? '-' : `${volume24hUSD.toFixed(2)}$`,
     activeCurrencyDetails,
   }
 }
