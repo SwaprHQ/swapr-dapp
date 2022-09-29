@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { useState } from 'react'
 
 import { ReactComponent as SwaprLogo } from '../../../../assets/images/swapr-logo.svg'
 import { AutoColumn } from '../../../../components/Column'
@@ -8,15 +8,10 @@ import { useShowExpeditionsPopup } from '../../../../state/application/hooks'
 import { CloseIcon, TYPE } from '../../../../theme'
 import { ExpeditionsFragmentsBalance } from '../../components/ExpeditionsFragments'
 import { ExpeditionsTabBar, ExpeditionsTabs } from '../../components/ExpeditionsTabBar'
+import { StyledExternalLink } from '../shared'
 import { ContentWrapper, ExpeditionsLogo } from './ExpeditionsModal.styled'
 import { ExpeditionsRewards } from './ExpeditionsRewards'
 import { ExpeditionsTasks } from './ExpeditionsTasks'
-
-const Text = ({ children }: { children: ReactNode }) => (
-  <TYPE.White fontSize="12px" lineHeight="150%">
-    {children}
-  </TYPE.White>
-)
 
 export interface ExpeditionsModalProps {
   onDismiss: () => void
@@ -39,10 +34,10 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
             <CloseIcon onClick={onDismiss} />
           </Row>
           <Row>
-            <Text>
+            <TYPE.White fontSize="12px" lineHeight="150%" textAlign={'center'}>
               Expeditions are missions you can complete on Swapr to earn “Star Fragments”. These can be redeemed for
-              special NFT's and various other rewards. Learn More
-            </Text>
+              special NFT's and various other rewards. <StyledExternalLink href="#">Learn More</StyledExternalLink>
+            </TYPE.White>
           </Row>
           <Row justifyContent={'center'}>
             <ExpeditionsTabBar activeTab={activeTab} setActiveTab={setActiveTab} claimableRewards={0} />

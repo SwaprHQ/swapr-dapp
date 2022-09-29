@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 
 import DxLogo from '../../../../assets/images/logo_white.svg'
-import { ButtonConfirmed } from '../../../../components/Button'
 import Row from '../../../../components/Row'
 import { TYPE } from '../../../../theme'
-import { Card, Wrapper } from '../shared'
+import { Card, ExpeditionsButton, Wrapper } from '../shared'
 import { RarityTag, RarityTags } from './ExpeditionsTags'
 
 export interface RewardCardProps {
@@ -17,6 +16,7 @@ export interface RewardCardProps {
   onClick?: () => void
   claimed?: boolean
   requiredFragments?: number
+  expired?: boolean
 }
 
 const ImageWithPlaceholder = styled.img`
@@ -39,6 +39,7 @@ export function RewardCard({
   buttonDisabled = false,
   onClick,
   claimed = false,
+  expired = false,
   imageUrl,
   requiredFragments,
 }: RewardCardProps) {
@@ -65,9 +66,14 @@ export function RewardCard({
           {requiredFragments && (
             <TYPE.White fontSize="14px">{`Collect ${requiredFragments} fragments to claim this NFT.`}</TYPE.White>
           )}
-          <ButtonConfirmed padding="8px" onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
+          <ExpeditionsButton
+            onClick={onClick}
+            disabled={buttonDisabled || expired}
+            confirmed={claimed}
+            expired={expired}
+          >
             {buttonText}
-          </ButtonConfirmed>
+          </ExpeditionsButton>
         </div>
       </Card>
     </Wrapper>

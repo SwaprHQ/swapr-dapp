@@ -1,11 +1,10 @@
 import { Flex } from 'rebass'
 
 import { ReactComponent as ClockSvg } from '../../../../assets/images/clock.svg'
-import { ButtonConfirmed } from '../../../../components/Button'
 import Countdown from '../../../../components/Countdown'
 import Row from '../../../../components/Row'
 import { TYPE } from '../../../../theme'
-import { Card, StyledExternalLink, Wrapper } from '../shared'
+import { Card, ExpeditionsButton, StyledExternalLink, Wrapper } from '../shared'
 import { StatusTag, StatusTags } from './ExpeditionsTags'
 
 export interface TaskCardProps {
@@ -49,7 +48,7 @@ export function TaskCard({
             </Flex>
           </Row>
           <Row justifyContent={'space-between'}>
-            <TYPE.White fontSize="20px" paddingTop={'16px'}>
+            <TYPE.White fontSize="20px" paddingTop={'8px'}>
               {title}
             </TYPE.White>
             <div style={{ alignSelf: 'flex-start' }}>
@@ -59,9 +58,9 @@ export function TaskCard({
         </Row>
         <TYPE.White fontSize="14px">{description}</TYPE.White>
         {infoLink && <StyledExternalLink href={infoLink}>More info</StyledExternalLink>}
-        <ButtonConfirmed padding="8px" onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
+        <ExpeditionsButton onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
           {buttonText}
-        </ButtonConfirmed>
+        </ExpeditionsButton>
       </Card>
     </Wrapper>
   )
