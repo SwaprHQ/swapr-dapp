@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 export const BaseWrapper = styled.div`
-  background: #101019;
+  background: ${({ theme }) => theme.bg9};
   border-radius: 12px;
   padding: 10px;
 `
@@ -28,7 +28,7 @@ const TitleBase = css`
   text-transform: uppercase;
 `
 
-export const AdvancedSwapModeContainer = styled.div`
+export const AdvancedSwapModeWrapper = styled.div`
   backdrop-filter: blur(10px);
   width: 100%;
   display: grid;
@@ -51,6 +51,9 @@ export const PairInfo = styled.div`
   width: 10%;
   margin-left: 20px;
   overflow: hidden;
+  &:nth-child(2) {
+    width: 15%;
+  }
 
   & > div:nth-child(2) {
     margin-top: 10px;
@@ -71,7 +74,7 @@ export const PairValue = styled.div`
 `
 
 export const PairValueChange = styled(PairValue)<{ positive: boolean; size?: string; space?: boolean }>`
-  color: ${({ positive }) => (positive ? '#0E9F6E' : '#F02E51')};
+  color: ${({ theme, positive }) => (positive ? theme.green2 : theme.red1)};
   font-size: ${({ size }) => (size ? size : '14px')};
 `
 
@@ -170,7 +173,7 @@ export const SwitchButton = styled.button<{ active: boolean }>`
   border: none;
 `
 
-export const NoDataMessage = styled.div`
+export const NoDataMessage = styled.p`
   color: ${({ theme }) => theme.purple2};
   text-align: center;
   margin-top: 30px;

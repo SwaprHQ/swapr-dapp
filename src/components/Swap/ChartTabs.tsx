@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -52,6 +53,7 @@ export const ChartTabs = ({
   hasBothCurrenciesInput: boolean
 }) => {
   const { navigate } = useRouter()
+  const { t } = useTranslation('swap')
   const isDesktop = useIsDesktopByMedia()
   const proOptionsDisabled = !hasBothCurrenciesInput || !isDesktop
 
@@ -65,10 +67,10 @@ export const ChartTabs = ({
             navigate('/swap')
           }
         }}
-        title="Simple chart"
+        title={t('advancedTradingView.chartTabs.simpleTitle')}
         disabled={!hasBothCurrenciesInput}
       >
-        Simple
+        {t('advancedTradingView.chartTabs.simple')}
       </Tab>
       <Tab
         active={activeChartTab === ChartTabsOptions.PRO}
@@ -78,10 +80,14 @@ export const ChartTabs = ({
             navigate('/swap/pro')
           }
         }}
-        title={`Advanced Trade View${proOptionsDisabled && ' is disabled on mobile, try desktop version'}`}
+        title={
+          proOptionsDisabled
+            ? t('advancedTradingView.chartTabs.proDisabledTitle')
+            : t('advancedTradingView.chartTabs.proTitle')
+        }
         disabled={proOptionsDisabled}
       >
-        Pro
+        {t('advancedTradingView.chartTabs.pro')}
       </Tab>
       <Tab
         active={activeChartTab === ChartTabsOptions.OFF}
@@ -91,10 +97,10 @@ export const ChartTabs = ({
             navigate('/swap')
           }
         }}
-        title="Switch off charts"
+        title={t('advancedTradingView.chartTabs.offTitle')}
         disabled={!hasBothCurrenciesInput}
       >
-        Off
+        {t('advancedTradingView.chartTabs.off')}
       </Tab>
     </Root>
   )
