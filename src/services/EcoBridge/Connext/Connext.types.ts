@@ -1,8 +1,6 @@
 import { EntityState } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
 export type ConnextToken = {
   id: string
@@ -48,17 +46,6 @@ export type ConnextQuote = {
 
 export interface ConnextBridgeState {
   transactions: EntityState<ConnextTransaction>
-  bridgingDetails: {
-    gas?: string
-    fee?: string
-    estimateTime?: string
-    receiveAmount?: string
-  }
-  bridgingDetailsStatus: SyncState
-  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  listsStatus: SyncState
-  lists: { [id: string]: TokenList }
-  lastMetadataCt: number
 }
 export type ConnextTransactionsSubgraph = {
   transactions: ConnextTransaction[]
