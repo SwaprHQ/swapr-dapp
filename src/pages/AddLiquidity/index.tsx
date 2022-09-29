@@ -14,6 +14,7 @@ import { AutoColumn, ColumnCenter } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
+import { PageMetaData } from '../../components/PageMetaData'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFlat } from '../../components/Row'
 import TradePrice from '../../components/Swap/TradePrice'
@@ -313,6 +314,7 @@ export default function AddLiquidity() {
 
   return (
     <>
+      <PageMetaData title={`${isCreate ? 'Create a pair' : 'Add Liquidity'} | Swapr`} />
       <AppBody>
         <AddRemoveTabs creating={isCreate} adding={true} />
         <Wrapper>

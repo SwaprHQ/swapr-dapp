@@ -9,6 +9,7 @@ import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import { FallbackLoader } from '../components/Loader/FallbackLoader'
 import NetworkWarningModal from '../components/NetworkWarningModal'
+import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
@@ -75,33 +76,36 @@ export default function App() {
   }, [])
 
   return (
-    <Suspense fallback={null}>
-      <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
-        <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
-          <NetworkWarningModal />
-          <AppWrapper id="app-wrapper">
-            <HeaderWrapper>
-              <Header />
-            </HeaderWrapper>
-            <BodyWrapper>
-              <SpaceBg>
-                <Suspense fallback={<FallbackLoader />}>
-                  <Routes />
-                </Suspense>
-              </SpaceBg>
-              <Marginer />
-            </BodyWrapper>
-          </AppWrapper>
-          <ToastContainer
-            draggable={false}
-            className="custom-toast-root"
-            toastClassName="custom-toast-container"
-            bodyClassName="custom-toast-body"
-            position="top-right"
-            transition={Slide}
-          />
-        </ApolloProvider>
-      </SkeletonTheme>
-    </Suspense>
+    <>
+      <PageMetaData />
+      <Suspense fallback={null}>
+        <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
+          <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
+            <NetworkWarningModal />
+            <AppWrapper id="app-wrapper">
+              <HeaderWrapper>
+                <Header />
+              </HeaderWrapper>
+              <BodyWrapper>
+                <SpaceBg>
+                  <Suspense fallback={<FallbackLoader />}>
+                    <Routes />
+                  </Suspense>
+                </SpaceBg>
+                <Marginer />
+              </BodyWrapper>
+            </AppWrapper>
+            <ToastContainer
+              draggable={false}
+              className="custom-toast-root"
+              toastClassName="custom-toast-container"
+              bodyClassName="custom-toast-body"
+              position="top-right"
+              transition={Slide}
+            />
+          </ApolloProvider>
+        </SkeletonTheme>
+      </Suspense>
+    </>
   )
 }

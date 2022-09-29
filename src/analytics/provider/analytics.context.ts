@@ -3,7 +3,7 @@ import { Trade } from '@swapr/sdk'
 import { createContext } from 'react'
 
 import { Fathom } from '../fathom'
-import { FathomSiteInformation } from '../generated'
+import { FathomSiteInformation } from '../generated/prod'
 
 export interface TrackEcoRouterVolumeUSDParams {
   protocolName: string

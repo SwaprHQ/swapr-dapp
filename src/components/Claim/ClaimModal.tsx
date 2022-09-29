@@ -68,7 +68,9 @@ export default function ClaimModal({
               <TYPE.Body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                 SWPR
               </TYPE.Body>
-              <ButtonPurple onClick={handleStakeUnstakeClick}>STAKE</ButtonPurple>
+              <ButtonPurple disabled={!singleSidedCampaignLink} onClick={handleStakeUnstakeClick}>
+                STAKE
+              </ButtonPurple>
             </Flex>
 
             <Flex width="50%" flexDirection="column">
@@ -78,7 +80,9 @@ export default function ClaimModal({
               <TYPE.Body marginTop="4px" marginBottom="11px" fontWeight="600" fontSize="11px">
                 STAKED SWPR
               </TYPE.Body>
-              <ButtonDark1 onClick={handleStakeUnstakeClick}>UNSTAKE</ButtonDark1>
+              <ButtonDark1 disabled={!singleSidedCampaignLink} onClick={handleStakeUnstakeClick}>
+                UNSTAKE
+              </ButtonDark1>
             </Flex>
           </RowBetween>
         </UpperAutoColumn>

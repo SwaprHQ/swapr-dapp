@@ -10,7 +10,7 @@ import { BaseRedirect } from './BaseRedirect'
 export function RouteCheck({ element }: { element: JSX.Element }) {
   const { chainId } = useWeb3ReactCore()
   // If all features are available, render the route
-  if (chainSupportsSWPR(chainId) || ChainId.ARBITRUM_GOERLI) {
+  if (chainSupportsSWPR(chainId) || ChainId.ARBITRUM_GOERLI === chainId) {
     // FIXME: fix this if's condition once SWPR is on Arb Goerli
     return element
   }

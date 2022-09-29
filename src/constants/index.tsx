@@ -168,7 +168,7 @@ export const MATIC: { [key: number]: Token } = {
   ),
 }
 
-export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
+export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
   ChainId.XDAI,

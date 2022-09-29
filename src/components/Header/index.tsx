@@ -269,22 +269,21 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge" disabled={networkWithoutSWPR}>
-            <>
-              {t('bridge')}
-              {networkWithoutSWPR ? <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" /> : <HeaderLinkBadge label="BETA" />}
-            </>
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
+            {t('bridge')}
+            <HeaderLinkBadge label="BETA" />
           </HeaderLink>
-          <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
+          <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
           <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            <>
-              {t('charts')}
-              <Text ml="4px" fontSize="11px">
-                ↗
-              </Text>
-            </>
+            {t('charts')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
@@ -353,14 +352,15 @@ function Header() {
           </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
           </HeaderMobileLink>
           <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            <>
-              {t('charts')}
-              <Text ml="4px" fontSize="11px">
-                ↗
-              </Text>
-            </>
+            {t('charts')}
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
           </HeaderMobileLink>
         </Flex>
 
