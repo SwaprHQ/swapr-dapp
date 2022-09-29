@@ -15,7 +15,7 @@ describe('Add liquidity', () => {
   let secondTokenBalance: number = 0
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   beforeEach(() => {
     LiquidityPage.visitLiquidityPage()
