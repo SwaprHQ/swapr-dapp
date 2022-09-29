@@ -1,0 +1,19 @@
+import { DAI, WETH } from '@swapr/sdk'
+
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
+import { Box, Flex, Text } from 'rebass'
+import { CurrencyLogoComponent } from './CurrencyLogo.component'
+
+import { NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
+
+<Meta title="Currencies" component={Flex} />
+
+# CurrencyLogoComponent
+
+Show the currency logo.
+
+<Canvas>
+  <Story name="CurrencyLogoComponent">
+    <CurrencyLogoComponent currency={WETH[1]} sources={[NATIVE_CURRENCY_LOGO[1]]} size="48px" />
+  </Story>
+</Canvas>
