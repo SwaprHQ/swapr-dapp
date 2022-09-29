@@ -276,9 +276,8 @@ jobs:
 
   synpress:
     name: 👘 ・Synpress
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [prepare]
-    container: cypress/base:16.5.0
     if: ${{ needs.prepare.outputs.synpress }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -323,9 +322,6 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
-
       - name: Codegen socket
         run: yarn codegen:socket
 
@@ -333,28 +329,25 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        run: yarn synpress:ct
+        run: |
+          sudo -E ./start-tests.sh
         continue-on-error: true
         env:
           CI: true
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
-
-      - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
+          TEST_PARAMS: ${{ env.TEST_PARAMS }}
+          PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
+          SLOW_MODE: true
+          DISPLAY: ':99'
+          CYPRESS_RESOURCES_WAIT: true
 
       - name: Save code coverage results
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
-            ${{ matrix.containers }}.json
-            public-report/screenshots
-            public-report/videos
+            docker/videos-ci
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})

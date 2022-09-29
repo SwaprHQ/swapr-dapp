@@ -21,11 +21,7 @@ export class MetamaskNetworkHandler {
       isTestnet: true,
     })
   }
-  static switchToRinkebyIfNotConnected() {
-    cy.getNetwork().then((network?: Network) => {
-      if (network?.networkName !== 'rinkeby') {
-        cy.changeMetamaskNetwork('rinkeby')
-      }
-    })
+  static switchToNetworkIfNotConnected(desiredNetwork: string = 'rinkeby') {
+    cy.changeMetamaskNetwork(desiredNetwork)
   }
 }
