@@ -1,24 +1,16 @@
 import { ReactNode, useState } from 'react'
-import styled from 'styled-components'
 
 import { ReactComponent as SwaprLogo } from '../../../../assets/images/swapr-logo.svg'
 import { AutoColumn } from '../../../../components/Column'
-import { HeaderButton } from '../../../../components/Header/HeaderButton'
 import Modal from '../../../../components/Modal'
 import Row from '../../../../components/Row'
 import { useShowExpeditionsPopup } from '../../../../state/application/hooks'
 import { CloseIcon, TYPE } from '../../../../theme'
 import { ExpeditionsFragmentsBalance } from '../../components/ExpeditionsFragments'
 import { ExpeditionsTabBar, ExpeditionsTabs } from '../../components/ExpeditionsTabBar'
+import { ContentWrapper, ExpeditionsLogo } from './ExpeditionsModal.styled'
 import { ExpeditionsRewards } from './ExpeditionsRewards'
 import { ExpeditionsTasks } from './ExpeditionsTasks'
-
-const ContentWrapper = styled(AutoColumn)`
-  width: 100%;
-  background-color: ${({ theme }) => theme.dark1};
-  padding: 32px;
-  overflow-y: hidden;
-`
 
 const Text = ({ children }: { children: ReactNode }) => (
   <TYPE.White fontSize="12px" lineHeight="150%">
@@ -42,7 +34,7 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
             <CloseIcon style={{ visibility: 'hidden' }} />
             <Row justifyContent={'center'} gap={'16px'}>
               <SwaprLogo />
-              <HeaderButton glow>&#10024;&nbsp;Expeditions</HeaderButton>
+              <ExpeditionsLogo>&#10024;&nbsp;Expeditions</ExpeditionsLogo>
             </Row>
             <CloseIcon onClick={onDismiss} />
           </Row>
