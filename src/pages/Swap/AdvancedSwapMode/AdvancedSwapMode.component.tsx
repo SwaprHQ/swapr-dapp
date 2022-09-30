@@ -62,6 +62,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
           token1={token1}
           activeCurrencyOption={activeCurrencyOption}
           handleSwitchCurrency={handleSwitchCurrency}
+          isLatestTradeSell={!!tradeHistory[0]?.isSell}
         />
       </PairDetailsWrapper>
       <ChartWrapper>

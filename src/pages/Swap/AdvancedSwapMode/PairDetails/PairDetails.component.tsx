@@ -23,9 +23,16 @@ interface PairDetailsProps {
   token1?: Token
   activeCurrencyOption?: Token
   handleSwitchCurrency: (option: Token) => void
+  isLatestTradeSell: boolean
 }
 
-export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitchCurrency }: PairDetailsProps) => {
+export const PairDetails = ({
+  activeCurrencyOption,
+  token0,
+  token1,
+  handleSwitchCurrency,
+  isLatestTradeSell,
+}: PairDetailsProps) => {
   const { t } = useTranslation('swap')
 
   const { activeCurrencyDetails, handleOpenModal, isLoading, isPairModalOpen, onDismiss, onPairSelect, volume24hUSD } =
@@ -45,7 +52,7 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
         </Flex>
         <Flex flexBasis="80%">
           <PairInfo>
-            <PairValueChange size="16px" positive={true}>
+            <PairValueChange size="16px" positive={isLatestTradeSell}>
               {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
             </PairValueChange>
             <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
