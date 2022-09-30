@@ -83,21 +83,21 @@ export default function App() {
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
           <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
             <NetworkWarningModal />
-            <AppWrapper id="app-wrapper">
-              <HeaderWrapper>
-                <Header />
-              </HeaderWrapper>
-              <BodyWrapper>
-                <Web3ReactManager>
+            <Web3ReactManager>
+              <AppWrapper id="app-wrapper">
+                <HeaderWrapper>
+                  <Header />
+                </HeaderWrapper>
+                <BodyWrapper>
                   <SpaceBg>
                     <Suspense fallback={<FallbackLoader />}>
                       <Routes />
                     </Suspense>
                   </SpaceBg>
-                </Web3ReactManager>
-                <Marginer />
-              </BodyWrapper>
-            </AppWrapper>
+                  <Marginer />
+                </BodyWrapper>
+              </AppWrapper>
+            </Web3ReactManager>
             <ToastContainer
               draggable={false}
               className="custom-toast-root"
