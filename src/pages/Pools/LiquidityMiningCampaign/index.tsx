@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyLogo } from '../../../components/CurrencyLogo'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../components/DoubleCurrencyLogo'
 import { SwapPoolTabs } from '../../../components/NavigationTabs'
 import { PageMetaData } from '../../../components/PageMetaData'
 import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMiningCampaignView'
