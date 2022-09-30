@@ -58,7 +58,7 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
             </PairTab>
             <PairValueChange positive={Boolean(activeCurrencyDetails.isIncome24h)}>
               {isLoading ? (
-                <Skeleton width="100px" height="14px" />
+                <Skeleton width="182px" height="14px" />
               ) : (
                 <>
                   {activeCurrencyDetails.priceChange24h} {!activeCurrencyDetails.isIncome24h && '-'}

@@ -3,7 +3,7 @@ import { ChainId, Currency, Trade } from '@swapr/sdk'
 interface PriceInformation {
   token: string
   amount: string | null
-  amountChange24h: string | null
+  percentageAmountChange24h: string | null
   isIncome24h: boolean | undefined
 }
 
@@ -128,7 +128,7 @@ export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInf
   const { usd, usd_24h_change } = priceRaw[token]
   return {
     amount: usd.toString(),
-    amountChange24h: Math.abs(usd_24h_change).toString(),
+    percentageAmountChange24h: Math.abs(usd_24h_change).toString(),
     isIncome24h: usd_24h_change > 0,
     token,
   }
