@@ -7,22 +7,6 @@ import { ArbitrumPendingReasons } from '../Arbitrum/ArbitrumBridge.types'
 import { XdaiBridgeList } from '../EcoBridge.types'
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 
-const createSelectBridgingDetails = (bridgeId: XdaiBridgeList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-    ],
-    (details, loading) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage: undefined,
-      }
-    }
-  )
-
 const createSelectOwnedTransactions = (bridgeId: XdaiBridgeList) => {
   const transactionsSelector = createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions],
@@ -101,7 +85,6 @@ const createSelectPendingTransactions = (ownedTransactions: ReturnType<typeof cr
   })
 
 export interface XdaiBridgeSelectors {
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
@@ -109,13 +92,11 @@ export interface XdaiBridgeSelectors {
 
 export const xdaiSelectorsFactory = (xdaiBridges: XdaiBridgeList[]) => {
   return xdaiBridges.reduce((total, bridgeId) => {
-    const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
     const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
 
     const selectors = {
-      selectBridgingDetails,
       selectOwnedTransactions,
       selectBridgeTransactionsSummary,
       selectPendingTransactions,

@@ -5,23 +5,6 @@ import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../stat
 import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
 import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 
-const createSelectBridgingDetails = (bridgeId: SocketList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
-    ],
-    (details, loading, errorMessage) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage,
-      }
-    }
-  )
-
 const createSelectRoutes = (bridgeId: SocketList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].routes], routes => routes)
 
@@ -127,7 +110,6 @@ const createSelectBridgeTransactionsSummary = (
   })
 
 export interface SocketBridgeSelectors {
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
   selectRoutes: ReturnType<typeof createSelectRoutes>
   selectApprovalData: ReturnType<typeof createSelectApprovalData>
   selectTxBridgingData: ReturnType<typeof createSelectTxBridgingData>
@@ -138,7 +120,6 @@ export interface SocketBridgeSelectors {
 export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
   return socketBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
-    const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
     const selectRoutes = createSelectRoutes(bridgeId)
     const selectApprovalData = createSelectApprovalData(bridgeId)
     const selectTxBridgingData = createSelectTxBridgingData(bridgeId)
@@ -146,7 +127,6 @@ export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
     const selectors = {
-      selectBridgingDetails,
       selectRoutes,
       selectApprovalData,
       selectTxBridgingData,
