@@ -17,6 +17,7 @@ import {
   OrdersWrapper,
   PairDetailsWrapper,
   SwapBox,
+  TradesWrapper,
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
@@ -46,14 +47,12 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     isLoadingActivity,
     fetchTrades,
     fetchActivity,
-    pairTokens,
+    pairTokens: [token0, token1],
     activeCurrencyOption,
     handleAddLiquidity,
     handleSwitchCurrency,
     isFetched,
   } = useAdvancedTradingView()
-
-  const [token0, token1] = pairTokens
 
   return (
     <AdvancedSwapModeWrapper>
@@ -68,7 +67,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
       <ChartWrapper>
         <Chart symbol={symbol} />
       </ChartWrapper>
-      <BaseWrapper ref={tradesWrapper}>
+      <TradesWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
           <AdvancedModeTitle>{t('advancedTradingView.column.trades')}</AdvancedModeTitle>
           <ColumnHeader
@@ -80,7 +79,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
           />
         </AdvancedModeHeader>
         <TransactionsWrapper
-          maxHeight={`${tradesWrapper?.current?.clientHeight ? tradesWrapper?.current?.clientHeight - 100 : 560}px`}
+          maxHeight={`${tradesWrapper?.current?.clientHeight ? tradesWrapper?.current?.clientHeight - 85 : 570}px`}
           id="transactions-wrapper-scrollable"
         >
           <InfiniteScroll
@@ -96,7 +95,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             scrollableTarget="transactions-wrapper-scrollable"
           />
         </TransactionsWrapper>
-      </BaseWrapper>
+      </TradesWrapper>
       <BaseWrapper>
         <SwapBox>{children}</SwapBox>
       </BaseWrapper>
