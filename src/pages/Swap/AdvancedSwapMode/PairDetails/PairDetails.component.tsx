@@ -52,14 +52,22 @@ export const PairDetails = ({
         </Flex>
         <Flex flexBasis="80%">
           <PairInfo>
-            <PairValueChange size="16px" positive={isLatestTradeSell}>
+            <PairValueChange size="16px" positive={!isLatestTradeSell}>
               {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
             </PairValueChange>
             <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
           </PairInfo>
           <PairInfo>
             <PairTab>{t('advancedTradingView.Change24')}</PairTab>
-            <PairValueChange positive={false}>55 | -3.42%</PairValueChange>
+            <PairValueChange positive={Boolean(activeCurrencyDetails.isIncome24h)}>
+              {isLoading ? (
+                <Skeleton width="182px" height="14px" />
+              ) : (
+                <>
+                  {activeCurrencyDetails.priceChange24h} {activeCurrencyDetails.percentPriceChange24h}%
+                </>
+              )}
+            </PairValueChange>
           </PairInfo>
           <PairInfo>
             <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
