@@ -23,9 +23,16 @@ interface PairDetailsProps {
   token1?: Token
   activeCurrencyOption?: Token
   handleSwitchCurrency: (option: Token) => void
+  isLatestTradeSell: boolean
 }
 
-export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitchCurrency }: PairDetailsProps) => {
+export const PairDetails = ({
+  activeCurrencyOption,
+  token0,
+  token1,
+  handleSwitchCurrency,
+  isLatestTradeSell,
+}: PairDetailsProps) => {
   const { t } = useTranslation('swap')
 
   const { activeCurrencyDetails, handleOpenModal, isLoading, isPairModalOpen, onDismiss, onPairSelect, volume24hUSD } =
@@ -45,17 +52,13 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
         </Flex>
         <Flex flexBasis="80%">
           <PairInfo>
-            <PairValueChange size="16px" positive={true}>
+            <PairValueChange size="16px" positive={isLatestTradeSell}>
               {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
             </PairValueChange>
             <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
           </PairInfo>
           <PairInfo>
-            <PairTab>
-              <Flex alignItems="center">
-                <span>{t('advancedTradingView.Change24')}</span>
-              </Flex>
-            </PairTab>
+            <PairTab>{t('advancedTradingView.Change24')}</PairTab>
             <PairValueChange positive={Boolean(activeCurrencyDetails.isIncome24h)}>
               {isLoading ? (
                 <Skeleton width="182px" height="14px" />
@@ -68,14 +71,6 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
             </PairValueChange>
           </PairInfo>
           <PairInfo>
-            <PairTab>{t('advancedTradingView.High24')}</PairTab>
-            <PairValue>1690</PairValue>
-          </PairInfo>
-          <PairInfo>
-            <PairTab>{t('advancedTradingView.Low24')}</PairTab>
-            <PairValue>1569</PairValue>
-          </PairInfo>
-          <PairInfo>
             <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
             <PairValue>
               {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.volume24h}
@@ -84,6 +79,14 @@ export const PairDetails = ({ activeCurrencyOption, token0, token1, handleSwitch
           <PairInfo>
             <PairTab>{t('advancedTradingView.Volume24')}</PairTab>
             <PairValue>{isLoading ? <Skeleton width="100px" height="14px" /> : volume24hUSD}</PairValue>
+          </PairInfo>
+          <PairInfo>
+            <PairTab>{t('advancedTradingView.High24')}</PairTab>
+            <PairTab>&#45;</PairTab>
+          </PairInfo>
+          <PairInfo>
+            <PairTab>{t('advancedTradingView.Low24')}</PairTab>
+            <PairTab>&#45;</PairTab>
           </PairInfo>
         </Flex>
         <SwitcherWrapper>

@@ -1,12 +1,11 @@
 import { ChainId, Token } from '@swapr/sdk'
 
 import { Trans } from 'react-i18next'
-import { default as InfiniteScrollCom } from 'react-infinite-scroll-component'
+import { default as Scroll } from 'react-infinite-scroll-component'
+import Skeleton from 'react-loading-skeleton'
 
-import { Loader } from '../../../../components/Loader'
 import { AdvancedViewTransaction } from '../../../../services/AdvancedTradingView/advancedTradingView.types'
-import { sortByTimeStamp } from '../../../../utils/sortByTimestamp'
-import { LoaderContainer, NoDataMessage } from '../AdvancedSwapMode.styles'
+import { NoDataMessage } from '../AdvancedSwapMode.styles'
 import { Trade } from '../Trade/Trade.component'
 
 interface InfiniteScrollProps {
@@ -36,7 +35,7 @@ export const InfiniteScroll = ({
 }: InfiniteScrollProps) => {
   return (
     <>
-      <InfiniteScrollCom
+      <Scroll
         dataLength={data.length}
         next={fetchMore}
         hasMore={hasMore}
@@ -46,28 +45,23 @@ export const InfiniteScroll = ({
       >
         {showTrades &&
           activeCurrencyOption &&
-          data
-            .sort((firstTrade, secondTrade) => sortByTimeStamp(secondTrade.timestamp, firstTrade.timestamp))
-            .map((tx, index) => (
-              <Trade
-                key={`${tx.transactionId}-${index}`}
-                isSell={Boolean(tx.isSell)}
-                transactionId={tx.transactionId}
-                logoKey={tx.logoKey}
-                chainId={chainId}
-                amountIn={tx.amountIn}
-                amountOut={tx.amountOut}
-                timestamp={tx.timestamp}
-                amountUSD={tx.amountUSD}
-                price={activeCurrencyOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
-              />
-            ))}
-      </InfiniteScrollCom>
-      {isLoading && (
-        <LoaderContainer>
-          <Loader size="40px" stroke="#8780BF" />
-        </LoaderContainer>
-      )}
+          !isLoading &&
+          data.map((tx, index) => (
+            <Trade
+              key={`${tx.transactionId}-${index}`}
+              isSell={Boolean(tx.isSell)}
+              transactionId={tx.transactionId}
+              logoKey={tx.logoKey}
+              chainId={chainId}
+              amountIn={tx.amountIn}
+              amountOut={tx.amountOut}
+              timestamp={tx.timestamp}
+              amountUSD={tx.amountUSD}
+              price={activeCurrencyOption?.address === token0.address ? tx.priceToken0 : tx.priceToken1}
+            />
+          ))}
+      </Scroll>
+      {isLoading && new Array(3).fill(<Skeleton width="100%" height="15px" style={{ marginTop: '10px' }} />)}
       {!isLoading && isFetched && showTrades && !data.length && (
         <NoDataMessage>
           <Trans i18nKey="swap:advancedTradingView.infiniteScroll.noData" components={[<span key="0"></span>]} />
