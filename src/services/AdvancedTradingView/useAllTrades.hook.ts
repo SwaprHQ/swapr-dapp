@@ -5,6 +5,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { Transaction } from '../../pages/Account/Account.types'
 import { formattedTransactions as formatTransactions } from '../../pages/Account/accountUtils'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
+import { sortByTimeStamp } from '../../utils/sortByTimestamp'
 import { selectAllDataFromAdapters, selectHasMoreData, selectUniswapV3AllData } from './advancedTradingView.selectors'
 import { AdvancedViewTransaction } from './advancedTradingView.types'
 
@@ -39,8 +40,13 @@ export const useAllTrades = (): {
       : setTransactions([...pendingTransactions, ...sortedTransactions.splice(0, 5 - pendingTransactions.length)])
   }, [allBridgeTransactions, allSwapTransactions, account])
 
-  const tradeHistory = [...baseAdapterTradeHistory, ...uniswapV3TradeHistory]
-  const liquidityHistory = [...baseAdapterLiquidityHistory, ...uniswapV3LiquidityHistory]
+  const tradeHistory = [...baseAdapterTradeHistory, ...uniswapV3TradeHistory].sort((firstTrade, secondTrade) =>
+    sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+  )
+
+  const liquidityHistory = [...baseAdapterLiquidityHistory, ...uniswapV3LiquidityHistory].sort(
+    (firstTrade, secondTrade) => sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+  )
 
   return {
     transactions,

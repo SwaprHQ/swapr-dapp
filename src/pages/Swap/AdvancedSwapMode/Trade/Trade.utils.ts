@@ -1,8 +1,8 @@
-import { formatDistance, subDays } from 'date-fns'
+import { formatDistance } from 'date-fns'
 
 export const formatDistanceDate = (timestamp: number) => {
   try {
-    return formatDistance(subDays(new Date(timestamp), 3), new Date(), {
+    return formatDistance(new Date(timestamp), new Date(), {
       addSuffix: false,
     })
   } catch {
