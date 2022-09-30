@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Pair, Price, Token } from '@swapr/sdk'
+import { CurrencyAmount, Pair, Price, Token } from '@swapr/sdk'
 
 import { useEffect, useState } from 'react'
 
@@ -57,10 +57,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
   }, [token0, token1])
 
   const { loading: isLoadingVolume24hUSD, volume24hUSD } = usePair24hVolumeUSD(pairAddress)
-  const [token0USDPrice, token1USDPrice] = [
-    useCoingeckoUSDPrice(token0, Currency.isNative(token0 as Token)),
-    useCoingeckoUSDPrice(token1, Currency.isNative(token1 as Token)),
-  ]
+  const [token0USDPrice, token1USDPrice] = [useCoingeckoUSDPrice(token0), useCoingeckoUSDPrice(token1)]
 
   const [isPairModalOpen, setIsPairModalOpen] = useState(false)
 
@@ -70,7 +67,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     relativePrice: '',
     priceChange24h: '',
     percentPriceChange24h: '',
-    isIncome24h: false,
+    isIncome24h: true,
   })
 
   const handleOpenModal = () => {
@@ -159,7 +156,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
         price: '-',
         volume24h: '-',
         relativePrice: '-',
-        isIncome24h: false,
+        isIncome24h: true,
         priceChange24h: '-',
         percentPriceChange24h: '-',
       })

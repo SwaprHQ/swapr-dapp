@@ -122,11 +122,11 @@ const generatePrice = (apiUsdPrice: string, baseAmount: CurrencyAmount, chainId:
 export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   // default to MAINNET (if disconnected e.g)
   const { chainId = ChainId.MAINNET } = useActiveWeb3React()
-  const [price, setPrice] = useState<Price | undefined>()
-  const [percentagePriceChange24h, setPercentagePriceChange24h] = useState<Price | undefined>()
-  const [isIncome24h, setIsIncome24h] = useState<boolean | undefined>()
-  const [error, setError] = useState<Error | undefined>()
-  const [loading, setLoading] = useState<boolean | undefined>()
+  const [price, setPrice] = useState<Price>()
+  const [percentagePriceChange24h, setPercentagePriceChange24h] = useState<Price>()
+  const [isIncome24h, setIsIncome24h] = useState<boolean>()
+  const [error, setError] = useState<Error>()
+  const [loading, setLoading] = useState<boolean>()
 
   // token is deep nested and we only really care about token address changing
   // so we ref it here as to avoid updating useEffect
@@ -137,7 +137,6 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   useEffect(() => {
     const fetchPrice = () => {
       const baseAmount = tryParseAmount('1', tokenRef.current)
-      console.log(baseAmount)
 
       if (!chainId || !tokenAddress || !baseAmount) return
 
