@@ -54,6 +54,10 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     isFetched,
   } = useAdvancedTradingView()
 
+  const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
+    ? tradesWrapper?.current?.clientHeight - 85
+    : 570
+
   return (
     <AdvancedSwapModeWrapper>
       <PairDetailsWrapper>
@@ -79,10 +83,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             showPrice
           />
         </AdvancedModeHeader>
-        <TransactionsWrapper
-          maxHeight={`${tradesWrapper?.current?.clientHeight ? tradesWrapper?.current?.clientHeight - 85 : 570}px`}
-          id="transactions-wrapper-scrollable"
-        >
+        <TransactionsWrapper maxHeight={`${transactionsWrapperMaxHeight}px`} id="transactions-wrapper-scrollable">
           <InfiniteScroll
             token0={token0}
             chainId={chainId}
