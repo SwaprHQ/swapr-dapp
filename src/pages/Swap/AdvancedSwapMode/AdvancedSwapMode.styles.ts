@@ -1,4 +1,3 @@
-import { Repeat } from 'react-feather'
 import styled, { css } from 'styled-components'
 
 export const BaseWrapper = styled.div`
@@ -21,6 +20,21 @@ export const AdvancedModeDetailsItems = css`
     line-height: 1.4;
   }
 `
+const FadeTransactions = css`
+  &::before {
+    content: '';
+    display: block;
+    height: 80px;
+    width: 100%;
+    background: linear-gradient(transparent, #101019);
+    position: absolute;
+    display: block;
+    bottom: 0px;
+    left: 0;
+    z-index: 3;
+    border-radius: 20px;
+  }
+`
 
 const TitleBase = css`
   font-weight: 600;
@@ -33,7 +47,7 @@ export const AdvancedSwapModeWrapper = styled.div`
   backdrop-filter: blur(10px);
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 0.9fr)) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 400px 500px;
   gap: 15px;
   padding: 0 20px;
 `
@@ -56,6 +70,10 @@ export const PairInfo = styled.div`
   & > div:nth-child(2) {
     margin-top: 10px;
   }
+
+  &:nth-last-of-type(-n + 2) {
+    opacity: 0.4;
+  }
 `
 
 export const PairTab = styled.div<{ size?: string }>`
@@ -63,6 +81,7 @@ export const PairTab = styled.div<{ size?: string }>`
   font-size: ${({ size }) => (size ? size : '11px')};
   font-weight: 500;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 `
 
 export const PairValue = styled.div`
@@ -82,6 +101,11 @@ export const ChartWrapper = styled(BaseWrapper)`
   min-height: 560px;
   padding: 0;
 `
+export const TradesWrapper = styled(BaseWrapper)`
+  position: relative;
+
+  ${FadeTransactions}
+`
 
 export const OrdersWrapper = styled(BaseWrapper)`
   grid-column: 1 / 4;
@@ -90,12 +114,9 @@ export const OrdersWrapper = styled(BaseWrapper)`
 
 export const LiquidityWrapper = styled(BaseWrapper)`
   grid-column: 4 / 5;
-`
+  position: relative;
 
-export const LoaderContainer = styled.div`
-  text-align: center;
-  width: 100%;
-  margin: 20px 0;
+  ${FadeTransactions}
 `
 
 export const SwapBox = styled.div`
@@ -180,8 +201,4 @@ export const NoDataMessage = styled.p`
   & > span {
     font-weight: 700;
   }
-`
-
-export const PairTabIcon = styled(Repeat)`
-  padding-left: 0.125rem;
 `

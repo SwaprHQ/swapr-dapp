@@ -1,10 +1,13 @@
 import { CurrencyAmount, Pair, Price, Token } from '@swapr/sdk'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { ZERO_USD } from '../../constants'
 import { usePair24hVolumeUSD } from '../../hooks/usePairVolume24hUSD'
 import { useCoingeckoUSDPrice } from '../../hooks/useUSDValue'
+import { selectCurrency } from '../../state/swap/actions'
+import { Field } from '../../state/swap/types'
 
 type ActiveCurrencyDetails = {
   price: string
@@ -20,7 +23,9 @@ const calculate24hVolumeForActiveCurrencyOption = (
   try {
     if (volume24hUSD === ZERO_USD) throw new Error('Advanced Trading View: cannot fetch volume24h')
 
-    return `${Number(volume24hUSD.divide(price).toSignificant(6)).toFixed(2)} ${activeCurrencyOption?.symbol ?? ''}`
+    return `${(Number(volume24hUSD.toSignificant()) / Number(price.toSignificant())).toFixed(2)} ${
+      activeCurrencyOption?.symbol ?? ''
+    }`
   } catch {
     return '-'
   }
@@ -28,6 +33,7 @@ const calculate24hVolumeForActiveCurrencyOption = (
 
 export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOption?: Token) => {
   const [pairAddress, setPairAddress] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (token0 && token1) {
@@ -56,9 +62,23 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     setIsPairModalOpen(false)
   }
 
-  const onPairSelect = () => {
-    // @TODO implement it
-  }
+  const onPairSelect = useCallback(
+    (pair: Pair) => {
+      dispatch(
+        selectCurrency({
+          field: Field.INPUT,
+          currencyId: pair.token0.address,
+        })
+      )
+      dispatch(
+        selectCurrency({
+          field: Field.OUTPUT,
+          currencyId: pair.token1.address,
+        })
+      )
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
     if (
@@ -71,7 +91,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     ) {
       if (token0.address.toLowerCase() === activeCurrencyOption.address.toLowerCase()) {
         setActiveCurrencyDetails({
-          price: `$${token1Price.price.toFixed(4)}`,
+          price: `$${token1Price.price.toFixed(2)}`,
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0Price.price, activeCurrencyOption),
           relativePrice: (
             Number(token1Price.price.toSignificant()) / Number(token0Price.price.toSignificant())
@@ -79,7 +99,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
         })
       } else {
         setActiveCurrencyDetails({
-          price: `$${token0Price.price.toFixed(4)}`,
+          price: `$${token0Price.price.toFixed(2)}`,
           volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1Price.price, activeCurrencyOption),
           relativePrice: (
             Number(token0Price.price.toSignificant()) / Number(token1Price.price.toSignificant())

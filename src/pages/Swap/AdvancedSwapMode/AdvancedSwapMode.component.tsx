@@ -17,6 +17,7 @@ import {
   OrdersWrapper,
   PairDetailsWrapper,
   SwapBox,
+  TradesWrapper,
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
@@ -46,14 +47,16 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     isLoadingActivity,
     fetchTrades,
     fetchActivity,
-    pairTokens,
+    pairTokens: [token0, token1],
     activeCurrencyOption,
     handleAddLiquidity,
     handleSwitchCurrency,
     isFetched,
   } = useAdvancedTradingView()
 
-  const [token0, token1] = pairTokens
+  const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
+    ? tradesWrapper?.current?.clientHeight - 85
+    : 570
 
   return (
     <AdvancedSwapModeWrapper>
@@ -63,12 +66,13 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
           token1={token1}
           activeCurrencyOption={activeCurrencyOption}
           handleSwitchCurrency={handleSwitchCurrency}
+          isLatestTradeSell={!!tradeHistory[0]?.isSell}
         />
       </PairDetailsWrapper>
       <ChartWrapper>
         <Chart symbol={symbol} />
       </ChartWrapper>
-      <BaseWrapper ref={tradesWrapper}>
+      <TradesWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
           <AdvancedModeTitle>{t('advancedTradingView.column.trades')}</AdvancedModeTitle>
           <ColumnHeader
@@ -79,10 +83,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             showPrice
           />
         </AdvancedModeHeader>
-        <TransactionsWrapper
-          maxHeight={`${tradesWrapper?.current?.clientHeight ? tradesWrapper?.current?.clientHeight - 100 : 560}px`}
-          id="transactions-wrapper-scrollable"
-        >
+        <TransactionsWrapper maxHeight={`${transactionsWrapperMaxHeight}px`} id="transactions-wrapper-scrollable">
           <InfiniteScroll
             token0={token0}
             chainId={chainId}
@@ -96,7 +97,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             scrollableTarget="transactions-wrapper-scrollable"
           />
         </TransactionsWrapper>
-      </BaseWrapper>
+      </TradesWrapper>
       <BaseWrapper>
         <SwapBox>{children}</SwapBox>
       </BaseWrapper>
