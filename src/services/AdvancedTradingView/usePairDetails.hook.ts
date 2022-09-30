@@ -43,8 +43,9 @@ const calculatePrices = (relativePrice: number, token0Price24h: number, token1Pr
   const relativePrice24h = token1Price24h / token0Price24h
   const priceChange24h = Math.abs(Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))).toFixed(4)
   const priceChange24hWithSymbol = `${Number(priceChange24h) !== 0 ? `${priceChange24h}` : '< 0,0001'}  ${symbol}`
-  const percentPriceChange24h = Math.abs(
-    ((Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))) / Number(relativePrice.toFixed(6))) * 100
+  const percentPriceChange24h = (
+    ((Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))) / Number(relativePrice.toFixed(6))) *
+    100
   ).toFixed(2)
   const isIncome = relativePrice24h < relativePrice
   return { priceChange24hWithSymbol, percentPriceChange24h, isIncome }
