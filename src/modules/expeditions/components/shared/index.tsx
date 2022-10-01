@@ -2,6 +2,7 @@ import { Box } from 'rebass'
 import styled, { css, keyframes } from 'styled-components'
 
 import { ButtonConfirmed, ButtonPrimary } from '../../../../components/Button'
+import { AutoColumn } from '../../../../components/Column'
 import { ExternalLink } from '../../../../theme'
 
 export const expeditionsColorMixin = css`
@@ -83,4 +84,24 @@ export const ExpeditionsButton = styled(ButtonConfirmed)<{ expired?: boolean }>`
 
     ${glowMixin}
   }
+`
+
+export const ScrollableAutoColumn = styled(AutoColumn)`
+  justify-content: center;
+  gap: 32px;
+  overflow-y: scroll;
+  width: calc(100% + 10px);
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.bg3};
+    border-radius: 8px;
+    border: 2px solid ${({ theme }) => theme.bg2};
+  }
+  //firefox support
+  scrollbar-color: ${({ theme }) => theme.bg3 + ' ' + theme.bg2};
+  scrollbar-width: thin;
 `

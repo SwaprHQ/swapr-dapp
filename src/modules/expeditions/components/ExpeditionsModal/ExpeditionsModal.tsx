@@ -8,7 +8,7 @@ import { useShowExpeditionsPopup } from '../../../../state/application/hooks'
 import { CloseIcon, TYPE } from '../../../../theme'
 import { ExpeditionsFragmentsBalance } from '../../components/ExpeditionsFragments'
 import { ExpeditionsTabBar, ExpeditionsTabs } from '../../components/ExpeditionsTabBar'
-import { StyledExternalLink } from '../shared'
+import { ScrollableAutoColumn, StyledExternalLink } from '../shared'
 import { ContentWrapper, ExpeditionsLogo } from './ExpeditionsModal.styled'
 import { ExpeditionsRewards } from './ExpeditionsRewards'
 import { ExpeditionsTasks } from './ExpeditionsTasks'
@@ -44,9 +44,9 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
           </Row>
           <ExpeditionsFragmentsBalance balance={9999} />
         </AutoColumn>
-        <AutoColumn justify={'center'} gap="32px" style={{ overflowY: 'scroll' }}>
+        <ScrollableAutoColumn>
           {activeTab === ExpeditionsTabs.TASKS ? <ExpeditionsTasks /> : <ExpeditionsRewards />}
-        </AutoColumn>
+        </ScrollableAutoColumn>
       </ContentWrapper>
     </Modal>
   )

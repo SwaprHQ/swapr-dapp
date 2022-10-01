@@ -45,13 +45,13 @@ export function RewardCard({
 }: RewardCardProps) {
   return (
     <Wrapper>
-      <Card flexDirection={'row'} style={{ gap: '32px' }}>
+      <Card flexDirection={'row'} flexWrap={'wrap'} justifyContent={'center'} style={{ gap: '32px' }}>
         <div>
           <ImageWithPlaceholder src={imageUrl} alt={title} />
         </div>
         <div
           style={{
-            flex: '1 0 0',
+            flex: '1 0 200px',
             display: 'flex',
             gap: '16px',
             flexDirection: 'column',

@@ -6,8 +6,6 @@ export const ExpeditionsTasks = () => {
     <>
       <LiquidityProvisionTaskCard />
       <LiquidityStakingTaskCard />
-      <LiquidityStakingTaskCard />
-      <LiquidityStakingTaskCard />
     </>
   )
 }
