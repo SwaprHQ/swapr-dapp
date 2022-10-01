@@ -129,7 +129,7 @@
     "@types/aos": "^3.0.4",
     "@types/debug": "^4.1.7",
     "@types/jest": "^28.1.6",
-    "@types/lodash": "^4.14.182",
+    "@types/lodash": "^4.14.186",
     "@types/luxon": "^3.0.0",
     "@types/multicodec": "^2.1.0",
     "@types/node": "^18.0.1",
