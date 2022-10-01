@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.7",
-    "@arbitrum/sdk": "3.0.0-beta.11",
+    "@arbitrum/sdk": "3.0.0-rc.3",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.17.0",
     "@reach/portal": "^0.17.0",
