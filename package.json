@@ -134,7 +134,7 @@
     "@types/multicodec": "^2.1.0",
     "@types/node": "^18.0.1",
     "@types/numeral": "^2.0.2",
-    "@types/react": "^18.0.15",
+    "@types/react": "^18.0.21",
     "@types/react-datepicker": "^4.4.2",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.1.8",
