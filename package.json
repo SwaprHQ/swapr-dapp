@@ -33,7 +33,7 @@
     "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
   },
   "dependencies": {
-    "@apollo/client": "^3.4.7",
+    "@apollo/client": "^3.7.0",
     "@arbitrum/sdk": "3.0.0-beta.11",
     "@popperjs/core": "^2.9.3",
     "@reach/dialog": "^0.17.0",
