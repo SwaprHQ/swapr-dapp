@@ -5,26 +5,30 @@ import { Form as LimitOrderForm } from '../components/Form'
 import { supportedChainIdList } from '../constants'
 
 export interface LimitOrderAppProps {
-  provider: Web3Provider
-  chainId: ChainId
-  account: string
+  provider?: Web3Provider
+  chainId?: ChainId
+  account?: string | null
 }
 
 /**
  * The main entry point for the Limit Orders module.
  */
-export function App(props: LimitOrderAppProps) {
-  if (!props.provider) {
+export function App({ provider, chainId, account }: LimitOrderAppProps) {
+  if (!provider) {
     throw new Error('Limit Orders module requires a Web3 provider')
   }
 
-  if (!supportedChainIdList.includes(props.chainId)) {
-    throw new Error('Limit Orders module does not support chainId ' + props.chainId)
+  if (!chainId) {
+    throw new Error('Should be connected to a network')
   }
 
-  if (!props.account) {
+  if (chainId && !supportedChainIdList.includes(chainId)) {
+    throw new Error('Limit Orders module does not support chainId ' + chainId)
+  }
+
+  if (!account) {
     throw new Error('Limit Orders module requires an EVM account')
   }
 
-  return <LimitOrderForm {...props} />
+  return <LimitOrderForm provider={provider} chainId={chainId} account={account} />
 }

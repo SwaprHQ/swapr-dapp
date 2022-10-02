@@ -5,18 +5,15 @@ import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
-import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../../../assets/images/swap-icon.svg'
 import { ButtonPrimary } from '../../../../components/Button'
 import { AutoColumn } from '../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
-import { Loader } from '../../../../components/Loader'
-import ProgressSteps from '../../../../components/ProgressSteps'
 import { AutoRow as AutoRowBase } from '../../../../components/Row'
 import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from '../../../../components/Swap/styleds'
-import { useTokenAllowance } from '../../../../data/Allowances'
 import { ApprovalState, useApproveCallback } from '../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import AppBody from '../../../../pages/AppBody'
@@ -28,6 +25,7 @@ import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../.
 import { getInitialState } from '../../utils'
 import { OrderExpirayField } from '../partials/OrderExpirayField'
 import { OrderLimitPriceField } from '../partials/OrderLimitPriceField'
+import { ApprovalFlow } from './ApprovalFlow'
 dayjs.extend(dayjsUTCPlugin)
 
 const AutoRow = styled(AutoRowBase)`
@@ -52,43 +50,6 @@ interface HandleCurrenyAmountChangeParams {
   amountFormatted: string
   updatedLimitOrder?: SerializableLimitOrder
 }
-
-interface ApprovalFlowProps {
-  approval: ApprovalState
-  approveCallback: () => Promise<void>
-  // approvalSubmitted: boolean
-  tokenInSymbol: string
-}
-
-export const ApprovalFlow: FC<ApprovalFlowProps> = ({
-  approval,
-  // approvalSubmitted,
-  approveCallback,
-  tokenInSymbol,
-}) => (
-  <>
-    <ButtonPrimary
-      onClick={approveCallback}
-      disabled={approval !== ApprovalState.NOT_APPROVED /* || approvalSubmitted */}
-      altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
-      //   confirmed={approval === ApprovalState.APPROVED}
-    >
-      {approval === ApprovalState.PENDING ? (
-        <AutoRow gap="6px" justify="center">
-          Approving <Loader />
-        </AutoRow>
-      ) : (
-        // : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-        // 'Approved'
-        // ) :
-        'Approve ' + tokenInSymbol
-      )}
-    </ButtonPrimary>
-    <div style={{ marginTop: '1rem' }}>
-      <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
-    </div>
-  </>
-)
 
 /**
  * The Limit Order Form is the base component for all limit order forms.
