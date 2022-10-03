@@ -102,7 +102,7 @@ export class AdvancedTradingViewAdapter<AppState> {
   }
 
   public updateActiveChainId(chainId: ChainId) {
-    this.store.dispatch(this.actions.resetAdapterStore())
+    this.store.dispatch(this.actions.resetAdapterStore({ resetSelectedPair: true }))
 
     for (const adapter of Object.values(this._adapters)) {
       adapter.updateActiveChainId(chainId)

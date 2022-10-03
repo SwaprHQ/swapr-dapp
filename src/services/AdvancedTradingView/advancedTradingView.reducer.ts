@@ -32,8 +32,10 @@ const advancedTradingViewSlice = createSlice({
         outputToken,
       }
     },
-    resetAdapterStore: state => {
-      state.pair = {}
+    resetAdapterStore: (state, action: PayloadAction<{ resetSelectedPair: boolean }>) => {
+      if (action.payload.resetSelectedPair) {
+        state.pair = {}
+      }
       state.adapters = {
         swapr: {},
         sushiswap: {},

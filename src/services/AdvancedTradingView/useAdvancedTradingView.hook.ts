@@ -8,6 +8,7 @@ import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
+import { actions as advancedTradingViewReducerActions } from '../AdvancedTradingView/advancedTradingView.reducer'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { sortsBeforeTokens } from './advancedTradingView.selectors'
@@ -164,6 +165,14 @@ export const useAdvancedTradingView = () => {
     }
 
     fetchTrades()
+
+    const interval = setInterval(() => {
+      dispatch(advancedTradingViewReducerActions.resetAdapterStore({ resetSelectedPair: false }))
+
+      fetchTrades()
+    }, 15000)
+
+    return () => clearInterval(interval)
   }, [
     dispatch,
     inputToken,
