@@ -129,17 +129,19 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
         token0USDPrice.isIncome24h
       )
 
+      const relativePrice0 = Number(token0USDPrice.price.toSignificant()) / Number(token1USDPrice.price.toSignificant())
+      const relativePrice1 = Number(token1USDPrice.price.toSignificant()) / Number(token0USDPrice.price.toSignificant())
+
       if (token0.address.toLowerCase() === activeCurrencyOption.address.toLowerCase()) {
-        const relativePrice =
-          Number(token1USDPrice.price.toSignificant()) / Number(token0USDPrice.price.toSignificant())
         const { priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
-          relativePrice,
+          relativePrice1,
           token0USDPrice24h,
           token1USDPrice24h,
           activeCurrencyOption?.symbol ?? ''
         )
+
         setActiveCurrencyDetails({
-          price: `$${token1USDPrice.price.toFixed(2)}`,
+          price: `$${token0USDPrice.price.toFixed(2)}`,
           priceChange24h: priceChange24hWithSymbol,
           percentPriceChange24h: percentPriceChange24h,
           isIncome24h: isIncome,
@@ -148,19 +150,18 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
             token0USDPrice.price,
             activeCurrencyOption
           ),
-          relativePrice: Number(relativePrice.toFixed(4)) !== 0 ? relativePrice.toFixed(4) : '< 0.0001',
+          relativePrice: Number(relativePrice0.toFixed(4)) !== 0 ? relativePrice0.toFixed(4) : '< 0.0001',
         })
       } else {
-        const relativePrice =
-          Number(token0USDPrice.price.toSignificant()) / Number(token1USDPrice.price.toSignificant())
         const { priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
-          relativePrice,
+          relativePrice0,
           token1USDPrice24h,
           token0USDPrice24h,
           activeCurrencyOption?.symbol ?? ''
         )
+
         setActiveCurrencyDetails({
-          price: `$${token0USDPrice.price.toFixed(4)}`,
+          price: `$${token1USDPrice.price.toFixed(4)}`,
           priceChange24h: priceChange24hWithSymbol,
           percentPriceChange24h: percentPriceChange24h,
           isIncome24h: isIncome,
@@ -169,7 +170,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
             token1USDPrice.price,
             activeCurrencyOption
           ),
-          relativePrice: Number(relativePrice.toFixed(4)) !== 0 ? relativePrice.toFixed(4) : '< 0.0001',
+          relativePrice: Number(relativePrice1.toFixed(4)) !== 0 ? relativePrice1.toFixed(4) : '< 0.0001',
         })
       }
     } else {
