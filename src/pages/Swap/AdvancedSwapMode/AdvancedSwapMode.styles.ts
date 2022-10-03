@@ -8,13 +8,13 @@ export const BaseWrapper = styled.div`
 export const AdvancedModeDetailsItems = css`
   & > div:nth-child(1),
   & > div:nth-child(2) {
-    flex-basis: 25%;
+    flex-basis: 30%;
   }
   & > div:nth-child(3) {
     flex-basis: 20%;
   }
   & > div:nth-child(4) {
-    flex-basis: 10%;
+    flex-basis: 20%;
   }
   & > div {
     line-height: 1.4;

@@ -1,5 +1,6 @@
 import { ChainId } from '@swapr/sdk'
 
+import { DateTime } from 'luxon'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -8,7 +9,6 @@ import { ExternalLink } from '../../../../theme/components'
 import { getExplorerLink } from '../../../../utils'
 import { AdvancedModeDetailsItems } from '../AdvancedSwapMode.styles'
 import { useStylingTradeBackground } from './Trade.hooks'
-import { formatDistanceDate } from './Trade.utils'
 
 const TradeWrapper = styled(ExternalLink)`
   display: flex;
@@ -58,7 +58,9 @@ export const Trade = ({
       </Flex>
       <Text>{amountOut}</Text>
       {price && <Text>{price}</Text>}
-      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>{formatDistanceDate(timestampInMilliseconds)}</Text>
+      <Text sx={{ textTransform: 'uppercase', textAlign: 'right' }}>
+        {DateTime.fromMillis(timestampInMilliseconds).toFormat('HH:mm:ss')}
+      </Text>
     </TradeWrapper>
   )
 }
