@@ -45,7 +45,6 @@ export const InfiniteScroll = ({
       >
         {showTrades &&
           activeCurrencyOption &&
-          !isLoading &&
           data.map((tx, index) => (
             <Trade
               key={`${tx.transactionId}-${index}`}
@@ -61,7 +60,13 @@ export const InfiniteScroll = ({
             />
           ))}
       </Scroll>
-      {isLoading && new Array(3).fill(<Skeleton width="100%" height="15px" style={{ marginTop: '10px' }} />)}
+      {isLoading && (
+        <>
+          <Skeleton width="100%" height="15px" style={{ marginTop: '10px' }} />
+          <Skeleton width="100%" height="15px" style={{ marginTop: '10px' }} />
+          <Skeleton width="100%" height="15px" style={{ marginTop: '10px' }} />
+        </>
+      )}
       {!isLoading && isFetched && showTrades && !data.length && (
         <NoDataMessage>
           <Trans i18nKey="swap:advancedTradingView.infiniteScroll.noData" components={[<span key="0"></span>]} />
