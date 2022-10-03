@@ -16,6 +16,14 @@ const adapterLogos: { [key in AdapterKeys]: string } = {
   uniswapV3: RoutablePlatform.UNISWAP.name,
 }
 
+const formatAdapterAmount = (amount: Number) => {
+  if (amount < 0.000001) return amount.toFixed(4)
+
+  if (amount < 0.001) return amount.toFixed(6)
+
+  return amount.toFixed(4)
+}
+
 export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
   inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 
@@ -117,8 +125,8 @@ export const selectAllDataFromAdapters = createSelector(
       ({ transaction: { id }, amount0, amount1, timestamp, amountUSD, logoKey, type }) => {
         return {
           transactionId: id,
-          amountIn: amount0,
-          amountOut: amount1,
+          amountIn: formatAdapterAmount(Number(amount0)),
+          amountOut: formatAdapterAmount(Number(amount1)),
           timestamp,
           logoKey,
           amountUSD,
@@ -144,16 +152,14 @@ export const selectAllDataFromAdapters = createSelector(
 
         return {
           transactionId: id,
-          amountIn: (normalizedValues.inputTokenAddress === normalizedValues.token0Address
-            ? amount0
-            : amount1
-          ).toString(),
-          amountOut: (normalizedValues.outputTokenAddress === normalizedValues.token0Address
-            ? amount0
-            : amount1
-          ).toString(),
-          priceToken0: (amount1 / amount0).toString(),
-          priceToken1: (amount0 / amount1).toString(),
+          amountIn: formatAdapterAmount(
+            normalizedValues.inputTokenAddress === normalizedValues.token0Address ? amount0 : amount1
+          ),
+          amountOut: formatAdapterAmount(
+            normalizedValues.outputTokenAddress === normalizedValues.token0Address ? amount0 : amount1
+          ),
+          priceToken0: formatAdapterAmount(amount1 / amount0),
+          priceToken1: formatAdapterAmount(amount0 / amount1),
           timestamp,
           amountUSD,
           isSell:
@@ -189,8 +195,8 @@ export const selectUniswapV3AllData = createSelector(
       ? pair.burnsAndMints.data.map(({ transaction: { id }, amount0, amount1, timestamp, type, amountUSD }) => {
           return {
             transactionId: id,
-            amountIn: amount0,
-            amountOut: amount1,
+            amountIn: formatAdapterAmount(Number(amount0)),
+            amountOut: formatAdapterAmount(Number(amount1)),
             timestamp,
             logoKey,
             amountUSD,
@@ -225,16 +231,14 @@ export const selectUniswapV3AllData = createSelector(
             (normalizedValues.token1Address === normalizedValues.inputTokenAddress && normalizedValues.amount1 < 0)
           return {
             transactionId: id,
-            amountIn: (normalizedValues.token0Address === normalizedValues.inputTokenAddress
-              ? absoluteAmount0
-              : absoluteAmount1
-            ).toString(),
-            amountOut: (normalizedValues.token0Address === normalizedValues.outputTokenAddress
-              ? absoluteAmount0
-              : absoluteAmount1
-            ).toString(),
-            priceToken0: (absoluteAmount1 / absoluteAmount0).toString(),
-            priceToken1: (absoluteAmount0 / absoluteAmount1).toString(),
+            amountIn: formatAdapterAmount(
+              normalizedValues.token0Address === normalizedValues.inputTokenAddress ? absoluteAmount0 : absoluteAmount1
+            ),
+            amountOut: formatAdapterAmount(
+              normalizedValues.token0Address === normalizedValues.outputTokenAddress ? absoluteAmount0 : absoluteAmount1
+            ),
+            priceToken0: formatAdapterAmount(absoluteAmount1 / absoluteAmount0),
+            priceToken1: formatAdapterAmount(absoluteAmount0 / absoluteAmount1),
             timestamp,
             amountUSD,
             isSell,
