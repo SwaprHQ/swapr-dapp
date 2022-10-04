@@ -2,7 +2,6 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const crypto = require('crypto')
 
 class NonceInjector {
   constructor(base64Hash) {
@@ -29,7 +28,7 @@ module.exports = (config, env) => {
 
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
-  const base64Hash = crypto.randomBytes(16).toString('base64')
+  const base64Hash = Buffer.from(shortCommitHash).toString('base64')
   const CSP_NONCE = JSON.stringify(base64Hash)
 
   const fallback = config.resolve.fallback || {}
