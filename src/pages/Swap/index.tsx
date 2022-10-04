@@ -9,6 +9,7 @@ import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PageMetaData } from '../../components/PageMetaData'
 import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
 import { ChartTabs } from '../../components/Swap/ChartTabs'
 import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
@@ -512,6 +513,7 @@ export default function Swap() {
 
   return (
     <>
+      <PageMetaData title="Swap | Swapr" />
       <TokenWarningModal
         isOpen={
           (!urlLoadedChainId || chainId === urlLoadedChainId) &&
