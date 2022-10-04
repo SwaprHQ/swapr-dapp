@@ -1,7 +1,7 @@
 import type { Web3Provider } from '@ethersproject/providers'
 import type { ChainId } from '@swapr/sdk'
 
-import { Form as LimitOrderForm } from '../components/Form'
+import { LimitOrderForm } from '../components/Form'
 import { supportedChainIdList } from '../constants'
 
 export interface LimitOrderAppProps {

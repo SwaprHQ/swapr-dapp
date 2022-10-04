@@ -1,4 +1,4 @@
-import { Form } from './components/Form'
+import { LimitOrderForm } from './components/Form'
 import { OrderList } from './components/OrderList/OrderList'
 
 /**
@@ -36,7 +36,7 @@ enum ComponentName {
 /**
  * Registered components for this module
  */
-const components: Record<ComponentName, typeof Form | typeof OrderList> = {
+const components: Record<ComponentName, typeof LimitOrderForm | typeof OrderList> = {
   [ComponentName.OrderList]: OrderList,
 }
 
