@@ -24,8 +24,6 @@ const DFYN_LIST = 'https://raw.githubusercontent.com/dfyn/new-host/main/list-tok
 const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json'
 const PANCAKESWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/pancake-toolkit/master/packages/token-lists/lists/pancakeswap-default.json'
-const SUSHISWAP_LIST =
-  'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/bsc.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
@@ -51,7 +49,6 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   DFYN_LIST,
   OPTIMISM_LIST,
   PANCAKESWAP_LIST,
-  SUSHISWAP_LIST,
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
 ]
 
