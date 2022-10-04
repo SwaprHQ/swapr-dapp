@@ -1,2 +1,2 @@
 import './commands'
-import '@synthetixio/synpress/support'
+import '@synthetixio/synpress/support/index'
