@@ -34,7 +34,7 @@ const calculate24hVolumeForActiveCurrencyOption = (
   }
 }
 
-const calculateUSDChange24h = (price: Price, percentagePriceChange24h: Price, isIncome24h: boolean) => {
+const calculateUSDChange24h = (price: Price, percentagePriceChange24h: number, isIncome24h: boolean) => {
   const priceUSDChange24h = (Number(percentagePriceChange24h.toFixed(6)) * Number(price.toFixed(6))) / 100
   return isIncome24h ? Number(price.toFixed(6)) - priceUSDChange24h : Number(price.toFixed(6)) + priceUSDChange24h
 }
@@ -42,7 +42,7 @@ const calculateUSDChange24h = (price: Price, percentagePriceChange24h: Price, is
 const calculatePrices = (relativePrice: number, token0Price24h: number, token1Price24h: number, symbol: string) => {
   const relativePrice24h = token1Price24h / token0Price24h
   const priceChange24h = Math.abs(Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))).toFixed(4)
-  const priceChange24hWithSymbol = `${Number(priceChange24h) !== 0 ? `${priceChange24h}` : '< 0,0001'}  ${symbol}`
+  const priceChange24hWithSymbol = `${Number(priceChange24h) !== 0 ? `${priceChange24h}` : '< 0.0001'}  ${symbol}`
   const percentPriceChange24h = (
     ((Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))) / Number(relativePrice.toFixed(6))) *
     100
