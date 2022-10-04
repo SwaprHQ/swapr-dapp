@@ -78,22 +78,21 @@ export default function MobileOptions() {
         show={open}
         placement="bottom-end"
         content={
-          <>
-            <List>
-              <ListItem>
-                <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
-                  {t('charts')}
-                  <span>↗</span>
-                </StyledExternalLink>
-              </ListItem>
+          <List>
+            <ListItem>
+              <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
+                {t('charts')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
 
-              <ListItem>
-                <StyledExternalLink id="stake-nav-link" href="https://snapshot.org/#/swpr.eth">
-                  {t('vote')}
-                </StyledExternalLink>
-              </ListItem>
-            </List>
-          </>
+            <ListItem>
+              <StyledExternalLink id="stake-nav-link" href="https://snapshot.org/#/swpr.eth">
+                {t('vote')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
+          </List>
         }
       >
         <MenuButton onClick={toggle}>{open ? <Cross /> : <ThreeBars />}</MenuButton>
