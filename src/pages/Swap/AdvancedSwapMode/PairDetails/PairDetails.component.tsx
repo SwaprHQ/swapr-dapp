@@ -64,7 +64,7 @@ export const PairDetails = ({
                 <Skeleton width="182px" height="14px" />
               ) : (
                 <>
-                  {activeCurrencyDetails.priceChange24h} {activeCurrencyDetails.percentPriceChange24h}%
+                  {activeCurrencyDetails.priceChange24h} {activeCurrencyDetails.percentPriceChange24h}
                 </>
               )}
             </PairValueChange>
