@@ -127,8 +127,7 @@ export default function Swap() {
       if (!isDesktop) {
         setSelectedChartTab(ChartTabsOptions.OFF)
         navigate('/swap')
-      }
-      if (!pathname.includes('swapr/pro')) {
+      } else if (!pathname.includes('swapr/pro')) {
         setSelectedChartTab(ChartTabsOptions.PRO)
         navigate('/swap/pro')
       }

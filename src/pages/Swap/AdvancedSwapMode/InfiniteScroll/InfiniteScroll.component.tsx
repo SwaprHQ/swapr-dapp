@@ -61,7 +61,9 @@ export const InfiniteScroll = ({
           ))}
       </Scroll>
       {isLoading &&
-        [...new Array(3)].map((x, i) => <Skeleton key={i} width="100%" height="15px" style={{ marginTop: '10px' }} />)}
+        [...new Array(3)].map((_, key) => (
+          <Skeleton key={key} width="100%" height="15px" style={{ marginTop: '10px' }} />
+        ))}
       {!isLoading && isFetched && showTrades && !data.length && (
         <NoDataMessage>
           <Trans i18nKey="swap:advancedTradingView.infiniteScroll.noData" components={[<span key="0"></span>]} />
