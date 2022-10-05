@@ -10,9 +10,10 @@ import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 
-import { ReactComponent as ConnectedSvg } from '../assets/svg/connected.svg'
+import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
 import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
+import { SwapProtocol } from '../state/transactions/reducer'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -40,7 +41,9 @@ const getExplorerPrefix = (chainId: ChainId) => {
     case ChainId.XDAI:
       return 'https://blockscout.com/xdai/mainnet'
     case ChainId.POLYGON:
-      return 'https://polygonscan.com/'
+      return 'https://polygonscan.com'
+    case ChainId.OPTIMISM_MAINNET:
+      return 'https://optimistic.etherscan.io'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
@@ -48,29 +51,34 @@ const getExplorerPrefix = (chainId: ChainId) => {
 
 export function getExplorerLink(
   chainId: ChainId,
-  data: string,
-  type: 'transaction' | 'token' | 'address' | 'block'
+  hash: string,
+  type: 'transaction' | 'token' | 'address' | 'block',
+  protocol?: string
 ): string {
-  const prefix = getExplorerPrefix(chainId)
+  //exception with using cow swap. Need to show cow explorer
+  if (protocol?.toUpperCase() === SwapProtocol.COW) {
+    return getGnosisProtocolExplorerOrderLink(chainId, hash)
+  }
 
+  const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address
   if (chainId === ChainId.XDAI && type === 'token') {
-    return `${prefix}/address/${data}`
+    return `${prefix}/address/${hash}`
   }
 
   switch (type) {
     case 'transaction': {
-      return `${prefix}/tx/${data}`
+      return `${prefix}/tx/${hash}`
     }
     case 'token': {
-      return `${prefix}/token/${data}`
+      return `${prefix}/token/${hash}`
     }
     case 'block': {
-      return `${prefix}/block/${data}`
+      return `${prefix}/block/${hash}`
     }
     case 'address':
     default: {
-      return `${prefix}/address/${data}`
+      return `${prefix}/address/${hash}`
     }
   }
 }
@@ -215,8 +223,9 @@ export const calculatePercentage = (value: number, percentage: number): number =
 }
 
 export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
-  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account) return
-  window.ethereum
+  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account)
+    return Promise.reject()
+  return window.ethereum
     .request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: networkDetails.chainId }],

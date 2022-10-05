@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
 import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import List from '../../../components/LiquidityMiningCampaigns/List'
-import { DimBlurBgBox } from '../../../components/Pool/DimBlurBgBox/styleds'
+import { PageMetaData } from '../../../components/PageMetaData'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
@@ -21,8 +21,9 @@ import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
+import { BlurBox } from '../../../ui/StyledElements/BlurBox'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
-import { PageWrapper } from '../../PageWrapper'
 
 type CurrencySearchParams = {
   currencyIdA: string
@@ -61,8 +62,11 @@ export default function Pair() {
     return <Navigate to="/pools" replace />
   }
 
+  const tokenPair = !token0 || !token1 ? '' : `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
+
   return (
     <>
+      <PageMetaData title={`${tokenPair} Liquidity pool stats | Swapr`} />
       <PageWrapper>
         <Box paddingX={2}>
           <TitleRow>
@@ -78,11 +82,7 @@ export default function Pair() {
                 </Box>
                 <Box mr="4px">
                   <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                    {!token0 || !token1 ? (
-                      <Skeleton width="60px" />
-                    ) : (
-                      `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
-                    )}
+                    {!token0 || !token1 ? <Skeleton width="60px" /> : tokenPair}
                   </Text>
                 </Box>
                 <Box>
@@ -102,7 +102,7 @@ export default function Pair() {
           <ContentGrid>
             <TwoColumnsGrid>
               <PoolStats loading={wrappedPair[1] === null} pair={wrappedPair[1]} />
-              <DimBlurBgBox padding={'24px'}>
+              <BlurBox padding="24px">
                 <Flex alignItems="center" justifyContent="space-between" flexDirection={'column'} height="100%">
                   <Box mb={3}>
                     <ValueWithLabel
@@ -123,11 +123,11 @@ export default function Pair() {
                     {t('pair.governance')}
                   </ButtonBadge>
                 </Flex>
-              </DimBlurBgBox>
+              </BlurBox>
             </TwoColumnsGrid>
             <UserLiquidity pair={wrappedPair[1] || undefined} />
           </ContentGrid>
-          <Flex my={3}>
+          <Flex my={3} data-testid="open-rewards-button">
             <ButtonBadge
               number={miningCampaigns.active.length}
               color={miningCampaigns.active.length > 0 ? 'green' : 'orange'}

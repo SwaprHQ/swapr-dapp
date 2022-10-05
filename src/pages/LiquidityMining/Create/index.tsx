@@ -12,13 +12,14 @@ import PreviewAndCreate from '../../../components/LiquidityMining/Create/Steps/P
 import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/RewardAmount'
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
 import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
+import { PageMetaData } from '../../../components/PageMetaData'
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
-import { PageWrapper } from '../../PageWrapper'
+import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 
 const LastStep = styled(Step)`
   z-index: 0;
@@ -215,6 +216,7 @@ export default function CreateLiquidityMining() {
 
   return (
     <>
+      <PageMetaData title="Create a Rewards Campaign | Swapr" />
       <PageWrapper>
         <AutoColumn gap="40px">
           <AutoColumn gap="8px">

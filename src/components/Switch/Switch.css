@@ -25,6 +25,7 @@
   height: 12px;
   border-radius: 45px;
   transition: 0.2s;
+  transition-timing-function: ease-in-out;
   box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
 }
 

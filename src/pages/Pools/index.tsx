@@ -7,11 +7,12 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Box, Button, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three-blurred-circles.svg'
 import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PageMetaData } from '../../components/PageMetaData'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { PairsList } from '../../components/Pool/PairsList'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
@@ -24,9 +25,9 @@ import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStake
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { TYPE } from '../../theme'
+import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { PageWrapper } from '../PageWrapper'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -117,6 +118,7 @@ function Title({
 
   return (
     <>
+      <PageMetaData title="Liquidity | Swapr" />
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
         <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (

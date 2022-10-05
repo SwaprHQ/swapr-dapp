@@ -39,7 +39,7 @@ export type OmnibridgeToken = Pick<OmnibridgeTokenSubgraph, 'address' | 'chainId
 
 export type OmnibridgePairTokens = {
   fromToken: OmnibridgeToken & { amount: BigNumber; symbol?: string }
-  toToken: OmnibridgeToken
+  toToken: OmnibridgeToken & { amount: BigNumber; symbol?: string }
 }
 
 export type OmnibridgeTransactionMessage = {
@@ -54,7 +54,8 @@ export type OmniBridgeTransaction = {
   assetName: string
   assetAddressL1?: string
   assetAddressL2?: string
-  value: string
+  fromValue: string
+  toValue: string
   fromChainId: ChainId
   toChainId: ChainId
   sender: string
@@ -81,6 +82,7 @@ export type OmnibridgeExecution = {
   status: boolean | undefined
   token: string
   txHash: string
+  amount: string | null
 }
 export type OmnibridgeSubgraphRequests = {
   requests: OmnibridgeRequest[]

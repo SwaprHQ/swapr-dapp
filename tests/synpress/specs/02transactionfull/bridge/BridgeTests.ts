@@ -12,6 +12,8 @@ describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
+  beforeEach(() => {})
+
   before(() => {
     ScannerFacade.erc20TokenBalance(
       AddressesEnum.USDC_TOKEN_ARINKEBY,
@@ -25,16 +27,16 @@ describe('Bridge tests', () => {
     MetamaskNetworkHandler.addGnosis()
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.resetMetamaskAccount()
     cy.wait(500)
   })
 
-  it('Should initiate a bridging ', function () {
+  //TODO Change network to Goerli and uncomment
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -58,7 +60,7 @@ describe('Bridge tests', () => {
     BridgePage.closeBridgeInitiatedModal()
     BridgePage.getStatusTag(600000).should('contain.text', 'Pending')
     BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
-    BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
+    BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
   })
   it('Should display transaction rejected when rejecting bridging in wallet ', () => {
@@ -105,7 +107,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkToSelector().should('contain.text', 'Rinkeby')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Should select Arbitrum and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
@@ -124,7 +126,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkToSelector().should('contain.text', 'Rinkeby')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Should select Rinkeby and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
@@ -143,7 +145,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkToSelector().should('contain.text', 'Gnosis Chain')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Should select Gnosis Chain and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
@@ -162,12 +164,12 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkToSelector().should('contain.text', 'Rinkeby')
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkToSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Should select A. Rinkeby and select others networks as to', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.arinkeby().click()
-    BridgePage.getBridgeButton().should('contain.text', 'Connect to A. Rinkeby').click()
+    BridgePage.getBridgeButton().should('contain.text', 'Connect to A. Rinkeby').click()
     cy.allowMetamaskToAddAndSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.ARINKEBY)
     BridgePage.getNetworkToSelector().click()
@@ -193,7 +195,7 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'Rinkeby')
     cy.changeMetamaskNetwork('arbitrum rinkeby')
-    BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Should display no tokens', () => {
     cy.changeMetamaskNetwork('ethereum')
@@ -205,7 +207,7 @@ describe('Bridge tests', () => {
     cy.changeMetamaskNetwork('rinkeby')
     BridgePage.getNetworkFromSelector().should('contain.text', 'Rinkeby')
     cy.changeMetamaskNetwork('arbitrum rinkeby')
-    BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
+    BridgePage.getNetworkFromSelector().should('contain.text', 'A. Rinkeby')
   })
   it('Reject transaction on Gnosis', () => {
     cy.changeMetamaskNetwork('gnosis chain')
@@ -229,14 +231,14 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }
     cy.changeMetamaskNetwork('rinkeby')
     BridgePage.getStatusTag(600000).should('contain.text', 'Confirmed')
     BridgePage.getBridgedFromChain().should('contain.text', 'Rinkeby')
-    BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
+    BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
 
     ScannerFacade.erc20TokenBalance(

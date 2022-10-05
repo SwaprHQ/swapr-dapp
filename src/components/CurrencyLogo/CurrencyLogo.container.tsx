@@ -3,8 +3,8 @@ import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 import { useMemo } from 'react'
 
 import carrotListLogoUrl from '../../assets/images/carrot.png'
+import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
-import DXDLogo from '../../assets/svg/dxd.svg'
 import { useActiveWeb3React } from '../../hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
@@ -54,7 +54,11 @@ export const CurrencyLogo = ({
           carrotListLogoUrl.startsWith('.') ? carrotListLogoUrl.substring(1) : carrotListLogoUrl
         }`,
       ]
-    return []
+
+    if (!currency || !currency.address) {
+      return uriLocations
+    }
+    return [getTokenLogoURL(currency.address, selectedChainId), ...uriLocations]
   }, [currency, nativeCurrencyLogo, selectedChainId, uriLocations])
 
   return <CurrencyLogoComponent sources={sources} currency={currency} {...componentProps} />
