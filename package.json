@@ -1,6 +1,6 @@
 {
   "name": "@swapr/frontend",
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0-beta.16.2",
   "private": true,
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
@@ -91,7 +91,7 @@
     "react-loading-skeleton": "3.1.0",
     "react-popper": "^2.2.5",
     "react-redux": "^8.0.2",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.4.1",
     "react-toastify": "9.0.7",
     "react-use": "^17.4.0",
     "react-virtualized-auto-sizer": "^1.0.6",
@@ -183,7 +183,7 @@
     "svg-react-loader": "^0.4.6",
     "svg-url-loader": "^8.0.0",
     "tls": "^0.0.1",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.4",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "yargs": "^17.5.1"
