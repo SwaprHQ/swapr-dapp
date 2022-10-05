@@ -3,6 +3,7 @@ import {
   Currency,
   CurrencyAmount,
   DXD,
+  GNO,
   JSBI,
   Percent,
   RoutablePlatform,
@@ -21,18 +22,18 @@ import { ReactNode } from 'react'
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import Coinbase from '../assets/images/coinbase.svg'
-import CurveLogo from '../assets/images/curve-logo.svg'
+import CoWLogo from '../assets/images/cow-protocol.svg'
+import CurveLogo from '../assets/images/curve-logo.png'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
+import HoneyswapLogo from '../assets/images/honeyswap-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
+import SwaprLogo from '../assets/images/logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
+import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
+import UniswapLogo from '../assets/images/uniswap-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
-import CoWLogo from '../assets/svg/cow-protocol.svg'
-import HoneyswapLogo from '../assets/svg/honeyswap-logo.svg'
-import SwaprLogo from '../assets/svg/logo.svg'
-import SushiswapNewLogo from '../assets/svg/sushiswap-new-logo.svg'
-import UniswapLogo from '../assets/svg/uniswap-logo.svg'
 import { injected, walletConnect, walletLink } from '../connectors'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -169,7 +170,7 @@ export const MATIC: { [key: number]: Token } = {
   ),
 }
 
-export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
+export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
   ChainId.XDAI,
@@ -197,6 +198,19 @@ export const OP: { [key: number]: Token } = {
     'OP',
     'Optimism'
   ),
+}
+
+export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
+  [ChainId.GNOSIS]: GNO.address,
+  [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
+  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
+  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
+  [ChainId.RINKEBY]: '',
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.GOERLI]: '',
+  [ChainId.ARBITRUM_GOERLI]: '',
+  [ChainId.OPTIMISM_GOERLI]: '',
 }
 
 // used to construct intermediary pairs for trading

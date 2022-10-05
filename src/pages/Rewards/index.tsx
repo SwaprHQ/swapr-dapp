@@ -6,12 +6,13 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as ThreeBlurredCircles } from '../../assets/svg/three-blurred-circles.svg'
+import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three-blurred-circles.svg'
 import { ButtonSecondary } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { RewardsList } from '../../components/LiquidityMiningCampaigns/RewardsList'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PageMetaData } from '../../components/PageMetaData'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { RowBetween, RowFixed } from '../../components/Row'
 import { PairSearchModal } from '../../components/SearchModal/PairSearchModal'
@@ -121,6 +122,7 @@ export default function Rewards() {
 
   return (
     <>
+      <PageMetaData title="Rewards | Swapr" />
       <PageWrapper>
         <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">

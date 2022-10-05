@@ -1,6 +1,7 @@
 import { exportAllImagesFilesFromRelativePath } from '../utils'
 
 export const imagesBase = exportAllImagesFilesFromRelativePath(require.context('./images', false, /\.(png|jpe?g|svg)$/))
+
 export const imagesAnimations = exportAllImagesFilesFromRelativePath(
   require.context('./images/animations', false, /\.(png|jpe?g|svg)$/)
 )
@@ -17,4 +18,3 @@ export const imagesLogos = exportAllImagesFilesFromRelativePath(
 export const imagesTimelineAssets = exportAllImagesFilesFromRelativePath(
   require.context('./images/timeline-assets', false, /\.(png|jpe?g|svg)$/)
 )
-export const svg = exportAllImagesFilesFromRelativePath(require.context('./svg', false, /\.(png|jpe?g|svg)$/))

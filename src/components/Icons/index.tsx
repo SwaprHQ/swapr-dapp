@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import triangleIcon from '../../assets/svg/triangle.svg'
+import triangleIcon from '../../assets/images/triangle.svg'
 
 const Triangle = styled.img`
   margin-left: 6px;

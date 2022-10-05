@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { ReactComponent as GasInfoSvg } from '../../assets/svg/gas-info.svg'
+import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
@@ -17,7 +17,7 @@ import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } 
 import { useDarkModeManager } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
-import ClaimModal from '../claim/ClaimModal'
+import ClaimModal from '../Claim/ClaimModal'
 import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
@@ -272,21 +272,20 @@ function Header() {
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            <>
-              {t('bridge')}
-              <HeaderLinkBadge label="BETA" />
-            </>
+            {t('bridge')}
+            <HeaderLinkBadge label="BETA" />
           </HeaderLink>
-          <HeaderLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
+          <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
           <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            <>
-              {t('charts')}
-              <Text ml="4px" fontSize="11px">
-                ↗
-              </Text>
-            </>
+            {t('charts')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
         </HeaderLinks>
       </HeaderRow>
@@ -355,14 +354,15 @@ function Header() {
           </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
           </HeaderMobileLink>
           <HeaderMobileLink id="stake-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            <>
-              {t('charts')}
-              <Text ml="4px" fontSize="11px">
-                ↗
-              </Text>
-            </>
+            {t('charts')}
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
           </HeaderMobileLink>
         </Flex>
 

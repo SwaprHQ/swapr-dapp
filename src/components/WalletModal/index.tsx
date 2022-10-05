@@ -5,8 +5,8 @@ import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
+import { ReactComponent as DxDaoBanner } from '../../assets/images/DxDaoProductBanner.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
-import DxDao from '../../assets/svg/dxdao.svg'
 import { useUnsupportedChainIdError } from '../../hooks'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { TYPE } from '../../theme'
@@ -14,7 +14,6 @@ import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ModalView } from '../Web3Status'
 import PendingView from './PendingView'
-
 const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;
@@ -84,7 +83,6 @@ const Blurb = styled.div`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.bg1};
-  height: 76px;
   position: relative;
   overflow: hidden;
 
@@ -212,13 +210,7 @@ export default function WalletModal({
           />
         </ContentWrapper>
         <Blurb as="a" href="https://dxdao.eth.limo/" rel="noopener noreferrer" target="_blank">
-          <TYPE.Body fontWeight={700} fontSize="10px" color="text1" letterSpacing="3px" marginBottom="8px">
-            A DXDAO PRODUCT
-          </TYPE.Body>
-          <TYPE.Body fontWeight={600} fontSize="8px" color="text5" letterSpacing="2px">
-            DXDAO.ETH
-          </TYPE.Body>
-          <img src={DxDao} alt="dxdao" />
+          <DxDaoBanner />
         </Blurb>
       </UpperSection>
     )

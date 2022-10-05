@@ -12,7 +12,8 @@ import { CampaignPage } from '../../../../pages/CampaignPage'
 import { LiquidityCampaign } from '../../../../utils/TestTypes'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-describe('Campaign creation tests', () => {
+// TODO unskip and change network to Goerli when contracts are deployed
+describe.skip('Campaign creation tests', () => {
   const REWARDS_INPUT = 0.001
   const TOKENS_PAIR = 'DAI/USDT'
   const REWARD_TOKEN = 'weenus'
@@ -21,20 +22,19 @@ describe('Campaign creation tests', () => {
   let isCampaignCreated = false
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
-  })
-  beforeEach(() => {
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
     RewardsPage.visitRewardsPage()
     MenuBar.connectWallet()
   })
+  beforeEach(() => {
+    RewardsPage.visitRewardsPage()
+  })
   afterEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
     cy.clearCookies()
     cy.clearLocalStorage()
   })
   after(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.resetMetamaskAccount()
     cy.wait(500)
   })
 
@@ -87,6 +87,10 @@ describe('Campaign creation tests', () => {
     TokenMenu.goBack()
     TokenMenu.searchAndChooseToken('dai')
     LiquidityPage.getPairCards().contains('USDT').click({})
+    LiquidityPage.getOpenRewardsButton().should(button => {
+      const rewardAmount = parseInt(button.text().replace(/\D+/g, ''))
+      expect(rewardAmount).to.be.greaterThan(0)
+    })
     RewardsPage.getRewardCardByStartingAt(getUnixTime(expectedStartsAt).toString()).click({})
     CampaignPage.checkCampaignData(
       TOKENS_PAIR,
@@ -96,8 +100,7 @@ describe('Campaign creation tests', () => {
       DateUtils.getFormattedDateTimeForValidation(expectedEndsAt)
     )
   })
-  // WILL BE FIXED IN #1364
-  it.skip('Should open a campaign through Rewards page [TC-60]', function () {
+  it('Should open a campaign through Rewards page [TC-60]', function () {
     if (!isCampaignCreated) {
       this.skip()
     }
