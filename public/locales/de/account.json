@@ -1,0 +1,15 @@
+{
+  "copyAddress": "ADRESSE KOPIEREN",
+  "viewOnExplorer": "ANSICHT AUF EXPLORER",
+  "pendingTransactions": "AUSSTEHENDE TRANSAKTIONEN",
+  "allNetworks": "ALLE NETZWERKE",
+  "from": "AUS",
+  "to": "ZU",
+  "price": "PREIS",
+  "type": "TYP",
+  "status": "STATUS",
+  "confirmedTime": "BESTÄTIGTE ZEIT",
+  "createdTime": "GESCHAFFENE ZEIT",
+  "changeWallet": "GELDBÖRSE ÄNDERN",
+  "disconnect": "TRENNEN"
+}

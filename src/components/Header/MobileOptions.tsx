@@ -3,8 +3,8 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { ReactComponent as Cross } from '../../assets/svg/crossIcon.svg'
-import { ReactComponent as ThreeBars } from '../../assets/svg/three-bars.svg'
+import { ReactComponent as Cross } from '../../assets/images/crossIcon.svg'
+import { ReactComponent as ThreeBars } from '../../assets/images/three-bars.svg'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleMobileMenu } from '../../state/application/hooks'
@@ -78,22 +78,21 @@ export default function MobileOptions() {
         show={open}
         placement="bottom-end"
         content={
-          <>
-            <List>
-              <ListItem>
-                <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
-                  {t('charts')}
-                  <span>↗</span>
-                </StyledExternalLink>
-              </ListItem>
+          <List>
+            <ListItem>
+              <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
+                {t('charts')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
 
-              <ListItem>
-                <StyledExternalLink id="stake-nav-link" href="https://snapshot.org/#/swpr.eth">
-                  {t('vote')}
-                </StyledExternalLink>
-              </ListItem>
-            </List>
-          </>
+            <ListItem>
+              <StyledExternalLink id="stake-nav-link" href="https://snapshot.org/#/swpr.eth">
+                {t('vote')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
+          </List>
         }
       >
         <MenuButton onClick={toggle}>{open ? <Cross /> : <ThreeBars />}</MenuButton>

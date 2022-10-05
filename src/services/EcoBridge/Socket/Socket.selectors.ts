@@ -2,7 +2,6 @@ import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { normalizeInputValue } from '../../../utils'
 import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
 import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 
@@ -75,12 +74,13 @@ const createSelectBridgeTransactionsSummary = (
           ? SOCKET_PENDING_REASONS.TO_PENDING
           : undefined
 
-      const normalizedValue = normalizeInputValue(tx.value, true)
+      const fromValue = Number(tx.fromValue).toString()
+      const toValue = Number(tx.toValue ?? 0).toString()
 
       const summary: BridgeTransactionSummary = {
         assetName: tx.assetName,
-        assetAddressL1: '', // not applicable, socket doesn't implement collect flow for now
-        assetAddressL2: '', // not applicable, socket doesn't implement collect flow for now
+        assetAddressL1: tx.assetAddressL1,
+        assetAddressL2: tx.assetAddressL2,
         fromChainId: tx.fromChainId,
         toChainId: tx.toChainId,
         status: tx.partnerTxHash
@@ -88,7 +88,8 @@ const createSelectBridgeTransactionsSummary = (
           : tx.status === SocketTxStatus.ERROR
           ? BridgeTransactionStatus.FAILED
           : BridgeTransactionStatus.PENDING,
-        value: normalizedValue,
+        fromValue,
+        toValue,
         txHash: tx.txHash,
         pendingReason,
         timestampResolved: tx.timestampResolved,

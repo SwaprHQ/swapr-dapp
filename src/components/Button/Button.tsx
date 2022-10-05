@@ -7,7 +7,7 @@ import { ButtonProps, Button as RebassButton } from 'rebass/styled-components'
 import styled, { useTheme } from 'styled-components'
 
 import border8pxRadius from '../../assets/images/border-8px-radius.png'
-import { ReactComponent as CarrotIcon } from '../../assets/svg/carrot.svg'
+import { ReactComponent as CarrotIcon } from '../../assets/images/carrot.svg'
 import { ExternalLink } from '../../theme'
 import { gradients } from '../../utils/theme'
 import { NumberBadge } from '../NumberBadge'
@@ -164,6 +164,11 @@ export const ButtonDark1 = styled(Base)`
   &:active {
     background-color: ${({ theme }) => darken(0.1, theme.dark2)};
   }
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
+    background-color: ${({ theme }) => theme.dark1};
+  }
 `
 export const ButtonPurple = styled(Base)`
   background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
@@ -177,6 +182,10 @@ export const ButtonPurple = styled(Base)`
   }
   &:active {
     background-color: ${({ theme }) => darken(0.1, theme.dark2)};
+  }
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
   }
 `
 export const ButtonDark2 = styled(Base)`
