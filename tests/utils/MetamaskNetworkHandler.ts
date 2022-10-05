@@ -7,7 +7,7 @@ export class MetamaskNetworkHandler {
       rpcUrl: 'https://rpc.gnosischain.com/',
       chainId: '100',
       symbol: 'xDai',
-      blockExplorer: 'https://blockscout.com/xdai/mainnet',
+      blockExplorer: 'https://gnosisscan.io',
       isTestnet: true,
     })
   }
@@ -21,11 +21,7 @@ export class MetamaskNetworkHandler {
       isTestnet: true,
     })
   }
-  static switchToRinkebyIfNotConnected() {
-    cy.getNetwork().then((network?: Network) => {
-      if (network?.networkName !== 'rinkeby') {
-        cy.changeMetamaskNetwork('rinkeby')
-      }
-    })
+  static switchToNetworkIfNotConnected(desiredNetwork: string = 'rinkeby') {
+    cy.changeMetamaskNetwork(desiredNetwork)
   }
 }

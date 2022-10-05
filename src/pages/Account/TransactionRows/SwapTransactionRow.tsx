@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
 import { Box, Flex } from 'rebass'
 
-import { getExplorerLink } from '../../../utils'
+import { useActiveWeb3React } from '../../../hooks'
+import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
 import {
@@ -21,7 +23,11 @@ interface SwapTransactionRowProps {
 }
 
 export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, network, hash, swapProtocol } = transaction
+  const { t } = useTranslation('account')
+  const { account } = useActiveWeb3React()
+  const fromAddress = shortenAddress(`${account}`)
+  const { type, status, from, to, confirmedTime, network, hash, swapProtocol, addedTime, alternateReceiver } =
+    transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
   const price = to?.value === 0 ? 0 : from.value / to.value
   const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
@@ -37,6 +43,7 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
               <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
             </Flex>
           </Flex>
+          {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{fromAddress}</Box>}
           <Box sx={{ mt: 1 }}>
             <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
               <CustomLinkIcon size={12} />
@@ -55,6 +62,7 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
               <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
             </Flex>
           </Flex>
+          {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{alternateReceiver}</Box>}
           <Box sx={{ mt: 1 }}>
             <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
               <CustomLinkIcon size={12} />
@@ -85,10 +93,11 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
       </TransactionDetails>
 
       <TransactionDetails>
-        {confirmedTime ? (
+        {confirmedTime ?? addedTime ? (
           <Flex flexDirection="column" fontSize="12px">
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('HH:mm:ss')}</Box>
-            <Box>{DateTime.fromMillis(confirmedTime).toFormat('dd/MM/yyyy')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('HH:mm:ss')}</Box>
+            <Box>{DateTime.fromMillis(confirmedTime ?? addedTime).toFormat('dd/MM/yyyy')}</Box>
+            {!confirmedTime && <Box fontSize="9px">{t('createdTime')}</Box>}
           </Flex>
         ) : (
           '- -'

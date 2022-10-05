@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
+import { PageMetaData } from '../../components/PageMetaData'
 import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
 import { useActiveWeb3React } from '../../hooks'
@@ -38,7 +39,7 @@ import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
 
 export function Account() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('account')
   const dispatch = useDispatch()
   const isMobile = useIsMobileByMedia()
 
@@ -90,65 +91,78 @@ export function Account() {
 
   const externalLink = chainId && account ? getExplorerLink(chainId, account, 'address') : undefined
 
+  const accountName = ENSName ? ENSName : account ? shortenAddress(`${account}`) : undefined
+
   return (
-    <PageWrapper>
-      <Flex sx={{ mb: 4 }}>
-        <Flex>
-          {ENSName && ensAvatar?.image ? (
-            <AvatarWrapper>
-              <ENSAvatar url={ensAvatar.image} />
-            </AvatarWrapper>
-          ) : (
-            <Avatar
-              size={isMobile ? 90 : 120}
-              name={account}
-              variant="pixel"
-              colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
+    <>
+      <PageMetaData title={`${accountName ?? 'User account'} | Swapr`} />
+      <PageWrapper>
+        <Flex sx={{ mb: 4 }}>
+          <Flex>
+            {ENSName && ensAvatar?.image ? (
+              <AvatarWrapper>
+                <ENSAvatar url={ensAvatar.image} />
+              </AvatarWrapper>
+            ) : (
+              <Avatar
+                size={isMobile ? 80 : 120}
+                name={account}
+                variant="pixel"
+                colors={['#5400AA', '#A602A2', '#5921CB', '#5F1A69', '#FF008B']}
+              />
+            )}
+          </Flex>
+          <Flex flexDirection="column" justifyContent="center" marginLeft={isMobile ? '16px' : '24px'}>
+            <Box sx={{ mb: 1 }}>
+              <Text as="h1" fontSize={[4, 5]} sx={{ color: '#C0BAF7', mb: 2, textTransform: 'uppercase' }}>
+                {accountName ?? '--'}
+              </Text>
+              <FullAccount>{account}</FullAccount>
+            </Box>
+            <DetailActionWrapper>
+              <CopyWrapper value={account} label={t('copyAddress')} />
+              <StyledLink href={externalLink} rel="noopener noreferrer" target="_blank" disabled={!externalLink}>
+                <CustomLinkIcon size={12} />
+                <Box sx={{ ml: 1 }}>{t('viewOnExplorer')}</Box>
+              </StyledLink>
+            </DetailActionWrapper>
+            <CallToActionWrapper>
+              <Button onClick={toggleWalletSwitcherPopover}>{t('changeWallet')}</Button>
+              {active && <Button onClick={deactivate}>{t('disconnect')}</Button>}
+            </CallToActionWrapper>
+          </Flex>
+        </Flex>
+        <Flex sx={{ mb: 2 }} justifyContent="end">
+          <Flex>
+            <Switch
+              label={t('pendingTransactions')}
+              handleToggle={handlePendingToggle}
+              isOn={showPendingTransactions}
             />
-          )}
+            <Switch
+              label={t('allNetworks')}
+              handleToggle={handleAllNetworkTransactions}
+              isOn={showAllNetworkTransactions}
+            />
+          </Flex>
         </Flex>
-        <Flex flexDirection="column" justifyContent="center" marginLeft={isMobile ? '16px' : '24px'}>
-          <Box sx={{ mb: 1 }}>
-            <Text as="h1" fontSize={[4, 5]} sx={{ color: '#C0BAF7', mb: 2, textTransform: 'uppercase' }}>
-              {ENSName ? ENSName : account ? shortenAddress(`${account}`) : '--'}
-            </Text>
-            <FullAccount>{account}</FullAccount>
+        <BlurBox>
+          <TransactionHeaders />
+          <TransactionRows transactions={transactionsByPage} />
+          <NoDataTransactionRow data={transactions} />
+        </BlurBox>
+        <PaginationRow>
+          <Box>
+            <Pagination
+              page={page}
+              totalItems={transactions.length}
+              itemsPerPage={responsiveItemsPerPage}
+              onPageChange={setPage}
+              hideOnSinglePage={transactions.length <= responsiveItemsPerPage}
+            />
           </Box>
-          <DetailActionWrapper>
-            <CopyWrapper value={account} label="COPY ADDRESS" />
-            <StyledLink href={externalLink} rel="noopener noreferrer" target="_blank" disabled={!externalLink}>
-              <CustomLinkIcon size={12} />
-              <Box sx={{ ml: 1 }}>{t('viewOnBlockExplorer')}</Box>
-            </StyledLink>
-          </DetailActionWrapper>
-          <CallToActionWrapper>
-            <Button onClick={toggleWalletSwitcherPopover}>Change Wallet</Button>
-            {active && <Button onClick={deactivate}>Disconnect</Button>}
-          </CallToActionWrapper>
-        </Flex>
-      </Flex>
-      <Flex sx={{ mb: 2 }} justifyContent="end">
-        <Flex>
-          <Switch label="PENDING TXNS" handleToggle={handlePendingToggle} isOn={showPendingTransactions} />
-          <Switch label="ALL NETWORKS" handleToggle={handleAllNetworkTransactions} isOn={showAllNetworkTransactions} />
-        </Flex>
-      </Flex>
-      <BlurBox>
-        <TransactionHeaders />
-        <TransactionRows transactions={transactionsByPage} />
-        <NoDataTransactionRow data={transactions} />
-      </BlurBox>
-      <PaginationRow>
-        <Box>
-          <Pagination
-            page={page}
-            totalItems={transactions.length}
-            itemsPerPage={responsiveItemsPerPage}
-            onPageChange={setPage}
-            hideOnSinglePage={transactions.length <= responsiveItemsPerPage}
-          />
-        </Box>
-      </PaginationRow>
-    </PageWrapper>
+        </PaginationRow>
+      </PageWrapper>
+    </>
   )
 }

@@ -37,9 +37,11 @@ export interface SwapTransaction {
   status: string
   network?: ChainId
   swapProtocol?: string
+  alternateReceiver?: string
 }
 
-export interface BridgeTransaction extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime' | 'swapProtocol'> {
+export interface BridgeTransaction
+  extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime' | 'swapProtocol' | 'alternateReceiver'> {
   type: TransactionTypes.Bridge
   pendingReason?: string
   bridgeId: BridgeList
