@@ -2,6 +2,8 @@ import { AddressZero } from '@ethersproject/constants'
 import { formatUnits } from '@ethersproject/units'
 import { ChainId, JSBI, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
 
+import createDebugger from 'debug'
+
 import { LimitOrderKind, SerializableLimitOrder } from '../interfaces'
 import { TokenAmount as ITokenAmount } from '../interfaces/token.interface'
 
@@ -11,6 +13,8 @@ import { TokenAmount as ITokenAmount } from '../interfaces/token.interface'
  * @returns
  */
 export const formatTokenAmount = (amount: ITokenAmount) => formatUnits(amount.amount, amount.token.decimals)
+
+export const debug = createDebugger('limit-orders')
 
 interface InitialState {
   sellTokenAmount: TokenAmount
