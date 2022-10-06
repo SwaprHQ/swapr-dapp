@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { ReactComponent as Cross } from '../../../../../../assets/images/plusIcon.svg'
 import { CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { CurrencyLogo } from '../../../../../CurrencyLogo'
-import DoubleCurrencyLogo from '../../../../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../../../DoubleCurrencyLogo'
 
 const StyledCurrencyLogo = styled(CurrencyLogo)`
   position: absolute;
