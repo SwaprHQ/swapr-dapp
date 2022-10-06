@@ -7,7 +7,7 @@ export class MetamaskNetworkHandler {
       rpcUrl: 'https://rpc.gnosischain.com/',
       chainId: '100',
       symbol: 'xDai',
-      blockExplorer: 'https://blockscout.com/xdai/mainnet',
+      blockExplorer: 'https://gnosisscan.io',
       isTestnet: true,
     })
   }
