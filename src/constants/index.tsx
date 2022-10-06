@@ -449,7 +449,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.XDAI.decimals || 18,
     },
     rpcUrls: ['https://rpc.gnosischain.com/'],
-    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
+    blockExplorerUrls: ['https://gnosisscan.io'],
   },
   [ChainId.ARBITRUM_ONE]: {
     chainId: `0x${ChainId.ARBITRUM_ONE.toString(16)}`,
