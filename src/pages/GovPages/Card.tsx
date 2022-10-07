@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components'
 
 import Card from '../../components/Card'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../components/DoubleCurrencyLogo'
 import { AutoRow } from '../../components/Row'
 import { useRouter } from '../../hooks/useRouter'
 
