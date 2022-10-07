@@ -59,14 +59,14 @@ jobs:
         id: check-if-cypress-tests-should-run
         continue-on-error: true
         with:
-          one_of: ready-for-tests, QA
+          one_of: ready-for-tests,QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker://agilepathway/pull-request-label-checker:latest
         id: check-if-synpress-tests-should-run
         continue-on-error: true
         with:
-          one_of: ready-for-synpress-tests, QA
+          one_of: ready-for-synpress-tests,QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if cypress label is present
@@ -345,20 +345,11 @@ jobs:
           DISPLAY: ':99'
           CYPRESS_RESOURCES_WAIT: true
 
-      - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
-
       - name: Save code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
-            ${{ matrix.containers }}.json
-            public-report/screenshots
-            public-report/videos
             docker/videos-ci
 
   cypress:

@@ -6,7 +6,7 @@ import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler
 import { TokenMenu } from '../../../../pages/TokenMenu'
 
 describe('Switching from mainnet tests', () => {
-  const TRANSACTION_VALUE: number = 0.00000001
+  const TRANSACTION_VALUE: number = 1
   before(() => {
     cy.clearLocalStorage()
     MetamaskNetworkHandler.addARinkeby()
@@ -174,7 +174,7 @@ describe('Switching from mainnet tests', () => {
     cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.GNOSIS)
   })
-  it('Should switch from mainnet to gnosis after starting the swap process [regression-test] [TC-61]', () => {
+  it.skip('Should switch from mainnet to gnosis after starting the swap process [regression-test] [TC-61]', () => {
     cy.changeMetamaskNetwork('ethereum')
     SwapPage.openTokenToSwapMenu().searchAndChooseToken('dxd')
     SwapPage.getCurrencySelectors().first().click()

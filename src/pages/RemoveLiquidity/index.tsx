@@ -15,9 +15,10 @@ import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../components/DoubleCurrencyLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { Option } from '../../components/Option'
+import { PageMetaData } from '../../components/PageMetaData'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
@@ -498,6 +499,7 @@ export default function RemoveLiquidity() {
 
   return (
     <>
+      <PageMetaData title="Liquidity | Swapr" />
       <AppBody>
         <AddRemoveTabs creating={false} adding={false} />
         <Wrapper>
