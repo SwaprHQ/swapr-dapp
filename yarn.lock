@@ -1564,12 +1564,12 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@connext/nxtp-contracts@0.1.40":
-  version "0.1.40"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-contracts/-/nxtp-contracts-0.1.40.tgz#f12b700d3c39698bc62541d030f3e7d2bc42995d"
-  integrity sha512-CWr9OSI0sdgs0Q2Q4VN8Z7VOhHGicry06PUgy75jtzqzfwY8poX3XqJwNaQwslKAR/GOES3L5RZATWk/MQQAqg==
+"@connext/nxtp-contracts@0.1.42":
+  version "0.1.42"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-contracts/-/nxtp-contracts-0.1.42.tgz#7b42897e377cf0e1a32c66e180392a11063f3b09"
+  integrity sha512-BJKHlAoisPh5i/els3jtCXSZQAL2p+KCuoyu0pDHwRpxGooD264r1RlCwN17eJLJp2VJ1fumSmg8MPVQNl4lMg==
   dependencies:
-    "@connext/nxtp-utils" "0.1.40"
+    "@connext/nxtp-utils" "0.1.42"
     "@typescript-eslint/eslint-plugin" "^4.29.2"
     adv "^0.1.5"
     ajv "^8.6.2"
@@ -1579,14 +1579,14 @@
     hardhat-gas-reporter "^1.0.4"
     typechain "^5.1.2"
 
-"@connext/nxtp-sdk@^0.1.36":
-  version "0.1.40"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-sdk/-/nxtp-sdk-0.1.40.tgz#990026a896f5adf171be483ae0668a7abbbf9d80"
-  integrity sha512-KK1H4Z2KZMgOK91HHxnIdJE5q5sineTFtgLTudfP/yK7HZTB2GL0t23iqlWxMIc3phopht08l9dFfRF+jD3TUQ==
+"@connext/nxtp-sdk@^0.1.42":
+  version "0.1.42"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-sdk/-/nxtp-sdk-0.1.42.tgz#20410aa0e737b7c1d2b2f36fc3be4bbf1a2441e7"
+  integrity sha512-8N/wd8lh5SrV4HLmnHtztmVc94WrwK8Sgf9Q+lcOwr4WQ+SgXwl2O8UQ91NcRgRLUW25Oh3UyPt6318gTSdF2w==
   dependencies:
-    "@connext/nxtp-contracts" "0.1.40"
-    "@connext/nxtp-txservice" "0.1.40"
-    "@connext/nxtp-utils" "0.1.40"
+    "@connext/nxtp-contracts" "0.1.42"
+    "@connext/nxtp-txservice" "0.1.42"
+    "@connext/nxtp-utils" "0.1.42"
     "@sinclair/typebox" "^0.18.1"
     ajv "^8.6.2"
     ajv-formats "^2.1.1"
@@ -1597,13 +1597,13 @@
     graphql-tag "^2.12.5"
     pino "^6.13.0"
 
-"@connext/nxtp-txservice@0.1.40":
-  version "0.1.40"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-txservice/-/nxtp-txservice-0.1.40.tgz#1a10ca57253b9596d56d637ec5450b536b34ee55"
-  integrity sha512-kjy6nS6wYgb9a79NGJvgOeX6EOivHlOw/84BaDzqi7tP/2P+EmbVJosRJubsZrGo4VyNv8VPWuqK7xp0n0f54Q==
+"@connext/nxtp-txservice@0.1.42":
+  version "0.1.42"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-txservice/-/nxtp-txservice-0.1.42.tgz#2c2bb3514422862ac306e80475e0f480cb2b0a6c"
+  integrity sha512-GWILIjSL9zwyBMQS8162ffxYduQ6Ffg6ZQR+XqtGN+6X1eb1VjYdurOSPmgIzitda0xCrwb1aYRkbpNm6PjqXw==
   dependencies:
-    "@connext/nxtp-contracts" "0.1.40"
-    "@connext/nxtp-utils" "0.1.40"
+    "@connext/nxtp-contracts" "0.1.42"
+    "@connext/nxtp-utils" "0.1.42"
     "@sinclair/typebox" "^0.18.1"
     "@typescript-eslint/eslint-plugin" "^4.29.2"
     ajv "^8.6.2"
@@ -1616,10 +1616,10 @@
     p-queue "6.6.2"
     pino "^6.13.0"
 
-"@connext/nxtp-utils@0.1.40":
-  version "0.1.40"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-utils/-/nxtp-utils-0.1.40.tgz#672fb92af31133692e4640b8bc6f9af541382449"
-  integrity sha512-mchvkNgYOxu36FELaG1fbhiPRpO0MhjZ0pow741lybKRoMKI11fXAW8iaRQ/dyU2Y97aKiRHjahj5s+TYOWFPg==
+"@connext/nxtp-utils@0.1.42":
+  version "0.1.42"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-utils/-/nxtp-utils-0.1.42.tgz#142df8ad4b97394ad49521c0607f25954dd89f45"
+  integrity sha512-s82BBY/mVG5pnLraUsMB+wC2TPCJVWEt7UYJE+UlvSNsg8qAdw8+p5bbenztJJl1Hua7oLh1nmYfQMEpXHrv4Q==
   dependencies:
     "@sinclair/typebox" "^0.18.1"
     "@typescript-eslint/eslint-plugin" "^4.29.2"
@@ -2560,7 +2560,7 @@
     "@graphql-codegen/visitor-plugin-common" "^2.12.1"
     tslib "~2.4.0"
 
-"@graphql-codegen/plugin-helpers@^2.5.0", "@graphql-codegen/plugin-helpers@^2.6.0", "@graphql-codegen/plugin-helpers@^2.6.2":
+"@graphql-codegen/plugin-helpers@^2.6.0", "@graphql-codegen/plugin-helpers@^2.6.2":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-2.7.0.tgz#54ba1d5fb3ddad8a3634bc2e09b023eb183e574c"
   integrity sha512-+a2VP/4Ob0fwP8YLrQ/hhYlAA9UZUdDFNqwS543DmyiGFUkNIsa7TnTsE/mBDKJSMsCVWLw78949fCpzjyw/9Q==
