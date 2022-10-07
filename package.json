@@ -91,7 +91,7 @@
     "react-loading-skeleton": "3.1.0",
     "react-popper": "^2.2.5",
     "react-redux": "^8.0.2",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.4.1",
     "react-toastify": "9.0.7",
     "react-use": "^17.4.0",
     "react-virtualized-auto-sizer": "^1.0.6",
@@ -106,7 +106,7 @@
   "devDependencies": {
     "@connext/nxtp-sdk": "^0.1.36",
     "@graphql-codegen/cli": "2.11.3",
-    "@graphql-codegen/introspection": "2.2.0",
+    "@graphql-codegen/introspection": "2.2.1",
     "@graphql-codegen/typescript": "2.7.2",
     "@graphql-codegen/typescript-operations": "^2.5.2",
     "@graphql-codegen/typescript-react-apollo": "^3.3.2",
@@ -183,7 +183,7 @@
     "svg-react-loader": "^0.4.6",
     "svg-url-loader": "^7.1.1",
     "tls": "^0.0.1",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.4",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "yargs": "^17.5.1"

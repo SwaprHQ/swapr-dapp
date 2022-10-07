@@ -40,3 +40,5 @@ mochawesome-report
 
 **/generated/**/*
 !src/analytics/generated/**/*
+
+storybook-static
