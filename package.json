@@ -72,7 +72,7 @@
     "luxon": "^3.0.1",
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
-    "multiformats": "^9.7.1",
+    "multiformats": "^9.9.0",
     "multihashes": "^4.0.3",
     "node-vibrant": "^3.2.1-alpha.1",
     "numeral": "^2.0.6",
