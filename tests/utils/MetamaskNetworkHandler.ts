@@ -21,6 +21,16 @@ export class MetamaskNetworkHandler {
       isTestnet: true,
     })
   }
+  static addArbitrumOne() {
+    cy.addMetamaskNetwork({
+      networkName: 'arbitrum one',
+      rpcUrl: 'https://arb1.arbitrum.io/rpc',
+      chainId: '42161',
+      symbol: 'ETH',
+      blockExplorer: 'https://arbiscan.io/',
+      isTestnet: true,
+    })
+  }
   static switchToNetworkIfNotConnected(desiredNetwork: string = 'rinkeby') {
     cy.changeMetamaskNetwork(desiredNetwork)
   }
