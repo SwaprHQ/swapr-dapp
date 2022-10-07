@@ -68,7 +68,7 @@
     "graphql-request": "^4.3.0",
     "i18next": "^21.8.16",
     "i18next-browser-languagedetector": "^6.1.4",
-    "i18next-http-backend": "^1.4.1",
+    "i18next-http-backend": "^1.4.4",
     "luxon": "^3.0.1",
     "merkletreejs": "^0.2.32",
     "multicodec": "^3.2.1",
