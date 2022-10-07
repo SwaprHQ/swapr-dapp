@@ -9,7 +9,7 @@ import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../components/DoubleCurrencyLogo'
 import List from '../../../components/LiquidityMiningCampaigns/List'
 import { PageMetaData } from '../../../components/PageMetaData'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'

@@ -45,7 +45,7 @@ const CoveredLogo = styled(CurrencyLogo)`
   left: 0 !important;
 `
 
-export default function DoubleCurrencyLogo({
+export function DoubleCurrencyLogo({
   currency0,
   currency1,
   loading,

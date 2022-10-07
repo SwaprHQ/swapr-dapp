@@ -3,7 +3,7 @@ import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
 import { DarkCard } from '../../../Card'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../DoubleCurrencyLogo'
 
 export function LoadingCard() {
   return (
