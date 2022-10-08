@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { useRouter } from '../../../hooks/useRouter'
@@ -7,11 +8,13 @@ import { Settings } from '../../Settings'
 
 export function PoolLiquidityHeader({ adding, creating }: { adding: boolean; creating: boolean }) {
   const { navigate } = useRouter()
+  const { t } = useTranslation('pool')
+
   return (
     <Tabs>
       <RowBetween mb="16px">
         <StyledArrowLeft onClick={() => navigate(-1)} />
-        <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>
+        <ActiveText>{creating ? t('createApair') : adding ? t('addLiquidity') : t('removeLiquidity')}</ActiveText>
         <Settings simple={true} />
       </RowBetween>
     </Tabs>
