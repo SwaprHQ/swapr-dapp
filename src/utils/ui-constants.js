@@ -244,7 +244,7 @@ export const FeaturesContent = {
     },
     {
       title: 'BRIDGE',
-      content: 'Bridge directly to or from any chain where Swapr is deployed.',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
       image: Bridge,
       animation: animations['06_Bridge'],
       buttons: [

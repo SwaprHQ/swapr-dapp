@@ -13,7 +13,7 @@ import { usePairAdder, usePairRemover } from '../../../state/user/hooks'
 import { isPairOnList } from '../../../utils'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
 import { Badge } from '../../Badge'
-import DoubleCurrencyLogo from '../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../DoubleCurrencyLogo'
 import { TokenPickerItem } from '../shared'
 
 interface PairRowProps {
