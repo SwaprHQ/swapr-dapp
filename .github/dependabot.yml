@@ -12,11 +12,13 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    versioning-strategy: increase-if-necessary
-    open-pull-requests-limit: 10
+    versioning-strategy: increase
     labels:
       - 'npm dependencies'
     reviewers:
       - 'niemam29'
       - 'MilanVojnovic95'
       - 'wixzi'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
