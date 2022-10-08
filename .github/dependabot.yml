@@ -1,4 +1,4 @@
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# https://docs.github.com/en/code-security/dependabot
 
 version: 2
 updates:
@@ -11,12 +11,11 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'monthly'
-    versioning-strategy: increase
-    open-pull-requests-limit: 50
+      interval: 'weekly'
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
     labels:
-      - 'npm'
-      - 'dependencies'
+      - 'npm dependencies'
     reviewers:
       - 'niemam29'
       - 'MilanVojnovic95'
