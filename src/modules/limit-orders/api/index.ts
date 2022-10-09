@@ -171,3 +171,8 @@ export function getVaultRelayerAddress(chainId: ChainId) {
 
   return GPv2VaultRelayer[chainId]?.address
 }
+
+export async function getOwnerOrders(chainId: ChainId, owner: string) {
+  const cowSdk = CoWTrade.getCowSdk(chainId)
+  return cowSdk.cowApi.getOrders({ owner })
+}
