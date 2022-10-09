@@ -39,7 +39,7 @@ const getExplorerPrefix = (chainId: ChainId) => {
     case ChainId.ARBITRUM_RINKEBY:
       return 'https://testnet.arbiscan.io'
     case ChainId.XDAI:
-      return 'https://blockscout.com/xdai/mainnet'
+      return 'https://gnosisscan.io'
     case ChainId.POLYGON:
       return 'https://polygonscan.com'
     case ChainId.OPTIMISM_MAINNET:

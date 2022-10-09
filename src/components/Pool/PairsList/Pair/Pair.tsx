@@ -12,7 +12,7 @@ import { formatCurrencyAmount } from '../../../../utils'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import CarrotBadge from '../../../Badge/Carrot'
 import { CurrencyLogo } from '../../../CurrencyLogo'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../DoubleCurrencyLogo'
 import { ValueWithLabel } from '../../PairView/ValueWithLabel'
 
 export interface PairProps {
