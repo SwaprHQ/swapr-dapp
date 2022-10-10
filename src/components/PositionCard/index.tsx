@@ -19,7 +19,7 @@ import { ButtonDark, ButtonGrey } from '../Button'
 import Card, { GreyCard, OutlineCard } from '../Card'
 import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
+import { DoubleCurrencyLogo } from '../DoubleCurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 
 export const FixedHeightRow = styled(RowBetween)`
