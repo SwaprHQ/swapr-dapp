@@ -19,6 +19,7 @@ export const Status = styled(Flex)<{ status: string }>`
       case TransactionStatus.COMPLETED:
       case TransactionStatus.CONFIRMED:
       case TransactionStatus.CLAIMED:
+      case TransactionStatus.FULFILLED:
         return `
         border-color: #0e9f6e;
         color: #0e9f6e;`
@@ -30,6 +31,7 @@ export const Status = styled(Flex)<{ status: string }>`
         color: #F2994A;`
       case TransactionStatus.CANCELLED:
       case TransactionStatus.FAILED:
+      case TransactionStatus.EXPIRED:
         return `
         border-color: #F02E51;
         color: #F02E51;`
@@ -91,6 +93,7 @@ export const GridCard = styled(Flex)<{ status?: string }>`
       case TransactionStatus.COMPLETED:
       case TransactionStatus.CONFIRMED:
       case TransactionStatus.CLAIMED:
+      case TransactionStatus.FULFILLED:
         return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 7%, rgba(15, 152, 106, 0) 66%)'
       case TransactionStatus.REDEEM:
       case TransactionStatus.PENDING:
@@ -98,6 +101,7 @@ export const GridCard = styled(Flex)<{ status?: string }>`
         return 'linear-gradient(256.45deg, rgba(242, 153, 74, 0.2) 9%, rgba(242, 153, 74, 0) 56%)'
       case TransactionStatus.CANCELLED:
       case TransactionStatus.FAILED:
+      case TransactionStatus.EXPIRED:
         return 'linear-gradient(256.45deg, rgba(240, 46, 81, 0.2) 2%, rgba(240, 46, 81, 0) 62%)'
       default:
         return 'inherit'

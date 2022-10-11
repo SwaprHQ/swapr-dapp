@@ -15,6 +15,7 @@ import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
+import { useLimitOrderTransactions } from '../../modules/limit-orders/utils/hooks'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -34,9 +35,9 @@ import {
   StyledLink,
 } from './Account.styles'
 import { type Transaction } from './Account.types'
-import { formattedTransactions as formatTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
+import { formattedTransactions as formatTransactions } from './utils/accountUtils'
 
 export function Account() {
   const { t } = useTranslation('account')
@@ -57,6 +58,7 @@ export function Account() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
   const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
+  const allLimitOrderTransactions = useLimitOrderTransactions(chainId, account)
 
   // Pagination
   const [page, setPage] = useState(1)
@@ -71,9 +73,17 @@ export function Account() {
   useEffect(() => {
     // format and merge transactions
     if (account) {
-      setTransactions(formatTransactions(allTransactions, allBridgeTransactions, showPendingTransactions, account))
+      setTransactions(
+        formatTransactions(
+          allTransactions,
+          allBridgeTransactions,
+          allLimitOrderTransactions,
+          showPendingTransactions,
+          account
+        )
+      )
     }
-  }, [allTransactions, allBridgeTransactions, showPendingTransactions, account])
+  }, [allTransactions, allBridgeTransactions, showPendingTransactions, account, allLimitOrderTransactions])
 
   const handlePendingToggle = () => {
     setPage(1)

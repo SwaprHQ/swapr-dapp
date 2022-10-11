@@ -2,11 +2,16 @@ import { type ChainId } from '@swapr/sdk'
 
 import { type BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
+import { TransactionDetails } from '../../state/transactions/reducer'
+import { LimitOrderTransaction } from './../../modules/limit-orders/utils/hooks'
 
 export enum TransactionTypes {
   Swap = 'Swap',
   Bridge = 'Bridge',
+  Limit = 'Limit Order',
 }
+
+export type AllSwapTransactions = { [txHash: string]: TransactionDetails }
 
 export enum TransactionStatus {
   COMPLETED = 'COMPLETED',
@@ -17,6 +22,8 @@ export enum TransactionStatus {
   FAILED = 'FAILED',
   CANCELLED = 'CANCELLED',
   LOADING = 'LOADING',
+  FULFILLED = 'FULFILLED',
+  EXPIRED = 'EXPIRED',
 }
 
 interface Token {
@@ -48,4 +55,4 @@ export interface BridgeTransaction
   logs: BridgeTransactionLog[]
 }
 
-export type Transaction = SwapTransaction | BridgeTransaction
+export type Transaction = SwapTransaction | BridgeTransaction | LimitOrderTransaction

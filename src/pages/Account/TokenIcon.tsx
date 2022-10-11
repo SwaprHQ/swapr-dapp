@@ -6,12 +6,12 @@ import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/CurrencyLogo/CurrencyLogo.utils'
 import { ZERO_ADDRESS } from '../../constants'
-import { useListsByToken } from '../../state/lists/hooks'
+import { useListsByAddress, useListsByToken } from '../../state/lists/hooks'
 import { StyledLogo } from './Account.styles'
-import { getNetworkDefaultTokenUrl } from './accountUtils'
+import { getNetworkDefaultTokenUrl } from './utils/accountUtils'
 
 interface TokenIconProps {
-  symbol: string
+  symbol?: string
   address?: string
   chainId?: ChainId
   width?: number
@@ -19,8 +19,13 @@ interface TokenIconProps {
   marginRight?: number
 }
 export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, marginRight = 6 }: TokenIconProps) {
-  const allTokens = useListsByToken()
-  const token = allTokens.get(symbol)
+  const allTokensBySymbol = useListsByToken()
+  const allTokensByAddress = useListsByAddress()
+  let token = symbol ? allTokensBySymbol.get(symbol) : undefined
+  if (!token && address && chainId) {
+    token = allTokensByAddress.get(chainId)?.get(address) ?? allTokensByAddress.get(1)?.get(address)
+  }
+
   let sources: string[] = []
 
   if (address === ZERO_ADDRESS) {
@@ -38,10 +43,11 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
   if (address) {
     sources.push(getTokenLogoURL(address, chainId))
   }
-
-  const urlSource = getNetworkDefaultTokenUrl(symbol, token?.logoURI)
-  if (urlSource) {
-    sources.push(urlSource)
+  if (token?.symbol) {
+    const urlSource = getNetworkDefaultTokenUrl(token.symbol, token?.logoURI)
+    if (urlSource) {
+      sources.push(urlSource)
+    }
   }
   if (token) {
     sources.push(getTokenLogoURL(token.address))
