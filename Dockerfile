@@ -8,5 +8,7 @@ COPY package.json ./
 COPY yarn.lock ./
 
 FROM base as test
+RUN apt -y update
+RUN apt -y upgrade
 RUN yarn --frozen-lockfile --prefer-offline --no-audit
 COPY . .
