@@ -18,6 +18,8 @@ services:
       - ./docker/videos:/app/public-report/screenshots
       - ./docker/screenshots:/app/public-report/videos
     command: >
+      sudo apt update
+      sudo apt upgrade
       yarn synpress:ct
     networks:
       - x11
