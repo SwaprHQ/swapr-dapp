@@ -146,6 +146,7 @@ export const OrderButton = styled.button<{ isActive?: boolean }>`
 
 export const AdvancedModeHeader = styled.div`
   margin-top: 10px;
+  position: relative;
 `
 
 export const AdvancedModeTitle = styled.div`
@@ -181,7 +182,9 @@ export const SwitcherWrapper = styled.div`
   display: flex;
   align-items: center;
   border-radius: 20px;
-  position: relative;
+  position: absolute;
+  right: 0;
+  top: -5px;
 `
 export const SwitchButton = styled.button<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text5)};
@@ -191,7 +194,7 @@ export const SwitchButton = styled.button<{ active: boolean }>`
   transition: background 0.3s ease;
   cursor: pointer;
   text-align: center;
-  width: 50px;
+  width: 60px;
   height: 25px;
   border: none;
 `
@@ -204,5 +207,20 @@ export const NoDataMessage = styled.p`
 
   & > span {
     font-weight: 700;
+  }
+`
+export const OrderHistoryHeader = styled.div`
+  display: flex;
+  margin-top: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+
+  & > div {
+    flex: 1;
+    color: ${({ theme }) => theme.purple3};
+  }
+
+  & > div:last-child {
+    text-align: right;
   }
 `
