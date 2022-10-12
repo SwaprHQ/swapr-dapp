@@ -51,5 +51,10 @@
   "advancedTradingView.Low24": "24H Low",
   "advancedTradingView.Volume24": "24H Volume",
   "advancedTradingView.addLiquidity": "Add Liquidity",
-  "advancedTradingView.infiniteScroll.noData": "There is no data for this <0>pair</0>"
+  "advancedTradingView.infiniteScroll.noData": "There is no data for this <0>pair</0>",
+  "advancedTradingView.orderHistory.from": "from",
+  "advancedTradingView.orderHistory.to": "To",
+  "advancedTradingView.orderHistory.amount": "Amount",
+  "advancedTradingView.orderHistory.date": "Date",
+  "advancedTradingView.orderHistory.status": "Status"
 }
