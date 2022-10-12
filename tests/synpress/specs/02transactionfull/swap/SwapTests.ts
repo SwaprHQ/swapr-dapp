@@ -8,7 +8,7 @@ import { TransactionSettings } from '../../../../pages/TransactionSettings'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 import { ErrorModal } from '../../../../pages/ErrorModal'
 
-describe('Swapping tests', () => {
+describe.skip('Swapping tests', () => {
   const TRANSACTION_VALUE: number = 0.00000001
   let estimatedTransactionOutput: number
   let ethBalanceBefore: number
