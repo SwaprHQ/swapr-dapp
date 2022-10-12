@@ -158,8 +158,12 @@ export const selectAllDataFromAdapters = createSelector(
           amountOut: formatAdapterAmount(
             normalizedValues.outputTokenAddress === normalizedValues.token0Address ? amount0 : amount1
           ),
-          priceToken0: formatAdapterAmount(amount1 / amount0),
-          priceToken1: formatAdapterAmount(amount0 / amount1),
+          priceToken0: isFinite(Number(formatAdapterAmount(amount1 / amount0)))
+            ? formatAdapterAmount(amount1 / amount0)
+            : '-',
+          priceToken1: isFinite(Number(formatAdapterAmount(amount0 / amount1)))
+            ? formatAdapterAmount(amount0 / amount1)
+            : '-',
           timestamp,
           amountUSD,
           isSell:
