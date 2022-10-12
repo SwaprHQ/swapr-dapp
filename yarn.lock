@@ -2560,7 +2560,7 @@
     "@graphql-codegen/visitor-plugin-common" "^2.12.1"
     tslib "~2.4.0"
 
-"@graphql-codegen/plugin-helpers@^2.5.0", "@graphql-codegen/plugin-helpers@^2.6.0", "@graphql-codegen/plugin-helpers@^2.6.2":
+"@graphql-codegen/plugin-helpers@^2.6.0", "@graphql-codegen/plugin-helpers@^2.6.2":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-2.7.0.tgz#54ba1d5fb3ddad8a3634bc2e09b023eb183e574c"
   integrity sha512-+a2VP/4Ob0fwP8YLrQ/hhYlAA9UZUdDFNqwS543DmyiGFUkNIsa7TnTsE/mBDKJSMsCVWLw78949fCpzjyw/9Q==
@@ -5908,7 +5908,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.167", "@types/lodash@^4.14.182":
+"@types/lodash@^4.14.167":
   version "4.14.185"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.185.tgz#c9843f5a40703a8f5edfd53358a58ae729816908"
   integrity sha512-evMDG1bC4rgQg4ku9tKpuMh5iBNEwNa3tf9zRHdP1qlv+1WUg44xat4IxCE14gIpZRGUUWAx2VhItCZc25NfMA==

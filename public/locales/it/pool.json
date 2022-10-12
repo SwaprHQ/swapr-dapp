@@ -16,7 +16,7 @@
   "userLiquidity.poolShare": "Pool share",
   "userLiquidity.lpTokens": "LP Tokens",
   "addLiquidity": "Add Liquidity",
-  "userLiquidity.removeLiquidity": "Remove Liquidity",
+  "removeLiquidity": "Remove Liquidity",
   "pairsList.pair": "Pair",
   "pairsList.campaigns": "Campaigns",
   "pairsList.farming": "Farming",
