@@ -1,11 +1,10 @@
 import { PropsWithChildren, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Flex } from 'rebass'
+import { Flex, Text } from 'rebass'
 
 import { ButtonDark } from '../../../components/Button'
 import { useAdvancedTradingView } from '../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
 import { useAllTrades } from '../../../services/AdvancedTradingView/useAllTrades.hook'
-import { TransactionRows } from '../../Account/TransactionRows'
 import {
   AdvancedModeHeader,
   AdvancedModeTitle,
@@ -14,15 +13,19 @@ import {
   ChartWrapper,
   LiquidityWrapper,
   OrderButton,
+  OrderHistoryHeader,
   OrdersWrapper,
   PairDetailsWrapper,
   SwapBox,
+  SwitchButton,
+  SwitcherWrapper,
   TradesWrapper,
   TransactionsWrapper,
 } from './AdvancedSwapMode.styles'
 import { Chart } from './Chart'
 import { ColumnHeader } from './ColumnHeader'
 import { InfiniteScroll } from './InfiniteScroll'
+import { OrderHistoryTransaction } from './OrderHistory/OrderHistoryTransaction'
 import { PairDetails } from './PairDetails'
 
 export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
@@ -39,8 +42,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
 
   const {
     chainId,
-    inputTokenSymbol,
-    outputTokenSymbol,
+    inputToken,
+    outputToken,
     symbol,
     showTrades,
     isLoadingTrades,
@@ -64,8 +67,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
         <PairDetails
           token0={token0}
           token1={token1}
-          activeCurrencyOption={activeCurrencyOption}
-          handleSwitchCurrency={handleSwitchCurrency}
+          activeCurrencyOption={inputToken}
           isLatestTradeSell={!!tradeHistory[0]?.isSell}
         />
       </PairDetailsWrapper>
@@ -74,11 +76,25 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
       </ChartWrapper>
       <TradesWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
+          <SwitcherWrapper>
+            <SwitchButton
+              onClick={() => handleSwitchCurrency(token0)}
+              active={activeCurrencyOption?.address === token0?.address}
+            >
+              {token0?.symbol?.substring(0, 6)}
+            </SwitchButton>
+            <SwitchButton
+              onClick={() => handleSwitchCurrency(token1)}
+              active={activeCurrencyOption?.address === token1?.address}
+            >
+              {token1?.symbol?.substring(0, 6)}
+            </SwitchButton>
+          </SwitcherWrapper>
           <AdvancedModeTitle>{t('advancedTradingView.column.trades')}</AdvancedModeTitle>
           <ColumnHeader
             showTrades={showTrades}
-            inputTokenSymbol={inputTokenSymbol}
-            outputTokenSymbol={outputTokenSymbol}
+            inputTokenSymbol={inputToken?.symbol ?? ''}
+            outputTokenSymbol={outputToken?.symbol ?? ''}
             activeCurrencySymbolOption={activeCurrencyOption?.symbol ?? ''}
             showPrice
           />
@@ -107,8 +123,18 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             <OrderButton isActive>{t('advancedTradingView.column.orderHistory')}</OrderButton>
             <OrderButton disabled>{t('advancedTradingView.column.openOrder')}</OrderButton>
           </Flex>
-          <TransactionsWrapper style={{ marginTop: '20px' }} maxHeight="300px">
-            <TransactionRows transactions={transactions} showBackgroundStatus={false} />
+          <TransactionsWrapper style={{ padding: '5px' }} maxHeight="300px">
+            <OrderHistoryHeader>
+              <Text>{t('advancedTradingView.orderHistory.from')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.to')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.amount')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.amount')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.date')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.status')}</Text>
+            </OrderHistoryHeader>
+            {transactions.map((tx, index) => (
+              <OrderHistoryTransaction key={index} tx={tx} />
+            ))}
           </TransactionsWrapper>
         </AdvancedModeHeader>
       </OrdersWrapper>
@@ -127,8 +153,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
           <ColumnHeader
             activeCurrencySymbolOption={activeCurrencyOption?.symbol ?? ''}
             showPrice={false}
-            inputTokenSymbol={inputTokenSymbol}
-            outputTokenSymbol={outputTokenSymbol}
+            inputTokenSymbol={inputToken?.symbol ?? ''}
+            outputTokenSymbol={outputToken?.symbol ?? ''}
             showTrades={showTrades}
           />
         </AdvancedModeHeader>

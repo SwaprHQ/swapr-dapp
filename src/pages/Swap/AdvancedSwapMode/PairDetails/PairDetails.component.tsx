@@ -8,31 +8,16 @@ import { Flex } from 'rebass'
 import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
 import { PairSearchModal } from '../../../../components/SearchModal/PairSearchModal'
 import { usePairDetails } from '../../../../services/AdvancedTradingView/usePairDetails.hook'
-import {
-  PairInfo,
-  PairSymbols,
-  PairTab,
-  PairValue,
-  PairValueChange,
-  SwitchButton,
-  SwitcherWrapper,
-} from '../AdvancedSwapMode.styles'
+import { PairInfo, PairSymbols, PairTab, PairValue, PairValueChange } from '../AdvancedSwapMode.styles'
 
 interface PairDetailsProps {
   token0?: Token
   token1?: Token
-  activeCurrencyOption?: Token
-  handleSwitchCurrency: (option: Token) => void
+  activeCurrencyOption: Token | null | undefined
   isLatestTradeSell: boolean
 }
 
-export const PairDetails = ({
-  activeCurrencyOption,
-  token0,
-  token1,
-  handleSwitchCurrency,
-  isLatestTradeSell,
-}: PairDetailsProps) => {
+export const PairDetails = ({ token0, token1, activeCurrencyOption, isLatestTradeSell }: PairDetailsProps) => {
   const { t } = useTranslation('swap')
 
   const { activeCurrencyDetails, handleOpenModal, isLoading, isPairModalOpen, onDismiss, onPairSelect, volume24hUSD } =
@@ -42,7 +27,7 @@ export const PairDetails = ({
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-between">
+      <Flex alignItems="center">
         <Flex alignItems="center">
           <DoubleCurrencyLogo size={25} currency0={token0} currency1={token1} />
           <PairSymbols>
@@ -50,7 +35,7 @@ export const PairDetails = ({
           </PairSymbols>
           <ChevronDown style={{ cursor: 'pointer' }} onClick={handleOpenModal} />
         </Flex>
-        <Flex flexBasis="80%">
+        <Flex flexBasis="80%" marginLeft="30px">
           <PairInfo>
             <PairValueChange size="16px" positive={!isLatestTradeSell}>
               {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
@@ -88,20 +73,6 @@ export const PairDetails = ({
             <PairTab>&#45;</PairTab>
           </PairInfo>
         </Flex>
-        <SwitcherWrapper>
-          <SwitchButton
-            onClick={() => handleSwitchCurrency(token0)}
-            active={activeCurrencyOption.address === token0.address}
-          >
-            {token0.symbol?.substring(0, 4)}
-          </SwitchButton>
-          <SwitchButton
-            onClick={() => handleSwitchCurrency(token1)}
-            active={activeCurrencyOption.address === token1.address}
-          >
-            {token1.symbol?.substring(0, 4)}
-          </SwitchButton>
-        </SwitcherWrapper>
       </Flex>
       <PairSearchModal isOpen={isPairModalOpen} onDismiss={onDismiss} onPairSelect={onPairSelect} />
     </>

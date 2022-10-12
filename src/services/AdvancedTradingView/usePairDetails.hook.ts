@@ -51,7 +51,7 @@ const calculatePrices = (relativePrice: number, token0Price24h: number, token1Pr
   return { priceChange24hWithSymbol, percentPriceChange24h, isIncome }
 }
 
-export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOption?: Token) => {
+export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOption?: Token | null) => {
   const [pairAddress, setPairAddress] = useState('')
   const dispatch = useDispatch()
 
