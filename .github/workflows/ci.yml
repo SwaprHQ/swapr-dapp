@@ -354,7 +354,6 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: [install, prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
     if: ${{ needs.prepare.outputs.cypress }}
@@ -368,10 +367,17 @@ jobs:
         with:
           fetch-depth: '50'
 
-      - name: Setup Node
+      - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+          check-latest: true
+          cache: 'yarn'
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
