@@ -376,6 +376,11 @@ jobs:
         with:
           fetch-depth: '50'
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
