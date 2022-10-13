@@ -363,14 +363,6 @@ jobs:
       matrix:
         containers: [Container01, Container02, Container03, Container04]
     steps:
-      - name: 📥 ・Download workspace artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace
-
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
-
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
         with:
@@ -380,6 +372,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Generate open-api
+        run: yarn codegen:socket
+
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
