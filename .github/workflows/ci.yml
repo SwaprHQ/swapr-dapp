@@ -372,7 +372,7 @@ jobs:
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
       - name: Verify Cypress
-        run: yarn cypress install && yarn cypress verify
+        run: yarn install
 
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
