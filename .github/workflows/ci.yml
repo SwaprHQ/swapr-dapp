@@ -354,6 +354,7 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
+    needs: [prepare]
     runs-on: ubuntu-20.04
     container: swapr/cypress:zstd
     if: ${{ needs.prepare.outputs.cypress }}
