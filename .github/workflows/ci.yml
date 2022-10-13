@@ -371,6 +371,9 @@ jobs:
       - name: Extract workspace artifact
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
       - name: Verify Cypress
         run: yarn cypress install
 
