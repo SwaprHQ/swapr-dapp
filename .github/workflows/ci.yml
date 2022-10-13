@@ -371,6 +371,9 @@ jobs:
       - name: Extract workspace artifact
         run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
+      - name: Verify Cypress
+        run: yarn cypress install
+
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
         run: yarn cypress:ci 'yarn cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
