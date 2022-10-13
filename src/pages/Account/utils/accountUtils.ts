@@ -14,7 +14,6 @@ export const formattedTransactions = (
 ) => {
   const swapTransactions = formatSwapTransactions(transactions, account)
   const limitTransactions = limitOrderTransactions
-  debugger
   const sortedTransactions = [...swapTransactions, ...bridgeTransactions, ...limitTransactions].sort((txn1, txn2) => {
     if (txn1?.confirmedTime && txn2?.confirmedTime && txn1.confirmedTime > txn2.confirmedTime) {
       return -1

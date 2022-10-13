@@ -27,20 +27,28 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
   const [orders, setOrders] = useState<LimitOrderTransaction[]>([])
   const listByAddress = useListsByAddress()
 
+  const appData =
+    chainId === 100
+      ? '0x6c240279a61e99270495394a46ace74065b511f8d3e6899f8ce87bbaefab21de'
+      : chainId === 1
+      ? '0x'
+      : undefined
+
   useEffect(() => {
     const getOrders = async (chainId: ChainId, account: string) => {
       const orders = await getOwnerOrders(chainId, account)
-      console.log({ orders })
+
       if (orders && orders.length > 0) {
+        const filteredOrders = orders.filter(order => order.appData.toString() === appData)
         setOrders(
-          orders.map(order => {
-            const sellToken = listByAddress.get(100)?.get(order.sellToken)
-            const buyToken = listByAddress.get(100)?.get(order.buyToken)
+          filteredOrders.map(order => {
+            const sellToken = listByAddress.get(chainId)?.get(order.sellToken)
+            const buyToken = listByAddress.get(chainId)?.get(order.buyToken)
             return {
               ...order,
               type: 'Limit Order',
               hash: order.uid,
-              network: 100,
+              network: chainId,
               sellToken: {
                 value: formatUnits(order.sellAmount, sellToken?.decimals) as unknown as number,
                 symbol: sellToken?.symbol,
@@ -58,7 +66,7 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
         )
       }
     }
-    if (account != null && chainId) {
+    if (account != null && chainId && appData) {
       getOrders(chainId, account)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
