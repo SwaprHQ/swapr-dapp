@@ -34,7 +34,7 @@ export function App({ provider, chainId, account }: LimitOrderAppProps) {
   return (
     <>
       <LimitOrderForm provider={provider} chainId={chainId} account={account} />
-      <OrderList chainId={chainId} account={account} />
+      <OrderList />
     </>
   )
 }
