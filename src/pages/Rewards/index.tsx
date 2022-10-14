@@ -11,7 +11,6 @@ import { ButtonSecondary } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { DoubleCurrencyLogo } from '../../components/DoubleCurrencyLogo'
 import { RewardsList } from '../../components/LiquidityMiningCampaigns/RewardsList'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { PageMetaData } from '../../components/PageMetaData'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { RowBetween, RowFixed } from '../../components/Row'
@@ -124,7 +123,6 @@ export default function Rewards() {
     <>
       <PageMetaData title="Rewards | Swapr" />
       <PageWrapper>
-        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
