@@ -40,7 +40,7 @@ export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
       const value = parseFloat(newExpiresIn ?? 0)
       // Don't want to set negative time
       if (value >= 0) {
-        setInputExpiresIn(value)
+        setInputExpiresIn(value < 180 ? value : 180)
       }
     }
   }
@@ -69,7 +69,8 @@ export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
               setInputExpiresIn(1)
             }
           }}
-          max={300}
+          // Currently CoW supports only 180 minutes
+          max={180}
           type="number"
           onChange={expiresInChangeHandler}
           required
@@ -82,13 +83,13 @@ export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
           >
             Min
           </ExpiryUnitButton>
-          <ExpiryUnitButton
+          {/* <ExpiryUnitButton
             role="button"
             isActive={expiresInUnit === OrderExpiresInUnit.Days}
             onClick={() => setExpiresInUnit(OrderExpiresInUnit.Days)}
           >
             Days
-          </ExpiryUnitButton>
+          </ExpiryUnitButton> */}
         </ButtonAddonsWrapper>
       </InnerWrapper>
     </InputGroup>

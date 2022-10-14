@@ -62,6 +62,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   // Local state
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
+  // Default expiry time set to 20 minutes
   const [expiresIn, setExpiresIn] = useState(20)
 
   // State holding the sell and buy currency amounts
