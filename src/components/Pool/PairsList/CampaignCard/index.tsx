@@ -13,7 +13,7 @@ import CarrotBadge from '../../../Badge/Carrot'
 import SimpleTextBadge from '../../../Badge/SimpleText'
 import Countdown from '../../../Countdown'
 import { CurrencyLogo } from '../../../CurrencyLogo'
-import DoubleCurrencyLogo from '../../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../DoubleCurrencyLogo'
 
 const SizedCard = styled(Card)<{ cardColor: string }>`
   /* width: 260px; */

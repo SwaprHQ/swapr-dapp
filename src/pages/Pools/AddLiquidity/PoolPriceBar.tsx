@@ -3,11 +3,11 @@ import { Currency, Percent, Price } from '@swapr/sdk'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { AutoColumn } from '../../components/Column'
-import { AutoRow } from '../../components/Row'
-import { ONE_BIPS } from '../../constants'
-import { Field } from '../../state/mint/actions'
-import { TYPE } from '../../theme'
+import { AutoColumn } from '../../../components/Column'
+import { AutoRow } from '../../../components/Row'
+import { ONE_BIPS } from '../../../constants'
+import { Field } from '../../../state/mint/actions'
+import { TYPE } from '../../../theme'
 
 export function PoolPriceBar({
   currencies,

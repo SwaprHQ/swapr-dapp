@@ -7,7 +7,7 @@ export class MetamaskNetworkHandler {
       rpcUrl: 'https://rpc.gnosischain.com/',
       chainId: '100',
       symbol: 'xDai',
-      blockExplorer: 'https://blockscout.com/xdai/mainnet',
+      blockExplorer: 'https://gnosisscan.io',
       isTestnet: true,
     })
   }
@@ -18,6 +18,16 @@ export class MetamaskNetworkHandler {
       chainId: '421611',
       symbol: 'ETH',
       blockExplorer: 'https://rinkeby-explorer.arbitrum.io/#/',
+      isTestnet: true,
+    })
+  }
+  static addArbitrumOne() {
+    cy.addMetamaskNetwork({
+      networkName: 'arbitrum one',
+      rpcUrl: 'https://arb1.arbitrum.io/rpc',
+      chainId: '42161',
+      symbol: 'ETH',
+      blockExplorer: 'https://arbiscan.io/',
       isTestnet: true,
     })
   }
