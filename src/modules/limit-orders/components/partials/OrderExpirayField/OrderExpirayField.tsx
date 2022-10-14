@@ -10,11 +10,7 @@ export const ExpiryUnitButton = styled.span<{
 }>`
   color: #464366;
   cursor: pointer;
-  ${props =>
-    props.isActive &&
-    `
-    color: #8780BF;
-  `};
+  ${({ isActive }) => isActive && `color: #8780BF;`};
 `
 
 const invalidChars = ['-', '+', 'e']
@@ -33,13 +29,16 @@ export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
 
   const expiresInChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
     const newExpiresIn = event.target.value
+
     // Update local state
     if (newExpiresIn === '') {
       setInputExpiresIn(newExpiresIn)
     } else {
       const value = parseFloat(newExpiresIn ?? 0)
-      // Don't want to set negative time
+      //Don't want to set negative time
       if (value >= 0) {
+        // Max time can be set to 180 minutes only
+        // Update this once CoW supports future time
         setInputExpiresIn(value < 180 ? value : 180)
       }
     }

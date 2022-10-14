@@ -115,19 +115,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     buyTokenAmount?.currency,
   ])
 
-  const swapTokens = useCallback(() => {
-    setSellTokenAmount(buyTokenAmount)
-    setBuyTokenAmount(sellTokenAmount)
-    if (buyTokenAmount.currency.address && sellTokenAmount.currency.address) {
-      setLimitOrder({
-        ...limitOrder,
-        sellToken: buyTokenAmount.currency.address,
-        buyToken: sellTokenAmount.currency.address,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buyTokenAmount, sellTokenAmount])
-
   // Fetch the maximum amount of tokens that can be bought or sold
   const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
   const buyCurrencyMaxAmount = maxAmountSpend(buyCurrencyBalance, chainId, false)
@@ -144,6 +131,23 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     inputCurrencyAmount: sellTokenAmount,
     outputCurrencyAmount: buyTokenAmount,
   })
+
+  const swapTokens = useCallback(() => {
+    setSellTokenAmount(buyTokenAmount)
+    setBuyTokenAmount(sellTokenAmount)
+    setFormattedSellAmount(formattedBuyAmount)
+    setFormattedBuyAmount(formattedSellAmount)
+    if (buyTokenAmount.currency.address && sellTokenAmount.currency.address) {
+      setLimitOrder(limitOrder => ({
+        ...limitOrder,
+        sellAmount: limitOrder.buyAmount,
+        buyAmount: limitOrder.sellAmount,
+        sellToken: buyTokenAmount.currency.address!,
+        buyToken: sellTokenAmount.currency.address!,
+      }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buyTokenAmount, sellTokenAmount])
 
   // Determine if the token has to be approved first
   const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
