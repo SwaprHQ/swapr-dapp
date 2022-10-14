@@ -6,8 +6,7 @@ import styled from 'styled-components'
 
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyLogo } from '../../../components/CurrencyLogo'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
-import { SwapPoolTabs } from '../../../components/NavigationTabs'
+import { DoubleCurrencyLogo } from '../../../components/DoubleCurrencyLogo'
 import { PageMetaData } from '../../../components/PageMetaData'
 import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMiningCampaignView'
 import { RowBetween, RowFixed } from '../../../components/Row'
@@ -85,7 +84,6 @@ export default function LiquidityMiningCampaign() {
     <>
       <PageMetaData title="Rewards | Swapr" />
       <PageWrapper>
-        <SwapPoolTabs active="pool" />
         <AutoColumn gap="lg" justify="center">
           <AutoColumn gap="lg" style={{ width: '100%' }}>
             <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>

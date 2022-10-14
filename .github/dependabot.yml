@@ -1,4 +1,4 @@
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# https://docs.github.com/en/code-security/dependabot
 
 version: 2
 updates:
@@ -11,13 +11,14 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'monthly'
+      interval: 'weekly'
     versioning-strategy: increase
-    open-pull-requests-limit: 50
     labels:
-      - 'npm'
-      - 'dependencies'
+      - 'npm dependencies'
     reviewers:
       - 'niemam29'
       - 'MilanVojnovic95'
       - 'wixzi'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
