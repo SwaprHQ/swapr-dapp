@@ -22,7 +22,7 @@ import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
 import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
-import { debug, getInitialState } from '../../utils'
+import { getInitialState } from '../../utils'
 import { OrderExpirayField } from '../partials/OrderExpirayField'
 import { OrderLimitPriceField } from '../partials/OrderLimitPriceField'
 import { ApprovalFlow } from './ApprovalFlow'
@@ -223,11 +223,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       nextBuyAmountFloat = nextSellAmountFloat / limitPriceFloat
     }
 
-    debug({
-      nextBuyAmountFloat,
-      // newBuyAmountFormattedNumber,
-    })
-
     // Format the buy amount
     // Update buy amount state variables
     setBuyTokenAmount(
@@ -288,10 +283,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       // divide the buy amount by the new price
       newLimitOrder.limitPrice = JSBI.multiply(newBuyTokenAmount.raw, buyTokenAmount.raw).toString()
     }
-
-    debug({
-      nextLimitPriceFloat,
-    })
 
     // Update state
     setFormattedBuyAmount(nextBuyAmountFormatted) // update the token amount input

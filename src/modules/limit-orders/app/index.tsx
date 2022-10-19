@@ -2,7 +2,6 @@ import type { Web3Provider } from '@ethersproject/providers'
 import type { ChainId } from '@swapr/sdk'
 
 import { LimitOrderForm } from '../components/Form'
-import { OrderList } from '../components/OrderList'
 import { supportedChainIdList } from '../constants'
 
 export interface LimitOrderAppProps {
@@ -31,10 +30,5 @@ export function App({ provider, chainId, account }: LimitOrderAppProps) {
     throw new Error('Limit Orders module requires an EVM account')
   }
 
-  return (
-    <>
-      <LimitOrderForm provider={provider} chainId={chainId} account={account} />
-      <OrderList />
-    </>
-  )
+  return <LimitOrderForm provider={provider} chainId={chainId} account={account} />
 }

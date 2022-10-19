@@ -19,8 +19,8 @@ export const formattedTransactions = (
       return -1
     }
     if (
-      txn1?.status.toUpperCase() === TransactionStatus.PENDING &&
-      txn2?.status.toUpperCase() !== TransactionStatus.PENDING
+      txn1?.status.toUpperCase() === (TransactionStatus.PENDING || TransactionStatus.OPEN) &&
+      txn2?.status.toUpperCase() !== (TransactionStatus.PENDING || TransactionStatus.OPEN)
     ) {
       return -1
     }
@@ -30,7 +30,9 @@ export const formattedTransactions = (
   if (showPendingTransactions) {
     return sortedTransactions.filter(
       txn =>
-        txn.status.toUpperCase() === TransactionStatus.PENDING || txn.status.toUpperCase() === TransactionStatus.REDEEM
+        txn.status.toUpperCase() === TransactionStatus.PENDING ||
+        txn.status.toUpperCase() === TransactionStatus.REDEEM ||
+        txn.status.toUpperCase() === TransactionStatus.OPEN
     )
   }
 

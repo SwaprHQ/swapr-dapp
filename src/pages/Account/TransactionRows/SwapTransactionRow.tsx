@@ -103,6 +103,7 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
           '- -'
         )}
       </TransactionDetails>
+      <Box width="20px"></Box>
     </GridCard>
   )
 }

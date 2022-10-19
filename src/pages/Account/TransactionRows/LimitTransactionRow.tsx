@@ -1,7 +1,13 @@
 import { DateTime } from 'luxon'
+import { useCallback } from 'react'
+import { XCircle } from 'react-feather'
 import { Box, Flex } from 'rebass'
+import styled from 'styled-components'
 
+import { MouseoverTooltip } from '../../../components/Tooltip'
+import { useActiveWeb3React } from '../../../hooks'
 import { LimitOrderTransaction } from '../../../modules/limit-orders/utils/hooks'
+import { useNotificationPopup } from '../../../state/application/hooks'
 import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
@@ -17,15 +23,33 @@ import {
 } from '../Account.styles'
 import { TokenIcon } from '../TokenIcon'
 
+export const CancelIcon = styled(XCircle)`
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  color: #ff7e7e;
+`
+
 interface LimitTransactionRowProps {
   transaction: LimitOrderTransaction
 }
 
 export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
-  const { type, status, uid, network, sellToken, buyToken, confirmedTime } = transaction
+  const { type, status, uid, network, sellToken, buyToken, confirmedTime, cancelOrder } = transaction
+  const { chainId, library } = useActiveWeb3React()
 
   const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
+  const notify = useNotificationPopup()
+
+  const handleDeleteOpenOrders = useCallback(async () => {
+    if (chainId && library) {
+      const response = await cancelOrder?.(uid, library)
+      if (response) {
+        notify('Open order deleted successfully.')
+      }
+    }
+  }, [cancelOrder, chainId, library, notify, uid])
 
   return (
     <GridCard status={status.toUpperCase()}>
@@ -96,6 +120,13 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
           '- -'
         )}
       </TransactionDetails>
+      <Box width="20px">
+        {status === 'open' && (
+          <MouseoverTooltip content="Cancel open order">
+            <CancelIcon onClick={handleDeleteOpenOrders} aria-label="Cancel Open Order" />
+          </MouseoverTooltip>
+        )}
+      </Box>
     </GridCard>
   )
 }

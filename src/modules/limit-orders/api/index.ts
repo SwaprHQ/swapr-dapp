@@ -176,3 +176,29 @@ export async function getOwnerOrders(chainId: ChainId, owner: string) {
   const cowSdk = CoWTrade.getCowSdk(chainId)
   return cowSdk.cowApi.getOrders({ owner })
 }
+
+export async function deleteOpenOrders(chainId: ChainId, uid: string, signer: Signer) {
+  const cowSdk = CoWTrade.getCowSdk(chainId, { signer })
+  const { signature } = await cowSdk.signOrderCancellation(uid)
+
+  // @ts-ignore POLYGON is not supported now by CoW SDK
+  const url = `${cowSdk.cowApi.API_BASE_URL[chainId]}/v1/orders/${uid}`
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ signature, signingScheme: 'eip712' }),
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      // get error message from body or default to response status
+      const error = (data && data.message) || response.status
+      return Promise.reject(error)
+    }
+    return data
+  } catch (error) {
+    console.error('There was an error!', error)
+  }
+}

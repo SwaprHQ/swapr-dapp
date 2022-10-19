@@ -24,6 +24,7 @@ export enum TransactionStatus {
   LOADING = 'LOADING',
   FULFILLED = 'FULFILLED',
   EXPIRED = 'EXPIRED',
+  OPEN = 'OPEN',
 }
 
 interface Token {

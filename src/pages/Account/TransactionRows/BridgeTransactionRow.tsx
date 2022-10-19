@@ -100,6 +100,7 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
           '- -'
         )}
       </TransactionDetails>
+      <Box width="20px"></Box>
     </GridCard>
   )
 }
