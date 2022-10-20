@@ -5330,9 +5330,10 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@git+https://git@github.com/levelkdev/swapr-sdk.git#v1.7.0-rc.1":
-  version "1.6.1"
-  resolved "git+https://git@github.com/levelkdev/swapr-sdk.git#44f3f4b7e5c88ffe70eefb12c46d175256245e2e"
+"@swapr/sdk@1.7.0-beta.0":
+  version "1.7.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.7.0-beta.0.tgz#0762c020dc715a2cd84eb2ec3b350f0ff0d5ded2"
+  integrity sha512-CYxaW3qg9Nc4Bs8/ce2BUSXSxXw6JmIfDrL3FHIcB6QmyiA6AFP+jhPM+X57+uqRCXy3OzzYG+jYdMFBdm2GAA==
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
