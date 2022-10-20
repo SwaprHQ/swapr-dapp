@@ -131,7 +131,7 @@
     "@types/jest": "^28.1.6",
     "@types/luxon": "^3.0.0",
     "@types/multicodec": "^2.1.0",
-    "@types/node": "^18.0.1",
+    "@types/node": "^18.8.0",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.15",
     "@types/react-datepicker": "^4.4.2",
