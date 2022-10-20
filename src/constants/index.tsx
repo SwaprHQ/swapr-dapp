@@ -277,8 +277,14 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
+  [ChainId.POLYGON]: [
+    WMATIC[ChainId.POLYGON],
+    WETH[ChainId.POLYGON],
+    USDC[ChainId.POLYGON],
+    WBTC[ChainId.POLYGON],
+    USDT[ChainId.POLYGON],
+  ],
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
     OP[ChainId.OPTIMISM_MAINNET],
