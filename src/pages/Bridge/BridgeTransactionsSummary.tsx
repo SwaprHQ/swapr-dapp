@@ -176,7 +176,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
       <ColumnFrom data-testid="bridged-from-chain">
         <TextFrom>
           <Link
-            href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction')}
+            href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction', tx.bridgeId)}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -191,7 +191,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
         </Filler>
         <TextTo
           status={status}
-          href={log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction')}
+          href={(log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction'), tx.bridgeId)}
           rel="noopener noreferrer"
           target="_blank"
         >
