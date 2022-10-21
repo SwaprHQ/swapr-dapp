@@ -127,8 +127,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
             <OrderHistoryHeader>
               <Text>{t('advancedTradingView.orderHistory.from')}</Text>
               <Text>{t('advancedTradingView.orderHistory.to')}</Text>
-              <Text>{t('advancedTradingView.orderHistory.amount')}</Text>
-              <Text>{t('advancedTradingView.orderHistory.amount')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.protocol')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.type')}</Text>
               <Text>{t('advancedTradingView.orderHistory.date')}</Text>
               <Text>{t('advancedTradingView.orderHistory.status')}</Text>
             </OrderHistoryHeader>

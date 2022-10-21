@@ -54,7 +54,8 @@
   "advancedTradingView.infiniteScroll.noData": "There is no data for this <0>pair</0>",
   "advancedTradingView.orderHistory.from": "from",
   "advancedTradingView.orderHistory.to": "To",
-  "advancedTradingView.orderHistory.amount": "Amount",
+  "advancedTradingView.orderHistory.type": "Type",
+  "advancedTradingView.orderHistory.protocol": "Protocol",
   "advancedTradingView.orderHistory.date": "Date",
   "advancedTradingView.orderHistory.status": "Status"
 }
