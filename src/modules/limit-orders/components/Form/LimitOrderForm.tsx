@@ -2,7 +2,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 
-// import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -23,7 +22,7 @@ import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } fr
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
-import { OrderExpirayField } from '../partials/OrderExpirayField'
+import { OrderExpiryField } from '../partials/OrderExpiryField'
 import { OrderLimitPriceField } from '../partials/OrderLimitPriceField'
 import { ApprovalFlow } from './ApprovalFlow'
 dayjs.extend(dayjsUTCPlugin)
@@ -44,7 +43,7 @@ export interface LimitOrderFormProps {
   account: string
 }
 
-interface HandleCurrenyAmountChangeParams {
+interface HandleCurrencyAmountChangeParams {
   currency: Currency
   amountWei: string
   amountFormatted: string
@@ -95,7 +94,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       console.log({ cowQuote, feeAmount })
       const updatedLimitOrder = { ...limitOrder, limitPrice: buyAmount, feeAmount }
       setLimitOrder(updatedLimitOrder)
-      handleBuyCurrenyAmountChange({
+      handleBuyCurrencyAmountChange({
         currency: buyTokenAmount.currency,
         amountWei: buyAmount,
         amountFormatted: buyTokenFormattedAmount,
@@ -190,12 +189,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   /**
    * Aggregate the sell currency amount state variables into a single value
    */
-  const handleSellCurrenyAmountChange = ({
+  const handleSellCurrencyAmountChange = ({
     amountWei,
     currency,
     amountFormatted,
     updatedLimitOrder = limitOrder,
-  }: HandleCurrenyAmountChangeParams) => {
+  }: HandleCurrencyAmountChangeParams) => {
     const limitPriceFloat = parseFloat(formattedLimitPrice)
 
     // Construct a new token amount and format it
@@ -242,12 +241,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   /**
    * Aggregate the buy currency amount state variables into a single value
    */
-  const handleBuyCurrenyAmountChange = ({
+  const handleBuyCurrencyAmountChange = ({
     amountWei,
     currency,
     amountFormatted,
     updatedLimitOrder = limitOrder,
-  }: HandleCurrenyAmountChangeParams) => {
+  }: HandleCurrencyAmountChangeParams) => {
     // Construct a new token amount and format it
 
     const newLimitOrder = {
@@ -290,10 +289,10 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setLimitOrder(newLimitOrder)
   }
 
-  const handleInputOnChange = async (formatedValue: string) => {
-    const amountFormatted = formatedValue.trim() === '' ? '0' : formatedValue
-    const amountWei = parseUnits(formatedValue, sellTokenAmount?.currency?.decimals).toString()
-    handleSellCurrenyAmountChange({
+  const handleInputOnChange = async (formattedValue: string) => {
+    const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
+    const amountWei = parseUnits(formattedValue, sellTokenAmount?.currency?.decimals).toString()
+    handleSellCurrencyAmountChange({
       currency: sellTokenAmount?.currency as Token,
       amountWei,
       amountFormatted,
@@ -368,14 +367,14 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   : formattedSellAmount
                   ? parseUnits(formattedSellAmount, prevSellTokenAmount?.currency?.decimals).toString()
                   : '0' // use 0 if no buy currency amount is set
-                handleSellCurrenyAmountChange({ currency, amountWei, amountFormatted: formattedSellAmount })
+                handleSellCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedSellAmount })
               }}
               value={formattedSellAmount}
               onUserInput={handleInputOnChange}
               onMax={() => {
                 if (!sellCurrencyMaxAmount) return
 
-                handleSellCurrenyAmountChange({
+                handleSellCurrencyAmountChange({
                   currency: sellCurrencyMaxAmount?.currency as Token,
                   amountWei: sellCurrencyMaxAmount?.raw.toString(),
                   amountFormatted: sellCurrencyMaxAmount.toSignificant(),
@@ -410,13 +409,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   : formattedBuyAmount
                   ? parseUnits(formattedBuyAmount, prevBuyTokenAmount?.currency?.decimals).toString()
                   : '0' // use 0 if no buy currency amount is set
-                handleBuyCurrenyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
+                handleBuyCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
               }}
               value={formattedBuyAmount}
-              onUserInput={formatedValue => {
-                const amountFormatted = formatedValue.trim() === '' ? '0' : formatedValue
-                const amountWei = parseUnits(formatedValue, buyTokenAmount.currency.decimals).toString()
-                handleBuyCurrenyAmountChange({
+              onUserInput={formattedValue => {
+                const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
+                const amountWei = parseUnits(formattedValue, buyTokenAmount.currency.decimals).toString()
+                handleBuyCurrencyAmountChange({
                   currency: buyTokenAmount.currency,
                   amountWei,
                   amountFormatted,
@@ -432,7 +431,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               <OrderLimitPriceField id="limitPrice" />
             </div>
             <div>
-              <OrderExpirayField id="limitOrderExpiry" />
+              <OrderExpiryField id="limitOrderExpiry" />
             </div>
           </AutoRow>
           {Currency.isNative(sellTokenAmount.currency) ? (

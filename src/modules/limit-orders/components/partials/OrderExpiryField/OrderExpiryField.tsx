@@ -19,11 +19,11 @@ export interface OnChangeParams {
   expiresIn: number
 }
 
-export interface OrderExpirayFieldProps {
+export interface OrderExpiryFieldProps {
   id?: string
 }
 
-export function OrderExpirayField({ id }: OrderExpirayFieldProps) {
+export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
   const { expiresIn, setExpiresIn, expiresInUnit, setExpiresInUnit } = useContext(LimitOrderFormContext)
   const [inputExpiresIn, setInputExpiresIn] = useState<string | number>(expiresIn)
 
