@@ -108,7 +108,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   useEffect(() => {
     setToMarket().catch(console.error)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [buyTokenAmount.currency, sellTokenAmount.currency])
 
   const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(account, [
     sellTokenAmount.currency,
