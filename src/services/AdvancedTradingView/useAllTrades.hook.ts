@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -22,36 +22,37 @@ export const useAllTrades = (): {
 
   const allSwapTransactions = useAllSwapTransactions()
 
-  const allSwapBridgeTransactions = useAllBridgeTransactions().filter(
+  const allSwapBridgeTransactions = useAllBridgeTransactions(true).filter(
     transaction => transaction.bridgeId === 'socket' && transaction.from.token !== transaction.to.token
   )
-  const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  useEffect(() => {
-    if (!account) return
+  const transactions = useMemo(() => {
+    if (account) {
+      const formattedTransactions = formatTransactions(allSwapTransactions, allSwapBridgeTransactions, false, account)
 
-    const formattedTransactions = formatTransactions(allSwapTransactions, allSwapBridgeTransactions, false, account)
+      const pendingTransactions = formattedTransactions
+        .filter(
+          tx =>
+            tx.status.toUpperCase() === TransactionStatus.PENDING ||
+            tx.status.toUpperCase() === TransactionStatus.REDEEM
+        )
+        .splice(0, 5)
 
-    const pendingTransactions = formattedTransactions
-      .filter(
-        tx =>
-          tx.status.toUpperCase() === TransactionStatus.PENDING || tx.status.toUpperCase() === TransactionStatus.REDEEM
-      )
-      .splice(0, 5)
+      if (pendingTransactions.length === 5) return pendingTransactions
 
-    pendingTransactions.length === 5
-      ? setTransactions(pendingTransactions)
-      : setTransactions([
-          ...pendingTransactions,
-          ...formattedTransactions
-            .filter(
-              tx =>
-                tx.status.toUpperCase() !== TransactionStatus.PENDING &&
-                tx.status.toUpperCase() !== TransactionStatus.REDEEM
-            )
-            .splice(0, 5 - pendingTransactions.length),
-        ])
-  }, [allSwapBridgeTransactions, allSwapTransactions, account])
+      const formattedTransactionsWithoutPending = formattedTransactions
+        .filter(
+          transaction =>
+            transaction.status.toUpperCase() !== TransactionStatus.PENDING &&
+            transaction.status.toUpperCase() !== TransactionStatus.REDEEM
+        )
+        .splice(0, 5 - pendingTransactions.length)
+
+      return [...pendingTransactions, ...formattedTransactionsWithoutPending]
+    }
+
+    return []
+  }, [account, allSwapBridgeTransactions, allSwapTransactions])
 
   const tradeHistory = [...baseAdapterTradeHistory, ...uniswapV3TradeHistory].sort((firstTrade, secondTrade) =>
     sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
