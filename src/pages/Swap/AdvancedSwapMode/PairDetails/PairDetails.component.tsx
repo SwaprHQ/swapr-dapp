@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Flex } from 'rebass'
 
-import DoubleCurrencyLogo from '../../../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../../components/DoubleCurrencyLogo'
 import { PairSearchModal } from '../../../../components/SearchModal/PairSearchModal'
 import { usePairDetails } from '../../../../services/AdvancedTradingView/usePairDetails.hook'
 import { PairInfo, PairSymbols, PairTab, PairValue, PairValueChange } from '../AdvancedSwapMode.styles'
