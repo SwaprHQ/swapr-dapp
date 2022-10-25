@@ -277,8 +277,14 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
+  [ChainId.POLYGON]: [
+    WMATIC[ChainId.POLYGON],
+    WETH[ChainId.POLYGON],
+    USDC[ChainId.POLYGON],
+    WBTC[ChainId.POLYGON],
+    USDT[ChainId.POLYGON],
+  ],
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
     OP[ChainId.OPTIMISM_MAINNET],
@@ -405,7 +411,7 @@ export const NO_PRICE_IMPACT = 0
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const DEFAULT_TOKEN_LIST = 'ipfs://QmUWnK6AFHZ3S1hR7Up1h3Ntax3fP1ZyiTptDNG2cWLTeK'
+export const DEFAULT_TOKEN_LIST = 'ipfs://QmRqvWQahoyAUdeXEroKsWtLMLPpJ2Nxad7SeGTN4H6zRt'
 
 export const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 export const ZERO_USD = CurrencyAmount.usd('0')
@@ -449,7 +455,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.XDAI.decimals || 18,
     },
     rpcUrls: ['https://rpc.gnosischain.com/'],
-    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
+    blockExplorerUrls: ['https://gnosisscan.io'],
   },
   [ChainId.ARBITRUM_ONE]: {
     chainId: `0x${ChainId.ARBITRUM_ONE.toString(16)}`,

@@ -3,10 +3,10 @@ import { Currency, Price } from '@swapr/sdk'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { AutoColumn } from '../../components/Column'
-import { AutoRow } from '../../components/Row'
-import { Field } from '../../state/mint/actions'
-import { TYPE } from '../../theme'
+import { AutoColumn } from '../../../components/Column'
+import { AutoRow } from '../../../components/Row'
+import { Field } from '../../../state/mint/actions'
+import { TYPE } from '../../../theme'
 
 export function PoolPriceBar({ currencies, price }: { currencies: { [field in Field]?: Currency }; price?: Price }) {
   const theme = useTheme()

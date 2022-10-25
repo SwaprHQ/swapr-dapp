@@ -1,4 +1,4 @@
-import { theme } from '../src/theme'
+import { FixedGlobalStyle, theme } from '../src/theme'
 import { ThemeProvider } from 'styled-components'
 import i18n from './i18next.js'
 
@@ -26,5 +26,10 @@ export const parameters = {
   },
 }
 
-const themeDecorator = storyFn => <ThemeProvider theme={theme(true)}>{storyFn()}</ThemeProvider>
+const themeDecorator = storyFn => (
+  <ThemeProvider theme={theme(true)}>
+    <FixedGlobalStyle />
+    {storyFn()}
+  </ThemeProvider>
+)
 export const decorators = [themeDecorator]
