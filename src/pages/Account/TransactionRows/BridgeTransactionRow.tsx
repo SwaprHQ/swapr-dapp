@@ -29,9 +29,9 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
 
   const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction', bridgeId)
   const toLink =
-    logs[1]?.chainId && logs[1]?.txHash
-      ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction', bridgeId)
-      : undefined
+    bridgeId === 'socket'
+      ? logs[0] && logs[1] && getExplorerLink(logs[0].chainId, logs[0].txHash, 'transaction', bridgeId)
+      : logs[1] && getExplorerLink(logs[1].chainId, logs[1].txHash, 'transaction', bridgeId)
 
   return (
     <GridCard status={status.toUpperCase()}>
