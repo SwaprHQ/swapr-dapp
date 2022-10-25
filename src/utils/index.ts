@@ -60,6 +60,8 @@ export function getExplorerLink(
     return getGnosisProtocolExplorerOrderLink(chainId, hash)
   }
 
+  if (protocol === 'socket') return getSocketExplorerLink(hash)
+
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address
   if (chainId === ChainId.XDAI && type === 'token') {
@@ -257,6 +259,10 @@ export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
   return strictFormat
     ? normalizedValue.replace(/^([\d,]+)$|^([\d,]+)\.0*$|^([\d,]+\.[0-9]*?)0*$/, '$1$2$3')
     : normalizedValue
+}
+
+export function getSocketExplorerLink(transactionHash: string) {
+  return `https://socketscan.io/tx/${transactionHash}`
 }
 
 /**
