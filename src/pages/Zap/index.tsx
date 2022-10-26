@@ -168,9 +168,8 @@ export default function Zap() {
   const { independentField, typedValue, recipient, INPUT, OUTPUT, pairTokens } = useZapState()
 
   const {
-    trade0: potentialTrade,
-    trade1: potentialTrade1,
-    allPlatformTradesToken0: allPlatformTrades, // TODO
+    tradeToken0: potentialTrade,
+    tradeToken1: potentialTrade,
     currencyBalances,
     parsedAmount,
     currencies,
