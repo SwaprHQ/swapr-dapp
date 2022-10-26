@@ -83,6 +83,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
         contract_address: DAI[ChainId.POLYGON].address,
         contract_decimals: DAI[ChainId.POLYGON].decimals,
       },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: DAI[ChainId.OPTIMISM_MAINNET].address,
+        contract_decimals: DAI[ChainId.OPTIMISM_MAINNET].decimals,
+      },
     },
   },
   {
@@ -107,6 +111,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
         contract_address: WETH[ChainId.POLYGON].address,
         contract_decimals: WETH[ChainId.POLYGON].decimals,
       },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: ZERO_ADDRESS,
+        contract_decimals: 18,
+      },
     },
   },
   {
@@ -130,6 +138,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
       [ChainId.POLYGON]: {
         contract_address: WBTC[ChainId.POLYGON].address,
         contract_decimals: WBTC[ChainId.POLYGON].decimals,
+      },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: WBTC[ChainId.OPTIMISM_MAINNET].address,
+        contract_decimals: WBTC[ChainId.OPTIMISM_MAINNET].decimals,
       },
     },
   },
@@ -197,6 +209,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
       },
       [ChainId.POLYGON]: {
         contract_address: '0xc7031408c7978da9aca03308cd104cb54e7a2eb3',
+        contract_decimals: 18,
+      },
+      [ChainId.OPTIMISM_MAINNET]: {
+        contract_address: '0x35d48a789904e9b15705977192e5d95e2af7f1d3',
         contract_decimals: 18,
       },
     },
