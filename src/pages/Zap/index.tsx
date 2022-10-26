@@ -36,9 +36,7 @@ import Footer from '../../components/LandingPageComponents/layout/Footer'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import Stats from '../../components/LandingPageComponents/Stats'
 import Timeline from '../../components/LandingPageComponents/Timeline'
-import { PairSelectPanel } from '../../components/PairSelectPanel'
 import { StyledFlex } from '../../components/Pool/SortByDropdown/SortByDropdown'
-import { PairSearchModal } from '../../components/SearchModal/PairSearchModal'
 import { filterPairsForZap } from '../../components/SearchModal/utils/filtering'
 import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
@@ -49,9 +47,9 @@ import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import SwapButtons from '../../components/Zap/SwapButtons'
-import { ROUTABLE_PLATFORM_LOGO, ZAP_CONTRACT_ADDRESS, ZERO_ADDRESS } from '../../constants'
+import { ROUTABLE_PLATFORM_LOGO, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import ZAP_ABI from '../../constants/abis/zap.json'
-import { usePair, usePairAtAddress, usePairs } from '../../data/Reserves'
+import { usePair, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -130,7 +128,6 @@ export default function Zap() {
   const theme = useTheme()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
-  // const [pairZap, setPairZap] = useState<Pair>()
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   // token warning stuff
@@ -168,7 +165,7 @@ export default function Zap() {
 
   // swap state
   // const { independentField, typedValue, recipient } = useSwapState()
-  const { independentField, typedValue, recipient } = useZapState()
+  const { independentField, typedValue, recipient, INPUT, OUTPUT, pairTokens } = useZapState()
 
   const {
     trade0: potentialTrade,
@@ -189,25 +186,25 @@ export default function Zap() {
   let pathToken0Addresses: string[] = []
   let pathToken1Addresses: string[] = []
   // TODO GET PATH
-  // if (chainId) {
-  //   if (tst) {
-  //     const pathToken0 = tst?.path
-  //     for (let i = 0; i < pathToken0.length; i++) {
-  //       pathToken0Addresses.push(pathToken0[i].address)
-  //     }
-  //   } else if (INPUT.currencyId && INPUT.currencyId === pair?.token0.address) {
-  //     pathToken0Addresses = [INPUT.currencyId]
-  //   }
+  if (chainId) {
+    if (tst) {
+      const pathToken0 = tst?.path
+      for (let i = 0; i < pathToken0.length; i++) {
+        pathToken0Addresses.push(pathToken0[i].address)
+      }
+    } else if (INPUT.currencyId && INPUT.currencyId === pairTokens.token0Id) {
+      pathToken0Addresses = [INPUT.currencyId]
+    }
 
-  //   if (tst1) {
-  //     const pathToken1 = tst1?.path
-  //     for (let i = 0; i < pathToken1.length; i++) {
-  //       pathToken1Addresses.push(pathToken1[i].address)
-  //     }
-  //   } else if (INPUT.currencyId && INPUT.currencyId === pair?.token1.address) {
-  //     pathToken1Addresses = [INPUT.currencyId]
-  //   }
-  // }
+    if (tst1) {
+      const pathToken1 = tst1?.path
+      for (let i = 0; i < pathToken1.length; i++) {
+        pathToken1Addresses.push(pathToken1[i].address)
+      }
+    } else if (INPUT.currencyId && INPUT.currencyId === pairTokens.token1Id) {
+      pathToken1Addresses = [INPUT.currencyId]
+    }
+  }
 
   const filterPairs = useCallback(
     (pair: Pair) => {
@@ -345,7 +342,7 @@ export default function Zap() {
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       }
 
-  const { onUserInput, onSwitchTokens, onCurrencySelection } = useZapActionHandlers()
+  const { onUserInput, onSwitchTokens, onCurrencySelection, onPairSelection } = useZapActionHandlers()
 
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
@@ -530,17 +527,17 @@ export default function Zap() {
     [onCurrencySelection]
   )
 
-  const [fasterPair, setFasterPair] = useState<Pair>()
+  const [zapPair, setZapPair] = useState<Pair>()
 
-  const { token0Address, token1Address } = useSelector((state: AppState) => state.zap.pairTokens)
+  const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
 
-  const [token0, token1] = [useToken(token0Address), useToken(token1Address)]
+  const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
 
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
 
   useEffect(() => {
     if (pair) {
-      setFasterPair(pair)
+      setZapPair(pair)
     }
   }, [pair])
 
@@ -548,10 +545,11 @@ export default function Zap() {
     (pair: Pair) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(zapIn ? Field.OUTPUT : Field.INPUT, pair.liquidityToken)
+      onPairSelection(pair.token0.address, pair.token1.address)
 
-      setFasterPair(pair)
+      setZapPair(pair)
     },
-    [onCurrencySelection, zapIn]
+    [onCurrencySelection, onPairSelection, zapIn]
   )
 
   const handleMaxInput = useCallback(
@@ -608,7 +606,7 @@ export default function Zap() {
                     id="zap-currency-input"
                     value={formattedAmounts[Field.INPUT]}
                     currency={currencies[Field.INPUT]}
-                    pair={zapIn ? null : null}
+                    pair={zapIn ? null : zapPair}
                     onUserInput={handleTypeInput}
                     onMax={handleMaxInput(Field.INPUT)}
                     onCurrencySelect={handleInputSelect}
@@ -643,7 +641,7 @@ export default function Zap() {
                     value={formattedAmounts[Field.OUTPUT]}
                     onUserInput={handleTypeInput}
                     currency={currencies[Field.OUTPUT]}
-                    pair={zapIn ? fasterPair : null}
+                    pair={zapIn ? zapPair : null}
                     onMax={handleMaxInput(Field.OUTPUT)}
                     onCurrencySelect={handleOutputSelect}
                     onPairSelect={handleOnPairSelect}
@@ -701,6 +699,50 @@ export default function Zap() {
               onSelectedPlatformChange={setPlatformOverride}
             />
           )}
+          <AutoColumn style={{ width: '457px' }}>
+            {potentialTrade && potentialTrade instanceof UniswapV2Trade && (
+              <StyledRouteFlex>
+                <StyledFlex alignItems="center">
+                  {ROUTABLE_PLATFORM_LOGO[potentialTrade.platform.name]}
+                  {potentialTrade.platform.name}
+                </StyledFlex>
+                <TYPE.Body
+                  marginLeft="10px"
+                  fontSize="14px"
+                  lineHeight="15px"
+                  fontWeight="400"
+                  minWidth="auto"
+                  color={theme.purple2}
+                >
+                  Token 0
+                </TYPE.Body>
+                <Box flex="1">
+                  <SwapRoute trade={potentialTrade} />
+                </Box>
+              </StyledRouteFlex>
+            )}
+            {potentialTrade1 && potentialTrade1 instanceof UniswapV2Trade && (
+              <StyledRouteFlex>
+                <StyledFlex alignItems="center">
+                  {ROUTABLE_PLATFORM_LOGO[potentialTrade1.platform.name]}
+                  {potentialTrade1.platform.name}
+                </StyledFlex>
+                <TYPE.Body
+                  marginLeft="10px"
+                  fontSize="14px"
+                  lineHeight="15px"
+                  fontWeight="400"
+                  minWidth="auto"
+                  color={theme.purple2}
+                >
+                  Token 1
+                </TYPE.Body>
+                <Box flex="1">
+                  <SwapRoute trade={potentialTrade1} />
+                </Box>
+              </StyledRouteFlex>
+            )}
+          </AutoColumn>
           <AutoColumn style={{ width: '457px' }}>
             {potentialTrade && potentialTrade instanceof UniswapV2Trade && (
               <StyledRouteFlex>

@@ -25,7 +25,6 @@ import { usePairAtAddress } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
-import { useZapContract } from '../../hooks/useContract'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
@@ -41,7 +40,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { replaceZapState, selectCurrency, setRecipient, switchZapDirection, typeInput } from './actions'
+import { replaceZapState, selectCurrency, setPairTokens, setRecipient, switchZapDirection, typeInput } from './actions'
 import { Field } from './types'
 
 // set TTL - currently at 5 minutes
@@ -61,6 +60,7 @@ export function useZapActionHandlers(): {
   onSwitchTokens: () => void
   onUserInput: (field: Field, typedValue: string) => void
   onChangeRecipient: (recipient: string | null) => void
+  onPairSelection: (token0Id: string, token1Id: string) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
 
@@ -94,11 +94,19 @@ export function useZapActionHandlers(): {
     [dispatch]
   )
 
+  const onPairSelection = useCallback(
+    (token0Id: string, token1Id: string) => {
+      dispatch(setPairTokens({ token0Id, token1Id }))
+    },
+    [dispatch]
+  )
+
   return {
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
     onChangeRecipient,
+    onPairSelection,
   }
 }
 
@@ -139,7 +147,9 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   const {
     independentField,
     typedValue,
-    pairTokens: { token0Address: inputCurrencyId, token1Address: outputCurrencyId },
+    pairTokens: { token0Id, token1Id },
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
     recipient,
   } = useZapState()
   const allowedSlippage = useUserSlippageTolerance()

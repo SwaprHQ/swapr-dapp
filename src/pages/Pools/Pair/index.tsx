@@ -50,7 +50,6 @@ export default function Pair() {
     wrappedPair[1] ? wrappedPair[1] : undefined
   )
   const urlLoadedChainId = useTargetedChainIdFromUrl()
-  const { onCurrencySelection } = useZapActionHandlers() // TODO
   // refactor to put into the store just lp token address
   const tokenZap = useCurrency(PRE_SELECT_OUTPUT_CURRENCY_ID[urlLoadedChainId ? urlLoadedChainId : ChainId.MAINNET])
   const pairZap = wrappedPair && wrappedPair[0] === PairState.EXISTS ? wrappedPair[1] : null
@@ -78,7 +77,7 @@ export default function Pair() {
   const dispatch = useDispatch()
 
   const handlePairZap = () => {
-    dispatch(setPairTokens({ token0Address: token0?.address ?? '', token1Address: token1?.address ?? '' }))
+    dispatch(setPairTokens({ token0Id: currencyIdA ?? '', token1Id: currencyIdB ?? '' }))
   }
 
   const isZapSupported = useMemo(() => {
