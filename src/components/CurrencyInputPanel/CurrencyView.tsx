@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CurrencyLogo } from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { StyledDropDown, StyledTokenName } from './CurrencyInputPanel.styles'
-import { CurrencyViewProps } from './CurrencyInputPanel.types'
+import { CurrencyViewProps, InputType } from './CurrencyInputPanel.types'
 
 export const CurrencyView = ({
   pair,
@@ -11,6 +11,7 @@ export const CurrencyView = ({
   chainIdOverride,
   currencyWrapperSource,
   disableCurrencySelect,
+  inputType,
 }: CurrencyViewProps) => {
   const { t } = useTranslation('swap')
 
@@ -45,7 +46,12 @@ export const CurrencyView = ({
           ? currency.symbol.slice(0, 4) +
             '...' +
             currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-          : currency?.symbol) || <div data-testid="select-token-button"> {t('currencyView.selectToken')}</div>}
+          : currency?.symbol) || (
+          <div data-testid="select-token-button">
+            {' '}
+            {inputType === InputType.currency ? t('button.selectToken') : t('button.selectPair')}
+          </div>
+        )}
       </StyledTokenName>
       {!disableCurrencySelect && (pair || currency) && <StyledDropDown selected={!!currency} />}
     </>

@@ -124,6 +124,8 @@ export default function Swap() {
     loading,
   } = useDerivedSwapInfo(platformOverride || undefined)
 
+  console.log('swap platforms', allPlatformTrades)
+
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
   const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)

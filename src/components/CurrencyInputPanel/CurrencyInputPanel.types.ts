@@ -29,15 +29,23 @@ export interface CurrencyInputPanelProps {
   setDisplayedValue?: (val: string) => void
   maxAmount?: CurrencyAmount
   isOutputPanel?: boolean
+  inputType?: InputType
+  onPairSelect?: (pair: Pair) => void
+  filterPairs?: (pair: Pair) => boolean
 }
 
 export type CurrencyViewProps = Pick<
   CurrencyInputPanelProps,
-  'currency' | 'currency' | 'chainIdOverride' | 'currencyWrapperSource' | 'disableCurrencySelect' | 'pair'
+  'currency' | 'currency' | 'chainIdOverride' | 'currencyWrapperSource' | 'disableCurrencySelect' | 'pair' | 'inputType'
 >
 export type CurrencyUserBalanceProps = Pick<
   CurrencyInputPanelProps,
   'hideBalance' | 'currency' | 'pair' | 'balance' | 'customBalanceText' | 'onMax'
 > & {
   selectedCurrencyBalance: CurrencyAmount | undefined
+}
+
+export enum InputType {
+  currency,
+  pair,
 }

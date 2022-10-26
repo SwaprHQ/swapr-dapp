@@ -21,5 +21,6 @@
   "campaigns": "Campaigns",
   "pairsList.farming": "Farming",
   "pairsList.myPairs": "My Pairs",
-  "pairsList.accountAnalyticsAndAccruedFees": "Account analytics and accrued fees"
+  "pairsList.accountAnalyticsAndAccruedFees": "Account analytics and accrued fees",
+  "pair.zap": "Zap"
 }

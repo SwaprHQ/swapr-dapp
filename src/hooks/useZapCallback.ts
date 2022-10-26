@@ -121,16 +121,16 @@ export function useSwapsCallArguments(
 }
 
 /**
- * Returns the swap summary for UI components
+ * Returns the zap summary for UI components
  */
-export function getSwapSummary(trade: Trade, recipientAddressOrName: string | null): string {
+export function getZapSummary(trade: Trade, recipientAddressOrName: string | null): string {
   const inputSymbol = trade.inputAmount.currency.symbol
   const outputSymbol = trade.outputAmount.currency.symbol
   const inputAmount = limitNumberOfDecimalPlaces(trade.inputAmount)
   const outputAmount = limitNumberOfDecimalPlaces(trade.outputAmount)
   const platformName = trade.platform.name
 
-  const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
+  const base = `Zap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
     platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
   }`
 

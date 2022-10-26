@@ -122,6 +122,7 @@ export function useDerivedMintInfo(
     if (noLiquidity) {
       const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
       if (currencyAAmount && currencyBAmount) {
+        console.log('price new')
         return new Price({
           baseCurrency: currencyAAmount.currency,
           quoteCurrency: currencyBAmount.currency,
@@ -132,9 +133,11 @@ export function useDerivedMintInfo(
       return undefined
     } else {
       const wrappedCurrencyA = wrappedCurrency(currencyA, chainId)
+      console.log('price pary')
       return pair && wrappedCurrencyA ? pair.priceOf(wrappedCurrencyA) : undefined
     }
   }, [chainId, currencyA, noLiquidity, pair, parsedAmounts])
+  console.log('price: ', price)
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
 
   // liquidity minted

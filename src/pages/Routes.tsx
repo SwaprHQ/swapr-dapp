@@ -63,6 +63,7 @@ export function Routes() {
       <Route path="send" element={<BaseRedirect />} />
       <Route path="account" element={<Account />} />
       <Route path="zap" element={<Zap />} />
+      <Route path="zap/:pairId" element={<RouteCheck element={<Zap />} />} />
 
       <Route path="*" element={<BaseRedirect />} />
     </Switch>

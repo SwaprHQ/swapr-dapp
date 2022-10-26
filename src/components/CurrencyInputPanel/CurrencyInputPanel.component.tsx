@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { Currency, Pair } from '@swapr/sdk'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -13,6 +13,7 @@ import { NumericalInput } from '../Input/NumericalInput'
 import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+import { PairSearchModal } from '../SearchModal/PairSearchModal'
 import {
   Aligner,
   Container,
@@ -23,7 +24,7 @@ import {
   LabelRow,
   UppercaseHelper,
 } from './CurrencyInputPanel.styles'
-import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
+import { CurrencyInputPanelProps, InputType } from './CurrencyInputPanel.types'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
 import { CurrencyView } from './CurrencyView'
 
@@ -52,6 +53,9 @@ export const CurrencyInputPanelComponent = ({
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
   isOutputPanel,
+  inputType = InputType.currency,
+  onPairSelect,
+  filterPairs,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -91,6 +95,13 @@ export const CurrencyInputPanelComponent = ({
       if (onCurrencySelect && currency) onCurrencySelect(currency, isMaxAmount)
     },
     [isMaxAmount, onCurrencySelect]
+  )
+
+  const handleOnPairSelect = useCallback(
+    (pair: Pair) => {
+      if (onPairSelect) onPairSelect(pair)
+    },
+    [onPairSelect]
   )
 
   const handleOnUserInput = useCallback(
@@ -160,6 +171,7 @@ export const CurrencyInputPanelComponent = ({
                     currency={currency}
                     chainIdOverride={chainIdOverride}
                     currencyWrapperSource={currencyWrapperSource}
+                    inputType={inputType}
                   />
                 )}
               </Aligner>
@@ -181,17 +193,27 @@ export const CurrencyInputPanelComponent = ({
           </div>
         </Content>
       </Container>
-      {!disableCurrencySelect && onCurrencySelect && (
-        <CurrencySearchModalComponent
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleOnCurrencySelect}
-          selectedCurrency={currency}
-          otherSelectedCurrency={new Array(1).fill(otherCurrency)}
-          showCommonBases={showCommonBases}
-          isOutputPanel={isOutputPanel}
-        />
-      )}
+      {!disableCurrencySelect &&
+        (onCurrencySelect && inputType === InputType.currency ? (
+          <CurrencySearchModalComponent
+            isOpen={isOpen}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleOnCurrencySelect}
+            selectedCurrency={currency}
+            otherSelectedCurrency={new Array(1).fill(otherCurrency)}
+            showCommonBases={showCommonBases}
+            isOutputPanel={isOutputPanel}
+          />
+        ) : (
+          onPairSelect && (
+            <PairSearchModal
+              isOpen={isOpen}
+              onDismiss={onDismiss}
+              onPairSelect={handleOnPairSelect}
+              filterPairs={filterPairs}
+            />
+          )
+        ))}
     </InputPanel>
   )
 }

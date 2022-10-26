@@ -159,6 +159,13 @@ function Title({
               {t('addLiquidity')}
             </StyledText>
           </TransperentButton>
+
+          <TransperentButton as={Link} to={{ pathname: '/zap', search: search.toString() }}>
+            <Plus size="16" />
+            <StyledText marginLeft="5px" fontWeight="500" fontSize="12px" data-testid="zap">
+              {t('pair.zap')}
+            </StyledText>
+          </TransperentButton>
         </Flex>
         <Flex data-testid="campaigns-toggle">
           <Switch

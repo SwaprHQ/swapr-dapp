@@ -1,16 +1,27 @@
 import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
+import {
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Pair,
+  Percent,
+  RoutablePlatform,
+  Route,
+  Token,
+  TokenAmount,
+  Trade,
+} from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Route } from 'react-router-dom'
 
-import { SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import { usePairAtAddress } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
@@ -28,10 +39,9 @@ import { currencyId } from '../../utils/currencyId'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
-import { UseDerivedSwapInfoResult } from '../swap/hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { selectPair, selectToken, setRecipient, switchZapDirection, typeInput, updateZapState } from './actions'
+import { replaceZapState, selectCurrency, setRecipient, switchZapDirection, typeInput } from './actions'
 import { Field } from './types'
 
 // set TTL - currently at 5 minutes
@@ -47,41 +57,28 @@ export function useZapState() {
 }
 
 export function useZapActionHandlers(): {
-  onTokenSelection: (tokenId: Currency) => void
-  onPairSelection: (pairId: string, token0Id: string, token1Id: string) => void
-  onUserInput: (independentField: Field, typedValue: string) => void
+  onCurrencySelection: (field: Field, currency: Currency) => void
+  onSwitchTokens: () => void
+  onUserInput: (field: Field, typedValue: string) => void
   onChangeRecipient: (recipient: string | null) => void
-  onSwitchDirection: () => void
 } {
   const dispatch = useDispatch<AppDispatch>()
 
-  const onTokenSelection = useCallback(
-    (tokenId: Currency) => {
+  const onCurrencySelection = useCallback(
+    (field: Field, currency: Currency) => {
       dispatch(
-        selectToken({
-          tokenId: currencyId(tokenId),
+        selectCurrency({
+          field,
+          currencyId: currencyId(currency),
         })
       )
     },
     [dispatch]
   )
 
-  const onSwitchDirection = useCallback(() => {
+  const onSwitchTokens = useCallback(() => {
     dispatch(switchZapDirection())
   }, [dispatch])
-
-  const onPairSelection = useCallback(
-    (pairId: string, token0Id: string, token1Id: string) => {
-      dispatch(
-        selectPair({
-          pairId: pairId,
-          token0Id: token0Id,
-          token1Id: token1Id,
-        })
-      )
-    },
-    [dispatch]
-  )
 
   const onUserInput = useCallback(
     (independentField: Field, typedValue: string) => {
@@ -98,11 +95,10 @@ export function useZapActionHandlers(): {
   )
 
   return {
-    onTokenSelection,
-    onPairSelection,
+    onSwitchTokens,
+    onCurrencySelection,
     onUserInput,
     onChangeRecipient,
-    onSwitchDirection,
   }
 }
 
@@ -132,7 +128,7 @@ export interface UseDerivedZapInfoResult {
   parsedAmount: CurrencyAmount | undefined
   trade0: Trade | undefined
   trade1: Trade | undefined
-  allPlatformTrades: (Trade | undefined)[] | undefined
+  allPlatformTradesToken0: (Trade | undefined)[] | undefined
   inputError?: number
   loading: boolean
 }
@@ -141,34 +137,41 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
   const {
-    typedValue,
-    [Field.INPUT]: { tokenId: inputTokenId },
-    [Field.OUTPUT]: { token0Id: outputToken0Id, token1Id: outputToken1Id, pairId: outputPairId },
-    recipient,
     independentField,
+    typedValue,
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+    recipient,
   } = useZapState()
   const allowedSlippage = useUserSlippageTolerance()
   const useMultihops = useIsMultihop()
   const recipientLookup = useENS(recipient ?? undefined)
-  const inputCurrency = useCurrency(inputTokenId)
-  const outputCurrency = useCurrency(outputToken0Id)
-  const outputCurrency1 = useCurrency(outputToken1Id)
-  const outputPair = useCurrency(outputPairId)
+  const inputCurrency = useCurrency(inputCurrencyId)
+  // TODO
+  const pairZap = usePairAtAddress(outputCurrencyId)
+  const outputPairCurrency = useCurrency(outputCurrencyId)
+  const outputToken0Currency = pairZap?.token0
+  const outputToken1Currency = pairZap?.token1
+
   // Start by retrieveing the balances of the input and output currencies
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
-    outputPair ?? undefined,
+    outputPairCurrency ?? undefined,
   ])
   // Internal state
   const [loading, setLoading] = useState<boolean>(false)
   const [inputError, setInputError] = useState<number | undefined>()
   // const [trade, setTrade] = useState<Trade>()
-  const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
-  const [allPlatformTrades1, setAllPlatformTrades1] = useState<Trade[]>([])
+  const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
+  const [allPlatformTradesToken1, setAllPlatformTradesToken1] = useState<Trade[]>([])
 
   // Computed on the fly state
   const isExactIn = useMemo(() => independentField === Field.INPUT, [independentField])
-  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
+  const parsedAmount = tryParseAmount(
+    typedValue,
+    (isExactIn ? inputCurrency : outputPairCurrency) ?? undefined,
+    chainId
+  )
 
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
@@ -183,8 +186,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     useMultihops,
     chainId,
     inputCurrency?.address,
-    outputCurrency?.address,
-    outputCurrency1?.address,
+    outputPairCurrency?.address,
     parsedAmountString,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     relevantTokenBalances[0]?.raw.toString(),
@@ -198,7 +200,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
 
   useWhatChanged(
     dependencyList,
-    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
+    `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputPairCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
   )
 
   useEffect(() => {
@@ -207,7 +209,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     const signal = getAbortSignal()
 
     // Require two currencies to be selected
-    if (!inputCurrency || !outputCurrency || !outputCurrency1) {
+    if (!inputCurrency || !outputPairCurrency || !outputToken0Currency || !outputToken1Currency) {
       setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
       return
     }
@@ -234,18 +236,19 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     }
 
     // The user wants to un/wrap the network native token
-    const isWrap = Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === outputCurrency
-    const isUnwrap = Currency.isNative(outputCurrency) && wrappedCurrency(outputCurrency, chainId) === inputCurrency
+    const isWrap = Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === outputPairCurrency
+    const isUnwrap =
+      Currency.isNative(outputPairCurrency) && wrappedCurrency(outputPairCurrency, chainId) === inputCurrency
 
     if (isWrap || isUnwrap) {
       return
     }
-    console.log('zap in out0 out1', inputCurrency, outputCurrency, outputCurrency1, parsedAmount)
+    console.log('zap in out0 out1', inputCurrency, outputPairCurrency, parsedAmount)
 
     // Update swap state with the new input
     setInputError(inputErrorNextState)
     setLoading(true)
-    setAllPlatformTrades([])
+    setAllPlatformTradesToken0([])
 
     setIsQuoteExpired(false)
     if (quoteExpiryTimeout.current) {
@@ -266,7 +269,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     const getTrades = getTradesPromise(
       parsedAmount,
       inputCurrency,
-      outputCurrency,
+      outputToken0Currency,
       commonParams,
       ecoRouterSourceOptionsParams,
       provider,
@@ -276,7 +279,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     // Start fetching trades from EcoRouter API
     getTrades
       .then(trades => {
-        setAllPlatformTrades(trades.trades)
+        setAllPlatformTradesToken0(trades.trades)
         setLoading(false)
         quoteExpiryTimeout.current = setTimeout(() => {
           setIsQuoteExpired(true)
@@ -293,7 +296,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     const getTrades1 = getTradesPromise(
       parsedAmount,
       inputCurrency,
-      outputCurrency1,
+      outputToken1Currency,
       commonParams,
       ecoRouterSourceOptionsParams,
       provider,
@@ -303,7 +306,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     // Start fetching trades from EcoRouter API
     getTrades1
       .then(trades => {
-        setAllPlatformTrades1(trades.trades)
+        setAllPlatformTradesToken1(trades.trades)
         setLoading(false)
         quoteExpiryTimeout.current = setTimeout(() => {
           setIsQuoteExpired(true)
@@ -318,8 +321,8 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
       })
 
     return function useDerivedSwapInfoCleanUp() {
-      setAllPlatformTrades([])
-      setAllPlatformTrades1([])
+      setAllPlatformTradesToken0([])
+      setAllPlatformTradesToken1([])
       setLoading(false)
       setInputError(undefined)
       if (quoteExpiryTimeout.current) {
@@ -333,16 +336,21 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   // Otherwise, use the best trade
   let platformTrade
   if (platformOverride) {
-    platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
+    platformTrade = allPlatformTradesToken0.filter(t => t?.platform === platformOverride)[0]
   }
-  const trade0 = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
-  const trade1 = platformTrade ? platformTrade : allPlatformTrades1[0] // the first trade is the best trade
+
+  // TODO filter only uniswapV2?
+  const platrofmWithRoute = allPlatformTradesToken0.filter(t => !!t?.details)
+  const platrofmWithRoute1 = allPlatformTradesToken1.filter(t => !!t?.details)
+  const trade0 = platformTrade ? platformTrade : platrofmWithRoute[0] // the first trade is the best trade
+  const trade1 = platformTrade ? platformTrade : platrofmWithRoute1[0] // the first trade is the best trade
 
   const slippageAdjustedAmounts = trade0 && allowedSlippage && computeSlippageAdjustedAmounts(trade0)
 
-  // const trade0 = allPlatformTrades.filter(t => t?.platform.name === 'Swapr')[0]
-  // const trade1 = allPlatformTrades1.filter(t => t?.platform.name === 'Swapr')[0]
-  console.log('zap get all trades', allPlatformTrades, allPlatformTrades1)
+  // const trade0 = allPlatformTradesToken0.filter(t => t?.platform.name === 'Swapr')[0]
+  // const trade1 = allPlatformTradesToken1.filter(t => t?.platform.name === 'Swapr')[0]
+  console.log('zap get all trades', allPlatformTradesToken0, allPlatformTradesToken1)
+  console.log('zap get routes', platrofmWithRoute, platrofmWithRoute1)
   console.log('zap get best trade', trade0, trade1, typeof trade0?.details)
   // compare input balance to Max input based on version
   const [balanceIn, amountIn] = [
@@ -358,7 +366,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   return {
     currencies: {
       [Field.INPUT]: inputCurrency ?? undefined,
-      [Field.OUTPUT]: outputPair ?? undefined,
+      [Field.OUTPUT]: outputPairCurrency ?? undefined,
     },
     currencyBalances: {
       [Field.INPUT]: relevantTokenBalances[0] ?? undefined,
@@ -367,7 +375,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     parsedAmount,
     trade0,
     trade1,
-    allPlatformTrades: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTrades,
+    allPlatformTradesToken0: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTradesToken0,
     inputError: returnInputError,
     loading,
   }
@@ -375,7 +383,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   async function getTradesPromise(
     parsedAmount: CurrencyAmount,
     inputCurrency: Currency,
-    outputCurrency: Currency,
+    outputPairCurrency: Currency,
     commonParams: { maximumSlippage: Percent; receiver: string; user: string },
     ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
     staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
@@ -391,7 +399,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
       ? getExactInFromEcoRouter(
           {
             currencyAmountIn: parsedAmount,
-            currencyOut: outputCurrency,
+            currencyOut: outputPairCurrency,
             ...commonParams,
           },
           ecoRouterSourceOptionsParams,
@@ -409,4 +417,113 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
 
     return await Promise.race([abortPromise, ecoRouterPromise])
   }
+}
+
+function parseCurrencyFromURLParameter(urlParam: any, nativeCurrencyId: string): string {
+  if (typeof urlParam === 'string') {
+    const valid = isAddress(urlParam)
+    if (valid) return valid
+    if (urlParam.toUpperCase() === nativeCurrencyId) return nativeCurrencyId
+    if (valid === false) return nativeCurrencyId
+  }
+  return nativeCurrencyId ?? ''
+}
+
+function parseTokenAmountURLParameter(urlParam: any): string {
+  return typeof urlParam === 'string' && !isNaN(parseFloat(urlParam)) ? urlParam : ''
+}
+
+function parseIndependentFieldURLParameter(urlParam: any): Field {
+  return typeof urlParam === 'string' && urlParam.toLowerCase() === 'output' ? Field.OUTPUT : Field.INPUT
+}
+
+const ENS_NAME_REGEX = /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)?$/
+const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/
+function validatedRecipient(recipient: any): string | null {
+  if (typeof recipient !== 'string') return null
+  const address = isAddress(recipient)
+  if (address) return address
+  if (ENS_NAME_REGEX.test(recipient)) return recipient
+  if (ADDRESS_REGEX.test(recipient)) return recipient
+  return null
+}
+
+type SearchParams = { [k: string]: string }
+
+type QueryParametersToSwapStateResponse = {
+  independentField: Field
+  typedValue: string
+  [Field.INPUT]: {
+    currencyId: string | undefined
+  }
+  [Field.OUTPUT]: {
+    currencyId: string | undefined
+  }
+  recipient: string | null
+}
+
+export function queryParametersToZapState(
+  parsedQs: SearchParams,
+  nativeCurrencyId: string
+): QueryParametersToSwapStateResponse {
+  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency, nativeCurrencyId)
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency, nativeCurrencyId)
+  if (inputCurrency === outputCurrency) {
+    if (typeof parsedQs.outputCurrency === 'string') {
+      inputCurrency = ''
+    } else {
+      outputCurrency = ''
+    }
+  }
+
+  const recipient = validatedRecipient(parsedQs.recipient)
+
+  return {
+    [Field.INPUT]: {
+      currencyId: inputCurrency,
+    },
+    [Field.OUTPUT]: {
+      currencyId: outputCurrency,
+    },
+    typedValue: parseTokenAmountURLParameter(parsedQs.exactAmount),
+    independentField: parseIndependentFieldURLParameter(parsedQs.exactField),
+    recipient,
+  }
+}
+
+// updates the swap state to use the defaults for a given network
+export function useDefaultsFromURLSearch():
+  | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
+  | undefined {
+  const { chainId } = useActiveWeb3React()
+  const nativeCurrency = useNativeCurrency()
+  const dispatch = useDispatch<AppDispatch>()
+  const parsedQs = useParsedQueryString()
+  const [result, setResult] = useState<
+    { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
+  >()
+
+  useEffect(() => {
+    if (!chainId) return
+    const parsed = queryParametersToZapState(parsedQs, currencyId(nativeCurrency))
+
+    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
+      ? parsed[Field.OUTPUT].currencyId
+      : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+
+    dispatch(
+      replaceZapState({
+        typedValue: parsed.typedValue,
+        field: parsed.independentField,
+        inputCurrencyId: parsed[Field.INPUT].currencyId,
+        outputCurrencyId,
+        recipient: parsed.recipient,
+      })
+    )
+
+    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, chainId])
+
+  return result
 }
