@@ -5,16 +5,38 @@ import { type LimitOrderTransaction } from '../../../modules/limit-orders/utils/
 import { type AllSwapTransactions, type BridgeTransaction, type Transaction, TransactionStatus } from '../Account.types'
 import { formatSwapTransactions } from './swapTransactionsUtils'
 
-export const formattedTransactions = (
+export enum TransactionFilter {
+  ALL = 'all',
+  SWAP = 'swap',
+  BRIDGE = 'bridge',
+  LIMIT = 'limit',
+}
+
+export const formatTransactions = (
   transactions: AllSwapTransactions,
   bridgeTransactions: BridgeTransaction[],
   limitOrderTransactions: LimitOrderTransaction[],
   showPendingTransactions: boolean,
-  account: string
+  account: string,
+  filter: string | null
 ) => {
+  debugger
   const swapTransactions = formatSwapTransactions(transactions, account)
-  const limitTransactions = limitOrderTransactions
-  const sortedTransactions = [...swapTransactions, ...bridgeTransactions, ...limitTransactions].sort((txn1, txn2) => {
+  let allTransactions
+  if (filter === TransactionFilter.SWAP) {
+    allTransactions = swapTransactions
+  }
+  if (filter === TransactionFilter.BRIDGE) {
+    allTransactions = bridgeTransactions
+  }
+  if (filter === TransactionFilter.LIMIT) {
+    allTransactions = limitOrderTransactions
+  }
+  if (filter === TransactionFilter.ALL || !filter) {
+    allTransactions = [...swapTransactions, ...bridgeTransactions, ...limitOrderTransactions]
+  }
+
+  const sortedTransactions = (allTransactions ?? []).sort((txn1, txn2) => {
     if (txn1?.confirmedTime && txn2?.confirmedTime && txn1.confirmedTime > txn2.confirmedTime) {
       return -1
     }

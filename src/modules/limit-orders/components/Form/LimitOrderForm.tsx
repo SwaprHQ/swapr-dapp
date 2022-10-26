@@ -16,6 +16,7 @@ import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from 
 import { ApprovalState, useApproveCallback } from '../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import AppBody from '../../../../pages/AppBody'
+import { useNotificationPopup } from '../../../../state/application/hooks'
 import { useCurrencyBalances } from '../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
 import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
@@ -55,6 +56,7 @@ interface HandleCurrencyAmountChangeParams {
  */
 export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormProps) {
   const [loading, setLoading] = useState(false)
+  const notify = useNotificationPopup()
 
   // Get the initial values and set the state
   const initialState = useRef(getInitialState(chainId, account)).current
@@ -177,8 +179,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         chainId,
         signer,
       })
-
-      console.log(response)
+      if (response) {
+        notify('Successfully created limit order')
+      }
     } catch (error) {
       console.log(error)
     } finally {

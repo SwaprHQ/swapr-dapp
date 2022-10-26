@@ -37,10 +37,10 @@ interface LimitTransactionRowProps {
 export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const { type, status, uid, network, sellToken, buyToken, confirmedTime, cancelOrder } = transaction
   const { chainId, library } = useActiveWeb3React()
+  const notify = useNotificationPopup()
 
   const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
-  const notify = useNotificationPopup()
 
   const handleDeleteOpenOrders = useCallback(async () => {
     if (chainId && library) {

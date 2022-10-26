@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
 export default function Updater(): null {
   const { chainId, connector } = useActiveWeb3React()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const updateSwitchingToCorrectChain = useIsSwitchingToCorrectChainUpdater()
@@ -23,6 +24,10 @@ export default function Updater(): null {
   // - If the user lands on a Swapr link without a chain id set in the URL, we set it up for him depending on
   //   the selected network (whether the user has a connected wallet or not).
   useEffect(() => {
+    if (location.pathname !== '/account' && searchParams.get('filter')) {
+      searchParams.delete('filter')
+      setSearchParams(searchParams, { replace: true })
+    }
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
@@ -38,8 +43,10 @@ export default function Updater(): null {
     }
 
     if (requiredChainId !== stringChainId && !switchingToCorrectChain) {
-      setSearchParams({ chainId: stringChainId }, { replace: true })
+      searchParams.set('chainId', stringChainId)
+      setSearchParams(searchParams, { replace: true })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, connector, switchingToCorrectChain, updateSwitchingToCorrectChain, searchParams, setSearchParams])
 
   return null
