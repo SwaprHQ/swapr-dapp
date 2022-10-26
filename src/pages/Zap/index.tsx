@@ -124,8 +124,6 @@ export enum CoWTradeState {
 }
 
 export default function Zap() {
-  const zapContract = useZapContract()
-  const theme = useTheme()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -150,11 +148,6 @@ export default function Zap() {
     setDismissTokenWarning(true)
   }, [])
 
-  // const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
-  // const { pairId } = useParams<{ pairId: string }>()
-
-  // console.log('url zap pair address', pairId)
-
   const { chainId } = useActiveWeb3React()
 
   // for expert mode
@@ -168,8 +161,8 @@ export default function Zap() {
   const { independentField, typedValue, recipient, INPUT, OUTPUT, pairTokens } = useZapState()
 
   const {
-    tradeToken0: potentialTrade,
-    tradeToken1: potentialTrade,
+    tradeToken0,
+    tradeToken1,
     currencyBalances,
     parsedAmount,
     currencies,
@@ -179,32 +172,6 @@ export default function Zap() {
 
   const zapIn = independentField === Field.INPUT
 
-  //TODO check chainID
-  const tst = potentialTrade?.details as Route
-  const tst1 = potentialTrade1?.details as Route
-  let pathToken0Addresses: string[] = []
-  let pathToken1Addresses: string[] = []
-  // TODO GET PATH
-  if (chainId) {
-    if (tst) {
-      const pathToken0 = tst?.path
-      for (let i = 0; i < pathToken0.length; i++) {
-        pathToken0Addresses.push(pathToken0[i].address)
-      }
-    } else if (INPUT.currencyId && INPUT.currencyId === pairTokens.token0Id) {
-      pathToken0Addresses = [INPUT.currencyId]
-    }
-
-    if (tst1) {
-      const pathToken1 = tst1?.path
-      for (let i = 0; i < pathToken1.length; i++) {
-        pathToken1Addresses.push(pathToken1[i].address)
-      }
-    } else if (INPUT.currencyId && INPUT.currencyId === pairTokens.token1Id) {
-      pathToken1Addresses = [INPUT.currencyId]
-    }
-  }
-
   const filterPairs = useCallback(
     (pair: Pair) => {
       return filterPairsForZap(pair, chainId ?? ChainId.MAINNET)
@@ -213,133 +180,16 @@ export default function Zap() {
   )
 
   const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
-  // const pairRouter = pair?.platform.routerAddress[chainId ?? ChainId.RINKEBY] ?? ZERO_ADDRESS
-  console.log('zap path trades', potentialTrade, potentialTrade1)
-  console.log('zap path', pathToken0Addresses, pathToken1Addresses)
-  // console.log('zap router', pairRouter)
-
-  const { callback: onZap } = useZapCallback({
-    amountFrom: parsedAmount,
-    amount0Min: amountOutZero,
-    amount1Min: amountOutZero,
-    pathToPairToken0: pathToken0Addresses,
-    pathToPairToken1: pathToken1Addresses,
-    allowedSlippage: 0,
-    recipientAddressOrName: null,
-    router: '',
-  })
-
-  const handleZapInToken = useCallback(() => {
-    const amountIn = BigNumber.from(1000000000000000)
-    const tstFct = async () => {
-      if (!zapContract) return
-      //weth/dxd & weth/dxd/weenus
-      const zapAmountTo = await zapContract.zapInFromToken(
-        amountIn,
-        0,
-        0,
-        ['0xc778417E063141139Fce010982780140Aa0cD5Ab', '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b'],
-        ['0xc778417E063141139Fce010982780140Aa0cD5Ab', '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02']
-      )
-      return zapAmountTo
-    }
-    // if (!zapCallback) {
-    //   console.log('test zap nie ma callbacka')
-    //   return
-    // }
-    tstFct()
-      .then(tx => {
-        console.log('test sukces!', tx)
-      })
-      .catch(e => {
-        console.log('test failed :<')
-        console.error(e)
-      })
-  }, [zapContract])
-
-  const handleZapOutToToken = useCallback(() => {
-    const amountIn = BigNumber.from(500000000000000) // 0.0005 DXS
-    console.log('test zap out handle', amountIn.toString())
-    const tstFct = async () => {
-      if (!zapContract) return
-      //dxd/weth & weenus/dxd/weth
-      const zapAmountTo = await zapContract.zapOutToToken(
-        amountIn,
-        0,
-        ['0x554898A0BF98aB0C03ff86C7DccBE29269cc4d29', '0xc778417E063141139Fce010982780140Aa0cD5Ab'],
-        [
-          '0xaFF4481D10270F50f203E0763e2597776068CBc5',
-          '0x554898A0BF98aB0C03ff86C7DccBE29269cc4d29',
-          '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-        ],
-        { gasLimit: BigNumber.from(21000000), gasPrice: BigNumber.from(7000000000) }
-      )
-      return zapAmountTo
-    }
-    // if (!zapCallback) {
-    //   console.log('test zap nie ma callbacka')
-    //   return
-    // }
-    tstFct()
-      .then(tx => {
-        console.log('test sukces!', tx)
-      })
-      .catch(e => {
-        console.log('test failed :<')
-        console.error(e)
-      })
-  }, [zapContract])
-
-  const handleZapFeeToo = useCallback(() => {
-    console.log('test zap handle')
-    if (!zapContract) return
-    console.log('test zap exist')
-    const tstFct = async () => {
-      await zapContract.setFeeTo('0x372a291a9cad69b0f5f231cf1885574e9de7fd33')
-    }
-    const own = tstFct()
-    own
-      .then(tx => {
-        console.log('test sukces!', tx)
-      })
-      .catch(e => {
-        console.log('test failed :<')
-        console.error(e)
-      })
-  }, [zapContract])
-
-  // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
-  // wrap status(use useWrapCallback and a state variable)
-  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError,
-    wrapState,
-    setWrapState,
-  } = useWrapCallback(
-    currencies.INPUT,
-    currencies.OUTPUT,
-    potentialTrade instanceof CoWTrade,
-    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
-  )
-
-  const bestPricedTrade = allPlatformTrades?.[0]
-  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
-
-  const trade = showWrap ? undefined : potentialTrade
-  const trade1 = showWrap ? undefined : potentialTrade1
+  const pathToPairToken0 =
+    tradeToken0 && tradeToken0.details instanceof Route ? tradeToken0.details.path.map(token => token.address) : []
+  const pathToPairToken1 =
+    tradeToken1 && tradeToken1.details instanceof Route ? tradeToken1.details.path.map(token => token.address) : []
 
   //GPv2 is falling in the true case, not very useful for what I think I need
-  const parsedAmounts = showWrap
-    ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
-      }
-    : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-      }
+  const parsedAmounts = {
+    [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : tradeToken0?.inputAmount,
+    [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : tradeToken0?.outputAmount,
+  }
 
   const { onUserInput, onSwitchTokens, onCurrencySelection, onPairSelection } = useZapActionHandlers()
 
@@ -351,8 +201,6 @@ export default function Zap() {
     },
     [onUserInput]
   )
-
-  console.log('potentialTrade', potentialTrade)
 
   const handleTypeOutput = useCallback(
     (value: string) => {
@@ -372,9 +220,7 @@ export default function Zap() {
 
   const formattedAmounts = {
     [independentField]: typedValue,
-    [dependentField]: showWrap
-      ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+    [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
   const userHasSpecifiedInputOutput = Boolean(
@@ -388,101 +234,36 @@ export default function Zap() {
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalsSubmitted, setApprovalsSubmitted] = useState<boolean[]>([])
 
-  const currentTradeIndex = useMemo(() => {
-    if (allPlatformTrades) {
-      return (
-        allPlatformTrades.findIndex(
-          trade => trade && platformOverride && trade.platform.name === platformOverride.name
-        ) || 0
-      )
-    } else {
-      return 0
-    }
-  }, [platformOverride, allPlatformTrades])
-
-  // mark when a user has submitted an approval, reset onTokenSelection for input field
-  useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
-      const newArray = [...approvalsSubmitted]
-      newArray[currentTradeIndex] = true
-      setApprovalsSubmitted(newArray)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approval])
-
-  // Listen for changes on wrapState
-  useEffect(() => {
-    // watch GPv2
-    if (wrapState === WrapState.WRAPPED) {
-      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
-      else setGnosisProtocolState(CoWTradeState.APPROVAL)
-    }
-  }, [wrapState, approval, trade])
-
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
-  // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback({
-    trade,
-    allowedSlippage,
-    recipientAddressOrName: recipient,
+  const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
+    amountFrom: parsedAmount,
+    amount0Min: amountOutZero,
+    amount1Min: amountOutZero,
+    pathToPairToken0,
+    pathToPairToken1,
+    allowedSlippage: 0,
+    recipientAddressOrName: null,
+    router: '',
   })
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
-
-  const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
-    if (!swapCallback) {
-      return
-    }
-    setSwapState({
-      attemptingTxn: true,
-      tradeToConfirm,
-      showConfirm,
-      swapErrorMessage: undefined,
-      txHash: undefined,
-    })
-    swapCallback()
-      .then(hash => {
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage: undefined,
-          txHash: hash,
-        })
-        //reset states, in case we want to operate again
-        if (trade instanceof CoWTrade) {
-          setGnosisProtocolState(CoWTradeState.WRAP)
-          setWrapState && setWrapState(WrapState.UNKNOWN)
-        }
-      })
-      .catch(error => {
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage: error.message,
-          txHash: undefined,
-        })
-        setGnosisProtocolState(CoWTradeState.SWAP)
-      })
-  }, [trade, tradeToConfirm, priceImpactWithoutFee, showConfirm, setWrapState, swapCallback])
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(tradeToken0)
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    !swapInputError &&
-    (approval === ApprovalState.NOT_APPROVED ||
-      approval === ApprovalState.PENDING ||
-      (approvalsSubmitted[currentTradeIndex] && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+  // const showApproveFlow =
+  //   !swapInputError &&
+  //   (approval === ApprovalState.NOT_APPROVED ||
+  //     approval === ApprovalState.PENDING ||
+  //     (approvalsSubmitted[currentTradeIndex] && approval === ApprovalState.APPROVED)) &&
+  //   !(priceImpactSeverity > 3 && !isExpertMode)
+
+  const handleAcceptChanges = useCallback(() => {}, [])
+  const handleSwap = useCallback(() => {}, [])
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -498,16 +279,6 @@ export default function Zap() {
       onUserInput(Field.OUTPUT, '')
     }
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
-
-  const handleAcceptChanges = useCallback(() => {
-    setSwapState({
-      tradeToConfirm: trade,
-      swapErrorMessage,
-      txHash,
-      attemptingTxn,
-      showConfirm,
-    })
-  }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
@@ -583,11 +354,11 @@ export default function Zap() {
       <Hero>
         <AppBodyContainer>
           <Tabs />
-          <AppBody tradeDetailsOpen={!!trade}>
+          <AppBody>
             <Wrapper id="zap-page">
               <ConfirmSwapModal
                 isOpen={showConfirm}
-                trade={trade}
+                trade={undefined}
                 originalTrade={tradeToConfirm}
                 onAcceptChanges={handleAcceptChanges}
                 attemptingTxn={attemptingTxn}
@@ -654,138 +425,9 @@ export default function Zap() {
                     filterPairs={filterPairs}
                   />
                 </AutoColumn>
-
-                <TradeDetails
-                  show={!showWrap}
-                  loading={loading}
-                  trade={trade}
-                  bestPricedTrade={bestPricedTrade}
-                  showAdvancedSwapDetails={showAdvancedSwapDetails}
-                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-                  recipient={recipient}
-                />
-                <SwapButtons
-                  wrapInputError={wrapInputError}
-                  showApproveFlow={showApproveFlow}
-                  userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
-                  approval={approval}
-                  setSwapState={setSwapState}
-                  priceImpactSeverity={0}
-                  swapCallbackError={swapCallbackError}
-                  wrapType={wrapType}
-                  approvalSubmitted={approvalsSubmitted[currentTradeIndex]}
-                  currencies={currencies}
-                  trade={trade}
-                  swapInputError={swapInputError}
-                  swapErrorMessage={swapErrorMessage}
-                  loading={loading}
-                  onWrap={onWrap}
-                  approveCallback={approveCallback}
-                  handleSwap={independentField === Field.INPUT ? handleZapInToken : handleZapOutToToken}
-                  handleInputSelect={handleInputSelect}
-                  wrapState={wrapState}
-                  setWrapState={setWrapState}
-                  onZap={onZap}
-                />
               </AutoColumn>
             </Wrapper>
           </AppBody>
-          {showAdvancedSwapDetails && (
-            <AdvancedSwapDetailsDropdown
-              isLoading={loading}
-              trade={trade}
-              allPlatformTrades={allPlatformTrades}
-              onSelectedPlatformChange={setPlatformOverride}
-            />
-          )}
-          <AutoColumn style={{ width: '457px' }}>
-            {potentialTrade && potentialTrade instanceof UniswapV2Trade && (
-              <StyledRouteFlex>
-                <StyledFlex alignItems="center">
-                  {ROUTABLE_PLATFORM_LOGO[potentialTrade.platform.name]}
-                  {potentialTrade.platform.name}
-                </StyledFlex>
-                <TYPE.Body
-                  marginLeft="10px"
-                  fontSize="14px"
-                  lineHeight="15px"
-                  fontWeight="400"
-                  minWidth="auto"
-                  color={theme.purple2}
-                >
-                  Token 0
-                </TYPE.Body>
-                <Box flex="1">
-                  <SwapRoute trade={potentialTrade} />
-                </Box>
-              </StyledRouteFlex>
-            )}
-            {potentialTrade1 && potentialTrade1 instanceof UniswapV2Trade && (
-              <StyledRouteFlex>
-                <StyledFlex alignItems="center">
-                  {ROUTABLE_PLATFORM_LOGO[potentialTrade1.platform.name]}
-                  {potentialTrade1.platform.name}
-                </StyledFlex>
-                <TYPE.Body
-                  marginLeft="10px"
-                  fontSize="14px"
-                  lineHeight="15px"
-                  fontWeight="400"
-                  minWidth="auto"
-                  color={theme.purple2}
-                >
-                  Token 1
-                </TYPE.Body>
-                <Box flex="1">
-                  <SwapRoute trade={potentialTrade1} />
-                </Box>
-              </StyledRouteFlex>
-            )}
-          </AutoColumn>
-          <AutoColumn style={{ width: '457px' }}>
-            {potentialTrade && potentialTrade instanceof UniswapV2Trade && (
-              <StyledRouteFlex>
-                <StyledFlex alignItems="center">
-                  {ROUTABLE_PLATFORM_LOGO[potentialTrade.platform.name]}
-                  {potentialTrade.platform.name}
-                </StyledFlex>
-                <TYPE.Body
-                  marginLeft="10px"
-                  fontSize="14px"
-                  lineHeight="15px"
-                  fontWeight="400"
-                  minWidth="auto"
-                  color={theme.purple2}
-                >
-                  Token 0
-                </TYPE.Body>
-                <Box flex="1">
-                  <SwapRoute trade={potentialTrade} />
-                </Box>
-              </StyledRouteFlex>
-            )}
-            {potentialTrade1 && potentialTrade1 instanceof UniswapV2Trade && (
-              <StyledRouteFlex>
-                <StyledFlex alignItems="center">
-                  {ROUTABLE_PLATFORM_LOGO[potentialTrade1.platform.name]}
-                  {potentialTrade1.platform.name}
-                </StyledFlex>
-                <TYPE.Body
-                  marginLeft="10px"
-                  fontSize="14px"
-                  lineHeight="15px"
-                  fontWeight="400"
-                  minWidth="auto"
-                  color={theme.purple2}
-                >
-                  Token 1
-                </TYPE.Body>
-                <Box flex="1">
-                  <SwapRoute trade={potentialTrade1} />
-                </Box>
-              </StyledRouteFlex>
-            )}
-          </AutoColumn>
         </AppBodyContainer>
       </Hero>
       <LandingBodyContainer>

@@ -147,8 +147,8 @@ export interface UseZapCallbackParams {
   amountFrom: CurrencyAmount | undefined
   amount0Min: CurrencyAmount | undefined
   amount1Min: CurrencyAmount | undefined
-  pathToPairToken0: string[]
-  pathToPairToken1: string[]
+  pathToPairToken0: string[] | undefined
+  pathToPairToken1: string[] | undefined
   allowedSlippage: number // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   router: string

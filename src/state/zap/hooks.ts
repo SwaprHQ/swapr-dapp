@@ -168,6 +168,8 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   // Internal state
   const [loading, setLoading] = useState<boolean>(false)
   const [inputError, setInputError] = useState<number | undefined>()
+  const [tradeToken0toLpToken, setTradeToken0toLpToken] = useState<Trade>()
+  const [tradeToken1toLpToken, setTradeToken1toLpToken] = useState<Trade>()
   const [pathToken0toLpToken, setPathToken0toLpToken] = useState<string[]>()
   const [pathToken1toLpToken, setPathToken1toLpToken] = useState<string[]>()
   const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
@@ -184,6 +186,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
   const { getAbortSignal } = useAbortController()
+  let returnInputError = inputError
 
   const dependencyList = [
     account,
@@ -351,37 +354,43 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     }
 
     // use the best trade
-    const [[bestTradeToken0], [bestTradeToken1]] = [platformTradeToken0, platformTradeToken1]
+    const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
+    setTradeToken0toLpToken(bestTradeToken0)
+    setTradeToken1toLpToken(bestTradeToken1)
 
-    if (tradeToken0 && bestTradeToken0.details instanceof Route) {
+    if (bestTradeToken0 && bestTradeToken0.details instanceof Route) {
       const tokensAddresses = bestTradeToken0.details.path.map(token => token.address)
+      setPathToken0toLpToken(tokensAddresses)
+    }
+    if (bestTradeToken1 && bestTradeToken1.details instanceof Route) {
+      const tokensAddresses = bestTradeToken1.details.path.map(token => token.address)
+      setPathToken1toLpToken(tokensAddresses)
+    }
+
+    console.log('zap get best trade', bestTradeToken0, bestTradeToken1)
+
+    if (allowedSlippage) {
+      const slippageAdjustedAmounts0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
+      const slippageAdjustedAmounts1 = bestTradeToken1 && computeSlippageAdjustedAmounts(bestTradeToken1)
+      // compare input balance to Max input based on version
+      const [balanceInToken0, amountInToken0] = [
+        relevantTokenBalances[0],
+        slippageAdjustedAmounts0 ? slippageAdjustedAmounts0[Field.INPUT] : null,
+      ]
+
+      const [balanceInToken1, amountInToken1] = [
+        relevantTokenBalances[0],
+        slippageAdjustedAmounts1 ? slippageAdjustedAmounts1[Field.INPUT] : null,
+      ]
+
+      if (
+        (balanceInToken0 && amountInToken0 && balanceInToken0.lessThan(amountInToken0)) ||
+        (balanceInToken1 && amountInToken1 && balanceInToken1.lessThan(amountInToken1))
+      ) {
+        returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
+      }
     }
   }, [allPlatformTradesToken0, allPlatformTradesToken1, platformOverride])
-
-  console.log('zap get best trade', tradeToken0, tradeToken1)
-
-  let returnInputError = inputError
-  if (allowedSlippage) {
-    const slippageAdjustedAmounts0 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken0)
-    const slippageAdjustedAmounts1 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken1)
-    // compare input balance to Max input based on version
-    const [balanceInToken0, amountInToken0] = [
-      relevantTokenBalances[0],
-      slippageAdjustedAmounts0 ? slippageAdjustedAmounts0[Field.INPUT] : null,
-    ]
-
-    const [balanceInToken1, amountInToken1] = [
-      relevantTokenBalances[0],
-      slippageAdjustedAmounts1 ? slippageAdjustedAmounts1[Field.INPUT] : null,
-    ]
-
-    if (
-      (balanceInToken0 && amountInToken0 && balanceInToken0.lessThan(amountInToken0)) ||
-      (balanceInToken1 && amountInToken1 && balanceInToken1.lessThan(amountInToken1))
-    ) {
-      returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
-    }
-  }
 
   return {
     currencies: {
@@ -393,8 +402,8 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
       [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
     },
     parsedAmount,
-    tradeToken0,
-    tradeToken1,
+    tradeToken0: tradeToken0toLpToken,
+    tradeToken1: tradeToken1toLpToken,
     allPlatformTradesToken0: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTradesToken0,
     inputError: returnInputError,
     loading,
