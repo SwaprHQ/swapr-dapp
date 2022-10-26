@@ -13,7 +13,13 @@ const appDataHashes = {
   [ChainId.MAINNET]: '0x7bb480cf9d89cd9fa5ac557f573fa3cee96ca57ec0b9a0de783a29391967c4ab',
 }
 
-async function getOrders(account: string, chainId: ChainId.GNOSIS | ChainId.MAINNET, allNetworks: boolean) {
+function getNetworkId(appData: string) {
+  return Object.keys(appDataHashes)
+    .map(Number)
+    .find((key: keyof typeof appDataHashes) => appDataHashes[key] === appData) as number
+}
+
+async function getOrders(account: string, allNetworks: boolean, chainId: ChainId) {
   if (allNetworks) {
     const allOrders = await Promise.all([
       getOwnerOrders(ChainId.GNOSIS, account),
@@ -24,7 +30,10 @@ async function getOrders(account: string, chainId: ChainId.GNOSIS | ChainId.MAIN
     })
     return allOrders.flat()
   }
-  return await getOwnerOrders(chainId, account)
+  if (chainId === ChainId.GNOSIS || chainId === ChainId.MAINNET) {
+    return await getOwnerOrders(chainId, account)
+  }
+  return [] as OrderMetaData[]
 }
 
 interface LimitToken {
@@ -49,9 +58,10 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
   const listByAddress = useListsByAddress()
 
   useEffect(() => {
-    const getLimitOrderTransactions = async (chainId: ChainId.GNOSIS | ChainId.MAINNET, account: string) => {
-      const orders = await getOrders(account, chainId, allNetworks)
+    const getLimitOrderTransactions = async (chainId: ChainId, account: string) => {
+      const orders = await getOrders(account, allNetworks, chainId)
       if (orders && orders.length > 0) {
+        //@ts-expect-error  chainId here wont have other networks since its filtered in upper scope
         const appData = allNetworks ? Object.values(appDataHashes) : [appDataHashes[chainId]]
         const filteredOrders = orders.filter(order => appData.includes(order.appData.toString()))
         const formattedLimitOrders = filteredOrders.map(order => {
@@ -61,7 +71,7 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
             ...order,
             type: 'Limit Order' as const,
             hash: order.uid,
-            network: chainId,
+            network: getNetworkId(order.appData.toString()),
             sellToken: {
               value: formatUnits(order.sellAmount, sellToken?.decimals) as unknown as number,
               symbol: sellToken?.symbol,
@@ -80,7 +90,7 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
         setOrders(formattedLimitOrders)
       }
     }
-    if (account != null && (chainId === ChainId.GNOSIS || chainId === ChainId.MAINNET)) {
+    if (account != null && chainId !== undefined) {
       getLimitOrderTransactions(chainId, account)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
