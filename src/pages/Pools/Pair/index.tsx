@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
+import { useDispatch } from 'react-redux'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
@@ -23,6 +24,7 @@ import { useCurrency, useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
+import { setPairTokens } from '../../../state/zap/actions'
 import { useZapActionHandlers } from '../../../state/zap/hooks'
 import { Field } from '../../../state/zap/types'
 import { BlurBox } from '../../../ui/StyledElements/BlurBox'
@@ -73,17 +75,11 @@ export default function Pair() {
     [navigate]
   )
 
-  const handlePairZap = useCallback(
-    (currency: Currency | null | undefined, pair: PairType | null) => {
-      if (!!currency) {
-        onCurrencySelection(Field.INPUT, currency)
-      }
-      if (!!pair) {
-        onCurrencySelection(Field.OUTPUT, pair.liquidityToken)
-      }
-    },
-    [onCurrencySelection]
-  )
+  const dispatch = useDispatch()
+
+  const handlePairZap = () => {
+    dispatch(setPairTokens({ token0Address: token0?.address ?? '', token1Address: token1?.address ?? '' }))
+  }
 
   const isZapSupported = useMemo(() => {
     return pairZap && urlLoadedChainId ? filterPairsForZap(pairZap, urlLoadedChainId) : false
@@ -133,7 +129,7 @@ export default function Pair() {
                 disabled={!isZapSupported}
                 as={isZapSupported ? Link : ButtonPurpleDim}
                 to={isZapSupported ? '/zap' : ''}
-                onClick={() => handlePairZap(tokenZap, pairZap)}
+                onClick={() => handlePairZap()}
               >
                 {t('pair.zap')}
               </ButtonPurpleDim>

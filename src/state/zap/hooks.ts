@@ -139,8 +139,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   const {
     independentField,
     typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+    pairTokens: { token0Address: inputCurrencyId, token1Address: outputCurrencyId },
     recipient,
   } = useZapState()
   const allowedSlippage = useUserSlippageTolerance()

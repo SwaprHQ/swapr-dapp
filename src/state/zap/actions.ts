@@ -13,3 +13,7 @@ export const replaceZapState = createAction<{
   recipient: string | null
 }>('zap/replaceZapState')
 export const setRecipient = createAction<{ recipient: string | null }>('zap/setRecipient')
+
+export const setPairTokens = createAction<{ token0Address: string; token1Address: string }>('zap/setPairTokens')
+
+export const setSelectedToken = createAction<{ currencyId: string }>('zap/setSelectedToken')

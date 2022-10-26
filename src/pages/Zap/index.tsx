@@ -51,9 +51,9 @@ import TokenWarningModal from '../../components/TokenWarningModal'
 import SwapButtons from '../../components/Zap/SwapButtons'
 import { ROUTABLE_PLATFORM_LOGO, ZAP_CONTRACT_ADDRESS, ZERO_ADDRESS } from '../../constants'
 import ZAP_ABI from '../../constants/abis/zap.json'
-import { usePairAtAddress, usePairs } from '../../data/Reserves'
+import { usePair, usePairAtAddress, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
-import { useAllTokens, useCurrency } from '../../hooks/Tokens'
+import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useZapContract } from '../../hooks/useContract'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
@@ -168,7 +168,7 @@ export default function Zap() {
 
   // swap state
   // const { independentField, typedValue, recipient } = useSwapState()
-  const { independentField, typedValue, recipient, INPUT, OUTPUT } = useZapState()
+  const { independentField, typedValue, recipient } = useZapState()
 
   const {
     trade0: potentialTrade,
@@ -182,16 +182,6 @@ export default function Zap() {
   } = useDerivedZapInfo()
 
   const zapIn = independentField === Field.INPUT
-  const pair = usePairAtAddress(zapIn ? OUTPUT.currencyId : INPUT.currencyId)
-
-  const [tstCurrency1, tstCurrency2] = [
-    useCurrency('0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'),
-    useCurrency('0x9C58BAcC331c9aa871AFD802DB6379a98e80CEdb'),
-  ]
-
-  const tstLol = usePairs([[tstCurrency1 ?? undefined, tstCurrency2 ?? undefined]])[0][1]
-
-  console.log('pairtstLol', { tstLol, tstCurrency1, tstCurrency2 })
 
   //TODO check chainID
   const tst = potentialTrade?.details as Route
@@ -199,25 +189,25 @@ export default function Zap() {
   let pathToken0Addresses: string[] = []
   let pathToken1Addresses: string[] = []
   // TODO GET PATH
-  if (chainId) {
-    if (tst) {
-      const pathToken0 = tst?.path
-      for (let i = 0; i < pathToken0.length; i++) {
-        pathToken0Addresses.push(pathToken0[i].address)
-      }
-    } else if (INPUT.currencyId && INPUT.currencyId === pair?.token0.address) {
-      pathToken0Addresses = [INPUT.currencyId]
-    }
+  // if (chainId) {
+  //   if (tst) {
+  //     const pathToken0 = tst?.path
+  //     for (let i = 0; i < pathToken0.length; i++) {
+  //       pathToken0Addresses.push(pathToken0[i].address)
+  //     }
+  //   } else if (INPUT.currencyId && INPUT.currencyId === pair?.token0.address) {
+  //     pathToken0Addresses = [INPUT.currencyId]
+  //   }
 
-    if (tst1) {
-      const pathToken1 = tst1?.path
-      for (let i = 0; i < pathToken1.length; i++) {
-        pathToken1Addresses.push(pathToken1[i].address)
-      }
-    } else if (INPUT.currencyId && INPUT.currencyId === pair?.token1.address) {
-      pathToken1Addresses = [INPUT.currencyId]
-    }
-  }
+  //   if (tst1) {
+  //     const pathToken1 = tst1?.path
+  //     for (let i = 0; i < pathToken1.length; i++) {
+  //       pathToken1Addresses.push(pathToken1[i].address)
+  //     }
+  //   } else if (INPUT.currencyId && INPUT.currencyId === pair?.token1.address) {
+  //     pathToken1Addresses = [INPUT.currencyId]
+  //   }
+  // }
 
   const filterPairs = useCallback(
     (pair: Pair) => {
@@ -227,10 +217,10 @@ export default function Zap() {
   )
 
   const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
-  const pairRouter = pair?.platform.routerAddress[chainId ?? ChainId.RINKEBY] ?? ZERO_ADDRESS
+  // const pairRouter = pair?.platform.routerAddress[chainId ?? ChainId.RINKEBY] ?? ZERO_ADDRESS
   console.log('zap path trades', potentialTrade, potentialTrade1)
   console.log('zap path', pathToken0Addresses, pathToken1Addresses)
-  console.log('zap router', pairRouter)
+  // console.log('zap router', pairRouter)
 
   const { callback: onZap } = useZapCallback({
     amountFrom: parsedAmount,
@@ -240,7 +230,7 @@ export default function Zap() {
     pathToPairToken1: pathToken1Addresses,
     allowedSlippage: 0,
     recipientAddressOrName: null,
-    router: pairRouter,
+    router: '',
   })
 
   const handleZapInToken = useCallback(() => {
@@ -540,10 +530,26 @@ export default function Zap() {
     [onCurrencySelection]
   )
 
+  const [fasterPair, setFasterPair] = useState<Pair>()
+
+  const { token0Address, token1Address } = useSelector((state: AppState) => state.zap.pairTokens)
+
+  const [token0, token1] = [useToken(token0Address), useToken(token1Address)]
+
+  const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
+
+  useEffect(() => {
+    if (pair) {
+      setFasterPair(pair)
+    }
+  }, [pair])
+
   const handleOnPairSelect = useCallback(
     (pair: Pair) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(zapIn ? Field.OUTPUT : Field.INPUT, pair.liquidityToken)
+
+      setFasterPair(pair)
     },
     [onCurrencySelection, zapIn]
   )
@@ -602,7 +608,7 @@ export default function Zap() {
                     id="zap-currency-input"
                     value={formattedAmounts[Field.INPUT]}
                     currency={currencies[Field.INPUT]}
-                    pair={zapIn ? null : pair}
+                    pair={zapIn ? null : null}
                     onUserInput={handleTypeInput}
                     onMax={handleMaxInput(Field.INPUT)}
                     onCurrencySelect={handleInputSelect}
@@ -637,7 +643,7 @@ export default function Zap() {
                     value={formattedAmounts[Field.OUTPUT]}
                     onUserInput={handleTypeInput}
                     currency={currencies[Field.OUTPUT]}
-                    pair={zapIn ? tstLol : null}
+                    pair={zapIn ? fasterPair : null}
                     onMax={handleMaxInput(Field.OUTPUT)}
                     onCurrencySelect={handleOutputSelect}
                     onPairSelect={handleOnPairSelect}
