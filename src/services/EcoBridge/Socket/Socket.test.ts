@@ -1,6 +1,6 @@
-import { ChainId, Currency, WETH } from '@swapr/sdk'
+import { ChainId, Currency, DAI, USDC, WETH } from '@swapr/sdk'
 
-import { DAI, MATIC, SOCKET_NATIVE_TOKEN_ADDRESS, USDC } from '../../../constants'
+import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { overrideTokensAddresses } from './Socket.utils'
 
 describe('overrideTokensAddresses', () => {

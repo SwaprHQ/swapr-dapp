@@ -44,6 +44,8 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return 'https://polygonscan.com'
     case ChainId.OPTIMISM_MAINNET:
       return 'https://optimistic.etherscan.io'
+    case ChainId.BSC_MAINNET:
+      return 'https://bscscan.com'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
