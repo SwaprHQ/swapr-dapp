@@ -113,7 +113,8 @@ export const useAdvancedTradingView = () => {
 
       setActiveCurrencyOption(sortedTokens[0])
     }
-  }, [inputToken, outputToken])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputToken?.address, outputToken?.address])
 
   useEffect(() => {
     const fetchTrades = async () => {
@@ -173,10 +174,11 @@ export const useAdvancedTradingView = () => {
     }, 15000)
 
     return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
-    inputToken,
-    outputToken,
+    inputToken?.address,
+    outputToken?.address,
     advancedTradingViewAdapter,
     pairTradesAmountToFetch,
     pairActivityAmountToFetch,
