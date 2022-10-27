@@ -113,7 +113,7 @@ export function UserLiquidity({ pair }: UserLiquidityProps) {
             as={token0Deposited?.equalTo('0') ? ButtonPurpleDim : Link}
             to={currency0 && currency1 ? `/pools/remove/${currencyId(currency0)}/${currencyId(currency1)}` : ''}
           >
-            {t('userLiquidity.removeLiquidity')}
+            {t('removeLiquidity')}
           </ButtonPurpleDim>
         </Box>
       </Flex>
