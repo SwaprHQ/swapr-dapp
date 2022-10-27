@@ -27,10 +27,11 @@ import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallbac
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  UseDerivedSwapInfoResult,
   useSwapActionHandlers,
   useSwapState,
 } from '../../state/swap/hooks'
-import { Field } from '../../state/swap/types'
+import { Field, SwapState } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -122,7 +123,10 @@ export default function Swap() {
     currencies,
     inputError: swapInputError,
     loading,
-  } = useDerivedSwapInfo(platformOverride || undefined)
+  } = useDerivedSwapInfo<SwapState, UseDerivedSwapInfoResult>({
+    key: 'swap',
+    platformOverride: platformOverride || undefined,
+  })
 
   console.log('swap platforms', allPlatformTrades)
 

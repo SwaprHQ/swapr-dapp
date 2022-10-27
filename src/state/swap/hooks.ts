@@ -1,7 +1,7 @@
 import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Route, Token, TokenAmount, Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
+import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
@@ -28,7 +28,7 @@ import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
-import { Field } from './types'
+import { Field, SwapState } from './types'
 
 const selectSwap = createSelector(
   (state: AppState) => state.swap,
@@ -117,36 +117,57 @@ export interface UseDerivedSwapInfoResult {
 // set TTL - currently at 5 minutes
 const quoteTTL = 5 * 60 * 1000
 
+type SwaprOrZapKey = 'swap' | 'zap'
+
+type DerivedParams = {
+  key: SwaprOrZapKey
+  platformOverride?: RoutablePlatform
+  isZap?: boolean
+}
+
+const useSwapOrZapState = <T>(key: SwaprOrZapKey) => {
+  return useSelector((state: AppState) => state[key]) as T
+}
+
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
+export function useDerivedSwapInfo<
+  T extends SwapState & { pairTokens?: { token0Id: string | undefined; token1Id: string | undefined } },
+  ReturnedValue
+>({ key, isZap = false, platformOverride }: DerivedParams): ReturnedValue {
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
+
   const {
     independentField,
     typedValue,
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     recipient,
-  } = useSwapState()
+    pairTokens,
+  } = useSwapOrZapState<T>(key)
+
   const allowedSlippage = useUserSlippageTolerance()
   const useMultihops = useIsMultihop()
   const recipientLookup = useENS(recipient ?? undefined)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
-  // Start by retrieveing the balances of the input and output currencies
+
+  const [pairCurrency0, pairCurrency1] = [useToken(pairTokens?.token0Id), useToken(pairTokens?.token1Id)]
+
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
-  // Internal state
+
   const [loading, setLoading] = useState<boolean>(false)
   const [inputError, setInputError] = useState<number | undefined>()
-  // const [trade, setTrade] = useState<Trade>()
   const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
-  console.log('swap trades', allPlatformTrades)
-  // Computed on the fly state
+
   const isExactIn = useMemo(() => independentField === Field.INPUT, [independentField])
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
+
+  const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
+  const [allPlatformTradesToken1, setAllPlatformTradesToken1] = useState<Trade[]>([])
 
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
@@ -171,6 +192,8 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     isExactIn,
     provider,
     isQuoteExpired,
+    pairCurrency0,
+    pairCurrency1,
   ]
 
   useWhatChanged(
@@ -185,7 +208,15 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
 
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
-      setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
+      if (isZap) {
+        if (!pairCurrency0 || !pairCurrency1) {
+          setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
+          return
+        }
+      } else {
+        setInputError(SWAP_INPUT_ERRORS.SELECT_TOKEN)
+        return
+      }
       return
     }
     // Require a valid input amount
@@ -223,6 +254,11 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     setLoading(true)
     setAllPlatformTrades([])
 
+    if (isZap) {
+      setAllPlatformTradesToken0([])
+      setAllPlatformTradesToken1([])
+    }
+
     setIsQuoteExpired(false)
     if (quoteExpiryTimeout.current) {
       clearTimeout(quoteExpiryTimeout.current)
@@ -239,35 +275,97 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
         useMultihops,
       },
     }
-    const getTrades = getTradesPromise(
-      parsedAmount,
-      inputCurrency,
-      outputCurrency,
-      commonParams,
-      ecoRouterSourceOptionsParams,
-      provider,
-      signal
-    )
 
-    // Start fetching trades from EcoRouter API
-    getTrades
-      .then(trades => {
-        setAllPlatformTrades(trades.trades)
-        setLoading(false)
-        quoteExpiryTimeout.current = setTimeout(() => {
-          setIsQuoteExpired(true)
-        }, quoteTTL)
-      })
-      .catch(error => {
-        if (error.name !== 'AbortError') {
-          console.error(error)
-          setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+    if (isZap && pairCurrency0 && pairCurrency1) {
+      const getTradesToken0 = getTradesPromise(
+        parsedAmount,
+        inputCurrency,
+        pairCurrency0,
+        commonParams,
+        ecoRouterSourceOptionsParams,
+        provider,
+        signal
+      )
+
+      // Start fetching trades from EcoRouter API
+      getTradesToken0
+        .then(trades => {
+          setAllPlatformTradesToken0(trades.trades)
           setLoading(false)
-        }
-      })
+          quoteExpiryTimeout.current = setTimeout(() => {
+            setIsQuoteExpired(true)
+          }, quoteTTL)
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error(error)
+            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+            setLoading(false)
+          }
+        })
+
+      const getTradesToken1 = getTradesPromise(
+        parsedAmount,
+        inputCurrency,
+        pairCurrency1,
+        commonParams,
+        ecoRouterSourceOptionsParams,
+        provider,
+        signal
+      )
+
+      // Start fetching trades from EcoRouter API
+      getTradesToken1
+        .then(trades => {
+          setAllPlatformTradesToken1(trades.trades)
+          setLoading(false)
+          quoteExpiryTimeout.current = setTimeout(() => {
+            setIsQuoteExpired(true)
+          }, quoteTTL)
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error(error)
+            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+            setLoading(false)
+          }
+        })
+    } else {
+      const getTrades = getTradesPromise(
+        parsedAmount,
+        inputCurrency,
+        outputCurrency,
+        commonParams,
+        ecoRouterSourceOptionsParams,
+        provider,
+        signal
+      )
+
+      // Start fetching trades from EcoRouter API
+      getTrades
+        .then(trades => {
+          setAllPlatformTrades(trades.trades)
+          setLoading(false)
+          quoteExpiryTimeout.current = setTimeout(() => {
+            setIsQuoteExpired(true)
+          }, quoteTTL)
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error(error)
+            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+            setLoading(false)
+          }
+        })
+    }
 
     return function useDerivedSwapInfoCleanUp() {
-      setAllPlatformTrades([])
+      if (isZap) {
+        setAllPlatformTradesToken0([])
+        setAllPlatformTradesToken1([])
+      } else {
+        setAllPlatformTrades([])
+      }
       setLoading(false)
       setInputError(undefined)
       if (quoteExpiryTimeout.current) {
@@ -280,37 +378,97 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
   // If overridden platform selection and a trade for that platform exists, use that.
   // Otherwise, use the best trade
   let platformTrade
-  if (platformOverride) {
-    platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
-  }
-  const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
-  const slippageAdjustedAmounts = trade && allowedSlippage && computeSlippageAdjustedAmounts(trade)
 
-  // compare input balance to MAx input based on version
-  const [balanceIn, amountIn] = [
-    relevantTokenBalances[0],
-    slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
-  ]
+  let platformTradeToken0 = allPlatformTradesToken0.filter(t => !!t?.details)
+  let platformTradeToken1 = allPlatformTradesToken1.filter(t => !!t?.details)
+
+  if (platformOverride) {
+    if (isZap) {
+      platformTradeToken0 = platformTradeToken0.filter(t => t?.platform === platformOverride)
+      platformTradeToken1 = platformTradeToken1.filter(t => t?.platform === platformOverride)
+    } else {
+      platformTrade = allPlatformTrades.filter(t => t?.platform === platformOverride)[0]
+    }
+  }
 
   let returnInputError = inputError
-  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
-  }
+  if (isZap) {
+    const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
 
-  return {
-    currencies: {
-      [Field.INPUT]: inputCurrency ?? undefined,
-      [Field.OUTPUT]: outputCurrency ?? undefined,
-    },
-    currencyBalances: {
-      [Field.INPUT]: relevantTokenBalances[0] ?? undefined,
-      [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
-    },
-    parsedAmount,
-    trade,
-    allPlatformTrades: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTrades,
-    inputError: returnInputError,
-    loading,
+    const isCorrectTrade =
+      bestTradeToken0 &&
+      bestTradeToken1 &&
+      bestTradeToken0.details instanceof Route &&
+      bestTradeToken1.details instanceof Route
+
+    if (allowedSlippage && bestTradeToken0 && bestTradeToken1) {
+      const slippageAdjustedAmounts0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
+      const slippageAdjustedAmounts1 = bestTradeToken1 && computeSlippageAdjustedAmounts(bestTradeToken1)
+      // compare input balance to Max input based on version
+      const [balanceInToken0, amountInToken0] = [
+        relevantTokenBalances[0],
+        slippageAdjustedAmounts0 ? slippageAdjustedAmounts0[Field.INPUT] : null,
+      ]
+
+      const [balanceInToken1, amountInToken1] = [
+        relevantTokenBalances[0],
+        slippageAdjustedAmounts1 ? slippageAdjustedAmounts1[Field.INPUT] : null,
+      ]
+
+      if (
+        (balanceInToken0 && amountInToken0 && balanceInToken0.lessThan(amountInToken0)) ||
+        (balanceInToken1 && amountInToken1 && balanceInToken1.lessThan(amountInToken1))
+      ) {
+        returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
+      }
+    }
+    return {
+      currencies: {
+        [Field.INPUT]: inputCurrency ?? undefined,
+        [Field.OUTPUT]: outputCurrency ?? undefined,
+      },
+      currencyBalances: {
+        [Field.INPUT]: relevantTokenBalances[0] ?? undefined,
+        [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
+      },
+      parsedAmount,
+      tradeToken0: bestTradeToken0,
+      tradeToken1: bestTradeToken1,
+      allPlatformTradesToken0: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTradesToken0,
+      inputError: returnInputError,
+      loading,
+      pathToken0toLpToken: isCorrectTrade ? bestTradeToken0.details.path.map(token => token.address) : [],
+      pathToken1toLpToken: isCorrectTrade ? bestTradeToken1.details.path.map(token => token.address) : [],
+    } as ReturnedValue
+  } else {
+    const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
+    const slippageAdjustedAmounts = trade && allowedSlippage && computeSlippageAdjustedAmounts(trade)
+
+    // compare input balance to MAx input based on version
+    const [balanceIn, amountIn] = [
+      relevantTokenBalances[0],
+      slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
+    ]
+
+    if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
+      returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
+    }
+
+    return {
+      currencies: {
+        [Field.INPUT]: inputCurrency ?? undefined,
+        [Field.OUTPUT]: outputCurrency ?? undefined,
+      },
+      currencyBalances: {
+        [Field.INPUT]: relevantTokenBalances[0] ?? undefined,
+        [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
+      },
+      parsedAmount,
+      trade,
+      allPlatformTrades: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTrades,
+      inputError: returnInputError,
+      loading,
+    } as ReturnedValue
   }
 
   async function getTradesPromise(

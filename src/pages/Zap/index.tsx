@@ -1,33 +1,15 @@
-import {
-  ChainId,
-  CoWTrade,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  Pair,
-  RoutablePlatform,
-  Route,
-  Token,
-  Trade,
-  UniswapV2RoutablePlatform,
-  UniswapV2Trade,
-} from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, Pair, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import { BigNumber, Contract } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Box, Flex } from 'rebass'
-import styled, { useTheme } from 'styled-components'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { InputType } from '../../components/CurrencyInputPanel/CurrencyInputPanel.types'
-import { CurrencyView } from '../../components/CurrencyInputPanel/CurrencyView'
 import BlogNavigation from '../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from '../../components/LandingPageComponents/CommunityBanner'
 import CommunityLinks from '../../components/LandingPageComponents/CommunityLinks'
@@ -36,49 +18,22 @@ import Footer from '../../components/LandingPageComponents/layout/Footer'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import Stats from '../../components/LandingPageComponents/Stats'
 import Timeline from '../../components/LandingPageComponents/Timeline'
-import { StyledFlex } from '../../components/Pool/SortByDropdown/SortByDropdown'
 import { filterPairsForZap } from '../../components/SearchModal/utils/filtering'
-import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
-import SwapRoute from '../../components/Swap/SwapRoute'
 import { Tabs } from '../../components/Swap/Tabs'
-import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import SwapButtons from '../../components/Zap/SwapButtons'
-import { ROUTABLE_PLATFORM_LOGO, ZAP_CONTRACT_ADDRESS } from '../../constants'
-import ZAP_ABI from '../../constants/abis/zap.json'
-import { usePair, usePairs } from '../../data/Reserves'
+import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
-import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
-import { useZapContract } from '../../hooks/useContract'
-import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { useZapCallback } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
-import { selectCurrency } from '../../state/swap/actions'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-} from '../../state/swap/hooks'
-import {
-  useAdvancedSwapDetails,
-  useIsExpertMode,
-  useUserPreferredGasPrice,
-  useUserSlippageTolerance,
-} from '../../state/user/hooks'
-import { useDerivedZapInfo, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
-import { Field } from '../../state/zap/types'
-import { TYPE } from '../../theme'
-import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
+import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
+import { useUserSlippageTolerance } from '../../state/user/hooks'
+import { UseDerivedZapInfoResult, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
+import { Field, ZapState } from '../../state/zap/types'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 
 export type SwapData = {
@@ -107,14 +62,14 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-const StyledRouteFlex = styled(Flex)`
-  align-items: center;
-  background-color: rgba(25, 26, 36, 0.55);
-  boarder: 1px solid ${({ theme }) => theme.purple6};
-  border-radius: 12px;
-  padding: 18px 16px;
-  margin-bottom: 16px !important;
-`
+// const StyledRouteFlex = styled(Flex)`
+//   align-items: center;
+//   background-color: rgba(25, 26, 36, 0.55);
+//   boarder: 1px solid ${({ theme }) => theme.purple6};
+//   border-radius: 12px;
+//   padding: 18px 16px;
+//   margin-bottom: 16px !important;
+// `
 
 export enum CoWTradeState {
   UNKNOWN, // default
@@ -125,9 +80,8 @@ export enum CoWTradeState {
 
 export default function Zap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
+  const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -151,24 +105,26 @@ export default function Zap() {
   const { chainId } = useActiveWeb3React()
 
   // for expert mode
-  const isExpertMode = useIsExpertMode()
 
   // get custom setting values for user
   const allowedSlippage = useUserSlippageTolerance()
 
   // swap state
   // const { independentField, typedValue, recipient } = useSwapState()
-  const { independentField, typedValue, recipient, INPUT, OUTPUT, pairTokens } = useZapState()
+  const { independentField, typedValue, recipient } = useZapState()
 
   const {
+    currencies,
+    currencyBalances,
+    loading,
+    parsedAmount,
+    pathToken0toLpToken,
+    pathToken1toLpToken,
     tradeToken0,
     tradeToken1,
-    currencyBalances,
-    parsedAmount,
-    currencies,
-    inputError: swapInputError,
-    loading,
-  } = useDerivedZapInfo()
+  } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: 'zap', isZap: true })
+
+  console.log('masny test', { pathToken0toLpToken, pathToken1toLpToken, tradeToken0, tradeToken1 })
 
   const zapIn = independentField === Field.INPUT
 
@@ -179,11 +135,7 @@ export default function Zap() {
     [chainId]
   )
 
-  const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
-  const pathToPairToken0 =
-    tradeToken0 && tradeToken0.details instanceof Route ? tradeToken0.details.path.map(token => token.address) : []
-  const pathToPairToken1 =
-    tradeToken1 && tradeToken1.details instanceof Route ? tradeToken1.details.path.map(token => token.address) : []
+  // const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
 
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = {
@@ -202,13 +154,6 @@ export default function Zap() {
     [onUserInput]
   )
 
-  const handleTypeOutput = useCallback(
-    (value: string) => {
-      onUserInput(Field.OUTPUT, value)
-    },
-    [onUserInput]
-  )
-
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<SwapData>({
     showConfirm: false,
@@ -223,35 +168,27 @@ export default function Zap() {
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  )
-
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallback(parsedAmount, ZAP_CONTRACT_ADDRESS)
-  console.log('zap approve', approval, parsedAmount)
+  // const [approval] = useApproveCallback(parsedAmount, ZAP_CONTRACT_ADDRESS)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [approvalsSubmitted, setApprovalsSubmitted] = useState<boolean[]>([])
+  const [, setApprovalsSubmitted] = useState<boolean[]>([])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
-  const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-    amountFrom: parsedAmount,
-    amount0Min: amountOutZero,
-    amount1Min: amountOutZero,
-    pathToPairToken0,
-    pathToPairToken1,
-    allowedSlippage: 0,
-    recipientAddressOrName: null,
-    router: '',
-  })
-
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(tradeToken0)
+  // const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
+  //   amountFrom: parsedAmount,
+  //   amount0Min: amountOutZero,
+  //   amount1Min: amountOutZero,
+  //   pathToPairToken0: pathToken0toLpToken,
+  //   pathToPairToken1: pathToken1toLpToken,
+  //   allowedSlippage: 0,
+  //   recipientAddressOrName: null,
+  //   router: '',
+  // })
 
   // warnings on slippage
-  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -306,10 +243,10 @@ export default function Zap() {
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
 
   useEffect(() => {
-    if (pair) {
+    if (!zapPair && pair) {
       setZapPair(pair)
     }
-  }, [pair])
+  }, [pair, zapPair])
 
   const handleOnPairSelect = useCallback(
     (pair: Pair) => {
@@ -330,15 +267,10 @@ export default function Zap() {
     [maxAmountInput, maxAmountOutput, onUserInput]
   )
 
-  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+  const { fiatValueInput, isFallbackFiatValueInput } = useHigherUSDValue({
     inputCurrencyAmount: parsedAmounts[Field.INPUT],
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
   })
-
-  const priceImpact = useMemo(
-    () => computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput),
-    [fiatValueInput, fiatValueOutput]
-  )
 
   return (
     <>

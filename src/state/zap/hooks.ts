@@ -139,9 +139,11 @@ export interface UseDerivedZapInfoResult {
   allPlatformTradesToken0: (Trade | undefined)[] | undefined
   inputError?: number
   loading: boolean
+  pathToken0toLpToken: string[]
+  pathToken1toLpToken: string[]
 }
 
-export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDerivedZapInfoResult {
+export function useDerivedZapInfo(platformOverride?: RoutablePlatform): any {
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
   const {
@@ -186,7 +188,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
   const { getAbortSignal } = useAbortController()
-  let returnInputError = inputError
+  let returnInputError = useRef(inputError)
 
   const dependencyList = [
     account,
@@ -387,10 +389,10 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
         (balanceInToken0 && amountInToken0 && balanceInToken0.lessThan(amountInToken0)) ||
         (balanceInToken1 && amountInToken1 && balanceInToken1.lessThan(amountInToken1))
       ) {
-        returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
+        returnInputError.current = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
       }
     }
-  }, [allPlatformTradesToken0, allPlatformTradesToken1, platformOverride])
+  }, [allPlatformTradesToken0, allPlatformTradesToken1, allowedSlippage, platformOverride, relevantTokenBalances])
 
   return {
     currencies: {
@@ -405,7 +407,7 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): UseDeriv
     tradeToken0: tradeToken0toLpToken,
     tradeToken1: tradeToken1toLpToken,
     allPlatformTradesToken0: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTradesToken0,
-    inputError: returnInputError,
+    inputError: returnInputError.current,
     loading,
   }
 
