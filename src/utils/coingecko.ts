@@ -3,6 +3,8 @@ import { ChainId, Currency, Trade } from '@swapr/sdk'
 interface PriceInformation {
   token: string
   amount: string | null
+  percentageAmountChange24h: number | null
+  isIncome24h: boolean | undefined
 }
 
 // Defaults
@@ -72,6 +74,7 @@ export interface CoinGeckoUsdPriceCurrencyParams {
 interface CoinGeckoUsdQuote {
   [address: string]: {
     usd: number
+    usd_24h_change: number
   }
 }
 
@@ -86,7 +89,7 @@ export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams
 
   const response = await _get(
     chainId,
-    `/simple/token_price/${assetPlatform}?contract_addresses=${tokenAddress}&vs_currencies=usd`
+    `/simple/token_price/${assetPlatform}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`
   ).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
@@ -118,12 +121,17 @@ export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInf
   // We only receive/want the first key/value pair in the return object
   const token = priceRaw ? Object.keys(priceRaw)[0] : null
 
-  if (!token || !priceRaw?.[token].usd) {
+  if (!token || !priceRaw?.[token].usd || !priceRaw?.[token].usd_24h_change) {
     return null
   }
 
-  const { usd } = priceRaw[token]
-  return { amount: usd.toString(), token }
+  const { usd, usd_24h_change } = priceRaw[token]
+  return {
+    amount: usd.toString(),
+    percentageAmountChange24h: Math.abs(usd_24h_change),
+    isIncome24h: usd_24h_change > 0,
+    token,
+  }
 }
 
 export async function getTradeUSDValue(trade: Trade): Promise<string | null> {

@@ -7,6 +7,7 @@ module.exports = {
     '@storybook/preset-create-react-app',
     '@react-theming/storybook-addon',
     '@storybook/addon-docs',
+    'storybook-react-i18next',
   ],
   framework: '@storybook/react',
   core: {

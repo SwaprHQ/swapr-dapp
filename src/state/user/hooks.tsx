@@ -18,6 +18,8 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateSelectedChartTab,
+  updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -26,6 +28,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
+import { ChartTabs, SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -110,6 +113,14 @@ const selectExpertMode = createSelector(
 export function useIsExpertMode() {
   return useSelector<AppState, AppState['user']['userExpertMode']>(selectExpertMode)
 }
+const selectAdvTradeMode = createSelector(
+  (state: AppState) => state.user.selectedChartTab,
+  selectedChartTab => !!(selectedChartTab === ChartTabs.PRO)
+)
+
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, boolean>(selectAdvTradeMode)
+}
 
 export function useExpertModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()
@@ -120,6 +131,56 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+const selectSelectedSwapTab = createSelector(
+  (state: AppState) => state.user.selectedSwapTab,
+  selectedSwapTab => selectedSwapTab
+)
+
+const selectSelectedChartTab = createSelector(
+  (state: AppState) => state.user.selectedChartTab,
+  selectedChartTab => selectedChartTab
+)
+
+export function useSelectedSwapTab() {
+  return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
+}
+
+export function useSelectedChartTab() {
+  return useSelector<AppState, AppState['user']['selectedChartTab']>(selectSelectedChartTab)
+}
+
+export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentTab = useSelectedSwapTab()
+
+  const setSelectedTab = useCallback(
+    (selectedTab: SwapTabs) => {
+      if (currentTab !== selectedTab || !currentTab) {
+        dispatch(updateSelectedSwapTab({ selectedSwapTab: selectedTab }))
+      }
+    },
+    [currentTab, dispatch]
+  )
+
+  return [currentTab, setSelectedTab]
+}
+
+export function useUpdateSelectedChartTab(): [ChartTabs, (selectedTab: ChartTabs) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentChartTab = useSelectedChartTab()
+
+  const setSelectedChartTab = useCallback(
+    (selectedChartTab: ChartTabs) => {
+      if (!currentChartTab || currentChartTab !== selectedChartTab) {
+        dispatch(updateSelectedChartTab({ selectedChartTab: selectedChartTab }))
+      }
+    },
+    [currentChartTab, dispatch]
+  )
+
+  return [currentChartTab, setSelectedChartTab]
 }
 
 const selectUserSlippageTolerance = createSelector(
