@@ -21,10 +21,11 @@ import { filterPairsForZap } from '../../../components/SearchModal/utils/filteri
 import { PRE_SELECT_OUTPUT_CURRENCY_ID } from '../../../constants'
 import { PairState, usePair } from '../../../data/Reserves'
 import { useCurrency, useToken } from '../../../hooks/Tokens'
+import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
-import { setPairTokens } from '../../../state/zap/actions'
+import { selectCurrency, setPairTokens } from '../../../state/zap/actions'
 import { useZapActionHandlers } from '../../../state/zap/hooks'
 import { Field } from '../../../state/zap/types'
 import { BlurBox } from '../../../ui/StyledElements/BlurBox'
@@ -51,9 +52,9 @@ export default function Pair() {
   )
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   // refactor to put into the store just lp token address
-  const tokenZap = useCurrency(PRE_SELECT_OUTPUT_CURRENCY_ID[urlLoadedChainId ? urlLoadedChainId : ChainId.MAINNET])
+  // const currencyZap = useCurrency(PRE_SELECT_OUTPUT_CURRENCY_ID[urlLoadedChainId ? urlLoadedChainId : ChainId.MAINNET])
   const pairZap = wrappedPair && wrappedPair[0] === PairState.EXISTS ? wrappedPair[1] : null
-  console.log('zap pools', urlLoadedChainId, tokenZap, pairZap)
+  console.log('zap pools', urlLoadedChainId, pairZap)
   console.log(
     'zap pools currency',
     PRE_SELECT_OUTPUT_CURRENCY_ID[urlLoadedChainId ? urlLoadedChainId : ChainId.MAINNET]
@@ -78,6 +79,8 @@ export default function Pair() {
 
   const handlePairZap = () => {
     dispatch(setPairTokens({ token0Id: currencyIdA ?? '', token1Id: currencyIdB ?? '' }))
+    // use by default native currency to zap
+    dispatch(selectCurrency({ field: Field.OUTPUT, currencyId: pairZap?.liquidityToken.address ?? '' }))
   }
 
   const isZapSupported = useMemo(() => {

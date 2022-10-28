@@ -48,7 +48,7 @@ export default createReducer<ZapState>(initialState, builder =>
         }
       }
     )
-    .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
+    .addCase(selectCurrency, (state, { payload: { field, currencyId } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
       if (currencyId === state[otherField].currencyId) {

@@ -8,7 +8,7 @@ import { useWhatChanged } from '@simbathesailor/use-what-changed'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, PRE_SELECT_ZAP_PAIR_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
@@ -27,6 +27,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
+import { replaceZapState } from '../zap/actions'
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { Field, SwapState } from './types'
 
@@ -602,12 +603,25 @@ export function useDefaultsFromURLSearch():
       ? parsed[Field.OUTPUT].currencyId
       : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
 
+    const outputPairId = !!parsed[Field.OUTPUT].currencyId?.length
+      ? parsed[Field.OUTPUT].currencyId
+      : PRE_SELECT_ZAP_PAIR_ID[chainId]
+
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
         inputCurrencyId: parsed[Field.INPUT].currencyId,
         outputCurrencyId,
+        recipient: parsed.recipient,
+      })
+    )
+    dispatch(
+      replaceZapState({
+        typedValue: parsed.typedValue,
+        field: parsed.independentField,
+        inputCurrencyId: parsed[Field.INPUT].currencyId,
+        outputCurrencyId: outputPairId,
         recipient: parsed.recipient,
       })
     )

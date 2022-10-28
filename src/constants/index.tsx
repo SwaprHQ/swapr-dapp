@@ -213,6 +213,19 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.OPTIMISM_GOERLI]: '',
 }
 
+export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '',
+  [ChainId.GNOSIS]: '',
+  [ChainId.ARBITRUM_ONE]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.OPTIMISM_MAINNET]: '',
+  [ChainId.RINKEBY]: '',
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.GOERLI]: '',
+  [ChainId.ARBITRUM_GOERLI]: '',
+  [ChainId.OPTIMISM_GOERLI]: '',
+}
+
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MAINNET]: [
