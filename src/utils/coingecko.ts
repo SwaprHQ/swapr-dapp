@@ -36,6 +36,8 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.GOERLI]: null,
   [ChainId.OPTIMISM_MAINNET]: 'optimistic-ethereum',
   [ChainId.OPTIMISM_GOERLI]: null,
+  [ChainId.BSC_MAINNET]: 'binance-smart-chain',
+  [ChainId.BSC_TESTNET]: null,
 }
 
 const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
@@ -44,6 +46,7 @@ const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.XDAI]: 'xdai',
   [ChainId.POLYGON]: 'matic-network',
   [ChainId.OPTIMISM_MAINNET]: 'ethereum',
+  [ChainId.BSC_MAINNET]: 'binancecoin',
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {

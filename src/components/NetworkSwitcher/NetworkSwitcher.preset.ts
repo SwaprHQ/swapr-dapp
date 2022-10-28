@@ -1,6 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
 import ArbitrumLogo from '../../assets/images/arbitrum-one-logo.svg'
+import BinanceChainLogo from '../../assets/images/binance-chain-logo.svg'
 import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
@@ -32,6 +33,12 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Optimism',
     logoSrc: OptimismLogo,
     color: '#ff0420',
+  },
+  {
+    chainId: ChainId.BSC_MAINNET,
+    name: 'BNB Chain',
+    logoSrc: BinanceChainLogo,
+    color: '#F3BA2F',
   },
 
   // TESTNETS
@@ -74,6 +81,13 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Optimism Görli',
     logoSrc: OptimismLogo,
     color: '#ff0420',
+    tag: NetworkSwitcherTags.TESTNETS,
+  },
+  {
+    chainId: ChainId.BSC_TESTNET,
+    name: 'BNB Testnet',
+    logoSrc: BinanceChainLogo,
+    color: '#F3BA2F',
     tag: NetworkSwitcherTags.TESTNETS,
   },
 ]

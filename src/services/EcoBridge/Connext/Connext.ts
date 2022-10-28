@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, WETH } from '@swapr/sdk'
+import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
 import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
 import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sdk'
@@ -12,7 +12,6 @@ import { ethers, utils } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { DAI } from '../../../constants'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import {
   BridgeModalStatus,
