@@ -154,155 +154,171 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   public validate = async () => {
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
+    try {
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    const {
-      from: { chainId: fromChainId, value: fromAmount, decimals: fromTokenDecimals },
-    } = this.store.getState().ecoBridge.ui
+      const {
+        from: { chainId: fromChainId, value: fromAmount, decimals: fromTokenDecimals },
+      } = this.store.getState().ecoBridge.ui
 
-    const fromAmountNumber = Number(fromAmount)
+      const fromAmountNumber = Number(fromAmount)
 
-    if (
-      fromAmountNumber > 9999999 ||
-      (fromChainId === ChainId.MAINNET && fromAmountNumber < 0.005) ||
-      (fromChainId === ChainId.XDAI && fromAmountNumber < 10)
-    ) {
-      this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
-        label: `Amount is underflow or overflow`,
-        isError: true,
-        isLoading: false,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
-
-      return
-    }
-
-    if (this._daiTokenOnMainnet) {
-      const allowance: BigNumber = await this._daiTokenOnMainnet.allowance(this._account, ETHEREUM_BRIDGE_ADDRESS)
-
-      const parsedValue = parseUnits(fromAmount, fromTokenDecimals)
-
-      if (allowance.gte(parsedValue)) {
-        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (
+        fromAmountNumber > 9999999 ||
+        (fromChainId === ChainId.MAINNET && fromAmountNumber < 0.005) ||
+        (fromChainId === ChainId.XDAI && fromAmountNumber < 10)
+      ) {
+        this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
+          label: `Amount is underflow or overflow`,
+          isError: true,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
 
         return
       }
 
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
-    } else {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (this._daiTokenOnMainnet) {
+        const allowance: BigNumber = await this._daiTokenOnMainnet.allowance(this._account, ETHEREUM_BRIDGE_ADDRESS)
+
+        const parsedValue = parseUnits(fromAmount, fromTokenDecimals)
+
+        if (allowance.gte(parsedValue)) {
+          this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+
+          return
+        }
+
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+      } else {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
   }
 
   public approve = async () => {
-    if (!this._daiTokenOnMainnet) return
+    try {
+      if (!this._daiTokenOnMainnet) return
 
-    const { value, decimals } = this.store.getState().ecoBridge.ui.from
+      const { value, decimals } = this.store.getState().ecoBridge.ui.from
 
-    const parsedValue = parseUnits(value, decimals)
-    const txn: ContractTransaction = await this._daiTokenOnMainnet.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
+      const parsedValue = parseUnits(value, decimals)
+      const txn: ContractTransaction = await this._daiTokenOnMainnet.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    const receipt = await txn.wait()
+      const receipt = await txn.wait()
 
-    if (receipt) this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (receipt) this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
+    }
   }
 
   public triggerBridging = async () => {
-    if (!this._activeProvider || !this._account) return
+    try {
+      if (!this._activeProvider || !this._account) return
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const {
-      from: { chainId: fromChainId, value: fromValue, decimals: fromTokenDecimals },
-      to: { chainId: toChainId },
-    } = this.store.getState().ecoBridge.ui
+      const {
+        from: { chainId: fromChainId, value: fromValue, decimals: fromTokenDecimals },
+        to: { chainId: toChainId },
+      } = this.store.getState().ecoBridge.ui
 
-    const amount = parseUnits(fromValue, fromTokenDecimals)
+      const amount = parseUnits(fromValue, fromTokenDecimals)
 
-    let transaction: TransactionResponse | undefined = undefined
+      let transaction: TransactionResponse | undefined = undefined
 
-    if (this._daiTokenOnMainnet) {
-      transaction = await this._daiTokenOnMainnet.transferFrom(this._account, ETHEREUM_BRIDGE_ADDRESS, amount)
-    } else {
-      transaction = await this._activeProvider.getSigner().sendTransaction({
-        to: XDAI_BRIDGE_ADDRESS,
-        value: amount,
-      })
-    }
-
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
-
-    if (transaction) {
-      this.store.dispatch(
-        this.actions.addTransaction({
-          assetAddressL1: fromChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
-          assetAddressL2: toChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
-          assetName: fromChainId === ChainId.MAINNET ? 'DAI' : 'XDAI',
-          fromChainId,
-          toChainId,
-          value: fromValue,
-          sender: this._account,
-          status: BridgeTransactionStatus.PENDING,
-          txHash: transaction.hash,
-          needsClaiming: fromChainId !== ChainId.MAINNET,
+      if (this._daiTokenOnMainnet) {
+        transaction = await this._daiTokenOnMainnet.transferFrom(this._account, ETHEREUM_BRIDGE_ADDRESS, amount)
+      } else {
+        transaction = await this._activeProvider.getSigner().sendTransaction({
+          to: XDAI_BRIDGE_ADDRESS,
+          value: amount,
         })
-      )
+      }
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
+
+      if (transaction) {
+        this.store.dispatch(
+          this.actions.addTransaction({
+            assetAddressL1: fromChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
+            assetAddressL2: toChainId === ChainId.MAINNET ? DAI[ChainId.MAINNET].address : ZERO_ADDRESS,
+            assetName: fromChainId === ChainId.MAINNET ? 'DAI' : 'XDAI',
+            fromChainId,
+            toChainId,
+            value: fromValue,
+            sender: this._account,
+            status: BridgeTransactionStatus.PENDING,
+            txHash: transaction.hash,
+            needsClaiming: fromChainId !== ChainId.MAINNET,
+          })
+        )
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public collect = async () => {
-    const collectableTransactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
+    try {
+      const collectableTransactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
 
-    if (!this._activeProvider || !collectableTransactionHash) return
+      if (!this._activeProvider || !collectableTransactionHash) return
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const abi = ['function executeSignatures(bytes messageData, bytes signatures) external']
+      const abi = ['function executeSignatures(bytes messageData, bytes signatures) external']
 
-    const ambContract = new Contract(ETHEREUM_BRIDGE_ADDRESS, abi, this._activeProvider.getSigner())
+      const ambContract = new Contract(ETHEREUM_BRIDGE_ADDRESS, abi, this._activeProvider.getSigner())
 
-    const collectableTransaction = xdaiBridgeTransactionAdapter
-      .getSelectors()
-      .selectById(
-        this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].transactions,
-        collectableTransactionHash
-      )
+      const collectableTransaction = xdaiBridgeTransactionAdapter
+        .getSelectors()
+        .selectById(
+          this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].transactions,
+          collectableTransactionHash
+        )
 
-    if (collectableTransaction?.message) {
-      const { content, signatures } = collectableTransaction.message
+      if (collectableTransaction?.message) {
+        const { content, signatures } = collectableTransaction.message
 
-      if (content && !!signatures?.length) {
-        const signs = packSignatures(signatures.map(signature => signatureToVRS(signature)))
+        if (content && !!signatures?.length) {
+          const signs = packSignatures(signatures.map(signature => signatureToVRS(signature)))
 
-        const transaction: TransactionResponse = await ambContract.executeSignatures(content, signs)
+          const transaction: TransactionResponse = await ambContract.executeSignatures(content, signs)
 
-        this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+          this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
 
-        this.store.dispatch(this.actions.updateTransactionAfterCollect({ txHash: collectableTransactionHash }))
+          this.store.dispatch(this.actions.updateTransactionAfterCollect({ txHash: collectableTransactionHash }))
 
-        const receipt = await transaction.wait()
+          const receipt = await transaction.wait()
 
-        if (receipt) {
-          this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+          if (receipt) {
+            this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
 
-          this.store.dispatch(
-            this.actions.updatePartnerTxHash({
-              txHash: collectableTransactionHash,
-              partnerTxHash: receipt.transactionHash,
-            })
-          )
+            this.store.dispatch(
+              this.actions.updatePartnerTxHash({
+                txHash: collectableTransactionHash,
+                partnerTxHash: receipt.transactionHash,
+              })
+            )
 
-          this.store.dispatch(
-            this.actions.updateTransactionStatus({
-              txHash: collectableTransactionHash,
-              status: BridgeTransactionStatus.CLAIMED,
-            })
-          )
+            this.store.dispatch(
+              this.actions.updateTransactionStatus({
+                txHash: collectableTransactionHash,
+                status: BridgeTransactionStatus.CLAIMED,
+              })
+            )
+          }
         }
       }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 

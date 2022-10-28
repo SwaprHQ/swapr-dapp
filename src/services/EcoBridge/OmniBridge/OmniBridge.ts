@@ -102,235 +102,253 @@ export class OmniBridge extends EcoBridgeChildBase {
   }
 
   public triggerBridging = async () => {
-    if (!this._account || !this._activeProvider || !this._tokensPair) return
+    try {
+      if (!this._account || !this._activeProvider || !this._tokensPair) return
 
-    const { fromToken, toToken } = this._tokensPair
-    const {
-      address: fromTokenAddress,
-      mode: fromTokenMode,
-      mediator: fromMediator,
-      amount: fromAmount,
-      chainId: fromChainId,
-      decimals: fromTokenDecimals,
-    } = fromToken
+      const { fromToken, toToken } = this._tokensPair
+      const {
+        address: fromTokenAddress,
+        mode: fromTokenMode,
+        mediator: fromMediator,
+        amount: fromAmount,
+        chainId: fromChainId,
+        decimals: fromTokenDecimals,
+      } = fromToken
 
-    const {
-      chainId: toChainId,
-      address: toTokenAddress,
-      mode: toTokenMode,
-      amount: toTokenAmount,
-      decimals: toTokenDecimals,
-    } = toToken
+      const {
+        chainId: toChainId,
+        address: toTokenAddress,
+        mode: toTokenMode,
+        amount: toTokenAmount,
+        decimals: toTokenDecimals,
+      } = toToken
 
-    if (!fromTokenMode || !fromMediator || !toTokenMode) return
+      if (!fromTokenMode || !fromMediator || !toTokenMode) return
 
-    let shouldReceiveNativeCurrency = false
+      let shouldReceiveNativeCurrency = false
 
-    if (
-      toChainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
-      toTokenAddress === ZERO_ADDRESS &&
-      toTokenMode === Mode.NATIVE
-    ) {
-      shouldReceiveNativeCurrency = true
-    }
+      if (
+        toChainId === BRIDGE_CONFIG[this.bridgeId].foreignChainId &&
+        toTokenAddress === ZERO_ADDRESS &&
+        toTokenMode === Mode.NATIVE
+      ) {
+        shouldReceiveNativeCurrency = true
+      }
 
-    const isHomeChainId = this._activeChainId === this._homeChainId
-    const isClaimDisabled = BRIDGE_CONFIG[this.bridgeId].claimDisabled
-    const tokensClaimDisabled = BRIDGE_CONFIG[this.bridgeId].tokensClaimDisabled
+      const isHomeChainId = this._activeChainId === this._homeChainId
+      const isClaimDisabled = BRIDGE_CONFIG[this.bridgeId].claimDisabled
+      const tokensClaimDisabled = BRIDGE_CONFIG[this.bridgeId].tokensClaimDisabled
 
-    //check is withdraw
-    const needsClaiming =
-      isHomeChainId && !isClaimDisabled && !(tokensClaimDisabled || []).includes(fromTokenAddress.toLowerCase())
+      //check is withdraw
+      const needsClaiming =
+        isHomeChainId && !isClaimDisabled && !(tokensClaimDisabled || []).includes(fromTokenAddress.toLowerCase())
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const tx = await relayTokens(
-      this._activeProvider.getSigner(),
-      { address: fromTokenAddress, mode: fromTokenMode, mediator: fromMediator },
-      this._account,
-      fromAmount.toString(),
-      { shouldReceiveNativeCurrency, foreignChainId: this._foreignChainId }
-    )
+      const tx = await relayTokens(
+        this._activeProvider.getSigner(),
+        { address: fromTokenAddress, mode: fromTokenMode, mediator: fromMediator },
+        this._account,
+        fromAmount.toString(),
+        { shouldReceiveNativeCurrency, foreignChainId: this._foreignChainId }
+      )
 
-    this.store.dispatch(
-      this.actions.addTransaction({
-        assetName: fromToken.symbol ?? '',
-        assetAddressL1: fromToken.address,
-        assetAddressL2: toToken.address,
-        fromChainId,
-        toChainId,
-        sender: this._account,
-        txHash: tx.hash,
-        fromValue: formatUnits(fromAmount.toString(), fromTokenDecimals),
-        toValue: formatUnits(toTokenAmount.toString(), toTokenDecimals),
-        needsClaiming,
-        status: BridgeTransactionStatus.PENDING,
-      })
-    )
+      this.store.dispatch(
+        this.actions.addTransaction({
+          assetName: fromToken.symbol ?? '',
+          assetAddressL1: fromToken.address,
+          assetAddressL2: toToken.address,
+          fromChainId,
+          toChainId,
+          sender: this._account,
+          txHash: tx.hash,
+          fromValue: formatUnits(fromAmount.toString(), fromTokenDecimals),
+          toValue: formatUnits(toTokenAmount.toString(), toTokenDecimals),
+          needsClaiming,
+          status: BridgeTransactionStatus.PENDING,
+        })
+      )
 
-    const receipt = await tx.wait()
+      const receipt = await tx.wait()
 
-    if (receipt) {
-      this.store.dispatch(this.actions.updateTransaction({ txHash: receipt.transactionHash, receipt }))
+      if (receipt) {
+        this.store.dispatch(this.actions.updateTransaction({ txHash: receipt.transactionHash, receipt }))
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public approve = async () => {
-    if (!this._account || !this._activeProvider || !this._tokensPair)
-      throw this.ecoBridgeUtils.logger.error('Cannot execute approve method')
+    try {
+      if (!this._account || !this._activeProvider || !this._tokensPair)
+        throw this.ecoBridgeUtils.logger.error('Cannot execute approve method')
 
-    const {
-      fromToken: { address: fromTokenAddress, mediator: fromMediator, amount: fromAmount },
-    } = this._tokensPair
+      const {
+        fromToken: { address: fromTokenAddress, mediator: fromMediator, amount: fromAmount },
+      } = this._tokensPair
 
-    if (!fromMediator) throw this.ecoBridgeUtils.logger.error('Mediator not found')
+      if (!fromMediator) throw this.ecoBridgeUtils.logger.error('Mediator not found')
 
-    const tx = await approveToken(
-      { address: fromTokenAddress, mediator: fromMediator },
-      fromAmount.toString(),
-      this._activeProvider.getSigner()
-    )
+      const tx = await approveToken(
+        { address: fromTokenAddress, mediator: fromMediator },
+        fromAmount.toString(),
+        this._activeProvider.getSigner()
+      )
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    const receipt = await tx.wait()
+      const receipt = await tx.wait()
 
-    if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public collect = async () => {
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+    try {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const collectableTxHash = this.store.getState().ecoBridge.ui.collectableTxHash
-    const transactions = this.selectors.selectAllTransactions(this.store.getState())
+      const collectableTxHash = this.store.getState().ecoBridge.ui.collectableTxHash
+      const transactions = this.selectors.selectAllTransactions(this.store.getState())
 
-    if (!collectableTxHash || !this._homeAmbContract) return
+      if (!collectableTxHash || !this._homeAmbContract) return
 
-    const collectableTransaction = transactions.find(tx => tx.txHash.toLowerCase() === collectableTxHash.toLowerCase())
-
-    if (!this._staticProviders) return
-
-    const homeAmbAddress = BRIDGE_CONFIG[this.bridgeId].homeAmbAddress
-    const foreignAmbAddress = BRIDGE_CONFIG[this.bridgeId].foreignAmbAddress
-
-    const homeProvider = this._staticProviders[this._homeChainId]
-    const foreignProvider = this._staticProviders[this._foreignChainId]
-
-    if (!foreignProvider || !homeProvider || !collectableTransaction) return
-
-    const { message, txHash } = collectableTransaction
-
-    const homeRequiredSignatures = await requiredSignatures(homeAmbAddress, homeProvider)
-    let txMessage =
-      message && message.signatures && message.signatures.length >= homeRequiredSignatures ? message : null
-
-    if (!txMessage) {
-      const fetchedMessage = await getMessage(true, txHash, homeProvider, this._homeAmbContract)
-      txMessage = fetchedMessage
-    }
-    const isClaimed = await messageCallStatus(foreignAmbAddress, txMessage.messageId, foreignProvider)
-
-    if (isClaimed) {
-      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(
-        BridgeModalStatus.ERROR,
-        this.bridgeId,
-        'Tokens already claimed'
+      const collectableTransaction = transactions.find(
+        tx => tx.txHash.toLowerCase() === collectableTxHash.toLowerCase()
       )
-      return
-    }
 
-    const { signatures, messageData } = txMessage
+      if (!this._staticProviders) return
 
-    if (!signatures || !messageData || !this._activeProvider) return
+      const homeAmbAddress = BRIDGE_CONFIG[this.bridgeId].homeAmbAddress
+      const foreignAmbAddress = BRIDGE_CONFIG[this.bridgeId].foreignAmbAddress
 
-    const foreignAmbVersion = await fetchAmbVersion(foreignAmbAddress, foreignProvider)
+      const homeProvider = this._staticProviders[this._homeChainId]
+      const foreignProvider = this._staticProviders[this._foreignChainId]
 
-    const tx = await executeSignatures(
-      foreignAmbAddress,
-      foreignAmbVersion,
-      {
-        messageData,
-        signatures,
-      },
-      this._activeProvider.getSigner()
-    )
+      if (!foreignProvider || !homeProvider || !collectableTransaction) return
 
-    this.store.dispatch(this.actions.updatePartnerTransaction({ txHash, status: BridgeTransactionStatus.PENDING }))
+      const { message, txHash } = collectableTransaction
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+      const homeRequiredSignatures = await requiredSignatures(homeAmbAddress, homeProvider)
+      let txMessage =
+        message && message.signatures && message.signatures.length >= homeRequiredSignatures ? message : null
 
-    const receipt = await tx.wait()
+      if (!txMessage) {
+        const fetchedMessage = await getMessage(true, txHash, homeProvider, this._homeAmbContract)
+        txMessage = fetchedMessage
+      }
+      const isClaimed = await messageCallStatus(foreignAmbAddress, txMessage.messageId, foreignProvider)
 
-    if (receipt) {
-      this.store.dispatch(
-        this.actions.updatePartnerTransaction({ txHash, partnerTxHash: receipt.transactionHash, status: true })
+      if (isClaimed) {
+        this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+          BridgeModalStatus.ERROR,
+          this.bridgeId,
+          'Tokens already claimed'
+        )
+        return
+      }
+
+      const { signatures, messageData } = txMessage
+
+      if (!signatures || !messageData || !this._activeProvider) return
+
+      const foreignAmbVersion = await fetchAmbVersion(foreignAmbAddress, foreignProvider)
+
+      const tx = await executeSignatures(
+        foreignAmbAddress,
+        foreignAmbVersion,
+        {
+          messageData,
+          signatures,
+        },
+        this._activeProvider.getSigner()
       )
-      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+
+      this.store.dispatch(this.actions.updatePartnerTransaction({ txHash, status: BridgeTransactionStatus.PENDING }))
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+
+      const receipt = await tx.wait()
+
+      if (receipt) {
+        this.store.dispatch(
+          this.actions.updatePartnerTransaction({ txHash, partnerTxHash: receipt.transactionHash, status: true })
+        )
+        this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public validate = async () => {
-    if (!this._tokensPair || !this._staticProviders || !this._account || !this._currentDay) return
+    try {
+      if (!this._tokensPair || !this._staticProviders || !this._account || !this._currentDay) return
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    const { fromToken, toToken } = this._tokensPair
+      const { fromToken, toToken } = this._tokensPair
 
-    const limits = await fetchTokenLimits(this.bridgeId, fromToken, toToken, this._currentDay, this._staticProviders)
+      const limits = await fetchTokenLimits(this.bridgeId, fromToken, toToken, this._currentDay, this._staticProviders)
 
-    if (!limits) throw this.ecoBridgeUtils.logger.error('Cannot get limits')
+      if (!limits) throw this.ecoBridgeUtils.logger.error('Cannot get limits')
 
-    const { maxPerTx, minPerTx } = limits
+      const { maxPerTx, minPerTx } = limits
 
-    const { amount: fromAmount, mode: fromTokenMode, address: fromTokenAddress, mediator: fromMediator } = fromToken
+      const { amount: fromAmount, mode: fromTokenMode, address: fromTokenAddress, mediator: fromMediator } = fromToken
 
-    if (fromAmount.lt(minPerTx)) {
-      this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
-        label: `Specify more than ${minPerTx.toString()}`,
-        isError: false,
-        isLoading: false,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
+      if (fromAmount.lt(minPerTx)) {
+        this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
+          label: `Specify more than ${minPerTx.toString()}`,
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
 
-      return
+        return
+      }
+
+      if (fromAmount.gt(maxPerTx)) {
+        this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
+          label: `Specify less than ${maxPerTx.toString()}`,
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
+
+        return
+      }
+
+      const allowance = await fetchAllowance(
+        { address: fromTokenAddress, mediator: fromMediator },
+        this._account,
+        this._staticProviders[fromToken.chainId]
+      )
+
+      if (!allowance || !fromTokenMode) {
+        this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
+          label: 'Cannot fetch allowance. Try later',
+          isError: false,
+          isLoading: false,
+          isBalanceSufficient: false,
+          isApproved: false,
+        })
+
+        return
+      }
+
+      ;[Mode.NATIVE, Mode.ERC677].includes(fromTokenMode) || allowance.gte(fromAmount)
+        ? this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+        : this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
-
-    if (fromAmount.gt(maxPerTx)) {
-      this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
-        label: `Specify less than ${maxPerTx.toString()}`,
-        isError: false,
-        isLoading: false,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
-
-      return
-    }
-
-    const allowance = await fetchAllowance(
-      { address: fromTokenAddress, mediator: fromMediator },
-      this._account,
-      this._staticProviders[fromToken.chainId]
-    )
-
-    if (!allowance || !fromTokenMode) {
-      this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
-        label: 'Cannot fetch allowance. Try later',
-        isError: false,
-        isLoading: false,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
-
-      return
-    }
-
-    ;[Mode.NATIVE, Mode.ERC677].includes(fromTokenMode) || allowance.gte(fromAmount)
-      ? this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
-      : this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
   }
 
   public fetchDynamicLists = async () => {

@@ -93,108 +93,116 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public approve = async () => {
-    if (!this._activeProvider) return
+    try {
+      if (!this._activeProvider) return
 
-    const {
-      from: { address, value, decimals, chainId },
-    } = this.store.getState().ecoBridge.ui
+      const {
+        from: { address, value, decimals, chainId },
+      } = this.store.getState().ecoBridge.ui
 
-    const token = new Contract(address, ERC20.abi, this._activeProvider.getSigner())
+      const token = new Contract(address, ERC20.abi, this._activeProvider.getSigner())
 
-    const amount = parseUnits(value, decimals)
+      const amount = parseUnits(value, decimals)
 
-    const managerContract = getDeployedTransactionManagerContract(chainId)
+      const managerContract = getDeployedTransactionManagerContract(chainId)
 
-    if (!managerContract) return
+      if (!managerContract) return
 
-    const transaction: ContractTransaction = await token.approve(managerContract.address, amount.toString())
+      const transaction: ContractTransaction = await token.approve(managerContract.address, amount.toString())
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    const receipt = await transaction.wait()
+      const receipt = await transaction.wait()
 
-    if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public collect = async () => {
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+    try {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const transactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
+      const transactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
 
-    if (!transactionHash || !this._account || !this._connextSdk)
-      throw this.ecoBridgeUtils.logger.error('Cannot execute collect method')
+      if (!transactionHash || !this._account || !this._connextSdk)
+        throw this.ecoBridgeUtils.logger.error('Cannot execute collect method')
 
-    const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
+      const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
 
-    const transaction = this.selectors.selectTransaction(this.store.getState(), transactionHash)
+      const transaction = this.selectors.selectTransaction(this.store.getState(), transactionHash)
 
-    if (!transaction) throw this.ecoBridgeUtils.logger.error('Cannot find transaction')
+      if (!transaction) throw this.ecoBridgeUtils.logger.error('Cannot find transaction')
 
-    const transactionToCollect = allTransactions.find(
-      tx =>
-        tx.transactionId === transaction.transactionId &&
-        tx.chainId !== transaction.chainId &&
-        tx.receivingChainId === transaction.receivingChainId
-    )
+      const transactionToCollect = allTransactions.find(
+        tx =>
+          tx.transactionId === transaction.transactionId &&
+          tx.chainId !== transaction.chainId &&
+          tx.receivingChainId === transaction.receivingChainId
+      )
 
-    if (!transactionToCollect) throw this.ecoBridgeUtils.logger.error('Cannot find transaction to collect')
+      if (!transactionToCollect) throw this.ecoBridgeUtils.logger.error('Cannot find transaction to collect')
 
-    const {
-      encryptedCallData,
-      encodedBid,
-      bidSignature,
-      amount,
-      expiry,
-      preparedBlockNumber,
-      receivingChainTxManagerAddress,
-      user,
-      router,
-      initiator,
-      sendingAssetId,
-      receivingAssetId,
-      sendingChainFallback,
-      callTo,
-      receivingAddress,
-      callDataHash,
-      transactionId,
-      sendingChainId,
-      receivingChainId,
-    } = transactionToCollect
-
-    const receipt = await this._connextSdk.fulfillTransfer(
-      {
-        txData: {
-          amount,
-          expiry: Number(expiry),
-          preparedBlockNumber: Number(preparedBlockNumber),
-          receivingChainTxManagerAddress,
-          user: user.id,
-          router: router.id,
-          initiator,
-          sendingAssetId,
-          receivingAssetId,
-          sendingChainFallback: sendingChainFallback ?? '',
-          callTo,
-          receivingAddress,
-          sendingChainId: Number(sendingChainId),
-          receivingChainId: Number(receivingChainId),
-          callDataHash,
-          transactionId,
-        },
+      const {
         encryptedCallData,
-        encodedBid: encodedBid ?? '',
-        bidSignature: bidSignature ?? '',
-      },
-      false
-    )
+        encodedBid,
+        bidSignature,
+        amount,
+        expiry,
+        preparedBlockNumber,
+        receivingChainTxManagerAddress,
+        user,
+        router,
+        initiator,
+        sendingAssetId,
+        receivingAssetId,
+        sendingChainFallback,
+        callTo,
+        receivingAddress,
+        callDataHash,
+        transactionId,
+        sendingChainId,
+        receivingChainId,
+      } = transactionToCollect
 
-    this.store.dispatch(this.actions.updateTransactionAfterCollect(transactionHash))
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+      const receipt = await this._connextSdk.fulfillTransfer(
+        {
+          txData: {
+            amount,
+            expiry: Number(expiry),
+            preparedBlockNumber: Number(preparedBlockNumber),
+            receivingChainTxManagerAddress,
+            user: user.id,
+            router: router.id,
+            initiator,
+            sendingAssetId,
+            receivingAssetId,
+            sendingChainFallback: sendingChainFallback ?? '',
+            callTo,
+            receivingAddress,
+            sendingChainId: Number(sendingChainId),
+            receivingChainId: Number(receivingChainId),
+            callDataHash,
+            transactionId,
+          },
+          encryptedCallData,
+          encodedBid: encodedBid ?? '',
+          bidSignature: bidSignature ?? '',
+        },
+        false
+      )
 
-    if (receipt) {
-      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+      this.store.dispatch(this.actions.updateTransactionAfterCollect(transactionHash))
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+
+      if (receipt) {
+        this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
@@ -265,73 +273,77 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public triggerBridging = async () => {
-    if (!this._connextSdk || !this._account || !this._quote)
-      throw this.ecoBridgeUtils.logger.error('Cannot trigger transaction')
+    try {
+      if (!this._connextSdk || !this._account || !this._quote)
+        throw this.ecoBridgeUtils.logger.error('Cannot trigger transaction')
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const { from, to } = this.store.getState().ecoBridge.ui
-    const { bid, gasFeeInReceivingToken, bidSignature } = this._quote
+      const { from, to } = this.store.getState().ecoBridge.ui
+      const { bid, gasFeeInReceivingToken, bidSignature } = this._quote
 
-    const transferData = {
-      bid,
-      gasFeeInReceivingToken,
-      bidSignature,
+      const transferData = {
+        bid,
+        gasFeeInReceivingToken,
+        bidSignature,
+      }
+      const {
+        amount,
+        callDataHash,
+        callTo,
+        expiry,
+        receivingAssetId,
+        receivingAddress,
+        encryptedCallData,
+        initiator,
+        receivingChainTxManagerAddress,
+        user,
+        sendingAssetId,
+        router,
+        amountReceived,
+      } = bid
+
+      const { prepareResponse, transactionId } = await this._connextSdk.prepareTransfer(transferData, false)
+
+      const summary: ConnextTransaction = {
+        amount,
+        amountReceived,
+        bidSignature,
+        callDataHash,
+        chainId: from.chainId.toString(),
+        callTo,
+        expiry: expiry.toString(),
+        receivingAddress,
+        receivingAssetId,
+        receivingChainId: to.chainId.toString(),
+        encryptedCallData,
+        initiator,
+        prepareCaller: this._account,
+        prepareTransactionHash: prepareResponse.hash,
+        preparedBlockNumber: prepareResponse.blockNumber?.toString() ?? '0',
+        preparedTimestamp: prepareResponse.timestamp?.toString() ?? '0',
+        receivingChainTxManagerAddress,
+        router: { id: router },
+        sendingAssetId,
+        sendingChainId: from.chainId.toString(),
+        status: ConnextTransactionStatus.PREPARED,
+        transactionId,
+        user: { id: user },
+        callData: null,
+        cancelCaller: null,
+        cancelMeta: null,
+        cancelTimestamp: null,
+        cancelTransactionHash: null,
+        encodedBid: undefined,
+        fulfillTransactionHash: null,
+        signature: null,
+      }
+
+      this.store.dispatch(this.baseActions.addTransaction(summary))
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
-    const {
-      amount,
-      callDataHash,
-      callTo,
-      expiry,
-      receivingAssetId,
-      receivingAddress,
-      encryptedCallData,
-      initiator,
-      receivingChainTxManagerAddress,
-      user,
-      sendingAssetId,
-      router,
-      amountReceived,
-    } = bid
-
-    const { prepareResponse, transactionId } = await this._connextSdk.prepareTransfer(transferData, false)
-
-    const summary: ConnextTransaction = {
-      amount,
-      amountReceived,
-      bidSignature,
-      callDataHash,
-      chainId: from.chainId.toString(),
-      callTo,
-      expiry: expiry.toString(),
-      receivingAddress,
-      receivingAssetId,
-      receivingChainId: to.chainId.toString(),
-      encryptedCallData,
-      initiator,
-      prepareCaller: this._account,
-      prepareTransactionHash: prepareResponse.hash,
-      preparedBlockNumber: prepareResponse.blockNumber?.toString() ?? '0',
-      preparedTimestamp: prepareResponse.timestamp?.toString() ?? '0',
-      receivingChainTxManagerAddress,
-      router: { id: router },
-      sendingAssetId,
-      sendingChainId: from.chainId.toString(),
-      status: ConnextTransactionStatus.PREPARED,
-      transactionId,
-      user: { id: user },
-      callData: null,
-      cancelCaller: null,
-      cancelMeta: null,
-      cancelTimestamp: null,
-      cancelTransactionHash: null,
-      encodedBid: undefined,
-      fulfillTransactionHash: null,
-      signature: null,
-    }
-
-    this.store.dispatch(this.baseActions.addTransaction(summary))
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
   }
   public getBridgingMetadata = async () => {
     try {
@@ -436,35 +448,39 @@ export class Connext extends EcoBridgeChildBase {
     }
   }
   public validate = async () => {
-    if (!this._activeProvider || !this._account || !this._quote) return
+    try {
+      if (!this._activeProvider || !this._account || !this._quote) return
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    const {
-      from: { address: fromTokenAddress, chainId: fromChainId },
-    } = this.store.getState().ecoBridge.ui
+      const {
+        from: { address: fromTokenAddress, chainId: fromChainId },
+      } = this.store.getState().ecoBridge.ui
 
-    if (fromTokenAddress === Currency.getNative(fromChainId).symbol) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
-      return
-    }
+      if (fromTokenAddress === Currency.getNative(fromChainId).symbol) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+        return
+      }
 
-    const token = new Contract(fromTokenAddress, ERC20.abi, this._activeProvider.getSigner())
+      const token = new Contract(fromTokenAddress, ERC20.abi, this._activeProvider.getSigner())
 
-    const managerContract = getDeployedTransactionManagerContract(fromChainId)
+      const managerContract = getDeployedTransactionManagerContract(fromChainId)
 
-    if (!managerContract) throw this.ecoBridgeUtils.logger.error('Cannot get managerContractAddress')
+      if (!managerContract) throw this.ecoBridgeUtils.logger.error('Cannot get managerContractAddress')
 
-    const allowance: BigNumber = await token.allowance(this._account, managerContract.address)
+      const allowance: BigNumber = await token.allowance(this._account, managerContract.address)
 
-    const {
-      bid: { amount },
-    } = this._quote
+      const {
+        bid: { amount },
+      } = this._quote
 
-    if (allowance.gte(BigNumber.from(amount))) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
-    } else {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+      if (allowance.gte(BigNumber.from(amount))) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      } else {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+      }
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
   }
 

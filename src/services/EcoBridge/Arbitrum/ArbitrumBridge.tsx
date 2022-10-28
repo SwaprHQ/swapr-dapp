@@ -138,102 +138,110 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
-    const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
-    if (!this._account || !batchIndex || !batchNumber || !fromValue) return
+    try {
+      const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
+      if (!this._account || !batchIndex || !batchNumber || !fromValue) return
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const txHash = log.find(transactionLog => transactionLog.chainId === this.l2ChainId)?.txHash
+      const txHash = log.find(transactionLog => transactionLog.chainId === this.l2ChainId)?.txHash
 
-    if (!txHash || !this.l2Signer.provider) return
+      if (!txHash || !this.l2Signer.provider) return
 
-    const l1TransactionReceipt = arbitrumTransactionsAdapter
-      .getSelectors()
-      .selectById(this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].transactions, txHash)?.receipt
+      const l1TransactionReceipt = arbitrumTransactionsAdapter
+        .getSelectors()
+        .selectById(this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].transactions, txHash)?.receipt
 
-    if (!l1TransactionReceipt) return
+      if (!l1TransactionReceipt) return
 
-    const l2TransactionReceipt = new L2TransactionReceipt(l1TransactionReceipt)
+      const l2TransactionReceipt = new L2TransactionReceipt(l1TransactionReceipt)
 
-    const [l2ToL1Msg] = await l2TransactionReceipt.getL2ToL1Messages(this.l1Signer)
+      const [l2ToL1Msg] = await l2TransactionReceipt.getL2ToL1Messages(this.l1Signer)
 
-    const l1CollectTransaction = await l2ToL1Msg.execute(this.l2Signer.provider)
+      const l1CollectTransaction = await l2ToL1Msg.execute(this.l2Signer.provider)
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
 
-    this.store.dispatch(
-      this.actions.addTx({
-        assetName: assetAddressL2 ? l2Tx.assetName : Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH',
-        assetType: assetAddressL2 ? BridgeAssetType.ERC20 : BridgeAssetType.ETH,
-        type: 'outbox',
-        value: fromValue,
-        txHash: l1CollectTransaction.hash,
-        chainId: this.l1ChainId,
-        sender: this._account,
-      })
-    )
+      this.store.dispatch(
+        this.actions.addTx({
+          assetName: assetAddressL2 ? l2Tx.assetName : Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH',
+          assetType: assetAddressL2 ? BridgeAssetType.ERC20 : BridgeAssetType.ETH,
+          type: 'outbox',
+          value: fromValue,
+          txHash: l1CollectTransaction.hash,
+          chainId: this.l1ChainId,
+          sender: this._account,
+        })
+      )
 
-    this.store.dispatch(
-      this.actions.updateTxPartnerHash({
-        chainId: this.l1ChainId,
-        txHash: l1CollectTransaction.hash,
-        partnerTxHash: l2Tx.txHash,
-        partnerChainId: this.l2ChainId,
-      })
-    )
+      this.store.dispatch(
+        this.actions.updateTxPartnerHash({
+          chainId: this.l1ChainId,
+          txHash: l1CollectTransaction.hash,
+          partnerTxHash: l2Tx.txHash,
+          partnerChainId: this.l2ChainId,
+        })
+      )
 
-    const l1Receipt = await l1CollectTransaction.wait()
+      const l1Receipt = await l1CollectTransaction.wait()
 
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
 
-    this.store.dispatch(
-      this.actions.updateTxReceipt({
-        chainId: this.l1ChainId,
-        txHash: l1CollectTransaction.hash,
-        receipt: l1Receipt,
-      })
-    )
+      this.store.dispatch(
+        this.actions.updateTxReceipt({
+          chainId: this.l1ChainId,
+          txHash: l1CollectTransaction.hash,
+          receipt: l1Receipt,
+        })
+      )
 
-    this.store.dispatch(
-      this.actions.updateTxWithdrawal({
-        chainId: this.l1ChainId,
-        txHash: l1CollectTransaction.hash,
-        l2ToL1MessageStatus: L2ToL1MessageStatus.EXECUTED,
-      })
-    )
+      this.store.dispatch(
+        this.actions.updateTxWithdrawal({
+          chainId: this.l1ChainId,
+          txHash: l1CollectTransaction.hash,
+          l2ToL1MessageStatus: L2ToL1MessageStatus.EXECUTED,
+        })
+      )
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
+    }
   }
 
   public approve = async () => {
-    if (!this._account || !this.l1Signer.provider) return
+    try {
+      if (!this._account || !this.l1Signer.provider) return
 
-    const { address: erc20L1Address, symbol: erc20L1Symbol } = this.store.getState().ecoBridge.ui.from
+      const { address: erc20L1Address, symbol: erc20L1Symbol } = this.store.getState().ecoBridge.ui.from
 
-    const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(erc20L1Address, this.l1Signer.provider)
+      const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(erc20L1Address, this.l1Signer.provider)
 
-    const transaction = await this.erc20Bridger.approveToken({
-      l1Signer: this.l1Signer,
-      erc20L1Address,
-    })
-
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
-
-    this.store.dispatch(
-      addTransaction({
-        hash: transaction.hash,
-        from: this._account,
-        chainId: this.l1ChainId,
-        approval: {
-          spender: gatewayAddress,
-          tokenAddress: erc20L1Address,
-        },
-        summary: `Approve ${erc20L1Symbol?.toUpperCase()}`,
+      const transaction = await this.erc20Bridger.approveToken({
+        l1Signer: this.l1Signer,
+        erc20L1Address,
       })
-    )
 
-    const receipt = await transaction.wait()
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      this.store.dispatch(
+        addTransaction({
+          hash: transaction.hash,
+          from: this._account,
+          chainId: this.l1ChainId,
+          approval: {
+            spender: gatewayAddress,
+            tokenAddress: erc20L1Address,
+          },
+          summary: `Approve ${erc20L1Symbol?.toUpperCase()}`,
+        })
+      )
+
+      const receipt = await transaction.wait()
+
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
@@ -641,59 +649,66 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   public fetchDynamicLists = async () => undefined
 
   public validate = async () => {
-    if (!this._account || !this.l1Signer.provider || !this.l2Signer.provider) return
+    try {
+      if (!this._account || !this.l1Signer.provider || !this.l2Signer.provider) return
 
-    const {
-      address: fromTokenAddress,
-      chainId: fromChainId,
-      value: fromValue,
-    } = this.store.getState().ecoBridge.ui.from
+      const {
+        address: fromTokenAddress,
+        chainId: fromChainId,
+        value: fromValue,
+      } = this.store.getState().ecoBridge.ui.from
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    if (fromTokenAddress === Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
-      return
-    }
-
-    if (fromTokenAddress !== Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
-      let tokenContract: L2GatewayToken | ERC20
-      if (fromChainId === this.l1ChainId) {
-        tokenContract = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, fromTokenAddress)
-      } else {
-        tokenContract = this.erc20Bridger.getL2TokenContract(this.l2Signer.provider, fromTokenAddress)
-      }
-
-      const decimals = await tokenContract.decimals()
-
-      const parsedValue = parseUnits(fromValue, decimals)
-
-      //check allowance
-      let gatewayAddress: string
-      if (fromChainId === this.l1ChainId) {
-        gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(fromTokenAddress, this.l1Signer.provider)
-      } else {
-        gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(fromTokenAddress, this.l2Signer.provider)
-      }
-
-      const allowance = await tokenContract.allowance(this._account, gatewayAddress)
-
-      // Don't check allowance for l2 => l1
-      if (fromChainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
-        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+      if (fromTokenAddress === Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
         return
       }
 
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (fromTokenAddress !== Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
+        let tokenContract: L2GatewayToken | ERC20
+        if (fromChainId === this.l1ChainId) {
+          tokenContract = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, fromTokenAddress)
+        } else {
+          tokenContract = this.erc20Bridger.getL2TokenContract(this.l2Signer.provider, fromTokenAddress)
+        }
+
+        const decimals = await tokenContract.decimals()
+
+        const parsedValue = parseUnits(fromValue, decimals)
+
+        //check allowance
+        let gatewayAddress: string
+        if (fromChainId === this.l1ChainId) {
+          gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(fromTokenAddress, this.l1Signer.provider)
+        } else {
+          gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(fromTokenAddress, this.l2Signer.provider)
+        }
+
+        const allowance = await tokenContract.allowance(this._account, gatewayAddress)
+
+        // Don't check allowance for l2 => l1
+        if (fromChainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
+          this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+          return
+        }
+
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
   }
   public triggerBridging = () => {
     const { value, address: tokenAddress } = this.store.getState().ecoBridge.ui.from
-
-    if (this.l1ChainId === this._activeChainId) {
-      this.deposit(value, tokenAddress)
-    } else {
-      this.withdraw(value, tokenAddress)
+    try {
+      if (this.l1ChainId === this._activeChainId) {
+        this.deposit(value, tokenAddress)
+      } else {
+        this.withdraw(value, tokenAddress)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 

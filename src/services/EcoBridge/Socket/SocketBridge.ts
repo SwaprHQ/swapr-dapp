@@ -68,91 +68,99 @@ export class SocketBridge extends EcoBridgeChildBase {
   public collect = () => undefined
 
   public triggerBridging = async () => {
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+    try {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
-    const { from, to } = this.store.getState().ecoBridge.ui
+      const { data, to: recipient } = this.selectors.selectTxBridgingData(this.store.getState())
+      const { from, to } = this.store.getState().ecoBridge.ui
 
-    if (
-      !data ||
-      !recipient ||
-      !this._account ||
-      !from.address ||
-      !from.chainId ||
-      !from.value ||
-      !from.address ||
-      !from.symbol ||
-      !to.chainId
-    )
-      return
+      if (
+        !data ||
+        !recipient ||
+        !this._account ||
+        !from.address ||
+        !from.chainId ||
+        !from.value ||
+        !from.address ||
+        !from.symbol ||
+        !to.chainId
+      )
+        return
 
-    const value =
-      from.address === Currency.getNative(from.chainId).symbol ? parseUnits(from.value, from.decimals) : undefined
+      const value =
+        from.address === Currency.getNative(from.chainId).symbol ? parseUnits(from.value, from.decimals) : undefined
 
-    const tx = await this._activeProvider?.getSigner().sendTransaction({
-      to: recipient,
-      data,
-      value,
-    })
-
-    if (!tx) return
-
-    // @TODO: can be improved later with a better way to get the toValue
-    const routeId = this.store.getState().ecoBridge.common.activeRouteId
-    const routes = this.selectors.selectRoutes(this.store.getState())
-    const selectedRoute = routes.find(route => route.routeId === routeId)
-    const assetDecimals = this.store.getState().ecoBridge.socket.assetDecimals
-
-    const toValue = (formatUnits(selectedRoute?.toAmount ?? '0', assetDecimals) ?? 0).toString()
-    const fromValue = Number(from.value).toString()
-
-    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
-
-    this.store.dispatch(
-      this.actions.addTx({
-        sender: this._account,
-        txHash: tx.hash,
-        assetName: from.symbol,
-        fromValue,
-        toValue,
-        fromChainId: from.chainId,
-        toChainId: to.chainId,
-        bridgeId: this.bridgeId,
-        assetAddressL1: from.address,
-        assetAddressL2: to.address,
+      const tx = await this._activeProvider?.getSigner().sendTransaction({
+        to: recipient,
+        data,
+        value,
       })
-    )
+
+      if (!tx) return
+
+      // @TODO: can be improved later with a better way to get the toValue
+      const routeId = this.store.getState().ecoBridge.common.activeRouteId
+      const routes = this.selectors.selectRoutes(this.store.getState())
+      const selectedRoute = routes.find(route => route.routeId === routeId)
+      const assetDecimals = this.store.getState().ecoBridge.socket.assetDecimals
+
+      const toValue = (formatUnits(selectedRoute?.toAmount ?? '0', assetDecimals) ?? 0).toString()
+      const fromValue = Number(from.value).toString()
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
+
+      this.store.dispatch(
+        this.actions.addTx({
+          sender: this._account,
+          txHash: tx.hash,
+          assetName: from.symbol,
+          fromValue,
+          toValue,
+          fromChainId: from.chainId,
+          toChainId: to.chainId,
+          bridgeId: this.bridgeId,
+          assetAddressL1: from.address,
+          assetAddressL2: to.address,
+        })
+      )
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
+    }
   }
   public approve = async () => {
     //get approval data from store
-    const { allowanceTarget, amount, chainId, owner, tokenAddress } = this.selectors.selectApprovalData(
-      this.store.getState()
-    )
-    //shouldn't happen
-    if (!allowanceTarget || !amount || !chainId || !owner || !tokenAddress) return
+    try {
+      const { allowanceTarget, amount, chainId, owner, tokenAddress } = this.selectors.selectApprovalData(
+        this.store.getState()
+      )
+      //shouldn't happen
+      if (!allowanceTarget || !amount || !chainId || !owner || !tokenAddress) return
 
-    //build tx for approve
+      //build tx for approve
 
-    const transaction = await ApprovalsAPI.approveControllerFetchApprovalsCalldata({
-      chainID: chainId.toString(),
-      owner,
-      allowanceTarget,
-      tokenAddress,
-      amount,
-    })
+      const transaction = await ApprovalsAPI.approveControllerFetchApprovalsCalldata({
+        chainID: chainId.toString(),
+        owner,
+        allowanceTarget,
+        tokenAddress,
+        amount,
+      })
 
-    if (!transaction.success) return
+      if (!transaction.success) return
 
-    const txn = await this._activeProvider?.getSigner().sendTransaction({
-      to: transaction.result.to,
-      data: transaction.result.data,
-    })
+      const txn = await this._activeProvider?.getSigner().sendTransaction({
+        to: transaction.result.to,
+        data: transaction.result.data,
+      })
 
-    this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    const receipt = await txn?.wait()
-    if (receipt) {
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      const receipt = await txn?.wait()
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
