@@ -31,7 +31,7 @@ import {
   useSwapActionHandlers,
   useSwapState,
 } from '../../state/swap/hooks'
-import { Field, SwapState } from '../../state/swap/types'
+import { Field, StateKey, SwapState } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -124,7 +124,7 @@ export default function Swap() {
     inputError: swapInputError,
     loading,
   } = useDerivedSwapInfo<SwapState, UseDerivedSwapInfoResult>({
-    key: 'swap',
+    key: StateKey.SWAP,
     platformOverride: platformOverride || undefined,
   })
 

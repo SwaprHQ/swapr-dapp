@@ -1,4 +1,4 @@
-import { ChainId, Currency, CurrencyAmount, Pair, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { ChainId, CoWTrade, Currency, CurrencyAmount, JSBI, Pair, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
@@ -19,21 +19,30 @@ import Hero from '../../components/LandingPageComponents/layout/Hero'
 import Stats from '../../components/LandingPageComponents/Stats'
 import Timeline from '../../components/LandingPageComponents/Timeline'
 import { filterPairsForZap } from '../../components/SearchModal/utils/filtering'
+import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
+import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
+import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
+import { ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
+import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
+import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
+import { useZapCallback } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
-import { useUserSlippageTolerance } from '../../state/user/hooks'
+import { StateKey } from '../../state/swap/types'
+import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { UseDerivedZapInfoResult, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
 import { Field, ZapState } from '../../state/zap/types'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
+import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 
 export type SwapData = {
@@ -82,6 +91,7 @@ export default function Zap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
+  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -105,6 +115,7 @@ export default function Zap() {
   const { chainId } = useActiveWeb3React()
 
   // for expert mode
+  const isExpertMode = useIsExpertMode()
 
   // get custom setting values for user
   const allowedSlippage = useUserSlippageTolerance()
@@ -120,11 +131,12 @@ export default function Zap() {
     parsedAmount,
     pathToken0toLpToken,
     pathToken1toLpToken,
-    tradeToken0,
-    tradeToken1,
-  } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: 'zap', isZap: true })
+    tradeToken0: potentialTrade0,
+    tradeToken1: potentialTrade1,
+    inputError,
+  } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
 
-  console.log('masny test', { pathToken0toLpToken, pathToken1toLpToken, tradeToken0, tradeToken1 })
+  console.log('masny test', { pathToken0toLpToken, pathToken1toLpToken, potentialTrade0, potentialTrade1 })
 
   const zapIn = independentField === Field.INPUT
 
@@ -137,11 +149,37 @@ export default function Zap() {
 
   // const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
 
+  // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
+  // wrap status(use useWrapCallback and a state variable)
+  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)
+  const {
+    wrapType,
+    execute: onWrap,
+    inputError: wrapInputError,
+    wrapState,
+    setWrapState,
+  } = useWrapCallback(
+    currencies.INPUT,
+    currencies.OUTPUT,
+    potentialTrade0 instanceof CoWTrade,
+    potentialTrade0?.inputAmount?.toSignificant(6) ?? typedValue
+  )
+
+  const bestPricedTrade = potentialTrade0
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
+
+  const trade = showWrap ? undefined : potentialTrade0
+
   //GPv2 is falling in the true case, not very useful for what I think I need
-  const parsedAmounts = {
-    [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : tradeToken0?.inputAmount,
-    [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : tradeToken0?.outputAmount,
-  }
+  const parsedAmounts = showWrap
+    ? {
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount,
+      }
+    : {
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      }
 
   const { onUserInput, onSwitchTokens, onCurrencySelection, onPairSelection } = useZapActionHandlers()
 
@@ -168,39 +206,104 @@ export default function Zap() {
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
+  const userHasSpecifiedInputOutput = Boolean(
+    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+  )
+
   // check whether the user has approved the router on the input token
-  // const [approval] = useApproveCallback(parsedAmount, ZAP_CONTRACT_ADDRESS)
+  const [approvalZap, approveCallbackZap] = useApproveCallback(parsedAmount, ZAP_CONTRACT_ADDRESS)
+
+  // check whether the user has approved the router on the input token
+  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [, setApprovalsSubmitted] = useState<boolean[]>([])
+  const [approvalSubmitted, setApprovalSubmitted] = useState(false)
+
+  // mark when a user has submitted an approval, reset onTokenSelection for input field
+  useEffect(() => {
+    if (approval === ApprovalState.PENDING) {
+      setApprovalSubmitted(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [approval])
+
+  // Listen for changes on wrapState
+  useEffect(() => {
+    // watch GPv2
+    if (wrapState === WrapState.WRAPPED) {
+      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
+      else setGnosisProtocolState(CoWTradeState.APPROVAL)
+    }
+  }, [wrapState, approval, trade])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
-  // const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-  //   amountFrom: parsedAmount,
-  //   amount0Min: amountOutZero,
-  //   amount1Min: amountOutZero,
-  //   pathToPairToken0: pathToken0toLpToken,
-  //   pathToPairToken1: pathToken1toLpToken,
-  //   allowedSlippage: 0,
-  //   recipientAddressOrName: null,
-  //   router: '',
-  // })
+  const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
+    amountFrom: parsedAmount,
+    amount0Min: undefined,
+    amount1Min: undefined,
+    pathToPairToken0: pathToken0toLpToken,
+    pathToPairToken1: pathToken1toLpToken,
+    allowedSlippage: 0,
+    recipientAddressOrName: null,
+    router: '',
+  })
+
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+
+  const handleZap = useCallback(() => {
+    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
+      return
+    }
+    if (!zapCallback) {
+      return
+    }
+    setSwapState({
+      attemptingTxn: true,
+      tradeToConfirm,
+      showConfirm,
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    })
+    zapCallback()
+      .then(hash => {
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        })
+        //reset states, in case we want to operate again
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
+        setWrapState && setWrapState(WrapState.UNKNOWN)
+      })
+      .catch(error => {
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: error.message,
+          txHash: undefined,
+        })
+        setGnosisProtocolState(CoWTradeState.UNKNOWN)
+      })
+  }, [priceImpactWithoutFee, zapCallback, tradeToConfirm, showConfirm, setWrapState])
 
   // warnings on slippage
+  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
-  // const showApproveFlow =
-  //   !swapInputError &&
-  //   (approval === ApprovalState.NOT_APPROVED ||
-  //     approval === ApprovalState.PENDING ||
-  //     (approvalsSubmitted[currentTradeIndex] && approval === ApprovalState.APPROVED)) &&
-  //   !(priceImpactSeverity > 3 && !isExpertMode)
+  const showApproveFlow =
+    !inputError &&
+    (approval === ApprovalState.NOT_APPROVED ||
+      approval === ApprovalState.PENDING ||
+      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+    !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleAcceptChanges = useCallback(() => {}, [])
-  const handleSwap = useCallback(() => {}, [])
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -220,7 +323,7 @@ export default function Zap() {
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
-      setApprovalsSubmitted([]) // reset 2 step UI for approvals
+      setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
     [onCurrencySelection]
@@ -297,7 +400,7 @@ export default function Zap() {
                 txHash={txHash}
                 recipient={recipient}
                 allowedSlippage={allowedSlippage}
-                onConfirm={handleSwap}
+                onConfirm={handleZap}
                 swapErrorMessage={swapErrorMessage}
                 onDismiss={handleConfirmDismiss}
               />
@@ -325,7 +428,7 @@ export default function Zap() {
                   <SwitchIconContainer>
                     <SwitchTokensAmountsContainer
                       onClick={() => {
-                        setApprovalsSubmitted([]) // reset 2 step UI for approvals
+                        setApprovalSubmitted(false) // reset 2 step UI for approvals
                         onSwitchTokens()
                       }}
                     >
@@ -357,6 +460,38 @@ export default function Zap() {
                     filterPairs={filterPairs}
                   />
                 </AutoColumn>
+
+                <TradeDetails
+                  show={!showWrap}
+                  loading={loading}
+                  trade={trade}
+                  bestPricedTrade={bestPricedTrade}
+                  showAdvancedSwapDetails={showAdvancedSwapDetails}
+                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                  recipient={recipient}
+                />
+                <SwapButtons
+                  wrapInputError={wrapInputError}
+                  showApproveFlow={showApproveFlow}
+                  userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
+                  approval={approvalZap}
+                  setSwapState={setSwapState}
+                  priceImpactSeverity={priceImpactSeverity}
+                  swapCallbackError={zapCallbackError}
+                  wrapType={wrapType}
+                  approvalSubmitted={approvalSubmitted}
+                  currencies={currencies}
+                  trade={trade}
+                  swapInputError={inputError}
+                  swapErrorMessage={swapErrorMessage}
+                  loading={loading}
+                  onWrap={onWrap}
+                  approveCallback={approveCallbackZap}
+                  handleSwap={handleZap}
+                  handleInputSelect={handleInputSelect}
+                  wrapState={wrapState}
+                  setWrapState={setWrapState}
+                />
               </AutoColumn>
             </Wrapper>
           </AppBody>

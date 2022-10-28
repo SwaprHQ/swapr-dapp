@@ -29,7 +29,7 @@ import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { replaceZapState } from '../zap/actions'
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
-import { Field, SwapState } from './types'
+import { Field, StateKey, SwapState } from './types'
 
 const selectSwap = createSelector(
   (state: AppState) => state.swap,
@@ -118,15 +118,12 @@ export interface UseDerivedSwapInfoResult {
 // set TTL - currently at 5 minutes
 const quoteTTL = 5 * 60 * 1000
 
-type SwaprOrZapKey = 'swap' | 'zap'
-
 type DerivedParams = {
-  key: SwaprOrZapKey
+  key: StateKey
   platformOverride?: RoutablePlatform
-  isZap?: boolean
 }
 
-const useSwapOrZapState = <T>(key: SwaprOrZapKey) => {
+const useSwapOrZapState = <T>(key: StateKey) => {
   return useSelector((state: AppState) => state[key]) as T
 }
 
@@ -134,9 +131,11 @@ const useSwapOrZapState = <T>(key: SwaprOrZapKey) => {
 export function useDerivedSwapInfo<
   T extends SwapState & { pairTokens?: { token0Id: string | undefined; token1Id: string | undefined } },
   ReturnedValue
->({ key, isZap = false, platformOverride }: DerivedParams): ReturnedValue {
+>({ key, platformOverride }: DerivedParams): ReturnedValue {
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
+
+  const isZap = key === StateKey.ZAP
 
   const {
     independentField,
@@ -169,6 +168,8 @@ export function useDerivedSwapInfo<
 
   const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
   const [allPlatformTradesToken1, setAllPlatformTradesToken1] = useState<Trade[]>([])
+
+  console.log('all', allPlatformTrades, allPlatformTradesToken0, allPlatformTradesToken1)
 
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
@@ -277,6 +278,7 @@ export function useDerivedSwapInfo<
       },
     }
 
+    console.log('all zap', isZap, pairCurrency0, pairCurrency1)
     if (isZap && pairCurrency0 && pairCurrency1) {
       const getTradesToken0 = getTradesPromise(
         parsedAmount,

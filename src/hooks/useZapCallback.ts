@@ -156,7 +156,7 @@ export interface UseZapCallbackParams {
 
 export interface UseZapCallbackReturn {
   state: ZapCallbackState
-  callback?: () => Promise<void>
+  callback?: () => Promise<string>
   error: string | null
 }
 /**
@@ -199,7 +199,8 @@ export function useZapCallback({
     const amount1MinBN = parseUnits(amount1Min.toExact(), amount1Min.currency.decimals)
     return {
       state: ZapCallbackState.VALID,
-      callback: async function onZapIn(): Promise<void> {
+      callback: async function onZapIn(): Promise<string> {
+        const orderId = ''
         try {
           console.log('zap callback inside')
           const zapTx = await zapContract.zapInFromToken(
@@ -215,13 +216,19 @@ export function useZapCallback({
             }
           )
           // TODO summary
-          addTransaction(zapTx, {
-            summary: `Zap ${amountFrom.toSignificant(6)} ${amountFrom.currency.symbol}`,
-          })
+          addTransaction(
+            {
+              hash: orderId, // TODO
+            },
+            {
+              summary: `Zap ${amountFrom.toSignificant(6)} ${amountFrom.currency.symbol}`,
+            }
+          )
         } catch (error) {
           // TODO error msg
           console.error('Could not zap', error)
         }
+        return orderId
       },
       error: null,
     }
