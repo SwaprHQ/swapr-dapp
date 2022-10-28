@@ -2,8 +2,8 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { configureStore, Store } from '@reduxjs/toolkit'
 
-import advancedTradingView, { actions } from '../advancedTradingView.reducer'
-import { AdapterKeys, AdapterPayloadType } from '../advancedTradingView.types'
+import { AdapterKey, AdapterPayloadType } from '../advancedTradingView.types'
+import advancedTradingView, { actions } from '../store/advancedTradingView.reducer'
 import { adapters } from './adapters.config'
 import { AdvancedTradingViewAdapter } from './advancedTradingView.adapter'
 import { BaseAppState } from './baseAdapter/base.adapter'
@@ -15,8 +15,8 @@ const fakeData = {
   pairId: '0x123456789',
   data: [],
   hasMore: false,
-  key: AdapterKeys.SWAPR,
-  payloadType: AdapterPayloadType.swaps,
+  key: AdapterKey.SWAPR,
+  payloadType: AdapterPayloadType.SWAPS,
 }
 
 describe('AdvancedTradingView - adapter', () => {

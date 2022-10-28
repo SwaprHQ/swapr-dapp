@@ -2,8 +2,8 @@ import { Token } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
-import { sortsBeforeTokens } from '../../advancedTradingView.selectors'
 import { AdapterFetchMethodArguments } from '../../advancedTradingView.types'
+import { sortsBeforeTokens } from '../../store/advancedTradingView.selectors'
 import { BaseAdapter, BaseAppState } from '../baseAdapter/base.adapter'
 import { UNISWAP_PAIR_BURNS_AND_MINTS, UNISWAP_PAIR_SWAPS } from './uniswapV3.queries'
 

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
+import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { ChartTabs as ChartTabsOptions } from '../../state/user/reducer'
 
@@ -54,7 +54,7 @@ export const ChartTabs = ({
 }) => {
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
-  const isDesktop = useIsDesktopByMedia()
+  const isDesktop = useIsDesktop()
   const proOptionsDisabled = !hasBothCurrenciesInput || !isDesktop
 
   return (
@@ -85,17 +85,15 @@ export const ChartTabs = ({
             ? t('advancedTradingView.chartTabs.proDisabledTitle')
             : t('advancedTradingView.chartTabs.proTitle')
         }
-        disabled={proOptionsDisabled}
+        disabled
       >
         {t('advancedTradingView.chartTabs.pro')}
       </Tab>
       <Tab
         active={activeChartTab === ChartTabsOptions.OFF}
         onClick={() => {
-          if (activeChartTab !== ChartTabsOptions.OFF) {
-            setActiveChartTab(ChartTabsOptions.OFF)
-            navigate('/swap')
-          }
+          setActiveChartTab(ChartTabsOptions.OFF)
+          navigate('/swap')
         }}
         title={t('advancedTradingView.chartTabs.offTitle')}
         disabled={!hasBothCurrenciesInput}

@@ -6,7 +6,7 @@ import { AbstractAdvancedTradingViewAdapter } from './adapters/advancedTradingVi
 import { BasePair } from './adapters/baseAdapter/base.types'
 import { UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
 
-export enum AdapterKeys {
+export enum AdapterKey {
   SWAPR = 'swapr',
   SUSHISWAP = 'sushiswap',
   UNISWAPV2 = 'uniswapV2',
@@ -20,19 +20,19 @@ export type InitialState = {
     outputToken?: Token
   }
   adapters: {
-    [AdapterKeys.SWAPR]: {
+    [AdapterKey.SWAPR]: {
       [pairId: string]: BasePair | undefined
     }
-    [AdapterKeys.SUSHISWAP]: {
+    [AdapterKey.SUSHISWAP]: {
       [pairId: string]: BasePair | undefined
     }
-    [AdapterKeys.UNISWAPV2]: {
+    [AdapterKey.UNISWAPV2]: {
       [pairId: string]: BasePair | undefined
     }
-    [AdapterKeys.HONEYSWAP]: {
+    [AdapterKey.HONEYSWAP]: {
       [pairId: string]: BasePair | undefined
     }
-    [AdapterKeys.UNISWAPV3]: {
+    [AdapterKey.UNISWAPV3]: {
       [pairId: string]: UniswapV3Pair | undefined
     }
   }
@@ -51,8 +51,8 @@ export type AdvancedViewTransaction = {
 }
 
 export enum AdapterPayloadType {
-  swaps = 'swaps',
-  burnsAndMints = 'burnsAndMints',
+  SWAPS = 'swaps',
+  BURNS_AND_MINTS = 'burnsAndMints',
 }
 
 export type AdvancedTradingViewAdapterConstructorParams<AppState> = {
@@ -65,7 +65,7 @@ export type AdapterInitialArguments<AppState> = Omit<
   'adapters' | 'amountOfPairTrades' | 'amountOfPairActivity'
 >
 
-export type Adapters<AppState> = { [key in AdapterKeys]: AbstractAdvancedTradingViewAdapter<AppState> }
+export type Adapters<AppState> = { [key in AdapterKey]: AbstractAdvancedTradingViewAdapter<AppState> }
 
 export type AdapterFetchDetails = {
   inputToken: Token
@@ -76,9 +76,9 @@ export type AdapterFetchDetails = {
 }
 
 export enum AdapterAmountToFetch {
-  pairTrades = 10,
-  pairActivity = 3,
-  limit = 30,
+  PAIR_TRADES = 10,
+  PAIR_ACTIVITY = 3,
+  LIMIT = 30,
 }
 
 export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {

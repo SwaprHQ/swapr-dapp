@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
-import advancedTradingView from '../services/AdvancedTradingView'
+import advancedTradingView from '../services/AdvancedTradingView/store'
 import {
   ecoBridgePersistedKeys,
   fixCorruptedEcoBridgeLocalStorageEntries,

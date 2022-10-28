@@ -8,11 +8,11 @@ import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
-import { actions as advancedTradingViewReducerActions } from '../AdvancedTradingView/advancedTradingView.reducer'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
-import { sortsBeforeTokens } from './advancedTradingView.selectors'
 import { AdapterAmountToFetch } from './advancedTradingView.types'
+import { actions as advancedTradingViewReducerActions } from './store/advancedTradingView.reducer'
+import { sortsBeforeTokens } from './store/advancedTradingView.selectors'
 
 const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,
@@ -41,7 +41,7 @@ const calculateAmountToFetch = (chainId: ChainId | undefined, amountToFetch: num
 
   const amount = Math.floor((amountToFetch * unsupportedAdaptersByChain) / supportedAdaptersByChain) + amountToFetch
 
-  return amount > AdapterAmountToFetch.limit ? AdapterAmountToFetch.limit : amount
+  return amount > AdapterAmountToFetch.LIMIT ? AdapterAmountToFetch.LIMIT : amount
 }
 
 export const useAdvancedTradingView = () => {
@@ -59,8 +59,8 @@ export const useAdvancedTradingView = () => {
 
   const [pairTradesAmountToFetch, pairActivityAmountToFetch] = useMemo(
     () => [
-      calculateAmountToFetch(chainId, AdapterAmountToFetch.pairTrades),
-      calculateAmountToFetch(chainId, AdapterAmountToFetch.pairActivity),
+      calculateAmountToFetch(chainId, AdapterAmountToFetch.PAIR_TRADES),
+      calculateAmountToFetch(chainId, AdapterAmountToFetch.PAIR_ACTIVITY),
     ],
     [chainId]
   )
@@ -204,7 +204,7 @@ export const useAdvancedTradingView = () => {
       await advancedTradingViewAdapter.fetchPairTrades({
         inputToken,
         outputToken,
-        amountToFetch: AdapterAmountToFetch.pairTrades,
+        amountToFetch: AdapterAmountToFetch.PAIR_TRADES,
         isFirstFetch: false,
       })
     } catch (e) {
@@ -222,7 +222,7 @@ export const useAdvancedTradingView = () => {
       await advancedTradingViewAdapter.fetchPairActivity({
         inputToken,
         outputToken,
-        amountToFetch: AdapterAmountToFetch.pairActivity,
+        amountToFetch: AdapterAmountToFetch.PAIR_ACTIVITY,
         isFirstFetch: false,
       })
     } catch (e) {

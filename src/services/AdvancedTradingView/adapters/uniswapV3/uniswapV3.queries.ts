@@ -1,5 +1,7 @@
 import { gql } from 'graphql-request'
 
+import { BASE_QUERY_FRAGMENT } from '../fragment.queries'
+
 export const UNISWAP_PAIR_SWAPS = gql`
   query getPairTrades($token0_in: [Bytes]!, $token1_in: [Bytes]!, $first: Int!, $skip: Int!) {
     swaps(
@@ -30,14 +32,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
-      id
-      transaction {
-        id
-      }
-      amount0
-      amount1
-      amountUSD
-      timestamp
+     ${BASE_QUERY_FRAGMENT}
       type: __typename
     }
     burns(
@@ -47,14 +42,7 @@ export const UNISWAP_PAIR_BURNS_AND_MINTS = gql`
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
-      id
-      transaction {
-        id
-      }
-      amount0
-      amount1
-      amountUSD
-      timestamp
+     ${BASE_QUERY_FRAGMENT}
       type: __typename
     }
   }

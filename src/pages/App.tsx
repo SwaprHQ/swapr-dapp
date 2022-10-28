@@ -72,7 +72,7 @@ export default function App() {
   const location = useLocation()
   const theme = useTheme()
   const [isSwapPage, setIsSwapPage] = useState(false)
-  const isAdvancedTradeMode = useIsAdvancedTradeMode()
+  const isAdvancedTradeMode = location.pathname.includes('/swap/pro')
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))

@@ -3,9 +3,9 @@ import { ChainId, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { configureStore, Store } from '@reduxjs/toolkit'
 import { request as graphqlRequest } from 'graphql-request'
 
-import advancedTradingView, { actions } from '../../advancedTradingView.reducer'
-import { selectCurrentSwaprPair } from '../../advancedTradingView.selectors'
-import { AdapterKeys } from '../../advancedTradingView.types'
+import { AdapterKey } from '../../advancedTradingView.types'
+import advancedTradingView, { actions } from '../../store/advancedTradingView.reducer'
+import { selectCurrentSwaprPair } from '../../store/advancedTradingView.selectors'
 import { BaseAdapter, BaseAppState } from './base.adapter'
 import { PairBurnsAndMints, PairSwaps } from './base.types'
 
@@ -54,7 +54,7 @@ describe('BaseAdapter', () => {
     })
 
     baseAdapter = new BaseAdapter({
-      key: AdapterKeys.SWAPR,
+      key: AdapterKey.SWAPR,
       adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
       platform: UniswapV2RoutablePlatform.SWAPR,
       subgraphUrls: {

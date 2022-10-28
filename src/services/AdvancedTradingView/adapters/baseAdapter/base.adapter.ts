@@ -2,13 +2,13 @@ import { ChainId, Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
-import { initialState as advancedTradingViewInitialState } from '../../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
   AdapterFetchMethodArguments,
-  AdapterKeys,
+  AdapterKey,
   AdapterPayloadType,
 } from '../../advancedTradingView.types'
+import { initialState as advancedTradingViewInitialState } from '../../store/advancedTradingView.reducer'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
 import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
 
@@ -36,7 +36,7 @@ export class BaseAdapter<
     subgraphUrls,
     adapterSupportedChains,
   }: {
-    key: AdapterKeys
+    key: AdapterKey
     platform?: UniswapV2RoutablePlatform
     subgraphUrls: {
       [ChainId.GNOSIS]: string
@@ -166,7 +166,7 @@ export class BaseAdapter<
       this.actions.setPairData({
         key: this._key,
         pairId,
-        payloadType: AdapterPayloadType.swaps,
+        payloadType: AdapterPayloadType.SWAPS,
         data: swaps,
         hasMore,
       })
@@ -180,7 +180,7 @@ export class BaseAdapter<
       this.actions.setPairData({
         key: this._key,
         pairId,
-        payloadType: AdapterPayloadType.burnsAndMints,
+        payloadType: AdapterPayloadType.BURNS_AND_MINTS,
         data: [...burns, ...mints],
         hasMore,
       })

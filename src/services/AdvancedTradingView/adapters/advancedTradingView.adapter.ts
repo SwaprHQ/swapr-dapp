@@ -2,23 +2,23 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
-import { actions } from '../advancedTradingView.reducer'
 import {
   AdapterFetchDetails,
   AdapterInitialArguments,
-  AdapterKeys,
+  AdapterKey,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
+import { actions } from '../store/advancedTradingView.reducer'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
-  protected _key: AdapterKeys
+  protected _key: AdapterKey
   protected _chainId: ChainId | undefined
   protected _store: Store<AppState> | undefined
   protected _adapterSupportedChains: ChainId[]
 
-  constructor({ key, adapterSupportedChains }: { key: AdapterKeys; adapterSupportedChains: ChainId[] }) {
+  constructor({ key, adapterSupportedChains }: { key: AdapterKey; adapterSupportedChains: ChainId[] }) {
     this._key = key
     this._adapterSupportedChains = adapterSupportedChains
   }

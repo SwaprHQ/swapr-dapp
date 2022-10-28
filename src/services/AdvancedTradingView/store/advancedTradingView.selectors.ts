@@ -2,13 +2,13 @@ import { Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr
 
 import { createSelector } from '@reduxjs/toolkit'
 
-import { AppState } from '../../state'
-import { BaseAppState } from './adapters/baseAdapter/base.adapter'
-import { AllTradesAndLiquidityFromAdapters, BasePair, LiquidityTypename } from './adapters/baseAdapter/base.types'
-import { UniswapV3Pair } from './adapters/uniswapV3/uniswapV3.types'
-import { AdapterKeys, AdvancedViewTransaction } from './advancedTradingView.types'
+import { AppState } from '../../../state'
+import { BaseAppState } from '../adapters/baseAdapter/base.adapter'
+import { AllTradesAndLiquidityFromAdapters, BasePair, LiquidityTypename } from '../adapters/baseAdapter/base.types'
+import { UniswapV3Pair } from '../adapters/uniswapV3/uniswapV3.types'
+import { AdapterKey, AdvancedViewTransaction } from '../advancedTradingView.types'
 
-const adapterLogos: { [key in AdapterKeys]: string } = {
+const adapterLogos: { [key in AdapterKey]: string } = {
   swapr: UniswapV2RoutablePlatform.SWAPR.name,
   sushiswap: UniswapV2RoutablePlatform.SUSHISWAP.name,
   uniswapV2: UniswapV2RoutablePlatform.UNISWAP.name,
@@ -27,7 +27,7 @@ const formatAdapterAmount = (amount: Number) => {
 export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
   inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
 
-export const getAdapterPair = <T extends BaseAppState>(key: AdapterKeys, platform: UniswapV2RoutablePlatform) =>
+const getAdapterPair = <T extends BaseAppState>(key: AdapterKey, platform: UniswapV2RoutablePlatform) =>
   createSelector(
     [(state: T) => state.advancedTradingView.pair, (state: T) => state.advancedTradingView.adapters[key]],
     ({ inputToken, outputToken }, adapterPairs) => {
@@ -42,9 +42,9 @@ export const getAdapterPair = <T extends BaseAppState>(key: AdapterKeys, platfor
       }
     }
   )
-const getAdapterPairUniswapV3 = (key: AdapterKeys) =>
+const getAdapterPairUniswapV3 = <T extends BaseAppState>(key: AdapterKey) =>
   createSelector(
-    [(state: AppState) => state.advancedTradingView.pair, (state: AppState) => state.advancedTradingView.adapters[key]],
+    [(state: T) => state.advancedTradingView.pair, (state: T) => state.advancedTradingView.adapters[key]],
     ({ inputToken, outputToken }, adapterPairs) => {
       if (inputToken && outputToken) {
         const [token0, token1] = sortsBeforeTokens(inputToken, outputToken)
@@ -61,11 +61,11 @@ const getAdapterPairUniswapV3 = (key: AdapterKeys) =>
     }
   )
 
-export const selectCurrentSwaprPair = getAdapterPair(AdapterKeys.SWAPR, UniswapV2RoutablePlatform.SWAPR)
-const selectCurrentSushiPair = getAdapterPair(AdapterKeys.SUSHISWAP, UniswapV2RoutablePlatform.SUSHISWAP)
-const selectCurrentUniswapV2Pair = getAdapterPair(AdapterKeys.UNISWAPV2, UniswapV2RoutablePlatform.UNISWAP)
-const selectCurrentHoneyPair = getAdapterPair(AdapterKeys.HONEYSWAP, UniswapV2RoutablePlatform.HONEYSWAP)
-const selectCurrentUniswapV3Pair = getAdapterPairUniswapV3(AdapterKeys.UNISWAPV3)
+export const selectCurrentSwaprPair = getAdapterPair(AdapterKey.SWAPR, UniswapV2RoutablePlatform.SWAPR)
+const selectCurrentSushiPair = getAdapterPair(AdapterKey.SUSHISWAP, UniswapV2RoutablePlatform.SUSHISWAP)
+const selectCurrentUniswapV2Pair = getAdapterPair(AdapterKey.UNISWAPV2, UniswapV2RoutablePlatform.UNISWAP)
+const selectCurrentHoneyPair = getAdapterPair(AdapterKey.HONEYSWAP, UniswapV2RoutablePlatform.HONEYSWAP)
+const selectCurrentUniswapV3Pair = getAdapterPairUniswapV3(AdapterKey.UNISWAPV3)
 
 const selectAllCurrentPairs = createSelector(
   [selectCurrentSwaprPair, selectCurrentSushiPair, selectCurrentUniswapV2Pair, selectCurrentHoneyPair],
@@ -92,8 +92,6 @@ const selectAllCurrentPairs = createSelector(
     )
 )
 
-const identity = (x: boolean) => x
-
 export const selectHasMoreData = createSelector(
   [
     selectCurrentSwaprPair,
@@ -103,8 +101,8 @@ export const selectHasMoreData = createSelector(
     selectCurrentUniswapV3Pair,
   ],
   (...pairs) => ({
-    hasMoreTrades: pairs.map(pair => Boolean(pair?.pair?.swaps?.hasMore)).some(identity),
-    hasMoreActivity: pairs.map(pair => Boolean(pair?.pair?.burnsAndMints?.hasMore)).some(identity),
+    hasMoreTrades: pairs.map(pair => Boolean(pair?.pair?.swaps?.hasMore)).some(hasMore => hasMore),
+    hasMoreActivity: pairs.map(pair => Boolean(pair?.pair?.burnsAndMints?.hasMore)).some(hasMore => hasMore),
   })
 )
 
@@ -130,7 +128,7 @@ export const selectAllDataFromAdapters = createSelector(
           timestamp,
           logoKey,
           amountUSD,
-          isSell: type === LiquidityTypename.burn,
+          isSell: type === LiquidityTypename.BURN,
         }
       }
     )
@@ -204,7 +202,7 @@ export const selectUniswapV3AllData = createSelector(
             timestamp,
             logoKey,
             amountUSD,
-            isSell: type === LiquidityTypename.burn,
+            isSell: type === LiquidityTypename.BURN,
           }
         })
       : []

@@ -1,7 +1,7 @@
 import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { AppState } from '../../../state'
-import { AdapterKeys, Adapters } from '../advancedTradingView.types'
+import { AdapterKey, Adapters } from '../advancedTradingView.types'
 import { BaseAdapter } from './baseAdapter/base.adapter'
 import { PairBurnsAndMints, PairSwaps } from './baseAdapter/base.types'
 import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
@@ -9,7 +9,7 @@ import { UniswapV3PairBurnsAndMints, UniswapV3PairSwaps } from './uniswapV3/unis
 
 export const adapters: Adapters<AppState> = {
   swapr: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
-    key: AdapterKeys.SWAPR,
+    key: AdapterKey.SWAPR,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SWAPR,
     subgraphUrls: {
@@ -21,7 +21,7 @@ export const adapters: Adapters<AppState> = {
     },
   }),
   sushiswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
-    key: AdapterKeys.SUSHISWAP,
+    key: AdapterKey.SUSHISWAP,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SUSHISWAP,
     subgraphUrls: {
@@ -33,7 +33,7 @@ export const adapters: Adapters<AppState> = {
     },
   }),
   uniswapV2: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
-    key: AdapterKeys.UNISWAPV2,
+    key: AdapterKey.UNISWAPV2,
     adapterSupportedChains: [ChainId.MAINNET],
     platform: UniswapV2RoutablePlatform.UNISWAP,
     subgraphUrls: {
@@ -45,7 +45,7 @@ export const adapters: Adapters<AppState> = {
     },
   }),
   honeyswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
-    key: AdapterKeys.HONEYSWAP,
+    key: AdapterKey.HONEYSWAP,
     adapterSupportedChains: [ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.HONEYSWAP,
     subgraphUrls: {
@@ -57,7 +57,7 @@ export const adapters: Adapters<AppState> = {
     },
   }),
   uniswapV3: new UniswapV3Adapter<AppState, UniswapV3PairSwaps, UniswapV3PairBurnsAndMints>({
-    key: AdapterKeys.UNISWAPV3,
+    key: AdapterKey.UNISWAPV3,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.POLYGON, ChainId.OPTIMISM_MAINNET],
     subgraphUrls: {
       [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',

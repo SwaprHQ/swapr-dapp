@@ -28,6 +28,11 @@ import { InfiniteScroll } from './InfiniteScroll'
 import { OrderHistoryTransaction } from './OrderHistory/OrderHistoryTransaction'
 import { PairDetails } from './PairDetails'
 
+enum TradesWrapperHeight {
+  MIN = 570,
+  PADDING = 85,
+}
+
 export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
   const { t } = useTranslation('swap')
 
@@ -58,8 +63,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
   } = useAdvancedTradingView()
 
   const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
-    ? tradesWrapper?.current?.clientHeight - 85
-    : 570
+    ? tradesWrapper?.current?.clientHeight - TradesWrapperHeight.PADDING
+    : TradesWrapperHeight.MIN
 
   return (
     <AdvancedSwapModeWrapper>
@@ -121,7 +126,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
         <AdvancedModeHeader>
           <Flex>
             <OrderButton isActive>{t('advancedTradingView.column.orderHistory')}</OrderButton>
-            <OrderButton disabled>{t('advancedTradingView.column.openOrder')}</OrderButton>
+            <OrderButton disabled>{t('advancedTradingView.column.openOrders')}</OrderButton>
           </Flex>
           <TransactionsWrapper style={{ padding: '5px' }} maxHeight="300px">
             <OrderHistoryHeader>

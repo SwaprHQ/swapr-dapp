@@ -1,8 +1,8 @@
-import { AdapterKeys, AdapterPayloadType } from '../../advancedTradingView.types'
+import { AdapterKey, AdapterPayloadType } from '../../advancedTradingView.types'
 
 export enum LiquidityTypename {
-  burn = 'Burn',
-  mint = 'Mint',
+  BURN = 'Burn',
+  MINT = 'Mint',
 }
 
 // subgraph types
@@ -51,11 +51,11 @@ export type PairBurnsAndMints = {
 }
 
 export type BaseActionPayload<DataType> = {
-  key: AdapterKeys
+  key: AdapterKey
   hasMore: boolean
   pairId: string
   data: DataType
-  payloadType: AdapterPayloadType.swaps | AdapterPayloadType.burnsAndMints
+  payloadType: AdapterPayloadType.SWAPS | AdapterPayloadType.BURNS_AND_MINTS
 }
 
 export type BasePair = {

@@ -33,7 +33,7 @@
   "tradeDetails.bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
   "advancedTradingView.column.trades": "Trades",
-  "advancedTradingView.column.openOrder": "Open orders",
+  "advancedTradingView.column.openOrders": "Open orders",
   "advancedTradingView.column.orderHistory": "Order history",
   "advancedTradingView.column.poolActivity": "Pool activity",
   "advancedTradingView.details.amount": "Amount",

@@ -6,8 +6,12 @@ import { Transaction, TransactionStatus } from '../../pages/Account/Account.type
 import { formattedTransactions as formatTransactions } from '../../pages/Account/accountUtils'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { sortByTimeStamp } from '../../utils/sortByTimestamp'
-import { selectAllDataFromAdapters, selectHasMoreData, selectUniswapV3AllData } from './advancedTradingView.selectors'
 import { AdvancedViewTransaction } from './advancedTradingView.types'
+import {
+  selectAllDataFromAdapters,
+  selectHasMoreData,
+  selectUniswapV3AllData,
+} from './store/advancedTradingView.selectors'
 
 export const useAllTrades = (): {
   transactions: Transaction[]

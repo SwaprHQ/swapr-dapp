@@ -22,7 +22,7 @@ import { TESTNETS } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
-import { useIsDesktopByMedia } from '../../hooks/useIsDesktopByMedia'
+import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
@@ -90,7 +90,7 @@ const AppBodyContainer = styled.section`
 `
 
 export default function Swap() {
-  const isDesktop = useIsDesktopByMedia()
+  const isDesktop = useIsDesktop()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -122,16 +122,12 @@ export default function Swap() {
   const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
 
   useEffect(() => {
-    if (activeChartTab === ChartTabsOptions.PRO) {
+    if (pathname.includes('/pro')) {
       if (!isDesktop) {
-        setSelectedChartTab(ChartTabsOptions.OFF)
         navigate('/swap')
-      } else if (!pathname.includes('swapr/pro')) {
-        setSelectedChartTab(ChartTabsOptions.PRO)
-        navigate('/swap/pro')
       }
     }
-  }, [isDesktop, pathname, navigate, activeChartTab, setSelectedChartTab])
+  }, [isDesktop, navigate, pathname])
 
   const { chainId } = useActiveWeb3React()
 
@@ -520,12 +516,12 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {activeChartTab === ChartTabsOptions.PRO &&
+      {pathname.includes('/pro') &&
         chainId &&
         !isUnsupportedChainIdError &&
         !TESTNETS.includes(chainId) &&
         isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {activeChartTab !== ChartTabsOptions.PRO && (
+      {activeChartTab !== ChartTabsOptions.PRO && !pathname.includes('/pro') && (
         <>
           <Hero>
             <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
