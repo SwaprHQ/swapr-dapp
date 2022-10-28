@@ -1,7 +1,9 @@
 import {
+  BNB,
   ChainId,
   Currency,
   CurrencyAmount,
+  DAI,
   DXD,
   GNO,
   JSBI,
@@ -10,6 +12,9 @@ import {
   SWPR,
   Token,
   UniswapV2RoutablePlatform,
+  USDC,
+  USDT,
+  WBTC,
   WETH,
   WMATIC,
   WXDAI,
@@ -21,6 +26,7 @@ import { ReactNode } from 'react'
 
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import PancakeSwapLogo from '../assets/images/bunny-mono.png'
 import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
 import CurveLogo from '../assets/images/curve-logo.png'
@@ -44,115 +50,6 @@ type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
 }
 
-export const DAI: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(
-    ChainId.MAINNET,
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.POLYGON]: new Token(
-    ChainId.POLYGON,
-    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
-    18,
-    'DAI',
-    'Dai Stablecoin'
-  ),
-}
-
-export const USDC: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C'),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-    6,
-    'USDC',
-    'USD//C'
-  ),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
-    6,
-    'USDC',
-    'USD//C from Ethereum'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-    6,
-    'USDC',
-    'USD//C'
-  ),
-}
-
-export const USDT: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6, 'USDT', 'Tether USD'),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
-    6,
-    'USDT',
-    'Tether USD from Ethereum'
-  ),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
-    6,
-    'USDT',
-    'Tether USD'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
-    6,
-    'USDT',
-    'Tether USD'
-  ),
-}
-
-export const WBTC: { [key: number]: Token } = {
-  [ChainId.MAINNET]: new Token(ChainId.MAINNET, '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', 8, 'WBTC', 'Wrapped BTC'),
-  [ChainId.ARBITRUM_ONE]: new Token(
-    ChainId.ARBITRUM_ONE,
-    '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
-    8,
-    'WBTC',
-    'Wrapped BTC'
-  ),
-  [ChainId.XDAI]: new Token(
-    ChainId.XDAI,
-    '0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252',
-    8,
-    'WBTC',
-    'Wrapped BTC from Ethereum'
-  ),
-  [ChainId.POLYGON]: new Token(ChainId.POLYGON, '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6', 8, 'WBTC', 'Wrapped BTC'),
-  [ChainId.OPTIMISM_MAINNET]: new Token(
-    ChainId.OPTIMISM_MAINNET,
-    '0x68f180fcCe6836688e9084f035309E29Bf0A2095',
-    8,
-    'WBTC',
-    'Wrapped BTC'
-  ),
-}
-
 export const MATIC: { [key: number]: Token } = {
   [ChainId.MAINNET]: new Token(
     ChainId.MAINNET,
@@ -170,7 +67,7 @@ export const MATIC: { [key: number]: Token } = {
   ),
 }
 
-export const HONEY = new Token(ChainId.XDAI, '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9', 18, 'HNY', 'Honey')
+export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
   ChainId.XDAI,
@@ -206,11 +103,13 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
   [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
   [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
+  [ChainId.BSC_MAINNET]: BNB.address!,
   [ChainId.RINKEBY]: '',
   [ChainId.ARBITRUM_RINKEBY]: '',
   [ChainId.GOERLI]: '',
   [ChainId.ARBITRUM_GOERLI]: '',
   [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.BSC_TESTNET]: '',
 }
 
 // used to construct intermediary pairs for trading
@@ -253,6 +152,15 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
   [ChainId.GOERLI]: [],
+  [ChainId.BSC_MAINNET]: [
+    Token.BUSD[ChainId.BSC_MAINNET],
+    Token.CAKE[ChainId.BSC_MAINNET],
+    DAI[ChainId.BSC_MAINNET],
+    Token.WBNB[ChainId.BSC_MAINNET],
+    USDC[ChainId.BSC_MAINNET],
+    USDT[ChainId.BSC_MAINNET],
+  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -277,8 +185,14 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
+  [ChainId.POLYGON]: [
+    WMATIC[ChainId.POLYGON],
+    WETH[ChainId.POLYGON],
+    USDC[ChainId.POLYGON],
+    WBTC[ChainId.POLYGON],
+    USDT[ChainId.POLYGON],
+  ],
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
     OP[ChainId.OPTIMISM_MAINNET],
@@ -288,6 +202,15 @@ export const SUGGESTED_BASES: ChainTokenList = {
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
   [ChainId.GOERLI]: [],
+  [ChainId.BSC_MAINNET]: [
+    Token.WBNB[ChainId.BSC_MAINNET],
+    Token.BUSD[ChainId.BSC_MAINNET],
+    Token.CAKE[ChainId.BSC_MAINNET],
+    DAI[ChainId.BSC_MAINNET],
+    USDC[ChainId.BSC_MAINNET],
+    USDT[ChainId.BSC_MAINNET],
+  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -308,6 +231,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
   [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.BSC_MAINNET]: [Token.WBNB[ChainId.BSC_MAINNET]],
+  [ChainId.BSC_TESTNET]: [Token.WBNB[ChainId.BSC_TESTNET]],
 }
 
 export const PINNED_PAIRS: {
@@ -405,7 +330,7 @@ export const NO_PRICE_IMPACT = 0
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const DEFAULT_TOKEN_LIST = 'ipfs://QmUWnK6AFHZ3S1hR7Up1h3Ntax3fP1ZyiTptDNG2cWLTeK'
+export const DEFAULT_TOKEN_LIST = 'ipfs://QmRqvWQahoyAUdeXEroKsWtLMLPpJ2Nxad7SeGTN4H6zRt'
 
 export const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 export const ZERO_USD = CurrencyAmount.usd('0')
@@ -449,7 +374,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       decimals: Currency.XDAI.decimals || 18,
     },
     rpcUrls: ['https://rpc.gnosischain.com/'],
-    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
+    blockExplorerUrls: ['https://gnosisscan.io'],
   },
   [ChainId.ARBITRUM_ONE]: {
     chainId: `0x${ChainId.ARBITRUM_ONE.toString(16)}`,
@@ -539,6 +464,28 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://goerli.optimism.io'],
     blockExplorerUrls: ['https://blockscout.com/optimism/goerli'],
   },
+  [ChainId.BSC_MAINNET]: {
+    chainId: `0x${ChainId.BSC_MAINNET.toString(16)}`,
+    chainName: 'BSC Mainnet',
+    nativeCurrency: {
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
+    },
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
+  },
+  [ChainId.BSC_TESTNET]: {
+    chainId: `0x${ChainId.BSC_TESTNET.toString(16)}`,
+    chainName: 'BSC Testnet',
+    nativeCurrency: {
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
+    },
+    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+    blockExplorerUrls: ['https://testnet.bscscan.com/'],
+  },
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {
@@ -557,6 +504,10 @@ export const NETWORK_OPTIONAL_DETAIL: {
   },
   [ChainId.OPTIMISM_MAINNET]: {
     partnerChainId: ChainId.MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.BSC_MAINNET]: {
+    partnerChainId: ChainId.BSC_MAINNET,
     isArbitrum: false,
   },
   [ChainId.ARBITRUM_RINKEBY]: {
@@ -603,6 +554,12 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
   ],
+  [ChainId.OPTIMISM_MAINNET]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.BSC_MAINNET]: [UniswapV2RoutablePlatform.SUSHISWAP.name, UniswapV2RoutablePlatform.PANCAKESWAP.name],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -625,11 +582,7 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.ARBITRUM_GOERLI]: [],
   [ChainId.GOERLI]: [],
   [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.CURVE.name,
-  ],
+  [ChainId.BSC_TESTNET]: [],
 }
 
 export const ROUTABLE_PLATFORM_STYLE: {
@@ -688,6 +641,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.DFYN.name,
   },
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
+    logo: PancakeSwapLogo,
+    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+  },
   [RoutablePlatform.CURVE.name]: {
     logo: CurveLogo,
     alt: RoutablePlatform.CURVE.name,
@@ -725,6 +684,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
   [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
@@ -739,6 +699,7 @@ export const ChainLabel: any = {
   [ChainId.XDAI]: 'Gnosis Chain',
   [ChainId.POLYGON]: 'Polygon',
   [ChainId.OPTIMISM_MAINNET]: 'Optimism',
+  [ChainId.BSC_MAINNET]: 'Binance Chain',
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {

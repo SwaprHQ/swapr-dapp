@@ -1,4 +1,4 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId, Currency, Trade } from '@swapr/sdk'
 
 interface PriceInformation {
   token: string
@@ -34,6 +34,8 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.GOERLI]: null,
   [ChainId.OPTIMISM_MAINNET]: 'optimistic-ethereum',
   [ChainId.OPTIMISM_GOERLI]: null,
+  [ChainId.BSC_MAINNET]: 'binance-smart-chain',
+  [ChainId.BSC_TESTNET]: null,
 }
 
 const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
@@ -42,6 +44,7 @@ const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.XDAI]: 'xdai',
   [ChainId.POLYGON]: 'matic-network',
   [ChainId.OPTIMISM_MAINNET]: 'ethereum',
+  [ChainId.BSC_MAINNET]: 'binancecoin',
 }
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
@@ -121,4 +124,22 @@ export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInf
 
   const { usd } = priceRaw[token]
   return { amount: usd.toString(), token }
+}
+
+export async function getTradeUSDValue(trade: Trade): Promise<string | null> {
+  const isNativeCurrency = Currency.isNative(trade.inputAmount.currency)
+
+  const getUSDPriceQuote = isNativeCurrency
+    ? getUSDPriceCurrencyQuote({ chainId: trade.chainId })
+    : getUSDPriceTokenQuote({ tokenAddress: trade.inputAmount.currency.address, chainId: trade.chainId })
+
+  const priceInformation = toPriceInformation(await getUSDPriceQuote)
+
+  if (priceInformation !== null && priceInformation.amount !== null) {
+    const amount = trade.inputAmount.toSignificant(6)
+    const usdValue = (parseFloat(amount) * parseFloat(priceInformation.amount)).toFixed(2)
+    return usdValue
+  }
+
+  return null
 }

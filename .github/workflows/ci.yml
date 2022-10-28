@@ -59,14 +59,14 @@ jobs:
         id: check-if-cypress-tests-should-run
         continue-on-error: true
         with:
-          one_of: ready-for-tests, QA
+          one_of: ready-for-tests,QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker://agilepathway/pull-request-label-checker:latest
         id: check-if-synpress-tests-should-run
         continue-on-error: true
         with:
-          one_of: ready-for-synpress-tests, QA
+          one_of: ready-for-synpress-tests,QA
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if cypress label is present
@@ -235,7 +235,7 @@ jobs:
     if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@4.2.5
+        uses: rlespinasse/github-slug-action@v4.3.0
 
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -279,9 +279,8 @@ jobs:
 
   synpress:
     name: 👘 ・Synpress
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [prepare]
-    container: cypress/base:16.5.0
     if: ${{ needs.prepare.outputs.synpress }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -326,9 +325,6 @@ jobs:
       - name: Generate open-api
         run: yarn codegen:socket
 
-      - name: Install cypress
-        run: yarn add -D cypress@9.2.0 --cache-folder $(yarn cache dir) && yarn cypress install && yarn cypress verify
-
       - name: Codegen socket
         run: yarn codegen:socket
 
@@ -336,55 +332,74 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Run synpress tests
-        run: yarn synpress:ct
+        run: |
+          sudo -E ./start-tests.sh
         continue-on-error: true
         env:
           CI: true
           COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
           COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
-
-      - name: Merge test results into one
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
+          TEST_PARAMS: ${{ env.TEST_PARAMS }}
+          PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
+          SLOW_MODE: true
+          DISPLAY: ':99'
+          CYPRESS_RESOURCES_WAIT: true
 
       - name: Save code coverage results
-        if: ${{ (github.event_name == 'push') || (contains(steps.prepare.commit-message.outputs.value, 'trigger-synpress')) }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.containers }}
           path: |
-            ${{ matrix.containers }}.json
-            public-report/screenshots
-            public-report/videos
+            docker/videos-ci
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: [install, prepare]
+    needs: [prepare]
     runs-on: ubuntu-20.04
-    container: swapr/cypress:zstd
     if: ${{ needs.prepare.outputs.cypress }}
     strategy:
       fail-fast: false
       matrix:
-        containers:
-          [Container01, Container02, Container03, Container04]
+        containers: [Container01, Container02, Container03, Container04]
     steps:
-      - name: 📥 ・Download workspace artifact
-        uses: actions/download-artifact@v3
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
         with:
-          name: workspace
+          fetch-depth: '50'
 
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          check-latest: true
+          cache: 'yarn'
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Generate open-api
+        run: yarn codegen:socket
+
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Verify Cypress
-        run: yarn cypress install && yarn cypress verify
+        run: yarn cypress install
 
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
+        run: yarn cypress:ci 'yarn cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}

@@ -2,16 +2,16 @@ import { ChainsEnum } from '../utils/enums/ChainsEnum'
 
 export class NetworkSwitcher {
   static ethereum() {
-    return cy.get('[data-testid=ethereum-network-button]').filter(':visible')
+    return cy.get('[data-testid=ethereum-network-button]').filter(':visible').first()
   }
   static arbitrum() {
-    return cy.get('[data-testid=arbitrum-one-network-button]').filter(':visible')
+    return cy.get('[data-testid=arbitrum-one-network-button]').filter(':visible').first()
   }
   static gnosis() {
-    return cy.get('[data-testid=gnosis-chain-network-button]').filter(':visible')
+    return cy.get('[data-testid=gnosis-chain-network-button]').filter(':visible').first()
   }
   static rinkeby() {
-    return cy.get('[data-testid=rinkeby-network-button]').filter(':visible')
+    return cy.get('[data-testid=rinkeby-network-button]').filter(':visible').first()
   }
   static arinkeby() {
     return cy
