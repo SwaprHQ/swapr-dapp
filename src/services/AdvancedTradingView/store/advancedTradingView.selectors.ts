@@ -24,8 +24,13 @@ const formatAdapterAmount = (amount: Number) => {
   return amount.toFixed(4)
 }
 
-export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) =>
-  inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+export const sortsBeforeTokens = (inputToken: Token, outputToken: Token) => {
+  try {
+    return inputToken.sortsBefore(outputToken) ? [inputToken, outputToken] : [outputToken, inputToken]
+  } catch {
+    return [inputToken, outputToken]
+  }
+}
 
 const getAdapterPair = <T extends BaseAppState>(key: AdapterKey, platform: UniswapV2RoutablePlatform) =>
   createSelector(
