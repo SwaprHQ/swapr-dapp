@@ -1,6 +1,6 @@
-import { ChainId, WETH } from '@swapr/sdk'
+import { ChainId, DAI, USDC, USDT, WBTC, WETH } from '@swapr/sdk'
 
-import { DAI, USDC, USDT, WBTC, ZERO_ADDRESS } from '../../../constants'
+import { ZERO_ADDRESS } from '../../../constants'
 import { ConnextToken } from './Connext.types'
 
 //connext's list of tokens
@@ -31,6 +31,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
         contract_address: USDT[ChainId.OPTIMISM_MAINNET].address,
         contract_decimals: USDT[ChainId.OPTIMISM_MAINNET].decimals,
       },
+      [ChainId.BSC_MAINNET]: {
+        contract_address: USDT[ChainId.BSC_MAINNET].address,
+        contract_decimals: USDT[ChainId.BSC_MAINNET].decimals,
+      },
     },
   },
   {
@@ -59,6 +63,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
         contract_address: USDC[ChainId.OPTIMISM_MAINNET].address,
         contract_decimals: USDC[ChainId.OPTIMISM_MAINNET].decimals,
       },
+      [ChainId.BSC_MAINNET]: {
+        contract_address: USDC[ChainId.BSC_MAINNET].address,
+        contract_decimals: USDC[ChainId.BSC_MAINNET].decimals,
+      },
     },
   },
   {
@@ -86,6 +94,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
       [ChainId.OPTIMISM_MAINNET]: {
         contract_address: DAI[ChainId.OPTIMISM_MAINNET].address,
         contract_decimals: DAI[ChainId.OPTIMISM_MAINNET].decimals,
+      },
+      [ChainId.BSC_MAINNET]: {
+        contract_address: DAI[ChainId.BSC_MAINNET].address,
+        contract_decimals: DAI[ChainId.BSC_MAINNET].decimals,
       },
     },
   },
@@ -165,6 +177,10 @@ export const CONNEXT_TOKENS: ConnextToken[] = [
       },
       [ChainId.POLYGON]: {
         contract_address: '0x5fe2b58c013d7601147dcdd68c143a77499f5531',
+        contract_decimals: 18,
+      },
+      [ChainId.BSC_MAINNET]: {
+        contract_address: '0x886c7c24b7A6C39a53ee95efa3f5E1B81DF37Ca5',
         contract_decimals: 18,
       },
     },

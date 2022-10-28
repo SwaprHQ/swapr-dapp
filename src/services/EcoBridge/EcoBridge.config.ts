@@ -31,6 +31,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
       ChainId.POLYGON,
       ChainId.XDAI,
       ChainId.OPTIMISM_MAINNET,
+      ChainId.BSC_MAINNET,
     ]),
   }),
   new XdaiBridge({
@@ -47,6 +48,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
       ChainId.POLYGON,
       ChainId.XDAI,
       ChainId.OPTIMISM_MAINNET,
+      ChainId.BSC_MAINNET,
     ]),
   }),
   new OmniBridge({

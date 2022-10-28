@@ -1,7 +1,7 @@
 import { formatUnits } from '@ethersproject/units'
-import { ChainId, Currency, WETH } from '@swapr/sdk'
+import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
-import { DAI, MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { SupportedChainsConfig } from '../EcoBridge.types'
 import { Route, TokenPriceResponseDTO } from './api/generated'
 import { isFee, SocketWrapDirection } from './Socket.types'
@@ -224,7 +224,7 @@ export const VERSION = {
 
 // TODO: To be reverted later
 export const SOCKET_LISTS_URL =
-  'https://raw.githubusercontent.com/SwaprDAO/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
+  'https://raw.githubusercontent.com/ImpeccableHQ/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
 // Pairs all provided chains
 export const bridgeSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains

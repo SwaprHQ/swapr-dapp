@@ -487,6 +487,24 @@ body {
   }
 }
 
+@keyframes loading-rotations-1 {
+  0% {
+    opacity:0;
+  }
+  6.25% {
+    opacity:0;
+  }
+  12.5% {
+    opacity:1;
+  }
+  93.75% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
 @keyframes loading-rotations-2 {
   0% {
     opacity:1;
@@ -614,6 +632,17 @@ body {
 }
 
 // rotating trade plataforms logos loading
+.loading-rotation-1>div {
+  animation-name: loading-rotations-1;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+}
+
+.loading-rotation-1>div:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
 .loading-rotation-2>div {
   animation-name: loading-rotations-2;
   animation-timing-function: ease-in-out;
