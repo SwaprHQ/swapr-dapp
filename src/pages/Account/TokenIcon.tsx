@@ -1,4 +1,4 @@
-import { ChainId, DXD, SWPR } from '@swapr/sdk'
+import { ChainId, DXD, SWPR, WETH } from '@swapr/sdk'
 
 import { Box } from 'rebass'
 
@@ -40,8 +40,13 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
   }
 
   const urlSource = getNetworkDefaultTokenUrl(symbol, token?.logoURI)
+
   if (urlSource) {
-    sources.push(urlSource)
+    if (token?.symbol === WETH[ChainId.MAINNET].symbol) {
+      sources.push(getTokenLogoURL(WETH[ChainId.MAINNET].address, ChainId.MAINNET))
+    } else {
+      sources.push(urlSource)
+    }
   }
   if (token) {
     sources.push(getTokenLogoURL(token.address))

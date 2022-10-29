@@ -39,11 +39,13 @@ const getExplorerPrefix = (chainId: ChainId) => {
     case ChainId.ARBITRUM_RINKEBY:
       return 'https://testnet.arbiscan.io'
     case ChainId.XDAI:
-      return 'https://blockscout.com/xdai/mainnet'
+      return 'https://gnosisscan.io'
     case ChainId.POLYGON:
       return 'https://polygonscan.com'
     case ChainId.OPTIMISM_MAINNET:
       return 'https://optimistic.etherscan.io'
+    case ChainId.BSC_MAINNET:
+      return 'https://bscscan.com'
     default:
       return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
@@ -59,6 +61,8 @@ export function getExplorerLink(
   if (protocol?.toUpperCase() === SwapProtocol.COW) {
     return getGnosisProtocolExplorerOrderLink(chainId, hash)
   }
+
+  if (protocol === 'socket') return getSocketExplorerLink(hash)
 
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address
@@ -257,6 +261,10 @@ export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
   return strictFormat
     ? normalizedValue.replace(/^([\d,]+)$|^([\d,]+)\.0*$|^([\d,]+\.[0-9]*?)0*$/, '$1$2$3')
     : normalizedValue
+}
+
+export function getSocketExplorerLink(transactionHash: string) {
+  return `https://socketscan.io/tx/${transactionHash}`
 }
 
 /**

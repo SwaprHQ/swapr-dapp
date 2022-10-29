@@ -1,3 +1,5 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
@@ -140,7 +142,10 @@ export const SwapButton = ({
 export const SwapLoadingButton = () => {
   const { t } = useTranslation('swap')
   const { chainId } = useActiveWeb3React()
-  const routablePlatforms = chainId ? RoutablePlatformKeysByNetwork[chainId] : RoutablePlatformKeysByNetwork[1]
+  const routablePlatforms = chainId
+    ? RoutablePlatformKeysByNetwork[chainId]
+    : RoutablePlatformKeysByNetwork[ChainId.MAINNET]
+
   return (
     <StyledSwapLoadingButton>
       <Text marginRight={[0, 2]}>{t('button.findingBestPrice')}</Text>

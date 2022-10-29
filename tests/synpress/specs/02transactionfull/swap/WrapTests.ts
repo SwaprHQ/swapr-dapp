@@ -5,7 +5,7 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-describe('Wrapping tests', () => {
+describe.skip('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
 
   let balanceBefore: number
