@@ -19,6 +19,7 @@ import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { TESTNETS } from '../../constants'
+import { REACT_APP_FEATURE_CHARTS } from '../../constants/features'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -389,11 +390,13 @@ export default function Swap() {
   const renderSwapBox = () => (
     <>
       <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab}>
-        <ChartTabs
-          hasBothCurrenciesInput={hasBothCurrenciesInput}
-          activeChartTab={activeChartTab || ChartTabsOptions.OFF}
-          setActiveChartTab={setSelectedChartTab}
-        />
+        {REACT_APP_FEATURE_CHARTS && (
+          <ChartTabs
+            hasBothCurrenciesInput={hasBothCurrenciesInput}
+            activeChartTab={activeChartTab || ChartTabsOptions.OFF}
+            setActiveChartTab={setSelectedChartTab}
+          />
+        )}
       </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">
