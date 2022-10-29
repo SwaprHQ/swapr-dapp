@@ -40,6 +40,12 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     logoSrc: BinanceChainLogo,
     color: '#F3BA2F',
   },
+  {
+    chainId: ChainId.XDAI,
+    name: 'Gnosis Chain',
+    logoSrc: GnosisLogo,
+    color: '#49A9A7',
+  },
 
   // TESTNETS
   {
@@ -69,12 +75,6 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     logoSrc: ArbitrumLogo,
     color: '#b1a5e6',
     tag: NetworkSwitcherTags.TESTNETS,
-  },
-  {
-    chainId: ChainId.XDAI,
-    name: 'Gnosis Chain',
-    logoSrc: GnosisLogo,
-    color: '#49A9A7',
   },
   {
     chainId: ChainId.OPTIMISM_GOERLI,
