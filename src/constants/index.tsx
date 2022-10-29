@@ -727,6 +727,7 @@ export const TESTNETS = [
   ChainId.ARBITRUM_GOERLI,
   ChainId.OPTIMISM_GOERLI,
   ChainId.GOERLI,
+  ChainId.BSC_TESTNET,
 ]
 
 export const SHOW_TESTNETS = false
