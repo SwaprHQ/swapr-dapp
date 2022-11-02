@@ -1,19 +1,27 @@
 import { DAI, WETH } from '@swapr/sdk'
 
 import { Canvas, Meta, Story, ArgsTable } from '@storybook/addon-docs'
-import { Box, Flex, Text } from 'rebass'
 import { CurrencyLogoComponent } from './CurrencyLogo.component'
 
 import { NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 
-<Meta title="Currencies" component={Flex} />
+<Meta title="Currencies" component={CurrencyLogoComponent} />
 
 # CurrencyLogoComponent
 
 Show the currency logo.
 
 <Canvas>
-  <Story name="CurrencyLogoComponent" args={{ currency: WETH[1], sources: [NATIVE_CURRENCY_LOGO[1]], size: '48px' }}>
+  <Story
+    name="CurrencyLogoComponent"
+    argTypes={{
+      sources: {
+        control: 'select',
+        options: [[NATIVE_CURRENCY_LOGO[1]], [NATIVE_CURRENCY_LOGO[100]]],
+      },
+    }}
+    args={{ currency: WETH[1], sources: [NATIVE_CURRENCY_LOGO[1]], size: '48px' }}
+  >
     {CurrencyLogoComponent.bind()}
   </Story>
 </Canvas>
