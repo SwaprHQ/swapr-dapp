@@ -418,7 +418,9 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
 
-    const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals)).toFixed(2).toString()
+    const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals))
+      .toFixed(this._receiveAmountDecimalPlaces)
+      .toString()
 
     this.store.dispatch(commonActions.setActiveRouteId(routeId))
 

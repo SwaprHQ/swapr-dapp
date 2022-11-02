@@ -684,7 +684,9 @@ export class OmniBridge extends EcoBridgeChildBase {
     const details = {
       fee,
       gas,
-      receiveAmount: Number(formatUnits(toAmount.toString(), toTokenDecimals)).toFixed(2),
+      receiveAmount: Number(formatUnits(toAmount.toString(), toTokenDecimals)).toFixed(
+        this._receiveAmountDecimalPlaces
+      ),
       estimateTime: '5 min',
       requestId: helperRequestId,
     }
