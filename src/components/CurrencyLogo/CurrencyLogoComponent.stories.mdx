@@ -13,7 +13,7 @@ import { NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 Show the currency logo.
 
 <Canvas>
-  <Story name="CurrencyLogoComponent">
-    <CurrencyLogoComponent currency={WETH[1]} sources={[NATIVE_CURRENCY_LOGO[1]]} size="48px" />
+  <Story name="CurrencyLogoComponent" args={{ currency: WETH[1], sources: [NATIVE_CURRENCY_LOGO[1]], size: '48px' }}>
+    {CurrencyLogoComponent.bind()}
   </Story>
 </Canvas>
