@@ -1,21 +1,26 @@
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
+import { useRouter } from '../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
+import { SwapTabs } from '../../state/user/reducer'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
   max-width: 457px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  margin: 0 0 10px;
 `
 
 const TabsRow = styled(Row)`
   display: inline-flex;
   width: auto;
-  margin: 0 0 10px;
   padding: 2px;
   background: ${({ theme }) => theme.bg6};
   border-radius: 12px;
@@ -53,20 +58,34 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = () => {
+export const Tabs = ({
+  activeTab,
+  setActiveTab,
+  children,
+}: {
+  activeTab: SwapTabs
+  setActiveTab: (tab: SwapTabs) => void
+  children?: ReactNode
+}) => {
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-
+  const { navigate } = useRouter()
   return (
     <TabsColumn>
       <TabsRow>
-        <Button className="active">
-          <StyledEcoRouter />
-          Eco Router V1.5
-        </Button>
-        <Button disabled={true}>{t('tabs.limit')}</Button>
         <Button
+          onClick={() => setActiveTab(SwapTabs.SWAP)}
+          className={activeTab === SwapTabs.SWAP ? 'active' : ''}
+          title="Swap with Eco Router V1.5"
+        >
+          <StyledEcoRouter />
+          Swap
+        </Button>
+        <Button disabled={true} title="Limit order">
+          {t('tabs.limit')}
+        </Button>
+        <Button
+          title="Bridge Swap"
           onClick={() => {
             dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
             navigate('/bridge')
@@ -75,6 +94,7 @@ export const Tabs = () => {
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
+      {children}
     </TabsColumn>
   )
 }

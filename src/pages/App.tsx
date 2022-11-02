@@ -1,7 +1,8 @@
 import { ApolloProvider } from '@apollo/client'
 import AOS from 'aos'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
+import { useLocation } from 'react-router-dom'
 import { Slide, ToastContainer } from 'react-toastify'
 import styled, { useTheme } from 'styled-components'
 
@@ -33,28 +34,30 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
 `
 
-const BodyWrapper = styled.div`
+const BodyWrapper = styled.div<{
+  isAdvancedTradeMode?: boolean
+}>`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 172px);
   width: 100%;
-  padding-top: 60px;
+  padding-top: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '30px' : '60px')};
   align-items: center;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   overflow: visible;
   z-index: 10;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme, isAdvancedTradeMode }) => theme.mediaWidth.upToMedium`
     /* [PR#531]: theme.mediaWidth.upToSmall does not cover all the breakpoints smoothly
     padding: 16px;
     */
-    padding-top: 2rem;
+    padding-top: ${isAdvancedTradeMode ? '1rem' : '2rem'};
   `};
 
   /* [PR#531] */
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
+  padding-right: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
 
   z-index: 1;
 `
@@ -65,7 +68,16 @@ const Marginer = styled.div`
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
+  const location = useLocation()
   const theme = useTheme()
+  const [isSwapPage, setIsSwapPage] = useState(false)
+  const isAdvancedTradeMode = location.pathname.includes('/swap/pro')
+
+  useEffect(() => {
+    setIsSwapPage(!!location.pathname.includes('swap'))
+  }, [location])
+
+  const isSwapPageAdvancedTradeMode = isSwapPage && isAdvancedTradeMode
 
   useEffect(() => {
     document.body.classList.add('no-margin')
@@ -83,21 +95,21 @@ export default function App() {
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
           <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
             <NetworkWarningModal />
-            <AppWrapper id="app-wrapper">
-              <HeaderWrapper>
-                <Header />
-              </HeaderWrapper>
-              <BodyWrapper>
-                <Web3ReactManager>
-                  <SpaceBg>
+            <Web3ReactManager>
+              <AppWrapper id="app-wrapper">
+                <HeaderWrapper>
+                  <Header />
+                </HeaderWrapper>
+                <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
+                  <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
                     <Suspense fallback={<FallbackLoader />}>
                       <Routes />
                     </Suspense>
                   </SpaceBg>
-                </Web3ReactManager>
-                <Marginer />
-              </BodyWrapper>
-            </AppWrapper>
+                  <Marginer />
+                </BodyWrapper>
+              </AppWrapper>
+            </Web3ReactManager>
             <ToastContainer
               draggable={false}
               className="custom-toast-root"

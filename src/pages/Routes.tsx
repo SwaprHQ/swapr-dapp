@@ -3,8 +3,8 @@ import { Route, Routes as Switch } from 'react-router-dom'
 
 import { BaseRedirect } from '../components/Routing/BaseRedirect'
 import { RouteCheck } from '../components/Routing/RouteCheck'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
+import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Pools/AddLiquidity/redirects'
+import { RedirectOldRemoveLiquidityPathStructure } from './Pools/RemoveLiquidity/redirects'
 // Dont want to lazy import swap
 import Swap from './Swap'
 
@@ -15,8 +15,8 @@ const LiquidityMiningCampaign = lazy(() => import(/* webpackPrefetch: true */ '.
 const Pair = lazy(() => import(/* webpackPrefetch: true */ './Pools/Pair'))
 const MyPairs = lazy(() => import(/* webpackPrefetch: true */ './Pools/Mine'))
 const Bridge = lazy(() => import(/* webpackPrefetch: true */ './Bridge'))
-const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './AddLiquidity'))
-const RemoveLiquidity = lazy(() => import(/* webpackPrefetch: true */ './RemoveLiquidity'))
+const AddLiquidity = lazy(() => import(/* webpackPrefetch: true */ './Pools/AddLiquidity'))
+const RemoveLiquidity = lazy(() => import(/* webpackPrefetch: true */ './Pools/RemoveLiquidity'))
 const CreateLiquidityMining = lazy(() => import(/* webpackPrefetch: true */ './LiquidityMining/Create'))
 const Account = lazy(() => import(/* webpackPrefetch: true */ './Account'))
 
@@ -24,6 +24,7 @@ export function Routes() {
   return (
     <Switch>
       <Route path="swap" element={<Swap />} />
+      <Route path="swap/pro" element={<Swap />} />
       <Route path="swap/:outputCurrency" element={<BaseRedirect />} />
       <Route path="bridge" element={<Bridge />} />
 

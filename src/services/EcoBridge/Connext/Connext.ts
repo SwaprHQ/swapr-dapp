@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, WETH } from '@swapr/sdk'
+import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
 import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
 import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sdk'
@@ -12,7 +12,6 @@ import { ethers, utils } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { DAI } from '../../../constants'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import {
   BridgeModalStatus,
@@ -406,7 +405,11 @@ export class Connext extends EcoBridgeChildBase {
 
       if (isNative) {
         //eth to weth
-        if (fromChainId === ChainId.MAINNET || fromChainId === ChainId.ARBITRUM_ONE) {
+        if (
+          fromChainId === ChainId.MAINNET ||
+          fromChainId === ChainId.ARBITRUM_ONE ||
+          fromChainId === ChainId.OPTIMISM_MAINNET
+        ) {
           if (toChainId === ChainId.XDAI) toTokenAddress = WETH[ChainId.XDAI].address
 
           if (toChainId === ChainId.POLYGON) toTokenAddress = WETH[ChainId.POLYGON].address
@@ -417,6 +420,8 @@ export class Connext extends EcoBridgeChildBase {
           if (toChainId === ChainId.ARBITRUM_ONE) toTokenAddress = DAI[ChainId.ARBITRUM_ONE].address
 
           if (toChainId === ChainId.POLYGON) toTokenAddress = DAI[ChainId.POLYGON].address
+
+          if (toChainId === ChainId.OPTIMISM_MAINNET) toTokenAddress = DAI[ChainId.OPTIMISM_MAINNET].address
         }
       } else {
         toTokenAddress = CONNEXT_TOKENS.reduce<string | undefined>((tokenAddressOnDestinationChain, token) => {
@@ -463,7 +468,7 @@ export class Connext extends EcoBridgeChildBase {
 
       let gasInUSD: string | undefined = undefined
 
-      if (gasPrice && fromChainId !== ChainId.POLYGON) {
+      if (gasPrice && ![ChainId.POLYGON, ChainId.OPTIMISM_MAINNET].includes(fromChainId)) {
         const gasInGwei = BigNumber.from(gasPrice).mul(prepare)
         const totalGas = formatUnits(gasInGwei)
 

@@ -114,6 +114,7 @@ function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddress
     ChainId.ARBITRUM_RINKEBY,
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
+    ChainId.BSC_MAINNET,
   ]
   return Object.assign({}, ...chainList.map(chain => ({ [chain]: { ...map1[chain], ...map2[chain] } })))
 }

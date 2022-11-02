@@ -1,4 +1,4 @@
-import { CurrencyAmount } from '@swapr/sdk'
+import { ChainId, CurrencyAmount } from '@swapr/sdk'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -98,6 +98,23 @@ const OutputPanelContainer = styled.div`
   margin-top: 12px;
 `
 
+/**
+ * Checks if network is supported by the bridge.
+ * Checks if the network exists in the defined presets.
+ * Checks if the network has testnet or coming soon tag.
+ * @param chainId
+ */
+export function isNetworkSupported(chainId: ChainId): boolean {
+  const network = networkOptionsPreset.find(network => network.chainId === chainId)
+
+  if (!network) {
+    return false
+  }
+
+  // Check for tags
+  return network.tag === NetworkSwitcherTags.COMING_SOON || network.tag === NetworkSwitcherTags.TESTNETS
+}
+
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
@@ -152,8 +169,7 @@ export default function Bridge() {
 
   const [displayedValue, setDisplayedValue] = useState('')
 
-  const isUnsupportedBridgeNetwork =
-    networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
+  const isUnsupportedBridgeNetwork = !isNetworkSupported(chainId!)
 
   useEffect(() => {
     if (activeTab === BridgeTab.BRIDGE) {
@@ -280,7 +296,7 @@ export default function Bridge() {
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: true,
+        showTestnets: false,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange]
   )
@@ -293,7 +309,7 @@ export default function Bridge() {
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: true,
+        showTestnets: false,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )
