@@ -721,7 +721,15 @@ export const OLD_SWPR: { [key: number]: Token } = {
   ),
 }
 
-export const TESTNETS = [ChainId.RINKEBY, ChainId.ARBITRUM_RINKEBY]
+export const TESTNETS = [
+  ChainId.RINKEBY,
+  ChainId.ARBITRUM_RINKEBY,
+  ChainId.ARBITRUM_GOERLI,
+  ChainId.OPTIMISM_GOERLI,
+  ChainId.GOERLI,
+  ChainId.BSC_TESTNET,
+]
+
 export const SHOW_TESTNETS = false
 
 // addresses to filter by when querying for verified KPI tokens

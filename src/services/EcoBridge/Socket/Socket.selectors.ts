@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
+import { SocketList } from '../EcoBridge.types'
 import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 
 const createSelectRoutes = (bridgeId: SocketList) =>
@@ -48,7 +48,7 @@ const createSelectBridgeTransactionsSummary = (
   bridgeId: SocketList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.filter], (txs, txsFilter) => {
+  createSelector([selectOwnedTxs], txs => {
     const summaries = txs.map(tx => {
       const pendingReason =
         tx.status === SocketTxStatus.FROM_PENDING
@@ -95,18 +95,7 @@ const createSelectBridgeTransactionsSummary = (
       return summary
     })
 
-    switch (txsFilter) {
-      case BridgeTxsFilter.COLLECTABLE:
-        return summaries.filter(summary => summary.status === 'redeem')
-      case BridgeTxsFilter.RECENT:
-        const passed24h = new Date().getTime() - 1000 * 60 * 60 * 24
-        return summaries.filter(summary => {
-          if (!summary.timestampResolved) return true
-          return summary.timestampResolved >= passed24h
-        })
-      default:
-        return summaries
-    }
+    return summaries
   })
 
 export interface SocketBridgeSelectors {

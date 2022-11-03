@@ -226,7 +226,7 @@ export const VERSION = {
 export const SOCKET_LISTS_URL =
   'https://raw.githubusercontent.com/ImpeccableHQ/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
 // Pairs all provided chains
-export const socketSupportedChains = (supportedChains: ChainId[]) =>
+export const bridgeSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains
     .flatMap((v, i) => supportedChains.slice(i + 1).map(w => [v, w]))
     .map<SupportedChainsConfig>(([from, to]) => ({
