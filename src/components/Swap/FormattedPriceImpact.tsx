@@ -2,7 +2,7 @@ import { Percent } from '@swapr/sdk'
 
 import { ONE_BIPS } from '../../constants'
 import { warningSeverity } from '../../utils/prices'
-import { ErrorText } from './styleds'
+import { ErrorText } from './styles'
 
 /**
  * Formatted version of price impact text with warning colors

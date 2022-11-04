@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -6,6 +6,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
 import { useActiveWeb3React } from '../../hooks'
+import { useRouter } from '../../hooks/useRouter'
 import { supportedChainIdList } from '../../modules/limit-orders'
 import { SwapContext, SwapTab } from '../../modules/swap/context'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
@@ -57,11 +58,11 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export function Tabs() {
+export function Tabs({ children }: { children?: ReactNode }) {
   const { t } = useTranslation('swap')
   const { activeTab, setActiveTab } = useContext(SwapContext)
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const { navigate, pathname } = useRouter()
   const { chainId } = useActiveWeb3React()
 
   const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
@@ -70,11 +71,13 @@ export function Tabs() {
     <TabsColumn>
       <TabsRow>
         <Button
-          onClick={() => setActiveTab(SwapTab.EcoRouter)}
-          className={activeTab === SwapTab.EcoRouter ? 'active' : ''}
+          onClick={() => {
+            setActiveTab(pathname.includes('pro') ? SwapTab.AdvancedTradingView : SwapTab.Swap)
+          }}
+          className={activeTab === SwapTab.Swap || activeTab === SwapTab.AdvancedTradingView ? 'active' : ''}
         >
           <StyledEcoRouter />
-          Eco Router V1.5
+          Swap
         </Button>
         <Button
           onClick={() => setActiveTab(SwapTab.LimitOrder)}
@@ -93,6 +96,7 @@ export function Tabs() {
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
+      {children}
     </TabsColumn>
   )
 }

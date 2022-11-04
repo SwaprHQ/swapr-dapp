@@ -36,9 +36,10 @@ async function getOrders(account: string, allNetworks: boolean, chainId: ChainId
   return [] as OrderMetaData[]
 }
 
-interface LimitToken {
+interface Token {
   value: number
   symbol?: string
+  chainId?: ChainId
   tokenAddress: string
 }
 
@@ -46,8 +47,8 @@ export interface LimitOrderTransaction extends Omit<OrderMetaData, 'status' | 's
   type: 'Limit Order'
   hash: string
   network: ChainId
-  sellToken: LimitToken
-  buyToken: LimitToken
+  sellToken: Token
+  buyToken: Token
   confirmedTime: number
   status: OrderMetaData['status']
   cancelOrder: ((uid: string, provider: Web3Provider) => Promise<boolean>) | undefined
@@ -76,11 +77,13 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
               value: formatUnits(order.sellAmount, sellToken?.decimals) as unknown as number,
               symbol: sellToken?.symbol,
               tokenAddress: order.sellToken,
+              chainId: getNetworkId(order.appData.toString()),
             },
             buyToken: {
               value: formatUnits(order.buyAmount, buyToken?.decimals) as unknown as number,
               symbol: buyToken?.symbol,
               tokenAddress: order.buyToken,
+              chainId: getNetworkId(order.appData.toString()),
             },
             confirmedTime: order.validTo * 1000,
             status: order.status,

@@ -29,15 +29,15 @@ export enum TransactionStatus {
 
 interface Token {
   value: number
-  token: string
+  symbol: string
   chainId?: ChainId
   tokenAddress?: string
 }
 
 export interface SwapTransaction {
   type: TransactionTypes.Swap
-  from: Token
-  to: Token
+  sellToken: Token
+  buyToken: Token
   summary: string
   addedTime: number
   confirmedTime?: number
@@ -56,4 +56,5 @@ export interface BridgeTransaction
   logs: BridgeTransactionLog[]
 }
 
+export type TradingTransaction = SwapTransaction | BridgeTransaction
 export type Transaction = SwapTransaction | BridgeTransaction | LimitOrderTransaction

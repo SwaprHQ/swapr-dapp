@@ -22,7 +22,7 @@ import { PoolLiquidityHeader } from '../../../components/Pool/PoolLiquidityHeade
 import { MinimalPositionCard } from '../../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../../components/Row'
 import Slider from '../../../components/Slider'
-import { Dots } from '../../../components/Swap/styleds'
+import { Dots } from '../../../components/Swap/styles'
 import TradePrice from '../../../components/Swap/TradePrice'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

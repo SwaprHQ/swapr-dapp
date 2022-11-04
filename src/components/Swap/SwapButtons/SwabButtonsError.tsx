@@ -1,4 +1,4 @@
-import { SwapCallbackError } from '../styleds'
+import { SwapCallbackError } from '../styles'
 
 export const ErrorBox = ({
   isExpertMode,

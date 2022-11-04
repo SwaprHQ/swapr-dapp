@@ -10,7 +10,7 @@ import { PageMetaData } from '../../../../components/PageMetaData'
 import AdvancedSwapDetailsDropdown from '../../../../components/Swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from '../../../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../../../components/Swap/ConfirmSwapModal'
-import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../../../components/Swap/styleds'
+import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../../../components/Swap/styles'
 import SwapButtons from '../../../../components/Swap/SwapButtons'
 import { TradeDetails } from '../../../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../../../components/TokenWarningModal'
@@ -334,8 +334,7 @@ export function SwapBox() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {/* <Hero>
-        <AppBodyContainer> */}
+
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">
           <ConfirmSwapModal

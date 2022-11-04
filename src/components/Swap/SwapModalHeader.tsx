@@ -13,7 +13,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
 import { CurrencyLogo } from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
-import { SwapShowAcceptChanges, TruncatedText } from './styleds'
+import { SwapShowAcceptChanges, TruncatedText } from './styles'
 
 export default function SwapModalHeader({
   trade,

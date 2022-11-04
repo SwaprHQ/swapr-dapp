@@ -1,9 +1,10 @@
 import { createContext } from 'react'
 
 export enum SwapTab {
-  EcoRouter = 'EcoRouter',
+  Swap = 'EcoRouter',
   LimitOrder = 'LimitOrder',
   BridgeSwap = 'BridgeSwap',
+  AdvancedTradingView = 'AdvancedTradingView',
 }
 
 export interface ISwapContext {
@@ -12,6 +13,6 @@ export interface ISwapContext {
 }
 
 export const SwapContext = createContext<ISwapContext>({
-  activeTab: SwapTab.EcoRouter,
+  activeTab: SwapTab.Swap,
   setActiveTab: () => {},
 })

@@ -5,8 +5,8 @@ import HeroImage from '../../assets/images/hero-graphic-desktop.png'
 import HeroImageLeft from '../../assets/images/hero-graphic-left.png'
 import { breakpoints, gradients } from '../../utils/theme'
 
-export const SpaceBg = ({ children }: { children: ReactNode }) => (
-  <StyledHero id="liquidity-hero" className="hero-active">
+export const SpaceBg = ({ children, isAdvancedTradeMode }: { children: ReactNode; isAdvancedTradeMode: boolean }) => (
+  <StyledHero id="liquidity-hero" className="hero-active" isAdvancedTradeMode={isAdvancedTradeMode}>
     <div className="inner-hero">
       <AppBodyContainer>{children}</AppBodyContainer>
       <div className="hero-background">
@@ -30,7 +30,7 @@ const zoomOut = keyframes`
     100% {transform: scale(1); opacity: 0.7;}
 `
 
-const StyledHero = styled.div`
+const StyledHero = styled.div<{ isAdvancedTradeMode: boolean }>`
   position: relative;
   width: 100%;
   .inner-hero {
@@ -112,27 +112,30 @@ const StyledHero = styled.div`
     transition: 1s ease-in-out all;
     /* transition: 0.25s ease-in-out transform; */
   }
-  .hero-image-right {
-    background-image: url('${HeroImage}');
-    width: 1198px;
-    height: 905px;
-    top: -172px;
-    right: -32px;
-    z-index: 1;
-  }
-  .hero-image-left {
-    background-image: url('${HeroImageLeft}');
-    width: 1680px;
-    height: 1680px;
-    top: -172px;
-    right: -15px;
-    background-position: left top;
-    background-size: 100% auto;
-    z-index: 1;
-    @media screen and (min-width: 1680px) {
-      width: 102%;
+  ${({ isAdvancedTradeMode }) =>
+    !isAdvancedTradeMode &&
+    `
+    .hero-image-right {
+      background-image: url('${HeroImage}');
+      width: 1198px;
+      height: 905px;
+      top: -172px;
+      right: -32px;
+      z-index: 1;
     }
-  }
+    .hero-image-left {
+      background-image: url('${HeroImageLeft}');
+      width: 1680px;
+      height: 1680px;
+      top: -172px;
+      right: -15px;
+      background-position: left top;
+      background-size: 100% auto;
+      z-index: 1;
+      @media screen and (min-width: 1680px) {
+        width: 102%;
+      }
+    }`}
 
   @media screen and (max-width: ${breakpoints.md}) {
     .inner-hero {

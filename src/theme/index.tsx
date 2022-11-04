@@ -59,6 +59,7 @@ export function colors(darkMode: boolean): Colors {
     bg6: '#171621',
     bg7: '#2D3040',
     bg8: '#191A24',
+    bg9: '#101019',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -240,19 +241,6 @@ a {
 
 body.no-margin {
   margin: 0 !important;
-}
-
-/**
- * Source: https://stackoverflow.com/a/4298216/2151050
- */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-input[type=number] {
-  -moz-appearance:textfield; /* Firefox */
 }
 `
 
@@ -500,6 +488,24 @@ body {
   }
 }
 
+@keyframes loading-rotations-1 {
+  0% {
+    opacity:0;
+  }
+  6.25% {
+    opacity:0;
+  }
+  12.5% {
+    opacity:1;
+  }
+  93.75% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+
 @keyframes loading-rotations-2 {
   0% {
     opacity:1;
@@ -627,6 +633,17 @@ body {
 }
 
 // rotating trade plataforms logos loading
+.loading-rotation-1>div {
+  animation-name: loading-rotations-1;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+}
+
+.loading-rotation-1>div:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
 .loading-rotation-2>div {
   animation-name: loading-rotations-2;
   animation-timing-function: ease-in-out;

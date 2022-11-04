@@ -18,7 +18,7 @@ import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
-import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
+import { StyledBalanceMaxMini, SwapCallbackError } from './styles'
 
 export default function SwapModalFooter({
   trade,

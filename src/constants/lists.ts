@@ -22,6 +22,8 @@ const BAOSWAP_LIST = 'https://raw.githubusercontent.com/baofinance/tokenlists/ma
 const QUICKSWAP_LIST = 'https://unpkg.com/quickswap-default-token-list@1.2.29/build/quickswap-default.tokenlist.json'
 const DFYN_LIST = 'https://raw.githubusercontent.com/dfyn/new-host/main/list-token.tokenlist.json'
 const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json'
+const PANCAKESWAP_LIST =
+  'https://raw.githubusercontent.com/pancakeswap/pancake-toolkit/master/packages/token-lists/lists/pancakeswap-default.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
@@ -46,9 +48,16 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   GEMINI_LIST,
   DFYN_LIST,
   OPTIMISM_LIST,
+  PANCAKESWAP_LIST,
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
 ]
 
 // default lists to be 'active' aka searched across
 // TODO: Generalise this to have a dict of (chainId: active_list)
-export const DEFAULT_ACTIVE_LIST_URLS: string[] = [DEFAULT_TOKEN_LIST, 'CARROT', QUICKSWAP_LIST, OPTIMISM_LIST]
+export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
+  DEFAULT_TOKEN_LIST,
+  'CARROT',
+  QUICKSWAP_LIST,
+  OPTIMISM_LIST,
+  PANCAKESWAP_LIST,
+]

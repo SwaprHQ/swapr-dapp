@@ -19,27 +19,30 @@ import { TokenIcon } from '../TokenIcon'
 
 interface BridgeTransactionRowProps {
   transaction: BridgeTransaction
+  showBackgroundStatus: boolean
 }
 
-export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps) {
-  const { type, status, from, to, confirmedTime, logs, bridgeId } = transaction
+export function BridgeTransactionRow({ transaction, showBackgroundStatus }: BridgeTransactionRowProps) {
+  const { type, status, sellToken, buyToken, confirmedTime, logs, bridgeId } = transaction
 
-  const fromNetwork = from.chainId ? getNetworkInfo(Number(from.chainId)) : undefined
-  const toNetwork = to?.chainId ? getNetworkInfo(Number(to?.chainId)) : undefined
+  const fromNetwork = sellToken.chainId ? getNetworkInfo(Number(sellToken.chainId)) : undefined
+  const toNetwork = buyToken?.chainId ? getNetworkInfo(Number(buyToken?.chainId)) : undefined
 
-  const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction')
+  const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction', bridgeId)
   const toLink =
-    logs[1]?.chainId && logs[1]?.txHash ? getExplorerLink(logs[1]?.chainId, logs[1]?.txHash, 'transaction') : undefined
+    bridgeId === 'socket'
+      ? logs[0] && logs[1] && getExplorerLink(logs[0].chainId, logs[0].txHash, 'transaction', bridgeId)
+      : logs[1] && getExplorerLink(logs[1].chainId, logs[1].txHash, 'transaction', bridgeId)
 
   return (
-    <GridCard status={status.toUpperCase()}>
+    <GridCard status={showBackgroundStatus ? status.toUpperCase() : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={from.token} address={from.tokenAddress} chainId={from.chainId} />
+            <TokenIcon symbol={sellToken.symbol} address={sellToken.tokenAddress} chainId={sellToken.chainId} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(from.value, false)}</Box>
-              <Box sx={{ fontSize: '0.8em' }}>{from.token}</Box>
+              <Box>{formatNumber(sellToken.value, false)}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>{sellToken.symbol}</Box>
             </Flex>
           </Flex>
           <Box sx={{ mt: 1 }}>
@@ -54,10 +57,10 @@ export function BridgeTransactionRow({ transaction }: BridgeTransactionRowProps)
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={to.token} address={to.tokenAddress} chainId={to.chainId} />
+            <TokenIcon symbol={buyToken.symbol} address={buyToken.tokenAddress} chainId={buyToken.chainId} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(to.value, false)}</Box>
-              <Box sx={{ fontSize: '0.8em' }}>{to.token}</Box>
+              <Box>{formatNumber(buyToken.value, false)}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>{buyToken.symbol}</Box>
             </Flex>
           </Flex>
           <Box sx={{ mt: 1 }}>

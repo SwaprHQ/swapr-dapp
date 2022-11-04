@@ -17,4 +17,8 @@ export const connextSdkChainConfig = {
     providers: ['https://polygon-rpc.com', 'https://rpc.ankr.com/polygon'],
     transactionManagerAddress: '0x6090De2EC76eb1Dc3B5d632734415c93c44Fd113',
   },
+  [ChainId.OPTIMISM_MAINNET]: {
+    providers: ['https://mainnet.optimism.io'],
+    transactionManagerAddress: '0x31eFc4AeAA7c39e54A33FDc3C46ee2Bd70ae0A09',
+  },
 }

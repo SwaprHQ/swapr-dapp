@@ -20,27 +20,38 @@ import { TokenIcon } from '../TokenIcon'
 
 interface SwapTransactionRowProps {
   transaction: SwapTransaction
+  showBackgroundStatus: boolean
 }
 
-export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
+export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTransactionRowProps) {
   const { t } = useTranslation('account')
   const { account } = useActiveWeb3React()
   const fromAddress = shortenAddress(`${account}`)
-  const { type, status, from, to, confirmedTime, network, hash, swapProtocol, addedTime, alternateReceiver } =
-    transaction
+  const {
+    type,
+    status,
+    sellToken,
+    buyToken,
+    confirmedTime,
+    network,
+    hash,
+    swapProtocol,
+    addedTime,
+    alternateReceiver,
+  } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
-  const price = to?.value === 0 ? 0 : from.value / to.value
+  const price = buyToken?.value === 0 ? 0 : sellToken.value / buyToken.value
   const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
 
   return (
-    <GridCard status={status}>
+    <GridCard status={showBackgroundStatus ? status : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={from.token} />
+            <TokenIcon symbol={sellToken.symbol} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(from.value, false)}</Box>
-              <Box sx={{ fontSize: '14px' }}>{from.token}</Box>
+              <Box>{formatNumber(sellToken.value, false)}</Box>
+              <Box sx={{ fontSize: '14px' }}>{sellToken.symbol}</Box>
             </Flex>
           </Flex>
           {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{fromAddress}</Box>}
@@ -56,10 +67,10 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
       <TokenDetails justifyContent="start">
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={to.token} />
+            <TokenIcon symbol={buyToken.symbol} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(to.value, false)}</Box>
-              <Box sx={{ fontSize: '14px' }}>{to.token}</Box>
+              <Box>{formatNumber(buyToken.value, false)}</Box>
+              <Box sx={{ fontSize: '14px' }}>{buyToken.symbol}</Box>
             </Flex>
           </Flex>
           {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{alternateReceiver}</Box>}
@@ -76,7 +87,7 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
         <Flex flexDirection="column" alignContent="center">
           <Box> {formatNumber(price, false, true)}</Box>
           <Box sx={{ fontSize: '10px' }}>
-            {from.token} / {to.token}
+            {sellToken.symbol} / {buyToken.symbol}
           </Box>
         </Flex>
       </TransactionDetails>

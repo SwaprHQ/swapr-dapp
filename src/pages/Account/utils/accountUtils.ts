@@ -20,7 +20,6 @@ export const formatTransactions = (
   account: string,
   filter: string | null
 ) => {
-  debugger
   const swapTransactions = formatSwapTransactions(transactions, account)
   let allTransactions
   if (filter === TransactionFilter.SWAP) {
