@@ -118,10 +118,8 @@ export function usePair24hVolumeUSD(
   return useMemo(() => {
     if (volume24hUsdLoading || totalVolumeLoading || blockLoading) return { loading: true, volume24hUSD: ZERO_USD }
     if (
-      !volume24hUsdData ||
-      !totalVolumeData ||
-      !volume24hUsdData.pairs.length ||
-      !totalVolumeData.pairs.length ||
+      !volume24hUsdData?.pairs?.length ||
+      !totalVolumeData?.pairs?.length ||
       volume24hUsdError ||
       totalVolumeError ||
       blockError
