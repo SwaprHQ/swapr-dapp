@@ -48,14 +48,6 @@ import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../../../utils/prices'
 import AppBody from '../../../AppBody'
 import { AdvancedSwapMode } from '../../AdvancedSwapMode'
-import BlogNavigation from './../../../../components/LandingPageComponents/BlogNavigation'
-import CommunityBanner from './../../../../components/LandingPageComponents/CommunityBanner'
-import CommunityLinks from './../../../../components/LandingPageComponents/CommunityLinks'
-import Features from './../../../../components/LandingPageComponents/Features'
-import Footer from './../../../../components/LandingPageComponents/layout/Footer'
-import Hero from './../../../../components/LandingPageComponents/layout/Hero'
-import Stats from './../../../../components/LandingPageComponents/Stats'
-import Timeline from './../../../../components/LandingPageComponents/Timeline'
 
 export type SwapData = {
   showConfirm: boolean
@@ -70,9 +62,6 @@ const SwitchIconContainer = styled.div`
   position: relative;
   width: 100%;
 `
-const LandingBodyContainer = styled.section`
-  width: calc(100% + 32px) !important;
-`
 
 export enum CoWTradeState {
   UNKNOWN, // default
@@ -80,14 +69,6 @@ export enum CoWTradeState {
   APPROVAL,
   SWAP,
 }
-
-const AppBodyContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 3;
-  min-height: calc(100vh - 340px);
-`
 
 export function AdvancedTradingView() {
   const isDesktop = useIsDesktop()
@@ -522,22 +503,6 @@ export function AdvancedTradingView() {
         !isUnsupportedChainIdError &&
         !TESTNETS.includes(chainId) &&
         isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {/* {activeChartTab !== ChartTabsOptions.PRO && !pathname.includes('/pro') && (
-        <>
-          <Hero>
-            <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
-          </Hero>
-          <LandingBodyContainer>
-            <Features />
-            <Stats />
-            <CommunityBanner />
-            <Timeline />
-            <CommunityLinks />
-            <BlogNavigation />
-          </LandingBodyContainer>
-          <Footer />
-        </>
-      )} */}
     </>
   )
 }

@@ -65,7 +65,7 @@ export const useAllTrades = (): {
     }
 
     return []
-  }, [account, allSwapBridgeTransactions, allSwapTransactions])
+  }, [account, allLimitOrderTransactions, allSwapBridgeTransactions, allSwapTransactions])
 
   const tradeHistory = [...baseAdapterTradeHistory, ...uniswapV3TradeHistory].sort((firstTrade, secondTrade) =>
     sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
