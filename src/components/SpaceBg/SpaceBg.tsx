@@ -103,6 +103,7 @@ const StyledHero = styled.div<{ isAdvancedTradeMode: boolean }>`
     opacity: 0;
     z-index: 2;
   }
+
   .hero-image-left,
   .hero-image-right {
     position: absolute;

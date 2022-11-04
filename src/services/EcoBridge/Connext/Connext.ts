@@ -484,7 +484,7 @@ export class Connext extends EcoBridgeChildBase {
       }
 
       const details = {
-        receiveAmount: Number(formatUnits(amountReceived, decimals)).toFixed(2),
+        receiveAmount: Number(formatUnits(amountReceived, decimals)).toFixed(this._receiveAmountDecimalPlaces),
         fee,
         estimateTime: '15 MIN',
         requestId: helperRequestId,

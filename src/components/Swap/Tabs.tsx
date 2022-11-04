@@ -1,7 +1,6 @@
 import { ReactNode, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { ReactComponent as EcoRouter } from '../../assets/images/eco-router.svg'
@@ -14,13 +13,16 @@ import Row from '../Row'
 
 const TabsColumn = styled.div`
   max-width: 457px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  margin: 0 0 10px;
 `
 
 const TabsRow = styled(Row)`
   display: inline-flex;
   width: auto;
-  margin: 0 0 10px;
   padding: 2px;
   background: ${({ theme }) => theme.bg6};
   border-radius: 12px;
@@ -87,6 +89,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           {t('tabs.limit')}
         </Button>
         <Button
+          title="Bridge Swap"
           onClick={() => {
             dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
             navigate('/bridge')
