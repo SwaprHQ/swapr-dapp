@@ -17,6 +17,7 @@ export abstract class EcoBridgeChildBase {
   protected _activeChainId: EcoBridgeChildBaseProps['activeChainId']
   protected _staticProviders: EcoBridgeChildBaseProps['staticProviders']
   protected _activeProvider: EcoBridgeChildBaseProps['activeProvider']
+  protected readonly _receiveAmountDecimalPlaces = 3
 
   constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
