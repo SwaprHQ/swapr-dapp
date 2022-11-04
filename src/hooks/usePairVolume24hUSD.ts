@@ -13,7 +13,7 @@ import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const GET_BLOCK_BY_TIMESTAMP = gql`
   query getBlockFromTimestamp($timestamp: String!) {
-    blocks(first: 10, orderBy: number, orderDirection: asc, where: { timestamp_gt: $timestamp }) {
+    blocks(first: 999, orderBy: number, orderDirection: asc, where: { timestamp_gt: $timestamp }) {
       number
     }
   }
