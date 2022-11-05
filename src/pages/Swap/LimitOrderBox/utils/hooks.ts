@@ -5,7 +5,7 @@ import { OrderMetaData } from '@cowprotocol/cow-sdk'
 import { formatUnits } from 'ethers/lib/utils'
 import { useEffect, useState } from 'react'
 
-import { useListsByAddress } from '../../../../../state/lists/hooks'
+import { useListsByAddress } from '../../../../state/lists/hooks'
 import { deleteOpenOrders, getOwnerOrders } from '../api'
 
 const appDataHashes = {

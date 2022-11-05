@@ -10,7 +10,7 @@ import { useNotificationPopup } from '../../../state/application/hooks'
 import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
-import { LimitOrderTransaction } from '../../Swap/LimitOrderBox/limit-orders/utils/hooks'
+import { LimitOrderTransaction } from '../../Swap/LimitOrderBox/utils/hooks'
 import {
   CustomLinkIcon,
   GridCard,

@@ -7,7 +7,7 @@ import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../../../../../assets/images/swap-icon.svg'
+import { ReactComponent as SwapIcon } from '../../../../../assets/images/swap-icon.svg'
 import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'

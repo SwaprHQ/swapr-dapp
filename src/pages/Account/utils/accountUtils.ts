@@ -1,7 +1,7 @@
 import EtherLogo from '../../../assets/images/ether-logo.png'
 import PolygonMaticLogo from '../../../assets/images/polygon-matic-logo.svg'
 import XDAILogo from '../../../assets/images/xdai-logo.png'
-import { type LimitOrderTransaction } from '../../Swap/LimitOrderBox/limit-orders/utils/hooks'
+import { type LimitOrderTransaction } from '../../Swap/LimitOrderBox/utils/hooks'
 import { type AllSwapTransactions, type BridgeTransaction, type Transaction, TransactionStatus } from '../Account.types'
 import { formatSwapTransactions } from './swapTransactionsUtils'
 
