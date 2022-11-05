@@ -1,8 +1,8 @@
-import { ButtonPrimary } from '../../../../../../components/Button'
-import { Loader } from '../../../../../../components/Loader'
-import ProgressSteps from '../../../../../../components/ProgressSteps'
-import { AutoRow } from '../../../../../../components/Row'
-import { ApprovalState } from '../../../../../../hooks/useApproveCallback'
+import { ButtonPrimary } from '../../../../../components/Button'
+import { Loader } from '../../../../../components/Loader'
+import ProgressSteps from '../../../../../components/ProgressSteps'
+import { AutoRow } from '../../../../../components/Row'
+import { ApprovalState } from '../../../../../hooks/useApproveCallback'
 
 interface ApprovalFlowProps {
   approval: ApprovalState

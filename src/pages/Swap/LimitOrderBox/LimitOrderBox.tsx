@@ -1,5 +1,5 @@
 import { useActiveWeb3React } from '../../../hooks'
-import { App as LimitOrdersContainer } from './limit-orders'
+import { App as LimitOrdersContainer } from './app'
 
 export function LimitOrderBox() {
   const { library, account, chainId } = useActiveWeb3React()

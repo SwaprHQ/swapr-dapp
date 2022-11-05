@@ -8,7 +8,7 @@ import Row from '../../../components/Row'
 import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
-import { supportedChainIdList } from '../LimitOrderBox/limit-orders'
+import { supportedChainIdList } from '../LimitOrderBox/constants'
 import { SwapContext, SwapTab } from '../SwapContext'
 
 const TabsColumn = styled.div`
