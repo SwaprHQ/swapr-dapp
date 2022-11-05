@@ -3,7 +3,7 @@ import { type ChainId } from '@swapr/sdk'
 import { type BridgeList } from '../../services/EcoBridge/EcoBridge.types'
 import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 import { TransactionDetails } from '../../state/transactions/reducer'
-import { LimitOrderTransaction } from './../../modules/limit-orders/utils/hooks'
+import { LimitOrderTransaction } from '../Swap/LimitOrderBox/limit-orders/utils/hooks'
 
 export enum TransactionTypes {
   Swap = 'Swap',

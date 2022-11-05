@@ -22,8 +22,6 @@ import { PoolLiquidityHeader } from '../../../components/Pool/PoolLiquidityHeade
 import { MinimalPositionCard } from '../../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../../components/Row'
 import Slider from '../../../components/Slider'
-import { Dots } from '../../../components/Swap/styles'
-import TradePrice from '../../../components/Swap/TradePrice'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from '../../../components/TransactionConfirmationModal'
@@ -47,7 +45,8 @@ import { currencyId } from '../../../utils/currencyId'
 import { calculateProtocolFee } from '../../../utils/prices'
 import { wrappedCurrency } from '../../../utils/wrappedCurrency'
 import AppBody from '../../AppBody'
-import { Wrapper } from '../styleds'
+import TradePrice from '../../Swap/Components/TradePrice'
+import { Dots, Wrapper } from '../styleds'
 
 const StyledInternalLinkText = styled(TYPE.Body)`
   display: flex;

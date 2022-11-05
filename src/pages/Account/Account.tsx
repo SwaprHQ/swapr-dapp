@@ -16,7 +16,6 @@ import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
-import { useLimitOrderTransactions } from '../../modules/limit-orders/utils/hooks'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -24,6 +23,7 @@ import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/tr
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
+import { useLimitOrderTransactions } from '../Swap/LimitOrderBox/limit-orders/utils/hooks'
 import {
   AvatarWrapper,
   Button,

@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Hero from '../../components/LandingPageComponents/layout/Hero'
-import { Tabs } from '../../components/Swap/Tabs'
 import { useRouter } from '../../hooks/useRouter'
-import { SwapContext, SwapTab } from '../../modules/swap/context'
 import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
 import { SwapTabs } from '../../state/user/reducer'
-import { AdvancedTradingView } from './partials/AdvancedTradingView'
-import { LandingSections } from './partials/LandingSections'
-import { LimitOrderBox } from './partials/LimitOrderBox'
-import { SwapBox } from './partials/SwapBox/SwapBox.component'
+import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
+import { Tabs } from './Components/Tabs'
+import { LandingSections } from './LandingSections'
+import { LimitOrderBox } from './LimitOrderBox'
+import { SwapBox } from './SwapBox/SwapBox.component'
+import { SwapContext, SwapTab } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -25,19 +25,20 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
+  const { Swap, AdvancedTradingView, LimitOrder } = SwapTab
   // Control the active tab
-  const [activeTab, setActiveTab] = useState(SwapTab.Swap)
+  const [activeTab, setActiveTab] = useState(Swap)
   const { pathname } = useRouter()
   const [, setAdvancedView] = useUpdateSelectedSwapTab()
 
   useEffect(() => {
     if (pathname.includes('/pro')) {
-      setActiveTab(SwapTab.AdvancedTradingView)
+      setActiveTab(AdvancedTradingView)
       setAdvancedView(SwapTabs.SWAP)
     } else if (pathname.includes('swap')) {
-      setActiveTab(SwapTab.Swap)
+      setActiveTab(Swap)
     }
-  }, [pathname, setAdvancedView])
+  }, [AdvancedTradingView, Swap, pathname, setAdvancedView])
 
   return (
     <SwapContext.Provider
@@ -48,13 +49,13 @@ export function Swap() {
     >
       <Hero>
         <AppBodyContainer>
-          {activeTab !== SwapTab.AdvancedTradingView && <Tabs />}
-          {activeTab === SwapTab.Swap && <SwapBox />}
-          {activeTab === SwapTab.AdvancedTradingView && <AdvancedTradingView />}
-          {activeTab === SwapTab.LimitOrder && <LimitOrderBox />}
+          {activeTab !== AdvancedTradingView && <Tabs />}
+          {activeTab === Swap && <SwapBox />}
+          {activeTab === AdvancedTradingView && <AdvancedTradingViewBox />}
+          {activeTab === LimitOrder && <LimitOrderBox />}
         </AppBodyContainer>
       </Hero>
-      <LandingSections key="hello" />
+      <LandingSections />
     </SwapContext.Provider>
   )
 }

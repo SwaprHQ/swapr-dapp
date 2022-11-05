@@ -91,7 +91,7 @@ export async function main() {
     fileContent[chainId] = metadata
   }
 
-  const directoryAbsolutePath = './src/modules/limit-orders/generated/cow-app-data'
+  const directoryAbsolutePath = './src/pages/Swap/LimitOrderBox/limit-orders/generated/cow-app-data'
   await mkdir(directoryAbsolutePath, { recursive: true })
   const fileAbsolutePath = join(directoryAbsolutePath, '/app-data.json')
   const fileContentString = JSON.stringify(fileContent, null, 2)
