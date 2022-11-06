@@ -6,10 +6,10 @@ import { RefreshCw } from 'react-feather'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { LimitOrderFormContext } from '../../../contexts/LimitOrderFormContext'
-import { LimitOrderKind } from '../../../interfaces'
-import { debug } from '../../../utils'
-import { InputGroup } from '../../InputGroup'
+import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
+import { LimitOrderKind } from '../interfaces'
+import { debug } from '../utils'
+import { InputGroup } from './InputGroup'
 
 export const ToggleCurrencyButton = styled.span`
   color: #464366;

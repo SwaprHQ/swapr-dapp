@@ -13,29 +13,6 @@ const appDataHashes = {
   [ChainId.MAINNET]: '0x7bb480cf9d89cd9fa5ac557f573fa3cee96ca57ec0b9a0de783a29391967c4ab',
 }
 
-function getNetworkId(appData: string) {
-  return Object.keys(appDataHashes)
-    .map(Number)
-    .find((key: keyof typeof appDataHashes) => appDataHashes[key] === appData) as number
-}
-
-async function getOrders(account: string, allNetworks: boolean, chainId: ChainId) {
-  if (allNetworks) {
-    const allOrders = await Promise.all([
-      getOwnerOrders(ChainId.GNOSIS, account),
-      getOwnerOrders(ChainId.MAINNET, account),
-    ]).catch(error => {
-      console.error({ error, message: 'All limit order fetch failed' })
-      return [[]]
-    })
-    return allOrders.flat()
-  }
-  if (chainId === ChainId.GNOSIS || chainId === ChainId.MAINNET) {
-    return await getOwnerOrders(chainId, account)
-  }
-  return [] as OrderMetaData[]
-}
-
 interface Token {
   value: number
   symbol?: string
@@ -113,4 +90,27 @@ function cancelOpenOrder(status: OrderMetaData['status'], chainId: ChainId, upda
       return true
     }
   }
+}
+
+function getNetworkId(appData: string) {
+  return Object.keys(appDataHashes)
+    .map(Number)
+    .find((key: keyof typeof appDataHashes) => appDataHashes[key] === appData) as number
+}
+
+async function getOrders(account: string, allNetworks: boolean, chainId: ChainId) {
+  if (allNetworks) {
+    const allOrders = await Promise.all([
+      getOwnerOrders(ChainId.GNOSIS, account),
+      getOwnerOrders(ChainId.MAINNET, account),
+    ]).catch(error => {
+      console.error({ error, message: 'All limit order fetch failed' })
+      return [[]]
+    })
+    return allOrders.flat()
+  }
+  if (chainId === ChainId.GNOSIS || chainId === ChainId.MAINNET) {
+    return await getOwnerOrders(chainId, account)
+  }
+  return [] as OrderMetaData[]
 }

@@ -57,5 +57,7 @@
   "advancedTradingView.orderHistory.type": "Type",
   "advancedTradingView.orderHistory.protocol": "Protocol",
   "advancedTradingView.orderHistory.date": "Date",
-  "advancedTradingView.orderHistory.status": "Status"
+  "advancedTradingView.orderHistory.status": "Status",
+  "limitOrder.expiresIn": "Expires In",
+  "limitOrder.maxExpiryTime": "Max: 180 min"
 }

@@ -59,25 +59,25 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
   }
 }
 
-/**
- * Computes a limit price
- * @param baseTokenAmount The first token amount
- * @param quoteTokenAmount The second token amount
- * @returns
- */
-export function computeLimitPrice(baseTokenAmount: TokenAmount, quoteTokenAmount: TokenAmount) {
-  // get the JSBI
-  const baseAmountJSBI = baseTokenAmount.raw
-  // Must be a positive number
-  const quoteAmountJSBI = JSBI.equal(quoteTokenAmount.raw, JSBI.BigInt(0)) ? JSBI.BigInt(1) : quoteTokenAmount.raw
-  // Compute the ratio
-  const limitPriceJSBI = JSBI.divide(baseAmountJSBI, quoteAmountJSBI)
+// /**
+//  * Computes a limit price
+//  * @param baseTokenAmount The first token amount
+//  * @param quoteTokenAmount The second token amount
+//  * @returns
+//  */
+// export function computeLimitPrice(baseTokenAmount: TokenAmount, quoteTokenAmount: TokenAmount) {
+//   // get the JSBI
+//   const baseAmountJSBI = baseTokenAmount.raw
+//   // Must be a positive number
+//   const quoteAmountJSBI = JSBI.equal(quoteTokenAmount.raw, JSBI.BigInt(0)) ? JSBI.BigInt(1) : quoteTokenAmount.raw
+//   // Compute the ratio
+//   const limitPriceJSBI = JSBI.divide(baseAmountJSBI, quoteAmountJSBI)
 
-  console.log({
-    baseAmountJSBI: baseAmountJSBI.toString(),
-    quoteAmountJSBI: quoteAmountJSBI.toString(),
-    limitPriceJSBI: limitPriceJSBI.toString(),
-  })
+//   // console.log({
+//   //   baseAmountJSBI: baseAmountJSBI.toString(),
+//   //   quoteAmountJSBI: quoteAmountJSBI.toString(),
+//   //   limitPriceJSBI: limitPriceJSBI.toString(),
+//   // })
 
-  return limitPriceJSBI.toString()
-}
+//   return limitPriceJSBI.toString()
+// }

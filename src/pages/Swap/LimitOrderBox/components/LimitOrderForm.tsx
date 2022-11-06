@@ -7,25 +7,25 @@ import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as SwapIcon } from '../../../../../assets/images/swap-icon.svg'
-import { ButtonPrimary } from '../../../../../components/Button'
-import { AutoColumn } from '../../../../../components/Column'
-import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
-import { AutoRow as AutoRowBase } from '../../../../../components/Row'
-import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
-import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
-import { useNotificationPopup } from '../../../../../state/application/hooks'
-import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
-import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
-import AppBody from '../../../../AppBody'
-import { ArrowWrapper, SwitchIconContainer, SwitchTokensAmountsContainer } from '../../../Components/styles'
-import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
-import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
-import { getInitialState } from '../../utils'
-import { OrderExpiryField } from '../partials/OrderExpiryField'
-import { OrderLimitPriceField } from '../partials/OrderLimitPriceField'
+import { ButtonPrimary } from '../../../../components/Button'
+import { AutoColumn } from '../../../../components/Column'
+import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
+import { AutoRow as AutoRowBase } from '../../../../components/Row'
+import { ApprovalState, useApproveCallback } from '../../../../hooks/useApproveCallback'
+import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
+import { useNotificationPopup } from '../../../../state/application/hooks'
+import { useCurrencyBalances } from '../../../../state/wallet/hooks'
+import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
+import AppBody from '../../../AppBody'
+import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../api'
+import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
+import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
+import { getInitialState } from '../utils'
 import { ApprovalFlow } from './ApprovalFlow'
+import { OrderExpiryField } from './OrderExpiryField'
+import { OrderLimitPriceField } from './OrderLimitPriceField'
+import SwapTokens from './SwapTokens'
+
 dayjs.extend(dayjsUTCPlugin)
 
 const AutoRow = styled(AutoRowBase)`
@@ -38,17 +38,17 @@ const AutoRow = styled(AutoRowBase)`
   }
 `
 
-export interface LimitOrderFormProps {
-  provider: Web3Provider
-  chainId: ChainId
-  account: string
-}
-
 interface HandleCurrencyAmountChangeParams {
   currency: Currency
   amountWei: string
   amountFormatted: string
   updatedLimitOrder?: SerializableLimitOrder
+}
+
+export interface LimitOrderFormProps {
+  provider: Web3Provider
+  chainId: ChainId
+  account: string
 }
 
 /**
@@ -57,14 +57,18 @@ interface HandleCurrencyAmountChangeParams {
 export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormProps) {
   const [loading, setLoading] = useState(false)
   const notify = useNotificationPopup()
-
   // Get the initial values and set the state
   const initialState = useRef(getInitialState(chainId, account)).current
-
   // Local state
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
   // Default expiry time set to 20 minutes
   const [expiresIn, setExpiresIn] = useState(20)
+
+  //IsPossibleToOrder
+  const [isPossibleToOrder, setIsPossibleToOrder] = useState({
+    status: false,
+    value: 0,
+  })
 
   // State holding the sell and buy currency amounts
   const [sellTokenAmount, setSellTokenAmount] = useState<TokenAmount>(initialState.sellTokenAmount)
@@ -92,8 +96,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         quote: { buyAmount, feeAmount },
       } = cowQuote
       const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
-      console.log(buyTokenFormattedAmount)
-      console.log({ cowQuote, feeAmount })
+
       const updatedLimitOrder = { ...limitOrder, limitPrice: buyAmount, feeAmount }
       setLimitOrder(updatedLimitOrder)
       handleBuyCurrencyAmountChange({
@@ -133,16 +136,17 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     outputCurrencyAmount: buyTokenAmount,
   })
 
-  const swapTokens = useCallback(() => {
+  const handleSwapTokens = useCallback(() => {
     setSellTokenAmount(buyTokenAmount)
     setBuyTokenAmount(sellTokenAmount)
     setFormattedSellAmount(formattedBuyAmount)
     setFormattedBuyAmount(formattedSellAmount)
+    setIsPossibleToOrder({ status: false, value: 0 })
     if (buyTokenAmount.currency.address && sellTokenAmount.currency.address) {
       setLimitOrder(limitOrder => ({
         ...limitOrder,
-        sellAmount: limitOrder.buyAmount,
-        buyAmount: limitOrder.sellAmount,
+        sellAmount: buyTokenAmount.raw.toString(),
+        buyAmount: sellTokenAmount.raw.toString(),
         sellToken: buyTokenAmount.currency.address!,
         buyToken: sellTokenAmount.currency.address!,
       }))
@@ -167,8 +171,16 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
-      const signedOrder = await signLimitOrder({
+
+      const { quote } = await getQuote({
+        chainId,
+        signer,
         order: finalizedLimitOrder,
+      })
+      const { feeAmount } = quote
+
+      const signedOrder = await signLimitOrder({
+        order: { ...finalizedLimitOrder, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(), feeAmount },
         chainId,
         signer,
       })
@@ -300,38 +312,45 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       amountWei,
       amountFormatted,
     })
-    // const signer = provider.getSigner()
-    // const cowQuote = await getQuote({ chainId, signer, order: limitOrder })
-    // if (cowQuote) {
-    //   const {
-    //     quote: { buyAmount, feeAmount },
-    //   } = cowQuote
-    //   const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
-    //   setLimitOrder({ ...limitOrder, limitPrice: buyAmount })
-    //   console.log({ buyTokenFormattedAmount })
-    //   handleBuyCurrenyAmountChange({
-    //     currency: buyTokenAmount.currency,
-    //     amountWei: buyAmount,
-    //     amountFormatted: buyTokenFormattedAmount,
-    //   })
-    //   setFormattedLimitPrice(buyTokenFormattedAmount)
-    // }
+
+    const signer = provider.getSigner()
+    const { quote } = await getQuote({
+      chainId,
+      signer,
+      order: { ...limitOrder, sellAmount: amountWei, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
+    })
+    if (quote) {
+      const { sellAmount, feeAmount } = quote
+
+      // const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
+      const sellAmountFormatted = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
+      const feeAmountFormatted = Number(formatUnits(feeAmount, sellTokenAmount.currency.decimals) ?? 0)
+      const maxAmount = Number(
+        formatUnits(sellCurrencyMaxAmount!.raw.toString(), sellTokenAmount.currency.decimals) ?? 0
+      )
+      const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
+      setLimitOrder({ ...limitOrder, feeAmount: Number(feeAmount).toString() })
+      if (totalSellAmount > maxAmount) {
+        const maxSellAmountPossibleWithFee =
+          maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
+
+        setIsPossibleToOrder({
+          status: true,
+          value: maxSellAmountPossibleWithFee,
+        })
+      } else {
+        setIsPossibleToOrder({
+          status: false,
+          value: 0,
+        })
+      }
+    } else {
+      setIsPossibleToOrder({
+        status: false,
+        value: 0,
+      })
+    }
   }
-
-  // Handles chainId change to update initial sell and buy currency amounts
-  // useEffect(() => {
-  //   // Get the initial values and set the state
-  //   const initialState = getInitialState(chainId, account)
-  //   setSellTokenAmount(initialState.sellTokenAmount)
-  //   setBuyTokenAmount(initialState.buyTokenAmount)
-  //   setPrice(initialState.price)
-  //   const { sellToken, buyToken } = initialState.limitOrder
-  //   setLimitOrder(limitOrder => ({ ...limitOrder, sellToken, buyToken }))
-  // handleInputOnChange(formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals))
-  // const getValueQuote = async () => {
-
-  // getValueQuote()
-  // }, [chainId, account])
 
   // In the event that user choose native token as sell currency, offer to wrap it
   const handleCurrencyWrap = () => {}
@@ -387,21 +406,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               fiatValue={fiatValueInput}
               isFallbackFiatValue={isFallbackFiatValueInput}
             />
-            <SwitchIconContainer
-              onClick={() => {
-                swapTokens()
-              }}
-            >
-              <SwitchTokensAmountsContainer>
-                <ArrowWrapper
-                  clickable={!loading}
-                  data-testid="switch-tokens-button"
-                  className={loading ? 'rotate' : ''}
-                >
-                  <SwapIcon />
-                </ArrowWrapper>
-              </SwitchTokensAmountsContainer>
-            </SwitchIconContainer>
+            <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
             <CurrencyInputPanel
               id="limit-order-box-buy-currency"
               currency={buyTokenAmount?.currency}
@@ -446,7 +451,16 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               approveCallback={tokenInApprovalCallback}
             />
           ) : (
-            <ButtonPrimary onClick={reviewOrder}>Review Order</ButtonPrimary>
+            <>
+              {isPossibleToOrder.status && (
+                <div>
+                  Max possible amount for {sellTokenAmount.currency.symbol} is {isPossibleToOrder.value.toFixed(6)}
+                </div>
+              )}
+              <ButtonPrimary onClick={reviewOrder} disabled={isPossibleToOrder.status}>
+                Review Order
+              </ButtonPrimary>
+            </>
           )}
         </AutoColumn>
       </LimitOrderFormContext.Provider>

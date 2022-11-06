@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { LimitOrderFormContext } from '../../../contexts'
-import { OrderExpiresInUnit } from '../../../interfaces'
-import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from '../../InputGroup'
+import { LimitOrderFormContext } from '../contexts'
+import { OrderExpiresInUnit } from '../interfaces'
+import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 
 export const ExpiryUnitButton = styled.span<{
   isActive: boolean
@@ -11,6 +12,11 @@ export const ExpiryUnitButton = styled.span<{
   color: #464366;
   cursor: pointer;
   ${({ isActive }) => isActive && `color: #8780BF;`};
+`
+
+const ExpiryLabels = styled(Label)`
+  display: flex;
+  justify-content: space-between;
 `
 
 const invalidChars = ['-', '+', 'e']
@@ -26,6 +32,7 @@ export interface OrderExpiryFieldProps {
 export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
   const { expiresIn, setExpiresIn, expiresInUnit, setExpiresInUnit } = useContext(LimitOrderFormContext)
   const [inputExpiresIn, setInputExpiresIn] = useState<string | number>(expiresIn)
+  const { t } = useTranslation('swap')
 
   const expiresInChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
     const newExpiresIn = event.target.value
@@ -53,7 +60,10 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
 
   return (
     <InputGroup>
-      <Label htmlFor={id}>Expires In</Label>
+      <ExpiryLabels htmlFor={id}>
+        <span>{t('limitOrder.expiresIn')}</span>
+        <span>{t('limitOrder.maxExpiryTime')}</span>
+      </ExpiryLabels>
       <InnerWrapper>
         <Input
           value={inputExpiresIn}

@@ -26,6 +26,7 @@ const AppBodyContainer = styled.section`
  */
 export function Swap() {
   const { Swap, AdvancedTradingView, LimitOrder } = SwapTab
+
   // Control the active tab
   const [activeTab, setActiveTab] = useState(Swap)
   const { pathname } = useRouter()

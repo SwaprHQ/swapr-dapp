@@ -25,8 +25,8 @@ import { TokenIcon } from '../TokenIcon'
 
 export const CancelIcon = styled(XCircle)`
   cursor: pointer;
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   color: #ff7e7e;
 `
 
