@@ -1,8 +1,11 @@
 import { ReactNode, useContext } from 'react'
+import { Sliders } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
+// import bridge from '../../../assets/images/bridge.png'
+import { ReactComponent as Bridge } from '../../../assets/images/bridge.svg'
 import { ReactComponent as EcoRouter } from '../../../assets/images/eco-router.svg'
 import Row from '../../../components/Row'
 import { useActiveWeb3React } from '../../../hooks'
@@ -23,7 +26,7 @@ const TabsColumn = styled.div`
 const TabsRow = styled(Row)`
   display: inline-flex;
   width: auto;
-  padding: 2px;
+  padding: 2px 6px;
   background: ${({ theme }) => theme.bg6};
   border-radius: 12px;
 `
@@ -59,6 +62,15 @@ const Button = styled.button`
 const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
+const StyledSliders = styled(Sliders)`
+  margin-right: 5px;
+  width: 14px;
+`
+const StyledBridge = styled(Bridge)`
+  margin-right: 5px;
+  width: 14px;
+  fill: ${({ theme }) => theme.text5};
+`
 
 export function Tabs({ children }: { children?: ReactNode }) {
   const { t } = useTranslation('swap')
@@ -86,6 +98,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           className={activeTab === SwapTab.LimitOrder ? 'active' : ''}
           disabled={noLimitOrderSupport}
         >
+          <StyledSliders />
           {t('tabs.limit')}
         </Button>
         <Button
@@ -96,6 +109,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           }}
           className={activeTab === SwapTab.BridgeSwap ? 'active' : ''}
         >
+          <StyledBridge />
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>

@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants'
 import { formatUnits } from '@ethersproject/units'
-import { ChainId, JSBI, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
+import { ChainId, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
 
 import createDebugger from 'debug'
 
@@ -58,26 +58,3 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
     limitOrder,
   }
 }
-
-// /**
-//  * Computes a limit price
-//  * @param baseTokenAmount The first token amount
-//  * @param quoteTokenAmount The second token amount
-//  * @returns
-//  */
-// export function computeLimitPrice(baseTokenAmount: TokenAmount, quoteTokenAmount: TokenAmount) {
-//   // get the JSBI
-//   const baseAmountJSBI = baseTokenAmount.raw
-//   // Must be a positive number
-//   const quoteAmountJSBI = JSBI.equal(quoteTokenAmount.raw, JSBI.BigInt(0)) ? JSBI.BigInt(1) : quoteTokenAmount.raw
-//   // Compute the ratio
-//   const limitPriceJSBI = JSBI.divide(baseAmountJSBI, quoteAmountJSBI)
-
-//   // console.log({
-//   //   baseAmountJSBI: baseAmountJSBI.toString(),
-//   //   quoteAmountJSBI: quoteAmountJSBI.toString(),
-//   //   limitPriceJSBI: limitPriceJSBI.toString(),
-//   // })
-
-//   return limitPriceJSBI.toString()
-// }
