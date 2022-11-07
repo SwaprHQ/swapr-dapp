@@ -10,6 +10,7 @@ export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
   border-radius: 12px;
   padding: 12px;
   transition: box-shadow 0.3s ease;
+  z-index: 1;
   ::before {
     border-radius: 12px;
     background: linear-gradient(

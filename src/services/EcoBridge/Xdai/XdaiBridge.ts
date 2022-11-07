@@ -1,14 +1,14 @@
 import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency } from '@swapr/sdk'
+import { ChainId, Currency, DAI } from '@swapr/sdk'
 
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
 import { subgraphClientsUris } from '../../../apollo/client'
-import { DAI, ZERO_ADDRESS } from '../../../constants'
+import { ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
@@ -162,7 +162,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
       gas,
       fee: '0%',
       estimateTime: '5 min',
-      receiveAmount: Number(value).toFixed(2),
+      receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
       requestId: helperRequestId,
     }
 
