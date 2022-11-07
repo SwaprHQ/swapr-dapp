@@ -26,22 +26,28 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
   }
   // Controls fetching of data from the backend
   const [isLoading, setIsLoading] = useState(true)
-  const [rewards, setRewards] = useState<ExpeditionsContext['rewards']>()
+  const [tasks, setTasks] = useState<ExpeditionsContext['tasks']>()
+  const [claimedFragments, setClaimedFragments] = useState<ExpeditionsContext['claimedFragments']>(0)
+  const [error, setError] = useState<string | undefined>()
 
   useEffect(() => {
-    if (isOpen) {
-      setIsLoading(true)
-      ExpeditionsAPI.getExpeditionsWeeklyfragments({ address: account })
-        .then(userRewards => {
-          setRewards(userRewards)
-        })
-        .catch(error => {
+    const getDailyProgress = async () => {
+      if (isOpen) {
+        setError(undefined)
+        setIsLoading(true)
+        try {
+          const { claimedFragments, tasks } = await ExpeditionsAPI.getExpeditionsProgress({ address: account })
+          setTasks(tasks)
+          setClaimedFragments(claimedFragments)
+        } catch (error) {
+          setError('No active campaign has been found')
           console.error(error)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
+        }
+        setIsLoading(false)
+      }
     }
+
+    getDailyProgress()
   }, [account, isOpen])
 
   return (
@@ -51,8 +57,11 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
           provider,
           userAddress: account,
           isLoading,
-          rewards,
-          setRewards,
+          claimedFragments,
+          setClaimedFragments,
+          setTasks,
+          tasks,
+          error,
         } as ExpeditionsContext
       }
     >

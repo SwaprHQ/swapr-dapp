@@ -1,200 +1,120 @@
 {
   "swagger": "2.0",
-  "host": "0.0.0.0:4000",
+  "host": "localhost:4000",
   "basePath": "/v1.0",
   "schemes": ["http"],
-  "info": {
-    "title": "Swapr Expeditions API Documentation",
-    "version": "1.0"
-  },
+  "info": { "title": "Swapr Expeditions API Documentation", "version": "1.0" },
   "tags": [],
   "paths": {
-    "/expeditions/daily-visits": {
-      "get": {
-        "summary": "Get daily rewards (fragments) state for an address",
-        "operationId": "getExpeditionsDailyvisits",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Ethereum address",
-            "name": "address",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "tags": ["expeditions"],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/DailyVisitsResponse"
-            },
-            "description": "Successful"
-          }
-        }
-      },
+    "/expeditions/add-campaign": {
       "post": {
-        "summary": "Claim all daily fragments available for an address",
-        "operationId": "postExpeditionsDailyvisits",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/DailyVisitsRequest"
-            }
-          }
-        ],
+        "summary": "Adds new campaign for a given date. Initiator must be on verified address list",
+        "operationId": "postExpeditionsAddcampaign",
+        "parameters": [{ "in": "body", "name": "body", "schema": { "$ref": "#/definitions/AddCampaignRequest" } }],
         "tags": ["expeditions"],
         "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/DailyVisitsResponse"
-            },
-            "description": "Successful"
-          }
+          "200": { "schema": { "$ref": "#/definitions/AddCampaignResponse" }, "description": "Successful" }
         }
       }
     },
-    "/expeditions/weekly-fragments": {
-      "get": {
-        "summary": "Get weekly rewards (fragments) state for an address",
-        "operationId": "getExpeditionsWeeklyfragments",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Ethereum address",
-            "name": "address",
-            "in": "query",
-            "required": true
-          },
-          {
-            "type": "string",
-            "name": "week",
-            "in": "query",
-            "required": false
-          }
-        ],
+    "/expeditions/claim": {
+      "post": {
+        "summary": "Claim rewards (fragments) for specified type of task",
+        "operationId": "postExpeditionsClaim",
+        "parameters": [{ "in": "body", "name": "body", "schema": { "$ref": "#/definitions/ClaimRequest" } }],
         "tags": ["expeditions"],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/GetWeeklyFragmentsResponse"
-            },
-            "description": "Successful"
-          }
-        }
+        "responses": { "200": { "schema": { "$ref": "#/definitions/ClaimResponse" }, "description": "Successful" } }
       }
     },
-    "/expeditions/weekly-fragments/claim": {
-      "post": {
-        "summary": "Claim weekly fragments for an address",
-        "operationId": "postExpeditionsWeeklyfragmentsClaim",
+    "/expeditions/progress": {
+      "get": {
+        "summary": "Get campaign status for a given address",
+        "operationId": "getExpeditionsProgress",
         "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/ClaimWeeklyFragments"
-            }
-          }
+          { "type": "string", "description": "Ethereum address", "name": "address", "in": "query", "required": true }
         ],
         "tags": ["expeditions"],
         "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/ClaimWeeklyFragmentsResponse"
-            },
-            "description": "Successful"
-          }
+          "200": { "schema": { "$ref": "#/definitions/GetCampaignProgressResponse" }, "description": "Successful" }
         }
       }
     }
   },
   "definitions": {
-    "DailyVisitsResponse": {
+    "AddCampaignRequest": {
       "type": "object",
       "properties": {
-        "address": {
-          "type": "string",
-          "description": "Ethereum address"
-        },
-        "allVisits": {
-          "type": "number"
-        },
-        "lastVisit": {
-          "type": "string",
-          "format": "date"
-        }
+        "address": { "type": "string", "description": "Ethereum address" },
+        "signature": { "type": "string", "description": "Return value signer.signMessage()" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "redeemEndDate": { "type": "string", "format": "date" }
       },
-      "required": ["address", "allVisits", "lastVisit"]
+      "required": ["address", "signature", "startDate", "endDate", "redeemEndDate"]
+    },
+    "AddCampaignResponse": {
+      "type": "object",
+      "properties": {
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "redeemEndDate": { "type": "string", "format": "date" },
+        "initiatorAddress": { "type": "string", "description": "Ethereum address" }
+      },
+      "required": ["startDate", "endDate", "redeemEndDate", "initiatorAddress"]
+    },
+    "ClaimRequest": {
+      "type": "object",
+      "properties": {
+        "address": { "type": "string", "description": "Ethereum address" },
+        "signature": { "type": "string", "description": "Return value signer.signMessage()" },
+        "type": { "type": "string", "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT"] }
+      },
+      "required": ["address", "signature", "type"]
+    },
+    "ClaimResponse": {
+      "type": "object",
+      "properties": {
+        "claimedFragments": { "type": "number" },
+        "type": { "type": "string", "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT"] }
+      },
+      "required": ["claimedFragments", "type"]
+    },
+    "DailyVisit": {
+      "type": "object",
+      "properties": {
+        "allVisits": { "type": "number" },
+        "lastVisit": { "type": "string", "format": "date" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT"] }
+      },
+      "required": ["allVisits", "lastVisit", "startDate", "endDate", "type"]
     },
     "WeeklyFragments": {
       "type": "object",
       "properties": {
-        "totalAmountUSD": {
-          "type": "number"
-        },
-        "claimableFragments": {
-          "type": "number"
-        },
-        "claimedFragments": {
-          "type": "number"
-        }
+        "totalAmountUSD": { "type": "number" },
+        "claimableFragments": { "type": "number" },
+        "claimedFragments": { "type": "number" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT"] }
       },
-      "required": ["totalAmountUSD", "claimableFragments", "claimedFragments"]
+      "required": ["totalAmountUSD", "claimableFragments", "claimedFragments", "startDate", "endDate", "type"]
     },
-    "GetWeeklyFragmentsResponse": {
+    "Tasks": {
       "type": "object",
       "properties": {
-        "liquidityProvision": {
-          "$ref": "#/definitions/WeeklyFragments"
-        },
-        "liquidityStaking": {
-          "$ref": "#/definitions/WeeklyFragments"
-        }
+        "dailyVisit": { "$ref": "#/definitions/DailyVisit" },
+        "liquidityProvision": { "$ref": "#/definitions/WeeklyFragments" },
+        "liquidityStaking": { "$ref": "#/definitions/WeeklyFragments" }
       },
-      "required": ["liquidityProvision", "liquidityStaking"]
+      "required": ["dailyVisit", "liquidityProvision", "liquidityStaking"]
     },
-    "DailyVisitsRequest": {
+    "GetCampaignProgressResponse": {
       "type": "object",
-      "properties": {
-        "address": {
-          "type": "string",
-          "description": "Ethereum address"
-        },
-        "signature": {
-          "type": "string",
-          "description": "Return value signer.signMessage()"
-        }
-      },
-      "required": ["address", "signature"]
-    },
-    "ClaimWeeklyFragments": {
-      "type": "object",
-      "properties": {
-        "address": {
-          "type": "string",
-          "description": "Ethereum address"
-        },
-        "signature": {
-          "type": "string",
-          "description": "Return value signer.signMessage()"
-        },
-        "type": {
-          "type": "string",
-          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING"]
-        }
-      },
-      "required": ["address", "signature", "type"]
-    },
-    "ClaimWeeklyFragmentsResponse": {
-      "type": "object",
-      "properties": {
-        "claimedFragments": {
-          "type": "number"
-        }
-      },
-      "required": ["claimedFragments"]
+      "properties": { "claimedFragments": { "type": "number" }, "tasks": { "$ref": "#/definitions/Tasks" } },
+      "required": ["claimedFragments", "tasks"]
     }
   }
 }

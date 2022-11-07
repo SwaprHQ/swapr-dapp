@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react'
 import { Flex } from 'rebass'
 
 import { ReactComponent as ClockSvg } from '../../../../assets/images/clock.svg'
@@ -5,11 +6,10 @@ import Countdown from '../../../../components/Countdown'
 import Row from '../../../../components/Row'
 import { TYPE } from '../../../../theme'
 import { Card, ExpeditionsButton, StyledExternalLink, Wrapper } from '../shared'
-import { StatusTag, StatusTags } from './ExpeditionsTags'
+import { StatusTag } from './ExpeditionsTags'
 
 export interface TaskCardProps {
   duration?: 'Weekly' | 'Daily'
-  status: StatusTags
   title: string
   description: string
   buttonText: React.ReactNode
@@ -17,6 +17,8 @@ export interface TaskCardProps {
   infoLink?: string
   onClick?: () => void
   claimed?: boolean
+  endDate: Date
+  startDate: Date
 }
 
 // Buttons to be implemented as needed. Maybe fixed set of buttons or button can be passed as child
@@ -26,12 +28,28 @@ export function TaskCard({
   title,
   description,
   infoLink,
-  status,
   buttonText,
   buttonDisabled = false,
   onClick,
   claimed = false,
+  startDate,
+  endDate,
 }: TaskCardProps) {
+  const [upcoming, setUpcoming] = useState(false)
+  const [expired, setExpired] = useState(false)
+  const [currentPeriodEnded, setCurrentPeriodEnded] = useState(false)
+
+  useEffect(() => {
+    const now = Math.floor(Date.now() / 1000)
+    setExpired(!!(endDate && endDate.getTime() / 1000 < now))
+    setUpcoming(!!(startDate && startDate.getTime() / 1000 > now))
+    setCurrentPeriodEnded(false)
+  }, [endDate, startDate, currentPeriodEnded])
+
+  const handleCountdownEnd = useCallback(() => {
+    setCurrentPeriodEnded(true)
+  }, [])
+
   return (
     <Wrapper>
       <Card flexDirection={'column'}>
@@ -43,7 +61,11 @@ export function TaskCard({
             <Flex width="max-content" alignItems="center">
               <ClockSvg width={'10px'} height={'10px'} />
               <TYPE.Body marginLeft="4px" fontSize="10px" fontWeight="500">
-                <Countdown to={1666728691} excludeSeconds />
+                <Countdown
+                  to={upcoming ? startDate.getTime() / 1000 : expired ? 0 : endDate.getTime() / 1000}
+                  excludeSeconds
+                  onEnd={handleCountdownEnd}
+                />
               </TYPE.Body>
             </Flex>
           </Row>
@@ -52,7 +74,7 @@ export function TaskCard({
               {title}
             </TYPE.White>
             <div style={{ alignSelf: 'flex-start' }}>
-              <StatusTag status={status} />
+              <StatusTag status={upcoming ? 'upcoming' : expired ? 'expired' : 'active'} />
             </div>
           </Row>
         </Row>
