@@ -29,6 +29,7 @@ export interface CurrencyInputPanelProps {
   setDisplayedValue?: (val: string) => void
   maxAmount?: CurrencyAmount
   isOutputPanel?: boolean
+  showNativeCurrency?: boolean
 }
 
 export type CurrencyViewProps = Pick<

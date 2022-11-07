@@ -17,6 +17,21 @@ export const ExpiryUnitButton = styled.span<{
 const ExpiryLabels = styled(Label)`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+`
+
+export const MaxExpiryTime = styled.button`
+  font-size: 11px;
+  color: #8780bf;
+  border: none;
+  cursor: pointer;
+  background-color: #2d3145;
+  border-radius: 5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  &:hover {
+    color: #736f96;
+  }
 `
 
 const invalidChars = ['-', '+', 'e']
@@ -62,7 +77,7 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
     <InputGroup>
       <ExpiryLabels htmlFor={id}>
         <span>{t('limitOrder.expiresIn')}</span>
-        <span>{t('limitOrder.maxExpiryTime')}</span>
+        <MaxExpiryTime onClick={() => setInputExpiresIn(180)}>{t('limitOrder.maxExpiryTime')}</MaxExpiryTime>
       </ExpiryLabels>
       <InnerWrapper>
         <Input
@@ -92,13 +107,6 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
           >
             Min
           </ExpiryUnitButton>
-          {/* <ExpiryUnitButton
-            role="button"
-            isActive={expiresInUnit === OrderExpiresInUnit.Days}
-            onClick={() => setExpiresInUnit(OrderExpiresInUnit.Days)}
-          >
-            Days
-          </ExpiryUnitButton> */}
         </ButtonAddonsWrapper>
       </InnerWrapper>
     </InputGroup>

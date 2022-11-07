@@ -1,5 +1,5 @@
 import { useActiveWeb3React } from '../../../hooks'
-import { LimitOrderForm } from './components/LimitOrderForm'
+import { LimitOrderForm } from './components/LimitOrderForm/LimitOrderForm'
 import { supportedChainIdList } from './constants'
 
 export function LimitOrderBox() {

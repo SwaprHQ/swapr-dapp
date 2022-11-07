@@ -59,5 +59,6 @@
   "advancedTradingView.orderHistory.date": "Date",
   "advancedTradingView.orderHistory.status": "Status",
   "limitOrder.expiresIn": "Expires In",
-  "limitOrder.maxExpiryTime": "Max: 180 min"
+  "limitOrder.maxExpiryTime": "Max 180 min",
+  "limitOrder.setToMarket": "Set to Market"
 }

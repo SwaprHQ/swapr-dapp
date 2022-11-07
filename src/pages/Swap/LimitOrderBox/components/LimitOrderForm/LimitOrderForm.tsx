@@ -5,38 +5,29 @@ import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { usePrevious } from 'react-use'
 
-import { ButtonPrimary } from '../../../../components/Button'
-import { AutoColumn } from '../../../../components/Column'
-import { CurrencyInputPanel } from '../../../../components/CurrencyInputPanel'
-import { AutoRow as AutoRowBase } from '../../../../components/Row'
-import { ApprovalState, useApproveCallback } from '../../../../hooks/useApproveCallback'
-import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
-import { useNotificationPopup } from '../../../../state/application/hooks'
-import { useCurrencyBalances } from '../../../../state/wallet/hooks'
-import { maxAmountSpend } from '../../../../utils/maxAmountSpend'
-import AppBody from '../../../AppBody'
-import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../api'
-import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
-import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
-import { getInitialState } from '../utils'
-import { ApprovalFlow } from './ApprovalFlow'
-import { OrderExpiryField } from './OrderExpiryField'
-import { OrderLimitPriceField } from './OrderLimitPriceField'
-import SwapTokens from './SwapTokens'
+import { ButtonPrimary } from '../../../../../components/Button'
+import { AutoColumn } from '../../../../../components/Column'
+import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
+import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
+import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
+import { useNotificationPopup } from '../../../../../state/application/hooks'
+import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
+import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
+import AppBody from '../../../../AppBody'
+import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
+import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
+import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
+import { getInitialState } from '../../utils'
+import { ApprovalFlow } from '../ApprovalFlow'
+import { OrderExpiryField } from '../OrderExpiryField'
+import { OrderLimitPriceField } from '../OrderLimitPriceField'
+import SwapTokens from '../SwapTokens'
+import { AutoRow, MaxAlert } from './styles'
+import { checkMaxOrderAmount, formatMaxValue } from './utils'
 
 dayjs.extend(dayjsUTCPlugin)
-
-const AutoRow = styled(AutoRowBase)`
-  gap: 12px;
-  justify-items: space-between;
-  flex-wrap: nowrap;
-
-  > div {
-    width: 50%;
-  }
-`
 
 interface HandleCurrencyAmountChangeParams {
   currency: Currency
@@ -95,6 +86,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const {
         quote: { buyAmount, feeAmount },
       } = cowQuote
+
       const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
 
       const updatedLimitOrder = { ...limitOrder, limitPrice: buyAmount, feeAmount }
@@ -110,7 +102,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   }
 
   useEffect(() => {
-    setToMarket().catch(console.error)
+    setToMarket().catch(e => {
+      console.error(e)
+      setIsPossibleToOrder({
+        status: true,
+        value: 0,
+      })
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTokenAmount.currency, sellTokenAmount.currency])
 
@@ -164,23 +162,20 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     // sign the order
     try {
       const signer = provider.getSigner()
-
-      // get the quote and set the fee amount
-
       const finalizedLimitOrder = {
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
-
-      const { quote } = await getQuote({
+      const {
+        quote: { feeAmount },
+      } = await getQuote({
         chainId,
         signer,
         order: finalizedLimitOrder,
       })
-      const { feeAmount } = quote
 
       const signedOrder = await signLimitOrder({
-        order: { ...finalizedLimitOrder, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(), feeAmount },
+        order: { ...finalizedLimitOrder, feeAmount },
         chainId,
         signer,
       })
@@ -200,6 +195,31 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       setLoading(false)
     }
   }
+
+  const previousSellAmount = usePrevious(sellCurrencyBalance)
+  const newSellAmount = previousSellAmount?.raw.toString() !== sellCurrencyBalance?.raw.toString()
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const amountWei = parseUnits(formattedSellAmount, sellTokenAmount?.currency?.decimals).toString()
+      const expiresAt = dayjs().add(expiresIn, expiresInUnit).unix()
+      const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
+
+      checkMaxOrderAmount(
+        limitOrder,
+        setIsPossibleToOrder,
+        setLimitOrder,
+        amountWei,
+        expiresAt,
+        sellTokenAmount,
+        sellCurrencyMaxAmount,
+        chainId,
+        provider
+      )
+    }, 500)
+    return () => clearTimeout(timeoutId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formattedSellAmount, formattedBuyAmount, newSellAmount])
 
   /**
    * Aggregate the sell currency amount state variables into a single value
@@ -236,6 +256,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     } else {
       nextBuyAmountFloat = nextSellAmountFloat / limitPriceFloat
     }
+    if ((Number(amountWei) ?? 0) === 0) {
+      setIsPossibleToOrder({ value: 0, status: true })
+    }
 
     // Format the buy amount
     // Update buy amount state variables
@@ -251,8 +274,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setLimitOrder(newLimitOrder)
   }
 
-  // useWhatChanged([limitOrder], `limitOrder`)
-
   /**
    * Aggregate the buy currency amount state variables into a single value
    */
@@ -267,6 +288,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     const newLimitOrder = {
       ...updatedLimitOrder,
       buyAmount: amountWei,
+      buyToken: currency.address as string,
     }
     const nextBuyAmountFormatted = amountFormatted // When the limit price is empty, set the limit price to 0
     const nextBuyAmountFloat = parseFloat(amountFormatted)
@@ -312,44 +334,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       amountWei,
       amountFormatted,
     })
-
-    const signer = provider.getSigner()
-    const { quote } = await getQuote({
-      chainId,
-      signer,
-      order: { ...limitOrder, sellAmount: amountWei, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
-    })
-    if (quote) {
-      const { sellAmount, feeAmount } = quote
-
-      // const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
-      const sellAmountFormatted = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
-      const feeAmountFormatted = Number(formatUnits(feeAmount, sellTokenAmount.currency.decimals) ?? 0)
-      const maxAmount = Number(
-        formatUnits(sellCurrencyMaxAmount!.raw.toString(), sellTokenAmount.currency.decimals) ?? 0
-      )
-      const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
-      setLimitOrder({ ...limitOrder, feeAmount: Number(feeAmount).toString() })
-      if (totalSellAmount > maxAmount) {
-        const maxSellAmountPossibleWithFee =
-          maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
-
-        setIsPossibleToOrder({
-          status: true,
-          value: maxSellAmountPossibleWithFee,
-        })
-      } else {
-        setIsPossibleToOrder({
-          status: false,
-          value: 0,
-        })
-      }
-    } else {
-      setIsPossibleToOrder({
-        status: false,
-        value: 0,
-      })
-    }
   }
 
   // In the event that user choose native token as sell currency, offer to wrap it
@@ -375,6 +359,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           setExpiresIn,
           expiresInUnit,
           setExpiresInUnit,
+          setToMarket,
         }}
       >
         <AutoColumn gap="12px">
@@ -395,7 +380,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               onUserInput={handleInputOnChange}
               onMax={() => {
                 if (!sellCurrencyMaxAmount) return
-
                 handleSellCurrencyAmountChange({
                   currency: sellCurrencyMaxAmount?.currency as Token,
                   amountWei: sellCurrencyMaxAmount?.raw.toString(),
@@ -405,6 +389,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               maxAmount={sellCurrencyMaxAmount}
               fiatValue={fiatValueInput}
               isFallbackFiatValue={isFallbackFiatValueInput}
+              showNativeCurrency={false}
             />
             <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
             <CurrencyInputPanel
@@ -432,6 +417,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               maxAmount={buyCurrencyMaxAmount}
               fiatValue={fiatValueOutput}
               isFallbackFiatValue={isFallbackFiatValueOutput}
+              showNativeCurrency={false}
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
@@ -452,10 +438,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             />
           ) : (
             <>
-              {isPossibleToOrder.status && (
-                <div>
-                  Max possible amount for {sellTokenAmount.currency.symbol} is {isPossibleToOrder.value.toFixed(6)}
-                </div>
+              {isPossibleToOrder.status && isPossibleToOrder.value > 0 && (
+                <MaxAlert>
+                  Max possible amount with fees for {sellTokenAmount.currency.symbol} is{' '}
+                  {formatMaxValue(isPossibleToOrder.value)}
+                </MaxAlert>
               )}
               <ButtonPrimary onClick={reviewOrder} disabled={isPossibleToOrder.status}>
                 Review Order

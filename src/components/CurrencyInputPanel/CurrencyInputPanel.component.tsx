@@ -52,6 +52,7 @@ export const CurrencyInputPanelComponent = ({
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   disableCurrencySelect = false,
   isOutputPanel,
+  showNativeCurrency = true,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -190,6 +191,7 @@ export const CurrencyInputPanelComponent = ({
           otherSelectedCurrency={new Array(1).fill(otherCurrency)}
           showCommonBases={showCommonBases}
           isOutputPanel={isOutputPanel}
+          showNativeCurrency={showNativeCurrency}
         />
       )}
     </InputPanel>

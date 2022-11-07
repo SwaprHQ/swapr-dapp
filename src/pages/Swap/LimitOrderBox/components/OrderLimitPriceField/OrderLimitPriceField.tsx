@@ -3,42 +3,13 @@ import { Token, TokenAmount } from '@swapr/sdk'
 
 import { useContext } from 'react'
 import { RefreshCw } from 'react-feather'
-import { Flex } from 'rebass'
-import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 
-import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
-import { LimitOrderKind } from '../interfaces'
-import { debug } from '../utils'
-import { InputGroup } from './InputGroup'
-
-export const ToggleCurrencyButton = styled.span`
-  color: #464366;
-  cursor: pointer;
-`
-
-const SwapTokenIconWrapper = styled.div`
-  margin-left: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  width: 24px;
-  height: 22px;
-  background: rgba(104, 110, 148, 0.3);
-  border-radius: 4.25926px;
-  color: #bcb3f0;
-`
-
-const SwapTokenWrapper = styled(Flex)`
-  color: #8780bf;
-  align-items: center;
-  &:hover {
-    color: #736f96;
-    & > div {
-      color: #736f96;
-    }
-  }
-`
+import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
+import { LimitOrderKind } from '../../interfaces'
+import { debug } from '../../utils'
+import { InputGroup } from '../InputGroup'
+import { LimitLabel, SetToMarket, SwapTokenIconWrapper, SwapTokenWrapper, ToggleCurrencyButton } from './styles'
 
 export interface OrderLimitPriceFieldProps {
   id?: string
@@ -54,8 +25,9 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedLimitPrice,
     setBuyTokenAmount,
     setFormattedBuyAmount,
+    setToMarket,
   } = useContext(LimitOrderFormContext)
-
+  const { t } = useTranslation('swap')
   const [baseTokenAmount, quoteTokenAmount] =
     limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
   const inputGroupLabel = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at`
@@ -77,8 +49,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       formatUnits(quoteTokenAmount.raw.toString(), quoteTokenAmount.currency.decimals)
     )
 
-    const nextlimitPriceFloat = quoteTokenAmountAsFloat / baseTokenAmountAsFloat
-    const nextLimitPriceFormatted = nextlimitPriceFloat.toFixed(6) // 6 is the lowest precision we support due to tokens like USDC
+    const nextLimitPriceFloat = quoteTokenAmountAsFloat / baseTokenAmountAsFloat
+    const nextLimitPriceFormatted = nextLimitPriceFloat.toFixed(6) // 6 is the lowest precision we support due to tokens like USDC
     const nextLimitPriceWei = parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString()
 
     setLimitOrder({
@@ -139,7 +111,10 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
 
   return (
     <InputGroup>
-      <InputGroup.Label htmlFor={id}>{inputGroupLabel}</InputGroup.Label>
+      <LimitLabel htmlFor={id}>
+        <span>{inputGroupLabel}</span>
+        <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
+      </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input id={id} value={formattedLimitPrice} onChange={onChangeHandler} />
         <InputGroup.ButtonAddonsWrapper>

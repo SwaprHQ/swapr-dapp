@@ -48,6 +48,7 @@ interface ILimitOrderFormContext {
   setExpiresIn: (expiresIn: number) => void
   expiresInUnit: OrderExpiresInUnit
   setExpiresInUnit: (expiresInUnit: OrderExpiresInUnit) => void
+  setToMarket: () => void
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)
