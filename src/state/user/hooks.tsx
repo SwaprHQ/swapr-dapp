@@ -113,6 +113,14 @@ const selectExpertMode = createSelector(
 export function useIsExpertMode() {
   return useSelector<AppState, AppState['user']['userExpertMode']>(selectExpertMode)
 }
+const selectAdvTradeMode = createSelector(
+  (state: AppState) => state.user.selectedChartOption,
+  selectedChartTab => !!(selectedChartTab === ChartOptions.PRO)
+)
+
+export function useIsAdvancedTradeMode() {
+  return useSelector<AppState, boolean>(selectAdvTradeMode)
+}
 
 export function useExpertModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()

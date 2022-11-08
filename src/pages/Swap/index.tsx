@@ -403,7 +403,7 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Flex mb={3} alignItems="center" justifyContent="space-between" width="100%">
+      <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
         {!isInProMode && (
           <ChartToggle
@@ -477,7 +477,6 @@ export default function Swap() {
                 id="swap-currency-output"
               />
             </AutoColumn>
-
             <TradeDetails
               show={!showWrap}
               loading={loading}
