@@ -8,12 +8,12 @@ import { TaskCard } from '../../../ExpeditionsCards'
 
 export function LiquidityStakingTaskCard() {
   const [isClaiming, setIsClaiming] = useState(false)
-  const { tasks, setTasks, provider } = useExpeditions()
+  const { tasks, setTasks, provider, setClaimedFragments } = useExpeditions()
 
   const { liquidityStaking } = tasks
   const { isAvailableToClaim, isClaimed, isIncomplete, buttonText } = computeFragmentState(liquidityStaking, isClaiming)
 
-  const claimFragments = async () => {
+  const claim = async () => {
     if (isClaimed || !isAvailableToClaim || isClaiming) {
       return
     }
@@ -23,7 +23,7 @@ export function LiquidityStakingTaskCard() {
     try {
       const address = await provider.getSigner().getAddress()
       const signature = await provider.getSigner().signMessage(ClaimRequestTypeEnum.LiquidityStaking)
-      const claimFragmentsResponse = await ExpeditionsAPI.postExpeditionsClaim({
+      await ExpeditionsAPI.postExpeditionsClaim({
         body: {
           address,
           signature,
@@ -31,14 +31,13 @@ export function LiquidityStakingTaskCard() {
         },
       })
       // Update local state
-      setTasks({
-        liquidityProvision: tasks.liquidityProvision,
-        liquidityStaking: {
-          ...liquidityStaking,
-          claimedFragments: claimFragmentsResponse.claimedFragments,
-        },
-        dailyVisit: tasks.dailyVisit,
+      const { claimedFragments, tasks } = await ExpeditionsAPI.getExpeditionsProgress({
+        address,
       })
+
+      // Update local state
+      setTasks(tasks)
+      setClaimedFragments(claimedFragments)
     } catch (error) {
       console.error(error)
     } finally {
@@ -51,7 +50,7 @@ export function LiquidityStakingTaskCard() {
       buttonText={buttonText}
       buttonDisabled={isClaimed || isClaiming || isIncomplete}
       claimed={isClaimed}
-      onClick={claimFragments}
+      onClick={claim}
       startDate={tasks.liquidityStaking.startDate}
       endDate={tasks.liquidityStaking.endDate}
       description="Get some fragments each week for staking at least $50 of liquidity on Swapr!"

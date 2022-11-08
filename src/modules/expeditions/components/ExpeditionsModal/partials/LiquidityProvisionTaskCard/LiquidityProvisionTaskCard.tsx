@@ -8,7 +8,7 @@ import { TaskCard } from '../../../ExpeditionsCards'
 
 export function LiquidityProvisionTaskCard() {
   const [isClaiming, setIsClaiming] = useState(false)
-  const { tasks, provider, setTasks } = useExpeditions()
+  const { tasks, provider, setTasks, setClaimedFragments } = useExpeditions()
 
   const { liquidityProvision } = tasks
   const { isAvailableToClaim, isClaimed, isIncomplete, buttonText } = computeFragmentState(
@@ -16,7 +16,7 @@ export function LiquidityProvisionTaskCard() {
     isClaiming
   )
 
-  const claimFragments = async () => {
+  const claim = async () => {
     if (isClaimed || !isAvailableToClaim || isClaiming) {
       return
     }
@@ -25,7 +25,7 @@ export function LiquidityProvisionTaskCard() {
     try {
       const address = await provider.getSigner().getAddress()
       const signature = await provider.getSigner().signMessage(ClaimRequestTypeEnum.LiquidityProvision)
-      const claimFragmentsResponse = await ExpeditionsAPI.postExpeditionsClaim({
+      await ExpeditionsAPI.postExpeditionsClaim({
         body: {
           address,
           signature,
@@ -34,14 +34,13 @@ export function LiquidityProvisionTaskCard() {
       })
 
       // Update local state
-      setTasks({
-        liquidityProvision: {
-          ...liquidityProvision,
-          claimedFragments: claimFragmentsResponse.claimedFragments,
-        },
-        liquidityStaking: tasks.liquidityStaking,
-        dailyVisit: tasks.dailyVisit,
+      const { claimedFragments, tasks } = await ExpeditionsAPI.getExpeditionsProgress({
+        address,
       })
+
+      // Update local state
+      setTasks(tasks)
+      setClaimedFragments(claimedFragments)
     } catch (error) {
       console.error(error)
     } finally {
@@ -54,7 +53,7 @@ export function LiquidityProvisionTaskCard() {
       buttonText={buttonText}
       buttonDisabled={isClaimed || isClaiming || isIncomplete}
       claimed={isClaimed}
-      onClick={claimFragments}
+      onClick={claim}
       startDate={tasks.liquidityProvision.startDate}
       endDate={tasks.liquidityProvision.endDate}
       description="Get some fragments each week for providing at least $50 of liquidity on Swapr!"

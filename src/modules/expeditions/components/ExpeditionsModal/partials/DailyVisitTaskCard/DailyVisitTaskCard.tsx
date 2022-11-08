@@ -13,7 +13,7 @@ export function DailyVisitTaskCard() {
   const { dailyVisit } = tasks
   const { isClaimed, buttonText } = computeDailyState(dailyVisit, isClaiming)
 
-  const claimVisit = async () => {
+  const claim = async () => {
     if (isClaimed || isClaiming) {
       return
     }
@@ -49,7 +49,7 @@ export function DailyVisitTaskCard() {
       buttonText={buttonText}
       buttonDisabled={isClaimed || isClaiming}
       claimed={isClaimed}
-      onClick={claimVisit}
+      onClick={claim}
       startDate={tasks.dailyVisit.startDate}
       endDate={tasks.dailyVisit.endDate}
       description="Make a daily visit to unlock entire new feeling of Swapr Expeditions. Really!"
