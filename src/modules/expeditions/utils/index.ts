@@ -1,4 +1,4 @@
-import { WeeklyFragments } from '../api/generated'
+import { DailyVisit, WeeklyFragments } from '../api/generated'
 
 export function computeFragmentState(rewards: WeeklyFragments, isClaiming: boolean) {
   const isClaimed = rewards.claimedFragments > 0
@@ -23,4 +23,20 @@ export function computeFragmentState(rewards: WeeklyFragments, isClaiming: boole
     isIncomplete,
     buttonText,
   }
+}
+
+export function computeDailyState(dailyVisit: DailyVisit, isClaiming: boolean) {
+  const isClaimed = dailyVisit.lastVisit >= dailyVisit.startDate && dailyVisit.lastVisit <= dailyVisit.endDate
+
+  let buttonText = ''
+
+  if (isClaiming) {
+    buttonText = 'Claiming...'
+  } else if (isClaimed) {
+    buttonText = 'Claimed'
+  } else {
+    buttonText = 'Claim'
+  }
+
+  return { isClaimed, buttonText }
 }
