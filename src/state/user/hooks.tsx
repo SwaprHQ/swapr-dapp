@@ -19,6 +19,7 @@ import {
   SerializedToken,
   toggleURLWarning,
   updateSelectedChartOption,
+  updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -27,7 +28,7 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
-import { ChartOptions } from './reducer'
+import { ChartOptions, SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -131,6 +132,31 @@ const selectSelectedChartOption = createSelector(
 
 export function useSelectedChartOption() {
   return useSelector(selectSelectedChartOption)
+}
+
+const selectSelectedSwapTab = createSelector(
+  (state: AppState) => state.user.selectedSwapTab,
+  selectedSwapTab => selectedSwapTab
+)
+
+export function useSelectedSwapTab() {
+  return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
+}
+
+export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentTab = useSelectedSwapTab()
+
+  const setSelectedTab = useCallback(
+    (selectedTab: SwapTabs) => {
+      if (currentTab !== selectedTab || !currentTab) {
+        dispatch(updateSelectedSwapTab({ selectedSwapTab: selectedTab }))
+      }
+    },
+    [currentTab, dispatch]
+  )
+
+  return [currentTab, setSelectedTab]
 }
 
 const selectUserSlippageTolerance = createSelector(

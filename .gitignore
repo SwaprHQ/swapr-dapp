@@ -16,6 +16,7 @@
 .env.production.local
 
 /.netlify
+netlify.toml
 
 npm-debug.log*
 yarn-debug.log*
@@ -38,6 +39,6 @@ mochawesome-report
 .eslintcache
 
 **/generated/**/*
-!src/analytics/generated/*
+!src/analytics/generated/**/*
 
 storybook-static

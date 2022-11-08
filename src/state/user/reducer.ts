@@ -13,6 +13,7 @@ import {
   toggleURLWarning,
   updateMatchesDarkMode,
   updateSelectedChartOption,
+  updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -27,6 +28,13 @@ const currentTimestamp = () => new Date().getTime()
 export enum ChartOptions {
   OFF,
   SIMPLE_CHART,
+  PRO,
+}
+
+export enum SwapTabs {
+  SWAP,
+  LIMIT_ORDER,
+  BRIDGE_SWAP,
 }
 
 export interface UserState {
@@ -37,6 +45,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
+  selectedSwapTab: SwapTabs
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -79,6 +88,8 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
+  selectedSwapTab: 0,
+  selectedChartOption: 0,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -88,7 +99,6 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   userAdvancedSwapDetails: true,
-  selectedChartOption: 0,
 }
 
 export default createReducer(initialState, builder =>
@@ -133,6 +143,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateSelectedSwapTab, (state, action) => {
+      state.selectedSwapTab = action.payload.selectedSwapTab
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

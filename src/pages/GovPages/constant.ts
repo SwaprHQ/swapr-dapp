@@ -1,6 +1,4 @@
-import { ChainId, Currency } from '@swapr/sdk'
-
-import { DAI, USDC, USDT, WBTC } from '../../constants'
+import { ChainId, Currency, DAI, USDC, USDT, WBTC } from '@swapr/sdk'
 
 export const MainPage = 'Governance Main Page'
 export const PairPage = 'Governance Pair Page'
