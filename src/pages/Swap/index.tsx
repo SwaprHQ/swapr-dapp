@@ -145,7 +145,6 @@ export default function Swap() {
 
   const { chainId } = useActiveWeb3React()
   const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
-  console.log('selectedChartOption:', selectedChartOption)
 
   // for expert mode
   const isExpertMode = useIsExpertMode()
