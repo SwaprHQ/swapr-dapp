@@ -12,7 +12,7 @@ import {
   SerializedToken,
   toggleURLWarning,
   updateMatchesDarkMode,
-  updateSelectedChartTab,
+  updateSelectedChartOption,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
@@ -25,15 +25,16 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
+export enum ChartOptions {
+  OFF,
+  SIMPLE_CHART,
+  PRO,
+}
+
 export enum SwapTabs {
   SWAP,
   LIMIT_ORDER,
   BRIDGE_SWAP,
-}
-export enum ChartTabs {
-  OFF,
-  SIMPLE,
-  PRO,
 }
 
 export interface UserState {
@@ -45,7 +46,6 @@ export interface UserState {
 
   userExpertMode: boolean
   selectedSwapTab: SwapTabs
-  selectedChartTab: ChartTabs
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -58,6 +58,9 @@ export interface UserState {
 
   // the gas price the user would like to use on mainnet
   userPreferredGasPrice: MainnetGasPrice | string | null
+
+  //user chart option preference
+  selectedChartOption?: ChartOptions
 
   tokens: {
     [chainId: number]: {
@@ -86,7 +89,7 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   userExpertMode: false,
   selectedSwapTab: 0,
-  selectedChartTab: 0,
+  selectedChartOption: 0,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
@@ -146,10 +149,6 @@ export default createReducer(initialState, builder =>
       state.selectedSwapTab = action.payload.selectedSwapTab
       state.timestamp = currentTimestamp()
     })
-    .addCase(updateSelectedChartTab, (state, action) => {
-      state.selectedChartTab = action.payload.selectedChartTab
-      state.timestamp = currentTimestamp()
-    })
     .addCase(updateUserSlippageTolerance, (state, action) => {
       state.userSlippageTolerance = action.payload.userSlippageTolerance
       state.timestamp = currentTimestamp()
@@ -195,5 +194,8 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserAdvancedSwapDetails, (state, action) => {
       state.userAdvancedSwapDetails = action.payload.userAdvancedSwapDetails
+    })
+    .addCase(updateSelectedChartOption, (state, action) => {
+      state.selectedChartOption = action.payload.selectedChartOption
     })
 )
