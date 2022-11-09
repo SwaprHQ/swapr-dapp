@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import { ReactComponent as Bridge } from '../../../assets/images/bridge.svg'
 import { ReactComponent as EcoRouter } from '../../../assets/images/eco-router.svg'
 import Row from '../../../components/Row'
+import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
@@ -77,9 +78,6 @@ export function Tabs({ children }: { children?: ReactNode }) {
   const { activeTab, setActiveTab } = useContext(SwapContext)
   const dispatch = useDispatch()
   const { navigate, pathname } = useRouter()
-  const { chainId } = useActiveWeb3React()
-
-  const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
 
   return (
     <TabsColumn>
@@ -93,14 +91,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           <StyledEcoRouter />
           Swap
         </Button>
-        <Button
-          onClick={() => setActiveTab(SwapTab.LimitOrder)}
-          className={activeTab === SwapTab.LimitOrder ? 'active' : ''}
-          disabled={noLimitOrderSupport}
-        >
-          <StyledSliders />
-          {t('tabs.limit')}
-        </Button>
+        <LimitOrderTab className={activeTab === SwapTab.LimitOrder ? 'active' : ''} setActiveTab={setActiveTab} />
         <Button
           title="Bridge Swap"
           onClick={() => {
@@ -115,5 +106,32 @@ export function Tabs({ children }: { children?: ReactNode }) {
       </TabsRow>
       {children}
     </TabsColumn>
+  )
+}
+
+const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setActiveTab: any }) => {
+  const { chainId, account } = useActiveWeb3React()
+  const { t } = useTranslation('swap')
+  const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
+  if (account == null || noLimitOrderSupport) {
+    return (
+      <MouseoverTooltip content={noLimitOrderSupport ? 'Unsupported network' : 'Connect your wallet'} placement="top">
+        <Button
+          onClick={() => setActiveTab(SwapTab.LimitOrder)}
+          className={className}
+          disabled={noLimitOrderSupport || account == null}
+        >
+          <StyledSliders />
+          {t('tabs.limit')}
+        </Button>
+      </MouseoverTooltip>
+    )
+  }
+
+  return (
+    <Button onClick={() => setActiveTab(SwapTab.LimitOrder)} className={className}>
+      <StyledSliders />
+      {t('tabs.limit')}
+    </Button>
   )
 }

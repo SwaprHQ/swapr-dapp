@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
@@ -21,16 +21,24 @@ export default function Tooltip({ text, ...rest }: Omit<TooltipProps, 'content'>
   return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-export function CustomTooltip({ content, ...rest }: PopoverProps) {
-  return <Popover offsetY={3} placement={'bottom'} content={content} {...rest} />
+export function CustomTooltip({ content, placement, ...rest }: PopoverProps) {
+  return <Popover offsetY={3} placement={placement ?? 'bottom'} content={content} {...rest} />
 }
 
 export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipProps, 'show'>) {
-  const [show, setShow] = useState(false)
+  const [canShow, setShow] = useState(false)
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setShow(false)
+    }, 3000)
+    return () => {
+      clearTimeout(id)
+    }
+  }, [canShow])
   const open = useCallback(() => setShow(true), [setShow])
   const close = useCallback(() => setShow(false), [setShow])
   return (
-    <CustomTooltip content={content} {...rest} show={show}>
+    <CustomTooltip content={content} {...rest} show={canShow}>
       <CursorPointerDiv onMouseEnter={open} onMouseLeave={close}>
         {children}
       </CursorPointerDiv>
