@@ -20,7 +20,7 @@ import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { TESTNETS } from '../../constants'
-// import { REACT_APP_FEATURE_CHARTS } from '../../constants/features'
+import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../constants/features'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -405,7 +405,7 @@ export default function Swap() {
     <>
       <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        {!isInProMode && (
+        {REACT_APP_FEATURE_SIMPLE_CHART && !isInProMode && (
           <ChartToggle
             hasBothCurrenciesInput={hasBothCurrenciesInput}
             selectedChartOption={selectedChartOption}
