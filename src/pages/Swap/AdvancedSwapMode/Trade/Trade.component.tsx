@@ -59,7 +59,7 @@ export const Trade = ({
       <Text>{amountOut}</Text>
       {price && <Text>{price}</Text>}
       <Text sx={{ textTransform: 'uppercase', textAlign: 'right', color: '#BCB3F0' }}>
-        {DateTime.fromMillis(timestampInMilliseconds).toFormat('HH:mm:ss')}
+        {DateTime.fromMillis(timestampInMilliseconds).toFormat('HH:mm')}
       </Text>
     </TradeWrapper>
   )

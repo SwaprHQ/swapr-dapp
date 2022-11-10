@@ -216,11 +216,13 @@ export const OrderHistoryHeader = styled.div`
   text-transform: uppercase;
 
   & > div {
-    flex: 1;
+    flex: 2;
     color: ${({ theme }) => theme.purple3};
+    padding-right: 4px;
   }
 
   & > div:last-child {
     text-align: right;
+    flex: 1;
   }
 `

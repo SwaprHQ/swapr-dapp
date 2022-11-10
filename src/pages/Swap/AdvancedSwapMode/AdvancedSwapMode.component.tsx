@@ -136,6 +136,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
               <Text>{t('advancedTradingView.orderHistory.type')}</Text>
               <Text>{t('advancedTradingView.orderHistory.date')}</Text>
               <Text>{t('advancedTradingView.orderHistory.status')}</Text>
+              <Text>{t('advancedTradingView.orderHistory.tx')}</Text>
             </OrderHistoryHeader>
             {transactions.map((tx, index) => (
               <OrderHistoryTransaction key={index} tx={tx} />
@@ -158,8 +159,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
           <ColumnHeader
             activeCurrencySymbolOption={activeCurrencyOption?.symbol ?? ''}
             showPrice={false}
-            inputTokenSymbol={inputToken?.symbol ?? ''}
-            outputTokenSymbol={outputToken?.symbol ?? ''}
+            inputTokenSymbol={token0?.symbol ?? ''}
+            outputTokenSymbol={token1?.symbol ?? ''}
             showTrades={showTrades}
           />
         </AdvancedModeHeader>
