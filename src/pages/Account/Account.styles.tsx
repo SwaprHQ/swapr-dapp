@@ -20,10 +20,10 @@ export const Status = styled(Flex)<{ status: string }>`
       case TransactionStatus.CONFIRMED:
       case TransactionStatus.CLAIMED:
       case TransactionStatus.FULFILLED:
-      case TransactionStatus.CANCELLED:
         return `
         border-color: #0e9f6e;
         color: #0e9f6e;`
+      case TransactionStatus.CANCELLED:
       case TransactionStatus.REDEEM:
       case TransactionStatus.PENDING:
       case TransactionStatus.LOADING:
@@ -95,8 +95,8 @@ export const GridCard = styled(Flex)<{ status?: string }>`
       case TransactionStatus.CONFIRMED:
       case TransactionStatus.CLAIMED:
       case TransactionStatus.FULFILLED:
-      case TransactionStatus.CANCELLED:
         return 'linear-gradient(256.45deg, rgba(15, 152, 106, 0.2) 7%, rgba(15, 152, 106, 0) 66%)'
+      case TransactionStatus.CANCELLED:
       case TransactionStatus.REDEEM:
       case TransactionStatus.PENDING:
       case TransactionStatus.LOADING:

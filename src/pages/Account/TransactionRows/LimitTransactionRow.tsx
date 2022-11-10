@@ -45,6 +45,11 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
 
+  const sellTokenValue = formatUnits(sellToken.value, formattedSellToken?.decimals)
+  const buyTokenValue = formatUnits(buyToken.value, formattedBuyToken?.decimals)
+
+  const price = Number(buyTokenValue) / Number(sellTokenValue)
+
   const handleDeleteOpenOrders = useCallback(async () => {
     if (chainId && library) {
       const response = await cancelOrder?.(uid, library)
@@ -108,7 +113,7 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
 
       <TransactionDetails justifyContent="start">
         <Flex flexDirection="column" alignContent="center">
-          <Box>- -</Box>
+          <Box>{price > 0 && price < Infinity ? formatNumber(price) : '- -'}</Box>
         </Flex>
       </TransactionDetails>
 
