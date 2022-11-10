@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
+import { invalidChars } from '../constants'
 import { LimitOrderFormContext } from '../contexts'
 import { OrderExpiresInUnit } from '../interfaces'
 import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
@@ -33,8 +34,6 @@ export const MaxExpiryTime = styled.button`
     color: #736f96;
   }
 `
-
-const invalidChars = ['-', '+', 'e']
 
 export interface OnChangeParams {
   expiresIn: number

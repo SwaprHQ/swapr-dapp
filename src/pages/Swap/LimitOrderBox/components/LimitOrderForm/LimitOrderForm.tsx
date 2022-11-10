@@ -258,9 +258,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     let nextBuyAmountFloat = 0
     // Compute the buy amount based on the new sell amount
-    // const newBuyAmountFormattedNumber =
-    //   parseFloat(amountFormatted) * parseFloat(formatUnits(limitOrder.limitPrice, buyTokenAmount.currency.decimals))
-    // const newBuyTokenAmountBN = parseUnits(newBuyAmountFormattedNumber.toString(), buyTokenAmount.currency.decimals)
 
     if (limitOrder.kind === LimitOrderKind.SELL) {
       nextBuyAmountFloat = nextSellAmountFloat * limitPriceFloat
