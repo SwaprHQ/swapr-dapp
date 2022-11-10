@@ -442,7 +442,7 @@ export class Connext extends EcoBridgeChildBase {
 
       this.store.dispatch(
         this.baseActions.setBridgeDetails({
-          receiveAmount: Number(formatUnits(amountReceived, decimals)).toFixed(2),
+          receiveAmount: Number(formatUnits(amountReceived, decimals)).toFixed(this._receiveAmountDecimalPlaces),
           fee,
           estimateTime: '15 MIN',
           requestId,

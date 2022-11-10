@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -10,12 +9,8 @@ import { SwapTabs } from '../../state/user/reducer'
 import Row from '../Row'
 
 const TabsColumn = styled.div`
-  max-width: 457px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin: 0 0 10px;
 `
 
 const TabsRow = styled(Row)`
@@ -58,18 +53,11 @@ const StyledEcoRouter = styled(EcoRouter)`
   margin-right: 5px;
 `
 
-export const Tabs = ({
-  activeTab,
-  setActiveTab,
-  children,
-}: {
-  activeTab: SwapTabs
-  setActiveTab: (tab: SwapTabs) => void
-  children?: ReactNode
-}) => {
+export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActiveTab: (tab: SwapTabs) => void }) => {
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { navigate } = useRouter()
+
   return (
     <TabsColumn>
       <TabsRow>
@@ -94,7 +82,6 @@ export const Tabs = ({
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
-      {children}
     </TabsColumn>
   )
 }

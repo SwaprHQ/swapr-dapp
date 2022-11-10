@@ -147,7 +147,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         gas,
         fee: '0%',
         estimateTime: '5 min',
-        receiveAmount: Number(value).toFixed(2),
+        receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
         requestId,
       })
     )

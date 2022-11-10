@@ -790,7 +790,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
         gas: totalTxnGasCostInUSD,
         fee: '0%',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value).toFixed(2).toString(),
+        receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces).toString(),
         requestId,
       })
     )

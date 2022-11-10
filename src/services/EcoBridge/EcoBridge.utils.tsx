@@ -61,6 +61,7 @@ export abstract class EcoBridgeChildBase {
   protected _activeProvider: EcoBridgeChildBaseProps['activeProvider']
   protected _baseActions: ReturnType<typeof createEcoBridgeChildBaseSlice>['actions'] | undefined
   private _listeners: NodeJS.Timeout[] = []
+  protected readonly _receiveAmountDecimalPlaces = 3
 
   constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
