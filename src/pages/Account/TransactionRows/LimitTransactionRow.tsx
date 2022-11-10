@@ -4,8 +4,10 @@ import { XCircle } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { CurrencyLogo } from '../../../components/CurrencyLogo'
 import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../hooks'
+import { useToken } from '../../../hooks/Tokens'
 import { useNotificationPopup } from '../../../state/application/hooks'
 import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
@@ -38,7 +40,8 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const { type, status, uid, network, sellToken, buyToken, confirmedTime, cancelOrder } = transaction
   const { chainId, library } = useActiveWeb3React()
   const notify = useNotificationPopup()
-
+  const formattedSellToken = useToken(sellToken.tokenAddress)
+  const formattedBuyToken = useToken(buyToken.tokenAddress)
   const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
 
@@ -56,10 +59,16 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={sellToken.symbol} address={sellToken.tokenAddress} chainId={network} />
+            {formattedSellToken !== null && (
+              <Box sx={{ mr: '6px' }}>
+                <CurrencyLogo loading={false} currency={formattedSellToken} size={'32px'} />
+              </Box>
+            )}
             <Flex flexDirection="column">
               <Box>{formatNumber(sellToken.value, false)}</Box>
-              <Box sx={{ fontSize: '0.8em' }}>{sellToken.symbol ?? shortenAddress(sellToken.tokenAddress)}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>
+                {formattedSellToken?.symbol ?? shortenAddress(sellToken.tokenAddress)}
+              </Box>
             </Flex>
           </Flex>
           <Box sx={{ mt: 1 }}>
@@ -74,10 +83,14 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={buyToken.symbol} address={buyToken.tokenAddress} chainId={network} />
+            {formattedBuyToken !== null && (
+              <Box sx={{ mr: '6px' }}>
+                <CurrencyLogo loading={false} currency={formattedBuyToken} size={'32px'} />
+              </Box>
+            )}
             <Flex flexDirection="column">
               <Box>{formatNumber(buyToken.value, false)}</Box>
-              <Box sx={{ fontSize: '0.8em' }}>{buyToken.symbol ?? shortenAddress(buyToken.tokenAddress)}</Box>
+              <Box sx={{ fontSize: '0.8em' }}>{formattedBuyToken?.symbol ?? shortenAddress(buyToken.tokenAddress)}</Box>
             </Flex>
           </Flex>
           <Box sx={{ mt: 1 }}>

@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
+import { ChainId, CoWTrade, Currency, JSBI, Percent, Price, Token, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
@@ -49,11 +49,18 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const [loading, setLoading] = useState(false)
   const notify = useNotificationPopup()
   // Get the initial values and set the state
-  const initialState = useRef(getInitialState(chainId, account)).current
+  let initialState = useRef(getInitialState(chainId, account)).current
   // Local state
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
   // Default expiry time set to 20 minutes
   const [expiresIn, setExpiresIn] = useState(20)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    initialState = getInitialState(chainId, account)
+    setSellTokenAmount(initialState.sellTokenAmount)
+    setBuyTokenAmount(initialState.buyTokenAmount)
+  }, [chainId])
 
   //IsPossibleToOrder
   const [isPossibleToOrder, setIsPossibleToOrder] = useState({
@@ -75,7 +82,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   // Final limit order to be sent to the internal API
   const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
 
-  const setToMarket = async () => {
+  const setInitialValue = async () => {
     const signer = provider.getSigner()
     const cowQuote = await getQuote({
       chainId,
@@ -101,8 +108,26 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     }
   }
 
+  // useEffect(()=>{
+  //   CoWTrade.bestTradeExactIn({
+  //     currencyAmountIn:sellTokenAmount,
+  //     currencyOut: buyTokenAmount,
+  //     maximumSlippage: new Percent('0.5'.toString(), '10000'),
+  //     receiver:limitOrder.receiverAddress,
+  //     user:account,
+  //   })
+  //     .then(value => {
+  //       console.log({value})
+  //     })
+  //     .catch(error => {
+  //       // resolve(undefined)
+  //       console.error(error)
+  //     })
+  // })
+  // },[])
+
   useEffect(() => {
-    setToMarket().catch(e => {
+    setInitialValue().catch(e => {
       console.error(e)
       setIsPossibleToOrder({
         status: true,
@@ -168,6 +193,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       }
       const {
         quote: { feeAmount },
+        id,
       } = await getQuote({
         chainId,
         signer,
@@ -175,7 +201,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       })
 
       const signedOrder = await signLimitOrder({
-        order: { ...finalizedLimitOrder, feeAmount },
+        order: { ...finalizedLimitOrder, feeAmount, quoteId: id },
         chainId,
         signer,
       })
@@ -188,9 +214,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       })
       if (response) {
         notify('Successfully created limit order')
+      } else {
+        notify('Failed to place limit order. Try again.', false)
       }
     } catch (error) {
       console.log(error)
+      notify('Failed to place limit order. Try again.', false)
     } finally {
       setLoading(false)
     }
@@ -359,7 +388,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           setExpiresIn,
           expiresInUnit,
           setExpiresInUnit,
-          setToMarket,
+          setToMarket: () => {},
         }}
       >
         <AutoColumn gap="12px">

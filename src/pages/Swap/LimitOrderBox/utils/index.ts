@@ -4,6 +4,7 @@ import { ChainId, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
 
 import createDebugger from 'debug'
 
+import { isAddress } from '../../../../utils'
 import { LimitOrderKind, SerializableLimitOrder } from '../interfaces'
 import { TokenAmount as ITokenAmount } from '../interfaces/token.interface'
 
@@ -41,8 +42,8 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
     sellAmount: '1000000000000000000',
     buyAmount: '0',
     feeAmount: '0',
-    sellToken: sellTokenAmount.currency.address || AddressZero,
-    buyToken: buyTokenAmount?.currency?.address || AddressZero,
+    sellToken: isAddress(sellTokenAmount.currency.address) || AddressZero,
+    buyToken: isAddress(buyTokenAmount?.currency?.address) || AddressZero,
     createdAt: 0,
     expiresAt: Date.now(),
     limitPrice: '0',

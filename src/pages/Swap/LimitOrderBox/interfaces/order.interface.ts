@@ -68,6 +68,10 @@ export interface SerializableLimitOrder {
    * Order kind
    */
   kind: LimitOrderKind
+  /**
+   * Quote Id
+   */
+  quoteId?: number | null
 }
 
 /**

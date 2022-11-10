@@ -137,10 +137,12 @@ export async function submitLimitOrder({ order, signer, chainId }: SubmitLimitOr
     signingScheme,
     userAddress,
     feeAmount,
+    quoteId,
   } = order
 
   return cowSdk.cowApi.sendOrder({
     order: {
+      quoteId,
       buyAmount,
       buyToken,
       sellAmount,

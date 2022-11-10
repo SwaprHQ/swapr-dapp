@@ -3,13 +3,12 @@ import { Token, TokenAmount } from '@swapr/sdk'
 
 import { useContext } from 'react'
 import { RefreshCw } from 'react-feather'
-import { useTranslation } from 'react-i18next'
 
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind } from '../../interfaces'
 import { debug } from '../../utils'
 import { InputGroup } from '../InputGroup'
-import { LimitLabel, SetToMarket, SwapTokenIconWrapper, SwapTokenWrapper, ToggleCurrencyButton } from './styles'
+import { LimitLabel, SwapTokenIconWrapper, SwapTokenWrapper, ToggleCurrencyButton } from './styles'
 
 export interface OrderLimitPriceFieldProps {
   id?: string
@@ -25,9 +24,9 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedLimitPrice,
     setBuyTokenAmount,
     setFormattedBuyAmount,
-    setToMarket,
+    // setToMarket,
   } = useContext(LimitOrderFormContext)
-  const { t } = useTranslation('swap')
+  // const { t } = useTranslation('swap')
   const [baseTokenAmount, quoteTokenAmount] =
     limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
   const inputGroupLabel = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at`
@@ -113,7 +112,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     <InputGroup>
       <LimitLabel htmlFor={id}>
         <span>{inputGroupLabel}</span>
-        <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
+        {/* Implement with CoW router */}
+        {/* <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket> */}
       </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input id={id} value={formattedLimitPrice} onChange={onChangeHandler} />
