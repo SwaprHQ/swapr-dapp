@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, CoWTrade, Currency, JSBI, Percent, Price, Token, TokenAmount } from '@swapr/sdk'
+import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
@@ -107,24 +107,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       setFormattedLimitPrice(buyTokenFormattedAmount)
     }
   }
-
-  // useEffect(()=>{
-  //   CoWTrade.bestTradeExactIn({
-  //     currencyAmountIn:sellTokenAmount,
-  //     currencyOut: buyTokenAmount,
-  //     maximumSlippage: new Percent('0.5'.toString(), '10000'),
-  //     receiver:limitOrder.receiverAddress,
-  //     user:account,
-  //   })
-  //     .then(value => {
-  //       console.log({value})
-  //     })
-  //     .catch(error => {
-  //       // resolve(undefined)
-  //       console.error(error)
-  //     })
-  // })
-  // },[])
 
   useEffect(() => {
     setInitialValue().catch(e => {

@@ -24,7 +24,6 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedLimitPrice,
     setBuyTokenAmount,
     setFormattedBuyAmount,
-    // setToMarket,
   } = useContext(LimitOrderFormContext)
   // const { t } = useTranslation('swap')
   const [baseTokenAmount, quoteTokenAmount] =

@@ -23,7 +23,6 @@ import {
   TransactionDetails,
   TypeDetails,
 } from '../Account.styles'
-import { TokenIcon } from '../TokenIcon'
 
 export const CancelIcon = styled(XCircle)`
   cursor: pointer;
