@@ -2,10 +2,8 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
 import { OrderMetaData } from '@cowprotocol/cow-sdk'
-import { formatUnits } from 'ethers/lib/utils'
 import { useEffect, useState } from 'react'
 
-import { useListsByAddress } from '../../../../state/lists/hooks'
 import { deleteOpenOrders, getOwnerOrders } from '../api'
 
 const appDataHashes = {
@@ -14,7 +12,7 @@ const appDataHashes = {
 }
 
 interface Token {
-  value: number
+  value: number | string
   symbol?: string
   chainId?: ChainId
   tokenAddress: string
@@ -33,7 +31,6 @@ export interface LimitOrderTransaction extends Omit<OrderMetaData, 'status' | 's
 
 export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | null, allNetworks = false) => {
   const [orders, setOrders] = useState<LimitOrderTransaction[]>([])
-  const listByAddress = useListsByAddress()
 
   useEffect(() => {
     const getLimitOrderTransactions = async (chainId: ChainId, account: string) => {
@@ -43,22 +40,20 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
         const appData = allNetworks ? Object.values(appDataHashes) : [appDataHashes[chainId]]
         const filteredOrders = orders.filter(order => appData.includes(order.appData.toString()))
         const formattedLimitOrders = filteredOrders.map(order => {
-          const sellToken = listByAddress.get(chainId)?.get(order.sellToken)
-          const buyToken = listByAddress.get(chainId)?.get(order.buyToken)
           return {
             ...order,
             type: 'Limit Order' as const,
             hash: order.uid,
             network: getNetworkId(order.appData.toString()),
             sellToken: {
-              value: formatUnits(order.sellAmount, sellToken?.decimals) as unknown as number,
-              symbol: sellToken?.symbol,
+              value: order.sellAmount,
+              symbol: '',
               tokenAddress: order.sellToken,
               chainId: getNetworkId(order.appData.toString()),
             },
             buyToken: {
-              value: formatUnits(order.buyAmount, buyToken?.decimals) as unknown as number,
-              symbol: buyToken?.symbol,
+              value: order.buyAmount,
+              symbol: '',
               tokenAddress: order.buyToken,
               chainId: getNetworkId(order.appData.toString()),
             },

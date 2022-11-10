@@ -348,7 +348,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   }
 
   // In the event that user choose native token as sell currency, offer to wrap it
-  const handleCurrencyWrap = () => {}
 
   return (
     <AppBody>
@@ -432,16 +431,10 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
-            <div>
-              <OrderLimitPriceField id="limitPrice" />
-            </div>
-            <div>
-              <OrderExpiryField id="limitOrderExpiry" />
-            </div>
+            <OrderLimitPriceField id="limitPrice" />
+            <OrderExpiryField id="limitOrderExpiry" />
           </AutoRow>
-          {Currency.isNative(sellTokenAmount.currency) ? (
-            <ButtonPrimary onClick={handleCurrencyWrap}>Wrap</ButtonPrimary> // @todo remove this as Swapbox handles wrapping native tokens
-          ) : showApproveFlow ? (
+          {showApproveFlow ? (
             <ApprovalFlow
               tokenInSymbol={sellTokenAmount.currency.symbol as string}
               approval={tokenInApproval}

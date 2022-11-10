@@ -1,3 +1,4 @@
+import { formatUnits } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { useCallback } from 'react'
 import { XCircle } from 'react-feather'
@@ -64,7 +65,7 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
               </Box>
             )}
             <Flex flexDirection="column">
-              <Box>{formatNumber(sellToken.value, false)}</Box>
+              <Box>{formatNumber(formatUnits(sellToken.value, formattedSellToken?.decimals))}</Box>
               <Box sx={{ fontSize: '0.8em' }}>
                 {formattedSellToken?.symbol ?? shortenAddress(sellToken.tokenAddress)}
               </Box>
@@ -88,7 +89,7 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
               </Box>
             )}
             <Flex flexDirection="column">
-              <Box>{formatNumber(buyToken.value, false)}</Box>
+              <Box>{formatNumber(formatUnits(buyToken.value, formattedBuyToken?.decimals))}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{formattedBuyToken?.symbol ?? shortenAddress(buyToken.tokenAddress)}</Box>
             </Flex>
           </Flex>
