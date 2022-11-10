@@ -19,7 +19,7 @@ interface AnalyticsTradeQueueItem {
   retries: number
 }
 
-type AnalyticsTradeQueueState = Record<string, AnalyticsTradeQueueItem>
+export type AnalyticsTradeQueueState = Record<string, AnalyticsTradeQueueItem>
 
 type AnalyticsTradeQueueStateAction =
   | {

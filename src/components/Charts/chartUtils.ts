@@ -4,8 +4,6 @@ import _Decimal from 'decimal.js-light'
 import { UTCTimestamp } from 'lightweight-charts'
 import toFormat from 'toformat'
 
-import { PairTokenPriceTimeframe } from '../../graphql/generated/schema'
-
 const Decimal = toFormat(_Decimal)
 
 export type ChartData = { time: UTCTimestamp; value: string }
@@ -37,6 +35,13 @@ export const DATE_INTERVALS = {
   WEEK: 'WEEK',
   MONTH: 'MONTH',
   YEAR: 'YEAR',
+}
+
+const PairTokenPriceTimeframe = {
+  FiveMinutes: 'FIVE_MINUTES',
+  FifteenMinutes: 'FIFTEEN_MINUTES',
+  OneHour: 'ONE_HOUR',
+  TwelveHours: 'TWELVE_HOURS',
 }
 
 export const convertToSecondsTimestamp = (timestamp: number): string => Math.floor(timestamp / 1000).toString()

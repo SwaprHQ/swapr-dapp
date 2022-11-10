@@ -11,7 +11,7 @@ import { ReactComponent as ThreeBlurredCircles } from '../../assets/images/three
 import { ButtonWithExternalLink } from '../../components/Button'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyLogo } from '../../components/CurrencyLogo'
-import { SwapPoolTabs } from '../../components/NavigationTabs'
+import { PageMetaData } from '../../components/PageMetaData'
 import { PairsFilterType } from '../../components/Pool/ListFilter'
 import { PairsList } from '../../components/Pool/PairsList'
 import { SortByDropdown } from '../../components/Pool/SortByDropdown'
@@ -117,6 +117,7 @@ function Title({
 
   return (
     <>
+      <PageMetaData title="Liquidity | Swapr" />
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
         <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (
@@ -223,7 +224,6 @@ export default function Pools() {
 
   return (
     <PageWrapper>
-      <SwapPoolTabs active="pool" />
       <AutoColumn gap="lg" justify="center">
         <AutoColumn gap="27px" style={{ width: '100%' }}>
           <Title
