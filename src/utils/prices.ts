@@ -2,6 +2,7 @@ import { parseUnits } from '@ethersproject/units'
 import {
   _100,
   _10000,
+  BigintIsh,
   CoWTrade,
   Currency,
   CurrencyAmount,
@@ -11,6 +12,7 @@ import {
   Pair,
   Percent,
   Price,
+  Token,
   TokenAmount,
   Trade,
   UniswapTrade,
@@ -20,6 +22,7 @@ import {
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
+import { BigNumber } from 'ethers'
 import toFormat from 'toformat'
 
 import {
@@ -33,8 +36,13 @@ import {
   PRICE_IMPACT_LOW,
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_NON_EXPERT,
+  PriceImpact,
 } from '../constants'
+import { useCoingeckoUSDPrice } from '../hooks/useUSDValue'
+import { tryParseAmount } from '../state/swap/hooks'
 import { Field } from '../state/swap/types'
+
+import { formatCurrencyAmount } from '.'
 
 const Decimal = toFormat(_Decimal)
 
@@ -145,6 +153,20 @@ export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3
   return NO_PRICE_IMPACT
 }
 
+export function warningSeverityZap(
+  priceImpactTrade0: Percent | undefined,
+  priceImpactTrade1: Percent | undefined
+): PriceImpact {
+  const severityTrade0 = warningSeverity(priceImpactTrade0)
+  const severityTrade1 = warningSeverity(priceImpactTrade1)
+  console.log('zap price impact sev', severityTrade0, severityTrade1)
+  if (severityTrade0 === 4 || severityTrade1 === 4) return PriceImpact.ONLY_EXPERT
+  if (severityTrade0 === 3 || severityTrade1 === 3) return PriceImpact.HIGH
+  if (severityTrade0 === 2 || severityTrade1 === 2) return PriceImpact.MEDIUM
+  if (severityTrade0 === 1 || severityTrade1 === 1) return PriceImpact.LOW
+  return PriceImpact.NO_IMPACT
+}
+
 export function simpleWarningSeverity(priceImpact: Percent | undefined): 0 | 3 {
   if (!priceImpact?.lessThan(ALLOWED_FIAT_PRICE_IMPACT_PERCENTAGE[PRICE_IMPACT_HIGH])) return PRICE_IMPACT_HIGH
   return NO_PRICE_IMPACT
@@ -230,4 +252,99 @@ export const limitNumberOfDecimalPlaces = (
   const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
 
   return quotient.toFormat(quotient.decimalPlaces(), format)
+}
+
+export const calculateZapInAmounts = (
+  amountFrom: CurrencyAmount,
+  pair: Pair,
+  priceAC: Price,
+  priceBC: Price,
+  chainId: number
+): { amountA: BigNumber; amountB: BigNumber } => {
+  const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
+  const reserveA = pair.reserve0
+  const reserveB = pair.reserve1
+  // const a = priceAC.divide(priceBC)
+  const b = reserveA.divide(reserveB)
+  // const x = a.multiply(b)
+  // const decimals0 = pair.token0.decimals
+
+  // const pairPrice = parseUnits(pair.token1Price.toFixed(), 6)
+  // const pac = parseUnits(priceAC.toFixed(), 6)
+  // const pbc = parseUnits(priceBC.toFixed(), 6)
+  // const amountFromBN = parseUnits(amountFrom.toFixed(), 6)
+
+  // const pac = parseUnits(new Decimal(priceAC.toFixed()).toFixed(18), 18).toString()
+  // const pbc = BigNumber.from(priceBC.toFixed())
+  // const pairPrice = BigNumber.from(pair.token1Price.toFixed())
+
+  const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
+  const pac = Number(priceAC.toFixed(significantDigits))
+  const pbc = Number(priceBC.toFixed(significantDigits))
+  const amountFromBN = Number(amountFrom.toFixed(significantDigits))
+
+  // console.log(
+  //   'tst',
+  //   pair,
+  //   pair.token0.symbol,
+  //   pair.token1.symbol,
+  //   pair.token0Price.toFixed(),
+  //   pair.token1Price.toFixed()
+  // )
+  // console.log(
+  //   'tst p',
+  //   formatCurrencyAmount(amountFrom),
+  //   amountFrom.toFixed(),
+  //   pair.token0Price.toFixed(),
+  //   pair.token1Price.toFixed(),
+  //   priceAC.toFixed(),
+  //   priceBC.toFixed()
+  // )
+  // console.log('tst a', a.toFixed(18), priceAC.toFixed(), priceBC.toFixed())
+  // console.log('tst b', b.toFixed(18), reserveB.toFixed(), reserveA.toFixed())
+  // console.log('tst x', x, x.toFixed(18))
+
+  // const xBN = parseUnits(x?.toFixed(18) ?? '')
+
+  // const one = parseUnits('1', 18)
+  // const k0 = BigNumber.from(parseFloat('100'))
+  // const k1 = BigNumber.from(parseFloat('0.075'))
+  // const k2 = BigNumber.from(parseFloat('1565'))
+  // const k3 = BigNumber.from(parseFloat('117'))
+  // const tstk = k0.div(k1.mul(k2).add(k3))
+  // console.log('tst k', tstk)
+
+  // const a = pairPrice.mul(pac).add(pbc)
+  // const amountB = amountFromBN.div(pairPrice.mul(pac).add(pbc))
+  const rawAmountB = Number((amountFromBN / (pairPrice * pac + pbc)).toFixed(significantDigits))
+  const rawAmountA = Number((rawAmountB * pairPrice).toFixed(significantDigits))
+  // TODO too low value check?
+  // if (rawAmountA < Number. || rawAmountB < Number.MIN_SAFE_INTEGER) throw new Error('Amount too low')
+  const amountFromForTokenB = rawAmountB * pbc
+  const amountFromForTokenA = amountFromBN - amountFromForTokenB
+  console.log('zap pair:', pair)
+  console.log('zap:', amountFrom.currency.symbol, amountFromBN, ' was given')
+  console.log('zap:', rawAmountA, pair.token0.symbol, ' will be LP. Bought for', amountFromForTokenA)
+  console.log('zap:', rawAmountB, pair.token1.symbol, ' will be LP. Bought for', amountFromForTokenB)
+  const amountB = BigNumber.from(parseUnits(rawAmountB.toString()))
+  const amountA = BigNumber.from(parseUnits(rawAmountA.toString()))
+  console.log('zap amp', amountFromForTokenA + amountFromForTokenB)
+  // console.log(
+  //   'tst o',
+  //   pairPrice.toString(),
+  //   pac.toString(),
+  //   pbc.toString(),
+  //   amountFromBN.toString(),
+  //   rawAmountA,
+  //   rawAmountB
+  // )
+  console.log('zap: pair, ac, bc', pair.token1Price.toFixed(), b.toFixed(12), priceAC.toFixed(), priceBC.toFixed())
+  // console.log('eloszki', amountFrom, amountFromBN, one.toString())
+  // const tmpDenominator = xBN.add(one)
+  // const amountB = xBN.mul(amountFromBN).div(tmpDenominator)
+  // const amountA = amountFromBN.div(tmpDenominator)
+  // const amountB = CurrencyAmount.nativeCurrency(cb, chainId)
+  // const amountA = CurrencyAmount.nativeCurrency(ca, chainId)
+  // console.log('zap calculate', amountA, amountB, amountFrom.toExact(), amountA.toString(), amountB.toString())
+  return { amountA, amountB }
 }

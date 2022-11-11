@@ -25,7 +25,7 @@ import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
-import { selectCurrency, setPairTokens } from '../../../state/zap/actions'
+import { replaceZapState, selectCurrency, setPairTokens } from '../../../state/zap/actions'
 import { useZapActionHandlers } from '../../../state/zap/hooks'
 import { Field } from '../../../state/zap/types'
 import { BlurBox } from '../../../ui/StyledElements/BlurBox'
@@ -75,13 +75,14 @@ export default function Pair() {
     [navigate]
   )
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
-  const handlePairZap = () => {
-    dispatch(setPairTokens({ token0Id: currencyIdA ?? '', token1Id: currencyIdB ?? '' }))
-    // use by default native currency to zap
-    dispatch(selectCurrency({ field: Field.OUTPUT, currencyId: pairZap?.liquidityToken.address ?? '' }))
-  }
+  // const handlePairZap = () => {
+  //   console.log('handle pair', pairZap)
+  //   dispatch(selectCurrency({ field: Field.OUTPUT, currencyId: pairZap?.liquidityToken.address ?? '' }))
+  //   dispatch(selectCurrency({ field: Field.OUTPUT, currencyId: pairZap?.liquidityToken.address ?? '' }))
+  //   dispatch(setPairTokens({ token0Id: currencyIdA ?? '', token1Id: currencyIdB ?? '' }))
+  // }
 
   const isZapSupported = useMemo(() => {
     return pairZap && urlLoadedChainId ? filterPairsForZap(pairZap, urlLoadedChainId) : false
@@ -130,8 +131,12 @@ export default function Pair() {
               <ButtonPurpleDim
                 disabled={!isZapSupported}
                 as={isZapSupported ? Link : ButtonPurpleDim}
-                to={isZapSupported ? '/zap' : ''}
-                onClick={() => handlePairZap()}
+                to={
+                  isZapSupported && token0 && token1
+                    ? `/zap?pair=${pairZap?.liquidityToken.address}&token0=${token0.address}&token1=${token1.address}`
+                    : ''
+                }
+                // onClick={() => handlePairZap()}
               >
                 {t('pair.zap')}
               </ButtonPurpleDim>

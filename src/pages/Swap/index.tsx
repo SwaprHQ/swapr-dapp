@@ -128,8 +128,6 @@ export default function Swap() {
     platformOverride: platformOverride || undefined,
   })
 
-  console.log('swap platforms', allPlatformTrades)
-
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
   const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)
@@ -148,6 +146,7 @@ export default function Swap() {
 
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
+  console.log('swap', wrapType, potentialTrade, showWrap)
 
   const trade = showWrap ? undefined : potentialTrade
 

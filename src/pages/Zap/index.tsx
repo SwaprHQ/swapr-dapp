@@ -26,7 +26,7 @@ import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { ZAP_CONTRACT_ADDRESS } from '../../constants'
+import { PriceImpact, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
@@ -36,13 +36,18 @@ import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { useZapCallback } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
+import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { StateKey } from '../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
-import { UseDerivedZapInfoResult, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
+import {
+  useDefaultsFromURLSearch,
+  UseDerivedZapInfoResult,
+  useZapActionHandlers,
+  useZapState,
+} from '../../state/zap/hooks'
 import { Field, ZapState } from '../../state/zap/types'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import { computeTradePriceBreakdown, warningSeverity, warningSeverityZap } from '../../utils/prices'
 import AppBody from '../AppBody'
 
 export type SwapData = {
@@ -97,6 +102,7 @@ export default function Zap() {
     useCurrency(loadedUrlParams?.inputCurrencyId),
     useCurrency(loadedUrlParams?.outputCurrencyId),
   ]
+  // console.log('zap currencies loaded', { loadedInputCurrency, loadedOutputCurrency })
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const urlLoadedScammyTokens: Token[] = useMemo(() => {
     const normalizedAllTokens = Object.values(allTokens)
@@ -134,9 +140,13 @@ export default function Zap() {
     tradeToken0: potentialTrade0,
     tradeToken1: potentialTrade1,
     inputError,
+    amountAddLpToken0,
+    amountAddLpToken1,
   } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
 
-  console.log('masny test', { pathToken0toLpToken, pathToken1toLpToken, potentialTrade0, potentialTrade1 })
+  console.log('zap:', { pathToken0toLpToken, pathToken1toLpToken, potentialTrade0, potentialTrade1 })
+  console.log('zap: path0', pathToken0toLpToken)
+  console.log('zap: path1', pathToken1toLpToken)
 
   const zapIn = independentField === Field.INPUT
 
@@ -159,16 +169,31 @@ export default function Zap() {
     wrapState,
     setWrapState,
   } = useWrapCallback(
-    currencies.INPUT,
-    currencies.OUTPUT,
+    potentialTrade0?.inputAmount.currency,
+    potentialTrade0?.outputAmount.currency,
     potentialTrade0 instanceof CoWTrade,
     potentialTrade0?.inputAmount?.toSignificant(6) ?? typedValue
   )
+  const {
+    wrapType: wrapType1,
+    execute: onWrap1,
+    inputError: wrapInputError1,
+    wrapState: wrapState1,
+  } = useWrapCallback(
+    potentialTrade1?.inputAmount.currency,
+    potentialTrade1?.outputAmount.currency,
+    potentialTrade1 instanceof CoWTrade,
+    potentialTrade1?.inputAmount?.toSignificant(6) ?? typedValue
+  )
 
   const bestPricedTrade = potentialTrade0
+  const bestPricedTrade1 = potentialTrade1
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
-
+  const showWrap1 = wrapType1 !== WrapType.NOT_APPLICABLE && !(potentialTrade1 instanceof CoWTrade)
+  console.log('zap wrap 0', showWrap, wrapType, potentialTrade0)
+  console.log('zap wrap 1', showWrap1, wrapType1, potentialTrade1)
   const trade = showWrap ? undefined : potentialTrade0
+  const trade1 = showWrap ? undefined : potentialTrade1
 
   //GPv2 is falling in the true case, not very useful for what I think I need
   const parsedAmounts = showWrap
@@ -241,8 +266,8 @@ export default function Zap() {
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
     amountFrom: parsedAmount,
-    amount0Min: undefined,
-    amount1Min: undefined,
+    amount0Min: maxAmountOutput, //TODO AMOUNT MIN
+    amount1Min: maxAmountOutput,
     pathToPairToken0: pathToken0toLpToken,
     pathToPairToken1: pathToken1toLpToken,
     allowedSlippage: 0,
@@ -250,10 +275,15 @@ export default function Zap() {
     router: '',
   })
 
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  // console.log('zap error', zapCallbackError)
+
+  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade0 } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade1 } = computeTradePriceBreakdown(trade1)
+  console.log('zap price impact', priceImpactWithoutFeeTrade0?.toFixed(), priceImpactWithoutFeeTrade1?.toFixed())
+  console.log('zap price impact mix', warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1))
 
   const handleZap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
+    if (priceImpactWithoutFeeTrade0 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)) {
       return
     }
     if (!zapCallback) {
@@ -289,10 +319,10 @@ export default function Zap() {
         })
         setGnosisProtocolState(CoWTradeState.UNKNOWN)
       })
-  }, [priceImpactWithoutFee, zapCallback, tradeToConfirm, showConfirm, setWrapState])
+  }, [priceImpactWithoutFeeTrade0, zapCallback, tradeToConfirm, showConfirm, setWrapState])
 
   // warnings on slippage
-  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
+  const priceImpactSeverity = warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -301,7 +331,7 @@ export default function Zap() {
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+    !(priceImpactSeverity > PriceImpact.HIGH && !isExpertMode)
 
   const handleAcceptChanges = useCallback(() => {}, [])
 
@@ -377,7 +407,7 @@ export default function Zap() {
 
   return (
     <>
-      <TokenWarningModal
+      {/* <TokenWarningModal
         isOpen={
           (!urlLoadedChainId || chainId === urlLoadedChainId) &&
           urlLoadedScammyTokens.length > 0 &&
@@ -385,7 +415,7 @@ export default function Zap() {
         }
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
-      />
+      /> */}
       <Hero>
         <AppBodyContainer>
           <Tabs />
@@ -466,6 +496,15 @@ export default function Zap() {
                   loading={loading}
                   trade={trade}
                   bestPricedTrade={bestPricedTrade}
+                  showAdvancedSwapDetails={showAdvancedSwapDetails}
+                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+                  recipient={recipient}
+                />
+                <TradeDetails
+                  show={!showWrap}
+                  loading={loading}
+                  trade={trade1}
+                  bestPricedTrade={bestPricedTrade1}
                   showAdvancedSwapDetails={showAdvancedSwapDetails}
                   setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
                   recipient={recipient}

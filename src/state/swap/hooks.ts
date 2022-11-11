@@ -1,18 +1,37 @@
 import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Route, Token, TokenAmount, Trade } from '@swapr/sdk'
+import {
+  Currency,
+  CurrencyAmount,
+  currencyEquals,
+  JSBI,
+  Pair,
+  parseBigintIsh,
+  Percent,
+  RoutablePlatform,
+  Route,
+  Token,
+  TokenAmount,
+  Trade,
+  ZERO,
+} from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PRE_SELECT_OUTPUT_CURRENCY_ID, PRE_SELECT_ZAP_PAIR_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PairState, usePair } from '../../data/Reserves'
+import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
+import { useWrappingToken } from '../../hooks/useContract'
 import useENS from '../../hooks/useENS'
+import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
 import {
@@ -22,7 +41,7 @@ import {
 } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
-import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { calculateZapInAmounts, computeSlippageAdjustedAmounts, limitNumberOfDecimalPlaces } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
@@ -49,6 +68,7 @@ export function useSwapActionHandlers(): {
   const dispatch = useDispatch<AppDispatch>()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      console.log('hook currency swap', field, currency)
       dispatch(
         selectCurrency({
           field,
@@ -132,6 +152,7 @@ export function useDerivedSwapInfo<
   T extends SwapState & { pairTokens?: { token0Id: string | undefined; token1Id: string | undefined } },
   ReturnedValue
 >({ key, platformOverride }: DerivedParams): ReturnedValue {
+  console.log('useDerivedSwapInfo:', key)
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
 
@@ -152,7 +173,35 @@ export function useDerivedSwapInfo<
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
 
-  const [pairCurrency0, pairCurrency1] = [useToken(pairTokens?.token0Id), useToken(pairTokens?.token1Id)]
+  const [pairCurrency0, pairCurrency1] = [useCurrency(pairTokens?.token0Id), useCurrency(pairTokens?.token1Id)]
+  const [zapPair, setZapPair] = useState<Pair>()
+  const [pairState, pair] = usePair(pairCurrency0 ?? undefined, pairCurrency1 ?? undefined)
+  console.log('zap hukowy tokeny', pairCurrency0?.symbol, pairCurrency1?.symbol)
+  console.log('zap hukowy pary  ', pair?.token0.symbol, pair?.token1.symbol)
+
+  useEffect(() => {
+    if (!zapPair && pair) {
+      setZapPair(pair)
+    }
+  }, [pair, zapPair])
+
+  const totalSupply = useTotalSupply(pair?.liquidityToken)
+
+  const noLiquidity: boolean =
+    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
+
+  const price = useMemo(() => {
+    if (noLiquidity || !pairCurrency0) {
+      return undefined
+    } else {
+      const wrappedCurrency0 = wrappedCurrency(pairCurrency0, chainId)
+      return pair && wrappedCurrency0 ? pair.priceOf(wrappedCurrency0) : undefined
+    }
+  }, [chainId, noLiquidity, pair, pairCurrency0])
+
+  const isMobileByMedia = useIsMobileByMedia()
+  const significantDigits = isMobileByMedia ? 6 : 14
+  const formattedPrice = limitNumberOfDecimalPlaces(price, significantDigits)
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -168,8 +217,6 @@ export function useDerivedSwapInfo<
 
   const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
   const [allPlatformTradesToken1, setAllPlatformTradesToken1] = useState<Trade[]>([])
-
-  console.log('all', allPlatformTrades, allPlatformTradesToken0, allPlatformTradesToken1)
 
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
@@ -207,7 +254,6 @@ export function useDerivedSwapInfo<
     const [inputCurrencyBalance] = relevantTokenBalances
 
     const signal = getAbortSignal()
-
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
       if (isZap) {
@@ -278,10 +324,24 @@ export function useDerivedSwapInfo<
       },
     }
 
-    console.log('all zap', isZap, pairCurrency0, pairCurrency1)
+    const halfParsedAmount = tryParseAmount(
+      parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
+      parsedAmount.currency,
+      chainId
+    )
+
     if (isZap && pairCurrency0 && pairCurrency1) {
+      const isInOut0EqualOrWrap =
+        currencyEquals(inputCurrency, pairCurrency0) ||
+        (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency0)
+      const isInOut1EqualOrWrap =
+        currencyEquals(inputCurrency, pairCurrency1) ||
+        (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency1)
+      console.log('zap is wrapped', isInOut0EqualOrWrap, isInOut1EqualOrWrap)
+      console.log('all zap', isZap, pairCurrency0, pairCurrency1)
+      console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())
       const getTradesToken0 = getTradesPromise(
-        parsedAmount,
+        halfParsedAmount ?? parsedAmount,
         inputCurrency,
         pairCurrency0,
         commonParams,
@@ -308,7 +368,7 @@ export function useDerivedSwapInfo<
         })
 
       const getTradesToken1 = getTradesPromise(
-        parsedAmount,
+        halfParsedAmount ?? parsedAmount,
         inputCurrency,
         pairCurrency1,
         commonParams,
@@ -397,12 +457,26 @@ export function useDerivedSwapInfo<
   let returnInputError = inputError
   if (isZap) {
     const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
+    let amountAddLpToken0
+    let amountAddLpToken1
 
     const isCorrectTrade =
       bestTradeToken0 &&
       bestTradeToken1 &&
       bestTradeToken0.details instanceof Route &&
       bestTradeToken1.details instanceof Route
+
+    if (parsedAmount && pair && chainId && bestTradeToken0 && bestTradeToken1) {
+      const { amountA, amountB } = calculateZapInAmounts(
+        parsedAmount,
+        pair,
+        bestTradeToken0.executionPrice.invert(),
+        bestTradeToken1.executionPrice.invert(),
+        chainId
+      )
+      amountAddLpToken0 = amountA //TODO
+      amountAddLpToken1 = amountB
+    }
 
     if (allowedSlippage && bestTradeToken0 && bestTradeToken1) {
       const slippageAdjustedAmounts0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
@@ -442,6 +516,8 @@ export function useDerivedSwapInfo<
       loading,
       pathToken0toLpToken: isCorrectTrade ? bestTradeToken0.details.path.map(token => token.address) : [],
       pathToken1toLpToken: isCorrectTrade ? bestTradeToken1.details.path.map(token => token.address) : [],
+      amountAddLpToken0,
+      amountAddLpToken1,
     } as ReturnedValue
   } else {
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
@@ -605,25 +681,12 @@ export function useDefaultsFromURLSearch():
       ? parsed[Field.OUTPUT].currencyId
       : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
 
-    const outputPairId = !!parsed[Field.OUTPUT].currencyId?.length
-      ? parsed[Field.OUTPUT].currencyId
-      : PRE_SELECT_ZAP_PAIR_ID[chainId]
-
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
         inputCurrencyId: parsed[Field.INPUT].currencyId,
         outputCurrencyId,
-        recipient: parsed.recipient,
-      })
-    )
-    dispatch(
-      replaceZapState({
-        typedValue: parsed.typedValue,
-        field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId,
-        outputCurrencyId: outputPairId,
         recipient: parsed.recipient,
       })
     )

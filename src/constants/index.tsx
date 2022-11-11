@@ -213,17 +213,19 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.OPTIMISM_GOERLI]: '',
 }
 
-export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: '',
-  [ChainId.GNOSIS]: '',
-  [ChainId.ARBITRUM_ONE]: '',
-  [ChainId.POLYGON]: '',
-  [ChainId.OPTIMISM_MAINNET]: '',
-  [ChainId.RINKEBY]: '',
-  [ChainId.ARBITRUM_RINKEBY]: '',
-  [ChainId.GOERLI]: '',
-  [ChainId.ARBITRUM_GOERLI]: '',
-  [ChainId.OPTIMISM_GOERLI]: '',
+//TODO PRESELECT
+// add preselected pair.address to set store
+export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string[] } = {
+  [ChainId.MAINNET]: [WETH[ChainId.MAINNET].address, DAI[ChainId.MAINNET].address], //eth-dai
+  [ChainId.GNOSIS]: [WETH[ChainId.GNOSIS].address, GNO.address], //xdai-weth
+  [ChainId.ARBITRUM_ONE]: ['', ''],
+  [ChainId.POLYGON]: ['', ''],
+  [ChainId.OPTIMISM_MAINNET]: ['', ''],
+  [ChainId.RINKEBY]: ['', ''],
+  [ChainId.ARBITRUM_RINKEBY]: ['', ''],
+  [ChainId.GOERLI]: ['', ''],
+  [ChainId.ARBITRUM_GOERLI]: ['', ''],
+  [ChainId.OPTIMISM_GOERLI]: ['', ''],
 }
 
 // used to construct intermediary pairs for trading
@@ -414,6 +416,14 @@ export const PRICE_IMPACT_HIGH = 3
 export const PRICE_IMPACT_MEDIUM = 2
 export const PRICE_IMPACT_LOW = 1
 export const NO_PRICE_IMPACT = 0
+
+export enum PriceImpact {
+  NO_IMPACT,
+  LOW,
+  MEDIUM,
+  HIGH,
+  ONLY_EXPERT,
+}
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -797,4 +807,5 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
   INSUFFICIENT_BALANCE: 6,
 }
 
-export const ZAP_CONTRACT_ADDRESS = '0xb4Aa30AC8E851553e8bb32DBf3c2F8597a0418eF'
+// export const ZAP_CONTRACT_ADDRESS = '0xb4Aa30AC8E851553e8bb32DBf3c2F8597a0418eF' //old
+export const ZAP_CONTRACT_ADDRESS = '0xb1ce168e32479Ca1575948a9473868436561e802'

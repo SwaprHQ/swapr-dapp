@@ -202,7 +202,6 @@ export function useZapCallback({
       callback: async function onZapIn(): Promise<string> {
         const orderId = ''
         try {
-          console.log('zap callback inside')
           const zapTx = await zapContract.zapInFromToken(
             amountFromBN,
             amount0MinBN,

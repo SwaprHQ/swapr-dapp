@@ -16,11 +16,12 @@ import {
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, PRE_SELECT_ZAP_PAIR_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { usePairAtAddress } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -66,6 +67,7 @@ export function useZapActionHandlers(): {
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      console.log('hook currency', field, currency)
       dispatch(
         selectCurrency({
           field,
@@ -141,6 +143,8 @@ export interface UseDerivedZapInfoResult {
   loading: boolean
   pathToken0toLpToken: string[]
   pathToken1toLpToken: string[]
+  amountAddLpToken0: BigNumber | undefined
+  amountAddLpToken1: BigNumber | undefined
 }
 
 export function useDerivedZapInfo(platformOverride?: RoutablePlatform): any {
@@ -253,7 +257,6 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): any {
     if (isWrap || isUnwrap) {
       return
     }
-    console.log('zap in out0 out1', inputCurrency, outputCurrency, parsedAmount)
 
     // Update swap state with the new input
     setInputError(inputErrorNextState)
@@ -368,8 +371,6 @@ export function useDerivedZapInfo(platformOverride?: RoutablePlatform): any {
       const tokensAddresses = bestTradeToken1.details.path.map(token => token.address)
       setPathToken1toLpToken(tokensAddresses)
     }
-
-    console.log('zap get best trade', bestTradeToken0, bestTradeToken1)
 
     if (allowedSlippage) {
       const slippageAdjustedAmounts0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
@@ -490,6 +491,10 @@ type QueryParametersToSwapStateResponse = {
   [Field.OUTPUT]: {
     currencyId: string | undefined
   }
+  readonly pairTokens: {
+    token0Id: string | undefined
+    token1Id: string | undefined
+  }
   recipient: string | null
 }
 
@@ -498,7 +503,9 @@ export function queryParametersToZapState(
   nativeCurrencyId: string
 ): QueryParametersToSwapStateResponse {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency, nativeCurrencyId)
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency, nativeCurrencyId)
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.pair, nativeCurrencyId)
+  let token0 = parsedQs.token0
+  let token1 = parsedQs.token1
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs.outputCurrency === 'string') {
       inputCurrency = ''
@@ -515,6 +522,10 @@ export function queryParametersToZapState(
     },
     [Field.OUTPUT]: {
       currencyId: outputCurrency,
+    },
+    pairTokens: {
+      token0Id: token0,
+      token1Id: token1,
     },
     typedValue: parseTokenAmountURLParameter(parsedQs.exactAmount),
     independentField: parseIndependentFieldURLParameter(parsedQs.exactField),
@@ -538,19 +549,27 @@ export function useDefaultsFromURLSearch():
     if (!chainId) return
     const parsed = queryParametersToZapState(parsedQs, currencyId(nativeCurrency))
 
-    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
-      ? parsed[Field.OUTPUT].currencyId
+    const inputCurrencyId = !!parsed[Field.INPUT].currencyId?.length
+      ? parsed[Field.INPUT].currencyId
       : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+
+    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length ? parsed[Field.OUTPUT].currencyId : ''
+
+    const token0Id = !!parsed.pairTokens.token0Id?.length ? parsed.pairTokens.token0Id : ''
+
+    const token1Id = !!parsed.pairTokens.token1Id?.length ? parsed.pairTokens.token1Id : ''
 
     dispatch(
       replaceZapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId,
+        inputCurrencyId,
         outputCurrencyId,
         recipient: parsed.recipient,
       })
     )
+
+    dispatch(dispatch(setPairTokens({ token0Id: token0Id, token1Id: token1Id })))
 
     setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
