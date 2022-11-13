@@ -30,7 +30,7 @@ export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipPro
   useEffect(() => {
     const id = setTimeout(() => {
       setShow(false)
-    }, 3000)
+    }, 2000)
     return () => {
       clearTimeout(id)
     }

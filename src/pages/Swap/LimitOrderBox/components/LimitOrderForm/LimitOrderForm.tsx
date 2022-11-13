@@ -55,14 +55,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   // Default expiry time set to 20 minutes
   const [expiresIn, setExpiresIn] = useState(20)
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    initialState = getInitialState(chainId, account)
-    setSellTokenAmount(initialState.sellTokenAmount)
-    setBuyTokenAmount(initialState.buyTokenAmount)
-  }, [chainId])
-
-  //IsPossibleToOrder
+  // IsPossibleToOrder
   const [isPossibleToOrder, setIsPossibleToOrder] = useState({
     status: false,
     value: 0,
@@ -75,12 +68,20 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   // State holding the limit/order price
   const [price, setPrice] = useState<Price>(initialState.price)
 
+  // Final limit order to be sent to the internal API
+  const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    initialState = getInitialState(chainId, account)
+    setSellTokenAmount(initialState.sellTokenAmount)
+    setBuyTokenAmount(initialState.buyTokenAmount)
+  }, [chainId])
+
   const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
     sellTokenAmount,
     getVaultRelayerAddress(chainId)
   )
-  // Final limit order to be sent to the internal API
-  const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
 
   const setInitialValue = async () => {
     const signer = provider.getSigner()
