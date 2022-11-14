@@ -53,6 +53,7 @@ export const CurrencyInputPanelComponent = ({
   disableCurrencySelect = false,
   isOutputPanel,
   showNativeCurrency = true,
+  currencyOmitList,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -192,6 +193,7 @@ export const CurrencyInputPanelComponent = ({
           showCommonBases={showCommonBases}
           isOutputPanel={isOutputPanel}
           showNativeCurrency={showNativeCurrency}
+          currencyOmitList={currencyOmitList}
         />
       )}
     </InputPanel>

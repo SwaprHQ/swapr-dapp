@@ -30,6 +30,7 @@ export interface CurrencyInputPanelProps {
   maxAmount?: CurrencyAmount
   isOutputPanel?: boolean
   showNativeCurrency?: boolean
+  currencyOmitList?: string[]
 }
 
 export type CurrencyViewProps = Pick<

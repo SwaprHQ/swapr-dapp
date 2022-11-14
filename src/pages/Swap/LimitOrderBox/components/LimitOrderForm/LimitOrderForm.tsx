@@ -398,6 +398,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               fiatValue={fiatValueInput}
               isFallbackFiatValue={isFallbackFiatValueInput}
               showNativeCurrency={false}
+              currencyOmitList={[buyTokenAmount.currency.address!]}
             />
             <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
             <CurrencyInputPanel
@@ -426,6 +427,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               fiatValue={fiatValueOutput}
               isFallbackFiatValue={isFallbackFiatValueOutput}
               showNativeCurrency={false}
+              currencyOmitList={[sellTokenAmount.currency.address!]}
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">

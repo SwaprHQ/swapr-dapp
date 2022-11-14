@@ -19,39 +19,43 @@ export const checkMaxOrderAmount = async (
   provider: Web3Provider
 ) => {
   const signer = provider.getSigner()
-  const { quote } = await getQuote({
-    chainId,
-    signer,
-    order: { ...limitOrder, sellAmount: amountWei, expiresAt: expiresAt },
-  })
-  if (quote && sellCurrencyMaxAmount?.raw !== undefined) {
-    const { sellAmount, feeAmount } = quote
-    const sellAmountFormatted = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
-    const feeAmountFormatted = Number(formatUnits(feeAmount, sellTokenAmount.currency.decimals) ?? 0)
-    const maxAmount = Number(formatUnits(sellCurrencyMaxAmount.raw.toString(), sellTokenAmount.currency.decimals) ?? 0)
-    // Since fee amount is recalculated again before order
-    // for safe side checking 2x of current feeAmount returned by quote
-    const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
-    setLimitOrder({ ...limitOrder, feeAmount: Number(feeAmount).toString() })
-    if (totalSellAmount > maxAmount) {
-      const maxSellAmountPossibleWithFee =
-        maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
+  if (limitOrder.sellToken !== limitOrder.buyToken) {
+    const { quote } = await getQuote({
+      chainId,
+      signer,
+      order: { ...limitOrder, sellAmount: amountWei, expiresAt: expiresAt },
+    })
+    if (quote && sellCurrencyMaxAmount?.raw !== undefined) {
+      const { sellAmount, feeAmount } = quote
+      const sellAmountFormatted = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
+      const feeAmountFormatted = Number(formatUnits(feeAmount, sellTokenAmount.currency.decimals) ?? 0)
+      const maxAmount = Number(
+        formatUnits(sellCurrencyMaxAmount.raw.toString(), sellTokenAmount.currency.decimals) ?? 0
+      )
+      // Since fee amount is recalculated again before order
+      // for safe side checking 2x of current feeAmount returned by quote
+      const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
+      setLimitOrder({ ...limitOrder, feeAmount: Number(feeAmount).toString() })
+      if (totalSellAmount > maxAmount) {
+        const maxSellAmountPossibleWithFee =
+          maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
 
-      setIsPossibleToOrder({
-        status: true,
-        value: maxSellAmountPossibleWithFee,
-      })
+        setIsPossibleToOrder({
+          status: true,
+          value: maxSellAmountPossibleWithFee,
+        })
+      } else {
+        setIsPossibleToOrder({
+          status: false,
+          value: 0,
+        })
+      }
     } else {
       setIsPossibleToOrder({
-        status: false,
+        status: true,
         value: 0,
       })
     }
-  } else {
-    setIsPossibleToOrder({
-      status: true,
-      value: 0,
-    })
   }
 }
 
