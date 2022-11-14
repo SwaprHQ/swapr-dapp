@@ -233,30 +233,12 @@ const createSelectBridgeTransactionsSummary = (
     return [...l1Summaries, ...l2Summaries]
   })
 
-const createSelectBridgingDetails = (bridgeId: ArbitrumList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
-    ],
-    (details, loading, errorMessage) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage,
-      }
-    }
-  )
-
 export interface ArbitrumBridgeSelectors {
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
   selectL1Deposits: ReturnType<typeof createSelectL1Deposits>
   selectPendingWithdrawals: ReturnType<typeof createSelectPendingWithdrawals>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
 }
 
 export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
@@ -269,15 +251,12 @@ export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
 
       const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
-      const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
-
       const selectors = {
         selectOwnedTransactions,
         selectPendingTransactions,
         selectL1Deposits,
         selectBridgeTransactionsSummary,
         selectPendingWithdrawals,
-        selectBridgingDetails,
       }
 
       total[bridgeId] = selectors

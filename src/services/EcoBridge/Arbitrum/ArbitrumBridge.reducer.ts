@@ -2,36 +2,22 @@ import { TransactionReceipt } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
 import { L2ToL1MessageStatus } from '@arbitrum/sdk'
-import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList, BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import { ArbitrumList } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-
-interface ArbitrumBridgeState {
-  transactions: EntityState<ArbitrumBridgeTxn>
-  lists: { [id: string]: TokenList }
-  listsStatus: SyncState
-  bridgingDetails: BridgeDetails
-  bridgingDetailsStatus: SyncState
-  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  lastMetadataCt: number
-}
+import { ArbitrumInitialState } from './ArbitrumBridge.types'
 
 const now = () => new Date().getTime()
 
-const initialState: ArbitrumBridgeState = {
-  bridgingDetails: {},
+const initialState: ArbitrumInitialState = {
   transactions: arbitrumTransactionsAdapter.getInitialState({}),
-  lists: {},
-  listsStatus: SyncState.IDLE,
-  bridgingDetailsStatus: SyncState.IDLE,
-  lastMetadataCt: 0,
 }
 
 export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
@@ -103,61 +89,12 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
           },
         })
       },
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        const { payload } = action
-
-        state.lists = payload
-      },
-      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
-        state.listsStatus = action.payload
-      },
       migrateTxs: (state, action: PayloadAction<ArbitrumBridgeTxnsState>) => {
         const { payload } = action
         const [l1Txs, l2Txs] = Object.values(payload)
         const transactions = [...Object.values(l1Txs), ...Object.values(l2Txs)]
 
         arbitrumTransactionsAdapter.setAll(state.transactions, transactions)
-      },
-      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
-
-        //(store persist) crashing page without that code
-        if (!state.bridgingDetails) {
-          state.bridgingDetails = {}
-        }
-
-        if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === SyncState.FAILED) return
-          state.bridgingDetailsStatus = SyncState.LOADING
-          return
-        } else {
-          state.bridgingDetailsStatus = SyncState.READY
-        }
-
-        state.bridgingDetails.gas = gas
-
-        if (fee) {
-          state.bridgingDetails.fee = fee
-        }
-        if (estimateTime) {
-          state.bridgingDetails.estimateTime = estimateTime
-        }
-        if (receiveAmount) {
-          state.bridgingDetails.receiveAmount = receiveAmount
-        }
-      },
-      setBridgeDetailsStatus: (
-        state,
-        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
-      ) => {
-        const { status, errorMessage } = action.payload
-        state.bridgingDetailsStatus = status
-        if (errorMessage) {
-          state.bridgingDetailsErrorMessage = errorMessage
-        }
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
       },
     },
   })
