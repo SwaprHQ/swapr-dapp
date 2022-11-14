@@ -2,9 +2,9 @@ import { transparentize } from 'polished'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import border8pxRadius from '../../../assets/images/border-8px-radius.png'
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'
+import { SwaprV2AssetMixin } from './swaprV2styles'
 
 export const ModalInfo = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -55,14 +55,16 @@ export const SearchInput = styled.input<{ fontSize?: string; fontWeight?: number
   width: ${({ width }) => (width ? width : '100%')};
   height: ${({ height }) => (height ? height : '44px')};
   white-space: nowrap;
-  background: ${({ theme }) => transparentize(0.75, theme.purpleBase)};
-  border-radius: 8px;
-  border: 8px solid transparent;
-  border-image: url(${border8pxRadius}) 8;
-  padding: 8px 12px;
+  background: rgba(20, 18, 31, 0.5);
+  border-radius: 12px;
+  border: 2px solid #8780bf;
+  backdrop-filter: blur(25px);
+  padding: 15px 60px 15px 20px;
+
   :focus {
-    border: solid 1px ${({ theme }) => theme.bg5};
-    padding: 15px 19px;
+    background: #0c0b16;
+    border: 2px solid #c0baf7;
+    color: #dddaf8;
   }
   outline: none;
   color: ${({ theme }) => theme.white};
@@ -72,7 +74,7 @@ export const SearchInput = styled.input<{ fontSize?: string; fontWeight?: number
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 'normal')};
 
   ::placeholder {
-    color: ${({ theme }) => theme.purple5};
+    color: #464366;
   }
 `
 export const Separator = styled.div`
@@ -98,4 +100,15 @@ export const TextDot = styled.div`
   width: 3px;
   background-color: ${({ theme }) => theme.text2};
   border-radius: 50%;
+`
+
+export const BaseWrapper = styled.div<{ disabled?: boolean }>`
+  border: 1px solid #464366;
+  border-radius: 12px;
+  display: flex;
+  line-height: 19.5px;
+  padding: 10px 14px;
+  align-items: center;
+  ${SwaprV2AssetMixin}
+  color: ${({ theme, disabled }) => disabled && theme.text3};
 `

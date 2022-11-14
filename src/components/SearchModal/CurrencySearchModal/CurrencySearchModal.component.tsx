@@ -50,6 +50,7 @@ export function CurrencySearchModalComponent({
       minHeight={
         modalView === CurrencyModalView.IMPORT_TOKEN || modalView === CurrencyModalView.IMPORT_LIST ? undefined : 60
       }
+      maxWidth={modalView !== CurrencyModalView.SEARCH ? undefined : 768}
     >
       {modalView === CurrencyModalView.SEARCH ? (
         <CurrencySearch

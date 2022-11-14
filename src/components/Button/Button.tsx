@@ -431,6 +431,10 @@ export const AddSWPRToMetamaskButton = styled(Base)<{ active?: boolean }>`
   box-shadow: ${props => (props.active ? '0px 0px 42px rgba(165, 58, 196, 0.35)' : 'none')};
 `
 
+export const SvgButton: React.FC<ButtonProps> = ({ children, ...buttonProps }) => {
+  return <ButtonInvisible {...buttonProps}>{children}</ButtonInvisible>
+}
+
 export const StyledButtonsArray = [
   Base,
   ButtonPrimary,
