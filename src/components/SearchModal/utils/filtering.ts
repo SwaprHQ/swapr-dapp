@@ -174,7 +174,8 @@ export const filterPairsForZap = (pair: Pair, chainId: ChainId): boolean => {
   const GOERLI_USDC_SWPR = '0x1873144584A768F89aE8843849d44055F9FE46bC'
   const GOERLI_WETH_USDC = '0x730E034a37ff2D267B201B77001142009a3b8403'
   const GOERLI_SWPR_WETH = '0xe74c2b0025aC02f8007845BE5A075B77C43a4258'
-  const GOERLI_WETH_UNI = '0x28cee28a7C4b4022AC92685C07d2f33Ab1A0e122'
+  // const GOERLI_WETH_UNI = '0x28cee28a7C4b4022AC92685C07d2f33Ab1A0e122' // Univ2 factory
+  const GOERLI_WETH_UNI = '0x30Bb42bB05cB037d91757101CF9744A28e213c42'
 
   const supportedZapPairs: { [chainId: number]: string[] } = {
     [ChainId.MAINNET]: [

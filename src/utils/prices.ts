@@ -260,7 +260,12 @@ export const calculateZapInAmounts = (
   priceAC: Price,
   priceBC: Price,
   chainId: number
-): { amountA: BigNumber; amountB: BigNumber } => {
+): {
+  amountFromForTokenA: BigNumber
+  amountFromForTokenB: BigNumber
+  amountAddLpTokenA: BigNumber
+  amountAddLpTokenB: BigNumber
+} => {
   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
   const reserveA = pair.reserve0
   const reserveB = pair.reserve1
@@ -320,15 +325,18 @@ export const calculateZapInAmounts = (
   const rawAmountA = Number((rawAmountB * pairPrice).toFixed(significantDigits))
   // TODO too low value check?
   // if (rawAmountA < Number. || rawAmountB < Number.MIN_SAFE_INTEGER) throw new Error('Amount too low')
-  const amountFromForTokenB = rawAmountB * pbc
-  const amountFromForTokenA = amountFromBN - amountFromForTokenB
+  const tstB = rawAmountB * pbc
+  const tstA = amountFromBN - tstB
+
   console.log('zap pair:', pair)
-  console.log('zap:', amountFrom.currency.symbol, amountFromBN, ' was given')
-  console.log('zap:', rawAmountA, pair.token0.symbol, ' will be LP. Bought for', amountFromForTokenA)
-  console.log('zap:', rawAmountB, pair.token1.symbol, ' will be LP. Bought for', amountFromForTokenB)
-  const amountB = BigNumber.from(parseUnits(rawAmountB.toString()))
-  const amountA = BigNumber.from(parseUnits(rawAmountA.toString()))
-  console.log('zap amp', amountFromForTokenA + amountFromForTokenB)
+  console.log('zap:', amountFrom.currency.symbol, amountFromBN, ' was given. Significant', significantDigits)
+  console.log('zap:', rawAmountA, pair.token0.symbol, ' will be LP. Bought for', tstA)
+  console.log('zap:', rawAmountB, pair.token1.symbol, ' will be LP. Bought for', tstB)
+  const amountFromForTokenB = BigNumber.from(parseUnits(tstB.toFixed(significantDigits)))
+  const amountFromForTokenA = BigNumber.from(parseUnits(tstA.toFixed(significantDigits)))
+  const amountAddLpTokenB = BigNumber.from(parseUnits(rawAmountB.toFixed(significantDigits)))
+  const amountAddLpTokenA = BigNumber.from(parseUnits(rawAmountA.toFixed(significantDigits)))
+  console.log('zap amp', amountFromForTokenA.add(amountFromForTokenB).toString())
   // console.log(
   //   'tst o',
   //   pairPrice.toString(),
@@ -346,5 +354,5 @@ export const calculateZapInAmounts = (
   // const amountB = CurrencyAmount.nativeCurrency(cb, chainId)
   // const amountA = CurrencyAmount.nativeCurrency(ca, chainId)
   // console.log('zap calculate', amountA, amountB, amountFrom.toExact(), amountA.toString(), amountB.toString())
-  return { amountA, amountB }
+  return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB }
 }

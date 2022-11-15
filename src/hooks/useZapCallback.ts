@@ -143,15 +143,36 @@ export function getZapSummary(trade: Trade, recipientAddressOrName: string | nul
     : base
 }
 
-export interface UseZapCallbackParams {
-  amountFrom: CurrencyAmount | undefined
-  amount0Min: CurrencyAmount | undefined
-  amount1Min: CurrencyAmount | undefined
-  pathToPairToken0: string[] | undefined
-  pathToPairToken1: string[] | undefined
+export interface SwapTx {
+  amount: BigNumber
+  amountMin: BigNumber
+  path: string[]
+  dexIndex: BigNumber
+}
+
+export interface ZapInTx {
+  amountAMin: BigNumber
+  amountBMin: BigNumber
+  amountLPMin: BigNumber
+  dexIndex: BigNumber
+  to: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+}
+
+export interface ZapOutTx {
+  amountLpFrom: BigNumber
+  amountTokenToMin: BigNumber
+  dexIndex: BigNumber
+  to: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+}
+
+export interface UseZapInCallbackParams {
+  swapTokenA: SwapTx
+  swapTokenB: SwapTx
+  zap: ZapInTx
   allowedSlippage: number // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  router: string
+  transferResidual: boolean
+  affiliate?: string
+  trade?: Trade
 }
 
 export interface UseZapCallbackReturn {
@@ -160,74 +181,163 @@ export interface UseZapCallbackReturn {
   error: string | null
 }
 /**
- * Returns a function that will execute a swap, if the parameters are all valid
+ * Returns a function that will execute a zap, if the parameters are all valid
  * and the user has approved the slippage adjusted input amount for the trade
  */
 export function useZapCallback({
-  amountFrom,
-  amount0Min,
-  amount1Min,
-  pathToPairToken0,
-  pathToPairToken1,
+  swapTokenA,
+  swapTokenB,
+  zap,
   allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
-  recipientAddressOrName,
-  router,
-}: UseZapCallbackParams): UseZapCallbackReturn {
+  affiliate,
+  transferResidual,
+  trade,
+}: UseZapInCallbackParams): UseZapCallbackReturn {
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract()
+  const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
+  const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
+  const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, zap.to)
 
   const addTransaction = useTransactionAdder()
 
-  const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const { address: recipientAddress } = useENS(zap.to)
+  const recipient = zap.to === null ? account : recipientAddress
 
   return useMemo(() => {
-    if (!zapContract || !library || !account || !chainId || !amountFrom || !amount0Min || !amount1Min) {
+    if (!zapContract || !library || !account || !chainId) {
       return { state: ZapCallbackState.INVALID, callback: undefined, error: 'Missing dependencies' }
     }
     if (!recipient) {
-      if (recipientAddressOrName !== null) {
+      if (zap.to !== null) {
         return { state: ZapCallbackState.INVALID, callback: undefined, error: 'Invalid recipient' }
       } else {
         return { state: ZapCallbackState.LOADING, callback: undefined, error: null }
       }
     }
 
-    const amountFromBN = parseUnits(amountFrom.toExact(), amountFrom.currency.decimals)
-    const amount0MinBN = parseUnits(amount0Min.toExact(), amount0Min.currency.decimals)
-    const amount1MinBN = parseUnits(amount1Min.toExact(), amount1Min.currency.decimals)
     return {
       state: ZapCallbackState.VALID,
       callback: async function onZapIn(): Promise<string> {
-        const orderId = ''
-        try {
-          const zapTx = await zapContract.zapInFromToken(
-            amountFromBN,
-            amount0MinBN,
-            amount1MinBN,
-            pathToPairToken0,
-            pathToPairToken1,
-            router,
-            {
-              gasLimit: BigNumber.from(21000000),
-              gasPrice: preferredGasPrice,
+        // const orderId = ''
+        // try {
+        //   const zapTx = await zapContract.zapInFromToken(swapTokenA, swapTokenB, zap, affiliate, transferResidual, {
+        //     gasLimit: BigNumber.from(21000000),
+        //     gasPrice: preferredGasPrice,
+        //   })
+        //   // TODO summary
+        //   addTransaction(
+        //     {
+        //       hash: orderId, // TODO
+        //     },
+        //     {
+        //       summary: `Zap ${swapTokenA.amount.toString()} & ${swapTokenA.amount.toString()} zap to ${zap.to}`,
+        //     }
+        //   )
+        // } catch (error) {
+        //   // TODO error msg
+        //   console.error('Could not zap', error)
+        // }
+        // return orderId
+
+        const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
+          swapCalls.map(async call => {
+            const transactionRequest = await call.transactionParameters
+            // Ignore gas estimation if the request has gasLimit property
+            if (transactionRequest.gasLimit) {
+              return {
+                call,
+                gasEstimate: transactionRequest.gasLimit as BigNumber,
+              }
             }
-          )
-          // TODO summary
-          addTransaction(
-            {
-              hash: orderId, // TODO
-            },
-            {
-              summary: `Zap ${amountFrom.toSignificant(6)} ${amountFrom.currency.symbol}`,
-            }
-          )
-        } catch (error) {
-          // TODO error msg
-          console.error('Could not zap', error)
+
+            return library
+              .getSigner()
+              .estimateGas(transactionRequest as any)
+              .then(gasEstimate => ({
+                call,
+                gasEstimate,
+              }))
+              .catch(gasError => {
+                console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
+
+                return library
+                  .call(transactionRequest as any)
+                  .then(result => {
+                    console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
+                    return {
+                      call,
+                      error: new Error('Unexpected issue with estimating the gas. Please try again.'),
+                    }
+                  })
+                  .catch((callError: { reason: string }) => {
+                    console.debug('Call threw error', call, callError)
+                    let errorMessage: string
+                    switch (callError.reason) {
+                      case 'DXswapRouter: INSUFFICIENT_OUTPUT_AMOUNT':
+                      case 'DXswapRouter: EXCESSIVE_INPUT_AMOUNT':
+                        errorMessage =
+                          'This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance.'
+                        break
+                      default:
+                        errorMessage = `The transaction cannot succeed due to error: ${callError.reason}. This is probably an issue with one of the tokens you are swapping.`
+                    }
+                    return { call, error: new Error(errorMessage) }
+                  })
+              })
+          })
+        )
+
+        // a successful estimation is a bignumber gas estimate and the next call is also a bignumber gas estimate
+        const successfulEstimation = estimatedCalls.find(
+          (el, ix, list): el is SuccessfulCall =>
+            'gasEstimate' in el && (ix === list.length - 1 || 'gasEstimate' in list[ix + 1])
+        )
+
+        if (!successfulEstimation) {
+          const errorCalls = estimatedCalls.filter((call): call is FailedCall => 'error' in call)
+          if (errorCalls.length > 0) throw errorCalls[errorCalls.length - 1].error
+          throw new Error('Unexpected error. Please contact support: none of the calls threw an error')
         }
-        return orderId
+
+        const {
+          call: { transactionParameters },
+          gasEstimate,
+        } = successfulEstimation
+
+        let normalizedGasPrice = undefined
+        if (preferredGasPrice && chainId === ChainId.MAINNET) {
+          if (!(preferredGasPrice in MainnetGasPrice)) {
+            normalizedGasPrice = preferredGasPrice
+          } else if (mainnetGasPrices) {
+            normalizedGasPrice = mainnetGasPrices[preferredGasPrice as MainnetGasPrice]
+          }
+        }
+        return library
+          .getSigner()
+          .sendTransaction({
+            gasLimit: calculateGasMargin(gasEstimate),
+            gasPrice: normalizedGasPrice,
+            ...((await transactionParameters) as any),
+          })
+          .then(async response => {
+            addTransaction(response, {
+              summary: `Zap ${swapTokenA.amount.toString()} & ${swapTokenA.amount.toString()} zap to ${zap.to}`, //TODO summary
+            })
+
+            return response.hash
+          })
+          .catch(error => {
+            // if the user rejected the tx, pass this along
+            if (error?.code === 4001 || error?.code === 'ACTION_REJECTED') {
+              throw new Error('Transaction rejected.')
+            } else {
+              // otherwise, the error was unexpected and we need to convey that
+              console.error(`Swap failed`, error, transactionParameters)
+              throw new Error(`Swap failed: ${error.message}`)
+            }
+          })
       },
       error: null,
     }
@@ -236,15 +346,12 @@ export function useZapCallback({
     library,
     account,
     chainId,
-    amountFrom,
-    amount0Min,
-    amount1Min,
     recipient,
-    recipientAddressOrName,
-    pathToPairToken0,
-    pathToPairToken1,
-    router,
+    zap.to,
+    swapCalls,
     preferredGasPrice,
+    mainnetGasPrices,
     addTransaction,
+    swapTokenA.amount,
   ])
 }

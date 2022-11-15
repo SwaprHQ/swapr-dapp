@@ -85,6 +85,7 @@ interface SwapButtonProps {
   priceImpactSeverity: number
   isExpertMode: boolean
   amountInCurrencySymbol?: string
+  zapSecondPlatformName?: string
 }
 
 export const SwapButton = ({
@@ -93,9 +94,11 @@ export const SwapButton = ({
   priceImpactSeverity,
   isExpertMode,
   amountInCurrencySymbol,
+  zapSecondPlatformName,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
   const { t } = useTranslation('swap')
+  const zap = !!zapSecondPlatformName
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
@@ -106,6 +109,7 @@ export const SwapButton = ({
     [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
       currency: amountInCurrencySymbol,
     }),
+    [SWAP_INPUT_ERRORS.TRADE_NOT_FOUND]: t('button.tradeNotFound'),
   }
 
   return (
@@ -117,7 +121,7 @@ export const SwapButton = ({
           t('button.priceImpactTooHigh')
         ) : (
           <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
-            <UnifiedText>{t('button.swapWith')}</UnifiedText>
+            <UnifiedText>{zap ? t('button.zapWith') : t('button.swapWith')}</UnifiedText>
             {platformName && (
               <Flex alignItems="center" marginLeft={2}>
                 <img
@@ -126,7 +130,19 @@ export const SwapButton = ({
                   width={21}
                   height={21}
                 />
-                <StyledPlatformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlatformText>
+                <StyledPlatformText>
+                  {zap && platformName !== zapSecondPlatformName ? ' AND ' : ROUTABLE_PLATFORM_STYLE[platformName].name}
+                </StyledPlatformText>
+              </Flex>
+            )}
+            {zap && zapSecondPlatformName && platformName !== zapSecondPlatformName && (
+              <Flex alignItems="center" marginLeft={2}>
+                <img
+                  src={ROUTABLE_PLATFORM_STYLE[zapSecondPlatformName].logo}
+                  alt={ROUTABLE_PLATFORM_STYLE[zapSecondPlatformName].alt}
+                  width={21}
+                  height={21}
+                />
               </Flex>
             )}
             <AnywayText>{priceImpactSeverity > PRICE_IMPACT_MEDIUM && t('button.anyway')}</AnywayText>

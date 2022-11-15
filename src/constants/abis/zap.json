@@ -8,22 +8,12 @@
       },
       {
         "internalType": "address",
-        "name": "_factory",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_router",
+        "name": "_feeToSetter",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_nativeCurrencyWrapper",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_feeToSetter",
         "type": "address"
       }
     ],
@@ -32,22 +22,32 @@
   },
   {
     "inputs": [],
-    "name": "ForbiddenFeeValue",
+    "name": "DexIndexAlreadyUsed",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InsufficientSwapMinAmount",
+    "name": "ForbiddenValue",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InsufficientTokenInputAmount",
+    "name": "InsufficientMinAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInputAmount",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "InvalidPair",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidRouterOrFactory",
     "type": "error"
   },
   {
@@ -115,44 +115,13 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "sender",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "amountNativeCurrencyWrapper",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "pairTo",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amountTo",
-        "type": "uint256"
-      }
-    ],
-    "name": "ZapInFromNativeCurrency",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "tokenFrom",
         "type": "address"
@@ -164,7 +133,7 @@
         "type": "uint256"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "pairTo",
         "type": "address"
@@ -176,51 +145,20 @@
         "type": "uint256"
       }
     ],
-    "name": "ZapInFromToken",
+    "name": "ZapIn",
     "type": "event"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "sender",
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "pairFrom",
-        "type": "address"
-      },
-      {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "amountFrom",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amountNativeCurrencyWrapper",
-        "type": "uint256"
-      }
-    ],
-    "name": "ZapOutToNativeCurrency",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "pairFrom",
         "type": "address"
@@ -244,7 +182,7 @@
         "type": "uint256"
       }
     ],
-    "name": "ZapOutToToken",
+    "name": "ZapOut",
     "type": "event"
   },
   {
@@ -255,13 +193,24 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "dxSwapFactory",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "contract IDXswapFactory",
+        "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "affiliateBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -269,15 +218,47 @@
   },
   {
     "inputs": [],
-    "name": "dxSwapRouter",
+    "name": "affiliateSplit",
     "outputs": [
       {
-        "internalType": "contract IDXswapRouter",
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
+    "name": "affiliates",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "affilliateWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -300,6 +281,49 @@
       {
         "internalType": "address",
         "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "feeWhitelist",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "_dexIndex",
+        "type": "uint8"
+      }
+    ],
+    "name": "getSupportedDEX",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "factory",
         "type": "address"
       }
     ],
@@ -361,6 +385,37 @@
   {
     "inputs": [
       {
+        "internalType": "uint8",
+        "name": "_dexIndex",
+        "type": "uint8"
+      }
+    ],
+    "name": "removeSupportedDEX",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_affiliate",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_status",
+        "type": "bool"
+      }
+    ],
+    "name": "setAffiliateStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_feeTo",
         "type": "address"
@@ -380,6 +435,37 @@
       }
     ],
     "name": "setFeeToSetter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "zapAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
+      }
+    ],
+    "name": "setFeeWhitelist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "_newAffiliateSplit",
+        "type": "uint16"
+      }
+    ],
+    "name": "setNewAffiliateSplit",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -413,12 +499,76 @@
   {
     "inputs": [
       {
+        "internalType": "uint8",
+        "name": "_dexIndex",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
         "internalType": "address",
-        "name": "token",
+        "name": "_router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_factory",
         "type": "address"
       }
     ],
-    "name": "withdraw",
+    "name": "setSupportedDEX",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stopped",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "supportedDEXs",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "factory",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "toggleContractActive",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -426,37 +576,145 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "amount0Min",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount1Min",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "pathToPairToken0",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "pathToPairToken1",
-        "type": "address[]"
-      },
-      {
         "internalType": "address",
-        "name": "router",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "zapInFromNativeCurrency",
+    "name": "totalAffiliateBalance",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "amountTo",
+        "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "withdrawTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct SwapTx",
+        "name": "swapTokenA",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct SwapTx",
+        "name": "swapTokenB",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amountAMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountBMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountLPMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ZapInTx",
+        "name": "zap",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "affiliate",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "transferResidual",
+        "type": "bool"
+      }
+    ],
+    "name": "zapIn",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "lpBought",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "lpToken",
+        "type": "address"
       }
     ],
     "stateMutability": "payable",
@@ -465,120 +723,103 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "amountFrom",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amountLpFrom",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountTokenToMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct ZapOutTx",
+        "name": "zap",
+        "type": "tuple"
       },
       {
-        "internalType": "uint256",
-        "name": "amount0Min",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct SwapTx",
+        "name": "swapTokenA",
+        "type": "tuple"
       },
       {
-        "internalType": "uint256",
-        "name": "amount1Min",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "pathToPairToken0",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "pathToPairToken1",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address",
-        "name": "router",
-        "type": "address"
-      }
-    ],
-    "name": "zapInFromToken",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountTo",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountFrom",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amountToMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "path0",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "path1",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address",
-        "name": "router",
-        "type": "address"
-      }
-    ],
-    "name": "zapOutToNativeCurrency",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountTo",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountFrom",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amountToMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "path0",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "path1",
-        "type": "address[]"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct SwapTx",
+        "name": "swapTokenB",
+        "type": "tuple"
       },
       {
         "internalType": "address",
-        "name": "router",
+        "name": "affiliate",
         "type": "address"
       }
     ],
-    "name": "zapOutToToken",
+    "name": "zapOut",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "amountTo",
+        "name": "amountTransferred",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenTo",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",

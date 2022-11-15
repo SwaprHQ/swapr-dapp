@@ -137,12 +137,12 @@ export default function Swap() {
     inputError: wrapInputError,
     wrapState,
     setWrapState,
-  } = useWrapCallback(
-    currencies.INPUT,
-    currencies.OUTPUT,
-    potentialTrade instanceof CoWTrade,
-    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
-  )
+  } = useWrapCallback({
+    inputCurrency: currencies.INPUT,
+    outputCurrency: currencies.OUTPUT,
+    isGnosisTrade: potentialTrade instanceof CoWTrade,
+    typedValue: potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue,
+  })
 
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)

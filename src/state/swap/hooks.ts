@@ -466,16 +466,20 @@ export function useDerivedSwapInfo<
       bestTradeToken0.details instanceof Route &&
       bestTradeToken1.details instanceof Route
 
-    if (parsedAmount && pair && chainId && bestTradeToken0 && bestTradeToken1) {
-      const { amountA, amountB } = calculateZapInAmounts(
-        parsedAmount,
-        pair,
-        bestTradeToken0.executionPrice.invert(),
-        bestTradeToken1.executionPrice.invert(),
-        chainId
-      )
-      amountAddLpToken0 = amountA //TODO
-      amountAddLpToken1 = amountB
+    if (parsedAmount && pair && chainId) {
+      if (bestTradeToken0 && bestTradeToken1) {
+        const { amountAddLpTokenA, amountAddLpTokenB } = calculateZapInAmounts(
+          parsedAmount,
+          pair,
+          bestTradeToken0.executionPrice.invert(),
+          bestTradeToken1.executionPrice.invert(),
+          chainId
+        )
+        amountAddLpToken0 = amountAddLpTokenA
+        amountAddLpToken1 = amountAddLpTokenB
+      } else {
+        returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
+      }
     }
 
     if (allowedSlippage && bestTradeToken0 && bestTradeToken1) {

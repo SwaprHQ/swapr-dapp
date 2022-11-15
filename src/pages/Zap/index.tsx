@@ -1,7 +1,19 @@
-import { ChainId, CoWTrade, Currency, CurrencyAmount, JSBI, Pair, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import {
+  ChainId,
+  CoWTrade,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Pair,
+  RoutablePlatform,
+  Token,
+  Trade,
+  UniswapV2RoutablePlatform,
+} from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -26,7 +38,7 @@ import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { PriceImpact, ZAP_CONTRACT_ADDRESS } from '../../constants'
+import { PriceImpact, SUPPORTED_DEX_ZAP_INDEX, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
@@ -34,7 +46,7 @@ import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { useZapCallback } from '../../hooks/useZapCallback'
+import { SwapTx, useZapCallback, ZapInTx } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { StateKey } from '../../state/swap/types'
@@ -104,15 +116,7 @@ export default function Zap() {
   ]
   // console.log('zap currencies loaded', { loadedInputCurrency, loadedOutputCurrency })
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
-  const urlLoadedScammyTokens: Token[] = useMemo(() => {
-    const normalizedAllTokens = Object.values(allTokens)
-    if (normalizedAllTokens.length === 0) return []
-    return [loadedInputCurrency, loadedOutputCurrency].filter((urlLoadedToken): urlLoadedToken is Token => {
-      return (
-        urlLoadedToken instanceof Token && !normalizedAllTokens.some(legitToken => legitToken.equals(urlLoadedToken))
-      )
-    })
-  }, [loadedInputCurrency, loadedOutputCurrency, allTokens])
+
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
@@ -144,6 +148,14 @@ export default function Zap() {
     amountAddLpToken1,
   } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
 
+  const [zapPair, setZapPair] = useState<Pair>()
+
+  const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
+
+  const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
+
+  const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
+
   console.log('zap:', { pathToken0toLpToken, pathToken1toLpToken, potentialTrade0, potentialTrade1 })
   console.log('zap: path0', pathToken0toLpToken)
   console.log('zap: path1', pathToken1toLpToken)
@@ -157,6 +169,16 @@ export default function Zap() {
     [chainId]
   )
 
+  const urlLoadedScammyTokens: Token[] = useMemo(() => {
+    const normalizedAllTokens = Object.values(allTokens)
+    if (normalizedAllTokens.length === 0) return []
+    return [loadedInputCurrency, token0Id, token1Id].filter((urlLoadedToken): urlLoadedToken is Token => {
+      return (
+        urlLoadedToken instanceof Token && !normalizedAllTokens.some(legitToken => legitToken.equals(urlLoadedToken))
+      )
+    })
+  }, [allTokens, loadedInputCurrency, token0Id, token1Id])
+
   // const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
@@ -168,30 +190,30 @@ export default function Zap() {
     inputError: wrapInputError,
     wrapState,
     setWrapState,
-  } = useWrapCallback(
-    potentialTrade0?.inputAmount.currency,
-    potentialTrade0?.outputAmount.currency,
-    potentialTrade0 instanceof CoWTrade,
-    potentialTrade0?.inputAmount?.toSignificant(6) ?? typedValue
-  )
-  const {
-    wrapType: wrapType1,
-    execute: onWrap1,
-    inputError: wrapInputError1,
-    wrapState: wrapState1,
-  } = useWrapCallback(
-    potentialTrade1?.inputAmount.currency,
-    potentialTrade1?.outputAmount.currency,
-    potentialTrade1 instanceof CoWTrade,
-    potentialTrade1?.inputAmount?.toSignificant(6) ?? typedValue
-  )
+  } = useWrapCallback({
+    inputCurrency: potentialTrade0?.inputAmount.currency,
+    outputCurrency: potentialTrade0?.outputAmount.currency,
+    isGnosisTrade: potentialTrade0 instanceof CoWTrade,
+    typedValue: potentialTrade0?.inputAmount.toSignificant(6) ?? typedValue,
+  })
+  // const {
+  //   wrapType: wrapType1,
+  //   execute: onWrap1,
+  //   inputError: wrapInputError1,
+  //   wrapState: wrapState1,
+  // } = useWrapCallback(
+  //   potentialTrade1?.inputAmount.currency,
+  //   potentialTrade1?.outputAmount.currency,
+  //   potentialTrade1 instanceof CoWTrade,
+  //   potentialTrade1?.inputAmount?.toSignificant(6) ?? typedValue
+  // )
 
   const bestPricedTrade = potentialTrade0
   const bestPricedTrade1 = potentialTrade1
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
-  const showWrap1 = wrapType1 !== WrapType.NOT_APPLICABLE && !(potentialTrade1 instanceof CoWTrade)
-  console.log('zap wrap 0', showWrap, wrapType, potentialTrade0)
-  console.log('zap wrap 1', showWrap1, wrapType1, potentialTrade1)
+
+  console.log('zap wrap 0', potentialTrade0?.outputAmount.currency.symbol, showWrap, wrapType, potentialTrade0)
+
   const trade = showWrap ? undefined : potentialTrade0
   const trade1 = showWrap ? undefined : potentialTrade1
 
@@ -263,16 +285,44 @@ export default function Zap() {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
+  const zeroBN = BigNumber.from(0)
+  const dexIdSwapA = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[bestPricedTrade?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+  const dexIdSwapB = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[bestPricedTrade1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+  console.log('zap dex index', dexIdSwapA.toString(), dexIdSwapB.toString())
+
+  const swapTokenA: SwapTx = {
+    amount: amountAddLpToken0 ?? zeroBN,
+    amountMin: zeroBN,
+    path: pathToken0toLpToken,
+    dexIndex: dexIdSwapA,
+  }
+
+  const swapTokenB: SwapTx = {
+    amount: amountAddLpToken1 ?? zeroBN,
+    amountMin: zeroBN,
+    path: pathToken1toLpToken,
+    dexIndex: dexIdSwapB,
+  }
+
+  const zapInParams: ZapInTx = {
+    amountAMin: zeroBN,
+    amountBMin: zeroBN,
+    amountLPMin: zeroBN,
+    dexIndex: dexIdZap,
+    to: recipient,
+  }
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-    amountFrom: parsedAmount,
-    amount0Min: maxAmountOutput, //TODO AMOUNT MIN
-    amount1Min: maxAmountOutput,
-    pathToPairToken0: pathToken0toLpToken,
-    pathToPairToken1: pathToken1toLpToken,
-    allowedSlippage: 0,
-    recipientAddressOrName: null,
-    router: '',
+    swapTokenA,
+    swapTokenB,
+    zap: zapInParams,
+    allowedSlippage,
+    transferResidual: true,
   })
 
   // console.log('zap error', zapCallbackError)
@@ -367,19 +417,13 @@ export default function Zap() {
     [onCurrencySelection]
   )
 
-  const [zapPair, setZapPair] = useState<Pair>()
-
-  const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
-
-  const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
-
-  const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
-
   useEffect(() => {
     if (!zapPair && pair) {
       setZapPair(pair)
+    } else if (!token0Id || !token1Id) {
+      setZapPair(undefined)
     }
-  }, [pair, zapPair])
+  }, [pair, token0Id, token1Id, zapPair])
 
   const handleOnPairSelect = useCallback(
     (pair: Pair) => {
@@ -407,7 +451,7 @@ export default function Zap() {
 
   return (
     <>
-      {/* <TokenWarningModal
+      <TokenWarningModal
         isOpen={
           (!urlLoadedChainId || chainId === urlLoadedChainId) &&
           urlLoadedScammyTokens.length > 0 &&
@@ -415,7 +459,7 @@ export default function Zap() {
         }
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
-      /> */}
+      />
       <Hero>
         <AppBodyContainer>
           <Tabs />
@@ -530,6 +574,7 @@ export default function Zap() {
                   handleInputSelect={handleInputSelect}
                   wrapState={wrapState}
                   setWrapState={setWrapState}
+                  tradeSecondTokenZap={trade1}
                 />
               </AutoColumn>
             </Wrapper>

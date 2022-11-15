@@ -32,5 +32,9 @@
   "button.enterCurrencyAmount": "Enter {{ currency }} amount",
   "tradeDetails.bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
-  "button.selectPair": "Select pair"
+  "button.selectPair": "Select pair",
+  "button.tradeNotFound": "Trade not found",
+  "button.zap": "Zap",
+  "button.zapWith": "Zap with",
+  "button.zapAnyway": "Zap anyway"
 }

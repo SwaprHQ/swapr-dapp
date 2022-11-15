@@ -16,7 +16,7 @@ import {
 } from '@swapr/sdk'
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { providers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 import { ReactNode } from 'react'
 
 import RightArrow from '../assets/images/arrow-right.svg'
@@ -805,7 +805,17 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
   ENTER_RECIPIENT: 4,
   INVALID_RECIPIENT: 5,
   INSUFFICIENT_BALANCE: 6,
+  TRADE_NOT_FOUND: 7,
 }
 
 // export const ZAP_CONTRACT_ADDRESS = '0xb4Aa30AC8E851553e8bb32DBf3c2F8597a0418eF' //old
 export const ZAP_CONTRACT_ADDRESS = '0xb1ce168e32479Ca1575948a9473868436561e802'
+export const SUPPORTED_DEX_ZAP_INDEX: { [key: string]: number } = {
+  [UniswapV2RoutablePlatform.SWAPR.name]: 0,
+  [RoutablePlatform.UNISWAP.name]: 1,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: 2,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: 3,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: 4,
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: 5,
+  [RoutablePlatform.ZEROX.name]: 6,
+}
