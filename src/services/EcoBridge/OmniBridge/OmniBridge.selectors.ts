@@ -7,23 +7,6 @@ import { OmniBridgeList } from '../EcoBridge.types'
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
 import { getTransactionStatus } from './OmniBridge.utils'
 
-const createSelectBridgingDetails = (bridgeId: OmniBridgeList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
-    ],
-    (details, loading, errorMessage) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage,
-      }
-    }
-  )
-
 const createSelectOwnedTransactions = (bridgeId: OmniBridgeList) => {
   const transactionsSelector = createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions],
@@ -114,7 +97,6 @@ const createSelectAllTransactions = (bridgeId: OmniBridgeList) =>
   )
 
 export interface OmniBridgeSelectors {
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
@@ -124,14 +106,12 @@ export interface OmniBridgeSelectors {
 export const omniBridgeSelectorsFactory = (omniBridges: OmniBridgeList[]) => {
   return omniBridges.reduce(
     (total, bridgeId) => {
-      const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
       const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
       const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
       const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
       const selectAllTransactions = createSelectAllTransactions(bridgeId)
 
       const selectors = {
-        selectBridgingDetails,
         selectOwnedTransactions,
         selectBridgeTransactionsSummary,
         selectPendingTransactions,

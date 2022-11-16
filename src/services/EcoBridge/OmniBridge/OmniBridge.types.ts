@@ -2,10 +2,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { ChainId } from '@swapr/sdk'
 
 import { EntityState } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
-
-import { BridgeDetails, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
 
 export type ConfigPerChain = { [chainId: number]: string }
 
@@ -90,15 +87,8 @@ export type OmnibridgeSubgraphRequests = {
 export type OmnibridgeSubgraphExecutions = {
   executions: OmnibridgeExecution[]
 }
-
-export type InitialState = {
+export interface OmnibridgeInitialState {
   transactions: EntityState<OmniBridgeTransaction>
-  lists: { [id: string]: TokenList }
-  listsStatus: SyncState
-  bridgingDetails: BridgeDetails
-  bridgingDetailsStatus: SyncState
-  lastMetadataCt: number
-  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
 }
 
 export type OmnibridgeConfig = {
