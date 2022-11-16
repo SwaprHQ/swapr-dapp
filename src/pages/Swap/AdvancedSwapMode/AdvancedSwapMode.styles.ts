@@ -67,8 +67,8 @@ export const PairInfo = styled.div`
   margin-left: 20px;
   overflow: hidden;
   white-space: nowrap;
-  &:nth-child(2) {
-    width: 16%;
+  &:nth-child(-n + 2) {
+    width: 13%;
   }
 
   & > div:nth-child(2) {

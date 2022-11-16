@@ -66,7 +66,7 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
       <div>
         {isSwapTransaction ? (
           <a
-            href={chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction)}
+            href={chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, tx.swapProtocol)}
             rel="noopener noreferrer"
             target="_blank"
           >
