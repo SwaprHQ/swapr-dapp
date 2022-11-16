@@ -170,7 +170,8 @@ export function useSWPRConverterContract(withSignerIfPossible?: boolean): Contra
   return useContract(address, SWPR_CONVERTER_ABI, withSignerIfPossible)
 }
 
-export function useZapContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
-  const zapAddress = address ?? ZAP_CONTRACT_ADDRESS
+export function useZapContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  const zapAddress = useMemo(() => (chainId ? ZAP_CONTRACT_ADDRESS[chainId] : undefined), [chainId])
   return useContract(zapAddress, ZAP_ABI, withSignerIfPossible)
 }

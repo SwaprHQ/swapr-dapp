@@ -258,7 +258,10 @@ export default function Zap() {
   )
 
   // check whether the user has approved the router on the input token
-  const [approvalZap, approveCallbackZap] = useApproveCallback(parsedAmount, ZAP_CONTRACT_ADDRESS)
+  const [approvalZap, approveCallbackZap] = useApproveCallback(
+    parsedAmount,
+    chainId ? ZAP_CONTRACT_ADDRESS[chainId] : undefined
+  )
 
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
@@ -285,7 +288,6 @@ export default function Zap() {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
-  const zeroBN = BigNumber.from(0)
   const dexIdSwapA = BigNumber.from(
     SUPPORTED_DEX_ZAP_INDEX[bestPricedTrade?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
   )
@@ -294,36 +296,42 @@ export default function Zap() {
   )
   const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
   console.log('zap dex index', dexIdSwapA.toString(), dexIdSwapB.toString())
+  const tstPath0 = ['0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984']
+  const tstPath1 = ['0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6']
+  const zeroBN = BigNumber.from(0)
+  const dexId2 = BigNumber.from('2')
 
   const swapTokenA: SwapTx = {
-    amount: amountAddLpToken0 ?? zeroBN,
+    amount: BigNumber.from('40000000000000'),
     amountMin: zeroBN,
-    path: pathToken0toLpToken,
-    dexIndex: dexIdSwapA,
+    path: tstPath0,
+    dexIndex: dexId2,
   }
 
   const swapTokenB: SwapTx = {
-    amount: amountAddLpToken1 ?? zeroBN,
+    amount: BigNumber.from('57514200000000'),
     amountMin: zeroBN,
-    path: pathToken1toLpToken,
-    dexIndex: dexIdSwapB,
+    path: tstPath1,
+    dexIndex: dexId2,
   }
 
   const zapInParams: ZapInTx = {
     amountAMin: zeroBN,
     amountBMin: zeroBN,
     amountLPMin: zeroBN,
-    dexIndex: dexIdZap,
+    dexIndex: dexId2,
     to: recipient,
   }
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
     swapTokenA,
     swapTokenB,
-    zap: zapInParams,
+    zapIn: zapInParams,
     allowedSlippage,
     transferResidual: true,
   })
+
+  console.log('zap callback', zapCallback, zapCallbackError, inputError)
 
   // console.log('zap error', zapCallbackError)
 
@@ -383,7 +391,8 @@ export default function Zap() {
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > PriceImpact.HIGH && !isExpertMode)
 
-  const handleAcceptChanges = useCallback(() => {}, [])
+  // const handleAcceptChanges = useCallback(() => {}, [])
+  console.log('approveFlow', showApproveFlow)
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -469,7 +478,7 @@ export default function Zap() {
                 isOpen={showConfirm}
                 trade={undefined}
                 originalTrade={tradeToConfirm}
-                onAcceptChanges={handleAcceptChanges}
+                onAcceptChanges={() => {}}
                 attemptingTxn={attemptingTxn}
                 txHash={txHash}
                 recipient={recipient}

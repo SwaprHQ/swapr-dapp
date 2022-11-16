@@ -478,7 +478,8 @@ export function useDerivedSwapInfo<
         amountAddLpToken0 = amountAddLpTokenA
         amountAddLpToken1 = amountAddLpTokenB
       } else {
-        returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
+        // returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
+        returnInputError = undefined
       }
     }
 

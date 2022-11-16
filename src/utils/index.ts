@@ -27,6 +27,7 @@ export function isAddress(value: any): string | false {
 const ETHERSCAN_PREFIXES: { [chainId in ChainId | number]: string } = {
   1: '',
   4: 'rinkeby.',
+  5: 'goerli.',
   [ChainId.ARBITRUM_ONE]: '',
   [ChainId.ARBITRUM_RINKEBY]: '',
   [ChainId.XDAI]: '',

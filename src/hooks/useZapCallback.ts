@@ -1,3 +1,4 @@
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -13,15 +14,15 @@ import {
   ZeroXTrade,
 } from '@swapr/sdk'
 
-import { UnsignedTransaction } from 'ethers'
+import { ContractTransaction, UnsignedTransaction } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useAnalytics } from '../analytics'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
-import { useTransactionAdder } from '../state/transactions/hooks'
+import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
@@ -29,13 +30,21 @@ import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import { useZapContract } from './useContract'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
+import { Zap, ZapInterface } from './zap/Zap'
 
 import { useActiveWeb3React } from './index'
 
-export enum ZapCallbackState {
+export enum ZapState {
+  UNKNOWN,
   INVALID,
   LOADING,
   VALID,
+}
+
+export enum ZapType {
+  NOT_APPLICABLE,
+  ZAP_IN,
+  ZAP_OUT,
 }
 
 interface SwapCall {
@@ -155,31 +164,33 @@ export interface ZapInTx {
   amountBMin: BigNumber
   amountLPMin: BigNumber
   dexIndex: BigNumber
-  to: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  to: string // the ENS name or address of the recipient of the trade
 }
 
 export interface ZapOutTx {
   amountLpFrom: BigNumber
   amountTokenToMin: BigNumber
   dexIndex: BigNumber
-  to: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  to: string // the ENS name or address of the recipient of the trade
 }
 
 export interface UseZapInCallbackParams {
   swapTokenA: SwapTx
   swapTokenB: SwapTx
-  zap: ZapInTx
+  zapIn?: ZapInTx
+  zapOut?: ZapOutTx
   allowedSlippage: number // in bips
   transferResidual: boolean
-  affiliate?: string
-  trade?: Trade
+  affiliate: string
 }
 
 export interface UseZapCallbackReturn {
-  state: ZapCallbackState
+  zapType: ZapType
   callback?: () => Promise<string>
+  state: ZapState
   error: string | null
 }
+
 /**
  * Returns a function that will execute a zap, if the parameters are all valid
  * and the user has approved the slippage adjusted input amount for the trade
@@ -187,159 +198,119 @@ export interface UseZapCallbackReturn {
 export function useZapCallback({
   swapTokenA,
   swapTokenB,
-  zap,
+  zapIn,
+  zapOut,
   allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
   affiliate,
   transferResidual,
-  trade,
 }: UseZapInCallbackParams): UseZapCallbackReturn {
   const { account, chainId, library } = useActiveWeb3React()
-  const zapContract = useZapContract()
-  const mainnetGasPrices = useMainnetGasPrices()
-  const [preferredGasPrice] = useUserPreferredGasPrice()
-  const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
-  const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, zap.to)
+  const zapContract = useZapContract() as Zap
+  const [zapState, setZapState] = useState(ZapState.UNKNOWN)
+  const [zapType, setZapType] = useState(ZapType.NOT_APPLICABLE)
+  console.log('zap callback inside', zapContract)
+
+  const zapToAddress = zapType === ZapType.ZAP_IN ? zapIn?.to : zapOut?.to
+  const { address: recipientAddress } = useENS(zapToAddress)
+  const recipient = zapToAddress === null ? account : recipientAddress
+
+  // Watch the transaction from transaction reducer
+  const [transactionReceipt, setTransactionReceipt] = useState<ContractTransaction | undefined>()
+
+  const allTransactions = useAllSwapTransactions()
+  useEffect(() => {
+    const isTransactionSuccessful =
+      transactionReceipt && allTransactions[transactionReceipt.hash]?.receipt?.status === 1
+
+    zapType !== ZapType.NOT_APPLICABLE && isTransactionSuccessful && setZapState(ZapState.VALID)
+  }, [transactionReceipt, allTransactions, zapType])
 
   const addTransaction = useTransactionAdder()
 
-  const { address: recipientAddress } = useENS(zap.to)
-  const recipient = zap.to === null ? account : recipientAddress
+  useEffect(() => {
+    setZapType(zapIn ? ZapType.ZAP_IN : zapOut ? ZapType.ZAP_OUT : ZapType.NOT_APPLICABLE)
+  }, [zapIn, zapOut])
 
   return useMemo(() => {
     if (!zapContract || !library || !account || !chainId) {
-      return { state: ZapCallbackState.INVALID, callback: undefined, error: 'Missing dependencies' }
+      return {
+        zapType: ZapType.NOT_APPLICABLE,
+        state: ZapState.INVALID,
+        callback: undefined,
+        error: 'Missing dependencies',
+      }
     }
     if (!recipient) {
-      if (zap.to !== null) {
-        return { state: ZapCallbackState.INVALID, callback: undefined, error: 'Invalid recipient' }
+      if (zapToAddress !== null) {
+        return {
+          zapType: ZapType.NOT_APPLICABLE,
+          state: ZapState.INVALID,
+          callback: undefined,
+          error: 'Invalid recipient',
+        }
       } else {
-        return { state: ZapCallbackState.LOADING, callback: undefined, error: null }
+        return { zapType: zapType, state: ZapState.LOADING, callback: undefined, error: null }
       }
     }
 
-    return {
-      state: ZapCallbackState.VALID,
-      callback: async function onZapIn(): Promise<string> {
-        // const orderId = ''
-        // try {
-        //   const zapTx = await zapContract.zapInFromToken(swapTokenA, swapTokenB, zap, affiliate, transferResidual, {
-        //     gasLimit: BigNumber.from(21000000),
-        //     gasPrice: preferredGasPrice,
-        //   })
-        //   // TODO summary
-        //   addTransaction(
-        //     {
-        //       hash: orderId, // TODO
-        //     },
-        //     {
-        //       summary: `Zap ${swapTokenA.amount.toString()} & ${swapTokenA.amount.toString()} zap to ${zap.to}`,
-        //     }
-        //   )
-        // } catch (error) {
-        //   // TODO error msg
-        //   console.error('Could not zap', error)
-        // }
-        // return orderId
-
-        const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
-          swapCalls.map(async call => {
-            const transactionRequest = await call.transactionParameters
-            // Ignore gas estimation if the request has gasLimit property
-            if (transactionRequest.gasLimit) {
-              return {
-                call,
-                gasEstimate: transactionRequest.gasLimit as BigNumber,
-              }
-            }
-
-            return library
-              .getSigner()
-              .estimateGas(transactionRequest as any)
-              .then(gasEstimate => ({
-                call,
-                gasEstimate,
-              }))
-              .catch(gasError => {
-                console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
-
-                return library
-                  .call(transactionRequest as any)
-                  .then(result => {
-                    console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
-                    return {
-                      call,
-                      error: new Error('Unexpected issue with estimating the gas. Please try again.'),
-                    }
-                  })
-                  .catch((callError: { reason: string }) => {
-                    console.debug('Call threw error', call, callError)
-                    let errorMessage: string
-                    switch (callError.reason) {
-                      case 'DXswapRouter: INSUFFICIENT_OUTPUT_AMOUNT':
-                      case 'DXswapRouter: EXCESSIVE_INPUT_AMOUNT':
-                        errorMessage =
-                          'This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance.'
-                        break
-                      default:
-                        errorMessage = `The transaction cannot succeed due to error: ${callError.reason}. This is probably an issue with one of the tokens you are swapping.`
-                    }
-                    return { call, error: new Error(errorMessage) }
-                  })
-              })
-          })
-        )
-
-        // a successful estimation is a bignumber gas estimate and the next call is also a bignumber gas estimate
-        const successfulEstimation = estimatedCalls.find(
-          (el, ix, list): el is SuccessfulCall =>
-            'gasEstimate' in el && (ix === list.length - 1 || 'gasEstimate' in list[ix + 1])
-        )
-
-        if (!successfulEstimation) {
-          const errorCalls = estimatedCalls.filter((call): call is FailedCall => 'error' in call)
-          if (errorCalls.length > 0) throw errorCalls[errorCalls.length - 1].error
-          throw new Error('Unexpected error. Please contact support: none of the calls threw an error')
-        }
-
-        const {
-          call: { transactionParameters },
-          gasEstimate,
-        } = successfulEstimation
-
-        let normalizedGasPrice = undefined
-        if (preferredGasPrice && chainId === ChainId.MAINNET) {
-          if (!(preferredGasPrice in MainnetGasPrice)) {
-            normalizedGasPrice = preferredGasPrice
-          } else if (mainnetGasPrices) {
-            normalizedGasPrice = mainnetGasPrices[preferredGasPrice as MainnetGasPrice]
-          }
-        }
-        return library
-          .getSigner()
-          .sendTransaction({
-            gasLimit: calculateGasMargin(gasEstimate),
-            gasPrice: normalizedGasPrice,
-            ...((await transactionParameters) as any),
-          })
-          .then(async response => {
-            addTransaction(response, {
-              summary: `Zap ${swapTokenA.amount.toString()} & ${swapTokenA.amount.toString()} zap to ${zap.to}`, //TODO summary
+    if (zapType === ZapType.ZAP_IN && zapIn) {
+      return {
+        zapType: ZapType.NOT_APPLICABLE,
+        callback: async () => {
+          try {
+            console.log('ESSA zap in callback', zapContract, {
+              swapTokenA,
+              swapTokenB,
+              zapIn,
+              affiliate,
+              transferResidual,
             })
-
-            return response.hash
-          })
-          .catch(error => {
-            // if the user rejected the tx, pass this along
-            if (error?.code === 4001 || error?.code === 'ACTION_REJECTED') {
-              throw new Error('Transaction rejected.')
-            } else {
-              // otherwise, the error was unexpected and we need to convey that
-              console.error(`Swap failed`, error, transactionParameters)
-              throw new Error(`Swap failed: ${error.message}`)
-            }
-          })
-      },
-      error: null,
+            // Set state to pending
+            setZapState(ZapState.LOADING)
+            const txReceipt = await zapContract.zapIn(swapTokenA, swapTokenB, zapIn, affiliate, transferResidual)
+            console.log('zap in tx', txReceipt)
+            setTransactionReceipt(txReceipt)
+            addTransaction(txReceipt, { summary: 'Zap in' })
+            return 'wio'
+          } catch (error) {
+            console.error('Could not zap in!', error)
+            //if something goes wrong, reset status
+            setZapState(ZapState.INVALID)
+            return 'Error'
+          }
+        },
+        state: zapState,
+        error: null,
+      }
+    } else if (zapType === ZapType.ZAP_OUT && zapOut) {
+      return {
+        zapType: ZapType.NOT_APPLICABLE,
+        callback: async () => {
+          try {
+            console.log('ESSA zap out callback')
+            // Set state to pending
+            setZapState(ZapState.LOADING)
+            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, affiliate)
+            setTransactionReceipt(txReceipt)
+            addTransaction(txReceipt, { summary: 'Zap out' })
+            return 'wio'
+          } catch (error) {
+            console.error('Could not zap out!', error)
+            //if something goes wrong, reset status
+            setZapState(ZapState.INVALID)
+            return 'Error'
+          }
+        },
+        state: zapState,
+        error: null,
+      }
+    } else {
+      return {
+        zapType: ZapType.NOT_APPLICABLE,
+        state: ZapState.INVALID,
+        callback: undefined,
+        error: 'Undefined',
+      }
     }
   }, [
     zapContract,
@@ -347,11 +318,15 @@ export function useZapCallback({
     account,
     chainId,
     recipient,
-    zap.to,
-    swapCalls,
-    preferredGasPrice,
-    mainnetGasPrices,
+    zapType,
+    zapIn,
+    zapToAddress,
+    zapState,
+    swapTokenA,
+    swapTokenB,
+    affiliate,
+    transferResidual,
     addTransaction,
-    swapTokenA.amount,
+    zapOut,
   ])
 }

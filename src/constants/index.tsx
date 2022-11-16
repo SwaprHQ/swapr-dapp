@@ -809,7 +809,21 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
 }
 
 // export const ZAP_CONTRACT_ADDRESS = '0xb4Aa30AC8E851553e8bb32DBf3c2F8597a0418eF' //old
-export const ZAP_CONTRACT_ADDRESS = '0xb1ce168e32479Ca1575948a9473868436561e802'
+// export const ZAP_CONTRACT_ADDRESS = '0xb1ce168e32479Ca1575948a9473868436561e802'
+
+export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '',
+  [ChainId.GNOSIS]: '',
+  [ChainId.ARBITRUM_ONE]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.OPTIMISM_MAINNET]: '',
+  [ChainId.RINKEBY]: '',
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.GOERLI]: '0xb1ce168e32479Ca1575948a9473868436561e802',
+  [ChainId.ARBITRUM_GOERLI]: '',
+  [ChainId.OPTIMISM_GOERLI]: '',
+}
+
 export const SUPPORTED_DEX_ZAP_INDEX: { [key: string]: number } = {
   [UniswapV2RoutablePlatform.SWAPR.name]: 0,
   [RoutablePlatform.UNISWAP.name]: 1,
