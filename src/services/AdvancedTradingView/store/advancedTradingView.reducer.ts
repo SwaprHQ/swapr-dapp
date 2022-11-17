@@ -63,6 +63,8 @@ const advancedTradingViewSlice = createSlice({
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
     // TODO: DEFINE PAYLOAD DATA MODEL
     setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<BaseActionPayload<unknown[]>>>) => {
+      console.log('ACTION PAYLOAD', action.payload)
+      // [{key: 'uniswapV2', pairId: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11', data: Array(12), hasMore: true}]
       let updatedAdapters: AdapterType = {
         swapr: {},
         sushiswap: {},

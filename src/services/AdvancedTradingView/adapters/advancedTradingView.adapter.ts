@@ -25,6 +25,7 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
+  // TODO: UPDATE RES TYPE
   abstract getPairTradesData(fetchDetails: AdapterFetchDetails): any
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
