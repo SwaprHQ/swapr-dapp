@@ -25,6 +25,8 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
+  abstract getPairTradesData(fetchDetails: AdapterFetchDetails): any
+
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
 
   public updateActiveChainId(chainId: ChainId) {
@@ -109,6 +111,7 @@ export class AdvancedTradingViewAdapter<AppState> {
     }
   }
 
+  // UPDATED THIS FUNCTION TO ALTER THE STATE TOGETHER INSTEAD OF DISPATCHING IN CHUNKS
   public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
       adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })

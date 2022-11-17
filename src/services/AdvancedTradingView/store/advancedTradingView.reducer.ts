@@ -61,6 +61,7 @@ const advancedTradingViewSlice = createSlice({
     },
 
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
+    // TODO: DEFINE PAYLOAD DATA MODEL
     setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<BaseActionPayload<unknown[]>>>) => {
       let updatedAdapters: AdapterType = {
         swapr: {},
