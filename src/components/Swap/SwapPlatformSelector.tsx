@@ -82,6 +82,7 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
 }
 
 const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
+  console.log('priceImpact', priceImpact)
   return (
     <TYPE.Main
       color={simpleWarningSeverity(priceImpact) >= PRICE_IMPACT_MEDIUM ? 'red1' : 'text4'}

@@ -9,6 +9,7 @@ import {
   UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
+  VelodromeTrade,
   ZeroXTrade,
 } from '@swapr/sdk'
 
@@ -89,7 +90,7 @@ export function useSwapsCallArguments(
       }
 
       // Uniswap V2 trade
-      if (trade instanceof UniswapV2Trade) {
+      if (trade instanceof UniswapV2Trade || trade instanceof VelodromeTrade) {
         swapMethods.push(
           trade.swapTransaction({
             recipient,
