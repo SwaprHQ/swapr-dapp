@@ -111,13 +111,35 @@ export class AdvancedTradingViewAdapter<AppState> {
     }
   }
 
-  // UPDATED THIS FUNCTION TO ALTER THE STATE TOGETHER INSTEAD OF DISPATCHING IN CHUNKS
   public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
       adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
     return await Promise.allSettled(promises)
+  }
+
+  public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairTradesData({ ...fetchDetails, abortController: this.renewAbortController })
+    )
+
+    const response = await Promise.allSettled(promises).then(res => {
+      console.log('RES', res)
+
+      // TODO: UPDATE RESPONSE MAPPING!!!
+      return res.map(el => {
+        if (el.status !== 'fulfilled' || !el.value) {
+          return []
+        } else {
+          return el.value
+        }
+      })
+    })
+    console.log('PROMISE ARRAY RES', response)
+
+    this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
+    return response
   }
 
   public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
