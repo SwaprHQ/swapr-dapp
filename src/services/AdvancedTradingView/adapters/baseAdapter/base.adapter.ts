@@ -96,20 +96,13 @@ export class BaseAdapter<
   }: AdapterFetchDetails) {
     const pairId = this._getPairId(inputToken, outputToken)
 
-    let data = {
-      key: this._key,
-      pairId,
-      data: [],
-      hasMore: false,
-    }
+    if (!this.isSupportedChainId(this._chainId)) return
 
-    if (!this.isSupportedChainId(this._chainId)) return data
-
-    if (!pairId) return data
+    if (!pairId) return
 
     const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
-    if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return data
+    if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
 
     try {
       const { swaps } = await this._fetchSwaps({
@@ -122,32 +115,15 @@ export class BaseAdapter<
         outputTokenAddress: outputToken.address,
       })
 
-      console.log('RESSSS SWAPS', swaps)
-
-      // @ts-ignore
-      data.data = swaps
-      data.hasMore = swaps.length === amountToFetch
-
-      // this._dispatchSwaps(pairId, swaps, amountToFetch)
-
-      // protected _dispatchSwaps(pairId: string, { swaps }: GenericPairSwaps, amountToFetch: number) {
-      //   const hasMore = swaps.length === amountToFetch
-
-      //   this.store.dispatch(
-      //     this.actions.setPairData({
-      //       key: this._key,
-      //       pairId,
-      //       payloadType: AdapterPayloadType.SWAPS,
-      //       data: swaps,
-      //       hasMore,
-      //     })
-      //   )
-      // }
+      return {
+        key: this._key,
+        pairId,
+        data: swaps,
+        hasMore: swaps.length === amountToFetch,
+      }
     } catch (e) {
       console.warn(`${this._key}${e}`)
-      return data
-    } finally {
-      return data
+      return
     }
   }
 
