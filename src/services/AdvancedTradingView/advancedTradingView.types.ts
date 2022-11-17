@@ -14,28 +14,30 @@ export enum AdapterKey {
   UNISWAPV3 = 'uniswapV3',
 }
 
+export type AdapterType = {
+  [AdapterKey.SWAPR]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.SUSHISWAP]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.UNISWAPV2]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.HONEYSWAP]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.UNISWAPV3]: {
+    [pairId: string]: UniswapV3Pair | undefined
+  }
+}
+
 export type InitialState = {
   pair: {
     inputToken?: Token
     outputToken?: Token
   }
-  adapters: {
-    [AdapterKey.SWAPR]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.SUSHISWAP]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.UNISWAPV2]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.HONEYSWAP]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.UNISWAPV3]: {
-      [pairId: string]: UniswapV3Pair | undefined
-    }
-  }
+  adapters: AdapterType
 }
 
 export type AdvancedViewTransaction = {
