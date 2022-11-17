@@ -125,20 +125,14 @@ export class AdvancedTradingViewAdapter<AppState> {
       adapter.getPairTradesData({ ...fetchDetails, abortController: this.renewAbortController })
     )
 
-    const response = await Promise.allSettled(promises).then(res => {
-      console.log('RES', res)
+    const response = await Promise.allSettled(promises).then(
+      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
+        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
 
-      // TODO: UPDATE RESPONSE MAPPING!!!
-      return res.map(el => {
-        if (el.status !== 'fulfilled' || !el.value) {
-          return []
-        } else {
-          return el.value
-        }
-      })
-    })
     console.log('PROMISE ARRAY RES', response)
 
+    // @ts-ignore
     this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
     return response
   }
