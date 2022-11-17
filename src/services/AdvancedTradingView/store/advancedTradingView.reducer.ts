@@ -3,7 +3,7 @@ import { Token } from '@swapr/sdk'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { BaseActionPayload } from '../adapters/baseAdapter/base.types'
-import { InitialState } from '../advancedTradingView.types'
+import { AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
 
 export const initialState: InitialState = {
   pair: {
@@ -32,6 +32,7 @@ const advancedTradingViewSlice = createSlice({
         outputToken,
       }
     },
+
     resetAdapterStore: (state, action: PayloadAction<{ resetSelectedPair: boolean }>) => {
       if (action.payload.resetSelectedPair) {
         state.pair = {}
@@ -57,6 +58,35 @@ const advancedTradingViewSlice = createSlice({
           hasMore,
         },
       }
+    },
+
+    // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
+    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<BaseActionPayload<unknown[]>>>) => {
+      let updatedAdapters: AdapterType = {
+        swapr: {},
+        sushiswap: {},
+        uniswapV2: {},
+        honeyswap: {},
+        uniswapV3: {},
+      }
+
+      // TODO: UPDATED DATA HANDLING OF EACH PAIR
+      action.payload.forEach(pair => {
+        const { data, pairId, hasMore, key } = pair
+
+        const previousPairData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
+
+        updatedAdapters[key][pairId] = {
+          ...state.adapters[key][pairId],
+          swaps: {
+            // @ts-ignore
+            data: [...previousPairData, ...data],
+            hasMore,
+          },
+        }
+      })
+
+      state.adapters = updatedAdapters
     },
   },
 })
