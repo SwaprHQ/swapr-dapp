@@ -9,6 +9,15 @@ import { ListsState } from '../../state/lists/reducer'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
+export interface EcoBridgeChildBaseState {
+  lists: { [id: string]: TokenList }
+  listsStatus: SyncState
+  bridgingDetails: BridgeDetails
+  bridgingDetailsStatus: SyncState
+  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
+  lastMetadataCt: number
+}
+
 export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
 }
@@ -72,7 +81,7 @@ export enum SyncState {
   READY = 'ready',
   FAILED = 'failed',
 }
-export type BridgingDetailsErrorMessage = 'No available routes / details' | 'Bridge is not available now'
+export type BridgingDetailsErrorMessage = string
 
 export interface BridgeDetails {
   gas?: string

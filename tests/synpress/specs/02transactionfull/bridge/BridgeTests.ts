@@ -12,6 +12,8 @@ describe('Bridge tests', () => {
   let balanceBefore: number
   const TRANSACTION_VALUE = 1
 
+  beforeEach(() => {})
+
   before(() => {
     ScannerFacade.erc20TokenBalance(
       AddressesEnum.USDC_TOKEN_ARINKEBY,
@@ -23,18 +25,20 @@ describe('Bridge tests', () => {
       console.log('ERC20 BALANCE BEFORE: ', res)
     })
     MetamaskNetworkHandler.addGnosis()
+    MetamaskNetworkHandler.addArbitrumOne()
+    MetamaskNetworkHandler.addARinkeby()
     BridgePage.visitBridgePage()
     MenuBar.connectWallet()
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
   after(() => {
     cy.changeMetamaskNetwork('rinkeby')
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.resetMetamaskAccount()
     cy.wait(500)
   })
 
-  it('Should initiate a bridging ', function () {
+  //TODO Change network to Goerli and uncomment
+  it.skip('Should initiate a bridging ', function () {
     if (isNaN(balanceBefore)) {
       this.skip() // Skipping test if Arbiscan is down
     }
@@ -61,7 +65,7 @@ describe('Bridge tests', () => {
     BridgePage.getBridgedToChain().should('contain.text', 'A. Rinkeby')
     BridgePage.getBridgedAssetName().should('contain.text', '1 USDC')
   })
-  it('Should display transaction rejected when rejecting bridging in wallet ', () => {
+  it.skip('Should display transaction rejected when rejecting bridging in wallet ', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.rinkeby().click()
     BridgePage.getNetworkToSelector().click()
@@ -111,7 +115,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.arbitrum().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to Arbitrum').click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
+    cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.ARBITRUM)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
@@ -168,7 +172,7 @@ describe('Bridge tests', () => {
     BridgePage.getNetworkFromSelector().click()
     NetworkSwitcher.arinkeby().click()
     BridgePage.getBridgeButton().should('contain.text', 'Connect to A. Rinkeby').click()
-    cy.allowMetamaskToAddAndSwitchNetwork()
+    cy.allowMetamaskToSwitchNetwork()
     NetworkSwitcher.checkNetwork(ChainsEnum.ARINKEBY)
     BridgePage.getNetworkToSelector().click()
     NetworkSwitcher.ethereum().click()
@@ -229,7 +233,7 @@ describe('Bridge tests', () => {
     ErrorModal.getTransactionErrorModal().should('be.visible').should('contain.text', 'rejected')
     ErrorModal.closeTransactionErrorModal()
   })
-  it('Should display history of bridge', function () {
+  it.skip('Should display history of bridge', function () {
     if (isNaN(balanceBefore)) {
       this.skip()
     }

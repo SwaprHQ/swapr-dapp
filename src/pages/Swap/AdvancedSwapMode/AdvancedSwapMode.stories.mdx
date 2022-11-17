@@ -1,0 +1,161 @@
+import { Token } from '@swapr/sdk'
+import { Canvas, Meta, Story, ArgsTable } from '@storybook/addon-docs'
+
+import { Trade } from './Trade'
+import { Chart } from './Chart'
+import { ColumnHeader } from './ColumnHeader'
+import { InfiniteScroll } from './InfiniteScroll'
+
+import { BaseWrapper, TransactionsWrapper } from './AdvancedSwapMode.styles.ts'
+
+<Meta title="AdvancedSwapModeMDX" />
+
+# Chart
+
+export const ChartTemplate = args => (
+  <div style={{ width: '55vw', height: '80vh' }}>
+    <Chart {...args} />
+  </div>
+)
+
+<Canvas>
+  <Story name="Chart" component={Chart} args={{ symbol: 'WETHUSDC' }}>
+    {ChartTemplate.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={Chart} />
+
+# ColumnHeader
+
+export const ColumnHeaderTemplate = args => (
+  <div style={{ width: '55vw' }}>
+    <BaseWrapper>
+      <ColumnHeader {...args} />
+    </BaseWrapper>
+  </div>
+)
+
+<Canvas>
+  <Story
+    name="ColumnHeaderWithTokens"
+    component={ColumnHeader}
+    args={{
+      activeCurrencySymbolOption: 'USDC',
+      inputTokenSymbol: 'USDC',
+      outputTokenSymbol: 'WETH',
+      showPrice: true,
+      showTrades: true,
+    }}
+  >
+    {ColumnHeaderTemplate.bind({})}
+  </Story>
+  <Story
+    name="ColumnHeaderWithoutTokens"
+    component={ColumnHeader}
+    args={{
+      activeCurrencySymbolOption: '',
+      inputTokenSymbol: '',
+      outputTokenSymbol: '',
+      showPrice: true,
+      showTrades: false,
+    }}
+  >
+    {ColumnHeaderTemplate.bind({})}
+  </Story>
+  <Story
+    name="ColumnHeaderWithoutPrice"
+    component={ColumnHeader}
+    args={{
+      activeCurrencySymbolOption: '',
+      inputTokenSymbol: '',
+      outputTokenSymbol: '',
+      showPrice: false,
+      showTrades: false,
+    }}
+  >
+    {ColumnHeaderTemplate.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={ColumnHeader} />
+
+# Infinite Scroll
+
+export const InfiniteScrollTemplate = args => (
+  <BaseWrapper style={{ width: '55vw' }}>
+    <TransactionsWrapper>
+      <InfiniteScroll {...args} />
+    </TransactionsWrapper>
+  </BaseWrapper>
+)
+
+export const token0 = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
+
+export const fakeData = {
+  transactionId: '0x12',
+  amountIn: '1321.321',
+  amountOut: '876.30218',
+  timestamp: (Date.now() / 1000 - 4 * 60 * 60).toString(),
+  logoKey: 'Swapr',
+  isSell: false,
+  amountUSD: '832132.321',
+  priceToken0: '668251.37218',
+  priceToken1: '768251.37218',
+}
+
+export const fakeDataArr = [
+  { ...fakeData, isSell: true },
+  { ...fakeData, logoKey: 'Uniswap', isSell: true, amountUSD: '72321.321' },
+  { ...fakeData, logoKey: 'Uniswap', isSell: false, amountUSD: '72321.321' },
+  { ...fakeData, logoKey: 'Sushiswap', isSell: false, amountUSD: '32321.321' },
+  { ...fakeData, logoKey: 'Sushiswap', isSell: true, amountUSD: '32321.321' },
+  { ...fakeData, logoKey: 'Honeyswap', isSell: true, amountUSD: '2321.321' },
+  { ...fakeData, logoKey: 'Honeyswap', isSell: false, amountUSD: '2321.321' },
+  ...new Array(20).fill(fakeData),
+]
+
+<Canvas>
+  <Story
+    name="Infinite scroll"
+    component={InfiniteScroll}
+    args={{
+      chainId: 1,
+      data: fakeDataArr,
+      fetchMore: () => Promise.resolve([]),
+      hasMore: true,
+      isLoading: false,
+      showTrades: true,
+      activeCurrencyOption: 'USDC',
+      token0,
+      scrollableTarget: '',
+    }}
+  >
+    {InfiniteScrollTemplate.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={ColumnHeader} />
+
+# Trade
+
+export const TradeTemplate = args => (
+  <BaseWrapper style={{ width: '55vw' }}>
+    <Trade {...args} />
+  </BaseWrapper>
+)
+
+<Canvas>
+  <Story name="Trade/Buy" component={Trade} args={{ ...fakeData, price: '82721.321321' }}>
+    {TradeTemplate.bind({})}
+  </Story>
+  <Story
+    name="Trade/Sell"
+    component={Trade}
+    args={{ ...fakeData, price: '22721.321321', isSell: true, amountUSD: '23213.3212321' }}
+  >
+    {TradeTemplate.bind({})}
+  </Story>
+</Canvas>
+
+<ArgsTable of={Trade} />

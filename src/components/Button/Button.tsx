@@ -102,6 +102,7 @@ export const ButtonGrey = styled(Base)`
   color: ${({ theme }) => theme.text5};
   font-size: 16px;
   padding: ${({ padding }) => (padding ? padding : '10px')};
+  width: fit-content;
 
   &:disabled {
     opacity: 50%;
@@ -164,6 +165,11 @@ export const ButtonDark1 = styled(Base)`
   &:active {
     background-color: ${({ theme }) => darken(0.1, theme.dark2)};
   }
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
+    background-color: ${({ theme }) => theme.dark1};
+  }
 `
 export const ButtonPurple = styled(Base)`
   background: linear-gradient(90deg, #2e17f2 -24.77%, #fb52a1 186.93%);
@@ -177,6 +183,10 @@ export const ButtonPurple = styled(Base)`
   }
   &:active {
     background-color: ${({ theme }) => darken(0.1, theme.dark2)};
+  }
+  &:disabled {
+    opacity: 50%;
+    cursor: not-allowed;
   }
 `
 export const ButtonDark2 = styled(Base)`

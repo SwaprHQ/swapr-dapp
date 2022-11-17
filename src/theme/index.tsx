@@ -59,6 +59,7 @@ export function colors(darkMode: boolean): Colors {
     bg6: '#171621',
     bg7: '#2D3040',
     bg8: '#191A24',
+    bg9: '#101019',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -231,7 +232,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  
+
 }
 
 a {
@@ -424,7 +425,7 @@ body {
 	    left: 12px !important;
 	    right: 12px !important;
 	}
-	
+
   .Toastify__toast-container {
 	    width: auto !important;
 	}
@@ -484,6 +485,24 @@ body {
   }
   100% {
     opacity:1;
+  }
+}
+
+@keyframes loading-rotations-1 {
+  0% {
+    opacity:0;
+  }
+  6.25% {
+    opacity:0;
+  }
+  12.5% {
+    opacity:1;
+  }
+  93.75% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
   }
 }
 
@@ -614,6 +633,17 @@ body {
 }
 
 // rotating trade plataforms logos loading
+.loading-rotation-1>div {
+  animation-name: loading-rotations-1;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+}
+
+.loading-rotation-1>div:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
 .loading-rotation-2>div {
   animation-name: loading-rotations-2;
   animation-timing-function: ease-in-out;
@@ -723,16 +753,16 @@ body {
 }
 
 .loading-rotation-7>div:nth-of-type(1) {
-  animation-delay: 12s;  
+  animation-delay: 12s;
 }
 .loading-rotation-7>div:nth-of-type(2) {
-  animation-delay: 10s;  
+  animation-delay: 10s;
 }
 .loading-rotation-7>div:nth-of-type(3) {
-  animation-delay: 8s;  
+  animation-delay: 8s;
 }
 .loading-rotation-7>div:nth-of-type(4) {
-  animation-delay: 6s;  
+  animation-delay: 6s;
 }
 .loading-rotation-7>div:nth-of-type(5) {
   animation-delay: 4s;
@@ -752,16 +782,16 @@ body {
 }
 
 .loading-rotation-8>div:nth-of-type(1) {
-  animation-delay: 14s;  
+  animation-delay: 14s;
 }
 .loading-rotation-8>div:nth-of-type(2) {
-  animation-delay: 12s;  
+  animation-delay: 12s;
 }
 .loading-rotation-8>div:nth-of-type(3) {
-  animation-delay: 10s;  
+  animation-delay: 10s;
 }
 .loading-rotation-8>div:nth-of-type(4) {
-  animation-delay: 8s;  
+  animation-delay: 8s;
 }
 .loading-rotation-8>div:nth-of-type(5) {
   animation-delay: 6s;

@@ -13,7 +13,7 @@ import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 const GET_BLOCK_BY_TIMESTAMP = gql`
   query getBlockFromTimestamp($timestamp: String!) {
-    blocks(first: 10, orderBy: number, orderDirection: asc, where: { timestamp_gt: $timestamp }) {
+    blocks(first: 999, orderBy: number, orderDirection: asc, where: { timestamp_gt: $timestamp }) {
       number
     }
   }
@@ -118,10 +118,8 @@ export function usePair24hVolumeUSD(
   return useMemo(() => {
     if (volume24hUsdLoading || totalVolumeLoading || blockLoading) return { loading: true, volume24hUSD: ZERO_USD }
     if (
-      !volume24hUsdData ||
-      !totalVolumeData ||
-      !volume24hUsdData.pairs.length ||
-      !totalVolumeData.pairs.length ||
+      !volume24hUsdData?.pairs?.length ||
+      !totalVolumeData?.pairs?.length ||
       volume24hUsdError ||
       totalVolumeError ||
       blockError

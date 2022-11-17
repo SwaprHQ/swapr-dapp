@@ -218,10 +218,10 @@ const StyledHero = styled(Layout)`
       }
     }
   }
+  .inner-hero {
+    min-height: 200px;
+  }
   @media screen and (max-width: ${breakpoints.md}) {
-    .inner-hero {
-      min-height: calc(100vh + 80px);
-    }
     .hero-content {
       margin-top: 42px;
       padding: 0px;

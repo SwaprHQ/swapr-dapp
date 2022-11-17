@@ -10,8 +10,9 @@ import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ButtonBadge, ButtonPurpleDim } from '../../../components/Button'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../components/DoubleCurrencyLogo'
 import List from '../../../components/LiquidityMiningCampaigns/List'
+import { PageMetaData } from '../../../components/PageMetaData'
 import { PoolStats } from '../../../components/Pool/PairView/PoolStats'
 import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
@@ -92,8 +93,11 @@ export default function Pair() {
     return <Navigate to="/pools" replace />
   }
 
+  const tokenPair = !token0 || !token1 ? '' : `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
+
   return (
     <>
+      <PageMetaData title={`${tokenPair} Liquidity pool stats | Swapr`} />
       <PageWrapper>
         <Box paddingX={2}>
           <TitleRow>
@@ -109,11 +113,7 @@ export default function Pair() {
                 </Box>
                 <Box mr="4px">
                   <Text fontWeight="600" fontSize="16px" lineHeight="20px">
-                    {!token0 || !token1 ? (
-                      <Skeleton width="60px" />
-                    ) : (
-                      `${unwrappedToken(token0)?.symbol}/${unwrappedToken(token1)?.symbol}`
-                    )}
+                    {!token0 || !token1 ? <Skeleton width="60px" /> : tokenPair}
                   </Text>
                 </Box>
                 <Box>
