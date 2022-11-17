@@ -35,6 +35,7 @@ export enum SwapTabs {
   SWAP,
   LIMIT_ORDER,
   BRIDGE_SWAP,
+  ZAP,
 }
 
 export interface UserState {

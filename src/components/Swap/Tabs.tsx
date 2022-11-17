@@ -62,7 +62,10 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
     <TabsColumn>
       <TabsRow>
         <Button
-          onClick={() => setActiveTab(SwapTabs.SWAP)}
+          onClick={() => {
+            setActiveTab(SwapTabs.SWAP)
+            navigate('/swap')
+          }}
           className={activeTab === SwapTabs.SWAP ? 'active' : ''}
           title="Swap with Eco Router V1.5"
         >
@@ -83,9 +86,9 @@ export const Tabs = ({ activeTab, setActiveTab }: { activeTab: SwapTabs; setActi
         </Button>
         <Button
           title="Zap"
-          className={activeTab === SwapTabs.SWAP ? 'active' : ''}
+          className={activeTab === SwapTabs.ZAP ? 'active' : ''}
           onClick={() => {
-            setActiveTab(SwapTabs.SWAP)
+            setActiveTab(SwapTabs.ZAP)
             navigate('/zap')
           }}
         >

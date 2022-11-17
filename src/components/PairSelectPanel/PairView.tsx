@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { CurrencyLogo } from '../CurrencyLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
+import { DoubleCurrencyLogo } from '../DoubleCurrencyLogo'
 import { StyledDropDown, StyledTokenName } from './PairSelectPanel.styles'
 import { PairViewProps } from './PairSelectPanel.types'
 

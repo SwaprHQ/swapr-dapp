@@ -50,7 +50,12 @@ import { SwapTx, useZapCallback, ZapInTx } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { StateKey } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import {
+  useAdvancedSwapDetails,
+  useIsExpertMode,
+  useUpdateSelectedSwapTab,
+  useUserSlippageTolerance,
+} from '../../state/user/hooks'
 import {
   useDefaultsFromURLSearch,
   UseDerivedZapInfoResult,
@@ -116,6 +121,7 @@ export default function Zap() {
   ]
   // console.log('zap currencies loaded', { loadedInputCurrency, loadedOutputCurrency })
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const handleConfirmTokenWarning = useCallback(() => {
@@ -462,7 +468,7 @@ export default function Zap() {
       />
       <Hero>
         <AppBodyContainer>
-          <Tabs />
+          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
           <AppBody>
             <Wrapper id="zap-page">
               <ConfirmSwapModal

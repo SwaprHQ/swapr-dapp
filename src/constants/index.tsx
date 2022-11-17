@@ -120,11 +120,13 @@ export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string[] } = {
   [ChainId.ARBITRUM_ONE]: ['', ''],
   [ChainId.POLYGON]: ['', ''],
   [ChainId.OPTIMISM_MAINNET]: ['', ''],
+  [ChainId.BSC_MAINNET]: ['', ''],
   [ChainId.RINKEBY]: ['', ''],
   [ChainId.ARBITRUM_RINKEBY]: ['', ''],
   [ChainId.GOERLI]: ['', ''],
   [ChainId.ARBITRUM_GOERLI]: ['', ''],
   [ChainId.OPTIMISM_GOERLI]: ['', ''],
+  [ChainId.BSC_TESTNET]: ['', ''],
 }
 
 // used to construct intermediary pairs for trading
