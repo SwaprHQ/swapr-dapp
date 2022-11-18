@@ -77,6 +77,8 @@ export type AdapterFetchDetails = {
   abortController: (id: string) => AbortSignal
 }
 
+export type AdapterFetchDetailsExtended = AdapterFetchDetails & { dataType: AdapterPayloadType }
+
 export enum AdapterAmountToFetch {
   PAIR_TRADES = 10,
   PAIR_ACTIVITY = 3,
