@@ -1,9 +1,11 @@
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import { useEffect, useState } from 'react'
+import { redirect } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Hero from '../../components/LandingPageComponents/layout/Hero'
+import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
 import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
 import { SwapTabs } from '../../state/user/reducer'
@@ -11,6 +13,7 @@ import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
+import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
 import { SwapContext, SwapTab } from './SwapContext'
 
@@ -26,11 +29,20 @@ const AppBodyContainer = styled.section`
  */
 export function Swap() {
   const { Swap, AdvancedTradingView, LimitOrder } = SwapTab
+  const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
   const [activeTab, setActiveTab] = useState(Swap)
   const { pathname } = useRouter()
   const [, setAdvancedView] = useUpdateSelectedSwapTab()
+
+  useEffect(() => {
+    if (activeTab === LimitOrder && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
+      setActiveTab(Swap)
+      redirect('/swap')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId])
 
   useEffect(() => {
     if (pathname.includes('/pro')) {
