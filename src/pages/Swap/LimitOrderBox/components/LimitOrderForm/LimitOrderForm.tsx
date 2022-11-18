@@ -84,43 +84,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     getVaultRelayerAddress(chainId)
   )
 
-  const setInitialValue = async () => {
-    const signer = provider.getSigner()
-    if (limitOrder.buyToken && limitOrder.sellToken) {
-      const cowQuote = await getQuote({
-        chainId,
-        signer,
-        order: { ...limitOrder, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
-      })
-      if (cowQuote !== undefined) {
-        const {
-          quote: { buyAmount, feeAmount },
-        } = cowQuote
-
-        const buyTokenFormattedAmount = formatUnits(buyAmount, buyTokenAmount.currency.decimals)
-
-        const updatedLimitOrder = { ...limitOrder, limitPrice: buyAmount, feeAmount }
-        setLimitOrder(updatedLimitOrder)
-        handleBuyCurrencyAmountChange({
-          currency: buyTokenAmount.currency,
-          amountWei: buyAmount,
-          amountFormatted: buyTokenFormattedAmount,
-          updatedLimitOrder,
-        })
-        setFormattedLimitPrice(buyTokenFormattedAmount)
-      }
-    }
-  }
-
   const setToMarket = async () => {
     const signer = provider.getSigner()
     if (limitOrder.buyToken && limitOrder.sellToken) {
-      const order = structuredClone(limitOrder)
+      const order = JSON.parse(JSON.stringify(limitOrder))
 
-      order.sellAmount = parseUnits(
-        '1',
-        limitOrder.kind === LimitOrderKind.BUY ? buyTokenAmount.currency.decimals : sellTokenAmount.currency.decimals
-      ).toString()
+      const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
+      order.sellAmount = parseUnits('10', token.currency.decimals).toString()
 
       const cowQuote = await getQuote({
         chainId,
@@ -132,15 +102,22 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           quote: { buyAmount, sellAmount },
         } = cowQuote
 
-        const limitPrice = limitOrder.kind === LimitOrderKind.SELL ? buyAmount : sellAmount
-        const nextLimitPriceFloat = parseFloat(
-          formatUnits(
-            limitPrice,
-            limitOrder.kind === LimitOrderKind.SELL
-              ? buyTokenAmount.currency.decimals
-              : sellTokenAmount.currency.decimals
-          ) ?? 0
-        )
+        const nextLimitPriceFloat =
+          parseFloat(
+            formatUnits(
+              limitOrder.kind === LimitOrderKind.SELL ? buyAmount : sellAmount,
+              limitOrder.kind === LimitOrderKind.SELL
+                ? buyTokenAmount.currency.decimals
+                : sellTokenAmount.currency.decimals
+            ) ?? 0
+          ) / 10
+
+        console.log({ nextLimitPriceFloat })
+        const limitPrice = parseUnits(
+          nextLimitPriceFloat.toString(),
+          limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
+        ).toString()
+
         // get and parse the sell token amount
         const sellTokenAmountFloat = parseFloat(
           formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
@@ -174,7 +151,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   }
 
   useEffect(() => {
-    setInitialValue().catch(e => {
+    setToMarket().catch(e => {
       console.error(e)
       setIsPossibleToOrder({
         status: true,
