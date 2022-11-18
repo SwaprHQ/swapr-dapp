@@ -45,10 +45,10 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
 
-  const sellTokenValue = formatUnits(sellToken.value, formattedSellToken?.decimals)
-  const buyTokenValue = formatUnits(buyToken.value, formattedBuyToken?.decimals)
+  const sellTokenValue = Number(formatUnits(sellToken.value, formattedSellToken?.decimals))
+  const buyTokenValue = sellTokenValue * Number(formatUnits(buyToken.value, formattedBuyToken?.decimals))
 
-  const price = Number(buyTokenValue) / Number(sellTokenValue)
+  const price = buyTokenValue / sellTokenValue
 
   const handleDeleteOpenOrders = useCallback(async () => {
     if (chainId && library) {
@@ -70,7 +70,7 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
               </Box>
             )}
             <Flex flexDirection="column">
-              <Box>{formatNumber(formatUnits(sellToken.value, formattedSellToken?.decimals))}</Box>
+              <Box>{formatNumber(sellTokenValue)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>
                 {formattedSellToken?.symbol ?? shortenAddress(sellToken.tokenAddress)}
               </Box>
@@ -94,7 +94,7 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
               </Box>
             )}
             <Flex flexDirection="column">
-              <Box>{formatNumber(formatUnits(buyToken.value, formattedBuyToken?.decimals))}</Box>
+              <Box>{formatNumber(buyTokenValue)}</Box>
               <Box sx={{ fontSize: '0.8em' }}>{formattedBuyToken?.symbol ?? shortenAddress(buyToken.tokenAddress)}</Box>
             </Flex>
           </Flex>
