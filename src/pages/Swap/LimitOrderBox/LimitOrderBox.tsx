@@ -1,3 +1,5 @@
+import { redirect } from 'react-router-dom'
+
 import { useActiveWeb3React } from '../../../hooks'
 import { LimitOrderForm } from './components/LimitOrderForm/LimitOrderForm'
 import { supportedChainIdList } from './constants'
@@ -5,16 +7,17 @@ import { supportedChainIdList } from './constants'
 export function LimitOrderBox() {
   const { library, account, chainId } = useActiveWeb3React()
 
+  if (chainId && !supportedChainIdList.includes(chainId)) {
+    redirect('/swap')
+    return null
+  }
+
   if (!library) {
     throw new Error('Limit Orders module requires a Web3 provider')
   }
 
   if (!chainId) {
     throw new Error('Should be connected to a network')
-  }
-
-  if (chainId && !supportedChainIdList.includes(chainId)) {
-    throw new Error('Limit Orders module does not support chainId ' + chainId)
   }
 
   if (!account) {
