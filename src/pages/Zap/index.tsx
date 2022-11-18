@@ -131,8 +131,7 @@ export default function Zap() {
   // get custom setting values for user
   const allowedSlippage = useUserSlippageTolerance()
 
-  // swap state
-  // const { independentField, typedValue, recipient } = useSwapState()
+  // zap state
   const { independentField, typedValue, recipient } = useZapState()
 
   const {
@@ -152,9 +151,7 @@ export default function Zap() {
   const [zapPair, setZapPair] = useState<Pair>()
 
   const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
-
   const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
-
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
 
   const zapIn = independentField === Field.INPUT
@@ -292,6 +289,8 @@ export default function Zap() {
   const zeroBN = BigNumber.from(0)
   const dexId2 = BigNumber.from('2')
   const userAddress = '0x372A291A9cad69b0F5F231cf1885574e9De7fD33'
+  console.log('zap path0', potentialTrade0?.details, getPathFromTrade(potentialTrade0))
+  console.log('zap path1', potentialTrade1?.details, getPathFromTrade(potentialTrade1))
 
   const swapTokenA: SwapTx = {
     amount: zapInInputAmountTrade0?.toSignificant() ?? '0',

@@ -29,7 +29,7 @@ import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
-import { useWrappingToken } from '../../hooks/useContract'
+import { useWrappingToken, useZapContract } from '../../hooks/useContract'
 import useENS from '../../hooks/useENS'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
@@ -325,12 +325,6 @@ export function useDerivedSwapInfo<
       },
     }
 
-    const halfParsedAmount = tryParseAmount(
-      parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
-      parsedAmount.currency,
-      chainId
-    )
-
     if (isZap && pairCurrency0 && pairCurrency1) {
       const isInOut0EqualOrWrap =
         currencyEquals(inputCurrency, pairCurrency0) ||
@@ -338,6 +332,12 @@ export function useDerivedSwapInfo<
       const isInOut1EqualOrWrap =
         currencyEquals(inputCurrency, pairCurrency1) ||
         (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency1)
+      // use half of the parsed amount to find best routes for to different tokens and estimate prices
+      const halfParsedAmount = tryParseAmount(
+        parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
+        parsedAmount.currency,
+        chainId
+      )
       console.log('zap is wrapped', isInOut0EqualOrWrap, isInOut1EqualOrWrap)
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
       console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())

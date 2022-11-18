@@ -324,3 +324,48 @@ export const calculateZapInAmounts = (
 
   return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB, liquidityMinted }
 }
+
+// export const calculateZapOutAmounts = (
+//   amountFrom: CurrencyAmount,
+//   pair: Pair,
+//   pairTotalSupply: TokenAmount,
+//   priceToken0TokenFrom: Price,
+//   priceToken1TokenFrom: Price,
+//   chainId: number
+// ): {
+//   amountTo?: TokenAmount
+// } => {
+//   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
+
+//   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
+//   const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
+//   const token1TokenFromPrice = Number(priceToken1TokenFrom.toFixed(significantDigits))
+//   const amountFromBN = Number(amountFrom.toFixed(significantDigits))
+
+//   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+
+//   const liquidityValueA =
+//     pair &&
+//     pairTotalSupply &&
+//     userLiquidity &&
+//     tokenA &&
+//     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+//     JSBI.greaterThanOrEqual(pairTotalSupply.raw, userLiquidity.raw)
+//       ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, userLiquidity, false).raw)
+//       : undefined
+//   const liquidityValueB =
+//     pair &&
+//     pairTotalSupply &&
+//     userLiquidity &&
+//     tokenB &&
+//     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+//     JSBI.greaterThanOrEqual(pairTotalSupply.raw, userLiquidity.raw)
+//       ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, userLiquidity, false).raw)
+//       : undefined
+//   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
+//     [Field.CURRENCY_A]: liquidityValueA,
+//     [Field.CURRENCY_B]: liquidityValueB,
+//   }
+
+//   return {}
+// }
