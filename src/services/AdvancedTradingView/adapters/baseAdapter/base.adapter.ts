@@ -138,7 +138,13 @@ export class BaseAdapter<
 
     const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
-    if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
+    if (
+      (dataType === AdapterPayloadType.SWAPS && pair && !isFirstFetch && !pair.swaps?.hasMore) ||
+      (dataType === AdapterPayloadType.SWAPS && pair && isFirstFetch) ||
+      (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) ||
+      (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && isFirstFetch)
+    )
+      return
 
     try {
       if (dataType === AdapterPayloadType.SWAPS) {
