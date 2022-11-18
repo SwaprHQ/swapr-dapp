@@ -19,7 +19,7 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useAnalytics } from '../analytics'
-import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
@@ -30,7 +30,7 @@ import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import { useZapContract } from './useContract'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
-import { Zap, ZapInterface } from './zap/Zap'
+import { Zap } from './zap/Zap'
 
 import { useActiveWeb3React } from './index'
 
@@ -152,36 +152,20 @@ export function getZapSummary(trade: Trade, recipientAddressOrName: string | nul
     : base
 }
 
-export interface SwapTx {
-  amount: BigNumber
-  amountMin: BigNumber
-  path: string[]
-  dexIndex: BigNumber
-}
-
-export interface ZapInTx {
-  amountAMin: BigNumber
-  amountBMin: BigNumber
-  amountLPMin: BigNumber
-  dexIndex: BigNumber
-  to: string // the ENS name or address of the recipient of the trade
-}
-
-export interface ZapOutTx {
-  amountLpFrom: BigNumber
-  amountTokenToMin: BigNumber
-  dexIndex: BigNumber
-  to: string // the ENS name or address of the recipient of the trade
-}
+export type ZapInType = Parameters<Zap['functions']['zapIn']>
+export type ZapOutType = Parameters<Zap['functions']['zapOut']>
+export type ZapInTx = ZapInType[0]
+export type ZapOutTx = ZapOutType[0]
+export type SwapTx = ZapInType[1]
 
 export interface UseZapInCallbackParams {
-  swapTokenA: SwapTx
-  swapTokenB: SwapTx
   zapIn?: ZapInTx
   zapOut?: ZapOutTx
-  allowedSlippage: number // in bips
-  transferResidual: boolean
-  affiliate: string
+  swapTokenA: SwapTx
+  swapTokenB: SwapTx
+  receiver: string | null
+  affiliate?: string
+  transferResidual?: boolean
 }
 
 export interface UseZapCallbackReturn {
@@ -196,23 +180,28 @@ export interface UseZapCallbackReturn {
  * and the user has approved the slippage adjusted input amount for the trade
  */
 export function useZapCallback({
-  swapTokenA,
-  swapTokenB,
   zapIn,
   zapOut,
-  allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
+  swapTokenA,
+  swapTokenB,
+  receiver,
   affiliate,
-  transferResidual,
+  transferResidual = true,
 }: UseZapInCallbackParams): UseZapCallbackReturn {
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
   const [zapType, setZapType] = useState(ZapType.NOT_APPLICABLE)
+  const [affiliateAddress, setAffiliateAddress] = useState(ZERO_ADDRESS)
+  const [receiverAddress, setReceiverAddress] = useState(ZERO_ADDRESS)
   console.log('zap callback inside', zapContract)
 
-  const zapToAddress = zapType === ZapType.ZAP_IN ? zapIn?.to : zapOut?.to
-  const { address: recipientAddress } = useENS(zapToAddress)
-  const recipient = zapToAddress === null ? account : recipientAddress
+  const { address: receiverENS } = useENS(receiver)
+  useEffect(() => {
+    const recipient = receiverENS ?? account
+    if (recipient) setReceiverAddress(recipient)
+    if (affiliate) setAffiliateAddress(affiliate)
+  }, [account, affiliate, receiverENS])
 
   // Watch the transaction from transaction reducer
   const [transactionReceipt, setTransactionReceipt] = useState<ContractTransaction | undefined>()
@@ -228,11 +217,14 @@ export function useZapCallback({
   const addTransaction = useTransactionAdder()
 
   useEffect(() => {
-    setZapType(zapIn ? ZapType.ZAP_IN : zapOut ? ZapType.ZAP_OUT : ZapType.NOT_APPLICABLE)
+    if ((zapIn && zapOut) || !(zapIn || zapOut)) {
+      setZapType(ZapType.NOT_APPLICABLE)
+    } else setZapType(zapIn ? ZapType.ZAP_IN : ZapType.ZAP_OUT)
   }, [zapIn, zapOut])
 
   return useMemo(() => {
-    if (!zapContract || !library || !account || !chainId) {
+    if (!zapContract || !library || !account || !chainId || receiverAddress === ZERO_ADDRESS) {
+      console.log('zap error', zapContract, library, account, chainId, receiverAddress)
       return {
         zapType: ZapType.NOT_APPLICABLE,
         state: ZapState.INVALID,
@@ -240,34 +232,23 @@ export function useZapCallback({
         error: 'Missing dependencies',
       }
     }
-    if (!recipient) {
-      if (zapToAddress !== null) {
-        return {
-          zapType: ZapType.NOT_APPLICABLE,
-          state: ZapState.INVALID,
-          callback: undefined,
-          error: 'Invalid recipient',
-        }
-      } else {
-        return { zapType: zapType, state: ZapState.LOADING, callback: undefined, error: null }
-      }
-    }
 
     if (zapType === ZapType.ZAP_IN && zapIn) {
       return {
-        zapType: ZapType.NOT_APPLICABLE,
+        zapType: zapType,
         callback: async () => {
           try {
-            console.log('ESSA zap in callback', zapContract, {
-              swapTokenA,
-              swapTokenB,
-              zapIn,
-              affiliate,
-              transferResidual,
-            })
+            console.log('ESSA zap in callback', zapContract)
             // Set state to pending
             setZapState(ZapState.LOADING)
-            const txReceipt = await zapContract.zapIn(swapTokenA, swapTokenB, zapIn, affiliate, transferResidual)
+            const txReceipt = await zapContract.zapIn(
+              zapIn,
+              swapTokenA,
+              swapTokenB,
+              receiverAddress,
+              affiliateAddress,
+              transferResidual
+            )
             console.log('zap in tx', txReceipt)
             setTransactionReceipt(txReceipt)
             addTransaction(txReceipt, { summary: 'Zap in' })
@@ -284,13 +265,19 @@ export function useZapCallback({
       }
     } else if (zapType === ZapType.ZAP_OUT && zapOut) {
       return {
-        zapType: ZapType.NOT_APPLICABLE,
+        zapType: zapType,
         callback: async () => {
           try {
             console.log('ESSA zap out callback')
             // Set state to pending
             setZapState(ZapState.LOADING)
-            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, affiliate)
+            const txReceipt = await zapContract.zapOut(
+              zapOut,
+              swapTokenA,
+              swapTokenB,
+              receiverAddress,
+              affiliateAddress
+            )
             setTransactionReceipt(txReceipt)
             addTransaction(txReceipt, { summary: 'Zap out' })
             return 'wio'
@@ -317,16 +304,15 @@ export function useZapCallback({
     library,
     account,
     chainId,
-    recipient,
+    receiverAddress,
     zapType,
     zapIn,
-    zapToAddress,
+    zapOut,
     zapState,
     swapTokenA,
     swapTokenB,
-    affiliate,
+    affiliateAddress,
     transferResidual,
     addTransaction,
-    zapOut,
   ])
 }

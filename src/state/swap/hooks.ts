@@ -44,6 +44,7 @@ import { currencyId } from '../../utils/currencyId'
 import { calculateZapInAmounts, computeSlippageAdjustedAmounts, limitNumberOfDecimalPlaces } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
+import { useDerivedMintInfo } from '../mint/hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { replaceZapState } from '../zap/actions'
@@ -340,6 +341,7 @@ export function useDerivedSwapInfo<
       console.log('zap is wrapped', isInOut0EqualOrWrap, isInOut1EqualOrWrap)
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
       console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())
+
       const getTradesToken0 = getTradesPromise(
         halfParsedAmount ?? parsedAmount,
         inputCurrency,
@@ -457,52 +459,39 @@ export function useDerivedSwapInfo<
   let returnInputError = inputError
   if (isZap) {
     const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
-    let amountAddLpToken0
-    let amountAddLpToken1
-
-    const isCorrectTrade =
-      bestTradeToken0 &&
-      bestTradeToken1 &&
-      bestTradeToken0.details instanceof Route &&
-      bestTradeToken1.details instanceof Route
-
-    if (parsedAmount && pair && chainId) {
+    let zapInCalculatedAmounts
+    if (parsedAmount && pair && totalSupply && chainId) {
       if (bestTradeToken0 && bestTradeToken1) {
-        const { amountAddLpTokenA, amountAddLpTokenB } = calculateZapInAmounts(
+        zapInCalculatedAmounts = calculateZapInAmounts(
           parsedAmount,
           pair,
+          totalSupply,
           bestTradeToken0.executionPrice.invert(),
           bestTradeToken1.executionPrice.invert(),
           chainId
         )
-        amountAddLpToken0 = amountAddLpTokenA
-        amountAddLpToken1 = amountAddLpTokenB
+        console.log('total LP', zapInCalculatedAmounts.liquidityMinted?.toExact())
       } else {
-        // returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
-        returnInputError = undefined
+        returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
       }
     }
 
     if (allowedSlippage && bestTradeToken0 && bestTradeToken1) {
-      const slippageAdjustedAmounts0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
-      const slippageAdjustedAmounts1 = bestTradeToken1 && computeSlippageAdjustedAmounts(bestTradeToken1)
+      const slippageAdjustedAmountsTrade0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
+      const slippageAdjustedAmountsTrade1 = bestTradeToken1 && computeSlippageAdjustedAmounts(bestTradeToken1)
       // compare input balance to Max input based on version
-      const [balanceInToken0, amountInToken0] = [
-        relevantTokenBalances[0],
-        slippageAdjustedAmounts0 ? slippageAdjustedAmounts0[Field.INPUT] : null,
-      ]
-
-      const [balanceInToken1, amountInToken1] = [
-        relevantTokenBalances[0],
-        slippageAdjustedAmounts1 ? slippageAdjustedAmounts1[Field.INPUT] : null,
-      ]
-
+      const maxAmountInToken0 = slippageAdjustedAmountsTrade0 ? slippageAdjustedAmountsTrade0[Field.INPUT] : null
+      const maxAmountInToken1 = slippageAdjustedAmountsTrade1 ? slippageAdjustedAmountsTrade1[Field.INPUT] : null
+      const balanceIn = relevantTokenBalances[0]
       if (
-        (balanceInToken0 && amountInToken0 && balanceInToken0.lessThan(amountInToken0)) ||
-        (balanceInToken1 && amountInToken1 && balanceInToken1.lessThan(amountInToken1))
+        balanceIn &&
+        maxAmountInToken0 &&
+        maxAmountInToken1 &&
+        balanceIn.lessThan(maxAmountInToken0.add(maxAmountInToken1))
       ) {
         returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
       }
+      //TODO compare with inputAmountBalance0 and pick better
     }
     return {
       currencies: {
@@ -516,13 +505,11 @@ export function useDerivedSwapInfo<
       parsedAmount,
       tradeToken0: bestTradeToken0,
       tradeToken1: bestTradeToken1,
-      allPlatformTradesToken0: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTradesToken0,
       inputError: returnInputError,
       loading,
-      pathToken0toLpToken: isCorrectTrade ? bestTradeToken0.details.path.map(token => token.address) : [],
-      pathToken1toLpToken: isCorrectTrade ? bestTradeToken1.details.path.map(token => token.address) : [],
-      amountAddLpToken0,
-      amountAddLpToken1,
+      inputAmountTrade0: zapInCalculatedAmounts?.amountFromForTokenA,
+      inputAmountTrade1: zapInCalculatedAmounts?.amountFromForTokenB,
+      liquidityMinted: zapInCalculatedAmounts?.liquidityMinted,
     } as ReturnedValue
   } else {
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade

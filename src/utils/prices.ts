@@ -22,7 +22,7 @@ import {
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
-import { BigNumber } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers'
 import toFormat from 'toformat'
 
 import {
@@ -38,9 +38,11 @@ import {
   PRICE_IMPACT_NON_EXPERT,
   PriceImpact,
 } from '../constants'
+import { useTotalSupply } from '../data/TotalSupply'
 import { useCoingeckoUSDPrice } from '../hooks/useUSDValue'
 import { tryParseAmount } from '../state/swap/hooks'
 import { Field } from '../state/swap/types'
+import { wrappedCurrency, wrappedCurrencyAmount } from './wrappedCurrency'
 
 import { formatCurrencyAmount } from '.'
 
@@ -257,102 +259,68 @@ export const limitNumberOfDecimalPlaces = (
 export const calculateZapInAmounts = (
   amountFrom: CurrencyAmount,
   pair: Pair,
-  priceAC: Price,
-  priceBC: Price,
+  pairTotalSupply: TokenAmount,
+  priceToken0TokenFrom: Price,
+  priceToken1TokenFrom: Price,
   chainId: number
 ): {
-  amountFromForTokenA: BigNumber
-  amountFromForTokenB: BigNumber
-  amountAddLpTokenA: BigNumber
-  amountAddLpTokenB: BigNumber
+  amountFromForTokenA?: CurrencyAmount
+  amountFromForTokenB?: CurrencyAmount
+  amountAddLpTokenA?: CurrencyAmount
+  amountAddLpTokenB?: CurrencyAmount
+  liquidityMinted?: TokenAmount
 } => {
   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
-  const reserveA = pair.reserve0
-  const reserveB = pair.reserve1
-  // const a = priceAC.divide(priceBC)
-  const b = reserveA.divide(reserveB)
-  // const x = a.multiply(b)
-  // const decimals0 = pair.token0.decimals
-
-  // const pairPrice = parseUnits(pair.token1Price.toFixed(), 6)
-  // const pac = parseUnits(priceAC.toFixed(), 6)
-  // const pbc = parseUnits(priceBC.toFixed(), 6)
-  // const amountFromBN = parseUnits(amountFrom.toFixed(), 6)
-
-  // const pac = parseUnits(new Decimal(priceAC.toFixed()).toFixed(18), 18).toString()
-  // const pbc = BigNumber.from(priceBC.toFixed())
-  // const pairPrice = BigNumber.from(pair.token1Price.toFixed())
 
   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
-  const pac = Number(priceAC.toFixed(significantDigits))
-  const pbc = Number(priceBC.toFixed(significantDigits))
+  const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
+  const token1TokenFromPrice = Number(priceToken1TokenFrom.toFixed(significantDigits))
   const amountFromBN = Number(amountFrom.toFixed(significantDigits))
 
-  // console.log(
-  //   'tst',
-  //   pair,
-  //   pair.token0.symbol,
-  //   pair.token1.symbol,
-  //   pair.token0Price.toFixed(),
-  //   pair.token1Price.toFixed()
-  // )
-  // console.log(
-  //   'tst p',
-  //   formatCurrencyAmount(amountFrom),
-  //   amountFrom.toFixed(),
-  //   pair.token0Price.toFixed(),
-  //   pair.token1Price.toFixed(),
-  //   priceAC.toFixed(),
-  //   priceBC.toFixed()
-  // )
-  // console.log('tst a', a.toFixed(18), priceAC.toFixed(), priceBC.toFixed())
-  // console.log('tst b', b.toFixed(18), reserveB.toFixed(), reserveA.toFixed())
-  // console.log('tst x', x, x.toFixed(18))
+  const rawLpAmountB = Number(
+    (amountFromBN / (pairPrice * token0TokenFromPrice + token1TokenFromPrice)).toFixed(significantDigits)
+  )
+  const rawLpAmountA = Number((rawLpAmountB * pairPrice).toFixed(significantDigits))
 
-  // const xBN = parseUnits(x?.toFixed(18) ?? '')
+  const rawFromForB = rawLpAmountB * token1TokenFromPrice
+  const rawFromForA = amountFromBN - rawFromForB
 
-  // const one = parseUnits('1', 18)
-  // const k0 = BigNumber.from(parseFloat('100'))
-  // const k1 = BigNumber.from(parseFloat('0.075'))
-  // const k2 = BigNumber.from(parseFloat('1565'))
-  // const k3 = BigNumber.from(parseFloat('117'))
-  // const tstk = k0.div(k1.mul(k2).add(k3))
-  // console.log('tst k', tstk)
+  // amounts of input token which should be used to buy tokenA and tokenB
+  // amountFrom = amountFromForTokenA + amountFromForTokenB
+  const amountFromForTokenA = tryParseAmount(rawFromForA.toFixed(significantDigits), amountFrom.currency, chainId)
+  const amountFromForTokenB = tryParseAmount(rawFromForB.toFixed(significantDigits), amountFrom.currency, chainId)
 
-  // const a = pairPrice.mul(pac).add(pbc)
-  // const amountB = amountFromBN.div(pairPrice.mul(pac).add(pbc))
-  const rawAmountB = Number((amountFromBN / (pairPrice * pac + pbc)).toFixed(significantDigits))
-  const rawAmountA = Number((rawAmountB * pairPrice).toFixed(significantDigits))
-  // TODO too low value check?
-  // if (rawAmountA < Number. || rawAmountB < Number.MIN_SAFE_INTEGER) throw new Error('Amount too low')
-  const tstB = rawAmountB * pbc
-  const tstA = amountFromBN - tstB
+  // amounts of tokenA and tokenB which should be used to add liquidity accordingly
+  const amountAddLpTokenA = tryParseAmount(rawLpAmountA.toFixed(significantDigits), pair.token0, chainId)
+  const amountAddLpTokenB = tryParseAmount(rawLpAmountB.toFixed(significantDigits), pair.token1, chainId)
+
+  const [tokenAmountA, tokenAmountB] = [
+    wrappedCurrencyAmount(amountAddLpTokenA, chainId),
+    wrappedCurrencyAmount(amountAddLpTokenB, chainId),
+  ]
+  // estimated amount of LP tokens received after zap in
+  const liquidityMinted =
+    tokenAmountA && tokenAmountB && tokenAmountA.greaterThan('0') && tokenAmountB.greaterThan('0')
+      ? pair.getLiquidityMinted(pairTotalSupply, tokenAmountA, tokenAmountB)
+      : undefined
 
   console.log('zap pair:', pair)
   console.log('zap:', amountFrom.currency.symbol, amountFromBN, ' was given. Significant', significantDigits)
-  console.log('zap:', rawAmountA, pair.token0.symbol, ' will be LP. Bought for', tstA)
-  console.log('zap:', rawAmountB, pair.token1.symbol, ' will be LP. Bought for', tstB)
-  const amountFromForTokenB = BigNumber.from(parseUnits(tstB.toFixed(significantDigits)))
-  const amountFromForTokenA = BigNumber.from(parseUnits(tstA.toFixed(significantDigits)))
-  const amountAddLpTokenB = BigNumber.from(parseUnits(rawAmountB.toFixed(significantDigits)))
-  const amountAddLpTokenA = BigNumber.from(parseUnits(rawAmountA.toFixed(significantDigits)))
-  console.log('zap amp', amountFromForTokenA.add(amountFromForTokenB).toString())
-  // console.log(
-  //   'tst o',
-  //   pairPrice.toString(),
-  //   pac.toString(),
-  //   pbc.toString(),
-  //   amountFromBN.toString(),
-  //   rawAmountA,
-  //   rawAmountB
-  // )
-  console.log('zap: pair, ac, bc', pair.token1Price.toFixed(), b.toFixed(12), priceAC.toFixed(), priceBC.toFixed())
-  // console.log('eloszki', amountFrom, amountFromBN, one.toString())
-  // const tmpDenominator = xBN.add(one)
-  // const amountB = xBN.mul(amountFromBN).div(tmpDenominator)
-  // const amountA = amountFromBN.div(tmpDenominator)
-  // const amountB = CurrencyAmount.nativeCurrency(cb, chainId)
-  // const amountA = CurrencyAmount.nativeCurrency(ca, chainId)
-  // console.log('zap calculate', amountA, amountB, amountFrom.toExact(), amountA.toString(), amountB.toString())
-  return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB }
+  console.log(
+    'zap:',
+    amountAddLpTokenA?.toFixed(),
+    pair.token0.symbol,
+    ' will be LP. Bought for',
+    amountFromForTokenA?.toFixed()
+  )
+  console.log(
+    'zap:',
+    amountAddLpTokenB?.toFixed(),
+    pair.token1.symbol,
+    ' will be LP. Bought for',
+    amountFromForTokenB?.toFixed()
+  )
+  console.log('zap total LP', liquidityMinted?.toExact())
+
+  return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB, liquidityMinted }
 }

@@ -49,8 +49,8 @@ interface ZapInterface extends ethers.utils.Interface {
     'toggleContractActive()': FunctionFragment
     'totalAffiliateBalance(address)': FunctionFragment
     'withdrawTokens(address[])': FunctionFragment
-    'zapIn((uint256,uint256,address[],uint8),(uint256,uint256,address[],uint8),(uint256,uint256,uint256,uint8,address),address,bool)': FunctionFragment
-    'zapOut((uint256,uint256,uint8,address),(uint256,uint256,address[],uint8),(uint256,uint256,address[],uint8),address)': FunctionFragment
+    'zapIn((uint256,uint256,uint256,uint8),(uint256,uint256,address[],uint8),(uint256,uint256,address[],uint8),address,address,bool)': FunctionFragment
+    'zapOut((uint256,uint256,uint8),(uint256,uint256,address[],uint8),(uint256,uint256,address[],uint8),address,address)': FunctionFragment
   }
 
   encodeFunctionData(functionFragment: 'acceptOwner', values?: undefined): string
@@ -84,24 +84,24 @@ interface ZapInterface extends ethers.utils.Interface {
     functionFragment: 'zapIn',
     values: [
       {
-        amount: BigNumberish
-        amountMin: BigNumberish
-        path: string[]
-        dexIndex: BigNumberish
-      },
-      {
-        amount: BigNumberish
-        amountMin: BigNumberish
-        path: string[]
-        dexIndex: BigNumberish
-      },
-      {
         amountAMin: BigNumberish
         amountBMin: BigNumberish
         amountLPMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
+      {
+        amount: BigNumberish
+        amountMin: BigNumberish
+        path: string[]
+        dexIndex: BigNumberish
+      },
+      {
+        amount: BigNumberish
+        amountMin: BigNumberish
+        path: string[]
+        dexIndex: BigNumberish
+      },
+      string,
       string,
       boolean
     ]
@@ -113,7 +113,6 @@ interface ZapInterface extends ethers.utils.Interface {
         amountLpFrom: BigNumberish
         amountTokenToMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
       {
         amount: BigNumberish
@@ -127,6 +126,7 @@ interface ZapInterface extends ethers.utils.Interface {
         path: string[]
         dexIndex: BigNumberish
       },
+      string,
       string
     ]
   ): string
@@ -164,8 +164,8 @@ interface ZapInterface extends ethers.utils.Interface {
   events: {
     'OwnerProposal(address)': EventFragment
     'OwnerSet(address)': EventFragment
-    'ZapIn(address,address,uint256,address,uint256)': EventFragment
-    'ZapOut(address,address,uint256,address,uint256)': EventFragment
+    'ZapIn(address,address,address,uint256,address,uint256)': EventFragment
+    'ZapOut(address,address,address,uint256,address,uint256)': EventFragment
   }
 
   getEvent(nameOrSignatureOrTopic: 'OwnerProposal'): EventFragment
@@ -179,8 +179,9 @@ export type OwnerProposalEvent = TypedEvent<[string] & { _pendingOwner: string }
 export type OwnerSetEvent = TypedEvent<[string] & { _owner: string }>
 
 export type ZapInEvent = TypedEvent<
-  [string, string, BigNumber, string, BigNumber] & {
+  [string, string, string, BigNumber, string, BigNumber] & {
     sender: string
+    receiver: string
     tokenFrom: string
     amountFrom: BigNumber
     pairTo: string
@@ -189,8 +190,9 @@ export type ZapInEvent = TypedEvent<
 >
 
 export type ZapOutEvent = TypedEvent<
-  [string, string, BigNumber, string, BigNumber] & {
+  [string, string, string, BigNumber, string, BigNumber] & {
     sender: string
+    receiver: string
     pairFrom: string
     amountFrom: BigNumber
     tokenTo: string
@@ -341,6 +343,12 @@ export class Zap extends BaseContract {
     ): Promise<ContractTransaction>
 
     zapIn(
+      zap: {
+        amountAMin: BigNumberish
+        amountBMin: BigNumberish
+        amountLPMin: BigNumberish
+        dexIndex: BigNumberish
+      },
       swapTokenA: {
         amount: BigNumberish
         amountMin: BigNumberish
@@ -353,13 +361,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
-      zap: {
-        amountAMin: BigNumberish
-        amountBMin: BigNumberish
-        amountLPMin: BigNumberish
-        dexIndex: BigNumberish
-        to: string
-      },
+      receiver: string,
       affiliate: string,
       transferResidual: boolean,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -370,7 +372,6 @@ export class Zap extends BaseContract {
         amountLpFrom: BigNumberish
         amountTokenToMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
       swapTokenA: {
         amount: BigNumberish
@@ -384,6 +385,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
+      receiver: string,
       affiliate: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>
@@ -482,6 +484,12 @@ export class Zap extends BaseContract {
   ): Promise<ContractTransaction>
 
   zapIn(
+    zap: {
+      amountAMin: BigNumberish
+      amountBMin: BigNumberish
+      amountLPMin: BigNumberish
+      dexIndex: BigNumberish
+    },
     swapTokenA: {
       amount: BigNumberish
       amountMin: BigNumberish
@@ -494,13 +502,7 @@ export class Zap extends BaseContract {
       path: string[]
       dexIndex: BigNumberish
     },
-    zap: {
-      amountAMin: BigNumberish
-      amountBMin: BigNumberish
-      amountLPMin: BigNumberish
-      dexIndex: BigNumberish
-      to: string
-    },
+    receiver: string,
     affiliate: string,
     transferResidual: boolean,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -511,7 +513,6 @@ export class Zap extends BaseContract {
       amountLpFrom: BigNumberish
       amountTokenToMin: BigNumberish
       dexIndex: BigNumberish
-      to: string
     },
     swapTokenA: {
       amount: BigNumberish
@@ -525,6 +526,7 @@ export class Zap extends BaseContract {
       path: string[]
       dexIndex: BigNumberish
     },
+    receiver: string,
     affiliate: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>
@@ -603,6 +605,12 @@ export class Zap extends BaseContract {
     withdrawTokens(tokens: string[], overrides?: CallOverrides): Promise<void>
 
     zapIn(
+      zap: {
+        amountAMin: BigNumberish
+        amountBMin: BigNumberish
+        amountLPMin: BigNumberish
+        dexIndex: BigNumberish
+      },
       swapTokenA: {
         amount: BigNumberish
         amountMin: BigNumberish
@@ -615,13 +623,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
-      zap: {
-        amountAMin: BigNumberish
-        amountBMin: BigNumberish
-        amountLPMin: BigNumberish
-        dexIndex: BigNumberish
-        to: string
-      },
+      receiver: string,
       affiliate: string,
       transferResidual: boolean,
       overrides?: CallOverrides
@@ -632,7 +634,6 @@ export class Zap extends BaseContract {
         amountLpFrom: BigNumberish
         amountTokenToMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
       swapTokenA: {
         amount: BigNumberish
@@ -646,6 +647,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
+      receiver: string,
       affiliate: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber, string] & { amountTransferred: BigNumber; tokenTo: string }>
@@ -660,16 +662,18 @@ export class Zap extends BaseContract {
 
     OwnerSet(_owner?: null): TypedEventFilter<[string], { _owner: string }>
 
-    'ZapIn(address,address,uint256,address,uint256)'(
+    'ZapIn(address,address,address,uint256,address,uint256)'(
       sender?: null,
+      receiver?: null,
       tokenFrom?: null,
       amountFrom?: null,
       pairTo?: null,
       amountTo?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber],
+      [string, string, string, BigNumber, string, BigNumber],
       {
         sender: string
+        receiver: string
         tokenFrom: string
         amountFrom: BigNumber
         pairTo: string
@@ -679,14 +683,16 @@ export class Zap extends BaseContract {
 
     ZapIn(
       sender?: null,
+      receiver?: null,
       tokenFrom?: null,
       amountFrom?: null,
       pairTo?: null,
       amountTo?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber],
+      [string, string, string, BigNumber, string, BigNumber],
       {
         sender: string
+        receiver: string
         tokenFrom: string
         amountFrom: BigNumber
         pairTo: string
@@ -694,16 +700,18 @@ export class Zap extends BaseContract {
       }
     >
 
-    'ZapOut(address,address,uint256,address,uint256)'(
+    'ZapOut(address,address,address,uint256,address,uint256)'(
       sender?: null,
+      receiver?: null,
       pairFrom?: null,
       amountFrom?: null,
       tokenTo?: null,
       amountTo?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber],
+      [string, string, string, BigNumber, string, BigNumber],
       {
         sender: string
+        receiver: string
         pairFrom: string
         amountFrom: BigNumber
         tokenTo: string
@@ -713,14 +721,16 @@ export class Zap extends BaseContract {
 
     ZapOut(
       sender?: null,
+      receiver?: null,
       pairFrom?: null,
       amountFrom?: null,
       tokenTo?: null,
       amountTo?: null
     ): TypedEventFilter<
-      [string, string, BigNumber, string, BigNumber],
+      [string, string, string, BigNumber, string, BigNumber],
       {
         sender: string
+        receiver: string
         pairFrom: string
         amountFrom: BigNumber
         tokenTo: string
@@ -814,6 +824,12 @@ export class Zap extends BaseContract {
     withdrawTokens(tokens: string[], overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>
 
     zapIn(
+      zap: {
+        amountAMin: BigNumberish
+        amountBMin: BigNumberish
+        amountLPMin: BigNumberish
+        dexIndex: BigNumberish
+      },
       swapTokenA: {
         amount: BigNumberish
         amountMin: BigNumberish
@@ -826,13 +842,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
-      zap: {
-        amountAMin: BigNumberish
-        amountBMin: BigNumberish
-        amountLPMin: BigNumberish
-        dexIndex: BigNumberish
-        to: string
-      },
+      receiver: string,
       affiliate: string,
       transferResidual: boolean,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -843,7 +853,6 @@ export class Zap extends BaseContract {
         amountLpFrom: BigNumberish
         amountTokenToMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
       swapTokenA: {
         amount: BigNumberish
@@ -857,6 +866,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
+      receiver: string,
       affiliate: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>
@@ -950,6 +960,12 @@ export class Zap extends BaseContract {
     ): Promise<PopulatedTransaction>
 
     zapIn(
+      zap: {
+        amountAMin: BigNumberish
+        amountBMin: BigNumberish
+        amountLPMin: BigNumberish
+        dexIndex: BigNumberish
+      },
       swapTokenA: {
         amount: BigNumberish
         amountMin: BigNumberish
@@ -962,13 +978,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
-      zap: {
-        amountAMin: BigNumberish
-        amountBMin: BigNumberish
-        amountLPMin: BigNumberish
-        dexIndex: BigNumberish
-        to: string
-      },
+      receiver: string,
       affiliate: string,
       transferResidual: boolean,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -979,7 +989,6 @@ export class Zap extends BaseContract {
         amountLpFrom: BigNumberish
         amountTokenToMin: BigNumberish
         dexIndex: BigNumberish
-        to: string
       },
       swapTokenA: {
         amount: BigNumberish
@@ -993,6 +1002,7 @@ export class Zap extends BaseContract {
         path: string[]
         dexIndex: BigNumberish
       },
+      receiver: string,
       affiliate: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>
