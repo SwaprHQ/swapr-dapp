@@ -1,6 +1,6 @@
 import { formatUnits } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { XCircle } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
@@ -39,6 +39,7 @@ interface LimitTransactionRowProps {
 export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const { type, status, uid, network, sellToken, buyToken, confirmedTime, cancelOrder } = transaction
   const { chainId, library } = useActiveWeb3React()
+  const [flipPrice, setFlipPrice] = useState(true)
   const notify = useNotificationPopup()
   const formattedSellToken = useToken(sellToken.tokenAddress)
   const formattedBuyToken = useToken(buyToken.tokenAddress)
@@ -46,9 +47,15 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const link = getExplorerLink(network, uid, 'transaction', 'COW')
 
   const sellTokenValue = Number(formatUnits(sellToken.value, formattedSellToken?.decimals))
-  const buyTokenValue = sellTokenValue * Number(formatUnits(buyToken.value, formattedBuyToken?.decimals))
+  const buyTokenValue = Number(formatUnits(buyToken.value, formattedBuyToken?.decimals))
 
-  const price = buyTokenValue / sellTokenValue
+  const price = flipPrice ? buyTokenValue / sellTokenValue : sellTokenValue / buyTokenValue
+
+  const formattedPrice = price > 0 && price < Infinity ? `${formatNumber(price)}` : '- -'
+
+  const tokenPair = flipPrice
+    ? `${formattedBuyToken?.symbol} / ${formattedSellToken?.symbol}`
+    : `${formattedSellToken?.symbol} / ${formattedBuyToken?.symbol}`
 
   const handleDeleteOpenOrders = useCallback(async () => {
     if (chainId && library) {
@@ -112,8 +119,16 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
       </TokenDetails>
 
       <TransactionDetails justifyContent="start">
-        <Flex flexDirection="column" alignContent="center">
-          <Box>{price > 0 && price < Infinity ? formatNumber(price) : '- -'}</Box>
+        <Flex
+          flexDirection="column"
+          alignContent="center"
+          onClick={() => {
+            setFlipPrice(!flipPrice)
+          }}
+          sx={{ cursor: 'pointer' }}
+        >
+          <Box>{formattedPrice}</Box>
+          <Box sx={{ fontSize: '10px' }}>{tokenPair}</Box>
         </Flex>
       </TransactionDetails>
 

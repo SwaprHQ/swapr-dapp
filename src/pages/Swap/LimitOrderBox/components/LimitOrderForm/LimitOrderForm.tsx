@@ -112,9 +112,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             ) ?? 0
           ) / 10
 
-        console.log({ nextLimitPriceFloat })
         const limitPrice = parseUnits(
-          nextLimitPriceFloat.toString(),
+          nextLimitPriceFloat.toFixed(6),
           limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
         ).toString()
 
@@ -254,7 +253,10 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const amountWei = parseUnits(formattedSellAmount, sellTokenAmount?.currency?.decimals).toString()
+      const amountWei = parseUnits(
+        parseFloat(formattedSellAmount).toFixed(6),
+        sellTokenAmount?.currency?.decimals
+      ).toString()
       const expiresAt = dayjs().add(expiresIn, expiresInUnit).unix()
       const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
 
