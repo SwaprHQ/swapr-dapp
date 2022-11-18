@@ -4,6 +4,7 @@ import { request, RequestOptions } from 'graphql-request'
 
 import {
   AdapterFetchDetails,
+  AdapterFetchDetailsExtended,
   AdapterFetchMethodArguments,
   AdapterKey,
   AdapterPayloadType,
@@ -87,46 +88,6 @@ export class BaseAdapter<
     }
   }
 
-  public async getPairTradesData({
-    inputToken,
-    outputToken,
-    amountToFetch,
-    isFirstFetch,
-    abortController,
-  }: AdapterFetchDetails) {
-    const pairId = this._getPairId(inputToken, outputToken)
-
-    if (!this.isSupportedChainId(this._chainId)) return
-
-    if (!pairId) return
-
-    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
-
-    if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
-
-    try {
-      const { swaps } = await this._fetchSwaps({
-        pairId,
-        pair,
-        chainId: this._chainId,
-        amountToFetch,
-        abortController,
-        inputTokenAddress: inputToken.address,
-        outputTokenAddress: outputToken.address,
-      })
-
-      return {
-        key: this._key,
-        pairId,
-        data: swaps,
-        hasMore: swaps.length === amountToFetch,
-      }
-    } catch (e) {
-      console.warn(`${this._key}${e}`)
-      return
-    }
-  }
-
   public async getPairActivity({
     inputToken,
     outputToken,
@@ -158,6 +119,68 @@ export class BaseAdapter<
       this._dispatchBurnsAndMints(pairId, burnsAndMints, amountToFetch)
     } catch (e) {
       console.warn(`${this._key}${e}`)
+    }
+  }
+
+  public async getPairData({
+    dataType,
+    inputToken,
+    outputToken,
+    amountToFetch,
+    isFirstFetch,
+    abortController,
+  }: AdapterFetchDetailsExtended) {
+    if (!this.isSupportedChainId(this._chainId)) return
+
+    const pairId = this._getPairId(inputToken, outputToken)
+
+    if (!pairId) return
+
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
+
+    if ((pair && !isFirstFetch && !pair.swaps?.hasMore) || (pair && isFirstFetch)) return
+
+    try {
+      if (dataType === AdapterPayloadType.SWAPS) {
+        const { swaps } = await this._fetchSwaps({
+          pairId,
+          pair,
+          chainId: this._chainId,
+          amountToFetch,
+          abortController,
+          inputTokenAddress: inputToken.address,
+          outputTokenAddress: outputToken.address,
+        })
+
+        return {
+          key: this._key,
+          pairId,
+          data: swaps,
+          hasMore: swaps.length === amountToFetch,
+        }
+      }
+
+      if (dataType === AdapterPayloadType.BURNS_AND_MINTS) {
+        const { burns, mints } = await this._fetchBurnsAndMints({
+          pairId,
+          pair,
+          chainId: this._chainId,
+          amountToFetch,
+          abortController,
+          inputTokenAddress: inputToken.address,
+          outputTokenAddress: outputToken.address,
+        })
+
+        return {
+          key: this._key,
+          pairId,
+          data: [...burns, ...mints],
+          hasMore: Boolean(burns.length === amountToFetch || mints.length === amountToFetch),
+        }
+      }
+    } catch (e) {
+      console.warn(`${this._key}${e}`)
+      return
     }
   }
 
