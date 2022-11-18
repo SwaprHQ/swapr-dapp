@@ -3,7 +3,7 @@ import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { useIsMobileByMedia } from '../../../../../hooks/useIsMobileByMedia'
-import DoubleCurrencyLogo from '../../../../DoubleLogo'
+import { DoubleCurrencyLogo } from '../../../../DoubleCurrencyLogo'
 
 export function LoadingRow() {
   const isMobile = useIsMobileByMedia()

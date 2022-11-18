@@ -1,4 +1,4 @@
-import { CurrencyAmount } from '@swapr/sdk'
+import { ChainId, CurrencyAmount } from '@swapr/sdk'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,6 +11,7 @@ import {
   NetworkSwitcher as NetworkSwitcherPopover,
   NetworkSwitcherTags,
 } from '../../components/NetworkSwitcher'
+import { PageMetaData } from '../../components/PageMetaData'
 import { RowBetween } from '../../components/Row'
 import { useActiveWeb3React } from '../../hooks'
 import {
@@ -97,6 +98,23 @@ const OutputPanelContainer = styled.div`
   margin-top: 12px;
 `
 
+/**
+ * Checks if network is supported by the bridge.
+ * Checks if the network exists in the defined presets.
+ * Checks if the network has testnet or coming soon tag.
+ * @param chainId
+ */
+export function isNetworkSupported(chainId: ChainId): boolean {
+  const network = networkOptionsPreset.find(network => network.chainId === chainId)
+
+  if (!network) {
+    return false
+  }
+
+  // Check for tags
+  return network.tag === NetworkSwitcherTags.COMING_SOON || network.tag === NetworkSwitcherTags.TESTNETS
+}
+
 export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
@@ -151,8 +169,7 @@ export default function Bridge() {
 
   const [displayedValue, setDisplayedValue] = useState('')
 
-  const isUnsupportedBridgeNetwork =
-    networkOptionsPreset.find(network => network.chainId === chainId)?.tag === NetworkSwitcherTags.COMING_SOON
+  const isUnsupportedBridgeNetwork = !isNetworkSupported(chainId!)
 
   useEffect(() => {
     if (activeTab === BridgeTab.BRIDGE) {
@@ -279,7 +296,7 @@ export default function Bridge() {
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: true,
+        showTestnets: false,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange]
   )
@@ -292,141 +309,144 @@ export default function Bridge() {
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: true,
+        showTestnets: false,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )
 
   return (
-    <Wrapper>
-      <Tabs
-        isCollecting={isCollecting}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        collectableTxAmount={collectableTxAmount}
-        setTxsFilter={setTxsFilter}
-        handleResetBridge={handleResetBridge}
-        handleTriggerCollect={handleTriggerCollect}
-        firstTxnToCollect={collectableTx}
-        toggleBridgeSwap={toggleBridgeSwap}
-      />
-      {activeTab !== BridgeTab.HISTORY && (
-        <AppBody>
-          <RowBetween mb="12px">
-            <Title>{isCollecting ? 'Collect' : 'Swapr Bridge'}</Title>
-          </RowBetween>
-          <Row mb="12px">
-            <AssetWrapper ref={fromPanelRef}>
-              <AssetSelector
-                label="from"
-                onClick={() => setShowFromList(val => !val)}
-                disabled={isCollecting}
-                networkOption={getNetworkOptions({
-                  chainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
-                  networkList: fromNetworkList,
-                })}
-              />
-              <NetworkSwitcherPopover
-                networksList={fromNetworkList}
-                showWalletConnector={false}
-                parentRef={fromPanelRef}
-                show={showFromList}
-                onOuterClick={() => setShowFromList(false)}
-                placement="bottom"
-              />
-            </AssetWrapper>
-            <SwapButton onClick={onSwapBridgeNetworks} disabled={isCollecting}>
-              <img src={ArrowIcon} alt="arrow" />
-            </SwapButton>
-            <AssetWrapper ref={toPanelRef}>
-              <AssetSelector
-                label="to"
-                onClick={() => setShowToList(val => !val)}
-                disabled={isCollecting}
-                networkOption={getNetworkOptions({
-                  chainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
-                  networkList: toNetworkList,
-                })}
-              />
-              <NetworkSwitcherPopover
-                networksList={toNetworkList}
-                showWalletConnector={false}
-                parentRef={toPanelRef}
-                show={showToList}
-                onOuterClick={() => setShowToList(false)}
-                placement="bottom"
-              />
-            </AssetWrapper>
-          </Row>
-          <CurrencyInputPanelBridge
-            value={isCollecting && collectableTx ? collectableTx.fromValue : typedValue}
-            displayedValue={displayedValue}
-            setDisplayedValue={setDisplayedValue}
-            currency={isCollecting ? collectableCurrency : bridgeCurrency}
-            onUserInput={onUserInput}
-            onMax={isCollecting ? undefined : handleMaxInput}
-            onCurrencySelect={onCurrencySelection}
-            disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
-            disabled={!account || isCollecting || !isNetworkConnected}
-            id="bridge-currency-input"
-            hideBalance={
-              isCollecting && collectableTx
-                ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)
-                : false
-            }
-            isLoading={!!account && isNetworkConnected && listsLoading}
-            chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
-            maxAmount={maxAmountInput}
-            isOutputPanel={false}
-          />
-          {activeTab === BridgeTab.BRIDGE_SWAP && (
-            <OutputPanelContainer>
-              <CurrencyInputPanelBridge
-                id="bridge-currency-output"
-                value={toValue}
-                onUserInput={onUserInput}
-                disabled={true}
-                currency={bridgeOutputCurrency}
-                onCurrencySelect={onCurrencyOutputSelection}
-                isOutputPanel={true}
-                disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
-                isLoading={!!account && isNetworkConnected && listsLoading}
-              />
-            </OutputPanelContainer>
-          )}
-
-          <BridgeActionPanel
-            account={account}
-            fromNetworkChainId={fromChainId}
-            toNetworkChainId={isCollecting && collectableTx ? collectableTx.toChainId : toChainId}
-            handleModal={handleModal}
-            handleCollect={handleCollect}
-            isNetworkConnected={isNetworkConnected}
-            isCollecting={isCollecting}
-            setIsCollecting={setIsCollecting}
-          />
-        </AppBody>
-      )}
-      {(activeTab === BridgeTab.BRIDGE || activeTab === BridgeTab.BRIDGE_SWAP) && showAvailableBridges && (
-        <BridgeSelectionWindow />
-      )}
-      {!!bridgeSummaries.length && (
-        <BridgeTransactionsSummary
-          extraMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
-          transactions={bridgeSummaries}
+    <>
+      <PageMetaData title="Bridge | Swapr" />
+      <Wrapper>
+        <Tabs
+          isCollecting={isCollecting}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          collectableTxAmount={collectableTxAmount}
+          setTxsFilter={setTxsFilter}
+          handleResetBridge={handleResetBridge}
           handleTriggerCollect={handleTriggerCollect}
+          firstTxnToCollect={collectableTx}
+          toggleBridgeSwap={toggleBridgeSwap}
         />
-      )}
-      {activeTab === BridgeTab.HISTORY && !bridgeSummaries.length && (
-        <HistoryMessage>Your bridge transactions will appear here.</HistoryMessage>
-      )}
-      <BridgeModal
-        handleResetBridge={handleResetBridge}
-        setIsCollecting={setIsCollecting}
-        setStatus={setModalState}
-        modalData={modalData}
-        handleSubmit={handleSubmit}
-      />
-    </Wrapper>
+        {activeTab !== BridgeTab.HISTORY && (
+          <AppBody>
+            <RowBetween mb="12px">
+              <Title>{isCollecting ? 'Collect' : 'Swapr Bridge'}</Title>
+            </RowBetween>
+            <Row mb="12px">
+              <AssetWrapper ref={fromPanelRef}>
+                <AssetSelector
+                  label="from"
+                  onClick={() => setShowFromList(val => !val)}
+                  disabled={isCollecting}
+                  networkOption={getNetworkOptions({
+                    chainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
+                    networkList: fromNetworkList,
+                  })}
+                />
+                <NetworkSwitcherPopover
+                  networksList={fromNetworkList}
+                  showWalletConnector={false}
+                  parentRef={fromPanelRef}
+                  show={showFromList}
+                  onOuterClick={() => setShowFromList(false)}
+                  placement="bottom"
+                />
+              </AssetWrapper>
+              <SwapButton onClick={onSwapBridgeNetworks} disabled={isCollecting}>
+                <img src={ArrowIcon} alt="arrow" />
+              </SwapButton>
+              <AssetWrapper ref={toPanelRef}>
+                <AssetSelector
+                  label="to"
+                  onClick={() => setShowToList(val => !val)}
+                  disabled={isCollecting}
+                  networkOption={getNetworkOptions({
+                    chainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
+                    networkList: toNetworkList,
+                  })}
+                />
+                <NetworkSwitcherPopover
+                  networksList={toNetworkList}
+                  showWalletConnector={false}
+                  parentRef={toPanelRef}
+                  show={showToList}
+                  onOuterClick={() => setShowToList(false)}
+                  placement="bottom"
+                />
+              </AssetWrapper>
+            </Row>
+            <CurrencyInputPanelBridge
+              value={isCollecting && collectableTx ? collectableTx.fromValue : typedValue}
+              displayedValue={displayedValue}
+              setDisplayedValue={setDisplayedValue}
+              currency={isCollecting ? collectableCurrency : bridgeCurrency}
+              onUserInput={onUserInput}
+              onMax={isCollecting ? undefined : handleMaxInput}
+              onCurrencySelect={onCurrencySelection}
+              disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
+              disabled={!account || isCollecting || !isNetworkConnected}
+              id="bridge-currency-input"
+              hideBalance={
+                isCollecting && collectableTx
+                  ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)
+                  : false
+              }
+              isLoading={!!account && isNetworkConnected && listsLoading}
+              chainIdOverride={isCollecting && collectableTx ? collectableTx.toChainId : undefined}
+              maxAmount={maxAmountInput}
+              isOutputPanel={false}
+            />
+            {activeTab === BridgeTab.BRIDGE_SWAP && (
+              <OutputPanelContainer>
+                <CurrencyInputPanelBridge
+                  id="bridge-currency-output"
+                  value={toValue}
+                  onUserInput={onUserInput}
+                  disabled={true}
+                  currency={bridgeOutputCurrency}
+                  onCurrencySelect={onCurrencyOutputSelection}
+                  isOutputPanel={true}
+                  disableCurrencySelect={!account || isCollecting || !isNetworkConnected || !hasBridges}
+                  isLoading={!!account && isNetworkConnected && listsLoading}
+                />
+              </OutputPanelContainer>
+            )}
+
+            <BridgeActionPanel
+              account={account}
+              fromNetworkChainId={fromChainId}
+              toNetworkChainId={isCollecting && collectableTx ? collectableTx.toChainId : toChainId}
+              handleModal={handleModal}
+              handleCollect={handleCollect}
+              isNetworkConnected={isNetworkConnected}
+              isCollecting={isCollecting}
+              setIsCollecting={setIsCollecting}
+            />
+          </AppBody>
+        )}
+        {(activeTab === BridgeTab.BRIDGE || activeTab === BridgeTab.BRIDGE_SWAP) && showAvailableBridges && (
+          <BridgeSelectionWindow />
+        )}
+        {!!bridgeSummaries.length && (
+          <BridgeTransactionsSummary
+            extraMargin={activeTab !== BridgeTab.HISTORY && !showAvailableBridges}
+            transactions={bridgeSummaries}
+            handleTriggerCollect={handleTriggerCollect}
+          />
+        )}
+        {activeTab === BridgeTab.HISTORY && !bridgeSummaries.length && (
+          <HistoryMessage>Your bridge transactions will appear here.</HistoryMessage>
+        )}
+        <BridgeModal
+          handleResetBridge={handleResetBridge}
+          setIsCollecting={setIsCollecting}
+          setStatus={setModalState}
+          modalData={modalData}
+          handleSubmit={handleSubmit}
+        />
+      </Wrapper>
+    </>
   )
 }

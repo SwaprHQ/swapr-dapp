@@ -1,6 +1,24 @@
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+class NonceInjector {
+  constructor(base64Hash) {
+    this.base64Hash = base64Hash
+  }
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap('NonceInjector', compilation => {
+      HtmlWebpackPlugin.getHooks(compilation).afterTemplateExecution.tapAsync('NonceInjector', (data, cb) => {
+        const { headTags } = data
+        headTags.forEach(x => {
+          x.attributes.nonce = this.base64Hash
+        })
+        cb(null, data)
+      })
+    })
+  }
+}
 
 // Used to make the build reproducible between different machines (IPFS-related)
 module.exports = (config, env) => {
@@ -10,6 +28,8 @@ module.exports = (config, env) => {
 
   const gitRevisionPlugin = new GitRevisionPlugin()
   const shortCommitHash = gitRevisionPlugin.commithash().substring(0, 8)
+  const base64Hash = Buffer.from(shortCommitHash).toString('base64')
+  const CSP_NONCE = JSON.stringify(base64Hash)
 
   const fallback = config.resolve.fallback || {}
   Object.assign(fallback, {
@@ -33,7 +53,18 @@ module.exports = (config, env) => {
         process: 'process/browser',
         Buffer: ['buffer', 'Buffer'],
       }),
+      new webpack.DefinePlugin({
+        CSP_NONCE: CSP_NONCE,
+        'process.env.REACT_APP_CSP_NONCE': CSP_NONCE,
+      }),
+      !isProd
+        ? new HtmlWebpackPlugin({
+            inject: true,
+            template: './public/index.html',
+          })
+        : false,
       isAnalyze ? new BundleAnalyzerPlugin() : false,
+      new NonceInjector(base64Hash),
     ].filter(Boolean)
   )
 

@@ -66,7 +66,7 @@ export class TokenMenu {
     return cy.get('[data-testid=unknown-token-warning]')
   }
   static confirmTokenImport() {
-    this.getTokenImportWarning().get('[data-testid=confirm-import-button]').click()
+    this.getTokenImportWarning().get('[data-testid=confirm-import-button]').scrollIntoView().click()
   }
   static getTokenListsRow(tokenListName: string) {
     return cy.get('[data-testid=' + tokenListName + '-row]')

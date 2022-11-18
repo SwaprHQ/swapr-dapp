@@ -5,17 +5,16 @@ import { ScannerFacade } from '../../../../utils/facades/ScannerFacade'
 import { TransactionHelper } from '../../../../utils/TransactionHelper'
 import { MetamaskNetworkHandler } from '../../../../utils/MetamaskNetworkHandler'
 
-describe('Wrapping tests', () => {
+describe.skip('Wrapping tests', () => {
   const TRANSACTION_VALUE: number = 0.001
 
   let balanceBefore: number
 
   before(() => {
-    MetamaskNetworkHandler.switchToRinkebyIfNotConnected()
+    MetamaskNetworkHandler.switchToNetworkIfNotConnected()
   })
 
   beforeEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps()
     cy.clearLocalStorage()
     cy.clearCookies()
     SwapPage.visitSwapPage()
@@ -25,10 +24,8 @@ describe('Wrapping tests', () => {
       balanceBefore = parseInt(response.body.result)
     })
   })
-  after(() => {
-    cy.resetMetamaskAccount()
+  afterEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps()
-    cy.wait(1000)
   })
 
   it('Should wrap ETH to WETH [TC-03]', () => {
@@ -38,23 +35,15 @@ describe('Wrapping tests', () => {
       .wrap()
     cy.confirmMetamaskTransaction({})
 
-    TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
-
     MenuBar.checkToastMessage('Wrap')
 
     TransactionHelper.checkErc20TokenBalance(AddressesEnum.WETH_TOKEN, balanceBefore, TRANSACTION_VALUE, true)
   })
 
   it('Should unwrap WETH to ETH [TC-06]', () => {
-    SwapPage.openTokenToSwapMenu()
-      .searchAndChooseToken('eth')
-      .openTokenToSwapMenu()
-      .searchAndChooseToken('weth')
-      .typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString())
-      .unwrap()
+    SwapPage.openTokenToSwapMenu().searchAndChooseToken('weth').switchTokens()
+    SwapPage.typeValueFrom(TRANSACTION_VALUE.toFixed(9).toString()).unwrap()
     cy.confirmMetamaskTransaction({})
-
-    TransactionHelper.checkIfTxFromLocalStorageHaveNoError()
 
     MenuBar.checkToastMessage('Unwrap')
 

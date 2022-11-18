@@ -38,9 +38,9 @@ export async function getSiteEvents(siteId: string, token: string): Promise<Site
 
     allEventList = [...allEventList, ...responseJson.data]
     hasMoreItems = responseJson.has_more
-    lastItem = responseJson.data[responseJson.data.length - 1].id
 
     if (hasMoreItems) {
+      lastItem = responseJson.data[responseJson.data.length - 1]?.id
       return getEvents()
     }
 

@@ -3,7 +3,7 @@ import { Trade } from '@swapr/sdk'
 import debugFactory from 'debug'
 
 import { getTradeUSDValue } from '../../utils/coingecko'
-import { FathomSiteInformation, getEcoRouterVolumeUSDEventName, getNetworkNameByChainId } from '../generated'
+import { FathomSiteInformation, getEcoRouterVolumeUSDEventName, getNetworkNameByChainId } from '../generated/prod'
 
 const debug = debugFactory('analytics:trackers')
 

@@ -73,6 +73,12 @@ export const subgraphBlocksClientsUris: { [chainId in SWPRSupportedChains]: stri
   [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
 }
 
+export const subgraphPriceClientsUris: { [chainId: number]: string } = {
+  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-price-mainnet',
+  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-price-arbitrum-on',
+  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-price-xdai',
+}
+
 const setupBlocksApolloClient = (network: SWPRSupportedChains) =>
   new ApolloClient({
     uri: subgraphBlocksClientsUris[network],
@@ -90,4 +96,20 @@ export const subgraphBlocksClients: {
   [ChainId.GOERLI]: setupBlocksApolloClient(ChainId.GOERLI),
   [ChainId.ARBITRUM_RINKEBY]: setupBlocksApolloClient(ChainId.ARBITRUM_RINKEBY),
   [ChainId.ARBITRUM_GOERLI]: setupBlocksApolloClient(ChainId.ARBITRUM_GOERLI), // FIXME: fix this once the subgraph is deployed
+}
+
+const setupBaseApolloClient = (uri: string) =>
+  new ApolloClient({
+    uri,
+    cache: new InMemoryCache(),
+  })
+
+const setupPriceApolloClient = (network: number) => setupBaseApolloClient(subgraphPriceClientsUris[network])
+
+export const subgraphPriceClients: {
+  [chainId: number]: ApolloClient<NormalizedCacheObject>
+} = {
+  [ChainId.MAINNET]: setupPriceApolloClient(ChainId.MAINNET),
+  [ChainId.XDAI]: setupPriceApolloClient(ChainId.XDAI),
+  [ChainId.ARBITRUM_ONE]: setupPriceApolloClient(ChainId.ARBITRUM_ONE),
 }

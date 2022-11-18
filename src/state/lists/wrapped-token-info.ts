@@ -16,8 +16,9 @@ export class WrappedTokenInfo extends Token {
 
   public readonly tokenInfo: TokenInfo
 
-  constructor(tokenInfo: TokenInfo, list: TokenList) {
-    super(tokenInfo.chainId, getAddress(tokenInfo.address), tokenInfo.decimals, tokenInfo.symbol, tokenInfo.name)
+  constructor(tokenInfo: TokenInfo, list: TokenList, token?: Token) {
+    const newToken = token || tokenInfo
+    super(newToken.chainId, getAddress(newToken.address), newToken.decimals, newToken.symbol, newToken.name)
     this.tokenInfo = tokenInfo
     this.list = list
   }

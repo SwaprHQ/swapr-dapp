@@ -14,22 +14,16 @@ import {
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { InputType } from '../../components/CurrencyInputPanel/CurrencyInputPanel.types'
-import BlogNavigation from '../../components/LandingPageComponents/BlogNavigation'
-import CommunityBanner from '../../components/LandingPageComponents/CommunityBanner'
-import CommunityLinks from '../../components/LandingPageComponents/CommunityLinks'
-import Features from '../../components/LandingPageComponents/Features'
-import Footer from '../../components/LandingPageComponents/layout/Footer'
-import Hero from '../../components/LandingPageComponents/layout/Hero'
-import Stats from '../../components/LandingPageComponents/Stats'
-import Timeline from '../../components/LandingPageComponents/Timeline'
+import { PageMetaData } from '../../components/PageMetaData'
 import { filterPairsForZap } from '../../components/SearchModal/utils/filtering'
 import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
@@ -40,28 +34,38 @@ import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { PriceImpact, SUPPORTED_DEX_ZAP_INDEX, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
+import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { SwapTx, useZapCallback, ZapInTx, ZapInType, ZapOutTx } from '../../hooks/useZapCallback'
+import { SwapTx, useZapCallback, ZapInTx, ZapOutTx } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
-import { useDerivedSwapInfo } from '../../state/swap/hooks'
-import { StateKey } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
+import { Field, StateKey } from '../../state/swap/types'
 import {
-  useDefaultsFromURLSearch,
-  UseDerivedZapInfoResult,
-  useZapActionHandlers,
-  useZapState,
-} from '../../state/zap/hooks'
-import { Field, ZapState } from '../../state/zap/types'
+  useAdvancedSwapDetails,
+  useIsExpertMode,
+  useUpdateSelectedSwapTab,
+  useUserSlippageTolerance,
+} from '../../state/user/hooks'
+import { UseDerivedZapInfoResult, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
+import { ZapState } from '../../state/zap/types'
 import { getPathFromTrade } from '../../utils/getPathFromTrade'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverity, warningSeverityZap } from '../../utils/prices'
+import { computeTradePriceBreakdown, warningSeverityZap } from '../../utils/prices'
 import AppBody from '../AppBody'
+import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
+import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
+import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
+import Features from './../../components/LandingPageComponents/Features'
+import Footer from './../../components/LandingPageComponents/layout/Footer'
+import Hero from './../../components/LandingPageComponents/layout/Hero'
+import Stats from './../../components/LandingPageComponents/Stats'
+import Timeline from './../../components/LandingPageComponents/Timeline'
 
 export type SwapData = {
   showConfirm: boolean
@@ -83,20 +87,22 @@ const AppBodyContainer = styled.section`
   align-items: center;
   z-index: 3;
   min-height: calc(100vh - 340px);
+  max-width: 460px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    min-height: 0;
+    max-width: 550px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-height: 0;
+    min-width: 100%;
+  `};
 `
 
 const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
-
-// const StyledRouteFlex = styled(Flex)`
-//   align-items: center;
-//   background-color: rgba(25, 26, 36, 0.55);
-//   boarder: 1px solid ${({ theme }) => theme.purple6};
-//   border-radius: 12px;
-//   padding: 18px 16px;
-//   margin-bottom: 16px !important;
-// `
 
 export enum CoWTradeState {
   UNKNOWN, // default
@@ -106,22 +112,48 @@ export enum CoWTradeState {
 }
 
 export default function Zap() {
+  const isDesktop = useIsDesktop()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
+  const { navigate, pathname } = useRouter()
+  const isInProMode = pathname.includes('/pro') // comment
+  const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
+
+  const [zapPair, setZapPair] = useState<Pair>()
+  const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
+  const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
+  const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
+
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
     useCurrency(loadedUrlParams?.outputCurrencyId),
   ]
-  // console.log('zap currencies loaded', { loadedInputCurrency, loadedOutputCurrency })
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
-
+  const urlLoadedScammyTokens: Token[] = useMemo(() => {
+    const normalizedAllTokens = Object.values(allTokens)
+    if (normalizedAllTokens.length === 0) return []
+    return [loadedInputCurrency, token0Id, token1Id].filter((urlLoadedToken): urlLoadedToken is Token => {
+      return (
+        urlLoadedToken instanceof Token && !normalizedAllTokens.some(legitToken => legitToken.equals(urlLoadedToken))
+      )
+    })
+  }, [loadedInputCurrency, token0Id, token1Id, allTokens])
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const handleConfirmTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
   }, [])
+
+  useEffect(() => {
+    if (isInProMode) {
+      if (!isDesktop) {
+        navigate('/swap')
+      }
+    }
+  }, [isDesktop, navigate, isInProMode])
 
   const { chainId } = useActiveWeb3React()
 
@@ -133,6 +165,14 @@ export default function Zap() {
 
   // zap state
   const { independentField, typedValue, recipient } = useZapState()
+  const zapIn = independentField === Field.INPUT
+
+  const filterPairs = useCallback(
+    (pair: Pair) => {
+      return filterPairsForZap(pair, chainId ?? ChainId.MAINNET)
+    },
+    [chainId]
+  )
 
   const {
     currencies,
@@ -147,33 +187,6 @@ export default function Zap() {
     zapInLiquidityMinted,
     zapOutOutputAmount,
   } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
-
-  const [zapPair, setZapPair] = useState<Pair>()
-
-  const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
-  const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
-  const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
-
-  const zapIn = independentField === Field.INPUT
-
-  const filterPairs = useCallback(
-    (pair: Pair) => {
-      return filterPairsForZap(pair, chainId ?? ChainId.MAINNET)
-    },
-    [chainId]
-  )
-
-  const urlLoadedScammyTokens: Token[] = useMemo(() => {
-    const normalizedAllTokens = Object.values(allTokens)
-    if (normalizedAllTokens.length === 0) return []
-    return [loadedInputCurrency, token0Id, token1Id].filter((urlLoadedToken): urlLoadedToken is Token => {
-      return (
-        urlLoadedToken instanceof Token && !normalizedAllTokens.some(legitToken => legitToken.equals(urlLoadedToken))
-      )
-    })
-  }, [allTokens, loadedInputCurrency, token0Id, token1Id])
-
-  // const amountOutZero = CurrencyAmount.nativeCurrency(JSBI.BigInt(0), chainId ?? ChainId.MAINNET)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
@@ -190,22 +203,11 @@ export default function Zap() {
     isGnosisTrade: potentialTrade0 instanceof CoWTrade,
     typedValue: potentialTrade0?.inputAmount.toSignificant(6) ?? typedValue,
   })
-  // const {
-  //   wrapType: wrapType1,
-  //   execute: onWrap1,
-  //   inputError: wrapInputError1,
-  //   wrapState: wrapState1,
-  // } = useWrapCallback(
-  //   potentialTrade1?.inputAmount.currency,
-  //   potentialTrade1?.outputAmount.currency,
-  //   potentialTrade1 instanceof CoWTrade,
-  //   potentialTrade1?.inputAmount?.toSignificant(6) ?? typedValue
-  // )
 
   const bestPricedTrade = potentialTrade0
   const bestPricedTrade1 = potentialTrade1
-  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
 
+  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
   console.log('zap wrap 0', potentialTrade0?.outputAmount.currency.symbol, showWrap, wrapType, potentialTrade0)
 
   const trade = showWrap ? undefined : potentialTrade0
@@ -216,7 +218,7 @@ export default function Zap() {
     [Field.OUTPUT]: zapIn ? zapInLiquidityMinted : zapOutOutputAmount,
   }
 
-  const { onUserInput, onSwitchTokens, onCurrencySelection, onPairSelection } = useZapActionHandlers()
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
 
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
@@ -255,12 +257,12 @@ export default function Zap() {
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [approvalSubmitted, setApprovalSubmitted] = useState(false)
+  const [approvalsSubmitted, setApprovalsSubmitted] = useState(false)
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
+      setApprovalsSubmitted(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approval])
@@ -337,6 +339,7 @@ export default function Zap() {
   console.log('zap price impact mix', warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1))
 
   const handleZap = useCallback(() => {
+    //  TODO: shouldnt check also for priceImpact for trade1
     if (priceImpactWithoutFeeTrade0 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)) {
       return
     }
@@ -384,7 +387,7 @@ export default function Zap() {
     !inputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+      (approvalsSubmitted && approval === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > PriceImpact.HIGH && !isExpertMode)
 
   // const handleAcceptChanges = useCallback(() => {}, [])
@@ -405,10 +408,12 @@ export default function Zap() {
     }
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
+  const handleAcceptChanges = useCallback(() => {}, [])
+
   const handleInputSelect = useCallback(
     (inputCurrency: Currency) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
+      setApprovalsSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
     [onCurrencySelection]
@@ -454,8 +459,132 @@ export default function Zap() {
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
   })
 
+  const renderSwapBox = () => (
+    <>
+      <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      </Flex>
+      <AppBody tradeDetailsOpen={!!trade}>
+        <Wrapper id="zap-page">
+          <ConfirmSwapModal
+            isOpen={showConfirm}
+            trade={undefined}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleZap}
+            swapErrorMessage={swapErrorMessage} //zapErrorMessage
+            onDismiss={handleConfirmDismiss}
+          />
+
+          <AutoColumn gap="12px">
+            <AutoColumn gap="3px">
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.INPUT]}
+                currency={currencies[Field.INPUT]}
+                pair={zapIn ? null : zapPair}
+                onUserInput={handleTypeInput}
+                onMax={handleMaxInput(Field.INPUT)}
+                onCurrencySelect={handleInputSelect}
+                onPairSelect={handleOnPairSelect}
+                otherCurrency={currencies[Field.INPUT]} // TODO: old INPUT hmm?
+                fiatValue={fiatValueInput}
+                isFallbackFiatValue={isFallbackFiatValueInput}
+                maxAmount={maxAmountInput}
+                showCommonBases
+                id="zap-currency-input"
+                inputType={zapIn ? InputType.currency : InputType.pair}
+                filterPairs={filterPairs}
+              />
+              <SwitchIconContainer>
+                <SwitchTokensAmountsContainer
+                  onClick={() => {
+                    setApprovalsSubmitted(false) // reset 2 step UI for approvals TODO: do we need it here?
+                    onSwitchTokens()
+                  }}
+                >
+                  <ArrowWrapper
+                    clickable={!loading}
+                    data-testid="switch-tokens-button"
+                    className={loading ? 'rotate' : ''}
+                  >
+                    <SwapIcon />
+                  </ArrowWrapper>
+                </SwitchTokensAmountsContainer>
+              </SwitchIconContainer>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onUserInput={handleTypeInput} // TODO: make it optional as it is disabled
+                onMax={handleMaxInput(Field.OUTPUT)}
+                currency={currencies[Field.OUTPUT]}
+                pair={zapIn ? zapPair : null}
+                onCurrencySelect={handleOutputSelect}
+                onPairSelect={handleOnPairSelect}
+                otherCurrency={currencies[Field.OUTPUT]}
+                fiatValue={fiatValueInput} // TODO; make it optional
+                // priceImpact={priceImpact}
+                isFallbackFiatValue={isFallbackFiatValueInput} //
+                maxAmount={maxAmountOutput}
+                showCommonBases
+                disabled={true}
+                inputType={zapIn ? InputType.pair : InputType.currency}
+                filterPairs={filterPairs}
+                id="zap-currency-output"
+              />
+            </AutoColumn>
+            <TradeDetails
+              show={!showWrap}
+              loading={loading}
+              trade={trade}
+              bestPricedTrade={bestPricedTrade}
+              showAdvancedSwapDetails={showAdvancedSwapDetails}
+              setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+              recipient={recipient}
+            />
+            <TradeDetails
+              show={!showWrap}
+              loading={loading}
+              trade={trade1}
+              bestPricedTrade={bestPricedTrade1}
+              showAdvancedSwapDetails={showAdvancedSwapDetails}
+              setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+              recipient={recipient}
+            />
+            <SwapButtons
+              wrapInputError={wrapInputError}
+              showApproveFlow={showApproveFlow}
+              userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
+              approval={approvalZap}
+              setSwapState={setSwapState}
+              priceImpactSeverity={priceImpactSeverity}
+              swapCallbackError={zapCallbackError}
+              wrapType={wrapType}
+              approvalSubmitted={approvalsSubmitted}
+              currencies={currencies}
+              trade={trade}
+              tradeSecondTokenZap={trade1}
+              swapInputError={inputError}
+              swapErrorMessage={swapErrorMessage}
+              loading={loading}
+              onWrap={onWrap}
+              approveCallback={approveCallbackZap}
+              handleSwap={handleZap}
+              handleInputSelect={handleInputSelect}
+              wrapState={wrapState}
+              setWrapState={setWrapState}
+            />
+          </AutoColumn>
+        </Wrapper>
+      </AppBody>
+    </>
+  )
+
   return (
     <>
+      <PageMetaData title="Zap | Swapr" />
       <TokenWarningModal
         isOpen={
           (!urlLoadedChainId || chainId === urlLoadedChainId) &&
@@ -465,136 +594,26 @@ export default function Zap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      <Hero>
-        <AppBodyContainer>
-          <Tabs />
-          <AppBody>
-            <Wrapper id="zap-page">
-              <ConfirmSwapModal
-                isOpen={showConfirm}
-                trade={undefined}
-                originalTrade={tradeToConfirm}
-                onAcceptChanges={() => {}}
-                attemptingTxn={attemptingTxn}
-                txHash={txHash}
-                recipient={recipient}
-                allowedSlippage={allowedSlippage}
-                onConfirm={handleZap}
-                swapErrorMessage={swapErrorMessage}
-                onDismiss={handleConfirmDismiss}
-              />
-
-              <AutoColumn gap="12px">
-                <AutoColumn gap="3px">
-                  <CurrencyInputPanel
-                    id="zap-currency-input"
-                    value={formattedAmounts[Field.INPUT]}
-                    currency={currencies[Field.INPUT]}
-                    pair={zapIn ? null : zapPair}
-                    onUserInput={handleTypeInput}
-                    onMax={handleMaxInput(Field.INPUT)}
-                    onCurrencySelect={handleInputSelect}
-                    onPairSelect={handleOnPairSelect}
-                    otherCurrency={currencies[Field.INPUT]}
-                    fiatValue={fiatValueInput}
-                    isFallbackFiatValue={isFallbackFiatValueInput}
-                    maxAmount={maxAmountInput}
-                    showCommonBases
-                    disabled={false}
-                    inputType={zapIn ? InputType.currency : InputType.pair}
-                    filterPairs={filterPairs}
-                  />
-                  <SwitchIconContainer>
-                    <SwitchTokensAmountsContainer
-                      onClick={() => {
-                        setApprovalSubmitted(false) // reset 2 step UI for approvals
-                        onSwitchTokens()
-                      }}
-                    >
-                      <ArrowWrapper
-                        clickable={!loading}
-                        data-testid="switch-tokens-button"
-                        className={loading ? 'rotate' : ''}
-                      >
-                        <SwapIcon />
-                      </ArrowWrapper>
-                    </SwitchTokensAmountsContainer>
-                  </SwitchIconContainer>
-                  <CurrencyInputPanel
-                    id="zap-currency-output"
-                    value={formattedAmounts[Field.OUTPUT]}
-                    onUserInput={handleTypeInput}
-                    currency={currencies[Field.OUTPUT]}
-                    pair={zapIn ? zapPair : null}
-                    onMax={handleMaxInput(Field.OUTPUT)}
-                    onCurrencySelect={handleOutputSelect}
-                    onPairSelect={handleOnPairSelect}
-                    otherCurrency={currencies[Field.OUTPUT]}
-                    fiatValue={fiatValueInput}
-                    isFallbackFiatValue={isFallbackFiatValueInput}
-                    maxAmount={maxAmountInput}
-                    showCommonBases
-                    disabled={true}
-                    inputType={zapIn ? InputType.pair : InputType.currency}
-                    filterPairs={filterPairs}
-                  />
-                </AutoColumn>
-
-                <TradeDetails
-                  show={!showWrap}
-                  loading={loading}
-                  trade={trade}
-                  bestPricedTrade={bestPricedTrade}
-                  showAdvancedSwapDetails={showAdvancedSwapDetails}
-                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-                  recipient={recipient}
-                />
-                <TradeDetails
-                  show={!showWrap}
-                  loading={loading}
-                  trade={trade1}
-                  bestPricedTrade={bestPricedTrade1}
-                  showAdvancedSwapDetails={showAdvancedSwapDetails}
-                  setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-                  recipient={recipient}
-                />
-                <SwapButtons
-                  wrapInputError={wrapInputError}
-                  showApproveFlow={showApproveFlow}
-                  userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
-                  approval={approvalZap}
-                  setSwapState={setSwapState}
-                  priceImpactSeverity={priceImpactSeverity}
-                  swapCallbackError={zapCallbackError}
-                  wrapType={wrapType}
-                  approvalSubmitted={approvalSubmitted}
-                  currencies={currencies}
-                  trade={trade}
-                  swapInputError={inputError}
-                  swapErrorMessage={swapErrorMessage}
-                  loading={loading}
-                  onWrap={onWrap}
-                  approveCallback={approveCallbackZap}
-                  handleSwap={handleZap}
-                  handleInputSelect={handleInputSelect}
-                  wrapState={wrapState}
-                  setWrapState={setWrapState}
-                  tradeSecondTokenZap={trade1}
-                />
-              </AutoColumn>
-            </Wrapper>
-          </AppBody>
-        </AppBodyContainer>
-      </Hero>
-      <LandingBodyContainer>
-        <Features />
-        <Stats />
-        <CommunityBanner />
-        <Timeline />
-        <CommunityLinks />
-        <BlogNavigation />
-      </LandingBodyContainer>
-      <Footer />
+      <>
+        <Hero>
+          <Flex
+            justifyContent="center"
+            alignItems={['center', 'center', 'center', 'start', 'start', 'start']}
+            flexDirection={['column', 'column', 'column', 'row']}
+          >
+            <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+          </Flex>
+        </Hero>
+        <LandingBodyContainer>
+          <Features />
+          <Stats />
+          <CommunityBanner />
+          <Timeline />
+          <CommunityLinks />
+          <BlogNavigation />
+        </LandingBodyContainer>
+        <Footer />
+      </>
     </>
   )
 }
