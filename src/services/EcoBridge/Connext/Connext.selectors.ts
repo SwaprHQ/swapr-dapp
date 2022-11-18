@@ -9,23 +9,6 @@ import { connextTransactionsAdapter } from './Connext.adapter'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'
 
-const createSelectBridgingDetails = (bridgeId: ConnextList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
-    ],
-    (details, loading, errorMessage) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage,
-      }
-    }
-  )
-
 const createSelectOwnedTransactions = (bridgeId: ConnextList) => {
   const transactionsSelector = createSelector([(state: AppState) => state.ecoBridge[bridgeId].transactions], txs =>
     connextTransactionsAdapter.getSelectors().selectAll(txs)
@@ -162,7 +145,6 @@ const createSelectAllTransactions = (bridgeId: ConnextList) =>
   )
 
 export interface ConnextBridgeSelectors {
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
@@ -172,7 +154,6 @@ export interface ConnextBridgeSelectors {
 
 export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
   return connextBridges.reduce((total, bridgeId) => {
-    const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
     const selectPendingTransactions = createSelectPendingTransactions(bridgeId, selectBridgeTransactionsSummary)
@@ -180,7 +161,6 @@ export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
     const selectAllTransactions = createSelectAllTransactions(bridgeId)
 
     const selectors = {
-      selectBridgingDetails,
       selectOwnedTransactions,
       selectBridgeTransactionsSummary,
       selectPendingTransactions,

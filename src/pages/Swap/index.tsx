@@ -3,14 +3,15 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trad
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../components/Column'
 import { CurrencyInputPanel } from '../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../components/PageMetaData'
+import { SimpleChartContainer } from '../../components/SimpleChart/SimpleChartContainer'
 import AdvancedSwapDetailsDropdown from '../../components/Swap/AdvancedSwapDetailsDropdown'
-import { ChartTabs } from '../../components/Swap/ChartTabs'
 import confirmPriceImpactWithoutFee from '../../components/Swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
@@ -19,7 +20,7 @@ import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetails'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { TESTNETS } from '../../constants'
-import { REACT_APP_FEATURE_CHARTS } from '../../constants/features'
+import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../constants/features'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -39,11 +40,11 @@ import { Field } from '../../state/swap/types'
 import {
   useAdvancedSwapDetails,
   useIsExpertMode,
-  useUpdateSelectedChartTab,
+  useUpdateSelectedChartOption,
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
-import { ChartTabs as ChartTabsOptions, SwapTabs } from '../../state/user/reducer'
+import { ChartOptions } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -57,6 +58,7 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
+import { ChartToggle } from './ChartToggle'
 
 export type SwapData = {
   showConfirm: boolean
@@ -71,6 +73,26 @@ const SwitchIconContainer = styled.div`
   position: relative;
   width: 100%;
 `
+
+const AppBodyContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  min-height: calc(100vh - 340px);
+  max-width: 460px;
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    min-height: 0;
+    max-width: 550px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-height: 0;
+    min-width: 100%;
+  `};
+`
+
 const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
@@ -82,14 +104,6 @@ export enum CoWTradeState {
   SWAP,
 }
 
-const AppBodyContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 3;
-  min-height: calc(100vh - 340px);
-`
-
 export default function Swap() {
   const isDesktop = useIsDesktop()
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -97,6 +111,9 @@ export default function Swap() {
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
+  const { navigate, pathname } = useRouter()
+  const isInProMode = pathname.includes('/pro')
+  const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -118,19 +135,16 @@ export default function Swap() {
     setDismissTokenWarning(true)
   }, [])
 
-  const { navigate, pathname } = useRouter()
-  const [activeTab, setSelectedTab] = useUpdateSelectedSwapTab()
-  const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
-
   useEffect(() => {
-    if (pathname.includes('/pro')) {
+    if (isInProMode) {
       if (!isDesktop) {
         navigate('/swap')
       }
     }
-  }, [isDesktop, navigate, pathname])
+  }, [isDesktop, navigate, isInProMode])
 
   const { chainId } = useActiveWeb3React()
+  const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
 
   // for expert mode
   const isExpertMode = useIsExpertMode()
@@ -389,15 +403,16 @@ export default function Swap() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs activeTab={activeTab || SwapTabs.SWAP} setActiveTab={setSelectedTab}>
-        {REACT_APP_FEATURE_CHARTS && (
-          <ChartTabs
+      <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        {REACT_APP_FEATURE_SIMPLE_CHART && !isInProMode && (
+          <ChartToggle
             hasBothCurrenciesInput={hasBothCurrenciesInput}
-            activeChartTab={activeChartTab || ChartTabsOptions.OFF}
-            setActiveChartTab={setSelectedChartTab}
+            selectedChartOption={selectedChartOption}
+            setselectedChartOption={setselectedChartOption}
           />
         )}
-      </Tabs>
+      </Flex>
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">
           <ConfirmSwapModal
@@ -519,15 +534,29 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {pathname.includes('/pro') &&
-        chainId &&
-        !isUnsupportedChainIdError &&
-        !TESTNETS.includes(chainId) &&
-        isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
-      {activeChartTab !== ChartTabsOptions.PRO && !pathname.includes('/pro') && (
+      {isInProMode && chainId && !isUnsupportedChainIdError && !TESTNETS.includes(chainId) && isDesktop && (
+        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+      )}
+      {selectedChartOption !== ChartOptions.PRO && !isInProMode && (
         <>
           <Hero>
-            <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+            <Flex
+              justifyContent="center"
+              alignItems={['center', 'center', 'center', 'start', 'start', 'start']}
+              flexDirection={['column', 'column', 'column', 'row']}
+            >
+              <AppBodyContainer>{renderSwapBox()}</AppBodyContainer>
+              {hasBothCurrenciesInput && selectedChartOption === ChartOptions.SIMPLE_CHART && (
+                <Flex
+                  width={['100%', '550px', '550px', '600px', '650px']}
+                  justifyContent="center"
+                  mt={[4, 4, 4, 0]}
+                  ml={[0, 0, 0, 3]}
+                >
+                  <SimpleChartContainer currency0={currencies[Field.INPUT]} currency1={currencies[Field.OUTPUT]} />
+                </Flex>
+              )}
+            </Flex>
           </Hero>
           <LandingBodyContainer>
             <Features />

@@ -51,10 +51,17 @@ const getExplorerPrefix = (chainId: ChainId) => {
   }
 }
 
+export const EXPLORER_LINK_TYPE: Record<string, string> = {
+  transaction: 'transaction',
+  token: 'token',
+  address: 'address',
+  block: 'block',
+}
+
 export function getExplorerLink(
   chainId: ChainId,
   hash: string,
-  type: 'transaction' | 'token' | 'address' | 'block',
+  type: keyof typeof EXPLORER_LINK_TYPE,
   protocol?: string
 ): string {
   //exception with using cow swap. Need to show cow explorer
@@ -66,21 +73,21 @@ export function getExplorerLink(
 
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address
-  if (chainId === ChainId.XDAI && type === 'token') {
+  if (chainId === ChainId.XDAI && type === EXPLORER_LINK_TYPE.token) {
     return `${prefix}/address/${hash}`
   }
 
   switch (type) {
-    case 'transaction': {
+    case EXPLORER_LINK_TYPE.transaction: {
       return `${prefix}/tx/${hash}`
     }
-    case 'token': {
+    case EXPLORER_LINK_TYPE.token: {
       return `${prefix}/token/${hash}`
     }
-    case 'block': {
+    case EXPLORER_LINK_TYPE.block: {
       return `${prefix}/block/${hash}`
     }
-    case 'address':
+    case EXPLORER_LINK_TYPE.address:
     default: {
       return `${prefix}/address/${hash}`
     }

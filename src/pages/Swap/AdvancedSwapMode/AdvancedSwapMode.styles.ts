@@ -67,8 +67,8 @@ export const PairInfo = styled.div`
   margin-left: 20px;
   overflow: hidden;
   white-space: nowrap;
-  &:nth-child(2) {
-    width: 16%;
+  &:nth-child(-n + 2) {
+    width: 13%;
   }
 
   & > div:nth-child(2) {
@@ -216,11 +216,13 @@ export const OrderHistoryHeader = styled.div`
   text-transform: uppercase;
 
   & > div {
-    flex: 1;
+    flex: 2;
     color: ${({ theme }) => theme.purple3};
+    padding-right: 4px;
   }
 
   & > div:last-child {
     text-align: right;
+    flex: 1;
   }
 `
