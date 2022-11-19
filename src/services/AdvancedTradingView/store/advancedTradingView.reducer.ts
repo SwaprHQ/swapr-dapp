@@ -1,9 +1,10 @@
 import { Token } from '@swapr/sdk'
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
-import { BaseActionPayload } from '../adapters/baseAdapter/base.types'
-import { AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
+import { BaseActionPayload, SetSwapsActionPayload } from '../adapters/baseAdapter/base.types'
+import { UniswapV3PairSwapTransaction } from '../adapters/uniswapV3/uniswapV3.types'
+import { AdapterKey, AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
 
 export const initialState: InitialState = {
   pair: {
@@ -60,11 +61,28 @@ const advancedTradingViewSlice = createSlice({
       }
     },
 
+    // !!! FINISH THIS
+    setBurnsAndMintsDataForAllPairs: (
+      state: InitialState,
+      action: PayloadAction<
+        Array<
+          BaseActionPayload<
+            {
+              key: AdapterKey
+              pairId: string
+              // TODO: DEFINE DATA MODEL
+              data: any[]
+              hasMore: boolean
+            }[]
+          >
+        >
+      >
+    ) => {},
+
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
-    // TODO: DEFINE PAYLOAD DATA MODEL
-    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<BaseActionPayload<unknown[]>>>) => {
-      console.log('ACTION PAYLOAD', action.payload)
-      // [{key: 'uniswapV2', pairId: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11', data: Array(12), hasMore: true}]
+    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
+      console.log('CURRENT STATE', current(state))
+
       let updatedAdapters: AdapterType = {
         swapr: {},
         sushiswap: {},
@@ -73,17 +91,13 @@ const advancedTradingViewSlice = createSlice({
         uniswapV3: {},
       }
 
-      // TODO: UPDATED DATA HANDLING OF EACH PAIR
-      action.payload.forEach(pair => {
-        const { data, pairId, hasMore, key } = pair
-
-        const previousPairData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
+      // TODO: ADD PRESERVE THE OLD ONES FUNCTIONALITY
+      action.payload.forEach(adapter => {
+        const { key, pairId, data, hasMore } = adapter
 
         updatedAdapters[key][pairId] = {
-          ...state.adapters[key][pairId],
           swaps: {
-            // @ts-ignore
-            data: [...previousPairData, ...data],
+            data,
             hasMore,
           },
         }
