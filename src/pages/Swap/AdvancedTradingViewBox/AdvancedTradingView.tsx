@@ -31,10 +31,10 @@ import { Field } from '../../../state/swap/types'
 import {
   useAdvancedSwapDetails,
   useIsExpertMode,
-  useUpdateSelectedChartTab,
+  // useUpdateSelectedChartTab,
   useUserSlippageTolerance,
 } from '../../../state/user/hooks'
-import { ChartTabs as ChartTabsOptions } from '../../../state/user/reducer'
+import { ChartOptions } from '../../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
@@ -99,7 +99,7 @@ export function AdvancedTradingViewBox() {
   }, [])
 
   const { navigate, pathname } = useRouter()
-  const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
+  // const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
 
   useEffect(() => {
     if (pathname.includes('/pro')) {
@@ -372,8 +372,8 @@ export function AdvancedTradingViewBox() {
         {REACT_APP_FEATURE_CHARTS && pathname.includes('pro') && (
           <ChartTabs
             hasBothCurrenciesInput={hasBothCurrenciesInput}
-            activeChartTab={activeChartTab || ChartTabsOptions.OFF}
-            setActiveChartTab={setSelectedChartTab}
+            activeChartTab={ChartOptions.OFF}
+            setActiveChartTab={() => {}}
           />
         )}
       </Tabs>

@@ -93,5 +93,7 @@
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer",
   "liquidity": "Liquidity",
   "rewards": "Rewards",
-  "connectWallet": "Connect wallet"
+  "connectWallet": "Connect wallet",
+  "chart": "chart",
+  "off": "off"
 }

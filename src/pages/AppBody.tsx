@@ -5,6 +5,7 @@ import { DarkCard } from '../components/Card'
 
 export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
   position: relative;
+  min-width: 454px;
   max-width: 457px;
   width: 100%;
   border-radius: 12px;
@@ -21,6 +22,9 @@ export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
       ${props => props.theme.dark1};
     background: ${props => props.theme.dark1};
   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-width: 100%;
+  `};
 `
 
 interface AppBodyProps {

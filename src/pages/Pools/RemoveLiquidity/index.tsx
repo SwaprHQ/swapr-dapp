@@ -45,8 +45,9 @@ import { currencyId } from '../../../utils/currencyId'
 import { calculateProtocolFee } from '../../../utils/prices'
 import { wrappedCurrency } from '../../../utils/wrappedCurrency'
 import AppBody from '../../AppBody'
+import { Dots } from '../../Swap/Components/styles'
 import TradePrice from '../../Swap/Components/TradePrice'
-import { Dots, Wrapper } from '../styleds'
+import { Wrapper } from '../styleds'
 
 const StyledInternalLinkText = styled(TYPE.Body)`
   display: flex;

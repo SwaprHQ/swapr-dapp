@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
-import { ChartTabs as ChartTabsOptions } from '../../../state/user/reducer'
+import { ChartOptions } from '../../../state/user/reducer'
 
 const Root = styled(Flex)`
   background: ${({ theme }) => theme.dark1};
@@ -48,8 +48,8 @@ export const ChartTabs = ({
   setActiveChartTab,
   hasBothCurrenciesInput,
 }: {
-  activeChartTab: ChartTabsOptions
-  setActiveChartTab: (tab: ChartTabsOptions) => void
+  activeChartTab: ChartOptions
+  setActiveChartTab: (tab: ChartOptions) => void
   hasBothCurrenciesInput: boolean
 }) => {
   const { navigate } = useRouter()
@@ -60,10 +60,10 @@ export const ChartTabs = ({
   return (
     <Root>
       <Tab
-        active={activeChartTab === ChartTabsOptions.SIMPLE}
+        active={activeChartTab === ChartOptions.SIMPLE_CHART}
         onClick={() => {
-          if (activeChartTab !== ChartTabsOptions.SIMPLE) {
-            setActiveChartTab(ChartTabsOptions.SIMPLE)
+          if (activeChartTab !== ChartOptions.SIMPLE_CHART) {
+            setActiveChartTab(ChartOptions.SIMPLE_CHART)
             navigate('/swap')
           }
         }}
@@ -73,10 +73,10 @@ export const ChartTabs = ({
         {t('advancedTradingView.chartTabs.simple')}
       </Tab>
       <Tab
-        active={activeChartTab === ChartTabsOptions.PRO}
+        active={activeChartTab === ChartOptions.PRO}
         onClick={() => {
-          if (activeChartTab !== ChartTabsOptions.PRO) {
-            setActiveChartTab(ChartTabsOptions.PRO)
+          if (activeChartTab !== ChartOptions.PRO) {
+            setActiveChartTab(ChartOptions.PRO)
             navigate('/swap/pro')
           }
         }}
@@ -90,9 +90,9 @@ export const ChartTabs = ({
         {t('advancedTradingView.chartTabs.pro')}
       </Tab>
       <Tab
-        active={activeChartTab === ChartTabsOptions.OFF}
+        active={activeChartTab === ChartOptions.OFF}
         onClick={() => {
-          setActiveChartTab(ChartTabsOptions.OFF)
+          setActiveChartTab(ChartOptions.OFF)
           navigate('/swap')
         }}
         title={t('advancedTradingView.chartTabs.offTitle')}
