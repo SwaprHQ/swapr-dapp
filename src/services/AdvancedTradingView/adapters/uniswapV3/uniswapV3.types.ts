@@ -1,6 +1,6 @@
 import { BaseActionPayload, PairBurnsAndMints, PairBurnsAndMintsTransaction } from '../baseAdapter/base.types'
 
-type UniswapV3PairSwapTransaction = {
+export type UniswapV3PairSwapTransaction = {
   amount0: string
   amount1: string
   amountUSD: string
