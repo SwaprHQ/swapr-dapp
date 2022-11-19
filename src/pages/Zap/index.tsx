@@ -44,7 +44,7 @@ import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { SwapTx, useZapCallback, ZapInTx, ZapOutTx } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
+import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field, StateKey } from '../../state/swap/types'
 import {
   useAdvancedSwapDetails,
@@ -52,7 +52,12 @@ import {
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
-import { UseDerivedZapInfoResult, useZapActionHandlers, useZapState } from '../../state/zap/hooks'
+import {
+  useDefaultsFromURLSearch,
+  UseDerivedZapInfoResult,
+  useZapActionHandlers,
+  useZapState,
+} from '../../state/zap/hooks'
 import { ZapState } from '../../state/zap/types'
 import { getPathFromTrade } from '../../utils/getPathFromTrade'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -109,6 +114,53 @@ export enum CoWTradeState {
   WRAP,
   APPROVAL,
   SWAP,
+}
+
+const getZapParams = (
+  data: UseDerivedZapInfoResult,
+  zapIn = true
+): { zapInParams: ZapInTx | undefined; zapOutParams: ZapOutTx | undefined; swapTokenA: SwapTx; swapTokenB: SwapTx } => {
+  const zeroBN = BigNumber.from(0)
+  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+  const dexIdSwapA = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+  const dexIdSwapB = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+
+  const swapTokenA: SwapTx = {
+    amount: data.zapInInputAmountTrade0?.toSignificant() ?? '0',
+    amountMin: zeroBN,
+    path: getPathFromTrade(data.tradeToken0),
+    dexIndex: dexIdSwapA,
+  }
+
+  const swapTokenB: SwapTx = {
+    amount: data.zapInInputAmountTrade1?.toSignificant() ?? '0',
+    amountMin: zeroBN,
+    path: getPathFromTrade(data.tradeToken1),
+    dexIndex: dexIdSwapB,
+  }
+
+  const zapInParams = zapIn
+    ? {
+        amountAMin: zeroBN,
+        amountBMin: zeroBN,
+        amountLPMin: zeroBN,
+        dexIndex: dexIdZap,
+      }
+    : undefined
+
+  const zapOutParams = zapIn
+    ? undefined
+    : {
+        amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
+        amountTokenToMin: zeroBN,
+        dexIndex: dexIdZap,
+      }
+
+  return { zapInParams, zapOutParams, swapTokenA, swapTokenB }
 }
 
 export default function Zap() {
@@ -173,7 +225,7 @@ export default function Zap() {
     },
     [chainId]
   )
-
+  const derivedInfo = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
   const {
     currencies,
     currencyBalances,
@@ -186,7 +238,10 @@ export default function Zap() {
     zapInInputAmountTrade1,
     zapInLiquidityMinted,
     zapOutOutputAmount,
-  } = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
+  } = derivedInfo
+
+  console.log('ZAP DONE TRADE 0', potentialTrade0)
+  console.log('ZAP DONE TRADE 1', potentialTrade1)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
@@ -224,9 +279,9 @@ export default function Zap() {
 
   const handleTypeInput = useCallback(
     (value: string) => {
-      onUserInput(Field.INPUT, value)
+      onUserInput(independentField, value)
     },
-    [onUserInput]
+    [independentField, onUserInput]
   )
 
   // modal and loading
@@ -242,6 +297,7 @@ export default function Zap() {
     [independentField]: typedValue,
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
+  console.log('FORMATTED', zapInLiquidityMinted, parsedAmounts, formattedAmounts)
 
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
@@ -250,7 +306,7 @@ export default function Zap() {
   // check whether the user has approved the router on the input token
   const [approvalZap, approveCallbackZap] = useApproveCallback(
     parsedAmount,
-    chainId ? ZAP_CONTRACT_ADDRESS[chainId] : undefined
+    chainId && ZAP_CONTRACT_ADDRESS[chainId] !== '' ? ZAP_CONTRACT_ADDRESS[chainId] : undefined
   )
 
   // check whether the user has approved the router on the input token
@@ -293,40 +349,44 @@ export default function Zap() {
   const userAddress = '0x372A291A9cad69b0F5F231cf1885574e9De7fD33'
   console.log('zap path0', potentialTrade0?.details, getPathFromTrade(potentialTrade0))
   console.log('zap path1', potentialTrade1?.details, getPathFromTrade(potentialTrade1))
+  const { zapInParams, zapOutParams, swapTokenA, swapTokenB } = getZapParams(derivedInfo, zapIn)
 
-  const swapTokenA: SwapTx = {
-    amount: zapInInputAmountTrade0?.toSignificant() ?? '0',
-    amountMin: zeroBN,
-    path: getPathFromTrade(potentialTrade0),
-    dexIndex: dexIdSwapA,
-  }
+  // const swapTokenA: SwapTx = {
+  //   amount: zapInInputAmountTrade0?.toSignificant() ?? '0',
+  //   amountMin: zeroBN,
+  //   path: getPathFromTrade(potentialTrade0),
+  //   dexIndex: dexIdSwapA,
+  // }
 
-  const swapTokenB: SwapTx = {
-    amount: zapInInputAmountTrade1?.toSignificant() ?? '0',
-    amountMin: zeroBN,
-    path: getPathFromTrade(potentialTrade1),
-    dexIndex: dexIdSwapB,
-  }
+  // const swapTokenB: SwapTx = {
+  //   amount: zapInInputAmountTrade1?.toSignificant() ?? '0',
+  //   amountMin: zeroBN,
+  //   path: getPathFromTrade(potentialTrade1),
+  //   dexIndex: dexIdSwapB,
+  // }
 
-  const zapInParams: ZapInTx = {
-    amountAMin: zeroBN,
-    amountBMin: zeroBN,
-    amountLPMin: zeroBN,
-    dexIndex: dexIdZap,
-  }
+  // const zapInParams: ZapInTx = {
+  //   amountAMin: zeroBN,
+  //   amountBMin: zeroBN,
+  //   amountLPMin: zeroBN,
+  //   dexIndex: dexIdZap,
+  // }
 
-  const zapOutParams: ZapOutTx = {
-    amountLpFrom: parsedAmount?.toSignificant() ?? '0',
-    amountTokenToMin: zeroBN,
-    dexIndex: dexId2,
-  }
+  // // TODO zap Out params
+  // const zapOutParams: ZapOutTx = {
+  //   amountLpFrom: parsedAmount?.toSignificant() ?? '0',
+  //   amountTokenToMin: zeroBN,
+  //   dexIndex: dexId2,
+  // }
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-    zapIn: zapIn ? zapInParams : undefined,
-    zapOut: zapIn ? undefined : zapOutParams,
+    zapIn: zapInParams,
+    zapOut: zapOutParams,
     swapTokenA,
     swapTokenB,
-    receiver: recipient,
+    recipient,
+    affiliate: undefined,
+    transferResidual: true,
   })
 
   console.log('zap callback', zapCallback, zapCallbackError, inputError)

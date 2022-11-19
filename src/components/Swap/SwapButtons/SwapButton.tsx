@@ -112,6 +112,7 @@ export const SwapButton = ({
       currency: amountInCurrencySymbol,
     }),
     [SWAP_INPUT_ERRORS.TRADE_NOT_FOUND]: t('button.tradeNotFound'),
+    [SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE]: t('button.zapNotAvailable'),
   }
 
   return (

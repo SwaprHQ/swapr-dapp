@@ -41,12 +41,6 @@ export enum ZapState {
   VALID,
 }
 
-export enum ZapType {
-  NOT_APPLICABLE,
-  ZAP_IN,
-  ZAP_OUT,
-}
-
 interface SwapCall {
   contract?: Contract
   transactionParameters: Promise<UnsignedTransaction>
@@ -163,13 +157,12 @@ export interface UseZapInCallbackParams {
   zapOut?: ZapOutTx
   swapTokenA: SwapTx
   swapTokenB: SwapTx
-  receiver: string | null
+  recipient: string | null
   affiliate?: string
   transferResidual?: boolean
 }
 
 export interface UseZapCallbackReturn {
-  zapType: ZapType
   callback?: () => Promise<string>
   state: ZapState
   error: string | null
@@ -184,22 +177,21 @@ export function useZapCallback({
   zapOut,
   swapTokenA,
   swapTokenB,
-  receiver,
+  recipient,
   affiliate,
   transferResidual = true,
 }: UseZapInCallbackParams): UseZapCallbackReturn {
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
-  const [zapType, setZapType] = useState(ZapType.NOT_APPLICABLE)
   const [affiliateAddress, setAffiliateAddress] = useState(ZERO_ADDRESS)
-  const [receiverAddress, setReceiverAddress] = useState(ZERO_ADDRESS)
+  const [receiver, setReceiver] = useState(ZERO_ADDRESS)
   console.log('zap callback inside', zapContract)
 
-  const { address: receiverENS } = useENS(receiver)
+  const { address: receiverENS } = useENS(recipient)
   useEffect(() => {
     const recipient = receiverENS ?? account
-    if (recipient) setReceiverAddress(recipient)
+    if (recipient) setReceiver(recipient)
     if (affiliate) setAffiliateAddress(affiliate)
   }, [account, affiliate, receiverENS])
 
@@ -211,31 +203,23 @@ export function useZapCallback({
     const isTransactionSuccessful =
       transactionReceipt && allTransactions[transactionReceipt.hash]?.receipt?.status === 1
 
-    zapType !== ZapType.NOT_APPLICABLE && isTransactionSuccessful && setZapState(ZapState.VALID)
-  }, [transactionReceipt, allTransactions, zapType])
+    isTransactionSuccessful && setZapState(ZapState.VALID)
+  }, [transactionReceipt, allTransactions])
 
   const addTransaction = useTransactionAdder()
 
-  useEffect(() => {
-    if ((zapIn && zapOut) || !(zapIn || zapOut)) {
-      setZapType(ZapType.NOT_APPLICABLE)
-    } else setZapType(zapIn ? ZapType.ZAP_IN : ZapType.ZAP_OUT)
-  }, [zapIn, zapOut])
-
   return useMemo(() => {
-    if (!zapContract || !library || !account || !chainId || receiverAddress === ZERO_ADDRESS) {
-      console.log('zap error', zapContract, library, account, chainId, receiverAddress)
+    if (!zapContract || !library || !account || !chainId || receiver === ZERO_ADDRESS) {
+      console.log('zap error', zapContract, library, account, chainId, receiver)
       return {
-        zapType: ZapType.NOT_APPLICABLE,
-        state: ZapState.INVALID,
         callback: undefined,
+        state: ZapState.INVALID,
         error: 'Missing dependencies',
       }
     }
 
-    if (zapType === ZapType.ZAP_IN && zapIn) {
+    if (zapIn && !zapOut) {
       return {
-        zapType: zapType,
         callback: async () => {
           try {
             console.log('ESSA zap in callback', zapContract)
@@ -245,7 +229,7 @@ export function useZapCallback({
               zapIn,
               swapTokenA,
               swapTokenB,
-              receiverAddress,
+              receiver,
               affiliateAddress,
               transferResidual
             )
@@ -263,21 +247,16 @@ export function useZapCallback({
         state: zapState,
         error: null,
       }
-    } else if (zapType === ZapType.ZAP_OUT && zapOut) {
+    }
+
+    if (zapOut && !zapIn) {
       return {
-        zapType: zapType,
         callback: async () => {
           try {
             console.log('ESSA zap out callback')
             // Set state to pending
             setZapState(ZapState.LOADING)
-            const txReceipt = await zapContract.zapOut(
-              zapOut,
-              swapTokenA,
-              swapTokenB,
-              receiverAddress,
-              affiliateAddress
-            )
+            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress)
             setTransactionReceipt(txReceipt)
             addTransaction(txReceipt, { summary: 'Zap out' })
             return 'wio'
@@ -293,9 +272,8 @@ export function useZapCallback({
       }
     } else {
       return {
-        zapType: ZapType.NOT_APPLICABLE,
-        state: ZapState.INVALID,
         callback: undefined,
+        state: ZapState.INVALID,
         error: 'Undefined',
       }
     }
@@ -304,8 +282,7 @@ export function useZapCallback({
     library,
     account,
     chainId,
-    receiverAddress,
-    zapType,
+    receiver,
     zapIn,
     zapOut,
     zapState,

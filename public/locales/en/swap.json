@@ -38,6 +38,7 @@
   "button.zap": "Zap",
   "button.zapWith": "Zap with",
   "button.zapAnyway": "Zap anyway",
+  "button.zapNotAvailable": "Zap not available",
   "advancedTradingView.column.trades": "Trades",
   "advancedTradingView.column.openOrders": "Open orders",
   "advancedTradingView.column.orderHistory": "Order history",

@@ -177,7 +177,8 @@ export function useDerivedSwapInfo<
   const [pairCurrency0, pairCurrency1] = [useCurrency(pairTokens?.token0Id), useCurrency(pairTokens?.token1Id)]
   const [zapPair, setZapPair] = useState<Pair>()
   const [pairState, pair] = usePair(pairCurrency0 ?? undefined, pairCurrency1 ?? undefined)
-  console.log('zap hukowy tokeny', pairCurrency0?.symbol, pairCurrency1?.symbol)
+  const zapContact = useZapContract()
+  console.log('zap hukowy tokeny', pairCurrency0?.symbol, pairCurrency1?.symbol, zapContact)
   console.log('zap hukowy pary  ', pair?.token0.symbol, pair?.token1.symbol)
 
   useEffect(() => {
@@ -268,6 +269,11 @@ export function useDerivedSwapInfo<
       }
       return
     }
+    // Require a valid zap contract
+    if (isZap && !zapContact) {
+      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+      return
+    }
     // Require a valid input amount
     if (!parsedAmount) {
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
@@ -326,19 +332,18 @@ export function useDerivedSwapInfo<
     }
 
     if (isZap && pairCurrency0 && pairCurrency1) {
-      const isInOut0EqualOrWrap =
-        currencyEquals(inputCurrency, pairCurrency0) ||
-        (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency0)
-      const isInOut1EqualOrWrap =
-        currencyEquals(inputCurrency, pairCurrency1) ||
-        (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency1)
+      // const isInOut0EqualOrWrap =
+      //   currencyEquals(inputCurrency, pairCurrency0) ||
+      //   (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency0)
+      // const isInOut1EqualOrWrap =
+      //   currencyEquals(inputCurrency, pairCurrency1) ||
+      //   (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency1)
       // use half of the parsed amount to find best routes for to different tokens and estimate prices
       const halfParsedAmount = tryParseAmount(
         parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
         parsedAmount.currency,
         chainId
       )
-      console.log('zap is wrapped', isInOut0EqualOrWrap, isInOut1EqualOrWrap)
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
       console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())
 
@@ -470,7 +475,6 @@ export function useDerivedSwapInfo<
           bestTradeToken1.executionPrice.invert(),
           chainId
         )
-        console.log('total LP', zapInCalculatedAmounts.liquidityMinted?.toExact())
       } else {
         returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
       }
@@ -493,6 +497,7 @@ export function useDerivedSwapInfo<
       }
       //TODO compare with inputAmountBalance0 and pick better
     }
+    console.log('total LP', zapInCalculatedAmounts?.liquidityMinted)
     return {
       currencies: {
         [Field.INPUT]: inputCurrency ?? undefined,
@@ -507,9 +512,10 @@ export function useDerivedSwapInfo<
       tradeToken1: bestTradeToken1,
       inputError: returnInputError,
       loading,
-      inputAmountTrade0: zapInCalculatedAmounts?.amountFromForTokenA,
-      inputAmountTrade1: zapInCalculatedAmounts?.amountFromForTokenB,
-      liquidityMinted: zapInCalculatedAmounts?.liquidityMinted,
+      zapInInputAmountTrade0: zapInCalculatedAmounts?.amountFromForTokenA,
+      zapInInputAmountTrade1: zapInCalculatedAmounts?.amountFromForTokenB,
+      zapInLiquidityMinted: zapInCalculatedAmounts?.liquidityMinted,
+      zapOutOutputAmount: undefined,
     } as ReturnedValue
   } else {
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
