@@ -149,4 +149,24 @@ export class AdvancedTradingViewAdapter<AppState> {
 
     return await Promise.allSettled(promises)
   }
+
+  public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        dataType: AdapterPayloadType.BURNS_AND_MINTS,
+      })
+    )
+
+    const response = await Promise.allSettled(promises).then(
+      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
+        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    console.log('PROMISE ARRAY BURNS AND MINTS RES', response)
+
+    // @ts-ignore
+    this.store.dispatch(this.actions.setBurnsAndMintsDataForAllPairs(response))
+  }
 }
