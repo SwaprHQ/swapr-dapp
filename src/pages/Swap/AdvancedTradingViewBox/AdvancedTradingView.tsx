@@ -11,7 +11,7 @@ import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../../components/PageMetaData'
 import TokenWarningModal from '../../../components/TokenWarningModal'
 import { TESTNETS } from '../../../constants'
-import { REACT_APP_FEATURE_CHARTS } from '../../../constants/features'
+import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../../constants/features'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../../hooks'
 import { useAllTokens, useCurrency } from '../../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
@@ -28,12 +28,7 @@ import {
   useSwapState,
 } from '../../../state/swap/hooks'
 import { Field } from '../../../state/swap/types'
-import {
-  useAdvancedSwapDetails,
-  useIsExpertMode,
-  // useUpdateSelectedChartTab,
-  useUserSlippageTolerance,
-} from '../../../state/user/hooks'
+import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../state/user/hooks'
 import { ChartOptions } from '../../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
@@ -77,6 +72,8 @@ export function AdvancedTradingViewBox() {
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
+  const { navigate, pathname } = useRouter()
+  const isInProMode = pathname.includes('/pro')
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -98,16 +95,13 @@ export function AdvancedTradingViewBox() {
     setDismissTokenWarning(true)
   }, [])
 
-  const { navigate, pathname } = useRouter()
-  // const [activeChartTab, setSelectedChartTab] = useUpdateSelectedChartTab()
-
   useEffect(() => {
-    if (pathname.includes('/pro')) {
+    if (isInProMode) {
       if (!isDesktop) {
         navigate('/swap')
       }
     }
-  }, [isDesktop, navigate, pathname])
+  }, [isDesktop, navigate, isInProMode])
 
   const { chainId } = useActiveWeb3React()
 
@@ -369,7 +363,7 @@ export function AdvancedTradingViewBox() {
   const renderSwapBox = () => (
     <>
       <Tabs>
-        {REACT_APP_FEATURE_CHARTS && pathname.includes('pro') && (
+        {REACT_APP_FEATURE_SIMPLE_CHART && pathname.includes('pro') && (
           <ChartTabs
             hasBothCurrenciesInput={hasBothCurrenciesInput}
             activeChartTab={ChartOptions.OFF}

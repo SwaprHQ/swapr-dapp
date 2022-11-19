@@ -6,6 +6,7 @@ import { AppState } from '../../state'
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
 import {
   BridgeList,
+  BridgeModalStatus,
   Bridges,
   EcoBridgeChangeHandler,
   EcoBridgeConstructorParams,
@@ -127,23 +128,58 @@ export class EcoBridge {
   // ADAPTERS
   public triggerBridging = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].triggerBridging()
+    try {
+      return this.bridges[this._activeBridgeId].triggerBridging()
+    } catch (error) {
+      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+        BridgeModalStatus.ERROR,
+        this._activeBridgeId,
+        error
+      )
+    }
   }
 
   public approve = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].approve()
+    try {
+      return this.bridges[this._activeBridgeId].approve()
+    } catch (error) {
+      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+        BridgeModalStatus.ERROR,
+        this._activeBridgeId,
+        error
+      )
+    }
   }
 
   public collect = async () => {
-    if (!this._account) return
+    if (!this._account || !this._activeBridgeId) return
+
     const l2Tx = selectBridgeCollectableTx(this.store.getState(), this._account)
+
     if (!this._initialized || !l2Tx) return
-    return this.bridges[l2Tx.bridgeId].collect(l2Tx)
+
+    try {
+      return this.bridges[l2Tx.bridgeId].collect(l2Tx)
+    } catch (error) {
+      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+        BridgeModalStatus.ERROR,
+        this._activeBridgeId,
+        error
+      )
+    }
   }
 
   public validate = async () => {
     if (!this._initialized || !this._activeBridgeId) return
-    return this.bridges[this._activeBridgeId].validate()
+    try {
+      return this.bridges[this._activeBridgeId].validate()
+    } catch (error) {
+      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+        BridgeModalStatus.ERROR,
+        this._activeBridgeId,
+        error
+      )
+    }
   }
 }

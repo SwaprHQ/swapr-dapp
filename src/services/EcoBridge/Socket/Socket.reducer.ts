@@ -1,9 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TokenList } from '@uniswap/token-lists'
+import { PayloadAction } from '@reduxjs/toolkit'
 
-import { BridgeDetails, BridgingDetailsErrorMessage, SocketList, SyncState } from '../EcoBridge.types'
+import { SocketList } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { Route } from './api/generated'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 
@@ -11,67 +11,15 @@ const initialState: SocketBridgeState = {
   transactions: [],
   approvalData: {},
   txBridgingData: {},
-  bridgingDetails: {},
-  bridgingDetailsStatus: SyncState.IDLE,
-  listsStatus: SyncState.IDLE,
-  lists: {},
   routes: [],
-  lastMetadataCt: 0,
   assetDecimals: 18,
 }
 
 const createSocketSlice = (bridgeId: SocketList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
-      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
-
-        //(store persist) crashing page without that code
-        if (!state.bridgingDetails) {
-          state.bridgingDetails = {}
-        }
-
-        if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === SyncState.FAILED) return
-          state.bridgingDetailsStatus = SyncState.LOADING
-          return
-        } else {
-          state.bridgingDetailsStatus = SyncState.READY
-        }
-
-        if (gas) {
-          state.bridgingDetails.gas = gas
-        }
-        if (fee) {
-          state.bridgingDetails.fee = fee
-        }
-        if (estimateTime) {
-          state.bridgingDetails.estimateTime = estimateTime
-        }
-        if (receiveAmount) {
-          state.bridgingDetails.receiveAmount = receiveAmount
-        }
-      },
-      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
-        state.listsStatus = action.payload
-      },
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        const { payload } = action
-
-        state.lists = payload
-      },
-      setBridgeDetailsStatus: (
-        state,
-        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
-      ) => {
-        const { status, errorMessage } = action.payload
-        state.bridgingDetailsStatus = status
-        if (errorMessage) {
-          state.bridgingDetailsErrorMessage = errorMessage
-        }
-      },
       setApprovalData: (
         state,
         action: PayloadAction<{
@@ -114,9 +62,6 @@ const createSocketSlice = (bridgeId: SocketList) =>
       },
       setRoutes: (state, action: PayloadAction<Route[]>) => {
         state.routes = action.payload
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
       },
       setToAssetDecimals: (state, action: PayloadAction<number | undefined>) => {
         state.assetDecimals = action.payload ?? 18

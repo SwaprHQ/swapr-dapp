@@ -9,7 +9,18 @@ import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { connextSelectors } from '../Connext/Connext.selectors'
 import { ecoBridgeConfig } from '../EcoBridge.config'
-import { BridgeList, BridgeTxsFilter, SupportedBridges, SyncState, TokenMap } from '../EcoBridge.types'
+import {
+  ArbitrumList,
+  BridgeList,
+  BridgeTxsFilter,
+  ConnextList,
+  OmniBridgeList,
+  SocketList,
+  SupportedBridges,
+  SyncState,
+  TokenMap,
+  XdaiBridgeList,
+} from '../EcoBridge.types'
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
@@ -29,6 +40,25 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  *    // SupportedBridges gonna be Bridge A, Bridge C
  *
  */
+
+const createSelectBridgingDetails = (
+  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList
+) =>
+  createSelector(
+    [
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
+      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
+    ],
+    (details, loading, errorMessage) => {
+      return {
+        bridgeId,
+        details,
+        loading,
+        errorMessage,
+      }
+    }
+  )
 
 export const selectSupportedBridges = createSelector(
   [
@@ -296,15 +326,22 @@ export const selectBridgeSupportedTokensOnChain = createSelector(
   }
 )
 
+const connextBridgeDetails = createSelectBridgingDetails('connext')
+const socketBridgeDetails = createSelectBridgingDetails('socket')
+const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet')
+const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
+const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
+const xdaiBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
+
 export const selectSupportedBridgesForUI = createSelector(
   [
     selectSupportedBridges,
-    arbitrumSelectors['arbitrum:testnet'].selectBridgingDetails,
-    arbitrumSelectors['arbitrum:mainnet'].selectBridgingDetails,
-    omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgingDetails,
-    socketSelectors['socket'].selectBridgingDetails,
-    connextSelectors['connext'].selectBridgingDetails,
-    xdaiSelectors['xdai'].selectBridgingDetails,
+    arbitrumTestnetBridgeDetails,
+    arbitrumMainnetBridgeDetails,
+    omnibridgeBridgeDetails,
+    socketBridgeDetails,
+    connextBridgeDetails,
+    xdaiBridgeDetails,
   ],
   (
     bridges,

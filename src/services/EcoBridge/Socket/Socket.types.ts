@@ -1,8 +1,8 @@
 import { ChainId } from '@swapr/sdk'
 
-import { TokenInfo, TokenList } from '@uniswap/token-lists'
+import { TokenInfo } from '@uniswap/token-lists'
 
-import { BridgeList, BridgingDetailsErrorMessage, SyncState } from '../EcoBridge.types'
+import { BridgeList } from '../EcoBridge.types'
 import { Route } from './api/generated'
 
 export type SocketTokenMap = {
@@ -39,16 +39,6 @@ export type SocketTx = {
 
 export interface SocketBridgeState {
   transactions: SocketTx[]
-  bridgingDetails: {
-    gas?: string
-    fee?: string
-    estimateTime?: string
-    receiveAmount?: string
-  }
-  bridgingDetailsStatus: SyncState
-  bridgingDetailsErrorMessage?: BridgingDetailsErrorMessage
-  listsStatus: SyncState
-  lists: { [id: string]: TokenList }
   approvalData: {
     chainId?: ChainId
     owner?: string
@@ -61,7 +51,6 @@ export interface SocketBridgeState {
     to?: string
   }
   routes: Route[]
-  lastMetadataCt: number
   assetDecimals: number
 }
 

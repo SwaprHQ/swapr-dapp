@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { ROUTABLE_PLATFORM_LOGO } from '../../../../../constants'
 import { ExternalLink } from '../../../../../theme/components'
-import { getExplorerLink } from '../../../../../utils'
+import { EXPLORER_LINK_TYPE, getExplorerLink } from '../../../../../utils'
 import { AdvancedModeDetailsItems } from '../AdvancedSwapMode.styles'
 import { useStylingTradeBackground } from './Trade.hooks'
 
@@ -51,7 +51,10 @@ export const Trade = ({
   const timestampInMilliseconds = Number(timestamp) * 1000
 
   return (
-    <TradeWrapper style={style} href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, 'transaction')}>
+    <TradeWrapper
+      style={style}
+      href={getExplorerLink(chainId ?? ChainId.MAINNET, transactionId, EXPLORER_LINK_TYPE.transaction)}
+    >
       <Flex alignItems="center">
         {ROUTABLE_PLATFORM_LOGO[logoKey]}
         <Text sx={{ marginLeft: '5px' }}>{amountIn}</Text>

@@ -11,7 +11,6 @@ import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { AdapterAmountToFetch } from './advancedTradingView.types'
-import { actions as advancedTradingViewReducerActions } from './store/advancedTradingView.reducer'
 import { sortsBeforeTokens } from './store/advancedTradingView.selectors'
 
 const WrappedNativeCurrencyAddress = {
@@ -122,12 +121,13 @@ export const useAdvancedTradingView = () => {
 
       advancedTradingViewAdapter.setPairTokens(inputToken, outputToken)
 
+      setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
+
       if (
         // do not fetch data if user reversed pair
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
-        setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
         setIsLoadingTrades(true)
         setIsLoadingActivity(true)
         setIsFetched(false)
@@ -166,14 +166,6 @@ export const useAdvancedTradingView = () => {
     }
 
     fetchTrades()
-
-    const interval = setInterval(() => {
-      dispatch(advancedTradingViewReducerActions.resetAdapterStore({ resetSelectedPair: false }))
-
-      fetchTrades()
-    }, 15000)
-
-    return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
