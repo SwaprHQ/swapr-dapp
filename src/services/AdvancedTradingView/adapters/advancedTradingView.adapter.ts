@@ -4,8 +4,10 @@ import { Store } from '@reduxjs/toolkit'
 
 import {
   AdapterFetchDetails,
+  AdapterFetchDetailsExtended,
   AdapterInitialArguments,
   AdapterKey,
+  AdapterPayloadType,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
@@ -26,7 +28,7 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
   // TODO: UPDATE RES TYPE
-  abstract getPairTradesData(fetchDetails: AdapterFetchDetails): any
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
 
@@ -122,7 +124,11 @@ export class AdvancedTradingViewAdapter<AppState> {
 
   public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairTradesData({ ...fetchDetails, abortController: this.renewAbortController })
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        dataType: AdapterPayloadType.SWAPS,
+      })
     )
 
     const response = await Promise.allSettled(promises).then(
@@ -134,7 +140,6 @@ export class AdvancedTradingViewAdapter<AppState> {
 
     // @ts-ignore
     this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
-    return response
   }
 
   public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
