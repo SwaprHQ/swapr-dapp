@@ -40,7 +40,7 @@ export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTr
     alternateReceiver,
   } = transaction
   const networkDetails = network ? getNetworkInfo(Number(network)) : undefined
-  const price = buyToken?.value === 0 ? 0 : sellToken.value / buyToken.value
+  const price = buyToken?.value === 0 ? 0 : sellToken?.value / buyToken?.value
   const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
 
   return (
@@ -48,10 +48,10 @@ export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTr
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={sellToken.symbol} />
+            <TokenIcon symbol={sellToken?.symbol} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(sellToken.value, false)}</Box>
-              <Box sx={{ fontSize: '14px' }}>{sellToken.symbol}</Box>
+              <Box>{formatNumber(sellToken?.value, false)}</Box>
+              <Box sx={{ fontSize: '14px' }}>{sellToken?.symbol}</Box>
             </Flex>
           </Flex>
           {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{fromAddress}</Box>}
@@ -67,10 +67,10 @@ export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTr
       <TokenDetails justifyContent="start">
         <Flex flexDirection="column">
           <Flex alignItems="center">
-            <TokenIcon symbol={buyToken.symbol} />
+            <TokenIcon symbol={buyToken?.symbol} />
             <Flex flexDirection="column">
-              <Box>{formatNumber(buyToken.value, false)}</Box>
-              <Box sx={{ fontSize: '14px' }}>{buyToken.symbol}</Box>
+              <Box>{formatNumber(buyToken?.value, false)}</Box>
+              <Box sx={{ fontSize: '14px' }}>{buyToken?.symbol}</Box>
             </Flex>
           </Flex>
           {alternateReceiver && <Box sx={{ fontSize: '10px', mt: 1 }}>{alternateReceiver}</Box>}
@@ -87,7 +87,7 @@ export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTr
         <Flex flexDirection="column" alignContent="center">
           <Box> {formatNumber(price, false, true)}</Box>
           <Box sx={{ fontSize: '10px' }}>
-            {sellToken.symbol} / {buyToken.symbol}
+            {sellToken?.symbol} / {buyToken?.symbol}
           </Box>
         </Flex>
       </TransactionDetails>

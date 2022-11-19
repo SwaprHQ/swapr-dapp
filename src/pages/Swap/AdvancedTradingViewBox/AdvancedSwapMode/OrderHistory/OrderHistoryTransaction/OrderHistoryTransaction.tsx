@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
+import { formatNumber } from '../../../../../../utils/formatNumber'
 import { Status } from '../../../../../Account/Account.styles'
 import { Transaction, TransactionTypes } from '../../../../../Account/Account.types'
 import { TokenIcon } from '../../../../../Account/TokenIcon'
@@ -33,12 +34,12 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
   return (
     <Wrapper>
       <div>
-        <TokenIcon symbol={tx.sellToken.symbol} width={20} height={20} />
-        <Text>{tx.sellToken.value}</Text>
+        <TokenIcon symbol={tx.sellToken?.symbol} width={20} height={20} />
+        <Text>{formatNumber(tx.sellToken?.value)}</Text>
       </div>
       <div>
-        <TokenIcon symbol={tx.buyToken.symbol} width={20} height={20} />
-        <Text>{tx.buyToken.value}</Text>
+        <TokenIcon symbol={tx.buyToken?.symbol} width={20} height={20} />
+        <Text>{formatNumber(tx.buyToken?.value)}</Text>
       </div>
       <div>{protocol}</div>
       <div>{transactionType}</div>

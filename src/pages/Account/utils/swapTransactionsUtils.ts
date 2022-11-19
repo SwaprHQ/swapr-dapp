@@ -47,13 +47,13 @@ export const formatSwapTransactions = (transactions: AllSwapTransactions, accoun
 
         return {
           ...transaction,
-          from: {
+          sellToken: {
             value: Number(from?.groups?.num ?? 0),
-            token: from?.groups?.token,
+            symbol: from?.groups?.token,
           },
-          to: {
+          buyToken: {
             value: Number(to?.groups?.num ?? 0),
-            token: to?.groups?.token,
+            symbol: to?.groups?.token,
           },
           swapProtocol: protocol,
           alternateReceiver,
