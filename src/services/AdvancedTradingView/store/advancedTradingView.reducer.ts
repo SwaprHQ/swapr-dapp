@@ -2,7 +2,11 @@ import { Token } from '@swapr/sdk'
 
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
-import { BaseActionPayload, SetSwapsActionPayload } from '../adapters/baseAdapter/base.types'
+import {
+  BaseActionPayload,
+  SetBurnsAndMintsActionPayload,
+  SetSwapsActionPayload,
+} from '../adapters/baseAdapter/base.types'
 import { UniswapV3PairSwapTransaction } from '../adapters/uniswapV3/uniswapV3.types'
 import { AdapterKey, AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
 
@@ -61,23 +65,32 @@ const advancedTradingViewSlice = createSlice({
       }
     },
 
-    // !!! FINISH THIS
     setBurnsAndMintsDataForAllPairs: (
       state: InitialState,
-      action: PayloadAction<
-        Array<
-          BaseActionPayload<
-            {
-              key: AdapterKey
-              pairId: string
-              // TODO: DEFINE DATA MODEL
-              data: any[]
-              hasMore: boolean
-            }[]
-          >
-        >
-      >
-    ) => {},
+      action: PayloadAction<Array<SetBurnsAndMintsActionPayload>>
+    ) => {
+      const updatedAdapters: AdapterType = {
+        ...state.adapters,
+      }
+
+      action.payload.forEach(adapter => {
+        const { key, pairId, data, hasMore } = adapter
+
+        const previousPairData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
+
+        data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
+
+        updatedAdapters[key][pairId] = {
+          ...updatedAdapters[key][pairId],
+          burnsAndMints: {
+            data: previousPairData,
+            hasMore,
+          },
+        }
+      })
+
+      state.adapters = updatedAdapters
+    },
 
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
     setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
@@ -93,6 +106,7 @@ const advancedTradingViewSlice = createSlice({
         data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
 
         updatedAdapters[key][pairId] = {
+          ...updatedAdapters[key][pairId],
           swaps: {
             data: previousPairData,
             hasMore,
