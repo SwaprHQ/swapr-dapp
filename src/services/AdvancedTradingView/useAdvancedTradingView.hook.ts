@@ -70,8 +70,8 @@ export const useAdvancedTradingView = () => {
     outputTokenAddress: undefined,
   })
 
-  const [isLoadingTrades, setIsLoadingTrades] = useState(false)
-  const [isLoadingActivity, setIsLoadingActivity] = useState(false)
+  const [isLoadingTrades, setIsLoadingTrades] = useState(true)
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true)
   const [isFetched, setIsFetched] = useState(false)
 
   const dispatch = useDispatch()
