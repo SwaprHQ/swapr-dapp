@@ -144,8 +144,6 @@ export class AdvancedTradingViewAdapter<AppState> {
         res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
 
-    console.log('PROMISE ARRAY RES', response)
-
     // @ts-ignore
     this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
   }
@@ -163,8 +161,6 @@ export class AdvancedTradingViewAdapter<AppState> {
       (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
         res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
-
-    console.log('PROMISE ARRAY BURNS AND MINTS RES', response)
 
     // @ts-ignore
     this.store.dispatch(this.actions.setBurnsAndMintsDataForAllPairs(response))
