@@ -85,19 +85,15 @@ const advancedTradingViewSlice = createSlice({
         ...state.adapters,
       }
 
-      // TODO: FIX TYPES!
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        // @ts-ignore
         const previousPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
 
-        // @ts-ignore
         data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
 
         updatedAdapters[key][pairId] = {
           swaps: {
-            // @ts-ignore
             data: previousPairData,
             hasMore,
           },

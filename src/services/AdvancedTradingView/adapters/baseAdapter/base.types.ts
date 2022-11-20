@@ -67,6 +67,6 @@ export type SetSwapsActionPayload = {
 }
 
 export type BasePair = {
-  swaps?: { data: PairSwapTransaction[]; hasMore: boolean }
+  swaps?: { data: (PairSwapTransaction | UniswapV3PairSwapTransaction)[]; hasMore: boolean }
   burnsAndMints?: { data: PairBurnsAndMintsTransaction[]; hasMore: boolean }
 }
