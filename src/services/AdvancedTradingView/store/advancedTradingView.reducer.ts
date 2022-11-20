@@ -81,19 +81,24 @@ const advancedTradingViewSlice = createSlice({
 
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
     setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
-      console.log('CURRENT STATE', current(state))
-
-      const updatedAdapters = {
+      const updatedAdapters: AdapterType = {
         ...state.adapters,
       }
 
-      // TODO: ADD PRESERVE THE OLD ONES FUNCTIONALITY
+      // TODO: FIX TYPES!
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
+        // @ts-ignore
+        const previousPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
+
+        // @ts-ignore
+        data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
+
         updatedAdapters[key][pairId] = {
           swaps: {
-            data,
+            // @ts-ignore
+            data: previousPairData,
             hasMore,
           },
         }
