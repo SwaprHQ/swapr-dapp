@@ -139,12 +139,14 @@ export const useAdvancedTradingView = () => {
               outputToken,
               amountToFetch: pairTradesAmountToFetch,
               isFirstFetch: true,
+              refreshing: true,
             }),
             advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
               inputToken,
               outputToken,
               amountToFetch: pairActivityAmountToFetch,
               isFirstFetch: true,
+              refreshing: true,
             }),
           ])
         } catch (e) {
