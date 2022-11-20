@@ -122,6 +122,14 @@ export class AdvancedTradingViewAdapter<AppState> {
     return await Promise.allSettled(promises)
   }
 
+  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
+    )
+
+    return await Promise.allSettled(promises)
+  }
+
   public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
       adapter.getPairData({
@@ -140,14 +148,6 @@ export class AdvancedTradingViewAdapter<AppState> {
 
     // @ts-ignore
     this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
-  }
-
-  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
-    const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
-    )
-
-    return await Promise.allSettled(promises)
   }
 
   public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {

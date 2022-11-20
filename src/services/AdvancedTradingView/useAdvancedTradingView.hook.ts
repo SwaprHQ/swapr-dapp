@@ -128,19 +128,19 @@ export const useAdvancedTradingView = () => {
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
-        setIsLoadingTrades(true)
+        setIsLoadingTrades(false)
         setIsLoadingActivity(true)
         setIsFetched(false)
 
         try {
           await Promise.allSettled([
-            advancedTradingViewAdapter.fetchPairTrades({
+            advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
               inputToken,
               outputToken,
               amountToFetch: pairTradesAmountToFetch,
               isFirstFetch: true,
             }),
-            advancedTradingViewAdapter.fetchPairActivity({
+            advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
               inputToken,
               outputToken,
               amountToFetch: pairActivityAmountToFetch,
@@ -201,7 +201,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingTrades(true)
     try {
-      await advancedTradingViewAdapter.fetchPairTrades({
+      await advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_TRADES,
@@ -219,7 +219,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingActivity(true)
     try {
-      await advancedTradingViewAdapter.fetchPairActivity({
+      await advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_ACTIVITY,
