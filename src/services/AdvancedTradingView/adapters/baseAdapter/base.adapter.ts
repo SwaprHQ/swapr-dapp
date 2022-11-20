@@ -129,6 +129,7 @@ export class BaseAdapter<
     amountToFetch,
     isFirstFetch,
     abortController,
+    refreshing,
   }: AdapterFetchDetailsExtended) {
     if (!this.isSupportedChainId(this._chainId)) return
 
@@ -138,13 +139,14 @@ export class BaseAdapter<
 
     const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
-    if (
-      (dataType === AdapterPayloadType.SWAPS && pair && !isFirstFetch && !pair.swaps?.hasMore) ||
-      (dataType === AdapterPayloadType.SWAPS && pair && isFirstFetch) ||
-      (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) ||
-      (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && isFirstFetch)
-    )
-      return
+    // TODO: CLARIFY THIS WITH ADAM
+    // if (
+    //   (dataType === AdapterPayloadType.SWAPS && pair && !isFirstFetch && !pair.swaps?.hasMore) ||
+    //   (dataType === AdapterPayloadType.SWAPS && pair && isFirstFetch) ||
+    //   (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) ||
+    //   (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && isFirstFetch)
+    // )
+    //   return
 
     try {
       if (dataType === AdapterPayloadType.SWAPS) {
@@ -154,6 +156,7 @@ export class BaseAdapter<
           chainId: this._chainId,
           amountToFetch,
           abortController,
+          refreshing,
           inputTokenAddress: inputToken.address,
           outputTokenAddress: outputToken.address,
         })
@@ -173,6 +176,7 @@ export class BaseAdapter<
           chainId: this._chainId,
           amountToFetch,
           abortController,
+          refreshing,
           inputTokenAddress: inputToken.address,
           outputTokenAddress: outputToken.address,
         })
@@ -196,14 +200,21 @@ export class BaseAdapter<
     } catch {}
   }
 
-  protected async _fetchSwaps({ pairId, pair, chainId, amountToFetch, abortController }: AdapterFetchMethodArguments) {
+  protected async _fetchSwaps({
+    pairId,
+    pair,
+    chainId,
+    amountToFetch,
+    abortController,
+    refreshing,
+  }: AdapterFetchMethodArguments) {
     return await request<GenericPairSwaps>({
       url: this._subgraphUrls[chainId],
       document: PAIR_SWAPS,
       variables: {
         pairId,
         first: amountToFetch,
-        skip: pair?.swaps?.data.length ?? 0,
+        skip: refreshing ? 0 : pair?.swaps?.data.length ?? 0,
       },
       signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
     })
@@ -215,6 +226,7 @@ export class BaseAdapter<
     chainId,
     amountToFetch,
     abortController,
+    refreshing,
   }: AdapterFetchMethodArguments) {
     return await request<GenericPairBurnsAndMints>({
       url: this._subgraphUrls[chainId],
@@ -222,7 +234,7 @@ export class BaseAdapter<
       variables: {
         pairId,
         first: amountToFetch,
-        skip: pair?.burnsAndMints?.data.length ?? 0,
+        skip: refreshing ? 0 : pair?.swaps?.data.length ?? 0,
       },
       signal: abortController(`${this._key}-pair-activity`) as RequestOptions['signal'],
     })
