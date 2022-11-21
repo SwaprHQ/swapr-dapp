@@ -15,7 +15,7 @@ export const CurrencyView = ({
 }: CurrencyViewProps) => {
   const { t } = useTranslation('swap')
 
-  if (pair) {
+  if (pair && (currency?.symbol === 'DXS' || !currency)) {
     return (
       <>
         <DoubleCurrencyLogo marginRight={4} currency0={pair.token0} currency1={pair.token1} size={20} />

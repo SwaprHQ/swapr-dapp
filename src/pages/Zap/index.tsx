@@ -525,6 +525,8 @@ export default function Zap() {
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
   })
 
+  console.log('test trade', loading, trade1, trade)
+
   const renderSwapBox = () => (
     <>
       <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
@@ -551,7 +553,7 @@ export default function Zap() {
               <CurrencyInputPanel
                 value={formattedAmounts[Field.INPUT]}
                 currency={currencies[Field.INPUT]}
-                pair={isZapIn ? null : zapPair}
+                pair={zapPair}
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput(Field.INPUT)}
                 onCurrencySelect={handleInputSelect}
@@ -569,6 +571,9 @@ export default function Zap() {
                 <SwitchTokensAmountsContainer
                   onClick={() => {
                     setApprovalsSubmitted(false) // reset 2 step UI for approvals TODO: do we need it here?
+                    // onUserInput(Field.INPUT, '')
+                    // onUserInput(Field.OUTPUT, '')
+                    // onSwapSwitchTokens()
                     onSwitchTokens()
                   }}
                 >
@@ -583,10 +588,10 @@ export default function Zap() {
               </SwitchIconContainer>
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
-                onUserInput={handleTypeInput} // TODO: make it optional as it is disabled
+                onUserInput={() => {}} // TODO: make it optional as it is disabled
                 onMax={handleMaxInput(Field.OUTPUT)}
                 currency={currencies[Field.OUTPUT]}
-                pair={isZapIn ? zapPair : null}
+                pair={zapPair}
                 onCurrencySelect={handleOutputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
@@ -603,7 +608,7 @@ export default function Zap() {
             </AutoColumn>
             <TradeDetails
               show={!showWrap}
-              loading={loading}
+              loading={loading || (!loading && ((!!trade1 && !trade) || (!!trade && !trade1)))}
               trade={trade}
               bestPricedTrade={bestPricedTrade}
               showAdvancedSwapDetails={showAdvancedSwapDetails}
@@ -612,7 +617,7 @@ export default function Zap() {
             />
             <TradeDetails
               show={!showWrap}
-              loading={loading}
+              loading={loading || (!loading && ((!!trade1 && !trade) || (!!trade && !trade1)))}
               trade={trade1}
               bestPricedTrade={bestPricedTrade1}
               showAdvancedSwapDetails={showAdvancedSwapDetails}
