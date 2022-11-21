@@ -28,6 +28,7 @@ import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
+import { useTradeExactInUniswapV2 } from '../../hooks/Trades'
 import { useAbortController } from '../../hooks/useAbortController'
 import { useWrappingToken, useZapContract } from '../../hooks/useContract'
 import useENS from '../../hooks/useENS'
@@ -43,6 +44,7 @@ import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { calculateZapInAmounts, computeSlippageAdjustedAmounts, limitNumberOfDecimalPlaces } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
+import { useDerivedBurnInfo } from '../burn/hooks'
 import { AppDispatch, AppState } from '../index'
 import { useDerivedMintInfo } from '../mint/hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
@@ -201,10 +203,6 @@ export function useDerivedSwapInfo<
     }
   }, [chainId, noLiquidity, pair, pairCurrency0])
 
-  const isMobileByMedia = useIsMobileByMedia()
-  const significantDigits = isMobileByMedia ? 6 : 14
-  const formattedPrice = limitNumberOfDecimalPlaces(price, significantDigits)
-
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
@@ -269,7 +267,7 @@ export function useDerivedSwapInfo<
       }
       return
     }
-    // Require a valid zap contract
+    // // Require a valid zap contract
     if (isZap && !zapContact) {
       setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
       return
@@ -332,6 +330,7 @@ export function useDerivedSwapInfo<
     }
 
     if (isZap && pairCurrency0 && pairCurrency1) {
+      const isZapIn = independentField === Field.INPUT
       // const isInOut0EqualOrWrap =
       //   currencyEquals(inputCurrency, pairCurrency0) ||
       //   (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency0)
@@ -347,15 +346,25 @@ export function useDerivedSwapInfo<
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
       console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())
 
-      const getTradesToken0 = getTradesPromise(
-        halfParsedAmount ?? parsedAmount,
-        inputCurrency,
-        pairCurrency0,
-        commonParams,
-        ecoRouterSourceOptionsParams,
-        provider,
-        signal
-      )
+      const getTradesToken0 = isZapIn
+        ? getTradesPromise(
+            halfParsedAmount ?? parsedAmount,
+            inputCurrency,
+            pairCurrency0,
+            commonParams,
+            ecoRouterSourceOptionsParams,
+            provider,
+            signal
+          )
+        : getTradesPromise(
+            halfParsedAmount ?? parsedAmount,
+            pairCurrency0,
+            outputCurrency,
+            commonParams,
+            ecoRouterSourceOptionsParams,
+            provider,
+            signal
+          )
 
       // Start fetching trades from EcoRouter API
       getTradesToken0
@@ -374,15 +383,25 @@ export function useDerivedSwapInfo<
           }
         })
 
-      const getTradesToken1 = getTradesPromise(
-        halfParsedAmount ?? parsedAmount,
-        inputCurrency,
-        pairCurrency1,
-        commonParams,
-        ecoRouterSourceOptionsParams,
-        provider,
-        signal
-      )
+      const getTradesToken1 = isZapIn
+        ? getTradesPromise(
+            halfParsedAmount ?? parsedAmount,
+            inputCurrency,
+            pairCurrency1,
+            commonParams,
+            ecoRouterSourceOptionsParams,
+            provider,
+            signal
+          )
+        : getTradesPromise(
+            halfParsedAmount ?? parsedAmount,
+            pairCurrency1,
+            inputCurrency,
+            commonParams,
+            ecoRouterSourceOptionsParams,
+            provider,
+            signal
+          )
 
       // Start fetching trades from EcoRouter API
       getTradesToken1
@@ -464,40 +483,7 @@ export function useDerivedSwapInfo<
   let returnInputError = inputError
   if (isZap) {
     const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
-    let zapInCalculatedAmounts
-    if (parsedAmount && pair && totalSupply && chainId) {
-      if (bestTradeToken0 && bestTradeToken1) {
-        zapInCalculatedAmounts = calculateZapInAmounts(
-          parsedAmount,
-          pair,
-          totalSupply,
-          bestTradeToken0.executionPrice.invert(),
-          bestTradeToken1.executionPrice.invert(),
-          chainId
-        )
-      } else {
-        returnInputError = SWAP_INPUT_ERRORS.TRADE_NOT_FOUND
-      }
-    }
 
-    if (allowedSlippage && bestTradeToken0 && bestTradeToken1) {
-      const slippageAdjustedAmountsTrade0 = bestTradeToken0 && computeSlippageAdjustedAmounts(bestTradeToken0)
-      const slippageAdjustedAmountsTrade1 = bestTradeToken1 && computeSlippageAdjustedAmounts(bestTradeToken1)
-      // compare input balance to Max input based on version
-      const maxAmountInToken0 = slippageAdjustedAmountsTrade0 ? slippageAdjustedAmountsTrade0[Field.INPUT] : null
-      const maxAmountInToken1 = slippageAdjustedAmountsTrade1 ? slippageAdjustedAmountsTrade1[Field.INPUT] : null
-      const balanceIn = relevantTokenBalances[0]
-      if (
-        balanceIn &&
-        maxAmountInToken0 &&
-        maxAmountInToken1 &&
-        balanceIn.lessThan(maxAmountInToken0.add(maxAmountInToken1))
-      ) {
-        returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
-      }
-      //TODO compare with inputAmountBalance0 and pick better
-    }
-    console.log('total LP', zapInCalculatedAmounts?.liquidityMinted)
     return {
       currencies: {
         [Field.INPUT]: inputCurrency ?? undefined,
@@ -512,10 +498,6 @@ export function useDerivedSwapInfo<
       tradeToken1: bestTradeToken1,
       inputError: returnInputError,
       loading,
-      zapInInputAmountTrade0: zapInCalculatedAmounts?.amountFromForTokenA,
-      zapInInputAmountTrade1: zapInCalculatedAmounts?.amountFromForTokenB,
-      zapInLiquidityMinted: zapInCalculatedAmounts?.liquidityMinted,
-      zapOutOutputAmount: undefined,
     } as ReturnedValue
   } else {
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade

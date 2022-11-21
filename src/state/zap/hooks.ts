@@ -12,6 +12,7 @@ import {
   Token,
   TokenAmount,
   Trade,
+  UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
@@ -21,22 +22,31 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { PRE_SELECT_OUTPUT_CURRENCY_ID, PRE_SELECT_ZAP_PAIR_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import {
+  PRE_SELECT_OUTPUT_CURRENCY_ID,
+  PRE_SELECT_ZAP_PAIR_ID,
+  SUPPORTED_DEX_ZAP_INDEX,
+  SWAP_INPUT_ERRORS,
+} from '../../constants/index'
 import { usePairAtAddress } from '../../data/Reserves'
+import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
+import { useTradeExactInUniswapV2 } from '../../hooks/Trades'
 import { useAbortController } from '../../hooks/useAbortController'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
+import { SwapTx, ZapInTx, ZapOutTx } from '../../hooks/useZapCallback'
 import {
   EcoRouterResults,
   getExactIn as getExactInFromEcoRouter,
   getExactOut as getExactOutFromEcoRouter,
 } from '../../lib/eco-router'
-import { isAddress } from '../../utils'
+import { calculateSlippageAmount, isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
-import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { getPathFromTrade } from '../../utils/getPathFromTrade'
+import { calculateZapInAmounts, computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
@@ -575,4 +585,98 @@ export function useDefaultsFromURLSearch():
   }, [dispatch, chainId])
 
   return result
+}
+
+export const useZapParams = (
+  data: UseDerivedZapInfoResult,
+  pair: Pair | undefined,
+  isZapIn = true
+): {
+  zapIn: ZapInTx | undefined
+  zapOut: ZapOutTx | undefined
+  swapTokenA: SwapTx
+  swapTokenB: SwapTx
+  liquidityMinted: TokenAmount | undefined
+} => {
+  const zeroBN = BigNumber.from(0)
+  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+  const dexIdSwapA = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+  const dexIdSwapB = BigNumber.from(
+    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+  )
+
+  const tradeToken0 = data.tradeToken0
+  const tradeToken1 = data.tradeToken1
+  const totalSupply = useTotalSupply(pair?.liquidityToken)
+  const { chainId } = useActiveWeb3React()
+  const platformTrade0 = tradeToken0?.platform as UniswapV2RoutablePlatform
+  const platformTrade1 = tradeToken1?.platform as UniswapV2RoutablePlatform
+
+  const zapInCalculatedAmounts = calculateZapInAmounts(
+    data.parsedAmount,
+    pair,
+    totalSupply,
+    tradeToken0?.executionPrice.invert(),
+    tradeToken1?.executionPrice.invert(),
+    chainId
+  )
+
+  const exactTrade0 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenA, pair?.token0, platformTrade0)
+  const exactTrade1 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenB, pair?.token1, platformTrade1)
+
+  console.log(
+    'JES1',
+    exactTrade0?.inputAmount.toSignificant(),
+    exactTrade0?.minimumAmountOut().toSignificant(),
+    getPathFromTrade(data.tradeToken0),
+    dexIdSwapA.toString()
+  )
+  console.log(
+    'JES2',
+    exactTrade1?.inputAmount.toSignificant(),
+    exactTrade1?.minimumAmountOut().toSignificant(),
+    getPathFromTrade(data.tradeToken1),
+    dexIdSwapB.toString()
+  )
+
+  const allowedSlippage = useUserSlippageTolerance() // custom from users
+
+  const minLp = zapInCalculatedAmounts.liquidityMinted
+    ? calculateSlippageAmount(zapInCalculatedAmounts.liquidityMinted, allowedSlippage)[0].toString()
+    : '0'
+  console.log('JES3', zapInCalculatedAmounts.liquidityMinted?.toSignificant(), minLp)
+  const swapTokenA: SwapTx = {
+    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.toSignificant() : '0',
+    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : '0',
+    path: getPathFromTrade(data.tradeToken0),
+    dexIndex: dexIdSwapA,
+  }
+
+  const swapTokenB: SwapTx = {
+    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.toSignificant() : '0',
+    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : '0',
+    path: getPathFromTrade(data.tradeToken1),
+    dexIndex: dexIdSwapB,
+  }
+
+  const zapIn = isZapIn
+    ? {
+        amountAMin: zeroBN,
+        amountBMin: zeroBN,
+        amountLPMin: minLp,
+        dexIndex: dexIdZap,
+      }
+    : undefined
+
+  const zapOut = zapIn
+    ? undefined
+    : {
+        amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
+        amountTokenToMin: zeroBN,
+        dexIndex: dexIdZap,
+      }
+
+  return { zapIn, zapOut, swapTokenA, swapTokenB, liquidityMinted: zapInCalculatedAmounts.liquidityMinted }
 }

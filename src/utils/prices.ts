@@ -40,6 +40,7 @@ import {
 } from '../constants'
 import { useTotalSupply } from '../data/TotalSupply'
 import { useCoingeckoUSDPrice } from '../hooks/useUSDValue'
+import { useDerivedBurnInfo } from '../state/burn/hooks'
 import { tryParseAmount } from '../state/swap/hooks'
 import { Field } from '../state/swap/types'
 import { wrappedCurrency, wrappedCurrencyAmount } from './wrappedCurrency'
@@ -257,12 +258,12 @@ export const limitNumberOfDecimalPlaces = (
 }
 
 export const calculateZapInAmounts = (
-  amountFrom: CurrencyAmount,
-  pair: Pair,
-  pairTotalSupply: TokenAmount,
-  priceToken0TokenFrom: Price,
-  priceToken1TokenFrom: Price,
-  chainId: number
+  amountFrom: CurrencyAmount | undefined,
+  pair: Pair | undefined,
+  pairTotalSupply: TokenAmount | undefined,
+  priceToken0TokenFrom: Price | undefined,
+  priceToken1TokenFrom: Price | undefined,
+  chainId: number | undefined
 ): {
   amountFromForTokenA?: CurrencyAmount
   amountFromForTokenB?: CurrencyAmount
@@ -270,6 +271,14 @@ export const calculateZapInAmounts = (
   amountAddLpTokenB?: CurrencyAmount
   liquidityMinted?: TokenAmount
 } => {
+  if (!amountFrom || !pair || !pairTotalSupply || !priceToken0TokenFrom || !priceToken1TokenFrom || !chainId)
+    return {
+      amountAddLpTokenA: undefined,
+      amountAddLpTokenB: undefined,
+      amountFromForTokenA: undefined,
+      amountFromForTokenB: undefined,
+      liquidityMinted: undefined,
+    }
   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
 
   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
@@ -329,14 +338,15 @@ export const calculateZapInAmounts = (
 //   amountFrom: CurrencyAmount,
 //   pair: Pair,
 //   pairTotalSupply: TokenAmount,
-//   priceToken0TokenFrom: Price,
-//   priceToken1TokenFrom: Price,
+//   priceToken0TokenTo: Price,
+//   priceToken1TokenTo: Price,
 //   chainId: number
 // ): {
 //   amountTo?: TokenAmount
 // } => {
 //   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
 
+//   const tst = useDerivedBurnInfo()
 //   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
 //   const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
 //   const token1TokenFromPrice = Number(priceToken1TokenFrom.toFixed(significantDigits))

@@ -56,12 +56,13 @@ import {
   useDefaultsFromURLSearch,
   UseDerivedZapInfoResult,
   useZapActionHandlers,
+  useZapParams,
   useZapState,
 } from '../../state/zap/hooks'
 import { ZapState } from '../../state/zap/types'
 import { getPathFromTrade } from '../../utils/getPathFromTrade'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeTradePriceBreakdown, warningSeverityZap } from '../../utils/prices'
+import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverityZap } from '../../utils/prices'
 import AppBody from '../AppBody'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
@@ -118,7 +119,7 @@ export enum CoWTradeState {
 
 const getZapParams = (
   data: UseDerivedZapInfoResult,
-  zapIn = true
+  isZapIn = true
 ): { zapInParams: ZapInTx | undefined; zapOutParams: ZapOutTx | undefined; swapTokenA: SwapTx; swapTokenB: SwapTx } => {
   const zeroBN = BigNumber.from(0)
   const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
@@ -129,21 +130,26 @@ const getZapParams = (
     SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
   )
 
+  const tradeToken0 = data.tradeToken0
+  const tradeToken1 = data.tradeToken1
+  const slippageAdjustedAmountsTrade0 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken0)
+  const slippageAdjustedAmountsTrade1 = tradeToken1 && computeSlippageAdjustedAmounts(tradeToken1)
+
   const swapTokenA: SwapTx = {
     amount: data.zapInInputAmountTrade0?.toSignificant() ?? '0',
-    amountMin: zeroBN,
+    amountMin: slippageAdjustedAmountsTrade0?.OUTPUT?.toSignificant() ?? '0',
     path: getPathFromTrade(data.tradeToken0),
     dexIndex: dexIdSwapA,
   }
 
   const swapTokenB: SwapTx = {
     amount: data.zapInInputAmountTrade1?.toSignificant() ?? '0',
-    amountMin: zeroBN,
+    amountMin: slippageAdjustedAmountsTrade1?.OUTPUT?.toSignificant() ?? '0',
     path: getPathFromTrade(data.tradeToken1),
     dexIndex: dexIdSwapB,
   }
 
-  const zapInParams = zapIn
+  const zapInParams = isZapIn
     ? {
         amountAMin: zeroBN,
         amountBMin: zeroBN,
@@ -152,7 +158,7 @@ const getZapParams = (
       }
     : undefined
 
-  const zapOutParams = zapIn
+  const zapOutParams = isZapIn
     ? undefined
     : {
         amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
@@ -217,7 +223,7 @@ export default function Zap() {
 
   // zap state
   const { independentField, typedValue, recipient } = useZapState()
-  const zapIn = independentField === Field.INPUT
+  const isZapIn = independentField === Field.INPUT
 
   const filterPairs = useCallback(
     (pair: Pair) => {
@@ -239,7 +245,7 @@ export default function Zap() {
     zapInLiquidityMinted,
     zapOutOutputAmount,
   } = derivedInfo
-
+  const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
   console.log('ZAP DONE TRADE 0', potentialTrade0)
   console.log('ZAP DONE TRADE 1', potentialTrade1)
 
@@ -270,7 +276,7 @@ export default function Zap() {
 
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
-    [Field.OUTPUT]: zapIn ? zapInLiquidityMinted : zapOutOutputAmount,
+    [Field.OUTPUT]: isZapIn ? zapParams.liquidityMinted : zapOutOutputAmount,
   }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
@@ -349,8 +355,8 @@ export default function Zap() {
   const userAddress = '0x372A291A9cad69b0F5F231cf1885574e9De7fD33'
   console.log('zap path0', potentialTrade0?.details, getPathFromTrade(potentialTrade0))
   console.log('zap path1', potentialTrade1?.details, getPathFromTrade(potentialTrade1))
-  const { zapInParams, zapOutParams, swapTokenA, swapTokenB } = getZapParams(derivedInfo, zapIn)
-
+  // const { zapInParams, zapOutParams, swapTokenA, swapTokenB } = getZapParams(derivedInfo, isZapIn)
+  // const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
   // const swapTokenA: SwapTx = {
   //   amount: zapInInputAmountTrade0?.toSignificant() ?? '0',
   //   amountMin: zeroBN,
@@ -380,10 +386,10 @@ export default function Zap() {
   // }
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-    zapIn: zapInParams,
-    zapOut: zapOutParams,
-    swapTokenA,
-    swapTokenB,
+    zapIn: zapParams.zapIn,
+    zapOut: zapParams.zapOut,
+    swapTokenA: zapParams.swapTokenA,
+    swapTokenB: zapParams.swapTokenB,
     recipient,
     affiliate: undefined,
     transferResidual: true,
@@ -498,12 +504,12 @@ export default function Zap() {
   const handleOnPairSelect = useCallback(
     (pair: Pair) => {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
-      onCurrencySelection(zapIn ? Field.OUTPUT : Field.INPUT, pair.liquidityToken)
+      onCurrencySelection(isZapIn ? Field.OUTPUT : Field.INPUT, pair.liquidityToken)
       onPairSelection(pair.token0.address, pair.token1.address)
 
       setZapPair(pair)
     },
-    [onCurrencySelection, onPairSelection, zapIn]
+    [onCurrencySelection, onPairSelection, isZapIn]
   )
 
   const handleMaxInput = useCallback(
@@ -545,7 +551,7 @@ export default function Zap() {
               <CurrencyInputPanel
                 value={formattedAmounts[Field.INPUT]}
                 currency={currencies[Field.INPUT]}
-                pair={zapIn ? null : zapPair}
+                pair={isZapIn ? null : zapPair}
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput(Field.INPUT)}
                 onCurrencySelect={handleInputSelect}
@@ -556,7 +562,7 @@ export default function Zap() {
                 maxAmount={maxAmountInput}
                 showCommonBases
                 id="zap-currency-input"
-                inputType={zapIn ? InputType.currency : InputType.pair}
+                inputType={isZapIn ? InputType.currency : InputType.pair}
                 filterPairs={filterPairs}
               />
               <SwitchIconContainer>
@@ -580,7 +586,7 @@ export default function Zap() {
                 onUserInput={handleTypeInput} // TODO: make it optional as it is disabled
                 onMax={handleMaxInput(Field.OUTPUT)}
                 currency={currencies[Field.OUTPUT]}
-                pair={zapIn ? zapPair : null}
+                pair={isZapIn ? zapPair : null}
                 onCurrencySelect={handleOutputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
@@ -590,7 +596,7 @@ export default function Zap() {
                 maxAmount={maxAmountOutput}
                 showCommonBases
                 disabled={true}
-                inputType={zapIn ? InputType.pair : InputType.currency}
+                inputType={isZapIn ? InputType.pair : InputType.currency}
                 filterPairs={filterPairs}
                 id="zap-currency-output"
               />
