@@ -780,11 +780,8 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
   ZAP_NOT_AVAILABLE: 8,
 }
 
-// export const ZAP_CONTRACT_ADDRESS = '0xb4Aa30AC8E851553e8bb32DBf3c2F8597a0418eF' //old
-// export const ZAP_CONTRACT_ADDRESS = '0xb1ce168e32479Ca1575948a9473868436561e802'
-
 export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: '',
+  [ChainId.MAINNET]: '0xb1ce168e32479Ca1575948a9473868436561e802',
   [ChainId.GNOSIS]: '0xb1ce168e32479Ca1575948a9473868436561e802',
   [ChainId.ARBITRUM_ONE]: '',
   [ChainId.POLYGON]: '',

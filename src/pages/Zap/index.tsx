@@ -606,7 +606,7 @@ export default function Zap() {
             </AutoColumn>
             <TradeDetails
               show={!showWrap}
-              loading={loading || (!loading && ((!!trade1 && !trade) || (!!trade && !trade1)))}
+              loading={loading}
               trade={trade}
               trade1={trade1}
               bestPricedTrade={bestPricedTrade}

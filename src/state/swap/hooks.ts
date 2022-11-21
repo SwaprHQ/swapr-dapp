@@ -2,6 +2,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import {
+  ChainId,
   Currency,
   CurrencyAmount,
   currencyEquals,
@@ -214,6 +215,8 @@ export function useDerivedSwapInfo<
   ])
 
   const [loading, setLoading] = useState<boolean>(false)
+  const [loading0, setLoading0] = useState<boolean>(false)
+  const [loading1, setLoading1] = useState<boolean>(false)
   const [inputError, setInputError] = useState<number | undefined>()
   const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
 
@@ -272,11 +275,11 @@ export function useDerivedSwapInfo<
       }
       return
     }
-    // // Require a valid zap contract
-    // if (isZap && !zapContact) {
-    //   setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
-    //   return
-    // }
+    // Require a valid zap contract
+    if (isZap && !zapContact) {
+      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+      return
+    }
     // Require a valid input amount
     if (!parsedAmount) {
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
@@ -329,7 +332,8 @@ export function useDerivedSwapInfo<
 
     if (isZap && pairCurrency0 && pairCurrency1) {
       console.log('loading1', !platformTradeToken0[0]?.details || !platformTradeToken1[0]?.details)
-      setLoading(true)
+      setLoading0(true)
+      setLoading1(true)
 
       setAllPlatformTradesToken0([])
       setAllPlatformTradesToken1([])
@@ -346,18 +350,24 @@ export function useDerivedSwapInfo<
         parsedAmount.currency,
         chainId
       )
+      const halfParsedAmount1 = tryParseAmount(
+        parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
+        parsedAmount.currency,
+        chainId
+      )
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
-      console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed())
+      console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed(), chainId)
 
       const getTradesToken0 = isZapIn
-        ? getTradesPromise(
+        ? getTradesPromiseZap(
             halfParsedAmount ?? parsedAmount,
-            inputCurrency,
+            parsedAmount.currency,
             pairCurrency0,
             commonParams,
             ecoRouterSourceOptionsParams,
             provider,
-            signal
+            signal,
+            chainId
           )
         : getTradesPromise(
             halfParsedAmount ?? parsedAmount,
@@ -373,7 +383,7 @@ export function useDerivedSwapInfo<
       getTradesToken0
         .then(trades => {
           setAllPlatformTradesToken0(trades.trades)
-          setLoading(false)
+          setLoading0(false)
           quoteExpiryTimeout.current = setTimeout(() => {
             setIsQuoteExpired(true)
           }, quoteTTL)
@@ -382,35 +392,37 @@ export function useDerivedSwapInfo<
           if (error.name !== 'AbortError') {
             console.error(error)
             setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
-            setLoading(false)
+            setLoading0(false)
           }
         })
 
       const getTradesToken1 = isZapIn
-        ? getTradesPromise(
+        ? getTradesPromiseZap(
             halfParsedAmount ?? parsedAmount,
-            inputCurrency,
+            parsedAmount.currency,
             pairCurrency1,
             commonParams,
             ecoRouterSourceOptionsParams,
             provider,
-            signal
+            signal,
+            chainId
           )
-        : getTradesPromise(
+        : getTradesPromiseZap(
             halfParsedAmount ?? parsedAmount,
             pairCurrency1,
             outputCurrency,
             commonParams,
             ecoRouterSourceOptionsParams,
             provider,
-            signal
+            signal,
+            chainId
           )
 
       // Start fetching trades from EcoRouter API
       getTradesToken1
         .then(trades => {
           setAllPlatformTradesToken1(trades.trades)
-          if (!!platformTradeToken0[0]?.details) setLoading(false)
+          setLoading1(false)
           quoteExpiryTimeout.current = setTimeout(() => {
             setIsQuoteExpired(true)
           }, quoteTTL)
@@ -419,10 +431,9 @@ export function useDerivedSwapInfo<
           if (error.name !== 'AbortError') {
             console.error(error)
             setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
-            setLoading(false)
+            setLoading1(false)
           }
         })
-      console.log('loading2', !platformTradeToken0[0]?.details || !platformTradeToken1[0]?.details)
     } else {
       setLoading(true)
       setAllPlatformTrades([])
@@ -462,6 +473,8 @@ export function useDerivedSwapInfo<
         setAllPlatformTrades([])
       }
       setLoading(false)
+      setLoading0(false)
+      setLoading1(false)
       setInputError(undefined)
       if (quoteExpiryTimeout.current) {
         clearTimeout(quoteExpiryTimeout.current)
@@ -489,7 +502,7 @@ export function useDerivedSwapInfo<
   let returnInputError = inputError
   if (isZap) {
     const [bestTradeToken0, bestTradeToken1] = [platformTradeToken0[0], platformTradeToken1[0]]
-
+    // const isLoading = !bestTradeToken0 && !bestTradeToken1 && loading0 && loading1
     return {
       currencies: {
         [Field.INPUT]: inputCurrency ?? undefined,
@@ -503,7 +516,7 @@ export function useDerivedSwapInfo<
       tradeToken0: bestTradeToken0,
       tradeToken1: bestTradeToken1,
       inputError: returnInputError,
-      loading,
+      loading: loading0 || loading1,
     } as ReturnedValue
   } else {
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
@@ -577,23 +590,26 @@ export function useDerivedSwapInfo<
 
 async function getTradesPromiseZap(
   parsedAmount: CurrencyAmount,
+  inputCurrency: Currency,
   outputCurrency: Currency,
   commonParams: { maximumSlippage: Percent; receiver: string; user: string },
   ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
   staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
-  signal: AbortSignal
+  signal: AbortSignal,
+  chainId: ChainId | undefined
 ): Promise<EcoRouterResults> {
+  console.log('zap find')
   const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
     signal.onabort = () => {
       reject(new DOMException('Aborted', 'AbortError'))
     }
   })
-
   // Error list
   const errors: any[] = []
   // Derive the chainId from the token
-  const chainId = (parsedAmount.currency as Token).chainId
+  // const chainId = (parsedAmount.currency as Token).chainId
 
+  console.log('zap find', chainId)
   if (!chainId) {
     return {
       errors: [new Error('Unsupported chain')],
@@ -604,11 +620,12 @@ async function getTradesPromiseZap(
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
+  console.log('zap find', uniswapV2PlatformList)
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
       const getAllCommonUniswapV2PairsParams = {
-        currencyA: parsedAmount.currency,
+        currencyA: inputCurrency,
         currencyB: outputCurrency,
         platform,
         staticJsonRpcProvider,
