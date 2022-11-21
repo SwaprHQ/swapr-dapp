@@ -800,10 +800,9 @@ export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
 
 export const SUPPORTED_DEX_ZAP_INDEX: { [key: string]: number } = {
   [UniswapV2RoutablePlatform.SWAPR.name]: 0,
-  [RoutablePlatform.UNISWAP.name]: 1,
+  [UniswapV2RoutablePlatform.UNISWAP.name]: 1,
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: 2,
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: 3,
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: 4,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: 5,
-  [RoutablePlatform.ZEROX.name]: 6,
 }

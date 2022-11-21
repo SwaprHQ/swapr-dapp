@@ -5,6 +5,7 @@ import {
   Currency,
   CurrencyAmount,
   currencyEquals,
+  getAllCommonUniswapV2Pairs,
   JSBI,
   Pair,
   parseBigintIsh,
@@ -14,6 +15,8 @@ import {
   Token,
   TokenAmount,
   Trade,
+  UniswapV2RoutablePlatform,
+  UniswapV2Trade,
   ZERO,
 } from '@swapr/sdk'
 
@@ -39,6 +42,8 @@ import {
   EcoRouterResults,
   getExactIn as getExactInFromEcoRouter,
   getExactOut as getExactOutFromEcoRouter,
+  getUniswapV2PlatformList,
+  sortTradesByExecutionPrice,
 } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -268,10 +273,10 @@ export function useDerivedSwapInfo<
       return
     }
     // // Require a valid zap contract
-    if (isZap && !zapContact) {
-      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
-      return
-    }
+    // if (isZap && !zapContact) {
+    //   setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+    //   return
+    // }
     // Require a valid input amount
     if (!parsedAmount) {
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
@@ -304,13 +309,6 @@ export function useDerivedSwapInfo<
 
     // Update swap state with the new input
     setInputError(inputErrorNextState)
-    setLoading(true)
-    setAllPlatformTrades([])
-
-    if (isZap) {
-      setAllPlatformTradesToken0([])
-      setAllPlatformTradesToken1([])
-    }
 
     setIsQuoteExpired(false)
     if (quoteExpiryTimeout.current) {
@@ -330,6 +328,11 @@ export function useDerivedSwapInfo<
     }
 
     if (isZap && pairCurrency0 && pairCurrency1) {
+      console.log('loading1', !platformTradeToken0[0]?.details || !platformTradeToken1[0]?.details)
+      setLoading(true)
+
+      setAllPlatformTradesToken0([])
+      setAllPlatformTradesToken1([])
       const isZapIn = independentField === Field.INPUT
       // const isInOut0EqualOrWrap =
       //   currencyEquals(inputCurrency, pairCurrency0) ||
@@ -396,7 +399,7 @@ export function useDerivedSwapInfo<
         : getTradesPromise(
             halfParsedAmount ?? parsedAmount,
             pairCurrency1,
-            inputCurrency,
+            outputCurrency,
             commonParams,
             ecoRouterSourceOptionsParams,
             provider,
@@ -407,7 +410,7 @@ export function useDerivedSwapInfo<
       getTradesToken1
         .then(trades => {
           setAllPlatformTradesToken1(trades.trades)
-          setLoading(false)
+          if (!!platformTradeToken0[0]?.details) setLoading(false)
           quoteExpiryTimeout.current = setTimeout(() => {
             setIsQuoteExpired(true)
           }, quoteTTL)
@@ -419,7 +422,10 @@ export function useDerivedSwapInfo<
             setLoading(false)
           }
         })
+      console.log('loading2', !platformTradeToken0[0]?.details || !platformTradeToken1[0]?.details)
     } else {
+      setLoading(true)
+      setAllPlatformTrades([])
       const getTrades = getTradesPromise(
         parsedAmount,
         inputCurrency,
@@ -567,6 +573,79 @@ export function useDerivedSwapInfo<
 
     return await Promise.race([abortPromise, ecoRouterPromise])
   }
+}
+
+async function getTradesPromiseZap(
+  parsedAmount: CurrencyAmount,
+  outputCurrency: Currency,
+  commonParams: { maximumSlippage: Percent; receiver: string; user: string },
+  ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
+  staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
+  signal: AbortSignal
+): Promise<EcoRouterResults> {
+  const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
+    signal.onabort = () => {
+      reject(new DOMException('Aborted', 'AbortError'))
+    }
+  })
+
+  // Error list
+  const errors: any[] = []
+  // Derive the chainId from the token
+  const chainId = (parsedAmount.currency as Token).chainId
+
+  if (!chainId) {
+    return {
+      errors: [new Error('Unsupported chain')],
+      trades: [],
+    }
+  }
+
+  // Uniswap V2
+  // Get the list of Uniswap V2 platform that support current chain
+  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
+
+  const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
+    try {
+      const getAllCommonUniswapV2PairsParams = {
+        currencyA: parsedAmount.currency,
+        currencyB: outputCurrency,
+        platform,
+        staticJsonRpcProvider,
+      }
+
+      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
+
+      return (
+        UniswapV2Trade.computeTradesExactIn({
+          currencyAmountIn: parsedAmount,
+          currencyOut: outputCurrency,
+          maximumSlippage: commonParams.maximumSlippage,
+          maxHops: {
+            maxHops: ecoRouterSourceOptionsParams.uniswapV2.useMultihops ? 3 : 1,
+            maxNumResults: 1,
+          },
+          pairs,
+        })[0] ?? undefined
+      )
+    } catch (error) {
+      errors.push(error)
+      return undefined
+    }
+  })
+
+  // Wait for all promises to resolve, and
+  // remove undefined values
+  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList])
+  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
+
+  // Return the list of sorted trades
+  const ecoRouterPromise = {
+    errors,
+    trades: sortTradesByExecutionPrice(unsortedTrades),
+  }
+
+  return await Promise.race([abortPromise, ecoRouterPromise])
 }
 
 function parseCurrencyFromURLParameter(urlParam: any, nativeCurrencyId: string): string {

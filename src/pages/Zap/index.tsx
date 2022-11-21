@@ -323,20 +323,20 @@ export default function Zap() {
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
+    if (approvalZap === ApprovalState.PENDING) {
       setApprovalsSubmitted(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approval])
+  }, [approvalZap])
 
   // Listen for changes on wrapState
   useEffect(() => {
     // watch GPv2
     if (wrapState === WrapState.WRAPPED) {
-      if (approval === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
+      if (approvalZap === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
       else setGnosisProtocolState(CoWTradeState.APPROVAL)
     }
-  }, [wrapState, approval, trade])
+  }, [wrapState, approvalZap, trade])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
@@ -451,9 +451,9 @@ export default function Zap() {
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
     !inputError &&
-    (approval === ApprovalState.NOT_APPROVED ||
-      approval === ApprovalState.PENDING ||
-      (approvalsSubmitted && approval === ApprovalState.APPROVED)) &&
+    (approvalZap === ApprovalState.NOT_APPROVED ||
+      approvalZap === ApprovalState.PENDING ||
+      (approvalsSubmitted && approvalZap === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > PriceImpact.HIGH && !isExpertMode)
 
   // const handleAcceptChanges = useCallback(() => {}, [])

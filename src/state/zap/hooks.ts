@@ -611,8 +611,8 @@ export const useZapParams = (
   const tradeToken1 = data.tradeToken1
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const { chainId } = useActiveWeb3React()
-  const platformTrade0 = tradeToken0?.platform as UniswapV2RoutablePlatform
-  const platformTrade1 = tradeToken1?.platform as UniswapV2RoutablePlatform
+  const platformTrade0 = (tradeToken0?.platform as UniswapV2RoutablePlatform) ?? undefined
+  const platformTrade1 = (tradeToken1?.platform as UniswapV2RoutablePlatform) ?? undefined
 
   const zapInCalculatedAmounts = calculateZapInAmounts(
     data.parsedAmount,
@@ -623,6 +623,7 @@ export const useZapParams = (
     chainId
   )
 
+  console.log('JES platform', platformTrade0, platformTrade1)
   const exactTrade0 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenA, pair?.token0, platformTrade0)
   const exactTrade1 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenB, pair?.token1, platformTrade1)
 
