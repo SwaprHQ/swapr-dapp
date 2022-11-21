@@ -30,7 +30,7 @@ import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
 import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
-import { TradeDetails } from '../../components/Swap/TradeDetails'
+import { TradeDetails } from '../../components/Swap/TradeDetailsZap'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { PriceImpact, SUPPORTED_DEX_ZAP_INDEX, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
@@ -52,6 +52,7 @@ import {
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
+import { SwapTabs } from '../../state/user/reducer'
 import {
   useDefaultsFromURLSearch,
   UseDerivedZapInfoResult,
@@ -174,7 +175,6 @@ export default function Zap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
   const { navigate, pathname } = useRouter()
   const isInProMode = pathname.includes('/pro') // comment
@@ -206,12 +206,10 @@ export default function Zap() {
   }, [])
 
   useEffect(() => {
-    if (isInProMode) {
-      if (!isDesktop) {
-        navigate('/swap')
-      }
+    if (pathname.includes('zap') && activeTab !== SwapTabs.ZAP) {
+      setActiveTab(SwapTabs.ZAP)
     }
-  }, [isDesktop, navigate, isInProMode])
+  }, [pathname]) // eslint-disable-line
 
   const { chainId } = useActiveWeb3React()
 
@@ -610,20 +608,12 @@ export default function Zap() {
               show={!showWrap}
               loading={loading || (!loading && ((!!trade1 && !trade) || (!!trade && !trade1)))}
               trade={trade}
+              trade1={trade1}
               bestPricedTrade={bestPricedTrade}
-              showAdvancedSwapDetails={showAdvancedSwapDetails}
-              setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
+              bestPricedTrade1={bestPricedTrade1}
               recipient={recipient}
             />
-            <TradeDetails
-              show={!showWrap}
-              loading={loading || (!loading && ((!!trade1 && !trade) || (!!trade && !trade1)))}
-              trade={trade1}
-              bestPricedTrade={bestPricedTrade1}
-              showAdvancedSwapDetails={showAdvancedSwapDetails}
-              setShowAdvancedSwapDetails={setShowAdvancedSwapDetails}
-              recipient={recipient}
-            />
+
             <SwapButtons
               wrapInputError={wrapInputError}
               showApproveFlow={showApproveFlow}

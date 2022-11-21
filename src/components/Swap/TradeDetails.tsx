@@ -5,6 +5,7 @@ import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'
 
+import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { AdvancedSwapDetailsToggle } from '../AdvancedSwapDetailsToggle'
 import { AutoColumn } from '../Column'
@@ -94,7 +95,7 @@ export function TradeDetails({
             </RowFixed>
           </RowBetween>
         </AutoColumn>
-        {showAddRecipient && <RecipientField recipient={recipient} />}
+        {showAddRecipient && <RecipientField recipient={recipient} setRecipient={setRecipient} />}
       </>
     )
   }

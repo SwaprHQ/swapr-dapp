@@ -45,7 +45,7 @@ import {
   useUpdateSelectedSwapTab,
   useUserSlippageTolerance,
 } from '../../state/user/hooks'
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOptions, SwapTabs } from '../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -143,6 +143,12 @@ export default function Swap() {
       }
     }
   }, [isDesktop, navigate, isInProMode])
+
+  useEffect(() => {
+    if (pathname.includes('swap') && activeTab !== SwapTabs.SWAP) {
+      setActiveTab(SwapTabs.SWAP)
+    }
+  }, [pathname]) // eslint-disable-line
 
   const { chainId } = useActiveWeb3React()
   const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
