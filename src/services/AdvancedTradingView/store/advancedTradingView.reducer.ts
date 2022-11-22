@@ -76,14 +76,14 @@ const advancedTradingViewSlice = createSlice({
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        const previousPairData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
+        const nextPairData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
 
-        data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
+        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
           burnsAndMints: {
-            data: previousPairData,
+            data: nextPairData,
             hasMore,
           },
         }
@@ -101,14 +101,14 @@ const advancedTradingViewSlice = createSlice({
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        const previousPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
+        const nextPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
 
-        data.forEach(element => !previousPairData.some(el => el.id === element.id) && previousPairData.push(element))
+        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
           swaps: {
-            data: previousPairData,
+            data: nextPairData,
             hasMore,
           },
         }
