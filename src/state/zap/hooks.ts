@@ -196,7 +196,7 @@ export interface UseDerivedZapInfoResult {
 
 //   // useCurrency and useToken returns a new object every time,
 //   // so we need to compare the addresses as strings
-//   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw.toString()?.toString()}`
+//   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.toSignificant()?.toString()}`
 
 //   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
 //   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
@@ -213,9 +213,9 @@ export interface UseDerivedZapInfoResult {
 //     pairCurrency1,
 //     parsedAmountString,
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     relevantTokenBalances[0]?.raw.toString().toString(),
+//     relevantTokenBalances[0]?.toSignificant().toString(),
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     relevantTokenBalances[1]?.raw.toString().toString(),
+//     relevantTokenBalances[1]?.toSignificant().toString(),
 //     allowedSlippage,
 //     isExactIn,
 //     provider,
@@ -224,7 +224,7 @@ export interface UseDerivedZapInfoResult {
 
 //   useWhatChanged(
 //     dependencyList,
-//     `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString().toString(),relevantTokenBalances[1]?.raw.toString().toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
+//     `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.toSignificant().toString(),relevantTokenBalances[1]?.toSignificant().toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
 //   )
 
 //   useEffect(() => {
@@ -244,7 +244,7 @@ export interface UseDerivedZapInfoResult {
 //     }
 //     // Notify user if input amount is too low, but still trigger the EcoRouter
 //     let inputErrorNextState: undefined | number = undefined
-//     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw.toString(), inputCurrencyBalance.raw.toString() as JSBI)) {
+//     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.toSignificant(), inputCurrencyBalance.toSignificant() as JSBI)) {
 //       inputErrorNextState = SWAP_INPUT_ERRORS.INSUFFICIENT_FUNDS
 //     }
 
@@ -644,20 +644,20 @@ export const useZapParams = (
 
   const allowedSlippage = useUserSlippageTolerance() // custom from users
 
-  const minLp = zapInCalculatedAmounts.liquidityMinted
+  const amountLpMinWithSlippage = zapInCalculatedAmounts.liquidityMinted
     ? calculateSlippageAmount(zapInCalculatedAmounts.liquidityMinted, allowedSlippage)[0].toString()
     : '0'
   // console.log('JES3', zapInCalculatedAmounts.liquidityMinted?.toSignificant(), minLp)
   const swapTokenA: SwapTx = {
-    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
-    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().raw.toString() : zeroBN,
+    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.toSignificant() : zeroBN,
+    amountMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO  isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : zeroBN,
     path: getPathFromTrade(data.tradeToken0),
     dexIndex: dexIdSwapA,
   }
 
   const swapTokenB: SwapTx = {
-    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.raw.toString() : zeroBN,
-    amountMin: isZapIn && exactTrade1 ? exactTrade1.minimumAmountOut().raw.toString() : zeroBN,
+    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.toSignificant() : zeroBN,
+    amountMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO  isZapIn && exactTrade1 ? exactTrade1.minimumAmountOut().toSignificant() : zeroBN,
     path: getPathFromTrade(data.tradeToken1),
     dexIndex: dexIdSwapB,
   }
@@ -666,7 +666,7 @@ export const useZapParams = (
     ? {
         amountAMin: zeroBN,
         amountBMin: zeroBN,
-        amountLPMin: minLp,
+        amountLPMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO amountLpMinWithSlippage
         dexIndex: dexIdZap,
       }
     : undefined
@@ -674,7 +674,7 @@ export const useZapParams = (
   const zapOut = zapIn
     ? undefined
     : {
-        amountLpFrom: data.parsedAmount ? BigNumber.from(data.parsedAmount.toSignificant()) : zeroBN,
+        amountLpFrom: data.parsedAmount ? data.parsedAmount.toSignificant() : zeroBN,
         amountTokenToMin: zeroBN,
         dexIndex: dexIdZap,
       }

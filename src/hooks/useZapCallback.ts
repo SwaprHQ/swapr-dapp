@@ -14,12 +14,12 @@ import {
   ZeroXTrade,
 } from '@swapr/sdk'
 
-import { ContractTransaction, UnsignedTransaction } from 'ethers'
+import { BigNumberish, ContractTransaction, UnsignedTransaction } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useAnalytics } from '../analytics'
-import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '../constants'
+import { INITIAL_ALLOWED_SLIPPAGE, SUPPORTED_DEX_ZAP_INDEX, ZERO_ADDRESS } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
@@ -184,7 +184,10 @@ export function useZapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
-  console.log('zap callback inside', zapContract)
+  console.log('zap callback constract', zapContract)
+
+  const [preferredGasPrice] = useUserPreferredGasPrice()
+  const mainnetGasPrices = useMainnetGasPrices()
 
   const { address: receiverENS } = useENS(recipient)
   const receiver = receiverENS ?? account
@@ -213,6 +216,14 @@ export function useZapCallback({
         error: 'Missing dependencies',
       }
     }
+    let normalizedGasPrice: BigNumberish
+    if (preferredGasPrice && chainId === ChainId.MAINNET) {
+      if (!(preferredGasPrice in MainnetGasPrice)) {
+        normalizedGasPrice = preferredGasPrice
+      } else if (mainnetGasPrices) {
+        normalizedGasPrice = mainnetGasPrices[preferredGasPrice as MainnetGasPrice]
+      }
+    }
 
     if (zapIn && !zapOut) {
       return {
@@ -221,13 +232,32 @@ export function useZapCallback({
             console.log('ESSA zap in callback', zapContract)
             // Set state to pending
             setZapState(ZapState.LOADING)
+            console.log('zap callback params TOP', {
+              zapIn,
+              zapOut,
+              swapTokenA,
+              swapTokenB,
+              receiver,
+              affiliateAddress,
+              transferResidual,
+            })
+            // const zapInTx = await zapContract.setSupportedDEX(
+            //   BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]),
+            //   UniswapV2RoutablePlatform.SWAPR.name,
+            //   '0xE43e60736b1cb4a75ad25240E2f9a62Bff65c0C0',
+            //   '0x5D48C95AdfFD4B40c1AAADc4e08fc44117E02179'
+            // )
             const zapInTx = await zapContract.zapIn(
               zapIn,
               swapTokenA,
               swapTokenB,
               receiver,
               affiliateAddress,
-              transferResidual
+              transferResidual,
+              {
+                gasLimit: 30000000,
+                gasPrice: normalizedGasPrice,
+              }
             )
             console.log('zap in tx', zapInTx)
             setTransactionReceipt(zapInTx)
