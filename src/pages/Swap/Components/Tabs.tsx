@@ -117,8 +117,8 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
     return (
       <MouseoverTooltip content={noLimitOrderSupport ? 'Unsupported network' : 'Connect your wallet'} placement="top">
         <Button
-          onClick={() => setActiveTab(SwapTab.LimitOrder)}
           className={className}
+          onClick={() => setActiveTab(SwapTab.LimitOrder)}
           disabled={noLimitOrderSupport || account == null}
         >
           <StyledSliders />

@@ -26,7 +26,9 @@ export function CustomTooltip({ content, placement, ...rest }: PopoverProps) {
 }
 
 export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipProps, 'show'>) {
-  const [canShow, setShow] = useState(false)
+  const [show, setShow] = useState(false)
+
+  // Sometimes onMouseLeave is not triggered so this is a fallback to remove tooltip
   useEffect(() => {
     const id = setTimeout(() => {
       setShow(false)
@@ -34,14 +36,16 @@ export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipPro
     return () => {
       clearTimeout(id)
     }
-  }, [canShow])
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  }, [show])
+
+  const open = useCallback(() => setShow(true), [])
+  const close = useCallback(() => setShow(false), [])
+
   return (
-    <CustomTooltip content={content} {...rest} show={canShow}>
-      <CursorPointerDiv onMouseEnter={open} onMouseLeave={close}>
+    <CursorPointerDiv onMouseEnter={open} onMouseLeave={close}>
+      <CustomTooltip content={content} {...rest} show={show}>
         {children}
-      </CursorPointerDiv>
-    </CustomTooltip>
+      </CustomTooltip>
+    </CursorPointerDiv>
   )
 }

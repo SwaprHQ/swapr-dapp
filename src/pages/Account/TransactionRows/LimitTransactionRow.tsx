@@ -1,7 +1,7 @@
 import { formatUnits } from 'ethers/lib/utils'
 import { DateTime } from 'luxon'
 import { useCallback, useState } from 'react'
-import { XCircle } from 'react-feather'
+import { Repeat, XCircle } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
@@ -30,6 +30,13 @@ export const CancelIcon = styled(XCircle)`
   width: 18px;
   height: 18px;
   color: #ff7e7e;
+`
+
+export const StyledSwitch = styled(Repeat)`
+  width: 12px;
+  height: 12px;
+  color: ${props => props.theme.purple3};
+  margin-left: 4px;
 `
 
 interface LimitTransactionRowProps {
@@ -65,6 +72,8 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
       }
     }
   }, [cancelOrder, chainId, library, notify, uid])
+
+  const handleFlip = useCallback(() => setFlipPrice(flip => !flip), [])
 
   return (
     <GridCard status={status.toUpperCase()}>
@@ -119,16 +128,12 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
       </TokenDetails>
 
       <TransactionDetails justifyContent="start">
-        <Flex
-          flexDirection="column"
-          alignContent="center"
-          onClick={() => {
-            setFlipPrice(!flipPrice)
-          }}
-          sx={{ cursor: 'pointer' }}
-        >
+        <Flex flexDirection="column" alignContent="center" onClick={handleFlip} sx={{ cursor: 'pointer' }}>
           <Box>{formattedPrice}</Box>
-          <Box sx={{ fontSize: '10px' }}>{tokenPair}</Box>
+          <Box sx={{ fontSize: '10px' }}>
+            {tokenPair}
+            <StyledSwitch />
+          </Box>
         </Flex>
       </TransactionDetails>
 

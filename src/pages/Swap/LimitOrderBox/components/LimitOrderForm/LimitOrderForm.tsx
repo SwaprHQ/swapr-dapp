@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { usePrevious } from 'react-use'
+import { Flex } from 'rebass'
 
 import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
@@ -90,6 +91,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const order = JSON.parse(JSON.stringify(limitOrder))
 
       const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
+      // checking the price of 10 unit of tokens since CoW calculates fees from sell token. If we check price for 1 unit most cases in Mainnet
+      // 1 sell token wont cover fees and api fails. So checking the price of 10 unit of sell token to buy token and diving with 10 to get current market price.
+      // It is not optimal but to show market price its approximate. The order will be executed in correct price.
       order.sellAmount = parseUnits('10', token.currency.decimals).toString()
 
       const cowQuote = await getQuote({
@@ -181,6 +185,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     inputCurrencyAmount: sellTokenAmount,
     outputCurrencyAmount: buyTokenAmount,
   })
+  // Determine if the token has to be approved first
+  const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
 
   const handleSwapTokens = useCallback(() => {
     setSellTokenAmount(buyTokenAmount)
@@ -200,11 +206,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTokenAmount, sellTokenAmount])
 
-  // Determine if the token has to be approved first
-  const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
-
   // Form submission handler
-  const reviewOrder = async () => {
+  const placeLimitOrder = async () => {
     setLoading(true)
 
     // sign the order
@@ -236,7 +239,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         signer,
       })
       if (response) {
-        notify('Successfully created limit order')
+        notify('Successfully created limit order. Please check user account for details')
       } else {
         notify('Failed to place limit order. Try again.', false)
       }
@@ -388,8 +391,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     })
   }
 
-  // In the event that user choose native token as sell currency, offer to wrap it
-
   return (
     <AppBody>
       <LimitOrderFormContext.Provider
@@ -474,8 +475,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
-            <OrderLimitPriceField id="limitPrice" />
-            <OrderExpiryField id="limitOrderExpiry" />
+            <Flex flex={60}>
+              <OrderLimitPriceField id="limitPrice" />
+            </Flex>
+            <Flex flex={40}>
+              <OrderExpiryField id="limitOrderExpiry" />
+            </Flex>
           </AutoRow>
           {showApproveFlow ? (
             <ApprovalFlow
@@ -491,8 +496,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   {formatMaxValue(isPossibleToOrder.value)}
                 </MaxAlert>
               )}
-              <ButtonPrimary onClick={reviewOrder} disabled={isPossibleToOrder.status}>
-                Review Order
+              <ButtonPrimary onClick={placeLimitOrder} disabled={isPossibleToOrder.status}>
+                Place Limit Order
               </ButtonPrimary>
             </>
           )}
