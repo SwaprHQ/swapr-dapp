@@ -21,8 +21,7 @@ import {
   SyncState,
   XdaiBridgeList,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
-import { ecoBridgeUIActions } from '../store/UI.reducer'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import {
   XDAI_BRIDGE_EXECUTIONS,
   XDAI_BRIDGE_FOREIGN_REQUEST,
@@ -46,16 +45,11 @@ import {
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI
   private _foreignChainId = ChainId.MAINNET
-  private _listeners: NodeJS.Timeout[] = []
   private _daiTokenOnMainnet: Contract | undefined = undefined
 
   constructor({ supportedChains, bridgeId, displayName = 'xDai Bridge' }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
-  }
-
-  private get store() {
-    if (!this._store) throw new Error('xDai: No store set')
-    return this._store
+    this.setBaseActions(this.actions)
   }
 
   private get actions() {
@@ -82,7 +76,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
     this._daiTokenOnMainnet = this._createDaiTokenOnMainnet()
     await this.fetchHistory()
-    this.startListeners()
+    this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTransactionsListener }])
   }
 
   public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
@@ -91,17 +85,13 @@ export class XdaiBridge extends EcoBridgeChildBase {
     this._daiTokenOnMainnet = this._createDaiTokenOnMainnet()
   }
 
-  private startListeners = () => {
-    this._listeners.push(setInterval(this.pendingTransactionsListener, 5000))
-  }
-
   public fetchStaticLists = async () => undefined
 
   public fetchDynamicLists = async () => {
     const { chainId } = this.store.getState().ecoBridge.ui.from
 
     //create list only for mainnet
-    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.LOADING))
 
     if (chainId === ChainId.MAINNET) {
       const tokenList: TokenList = {
@@ -114,19 +104,13 @@ export class XdaiBridge extends EcoBridgeChildBase {
         },
         tokens: [DAI[ChainId.MAINNET] as TokenInfo],
       }
-      this.store.dispatch(this.actions.addTokenLists({ xdai: tokenList }))
+      this.store.dispatch(this.baseActions.addTokenLists({ xdai: tokenList }))
     }
-    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.READY))
   }
 
   public getBridgingMetadata = async () => {
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
-
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].lastMetadataCt
-
-    const helperRequestId = (requestId ?? 0) + 1
-
-    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
+    const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     const {
       from: { chainId: fromChainId, value, address: fromTokenAddress },
@@ -137,7 +121,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         fromTokenAddress.toLowerCase() !== DAI[ChainId.MAINNET].address.toLowerCase()) ||
       (fromChainId === ChainId.XDAI && fromTokenAddress !== Currency.getNative(fromChainId).symbol)
     ) {
-      this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.FAILED }))
+      this.ecoBridgeUtils.metadataStatus.fail()
       return
     }
 
@@ -158,160 +142,97 @@ export class XdaiBridge extends EcoBridgeChildBase {
       gas = `${Number(Number(formattedGasCost) * Number(nativeCurrencyPrice)).toFixed(2)}$`
     } catch {}
 
-    const details = {
-      gas,
-      fee: '0%',
-      estimateTime: '5 min',
-      receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
-      requestId: helperRequestId,
-    }
-
-    this.store.dispatch(this.actions.setBridgeDetails(details))
+    this.store.dispatch(
+      this.baseActions.setBridgeDetails({
+        gas,
+        fee: '0%',
+        estimateTime: '5 min',
+        receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
+        requestId,
+      })
+    )
   }
 
   public validate = async () => {
-    this.store.dispatch(
-      ecoBridgeUIActions.setStatusButton({
-        label: 'Loading',
-        isError: false,
-        isLoading: true,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
-    )
+    try {
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    const {
-      from: { chainId: fromChainId, value: fromAmount, decimals: fromTokenDecimals },
-    } = this.store.getState().ecoBridge.ui
+      const {
+        from: { chainId: fromChainId, value: fromAmount, decimals: fromTokenDecimals },
+      } = this.store.getState().ecoBridge.ui
 
-    const fromAmountNumber = Number(fromAmount)
+      const fromAmountNumber = Number(fromAmount)
 
-    if (
-      fromAmountNumber > 9999999 ||
-      (fromChainId === ChainId.MAINNET && fromAmountNumber < 0.005) ||
-      (fromChainId === ChainId.XDAI && fromAmountNumber < 10)
-    ) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
+      if (
+        fromAmountNumber > 9999999 ||
+        (fromChainId === ChainId.MAINNET && fromAmountNumber < 0.005) ||
+        (fromChainId === ChainId.XDAI && fromAmountNumber < 10)
+      ) {
+        this.ecoBridgeUtils.ui.statusButton.setCustomStatus({
           label: `Amount is underflow or overflow`,
           isError: true,
           isLoading: false,
           isBalanceSufficient: false,
           isApproved: false,
         })
-      )
-      return
-    }
 
-    try {
+        return
+      }
+
       if (this._daiTokenOnMainnet) {
         const allowance: BigNumber = await this._daiTokenOnMainnet.allowance(this._account, ETHEREUM_BRIDGE_ADDRESS)
 
         const parsedValue = parseUnits(fromAmount, fromTokenDecimals)
 
         if (allowance.gte(parsedValue)) {
-          this.store.dispatch(
-            ecoBridgeUIActions.setStatusButton({
-              label: 'Bridge',
-              isError: false,
-              isLoading: false,
-              isBalanceSufficient: true,
-              isApproved: true,
-            })
-          )
+          this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+
           return
         }
 
-        this.store.dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Approve',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: true,
-            isApproved: false,
-          })
-        )
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
       } else {
-        this.store.dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Bridge',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: true,
-            isApproved: true,
-          })
-        )
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
       }
-    } catch (e) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Something went wrong',
-          isError: true,
-          isLoading: false,
-          isBalanceSufficient: false,
-          isApproved: false,
-        })
-      )
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
   }
 
   public approve = async () => {
-    if (!this._daiTokenOnMainnet) return
-
-    const { value, decimals } = this.store.getState().ecoBridge.ui.from
-
     try {
+      if (!this._daiTokenOnMainnet) return
+
+      const { value, decimals } = this.store.getState().ecoBridge.ui.from
+
       const parsedValue = parseUnits(value, decimals)
       const txn: ContractTransaction = await this._daiTokenOnMainnet.approve(ETHEREUM_BRIDGE_ADDRESS, parsedValue)
 
-      this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Approving',
-          isError: false,
-          isLoading: true,
-          isBalanceSufficient: true,
-          isApproved: false,
-        })
-      )
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
       const receipt = await txn.wait()
 
-      if (receipt) {
-        this.store.dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Bridge',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: true,
-            isApproved: true,
-          })
-        )
-      }
-    } catch (e) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(e, this.bridgeId),
-        })
-      )
+      if (receipt) this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public triggerBridging = async () => {
-    if (!this._activeProvider || !this._account) return
-
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
-
-    const {
-      from: { chainId: fromChainId, value: fromValue, decimals: fromTokenDecimals },
-      to: { chainId: toChainId },
-    } = this.store.getState().ecoBridge.ui
-
-    const amount = parseUnits(fromValue, fromTokenDecimals)
-
-    let transaction: TransactionResponse | undefined = undefined
-
     try {
+      if (!this._activeProvider || !this._account) return
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+
+      const {
+        from: { chainId: fromChainId, value: fromValue, decimals: fromTokenDecimals },
+        to: { chainId: toChainId },
+      } = this.store.getState().ecoBridge.ui
+
+      const amount = parseUnits(fromValue, fromTokenDecimals)
+
+      let transaction: TransactionResponse | undefined = undefined
+
       if (this._daiTokenOnMainnet) {
         transaction = await this._daiTokenOnMainnet.transferFrom(this._account, ETHEREUM_BRIDGE_ADDRESS, amount)
       } else {
@@ -321,7 +242,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         })
       }
 
-      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 
       if (transaction) {
         this.store.dispatch(
@@ -339,51 +260,46 @@ export class XdaiBridge extends EcoBridgeChildBase {
           })
         )
       }
-    } catch (err) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err, this.bridgeId),
-        })
-      )
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public collect = async () => {
-    const collectableTransactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
+    try {
+      const collectableTransactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
 
-    if (!this._activeProvider || !collectableTransactionHash) return
+      if (!this._activeProvider || !collectableTransactionHash) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-    const abi = ['function executeSignatures(bytes messageData, bytes signatures) external']
+      const abi = ['function executeSignatures(bytes messageData, bytes signatures) external']
 
-    const ambContract = new Contract(ETHEREUM_BRIDGE_ADDRESS, abi, this._activeProvider.getSigner())
+      const ambContract = new Contract(ETHEREUM_BRIDGE_ADDRESS, abi, this._activeProvider.getSigner())
 
-    const collectableTransaction = xdaiBridgeTransactionAdapter
-      .getSelectors()
-      .selectById(
-        this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].transactions,
-        collectableTransactionHash
-      )
+      const collectableTransaction = xdaiBridgeTransactionAdapter
+        .getSelectors()
+        .selectById(
+          this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].transactions,
+          collectableTransactionHash
+        )
 
-    if (collectableTransaction?.message) {
-      const { content, signatures } = collectableTransaction.message
+      if (collectableTransaction?.message) {
+        const { content, signatures } = collectableTransaction.message
 
-      if (content && !!signatures?.length) {
-        const signs = packSignatures(signatures.map(signature => signatureToVRS(signature)))
+        if (content && !!signatures?.length) {
+          const signs = packSignatures(signatures.map(signature => signatureToVRS(signature)))
 
-        try {
           const transaction: TransactionResponse = await ambContract.executeSignatures(content, signs)
 
-          this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
+          this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
 
           this.store.dispatch(this.actions.updateTransactionAfterCollect({ txHash: collectableTransactionHash }))
 
           const receipt = await transaction.wait()
 
           if (receipt) {
-            this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.SUCCESS }))
+            this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
 
             this.store.dispatch(
               this.actions.updatePartnerTxHash({
@@ -399,15 +315,10 @@ export class XdaiBridge extends EcoBridgeChildBase {
               })
             )
           }
-        } catch (err) {
-          this.store.dispatch(
-            ecoBridgeUIActions.setBridgeModalStatus({
-              status: BridgeModalStatus.ERROR,
-              error: getErrorMsg(err, this.bridgeId),
-            })
-          )
         }
       }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
@@ -452,7 +363,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
 
       this.store.dispatch(this.actions.addTransactions(allTransfers))
     } catch {
-      throw new Error('Cannot fetch transactions history')
+      throw this.ecoBridgeUtils.logger.error('Cannot fetch transactions history')
     }
   }
 
@@ -506,8 +417,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
           }
         }
       }
-    } catch (e) {
-      throw new Error('Cannot fetch pending transactions')
+    } catch {
+      throw this.ecoBridgeUtils.logger.error('Cannot fetch pending transactions')
     }
   }
 }
