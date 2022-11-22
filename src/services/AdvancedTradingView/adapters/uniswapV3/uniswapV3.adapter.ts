@@ -19,6 +19,7 @@ export class UniswapV3Adapter<
     inputTokenAddress,
     outputTokenAddress,
     pair,
+    refreshing,
   }: AdapterFetchMethodArguments) {
     return await request<GenericPairSwaps>({
       url: this._subgraphUrls[chainId],
@@ -27,7 +28,7 @@ export class UniswapV3Adapter<
         token0_in: [inputTokenAddress.toLowerCase(), outputTokenAddress.toLowerCase()],
         token1_in: [inputTokenAddress.toLowerCase(), outputTokenAddress.toLowerCase()],
         first: amountToFetch,
-        skip: pair?.swaps?.data.length ?? 0,
+        skip: refreshing ? 0 : pair?.swaps?.data.length ?? 0,
       },
       signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
     })

@@ -70,8 +70,8 @@ export const useAdvancedTradingView = () => {
     outputTokenAddress: undefined,
   })
 
-  const [isLoadingTrades, setIsLoadingTrades] = useState(false)
-  const [isLoadingActivity, setIsLoadingActivity] = useState(false)
+  const [isLoadingTrades, setIsLoadingTrades] = useState(true)
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true)
   const [isFetched, setIsFetched] = useState(false)
 
   const dispatch = useDispatch()
@@ -128,23 +128,25 @@ export const useAdvancedTradingView = () => {
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
         setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
-        setIsLoadingTrades(true)
+        setIsLoadingTrades(false)
         setIsLoadingActivity(true)
         setIsFetched(false)
 
         try {
           await Promise.allSettled([
-            advancedTradingViewAdapter.fetchPairTrades({
+            advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
               inputToken,
               outputToken,
               amountToFetch: pairTradesAmountToFetch,
               isFirstFetch: true,
+              refreshing: true,
             }),
-            advancedTradingViewAdapter.fetchPairActivity({
+            advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
               inputToken,
               outputToken,
               amountToFetch: pairActivityAmountToFetch,
               isFirstFetch: true,
+              refreshing: true,
             }),
           ])
         } catch (e) {
@@ -201,7 +203,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingTrades(true)
     try {
-      await advancedTradingViewAdapter.fetchPairTrades({
+      await advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_TRADES,
@@ -219,7 +221,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingActivity(true)
     try {
-      await advancedTradingViewAdapter.fetchPairActivity({
+      await advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_ACTIVITY,

@@ -1,4 +1,5 @@
 import { AdapterKey, AdapterPayloadType } from '../../advancedTradingView.types'
+import { UniswapV3PairSwapTransaction } from '../uniswapV3/uniswapV3.types'
 
 export enum LiquidityTypename {
   BURN = 'Burn',
@@ -58,7 +59,21 @@ export type BaseActionPayload<DataType> = {
   payloadType: AdapterPayloadType.SWAPS | AdapterPayloadType.BURNS_AND_MINTS
 }
 
+export type SetSwapsActionPayload = {
+  key: AdapterKey
+  hasMore: boolean
+  pairId: string
+  data: UniswapV3PairSwapTransaction[]
+}
+
+export type SetBurnsAndMintsActionPayload = {
+  key: AdapterKey
+  hasMore: boolean
+  pairId: string
+  data: PairBurnsAndMintsTransaction[]
+}
+
 export type BasePair = {
-  swaps?: { data: PairSwapTransaction[]; hasMore: boolean }
+  swaps?: { data: (PairSwapTransaction | UniswapV3PairSwapTransaction)[]; hasMore: boolean }
   burnsAndMints?: { data: PairBurnsAndMintsTransaction[]; hasMore: boolean }
 }

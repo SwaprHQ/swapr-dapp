@@ -75,7 +75,10 @@ export type AdapterFetchDetails = {
   amountToFetch: number
   isFirstFetch: boolean
   abortController: (id: string) => AbortSignal
+  refreshing?: boolean
 }
+
+export type AdapterFetchDetailsExtended = AdapterFetchDetails & { dataType: AdapterPayloadType }
 
 export enum AdapterAmountToFetch {
   PAIR_TRADES = 10,
@@ -89,4 +92,5 @@ export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortContro
   chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS | ChainId.POLYGON | ChainId.OPTIMISM_MAINNET
   inputTokenAddress: string
   outputTokenAddress: string
+  refreshing?: boolean
 }

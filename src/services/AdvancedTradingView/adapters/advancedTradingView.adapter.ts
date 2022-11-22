@@ -4,8 +4,10 @@ import { Store } from '@reduxjs/toolkit'
 
 import {
   AdapterFetchDetails,
+  AdapterFetchDetailsExtended,
   AdapterInitialArguments,
   AdapterKey,
+  AdapterPayloadType,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
@@ -24,6 +26,9 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
   }
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
+
+  // TODO: UPDATE RES TYPE
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
 
   abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
 
@@ -123,5 +128,41 @@ export class AdvancedTradingViewAdapter<AppState> {
     )
 
     return await Promise.allSettled(promises)
+  }
+
+  public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        dataType: AdapterPayloadType.SWAPS,
+      })
+    )
+
+    const response = await Promise.allSettled(promises).then(
+      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
+        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    // @ts-ignore
+    this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
+  }
+
+  public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        dataType: AdapterPayloadType.BURNS_AND_MINTS,
+      })
+    )
+
+    const response = await Promise.allSettled(promises).then(
+      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
+        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    // @ts-ignore
+    this.store.dispatch(this.actions.setBurnsAndMintsDataForAllPairs(response))
   }
 }
