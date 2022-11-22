@@ -37,6 +37,7 @@ export const CurrencyInputPanelComponent = ({
   balance,
   currency,
   disabled,
+  isDisabledStyled = false,
   hideInput = false,
   isLoading = false,
   fiatValue,
@@ -56,6 +57,7 @@ export const CurrencyInputPanelComponent = ({
   inputType = InputType.currency,
   onPairSelect,
   filterPairs,
+  inputTitle,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -127,7 +129,7 @@ export const CurrencyInputPanelComponent = ({
 
   return (
     <InputPanel id={id}>
-      <Container focused={focused}>
+      <Container disabled={isDisabledStyled} focused={focused}>
         <Content>
           {!hideInput && label && (
             <LabelRow>
@@ -152,6 +154,7 @@ export const CurrencyInputPanelComponent = ({
                   }}
                   disabled={disabled}
                   data-testid={'transaction-value-input'}
+                  title={inputTitle}
                 />
               </>
             )}

@@ -70,8 +70,9 @@ export const InputPanel = styled.div`
   z-index: 1;
 `
 
-export const Container = styled.div<{ focused: boolean }>`
-  background-color: ${({ theme }) => theme.bg1And2};
+export const Container = styled.div<{ focused: boolean; disabled?: boolean }>`
+  background-color: ${({ theme, disabled }) =>
+    disabled ? 'linear-gradient(90deg,#4c4c76 19.74%,#292942 120.26%)' : theme.bg1And2};
   border: solid 1px ${({ focused, theme }) => (focused ? theme.bg3 : theme.bg1And2)};
   border-radius: 12px;
   transition: border 0.3s ease;
