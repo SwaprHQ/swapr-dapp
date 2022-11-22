@@ -524,8 +524,6 @@ export default function Zap() {
     outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
   })
 
-  console.log('test trade', loading, trade1, trade)
-
   const renderSwapBox = () => (
     <>
       <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">

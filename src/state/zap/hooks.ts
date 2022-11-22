@@ -674,7 +674,7 @@ export const useZapParams = (
   const zapOut = zapIn
     ? undefined
     : {
-        amountLpFrom: data.parsedAmount ? BigNumber.from(data.parsedAmount.toSignificant()) : zeroBN,
+        amountLpFrom: data.parsedAmount ? data.parsedAmount.toSignificant() : zeroBN,
         amountTokenToMin: zeroBN,
         dexIndex: dexIdZap,
       }
