@@ -301,7 +301,6 @@ export default function Zap() {
     [independentField]: typedValue,
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
-  console.log('FORMATTED', zapInLiquidityMinted, parsedAmounts, formattedAmounts)
 
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
@@ -312,9 +311,10 @@ export default function Zap() {
     parsedAmount,
     chainId && ZAP_CONTRACT_ADDRESS[chainId] !== '' ? ZAP_CONTRACT_ADDRESS[chainId] : undefined
   )
+  console.log('APPROVE ZAP', approvalZap)
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
+  // const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalsSubmitted, setApprovalsSubmitted] = useState(false)

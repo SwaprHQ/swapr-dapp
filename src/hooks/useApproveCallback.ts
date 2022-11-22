@@ -47,6 +47,15 @@ export function useApproveCallback(
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
+    console.log(
+      'zap approve',
+      amountToApprove,
+      token,
+      account,
+      spender,
+      currentAllowance?.raw.toString(),
+      amountToApprove?.raw.toString()
+    )
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency === nativeCurrency) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve

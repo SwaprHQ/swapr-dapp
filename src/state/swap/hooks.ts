@@ -220,7 +220,7 @@ export function useDerivedSwapInfo<
   const [inputError, setInputError] = useState<number | undefined>()
   const [allPlatformTrades, setAllPlatformTrades] = useState<Trade[]>([])
 
-  const isExactIn = useMemo(() => independentField === Field.INPUT, [independentField])
+  const isExactIn = useMemo(() => independentField === Field.INPUT || isZap, [independentField, isZap])
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
   const [allPlatformTradesToken0, setAllPlatformTradesToken0] = useState<Trade[]>([])
@@ -350,18 +350,24 @@ export function useDerivedSwapInfo<
         parsedAmount.currency,
         chainId
       )
-      const halfParsedAmount1 = tryParseAmount(
-        parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
-        parsedAmount.currency,
+
+      // needed for finding route for token0 and token1
+      const inputCurrency0Amount = tryParseAmount(
+        parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
+        pairCurrency0,
+        chainId
+      )
+      const inputCurrency1Amount = tryParseAmount(
+        parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
+        pairCurrency1,
         chainId
       )
       console.log('all zap', isZap, pairCurrency0, pairCurrency1)
       console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed(), chainId)
 
       const getTradesToken0 = isZapIn
-        ? getTradesPromiseZap(
+        ? getTradesPromiseZapUniV2(
             halfParsedAmount ?? parsedAmount,
-            parsedAmount.currency,
             pairCurrency0,
             commonParams,
             ecoRouterSourceOptionsParams,
@@ -369,14 +375,14 @@ export function useDerivedSwapInfo<
             signal,
             chainId
           )
-        : getTradesPromise(
-            halfParsedAmount ?? parsedAmount,
-            pairCurrency0,
+        : getTradesPromiseZapUniV2(
+            inputCurrency0Amount ?? parsedAmount,
             outputCurrency,
             commonParams,
             ecoRouterSourceOptionsParams,
             provider,
-            signal
+            signal,
+            chainId
           )
 
       // Start fetching trades from EcoRouter API
@@ -397,9 +403,8 @@ export function useDerivedSwapInfo<
         })
 
       const getTradesToken1 = isZapIn
-        ? getTradesPromiseZap(
+        ? getTradesPromiseZapUniV2(
             halfParsedAmount ?? parsedAmount,
-            parsedAmount.currency,
             pairCurrency1,
             commonParams,
             ecoRouterSourceOptionsParams,
@@ -407,9 +412,8 @@ export function useDerivedSwapInfo<
             signal,
             chainId
           )
-        : getTradesPromiseZap(
-            halfParsedAmount ?? parsedAmount,
-            pairCurrency1,
+        : getTradesPromiseZapUniV2(
+            inputCurrency1Amount ?? parsedAmount,
             outputCurrency,
             commonParams,
             ecoRouterSourceOptionsParams,
@@ -588,9 +592,8 @@ export function useDerivedSwapInfo<
   }
 }
 
-async function getTradesPromiseZap(
+async function getTradesPromiseZapUniV2(
   parsedAmount: CurrencyAmount,
-  inputCurrency: Currency,
   outputCurrency: Currency,
   commonParams: { maximumSlippage: Percent; receiver: string; user: string },
   ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
@@ -625,7 +628,7 @@ async function getTradesPromiseZap(
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
       const getAllCommonUniswapV2PairsParams = {
-        currencyA: inputCurrency,
+        currencyA: parsedAmount.currency,
         currencyB: outputCurrency,
         platform,
         staticJsonRpcProvider,
