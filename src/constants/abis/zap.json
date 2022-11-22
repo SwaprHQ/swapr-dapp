@@ -123,6 +123,12 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "tokenFrom",
         "type": "address"
       },
@@ -155,6 +161,12 @@
         "indexed": false,
         "internalType": "address",
         "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
         "type": "address"
       },
       {
@@ -611,6 +623,33 @@
         "components": [
           {
             "internalType": "uint256",
+            "name": "amountAMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountBMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountLPMin",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "dexIndex",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct ZapInTx",
+        "name": "zap",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
             "name": "amount",
             "type": "uint256"
           },
@@ -662,36 +701,9 @@
         "type": "tuple"
       },
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "amountAMin",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountBMin",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountLPMin",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "dexIndex",
-            "type": "uint8"
-          },
-          {
-            "internalType": "address",
-            "name": "to",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct ZapInTx",
-        "name": "zap",
-        "type": "tuple"
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
       },
       {
         "internalType": "address",
@@ -738,11 +750,6 @@
             "internalType": "uint8",
             "name": "dexIndex",
             "type": "uint8"
-          },
-          {
-            "internalType": "address",
-            "name": "to",
-            "type": "address"
           }
         ],
         "internalType": "struct ZapOutTx",
@@ -802,6 +809,11 @@
         "internalType": "struct SwapTx",
         "name": "swapTokenB",
         "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
       },
       {
         "internalType": "address",

@@ -118,57 +118,57 @@ export enum CoWTradeState {
   SWAP,
 }
 
-const getZapParams = (
-  data: UseDerivedZapInfoResult,
-  isZapIn = true
-): { zapInParams: ZapInTx | undefined; zapOutParams: ZapOutTx | undefined; swapTokenA: SwapTx; swapTokenB: SwapTx } => {
-  const zeroBN = BigNumber.from(0)
-  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
-  const dexIdSwapA = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-  )
-  const dexIdSwapB = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-  )
+// const getZapParams = (
+//   data: UseDerivedZapInfoResult,
+//   isZapIn = true
+// ): { zapInParams: ZapInTx | undefined; zapOutParams: ZapOutTx | undefined; swapTokenA: SwapTx; swapTokenB: SwapTx } => {
+//   const zeroBN = BigNumber.from(0)
+//   const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+//   const dexIdSwapA = BigNumber.from(
+//     SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+//   )
+//   const dexIdSwapB = BigNumber.from(
+//     SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+//   )
 
-  const tradeToken0 = data.tradeToken0
-  const tradeToken1 = data.tradeToken1
-  const slippageAdjustedAmountsTrade0 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken0)
-  const slippageAdjustedAmountsTrade1 = tradeToken1 && computeSlippageAdjustedAmounts(tradeToken1)
+//   const tradeToken0 = data.tradeToken0
+//   const tradeToken1 = data.tradeToken1
+//   const slippageAdjustedAmountsTrade0 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken0)
+//   const slippageAdjustedAmountsTrade1 = tradeToken1 && computeSlippageAdjustedAmounts(tradeToken1)
 
-  const swapTokenA: SwapTx = {
-    amount: data.zapInInputAmountTrade0?.toSignificant() ?? '0',
-    amountMin: slippageAdjustedAmountsTrade0?.OUTPUT?.toSignificant() ?? '0',
-    path: getPathFromTrade(data.tradeToken0),
-    dexIndex: dexIdSwapA,
-  }
+//   const swapTokenA: SwapTx = {
+//     amount: data.zapInInputAmountTrade0?.toSignificant() ?? '0',
+//     amountMin: slippageAdjustedAmountsTrade0?.OUTPUT?.toSignificant() ?? '0',
+//     path: getPathFromTrade(data.tradeToken0),
+//     dexIndex: dexIdSwapA,
+//   }
 
-  const swapTokenB: SwapTx = {
-    amount: data.zapInInputAmountTrade1?.toSignificant() ?? '0',
-    amountMin: slippageAdjustedAmountsTrade1?.OUTPUT?.toSignificant() ?? '0',
-    path: getPathFromTrade(data.tradeToken1),
-    dexIndex: dexIdSwapB,
-  }
+//   const swapTokenB: SwapTx = {
+//     amount: data.zapInInputAmountTrade1?.toSignificant() ?? '0',
+//     amountMin: slippageAdjustedAmountsTrade1?.OUTPUT?.toSignificant() ?? '0',
+//     path: getPathFromTrade(data.tradeToken1),
+//     dexIndex: dexIdSwapB,
+//   }
 
-  const zapInParams = isZapIn
-    ? {
-        amountAMin: zeroBN,
-        amountBMin: zeroBN,
-        amountLPMin: zeroBN,
-        dexIndex: dexIdZap,
-      }
-    : undefined
+//   const zapInParams = isZapIn
+//     ? {
+//         amountAMin: zeroBN,
+//         amountBMin: zeroBN,
+//         amountLPMin: zeroBN,
+//         dexIndex: dexIdZap,
+//       }
+//     : undefined
 
-  const zapOutParams = isZapIn
-    ? undefined
-    : {
-        amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
-        amountTokenToMin: zeroBN,
-        dexIndex: dexIdZap,
-      }
+//   const zapOutParams = isZapIn
+//     ? undefined
+//     : {
+//         amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
+//         amountTokenToMin: zeroBN,
+//         dexIndex: dexIdZap,
+//       }
 
-  return { zapInParams, zapOutParams, swapTokenA, swapTokenB }
-}
+//   return { zapInParams, zapOutParams, swapTokenA, swapTokenB }
+// }
 
 export default function Zap() {
   const isDesktop = useIsDesktop()
@@ -383,6 +383,7 @@ export default function Zap() {
   //   dexIndex: dexId2,
   // }
 
+  console.log('zap callback params', zapParams.zapIn, zapParams.zapOut, zapParams.swapTokenA, zapParams.swapTokenB)
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
     zapIn: zapParams.zapIn,
     zapOut: zapParams.zapOut,

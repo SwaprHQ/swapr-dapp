@@ -184,16 +184,12 @@ export function useZapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
-  const [affiliateAddress, setAffiliateAddress] = useState(ZERO_ADDRESS)
-  const [receiver, setReceiver] = useState(ZERO_ADDRESS)
   console.log('zap callback inside', zapContract)
 
   const { address: receiverENS } = useENS(recipient)
-  useEffect(() => {
-    const recipient = receiverENS ?? account
-    if (recipient) setReceiver(recipient)
-    if (affiliate) setAffiliateAddress(affiliate)
-  }, [account, affiliate, receiverENS])
+  const receiver = receiverENS ?? account
+  const affiliateAddress = affiliate ?? ZERO_ADDRESS
+  console.log('zap callback inside add', recipient, receiver, account)
 
   // Watch the transaction from transaction reducer
   const [transactionReceipt, setTransactionReceipt] = useState<ContractTransaction | undefined>()
@@ -209,7 +205,7 @@ export function useZapCallback({
   const addTransaction = useTransactionAdder()
 
   return useMemo(() => {
-    if (!zapContract || !library || !account || !chainId || receiver === ZERO_ADDRESS) {
+    if (!zapContract || !library || !account || !chainId || !receiver || receiver === ZERO_ADDRESS) {
       console.log('zap error', zapContract, library, account, chainId, receiver)
       return {
         callback: undefined,
@@ -225,7 +221,7 @@ export function useZapCallback({
             console.log('ESSA zap in callback', zapContract)
             // Set state to pending
             setZapState(ZapState.LOADING)
-            const txReceipt = await zapContract.zapIn(
+            const zapInTx = await zapContract.zapIn(
               zapIn,
               swapTokenA,
               swapTokenB,
@@ -233,10 +229,12 @@ export function useZapCallback({
               affiliateAddress,
               transferResidual
             )
-            console.log('zap in tx', txReceipt)
-            setTransactionReceipt(txReceipt)
-            addTransaction(txReceipt, { summary: 'Zap in' })
-            return 'wio'
+            console.log('zap in tx', zapInTx)
+            setTransactionReceipt(zapInTx)
+            addTransaction(zapInTx, { summary: 'Zap in' })
+            const zapInTxReceipt = await zapInTx.wait(1)
+            if (zapInTxReceipt.status === 1) setZapState(ZapState.VALID)
+            return 'Zap in successed'
           } catch (error) {
             console.error('Could not zap in!', error)
             //if something goes wrong, reset status

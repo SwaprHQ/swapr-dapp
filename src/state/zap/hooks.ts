@@ -196,7 +196,7 @@ export interface UseDerivedZapInfoResult {
 
 //   // useCurrency and useToken returns a new object every time,
 //   // so we need to compare the addresses as strings
-//   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw?.toString()}`
+//   const parsedAmountString = `${parsedAmount?.currency.address?.toString()}-${parsedAmount?.raw.toString()?.toString()}`
 
 //   const [isQuoteExpired, setIsQuoteExpired] = useState(false)
 //   const quoteExpiryTimeout = useRef<NodeJS.Timeout>()
@@ -213,9 +213,9 @@ export interface UseDerivedZapInfoResult {
 //     pairCurrency1,
 //     parsedAmountString,
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     relevantTokenBalances[0]?.raw.toString(),
+//     relevantTokenBalances[0]?.raw.toString().toString(),
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     relevantTokenBalances[1]?.raw.toString(),
+//     relevantTokenBalances[1]?.raw.toString().toString(),
 //     allowedSlippage,
 //     isExactIn,
 //     provider,
@@ -224,7 +224,7 @@ export interface UseDerivedZapInfoResult {
 
 //   useWhatChanged(
 //     dependencyList,
-//     `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString(),relevantTokenBalances[1]?.raw.toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
+//     `account,useMultihops,recipientLookupComputed,chainId,inputCurrency?.address,outputCurrency?.address,parsedAmountString,relevantTokenBalances[0]?.raw.toString().toString(),relevantTokenBalances[1]?.raw.toString().toString(),allowedSlippage,recipient,isExactIn,provider,isQuoteExpired`
 //   )
 
 //   useEffect(() => {
@@ -244,7 +244,7 @@ export interface UseDerivedZapInfoResult {
 //     }
 //     // Notify user if input amount is too low, but still trigger the EcoRouter
 //     let inputErrorNextState: undefined | number = undefined
-//     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)) {
+//     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw.toString(), inputCurrencyBalance.raw.toString() as JSBI)) {
 //       inputErrorNextState = SWAP_INPUT_ERRORS.INSUFFICIENT_FUNDS
 //     }
 
@@ -623,41 +623,41 @@ export const useZapParams = (
     chainId
   )
 
-  console.log('JES platform', platformTrade0, platformTrade1)
   const exactTrade0 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenA, pair?.token0, platformTrade0)
   const exactTrade1 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenB, pair?.token1, platformTrade1)
 
-  console.log(
-    'JES1',
-    exactTrade0?.inputAmount.toSignificant(),
-    exactTrade0?.minimumAmountOut().toSignificant(),
-    getPathFromTrade(data.tradeToken0),
-    dexIdSwapA.toString()
-  )
-  console.log(
-    'JES2',
-    exactTrade1?.inputAmount.toSignificant(),
-    exactTrade1?.minimumAmountOut().toSignificant(),
-    getPathFromTrade(data.tradeToken1),
-    dexIdSwapB.toString()
-  )
+  // console.log('JES platform', platformTrade0, platformTrade1)
+  // console.log(
+  //   'JES1',
+  //   exactTrade0?.inputAmount.toSignificant(),
+  //   exactTrade0?.minimumAmountOut().toSignificant(),
+  //   getPathFromTrade(data.tradeToken0),
+  //   dexIdSwapA.toString()
+  // )
+  // console.log(
+  //   'JES2',
+  //   exactTrade1?.inputAmount.toSignificant(),
+  //   exactTrade1?.minimumAmountOut().toSignificant(),
+  //   getPathFromTrade(data.tradeToken1),
+  //   dexIdSwapB.toString()
+  // )
 
   const allowedSlippage = useUserSlippageTolerance() // custom from users
 
   const minLp = zapInCalculatedAmounts.liquidityMinted
     ? calculateSlippageAmount(zapInCalculatedAmounts.liquidityMinted, allowedSlippage)[0].toString()
     : '0'
-  console.log('JES3', zapInCalculatedAmounts.liquidityMinted?.toSignificant(), minLp)
+  // console.log('JES3', zapInCalculatedAmounts.liquidityMinted?.toSignificant(), minLp)
   const swapTokenA: SwapTx = {
-    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.toSignificant() : '0',
-    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : '0',
+    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
+    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().raw.toString() : zeroBN,
     path: getPathFromTrade(data.tradeToken0),
     dexIndex: dexIdSwapA,
   }
 
   const swapTokenB: SwapTx = {
-    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.toSignificant() : '0',
-    amountMin: isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : '0',
+    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.raw.toString() : zeroBN,
+    amountMin: isZapIn && exactTrade1 ? exactTrade1.minimumAmountOut().raw.toString() : zeroBN,
     path: getPathFromTrade(data.tradeToken1),
     dexIndex: dexIdSwapB,
   }
@@ -674,7 +674,7 @@ export const useZapParams = (
   const zapOut = zapIn
     ? undefined
     : {
-        amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
+        amountLpFrom: data.parsedAmount ? BigNumber.from(data.parsedAmount.toSignificant()) : zeroBN,
         amountTokenToMin: zeroBN,
         dexIndex: dexIdZap,
       }
