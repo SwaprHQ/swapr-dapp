@@ -16,13 +16,13 @@ interface PairDetailsProps {
   activeCurrencyOption: Token | null | undefined
 }
 
-const RelativePrice = ({ relativePrice }: { relativePrice: string }) => {
-  if (Number(relativePrice) > 1) return <>{relativePrice}</>
+const DoubleSizedPrice = ({ price }: { price: string }) => {
+  if (Number(price) > 1) return <>{price}</>
 
   return (
     <>
-      {relativePrice.substring(0, 8)}
-      <span style={{ fontSize: '10px' }}>{relativePrice.substring(8)}</span>
+      {price.substring(0, 8)}
+      <span style={{ fontSize: '10px' }}>{price.substring(8)}</span>
     </>
   )
 }
@@ -51,7 +51,7 @@ export const PairDetails = ({ token0, token1, activeCurrencyOption }: PairDetail
               {isLoading ? (
                 <Skeleton width="100px" height="14px" />
               ) : (
-                <RelativePrice relativePrice={activeCurrencyDetails.relativePrice} />
+                <DoubleSizedPrice price={activeCurrencyDetails.relativePrice} />
               )}
             </PairValueChange>
             <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
