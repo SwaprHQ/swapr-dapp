@@ -11,6 +11,7 @@ export interface CurrencyInputPanelProps {
   balance?: CurrencyAmount
   currency?: Currency | null
   disabled?: boolean
+  isDisabledStyled?: boolean
   hideInput?: boolean
   fiatValue?: CurrencyAmount | null
   isLoading?: boolean
@@ -32,6 +33,7 @@ export interface CurrencyInputPanelProps {
   inputType?: InputType
   onPairSelect?: (pair: Pair) => void
   filterPairs?: (pair: Pair) => boolean
+  inputTitle?: string
 }
 
 export type CurrencyViewProps = Pick<

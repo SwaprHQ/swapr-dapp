@@ -176,7 +176,7 @@ export default function Zap() {
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
-  const { navigate, pathname } = useRouter()
+  const { pathname } = useRouter()
   const isInProMode = pathname.includes('/pro') // comment
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
@@ -570,9 +570,6 @@ export default function Zap() {
                 <SwitchTokensAmountsContainer
                   onClick={() => {
                     setApprovalsSubmitted(false) // reset 2 step UI for approvals TODO: do we need it here?
-                    // onUserInput(Field.INPUT, '')
-                    // onUserInput(Field.OUTPUT, '')
-                    // onSwapSwitchTokens()
                     onSwitchTokens()
                   }}
                 >
@@ -600,9 +597,11 @@ export default function Zap() {
                 maxAmount={maxAmountOutput}
                 showCommonBases
                 disabled={true}
+                isDisabledStyled={true}
                 inputType={isZapIn ? InputType.pair : InputType.currency}
                 filterPairs={filterPairs}
                 id="zap-currency-output"
+                inputTitle="Zap output is not supported"
               />
             </AutoColumn>
             <TradeDetails

@@ -9,6 +9,7 @@ export const NumericalInput = memo(function InnerInput({
   value,
   onUserInput,
   placeholder,
+  title,
   ...rest
 }: {
   value: string | number
@@ -34,7 +35,7 @@ export const NumericalInput = memo(function InnerInput({
       }}
       // universal input options
       inputMode="decimal"
-      title="Token Amount"
+      title={title ?? 'Token Amount'}
       autoComplete="off"
       autoCorrect="off"
       // text-specific options

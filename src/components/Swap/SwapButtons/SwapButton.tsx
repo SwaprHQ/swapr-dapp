@@ -27,7 +27,7 @@ const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
 
 const StyledSwapLoadingButton = styled(ButtonPrimary)`
   background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
-  cursor: 'wait';
+  cursor: wait;
   padding: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
