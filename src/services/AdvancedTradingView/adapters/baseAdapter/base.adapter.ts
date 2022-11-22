@@ -127,7 +127,6 @@ export class BaseAdapter<
     inputToken,
     outputToken,
     amountToFetch,
-    isFirstFetch,
     abortController,
     refreshing,
   }: AdapterFetchDetailsExtended) {

@@ -1,14 +1,13 @@
 import { Token } from '@swapr/sdk'
 
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import {
   BaseActionPayload,
   SetBurnsAndMintsActionPayload,
   SetSwapsActionPayload,
 } from '../adapters/baseAdapter/base.types'
-import { UniswapV3PairSwapTransaction } from '../adapters/uniswapV3/uniswapV3.types'
-import { AdapterKey, AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
+import { AdapterType, InitialState } from '../advancedTradingView.types'
 
 export const initialState: InitialState = {
   pair: {
