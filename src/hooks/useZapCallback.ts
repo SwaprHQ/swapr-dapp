@@ -281,10 +281,22 @@ export function useZapCallback({
       return {
         callback: async () => {
           try {
+            console.log('zap callback OUT params TOP', {
+              zapIn,
+              zapOut,
+              swapTokenA,
+              swapTokenB,
+              receiver,
+              affiliateAddress,
+              transferResidual,
+            })
             console.log('ESSA zap out callback')
             // Set state to pending
             setZapState(ZapState.LOADING)
-            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress)
+            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
+              gasLimit: 30000000,
+              gasPrice: normalizedGasPrice,
+            })
             setTransactionReceipt(txReceipt)
             addTransaction(txReceipt, { summary: 'Zap out' })
             return 'wio'
@@ -311,8 +323,10 @@ export function useZapCallback({
     account,
     chainId,
     receiver,
+    preferredGasPrice,
     zapIn,
     zapOut,
+    mainnetGasPrices,
     zapState,
     swapTokenA,
     swapTokenB,

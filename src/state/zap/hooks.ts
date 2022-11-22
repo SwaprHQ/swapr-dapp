@@ -649,14 +649,14 @@ export const useZapParams = (
     : '0'
   // console.log('JES3', zapInCalculatedAmounts.liquidityMinted?.toSignificant(), minLp)
   const swapTokenA: SwapTx = {
-    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.toSignificant() : zeroBN,
+    amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
     amountMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO  isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : zeroBN,
     path: getPathFromTrade(data.tradeToken0),
     dexIndex: dexIdSwapA,
   }
 
   const swapTokenB: SwapTx = {
-    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.toSignificant() : zeroBN,
+    amount: isZapIn && exactTrade1?.inputAmount ? exactTrade1.inputAmount.raw.toString() : zeroBN,
     amountMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO  isZapIn && exactTrade1 ? exactTrade1.minimumAmountOut().toSignificant() : zeroBN,
     path: getPathFromTrade(data.tradeToken1),
     dexIndex: dexIdSwapB,
@@ -674,7 +674,7 @@ export const useZapParams = (
   const zapOut = zapIn
     ? undefined
     : {
-        amountLpFrom: data.parsedAmount ? data.parsedAmount.toSignificant() : zeroBN,
+        amountLpFrom: data.parsedAmount ? data.parsedAmount.raw.toString() : zeroBN,
         amountTokenToMin: zeroBN,
         dexIndex: dexIdZap,
       }

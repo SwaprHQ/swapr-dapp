@@ -279,7 +279,7 @@ export const calculateZapInAmounts = (
       amountFromForTokenB: undefined,
       liquidityMinted: undefined,
     }
-  const significantDigits = amountFrom.currency.decimals < 6 ? amountFrom.currency.decimals : 6
+  const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
 
   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
   const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
