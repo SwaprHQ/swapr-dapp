@@ -42,6 +42,12 @@ export type AllTradesAndLiquidityFromAdapters = {
   burnsAndMints: BurnsAndMintsWithLogo[]
 }
 
+export type PairSwapsBurnsAndMints = {
+  swaps: PairSwapTransaction[]
+  burns: PairBurnsAndMintsTransaction[]
+  mints: PairBurnsAndMintsTransaction[]
+}
+
 export type PairSwaps = {
   swaps: PairSwapTransaction[]
 }
@@ -57,6 +63,16 @@ export type BaseActionPayload<DataType> = {
   pairId: string
   data: DataType
   payloadType: AdapterPayloadType.SWAPS | AdapterPayloadType.BURNS_AND_MINTS
+}
+
+export type SetSwapsBurnsAndMintsActionPayload = {
+  key: AdapterKey
+  hasMore: boolean
+  pairId: string
+  data: {
+    swaps: UniswapV3PairSwapTransaction[]
+    burnsAndMints: PairBurnsAndMintsTransaction[]
+  }
 }
 
 export type SetSwapsActionPayload = {

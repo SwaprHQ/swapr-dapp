@@ -133,22 +133,28 @@ export const useAdvancedTradingView = () => {
         setIsFetched(false)
 
         try {
-          await Promise.allSettled([
-            advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
-              inputToken,
-              outputToken,
-              amountToFetch: pairTradesAmountToFetch,
-              isFirstFetch: true,
-              refreshing: true,
-            }),
-            advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
-              inputToken,
-              outputToken,
-              amountToFetch: pairActivityAmountToFetch,
-              isFirstFetch: true,
-              refreshing: true,
-            }),
-          ])
+          await advancedTradingViewAdapter.fetchPairTradesAndActivityBulkUpdate({
+            inputToken,
+            outputToken,
+            amountToFetch: pairTradesAmountToFetch,
+          })
+
+          // await Promise.allSettled([
+          //   advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
+          //     inputToken,
+          //     outputToken,
+          //     amountToFetch: pairTradesAmountToFetch,
+          //     isFirstFetch: true,
+          //     refreshing: true,
+          //   }),
+          //   advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
+          //     inputToken,
+          //     outputToken,
+          //     amountToFetch: pairActivityAmountToFetch,
+          //     isFirstFetch: true,
+          //     refreshing: true,
+          //   }),
+          // ])
         } catch (e) {
           console.error(e)
         } finally {

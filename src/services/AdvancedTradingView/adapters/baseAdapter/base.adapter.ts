@@ -11,7 +11,7 @@ import {
 } from '../../advancedTradingView.types'
 import { initialState as advancedTradingViewInitialState } from '../../store/advancedTradingView.reducer'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
+import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS, PAIR_SWAPS_BURNS_AND_MINTS } from './base.queries'
 
 export interface BaseAppState {
   advancedTradingView: typeof advancedTradingViewInitialState
@@ -19,6 +19,7 @@ export interface BaseAppState {
 
 export class BaseAdapter<
   AppState extends BaseAppState,
+  GenericPairSwapsBurnsAndMints extends { swaps: unknown[]; burns: unknown[]; mints: unknown[] },
   GenericPairSwaps extends { swaps: unknown[] },
   GenericPairBurnsAndMints extends { burns: unknown[]; mints: unknown[] }
 > extends AbstractAdvancedTradingViewAdapter<AppState> {
@@ -122,6 +123,54 @@ export class BaseAdapter<
     }
   }
 
+  public async getPairTradingAndActivityData({
+    inputToken,
+    outputToken,
+    amountToFetch,
+    abortController,
+    refreshing,
+  }: AdapterFetchDetails) {
+    if (!this.isSupportedChainId(this._chainId)) return
+
+    const pairId = this._getPairId(inputToken, outputToken)
+
+    if (!pairId) return
+
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
+
+    try {
+      const { swaps, burns, mints } = await this._fetchSwapsBurnsAndMints({
+        pairId,
+        pair,
+        chainId: this._chainId,
+        amountToFetch,
+        abortController,
+        refreshing,
+        inputTokenAddress: inputToken.address,
+        outputTokenAddress: outputToken.address,
+      })
+
+      console.log('swaps', swaps)
+      console.log('burns', burns)
+      console.log('mints', mints)
+
+      return {
+        key: this._key,
+        pairId,
+        data: {
+          swaps,
+          burnsAndMints: [...burns, ...mints],
+        },
+        hasMore: Boolean(
+          swaps.length === amountToFetch || burns.length === amountToFetch || mints.length === amountToFetch
+        ),
+      }
+    } catch (e) {
+      console.warn(`${this._key}${e}`)
+      return
+    }
+  }
+
   public async getPairData({
     dataType,
     inputToken,
@@ -197,6 +246,23 @@ export class BaseAdapter<
     try {
       return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
     } catch {}
+  }
+
+  protected async _fetchSwapsBurnsAndMints({
+    pairId,
+    chainId,
+    amountToFetch,
+    abortController,
+  }: AdapterFetchMethodArguments) {
+    return await request<GenericPairSwapsBurnsAndMints>({
+      url: this._subgraphUrls[chainId],
+      document: PAIR_SWAPS_BURNS_AND_MINTS,
+      variables: {
+        pairId,
+        first: amountToFetch,
+      },
+      signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
+    })
   }
 
   protected async _fetchSwaps({
