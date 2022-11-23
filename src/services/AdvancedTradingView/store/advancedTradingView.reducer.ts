@@ -64,6 +64,31 @@ const advancedTradingViewSlice = createSlice({
       }
     },
 
+    // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
+    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
+      const updatedAdapters: AdapterType = {
+        ...state.adapters,
+      }
+
+      action.payload.forEach(adapter => {
+        const { key, pairId, data, hasMore } = adapter
+
+        const nextPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
+
+        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
+
+        updatedAdapters[key][pairId] = {
+          ...updatedAdapters[key][pairId],
+          swaps: {
+            data: nextPairData,
+            hasMore,
+          },
+        }
+      })
+
+      state.adapters = updatedAdapters
+    },
+
     setBurnsAndMintsDataForAllPairs: (
       state: InitialState,
       action: PayloadAction<Array<SetBurnsAndMintsActionPayload>>
@@ -82,31 +107,6 @@ const advancedTradingViewSlice = createSlice({
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
           burnsAndMints: {
-            data: nextPairData,
-            hasMore,
-          },
-        }
-      })
-
-      state.adapters = updatedAdapters
-    },
-
-    // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
-    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
-      const updatedAdapters: AdapterType = {
-        ...state.adapters,
-      }
-
-      action.payload.forEach(adapter => {
-        const { key, pairId, data, hasMore } = adapter
-
-        const nextPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
-
-        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
-
-        updatedAdapters[key][pairId] = {
-          ...updatedAdapters[key][pairId],
-          swaps: {
             data: nextPairData,
             hasMore,
           },
