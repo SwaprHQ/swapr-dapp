@@ -157,7 +157,13 @@ export class BaseAdapter<
       return {
         key: this._key,
         pairId,
-        data: [...mints, ...burns, ...mints],
+        data: {
+          swaps,
+          burnsAndMints: [...burns, ...mints],
+        },
+        hasMore: Boolean(
+          swaps.length === amountToFetch || burns.length === amountToFetch || mints.length === amountToFetch
+        ),
       }
     } catch (e) {
       console.warn(`${this._key}${e}`)
