@@ -22,6 +22,12 @@ export type AllTradesAndLiquidityFromUniswapV3Adapters = {
   burnsAndMints: BurnsAndMintsWithLogo[]
 }
 
+export type UniswapV3SwapsBurnsAndMints = {
+  swaps: UniswapV3PairSwapTransaction[]
+  burns: PairBurnsAndMintsTransaction[]
+  mints: PairBurnsAndMintsTransaction[]
+}
+
 export type UniswapV3PairSwaps = {
   swaps: UniswapV3PairSwapTransaction[]
 }
