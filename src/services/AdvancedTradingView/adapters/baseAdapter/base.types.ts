@@ -42,6 +42,12 @@ export type AllTradesAndLiquidityFromAdapters = {
   burnsAndMints: BurnsAndMintsWithLogo[]
 }
 
+export type PairSwapsBurnsAndMints = {
+  swaps: PairSwapTransaction[]
+  burns: PairBurnsAndMintsTransaction[]
+  mints: PairBurnsAndMintsTransaction[]
+}
+
 export type PairSwaps = {
   swaps: PairSwapTransaction[]
 }
