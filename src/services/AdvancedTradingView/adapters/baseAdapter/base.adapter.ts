@@ -123,6 +123,48 @@ export class BaseAdapter<
     }
   }
 
+  public async getPairTradingAndActivityData({
+    inputToken,
+    outputToken,
+    amountToFetch,
+    abortController,
+    refreshing,
+  }: AdapterFetchDetails) {
+    if (!this.isSupportedChainId(this._chainId)) return
+
+    const pairId = this._getPairId(inputToken, outputToken)
+
+    if (!pairId) return
+
+    const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
+
+    try {
+      const { swaps, burns, mints } = await this._fetchSwapsBurnsAndMints({
+        pairId,
+        pair,
+        chainId: this._chainId,
+        amountToFetch,
+        abortController,
+        refreshing,
+        inputTokenAddress: inputToken.address,
+        outputTokenAddress: outputToken.address,
+      })
+
+      console.log('swaps', swaps)
+      console.log('burns', burns)
+      console.log('mints', mints)
+
+      return {
+        key: this._key,
+        pairId,
+        data: [...mints, ...burns, ...mints],
+      }
+    } catch (e) {
+      console.warn(`${this._key}${e}`)
+      return
+    }
+  }
+
   public async getPairData({
     dataType,
     inputToken,
