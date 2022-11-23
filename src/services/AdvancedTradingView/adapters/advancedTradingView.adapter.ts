@@ -27,6 +27,8 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
   abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
 
+  abstract getPairTradingAndActivityData(fetchDetails: AdapterFetchDetails): any
+
   // TODO: UPDATE RES TYPE
   abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
 
@@ -128,6 +130,25 @@ export class AdvancedTradingViewAdapter<AppState> {
     )
 
     return await Promise.allSettled(promises)
+  }
+
+  public async fetchPairTradesAndActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairTradingAndActivityData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+      })
+    )
+
+    const response = await Promise.allSettled(promises).then(
+      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
+        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    console.log('SWAPS, BURNS AND MINTS', response)
+
+    // @ts-ignore
+    this.store.dispatch(this.actions.setSwapsBurnsAndMintsDataForAllPairs(response))
   }
 
   public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
