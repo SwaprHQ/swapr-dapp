@@ -29,7 +29,6 @@ export interface RecipientFieldProps {
 }
 
 export const RecipientField = ({ recipient, setRecipient }: RecipientFieldProps) => {
-  console.log('zap recipient', recipient)
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)

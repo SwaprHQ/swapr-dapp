@@ -8,13 +8,11 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TYPE } from '../../theme'
 import { normalizeInputValue } from '../../utils'
 import { CurrencyUserBalance } from '../CurrencyInputPanel/CurrencyUserBalance'
-import { CurrencyView } from '../CurrencyInputPanel/CurrencyView'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 import { FiatValueDetails } from '../FiatValueDetails'
 import { NumericalInput } from '../Input/NumericalInput'
 import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
-import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import { PairSearchModal } from '../SearchModal/PairSearchModal'
 import {
   Aligner,
@@ -101,7 +99,6 @@ export const PairSelectPanelComponent = ({
   )
 
   const handleOnPairSelect = useCallback((pair: Pair) => {
-    console.log('pair selected')
     setPairZap(pair)
   }, [])
 

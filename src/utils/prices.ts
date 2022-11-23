@@ -2,7 +2,6 @@ import { parseUnits } from '@ethersproject/units'
 import {
   _100,
   _10000,
-  BigintIsh,
   CoWTrade,
   Currency,
   CurrencyAmount,
@@ -12,7 +11,6 @@ import {
   Pair,
   Percent,
   Price,
-  Token,
   TokenAmount,
   Trade,
   UniswapTrade,
@@ -22,7 +20,6 @@ import {
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
-import { BigNumber, BigNumberish } from 'ethers'
 import toFormat from 'toformat'
 
 import {
@@ -38,14 +35,9 @@ import {
   PRICE_IMPACT_NON_EXPERT,
   PriceImpact,
 } from '../constants'
-import { useTotalSupply } from '../data/TotalSupply'
-import { useCoingeckoUSDPrice } from '../hooks/useUSDValue'
-import { useDerivedBurnInfo } from '../state/burn/hooks'
 import { tryParseAmount } from '../state/swap/hooks'
 import { Field } from '../state/swap/types'
-import { wrappedCurrency, wrappedCurrencyAmount } from './wrappedCurrency'
-
-import { formatCurrencyAmount } from '.'
+import { wrappedCurrencyAmount } from './wrappedCurrency'
 
 const Decimal = toFormat(_Decimal)
 
@@ -162,7 +154,6 @@ export function warningSeverityZap(
 ): PriceImpact {
   const severityTrade0 = warningSeverity(priceImpactTrade0)
   const severityTrade1 = warningSeverity(priceImpactTrade1)
-  console.log('zap price impact sev', severityTrade0, severityTrade1)
   if (severityTrade0 === 4 || severityTrade1 === 4) return PriceImpact.ONLY_EXPERT
   if (severityTrade0 === 3 || severityTrade1 === 3) return PriceImpact.HIGH
   if (severityTrade0 === 2 || severityTrade1 === 2) return PriceImpact.MEDIUM
@@ -313,69 +304,5 @@ export const calculateZapInAmounts = (
       ? pair.getLiquidityMinted(pairTotalSupply, tokenAmountA, tokenAmountB)
       : undefined
 
-  console.log('zap pair:', pair)
-  console.log('zap:', amountFrom.currency.symbol, amountFromBN, ' was given. Significant', significantDigits)
-  console.log(
-    'zap:',
-    amountAddLpTokenA?.toFixed(),
-    pair.token0.symbol,
-    ' will be LP. Bought for',
-    amountFromForTokenA?.toFixed()
-  )
-  console.log(
-    'zap:',
-    amountAddLpTokenB?.toFixed(),
-    pair.token1.symbol,
-    ' will be LP. Bought for',
-    amountFromForTokenB?.toFixed()
-  )
-  console.log('zap total LP', liquidityMinted?.toExact())
-
   return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB, liquidityMinted }
 }
-
-// export const calculateZapOutAmounts = (
-//   amountFrom: CurrencyAmount,
-//   pair: Pair,
-//   pairTotalSupply: TokenAmount,
-//   priceToken0TokenTo: Price,
-//   priceToken1TokenTo: Price,
-//   chainId: number
-// ): {
-//   amountTo?: TokenAmount
-// } => {
-//   const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
-
-//   const tst = useDerivedBurnInfo()
-//   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
-//   const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
-//   const token1TokenFromPrice = Number(priceToken1TokenFrom.toFixed(significantDigits))
-//   const amountFromBN = Number(amountFrom.toFixed(significantDigits))
-
-//   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
-
-//   const liquidityValueA =
-//     pair &&
-//     pairTotalSupply &&
-//     userLiquidity &&
-//     tokenA &&
-//     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-//     JSBI.greaterThanOrEqual(pairTotalSupply.raw, userLiquidity.raw)
-//       ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, userLiquidity, false).raw)
-//       : undefined
-//   const liquidityValueB =
-//     pair &&
-//     pairTotalSupply &&
-//     userLiquidity &&
-//     tokenB &&
-//     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-//     JSBI.greaterThanOrEqual(pairTotalSupply.raw, userLiquidity.raw)
-//       ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, userLiquidity, false).raw)
-//       : undefined
-//   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
-//     [Field.CURRENCY_A]: liquidityValueA,
-//     [Field.CURRENCY_B]: liquidityValueB,
-//   }
-
-//   return {}
-// }

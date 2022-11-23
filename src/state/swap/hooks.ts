@@ -5,38 +5,32 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
-  currencyEquals,
   getAllCommonUniswapV2Pairs,
   JSBI,
   Pair,
   parseBigintIsh,
   Percent,
   RoutablePlatform,
-  Route,
   Token,
   TokenAmount,
   Trade,
-  UniswapV2RoutablePlatform,
   UniswapV2Trade,
   ZERO,
 } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
-import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { PRE_SELECT_OUTPUT_CURRENCY_ID, PRE_SELECT_ZAP_PAIR_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency, useToken } from '../../hooks/Tokens'
-import { useTradeExactInUniswapV2 } from '../../hooks/Trades'
+import { useCurrency } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
-import { useWrappingToken, useZapContract } from '../../hooks/useContract'
+import { useZapContract } from '../../hooks/useContract'
 import useENS from '../../hooks/useENS'
-import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
 import {
@@ -48,14 +42,11 @@ import {
 } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
-import { calculateZapInAmounts, computeSlippageAdjustedAmounts, limitNumberOfDecimalPlaces } from '../../utils/prices'
+import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import { useDerivedBurnInfo } from '../burn/hooks'
 import { AppDispatch, AppState } from '../index'
-import { useDerivedMintInfo } from '../mint/hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { replaceZapState } from '../zap/actions'
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { Field, StateKey, SwapState } from './types'
 
@@ -77,7 +68,6 @@ export function useSwapActionHandlers(): {
   const dispatch = useDispatch<AppDispatch>()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
-      console.log('hook currency swap', field, currency)
       dispatch(
         selectCurrency({
           field,
@@ -161,7 +151,6 @@ export function useDerivedSwapInfo<
   T extends SwapState & { pairTokens?: { token0Id: string | undefined; token1Id: string | undefined } },
   ReturnedValue
 >({ key, platformOverride }: DerivedParams): ReturnedValue {
-  console.log('useDerivedSwapInfo:', key)
   const { account, chainId, library: provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
 
@@ -186,8 +175,6 @@ export function useDerivedSwapInfo<
   const [zapPair, setZapPair] = useState<Pair>()
   const [pairState, pair] = usePair(pairCurrency0 ?? undefined, pairCurrency1 ?? undefined)
   const zapContact = useZapContract()
-  console.log('zap hukowy tokeny', pairCurrency0?.symbol, pairCurrency1?.symbol, zapContact)
-  console.log('zap hukowy pary  ', pair?.token0.symbol, pair?.token1.symbol)
 
   useEffect(() => {
     if (!zapPair && pair) {
@@ -331,22 +318,17 @@ export function useDerivedSwapInfo<
     }
 
     if (isZap && pairCurrency0 && pairCurrency1) {
-      console.log('loading1', !platformTradeToken0[0]?.details || !platformTradeToken1[0]?.details)
+      const isZapIn = independentField === Field.INPUT
+
       setLoading0(true)
       setLoading1(true)
 
       setAllPlatformTradesToken0([])
       setAllPlatformTradesToken1([])
-      const isZapIn = independentField === Field.INPUT
-      // const isInOut0EqualOrWrap =
-      //   currencyEquals(inputCurrency, pairCurrency0) ||
-      //   (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency0)
-      // const isInOut1EqualOrWrap =
-      //   currencyEquals(inputCurrency, pairCurrency1) ||
-      //   (Currency.isNative(inputCurrency) && wrappedCurrency(inputCurrency, chainId) === pairCurrency1)
+
       // use half of the parsed amount to find best routes for to different tokens and estimate prices
       const halfParsedAmount = tryParseAmount(
-        parsedAmount.divide(parseBigintIsh('2')).toFixed(6), //TODO
+        parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
         parsedAmount.currency,
         chainId
       )
@@ -362,8 +344,6 @@ export function useDerivedSwapInfo<
         pairCurrency1,
         chainId
       )
-      console.log('all zap', isZap, pairCurrency0, pairCurrency1)
-      console.log('zap amount IN', parsedAmount.toFixed(), halfParsedAmount?.toFixed(), chainId)
 
       const getTradesToken0 = isZapIn
         ? getTradesPromiseZapUniV2(
@@ -601,7 +581,6 @@ async function getTradesPromiseZapUniV2(
   signal: AbortSignal,
   chainId: ChainId | undefined
 ): Promise<EcoRouterResults> {
-  console.log('zap find')
   const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
     signal.onabort = () => {
       reject(new DOMException('Aborted', 'AbortError'))
@@ -609,10 +588,7 @@ async function getTradesPromiseZapUniV2(
   })
   // Error list
   const errors: any[] = []
-  // Derive the chainId from the token
-  // const chainId = (parsedAmount.currency as Token).chainId
 
-  console.log('zap find', chainId)
   if (!chainId) {
     return {
       errors: [new Error('Unsupported chain')],
@@ -623,7 +599,6 @@ async function getTradesPromiseZapUniV2(
   // Uniswap V2
   // Get the list of Uniswap V2 platform that support current chain
   const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
-  console.log('zap find', uniswapV2PlatformList)
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {

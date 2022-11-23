@@ -1,6 +1,5 @@
 import {
   ChainId,
-  CoWTrade,
   Currency,
   CurrencyAmount,
   JSBI,
@@ -41,17 +40,12 @@ import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
-import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
-import { SwapTx, useZapCallback, ZapInTx, ZapOutTx } from '../../hooks/useZapCallback'
+import { WrapType } from '../../hooks/useWrapCallback'
+import { useZapCallback } from '../../hooks/useZapCallback'
 import { AppState } from '../../state'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field, StateKey } from '../../state/swap/types'
-import {
-  useAdvancedSwapDetails,
-  useIsExpertMode,
-  useUpdateSelectedSwapTab,
-  useUserSlippageTolerance,
-} from '../../state/user/hooks'
+import { useIsExpertMode, useUpdateSelectedSwapTab, useUserSlippageTolerance } from '../../state/user/hooks'
 import { SwapTabs } from '../../state/user/reducer'
 import {
   useDefaultsFromURLSearch,
@@ -61,9 +55,8 @@ import {
   useZapState,
 } from '../../state/zap/hooks'
 import { ZapState } from '../../state/zap/types'
-import { getPathFromTrade } from '../../utils/getPathFromTrade'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverityZap } from '../../utils/prices'
+import { computeTradePriceBreakdown, warningSeverityZap } from '../../utils/prices'
 import AppBody from '../AppBody'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
@@ -118,64 +111,10 @@ export enum CoWTradeState {
   SWAP,
 }
 
-// const getZapParams = (
-//   data: UseDerivedZapInfoResult,
-//   isZapIn = true
-// ): { zapInParams: ZapInTx | undefined; zapOutParams: ZapOutTx | undefined; swapTokenA: SwapTx; swapTokenB: SwapTx } => {
-//   const zeroBN = BigNumber.from(0)
-//   const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
-//   const dexIdSwapA = BigNumber.from(
-//     SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-//   )
-//   const dexIdSwapB = BigNumber.from(
-//     SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-//   )
-
-//   const tradeToken0 = data.tradeToken0
-//   const tradeToken1 = data.tradeToken1
-//   const slippageAdjustedAmountsTrade0 = tradeToken0 && computeSlippageAdjustedAmounts(tradeToken0)
-//   const slippageAdjustedAmountsTrade1 = tradeToken1 && computeSlippageAdjustedAmounts(tradeToken1)
-
-//   const swapTokenA: SwapTx = {
-//     amount: data.zapInInputAmountTrade0?.toSignificant() ?? '0',
-//     amountMin: slippageAdjustedAmountsTrade0?.OUTPUT?.toSignificant() ?? '0',
-//     path: getPathFromTrade(data.tradeToken0),
-//     dexIndex: dexIdSwapA,
-//   }
-
-//   const swapTokenB: SwapTx = {
-//     amount: data.zapInInputAmountTrade1?.toSignificant() ?? '0',
-//     amountMin: slippageAdjustedAmountsTrade1?.OUTPUT?.toSignificant() ?? '0',
-//     path: getPathFromTrade(data.tradeToken1),
-//     dexIndex: dexIdSwapB,
-//   }
-
-//   const zapInParams = isZapIn
-//     ? {
-//         amountAMin: zeroBN,
-//         amountBMin: zeroBN,
-//         amountLPMin: zeroBN,
-//         dexIndex: dexIdZap,
-//       }
-//     : undefined
-
-//   const zapOutParams = isZapIn
-//     ? undefined
-//     : {
-//         amountLpFrom: data.parsedAmount?.toSignificant() ?? '0',
-//         amountTokenToMin: zeroBN,
-//         dexIndex: dexIdZap,
-//       }
-
-//   return { zapInParams, zapOutParams, swapTokenA, swapTokenB }
-// }
-
 export default function Zap() {
-  const isDesktop = useIsDesktop()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
   const { pathname } = useRouter()
   const isInProMode = pathname.includes('/pro') // comment
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
@@ -230,51 +169,14 @@ export default function Zap() {
     [chainId]
   )
   const derivedInfo = useDerivedSwapInfo<ZapState, UseDerivedZapInfoResult>({ key: StateKey.ZAP })
-  const {
-    currencies,
-    currencyBalances,
-    loading,
-    parsedAmount,
-    tradeToken0: potentialTrade0,
-    tradeToken1: potentialTrade1,
-    inputError,
-    zapInInputAmountTrade0,
-    zapInInputAmountTrade1,
-    zapInLiquidityMinted,
-    zapOutOutputAmount,
-  } = derivedInfo
+
   const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
-  console.log('ZAP DONE TRADE 0', potentialTrade0)
-  console.log('ZAP DONE TRADE 1', potentialTrade1)
-
-  // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
-  // wrap status(use useWrapCallback and a state variable)
-  const [gnosisProtocolTradeState, setGnosisProtocolState] = useState(CoWTradeState.UNKNOWN)
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError,
-    wrapState,
-    setWrapState,
-  } = useWrapCallback({
-    inputCurrency: potentialTrade0?.inputAmount.currency,
-    outputCurrency: potentialTrade0?.outputAmount.currency,
-    isGnosisTrade: potentialTrade0 instanceof CoWTrade,
-    typedValue: potentialTrade0?.inputAmount.toSignificant(6) ?? typedValue,
-  })
-
-  const bestPricedTrade = potentialTrade0
-  const bestPricedTrade1 = potentialTrade1
-
-  const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade0 instanceof CoWTrade)
-  console.log('zap wrap 0', potentialTrade0?.outputAmount.currency.symbol, showWrap, wrapType, potentialTrade0)
-
-  const trade = showWrap ? undefined : potentialTrade0
-  const trade1 = showWrap ? undefined : potentialTrade1
+  const currencies = derivedInfo.currencies
+  const currencyBalances = derivedInfo.currencyBalances
 
   const parsedAmounts = {
-    [Field.INPUT]: parsedAmount,
-    [Field.OUTPUT]: isZapIn ? zapParams.liquidityMinted : zapOutOutputAmount,
+    [Field.INPUT]: derivedInfo.parsedAmount,
+    [Field.OUTPUT]: isZapIn ? zapParams.liquidityMinted : derivedInfo.zapOutOutputAmount,
   }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
@@ -308,13 +210,9 @@ export default function Zap() {
 
   // check whether the user has approved the router on the input token
   const [approvalZap, approveCallbackZap] = useApproveCallback(
-    parsedAmount,
+    derivedInfo.parsedAmount,
     chainId && ZAP_CONTRACT_ADDRESS[chainId] !== '' ? ZAP_CONTRACT_ADDRESS[chainId] : undefined
   )
-  console.log('APPROVE ZAP', approvalZap)
-
-  // check whether the user has approved the router on the input token
-  // const [approval, approveCallback] = useApproveCallbackFromTrade(trade /* allowedSlippage */)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalsSubmitted, setApprovalsSubmitted] = useState(false)
@@ -327,63 +225,9 @@ export default function Zap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvalZap])
 
-  // Listen for changes on wrapState
-  useEffect(() => {
-    // watch GPv2
-    if (wrapState === WrapState.WRAPPED) {
-      if (approvalZap === ApprovalState.APPROVED) setGnosisProtocolState(CoWTradeState.SWAP)
-      else setGnosisProtocolState(CoWTradeState.APPROVAL)
-    }
-  }, [wrapState, approvalZap, trade])
-
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
-  const dexIdSwapA = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[bestPricedTrade?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-  )
-  const dexIdSwapB = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[bestPricedTrade1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
-  )
-  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
-  console.log('zap dex index', dexIdSwapA.toString(), dexIdSwapB.toString())
-  const tstPath0 = ['0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6']
-  const tstPath1 = ['0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6']
-  const zeroBN = BigNumber.from(0)
-  const dexId2 = BigNumber.from('2')
-  const userAddress = '0x372A291A9cad69b0F5F231cf1885574e9De7fD33'
-  console.log('zap path0', potentialTrade0?.details, getPathFromTrade(potentialTrade0))
-  console.log('zap path1', potentialTrade1?.details, getPathFromTrade(potentialTrade1))
-  // const { zapInParams, zapOutParams, swapTokenA, swapTokenB } = getZapParams(derivedInfo, isZapIn)
-  // const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
-  // const swapTokenA: SwapTx = {
-  //   amount: zapInInputAmountTrade0?.toSignificant() ?? '0',
-  //   amountMin: zeroBN,
-  //   path: getPathFromTrade(potentialTrade0),
-  //   dexIndex: dexIdSwapA,
-  // }
 
-  // const swapTokenB: SwapTx = {
-  //   amount: zapInInputAmountTrade1?.toSignificant() ?? '0',
-  //   amountMin: zeroBN,
-  //   path: getPathFromTrade(potentialTrade1),
-  //   dexIndex: dexIdSwapB,
-  // }
-
-  // const zapInParams: ZapInTx = {
-  //   amountAMin: zeroBN,
-  //   amountBMin: zeroBN,
-  //   amountLPMin: zeroBN,
-  //   dexIndex: dexIdZap,
-  // }
-
-  // // TODO zap Out params
-  // const zapOutParams: ZapOutTx = {
-  //   amountLpFrom: parsedAmount?.toSignificant() ?? '0',
-  //   amountTokenToMin: zeroBN,
-  //   dexIndex: dexId2,
-  // }
-
-  console.log('zap callback params', zapParams.zapIn, zapParams.zapOut, zapParams.swapTokenA, zapParams.swapTokenB)
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
     zapIn: zapParams.zapIn,
     zapOut: zapParams.zapOut,
@@ -394,18 +238,14 @@ export default function Zap() {
     transferResidual: true,
   })
 
-  console.log('zap callback', zapCallback, zapCallbackError, inputError)
-
-  // console.log('zap error', zapCallbackError)
-
-  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade0 } = computeTradePriceBreakdown(trade)
-  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade1 } = computeTradePriceBreakdown(trade1)
-  console.log('zap price impact', priceImpactWithoutFeeTrade0?.toFixed(), priceImpactWithoutFeeTrade1?.toFixed())
-  console.log('zap price impact mix', warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1))
+  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade0 } = computeTradePriceBreakdown(derivedInfo.tradeToken0)
+  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade1 } = computeTradePriceBreakdown(derivedInfo.tradeToken1)
 
   const handleZap = useCallback(() => {
-    //  TODO: shouldnt check also for priceImpact for trade1
-    if (priceImpactWithoutFeeTrade0 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)) {
+    if (
+      (priceImpactWithoutFeeTrade0 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)) ||
+      (priceImpactWithoutFeeTrade1 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade1))
+    ) {
       return
     }
     if (!zapCallback) {
@@ -427,9 +267,6 @@ export default function Zap() {
           swapErrorMessage: undefined,
           txHash: hash,
         })
-        //reset states, in case we want to operate again
-        setGnosisProtocolState(CoWTradeState.UNKNOWN)
-        setWrapState && setWrapState(WrapState.UNKNOWN)
       })
       .catch(error => {
         setSwapState({
@@ -439,9 +276,8 @@ export default function Zap() {
           swapErrorMessage: error.message,
           txHash: undefined,
         })
-        setGnosisProtocolState(CoWTradeState.UNKNOWN)
       })
-  }, [priceImpactWithoutFeeTrade0, zapCallback, tradeToConfirm, showConfirm, setWrapState])
+  }, [priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1, zapCallback, tradeToConfirm, showConfirm])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1)
@@ -449,14 +285,11 @@ export default function Zap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !inputError &&
+    !derivedInfo.inputError &&
     (approvalZap === ApprovalState.NOT_APPROVED ||
       approvalZap === ApprovalState.PENDING ||
       (approvalsSubmitted && approvalZap === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > PriceImpact.HIGH && !isExpertMode)
-
-  // const handleAcceptChanges = useCallback(() => {}, [])
-  console.log('approveFlow', showApproveFlow)
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -529,7 +362,7 @@ export default function Zap() {
       <Flex mb={2} alignItems="center" justifyContent="space-between" width="100%">
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </Flex>
-      <AppBody tradeDetailsOpen={!!trade}>
+      <AppBody tradeDetailsOpen={!!derivedInfo.tradeToken0}>
         <Wrapper id="zap-page">
           <ConfirmSwapModal
             isOpen={showConfirm}
@@ -572,9 +405,9 @@ export default function Zap() {
                   }}
                 >
                   <ArrowWrapper
-                    clickable={!loading}
+                    clickable={!derivedInfo.loading}
                     data-testid="switch-tokens-button"
-                    className={loading ? 'rotate' : ''}
+                    className={derivedInfo.loading ? 'rotate' : ''}
                   >
                     <SwapIcon />
                   </ArrowWrapper>
@@ -582,15 +415,14 @@ export default function Zap() {
               </SwitchIconContainer>
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
-                onUserInput={() => {}} // TODO: make it optional as it is disabled
+                onUserInput={() => {}} // TODO make it optional as it is disabled
                 onMax={handleMaxInput(Field.OUTPUT)}
                 currency={currencies[Field.OUTPUT]}
                 pair={zapPair}
                 onCurrencySelect={handleOutputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
-                fiatValue={fiatValueInput} // TODO; make it optional
-                // priceImpact={priceImpact}
+                fiatValue={fiatValueInput} // TODO make it optional
                 isFallbackFiatValue={isFallbackFiatValueInput} //
                 maxAmount={maxAmountOutput}
                 showCommonBases
@@ -603,37 +435,37 @@ export default function Zap() {
               />
             </AutoColumn>
             <TradeDetails
-              show={!showWrap}
-              loading={loading}
-              trade={trade}
-              trade1={trade1}
-              bestPricedTrade={bestPricedTrade}
-              bestPricedTrade1={bestPricedTrade1}
+              show={true}
+              loading={derivedInfo.loading}
+              trade={derivedInfo.tradeToken0}
+              trade1={derivedInfo.tradeToken1}
+              bestPricedTrade={derivedInfo.tradeToken0}
+              bestPricedTrade1={derivedInfo.tradeToken1}
               recipient={recipient}
             />
 
             <SwapButtons
-              wrapInputError={wrapInputError}
+              wrapInputError={undefined}
               showApproveFlow={showApproveFlow}
               userHasSpecifiedInputOutput={userHasSpecifiedInputOutput}
               approval={approvalZap}
               setSwapState={setSwapState}
               priceImpactSeverity={priceImpactSeverity}
               swapCallbackError={zapCallbackError}
-              wrapType={wrapType}
+              wrapType={WrapType.NOT_APPLICABLE}
               approvalSubmitted={approvalsSubmitted}
               currencies={currencies}
-              trade={trade}
-              tradeSecondTokenZap={trade1}
-              swapInputError={inputError}
+              trade={derivedInfo.tradeToken0}
+              tradeSecondTokenZap={derivedInfo.tradeToken1}
+              swapInputError={derivedInfo.inputError}
               swapErrorMessage={swapErrorMessage}
-              loading={loading}
-              onWrap={onWrap}
+              loading={derivedInfo.loading}
+              onWrap={undefined}
               approveCallback={approveCallbackZap}
               handleSwap={handleZap}
               handleInputSelect={handleInputSelect}
-              wrapState={wrapState}
-              setWrapState={setWrapState}
+              wrapState={undefined}
+              setWrapState={undefined}
             />
           </AutoColumn>
         </Wrapper>

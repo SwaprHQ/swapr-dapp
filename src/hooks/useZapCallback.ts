@@ -1,10 +1,6 @@
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import {
   ChainId,
-  CoWTrade,
-  CurrencyAmount,
   CurveTrade,
   Trade,
   TradeType,
@@ -15,17 +11,14 @@ import {
 } from '@swapr/sdk'
 
 import { BigNumberish, ContractTransaction, UnsignedTransaction } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 
-import { useAnalytics } from '../analytics'
-import { INITIAL_ALLOWED_SLIPPAGE, SUPPORTED_DEX_ZAP_INDEX, ZERO_ADDRESS } from '../constants'
+import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
-import { SwapProtocol } from '../state/transactions/reducer'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
-import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
+import { isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import { useZapContract } from './useContract'
 import useENS from './useENS'
@@ -45,18 +38,6 @@ interface SwapCall {
   contract?: Contract
   transactionParameters: Promise<UnsignedTransaction>
 }
-
-interface SuccessfulCall {
-  call: SwapCall
-  gasEstimate: BigNumber
-}
-
-interface FailedCall {
-  call: SwapCall
-  error: Error
-}
-
-type EstimatedSwapCall = SuccessfulCall | FailedCall
 
 /**
  * Returns the swap calls that can be used to make the trade
@@ -184,7 +165,6 @@ export function useZapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
-  console.log('zap callback constract', zapContract)
 
   const [preferredGasPrice] = useUserPreferredGasPrice()
   const mainnetGasPrices = useMainnetGasPrices()
@@ -192,7 +172,6 @@ export function useZapCallback({
   const { address: receiverENS } = useENS(recipient)
   const receiver = receiverENS ?? account
   const affiliateAddress = affiliate ?? ZERO_ADDRESS
-  console.log('zap callback inside add', recipient, receiver, account)
 
   // Watch the transaction from transaction reducer
   const [transactionReceipt, setTransactionReceipt] = useState<ContractTransaction | undefined>()
@@ -209,7 +188,6 @@ export function useZapCallback({
 
   return useMemo(() => {
     if (!zapContract || !library || !account || !chainId || !receiver || receiver === ZERO_ADDRESS) {
-      console.log('zap error', zapContract, library, account, chainId, receiver)
       return {
         callback: undefined,
         state: ZapState.INVALID,
@@ -229,24 +207,9 @@ export function useZapCallback({
       return {
         callback: async () => {
           try {
-            console.log('ESSA zap in callback', zapContract)
             // Set state to pending
             setZapState(ZapState.LOADING)
-            console.log('zap callback params TOP', {
-              zapIn,
-              zapOut,
-              swapTokenA,
-              swapTokenB,
-              receiver,
-              affiliateAddress,
-              transferResidual,
-            })
-            // const zapInTx = await zapContract.setSupportedDEX(
-            //   BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]),
-            //   UniswapV2RoutablePlatform.SWAPR.name,
-            //   '0xE43e60736b1cb4a75ad25240E2f9a62Bff65c0C0',
-            //   '0x5D48C95AdfFD4B40c1AAADc4e08fc44117E02179'
-            // )
+
             const zapInTx = await zapContract.zapIn(
               zapIn,
               swapTokenA,
@@ -255,11 +218,10 @@ export function useZapCallback({
               affiliateAddress,
               transferResidual,
               {
-                gasLimit: 30000000,
+                gasLimit: 30000000, // TODO calculate gasLimit
                 gasPrice: normalizedGasPrice,
               }
             )
-            console.log('zap in tx', zapInTx)
             setTransactionReceipt(zapInTx)
             addTransaction(zapInTx, { summary: 'Zap in' })
             const zapInTxReceipt = await zapInTx.wait(1)
@@ -281,25 +243,15 @@ export function useZapCallback({
       return {
         callback: async () => {
           try {
-            console.log('zap callback OUT params TOP', {
-              zapIn,
-              zapOut,
-              swapTokenA,
-              swapTokenB,
-              receiver,
-              affiliateAddress,
-              transferResidual,
-            })
-            console.log('ESSA zap out callback')
             // Set state to pending
             setZapState(ZapState.LOADING)
             const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
-              gasLimit: 30000000,
+              gasLimit: 30000000, // TODO calculate gas limit
               gasPrice: normalizedGasPrice,
             })
             setTransactionReceipt(txReceipt)
             addTransaction(txReceipt, { summary: 'Zap out' })
-            return 'wio'
+            return 'Zap out successed'
           } catch (error) {
             console.error('Could not zap out!', error)
             //if something goes wrong, reset status

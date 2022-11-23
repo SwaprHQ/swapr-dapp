@@ -145,7 +145,8 @@ export const useSortedTokensByQuery = (tokens: Token[] | undefined, searchQuery:
 }
 
 export const filterPairsForZap = (pair: Pair, chainId: ChainId): boolean => {
-  // TODO addres to lowercase?
+  // TODO move address to const and simplify array
+  // temporary solution before set supported pairs
   const MAINNET_WETH_XDAI_ADDRESS = '0x7515Be43D16f871588ADc135d58a9c30A71Eb34F'
   const MAINNET_DXD_WETH_ADDRESS = '0xb0Dc4B36e0B4d2e3566D2328F6806EA0B76b4F13'
   const MAINNET_WETH_GNO_ADDRESS = '0x6e68f1B08024B35e175BE750dd94cd84942fe851'

@@ -193,7 +193,6 @@ export default function Swap() {
 
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
-  console.log('swap', wrapType, potentialTrade, showWrap)
 
   const trade = showWrap ? undefined : potentialTrade
 

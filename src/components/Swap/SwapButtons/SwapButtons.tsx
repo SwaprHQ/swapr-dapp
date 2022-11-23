@@ -79,7 +79,6 @@ export function SwapButtons({
   const noRoute = !route
   const isValid = !swapInputError
   const isZap = !!tradeSecondTokenZap
-  console.log('zap swap button', isZap, tradeSecondTokenZap)
 
   useEffect(() => {
     RoutablePlatformKeys.forEach(key => {
