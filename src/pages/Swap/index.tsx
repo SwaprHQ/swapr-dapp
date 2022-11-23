@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { ChartToggle } from '../../components/ChartToggle'
 import { PageMetaData } from '../../components/PageMetaData'
 import { SimpleChartContainer } from '../../components/SimpleChart/SimpleChartContainer'
 import { Tabs } from '../../components/Swap/Tabs'
@@ -29,7 +30,6 @@ import Hero from './../../components/LandingPageComponents/layout/Hero'
 import Stats from './../../components/LandingPageComponents/Stats'
 import Timeline from './../../components/LandingPageComponents/Timeline'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
-import { ChartToggle } from './ChartToggle'
 import { Swapbox } from './Swapbox/Swapbox'
 
 const AppBody = styled.section`
