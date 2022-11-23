@@ -73,7 +73,7 @@ export type AdapterFetchDetails = {
   inputToken: Token
   outputToken: Token
   amountToFetch: number
-  isFirstFetch: boolean
+  isFirstFetch?: boolean
   abortController: (id: string) => AbortSignal
   refreshing?: boolean
 }
@@ -88,7 +88,7 @@ export enum AdapterAmountToFetch {
 
 export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {
   pairId: string
-  pair: BasePair | UniswapV3Pair | undefined
+  pair?: BasePair | UniswapV3Pair | undefined
   chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS | ChainId.POLYGON | ChainId.OPTIMISM_MAINNET
   inputTokenAddress: string
   outputTokenAddress: string
