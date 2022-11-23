@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { BASE_QUERY_FRAGMENT } from '../fragment.queries'
 
 export const PAIR_SWAPS_BURNS_AND_MINTS = gql`
-  query getPairTradesAndActivity($pairId: Bytes!, $first: Int!, $skip: Int!) {
+  query getPairTradesAndActivity($pairId: Bytes!, $first: Int!) {
     swaps(where: { pair: $pairId }, first: $first, skip: $skip, orderDirection: "desc", orderBy: "timestamp") {
       id
       transaction {
