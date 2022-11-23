@@ -3,11 +3,10 @@ import { gql } from 'graphql-request'
 import { BASE_QUERY_FRAGMENT } from '../fragment.queries'
 
 export const UNISWAP_PAIR_SWAPS_BURNS_AND_MINTS = gql`
-  query getPairTradesAndActivity($token0_in: [Bytes]!, $token1_in: [Bytes]!, $first: Int!, $skip: Int!) {
+  query getPairTradesAndActivity($token0_in: [Bytes]!, $token1_in: [Bytes]!, $first: Int!) {
     swaps(
       where: { token0_in: $token0_in, token1_in: $token1_in }
       first: $first
-      skip: $skip
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
@@ -23,7 +22,6 @@ export const UNISWAP_PAIR_SWAPS_BURNS_AND_MINTS = gql`
     mints(
       where: { token0_in: $token0_in, token1_in: $token1_in }
       first: $first
-      skip: $skip
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
@@ -33,7 +31,6 @@ export const UNISWAP_PAIR_SWAPS_BURNS_AND_MINTS = gql`
     burns(
       where: { token0_in: $token0_in, token1_in: $token1_in }
       first: $first
-      skip: $skip
       orderDirection: "desc"
       orderBy: "timestamp"
     ) {
