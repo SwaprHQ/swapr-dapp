@@ -65,6 +65,16 @@ export type BaseActionPayload<DataType> = {
   payloadType: AdapterPayloadType.SWAPS | AdapterPayloadType.BURNS_AND_MINTS
 }
 
+export type SetSwapsBurnsAndMintsActionPayload = {
+  key: AdapterKey
+  hasMore: boolean
+  pairId: string
+  data: {
+    swaps: UniswapV3PairSwapTransaction[]
+    burnsAndMints: PairBurnsAndMintsTransaction[]
+  }
+}
+
 export type SetSwapsActionPayload = {
   key: AdapterKey
   hasMore: boolean
