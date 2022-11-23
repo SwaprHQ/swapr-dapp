@@ -8,7 +8,7 @@ import {
   SetSwapsActionPayload,
   SetSwapsBurnsAndMintsActionPayload,
 } from '../adapters/baseAdapter/base.types'
-import { AdapterType, InitialState } from '../advancedTradingView.types'
+import { AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
 
 export const initialState: InitialState = {
   pair: {
@@ -76,8 +76,8 @@ const advancedTradingViewSlice = createSlice({
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        const nextPairSwapData = state.adapters[key][pairId]?.['swaps']?.data ?? []
-        const nextPairBurnsAndMintsData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
+        const nextPairSwapData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
+        const nextPairBurnsAndMintsData = state.adapters[key][pairId]?.[AdapterPayloadType.BURNS_AND_MINTS]?.data ?? []
 
         data.swaps.forEach(
           element => !nextPairSwapData.some(el => el.id === element.id) && nextPairSwapData.push(element)
@@ -112,7 +112,7 @@ const advancedTradingViewSlice = createSlice({
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        const nextPairData = state.adapters[key][pairId]?.['swaps']?.data ?? []
+        const nextPairData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
 
         data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
 
@@ -139,7 +139,7 @@ const advancedTradingViewSlice = createSlice({
       action.payload.forEach(adapter => {
         const { key, pairId, data, hasMore } = adapter
 
-        const nextPairData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
+        const nextPairData = state.adapters[key][pairId]?.[AdapterPayloadType.BURNS_AND_MINTS]?.data ?? []
 
         data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
 
