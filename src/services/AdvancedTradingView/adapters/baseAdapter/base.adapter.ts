@@ -11,7 +11,7 @@ import {
 } from '../../advancedTradingView.types'
 import { initialState as advancedTradingViewInitialState } from '../../store/advancedTradingView.reducer'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS } from './base.queries'
+import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS, PAIR_SWAPS_BURNS_AND_MINTS } from './base.queries'
 
 export interface BaseAppState {
   advancedTradingView: typeof advancedTradingViewInitialState
@@ -19,6 +19,7 @@ export interface BaseAppState {
 
 export class BaseAdapter<
   AppState extends BaseAppState,
+  GenericPairSwapsBurnsAndMints extends { swaps: unknown[]; burns: unknown[]; mints: unknown[] },
   GenericPairSwaps extends { swaps: unknown[] },
   GenericPairBurnsAndMints extends { burns: unknown[]; mints: unknown[] }
 > extends AbstractAdvancedTradingViewAdapter<AppState> {
@@ -197,6 +198,23 @@ export class BaseAdapter<
     try {
       return Pair.getAddress(inputToken, outputToken, this._platform).toLowerCase()
     } catch {}
+  }
+
+  protected async _fetchSwapsBurnsAndMints({
+    pairId,
+    chainId,
+    amountToFetch,
+    abortController,
+  }: AdapterFetchMethodArguments) {
+    return await request<GenericPairSwapsBurnsAndMints>({
+      url: this._subgraphUrls[chainId],
+      document: PAIR_SWAPS_BURNS_AND_MINTS,
+      variables: {
+        pairId,
+        first: amountToFetch,
+      },
+      signal: abortController(`${this._key}-pair-trades`) as RequestOptions['signal'],
+    })
   }
 
   protected async _fetchSwaps({
