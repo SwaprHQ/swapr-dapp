@@ -6,6 +6,7 @@ import {
   BaseActionPayload,
   SetBurnsAndMintsActionPayload,
   SetSwapsActionPayload,
+  SetSwapsBurnsAndMintsActionPayload,
 } from '../adapters/baseAdapter/base.types'
 import { AdapterType, InitialState } from '../advancedTradingView.types'
 
@@ -62,6 +63,44 @@ const advancedTradingViewSlice = createSlice({
           hasMore,
         },
       }
+    },
+
+    setSwapsBurnsAndMintsDataForAllPairs: (
+      state: InitialState,
+      action: PayloadAction<Array<SetSwapsBurnsAndMintsActionPayload>>
+    ) => {
+      const updatedAdapters: AdapterType = {
+        ...state.adapters,
+      }
+
+      action.payload.forEach(adapter => {
+        const { key, pairId, data, hasMore } = adapter
+
+        const nextPairSwapData = state.adapters[key][pairId]?.['swaps']?.data ?? []
+        const nextPairBurnsAndMintsData = state.adapters[key][pairId]?.['burnsAndMints']?.data ?? []
+
+        data.swaps.forEach(
+          element => !nextPairSwapData.some(el => el.id === element.id) && nextPairSwapData.push(element)
+        )
+        data.burnsAndMints.forEach(
+          element =>
+            !nextPairBurnsAndMintsData.some(el => el.id === element.id) && nextPairBurnsAndMintsData.push(element)
+        )
+
+        updatedAdapters[key][pairId] = {
+          ...updatedAdapters[key][pairId],
+          swaps: {
+            data: nextPairSwapData,
+            hasMore,
+          },
+          burnsAndMints: {
+            data: nextPairBurnsAndMintsData,
+            hasMore,
+          },
+        }
+      })
+
+      state.adapters = updatedAdapters
     },
 
     // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
