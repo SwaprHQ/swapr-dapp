@@ -5,6 +5,7 @@ import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Flex } from 'rebass'
 
@@ -239,7 +240,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         signer,
       })
       if (response) {
-        notify('Successfully created limit order. Please check user account for details')
+        notify(
+          <>
+            Successfully created limit order. Please check <Link to="/account">user account</Link> for details
+          </>
+        )
       } else {
         notify('Failed to place limit order. Try again.', false)
       }
