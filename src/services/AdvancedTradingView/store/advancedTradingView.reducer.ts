@@ -9,6 +9,7 @@ import {
   SetSwapsActionPayload,
   SetSwapsBurnsAndMintsActionPayload,
 } from '../adapters/baseAdapter/base.types'
+import { UniswapV3PairSwapTransaction } from '../adapters/uniswapV3/uniswapV3.types'
 import { AdapterPayloadType, AdapterType, InitialState } from '../advancedTradingView.types'
 
 export const initialState: InitialState = {
@@ -122,9 +123,9 @@ const advancedTradingViewSlice = createSlice({
       state.adapters = updatedAdapters
     },
 
-    setBurnsAndMintsDataForAllPairs: (
+    setDataTypeForAllPairs: (
       state: InitialState,
-      action: PayloadAction<Array<BaseActionPayload<PairBurnsAndMintsTransaction[]>>>
+      action: PayloadAction<Array<BaseActionPayload<(UniswapV3PairSwapTransaction | PairBurnsAndMintsTransaction)[]>>>
     ) => {
       const updatedAdapters: AdapterType = {
         ...state.adapters,
