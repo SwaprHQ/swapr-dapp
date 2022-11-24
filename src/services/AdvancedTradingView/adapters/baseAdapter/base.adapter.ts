@@ -172,7 +172,7 @@ export class BaseAdapter<
   }
 
   public async getPairData({
-    dataType,
+    payloadType,
     inputToken,
     outputToken,
     amountToFetch,
@@ -187,17 +187,8 @@ export class BaseAdapter<
 
     const pair = this.store.getState().advancedTradingView.adapters[this._key][pairId]
 
-    // TODO: CLARIFY THIS WITH ADAM
-    // if (
-    //   (dataType === AdapterPayloadType.SWAPS && pair && !isFirstFetch && !pair.swaps?.hasMore) ||
-    //   (dataType === AdapterPayloadType.SWAPS && pair && isFirstFetch) ||
-    //   (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && !isFirstFetch && !pair.burnsAndMints?.hasMore) ||
-    //   (dataType === AdapterPayloadType.BURNS_AND_MINTS && pair && isFirstFetch)
-    // )
-    //   return
-
     try {
-      if (dataType === AdapterPayloadType.SWAPS) {
+      if (payloadType === AdapterPayloadType.SWAPS) {
         const { swaps } = await this._fetchSwaps({
           pairId,
           pair,
@@ -210,6 +201,7 @@ export class BaseAdapter<
         })
 
         return {
+          payloadType: AdapterPayloadType.SWAPS,
           key: this._key,
           pairId,
           data: swaps,
@@ -217,7 +209,7 @@ export class BaseAdapter<
         }
       }
 
-      if (dataType === AdapterPayloadType.BURNS_AND_MINTS) {
+      if (payloadType === AdapterPayloadType.BURNS_AND_MINTS) {
         const { burns, mints } = await this._fetchBurnsAndMints({
           pairId,
           pair,
@@ -230,6 +222,7 @@ export class BaseAdapter<
         })
 
         return {
+          payloadType: AdapterPayloadType.BURNS_AND_MINTS,
           key: this._key,
           pairId,
           data: [...burns, ...mints],
@@ -237,8 +230,7 @@ export class BaseAdapter<
         }
       }
     } catch (e) {
-      console.warn(`${this._key}${e}`)
-      return
+      return console.warn(`${this._key}${e}`)
     }
   }
 

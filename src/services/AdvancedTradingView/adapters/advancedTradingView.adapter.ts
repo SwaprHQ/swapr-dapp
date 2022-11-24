@@ -156,7 +156,7 @@ export class AdvancedTradingViewAdapter<AppState> {
       adapter.getPairData({
         ...fetchDetails,
         abortController: this.renewAbortController,
-        dataType: AdapterPayloadType.SWAPS,
+        payloadType: AdapterPayloadType.SWAPS,
       })
     )
 
@@ -174,7 +174,7 @@ export class AdvancedTradingViewAdapter<AppState> {
       adapter.getPairData({
         ...fetchDetails,
         abortController: this.renewAbortController,
-        dataType: AdapterPayloadType.BURNS_AND_MINTS,
+        payloadType: AdapterPayloadType.BURNS_AND_MINTS,
       })
     )
 
