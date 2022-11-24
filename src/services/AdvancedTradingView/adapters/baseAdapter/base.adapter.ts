@@ -82,10 +82,6 @@ export class BaseAdapter<
         outputTokenAddress: outputToken.address,
       })
 
-      console.log('swaps', swaps)
-      console.log('burns', burns)
-      console.log('mints', mints)
-
       return {
         key: this._key,
         pairId,
