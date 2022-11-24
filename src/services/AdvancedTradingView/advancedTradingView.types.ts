@@ -78,7 +78,7 @@ export type AdapterFetchDetails = {
   refreshing?: boolean
 }
 
-export type AdapterFetchDetailsExtended = AdapterFetchDetails & { dataType: AdapterPayloadType }
+export type AdapterFetchDetailsExtended = AdapterFetchDetails & { payloadType: AdapterPayloadType }
 
 export enum AdapterAmountToFetch {
   PAIR_TRADES = 10,
