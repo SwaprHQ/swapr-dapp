@@ -1,4 +1,4 @@
-import { BaseActionPayload, PairBurnsAndMints, PairBurnsAndMintsTransaction } from '../baseAdapter/base.types'
+import { PairBurnsAndMintsTransaction } from '../baseAdapter/base.types'
 
 export type UniswapV3PairSwapTransaction = {
   amount0: string
@@ -37,11 +37,7 @@ export type UniswapV3PairBurnsAndMints = {
   mints: PairBurnsAndMintsTransaction[]
 }
 
-type UniswapV3PairSwapsPayload = BaseActionPayload<UniswapV3PairSwapTransaction[]>
-
 export type UniswapV3Pair = {
   swaps?: { data: UniswapV3PairSwapTransaction[]; hasMore: boolean }
   burnsAndMints?: { data: PairBurnsAndMintsTransaction[]; hasMore: boolean }
 }
-
-export type UniswapV3ActionPayload = UniswapV3PairSwapsPayload | BaseActionPayload<PairBurnsAndMints>
