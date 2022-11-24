@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import {
   BaseActionPayload,
+  PairBurnsAndMintsTransaction,
   SetBurnsAndMintsActionPayload,
   SetSwapsActionPayload,
   SetSwapsBurnsAndMintsActionPayload,
@@ -123,22 +124,22 @@ const advancedTradingViewSlice = createSlice({
 
     setBurnsAndMintsDataForAllPairs: (
       state: InitialState,
-      action: PayloadAction<Array<SetBurnsAndMintsActionPayload>>
+      action: PayloadAction<Array<BaseActionPayload<PairBurnsAndMintsTransaction[]>>>
     ) => {
       const updatedAdapters: AdapterType = {
         ...state.adapters,
       }
 
       action.payload.forEach(adapter => {
-        const { key, pairId, data, hasMore } = adapter
+        const { key, pairId, data, hasMore, payloadType } = adapter
 
-        const nextPairData = state.adapters[key][pairId]?.[AdapterPayloadType.BURNS_AND_MINTS]?.data ?? []
+        const nextPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []
 
         data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
-          [AdapterPayloadType.BURNS_AND_MINTS]: {
+          [payloadType]: {
             data: nextPairData,
             hasMore,
           },
