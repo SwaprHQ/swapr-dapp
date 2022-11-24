@@ -42,13 +42,6 @@ const advancedTradingViewSlice = createSlice({
       if (action.payload.resetSelectedPair) {
         state.pair = {}
       }
-      // state.adapters = {
-      //   swapr: {},
-      //   sushiswap: {},
-      //   uniswapV2: {},
-      //   honeyswap: {},
-      //   uniswapV3: {},
-      // }
     },
 
     setPairData: (state, action: PayloadAction<BaseActionPayload<unknown[]>>) => {
@@ -118,7 +111,7 @@ const advancedTradingViewSlice = createSlice({
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
-          swaps: {
+          [AdapterPayloadType.SWAPS]: {
             data: nextPairData,
             hasMore,
           },
@@ -145,7 +138,7 @@ const advancedTradingViewSlice = createSlice({
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
-          burnsAndMints: {
+          [AdapterPayloadType.BURNS_AND_MINTS]: {
             data: nextPairData,
             hasMore,
           },
