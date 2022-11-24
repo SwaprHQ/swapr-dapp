@@ -5,8 +5,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   BaseActionPayload,
   PairBurnsAndMintsTransaction,
-  SetBurnsAndMintsActionPayload,
-  SetSwapsActionPayload,
   SetSwapsBurnsAndMintsActionPayload,
 } from '../adapters/baseAdapter/base.types'
 import { UniswapV3PairSwapTransaction } from '../adapters/uniswapV3/uniswapV3.types'
@@ -90,31 +88,6 @@ const advancedTradingViewSlice = createSlice({
           },
           burnsAndMints: {
             data: nextPairBurnsAndMintsData,
-            hasMore,
-          },
-        }
-      })
-
-      state.adapters = updatedAdapters
-    },
-
-    // TODO: UPDATE ACTION TO HANDLE BOTH SWAPS AND ACTIVITY DATA
-    setSwapsDataForAllPairs: (state: InitialState, action: PayloadAction<Array<SetSwapsActionPayload>>) => {
-      const updatedAdapters: AdapterType = {
-        ...state.adapters,
-      }
-
-      action.payload.forEach(adapter => {
-        const { key, pairId, data, hasMore } = adapter
-
-        const nextPairData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
-
-        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
-
-        updatedAdapters[key][pairId] = {
-          ...updatedAdapters[key][pairId],
-          [AdapterPayloadType.SWAPS]: {
-            data: nextPairData,
             hasMore,
           },
         }
