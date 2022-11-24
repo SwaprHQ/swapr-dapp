@@ -23,7 +23,7 @@ export function TokenIcon({ symbol, address, chainId, width = 32, height = 32, m
   const allTokensByAddress = useListsByAddress()
   let token = symbol ? allTokensBySymbol.get(symbol) : undefined
   if (!token && address && chainId) {
-    token = allTokensByAddress.get(chainId)?.get(address) ?? allTokensByAddress.get(1)?.get(address)
+    token = allTokensByAddress.get(chainId)?.get(address) ?? allTokensByAddress.get(ChainId.MAINNET)?.get(address)
   }
 
   let sources: string[] = []

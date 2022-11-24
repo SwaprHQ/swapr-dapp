@@ -363,7 +363,7 @@ export function AdvancedTradingViewBox() {
   const renderSwapBox = () => (
     <>
       <Tabs>
-        {REACT_APP_FEATURE_SIMPLE_CHART && pathname.includes('pro') && (
+        {REACT_APP_FEATURE_SIMPLE_CHART && isInProMode && (
           <ChartTabs
             hasBothCurrenciesInput={hasBothCurrenciesInput}
             activeChartTab={ChartOptions.OFF}
@@ -492,11 +492,9 @@ export function AdvancedTradingViewBox() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {pathname.includes('/pro') &&
-        chainId &&
-        !isUnsupportedChainIdError &&
-        !TESTNETS.includes(chainId) &&
-        isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
+      {isInProMode && chainId && !isUnsupportedChainIdError && !TESTNETS.includes(chainId) && isDesktop && (
+        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+      )}
     </>
   )
 }
