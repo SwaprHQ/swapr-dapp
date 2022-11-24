@@ -116,22 +116,6 @@ export class AdvancedTradingViewAdapter<AppState> {
     }
   }
 
-  public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
-    const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
-    )
-
-    return await Promise.allSettled(promises)
-  }
-
-  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
-    const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
-    )
-
-    return await Promise.allSettled(promises)
-  }
-
   public async fetchPairTradesAndActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
       adapter.getPairTradingAndActivityData({
@@ -144,8 +128,6 @@ export class AdvancedTradingViewAdapter<AppState> {
       (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
         res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
-
-    console.log('SWAPS, BURNS AND MINTS', response)
 
     // @ts-ignore
     this.store.dispatch(this.actions.setSwapsBurnsAndMintsDataForAllPairs(response))
