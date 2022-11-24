@@ -123,7 +123,6 @@ export const useAdvancedTradingView = () => {
       advancedTradingViewAdapter.setPairTokens(inputToken, outputToken)
 
       if (
-        // do not fetch data if user reversed pair
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
@@ -138,23 +137,6 @@ export const useAdvancedTradingView = () => {
             outputToken,
             amountToFetch: pairTradesAmountToFetch,
           })
-
-          // await Promise.allSettled([
-          //   advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
-          //     inputToken,
-          //     outputToken,
-          //     amountToFetch: pairTradesAmountToFetch,
-          //     isFirstFetch: true,
-          //     refreshing: true,
-          //   }),
-          //   advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
-          //     inputToken,
-          //     outputToken,
-          //     amountToFetch: pairActivityAmountToFetch,
-          //     isFirstFetch: true,
-          //     refreshing: true,
-          //   }),
-          // ])
         } catch (e) {
           console.error(e)
         } finally {
