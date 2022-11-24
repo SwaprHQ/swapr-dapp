@@ -57,5 +57,6 @@
   "advancedTradingView.orderHistory.type": "Type",
   "advancedTradingView.orderHistory.protocol": "Protocol",
   "advancedTradingView.orderHistory.date": "Date",
-  "advancedTradingView.orderHistory.status": "Status"
+  "advancedTradingView.orderHistory.status": "Status",
+  "advancedTradingView.orderHistory.tx": "Tx"
 }

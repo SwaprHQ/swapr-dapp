@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Box } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ButtonGroup, ButtonGroupOption } from '../../components/ButtonGroup/ButtonGroup'
 import { ChartOptions } from '../../state/user/reducer'
+import { ButtonGroup, ButtonGroupOption } from '../ButtonGroup/ButtonGroup'
 
 interface ChartToggleProps {
   hasBothCurrenciesInput: boolean
