@@ -166,7 +166,7 @@ export class AdvancedTradingViewAdapter<AppState> {
     )
 
     // @ts-ignore
-    this.store.dispatch(this.actions.setSwapsDataForAllPairs(response))
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response))
   }
 
   public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
@@ -184,6 +184,6 @@ export class AdvancedTradingViewAdapter<AppState> {
     )
 
     // @ts-ignore
-    this.store.dispatch(this.actions.setBurnsAndMintsDataForAllPairs(response))
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response))
   }
 }
