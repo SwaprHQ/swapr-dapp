@@ -31,7 +31,7 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
   [ChainId.XDAI]: { stablecoin: USDC[ChainId.XDAI], platform: UniswapV2RoutablePlatform.SWAPR },
   [ChainId.OPTIMISM_MAINNET]: {
     stablecoin: USDC[ChainId.OPTIMISM_MAINNET],
-    platform: UniswapV2RoutablePlatform.VELODROME,
+    platform: UniswapV2RoutablePlatform.UNISWAP,
   },
 }
 
