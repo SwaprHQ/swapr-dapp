@@ -42,6 +42,14 @@ const advancedTradingViewSlice = createSlice({
       if (action.payload.resetSelectedPair) {
         state.pair = {}
       }
+
+      state.adapters = {
+        swapr: {},
+        sushiswap: {},
+        uniswapV2: {},
+        honeyswap: {},
+        uniswapV3: {},
+      }
     },
 
     setPairData: (state, action: PayloadAction<BaseActionPayload<unknown[]>>) => {
