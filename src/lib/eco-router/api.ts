@@ -5,8 +5,6 @@ import {
   CoWTrade,
   CurveTrade,
   getAllCommonUniswapV2Pairs,
-  getAllCommonUniswapV2PairsFromSubgraph,
-  Pair,
   RoutablePlatform,
   Token,
   Trade,
@@ -78,8 +76,6 @@ export async function getExactIn(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      let pairs: Pair[] = []
-
       const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountIn.currency,
         currencyB: currencyOut,
@@ -87,11 +83,7 @@ export async function getExactIn(
         provider,
       }
 
-      if (platform.subgraphEndpoint[chainId] !== undefined) {
-        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
-      } else {
-        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-      }
+      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
 
       return (
         UniswapV2Trade.computeTradesExactIn({
@@ -253,8 +245,6 @@ export async function getExactOut(
 
   const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
     try {
-      let pairs: Pair[] = []
-
       const getAllCommonUniswapV2PairsParams = {
         currencyA: currencyAmountOut.currency,
         currencyB: currencyIn,
@@ -262,11 +252,7 @@ export async function getExactOut(
         provider,
       }
 
-      if (platform.subgraphEndpoint[chainId] !== undefined) {
-        pairs = await getAllCommonUniswapV2PairsFromSubgraph(getAllCommonUniswapV2PairsParams)
-      } else {
-        pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-      }
+      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
 
       return (
         UniswapV2Trade.computeTradesExactOut({

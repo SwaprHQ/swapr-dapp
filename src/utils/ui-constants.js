@@ -24,9 +24,10 @@ import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingCoW from './../assets/images/routing-cow.svg'
-import RoutingCurve from './../assets/images/routing-curve.png'
+import RoutingCurve from './../assets/images/routing-curve.svg'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
+import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
@@ -119,6 +120,10 @@ export const RoutingThroughContent = {
     {
       title: 'Curve',
       img: RoutingCurve,
+    },
+    {
+      title: 'PancakeSwap',
+      img: RoutingPancakeSwap,
     },
   ],
 }
@@ -244,7 +249,7 @@ export const FeaturesContent = {
     },
     {
       title: 'BRIDGE',
-      content: 'Bridge directly to or from any chain where Swapr is deployed.',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
       image: Bridge,
       animation: animations['06_Bridge'],
       buttons: [

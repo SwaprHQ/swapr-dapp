@@ -15,7 +15,7 @@ export class SwapPage {
   }
 
   static typeValueFrom(value: string) {
-    this.getFromInput().type(value, { delay: 200 })
+    this.getFromInput().type(value)
     return this
   }
   static typeValueTo(value: string) {
@@ -37,7 +37,7 @@ export class SwapPage {
   }
 
   static swap() {
-    this.getSwapButton().should('contain.text', 'Swap').click({ force: true })
+    this.getSwapButton().should('contain.text', 'Swap').click()
     return this
   }
 

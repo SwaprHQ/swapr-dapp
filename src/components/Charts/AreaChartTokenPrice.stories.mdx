@@ -1,0 +1,20 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
+import { DAI } from '@swapr/sdk'
+import { Flex } from 'rebass'
+
+import chartMockData from './chartMockData.json'
+import { AreaChartTokenPrice } from './AreaChartTokenPrice'
+
+<Meta title="Charts/AreaChartTokenPrice" component={AreaChartTokenPrice} />
+
+# AreaChartTokenPrice
+
+Area chart token price is just a wrapper on [lightweight-chart](https://github.com/tradingview/lightweight-charts) by Trading view with our custom theme and nice price on hover feature.
+
+<Canvas>
+  <Story name="AreaChartTokenPrice">
+    <Flex bg="#1e1e55" width={['100%', '550px', '550px', '600px', '650px']}>
+      <AreaChartTokenPrice showHours={false} tokenSymbol={DAI[1].symbol} data={chartMockData} />
+    </Flex>
+  </Story>
+</Canvas>

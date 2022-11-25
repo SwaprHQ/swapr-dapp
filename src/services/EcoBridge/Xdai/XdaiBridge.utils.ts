@@ -1,9 +1,9 @@
 import { formatUnits } from '@ethersproject/units'
-import { ChainId, Currency } from '@swapr/sdk'
+import { ChainId, Currency, DAI } from '@swapr/sdk'
 
 import { utils } from 'ethers'
 
-import { DAI, ZERO_ADDRESS } from '../../../constants'
+import { ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'
 

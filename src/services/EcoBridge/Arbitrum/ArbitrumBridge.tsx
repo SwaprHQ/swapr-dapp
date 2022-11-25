@@ -31,9 +31,7 @@ import {
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase, getErrorMsg } from '../EcoBridge.utils'
-import { commonActions } from '../store/Common.reducer'
-import { ecoBridgeUIActions } from '../store/UI.reducer'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
 import { arbitrumActions } from './ArbitrumBridge.reducer'
@@ -49,7 +47,6 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private _ethBridger: EthBridger | undefined
   private _erc20Bridger: Erc20Bridger | undefined
   private _initialPendingWithdrawalsChecked = false
-  private _listeners: NodeJS.Timeout[] = []
 
   private get actions() {
     return arbitrumActions[this.bridgeId as ArbitrumList]
@@ -59,20 +56,14 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     return arbitrumSelectors[this.bridgeId as ArbitrumList]
   }
 
-  // Typed setters
   public get ethBridger() {
-    if (!this._ethBridger) throw new Error('ArbBridge: No Eth bridge set')
+    if (!this._ethBridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No Eth bridge set')
     return this._ethBridger
   }
-  // Typed setters
-  public get erc20Bridger() {
-    if (!this._erc20Bridger) throw new Error('ArbBridge: No ERC20 bridge set')
-    return this._erc20Bridger
-  }
 
-  private get store() {
-    if (!this._store) throw new Error('ArbBridge: No store set')
-    return this._store
+  public get erc20Bridger() {
+    if (!this._erc20Bridger) throw this.ecoBridgeUtils.logger.error('ArbBridge: No ERC20 bridge set')
+    return this._erc20Bridger
   }
 
   // TODO: Handle exception throws properly over all the codebase.
@@ -80,12 +71,12 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   // if we call some of the methods without setting up the classe's properties
 
   private get l1Signer() {
-    if (!this._l1Signer) throw new Error('ArbBridge: No L1Signer set')
+    if (!this._l1Signer) throw this.ecoBridgeUtils.logger.error('ArbBridge: No L1Signer set')
     return this._l1Signer
   }
 
   private get l2Signer() {
-    if (!this._l2Signer) throw new Error('ArbBridge: No L2Signer set')
+    if (!this._l2Signer) throw this.ecoBridgeUtils.logger.error('ArbBridge: No L2Signer set')
     return this._l2Signer
   }
 
@@ -95,14 +86,15 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     displayName = 'Arbitrum',
   }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains: supportedChainsArr, bridgeId, displayName })
+    this.setBaseActions(this.actions)
 
-    if (supportedChainsArr.length !== 1) throw new Error('Invalid config')
+    if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error(`${this.bridgeId}: Invalid config`)
 
     const [supportedChains] = supportedChainsArr
 
     const { l1ChainId, l2ChainId } = getChainPair(supportedChains.from)
 
-    if (!l1ChainId || !l2ChainId) throw new Error('ArbBridge: Wrong config')
+    if (!l1ChainId || !l2ChainId) throw this.ecoBridgeUtils.logger.error(`${this.bridgeId}: Invalid config`)
 
     this.l1ChainId = l1ChainId
     this.l2ChainId = l2ChainId
@@ -117,7 +109,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     await this.setArbTs()
 
-    this.startListeners()
+    this.ecoBridgeUtils.listeners.start([{ listener: this.l2DepositsListener }, { listener: this.pendingTxListener }])
+
     this.updatePendingWithdrawals()
   }
 
@@ -129,50 +122,28 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   private deposit = async (value: string, tokenAddress: string) => {
-    try {
-      if (tokenAddress !== Currency.getNative(ChainId.MAINNET).symbol) {
-        await this.depositERC20(tokenAddress, value)
-      } else {
-        await this.depositETH(value)
-      }
-    } catch (err) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err, this.bridgeId),
-        })
-      )
+    if (tokenAddress !== Currency.getNative(ChainId.MAINNET).symbol) {
+      await this.depositERC20(tokenAddress, value)
+    } else {
+      await this.depositETH(value)
     }
   }
 
   private withdraw = async (value: string, tokenAddress: string) => {
-    try {
-      if (tokenAddress !== Currency.getNative(ChainId.ARBITRUM_ONE).symbol) {
-        await this.withdrawERC20(tokenAddress, value)
-      } else {
-        await this.withdrawETH(value)
-      }
-    } catch (err) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err, this.bridgeId),
-        })
-      )
+    if (tokenAddress !== Currency.getNative(ChainId.ARBITRUM_ONE).symbol) {
+      await this.withdrawERC20(tokenAddress, value)
+    } else {
+      await this.withdrawETH(value)
     }
   }
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
-    const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
-    if (!this._account || !batchIndex || !batchNumber || !fromValue) return
-
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.PENDING,
-      })
-    )
-
     try {
+      const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
+      if (!this._account || !batchIndex || !batchNumber || !fromValue) return
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+
       const txHash = log.find(transactionLog => transactionLog.chainId === this.l2ChainId)?.txHash
 
       if (!txHash || !this.l2Signer.provider) return
@@ -189,7 +160,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const l1CollectTransaction = await l2ToL1Msg.execute(this.l2Signer.provider)
 
-      this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.COLLECTING }))
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.COLLECTING)
 
       this.store.dispatch(
         this.actions.addTx({
@@ -214,11 +185,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const l1Receipt = await l1CollectTransaction.wait()
 
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.SUCCESS,
-        })
-      )
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.SUCCESS)
 
       this.store.dispatch(
         this.actions.updateTxReceipt({
@@ -235,63 +202,46 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
           l2ToL1MessageStatus: L2ToL1MessageStatus.EXECUTED,
         })
       )
-    } catch (err) {
-      this.store.dispatch(
-        ecoBridgeUIActions.setBridgeModalStatus({
-          status: BridgeModalStatus.ERROR,
-          error: getErrorMsg(err, this.bridgeId),
-        })
-      )
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
   public approve = async () => {
-    if (!this._account || !this.l1Signer.provider) return
+    try {
+      if (!this._account || !this.l1Signer.provider) return
 
-    const { address: erc20L1Address, symbol: erc20L1Symbol } = this.store.getState().ecoBridge.ui.from
+      const { address: erc20L1Address, symbol: erc20L1Symbol } = this.store.getState().ecoBridge.ui.from
 
-    const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(erc20L1Address, this.l1Signer.provider)
+      const gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(erc20L1Address, this.l1Signer.provider)
 
-    const transaction = await this.erc20Bridger.approveToken({
-      l1Signer: this.l1Signer,
-      erc20L1Address,
-    })
-
-    this.store.dispatch(
-      ecoBridgeUIActions.setStatusButton({
-        label: 'Approving',
-        isError: false,
-        isLoading: true,
-        isBalanceSufficient: true,
-        isApproved: false,
+      const transaction = await this.erc20Bridger.approveToken({
+        l1Signer: this.l1Signer,
+        erc20L1Address,
       })
-    )
 
-    this.store.dispatch(
-      addTransaction({
-        hash: transaction.hash,
-        from: this._account,
-        chainId: this.l1ChainId,
-        approval: {
-          spender: gatewayAddress,
-          tokenAddress: erc20L1Address,
-        },
-        summary: `Approve ${erc20L1Symbol?.toUpperCase()}`,
-      })
-    )
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-    const receipt = await transaction.wait()
-
-    if (receipt) {
       this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Bridge',
-          isError: false,
-          isLoading: false,
-          isBalanceSufficient: true,
-          isApproved: true,
+        addTransaction({
+          hash: transaction.hash,
+          from: this._account,
+          chainId: this.l1ChainId,
+          approval: {
+            spender: gatewayAddress,
+            tokenAddress: erc20L1Address,
+          },
+          summary: `Approve ${erc20L1Symbol?.toUpperCase()}`,
         })
       )
+
+      const receipt = await transaction.wait()
+
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
 
@@ -301,9 +251,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     let l1Signer: JsonRpcSigner | undefined = this._staticProviders[this.l1ChainId]?.getSigner(this._account)
     let l2Signer: JsonRpcSigner | undefined = this._staticProviders[this.l2ChainId]?.getSigner(this._account)
 
-    if (!l1Signer || !l2Signer) {
-      throw new Error('ArbBridge: No static signer found')
-    }
+    if (!l1Signer || !l2Signer) throw this.ecoBridgeUtils.logger.error('No static provider found')
 
     const l2Network = await getL2Network(l2Signer)
     const chains = [this.l1ChainId, this.l2ChainId]
@@ -330,20 +278,15 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       this._erc20Bridger = new Erc20Bridger(l2Network)
       this._ethBridger = new EthBridger(l2Network)
     } catch (err) {
-      throw new Error('ArbBridge: ' + err)
+      throw this.ecoBridgeUtils.logger.error(err as string)
     }
-  }
-
-  private startListeners = () => {
-    this._listeners.push(setInterval(this.l2DepositsListener, 5000))
-    this._listeners.push(setInterval(this.pendingTxListener, 5000))
   }
 
   // PendingTx Listener
   private getReceipt = async (tx: ArbitrumBridgeTxn) => {
     const provider = txnTypeToLayer(tx.type) === 2 ? this.l2Signer?.provider : this.l1Signer?.provider
 
-    if (!provider) throw new Error('No provider on bridge')
+    if (!provider) throw this.ecoBridgeUtils.logger.error('No provider on bridge')
 
     return provider.getTransactionReceipt(tx.txHash)
   }
@@ -447,7 +390,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private updatePendingWithdrawals = async () => {
     if (this._initialPendingWithdrawalsChecked) return
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeLoadingWithdrawals(true))
+    this.store.dispatch(this.ecoBridgeUIActions.setBridgeLoadingWithdrawals(true))
 
     const pendingWithdrawals = this.selectors.selectPendingWithdrawals(this.store.getState(), this._account)
 
@@ -470,7 +413,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
     })
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeLoadingWithdrawals(false))
+    this.store.dispatch(this.ecoBridgeUIActions.setBridgeLoadingWithdrawals(false))
     this._initialPendingWithdrawalsChecked = true
   }
 
@@ -478,11 +421,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private depositETH = async (value: string) => {
     if (!this._account || !this.l2Signer.provider) return
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.PENDING,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+
     const weiValue = parseEther(value)
 
     const txn = await this.ethBridger.deposit({
@@ -490,11 +430,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       amount: weiValue,
     })
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.INITIATED,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 
     this.store.dispatch(
       this.actions.addTx({
@@ -522,11 +458,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private depositERC20 = async (erc20L1Address: string, typedValue: string) => {
     if (!this._account || !this.l2Signer.provider) return
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.PENDING,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
     const { symbol: fromTokenSymbol, decimals: fromTokenDecimals } = this.store.getState().ecoBridge.ui.from
 
@@ -539,11 +471,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       amount: weiValue,
     })
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.INITIATED,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 
     this.store.dispatch(
       this.actions.addTx({
@@ -571,20 +499,13 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private withdrawETH = async (value: string) => {
     if (!this._account) return
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.PENDING,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
     const weiValue = parseEther(value)
     const transaction = await this.ethBridger.withdraw({ l2Signer: this.l2Signer, amount: weiValue })
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.INITIATED,
-      })
-    )
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
+
     this.store.dispatch(
       this.actions.addTx({
         assetName: Currency.getNative(ChainId.ARBITRUM_ONE).symbol ?? 'ETH',
@@ -613,19 +534,15 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
     const erc20L1Address = await this.erc20Bridger.getL1ERC20Address(erc20L2Address, this.l2Signer.provider)
 
-    if (!erc20L1Address) {
-      throw new Error('Token address not recognized')
-    }
+    if (!erc20L1Address) throw this.ecoBridgeUtils.logger.error('Token address not recognized')
 
     const l1Token = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, erc20L1Address)
 
-    if (!l1Token) {
-      throw new Error("Can't withdraw; token not found")
-    }
+    if (!l1Token) throw this.ecoBridgeUtils.logger.error("Can't withdraw: token not found")
 
     const [symbol, decimals] = await Promise.all([l1Token.symbol(), l1Token.decimals()])
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.PENDING }))
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
     const weiValue = parseUnits(value, decimals)
     const transaction = await this.erc20Bridger.withdraw({
@@ -634,13 +551,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       l2Signer: this.l2Signer,
     })
 
-    this.store.dispatch(ecoBridgeUIActions.setBridgeModalStatus({ status: BridgeModalStatus.INITIATED }))
+    this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setBridgeModalStatus({
-        status: BridgeModalStatus.INITIATED,
-      })
-    )
     this.store.dispatch(
       this.actions.addTx({
         assetName: symbol,
@@ -667,7 +579,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
-    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.LOADING))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.LOADING))
 
     const ownedTokenLists = ARBITRUM_TOKEN_LISTS_CONFIG.lists.filter(config =>
       [this.l1ChainId, this.l2ChainId].includes(config.chainId)
@@ -727,112 +639,82 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       { tokenLists: {}, defaultListsIds: [] }
     )
 
-    this.store.dispatch(this.actions.addTokenLists(tokenLists))
-    this.store.dispatch(this.actions.setTokenListsStatus(SyncState.READY))
-    this.store.dispatch(commonActions.activateLists(defaultListsIds))
+    this.store.dispatch(this.baseActions.addTokenLists(tokenLists))
+    this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.READY))
+
+    this.store.dispatch(this.commonActions.activateLists(defaultListsIds))
   }
 
   // No need to implement
   public fetchDynamicLists = async () => undefined
 
   public validate = async () => {
-    if (!this._account || !this.l1Signer.provider || !this.l2Signer.provider) return
+    try {
+      if (!this._account || !this.l1Signer.provider || !this.l2Signer.provider) return
 
-    const {
-      address: fromTokenAddress,
-      chainId: fromChainId,
-      value: fromValue,
-    } = this.store.getState().ecoBridge.ui.from
+      const {
+        address: fromTokenAddress,
+        chainId: fromChainId,
+        value: fromValue,
+      } = this.store.getState().ecoBridge.ui.from
 
-    this.store.dispatch(
-      ecoBridgeUIActions.setStatusButton({
-        label: 'Loading',
-        isError: false,
-        isLoading: true,
-        isBalanceSufficient: false,
-        isApproved: false,
-      })
-    )
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
 
-    if (fromTokenAddress === Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
-      this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Bridge',
-          isError: false,
-          isLoading: false,
-          isBalanceSufficient: true,
-          isApproved: true,
-        })
-      )
-      return
-    }
-
-    if (fromTokenAddress !== Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
-      let tokenContract: L2GatewayToken | ERC20
-      if (fromChainId === this.l1ChainId) {
-        tokenContract = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, fromTokenAddress)
-      } else {
-        tokenContract = this.erc20Bridger.getL2TokenContract(this.l2Signer.provider, fromTokenAddress)
-      }
-
-      const decimals = await tokenContract.decimals()
-
-      const parsedValue = parseUnits(fromValue, decimals)
-
-      //check allowance
-      let gatewayAddress: string
-      if (fromChainId === this.l1ChainId) {
-        gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(fromTokenAddress, this.l1Signer.provider)
-      } else {
-        gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(fromTokenAddress, this.l2Signer.provider)
-      }
-
-      const allowance = await tokenContract.allowance(this._account, gatewayAddress)
-
-      // Don't check allowance for l2 => l1
-      if (fromChainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
-        this.store.dispatch(
-          ecoBridgeUIActions.setStatusButton({
-            label: 'Approve',
-            isError: false,
-            isLoading: false,
-            isBalanceSufficient: true,
-            isApproved: false,
-          })
-        )
+      if (fromTokenAddress === Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
         return
       }
 
-      this.store.dispatch(
-        ecoBridgeUIActions.setStatusButton({
-          label: 'Bridge',
-          isError: false,
-          isLoading: false,
-          isBalanceSufficient: true,
-          isApproved: true,
-        })
-      )
+      if (fromTokenAddress !== Currency.getNative(ChainId.MAINNET).symbol ?? 'ETH') {
+        let tokenContract: L2GatewayToken | ERC20
+        if (fromChainId === this.l1ChainId) {
+          tokenContract = this.erc20Bridger.getL1TokenContract(this.l1Signer.provider, fromTokenAddress)
+        } else {
+          tokenContract = this.erc20Bridger.getL2TokenContract(this.l2Signer.provider, fromTokenAddress)
+        }
+
+        const decimals = await tokenContract.decimals()
+
+        const parsedValue = parseUnits(fromValue, decimals)
+
+        //check allowance
+        let gatewayAddress: string
+        if (fromChainId === this.l1ChainId) {
+          gatewayAddress = await this.erc20Bridger.getL1GatewayAddress(fromTokenAddress, this.l1Signer.provider)
+        } else {
+          gatewayAddress = await this.erc20Bridger.getL2GatewayAddress(fromTokenAddress, this.l2Signer.provider)
+        }
+
+        const allowance = await tokenContract.allowance(this._account, gatewayAddress)
+
+        // Don't check allowance for l2 => l1
+        if (fromChainId !== this.l2ChainId && allowance && parsedValue.gt(allowance)) {
+          this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+          return
+        }
+
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch {
+      this.ecoBridgeUtils.ui.statusButton.setError()
     }
   }
   public triggerBridging = () => {
     const { value, address: tokenAddress } = this.store.getState().ecoBridge.ui.from
-
-    if (this.l1ChainId === this._activeChainId) {
-      this.deposit(value, tokenAddress)
-    } else {
-      this.withdraw(value, tokenAddress)
+    try {
+      if (this.l1ChainId === this._activeChainId) {
+        this.deposit(value, tokenAddress)
+      } else {
+        this.withdraw(value, tokenAddress)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
+
   public getBridgingMetadata = async () => {
     if (!this.l1Signer.provider || !this.l2Signer.provider || !this._activeChainId) return
-
-    const requestId = this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].lastMetadataCt
-
-    const helperRequestId = (requestId ?? 0) + 1
-
-    this.store.dispatch(this.actions.requestStarted({ id: helperRequestId }))
-
-    this.store.dispatch(this.actions.setBridgeDetailsStatus({ status: SyncState.LOADING }))
+    const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     const { value, decimals, address, chainId } = this.store.getState().ecoBridge.ui.from
 
@@ -841,12 +723,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     try {
       parsedValue = parseUnits(value, decimals)
     } catch (e) {
-      this.store.dispatch(
-        this.actions.setBridgeDetailsStatus({
-          status: SyncState.FAILED,
-          errorMessage: 'No available routes / details',
-        })
-      )
+      this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
 
@@ -909,12 +786,12 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     }
 
     this.store.dispatch(
-      this.actions.setBridgeDetails({
+      this.baseActions.setBridgeDetails({
         gas: totalTxnGasCostInUSD,
         fee: '0%',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
-        receiveAmount: Number(value).toFixed(2).toString(),
-        requestId: helperRequestId,
+        receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces).toString(),
+        requestId,
       })
     )
   }
