@@ -224,18 +224,4 @@ export class BaseAdapter<
       signal: abortController(`${this._key}-pair-activity`) as RequestOptions['signal'],
     })
   }
-
-  protected _dispatchSwaps(pairId: string, { swaps }: GenericPairSwaps, amountToFetch: number) {
-    const hasMore = swaps.length === amountToFetch
-
-    this.store.dispatch(
-      this.actions.setPairData({
-        key: this._key,
-        pairId,
-        payloadType: AdapterPayloadType.SWAPS,
-        data: swaps,
-        hasMore,
-      })
-    )
-  }
 }
