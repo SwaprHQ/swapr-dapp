@@ -101,7 +101,7 @@ export function SwapButtons({
   }, [currencies, trade, handleInputSelect, wrapState, setWrapState])
 
   const onSwapClick = useCallback(() => {
-    if (isExpertMode) {
+    if (isExpertMode || isZap) {
       handleSwap()
     } else {
       setSwapState({
@@ -112,7 +112,7 @@ export function SwapButtons({
         txHash: undefined,
       })
     }
-  }, [isExpertMode, handleSwap, setSwapState, trade])
+  }, [isExpertMode, handleSwap, setSwapState, trade]) // eslint-disable-line
 
   if (loading) {
     return <SwapLoadingButton />

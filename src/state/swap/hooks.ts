@@ -272,6 +272,12 @@ export function useDerivedSwapInfo<
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
       return
     }
+    console.log(
+      'inputCurrencyBalance',
+      inputError,
+      inputCurrencyBalance?.toFixed(4),
+      inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)
+    )
     // Notify user if input amount is too low, but still trigger the EcoRouter
     let inputErrorNextState: undefined | number = undefined
     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)) {
@@ -377,7 +383,7 @@ export function useDerivedSwapInfo<
         .catch(error => {
           if (error.name !== 'AbortError') {
             console.error(error)
-            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+            // setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
             setLoading0(false)
           }
         })
@@ -414,7 +420,7 @@ export function useDerivedSwapInfo<
         .catch(error => {
           if (error.name !== 'AbortError') {
             console.error(error)
-            setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
+            // setInputError(SWAP_INPUT_ERRORS.UNKNOWN)
             setLoading1(false)
           }
         })
@@ -512,6 +518,7 @@ export function useDerivedSwapInfo<
       slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
     ]
 
+    console.log(balanceIn, amountIn, balanceIn && amountIn && balanceIn.lessThan(amountIn))
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
       returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
     }

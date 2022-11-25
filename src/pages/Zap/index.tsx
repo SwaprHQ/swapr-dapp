@@ -36,7 +36,6 @@ import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
-import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -116,7 +115,6 @@ export default function Zap() {
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const { pathname } = useRouter()
-  const isInProMode = pathname.includes('/pro') // comment
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
   const [zapPair, setZapPair] = useState<Pair>()
@@ -243,8 +241,9 @@ export default function Zap() {
 
   const handleZap = useCallback(() => {
     if (
-      (priceImpactWithoutFeeTrade0 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)) ||
-      (priceImpactWithoutFeeTrade1 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade1))
+      priceImpactWithoutFeeTrade0 &&
+      !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)
+      // (priceImpactWithoutFeeTrade1 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade1))
     ) {
       return
     }
@@ -364,7 +363,7 @@ export default function Zap() {
       </Flex>
       <AppBody tradeDetailsOpen={!!derivedInfo.tradeToken0}>
         <Wrapper id="zap-page">
-          <ConfirmSwapModal
+          {/* <ConfirmSwapModal
             isOpen={showConfirm}
             trade={undefined}
             originalTrade={tradeToConfirm}
@@ -376,7 +375,7 @@ export default function Zap() {
             onConfirm={handleZap}
             swapErrorMessage={swapErrorMessage} //zapErrorMessage
             onDismiss={handleConfirmDismiss}
-          />
+          /> */}
 
           <AutoColumn gap="12px">
             <AutoColumn gap="3px">
