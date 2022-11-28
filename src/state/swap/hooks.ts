@@ -1,7 +1,16 @@
 import { AddressZero } from '@ethersproject/constants'
-import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
+import {
+  Currency,
+  CurrencyAmount,
+  getTradesPromise,
+  JSBI,
+  Percent,
+  RoutablePlatform,
+  Token,
+  TokenAmount,
+  Trade,
+} from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
@@ -15,11 +24,6 @@ import { useAbortController } from '../../hooks/useAbortController'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
-import {
-  EcoRouterResults,
-  getExactIn as getExactInFromEcoRouter,
-  getExactOut as getExactOutFromEcoRouter,
-} from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
@@ -242,6 +246,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
       parsedAmount,
       inputCurrency,
       outputCurrency,
+      isExactIn,
       commonParams,
       ecoRouterSourceOptionsParams,
       provider,
@@ -310,44 +315,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     allPlatformTrades: inputError === SWAP_INPUT_ERRORS.SELECT_TOKEN ? [] : allPlatformTrades,
     inputError: returnInputError,
     loading,
-  }
-
-  async function getTradesPromise(
-    parsedAmount: CurrencyAmount,
-    inputCurrency: Currency,
-    outputCurrency: Currency,
-    commonParams: { maximumSlippage: Percent; receiver: string; user: string },
-    ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-    staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
-    signal: AbortSignal
-  ): Promise<EcoRouterResults> {
-    const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
-      signal.onabort = () => {
-        reject(new DOMException('Aborted', 'AbortError'))
-      }
-    })
-
-    const ecoRouterPromise = isExactIn
-      ? getExactInFromEcoRouter(
-          {
-            currencyAmountIn: parsedAmount,
-            currencyOut: outputCurrency,
-            ...commonParams,
-          },
-          ecoRouterSourceOptionsParams,
-          staticJsonRpcProvider
-        )
-      : getExactOutFromEcoRouter(
-          {
-            currencyAmountOut: parsedAmount,
-            currencyIn: inputCurrency,
-            ...commonParams,
-          },
-          ecoRouterSourceOptionsParams,
-          staticJsonRpcProvider
-        )
-
-    return await Promise.race([abortPromise, ecoRouterPromise])
   }
 }
 
