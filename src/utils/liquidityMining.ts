@@ -50,13 +50,24 @@ export function getPairRemainingRewardsUSD(pair: Pair, nativeCurrencyUSDPrice: P
 }
 
 export function getBestApyPairCampaign(pair: Pair): LiquidityMiningCampaign | null {
-  // no liquidity mining campaigns check
   if (pair.liquidityMiningCampaigns.length === 0) return null
-  return pair.liquidityMiningCampaigns.reduce((campaign: LiquidityMiningCampaign | null, liquidityMiningCampaign) => {
-    if (!campaign || liquidityMiningCampaign.apy.greaterThan(campaign.apy)) return liquidityMiningCampaign
-    return campaign
+  const now = Math.floor(Date.now() / 1000)
+
+  return pair.liquidityMiningCampaigns.reduce((bestCampaign: LiquidityMiningCampaign | null, currentCampaign) => {
+    const currentCampaignIsOpen = currentCampaign.endsAt && Number(currentCampaign.endsAt) > now
+    const currentCampaignIsLaunched = currentCampaign.startsAt && Number(currentCampaign.startsAt) < now
+    const currentCampaignIsActive = currentCampaignIsOpen && currentCampaignIsLaunched
+
+    if (bestCampaign) {
+      return currentCampaignIsActive && currentCampaign.apy.greaterThan(bestCampaign.apy)
+        ? currentCampaign
+        : bestCampaign
+    } else {
+      return currentCampaignIsActive ? currentCampaign : null
+    }
   }, null)
 }
+
 export function tokenToPricedTokenAmount(
   campaign: any,
   token: Token,

@@ -1,93 +1,34 @@
-import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token } from '@swapr/sdk'
+import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform } from '@swapr/sdk'
 
-// Landing Page Imports
-import '../../../theme/landingPageTheme/stylesheet.css'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
-import { PageMetaData } from '../../../components/PageMetaData'
-import TokenWarningModal from '../../../components/TokenWarningModal'
-import { TESTNETS } from '../../../constants'
-import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../../constants/features'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../../hooks'
-import { useAllTokens, useCurrency } from '../../../hooks/Tokens'
+import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
-import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
-import { useRouter } from '../../../hooks/useRouter'
 import { useSwapCallback } from '../../../hooks/useSwapCallback'
-import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../../hooks/useWrapCallback'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-} from '../../../state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../../state/swap/hooks'
 import { Field } from '../../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../state/user/hooks'
-import { ChartOptions } from '../../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
 import AppBody from '../../AppBody'
 import AdvancedSwapDetailsDropdown from '../Components/AdvancedSwapDetailsDropdown'
-import { ChartTabs } from '../Components/ChartTabs'
 import confirmPriceImpactWithoutFee from '../Components/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../Components/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Components/styles'
 import SwapButtons from '../Components/SwapButtons'
-import { Tabs } from '../Components/Tabs'
 import { TradeDetails } from '../Components/TradeDetails'
-import { CoWTradeState, SwapData } from '../SwapBox/SwapBox.types'
-import { AdvancedSwapMode } from './AdvancedSwapMode'
+import { CoWTradeState, SwapData } from './SwapBox.types'
 
-const SwitchIconContainer = styled.div`
-  height: 0;
-  position: relative;
-  width: 100%;
-`
-
-export function AdvancedTradingViewBox() {
-  const isDesktop = useIsDesktop()
-  const loadedUrlParams = useDefaultsFromURLSearch()
+export function Swapbox() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
-  const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
-  const { navigate, pathname } = useRouter()
-  const isInProMode = pathname.includes('/pro')
-
-  // token warning stuff
-  const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId),
-  ]
-  const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
-  const urlLoadedScammyTokens: Token[] = useMemo(() => {
-    const normalizedAllTokens = Object.values(allTokens)
-    if (normalizedAllTokens.length === 0) return []
-    return [loadedInputCurrency, loadedOutputCurrency].filter((urlLoadedToken): urlLoadedToken is Token => {
-      return (
-        urlLoadedToken instanceof Token && !normalizedAllTokens.some(legitToken => legitToken.equals(urlLoadedToken))
-      )
-    })
-  }, [loadedInputCurrency, loadedOutputCurrency, allTokens])
-  const urlLoadedChainId = useTargetedChainIdFromUrl()
-  const handleConfirmTokenWarning = useCallback(() => {
-    setDismissTokenWarning(true)
-  }, [])
-
-  useEffect(() => {
-    if (isInProMode) {
-      if (!isDesktop) {
-        navigate('/swap')
-      }
-    }
-  }, [isDesktop, navigate, isInProMode])
 
   const { chainId } = useActiveWeb3React()
 
@@ -125,7 +66,6 @@ export function AdvancedTradingViewBox() {
     potentialTrade instanceof CoWTrade,
     potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
-
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
 
@@ -175,9 +115,8 @@ export function AdvancedTradingViewBox() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
   const userHasSpecifiedInputOutput = Boolean(
-    hasBothCurrenciesInput && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
 
   // check whether the user has approved the router on the input token
@@ -270,7 +209,6 @@ export function AdvancedTradingViewBox() {
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
-
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
@@ -346,17 +284,8 @@ export function AdvancedTradingViewBox() {
       wrapState === WrapState.PENDING) &&
     trade instanceof CoWTrade
 
-  const renderSwapBox = () => (
+  return (
     <>
-      <Tabs>
-        {REACT_APP_FEATURE_SIMPLE_CHART && isInProMode && (
-          <ChartTabs
-            hasBothCurrenciesInput={hasBothCurrenciesInput}
-            activeChartTab={ChartOptions.OFF}
-            setActiveChartTab={() => {}}
-          />
-        )}
-      </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">
           <ConfirmSwapModal
@@ -421,6 +350,7 @@ export function AdvancedTradingViewBox() {
                 id="swap-currency-output"
               />
             </AutoColumn>
+
             <TradeDetails
               show={!showWrap}
               loading={loading}
@@ -465,22 +395,10 @@ export function AdvancedTradingViewBox() {
       )}
     </>
   )
-
-  return (
-    <>
-      <PageMetaData title="Swap | Swapr" />
-      <TokenWarningModal
-        isOpen={
-          (!urlLoadedChainId || chainId === urlLoadedChainId) &&
-          urlLoadedScammyTokens.length > 0 &&
-          !dismissTokenWarning
-        }
-        tokens={urlLoadedScammyTokens}
-        onConfirm={handleConfirmTokenWarning}
-      />
-      {isInProMode && chainId && !isUnsupportedChainIdError && !TESTNETS.includes(chainId) && isDesktop && (
-        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
-      )}
-    </>
-  )
 }
+
+const SwitchIconContainer = styled.div`
+  height: 0;
+  position: relative;
+  width: 100%;
+`
