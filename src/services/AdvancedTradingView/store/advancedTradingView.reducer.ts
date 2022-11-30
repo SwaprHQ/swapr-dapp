@@ -118,7 +118,11 @@ const advancedTradingViewSlice = createSlice({
 
         const nextPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []
 
-        data.forEach(element => !nextPairData.some(el => el.id === element.id) && nextPairData.push(element))
+        data.forEach(
+          incomingPairData =>
+            !nextPairData.some(existingPairData => existingPairData.id === incomingPairData.id) &&
+            nextPairData.push(incomingPairData)
+        )
 
         updatedAdapters[key][pairId] = {
           ...updatedAdapters[key][pairId],
