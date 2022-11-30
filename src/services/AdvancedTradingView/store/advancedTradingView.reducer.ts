@@ -81,11 +81,12 @@ const advancedTradingViewSlice = createSlice({
         const nextPairBurnsAndMintsData = state.adapters[key][pairId]?.[AdapterPayloadType.BURNS_AND_MINTS]?.data ?? []
 
         data.swaps.forEach(
-          element => !nextPairSwapData.some(el => el.id === element.id) && nextPairSwapData.push(element)
+          swap => !nextPairSwapData.some(nextPairSwap => nextPairSwap.id === swap.id) && nextPairSwapData.push(swap)
         )
         data.burnsAndMints.forEach(
-          element =>
-            !nextPairBurnsAndMintsData.some(el => el.id === element.id) && nextPairBurnsAndMintsData.push(element)
+          burnAndMint =>
+            !nextPairBurnsAndMintsData.some(nextPairBurnAndMint => nextPairBurnAndMint.id === burnAndMint.id) &&
+            nextPairBurnsAndMintsData.push(burnAndMint)
         )
 
         updatedAdapters[key][pairId] = {
