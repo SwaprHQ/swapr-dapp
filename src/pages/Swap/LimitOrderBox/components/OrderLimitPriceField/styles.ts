@@ -50,3 +50,7 @@ export const ToggleCurrencyButton = styled.span`
   color: #464366;
   cursor: pointer;
 `
+
+export const MarketPriceDiff = styled.span<{ isPositive: boolean }>`
+  color: ${({ isPositive }) => (isPositive ? 'green' : 'red')};
+`

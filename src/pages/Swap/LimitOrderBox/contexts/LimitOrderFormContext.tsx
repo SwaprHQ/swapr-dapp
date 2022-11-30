@@ -3,6 +3,7 @@ import { Price, TokenAmount } from '@swapr/sdk'
 import { createContext } from 'react'
 
 import { OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
+import { LimitOrderPrices } from '../interfaces/order.interface'
 
 interface ILimitOrderFormContext {
   /**
@@ -49,6 +50,11 @@ interface ILimitOrderFormContext {
   expiresInUnit: OrderExpiresInUnit
   setExpiresInUnit: (expiresInUnit: OrderExpiresInUnit) => void
   setToMarket: () => void
+  /**
+   *  market price difference
+   */
+  getMarketPriceDiff: () => void
+  limitOrderPrices: LimitOrderPrices
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)

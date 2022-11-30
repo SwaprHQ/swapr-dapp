@@ -391,6 +391,50 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     })
   }
 
+  const [limitOrderPrices, setLimitOrderPrices] = useState<{ buy: number; sell: number }>({ buy: 0, sell: 0 })
+
+  const getMarketPriceDiff = useCallback(async () => {
+    const signer = provider.getSigner()
+    if (limitOrder.buyToken && limitOrder.sellToken) {
+      const order = JSON.parse(JSON.stringify(limitOrder))
+
+      const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
+
+      order.sellAmount = parseUnits('10', token.currency.decimals).toString()
+
+      const cowQuote = await getQuote({
+        chainId,
+        signer,
+        order: { ...order, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
+      })
+
+      if (cowQuote) {
+        const {
+          quote: { buyAmount, sellAmount },
+        } = cowQuote
+
+        if (limitOrder.kind === LimitOrderKind.SELL)
+          setLimitOrderPrices(limitPrice => ({
+            ...limitPrice,
+            buy: parseFloat(formatUnits(buyAmount, buyTokenAmount.currency.decimals) ?? 0) / 10,
+          }))
+        else
+          setLimitOrderPrices(limitPrice => ({
+            ...limitPrice,
+            sell: parseFloat(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0) / 10,
+          }))
+      }
+    }
+  }, [buyTokenAmount, chainId, expiresIn, expiresInUnit, limitOrder, provider, sellTokenAmount])
+
+  useEffect(() => {
+    getMarketPriceDiff()
+  }, [limitOrder.kind, getMarketPriceDiff])
+
+  useEffect(() => {
+    setLimitOrderPrices({ buy: 0, sell: 0 })
+  }, [limitOrder.sellToken, limitOrder.buyToken])
+
   return (
     <AppBody>
       <LimitOrderFormContext.Provider
@@ -412,6 +456,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           expiresInUnit,
           setExpiresInUnit,
           setToMarket,
+          getMarketPriceDiff,
+          limitOrderPrices,
         }}
       >
         <AutoColumn gap="12px">
