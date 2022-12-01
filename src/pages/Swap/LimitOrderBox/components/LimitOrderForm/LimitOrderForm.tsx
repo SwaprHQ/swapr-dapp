@@ -18,7 +18,7 @@ import { useNotificationPopup } from '../../../../../state/application/hooks'
 import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
-import { getQuote, getVaultRelayerAddress, signLimitOrder, submitLimitOrder } from '../../api'
+import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
@@ -218,27 +218,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
-      const {
-        quote: { feeAmount },
-        id,
-      } = await getQuote({
+
+      const response = await createCoWLimitOrder({
         chainId,
         signer,
         order: finalizedLimitOrder,
       })
 
-      const signedOrder = await signLimitOrder({
-        order: { ...finalizedLimitOrder, feeAmount, quoteId: id },
-        chainId,
-        signer,
-      })
-
-      // send the order to the API
-      const response = await submitLimitOrder({
-        order: signedOrder,
-        chainId,
-        signer,
-      })
       if (response) {
         notify(
           <>
@@ -246,7 +232,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           </>
         )
       } else {
-        notify('Failed to place limit order. Try again.', false)
+        throw new Error(response)
       }
     } catch (error) {
       console.log(error)

@@ -4,7 +4,7 @@ import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
 import { SetStateAction } from 'react'
 
-import { getQuote } from '../../api'
+import { getQuote } from '../../api/cow'
 import { SerializableLimitOrder } from '../../interfaces'
 
 export const checkMaxOrderAmount = async (
