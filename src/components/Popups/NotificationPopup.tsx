@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components'
 
@@ -11,7 +12,7 @@ const RowNoFlex = styled(AutoRow)`
 `
 
 interface NotificationPopupProps {
-  text: string
+  text: ReactNode
   status?: boolean
 }
 

@@ -14,7 +14,7 @@ export const ApprovalFlow = ({ approval, approveCallback, tokenInSymbol }: Appro
   <>
     <ButtonPrimary
       onClick={approveCallback}
-      disabled={approval !== ApprovalState.NOT_APPROVED /* || approvalSubmitted */}
+      disabled={approval !== ApprovalState.NOT_APPROVED}
       altDisabledStyle={approval === ApprovalState.PENDING} // show solid button while waiting
     >
       {approval === ApprovalState.PENDING ? (

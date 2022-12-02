@@ -22,20 +22,6 @@ export interface SignLimitOrderParams {
 
 type GetLimitOrderQuoteParams = SignLimitOrderParams
 
-// const quoteResponse = await fetch(
-//   cowSdk.cowApi.API_BASE_URL[chainId as keyof typeof cowSdk.cowApi.API_BASE_URL] +
-//     '/v1/feeAndQuote/' +
-//     kind.toLowerCase() +
-//     '?' +
-//     new URLSearchParams({
-//       sellToken,
-//       buyToken,
-//       sellAmountBeforeFee: sellAmount,
-//     })
-// ).then(res => res.json())
-
-// const feeAmount = quoteResponse.fee.amount
-
 const getCoWSdk = (chainId: number, signer: Signer) =>
   CoWTrade.getCowSdk(chainId, {
     signer,
@@ -72,17 +58,6 @@ export async function signLimitOrder({
 
   // Get feeAmount from CoW
   const { buyAmount, buyToken, receiverAddress, feeAmount, expiresAt, sellAmount, sellToken, kind } = order
-  // const [baseToken, quoteToken] = kind === LimitOrderKind.SELL ? [sellToken, buyToken] : [buyToken, sellToken]
-
-  // const cowQuote = await cowSdk.cowApi.getQuote({
-  //   buyToken,
-  //   sellToken,
-  //   amount: sellAmount,
-  //   validTo: expiresAt,
-  //   kind: kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
-  //   receiver: receiverAddress,
-  //   userAddress: userAddress,
-  // })
 
   const cowOrder: Omit<UnsignedOrder, 'appData'> = {
     buyAmount,

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
@@ -96,7 +96,7 @@ export function useAddPopup(): (content: PopupContent, autoClose?: number | fals
 }
 
 export function useNotificationPopup() {
-  return useCallback((text: string, status?: boolean, autoClose: number | false = 15000) => {
+  return useCallback((text: ReactNode, status?: boolean, autoClose: number | false = 15000) => {
     toast.info(<NotificationPopup text={text} status={status} />, {
       autoClose,
       icon: false,

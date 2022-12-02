@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
-// import bridge from '../../../assets/images/bridge.png'
 import { ReactComponent as Bridge } from '../../../assets/images/bridge.svg'
 import { ReactComponent as EcoRouter } from '../../../assets/images/eco-router.svg'
 import Row from '../../../components/Row'

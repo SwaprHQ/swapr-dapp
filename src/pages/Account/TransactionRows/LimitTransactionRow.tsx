@@ -68,7 +68,9 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
     if (chainId && library) {
       const response = await cancelOrder?.(uid, library)
       if (response) {
-        notify('Open order deleted successfully.')
+        notify('Open order cancelled successfully.')
+      } else {
+        notify('Failed to cancel open limit order.', false)
       }
     }
   }, [cancelOrder, chainId, library, notify, uid])

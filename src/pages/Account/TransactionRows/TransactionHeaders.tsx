@@ -21,7 +21,7 @@ export function TransactionHeaders() {
           <TransactionDetails>{t('type')}</TransactionDetails>
           <TransactionDetails>{t('status')}</TransactionDetails>
           <TransactionDetails>{t('confirmedTime')}</TransactionDetails>
-          <Flex width="20px">{t('cta')}</Flex>
+          <Flex width="35px">{t('actions')}</Flex>
         </TableHeader>
       </TableHeaderText>
     </HeaderRow>

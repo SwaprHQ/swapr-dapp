@@ -5,6 +5,7 @@ import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Flex } from 'rebass'
 
@@ -234,7 +235,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         signer,
       })
       if (response) {
-        notify('Successfully created limit order. Please check user account for details')
+        notify(
+          <>
+            Successfully created limit order. Please check <Link to="/account">user account</Link> for details
+          </>
+        )
       } else {
         notify('Failed to place limit order. Try again.', false)
       }
@@ -306,7 +311,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     } else {
       nextBuyAmountFloat = nextSellAmountFloat / limitPriceFloat
     }
-    if ((Number(amountWei) ?? 0) === 0) {
+    if (Number(amountWei ?? 0) === 0) {
       setIsPossibleToOrder({ value: 0, status: true })
     }
 
@@ -320,7 +325,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     )
     setFormattedBuyAmount(nextBuyAmountFloat.toString()) // update the token amount input
     setSellTokenAmount(nextSellTokenAmount)
-    // Re-compute the limit order boy
+    // Re-compute the limit order buy
     setLimitOrder(newLimitOrder)
   }
 
@@ -340,7 +345,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       buyAmount: amountWei,
       buyToken: currency.address as string,
     }
-    const nextBuyAmountFormatted = amountFormatted // When the limit price is empty, set the limit price to 0
+    const nextBuyAmountFormatted = amountFormatted
     const nextBuyAmountFloat = parseFloat(amountFormatted)
 
     // Update the buy currency amount if the user has selected a token
@@ -376,15 +381,25 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setLimitOrder(newLimitOrder)
   }
 
-  const handleInputOnChange = async (formattedValue: string) => {
+  const handleInputOnChange = (token: Token, handleAmountChange: Function) => (formattedValue: string) => {
     const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
-    const amountWei = parseUnits(formattedValue, sellTokenAmount?.currency?.decimals).toString()
-    handleSellCurrencyAmountChange({
-      currency: sellTokenAmount?.currency as Token,
+    const amountWei = parseUnits(formattedValue, token.decimals).toString()
+    handleAmountChange({
+      currency: token as Token,
       amountWei,
       amountFormatted,
     })
   }
+
+  const handleCurrencySelect =
+    (prevTokenAmount: TokenAmount, handleCurrencyAmountChange: Function) => (currency: Currency) => {
+      const amountWei = prevTokenAmount?.raw
+        ? prevTokenAmount.raw.toString()
+        : formattedBuyAmount
+        ? parseUnits(formattedBuyAmount, prevTokenAmount?.currency?.decimals).toString()
+        : '0' // use 0 if no buy currency amount is set
+      handleCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
+    }
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
@@ -459,17 +474,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             <CurrencyInputPanel
               id="limit-order-box-sell-currency"
               currency={sellTokenAmount.currency}
-              onCurrencySelect={currency => {
-                const prevSellTokenAmount = sellTokenAmount
-                const amountWei = prevSellTokenAmount?.raw
-                  ? prevSellTokenAmount.raw.toString()
-                  : formattedSellAmount
-                  ? parseUnits(formattedSellAmount, prevSellTokenAmount?.currency?.decimals).toString()
-                  : '0' // use 0 if no buy currency amount is set
-                handleSellCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedSellAmount })
-              }}
+              onCurrencySelect={handleCurrencySelect(sellTokenAmount, handleSellCurrencyAmountChange)}
               value={formattedSellAmount}
-              onUserInput={handleInputOnChange}
+              onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
               onMax={() => {
                 if (!sellCurrencyMaxAmount) return
                 handleSellCurrencyAmountChange({
@@ -488,25 +495,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             <CurrencyInputPanel
               id="limit-order-box-buy-currency"
               currency={buyTokenAmount?.currency}
-              onCurrencySelect={currency => {
-                const prevBuyTokenAmount = buyTokenAmount
-                const amountWei = prevBuyTokenAmount?.raw
-                  ? prevBuyTokenAmount.raw.toString()
-                  : formattedBuyAmount
-                  ? parseUnits(formattedBuyAmount, prevBuyTokenAmount?.currency?.decimals).toString()
-                  : '0' // use 0 if no buy currency amount is set
-                handleBuyCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
-              }}
+              onCurrencySelect={handleCurrencySelect(buyTokenAmount, handleBuyCurrencyAmountChange)}
               value={formattedBuyAmount}
-              onUserInput={formattedValue => {
-                const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
-                const amountWei = parseUnits(formattedValue, buyTokenAmount.currency.decimals).toString()
-                handleBuyCurrencyAmountChange({
-                  currency: buyTokenAmount.currency,
-                  amountWei,
-                  amountFormatted,
-                })
-              }}
+              onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
               maxAmount={buyCurrencyMaxAmount}
               fiatValue={fiatValueOutput}
               isFallbackFiatValue={isFallbackFiatValueOutput}

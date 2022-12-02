@@ -1,4 +1,4 @@
-import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token, Trade } from '@swapr/sdk'
+import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token } from '@swapr/sdk'
 
 // Landing Page Imports
 import '../../../theme/landingPageTheme/stylesheet.css'
@@ -42,28 +42,14 @@ import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Componen
 import SwapButtons from '../Components/SwapButtons'
 import { Tabs } from '../Components/Tabs'
 import { TradeDetails } from '../Components/TradeDetails'
+import { CoWTradeState, SwapData } from '../SwapBox/SwapBox.types'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
-
-export type SwapData = {
-  showConfirm: boolean
-  tradeToConfirm: Trade | undefined
-  attemptingTxn: boolean
-  swapErrorMessage: string | undefined
-  txHash: string | undefined
-}
 
 const SwitchIconContainer = styled.div`
   height: 0;
   position: relative;
   width: 100%;
 `
-
-export enum CoWTradeState {
-  UNKNOWN, // default
-  WRAP,
-  APPROVAL,
-  SWAP,
-}
 
 export function AdvancedTradingViewBox() {
   const isDesktop = useIsDesktop()
@@ -363,7 +349,7 @@ export function AdvancedTradingViewBox() {
   const renderSwapBox = () => (
     <>
       <Tabs>
-        {REACT_APP_FEATURE_SIMPLE_CHART && pathname.includes('pro') && (
+        {REACT_APP_FEATURE_SIMPLE_CHART && isInProMode && (
           <ChartTabs
             hasBothCurrenciesInput={hasBothCurrenciesInput}
             activeChartTab={ChartOptions.OFF}
@@ -492,11 +478,9 @@ export function AdvancedTradingViewBox() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {pathname.includes('/pro') &&
-        chainId &&
-        !isUnsupportedChainIdError &&
-        !TESTNETS.includes(chainId) &&
-        isDesktop && <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>}
+      {isInProMode && chainId && !isUnsupportedChainIdError && !TESTNETS.includes(chainId) && isDesktop && (
+        <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
+      )}
     </>
   )
 }

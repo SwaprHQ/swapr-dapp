@@ -79,10 +79,14 @@ function cancelOpenOrder(status: OrderMetaData['status'], chainId: ChainId, upda
     return async (uid: string, provider: Web3Provider) => {
       const signer = provider.getSigner()
       // Cancel an open order
-      await deleteOpenOrders(chainId, uid, signer)
-      // Refetch orders
-      await updateLimitOrderTransactions()
-      return true
+      const response = await deleteOpenOrders(chainId, uid, signer)
+      if (response === 'Cancelled') {
+        // Refetch orders
+        await updateLimitOrderTransactions()
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
