@@ -87,7 +87,7 @@ export enum OrderExpiresInUnit {
   Days = 'days',
 }
 
-export interface LimitOrderPrices {
+export interface MarketPrices {
   buy: number
   sell: number
 }

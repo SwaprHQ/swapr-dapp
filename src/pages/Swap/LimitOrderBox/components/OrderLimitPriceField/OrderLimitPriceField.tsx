@@ -34,7 +34,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setBuyTokenAmount,
     setFormattedBuyAmount,
     setToMarket,
-    limitOrderPrices,
+    marketPrices,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -43,9 +43,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   const toggleCurrencyButtonLabel = `${quoteTokenAmount?.currency?.symbol}`
   const [inputLimitPrice, setInputLimitPrice] = useState<string | number>(formattedLimitPrice)
 
-  const nextLimitPriceFloat = limitOrder.kind === LimitOrderKind.SELL ? limitOrderPrices.buy : limitOrderPrices.sell
-
-  console.log(limitOrder.kind, nextLimitPriceFloat.toFixed(6), formattedLimitPrice)
+  const nextLimitPriceFloat = limitOrder.kind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
 
   let marketPriceDiffPercentage = 0
   let isDiffPositive = false

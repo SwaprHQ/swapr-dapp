@@ -66,3 +66,6 @@ export const formatMaxValue = (value: number) => {
   else if (value < 1000) return value.toFixed(3)
   return value.toFixed(2)
 }
+
+export const formatMarketPrice = (amount: string, decimals: number): number =>
+  parseFloat(formatUnits(amount, decimals) ?? 0) / 10
