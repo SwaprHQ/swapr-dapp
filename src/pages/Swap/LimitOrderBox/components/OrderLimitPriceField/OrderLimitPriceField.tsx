@@ -9,7 +9,14 @@ import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind } from '../../interfaces'
 import { InputGroup } from '../InputGroup'
-import { LimitLabel, SetToMarket, SwapTokenIconWrapper, SwapTokenWrapper, ToggleCurrencyButton } from './styles'
+import {
+  LimitLabel,
+  MarketPriceDiff,
+  SetToMarket,
+  SwapTokenIconWrapper,
+  SwapTokenWrapper,
+  ToggleCurrencyButton,
+} from './styles'
 
 export interface OrderLimitPriceFieldProps {
   id?: string
@@ -27,6 +34,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setBuyTokenAmount,
     setFormattedBuyAmount,
     setToMarket,
+    marketPrices,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -34,6 +42,31 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   const inputGroupLabel = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at`
   const toggleCurrencyButtonLabel = `${quoteTokenAmount?.currency?.symbol}`
   const [inputLimitPrice, setInputLimitPrice] = useState<string | number>(formattedLimitPrice)
+
+  const nextLimitPriceFloat = limitOrder.kind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
+
+  let marketPriceDiffPercentage = 0
+  let isDiffPositive = false
+
+  if (Boolean(Number(nextLimitPriceFloat)))
+    if (limitOrder.kind === LimitOrderKind.SELL) {
+      marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
+      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0
+    } else {
+      marketPriceDiffPercentage = (Number(nextLimitPriceFloat.toFixed(6)) / Number(formattedLimitPrice) - 1) * 100
+
+      if (marketPriceDiffPercentage < 0) {
+        marketPriceDiffPercentage = Math.abs(marketPriceDiffPercentage)
+      } else {
+        marketPriceDiffPercentage = marketPriceDiffPercentage * -1
+      }
+      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) < 0
+    }
+
+  marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
+
+  const showPercentage =
+    Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
 
   useEffect(() => {
     setInputLimitPrice(formattedLimitPrice)
@@ -126,7 +159,12 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   return (
     <InputGroup>
       <LimitLabel htmlFor={id}>
-        <span>{inputGroupLabel}</span>
+        <span>
+          {inputGroupLabel}
+          {showPercentage && (
+            <MarketPriceDiff isPositive={isDiffPositive}> ({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
+          )}
+        </span>
         <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
       </LimitLabel>
       <InputGroup.InnerWrapper>
