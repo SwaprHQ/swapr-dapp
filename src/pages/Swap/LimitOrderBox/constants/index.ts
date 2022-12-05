@@ -6,3 +6,5 @@ import { ChainId } from '@swapr/sdk'
 export const supportedChainIdList = [ChainId.MAINNET, ChainId.GNOSIS]
 
 export const invalidChars = ['-', '+', 'e']
+
+export const COW_LIMIT_ORDER_MAX_TIME = 180

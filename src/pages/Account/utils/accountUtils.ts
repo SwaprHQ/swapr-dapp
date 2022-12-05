@@ -18,35 +18,29 @@ export const formatTransactions = (
   limitOrderTransactions: LimitOrderTransaction[],
   showPendingTransactions: boolean,
   account: string,
-  filter: string | null
+  filter: TransactionFilter | null
 ) => {
-  const swapTransactions = formatSwapTransactions(transactions, account)
-  let allTransactions
-  if (filter === TransactionFilter.SWAP) {
-    allTransactions = swapTransactions
-  }
-  if (filter === TransactionFilter.BRIDGE) {
-    allTransactions = bridgeTransactions
-  }
-  if (filter === TransactionFilter.LIMIT) {
-    allTransactions = limitOrderTransactions
-  }
-  if (filter === TransactionFilter.ALL || !filter) {
-    allTransactions = [...swapTransactions, ...bridgeTransactions, ...limitOrderTransactions]
+  const swapTransactions = formatSwapTransactions(transactions, account) as Transaction[]
+
+  const filteredTransactions: Record<TransactionFilter, Transaction[]> = {
+    [TransactionFilter.SWAP]: swapTransactions,
+    [TransactionFilter.BRIDGE]: bridgeTransactions,
+    [TransactionFilter.LIMIT]: limitOrderTransactions,
+    [TransactionFilter.ALL]: [...swapTransactions, ...bridgeTransactions, ...limitOrderTransactions],
   }
 
+  const allTransactions = filteredTransactions[filter || TransactionFilter.ALL]
+
   const sortedTransactions = (allTransactions ?? []).sort((txn1, txn2) => {
-    if (txn1?.confirmedTime && txn2?.confirmedTime && txn1.confirmedTime > txn2.confirmedTime) {
-      return -1
-    }
     if (
-      txn1?.status.toUpperCase() === (TransactionStatus.PENDING || TransactionStatus.OPEN) &&
-      txn2?.status.toUpperCase() !== (TransactionStatus.PENDING || TransactionStatus.OPEN)
+      (txn1?.confirmedTime && txn2?.confirmedTime && txn1.confirmedTime > txn2.confirmedTime) ||
+      (txn1?.status.toUpperCase() === (TransactionStatus.PENDING || TransactionStatus.OPEN) &&
+        txn2?.status.toUpperCase() !== (TransactionStatus.PENDING || TransactionStatus.OPEN))
     ) {
       return -1
     }
     return 1
-  }) as Transaction[]
+  })
 
   if (showPendingTransactions) {
     return sortedTransactions.filter(

@@ -112,25 +112,21 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
   const { chainId, account } = useActiveWeb3React()
   const { t } = useTranslation('swap')
   const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
-  if (account == null || noLimitOrderSupport) {
-    return (
-      <MouseoverTooltip content={noLimitOrderSupport ? 'Unsupported network' : 'Connect your wallet'} placement="top">
-        <Button
-          className={className}
-          onClick={() => setActiveTab(SwapTab.LimitOrder)}
-          disabled={noLimitOrderSupport || account == null}
-        >
-          <StyledSliders />
-          {t('tabs.limit')}
-        </Button>
-      </MouseoverTooltip>
-    )
-  }
 
-  return (
-    <Button onClick={() => setActiveTab(SwapTab.LimitOrder)} className={className}>
+  const LimitOrderButton = ({ disabled = false }) => (
+    <Button onClick={() => setActiveTab(SwapTab.LimitOrder)} className={className} disabled={disabled}>
       <StyledSliders />
       {t('tabs.limit')}
     </Button>
   )
+
+  if (account == null || noLimitOrderSupport) {
+    return (
+      <MouseoverTooltip content={noLimitOrderSupport ? 'Unsupported network' : 'Connect your wallet'} placement="top">
+        <LimitOrderButton disabled={true} />
+      </MouseoverTooltip>
+    )
+  }
+
+  return <LimitOrderButton />
 }

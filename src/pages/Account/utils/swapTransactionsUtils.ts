@@ -1,4 +1,4 @@
-import { AllSwapTransactions } from '../Account.types'
+import { AllSwapTransactions, TransactionStatus, TransactionTypes } from '../Account.types'
 
 const expressions = {
   swap: new RegExp(
@@ -9,9 +9,9 @@ const expressions = {
 }
 
 const getStatus = (status?: 0 | 1, confrimedTime?: number) => {
-  if (status === 0) return 'CANCELLED'
-  if (status === 1 || confrimedTime !== undefined) return 'COMPLETED'
-  return 'PENDING'
+  if (status === 0) return TransactionStatus.CANCELLED
+  if (status === 1 || confrimedTime !== undefined) return TransactionStatus.COMPLETED
+  return TransactionStatus.PENDING
 }
 
 export const formatSwapTransactions = (transactions: AllSwapTransactions, account: string) => {
@@ -33,7 +33,7 @@ export const formatSwapTransactions = (transactions: AllSwapTransactions, accoun
         type,
       }
 
-      if (expressions.swap.test(summary) && type === 'Swap') {
+      if (expressions.swap.test(summary) && type === TransactionTypes.Swap) {
         expressions.swap.lastIndex = 0
         const [from, to, matchProtocol, matchAlternate] = [...summary.matchAll(expressions.swap)]
 

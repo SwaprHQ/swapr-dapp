@@ -25,20 +25,6 @@ import {
   TypeDetails,
 } from '../Account.styles'
 
-export const CancelIcon = styled(XCircle)`
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-  color: #ff7e7e;
-`
-
-export const StyledSwitch = styled(Repeat)`
-  width: 12px;
-  height: 12px;
-  color: ${props => props.theme.purple3};
-  margin-left: 4px;
-`
-
 interface LimitTransactionRowProps {
   transaction: LimitOrderTransaction
 }
@@ -170,3 +156,17 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
     </GridCard>
   )
 }
+
+export const CancelIcon = styled(XCircle)`
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  color: #ff7e7e;
+`
+
+export const StyledSwitch = styled(Repeat)`
+  width: 12px;
+  height: 12px;
+  color: ${props => props.theme.purple3};
+  margin-left: 4px;
+`
