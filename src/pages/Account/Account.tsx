@@ -88,7 +88,7 @@ export function Account() {
           allLimitOrderTransactions,
           showPendingTransactions,
           account,
-          searchParams.get('filter')
+          searchParams.get('filter') as TransactionFilter
         )
       )
     }
