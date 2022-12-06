@@ -122,7 +122,10 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
 
   if (account == null || noLimitOrderSupport) {
     return (
-      <MouseoverTooltip content={noLimitOrderSupport ? 'Unsupported network' : 'Connect your wallet'} placement="top">
+      <MouseoverTooltip
+        content={noLimitOrderSupport ? 'Available only in Mainnet and Gnosis chain' : 'Connect your wallet'}
+        placement="top"
+      >
         <LimitOrderButton disabled={true} />
       </MouseoverTooltip>
     )
