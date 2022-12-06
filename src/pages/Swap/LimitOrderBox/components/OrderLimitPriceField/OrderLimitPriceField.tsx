@@ -78,6 +78,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   const toggleBaseCurrency = () => {
     // Toggle between buy and sell currency
     const kind = limitOrder.kind === LimitOrderKind.SELL ? LimitOrderKind.BUY : LimitOrderKind.SELL
+    const [baseTokenAmount, quoteTokenAmount] =
+      kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
 
     const baseTokenAmountAsFloat = parseFloat(
       formatUnits(baseTokenAmount.raw.toString(), baseTokenAmount.currency.decimals)
