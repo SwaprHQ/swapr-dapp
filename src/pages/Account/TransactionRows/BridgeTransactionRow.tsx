@@ -15,6 +15,7 @@ import {
   TypeDetails,
 } from '../Account.styles'
 import { type BridgeTransaction } from '../Account.types'
+import { bridgeIdToDisplayNameMap } from '../accountUtils'
 import { TokenIcon } from '../TokenIcon'
 
 interface BridgeTransactionRowProps {
@@ -86,7 +87,7 @@ export function BridgeTransactionRow({ transaction, showBackgroundStatus }: Brid
         <Box color="#8780BF" fontWeight="600">
           {type}
         </Box>
-        <Box fontWeight="600">{bridgeId}</Box>
+        <Box fontWeight="600">{bridgeIdToDisplayNameMap[bridgeId]}</Box>
       </TypeDetails>
 
       <TransactionDetails>
