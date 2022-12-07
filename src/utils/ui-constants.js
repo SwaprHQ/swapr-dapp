@@ -1,8 +1,9 @@
 import TextyAnim from 'rc-texty'
 
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
-import EcoRouterArticle from './../assets/images/blog/ecorouter-article.jpeg'
+import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
 import MevArticle from './../assets/images/blog/mev-article.png'
+import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
 import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
@@ -22,6 +23,7 @@ import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
 import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
+import OptimismLogo from './../assets/images/optimism.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingCoW from './../assets/images/routing-cow.svg'
 import RoutingCurve from './../assets/images/routing-curve.svg'
@@ -72,6 +74,14 @@ export const HeroContent = {
     {
       img: PolygonLogo,
       title: 'Polygon',
+    },
+    {
+      img: OptimismLogo,
+      title: 'Optimism',
+    },
+    {
+      img: BNBLogo,
+      title: 'BNB',
     },
   ],
   heroButtons: [
@@ -142,7 +152,7 @@ const animations = importAll(require.context('./../assets/images/animations', fa
 export const FeaturesContent = {
   topBanner: {
     title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
-    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo],
+    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
   },
   preHeader: 'Swapr Features',
   sectionTitle: 'Your DeFi Powertool',
