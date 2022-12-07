@@ -1,8 +1,8 @@
 import TextyAnim from 'rc-texty'
 
-import Entry1 from './../assets/images/blog/blog-entry-1.jpg'
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
-import Entry3 from './../assets/images/blog/blog-entry-3.jpg'
+import EcoRouterArticle from './../assets/images/blog/ecorouter-article.jpeg'
+import MevArticle from './../assets/images/blog/mev-article.png'
 import Bridge from './../assets/images/features/bridge.png'
 import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
@@ -337,10 +337,17 @@ export const BlogContent = {
   readBlogPost: 'READ BLOG POST',
   posts: [
     {
-      image: Entry1,
-      title: 'Announcing SWPR Token',
-      content: 'SWPR Token and Liquidity Mining',
+      image: EcoRouterArticle,
+      title: 'The Eco Router — Effortlessly Combining Safety and Best Value Trading!',
+      content: 'Introducing external liquidity into swapr with no extra cost to the user',
       postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45',
+    },
+    {
+      image: MevArticle,
+      title: 'Full MEV Protection from CoW Protocol within Swapr’s Eco Router.',
+      content: 'MEV Protection in Swapr',
+      postLink:
+        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
     },
     {
       image: Entry2,
@@ -348,14 +355,6 @@ export const BlogContent = {
       content:
         'Introducing SWPR Token Farming RewardsRecently, the DXdao community identified a misconfiguration with ...',
       postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae',
-    },
-    {
-      image: Entry3,
-      title: 'DXdao and BadgerDAO Leverage Swapr to Bring Smarter BTC-focused Strategies to Arbitrum',
-      content:
-        'Both DXdao and BadgerDAO have strong communities that have been building interesting products in the DeFi space.',
-      postLink:
-        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
     },
   ],
 }
