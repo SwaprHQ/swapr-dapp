@@ -277,7 +277,7 @@ export default function Zap() {
           txHash: undefined,
         })
       })
-  }, [priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1, zapCallback, tradeToConfirm, showConfirm])
+  }, [priceImpactWithoutFeeTrade0, zapCallback, tradeToConfirm, showConfirm])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1)

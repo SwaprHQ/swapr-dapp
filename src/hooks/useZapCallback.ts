@@ -10,7 +10,7 @@ import {
   ZeroXTrade,
 } from '@swapr/sdk'
 
-import { BigNumberish, ContractTransaction, UnsignedTransaction } from 'ethers'
+import { BigNumber, BigNumberish, ContractTransaction, UnsignedTransaction } from 'ethers'
 import { useEffect, useMemo, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '../constants'
@@ -18,7 +18,7 @@ import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
-import { isAddress, shortenAddress } from '../utils'
+import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import { useZapContract } from './useContract'
 import useENS from './useENS'
@@ -210,6 +210,15 @@ export function useZapCallback({
             // Set state to pending
             setZapState(ZapState.LOADING)
 
+            const estimatedGas = await zapContract.estimateGas
+              .zapIn(zapIn, swapTokenA, swapTokenB, receiver, affiliateAddress, transferResidual)
+              .catch((error: Error) => {
+                console.debug('Gas estimation failed', error)
+                return BigNumber.from(30000000)
+              })
+
+            console.log('zap gas estimated', estimatedGas)
+
             const zapInTx = await zapContract.zapIn(
               zapIn,
               swapTokenA,
@@ -218,7 +227,7 @@ export function useZapCallback({
               affiliateAddress,
               transferResidual,
               {
-                gasLimit: 30000000, // TODO calculate gasLimit
+                gasLimit: calculateGasMargin(estimatedGas),
                 gasPrice: normalizedGasPrice,
               }
             )
@@ -245,8 +254,17 @@ export function useZapCallback({
           try {
             // Set state to pending
             setZapState(ZapState.LOADING)
+
+            const estimatedGas = await zapContract.estimateGas
+              .zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress)
+              .catch((error: Error) => {
+                console.debug('Gas estimation failed', error)
+                return BigNumber.from(30000000)
+              })
+            console.log('zap gas estimated', estimatedGas)
+
             const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
-              gasLimit: 30000000, // TODO calculate gas limit
+              gasLimit: calculateGasMargin(estimatedGas),
               gasPrice: normalizedGasPrice,
             })
             setTransactionReceipt(txReceipt)
