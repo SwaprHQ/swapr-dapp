@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   PRE_SELECT_OUTPUT_CURRENCY_ID,
   PRE_SELECT_ZAP_PAIR_ID,
-  SUPPORTED_DEX_ZAP_INDEX,
+  SUPPORTED_ZAP_DEX_INDEX,
   SWAP_INPUT_ERRORS,
 } from '../../constants/index'
 import { usePairAtAddress } from '../../data/Reserves'
@@ -294,12 +294,12 @@ export const useZapParams = (
   liquidityMinted: TokenAmount | undefined
 } => {
   const zeroBN = BigNumber.from(0)
-  const dexIdZap = BigNumber.from(SUPPORTED_DEX_ZAP_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+  const dexIdZap = BigNumber.from(SUPPORTED_ZAP_DEX_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
   const dexIdSwapA = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+    SUPPORTED_ZAP_DEX_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
   )
   const dexIdSwapB = BigNumber.from(
-    SUPPORTED_DEX_ZAP_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
+    SUPPORTED_ZAP_DEX_INDEX[data.tradeToken1?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
   )
 
   const tradeToken0 = data.tradeToken0

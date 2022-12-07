@@ -1,8 +1,9 @@
-import { ChainId, Currency, Pair, RoutablePlatform, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, Currency, Pair, Token } from '@swapr/sdk'
 
 import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'
 
+import { SUPPORTED_ZAP_PAIRS } from '../../../constants'
 import { isAddress } from '../../../utils'
 
 const alwaysTrue = () => true
@@ -145,71 +146,5 @@ export const useSortedTokensByQuery = (tokens: Token[] | undefined, searchQuery:
 }
 
 export const filterPairsForZap = (pair: Pair, chainId: ChainId): boolean => {
-  // TODO move address to const and simplify array
-  // temporary solution before set supported pairs
-  const MAINNET_WETH_XDAI_ADDRESS = '0x7515Be43D16f871588ADc135d58a9c30A71Eb34F'
-  const MAINNET_DXD_WETH_ADDRESS = '0xb0Dc4B36e0B4d2e3566D2328F6806EA0B76b4F13'
-  const MAINNET_WETH_GNO_ADDRESS = '0x6e68f1B08024B35e175BE750dd94cd84942fe851'
-  const MAINNET_SWPR_ETH_ADDRESS = '0x7a44D56ba0ce8Bb5F0359c473B6b637Db1fF216b'
-
-  const GNOSIS_WETH_XDAI_ADDRESS = '0x1865d5445010E0baf8Be2eB410d3Eae4A68683c2'
-  const GNOSIS_SWPR_XDAI_ADDRESS = '0xa82029c1E11eA0aC18dd3551c6E670787e12E45E'
-  const GNOSIS_WETH_GNO_ADDRESS = '0x5fCA4cBdC182e40aeFBCb91AFBDE7AD8d3Dc18a8'
-  const GNOSIS_GNO_XDAI_ADDRESS = '0xD7b118271B1B7d26C9e044Fc927CA31DccB22a5a'
-  const GNOSIS_DXD_WETH_ADDRESS = '0x1bDe964eCd52429004CbC5812C07C28bEC9147e9'
-  const GNOSIS_GNO_DXD_ADDRESS = '0x558d777b24366f011e35a9f59114d1b45110d67b'
-  const GNOSIS_COW_WETH_ADDRESS = '0x8028457E452D7221dB69B1e0563AA600A059fab1'
-
-  const RINKEBY_DXD_WEENUS = '0x02Ac3d66A788ed486D4dDF5D2b8176340CE091Fe' //calculated by platform swapr
-  const RINK_DXD_WEENUS = '0xc2f8EafCA46b9793829f3FB1F012A4267C4f5D27'
-  const RINKEBY_DXD_WETH = '0x41C22F1852721Bf7e6a6d40ff88c51c55E719CbC'
-  const RINKEBY_WEENUS_WETH = '0x7144e5FfD506f4Cc04867930D40Cfd208911eddD'
-  const RINKEBY_USDC_USDT = '0xc0bbe88f4B087E44d84355B358d63A1ec7072C67'
-  const RINKEBY_USDC_WETH = '0x4E990Bebd8DEeB551B86613d564577DF23A68ac0'
-  const RINKEBY_MINT_USDC = '0x92c30b3ba8ea0d0F14528a77946763488c63794F'
-  const RINKEBY_MATH_WETH = '0x8f86A36a6D7a0ddE0f8f00cDA3dF5088c8d950C2'
-  const RINKEBY_WEENUS_YEENUS = '0x3402087D8C80B1Ca60fF29FD0D56aa2d42d35047'
-  const R_BAT_WETH = '0x75b663B0D819d7658A35C97F323b5a58764cE3d7'
-  const R_XEENUS_WEENUS = '0x5f5e477913B1f7Dd3d8f40fA211155679E7EC061'
-
-  const GOERLI_USDC_SWPR = '0x1873144584A768F89aE8843849d44055F9FE46bC'
-  const GOERLI_WETH_USDC = '0x730E034a37ff2D267B201B77001142009a3b8403'
-  const GOERLI_SWPR_WETH = '0xe74c2b0025aC02f8007845BE5A075B77C43a4258'
-  // const GOERLI_WETH_UNI = '0x28cee28a7C4b4022AC92685C07d2f33Ab1A0e122' // Univ2 factory
-  const GOERLI_WETH_UNI = '0x30Bb42bB05cB037d91757101CF9744A28e213c42'
-
-  const supportedZapPairs: { [chainId: number]: string[] } = {
-    [ChainId.MAINNET]: [
-      MAINNET_DXD_WETH_ADDRESS,
-      MAINNET_SWPR_ETH_ADDRESS,
-      MAINNET_WETH_GNO_ADDRESS,
-      MAINNET_WETH_XDAI_ADDRESS,
-    ],
-    [ChainId.GNOSIS]: [
-      GNOSIS_WETH_XDAI_ADDRESS,
-      GNOSIS_SWPR_XDAI_ADDRESS,
-      GNOSIS_WETH_GNO_ADDRESS,
-      GNOSIS_GNO_XDAI_ADDRESS,
-      GNOSIS_DXD_WETH_ADDRESS,
-      GNOSIS_COW_WETH_ADDRESS,
-      GNOSIS_GNO_DXD_ADDRESS,
-    ],
-    [ChainId.RINKEBY]: [
-      RINK_DXD_WEENUS,
-      RINKEBY_DXD_WEENUS,
-      RINKEBY_DXD_WETH,
-      RINKEBY_WEENUS_WETH,
-      RINKEBY_USDC_USDT,
-      RINKEBY_USDC_WETH,
-      RINKEBY_MATH_WETH,
-      RINKEBY_MINT_USDC,
-      RINKEBY_WEENUS_YEENUS,
-      R_BAT_WETH,
-      R_XEENUS_WEENUS,
-    ],
-    [ChainId.GOERLI]: [GOERLI_SWPR_WETH, GOERLI_USDC_SWPR, GOERLI_WETH_USDC, GOERLI_WETH_UNI],
-  }
-
-  const pairAddress = Pair.getAddress(pair.token0, pair.token1, UniswapV2RoutablePlatform.SWAPR)
-  return supportedZapPairs[chainId].includes(pairAddress)
+  return SUPPORTED_ZAP_PAIRS[chainId].includes(pair.liquidityToken.address)
 }

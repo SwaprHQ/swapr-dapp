@@ -249,6 +249,11 @@ export function useDerivedSwapInfo<
     const [inputCurrencyBalance] = relevantTokenBalances
 
     const signal = getAbortSignal()
+    // Require for zap a valid zap contract
+    if (isZap && !zapContact) {
+      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+      return
+    }
     // Require two currencies to be selected
     if (!inputCurrency || !outputCurrency) {
       if (isZap) {
@@ -262,22 +267,12 @@ export function useDerivedSwapInfo<
       }
       return
     }
-    // Require a valid zap contract
-    if (isZap && !zapContact) {
-      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
-      return
-    }
     // Require a valid input amount
     if (!parsedAmount) {
       setInputError(SWAP_INPUT_ERRORS.ENTER_AMOUNT)
       return
     }
-    console.log(
-      'inputCurrencyBalance',
-      inputError,
-      inputCurrencyBalance?.toFixed(4),
-      inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)
-    )
+
     // Notify user if input amount is too low, but still trigger the EcoRouter
     let inputErrorNextState: undefined | number = undefined
     if (inputCurrencyBalance && JSBI.greaterThan(parsedAmount.raw, inputCurrencyBalance.raw as JSBI)) {
@@ -518,7 +513,6 @@ export function useDerivedSwapInfo<
       slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
     ]
 
-    console.log(balanceIn, amountIn, balanceIn && amountIn && balanceIn.lessThan(amountIn))
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
       returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
     }

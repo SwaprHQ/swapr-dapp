@@ -31,7 +31,7 @@ import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
 import { TradeDetails } from '../../components/Swap/TradeDetailsZap'
 import TokenWarningModal from '../../components/TokenWarningModal'
-import { PriceImpact, SUPPORTED_DEX_ZAP_INDEX, ZAP_CONTRACT_ADDRESS } from '../../constants'
+import { PriceImpact, SWAP_INPUT_ERRORS, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
@@ -171,6 +171,7 @@ export default function Zap() {
   const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
   const currencies = derivedInfo.currencies
   const currencyBalances = derivedInfo.currencyBalances
+  const isZapNotAvailable = derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE
 
   const parsedAmounts = {
     [Field.INPUT]: derivedInfo.parsedAmount,
@@ -427,10 +428,11 @@ export default function Zap() {
                 showCommonBases
                 disabled={true}
                 isDisabledStyled={true}
+                disableCurrencySelect={isZapNotAvailable}
                 inputType={isZapIn ? InputType.pair : InputType.currency}
                 filterPairs={filterPairs}
                 id="zap-currency-output"
-                inputTitle="Zap output is not supported"
+                inputTitle="Zap output will be estimated"
               />
             </AutoColumn>
             <TradeDetails
