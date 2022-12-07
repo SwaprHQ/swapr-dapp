@@ -1,6 +1,6 @@
 import { Currency } from '@swapr/sdk'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -54,6 +54,7 @@ export const CurrencyInputPanelComponent = ({
   isOutputPanel,
   showNativeCurrency = true,
   currencyOmitList,
+  currencySelectWrapper: CurrencySelectWrapper = Fragment,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -145,27 +146,29 @@ export const CurrencyInputPanelComponent = ({
                   data-testid={'transaction-value-input'}
                 />
               </>
-            )}
-            <CurrencySelect
-              selected={!!(currency || pair)}
-              className="open-currency-select-button"
-              disableCurrencySelect={disableCurrencySelect}
-              onClick={handleCurrencySelectClick}
-              disabled={(isLoading || disableCurrencySelect) && !currency}
-            >
-              <Aligner>
-                {isLoading ? (
-                  <Loader style={{ width: '97.25px' }} />
-                ) : (
-                  <CurrencyView
-                    pair={pair}
-                    currency={currency}
-                    chainIdOverride={chainIdOverride}
-                    currencyWrapperSource={currencyWrapperSource}
-                  />
-                )}
-              </Aligner>
-            </CurrencySelect>
+            )}{' '}
+            <CurrencySelectWrapper>
+              <CurrencySelect
+                selected={!!(currency || pair)}
+                className="open-currency-select-button"
+                disableCurrencySelect={disableCurrencySelect}
+                onClick={handleCurrencySelectClick}
+                disabled={(isLoading || disableCurrencySelect) && !currency}
+              >
+                <Aligner>
+                  {isLoading ? (
+                    <Loader style={{ width: '97.25px' }} />
+                  ) : (
+                    <CurrencyView
+                      pair={pair}
+                      currency={currency}
+                      chainIdOverride={chainIdOverride}
+                      currencyWrapperSource={currencyWrapperSource}
+                    />
+                  )}
+                </Aligner>
+              </CurrencySelect>
+            </CurrencySelectWrapper>
           </InputRow>
           <div>
             <RowBetween>

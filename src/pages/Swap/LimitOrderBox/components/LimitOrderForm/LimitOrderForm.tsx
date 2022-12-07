@@ -23,6 +23,7 @@ import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
 import { ApprovalFlow } from '../ApprovalFlow'
+import { CurrencySelectTooltip } from '../CurrencySelectTooltip'
 import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
 import SwapTokens from '../SwapTokens'
@@ -476,6 +477,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               isFallbackFiatValue={isFallbackFiatValueInput}
               showNativeCurrency={false}
               currencyOmitList={[buyTokenAmount.currency.address!]}
+              currencySelectWrapper={CurrencySelectTooltip}
             />
             <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
             <CurrencyInputPanel
@@ -489,6 +491,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
               isFallbackFiatValue={isFallbackFiatValueOutput}
               showNativeCurrency={false}
               currencyOmitList={[sellTokenAmount.currency.address!]}
+              currencySelectWrapper={CurrencySelectTooltip}
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">

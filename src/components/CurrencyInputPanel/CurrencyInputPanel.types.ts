@@ -1,5 +1,7 @@
 import { ChainId, Currency, CurrencyAmount, Pair, Percent } from '@swapr/sdk'
 
+import { ComponentType } from 'react'
+
 import { CurrencyWrapperSource } from '../CurrencyLogo'
 
 export interface CurrencyInputPanelProps {
@@ -31,6 +33,7 @@ export interface CurrencyInputPanelProps {
   isOutputPanel?: boolean
   showNativeCurrency?: boolean
   currencyOmitList?: string[]
+  currencySelectWrapper?: React.ElementType
 }
 
 export type CurrencyViewProps = Pick<
