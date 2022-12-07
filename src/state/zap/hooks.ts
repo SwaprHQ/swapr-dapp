@@ -293,8 +293,9 @@ export const useZapParams = (
   swapTokenB: SwapTx
   liquidityMinted: TokenAmount | undefined
 } => {
+  const { chainId } = useActiveWeb3React()
   const zeroBN = BigNumber.from(0)
-  const dexIdZap = BigNumber.from(SUPPORTED_ZAP_DEX_INDEX[UniswapV2RoutablePlatform.SWAPR.name]) //TODO pass zap dex
+  const dexIdZap = BigNumber.from(SUPPORTED_ZAP_DEX_INDEX[pair?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name])
   const dexIdSwapA = BigNumber.from(
     SUPPORTED_ZAP_DEX_INDEX[data.tradeToken0?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name]
   )
@@ -305,7 +306,6 @@ export const useZapParams = (
   const tradeToken0 = data.tradeToken0
   const tradeToken1 = data.tradeToken1
   const totalSupply = useTotalSupply(pair?.liquidityToken)
-  const { chainId } = useActiveWeb3React()
   const platformTrade0 = (tradeToken0?.platform as UniswapV2RoutablePlatform) ?? undefined
   const platformTrade1 = (tradeToken1?.platform as UniswapV2RoutablePlatform) ?? undefined
 

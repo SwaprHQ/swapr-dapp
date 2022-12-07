@@ -26,7 +26,6 @@ export const PairView = ({
     )
   }
 
-  // TODO remove
   return (
     <>
       {currency && (

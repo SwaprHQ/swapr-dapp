@@ -15,7 +15,7 @@ export interface CurrencyInputPanelProps {
   hideInput?: boolean
   fiatValue?: CurrencyAmount | null
   isLoading?: boolean
-  onUserInput: (value: string) => void
+  onUserInput?: (value: string) => void
   hideBalance?: boolean
   priceImpact?: Percent
   otherCurrency?: Currency | null

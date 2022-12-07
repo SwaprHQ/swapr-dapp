@@ -364,7 +364,7 @@ export default function Zap() {
       </Flex>
       <AppBody tradeDetailsOpen={!!derivedInfo.tradeToken0}>
         <Wrapper id="zap-page">
-          {/* <ConfirmSwapModal
+          <ConfirmSwapModal
             isOpen={showConfirm}
             trade={undefined}
             originalTrade={tradeToConfirm}
@@ -376,7 +376,7 @@ export default function Zap() {
             onConfirm={handleZap}
             swapErrorMessage={swapErrorMessage} //zapErrorMessage
             onDismiss={handleConfirmDismiss}
-          /> */}
+          />
 
           <AutoColumn gap="12px">
             <AutoColumn gap="3px">
@@ -388,7 +388,7 @@ export default function Zap() {
                 onMax={handleMaxInput(Field.INPUT)}
                 onCurrencySelect={handleInputSelect}
                 onPairSelect={handleOnPairSelect}
-                otherCurrency={currencies[Field.INPUT]} // TODO: old INPUT hmm?
+                otherCurrency={currencies[Field.INPUT]}
                 fiatValue={fiatValueInput}
                 isFallbackFiatValue={isFallbackFiatValueInput}
                 maxAmount={maxAmountInput}
@@ -415,14 +415,12 @@ export default function Zap() {
               </SwitchIconContainer>
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
-                onUserInput={() => {}} // TODO make it optional as it is disabled
                 onMax={handleMaxInput(Field.OUTPUT)}
                 currency={currencies[Field.OUTPUT]}
                 pair={zapPair}
                 onCurrencySelect={handleOutputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
-                fiatValue={fiatValueInput} // TODO make it optional
                 isFallbackFiatValue={isFallbackFiatValueInput} //
                 maxAmount={maxAmountOutput}
                 showCommonBases

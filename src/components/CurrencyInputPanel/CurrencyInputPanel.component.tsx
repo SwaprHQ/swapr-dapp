@@ -111,7 +111,7 @@ export const CurrencyInputPanelComponent = ({
       if (maxAmount?.toExact() === value) setIsMaxAmount(true)
       else setIsMaxAmount(false)
 
-      onUserInput(value)
+      if (onUserInput) onUserInput(value)
     },
     [maxAmount, onUserInput]
   )
