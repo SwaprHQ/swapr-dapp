@@ -173,14 +173,7 @@ export default function Zap() {
   const currencyBalances = derivedInfo.currencyBalances
   const isZapNotAvailable = derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE
 
-  const parsedAmounts = {
-    [Field.INPUT]: derivedInfo.parsedAmount,
-    [Field.OUTPUT]: isZapIn ? zapParams.liquidityMinted : derivedInfo.zapOutOutputAmount,
-  }
-
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
-
-  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -198,9 +191,14 @@ export default function Zap() {
     txHash: undefined,
   })
 
+  const parsedAmounts = {
+    [Field.INPUT]: derivedInfo.parsedAmount,
+    [Field.OUTPUT]: isZapIn ? zapParams.estLpMintedZapIn : zapParams.estAmountZapOut,
+  }
+
   const formattedAmounts = {
-    [independentField]: typedValue,
-    [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+    [Field.INPUT]: typedValue,
+    [Field.OUTPUT]: parsedAmounts[Field.OUTPUT]?.toSignificant(6) ?? '',
   }
 
   const userHasSpecifiedInputOutput = Boolean(
@@ -430,7 +428,7 @@ export default function Zap() {
                 inputType={isZapIn ? InputType.pair : InputType.currency}
                 filterPairs={filterPairs}
                 id="zap-currency-output"
-                inputTitle="Zap output will be estimated"
+                inputTitle="Zap output is estimated"
               />
             </AutoColumn>
             <TradeDetails

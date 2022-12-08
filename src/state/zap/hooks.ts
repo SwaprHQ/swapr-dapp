@@ -46,11 +46,11 @@ import {
 import { calculateSlippageAmount, isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import { getPathFromTrade } from '../../utils/getPathFromTrade'
-import { calculateZapInAmounts, computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { calculateZapInAmounts, calculateZapOutAmounts, computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
-import { useCurrencyBalances } from '../wallet/hooks'
+import { useCurrencyBalances, useTokenBalances } from '../wallet/hooks'
 import { replaceZapState, selectCurrency, setPairTokens, setRecipient, switchZapDirection, typeInput } from './actions'
 import { Field } from './types'
 
@@ -291,9 +291,12 @@ export const useZapParams = (
   zapOut: ZapOutTx | undefined
   swapTokenA: SwapTx
   swapTokenB: SwapTx
-  liquidityMinted: TokenAmount | undefined
+  estLpMintedZapIn: TokenAmount | undefined
+  estAmountZapOut: TokenAmount | undefined
 } => {
-  const { chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+  const totalSupply = useTotalSupply(pair?.liquidityToken)
+
   const zeroBN = BigNumber.from(0)
   const dexIdZap = BigNumber.from(SUPPORTED_ZAP_DEX_INDEX[pair?.platform.name ?? UniswapV2RoutablePlatform.SWAPR.name])
   const dexIdSwapA = BigNumber.from(
@@ -305,12 +308,11 @@ export const useZapParams = (
 
   const tradeToken0 = data.tradeToken0
   const tradeToken1 = data.tradeToken1
-  const totalSupply = useTotalSupply(pair?.liquidityToken)
   const platformTrade0 = (tradeToken0?.platform as UniswapV2RoutablePlatform) ?? undefined
   const platformTrade1 = (tradeToken1?.platform as UniswapV2RoutablePlatform) ?? undefined
 
   const zapInCalculatedAmounts = calculateZapInAmounts(
-    data.parsedAmount,
+    isZapIn ? data.parsedAmount : undefined,
     pair,
     totalSupply,
     tradeToken0?.executionPrice.invert(),
@@ -318,14 +320,22 @@ export const useZapParams = (
     chainId
   )
 
+  // balances
+  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
+  const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
+
+  const zapOutCalculatedAmounts = calculateZapOutAmounts(
+    isZapIn ? undefined : data.parsedAmount,
+    pair,
+    totalSupply,
+    userLiquidity,
+    tradeToken0?.executionPrice,
+    tradeToken1?.executionPrice,
+    chainId
+  )
+
   const exactTrade0 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenA, pair?.token0, platformTrade0)
   const exactTrade1 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenB, pair?.token1, platformTrade1)
-
-  const allowedSlippage = useUserSlippageTolerance() // custom from users
-
-  const amountLpMinWithSlippage = zapInCalculatedAmounts.liquidityMinted
-    ? calculateSlippageAmount(zapInCalculatedAmounts.liquidityMinted, allowedSlippage)[0].toString()
-    : '0'
 
   const swapTokenA: SwapTx = {
     amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
@@ -358,5 +368,12 @@ export const useZapParams = (
         dexIndex: dexIdZap,
       }
 
-  return { zapIn, zapOut, swapTokenA, swapTokenB, liquidityMinted: zapInCalculatedAmounts.liquidityMinted }
+  return {
+    zapIn,
+    zapOut,
+    swapTokenA,
+    swapTokenB,
+    estLpMintedZapIn: zapInCalculatedAmounts.estLpTokenMinted,
+    estAmountZapOut: zapOutCalculatedAmounts.estAmountTokenTo,
+  }
 }

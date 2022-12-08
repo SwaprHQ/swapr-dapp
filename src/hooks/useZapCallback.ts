@@ -217,8 +217,6 @@ export function useZapCallback({
                 return BigNumber.from(30000000)
               })
 
-            console.log('zap gas estimated', estimatedGas)
-
             const zapInTx = await zapContract.zapIn(
               zapIn,
               swapTokenA,
