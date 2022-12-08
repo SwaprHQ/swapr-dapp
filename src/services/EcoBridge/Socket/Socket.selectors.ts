@@ -2,25 +2,8 @@ import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { BridgeTxsFilter, SocketList } from '../EcoBridge.types'
+import { SocketList } from '../EcoBridge.types'
 import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
-
-const createSelectBridgingDetails = (bridgeId: SocketList) =>
-  createSelector(
-    [
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsStatus,
-      (state: AppState) => state.ecoBridge[bridgeId].bridgingDetailsErrorMessage,
-    ],
-    (details, loading, errorMessage) => {
-      return {
-        bridgeId,
-        details,
-        loading,
-        errorMessage,
-      }
-    }
-  )
 
 const createSelectRoutes = (bridgeId: SocketList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].routes], routes => routes)
@@ -65,7 +48,7 @@ const createSelectBridgeTransactionsSummary = (
   bridgeId: SocketList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
-  createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.filter], (txs, txsFilter) => {
+  createSelector([selectOwnedTxs], txs => {
     const summaries = txs.map(tx => {
       const pendingReason =
         tx.status === SocketTxStatus.FROM_PENDING
@@ -112,22 +95,10 @@ const createSelectBridgeTransactionsSummary = (
       return summary
     })
 
-    switch (txsFilter) {
-      case BridgeTxsFilter.COLLECTABLE:
-        return summaries.filter(summary => summary.status === 'redeem')
-      case BridgeTxsFilter.RECENT:
-        const passed24h = new Date().getTime() - 1000 * 60 * 60 * 24
-        return summaries.filter(summary => {
-          if (!summary.timestampResolved) return true
-          return summary.timestampResolved >= passed24h
-        })
-      default:
-        return summaries
-    }
+    return summaries
   })
 
 export interface SocketBridgeSelectors {
-  selectBridgingDetails: ReturnType<typeof createSelectBridgingDetails>
   selectRoutes: ReturnType<typeof createSelectRoutes>
   selectApprovalData: ReturnType<typeof createSelectApprovalData>
   selectTxBridgingData: ReturnType<typeof createSelectTxBridgingData>
@@ -138,7 +109,6 @@ export interface SocketBridgeSelectors {
 export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
   return socketBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
-    const selectBridgingDetails = createSelectBridgingDetails(bridgeId)
     const selectRoutes = createSelectRoutes(bridgeId)
     const selectApprovalData = createSelectApprovalData(bridgeId)
     const selectTxBridgingData = createSelectTxBridgingData(bridgeId)
@@ -146,7 +116,6 @@ export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
     const selectors = {
-      selectBridgingDetails,
       selectRoutes,
       selectApprovalData,
       selectTxBridgingData,

@@ -20,9 +20,10 @@ import { TokenIcon } from '../TokenIcon'
 
 interface SwapTransactionRowProps {
   transaction: SwapTransaction
+  showBackgroundStatus: boolean
 }
 
-export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
+export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTransactionRowProps) {
   const { t } = useTranslation('account')
   const { account } = useActiveWeb3React()
   const fromAddress = shortenAddress(`${account}`)
@@ -33,7 +34,7 @@ export function SwapTransactionRow({ transaction }: SwapTransactionRowProps) {
   const link = network ? getExplorerLink(Number(network), hash, 'transaction', swapProtocol) : '#'
 
   return (
-    <GridCard status={status}>
+    <GridCard status={showBackgroundStatus ? status : undefined}>
       <TokenDetails>
         <Flex flexDirection="column">
           <Flex alignItems="center">

@@ -162,9 +162,14 @@ interface BridgeTransactionsSummaryRowProps {
 }
 
 const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRowProps) => {
-  const { assetName, fromChainId, status, toChainId, fromValue, pendingReason, log } = tx
+  const { assetName, fromChainId, status, toChainId, fromValue, pendingReason, log, bridgeId } = tx
   const fromChainName = getNetworkInfo(fromChainId).name
   const toChainName = getNetworkInfo(toChainId).name
+
+  const toLink =
+    bridgeId === 'socket'
+      ? log[0] && log[1] && getExplorerLink(log[0].chainId, log[0].txHash, 'transaction', bridgeId)
+      : log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction', bridgeId)
 
   return (
     <Row>
@@ -176,7 +181,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
       <ColumnFrom data-testid="bridged-from-chain">
         <TextFrom>
           <Link
-            href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction')}
+            href={getExplorerLink(log[0].chainId, log[0].txHash, 'transaction', bridgeId)}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -189,12 +194,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
           <Dots status={BridgeTransactionStatus.CONFIRMED} />
           <Dots status={status} />
         </Filler>
-        <TextTo
-          status={status}
-          href={log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction')}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <TextTo status={status} href={toLink} rel="noopener noreferrer" target="_blank">
           {toChainName}
         </TextTo>
       </ColumnToFlex>

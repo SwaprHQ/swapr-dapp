@@ -354,29 +354,52 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: [install, prepare]
+    needs: [prepare]
     runs-on: ubuntu-20.04
-    container: swapr/cypress:zstd
     if: ${{ needs.prepare.outputs.cypress }}
     strategy:
       fail-fast: false
       matrix:
         containers: [Container01, Container02, Container03, Container04]
     steps:
-      - name: 📥 ・Download workspace artifact
-        uses: actions/download-artifact@v3
+      - name: ⬇️ ・Checkout repo
+        uses: actions/checkout@v3
         with:
-          name: workspace
+          fetch-depth: '50'
 
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          check-latest: true
+          cache: 'yarn'
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+
+      - name: Generate open-api
+        run: yarn codegen:socket
+
+      - name: Codegen socket
+        run: yarn codegen:socket
+
+      - name: Codegen GraphQl
+        run: yarn codegen:graphql
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
 
       - name: Verify Cypress
-        run: yarn cypress install && yarn cypress verify
+        run: yarn cypress install
 
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
+        run: yarn cypress:ci 'yarn cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
@@ -466,7 +489,7 @@ jobs:
           retention-days: 3
 
       - name: Delete merged artifacts
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: |
             Container01
@@ -481,7 +504,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: workspace
 
@@ -492,6 +515,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: workspace

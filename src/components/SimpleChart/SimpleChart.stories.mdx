@@ -1,0 +1,28 @@
+import { DAI, WETH } from '@swapr/sdk'
+import { Flex } from 'rebass'
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
+
+import chartMockData from '../Charts/chartMockData.json'
+import { SimpleChart } from './SimpleChart'
+
+<Meta title="Charts/SimpleChart" component={SimpleChart} />
+
+# SimpleChart
+
+Simplechart is a chart showing value/time of a pair on different time ranges. You can also invert the pair and have the opposite data.
+
+<Canvas>
+  <Story name="SimpleChart">
+    <Flex bg="#251d41" p={5} width={['100%', '550px', '550px', '600px', '650px']}>
+      <SimpleChart
+        currency0={WETH[1]}
+        currency1={DAI[1]}
+        loading={false}
+        isCurrenciesSwitched={false}
+        setSelectedInterval={() => {}}
+        setIsCurrenciesSwitched={() => {}}
+        data={chartMockData}
+      />
+    </Flex>
+  </Story>
+</Canvas>

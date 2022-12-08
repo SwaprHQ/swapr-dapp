@@ -20,6 +20,7 @@ export const network = new CustomNetworkConnector({
     [ChainId.ARBITRUM_GOERLI]: 'https://goerli-rollup.arbitrum.io/rpc',
     [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
     [ChainId.OPTIMISM_GOERLI]: 'https://goerli.optimism.io',
+    [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
   },
   defaultChainId: ChainId.MAINNET,
 })
@@ -36,12 +37,14 @@ export const injected = new InjectedConnector({
     ChainId.GOERLI,
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
+    ChainId.BSC_MAINNET,
   ],
 })
 
 // mainnet only
 export const walletConnect = new CustomWalletConnectConnector({
   rpc: {
+    [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
     [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
     [ChainId.POLYGON]: 'https://polygon-rpc.com',
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
@@ -74,5 +77,6 @@ export const walletLink = new CustomWalletLinkConnector({
     ChainId.ARBITRUM_GOERLI,
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
+    ChainId.BSC_MAINNET,
   ],
 })

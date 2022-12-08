@@ -5,11 +5,13 @@ import { DarkCard } from '../components/Card'
 
 export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
   position: relative;
+  min-width: 454px;
   max-width: 457px;
   width: 100%;
   border-radius: 12px;
   padding: 12px;
   transition: box-shadow 0.3s ease;
+  z-index: 1;
   ::before {
     border-radius: 12px;
     background: linear-gradient(
@@ -20,6 +22,9 @@ export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
       ${props => props.theme.dark1};
     background: ${props => props.theme.dark1};
   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    min-width: 100%;
+  `};
 `
 
 interface AppBodyProps {

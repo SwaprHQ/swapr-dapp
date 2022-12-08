@@ -1,0 +1,22 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
+import { Box, Flex, Text } from 'rebass'
+
+import { BlurBox } from './BlurBox'
+
+<Meta title="BlurBox" component={BlurBox} />
+
+# BlurBox
+
+BlurBox inherits from Box component and applies a purple blur background and some styles.
+
+<Canvas>
+  <Story name="BlurBox">
+    <Flex width="100%" minWidth="300px" height="500px" bg="#0c0b11" alignItems="center" justifyContent="center">
+      <BlurBox width="200px" height="200px">
+        <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
+          <Text color="white">I'm a BlurBox</Text>
+        </Flex>
+      </BlurBox>
+    </Flex>
+  </Story>
+</Canvas>
