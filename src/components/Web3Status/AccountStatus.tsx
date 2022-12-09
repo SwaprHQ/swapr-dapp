@@ -9,6 +9,7 @@ import { Text } from 'rebass'
 import styled from 'styled-components'
 
 import ArbitrumLogo from '../../assets/images/arbitrum-one-logo.svg'
+import BSCLogo from '../../assets/images/binance-chain-logo.svg'
 import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
@@ -33,6 +34,7 @@ const ChainLogo: any = {
   [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
   [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
   [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
+  [ChainId.BSC_MAINNET]: BSCLogo,
 }
 
 const View = styled.div`

@@ -43,24 +43,18 @@ export const TimelineData = [
       'Curve, 0x & CoW Protocol integration',
     ],
     releaseTag: 'BETA',
+    past: true,
+  },
+  {
+    title: 'Q3',
+    content: ['User Dashboard', 'Bridge Swap', 'Charts', 'BNB Chain', 'Optimism'],
+    releaseTag: 'BETA',
+    past: true,
+  },
+  {
+    title: 'Q4',
+    content: ['Limit Orders', 'LP Zapping', 'More Eco Routing markets'],
+    releaseTag: 'BETA',
     current: true,
-  },
-  {
-    title: 'Q3-Q4',
-    content: ['Balancer Integration', 'Uniswap V3 Int.', 'Limit Orders', 'User Dashboard', 'veSWPR', 'SWPR Governance'],
-    releaseTag: 'V1',
-  },
-  {
-    title: 'Soon™',
-    content: [
-      'Bentobox/Bancor',
-      'ZKSync',
-      'Eco Routing V2',
-      'Bridge Swap',
-      'LP Zapping',
-      'Sushi Trident Fork',
-      'More Eco Routing markets',
-    ],
-    releaseTag: 'V1.5',
   },
 ]

@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, Pair, Token } from '@swapr/sdk'
+import { Currency, Pair, Token, WETH } from '@swapr/sdk'
 
 import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
@@ -30,7 +30,16 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
 
     // reduce to just tokens
     const mapWithoutUrls = Object.keys(tokenMap[chainId]).reduce<{ [address: string]: Token }>((newMap, address) => {
-      newMap[address] = tokenMap[chainId][address].token
+      let token = tokenMap[chainId][address].token
+
+      if (token.equals(WETH[chainId]))
+        token = new WrappedTokenInfo(
+          tokenMap[chainId][address].token.tokenInfo,
+          tokenMap[chainId][address].token.list,
+          WETH[chainId]
+        )
+
+      newMap[address] = token
       return newMap
     }, {})
 

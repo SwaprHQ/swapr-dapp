@@ -1,8 +1,9 @@
-import { createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
+import { EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { BridgeDetails, BridgingDetailsErrorMessage, SyncState, XdaiBridgeList } from '../EcoBridge.types'
+import { BridgeDetails, SyncState, XdaiBridgeList } from '../EcoBridge.types'
+import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 import { XdaiBridgeTransaction, XdaiMessage } from './XdaiBridge.types'
 
@@ -25,46 +26,10 @@ const initialState: XdaiBridgeState = {
 }
 
 const createXdaiSlice = (bridgeId: XdaiBridgeList) =>
-  createSlice({
+  createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
     reducers: {
-      setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
-
-        //(store persist) crashing page without that code
-        if (!state.bridgingDetails) {
-          state.bridgingDetails = {}
-        }
-
-        if (requestId !== state.lastMetadataCt) {
-          if (state.bridgingDetailsStatus === SyncState.FAILED) return
-          state.bridgingDetailsStatus = SyncState.LOADING
-          return
-        } else {
-          state.bridgingDetailsStatus = SyncState.READY
-
-          state.bridgingDetails.gas = gas
-          state.bridgingDetails.fee = fee
-          state.bridgingDetails.estimateTime = estimateTime
-          state.bridgingDetails.receiveAmount = receiveAmount
-        }
-      },
-      setBridgeDetailsStatus: (
-        state,
-        action: PayloadAction<{ status: SyncState; errorMessage?: BridgingDetailsErrorMessage }>
-      ) => {
-        state.bridgingDetailsStatus = action.payload.status
-      },
-      requestStarted: (state, action: PayloadAction<{ id: number }>) => {
-        state.lastMetadataCt = action.payload.id
-      },
-      setTokenListsStatus: (state, action: PayloadAction<SyncState>) => {
-        state.listsStatus = action.payload
-      },
-      addTokenLists: (state, action: PayloadAction<{ [id: string]: TokenList }>) => {
-        state.lists = action.payload
-      },
       addTransactions: (state, action: PayloadAction<XdaiBridgeTransaction[]>) => {
         xdaiBridgeTransactionAdapter.addMany(state.transactions, action.payload)
       },

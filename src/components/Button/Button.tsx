@@ -102,6 +102,7 @@ export const ButtonGrey = styled(Base)`
   color: ${({ theme }) => theme.text5};
   font-size: 16px;
   padding: ${({ padding }) => (padding ? padding : '10px')};
+  width: fit-content;
 
   &:disabled {
     opacity: 50%;

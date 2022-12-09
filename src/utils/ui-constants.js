@@ -1,8 +1,9 @@
 import TextyAnim from 'rc-texty'
 
-import Entry1 from './../assets/images/blog/blog-entry-1.jpg'
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
-import Entry3 from './../assets/images/blog/blog-entry-3.jpg'
+import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
+import MevArticle from './../assets/images/blog/mev-article.png'
+import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
 import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
@@ -22,11 +23,13 @@ import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
 import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
+import OptimismLogo from './../assets/images/optimism.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingCoW from './../assets/images/routing-cow.svg'
-import RoutingCurve from './../assets/images/routing-curve.png'
+import RoutingCurve from './../assets/images/routing-curve.svg'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
+import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
@@ -71,6 +74,14 @@ export const HeroContent = {
     {
       img: PolygonLogo,
       title: 'Polygon',
+    },
+    {
+      img: OptimismLogo,
+      title: 'Optimism',
+    },
+    {
+      img: BNBLogo,
+      title: 'BNB',
     },
   ],
   heroButtons: [
@@ -120,6 +131,10 @@ export const RoutingThroughContent = {
       title: 'Curve',
       img: RoutingCurve,
     },
+    {
+      title: 'PancakeSwap',
+      img: RoutingPancakeSwap,
+    },
   ],
 }
 
@@ -137,7 +152,7 @@ const animations = importAll(require.context('./../assets/images/animations', fa
 export const FeaturesContent = {
   topBanner: {
     title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
-    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo],
+    logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
   },
   preHeader: 'Swapr Features',
   sectionTitle: 'Your DeFi Powertool',
@@ -244,7 +259,7 @@ export const FeaturesContent = {
     },
     {
       title: 'BRIDGE',
-      content: 'Bridge directly to or from any chain where Swapr is deployed.',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
       image: Bridge,
       animation: animations['06_Bridge'],
       buttons: [
@@ -332,10 +347,17 @@ export const BlogContent = {
   readBlogPost: 'READ BLOG POST',
   posts: [
     {
-      image: Entry1,
-      title: 'Announcing SWPR Token',
-      content: 'SWPR Token and Liquidity Mining',
+      image: EcoRouterArticle,
+      title: 'The Eco Router — Effortlessly Combining Safety and Best Value Trading!',
+      content: 'Introducing external liquidity into swapr with no extra cost to the user',
       postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45',
+    },
+    {
+      image: MevArticle,
+      title: 'Full MEV Protection from CoW Protocol within Swapr’s Eco Router.',
+      content: 'MEV Protection in Swapr',
+      postLink:
+        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
     },
     {
       image: Entry2,
@@ -343,14 +365,6 @@ export const BlogContent = {
       content:
         'Introducing SWPR Token Farming RewardsRecently, the DXdao community identified a misconfiguration with ...',
       postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae',
-    },
-    {
-      image: Entry3,
-      title: 'DXdao and BadgerDAO Leverage Swapr to Bring Smarter BTC-focused Strategies to Arbitrum',
-      content:
-        'Both DXdao and BadgerDAO have strong communities that have been building interesting products in the DeFi space.',
-      postLink:
-        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
     },
   ],
 }

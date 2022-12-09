@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit'
 
 import { ConnectorType } from '../../constants'
 import { MainnetGasPrice } from '../application/actions'
+import { ChartOptions, SwapTabs } from './reducer'
 
 export interface SerializedToken {
   chainId: number
@@ -20,6 +21,7 @@ export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>(
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserMultihop = createAction<{ userMultihop: boolean }>('user/updateUserMultihop')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
+export const updateSelectedSwapTab = createAction<{ selectedSwapTab: SwapTabs }>('user/updateSelectedSwapTab')
 export const updateUserPreferredGasPrice = createAction<MainnetGasPrice | string | null>(
   'user/updateUserPreferredGasPrice'
 )
@@ -41,4 +43,7 @@ export const setConnectorError = createAction<{ connector: ConnectorType; connec
 export const updatePendingConnector = createAction<{ pendingConnector: ConnectorType }>('user/updatePendingConnector')
 export const updateSelectedConnector = createAction<{ selectedConnector: ConnectorType }>(
   'user/updateSelectedConnector'
+)
+export const updateSelectedChartOption = createAction<{ selectedChartOption: ChartOptions }>(
+  'user/updateSelectedChartOption'
 )
