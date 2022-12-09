@@ -1,28 +1,19 @@
-import { Contract } from '@ethersproject/contracts'
-import {
-  ChainId,
-  CurveTrade,
-  Trade,
-  TradeType,
-  UniswapTrade,
-  UniswapV2RoutablePlatform,
-  UniswapV2Trade,
-  ZeroXTrade,
-} from '@swapr/sdk'
+import { ChainId, CurrencyAmount } from '@swapr/sdk'
 
-import { BigNumber, BigNumberish, ContractTransaction, UnsignedTransaction } from 'ethers'
+import { BigNumber, BigNumberish, ContractTransaction } from 'ethers'
 import { useEffect, useMemo, useState } from 'react'
 
-import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '../constants'
+import { ZERO_ADDRESS } from '../constants'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
+import { Field } from '../state/swap/types'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
+import { UseZapCallbackParams } from '../state/zap/types'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import { useZapContract } from './useContract'
 import useENS from './useENS'
-import useTransactionDeadline from './useTransactionDeadline'
 import { Zap } from './zap/Zap'
 
 import { useActiveWeb3React } from './index'
@@ -34,89 +25,20 @@ export enum ZapState {
   VALID,
 }
 
-interface SwapCall {
-  contract?: Contract
-  transactionParameters: Promise<UnsignedTransaction>
-}
-
-/**
- * Returns the swap calls that can be used to make the trade
- * @param trade trade to execute
- * @param allowedSlippage user allowed slippage
- * @param recipientAddressOrName
- */
-export function useSwapsCallArguments(
-  trades: (Trade | undefined)[] | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-): SwapCall[][] {
-  const { account, chainId, library } = useActiveWeb3React()
-  const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const deadline = useTransactionDeadline()
-
-  return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) {
-      return []
-    }
-
-    return trades.map(trade => {
-      if (!trade) {
-        return []
-      }
-
-      const swapMethods = []
-      // Curve, Uniswap v3, ZeroX
-      if (trade instanceof CurveTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
-        return [
-          {
-            transactionParameters: trade.swapTransaction(),
-          },
-        ]
-      }
-
-      // Uniswap V2 trade
-      if (trade instanceof UniswapV2Trade) {
-        swapMethods.push(
-          trade.swapTransaction({
-            recipient,
-            ttl: deadline.toNumber(),
-          })
-        )
-      }
-
-      /**
-       * @todo implement slippage
-       */
-      if (allowedSlippage > 6 && trade.tradeType === TradeType.EXACT_INPUT) {
-        // swapMethods.push(
-        // Router.swapCallParameters(trade, {
-        //   feeOnTransfer: true,
-        //   allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
-        //   recipient,
-        //   ttl: deadline.toNumber()
-        // })
-        // )
-      }
-
-      return swapMethods.map(transactionParameters => ({ transactionParameters }))
-    })
-  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
-}
-
 /**
  * Returns the zap summary for UI components
  */
-export function getZapSummary(trade: Trade, recipientAddressOrName: string | null): string {
-  const inputSymbol = trade.inputAmount.currency.symbol
-  const outputSymbol = trade.outputAmount.currency.symbol
-  const inputAmount = limitNumberOfDecimalPlaces(trade.inputAmount)
-  const outputAmount = limitNumberOfDecimalPlaces(trade.outputAmount)
-  const platformName = trade.platform.name
+export function getZapSummary(
+  parsedAmounts: { [Field.INPUT]: CurrencyAmount | undefined; [Field.OUTPUT]: CurrencyAmount | undefined },
+  recipientAddressOrName: string | null,
+  zapIn: boolean
+): string {
+  const inputSymbol = parsedAmounts[Field.INPUT]?.currency.symbol
+  const outputSymbol = parsedAmounts[Field.OUTPUT]?.currency.symbol
+  const inputAmount = limitNumberOfDecimalPlaces(parsedAmounts[Field.INPUT])
+  const outputAmount = limitNumberOfDecimalPlaces(parsedAmounts[Field.OUTPUT])
 
-  const base = `Zap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
-    platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
-  }`
+  const base = `Zap ${zapIn ? 'in' : 'out'} ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
 
   return recipientAddressOrName != null
     ? `${base} to ${
@@ -125,22 +47,6 @@ export function getZapSummary(trade: Trade, recipientAddressOrName: string | nul
           : recipientAddressOrName
       }`
     : base
-}
-
-export type ZapInType = Parameters<Zap['functions']['zapIn']>
-export type ZapOutType = Parameters<Zap['functions']['zapOut']>
-export type ZapInTx = ZapInType[0]
-export type ZapOutTx = ZapOutType[0]
-export type SwapTx = ZapInType[1]
-
-export interface UseZapInCallbackParams {
-  zapIn?: ZapInTx
-  zapOut?: ZapOutTx
-  swapTokenA: SwapTx
-  swapTokenB: SwapTx
-  recipient: string | null
-  affiliate?: string
-  transferResidual?: boolean
 }
 
 export interface UseZapCallbackReturn {
@@ -153,15 +59,8 @@ export interface UseZapCallbackReturn {
  * Returns a function that will execute a zap, if the parameters are all valid
  * and the user has approved the slippage adjusted input amount for the trade
  */
-export function useZapCallback({
-  zapIn,
-  zapOut,
-  swapTokenA,
-  swapTokenB,
-  recipient,
-  affiliate,
-  transferResidual = true,
-}: UseZapInCallbackParams): UseZapCallbackReturn {
+export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallbackParams): UseZapCallbackReturn {
+  const { zapIn, zapOut, swapTokenA, swapTokenB, recipient, affiliate, transferResidual = true } = zapContractParams
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
   const [zapState, setZapState] = useState(ZapState.UNKNOWN)
@@ -230,10 +129,10 @@ export function useZapCallback({
               }
             )
             setTransactionReceipt(zapInTx)
-            addTransaction(zapInTx, { summary: 'Zap in' })
+            addTransaction(zapInTx, { summary: getZapSummary(parsedAmounts, receiver, true) })
             const zapInTxReceipt = await zapInTx.wait(1)
             if (zapInTxReceipt.status === 1) setZapState(ZapState.VALID)
-            return 'Zap in successed'
+            return 'Zap in succeeded'
           } catch (error) {
             console.error('Could not zap in!', error)
             //if something goes wrong, reset status
@@ -259,15 +158,14 @@ export function useZapCallback({
                 console.debug('Gas estimation failed', error)
                 return BigNumber.from(30000000)
               })
-            console.log('zap gas estimated', estimatedGas)
 
             const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
               gasLimit: calculateGasMargin(estimatedGas),
               gasPrice: normalizedGasPrice,
             })
             setTransactionReceipt(txReceipt)
-            addTransaction(txReceipt, { summary: 'Zap out' })
-            return 'Zap out successed'
+            addTransaction(txReceipt, { summary: getZapSummary(parsedAmounts, receiver, false) })
+            return 'Zap out succeeded'
           } catch (error) {
             console.error('Could not zap out!', error)
             //if something goes wrong, reset status
@@ -301,5 +199,6 @@ export function useZapCallback({
     affiliateAddress,
     transferResidual,
     addTransaction,
+    parsedAmounts,
   ])
 }

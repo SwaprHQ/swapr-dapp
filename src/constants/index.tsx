@@ -793,6 +793,7 @@ export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.BSC_TESTNET]: '',
 }
 
+// index HAS TO BE THE SAME as set in contract supportedDEX
 export const SUPPORTED_ZAP_DEX_INDEX: { [key: string]: number } = {
   [UniswapV2RoutablePlatform.SWAPR.name]: 0,
   [UniswapV2RoutablePlatform.UNISWAP.name]: 1,

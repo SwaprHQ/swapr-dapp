@@ -27,7 +27,6 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTradeExactInUniswapV2 } from '../../hooks/Trades'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
-import { SwapTx, ZapInTx, ZapOutTx } from '../../hooks/useZapCallback'
 import { EcoRouterResults, getUniswapV2PlatformList, sortTradesByExecutionPrice } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -36,7 +35,7 @@ import { calculateZapInAmounts, calculateZapOutAmounts } from '../../utils/price
 import { AppDispatch, AppState } from '../index'
 import { useTokenBalances } from '../wallet/hooks'
 import { replaceZapState, selectCurrency, setPairTokens, setRecipient, switchZapDirection, typeInput } from './actions'
-import { Field } from './types'
+import { Field, SwapTx, ZapContractParams } from './types'
 
 const selectZap = createSelector(
   (state: AppState) => state.zap,
@@ -268,10 +267,7 @@ export const useZapParams = (
   pair: Pair | undefined,
   isZapIn = true
 ): {
-  zapIn: ZapInTx | undefined
-  zapOut: ZapOutTx | undefined
-  swapTokenA: SwapTx
-  swapTokenB: SwapTx
+  contractParams: ZapContractParams
   estLpMintedZapIn: TokenAmount | undefined
   estAmountZapOut: TokenAmount | undefined
 } => {
@@ -350,10 +346,7 @@ export const useZapParams = (
       }
 
   return {
-    zapIn,
-    zapOut,
-    swapTokenA,
-    swapTokenB,
+    contractParams: { zapIn, zapOut, swapTokenA, swapTokenB, recipient: null },
     estLpMintedZapIn: zapInCalculatedAmounts.estLpTokenMinted,
     estAmountZapOut: zapOutCalculatedAmounts.estAmountTokenTo,
   }

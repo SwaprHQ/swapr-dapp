@@ -215,23 +215,26 @@ export default function Zap() {
   const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
-    zapIn: zapParams.zapIn,
-    zapOut: zapParams.zapOut,
-    swapTokenA: zapParams.swapTokenA,
-    swapTokenB: zapParams.swapTokenB,
-    recipient,
-    affiliate: undefined,
-    transferResidual: true,
+    zapContractParams: {
+      zapIn: zapParams.contractParams.zapIn,
+      zapOut: zapParams.contractParams.zapOut,
+      swapTokenA: zapParams.contractParams.swapTokenA,
+      swapTokenB: zapParams.contractParams.swapTokenB,
+      recipient,
+      affiliate: undefined,
+      transferResidual: true,
+    },
+    parsedAmounts: parsedAmounts,
   })
 
-  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade0 } = computeTradePriceBreakdown(derivedInfo.tradeToken0)
-  const { priceImpactWithoutFee: priceImpactWithoutFeeTrade1 } = computeTradePriceBreakdown(derivedInfo.tradeToken1)
+  const { priceImpactWithoutFee: pImpactTrade0 } = computeTradePriceBreakdown(derivedInfo.tradeToken0)
+  const { priceImpactWithoutFee: pImpactTrade1 } = computeTradePriceBreakdown(derivedInfo.tradeToken1)
 
   const handleZap = useCallback(() => {
     if (
-      priceImpactWithoutFeeTrade0 &&
-      !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade0)
-      // (priceImpactWithoutFeeTrade1 && !confirmPriceImpactWithoutFee(priceImpactWithoutFeeTrade1))
+      pImpactTrade0 &&
+      pImpactTrade1 &&
+      !confirmPriceImpactWithoutFee(pImpactTrade0.greaterThan(pImpactTrade1) ? pImpactTrade0 : pImpactTrade1)
     ) {
       return
     }
@@ -264,10 +267,10 @@ export default function Zap() {
           txHash: undefined,
         })
       })
-  }, [priceImpactWithoutFeeTrade0, zapCallback, tradeToConfirm, showConfirm])
+  }, [pImpactTrade0, pImpactTrade1, zapCallback, tradeToConfirm, showConfirm])
 
   // warnings on slippage
-  const priceImpactSeverity = warningSeverityZap(priceImpactWithoutFeeTrade0, priceImpactWithoutFeeTrade1)
+  const priceImpactSeverity = warningSeverityZap(pImpactTrade0, pImpactTrade1)
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
