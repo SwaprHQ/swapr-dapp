@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { Transaction, TransactionStatus } from '../../pages/Account/Account.types'
 import { formattedTransactions as formatTransactions } from '../../pages/Account/accountUtils'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
@@ -19,7 +19,7 @@ export const useAllTrades = (): {
   liquidityHistory: AdvancedViewTransaction[]
   hasMore: { hasMoreActivity: boolean; hasMoreTrades: boolean }
 } => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const hasMore = useSelector(selectHasMoreData)
   const { uniswapV3LiquidityHistory, uniswapV3TradeHistory } = useSelector(selectUniswapV3AllData)
   const { baseAdapterTradeHistory, baseAdapterLiquidityHistory } = useSelector(selectAllDataFromAdapters)

@@ -25,7 +25,6 @@ import { ReactNode } from 'react'
 
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
-import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
 import CurveLogo from '../assets/images/curve-logo.png'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'

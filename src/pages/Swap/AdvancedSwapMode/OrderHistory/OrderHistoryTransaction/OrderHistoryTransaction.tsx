@@ -3,7 +3,7 @@ import { ExternalLink } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../../hooks/index'
+import { useWeb3ReactCore } from '../../../../../hooks/useWeb3ReactCore'
 import { EXPLORER_LINK_TYPE, getExplorerLink } from '../../../../../utils'
 import { Status } from '../../../../Account/Account.styles'
 import { Transaction, TransactionTypes } from '../../../../Account/Account.types'
@@ -30,7 +30,7 @@ const Wrapper = styled.div`
 `
 
 export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const theme = useTheme()
 
   const isSwapTransaction = tx.type === TransactionTypes.Swap

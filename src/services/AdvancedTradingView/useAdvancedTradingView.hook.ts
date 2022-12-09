@@ -3,9 +3,9 @@ import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
@@ -44,7 +44,7 @@ const calculateAmountToFetch = (chainId: ChainId | undefined, amountToFetch: num
 }
 
 export const useAdvancedTradingView = () => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const { navigate } = useRouter()
 
