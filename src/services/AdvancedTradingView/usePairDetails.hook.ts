@@ -1,13 +1,17 @@
 import { CurrencyAmount, Pair, Price, Token } from '@swapr/sdk'
 
+import _Decimal from 'decimal.js-light'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import toFormat from 'toformat'
 
 import { ZERO_USD } from '../../constants'
 import { usePair24hVolumeUSD } from '../../hooks/usePairVolume24hUSD'
 import { useCoingeckoUSDPrice } from '../../hooks/useUSDValue'
 import { selectCurrency } from '../../state/swap/actions'
 import { Field } from '../../state/swap/types'
+
+const Decimal = toFormat(_Decimal)
 
 type ActiveCurrencyDetails = {
   price: string
@@ -34,6 +38,19 @@ const calculate24hVolumeForActiveCurrencyOption = (
   }
 }
 
+const trimPrice = (price: number) => {
+  if (Number(price) > 1) return price.toFixed(2)
+  if (Number(price) > 0.0001) return price.toFixed(6)
+  if (Number(price.toFixed(10)) !== 0) {
+    const significantDigits = 3
+    const format = { groupSeparator: '' }
+    const quotient = new Decimal(price).toSignificantDigits(significantDigits)
+    return quotient.toFormat(quotient.decimalPlaces(), format)
+  }
+
+  return '< 0.0000000001'
+}
+
 const calculateUSDChange24h = (price: Price, percentagePriceChange24h: number, isIncome24h: boolean) => {
   const priceUSDChange24h = (Number(percentagePriceChange24h.toFixed(6)) * Number(price.toFixed(6))) / 100
   return isIncome24h ? Number(price.toFixed(6)) - priceUSDChange24h : Number(price.toFixed(6)) + priceUSDChange24h
@@ -41,14 +58,19 @@ const calculateUSDChange24h = (price: Price, percentagePriceChange24h: number, i
 
 const calculatePrices = (relativePrice: number, token0Price24h: number, token1Price24h: number, symbol: string) => {
   const relativePrice24h = token1Price24h / token0Price24h
-  const priceChange24h = Math.abs(Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))).toFixed(4)
-  const priceChange24hWithSymbol = `${Number(priceChange24h) !== 0 ? `${priceChange24h}` : '< 0.0001'}  ${symbol}`
+  const priceChange24h = Math.abs(Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6)))
+  const priceChange24hString = trimPrice(priceChange24h)
+  const price = trimPrice(relativePrice)
+
+  const priceChange24hWithSymbol = `${priceChange24hString}  ${symbol}`
   const percentPriceChange24h = `${(
-    ((Number(relativePrice.toFixed(6)) - Number(relativePrice24h.toFixed(6))) / Number(relativePrice.toFixed(6))) *
+    ((Number(relativePrice) - Number(relativePrice24h)) / Number(relativePrice)) *
     100
   ).toFixed(2)}%`
+
   const isIncome = relativePrice24h < relativePrice
-  return { priceChange24hWithSymbol, percentPriceChange24h, isIncome }
+
+  return { price, priceChange24hWithSymbol, percentPriceChange24h, isIncome }
 }
 
 export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOption?: Token | null) => {
@@ -133,11 +155,11 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
       const relativePrice1 = Number(token1USDPrice.price.toSignificant()) / Number(token0USDPrice.price.toSignificant())
 
       if (token0.address.toLowerCase() === activeCurrencyOption.address.toLowerCase()) {
-        const { priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
-          relativePrice1,
-          token0USDPrice24h,
+        const { price, priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
+          relativePrice0,
           token1USDPrice24h,
-          activeCurrencyOption?.symbol ?? ''
+          token0USDPrice24h,
+          token1?.symbol ?? ''
         )
 
         setActiveCurrencyDetails({
@@ -145,32 +167,24 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
           priceChange24h: priceChange24hWithSymbol,
           percentPriceChange24h: percentPriceChange24h,
           isIncome24h: isIncome,
-          volume24h: calculate24hVolumeForActiveCurrencyOption(
-            volume24hUSD,
-            token0USDPrice.price,
-            activeCurrencyOption
-          ),
-          relativePrice: Number(relativePrice0.toFixed(4)) !== 0 ? relativePrice0.toFixed(4) : '< 0.0001',
+          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token1USDPrice.price, token1),
+          relativePrice: price,
         })
       } else {
-        const { priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
-          relativePrice0,
-          token1USDPrice24h,
+        const { price, priceChange24hWithSymbol, percentPriceChange24h, isIncome } = calculatePrices(
+          relativePrice1,
           token0USDPrice24h,
-          activeCurrencyOption?.symbol ?? ''
+          token1USDPrice24h,
+          token0?.symbol ?? ''
         )
 
         setActiveCurrencyDetails({
-          price: `$${token1USDPrice.price.toFixed(4)}`,
+          price: `$${token1USDPrice.price.toFixed(2)}`,
           priceChange24h: priceChange24hWithSymbol,
           percentPriceChange24h: percentPriceChange24h,
           isIncome24h: isIncome,
-          volume24h: calculate24hVolumeForActiveCurrencyOption(
-            volume24hUSD,
-            token1USDPrice.price,
-            activeCurrencyOption
-          ),
-          relativePrice: Number(relativePrice1.toFixed(4)) !== 0 ? relativePrice1.toFixed(4) : '< 0.0001',
+          volume24h: calculate24hVolumeForActiveCurrencyOption(volume24hUSD, token0USDPrice.price, token0),
+          relativePrice: price,
         })
       }
     } else {
@@ -196,6 +210,7 @@ export const usePairDetails = (token0?: Token, token1?: Token, activeCurrencyOpt
     token1USDPrice.price,
     token1USDPrice.percentagePriceChange24h,
     token1USDPrice.isIncome24h,
+    token1,
   ])
 
   return {
