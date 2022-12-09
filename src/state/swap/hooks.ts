@@ -1,22 +1,7 @@
 import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  getAllCommonUniswapV2Pairs,
-  JSBI,
-  Pair,
-  parseBigintIsh,
-  Percent,
-  RoutablePlatform,
-  Token,
-  TokenAmount,
-  Trade,
-  UniswapV2Trade,
-  ZERO,
-} from '@swapr/sdk'
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
@@ -24,8 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
-import { PairState, usePair } from '../../data/Reserves'
-import { useTotalSupply } from '../../data/TotalSupply'
+import { usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
@@ -37,8 +21,6 @@ import {
   EcoRouterResults,
   getExactIn as getExactInFromEcoRouter,
   getExactOut as getExactOutFromEcoRouter,
-  getUniswapV2PlatformList,
-  sortTradesByExecutionPrice,
 } from '../../lib/eco-router'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -47,6 +29,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
+import { getZapBestTradesUniV2 } from '../zap/hooks'
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { Field, StateKey, SwapState } from './types'
 
@@ -173,28 +156,14 @@ export function useDerivedSwapInfo<
 
   const [pairCurrency0, pairCurrency1] = [useCurrency(pairTokens?.token0Id), useCurrency(pairTokens?.token1Id)]
   const [zapPair, setZapPair] = useState<Pair>()
-  const [pairState, pair] = usePair(pairCurrency0 ?? undefined, pairCurrency1 ?? undefined)
-  const zapContact = useZapContract()
+  const [, pair] = usePair(pairCurrency0 ?? undefined, pairCurrency1 ?? undefined)
+  const zapContract = useZapContract()
 
   useEffect(() => {
     if (!zapPair && pair) {
       setZapPair(pair)
     }
   }, [pair, zapPair])
-
-  const totalSupply = useTotalSupply(pair?.liquidityToken)
-
-  const noLiquidity: boolean =
-    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
-
-  const price = useMemo(() => {
-    if (noLiquidity || !pairCurrency0) {
-      return undefined
-    } else {
-      const wrappedCurrency0 = wrappedCurrency(pairCurrency0, chainId)
-      return pair && wrappedCurrency0 ? pair.priceOf(wrappedCurrency0) : undefined
-    }
-  }, [chainId, noLiquidity, pair, pairCurrency0])
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -246,7 +215,7 @@ export function useDerivedSwapInfo<
 
     const signal = getAbortSignal()
     // Require for zap a valid zap contract
-    if (isZap && !zapContact) {
+    if (isZap && !zapContract) {
       setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
       return
     }
@@ -391,6 +360,9 @@ export function useDerivedSwapInfo<
 
   let returnInputError = inputError
   if (isZap) {
+    if (relevantTokenBalances[0] && parsedAmount && relevantTokenBalances[0].lessThan(parsedAmount)) {
+      returnInputError = SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE
+    }
     return {
       currencies: {
         [Field.INPUT]: inputCurrency ?? undefined,
@@ -417,7 +389,7 @@ export function useDerivedSwapInfo<
     const trade = platformTrade ? platformTrade : allPlatformTrades[0] // the first trade is the best trade
     const slippageAdjustedAmounts = trade && allowedSlippage && computeSlippageAdjustedAmounts(trade)
 
-    // compare input balance to MAx input based on version
+    // compare input balance to max input based on version
     const [balanceIn, amountIn] = [
       relevantTokenBalances[0],
       slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
@@ -481,77 +453,6 @@ export function useDerivedSwapInfo<
 
     return await Promise.race([abortPromise, ecoRouterPromise])
   }
-}
-
-async function getTradesPromiseZapUniV2(
-  parsedAmount: CurrencyAmount,
-  outputCurrency: Currency,
-  commonParams: { maximumSlippage: Percent; receiver: string; user: string },
-  ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-  staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
-  signal: AbortSignal,
-  chainId: ChainId | undefined
-): Promise<EcoRouterResults> {
-  const abortPromise = new Promise<EcoRouterResults>((_, reject) => {
-    signal.onabort = () => {
-      reject(new DOMException('Aborted', 'AbortError'))
-    }
-  })
-  // Error list
-  const errors: any[] = []
-
-  if (!chainId) {
-    return {
-      errors: [new Error('Unsupported chain')],
-      trades: [],
-    }
-  }
-
-  // Uniswap V2
-  // Get the list of Uniswap V2 platform that support current chain
-  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
-
-  const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
-    try {
-      const getAllCommonUniswapV2PairsParams = {
-        currencyA: parsedAmount.currency,
-        currencyB: outputCurrency,
-        platform,
-        staticJsonRpcProvider,
-      }
-
-      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-
-      return (
-        UniswapV2Trade.computeTradesExactIn({
-          currencyAmountIn: parsedAmount,
-          currencyOut: outputCurrency,
-          maximumSlippage: commonParams.maximumSlippage,
-          maxHops: {
-            maxHops: ecoRouterSourceOptionsParams.uniswapV2.useMultihops ? 3 : 1,
-            maxNumResults: 1,
-          },
-          pairs,
-        })[0] ?? undefined
-      )
-    } catch (error) {
-      errors.push(error)
-      return undefined
-    }
-  })
-
-  // Wait for all promises to resolve, and
-  // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([...uniswapV2TradesList])
-  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
-
-  // Return the list of sorted trades
-  const ecoRouterPromise = {
-    errors,
-    trades: sortTradesByExecutionPrice(unsortedTrades),
-  }
-
-  return await Promise.race([abortPromise, ecoRouterPromise])
 }
 
 function parseCurrencyFromURLParameter(urlParam: any, nativeCurrencyId: string): string {
@@ -661,72 +562,4 @@ export function useDefaultsFromURLSearch():
   }, [dispatch, chainId])
 
   return result
-}
-
-async function getZapBestTradesUniV2(
-  parsedAmount: CurrencyAmount,
-  pairCurrency0: Currency,
-  pairCurrency1: Currency,
-  outputCurrency: Currency,
-  commonParams: { maximumSlippage: Percent; receiver: string; user: string },
-  ecoRouterSourceOptionsParams: { uniswapV2: { useMultihops: boolean } },
-  staticJsonRpcProvider: StaticJsonRpcProvider | undefined,
-  signal: AbortSignal,
-  chainId: ChainId | undefined,
-  isZapIn: boolean
-): Promise<Trade[]> {
-  const bestTradesTokens: Trade[] = []
-  let allPlatformTrades: EcoRouterResults[] = []
-
-  // use half of the parsed amount to find best routes for to different tokens and estimate prices
-  const halfParsedAmount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
-    parsedAmount.currency,
-    chainId
-  )
-
-  // needed for finding route for token0 and token1
-  const inputCurrency0Amount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
-    pairCurrency0,
-    chainId
-  )
-  const inputCurrency1Amount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
-    pairCurrency1,
-    chainId
-  )
-
-  try {
-    const getTradesToken0 = getTradesPromiseZapUniV2(
-      isZapIn ? halfParsedAmount ?? parsedAmount : inputCurrency0Amount ?? parsedAmount,
-      isZapIn ? pairCurrency0 : outputCurrency,
-      commonParams,
-      ecoRouterSourceOptionsParams,
-      staticJsonRpcProvider,
-      signal,
-      chainId
-    )
-
-    const getTradesToken1 = getTradesPromiseZapUniV2(
-      isZapIn ? halfParsedAmount ?? parsedAmount : inputCurrency1Amount ?? parsedAmount,
-      isZapIn ? pairCurrency1 : outputCurrency,
-      commonParams,
-      ecoRouterSourceOptionsParams,
-      staticJsonRpcProvider,
-      signal,
-      chainId
-    )
-
-    allPlatformTrades = await Promise.all<EcoRouterResults>([getTradesToken0, getTradesToken1])
-  } catch (error) {
-    return []
-  }
-
-  bestTradesTokens.push(
-    allPlatformTrades[0].trades.filter(t => !!t?.details)[0],
-    allPlatformTrades[1].trades.filter(t => !!t?.details)[0]
-  )
-
-  return bestTradesTokens
 }
