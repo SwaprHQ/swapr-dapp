@@ -5,9 +5,9 @@ import { Currency, Pair, TokenAmount, UniswapV2RoutablePlatform } from '@swapr/s
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '../hooks'
 import { useToken } from '../hooks/Tokens'
 import { usePairContract, useTokenContract } from '../hooks/useContract'
+import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import { useFeesState } from '../state/fees/hooks'
 import { useMultipleContractSingleData, useSingleCallResult } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
@@ -25,7 +25,7 @@ export function usePairs(
   currencies: [Currency | undefined, Currency | undefined][],
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): [PairState, Pair | null][] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const tokens = useMemo(
     () =>

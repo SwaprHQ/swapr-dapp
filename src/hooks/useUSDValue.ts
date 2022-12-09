@@ -21,8 +21,7 @@ import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } f
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
 import { useTradeExactInUniswapV2 } from './Trades'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platform: UniswapV2RoutablePlatform }> = {
   [ChainId.MAINNET]: { stablecoin: DAI[ChainId.MAINNET], platform: UniswapV2RoutablePlatform.UNISWAP },
@@ -56,7 +55,7 @@ const convertToTokenAmount = (currencyAmount: CurrencyAmount | undefined, chainI
 }
 
 export function useUSDPrice(tokenAmount?: TokenAmount) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   let stablecoin: Token | undefined = undefined
   let platform: UniswapV2RoutablePlatform | undefined = undefined
@@ -94,7 +93,7 @@ export function useUSDPrice(tokenAmount?: TokenAmount) {
 
 export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
   const [price, setPrice] = useState<Price>()
   const [percentagePriceChange24h, setPercentagePriceChange24h] = useState<number>()
   const [isIncome24h, setIsIncome24h] = useState<boolean>()
@@ -231,7 +230,7 @@ export function useHigherUSDValue({
   inputCurrencyAmount?: CurrencyAmount
   outputCurrencyAmount?: CurrencyAmount
 }) {
-  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
+  const { chainId = ChainId.MAINNET } = useWeb3ReactCore()
 
   const inputTokenAmount = convertToTokenAmount(inputCurrencyAmount, chainId)
   const outputTokenAmount = convertToTokenAmount(outputCurrencyAmount, chainId)

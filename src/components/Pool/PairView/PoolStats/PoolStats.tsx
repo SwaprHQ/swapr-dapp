@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { usePrevious } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
-import { useActiveWeb3React } from '../../../../hooks'
 import { useBestAPY } from '../../../../hooks/useBestAPY'
 import { usePairCampaignIndicatorAndLiquidityUSD } from '../../../../hooks/usePairCampaignIndicatorAndLiquidityUSD'
 import { usePair24hVolumeUSD } from '../../../../hooks/usePairVolume24hUSD'
 import { useRouter } from '../../../../hooks/useRouter'
+import { useWeb3ReactCore } from '../../../../hooks/useWeb3ReactCore'
 import { useIsSwitchingToCorrectChain } from '../../../../state/multi-chain-links/hooks'
 import { BlurBox } from '../../../../ui/StyledElements/BlurBox'
 import { formatCurrencyAmount } from '../../../../utils'
@@ -24,7 +24,7 @@ interface PairViewProps {
 
 export function PoolStats({ pair }: PairViewProps) {
   const { navigate } = useRouter()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const previousChainId = usePrevious(chainId)
   const { volume24hUSD } = usePair24hVolumeUSD(pair?.liquidityToken.address)
   const { liquidityUSD } = usePairCampaignIndicatorAndLiquidityUSD(pair)

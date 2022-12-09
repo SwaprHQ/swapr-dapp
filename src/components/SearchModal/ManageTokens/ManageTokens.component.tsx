@@ -4,8 +4,8 @@ import { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from '
 import { Box, Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useToken } from '../../../hooks/Tokens'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useRemoveUserAddedToken, useUserAddedTokens } from '../../../state/user/hooks'
 import { ExternalLink, TYPE } from '../../../theme'
 import { getExplorerLink, isAddress } from '../../../utils'
@@ -20,7 +20,7 @@ import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
 import { ManageTokensProps } from './ManageTokens.types'
 
 export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useTheme()

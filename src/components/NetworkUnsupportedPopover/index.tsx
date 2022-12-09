@@ -17,7 +17,6 @@ interface UnsupportedNetworkPopoverProps {
 export function UnsupportedNetworkPopover({ children, show }: UnsupportedNetworkPopoverProps) {
   const closeModals = useCloseModals()
   const popoverRef = useRef(null)
-
   useOnClickOutside(popoverRef, show ? closeModals : undefined)
 
   return (

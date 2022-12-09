@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { PopupContent } from '../../state/application/actions'
 import { SwapProtocol } from '../../state/transactions/reducer'
 import { TYPE } from '../../theme'
@@ -19,7 +19,7 @@ const RowNoFlex = styled(AutoRow)`
 `
 
 export function TransactionPopup({ hash, success, summary, swapProtocol }: PopupContent) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const { t } = useTranslation('common')
   const theme = useTheme()

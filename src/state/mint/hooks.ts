@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
-import { useActiveWeb3React } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
@@ -35,7 +35,7 @@ export function useDerivedMintInfo(
   poolTokenPercentage?: Percent
   error?: string
 } {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
 
   const { independentField, typedValue, otherTypedValue } = useMintState()

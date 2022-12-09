@@ -26,8 +26,7 @@ import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export enum SwapCallbackState {
   INVALID,
@@ -63,13 +62,13 @@ export function useSwapsCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3ReactCore()
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const deadline = useTransactionDeadline()
 
   return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) {
+    if (!trades || trades.length === 0 || !recipient || !provider || !account || !chainId || !deadline) {
       return []
     }
 
@@ -114,7 +113,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
+  }, [account, allowedSlippage, chainId, deadline, provider, trades, recipient])
 }
 
 /**
@@ -160,7 +159,7 @@ export function useSwapCallback({
   allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName,
 }: UseSwapCallbackParams): UseSwapCallbackReturn {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3ReactCore()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
 
@@ -175,7 +174,7 @@ export function useSwapCallback({
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId) {
+    if (!trade || !provider || !account || !chainId) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -191,7 +190,7 @@ export function useSwapCallback({
       callback: async function onSwap(): Promise<string> {
         // GPv2 trade
         if (trade instanceof CoWTrade) {
-          const signer = library.getSigner()
+          const signer = provider.getSigner()
 
           // Sign the order
           // and then submit the order to GPv2
@@ -224,7 +223,7 @@ export function useSwapCallback({
               }
             }
 
-            return library
+            return provider
               .getSigner()
               .estimateGas(transactionRequest as any)
               .then(gasEstimate => ({
@@ -234,7 +233,7 @@ export function useSwapCallback({
               .catch(gasError => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
-                return library
+                return provider
                   .call(transactionRequest as any)
                   .then(result => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -287,7 +286,7 @@ export function useSwapCallback({
           }
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             gasLimit: calculateGasMargin(gasEstimate),
@@ -317,7 +316,7 @@ export function useSwapCallback({
     }
   }, [
     trade,
-    library,
+    provider,
     account,
     chainId,
     swapCalls,

@@ -12,10 +12,10 @@ import ConfirmSwapModal from '../../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../../components/Swap/styleds'
 import SwapButtons from '../../../components/Swap/SwapButtons'
 import { TradeDetails } from '../../../components/Swap/TradeDetails'
-import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../../hooks/useSwapCallback'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useWrapCallback, WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../../state/swap/hooks'
 import { Field } from '../../../state/swap/types'
@@ -44,7 +44,7 @@ export function Swapbox() {
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   // for expert mode
   const isExpertMode = useIsExpertMode()

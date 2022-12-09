@@ -16,11 +16,11 @@ import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useOnClickOutside } from '../../../hooks/useOnClickOutside'
 import useToggle from '../../../hooks/useToggle'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../../theme'
 import { isAddress } from '../../../utils'
 import { ButtonDark2 } from '../../Button'
@@ -49,7 +49,7 @@ export const CurrencySearch = ({
   isOutputPanel,
 }: CurrencySearchProps) => {
   const { t } = useTranslation('common')
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const theme = useTheme()
   const {
     allTokens,

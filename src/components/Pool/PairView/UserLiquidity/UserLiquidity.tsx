@@ -6,7 +6,7 @@ import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { useTotalSupply } from '../../../../data/TotalSupply'
-import { useActiveWeb3React } from '../../../../hooks'
+import { useWeb3ReactCore } from '../../../../hooks/useWeb3ReactCore'
 import { useTokenBalance } from '../../../../state/wallet/hooks'
 import { BlurBox } from '../../../../ui/StyledElements/BlurBox'
 import { getAccountAnalyticsLink } from '../../../../utils'
@@ -26,7 +26,7 @@ interface UserLiquidityProps {
 }
 
 export function UserLiquidity({ pair }: UserLiquidityProps) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const currency0 = unwrappedToken(pair?.token0)
   const currency1 = unwrappedToken(pair?.token1)
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)

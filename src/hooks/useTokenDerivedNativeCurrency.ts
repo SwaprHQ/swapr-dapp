@@ -6,14 +6,13 @@ import { useMemo } from 'react'
 
 import { useGetTokenQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useTokenDerivedNativeCurrency(token?: Token): {
   loading: boolean
   derivedNativeCurrency: CurrencyAmount
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
 
   const { loading, data, error } = useGetTokenQuery({ variables: { tokenId: token?.address.toLowerCase() || '' } })

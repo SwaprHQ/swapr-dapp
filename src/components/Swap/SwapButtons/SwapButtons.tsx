@@ -4,8 +4,8 @@ import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
 import { SwapData } from '../../../pages/Swap/Swapbox/Swapbox'
 import { Field } from '../../../state/swap/types'
@@ -68,7 +68,7 @@ export function SwapButtons({
   wrapState,
   setWrapState,
 }: SwapButtonsProps) {
-  const { account } = useActiveWeb3React()
+  const { account, isActiveChainSupported } = useWeb3ReactCore()
   const isExpertMode = useIsExpertMode()
   const { t } = useTranslation('swap')
 
@@ -115,7 +115,7 @@ export function SwapButtons({
     return <SwapLoadingButton />
   }
 
-  if (!account) {
+  if (!account || !isActiveChainSupported) {
     return <ButtonConnect />
   }
 

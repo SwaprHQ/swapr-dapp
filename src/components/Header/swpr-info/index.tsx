@@ -3,7 +3,7 @@ import { TokenAmount } from '@swapr/sdk'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { HeaderButton } from '../HeaderButton'
 import { Amount } from '../styled'
 
@@ -24,10 +24,9 @@ interface SwprInfoProps {
 }
 
 export function SwprInfo({ onToggleClaimPopup, newSwprBalance, hasActiveCampaigns }: SwprInfoProps) {
-  const { account } = useActiveWeb3React()
-
+  const { account, isActiveChainSupported } = useWeb3ReactCore()
   return (
-    <Wrapper onClick={onToggleClaimPopup} hide={!account}>
+    <Wrapper onClick={onToggleClaimPopup} hide={!account || !isActiveChainSupported}>
       <Amount borderRadius={hasActiveCampaigns ? '8px 0px 0px 8px !important;' : ''} zero={false}>
         {!account ? (
           '0.000'

@@ -6,7 +6,7 @@ import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../state/application/hooks'
 import { useMultihopManager, useUserPreferredGasPrice } from '../../state/user/hooks'
@@ -83,7 +83,7 @@ export default function AdvancedSwapDetailsDropdown({
   allPlatformTrades,
   onSelectedPlatformChange,
 }: AdvancedSwapDetailsDropdownProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [userPreferredMainnetGasPrice, setUserPreferredMainnetGasPrice] = useUserPreferredGasPrice()
   const [multihopEnabled, toggleMultihop] = useMultihopManager()
   const toggleSettingsMenu = useToggleSettingsMenu()

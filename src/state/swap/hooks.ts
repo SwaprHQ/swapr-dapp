@@ -9,12 +9,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PRE_SELECT_OUTPUT_CURRENCY_ID, SWAP_INPUT_ERRORS } from '../../constants/index'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useAbortController } from '../../hooks/useAbortController'
 import useENS from '../../hooks/useENS'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useParsedQueryString } from '../../hooks/useParsedQueryString'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import {
   EcoRouterResults,
   getExactIn as getExactInFromEcoRouter,
@@ -119,8 +119,7 @@ const quoteTTL = 5 * 60 * 1000
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
-  const { account, chainId, library: provider } = useActiveWeb3React()
-  // Get all options for the input and output currencies
+  const { account, chainId, provider } = useWeb3ReactCore()
   const {
     independentField,
     typedValue,
@@ -427,7 +426,7 @@ export function queryParametersToSwapState(
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const dispatch = useDispatch<AppDispatch>()
   const parsedQs = useParsedQueryString()

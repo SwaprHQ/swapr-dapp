@@ -12,8 +12,7 @@ import { FallbackLoader } from '../components/Loader/FallbackLoader'
 import NetworkWarningModal from '../components/NetworkWarningModal'
 import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
-import Web3ReactManager from '../components/Web3ReactManager'
-import { useActiveWeb3React } from '../hooks'
+import { useWeb3ReactCore } from '../hooks/useWeb3ReactCore'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 
@@ -67,7 +66,7 @@ const Marginer = styled.div`
 `
 
 export default function App() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const location = useLocation()
   const theme = useTheme()
   const [isSwapPage, setIsSwapPage] = useState(false)
@@ -95,21 +94,19 @@ export default function App() {
         <SkeletonTheme baseColor={theme.bg3} highlightColor={theme.bg2}>
           <ApolloProvider client={subgraphClients[chainId as SWPRSupportedChains] || defaultSubgraphClient}>
             <NetworkWarningModal />
-            <Web3ReactManager>
-              <AppWrapper id="app-wrapper">
-                <HeaderWrapper>
-                  <Header />
-                </HeaderWrapper>
-                <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
-                  <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
-                    <Suspense fallback={<FallbackLoader />}>
-                      <Routes />
-                    </Suspense>
-                  </SpaceBg>
-                  <Marginer />
-                </BodyWrapper>
-              </AppWrapper>
-            </Web3ReactManager>
+            <AppWrapper id="app-wrapper">
+              <HeaderWrapper>
+                <Header />
+              </HeaderWrapper>
+              <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
+                <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
+                  <Suspense fallback={<FallbackLoader />}>
+                    <Routes />
+                  </Suspense>
+                </SpaceBg>
+                <Marginer />
+              </BodyWrapper>
+            </AppWrapper>
             <ToastContainer
               draggable={false}
               className="custom-toast-root"

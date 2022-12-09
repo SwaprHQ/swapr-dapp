@@ -1,82 +1,98 @@
 import { ChainId } from '@swapr/sdk'
 
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { providers } from 'ethers'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { Network } from '@web3-react/network'
+import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect'
 
-import swprLogo from '../assets/images/swpr-logo.png'
-import getLibrary from '../utils/getLibrary'
-import { CustomNetworkConnector } from './CustomNetworkConnector'
-import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
-import { CustomWalletLinkConnector } from './CustomWalletLinkConnector'
+import SWAPR_LOGO from './../assets/images/swapr.svg'
+import { ConnectorType, RPC_URLS } from './../constants'
 
-export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
-
-export const network = new CustomNetworkConnector({
-  urls: {
-    [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-    [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
-    [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
-    [ChainId.POLYGON]: 'https://polygon-rpc.com/',
-    [ChainId.ARBITRUM_GOERLI]: 'https://goerli-rollup.arbitrum.io/rpc',
-    [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
-    [ChainId.OPTIMISM_GOERLI]: 'https://goerli.optimism.io',
-    [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
-  },
-  defaultChainId: ChainId.MAINNET,
-})
-
-export const injected = new InjectedConnector({
-  supportedChainIds: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-    ChainId.BSC_MAINNET,
-  ],
-})
-
-// mainnet only
-export const walletConnect = new CustomWalletConnectConnector({
-  rpc: {
-    [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
-    [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
-    [ChainId.POLYGON]: 'https://polygon-rpc.com',
-    [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
-    [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
-    [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-  },
-  bridge: 'https://bridge.walletconnect.org',
-  qrcode: true,
-  pollingInterval: 15000,
-})
-
-let networkLibrary: providers.Web3Provider | undefined
-export function getNetworkLibrary(): providers.Web3Provider {
-  return (networkLibrary = networkLibrary ?? getLibrary(network.provider))
+export interface Connection {
+  connector: Connector
+  hooks: Web3ReactHooks
+  type: ConnectorType
 }
 
-// walletLink implements Metamask's RPC and should respond to most it's methods: window.ethereum.isMetaMask === true
-// More info: https://github.com/walletlink/walletlink
-export const walletLink = new CustomWalletLinkConnector({
-  url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-  appName: 'Swapr',
-  appLogoUrl: swprLogo,
-  supportedChainIds: [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.ARBITRUM_ONE,
-    ChainId.ARBITRUM_RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
-    ChainId.ARBITRUM_GOERLI,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
-    ChainId.BSC_MAINNET,
-  ],
-})
+function onError(error: Error) {
+  console.debug(`web3-react error: ${error}`)
+}
+
+// Network
+export const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
+  actions =>
+    new Network({
+      actions,
+      urlMap: RPC_URLS,
+      defaultChainId: ChainId.MAINNET,
+    })
+)
+
+export const networkConnection: Connection = {
+  connector: web3Network,
+  hooks: web3NetworkHooks,
+  type: ConnectorType.NETWORK,
+}
+
+// MetaMask
+export const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions, onError }))
+
+export const metaMaskConnection: Connection = {
+  connector: metaMask,
+  hooks: metaMaskHooks,
+  type: ConnectorType.METAMASK,
+}
+
+//Wallet Connect
+export const [walletConnect, walletConnectHooks] = initializeConnector<WalletConnect>(
+  actions =>
+    new WalletConnect({
+      actions,
+      options: {
+        rpc: RPC_URLS,
+      },
+      onError,
+    })
+)
+
+export const walletConnectConnection: Connection = {
+  connector: walletConnect,
+  hooks: walletConnectHooks,
+  type: ConnectorType.WALLET_CONNECT,
+}
+
+// Coinbase
+export const [coinbaseWallet, coinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
+  actions =>
+    new CoinbaseWallet({
+      actions,
+      options: {
+        url: RPC_URLS[ChainId.MAINNET],
+        appName: 'Swapr',
+        appLogoUrl: SWAPR_LOGO,
+      },
+      onError,
+    })
+)
+
+export const coinbaseWalletConnection: Connection = {
+  connector: coinbaseWallet,
+  hooks: coinbaseWalletHooks,
+  type: ConnectorType.COINBASE,
+}
+
+export const CONNECTIONS: Connection[] = [
+  metaMaskConnection,
+  coinbaseWalletConnection,
+  walletConnectConnection,
+  networkConnection,
+]
+
+export const connectors: [Connector, Web3ReactHooks][] = [
+  [metaMask, metaMaskHooks],
+  [walletConnect, walletConnectHooks],
+  [coinbaseWallet, coinbaseWalletHooks],
+  [web3Network, web3NetworkHooks],
+]

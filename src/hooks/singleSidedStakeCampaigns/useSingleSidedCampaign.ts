@@ -2,18 +2,18 @@ import { SingleSidedLiquidityMiningCampaign, Token } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '..'
 import { SubgraphSingleSidedStakingCampaign } from '../../apollo'
 import { useGetSingleSidedStakingCampaignQuery } from '../../graphql/generated/schema'
 import { toSingleSidedStakeCampaign } from '../../utils/liquidityMining'
 import { useNativeCurrency } from '../useNativeCurrency'
+import { useWeb3ReactCore } from '../useWeb3ReactCore'
 
 export function useSingleSidedCampaign(campaginAddress: string): {
   loading: boolean
   singleSidedStakingCampaign: SingleSidedLiquidityMiningCampaign | undefined
 } {
   //const hardcodedShit = '0x26358e62c2eded350e311bfde51588b8383a9315'
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useGetSingleSidedStakingCampaignQuery({
     variables: {

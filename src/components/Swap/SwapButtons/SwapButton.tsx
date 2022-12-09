@@ -1,10 +1,9 @@
-import { ChainId } from '@swapr/sdk'
-
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import { ButtonProps } from 'rebass/styled-components'
 import styled, { css } from 'styled-components'
 
+import { isChainSupportedByConnector } from '../../../connectors/utils'
 import {
   PRICE_IMPACT_HIGH,
   PRICE_IMPACT_MEDIUM,
@@ -12,7 +11,7 @@ import {
   RoutablePlatformKeysByNetwork,
   SWAP_INPUT_ERRORS,
 } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { shuffle } from '../../../utils/shuffleArray'
 import { ButtonPrimary } from '../../Button'
 
@@ -141,11 +140,11 @@ export const SwapButton = ({
 
 export const SwapLoadingButton = () => {
   const { t } = useTranslation('swap')
-  const { chainId } = useActiveWeb3React()
-  const routablePlatforms = chainId
-    ? RoutablePlatformKeysByNetwork[chainId]
-    : RoutablePlatformKeysByNetwork[ChainId.MAINNET]
-
+  const { connector, chainId } = useWeb3ReactCore()
+  const routablePlatforms =
+    chainId && isChainSupportedByConnector(connector, chainId)
+      ? RoutablePlatformKeysByNetwork[chainId]
+      : RoutablePlatformKeysByNetwork[1]
   return (
     <StyledSwapLoadingButton>
       <Text marginRight={[0, 2]}>{t('button.findingBestPrice')}</Text>

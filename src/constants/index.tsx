@@ -20,14 +20,11 @@ import {
   WXDAI,
 } from '@swapr/sdk'
 
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
 import { ReactNode } from 'react'
 
-import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
-import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
 import CurveLogo from '../assets/images/curve-logo.png'
 import DFYNLogo from '../assets/images/dfyn-logo.svg'
@@ -35,15 +32,16 @@ import HoneyswapLogo from '../assets/images/honeyswap-logo.svg'
 import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import SwaprLogo from '../assets/images/logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
-import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
 import UniswapLogo from '../assets/images/uniswap-logo.svg'
-import WalletConnect from '../assets/images/wallet-connect.svg'
-import { injected, walletConnect, walletLink } from '../connectors'
+import CoinbaseWalletLogo from '../assets/images/wallets/coinbase.svg'
+import MetaMaskLogo from '../assets/images/wallets/metamask.png'
+import WalletConnectLogo from '../assets/images/wallets/wallet-connect.svg'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -243,61 +241,82 @@ export const PINNED_PAIRS: {
     [DAI[ChainId.MAINNET], USDT[ChainId.MAINNET]],
   ],
 }
-
+export const MAINNET_PROVIDER = new providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`)
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
+export enum ConnectorType {
+  METAMASK = 'METAMASK',
+  COINBASE = 'COINBASE',
+  WALLET_CONNECT = 'WALLET_CONNECT',
+  NETWORK = 'NETWORK',
+}
+
 export interface WalletInfo {
-  connector?: AbstractConnector
   name: string
-  iconName: string
+  logo: string
   description: string
-  href: string | null
+  link: string | null
   color: string
-  primary?: true
   mobile?: true
   mobileOnly?: true
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  INJECTED: {
-    connector: injected,
-    name: 'Injected',
-    iconName: RightArrow,
-    description: 'Injected web3 provider.',
-    href: null,
-    color: '#010101',
-    primary: true,
-  },
-  METAMASK: {
-    connector: injected,
+  [ConnectorType.METAMASK]: {
     name: 'MetaMask',
-    iconName: Metamask,
+    logo: MetaMaskLogo,
     description: 'Easy-to-use browser extension.',
-    href: null,
+    link: 'https://metamask.io/',
     color: '#E8831D',
     mobile: true,
   },
-  WALLET_CONNECT: {
-    connector: walletConnect,
-    name: 'WalletConnect',
-    iconName: WalletConnect,
-    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
-    href: null,
+  [ConnectorType.COINBASE]: {
+    name: 'Coinbase Wallet',
+    logo: CoinbaseWalletLogo,
+    description: 'Connect using Coinbase Wallet.',
+    link: null,
     color: '#4196FC',
     mobile: true,
   },
-  COINBASE: {
-    connector: walletLink,
-    name: 'Coinbase Wallet',
-    iconName: Coinbase,
-    description: 'Connect using Coinbase Wallet.',
-    href: null,
+  [ConnectorType.WALLET_CONNECT]: {
+    name: 'WalletConnect',
+    logo: WalletConnectLogo,
+    description: 'Connect to Trust Wallet, Rainbow Wallet and more...',
+    link: null,
     color: '#4196FC',
+    mobile: true,
+  },
+  [ConnectorType.NETWORK]: {
+    name: 'Network',
+    logo: '',
+    description: 'Web3 Network',
+    link: null,
+    color: '#000000',
     mobile: true,
   },
 }
 
-export const NetworkContextName = 'NETWORK'
+export const BACKFILLABLE_WALLETS = [ConnectorType.METAMASK, ConnectorType.COINBASE, ConnectorType.WALLET_CONNECT]
+
+const getSupportedChainsByConnector = () => {
+  const CONNECTOR_SUPPORTED_NETWORKS: { [key in ConnectorType]: ChainId[] } = {
+    COINBASE: [],
+    METAMASK: [],
+    NETWORK: [],
+    WALLET_CONNECT: [],
+  }
+
+  const networks = Object.values(ChainId).filter(v => typeof v !== 'string') as ChainId[]
+
+  // note: if network is NOT supported by connector it has to be excluded
+  for (const connector of Object.values(ConnectorType)) {
+    CONNECTOR_SUPPORTED_NETWORKS[connector] = networks
+  }
+
+  return CONNECTOR_SUPPORTED_NETWORKS
+}
+
+export const SUPPORTED_NETWORKS = getSupportedChainsByConnector()
 
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50
@@ -348,7 +367,6 @@ export interface NetworkDetails {
 }
 
 export interface NetworkOptionalDetails {
-  iconUrls?: string[] // Currently ignored.
   partnerChainId?: ChainId //arbitrum chainId if supported
   isArbitrum: boolean
 }
@@ -486,6 +504,15 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
     blockExplorerUrls: ['https://testnet.bscscan.com/'],
   },
+}
+
+export const RPC_URLS: { [chainId: number]: string } = {
+  [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+  [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
+  [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
+  [ChainId.POLYGON]: 'https://polygon-rpc.com/',
+  [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3',
+  [ChainId.ARBITRUM_RINKEBY]: 'https://rinkeby.arbitrum.io/rpc',
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {

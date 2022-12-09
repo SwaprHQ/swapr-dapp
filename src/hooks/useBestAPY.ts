@@ -13,14 +13,13 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from '.'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useBestAPY(pair?: Pair | null): {
   loading: boolean
   bestAPY?: Percent
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
   const nativeCurrency = useNativeCurrency()
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])

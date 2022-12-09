@@ -4,11 +4,10 @@ import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { useGetPairsQuery } from '../graphql/generated/schema'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useAllPairs(): { loading: boolean; pairs: Pair[] } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { loading, data, error } = useGetPairsQuery()
 
   return useMemo(() => {

@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { AlertTriangle } from 'react-feather'
-import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { NETWORK_DETAIL } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
-import { unavailableRedirect } from '../../hooks/useNetworkSwitch'
+import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useIsSwitchingToCorrectChain } from '../../state/multi-chain-links/hooks'
 import { TYPE } from '../../theme'
-import { switchOrAddNetwork } from '../../utils'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
 import Modal from '../Modal'
@@ -34,14 +32,12 @@ const StyledWarningIcon = styled(AlertTriangle)`
 `
 
 export default function NetworkWarningModal() {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const urlLoadedChainId = useTargetedChainIdFromUrl()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const { selectNetwork } = useNetworkSwitch()
 
   const [open, setOpen] = useState(false)
-
   useEffect(() => {
     setOpen(!!account && !!chainId && !!urlLoadedChainId && !!switchingToCorrectChain)
   }, [account, chainId, switchingToCorrectChain, urlLoadedChainId])
@@ -50,10 +46,8 @@ export default function NetworkWarningModal() {
 
   const handleAddClick = useCallback(async () => {
     if (!urlLoadedChainId) return
-    const result = await switchOrAddNetwork(NETWORK_DETAIL[urlLoadedChainId], account || undefined)
-    // success scenario - user accepts the change on the popup window
-    if (result === null) unavailableRedirect(urlLoadedChainId, navigate, pathname)
-  }, [urlLoadedChainId, account, navigate, pathname])
+    selectNetwork(urlLoadedChainId)
+  }, [urlLoadedChainId, selectNetwork])
 
   return (
     <Modal isOpen={open} onDismiss={handleDismiss} maxHeight={90}>
@@ -95,7 +89,7 @@ export default function NetworkWarningModal() {
                     >
                       To add/switch to the requested network, click the button below.
                     </TYPE.Body>
-                    <ButtonPrimary onClick={handleAddClick}>Add</ButtonPrimary>
+                    <ButtonPrimary onClick={handleAddClick}>Add or switch</ButtonPrimary>
                   </>
                 )}
             </UpperSectionContainer>

@@ -13,10 +13,10 @@ import RewardsSelection from '../../../components/LiquidityMining/Create/Steps/R
 import SingleOrPairCampaign from '../../../components/LiquidityMining/Create/Steps/SingleOrPairCampaign'
 import DurationAndLocking from '../../../components/LiquidityMining/Create/Steps/Time'
 import { PageMetaData } from '../../../components/PageMetaData'
-import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { useCreateLiquidityMiningCallback } from '../../../hooks/useCreateLiquidityMiningCallback'
 import { useNewLiquidityMiningCampaign } from '../../../hooks/useNewLiquidityMiningCampaign'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
@@ -106,7 +106,7 @@ const reducer = (state: Reward[], action: Actions): Reward[] => {
 export default function CreateLiquidityMining() {
   const { t } = useTranslation('liquidity')
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [attemptingTransaction, setAttemptingTransaction] = useState(false)
   const [transactionHash, setTransactionHash] = useState<string | null>(null)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)

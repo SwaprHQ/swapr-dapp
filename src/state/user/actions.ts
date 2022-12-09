@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
+import { ConnectorType } from '../../constants'
 import { MainnetGasPrice } from '../application/actions'
 import { ChartOptions, SwapTabs } from './reducer'
 
@@ -35,6 +36,13 @@ export const removeSerializedPair = createAction<{ serializedPair: SerializedPai
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const updateUserAdvancedSwapDetails = createAction<{ userAdvancedSwapDetails: boolean }>(
   'user/updateUserAdvancedSwapDetails'
+)
+export const setConnectorError = createAction<{ connector: ConnectorType; connectorError: string | undefined }>(
+  'user/setConnectorError'
+)
+export const updatePendingConnector = createAction<{ pendingConnector: ConnectorType }>('user/updatePendingConnector')
+export const updateSelectedConnector = createAction<{ selectedConnector: ConnectorType }>(
+  'user/updateSelectedConnector'
 )
 export const updateSelectedChartOption = createAction<{ selectedChartOption: ChartOptions }>(
   'user/updateSelectedChartOption'

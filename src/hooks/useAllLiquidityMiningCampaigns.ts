@@ -18,15 +18,14 @@ import {
 import { useSWPRToken } from './swpr/useSWPRToken'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFilterType) {
   const token0Address = pair?.token0?.address.toLowerCase()
   const token1Address = pair?.token1?.address.toLowerCase()
   const pairAddress = pair?.liquidityToken.address.toLowerCase()
 
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
 
   const subgraphAccountId = account?.toLowerCase() ?? ''
 

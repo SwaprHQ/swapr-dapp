@@ -8,8 +8,8 @@ import { useMemo } from 'react'
 
 import { subgraphBlocksClients } from '../apollo/client'
 import { ZERO_USD } from '../constants'
-import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const GET_BLOCK_BY_TIMESTAMP = gql`
   query getBlockFromTimestamp($timestamp: String!) {
@@ -52,7 +52,7 @@ const PAIR_VOLUME_TILL_BLOCK = gql`
 `
 
 function useBlockByTimestamp(timestamp: string) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const { loading, data, error } = useQuery(GET_BLOCK_BY_TIMESTAMP, {
     client: subgraphBlocksClients[chainId as SWPRSupportedChains],

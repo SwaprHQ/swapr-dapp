@@ -19,10 +19,10 @@ import { RowBetween } from '../../components/Row'
 import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearchModal'
 import { Switch } from '../../components/Switch'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../theme'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
@@ -193,7 +193,7 @@ function Title({
 
 export default function Pools() {
   const { t } = useTranslation('pool')
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const [filterToken, setFilterToken] = useState<Token | undefined>()
   const [aggregatedDataFilter, setAggregatedDataFilter] = useState(PairsFilterType.ALL)
   const [sortBy, setSortBy] = useState(LIQUIDITY_SORTING_TYPES.TVL)

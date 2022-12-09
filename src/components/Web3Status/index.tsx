@@ -1,20 +1,14 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { NetworkContextName } from '../../constants'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
-import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import {
   useCloseModals,
-  useModalOpen,
   useNetworkSwitcherPopoverToggle,
   useOpenModal,
   useWalletSwitcherPopoverToggle,
@@ -71,20 +65,18 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
 }
 
-export enum ModalView {
-  Pending,
-  Account,
-}
-
 export default function Web3Status() {
-  const { active, activate, account, error } = useWeb3React()
-  const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
-  const contextNetwork = useWeb3React(NetworkContextName)
-  const navigate = useNavigate()
-
-  const { ENSName } = useENSName(account ?? undefined)
+  const { account, connector, chainId, ENSName, isActiveChainSupported, tryActivation, tryDeactivation } =
+    useWeb3ReactCore()
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
   const allTransactions = useAllSwapTransactions()
+  const navigate = useNavigate()
+  const { t } = useTranslation('common')
+  const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
+  const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
+  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
+  const mobileByMedia = useIsMobileByMedia()
+  const closeModals = useCloseModals()
 
   const pending = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -94,107 +86,48 @@ export default function Web3Status() {
       .map(tx => tx.hash)
   }, [allTransactions])
 
-  const [modal, setModal] = useState<ModalView | null>(null)
-
-  const [pendingError, setPendingError] = useState<boolean>()
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
-
-  const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
-  const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
-
-  const tryActivation = async (connector: AbstractConnector | undefined) => {
-    setPendingWallet(connector)
-    setModal(ModalView.Pending)
-
-    // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    // eslint-disable-next-line
-    // @ts-ignore
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-      connector.walletConnectProvider = undefined
-    }
-
-    connector &&
-      activate(connector, undefined, true).catch(error => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector)
-        } else {
-          setPendingError(true)
-        }
-      })
-  }
-
-  const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
-  const { t } = useTranslation('common')
-  const mobileByMedia = useIsMobileByMedia()
-  const [isUnsupportedNetwork, setUnsupportedNetwork] = useState(false)
-  const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
-  const closeModals = useCloseModals()
-
-  const unsupportedChainIdError = useUnsupportedChainIdError()
-
   useEffect(() => {
-    if (!isUnsupportedNetworkModal && !isUnsupportedNetwork && unsupportedChainIdError) {
-      setUnsupportedNetwork(true)
+    if (!isActiveChainSupported) {
       openUnsupportedNetworkModal()
-    } else if (!isUnsupportedNetworkModal && isUnsupportedNetwork && !unsupportedChainIdError) {
-      setUnsupportedNetwork(false)
-    } else if (isUnsupportedNetworkModal && !unsupportedChainIdError) {
+    } else {
       closeModals()
     }
-  }, [
-    isUnsupportedNetwork,
-    openUnsupportedNetworkModal,
-    isUnsupportedNetworkModal,
-    unsupportedChainIdError,
-    closeModals,
-  ])
+  }, [closeModals, isActiveChainSupported, openUnsupportedNetworkModal])
 
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (!contextNetwork.active && !active) {
-    return null
-  }
-  if (error) {
-    return (
-      <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
-        <SwitchNetworkButton onClick={clickHandler}>
-          Switch network
-          <TriangleIcon />
-        </SwitchNetworkButton>
-      </NetworkSwitcherPopover>
-    )
-  }
-
   return (
     <>
-      <ConnectWalletPopover tryActivation={tryActivation}>
+      <ConnectWalletPopover tryActivation={tryActivation} tryDeactivation={tryDeactivation}>
         <Row alignItems="center" justifyContent="flex-end">
-          {networkConnectorChainId && !account && (
+          {!account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
               {mobileByMedia ? 'Connect' : t('connectWallet')}
             </Button>
           )}
-          <AccountStatus
-            pendingTransactions={pending}
-            ENSName={ENSName ?? undefined}
-            account={account}
-            connector={activeConnector}
-            networkConnectorChainId={networkConnectorChainId}
-            onAddressClick={() => navigate('/account')}
-            avatar={ensAvatar ?? undefined}
-          />
+          {isActiveChainSupported ? (
+            <AccountStatus
+              pendingTransactions={pending}
+              ENSName={ENSName ?? undefined}
+              account={account}
+              connector={connector}
+              networkConnectorChainId={chainId}
+              onAddressClick={() => navigate('/account')}
+              avatar={ensAvatar ?? undefined}
+            />
+          ) : (
+            <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
+              <SwitchNetworkButton onClick={clickHandler}>
+                Switch network
+                <TriangleIcon />
+              </SwitchNetworkButton>
+            </NetworkSwitcherPopover>
+          )}
         </Row>
       </ConnectWalletPopover>
-      <WalletModal
-        modal={modal}
-        setModal={setModal}
-        setPendingError={setPendingError}
-        pendingWallet={pendingWallet}
-        pendingError={pendingError}
-        tryActivation={tryActivation}
-      />
+      <WalletModal />
     </>
   )
 }

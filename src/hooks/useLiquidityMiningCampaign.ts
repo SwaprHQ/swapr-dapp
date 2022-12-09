@@ -9,15 +9,14 @@ import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 // the id is the campaign's smart contract address
 export function useLiquidityMiningCampaign(
   targetedPair?: Pair,
   id?: string
 ): { loading: boolean; campaign: LiquidityMiningCampaign | null; containsKpiToken: boolean } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { loading, error, data } = useGetLiquidityMiningCampaignQuery({
     variables: { liquidityMiningCampaignId: id?.toLowerCase() || '' },
   })

@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
 import { getChainPair } from '../utils/arbitrum'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export const useChains = () => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   return useMemo(() => getChainPair(chainId), [chainId])
 }

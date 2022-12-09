@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppState } from '..'
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { debounce } from '../../utils/debounce'
 import { useBlockNumber } from '../application/hooks'
 import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
@@ -51,7 +51,7 @@ function useCallsData(
   calls: (Call | undefined)[],
   { blocksPerFetch }: ListenerOptions = { blocksPerFetch: 1 }
 ): CallResult[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const callResults = useSelector<AppState, MulticallState['callResults']>(state => state.multicall.callResults)
   const dispatch = useDispatch()
 

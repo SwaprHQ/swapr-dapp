@@ -1,10 +1,9 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 
 import { carrotSubgraphClient } from '../apollo/client'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useCarrotSubgraphClient(): ApolloClient<NormalizedCacheObject> | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   return chainId ? carrotSubgraphClient[chainId] : undefined
 }

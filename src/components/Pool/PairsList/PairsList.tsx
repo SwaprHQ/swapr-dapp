@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
 import { AggregatedPairs } from '../../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useNativeCurrencyUSDPrice } from '../../../hooks/useNativeCurrencyUSDPrice'
 import { usePage } from '../../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { BlurBox } from '../../../ui/StyledElements/BlurBox'
 import { ListLayout } from '../../../ui/StyledElements/ListLayout'
 import { TableHeader } from '../../../ui/StyledElements/TableHeader'
@@ -35,7 +35,7 @@ interface PairsListProps {
 }
 
 export function PairsList({ aggregatedPairs, loading, filter, singleSidedStake }: PairsListProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const itemsPage = usePage(aggregatedPairs, responsiveItemsPerPage, page, 0)

@@ -3,7 +3,7 @@ import { _10000 } from '@swapr/sdk'
 import { Trans } from 'react-i18next'
 import { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
 import { UnderlinedSmallText, UppercaseHelper } from './CurrencyInputPanel.styles'
@@ -18,7 +18,7 @@ export const CurrencyUserBalance = ({
   customBalanceText,
   onMax,
 }: CurrencyUserBalanceProps) => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const theme = useTheme()
 
   if (!account) return null

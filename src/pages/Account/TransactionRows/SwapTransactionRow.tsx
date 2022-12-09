@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Box, Flex } from 'rebass'
 
-import { useActiveWeb3React } from '../../../hooks'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { getExplorerLink, shortenAddress } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
@@ -25,7 +25,7 @@ interface SwapTransactionRowProps {
 
 export function SwapTransactionRow({ transaction, showBackgroundStatus }: SwapTransactionRowProps) {
   const { t } = useTranslation('account')
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const fromAddress = shortenAddress(`${account}`)
   const { type, status, from, to, confirmedTime, network, hash, swapProtocol, addedTime, alternateReceiver } =
     transaction

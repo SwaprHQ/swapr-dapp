@@ -11,8 +11,8 @@ import { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
+import { useWeb3ReactCore } from '../../../../../hooks/useWeb3ReactCore'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../../../Button'
 import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
@@ -76,7 +76,7 @@ export default function PreviewAndCreate({
   setSimulatedPrice,
   simulatedPrice,
 }: PreviewProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false)
   const { loading: loadingNativeCurrencyUsdPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
   useEffect(() => {

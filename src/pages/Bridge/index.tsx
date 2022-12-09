@@ -13,7 +13,7 @@ import {
 } from '../../components/NetworkSwitcher'
 import { PageMetaData } from '../../components/PageMetaData'
 import { RowBetween } from '../../components/Row'
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import {
   useBridgeActionHandlers,
   useBridgeCollectHandlers,
@@ -117,7 +117,7 @@ export function isNetworkSupported(chainId: ChainId): boolean {
 
 export default function Bridge() {
   const dispatch = useDispatch()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const ecoBridge = useEcoBridge()
 
   const bridgeSummaries = useSelector((state: AppState) =>

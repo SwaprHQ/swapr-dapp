@@ -8,8 +8,8 @@ import { Box, Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
 import TokenListLogo from '../../../assets/images/tokenlist.svg'
-import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../../state/user/hooks'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
@@ -41,7 +41,7 @@ const CurrencyRow = ({
   selectedTokenList,
   hideBalance,
 }: CurrencyRowProps) => {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
   const customAdded = useIsUserAddedToken(currency)
 
@@ -130,7 +130,7 @@ export const CurrencyList = ({
   selectedTokenList,
   hideBalance,
 }: CurrencyListProps) => {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const [hasBreakLine, setHasBreakLine] = useState(false)
   const itemData = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {

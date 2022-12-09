@@ -2,7 +2,7 @@ import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
-import { useActiveWeb3React } from '../../../hooks'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { toDXSwapLiquidityToken, useTrackedTokenPairs } from '../../../state/user/hooks'
 import { useAllTokenBalances, useTokenBalances } from '../../../state/wallet/hooks'
 
@@ -80,7 +80,7 @@ export const useTokenComparator = (inverted: boolean): ((tokenA: Token, tokenB: 
 }
 
 export function usePairsComparator(inverted: boolean): (pairA: Pair, pairB: Pair) => number {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const trackedTokenPairs = useTrackedTokenPairs()
   const balances = useTokenBalances(
     account || undefined,

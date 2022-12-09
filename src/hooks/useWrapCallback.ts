@@ -10,8 +10,7 @@ import { useAllSwapTransactions, useTransactionAdder } from '../state/transactio
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -48,7 +47,7 @@ export function useWrapCallback(
   isGnosisTrade = false,
   typedValue?: string // can be also obtained from the SwapState
 ): UseWrapCallbackReturn {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapperToken = useWrappingToken(nativeCurrency)
   const nativeCurrencyWrapperContract = useNativeCurrencyWrapperContract()

@@ -3,7 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback, useEffect, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
@@ -132,7 +132,7 @@ export const TransactionSettings = ({
   multihop,
   onMultihopChange,
 }: TransactionSettingsProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const formattedRawSlippage = (rawSlippage / 100).toFixed(2)
 
   const [slippageInput, setSlippageInput] = useState(formattedRawSlippage)

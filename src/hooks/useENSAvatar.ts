@@ -1,6 +1,7 @@
-import { useWeb3React } from '@web3-react/core'
 import { CID } from 'multiformats/cid'
 import { useEffect, useState } from 'react'
+
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
 
@@ -50,7 +51,7 @@ const supportedENSChainIds = [1, 4]
 export function useENSAvatar(ensName?: string | null) {
   const [avatar, setAvatar] = useState<ENSAvatarData>()
   const [loading, setLoading] = useState<boolean>(true)
-  const { chainId } = useWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   useEffect(() => {
     // ENS supports Mainnet and Rinkeby

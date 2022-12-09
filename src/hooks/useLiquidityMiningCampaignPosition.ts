@@ -6,8 +6,7 @@ import { useMemo } from 'react'
 
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useStakingRewardsDistributionContract } from './useContract'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 interface UseLiquidityMiningCampaignUserPositionHookResult {
   stakedTokenAmount: PricedTokenAmount | null
@@ -20,7 +19,7 @@ export function useLiquidityMiningCampaignPosition(
   campaign?: LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign,
   account?: string
 ): UseLiquidityMiningCampaignUserPositionHookResult {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const distributionContract = useStakingRewardsDistributionContract(campaign?.address, true)
 

@@ -9,8 +9,7 @@ import { useMemo } from 'react'
 import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const KPI_TOKENS_QUERY = gql`
   query kpiTokens($ids: [ID!]!) {
@@ -55,7 +54,7 @@ interface KpiTokensQueryResult {
 }
 
 export const useKpiTokens = (addresses: string[]): { loading: boolean; kpiTokens: KpiToken[] } => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const carrotSubgraphClient = useCarrotSubgraphClient()
 

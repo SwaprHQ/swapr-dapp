@@ -7,22 +7,25 @@ export const getNetworkInfo = (chainId: ChainId, customPreset: NetworkOptionsPre
   const network = customPreset.find(net => {
     return net.chainId === chainId
   })
+
+  const networkDetails = NETWORK_DETAIL[chainId] ?? NETWORK_DETAIL[ChainId.MAINNET]
+
   return {
     name: network ? network.name : '', //name displayed in swapr
     logoSrc: network ? network.logoSrc : '',
     color: network ? network.color : '',
     tag: network ? network.tag : undefined,
-    chainName: NETWORK_DETAIL[chainId].chainName, //name used by metamask
-    chainId: NETWORK_DETAIL[chainId].chainId,
-    rpcUrl: NETWORK_DETAIL[chainId].rpcUrls,
+    chainName: networkDetails.chainName, //name used by connectors
+    chainId: networkDetails.chainId,
     nativeCurrency: {
-      name: NETWORK_DETAIL[chainId].nativeCurrency.name,
-      symbol: NETWORK_DETAIL[chainId].nativeCurrency.symbol,
-      decimals: NETWORK_DETAIL[chainId].nativeCurrency.decimals,
+      name: networkDetails.nativeCurrency.name,
+      symbol: networkDetails.nativeCurrency.symbol,
+      decimals: networkDetails.nativeCurrency.decimals,
     },
+    rpcUrls: networkDetails.rpcUrls,
+    blockExplorerUrls: networkDetails.blockExplorerUrls,
     isArbitrum: NETWORK_OPTIONAL_DETAIL[chainId]?.isArbitrum ?? false,
     partnerChainId: NETWORK_OPTIONAL_DETAIL[chainId]?.partnerChainId,
-    iconUrls: NETWORK_OPTIONAL_DETAIL[chainId]?.iconUrls ?? undefined,
   }
 }
 

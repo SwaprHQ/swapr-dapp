@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useBlockNumber } from '../../state/application/hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink } from '../../utils'
@@ -63,7 +63,7 @@ const Spinner = styled.div`
 `
 
 export default function Polling() {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const blockNumber = useBlockNumber()
 

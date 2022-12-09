@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import { NETWORK_DETAIL, ZERO_ADDRESS } from '../../constants'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import sortByListPriority from '../../utils/listSort'
 import { AppState } from '../index'
 import { WrappedTokenInfo } from './wrapped-token-info'
@@ -164,14 +164,14 @@ export function useCombinedActiveList(): TokenAddressMap {
 export function useAllTokensFromActiveListsOnCurrentChain(): Readonly<{
   [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
 }> {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const activeListUrls = useActiveListUrls()
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
   return useMemo(() => combinedList[chainId || ChainId.MAINNET], [chainId, combinedList])
 }
 
 export function useTokenInfoFromActiveListOnCurrentChain(currency?: Currency): WrappedTokenInfo | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const activeListUrls = useActiveListUrls()
   const combinedList = useCombinedTokenMapFromUrls(activeListUrls)
 

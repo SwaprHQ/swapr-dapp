@@ -3,8 +3,9 @@ import { ChainId } from '@swapr/sdk'
 import { Placement } from '@popperjs/core'
 import React, { ReactNode } from 'react'
 
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
+import { isChainSupportedByConnector } from '../../connectors/utils'
 import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { createNetworksList } from '../../utils/networksList'
@@ -18,19 +19,13 @@ interface NetworkSwitcherPopoverProps {
 
 export default function NetworkSwitcherPopover({ children, modal, placement }: NetworkSwitcherPopoverProps) {
   const closeModals = useCloseModals()
-  const { connector, chainId: activeChainId, account } = useActiveWeb3React()
+  const { connector, chainId: activeChainId, account } = useWeb3ReactCore()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
-  const unsupportedChainIdError = useUnsupportedChainIdError()
 
-  const { selectNetwork } = useNetworkSwitch({
-    onSelectNetworkCallback: closeModals,
-  })
+  const isNetworkDisabled = (chainId: ChainId) =>
+    activeChainId === chainId || !isChainSupportedByConnector(connector, chainId)
 
-  const isNetworkDisabled = (chainId: ChainId) => {
-    return (
-      connector?.supportedChainIds?.indexOf(chainId) === -1 || (!unsupportedChainIdError && activeChainId === chainId)
-    )
-  }
+  const { selectNetwork } = useNetworkSwitch()
 
   const networkList = createNetworksList({
     networkOptionsPreset,

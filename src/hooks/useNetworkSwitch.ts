@@ -1,51 +1,58 @@
 import { ChainId, SWPR } from '@swapr/sdk'
 
-import { InjectedConnector } from '@web3-react/injected-connector'
+import { Connector } from '@web3-react/types'
 import { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom'
 
-import { CustomNetworkConnector } from '../connectors/CustomNetworkConnector'
-import { CustomWalletConnectConnector } from '../connectors/CustomWalletConnectConnector'
-import { CustomWalletLinkConnector } from '../connectors/CustomWalletLinkConnector'
-import { NETWORK_DETAIL } from '../constants'
-import { switchOrAddNetwork } from '../utils'
+import { networkConnection, walletConnectConnection } from '../connectors'
+import { getConnection, isChainSupportedByConnector } from '../connectors/utils'
+import { AppDispatch } from '../state'
+import { setConnectorError } from '../state/user/actions'
+import { getErrorMessage } from '../utils/getErrorMessage'
+import { getNetworkInfo } from '../utils/networksList'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
-import { useActiveWeb3React, useUnsupportedChainIdError } from '.'
+const switchNetwork = async (connector: Connector, chainId: ChainId) => {
+  if (!isChainSupportedByConnector(connector, chainId))
+    throw new Error(`Chain ${chainId} not supported for connector (${typeof connector})`)
 
-export type UseNetworkSwitchProps = {
-  onSelectNetworkCallback?: () => void
+  if (connector === walletConnectConnection.connector || connector === networkConnection.connector) {
+    await connector.activate(chainId)
+    return
+  }
+
+  const { chainName, rpcUrls, nativeCurrency, blockExplorerUrls } = getNetworkInfo(chainId)
+  const addChainParameter = {
+    chainId,
+    chainName,
+    rpcUrls,
+    nativeCurrency,
+    blockExplorerUrls,
+  }
+  await connector.activate(addChainParameter)
 }
 
-export const useNetworkSwitch = ({ onSelectNetworkCallback }: UseNetworkSwitchProps = {}) => {
-  const { connector, chainId, account } = useActiveWeb3React()
-  const unsupportedChainIdError = useUnsupportedChainIdError()
+export const useNetworkSwitch = () => {
+  const { connector } = useWeb3ReactCore()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
   const selectNetwork = useCallback(
-    async (optionChainId?: ChainId) => {
-      if (optionChainId === undefined || (optionChainId === chainId && !unsupportedChainIdError)) return
-
-      let changeChainIdResult: unknown
-      if (!account && !unsupportedChainIdError && connector instanceof CustomNetworkConnector) {
-        connector.changeChainId(optionChainId)
-        unavailableRedirect(optionChainId, navigate, pathname)
-      } else if (!account && unsupportedChainIdError && connector instanceof CustomNetworkConnector)
-        changeChainIdResult = await connector.switchUnsupportedNetwork(NETWORK_DETAIL[optionChainId])
-      else if (connector instanceof InjectedConnector)
-        changeChainIdResult = await switchOrAddNetwork(NETWORK_DETAIL[optionChainId], account || undefined)
-      else if (connector instanceof CustomWalletLinkConnector)
-        changeChainIdResult = await connector.changeChainId(NETWORK_DETAIL[optionChainId], account || undefined)
-      else if (connector instanceof CustomWalletConnectConnector) {
-        connector.changeChainId(optionChainId)
-        unavailableRedirect(optionChainId, navigate, pathname)
+    async (chainId: ChainId) => {
+      try {
+        unavailableRedirect(chainId, navigate, pathname)
+        await switchNetwork(connector, chainId)
+        dispatch(setConnectorError({ connector: getConnection(connector).type, connectorError: undefined }))
+      } catch (error) {
+        console.error('Failed to switch networks', error)
+        dispatch(
+          setConnectorError({ connector: getConnection(connector).type, connectorError: getErrorMessage(error) })
+        )
       }
-
-      if (onSelectNetworkCallback) onSelectNetworkCallback()
-      // success scenario - user accepts the change on the popup window
-      if (changeChainIdResult === null) unavailableRedirect(optionChainId, navigate, pathname)
     },
-    [account, chainId, connector, navigate, onSelectNetworkCallback, pathname, unsupportedChainIdError]
+    [connector, dispatch, navigate, pathname]
   )
 
   return {

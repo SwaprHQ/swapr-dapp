@@ -1,12 +1,13 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { Connector } from '@web3-react/types'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { injected } from '../../connectors'
+import { getConnection } from '../../connectors/utils'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
 import { Loader } from '../Loader'
+import { ConnectorProps } from '../WalletSwitcher/WalletOption.types'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -52,44 +53,26 @@ const LoadingWrapper = styled.div`
 export default function PendingView({
   connector,
   error = false,
-  setPendingError,
   tryActivation,
 }: {
-  connector?: AbstractConnector
+  connector: Connector
   error?: boolean
-  setPendingError: (error: boolean) => void
-  tryActivation: (connector: AbstractConnector) => void
-}) {
-  const isMetamask = window?.ethereum?.isMetaMask
+} & Pick<ConnectorProps, 'tryActivation'>) {
+  const { name, logo } = SUPPORTED_WALLETS[getConnection(connector).type]
 
   return (
     <PendingSection>
-      {Object.keys(SUPPORTED_WALLETS).map(key => {
-        const option = SUPPORTED_WALLETS[key]
-        if (option.connector === connector) {
-          if (option.connector === injected) {
-            if (isMetamask && option.name !== 'MetaMask') {
-              return null
-            }
-            if (!isMetamask && option.name === 'MetaMask') {
-              return null
-            }
-          }
-          return (
-            <Flex key={key} mb="28px" justifyContent="center">
-              <Box mr="10px">
-                <img src={option.iconName} alt="logo" width="24px" height="24px" />
-              </Box>
-              <Box>
-                <TYPE.Body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
-                  {option.name}
-                </TYPE.Body>
-              </Box>
-            </Flex>
-          )
-        }
-        return null
-      })}
+      <Flex mb="28px" justifyContent="center">
+        <Box mr="10px">
+          <img src={logo} alt="logo" width="24px" height="24px" />
+        </Box>
+        <Box>
+          <TYPE.Body color="white" fontWeight="500" fontSize="22px" lineHeight="27px">
+            {name}
+          </TYPE.Body>
+        </Box>
+      </Flex>
+
       <LoadingMessage error={error}>
         <LoadingWrapper>
           {error ? (
@@ -107,7 +90,6 @@ export default function PendingView({
               <ButtonPrimary
                 padding="8px 14px"
                 onClick={() => {
-                  setPendingError(false)
                   connector && tryActivation(connector)
                 }}
               >

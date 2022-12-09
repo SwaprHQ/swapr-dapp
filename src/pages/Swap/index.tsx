@@ -12,11 +12,11 @@ import { Tabs } from '../../components/Swap/Tabs'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { TESTNETS } from '../../constants'
 import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../constants/features'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
 import { useUpdateSelectedChartOption, useUpdateSelectedSwapTab } from '../../state/user/hooks'
@@ -63,7 +63,6 @@ export default function Swap() {
   const { navigate, pathname } = useRouter()
   const isInProMode = pathname.includes('/pro')
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -92,7 +91,7 @@ export default function Swap() {
     }
   }, [isDesktop, navigate, isInProMode])
 
-  const { chainId } = useActiveWeb3React()
+  const { chainId, isActiveChainSupported } = useWeb3ReactCore()
   const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
 
   const { currencies } = useDerivedSwapInfo(platformOverride || undefined)
@@ -126,7 +125,7 @@ export default function Swap() {
         tokens={urlLoadedScammyTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {isInProMode && chainId && !isUnsupportedChainIdError && !TESTNETS.includes(chainId) && isDesktop && (
+      {isInProMode && chainId && isActiveChainSupported && !TESTNETS.includes(chainId) && isDesktop && (
         <AdvancedSwapMode>{renderSwapBox()}</AdvancedSwapMode>
       )}
       {selectedChartOption !== ChartOptions.PRO && !isInProMode && (

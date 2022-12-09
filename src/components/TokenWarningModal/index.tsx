@@ -7,7 +7,7 @@ import { AlertCircle, AlertTriangle } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { useTheme } from 'styled-components'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import { ButtonError } from '../Button'
@@ -57,7 +57,7 @@ interface TokenWarningCardProps {
 export function TokenWarningCard({ token, list }: TokenWarningCardProps) {
   const theme = useTheme()
   const { t } = useTranslation('common')
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   if (!token) return null
 

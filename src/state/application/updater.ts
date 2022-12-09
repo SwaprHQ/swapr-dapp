@@ -3,13 +3,13 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { MainnetGasPrice, setConnectorInfo, updateBlockNumber, updateMainnetGasPrices } from './actions'
 
 export default function Updater(): null {
-  const { library, chainId, account } = useActiveWeb3React()
+  const { provider, chainId, account } = useWeb3ReactCore()
   const dispatch = useDispatch()
 
   const windowVisible = useIsWindowVisible()
@@ -38,21 +38,21 @@ export default function Updater(): null {
 
   // attach/detach listeners
   useEffect(() => {
-    if (!library || !chainId || !windowVisible) return undefined
+    if (!provider || !chainId || !windowVisible) return
 
     setState({ chainId, blockNumber: null })
 
-    library
+    provider
       .getBlockNumber()
       .then(blockNumberCallback)
       .catch(error => console.error(`Failed to get block number for chainId: ${chainId}`, error))
 
-    library.on('block', blockNumberCallback)
+    provider.on('block', blockNumberCallback)
 
     return () => {
-      library.removeListener('block', blockNumberCallback)
+      provider.removeListener('block', blockNumberCallback)
     }
-  }, [dispatch, chainId, library, blockNumberCallback, windowVisible])
+  }, [dispatch, chainId, provider, blockNumberCallback, windowVisible])
 
   const debouncedState = useDebounce(state, 100)
   const debouncedMainnetGasPrices = useDebounce(mainnetGasPrices, 100)

@@ -5,8 +5,8 @@ import { ChevronLeft, Repeat } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { DarkCard } from '../../Card'
 import { AutoColumn } from '../../Column'
@@ -61,7 +61,7 @@ interface PairViewProps {
 
 function LiquidityMiningCampaignView({ campaign, containsKpiToken, isSingleSidedStake }: PairViewProps) {
   const { navigate } = useRouter()
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const previousChainId = usePrevious(chainId)
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
 

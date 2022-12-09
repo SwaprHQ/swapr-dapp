@@ -11,7 +11,6 @@ import { commify } from 'ethers/lib/utils'
 import styled from 'styled-components'
 
 import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
-import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
 
@@ -231,30 +230,6 @@ export const formatCurrencyAmount = (amount: CurrencyAmount, significantDecimalP
 
 export const calculatePercentage = (value: number, percentage: number): number => {
   return Math.round((percentage / 100) * value)
-}
-
-export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: string) => {
-  if (!window.ethereum || !window.ethereum.request || !window.ethereum.isMetaMask || !networkDetails || !account)
-    return Promise.reject()
-  return window.ethereum
-    .request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: networkDetails.chainId }],
-    })
-    .catch(error => {
-      if (error.code !== 4902) {
-        console.error('error switching to chain id', networkDetails.chainId, error)
-      }
-      if (!window.ethereum || !window.ethereum.request) return
-      window.ethereum
-        .request({
-          method: 'wallet_addEthereumChain',
-          params: [{ ...networkDetails }, account],
-        })
-        .catch(error => {
-          console.error('error adding chain with id', networkDetails.chainId, error)
-        })
-    })
 }
 
 export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; padding?: string; margin?: string }>`

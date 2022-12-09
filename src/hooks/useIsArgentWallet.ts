@@ -1,10 +1,9 @@
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useArgentWalletDetectorContract } from './useContract'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export default function useIsArgentWallet(): boolean {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const argentWalletDetector = useArgentWalletDetectorContract()
   const call = useSingleCallResult(argentWalletDetector, 'isArgentWallet', [account ?? undefined], NEVER_RELOAD)
   return call?.result?.[0] ?? false

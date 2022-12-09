@@ -1,7 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { InjectedConnector } from '@web3-react/injected-connector'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { MetaMask } from '@web3-react/metamask'
+import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect'
 import { useEffect, useState } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components'
@@ -12,8 +14,6 @@ import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
-import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
-import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
 import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
@@ -140,7 +140,7 @@ interface AccountStatusProps {
   ENSName?: string
   avatar?: ENSAvatarData
   account: string | undefined | null
-  connector: AbstractConnector | undefined
+  connector: Connector | undefined
   networkConnectorChainId: ChainId | undefined
   onAddressClick: () => void
 }
@@ -160,10 +160,7 @@ export function AccountStatus({
 
   useEffect(() => {
     setNetworkSwitchingActive(
-      connector instanceof CustomNetworkConnector ||
-        connector instanceof InjectedConnector ||
-        connector instanceof CustomWalletLinkConnector ||
-        connector instanceof AbstractConnector
+      connector instanceof MetaMask || connector instanceof CoinbaseWallet || connector instanceof WalletConnect
     )
   }, [connector])
 

@@ -7,14 +7,13 @@ import { useMemo } from 'react'
 import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useNativeCurrencyPricedTokenAmounts(tokenAmounts?: TokenAmount[] | null): {
   loading: boolean
   pricedTokenAmounts: PricedTokenAmount[]
 } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const tokenIds = useMemo(() => {
     return tokenAmounts ? tokenAmounts.map(tokenAmount => tokenAmount.token.address.toLowerCase()) : []

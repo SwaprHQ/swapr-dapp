@@ -2,8 +2,8 @@ import { useCallback, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { AppDispatch } from '../../../state'
 import { enableList, removeList } from '../../../state/lists/actions'
 import { useAllLists } from '../../../state/lists/hooks'
@@ -21,7 +21,7 @@ import { ImportListProps } from './ImportList.types'
 
 export function ImportList({ onBack, onDismiss }: ImportListProps) {
   const { listURL: listURI, importList: list, setModalView } = useContext(CurrencySearchModalContext)
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
 
   const lists = useAllLists()

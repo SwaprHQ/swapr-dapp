@@ -7,14 +7,13 @@ import { useMemo } from 'react'
 import { useGetPairQuery } from '../graphql/generated/schema'
 import type { Pair as PairType } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useLpTokensUnderlyingAssets(
   pair?: Pair,
   lpTokensBalance?: TokenAmount
 ): { loading: boolean; underlyingAssets?: { token0: PricedTokenAmount; token1: PricedTokenAmount } } {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const nativeCurrency = useNativeCurrency()
   const { data, loading, error } = useGetPairQuery({
     variables: {

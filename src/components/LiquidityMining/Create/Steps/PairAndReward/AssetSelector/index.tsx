@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../../../hooks'
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
 import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
+import { useWeb3ReactCore } from '../../../../../../hooks/useWeb3ReactCore'
 import { Actions, ActionType, CampaignType } from '../../../../../../pages/LiquidityMining/Create'
 import { useTokenBalance } from '../../../../../../state/wallet/hooks'
 import { CloseIcon, TYPE } from '../../../../../../theme'
@@ -82,7 +82,7 @@ export default function AssetSelector({
   rawAmount,
   setRewardsObject,
 }: AssetSelectorProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const userBalance = useTokenBalance(account || undefined, currency0 !== null ? currency0 : undefined)
 
   const [assetTitle, setAssetTitle] = useState<string | null>(null)

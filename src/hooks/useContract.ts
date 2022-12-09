@@ -34,22 +34,21 @@ import WMATIC_ABI from '../constants/abis/wmatic.json'
 import WXDAI_ABI from '../constants/abis/wxdai.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React()
+  const { provider, account } = useWeb3ReactCore()
 
   return useMemo(() => {
-    if (!address || !ABI || !library) return null
+    if (!address || !ABI || !provider) return null
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [address, ABI, library, withSignerIfPossible, account])
+  }, [address, ABI, provider, withSignerIfPossible, account])
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
@@ -57,7 +56,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 }
 
 export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token | undefined {
-  const { chainId: activeChainId } = useActiveWeb3React()
+  const { chainId: activeChainId } = useWeb3ReactCore()
 
   const selectedChainId = chainId ?? activeChainId
   if (!selectedChainId || !currency || !Currency.isNative(currency)) return undefined
@@ -65,7 +64,7 @@ export function useWrappingToken(currency?: Currency, chainId?: ChainId): Token 
 }
 
 function useWrappingTokenAbi(token?: Token): any | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   if (!chainId) return undefined
   switch (token) {
     case WETH[chainId]:
@@ -87,7 +86,7 @@ export function useNativeCurrencyWrapperContract(withSignerIfPossible?: boolean)
 }
 
 export function useArgentWalletDetectorContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   return useContract(
     chainId === ChainId.MAINNET ? ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS : undefined,
     ARGENT_WALLET_DETECTOR_ABI,
@@ -96,7 +95,7 @@ export function useArgentWalletDetectorContract(): Contract | null {
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   let address: string | undefined
   if (chainId) {
     switch (chainId) {
@@ -122,12 +121,12 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function useMulticallContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   return useContract(chainId && MULTICALL2_ADDRESS[chainId], MULTICALL2_ABI, false)
 }
 
 export function useStakingRewardsDistributionFactoryContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   return useContract(
     chainId && STAKING_REWARDS_FACTORY_ADDRESS[chainId],
     STAKING_REWARDS_FACTORY_ABI,
@@ -143,28 +142,28 @@ export function useStakingRewardsDistributionContract(
 }
 
 export function useSWPRClaimerContract(): Contract | null {
-  const { library, chainId, account } = useActiveWeb3React()
+  const { provider, chainId, account } = useWeb3ReactCore()
   return useMemo(() => {
     const address = SWPR_CLAIMER_ADDRESS[ChainId.ARBITRUM_ONE]
     const ABI = SWPR_CLAIMER_ABI
-    if (!address || !isAddress(address) || address === constants.AddressZero || !ABI || !library) return null
+    if (!address || !isAddress(address) || address === constants.AddressZero || !ABI || !provider) return null
     try {
       return new Contract(
         address,
         ABI,
         account
-          ? (getProviderOrSigner(chainId === ChainId.ARBITRUM_ONE ? library : ARBITRUM_ONE_PROVIDER, account) as any)
+          ? (getProviderOrSigner(chainId === ChainId.ARBITRUM_ONE ? provider : ARBITRUM_ONE_PROVIDER, account) as any)
           : account
       )
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [library, chainId, account])
+  }, [provider, account, chainId])
 }
 
 export function useSWPRConverterContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const address = useMemo(() => (chainId ? SWPR_CONVERTER_ADDRESS[chainId] : undefined), [chainId])
   return useContract(address, SWPR_CONVERTER_ABI, withSignerIfPossible)
 }

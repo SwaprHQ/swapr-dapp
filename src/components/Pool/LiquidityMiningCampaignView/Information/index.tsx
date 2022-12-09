@@ -9,8 +9,8 @@ import Skeleton from 'react-loading-skeleton'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../hooks/useNativeCurrencyUSDPrice'
+import { useWeb3ReactCore } from '../../../../hooks/useWeb3ReactCore'
 import { ExternalLink, TYPE } from '../../../../theme'
 import { unwrappedToken } from '../../../../utils/wrappedCurrency'
 import { CarrotButton } from '../../../Button'
@@ -184,7 +184,7 @@ function Information({
   containsKpiToken,
   showUSDValue,
 }: InformationProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
 
   const [upcoming, setUpcoming] = useState(false)

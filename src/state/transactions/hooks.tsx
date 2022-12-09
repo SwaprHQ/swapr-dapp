@@ -4,7 +4,7 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { type BridgeTransaction, TransactionTypes } from '../../pages/Account/Account.types'
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
@@ -35,7 +35,7 @@ export function useTransactionAdder(): (
   response: SwaprTransactionResponse,
   customData?: TransactionAdderCustomData
 ) => void {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback(
@@ -67,7 +67,7 @@ const addNetworkToTransaction = (transaction: AllTransactions, networkId: ChainI
 }
 // returns all the transactions for the current chain
 export function useAllSwapTransactions(allNetwork = false): AllTransactions {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const allSwapTransactions = useSelector((state: AppState) => state.transactions)
 
@@ -90,7 +90,7 @@ export function useAllSwapTransactions(allNetwork = false): AllTransactions {
 }
 
 export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[] {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const listByAddress = useListsByAddress()
 
   const allBridgeTransactions = useSelector((state: AppState) => selectBridgeTransactions(state, account ?? undefined))

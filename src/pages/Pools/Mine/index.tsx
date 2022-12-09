@@ -7,9 +7,9 @@ import { AutoColumn } from '../../../components/Column'
 import { PairsList } from '../../../components/Pool/PairsList'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
-import { useActiveWeb3React } from '../../../hooks'
 import { useLiquidityMiningFeatureFlag } from '../../../hooks/useLiquidityMiningFeatureFlag'
 import { useLPPairs } from '../../../hooks/useLiquidityPositions'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 
@@ -47,7 +47,7 @@ const ResponsiveButtonSecondary = styled(ButtonSecondary)`
 `
 
 export default function MyPairs() {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const [search] = useSearchParams()
   const liquidityMiningEnabled = useLiquidityMiningFeatureFlag()
   const { loading: loadingPairs, data } = useLPPairs(account || undefined)

@@ -5,8 +5,8 @@ import { useMemo } from 'react'
 import carrotListLogoUrl from '../../assets/images/carrot.png'
 import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
-import { useActiveWeb3React } from '../../hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
 import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
@@ -20,7 +20,7 @@ export const CurrencyLogo = ({
   currencyWrapperSource = CurrencyWrapperSource.SWAP,
   ...componentProps
 }: CurrencyLogoContainerProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const selectedChainId = chainIdOverride || chainId
 
   const swapWrappedTokenInfo = useTokenInfoFromActiveListOnCurrentChain(currency)

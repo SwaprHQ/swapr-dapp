@@ -15,15 +15,14 @@ import {
 } from '../utils/liquidityMining'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
-
-import { useActiveWeb3React } from '.'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function usePairLiquidityMiningCampaigns(pair?: Pair): {
   loading: boolean
   miningCampaigns: { active: MiningCampaign[]; expired: MiningCampaign[] }
 } {
   const pairAddress = pair ? pair.liquidityToken.address.toLowerCase() : undefined
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account } = useWeb3ReactCore()
   const subgraphAccountId = account?.toLowerCase() || ''
   const nativeCurrency = useNativeCurrency()
   const timestamp = Math.floor(Date.now() / 1000)

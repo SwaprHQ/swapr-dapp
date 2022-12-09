@@ -3,10 +3,10 @@ import { ChainId, Currency, Token } from '@swapr/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
 import { parseStringOrBytes32 } from '../../hooks/Tokens'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { AppState } from '../../state'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
@@ -35,14 +35,14 @@ import {
 import { ecoBridgeUIActions } from './store/UI.reducer'
 
 export const useBridgeSupportedTokens = () => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const tokens = useSelector((state: AppState) => selectBridgeSupportedTokensOnChain(state, chainId ?? 0))
 
   return tokens
 }
 
 export function useBridgeToken(tokenAddress?: string, chainId?: ChainId): Token | undefined | null {
-  const { chainId: activeChainId } = useActiveWeb3React()
+  const { chainId: activeChainId } = useWeb3ReactCore()
   const selectedChainId = chainId ?? activeChainId
   const allTokens = useSelector(selectBridgeTokens)
   const tokensOnChain = allTokens[selectedChainId ?? 0]
@@ -110,7 +110,7 @@ export const useBridgeCurrency = (currencyId: string | undefined, chainId: Chain
 }
 
 export const useBridgeTokenInfo = (currency?: Currency, chainId?: ChainId): WrappedTokenInfo | undefined => {
-  const { chainId: activeChainId } = useActiveWeb3React()
+  const { chainId: activeChainId } = useWeb3ReactCore()
   const allTokens = useSelector(selectBridgeTokens)
 
   const selectedChainId = chainId || activeChainId
@@ -276,7 +276,7 @@ export function useBridgeActionHandlers(): {
 }
 
 export const useBridgeInfo = () => {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
 
   const { from, to, isBridgeSwapActive } = useSelector((state: AppState) => state.ecoBridge.ui)
 
@@ -326,7 +326,7 @@ export const useBridgeTxsFilter = () => {
 
 export const useBridgeCollectHandlers = () => {
   const dispatch = useDispatch()
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const collectableTx = useSelector((state: AppState) => selectBridgeCollectableTx(state, account ?? undefined))
 
   const [isCollecting, setIsCollecting] = useState(false)

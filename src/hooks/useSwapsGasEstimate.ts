@@ -16,15 +16,14 @@ import { calculateGasMargin } from '../utils'
 import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName: string | null,
   trades?: (Trade | undefined)[]
 ): { loading: boolean; estimations: (BigNumber | null)[][] } {
-  const { account, library, chainId } = useActiveWeb3React()
+  const { account, provider, chainId } = useWeb3ReactCore()
   const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName)
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
@@ -115,7 +114,7 @@ export function useSwapsGasEstimations(
           let estimatedCall = null
           try {
             estimatedCall = calculateGasMargin(
-              await (library as Web3Provider).estimateGas(transactionParameters as any)
+              await (provider as Web3Provider).estimateGas(transactionParameters as any)
             )
           } catch (error) {
             console.error(error)
@@ -129,15 +128,15 @@ export function useSwapsGasEstimations(
     }
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, library, routerAllowances, trades, typedIndependentCurrencyAmount])
+  }, [platformSwapCalls, provider, routerAllowances, trades, typedIndependentCurrencyAmount])
 
   useEffect(() => {
-    if (!trades || trades.length === 0 || !library || !chainId || !recipient || !account || !calculateGasFees) {
+    if (!trades || trades.length === 0 || !provider || !chainId || !recipient || !account || !calculateGasFees) {
       setEstimations([])
       return
     }
     updateEstimations()
-  }, [chainId, library, recipient, trades, updateEstimations, account, calculateGasFees])
+  }, [chainId, provider, recipient, trades, updateEstimations, account, calculateGasFees])
 
   return { loading: loading, estimations }
 }

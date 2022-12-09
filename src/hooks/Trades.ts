@@ -11,22 +11,25 @@ import {
 
 import { useMemo } from 'react'
 
+import { isChainSupportedByConnector } from '../connectors/utils'
 import { BASES_TO_CHECK_TRADES_AGAINST } from '../constants'
 import { PairState, usePairs } from '../data/Reserves'
 import { useIsMultihop, useUserSlippageTolerance } from '../state/user/hooks'
 import { sortTradesByExecutionPrice } from '../utils/prices'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 function useAllCommonPairs(
   currencyA?: Currency,
   currencyB?: Currency,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Pair[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId, connector } = useWeb3ReactCore()
 
-  const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])
+  const bases: Token[] = useMemo(
+    () => (chainId && isChainSupportedByConnector(connector, chainId) ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []),
+    [chainId, connector]
+  )
 
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
@@ -86,7 +89,7 @@ export function useTradeExactInUniswapV2(
   currencyOut?: Currency,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Trade | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut, platform)
   const multihop = useIsMultihop()
   const userSlippageTolerance = useUserSlippageTolerance()
@@ -119,7 +122,7 @@ export function useTradeExactOutUniswapV2(
   currencyAmountOut?: CurrencyAmount,
   platform: UniswapV2RoutablePlatform = UniswapV2RoutablePlatform.SWAPR
 ): Trade | undefined {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency, platform)
   const multihop = useIsMultihop()
   const userSlippageTolerance = useUserSlippageTolerance()

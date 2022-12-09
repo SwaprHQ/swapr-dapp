@@ -10,8 +10,7 @@ import {
   TIMEFRAME_PROPRETIES,
 } from '../components/Charts/chartUtils'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
-
-import { useActiveWeb3React } from '.'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 const GET_PAIR_TOKEN_PRICES_QUERY = gql`
   query getPairTokenPrices($pairAddress: ID, $timestamp: BigInt, $timeframe: PairTokenPriceTimeframe) {
@@ -48,7 +47,7 @@ type PairTokenPriceByTimestampProps = {
 }
 
 export function usePairTokenPriceByTimestamp({ currency0, currency1, dateInterval }: PairTokenPriceByTimestampProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
   const [wrappedToken1, setWrappedToken1] = useState<Token>()
   const [pairAddress, setPairAddress] = useState<string>()
 

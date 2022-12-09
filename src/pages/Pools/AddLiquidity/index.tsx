@@ -22,13 +22,13 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from '../../../components/TransactionConfirmationModal'
 import { PairState } from '../../../data/Reserves'
-import { useActiveWeb3React } from '../../../hooks'
 import { useCurrency } from '../../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { useWrappingToken } from '../../../hooks/useContract'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useRouter } from '../../../hooks/useRouter'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useWalletSwitcherPopoverToggle } from '../../../state/application/hooks'
 import { Field } from '../../../state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
@@ -52,7 +52,7 @@ type CurrencySearchParams = {
 export default function AddLiquidity() {
   const { navigate, location } = useRouter()
   const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useWeb3ReactCore()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
@@ -128,8 +128,8 @@ export default function AddLiquidity() {
   const addTransaction = useTransactionAdder()
 
   async function onAdd() {
-    if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
+    if (!chainId || !provider || !account) return
+    const router = getRouterContract(chainId, provider, UniswapV2RoutablePlatform.SWAPR, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {

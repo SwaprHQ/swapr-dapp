@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
 import { Amount } from './styled'
@@ -55,8 +55,7 @@ const StyledBalanacesWrapper = styled.div(
 export function Balances() {
   const toggleClaimPopup = useToggleShowClaimPopup()
   const nativeCurrency = useNativeCurrency()
-  const isUnsupportedChainIdError = useUnsupportedChainIdError()
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useWeb3ReactCore()
   const userNativeCurrencyBalance = useNativeCurrencyBalance()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
@@ -71,30 +70,26 @@ export function Balances() {
 
   return (
     <StyledBalanacesWrapper onClick={toggleClaimPopup}>
-      {!isUnsupportedChainIdError && (
-        <>
-          <Amount id="eth-balance">
-            {userNativeCurrencyBalance ? (
-              `${
-                userNativeCurrencyBalance.greaterThan(new Fraction('10000'))
-                  ? numberFormater.format(parseInt(userNativeCurrencyBalance.toFixed(2)))
-                  : userNativeCurrencyBalance.toFixed(3)
-              } ${nativeCurrency.symbol}`
-            ) : (
-              <Skeleton className="eth-balance-skeleton-wrapper" />
-            )}
-          </Amount>
-          {!networkWithoutSWPR && (
-            <Amount id="swpr-info">
-              {newSwprBalance
-                ? newSwprBalance.greaterThan(new Fraction('10000'))
-                  ? numberFormater.format(parseInt(newSwprBalance.toFixed(3)))
-                  : newSwprBalance.toFixed(3)
-                : '0.000'}{' '}
-              SWPR
-            </Amount>
-          )}
-        </>
+      <Amount id="eth-balance">
+        {userNativeCurrencyBalance ? (
+          `${
+            userNativeCurrencyBalance.greaterThan(new Fraction('10000'))
+              ? numberFormater.format(parseInt(userNativeCurrencyBalance.toFixed(2)))
+              : userNativeCurrencyBalance.toFixed(3)
+          } ${nativeCurrency.symbol}`
+        ) : (
+          <Skeleton className="eth-balance-skeleton-wrapper" />
+        )}
+      </Amount>
+      {!networkWithoutSWPR && (
+        <Amount id="swpr-info">
+          {newSwprBalance
+            ? newSwprBalance.greaterThan(new Fraction('10000'))
+              ? numberFormater.format(parseInt(newSwprBalance.toFixed(3)))
+              : newSwprBalance.toFixed(3)
+            : '0.000'}{' '}
+          SWPR
+        </Amount>
       )}
     </StyledBalanacesWrapper>
   )

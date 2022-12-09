@@ -15,8 +15,7 @@ import { useMemo } from 'react'
 
 import { useNativeCurrency } from './useNativeCurrency'
 import { useNativeCurrencyPricedTokenAmounts } from './useTokensDerivedNativeCurrency'
-
-import { useActiveWeb3React } from './index'
+import { useWeb3ReactCore } from './useWeb3ReactCore'
 
 export function useNewLiquidityMiningCampaign(
   rewards: TokenAmount[],
@@ -29,7 +28,7 @@ export function useNewLiquidityMiningCampaign(
   stakeToken?: Token,
   stakePair?: Pair
 ): LiquidityMiningCampaign | SingleSidedLiquidityMiningCampaign | null {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   const nativeCurrency = useNativeCurrency()
   const { pricedTokenAmounts: pricedRewardAmounts } = useNativeCurrencyPricedTokenAmounts(rewards)

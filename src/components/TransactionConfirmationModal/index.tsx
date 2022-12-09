@@ -6,7 +6,7 @@ import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useActiveWeb3React } from '../../hooks'
+import { useWeb3ReactCore } from '../../hooks/useWeb3ReactCore'
 import { CloseIcon, CustomLightSpinner, ExternalLink, TYPE } from '../../theme'
 import { getExplorerLink, getGnosisProtocolExplorerOrderLink } from '../../utils'
 import { ButtonPrimary } from '../Button'
@@ -184,7 +184,7 @@ export default function TransactionConfirmationModal({
   content,
   trade,
 }: ConfirmationModalProps) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useWeb3ReactCore()
 
   if (!chainId) return null
 

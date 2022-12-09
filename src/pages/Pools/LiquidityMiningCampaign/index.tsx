@@ -12,11 +12,11 @@ import LiquidityMiningCampaignView from '../../../components/Pool/LiquidityMinin
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { PairState, usePair } from '../../../data/Reserves'
-import { useActiveWeb3React } from '../../../hooks'
 import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { useToken } from '../../../hooks/Tokens'
 import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
 import { useRouter } from '../../../hooks/useRouter'
+import { useWeb3ReactCore } from '../../../hooks/useWeb3ReactCore'
 import { useTokenBalance } from '../../../state/wallet/hooks'
 import { TYPE } from '../../../theme'
 import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
@@ -44,7 +44,7 @@ const ButtonRow = styled(RowFixed)`
 `
 
 export default function LiquidityMiningCampaign() {
-  const { account } = useActiveWeb3React()
+  const { account } = useWeb3ReactCore()
   const { location, searchParams: search } = useRouter()
   const { liquidityMiningCampaignId, currencyIdA, currencyIdB } = useParams<{
     currencyIdA: string
