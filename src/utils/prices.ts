@@ -336,10 +336,8 @@ export const calculateZapOutAmounts = (
     return {
       estAmountTokenTo: undefined,
     }
-
   // determine significant digits in case currency has less than 9 decimals
   const tokenTo = wrappedCurrency(priceToken0TokenTo.quoteCurrency, chainId)
-  const significantDigits = tokenTo && tokenTo.decimals < 9 ? tokenTo.decimals : 9
 
   const [tokenA, tokenB] = [pair?.token0, pair?.token1]
   // liquidity values
@@ -371,7 +369,7 @@ export const calculateZapOutAmounts = (
   // estimate total amount of output token
   const estAmountTokenTo =
     tokenTo && amountTokenToLpTokenA && amountTokenToLpTokenB
-      ? new TokenAmount(tokenTo, amountTokenToLpTokenA.add(amountTokenToLpTokenB).toSignificant(significantDigits))
+      ? new TokenAmount(tokenTo, amountTokenToLpTokenA.add(amountTokenToLpTokenB).quotient)
       : undefined
 
   return { estAmountTokenTo }
