@@ -226,7 +226,7 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     if (quoteExpiryTimeout.current) {
       clearTimeout(quoteExpiryTimeout.current)
     }
-
+    console.log('DERIVED RECIPIENT', receiver)
     const commonParams = {
       user: account || AddressZero, // default back to zero if no account is connected.
       maximumSlippage: new Percent(allowedSlippage.toString(), '10000'),
