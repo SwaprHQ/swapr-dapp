@@ -1,19 +1,8 @@
-import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  Pair,
-  RoutablePlatform,
-  Token,
-  Trade,
-  UniswapV2RoutablePlatform,
-} from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, JSBI, Pair, RoutablePlatform, Token, Trade } from '@swapr/sdk'
 
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import { BigNumber } from 'ethers'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
@@ -33,9 +22,9 @@ import { ZapTradesDetails } from '../../components/Swap/TradeDetailsZap'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { PriceImpact, SWAP_INPUT_ERRORS, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
-import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
+import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency, useToken } from '../../hooks/Tokens'
-import { ApprovalState, useApproveCallback, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../hooks/useUSDValue'
@@ -123,7 +112,7 @@ export default function Zap() {
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
 
   // token warning stuff
-  const [loadedInputCurrency, loadedOutputCurrency] = [
+  const [loadedInputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
     useCurrency(loadedUrlParams?.outputCurrencyId),
   ]

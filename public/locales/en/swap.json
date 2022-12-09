@@ -33,6 +33,7 @@
   "button.enterCurrencyAmount": "Enter {{ currency }} amount",
   "tradeDetails.bestPriceFoundOn": "Best price found on <0>{{platform}}</0>.",
   "tradeDetails.swapWithNoAdditionalFees": "Swap with <0>no additional fees</0>.",
+  "tradeDetails.priceImpact": "Price impact: <0>{{priceImpact}}</0>.",
   "button.selectPair": "Select pair",
   "button.tradeNotFound": "Trade not found",
   "button.zap": "Zap",
@@ -64,6 +65,5 @@
   "advancedTradingView.orderHistory.type": "Type",
   "advancedTradingView.orderHistory.protocol": "Protocol",
   "advancedTradingView.orderHistory.date": "Date",
-  "advancedTradingView.orderHistory.status": "Status",
-  "tradeDetails.priceImpact": "Price impact: <0>{{priceImpact}}</0>."
+  "advancedTradingView.orderHistory.status": "Status"
 }

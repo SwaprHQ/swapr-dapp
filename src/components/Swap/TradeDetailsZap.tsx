@@ -1,4 +1,4 @@
-import { Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { Trade } from '@swapr/sdk'
 
 import { useState } from 'react'
 import { Trans } from 'react-i18next'
