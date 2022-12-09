@@ -6,6 +6,7 @@ import { DarkCard } from '../components/Card'
 export const BodyWrapper = styled(DarkCard)<{ tradeDetailsOpen?: boolean }>`
   position: relative;
   min-width: 454px;
+  max-width: 457px;
   width: 100%;
   border-radius: 12px;
   padding: 12px;

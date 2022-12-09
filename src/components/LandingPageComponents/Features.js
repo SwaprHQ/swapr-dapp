@@ -51,16 +51,16 @@ const StyledFeatures = styled(Layout)`
         margin-bottom: 32px;
         width: 820px;
       }
-      .top-banner-logos {
-        display: flex;
-        align-items: center;
-        margin-bottom: 176px;
-        img {
-          margin-right: 32px;
-          opacity: 0.7;
-          &:last-child {
-            margin-right: 0;
-          }
+    }
+    .top-banner-logos {
+      display: flex;
+      align-items: center;
+      margin-bottom: 176px;
+      img {
+        margin-right: 32px;
+        opacity: 0.7;
+        &:last-child {
+          margin-right: 0;
         }
       }
     }
@@ -126,6 +126,26 @@ const StyledFeatures = styled(Layout)`
           flex-direction: column;
           .feature-item {
             width: 100%;
+          }
+        }
+      }
+      .top-banner-logos {
+        width: 260px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        img {
+          max-width: unset;
+          max-height: unset;
+          margin-right: 21px;
+          margin-bottom: 21px;
+          &:first-child {
+            width: 92px;
+          }
+          &:nth-child(2) {
+            width: 108px;
+          }
+          &:nth-child(3) {
+            width: 84px;
           }
         }
       }
