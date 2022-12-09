@@ -29,7 +29,7 @@ import ConfirmSwapModal from '../../components/Swap/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../../components/Swap/styleds'
 import SwapButtons from '../../components/Swap/SwapButtons'
 import { Tabs } from '../../components/Swap/Tabs'
-import { TradeDetails } from '../../components/Swap/TradeDetailsZap'
+import { ZapTradesDetails } from '../../components/Swap/TradeDetailsZap'
 import TokenWarningModal from '../../components/TokenWarningModal'
 import { PriceImpact, SWAP_INPUT_ERRORS, ZAP_CONTRACT_ADDRESS } from '../../constants'
 import { usePair } from '../../data/Reserves'
@@ -431,14 +431,12 @@ export default function Zap() {
                 inputTitle="Zap output is estimated"
               />
             </AutoColumn>
-            <TradeDetails
+            <ZapTradesDetails
               show={true}
-              loading={derivedInfo.loading}
-              trade={derivedInfo.tradeToken0}
-              trade1={derivedInfo.tradeToken1}
-              bestPricedTrade={derivedInfo.tradeToken0}
-              bestPricedTrade1={derivedInfo.tradeToken1}
+              tradeToken0={derivedInfo.tradeToken0}
+              tradeToken1={derivedInfo.tradeToken1}
               recipient={recipient}
+              loading={derivedInfo.loading}
             />
 
             <SwapButtons

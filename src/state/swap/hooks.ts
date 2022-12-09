@@ -208,8 +208,8 @@ export function useDerivedSwapInfo<
   const isExactIn = useMemo(() => independentField === Field.INPUT || isZap, [independentField, isZap])
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId)
 
-  const [bestZapInTradeToken0, setBestZapInTradeToken0] = useState<Trade>()
-  const [bestZapInTradeToken1, setBestZapInTradeToken1] = useState<Trade>()
+  const [bestZapTradeToken0, setBestZapTradeToken0] = useState<Trade>()
+  const [bestZapTradeToken1, setBestZapTradeToken1] = useState<Trade>()
 
   // useCurrency and useToken returns a new object every time,
   // so we need to compare the addresses as strings
@@ -332,8 +332,8 @@ export function useDerivedSwapInfo<
 
       getTrades
         .then(trades => {
-          setBestZapInTradeToken0(trades[0])
-          setBestZapInTradeToken1(trades[1])
+          setBestZapTradeToken0(trades[0])
+          setBestZapTradeToken1(trades[1])
           setLoading(false)
           quoteExpiryTimeout.current = setTimeout(() => {
             setIsQuoteExpired(true)
@@ -378,6 +378,8 @@ export function useDerivedSwapInfo<
 
     return function useDerivedSwapInfoCleanUp() {
       setAllPlatformTrades([])
+      setBestZapTradeToken0(undefined)
+      setBestZapTradeToken1(undefined)
       setLoading(false)
       setInputError(undefined)
       if (quoteExpiryTimeout.current) {
@@ -399,8 +401,8 @@ export function useDerivedSwapInfo<
         [Field.OUTPUT]: relevantTokenBalances[1] ?? undefined,
       },
       parsedAmount,
-      tradeToken0: bestZapInTradeToken0,
-      tradeToken1: bestZapInTradeToken1,
+      tradeToken0: bestZapTradeToken0,
+      tradeToken1: bestZapTradeToken1,
       inputError: returnInputError,
       loading,
     } as ReturnedValue

@@ -15,22 +15,12 @@ import TradePrice from './TradePrice'
 
 interface TradeDetailsProps {
   show: boolean
-  trade: Trade | undefined
-  trade1: Trade | undefined
-  bestPricedTrade: Trade | undefined
-  bestPricedTrade1: Trade | undefined
+  tradeToken0: Trade | undefined
+  tradeToken1: Trade | undefined
   recipient: string | null
   loading: boolean
 }
-export function TradeDetails({
-  show,
-  trade,
-  trade1,
-  bestPricedTrade,
-  bestPricedTrade1,
-  recipient,
-  loading,
-}: TradeDetailsProps) {
+export function ZapTradesDetails({ show, tradeToken0, tradeToken1, recipient, loading }: TradeDetailsProps) {
   const [showAddRecipient, setShowAddRecipient] = useState<boolean>(false)
   // errors
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -68,7 +58,7 @@ export function TradeDetails({
     )
   }
 
-  if (show && trade !== undefined && trade1 !== undefined) {
+  if (show && tradeToken0 !== undefined && tradeToken1 !== undefined) {
     return (
       <>
         <AutoColumn gap="8px">
@@ -76,48 +66,44 @@ export function TradeDetails({
             <TYPE.Body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
                 i18nKey="swap:tradeDetails.bestPriceFoundOn"
-                values={{ platform: bestPricedTrade?.platform.name }}
+                values={{ platform: tradeToken0?.platform.name }}
+                components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+              />{' '}
+              <Trans
+                i18nKey="swap:tradeDetails.priceImpact"
+                values={{ priceImpact: tradeToken0?.priceImpact.toSignificant(3) }}
                 components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
               />
-              {trade.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
-                <>
-                  {' '}
-                  <Trans
-                    i18nKey="swap:tradeDetails.swapWithNoAdditionalFees"
-                    components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
-                  />
-                </>
-              ) : null}
             </TYPE.Body>
           </RowBetween>
           <RowBetween>
             <RowFixed>
-              <TradePrice price={trade?.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
+              <TradePrice
+                price={tradeToken0?.executionPrice}
+                showInverted={showInverted}
+                setShowInverted={setShowInverted}
+              />
             </RowFixed>
           </RowBetween>
           <RowBetween alignItems="center">
             <TYPE.Body fontSize="11px" lineHeight="15px" fontWeight="500">
               <Trans
                 i18nKey="swap:tradeDetails.bestPriceFoundOn"
-                values={{ platform: bestPricedTrade1?.platform.name }}
+                values={{ platform: tradeToken1?.platform.name }}
+                components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
+              />{' '}
+              <Trans
+                i18nKey="swap:tradeDetails.priceImpact"
+                values={{ priceImpact: tradeToken1?.priceImpact.toSignificant(3) }}
                 components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
               />
-              {trade1.platform.name !== UniswapV2RoutablePlatform.SWAPR.name ? (
-                <>
-                  {' '}
-                  <Trans
-                    i18nKey="swap:tradeDetails.swapWithNoAdditionalFees"
-                    components={[<span key="1" style={{ color: 'white', fontWeight: 700 }}></span>]}
-                  />
-                </>
-              ) : null}
             </TYPE.Body>
           </RowBetween>
 
           <RowBetween>
             <RowFixed>
               <TradePrice
-                price={trade1?.executionPrice}
+                price={tradeToken1?.executionPrice}
                 showInverted={showInverted}
                 setShowInverted={setShowInverted}
               />
