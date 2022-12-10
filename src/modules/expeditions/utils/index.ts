@@ -26,7 +26,8 @@ export function computeFragmentState(rewards: WeeklyFragments, isClaiming: boole
 }
 
 export function computeDailyState(dailyVisit: DailyVisit, isClaiming: boolean) {
-  const isClaimed = dailyVisit.lastVisit >= dailyVisit.startDate && dailyVisit.lastVisit <= dailyVisit.endDate
+  const hasNextVisitTimestamp = dailyVisit.nextVisit.getTime()
+  const isClaimed = hasNextVisitTimestamp > 0 ? hasNextVisitTimestamp > new Date().getTime() : false
 
   let buttonText = ''
 

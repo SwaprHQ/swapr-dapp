@@ -42,8 +42,9 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
         } catch (error) {
           setError('No active campaign has been found')
           console.error(error)
+        } finally {
+          setIsLoading(false)
         }
-        setIsLoading(false)
       }
     }
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { ExpeditionsAPI } from '../../../../api'
-import { ClaimRequestTypeEnum } from '../../../../api/generated'
+import { ClaimTaskRequestTypeEnum } from '../../../../api/generated'
 import { useExpeditions } from '../../../../contexts/ExpeditionsContext'
 import { computeFragmentState } from '../../../../utils'
 import { TaskCard } from '../../../ExpeditionsCards'
@@ -24,12 +24,12 @@ export function LiquidityProvisionTaskCard() {
     setIsClaiming(true)
     try {
       const address = await provider.getSigner().getAddress()
-      const signature = await provider.getSigner().signMessage(ClaimRequestTypeEnum.LiquidityProvision)
-      await ExpeditionsAPI.postExpeditionsClaim({
+      const signature = await provider.getSigner().signMessage(ClaimTaskRequestTypeEnum.LiquidityProvision)
+      await ExpeditionsAPI.postExpeditionsClaimtask({
         body: {
           address,
           signature,
-          type: ClaimRequestTypeEnum.LiquidityProvision,
+          type: ClaimTaskRequestTypeEnum.LiquidityProvision,
         },
       })
 

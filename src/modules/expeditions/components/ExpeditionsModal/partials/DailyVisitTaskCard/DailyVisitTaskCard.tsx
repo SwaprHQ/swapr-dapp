@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { ExpeditionsAPI } from '../../../../api'
-import { ClaimRequestTypeEnum } from '../../../../api/generated'
+import { ClaimTaskRequestTypeEnum } from '../../../../api/generated'
 import { useExpeditions } from '../../../../contexts/ExpeditionsContext'
 import { computeDailyState } from '../../../../utils'
 import { TaskCard } from '../../../ExpeditionsCards'
@@ -21,12 +21,12 @@ export function DailyVisitTaskCard() {
     setIsClaiming(true)
     try {
       const address = await provider.getSigner().getAddress()
-      const signature = await provider.getSigner().signMessage(ClaimRequestTypeEnum.DailyVisit)
-      await ExpeditionsAPI.postExpeditionsClaim({
+      const signature = await provider.getSigner().signMessage(ClaimTaskRequestTypeEnum.DailyVisit)
+      await ExpeditionsAPI.postExpeditionsClaimtask({
         body: {
           address,
           signature,
-          type: ClaimRequestTypeEnum.DailyVisit,
+          type: ClaimTaskRequestTypeEnum.DailyVisit,
         },
       })
 
@@ -44,17 +44,20 @@ export function DailyVisitTaskCard() {
     }
   }
 
+  const overwriteStatus = tasks.dailyVisit.lastVisit.getTime() > 0 ? undefined : 'active'
+
   return (
     <TaskCard
       buttonText={buttonText}
       buttonDisabled={isClaimed || isClaiming}
       claimed={isClaimed}
       onClick={claim}
-      startDate={tasks.dailyVisit.startDate}
-      endDate={tasks.dailyVisit.endDate}
+      startDate={tasks.dailyVisit.lastVisit}
+      endDate={tasks.dailyVisit.nextVisit}
       description="Make a daily visit to unlock entire new feeling of Swapr Expeditions. Really!"
       duration="Daily"
       title="Daily Visit"
+      overwriteStatus={overwriteStatus}
     />
   )
 }

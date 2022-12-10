@@ -6,7 +6,7 @@ import Countdown from '../../../../components/Countdown'
 import Row from '../../../../components/Row'
 import { TYPE } from '../../../../theme'
 import { Card, ExpeditionsButton, StyledExternalLink, Wrapper } from '../shared'
-import { StatusTag } from './ExpeditionsTags'
+import { StatusTag, StatusTags } from './ExpeditionsTags'
 
 export interface TaskCardProps {
   duration?: 'Weekly' | 'Daily'
@@ -19,6 +19,7 @@ export interface TaskCardProps {
   claimed?: boolean
   endDate: Date
   startDate: Date
+  overwriteStatus?: StatusTags
 }
 
 // Buttons to be implemented as needed. Maybe fixed set of buttons or button can be passed as child
@@ -34,6 +35,7 @@ export function TaskCard({
   claimed = false,
   startDate,
   endDate,
+  overwriteStatus,
 }: TaskCardProps) {
   const [upcoming, setUpcoming] = useState(false)
   const [expired, setExpired] = useState(false)
@@ -49,6 +51,8 @@ export function TaskCard({
   const handleCountdownEnd = useCallback(() => {
     setCurrentPeriodEnded(true)
   }, [])
+
+  const statusTag = overwriteStatus ? overwriteStatus : upcoming ? 'upcoming' : expired ? 'expired' : 'active'
 
   return (
     <Wrapper>
@@ -74,7 +78,7 @@ export function TaskCard({
               {title}
             </TYPE.White>
             <div style={{ alignSelf: 'flex-start' }}>
-              <StatusTag status={upcoming ? 'upcoming' : expired ? 'expired' : 'active'} />
+              <StatusTag status={statusTag} />
             </div>
           </Row>
         </Row>
