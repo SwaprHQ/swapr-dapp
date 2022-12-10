@@ -27,6 +27,7 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
   // Controls fetching of data from the backend
   const [isLoading, setIsLoading] = useState(true)
   const [tasks, setTasks] = useState<ExpeditionsContext['tasks']>()
+  const [rewards, setRewards] = useState<ExpeditionsContext['rewards']>()
   const [claimedFragments, setClaimedFragments] = useState<ExpeditionsContext['claimedFragments']>(0)
   const [error, setError] = useState<string | undefined>()
 
@@ -36,8 +37,9 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
         setError(undefined)
         setIsLoading(true)
         try {
-          const { claimedFragments, tasks } = await ExpeditionsAPI.getExpeditionsProgress({ address: account })
+          const { claimedFragments, tasks, rewards } = await ExpeditionsAPI.getExpeditionsProgress({ address: account })
           setTasks(tasks)
+          setRewards(rewards)
           setClaimedFragments(claimedFragments)
         } catch (error) {
           setError('No active campaign has been found')
@@ -62,6 +64,7 @@ export function App({ provider, account }: SwaprExpeditionsAppProps) {
           setClaimedFragments,
           setTasks,
           tasks,
+          rewards,
           error,
         } as ExpeditionsContext
       }

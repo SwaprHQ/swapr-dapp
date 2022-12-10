@@ -46,7 +46,7 @@ export function RewardCard({
   return (
     <Wrapper>
       <Card flexDirection={'row'} flexWrap={'wrap'} justifyContent={'center'} style={{ gap: '32px' }}>
-        <div>
+        <div style={{ alignSelf: 'center' }}>
           <ImageWithPlaceholder src={imageUrl} alt={title} />
         </div>
         <div
@@ -62,7 +62,9 @@ export function RewardCard({
             <TYPE.White fontSize="20px">{title}</TYPE.White>
             <RarityTag rarity={rarity} />
           </Row>
-          <TYPE.White fontSize="14px">{description}</TYPE.White>
+          <TYPE.White fontSize="14px" style={{ whiteSpace: 'break-spaces' }}>
+            {description}
+          </TYPE.White>
           {requiredFragments && (
             <TYPE.White fontSize="14px">{`Collect ${requiredFragments} fragments to claim this NFT.`}</TYPE.White>
           )}

@@ -2,7 +2,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 
 import { createContext, useContext } from 'react'
 
-import { Tasks } from '../api/generated'
+import { Reward, Tasks } from '../api/generated'
 
 export interface ExpeditionsContext {
   userAddress: string
@@ -11,6 +11,7 @@ export interface ExpeditionsContext {
   setError: (error: string) => void
   provider: Web3Provider
   tasks: Tasks
+  rewards: Reward[]
   claimedFragments: number
   setTasks: (tasks: ExpeditionsContext['tasks']) => void
   setClaimedFragments: (claimedFragments: ExpeditionsContext['claimedFragments']) => void
