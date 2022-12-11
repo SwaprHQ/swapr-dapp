@@ -9,7 +9,7 @@ import { useShowExpeditionsPopup } from '../../../../state/application/hooks'
 import { CloseIcon, TYPE } from '../../../../theme'
 import { ExpeditionsFragmentsBalance } from '../../components/ExpeditionsFragments'
 import { ExpeditionsTabBar, ExpeditionsTabs } from '../../components/ExpeditionsTabBar'
-import { useExpeditions } from '../../contexts/ExpeditionsContext'
+import { useExpeditions } from '../../Expeditions.hooks'
 import { ScrollableAutoColumn, StyledExternalLink } from '../shared'
 import { ContentWrapper, ExpeditionsLogo } from './ExpeditionsModal.styled'
 import { ExpeditionsRewards } from './ExpeditionsRewards'
@@ -21,12 +21,12 @@ export interface ExpeditionsModalProps {
 export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
   const open = useShowExpeditionsPopup()
   const [activeTab, setActiveTab] = useState(ExpeditionsTabs.TASKS)
-  const { claimedFragments, error, isLoading } = useExpeditions()
+  const { claimedFragments, error, status } = useExpeditions()
 
   return (
     <Modal maxWidth={630} onDismiss={onDismiss} isOpen={open}>
       <ContentWrapper gap="lg">
-        {isLoading ? (
+        {status === 'pending' || status === 'idle' ? (
           <FallbackLoader />
         ) : (
           <>
@@ -45,7 +45,7 @@ export function ExpeditionsModal({ onDismiss }: ExpeditionsModalProps) {
                   special NFT's and various other rewards. <StyledExternalLink href="#">Learn More</StyledExternalLink>
                 </TYPE.White>
               </Row>
-              {error ? (
+              {status === 'error' && error ? (
                 <TYPE.White fontSize="24px" lineHeight="150%" textAlign={'center'}>
                   No active expeditions campaign has been found
                 </TYPE.White>

@@ -1,53 +1,29 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 
-import { ExpeditionsAPI } from '../../../../api'
 import { ClaimTaskRequestTypeEnum } from '../../../../api/generated'
-import { useExpeditions } from '../../../../contexts/ExpeditionsContext'
+import { useExpeditions, useExpeditionsTaskClaim } from '../../../../Expeditions.hooks'
 import { computeFragmentState } from '../../../../utils'
 import { TaskCard } from '../../../ExpeditionsCards'
 
 export function LiquidityStakingTaskCard() {
-  const [isClaiming, setIsClaiming] = useState(false)
-  const { tasks, setTasks, provider, setClaimedFragments } = useExpeditions()
+  const { tasks } = useExpeditions()
+  const { claimTask, isClaiming } = useExpeditionsTaskClaim()
 
   const { liquidityStaking } = tasks
+
   const { isAvailableToClaim, isClaimed, isIncomplete, buttonText } = computeFragmentState(liquidityStaking, isClaiming)
 
-  const claim = async () => {
+  const claim = useCallback(async () => {
     if (isClaimed || !isAvailableToClaim || isClaiming) {
       return
     }
 
-    setIsClaiming(true)
-
-    try {
-      const address = await provider.getSigner().getAddress()
-      const signature = await provider.getSigner().signMessage(ClaimTaskRequestTypeEnum.LiquidityStaking)
-      await ExpeditionsAPI.postExpeditionsClaimtask({
-        body: {
-          address,
-          signature,
-          type: ClaimTaskRequestTypeEnum.LiquidityStaking,
-        },
-      })
-      // Update local state
-      const { claimedFragments, tasks } = await ExpeditionsAPI.getExpeditionsProgress({
-        address,
-      })
-
-      // Update local state
-      setTasks(tasks)
-      setClaimedFragments(claimedFragments)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsClaiming(false)
-    }
-  }
+    await claimTask(ClaimTaskRequestTypeEnum.LiquidityStaking)
+  }, [claimTask, isAvailableToClaim, isClaimed, isClaiming])
 
   return (
     <TaskCard
-      buttonText={buttonText}
+      button={buttonText}
       buttonDisabled={isClaimed || isClaiming || isIncomplete}
       claimed={isClaimed}
       onClick={claim}

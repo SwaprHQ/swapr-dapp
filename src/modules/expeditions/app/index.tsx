@@ -1,78 +1,35 @@
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { HeaderButton } from '../../../components/Header/HeaderButton'
 import { useShowExpeditionsPopup, useToggleShowExpeditionsPopup } from '../../../state/application/hooks'
-import { ExpeditionsAPI } from '../api'
 import { ExpeditionsModal } from '../components/ExpeditionsModal'
-import { ExpeditionsContext } from '../contexts/ExpeditionsContext'
+import { useExpeditionsRefreshProgress } from '../Expeditions.hooks'
 
 export interface SwaprExpeditionsAppProps {
   provider: Web3Provider
   account: string
 }
 
-export function App({ provider, account }: SwaprExpeditionsAppProps) {
+export function App({ account }: SwaprExpeditionsAppProps) {
   const isOpen = useShowExpeditionsPopup()
   const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
 
-  if (!account) {
-    throw new Error('SwaprExpeditionsApp: No account')
-  }
-
-  if (!provider) {
-    throw new Error('SwaprExpeditionsApp: No provider')
-  }
-  // Controls fetching of data from the backend
-  const [isLoading, setIsLoading] = useState(true)
-  const [tasks, setTasks] = useState<ExpeditionsContext['tasks']>()
-  const [rewards, setRewards] = useState<ExpeditionsContext['rewards']>()
-  const [claimedFragments, setClaimedFragments] = useState<ExpeditionsContext['claimedFragments']>(0)
-  const [error, setError] = useState<string | undefined>()
+  const refeshCampaignProgress = useExpeditionsRefreshProgress()
 
   useEffect(() => {
-    const getDailyProgress = async () => {
-      if (isOpen) {
-        setError(undefined)
-        setIsLoading(true)
-        try {
-          const { claimedFragments, tasks, rewards } = await ExpeditionsAPI.getExpeditionsProgress({ address: account })
-          setTasks(tasks)
-          setRewards(rewards)
-          setClaimedFragments(claimedFragments)
-        } catch (error) {
-          setError('No active campaign has been found')
-          console.error(error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
+    if (isOpen) {
+      refeshCampaignProgress(account)
     }
-
-    getDailyProgress()
-  }, [account, isOpen])
+  }, [account, isOpen, refeshCampaignProgress])
 
   return (
-    <ExpeditionsContext.Provider
-      value={
-        {
-          provider,
-          userAddress: account,
-          isLoading,
-          claimedFragments,
-          setClaimedFragments,
-          setTasks,
-          tasks,
-          rewards,
-          error,
-        } as ExpeditionsContext
-      }
-    >
+    <>
       <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
         &#10024;&nbsp;Expeditions
       </HeaderButton>
       <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
-    </ExpeditionsContext.Provider>
+    </>
   )
 }

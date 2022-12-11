@@ -330,6 +330,26 @@
       },
       "required": ["allVisits", "fragments", "lastVisit", "nextVisit", "type"]
     },
+    "DailySwaps": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "fragments": {
+          "type": "number"
+        },
+        "totalTradeUSDValue": {
+          "type": "number"
+        }
+      },
+      "required": ["startDate", "endDate", "fragments", "totalTradeUSDValue"]
+    },
     "WeeklyFragments": {
       "type": "object",
       "properties": {
@@ -363,6 +383,9 @@
         "dailyVisit": {
           "$ref": "#/definitions/DailyVisit"
         },
+        "dailySwaps": {
+          "$ref": "#/definitions/DailySwaps"
+        },
         "liquidityProvision": {
           "$ref": "#/definitions/WeeklyFragments"
         },
@@ -370,11 +393,19 @@
           "$ref": "#/definitions/WeeklyFragments"
         }
       },
-      "required": ["dailyVisit", "liquidityProvision", "liquidityStaking"]
+      "required": ["dailyVisit", "dailySwaps", "liquidityProvision", "liquidityStaking"]
     },
     "GetCampaignProgressResponse": {
       "type": "object",
       "properties": {
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "redeemEndDate": {
+          "type": "string",
+          "format": "date"
+        },
         "claimedFragments": {
           "type": "number"
         },
@@ -385,7 +416,7 @@
           "$ref": "#/definitions/Tasks"
         }
       },
-      "required": ["claimedFragments", "rewards", "tasks"]
+      "required": ["endDate", "redeemEndDate", "claimedFragments", "rewards", "tasks"]
     }
   }
 }

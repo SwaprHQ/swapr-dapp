@@ -11,8 +11,8 @@ import { StatusTag, StatusTags } from './ExpeditionsTags'
 export interface TaskCardProps {
   duration?: 'Weekly' | 'Daily'
   title: string
-  description: string
-  buttonText: React.ReactNode
+  description: React.ReactNode
+  button: React.ReactNode
   buttonDisabled?: boolean
   infoLink?: string
   onClick?: () => void
@@ -29,7 +29,7 @@ export function TaskCard({
   title,
   description,
   infoLink,
-  buttonText,
+  button,
   buttonDisabled = false,
   onClick,
   claimed = false,
@@ -84,9 +84,11 @@ export function TaskCard({
         </Row>
         <TYPE.White fontSize="14px">{description}</TYPE.White>
         {infoLink && <StyledExternalLink href={infoLink}>More info</StyledExternalLink>}
-        <ExpeditionsButton onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
-          {buttonText}
-        </ExpeditionsButton>
+        {button && (
+          <ExpeditionsButton onClick={onClick} disabled={buttonDisabled} confirmed={claimed}>
+            {button}
+          </ExpeditionsButton>
+        )}
       </Card>
     </Wrapper>
   )

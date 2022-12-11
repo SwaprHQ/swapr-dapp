@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 import { CustomOutlinedTag } from '../../../../components/Tag'
 
 export type RarityTags = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic'
-export type StatusTags = 'active' | 'upcoming' | 'expired' | 'loading'
+export type StatusTags = 'active' | 'upcoming' | 'expired' | 'loading' | 'inactive'
 
 interface TagThemeProps {
   color: string
@@ -27,6 +27,9 @@ const statusTheme: TagTheme<StatusTags> = {
     color: '',
   },
   upcoming: {
+    color: '#a86e3f',
+  },
+  inactive: {
     color: '#a86e3f',
   },
 }

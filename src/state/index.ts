@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
+import { expeditionsReducer as expeditions } from '../modules/expeditions/Expeditions.reducer'
 import advancedTradingView from '../services/AdvancedTradingView/store'
 import {
   ecoBridgePersistedKeys,
@@ -20,7 +21,14 @@ import swap from './swap/reducer'
 import transactions from './transactions/reducer'
 import user from './user/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...ecoBridgePersistedKeys]
+const PERSISTED_KEYS: string[] = [
+  'user',
+  'transactions',
+  'claim',
+  'bridgeTransactions',
+  ...ecoBridgePersistedKeys,
+  'expeditions.dailySwapsTracked',
+]
 
 const persistenceNamespace = 'swapr'
 
@@ -42,6 +50,7 @@ const store = configureStore({
     bridgeTransactions,
     ecoBridge,
     advancedTradingView,
+    expeditions,
   },
   middleware: [
     save({
