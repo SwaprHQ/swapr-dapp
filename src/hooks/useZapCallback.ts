@@ -159,12 +159,14 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
                 return BigNumber.from(30000000)
               })
 
-            const txReceipt = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
+            const zapOutTx = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
               gasLimit: calculateGasMargin(estimatedGas),
               gasPrice: normalizedGasPrice,
             })
-            setTransactionReceipt(txReceipt)
-            addTransaction(txReceipt, { summary: getZapSummary(parsedAmounts, receiver, false) })
+            setTransactionReceipt(zapOutTx)
+            addTransaction(zapOutTx, { summary: getZapSummary(parsedAmounts, receiver, false) })
+            const zapOutTxReceipt = await zapOutTx.wait(1)
+            if (zapOutTxReceipt.status === 1) setZapState(ZapState.VALID)
             return 'Zap out succeeded'
           } catch (error) {
             console.error('Could not zap out!', error)
