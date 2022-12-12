@@ -147,7 +147,7 @@ export const CurrencyInputPanelComponent = ({
                 />
               </>
             )}{' '}
-            <CurrencySelectWrapper>
+            <CurrencySelectWrapper currency={currency}>
               <CurrencySelect
                 selected={!!(currency || pair)}
                 className="open-currency-select-button"
