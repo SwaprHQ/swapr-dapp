@@ -166,14 +166,12 @@ export function useSwapCallback({
   const { trackEcoEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
-  console.log('recipeintORDASDJSAKDJKASJDA', recipientAddressOrName)
+
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipient)
 
   const addTransaction = useTransactionAdder()
-
-  console.log('recipient', recipient)
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
@@ -278,7 +276,6 @@ export function useSwapCallback({
           call: { transactionParameters },
           gasEstimate,
         } = successfulEstimation
-        console.log('transactionParameters', transactionParameters)
 
         let normalizedGasPrice = undefined
         if (preferredGasPrice && chainId === ChainId.MAINNET) {

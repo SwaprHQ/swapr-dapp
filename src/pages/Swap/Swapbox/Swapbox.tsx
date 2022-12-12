@@ -54,7 +54,6 @@ export function Swapbox() {
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
-  console.log('SWAPSTATE RECIPIENT', recipient)
 
   const {
     trade: potentialTrade,
@@ -180,8 +179,6 @@ export function Swapbox() {
     allowedSlippage,
     recipientAddressOrName: recipient,
   })
-
-  console.log('TRADEEEE', trade)
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
