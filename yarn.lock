@@ -5406,8 +5406,9 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@file:.yalc/@swapr/sdk":
+"@swapr/sdk@https://git@github.com/levelkdev/swapr-sdk.git#8c763bc87336352dbff3e9b8ac4d8310badbede9":
   version "1.7.0-beta.0"
+  resolved "https://git@github.com/levelkdev/swapr-sdk.git#8c763bc87336352dbff3e9b8ac4d8310badbede9"
   dependencies:
     "@cowprotocol/cow-sdk" "^0.0.15"
     "@ethersproject/abi" "^5.6.4"
