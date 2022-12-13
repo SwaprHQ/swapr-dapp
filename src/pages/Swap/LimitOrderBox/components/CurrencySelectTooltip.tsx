@@ -1,25 +1,19 @@
-import { ChainId, Currency, ETHER, XDAI } from '@swapr/sdk'
+import { Currency } from '@swapr/sdk'
 
 import { MouseoverTooltip } from '../../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../../hooks'
+import { useNativeCurrency } from '../../../../hooks/useNativeCurrency'
 import { wrappedCurrency } from '../../../../utils/wrappedCurrency'
-
-const wrappedCurrencySymbols: Record<Extract<ChainId, ChainId.MAINNET | ChainId.GNOSIS>, string | undefined> = {
-  [ChainId.MAINNET]: wrappedCurrency(ETHER, ChainId.MAINNET)?.symbol,
-  [ChainId.GNOSIS]: wrappedCurrency(XDAI, ChainId.GNOSIS)?.symbol,
-}
 
 export const CurrencySelectTooltip = ({ currency, children }: { currency: Currency; children: React.ReactNode }) => {
   const { chainId } = useActiveWeb3React()
+  const nativeCurrency = useNativeCurrency()
 
-  if (
-    (currency.symbol !== ETHER.symbol && currency.symbol !== XDAI.symbol) ||
-    (chainId !== ChainId.MAINNET && chainId !== ChainId.GNOSIS)
-  ) {
+  const tokenSymbol = wrappedCurrency(nativeCurrency, chainId)?.symbol
+
+  if (currency.symbol !== nativeCurrency.symbol || !chainId || !tokenSymbol) {
     return <>{children}</>
   }
-
-  const tokenSymbol = wrappedCurrencySymbols[chainId]
 
   return (
     <MouseoverTooltip
