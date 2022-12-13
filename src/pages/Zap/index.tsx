@@ -161,6 +161,7 @@ export default function Zap() {
   const currencies = derivedInfo.currencies
   const currencyBalances = derivedInfo.currencyBalances
   const isZapNotAvailable = derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
 
@@ -210,9 +211,6 @@ export default function Zap() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvalZap])
-
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
-  const maxAmountOutput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.OUTPUT], chainId, false)
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
     zapContractParams: {
@@ -334,17 +332,12 @@ export default function Zap() {
     [onCurrencySelection, onPairSelection, isZapIn]
   )
 
-  const handleMaxInput = useCallback(
-    (fieldInput: string) => () => {
-      maxAmountInput && fieldInput === Field.INPUT && onUserInput(Field.INPUT, maxAmountInput.toExact())
-      maxAmountOutput && fieldInput === Field.OUTPUT && onUserInput(Field.OUTPUT, maxAmountOutput.toExact())
-    },
-    [maxAmountInput, maxAmountOutput, onUserInput]
-  )
+  const handleMaxInput = useCallback(() => {
+    maxAmountInput && onUserInput(independentField, maxAmountInput.toSignificant())
+  }, [independentField, maxAmountInput, onUserInput])
 
   const { fiatValueInput, isFallbackFiatValueInput } = useHigherUSDValue({
-    inputCurrencyAmount: parsedAmounts[Field.INPUT],
-    outputCurrencyAmount: parsedAmounts[Field.OUTPUT],
+    inputCurrencyAmount: parsedAmounts[independentField],
   })
 
   const renderSwapBox = () => (
@@ -375,7 +368,7 @@ export default function Zap() {
                 currency={currencies[Field.INPUT]}
                 pair={zapPair}
                 onUserInput={handleTypeInput}
-                onMax={handleMaxInput(Field.INPUT)}
+                onMax={handleMaxInput}
                 onCurrencySelect={handleInputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.INPUT]}
@@ -405,14 +398,12 @@ export default function Zap() {
               </SwitchIconContainer>
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
-                onMax={handleMaxInput(Field.OUTPUT)}
                 currency={currencies[Field.OUTPUT]}
                 pair={zapPair}
                 onCurrencySelect={handleOutputSelect}
                 onPairSelect={handleOnPairSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
-                isFallbackFiatValue={isFallbackFiatValueInput} //
-                maxAmount={maxAmountOutput}
+                isFallbackFiatValue={isFallbackFiatValueInput}
                 showCommonBases
                 disabled={true}
                 isDisabledStyled={true}

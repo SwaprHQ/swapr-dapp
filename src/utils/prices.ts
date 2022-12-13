@@ -341,11 +341,11 @@ export const calculateZapOutAmounts = (
 
   const [tokenA, tokenB] = [pair?.token0, pair?.token1]
   // liquidity values
-  const liquidityValueA =
+  const pooledAmountTokenA =
     pair && pairTotalSupply && userLiquidity && tokenA
       ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, userLiquidity, false).raw)
       : undefined
-  const liquidityValueB =
+  const pooledAmountTokenB =
     pair && pairTotalSupply && userLiquidity && tokenB
       ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, userLiquidity, false).raw)
       : undefined
@@ -359,11 +359,11 @@ export const calculateZapOutAmounts = (
 
   // calculate liquidity pool's tokens amounts which will be removed from the LP and
   // then output token amount which will be swapped for LP's tokens
-  const amountTokenToLpTokenA = liquidityValueA
-    ? percentToRemove.multiply(liquidityValueA.raw).multiply(priceToken0TokenTo)
+  const amountTokenToLpTokenA = pooledAmountTokenA
+    ? percentToRemove.multiply(pooledAmountTokenA.raw).multiply(priceToken0TokenTo)
     : undefined
-  const amountTokenToLpTokenB = liquidityValueB
-    ? percentToRemove.multiply(liquidityValueB.raw).multiply(priceToken1TokenTo)
+  const amountTokenToLpTokenB = pooledAmountTokenB
+    ? percentToRemove.multiply(pooledAmountTokenB.raw).multiply(priceToken1TokenTo)
     : undefined
 
   // estimate total amount of output token
