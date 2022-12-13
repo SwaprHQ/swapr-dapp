@@ -137,7 +137,6 @@ export async function getExactIn(
     })
       .then(res => resolve(res ? res : undefined))
       .catch(error => {
-        console.log('velError')
         console.error(error)
         errors.push(error)
         resolve(undefined)
