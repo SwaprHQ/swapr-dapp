@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { COW_LIMIT_ORDER_MAX_TIME, invalidChars } from '../constants'
+import { invalidChars } from '../constants'
 import { LimitOrderFormContext } from '../contexts'
 import { OrderExpiresInUnit } from '../interfaces'
 import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
@@ -60,7 +60,7 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
       if (value >= 0) {
         // Max time can be set to 180 minutes only
         // Update this once CoW supports future time
-        setInputExpiresIn(value < COW_LIMIT_ORDER_MAX_TIME ? value : COW_LIMIT_ORDER_MAX_TIME)
+        setInputExpiresIn(value)
       }
     }
   }
@@ -76,9 +76,6 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
     <InputGroup>
       <ExpiryLabels htmlFor={id}>
         <span>{t('limitOrder.expiresIn')}</span>
-        <MaxExpiryTime onClick={() => setInputExpiresIn(COW_LIMIT_ORDER_MAX_TIME)}>
-          {t('limitOrder.maxExpiryTime')}
-        </MaxExpiryTime>
       </ExpiryLabels>
       <InnerWrapper>
         <Input
@@ -94,8 +91,6 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
               setInputExpiresIn(1)
             }
           }}
-          // Currently CoW supports only 180 minutes
-          max={COW_LIMIT_ORDER_MAX_TIME}
           type="number"
           onChange={expiresInChangeHandler}
           required
@@ -107,6 +102,13 @@ export function OrderExpiryField({ id }: OrderExpiryFieldProps) {
             onClick={() => setExpiresInUnit(OrderExpiresInUnit.Minutes)}
           >
             Min
+          </ExpiryUnitButton>
+          <ExpiryUnitButton
+            role="button"
+            isActive={expiresInUnit === OrderExpiresInUnit.Days}
+            onClick={() => setExpiresInUnit(OrderExpiresInUnit.Days)}
+          >
+            Days
           </ExpiryUnitButton>
         </ButtonAddonsWrapper>
       </InnerWrapper>

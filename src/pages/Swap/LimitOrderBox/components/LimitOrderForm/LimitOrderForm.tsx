@@ -88,64 +88,71 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   const setToMarket = async () => {
     const signer = provider.getSigner()
-    if (limitOrder.buyToken && limitOrder.sellToken) {
-      const order = JSON.parse(JSON.stringify(limitOrder))
+    if (!limitOrder.buyToken || !limitOrder.sellToken) {
+      return
+    }
 
-      const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
-      // checking the price of 10 unit of tokens since CoW calculates fees from sell token. If we check price for 1 unit most cases in Mainnet
-      // 1 sell token wont cover fees and api fails. So checking the price of 10 unit of sell token to buy token and diving with 10 to get current market price.
-      // It is not optimal but to show market price its approximate. The order will be executed in correct price.
-      order.sellAmount = parseUnits('10', token.currency.decimals).toString()
+    const order = JSON.parse(JSON.stringify(limitOrder))
 
-      const cowQuote = await getQuote({
-        chainId,
-        signer,
-        order: { ...order, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
-      })
-      if (cowQuote !== undefined) {
-        const {
-          quote: { buyAmount, sellAmount },
-        } = cowQuote
+    const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
+    // checking the price of 10 unit of tokens since CoW calculates fees from sell token. If we check price for 1 unit most cases in Mainnet
+    // 1 sell token wont cover fees and api fails. So checking the price of 10 unit of sell token to buy token and diving with 10 to get current market price.
+    // It is not optimal but to show market price its approximate. The order will be executed in correct price.
+    order.sellAmount = parseUnits('10', token.currency.decimals).toString()
 
-        const nextLimitPriceFloat =
-          limitOrder.kind === LimitOrderKind.SELL
-            ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals)
-            : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals)
+    const cowQuote = await getQuote({
+      chainId,
+      signer,
+      order: { ...order, expiresAt: dayjs().add(expiresIn, 'minutes').unix() },
+    })
 
-        const limitPrice = parseUnits(
-          nextLimitPriceFloat.toFixed(6),
-          limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
-        ).toString()
+    console.log({
+      cowQuote,
+    })
 
-        // get and parse the sell token amount
-        const sellTokenAmountFloat = parseFloat(
-          formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
-        )
+    if (cowQuote !== undefined) {
+      const {
+        quote: { buyAmount, sellAmount },
+      } = cowQuote
 
-        let newBuyAmountAsFloat = 0 // the amount of buy token
+      const nextLimitPriceFloat =
+        limitOrder.kind === LimitOrderKind.SELL
+          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals)
+          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals)
 
-        if (limitOrder.kind === LimitOrderKind.SELL) {
-          newBuyAmountAsFloat = sellTokenAmountFloat * nextLimitPriceFloat
-        } else {
-          newBuyAmountAsFloat = sellTokenAmountFloat / nextLimitPriceFloat
-        }
+      const limitPrice = parseUnits(
+        nextLimitPriceFloat.toFixed(6),
+        limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
+      ).toString()
 
-        const nextBuyAmountWei = parseUnits(
-          newBuyAmountAsFloat.toFixed(6), // 6 is the lowest precision we support due to tokens like USDC
-          buyTokenAmount?.currency?.decimals
-        ).toString()
+      // get and parse the sell token amount
+      const sellTokenAmountFloat = parseFloat(
+        formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
+      )
 
-        const nextTokenBuyAmount = new TokenAmount(buyTokenAmount.currency as Token, nextBuyAmountWei)
+      let newBuyAmountAsFloat = 0 // the amount of buy token
 
-        setBuyTokenAmount(nextTokenBuyAmount)
-        setFormattedLimitPrice(nextLimitPriceFloat.toString())
-        setFormattedBuyAmount(newBuyAmountAsFloat.toString())
-        setLimitOrder({
-          ...limitOrder,
-          limitPrice: limitPrice,
-          buyAmount: nextBuyAmountWei,
-        })
+      if (limitOrder.kind === LimitOrderKind.SELL) {
+        newBuyAmountAsFloat = sellTokenAmountFloat * nextLimitPriceFloat
+      } else {
+        newBuyAmountAsFloat = sellTokenAmountFloat / nextLimitPriceFloat
       }
+
+      const nextBuyAmountWei = parseUnits(
+        newBuyAmountAsFloat.toFixed(6), // 6 is the lowest precision we support due to tokens like USDC
+        buyTokenAmount?.currency?.decimals
+      ).toString()
+
+      const nextTokenBuyAmount = new TokenAmount(buyTokenAmount.currency as Token, nextBuyAmountWei)
+
+      setBuyTokenAmount(nextTokenBuyAmount)
+      setFormattedLimitPrice(nextLimitPriceFloat.toString())
+      setFormattedBuyAmount(newBuyAmountAsFloat.toString())
+      setLimitOrder({
+        ...limitOrder,
+        limitPrice: limitPrice,
+        buyAmount: nextBuyAmountWei,
+      })
     }
   }
 
