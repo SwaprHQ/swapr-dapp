@@ -338,23 +338,23 @@ export const calculateZapOutAmounts = (
     }
   // determine significant digits in case currency has less than 9 decimals
   const tokenTo = wrappedCurrency(priceToken0TokenTo.quoteCurrency, chainId)
+  // use token amount for output calculation (if user has no LP use parsed amount)
+  const lpTokenAmount = userLiquidity.greaterThan('0') ? userLiquidity : wrappedCurrencyAmount(amountFrom, chainId)
 
   const [tokenA, tokenB] = [pair?.token0, pair?.token1]
   // liquidity values
   const pooledAmountTokenA =
-    pair && pairTotalSupply && userLiquidity && tokenA
-      ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, userLiquidity, false).raw)
+    pair && pairTotalSupply && lpTokenAmount && tokenA
+      ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, lpTokenAmount, false).raw)
       : undefined
   const pooledAmountTokenB =
-    pair && pairTotalSupply && userLiquidity && tokenB
-      ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, userLiquidity, false).raw)
+    pair && pairTotalSupply && lpTokenAmount && tokenB
+      ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, lpTokenAmount, false).raw)
       : undefined
 
   let percentToRemove: Percent = new Percent('0', '100')
-  if (pair?.liquidityToken) {
-    if (amountFrom && userLiquidity) {
-      percentToRemove = new Percent(amountFrom.raw, userLiquidity.raw)
-    }
+  if (pair?.liquidityToken && amountFrom && lpTokenAmount) {
+    percentToRemove = new Percent(amountFrom.raw, lpTokenAmount.raw)
   }
 
   // calculate liquidity pool's tokens amounts which will be removed from the LP and
@@ -368,7 +368,7 @@ export const calculateZapOutAmounts = (
 
   // estimate total amount of output token
   const estAmountTokenTo =
-    tokenTo && amountTokenToLpTokenA && amountTokenToLpTokenB
+    tokenTo && amountTokenToLpTokenA?.greaterThan('0') && amountTokenToLpTokenB?.greaterThan('0')
       ? new TokenAmount(tokenTo, amountTokenToLpTokenA.add(amountTokenToLpTokenB).quotient)
       : undefined
 
