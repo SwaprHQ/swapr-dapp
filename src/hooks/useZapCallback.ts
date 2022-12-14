@@ -109,12 +109,15 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
             // Set state to pending
             setZapState(ZapState.LOADING)
 
-            const estimatedGas = await zapContract.estimateGas
+            let estimatedGas = await zapContract.estimateGas
               .zapIn(zapIn, swapTokenA, swapTokenB, receiver, affiliateAddress, transferResidual)
               .catch((error: Error) => {
                 console.debug('Gas estimation failed', error)
-                return BigNumber.from(30000000)
+                return undefined
               })
+            if (!estimatedGas) {
+              estimatedGas = (await library.getBlock('latest')).gasLimit
+            }
 
             const zapInTx = await zapContract.zapIn(
               zapIn,
@@ -152,12 +155,15 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
             // Set state to pending
             setZapState(ZapState.LOADING)
 
-            const estimatedGas = await zapContract.estimateGas
+            let estimatedGas = await zapContract.estimateGas
               .zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress)
               .catch((error: Error) => {
                 console.debug('Gas estimation failed', error)
-                return BigNumber.from(30000000)
+                return undefined
               })
+            if (!estimatedGas) {
+              estimatedGas = (await library.getBlock('latest')).gasLimit
+            }
 
             const zapOutTx = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
               gasLimit: calculateGasMargin(estimatedGas),

@@ -440,19 +440,19 @@ export async function getZapBestTradesUniV2(
 
   // use half of the parsed amount to find best routes for to different tokens and estimate prices
   const halfParsedAmount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
+    parsedAmount.divide(parseBigintIsh('2')).toSignificant(parsedAmount.currency.decimals),
     parsedAmount.currency,
     chainId
   )
 
   // needed for finding route for token0 and token1
   const inputCurrency0Amount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
+    parsedAmount.divide(parseBigintIsh('2')).toSignificant(pairCurrency0.decimals),
     pairCurrency0,
     chainId
   )
   const inputCurrency1Amount = tryParseAmount(
-    parsedAmount.divide(parseBigintIsh('2')).toFixed(6),
+    parsedAmount.divide(parseBigintIsh('2')).toSignificant(pairCurrency1.decimals),
     pairCurrency1,
     chainId
   )
