@@ -1,6 +1,6 @@
 import { ChainId, CurrencyAmount } from '@swapr/sdk'
 
-import { BigNumber, BigNumberish, ContractTransaction } from 'ethers'
+import { BigNumberish, ContractTransaction } from 'ethers'
 import { useEffect, useMemo, useState } from 'react'
 
 import { ZERO_ADDRESS } from '../constants'
@@ -115,9 +115,9 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
                 console.debug('Gas estimation failed', error)
                 return undefined
               })
-            if (!estimatedGas) {
-              estimatedGas = (await library.getBlock('latest')).gasLimit
-            }
+            const txGasLimit = estimatedGas
+              ? calculateGasMargin(estimatedGas)
+              : (await library.getBlock('latest')).gasLimit
 
             const zapInTx = await zapContract.zapIn(
               zapIn,
@@ -127,7 +127,7 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
               affiliateAddress,
               transferResidual,
               {
-                gasLimit: calculateGasMargin(estimatedGas),
+                gasLimit: txGasLimit,
                 gasPrice: normalizedGasPrice,
               }
             )
@@ -161,12 +161,12 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
                 console.debug('Gas estimation failed', error)
                 return undefined
               })
-            if (!estimatedGas) {
-              estimatedGas = (await library.getBlock('latest')).gasLimit
-            }
+            const txGasLimit = estimatedGas
+              ? calculateGasMargin(estimatedGas)
+              : (await library.getBlock('latest')).gasLimit
 
             const zapOutTx = await zapContract.zapOut(zapOut, swapTokenA, swapTokenB, receiver, affiliateAddress, {
-              gasLimit: calculateGasMargin(estimatedGas),
+              gasLimit: calculateGasMargin(txGasLimit),
               gasPrice: normalizedGasPrice,
             })
             setTransactionReceipt(zapOutTx)

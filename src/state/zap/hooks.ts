@@ -445,7 +445,7 @@ export async function getZapBestTradesUniV2(
     chainId
   )
 
-  // needed for finding route for token0 and token1
+  // estimated amounts of token0 & token1 needed just to find the routes
   const inputCurrency0Amount = tryParseAmount(
     parsedAmount.divide(parseBigintIsh('2')).toSignificant(pairCurrency0.decimals),
     pairCurrency0,
@@ -480,6 +480,7 @@ export async function getZapBestTradesUniV2(
 
     allPlatformTrades = await Promise.all<EcoRouterResults>([getTradesToken0, getTradesToken1])
   } catch (error) {
+    console.debug('Zap trades not found!', error)
     return []
   }
 
