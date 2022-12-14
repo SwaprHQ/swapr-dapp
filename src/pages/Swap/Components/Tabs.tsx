@@ -99,7 +99,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           }}
           className={activeTab === SwapTab.BridgeSwap ? 'active' : ''}
         >
-          <StyledBridge />
+          <StyledBridge height={11} />
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
@@ -115,7 +115,7 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
 
   const LimitOrderButton = ({ disabled = false }) => (
     <Button onClick={() => setActiveTab(SwapTab.LimitOrder)} className={className} disabled={disabled}>
-      <StyledSliders />
+      <StyledSliders height={11} />
       {t('tabs.limit')}
     </Button>
   )
@@ -123,7 +123,7 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
   if (account == null || noLimitOrderSupport) {
     return (
       <MouseoverTooltip
-        content={noLimitOrderSupport ? 'Available only in Mainnet and Gnosis chain' : 'Connect your wallet'}
+        content={noLimitOrderSupport ? 'Available only in Mainnet and Gnosis Chain' : 'Connect your wallet'}
         placement="top"
       >
         <LimitOrderButton disabled={true} />

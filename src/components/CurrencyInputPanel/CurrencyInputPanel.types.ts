@@ -31,6 +31,7 @@ export interface CurrencyInputPanelProps {
   isOutputPanel?: boolean
   showNativeCurrency?: boolean
   currencyOmitList?: string[]
+  currencySelectWrapper?: React.ElementType
 }
 
 export type CurrencyViewProps = Pick<
