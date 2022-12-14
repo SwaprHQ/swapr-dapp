@@ -66,12 +66,6 @@ const UnifyFontSize = css`
   `};
 `
 
-const StyledPlatformText = styled.div`
-  text-transform: uppercase;
-  margin-left: 0.5rem;
-  ${UnifyFontSize}
-`
-
 const UnifiedText = styled(Text)`
   ${UnifyFontSize}
 `
@@ -87,7 +81,7 @@ interface SwapButtonProps {
   priceImpactSeverity: number
   isExpertMode: boolean
   amountInCurrencySymbol?: string
-  zapSecondPlatformName?: string
+  isZap: boolean
 }
 
 export const SwapButton = ({
@@ -96,16 +90,15 @@ export const SwapButton = ({
   priceImpactSeverity,
   isExpertMode,
   amountInCurrencySymbol,
-  zapSecondPlatformName,
+  isZap,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
   const { t } = useTranslation('swap')
-  const zap = !!zapSecondPlatformName
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
     [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('button.enterAmount'),
-    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('button.selectToken'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t(isZap ? 'button.selectPair' : 'button.selectToken'),
     [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('button.enterRecipient'),
     [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('button.invalidRecipient'),
     [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
@@ -124,25 +117,12 @@ export const SwapButton = ({
           t('button.priceImpactTooHigh')
         ) : (
           <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
-            <UnifiedText>{zap ? t('button.zapWith') : t('button.swapWith')}</UnifiedText>
+            <UnifiedText>{isZap ? t('button.zapWith') : t('button.swapWith')}</UnifiedText>
             {platformName && (
               <Flex alignItems="center" marginLeft={2}>
                 <img
                   src={ROUTABLE_PLATFORM_STYLE[platformName].logo}
                   alt={ROUTABLE_PLATFORM_STYLE[platformName].alt}
-                  width={21}
-                  height={21}
-                />
-                <StyledPlatformText>
-                  {zap && platformName !== zapSecondPlatformName ? ' AND ' : ROUTABLE_PLATFORM_STYLE[platformName].name}
-                </StyledPlatformText>
-              </Flex>
-            )}
-            {zap && zapSecondPlatformName && platformName !== zapSecondPlatformName && (
-              <Flex alignItems="center" marginLeft={2}>
-                <img
-                  src={ROUTABLE_PLATFORM_STYLE[zapSecondPlatformName].logo}
-                  alt={ROUTABLE_PLATFORM_STYLE[zapSecondPlatformName].alt}
                   width={21}
                   height={21}
                 />

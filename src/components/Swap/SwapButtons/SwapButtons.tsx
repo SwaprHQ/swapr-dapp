@@ -1,4 +1,4 @@
-import { CoWTrade, Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
+import { CoWTrade, Currency, Pair, Trade, UniswapV2Trade } from '@swapr/sdk'
 
 import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -44,7 +44,7 @@ interface SwapButtonsProps {
   handleInputSelect: (inputCurrency: Currency) => void
   wrapState?: WrapState | undefined
   setWrapState: ((wrapState: WrapState) => void) | undefined
-  tradeSecondTokenZap?: Trade | undefined
+  zapPair?: Pair | undefined
 }
 
 export function SwapButtons({
@@ -68,7 +68,7 @@ export function SwapButtons({
   handleInputSelect,
   wrapState,
   setWrapState,
-  tradeSecondTokenZap,
+  zapPair,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -78,7 +78,7 @@ export function SwapButtons({
   const route = trade instanceof UniswapV2Trade ? trade?.route : true
   const noRoute = !route
   const isValid = !swapInputError
-  const isZap = !!tradeSecondTokenZap
+  const isZap = !!zapPair
 
   useEffect(() => {
     RoutablePlatformKeys.forEach(key => {
@@ -202,12 +202,12 @@ export function SwapButtons({
         onClick={onSwapClick}
         id="swap-button"
         disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-        platformName={trade?.platform.name}
+        platformName={isZap ? zapPair.platform.name : trade?.platform.name}
         swapInputError={swapInputError}
         priceImpactSeverity={priceImpactSeverity}
         isExpertMode={isExpertMode}
         amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
-        zapSecondPlatformName={tradeSecondTokenZap?.platform.name}
+        isZap={isZap}
       />
       {ErrorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
     </>

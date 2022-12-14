@@ -429,7 +429,6 @@ export default function Zap() {
               approvalSubmitted={approvalsSubmitted}
               currencies={currencies}
               trade={derivedInfo.tradeToken0}
-              tradeSecondTokenZap={derivedInfo.tradeToken1}
               swapInputError={inputError}
               swapErrorMessage={swapErrorMessage}
               loading={derivedInfo.loading}
@@ -439,6 +438,7 @@ export default function Zap() {
               handleInputSelect={handleInputSelect}
               wrapState={undefined}
               setWrapState={undefined}
+              zapPair={zapPair}
             />
           </AutoColumn>
         </Wrapper>
