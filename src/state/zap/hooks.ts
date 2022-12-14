@@ -273,7 +273,6 @@ export const useZapParams = (
   inputError?: number
 } => {
   const { account, chainId } = useActiveWeb3React()
-  const [inputError, setInputError] = useState<number | undefined>()
   const totalSupply = useTotalSupply(pair?.liquidityToken)
 
   const zeroBN = BigNumber.from(0)
@@ -337,6 +336,15 @@ export const useZapParams = (
     platformTrade1
   )
 
+  const inputError =
+    isZapIn &&
+    data.parsedAmount &&
+    data.tradeToken0 &&
+    data.tradeToken1 &&
+    (!exactTrade0?.inputAmount || !exactTrade1?.inputAmount)
+      ? SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE
+      : undefined
+
   const swapTokenA: SwapTx = {
     amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
     amountMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO  isZapIn && exactTrade0 ? exactTrade0.minimumAmountOut().toSignificant() : zeroBN,
@@ -363,26 +371,13 @@ export const useZapParams = (
   }, [dexIdZap, isZapIn, zeroBN])
 
   const zapOut = useMemo(() => {
-    if (zapIn) return undefined
+    if (isZapIn) return undefined
     return {
       amountLpFrom: data.parsedAmount ? data.parsedAmount.raw.toString() : zeroBN,
       amountTokenToMin: zeroBN,
       dexIndex: dexIdZap,
     }
-  }, [data.parsedAmount, dexIdZap, zapIn, zeroBN])
-
-  // set error if zap in & amounts for trade were not found
-  useEffect(() => {
-    if (
-      data.parsedAmount &&
-      data.tradeToken0 &&
-      data.tradeToken1 &&
-      zapIn &&
-      (!exactTrade0?.inputAmount || !exactTrade1?.inputAmount)
-    ) {
-      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
-    } else setInputError(undefined)
-  }, [data.parsedAmount, data.tradeToken0, data.tradeToken1, exactTrade0?.inputAmount, exactTrade1?.inputAmount, zapIn])
+  }, [data.parsedAmount, dexIdZap, isZapIn, zeroBN])
 
   return {
     contractParams: { zapIn, zapOut, swapTokenA, swapTokenB, recipient: null },

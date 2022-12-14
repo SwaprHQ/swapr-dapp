@@ -100,8 +100,6 @@ export default function Zap() {
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
   const [zapPair, setZapPair] = useState<Pair>()
-  const [isZapAvailable, setIsZapAvailable] = useState(true)
-  const [inputError, setInputError] = useState<number | undefined>()
   const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
   const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
@@ -156,13 +154,10 @@ export default function Zap() {
   const currencies = derivedInfo.currencies
   const currencyBalances = derivedInfo.currencyBalances
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
-
+  const inputError = derivedInfo.inputError ? derivedInfo.inputError : zapParams.inputError ?? undefined
+  const isZapAvailable = !(derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+  console.log('zap error', derivedInfo.inputError, zapParams.inputError)
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
-
-  useEffect(() => {
-    setInputError(derivedInfo.inputError ? derivedInfo.inputError : zapParams.inputError ?? undefined)
-    setIsZapAvailable(!(derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE))
-  }, [derivedInfo.inputError, zapParams.inputError])
 
   const handleTypeInput = useCallback(
     (value: string) => {
