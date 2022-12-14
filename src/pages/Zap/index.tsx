@@ -156,7 +156,7 @@ export default function Zap() {
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
   const inputError = derivedInfo.inputError ? derivedInfo.inputError : zapParams.inputError ?? undefined
   const isZapAvailable = !(derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
-  console.log('zap error', derivedInfo.inputError, zapParams.inputError)
+
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
 
   const handleTypeInput = useCallback(
@@ -224,15 +224,14 @@ export default function Zap() {
 
   const handleZap = useCallback(() => {
     if (
-      pImpactTrade0 &&
-      pImpactTrade1 &&
-      !confirmPriceImpactWithoutFee(pImpactTrade0.greaterThan(pImpactTrade1) ? pImpactTrade0 : pImpactTrade1)
+      !zapCallback ||
+      (pImpactTrade0 &&
+        pImpactTrade1 &&
+        !confirmPriceImpactWithoutFee(pImpactTrade0.greaterThan(pImpactTrade1) ? pImpactTrade0 : pImpactTrade1))
     ) {
       return
     }
-    if (!zapCallback) {
-      return
-    }
+
     setSwapState({
       attemptingTxn: true,
       tradeToConfirm,
@@ -240,6 +239,7 @@ export default function Zap() {
       swapErrorMessage: undefined,
       txHash: undefined,
     })
+
     zapCallback()
       .then(hash => {
         setSwapState({
@@ -281,7 +281,7 @@ export default function Zap() {
       swapErrorMessage,
       txHash,
     })
-    // if there was a tx hash, we want to clear the input
+    // if there is tx hash, we want to clear the input
     if (txHash) {
       onUserInput(Field.INPUT, '')
       onUserInput(Field.OUTPUT, '')
@@ -307,6 +307,7 @@ export default function Zap() {
     [onCurrencySelection]
   )
 
+  // for better ux
   useEffect(() => {
     if (!zapPair && pair) {
       setZapPair(pair)
@@ -351,7 +352,7 @@ export default function Zap() {
             recipient={recipient}
             allowedSlippage={allowedSlippage}
             onConfirm={handleZap}
-            swapErrorMessage={swapErrorMessage} //zapErrorMessage
+            swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
 
@@ -377,7 +378,7 @@ export default function Zap() {
               <SwitchIconContainer>
                 <SwitchTokensAmountsContainer
                   onClick={() => {
-                    setApprovalsSubmitted(false) // reset 2 step UI for approvals TODO: do we need it here?
+                    setApprovalsSubmitted(false) // reset 2 step UI for approvals
                     onSwitchTokens()
                   }}
                 >

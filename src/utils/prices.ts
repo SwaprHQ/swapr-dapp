@@ -256,6 +256,9 @@ export interface ZapInAmountsResults {
   estLpTokenMinted?: TokenAmount
 }
 
+/**
+ * Returns estimated tokens amounts used for zap in
+ */
 export const calculateZapInAmounts = (
   amountFrom: CurrencyAmount | undefined,
   pair: Pair | undefined,
@@ -272,7 +275,7 @@ export const calculateZapInAmounts = (
       amountFromForTokenB: undefined,
       estLpTokenMinted: undefined,
     }
-  // determine significant digits in case currency has less than 9 decimals
+  // determine significant digits
   const significantDigits = amountFrom.currency.decimals
 
   // convert amounts to number for calculations
@@ -317,6 +320,9 @@ export interface ZapOutAmountsResults {
   estAmountTokenTo: TokenAmount | undefined
 }
 
+/**
+ * Returns estimated tokens amounts used for zap out
+ */
 export const calculateZapOutAmounts = (
   amountFrom: CurrencyAmount | undefined,
   pair: Pair | undefined,
@@ -344,7 +350,7 @@ export const calculateZapOutAmounts = (
   const lpTokenAmount = userLiquidity.greaterThan('0') ? userLiquidity : wrappedCurrencyAmount(amountFrom, chainId)
 
   const [tokenA, tokenB] = [pair?.token0, pair?.token1]
-  // liquidity values
+  // liquidity values of each token
   const pooledAmountTokenA =
     pair && pairTotalSupply && lpTokenAmount && tokenA
       ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, lpTokenAmount, false).raw)

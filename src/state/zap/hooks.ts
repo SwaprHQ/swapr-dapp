@@ -336,6 +336,7 @@ export const useZapParams = (
     platformTrade1
   )
 
+  // if input amounts were not found set error otherwise tx will fail because of insufficient input amount
   const inputError =
     isZapIn &&
     data.parsedAmount &&
