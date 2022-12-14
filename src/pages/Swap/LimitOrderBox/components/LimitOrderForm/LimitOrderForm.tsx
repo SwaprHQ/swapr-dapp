@@ -27,7 +27,7 @@ import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
 import SwapTokens from '../SwapTokens'
 import { AutoRow, MaxAlert } from './styles'
-import { checkMaxOrderAmount, formatMarketPrice, formatMaxValue } from './utils'
+import { checkMaxOrderAmount, formatMarketPrice, formatMaxValue, toFixedSix } from './utils'
 
 dayjs.extend(dayjsUTCPlugin)
 
@@ -95,19 +95,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     const order = JSON.parse(JSON.stringify(limitOrder))
 
     const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
-    // checking the price of 10 unit of tokens since CoW calculates fees from sell token. If we check price for 1 unit most cases in Mainnet
-    // 1 sell token wont cover fees and api fails. So checking the price of 10 unit of sell token to buy token and diving with 10 to get current market price.
-    // It is not optimal but to show market price its approximate. The order will be executed in correct price.
-    order.sellAmount = parseUnits('10', token.currency.decimals).toString()
+
+    order.sellAmount = parseUnits(token.toExact(), token.currency.decimals).toString()
 
     const cowQuote = await getQuote({
       chainId,
       signer,
       order: { ...order, expiresAt: dayjs().add(expiresIn, 'minutes').unix() },
-    })
-
-    console.log({
-      cowQuote,
     })
 
     if (cowQuote !== undefined) {
@@ -117,8 +111,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       const nextLimitPriceFloat =
         limitOrder.kind === LimitOrderKind.SELL
-          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals)
-          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals)
+          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, token.toExact())
+          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, token.toExact())
 
       const limitPrice = parseUnits(
         nextLimitPriceFloat.toFixed(6),
@@ -146,8 +140,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const nextTokenBuyAmount = new TokenAmount(buyTokenAmount.currency as Token, nextBuyAmountWei)
 
       setBuyTokenAmount(nextTokenBuyAmount)
-      setFormattedLimitPrice(nextLimitPriceFloat.toString())
-      setFormattedBuyAmount(newBuyAmountAsFloat.toString())
+      setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
+      setFormattedBuyAmount(toFixedSix(newBuyAmountAsFloat))
       setLimitOrder({
         ...limitOrder,
         limitPrice: limitPrice,
@@ -178,7 +172,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   // Display formatted sell/buy amounts
   const [formattedSellAmount, setFormattedSellAmount] = useState<string>(
-    formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals)
+    parseFloat(formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals)).toFixed(
+      6
+    )
   )
   const [formattedBuyAmount, setFormattedBuyAmount] = useState<string>('0')
   // Display formatted sell/buy amounts
@@ -237,7 +233,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         throw new Error(response)
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
       notify('Failed to place limit order. Try again.', false)
     } finally {
       setLoading(false)
@@ -316,7 +312,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         parseUnits(nextBuyAmountFloat.toFixed(6), buyTokenAmount.currency.decimals).toString()
       )
     )
-    setFormattedBuyAmount(nextBuyAmountFloat.toString()) // update the token amount input
+    setFormattedBuyAmount(toFixedSix(nextBuyAmountFloat)) // update the token amount input
     setSellTokenAmount(nextSellTokenAmount)
     // Re-compute the limit order buy
     setLimitOrder(newLimitOrder)
@@ -370,7 +366,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     // Update state
     setFormattedBuyAmount(nextBuyAmountFormatted) // update the token amount input
-    setFormattedLimitPrice(nextLimitPriceFloat.toString()) // update the token amount input
+    setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat)) // update the token amount input
     setLimitOrder(newLimitOrder)
   }
 
@@ -389,7 +385,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const amountWei = prevTokenAmount?.raw
         ? prevTokenAmount.raw.toString()
         : formattedBuyAmount
-        ? parseUnits(formattedBuyAmount, prevTokenAmount?.currency?.decimals).toString()
+        ? parseUnits(parseFloat(formattedBuyAmount).toFixed(6), prevTokenAmount?.currency?.decimals).toString()
         : '0' // use 0 if no buy currency amount is set
       handleCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
     }
@@ -403,7 +399,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
 
-      order.sellAmount = parseUnits('10', token.currency.decimals).toString()
+      order.sellAmount = parseUnits(token.toExact(), token.currency.decimals).toString()
 
       const cowQuote = await getQuote({
         chainId,
@@ -416,16 +412,17 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           quote: { buyAmount, sellAmount },
         } = cowQuote
 
-        if (limitOrder.kind === LimitOrderKind.SELL)
+        if (limitOrder.kind === LimitOrderKind.SELL) {
           setMarketPrices(marketPrice => ({
             ...marketPrice,
-            buy: formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals),
+            buy: formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, token.toExact()),
           }))
-        else
+        } else {
           setMarketPrices(marketPrice => ({
             ...marketPrice,
-            sell: formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals),
+            sell: formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, token.toExact()),
           }))
+        }
       }
     }
   }, [buyTokenAmount, chainId, expiresIn, expiresInUnit, limitOrder, provider, sellTokenAmount])
@@ -475,7 +472,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                 handleSellCurrencyAmountChange({
                   currency: sellCurrencyMaxAmount?.currency as Token,
                   amountWei: sellCurrencyMaxAmount?.raw.toString(),
-                  amountFormatted: sellCurrencyMaxAmount.toSignificant(),
+                  amountFormatted: sellCurrencyMaxAmount.toSignificant(6),
                 })
               }}
               maxAmount={sellCurrencyMaxAmount}
