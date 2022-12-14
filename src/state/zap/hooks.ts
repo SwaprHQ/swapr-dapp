@@ -18,10 +18,10 @@ import {
 
 import { createSelector } from '@reduxjs/toolkit'
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { PRE_SELECT_OUTPUT_CURRENCY_ID, SUPPORTED_ZAP_DEX_INDEX } from '../../constants/index'
+import { PRE_SELECT_OUTPUT_CURRENCY_ID, SUPPORTED_ZAP_DEX_INDEX, SWAP_INPUT_ERRORS } from '../../constants/index'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useTradeExactInUniswapV2 } from '../../hooks/Trades'
@@ -270,8 +270,10 @@ export const useZapParams = (
   contractParams: ZapContractParams
   estLpMintedZapIn: TokenAmount | undefined
   estAmountZapOut: TokenAmount | undefined
+  inputError?: number
 } => {
   const { account, chainId } = useActiveWeb3React()
+  const [inputError, setInputError] = useState<number | undefined>()
   const totalSupply = useTotalSupply(pair?.liquidityToken)
 
   const zeroBN = BigNumber.from(0)
@@ -288,31 +290,52 @@ export const useZapParams = (
   const platformTrade0 = (tradeToken0?.platform as UniswapV2RoutablePlatform) ?? undefined
   const platformTrade1 = (tradeToken1?.platform as UniswapV2RoutablePlatform) ?? undefined
 
-  const zapInCalculatedAmounts = calculateZapInAmounts(
-    isZapIn ? data.parsedAmount : undefined,
-    pair,
-    totalSupply,
-    tradeToken0?.executionPrice.invert(),
-    tradeToken1?.executionPrice.invert(),
-    chainId
-  )
+  const zapInCalculatedAmounts = useMemo(() => {
+    return calculateZapInAmounts(
+      isZapIn ? data.parsedAmount : undefined,
+      pair,
+      totalSupply,
+      tradeToken0?.executionPrice.invert(),
+      tradeToken1?.executionPrice.invert(),
+      chainId
+    )
+  }, [chainId, data.parsedAmount, isZapIn, pair, totalSupply, tradeToken0?.executionPrice, tradeToken1?.executionPrice])
 
   // balances
   const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
 
-  const zapOutCalculatedAmounts = calculateZapOutAmounts(
-    isZapIn ? undefined : data.parsedAmount,
+  const zapOutCalculatedAmounts = useMemo(() => {
+    return calculateZapOutAmounts(
+      isZapIn ? undefined : data.parsedAmount,
+      pair,
+      totalSupply,
+      userLiquidity,
+      tradeToken0?.executionPrice,
+      tradeToken1?.executionPrice,
+      chainId
+    )
+  }, [
+    chainId,
+    data.parsedAmount,
+    isZapIn,
     pair,
     totalSupply,
-    userLiquidity,
     tradeToken0?.executionPrice,
     tradeToken1?.executionPrice,
-    chainId
-  )
+    userLiquidity,
+  ])
 
-  const exactTrade0 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenA, pair?.token0, platformTrade0)
-  const exactTrade1 = useTradeExactInUniswapV2(zapInCalculatedAmounts.amountFromForTokenB, pair?.token1, platformTrade1)
+  const exactTrade0 = useTradeExactInUniswapV2(
+    zapInCalculatedAmounts?.amountFromForTokenA,
+    pair?.token0,
+    platformTrade0
+  )
+  const exactTrade1 = useTradeExactInUniswapV2(
+    zapInCalculatedAmounts?.amountFromForTokenB,
+    pair?.token1,
+    platformTrade1
+  )
 
   const swapTokenA: SwapTx = {
     amount: isZapIn && exactTrade0?.inputAmount ? exactTrade0.inputAmount.raw.toString() : zeroBN,
@@ -328,27 +351,44 @@ export const useZapParams = (
     dexIndex: dexIdSwapB,
   }
 
-  const zapIn = isZapIn
-    ? {
+  const zapIn = useMemo(() => {
+    if (isZapIn)
+      return {
         amountAMin: zeroBN,
         amountBMin: zeroBN,
         amountLPMin: zeroBN, // FOR TEST LEFT ZERO, LATER CAN BE CHANGED TO amountLpMinWithSlippage
         dexIndex: dexIdZap,
       }
-    : undefined
+    return undefined
+  }, [dexIdZap, isZapIn, zeroBN])
 
-  const zapOut = zapIn
-    ? undefined
-    : {
-        amountLpFrom: data.parsedAmount ? data.parsedAmount.raw.toString() : zeroBN,
-        amountTokenToMin: zeroBN,
-        dexIndex: dexIdZap,
-      }
+  const zapOut = useMemo(() => {
+    if (zapIn) return undefined
+    return {
+      amountLpFrom: data.parsedAmount ? data.parsedAmount.raw.toString() : zeroBN,
+      amountTokenToMin: zeroBN,
+      dexIndex: dexIdZap,
+    }
+  }, [data.parsedAmount, dexIdZap, zapIn, zeroBN])
+
+  // set error if zap in & amounts for trade were not found
+  useEffect(() => {
+    if (
+      data.parsedAmount &&
+      data.tradeToken0 &&
+      data.tradeToken1 &&
+      zapIn &&
+      (!exactTrade0?.inputAmount || !exactTrade1?.inputAmount)
+    ) {
+      setInputError(SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE)
+    } else setInputError(undefined)
+  }, [data.parsedAmount, data.tradeToken0, data.tradeToken1, exactTrade0?.inputAmount, exactTrade1?.inputAmount, zapIn])
 
   return {
     contractParams: { zapIn, zapOut, swapTokenA, swapTokenB, recipient: null },
-    estLpMintedZapIn: zapInCalculatedAmounts.estLpTokenMinted,
-    estAmountZapOut: zapOutCalculatedAmounts.estAmountTokenTo,
+    estLpMintedZapIn: zapInCalculatedAmounts?.estLpTokenMinted,
+    estAmountZapOut: zapOutCalculatedAmounts?.estAmountTokenTo,
+    inputError,
   }
 }
 

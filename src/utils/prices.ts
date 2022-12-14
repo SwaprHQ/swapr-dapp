@@ -248,7 +248,7 @@ export const limitNumberOfDecimalPlaces = (
   return quotient.toFormat(quotient.decimalPlaces(), format)
 }
 
-interface zapInAmountsResults {
+export interface ZapInAmountsResults {
   amountFromForTokenA?: CurrencyAmount
   amountFromForTokenB?: CurrencyAmount
   amountAddLpTokenA?: CurrencyAmount
@@ -263,7 +263,7 @@ export const calculateZapInAmounts = (
   priceToken0TokenFrom: Price | undefined,
   priceToken1TokenFrom: Price | undefined,
   chainId: number | undefined
-): zapInAmountsResults => {
+): ZapInAmountsResults => {
   if (!amountFrom || !pair || !pairTotalSupply || !priceToken0TokenFrom || !priceToken1TokenFrom || !chainId)
     return {
       amountAddLpTokenA: undefined,
@@ -273,7 +273,7 @@ export const calculateZapInAmounts = (
       estLpTokenMinted: undefined,
     }
   // determine significant digits in case currency has less than 9 decimals
-  const significantDigits = amountFrom.currency.decimals < 9 ? amountFrom.currency.decimals : 9
+  const significantDigits = amountFrom.currency.decimals
 
   // convert amounts to number for calculations
   const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
@@ -313,6 +313,10 @@ export const calculateZapInAmounts = (
   return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB, estLpTokenMinted }
 }
 
+export interface ZapOutAmountsResults {
+  estAmountTokenTo: TokenAmount | undefined
+}
+
 export const calculateZapOutAmounts = (
   amountFrom: CurrencyAmount | undefined,
   pair: Pair | undefined,
@@ -321,9 +325,7 @@ export const calculateZapOutAmounts = (
   priceToken0TokenTo: Price | undefined,
   priceToken1TokenTo: Price | undefined,
   chainId: number | undefined
-): {
-  estAmountTokenTo: TokenAmount | undefined
-} => {
+): ZapOutAmountsResults => {
   if (
     !amountFrom ||
     !pair ||

@@ -92,13 +92,6 @@ const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
 `
 
-export enum CoWTradeState {
-  UNKNOWN, // default
-  WRAP,
-  APPROVAL,
-  SWAP,
-}
-
 export default function Zap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [, setPlatformOverride] = useState<RoutablePlatform | null>(null)
@@ -107,6 +100,8 @@ export default function Zap() {
   const [activeTab, setActiveTab] = useUpdateSelectedSwapTab()
 
   const [zapPair, setZapPair] = useState<Pair>()
+  const [isZapAvailable, setIsZapAvailable] = useState(true)
+  const [inputError, setInputError] = useState<number | undefined>()
   const { token0Id, token1Id } = useSelector((state: AppState) => state.zap.pairTokens)
   const [token0, token1] = [useToken(token0Id), useToken(token1Id)]
   const pair = usePair(token0 ?? undefined, token1 ?? undefined)[1]
@@ -160,10 +155,14 @@ export default function Zap() {
   const zapParams = useZapParams(derivedInfo, zapPair, isZapIn)
   const currencies = derivedInfo.currencies
   const currencyBalances = derivedInfo.currencyBalances
-  const isZapNotAvailable = derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT], chainId)
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onPairSelection } = useZapActionHandlers()
+
+  useEffect(() => {
+    setInputError(derivedInfo.inputError ? derivedInfo.inputError : zapParams.inputError ?? undefined)
+    setIsZapAvailable(!(derivedInfo.inputError === SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE))
+  }, [derivedInfo.inputError, zapParams.inputError])
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -407,7 +406,7 @@ export default function Zap() {
                 showCommonBases
                 disabled={true}
                 isDisabledStyled={true}
-                disableCurrencySelect={isZapNotAvailable}
+                disableCurrencySelect={!isZapAvailable}
                 inputType={isZapIn ? InputType.pair : InputType.currency}
                 filterPairs={filterPairs}
                 id="zap-currency-output"
@@ -435,7 +434,7 @@ export default function Zap() {
               currencies={currencies}
               trade={derivedInfo.tradeToken0}
               tradeSecondTokenZap={derivedInfo.tradeToken1}
-              swapInputError={derivedInfo.inputError}
+              swapInputError={inputError}
               swapErrorMessage={swapErrorMessage}
               loading={derivedInfo.loading}
               onWrap={undefined}
