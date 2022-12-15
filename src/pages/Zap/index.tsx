@@ -439,6 +439,7 @@ export default function Zap() {
               wrapState={undefined}
               setWrapState={undefined}
               zapPair={zapPair}
+              isZapIn={isZapIn}
             />
           </AutoColumn>
         </Wrapper>

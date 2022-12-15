@@ -45,6 +45,7 @@ interface SwapButtonsProps {
   wrapState?: WrapState | undefined
   setWrapState: ((wrapState: WrapState) => void) | undefined
   zapPair?: Pair | undefined
+  isZapIn?: boolean
 }
 
 export function SwapButtons({
@@ -69,6 +70,7 @@ export function SwapButtons({
   wrapState,
   setWrapState,
   zapPair,
+  isZapIn,
 }: SwapButtonsProps) {
   const { account } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -207,7 +209,7 @@ export function SwapButtons({
         priceImpactSeverity={priceImpactSeverity}
         isExpertMode={isExpertMode}
         amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
-        isZap={isZap}
+        isZapIn={isZapIn}
       />
       {ErrorBox({ isExpertMode, swapErrorMessage, isSpaceAtTop: false })}
     </>

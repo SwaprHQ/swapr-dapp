@@ -81,7 +81,7 @@ interface SwapButtonProps {
   priceImpactSeverity: number
   isExpertMode: boolean
   amountInCurrencySymbol?: string
-  isZap: boolean
+  isZapIn?: boolean
 }
 
 export const SwapButton = ({
@@ -90,10 +90,11 @@ export const SwapButton = ({
   priceImpactSeverity,
   isExpertMode,
   amountInCurrencySymbol,
-  isZap,
+  isZapIn,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
   const { t } = useTranslation('swap')
+  const isZap = isZapIn !== undefined
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
@@ -117,7 +118,9 @@ export const SwapButton = ({
           t('button.priceImpactTooHigh')
         ) : (
           <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
-            <UnifiedText>{isZap ? t('button.zapWith') : t('button.swapWith')}</UnifiedText>
+            <UnifiedText>
+              {isZap ? t(isZapIn ? 'button.zapInTo' : 'button.zapOutFrom') : t('button.swapWith')}
+            </UnifiedText>
             {platformName && (
               <Flex alignItems="center" marginLeft={2}>
                 <img
@@ -128,6 +131,7 @@ export const SwapButton = ({
                 />
               </Flex>
             )}
+            <UnifiedText marginLeft={2}>{isZap ? platformName : null}</UnifiedText>
             <AnywayText>{priceImpactSeverity > PRICE_IMPACT_MEDIUM && t('button.anyway')}</AnywayText>
           </Flex>
         )}
