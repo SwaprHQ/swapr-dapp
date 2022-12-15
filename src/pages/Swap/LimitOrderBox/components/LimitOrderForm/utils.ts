@@ -69,5 +69,11 @@ export const formatMaxValue = (value: number) => {
   return value.toFixed(2)
 }
 
-export const formatMarketPrice = (amount: string, decimals: number): number =>
-  parseFloat(formatUnits(amount, decimals) ?? 0) / 10
+export const formatMarketPrice = (amount: string, decimals: number, tokenAmount: string): number =>
+  parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
+
+export const toFixedSix = (price: number): string => {
+  if (Number(price.toFixed(6)) === 0) return price.toString()
+
+  return price.toFixed(6)
+}

@@ -48,7 +48,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   let marketPriceDiffPercentage = 0
   let isDiffPositive = false
 
-  if (Boolean(Number(nextLimitPriceFloat)))
+  if (Boolean(Number(nextLimitPriceFloat))) {
     if (limitOrder.kind === LimitOrderKind.SELL) {
       marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
       isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0
@@ -58,10 +58,12 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       if (marketPriceDiffPercentage < 0) {
         marketPriceDiffPercentage = Math.abs(marketPriceDiffPercentage)
       } else {
+        marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
         marketPriceDiffPercentage = marketPriceDiffPercentage * -1
       }
       isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) < 0
     }
+  }
 
   marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
 
