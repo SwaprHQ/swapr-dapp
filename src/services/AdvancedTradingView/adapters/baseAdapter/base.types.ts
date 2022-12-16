@@ -57,11 +57,11 @@ export type PairBurnsAndMints = {
   mints: PairBurnsAndMintsTransaction[]
 }
 
-export type BaseActionPayload<DataType> = {
+export type BaseActionPayload = {
   key: AdapterKey
   hasMore: boolean
   pairId: string
-  data: DataType
+  data: (UniswapV3PairSwapTransaction | PairBurnsAndMintsTransaction)[]
   payloadType: AdapterPayloadType.SWAPS | AdapterPayloadType.BURNS_AND_MINTS
 }
 
