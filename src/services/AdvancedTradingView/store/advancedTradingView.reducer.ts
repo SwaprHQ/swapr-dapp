@@ -52,20 +52,6 @@ const advancedTradingViewSlice = createSlice({
       }
     },
 
-    setPairData: (state, action: PayloadAction<BaseActionPayload<unknown[]>>) => {
-      const { data, pairId, payloadType, hasMore, key } = action.payload
-
-      const previousPairData = state.adapters[key][pairId]?.[payloadType]?.data ?? []
-
-      state.adapters[key][pairId] = {
-        ...state.adapters[key][pairId],
-        [payloadType]: {
-          data: [...previousPairData, ...data],
-          hasMore,
-        },
-      }
-    },
-
     setSwapsBurnsAndMintsDataForAllPairs: (
       state: InitialState,
       action: PayloadAction<Array<SetSwapsBurnsAndMintsActionPayload>>
