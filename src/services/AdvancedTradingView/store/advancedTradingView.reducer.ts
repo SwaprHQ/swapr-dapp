@@ -91,10 +91,7 @@ const advancedTradingViewSlice = createSlice({
       state.adapters = updatedAdapters
     },
 
-    setDataTypeForAllPairs: (
-      state: InitialState,
-      action: PayloadAction<Array<BaseActionPayload<(UniswapV3PairSwapTransaction | PairBurnsAndMintsTransaction)[]>>>
-    ) => {
+    setDataTypeForAllPairs: (state: InitialState, action: PayloadAction<BaseActionPayload[]>) => {
       const updatedAdapters: AdapterType = {
         ...state.adapters,
       }
