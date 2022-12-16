@@ -155,6 +155,13 @@ export const useAdvancedTradingView = () => {
     }
 
     fetchTrades()
+
+    const interval = setInterval(() => {
+      fetchTrades()
+    }, 15000)
+
+    return () => clearInterval(interval)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
