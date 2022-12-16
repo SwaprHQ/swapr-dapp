@@ -207,6 +207,7 @@ export default function Zap() {
   }, [approvalZap])
 
   const { callback: zapCallback, error: zapCallbackError } = useZapCallback({
+    zapPair: zapPair,
     zapContractParams: {
       zapIn: zapParams.contractParams.zapIn,
       zapOut: zapParams.contractParams.zapOut,

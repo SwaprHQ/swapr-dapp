@@ -66,6 +66,12 @@ const UnifyFontSize = css`
   `};
 `
 
+const StyledPlatformText = styled.div`
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  ${UnifyFontSize}
+`
+
 const UnifiedText = styled(Text)`
   ${UnifyFontSize}
 `
@@ -129,9 +135,9 @@ export const SwapButton = ({
                   width={21}
                   height={21}
                 />
+                <StyledPlatformText>{ROUTABLE_PLATFORM_STYLE[platformName].name}</StyledPlatformText>
               </Flex>
             )}
-            <UnifiedText marginLeft={2}>{isZap ? platformName : null}</UnifiedText>
             <AnywayText>{priceImpactSeverity > PRICE_IMPACT_MEDIUM && t('button.anyway')}</AnywayText>
           </Flex>
         )}

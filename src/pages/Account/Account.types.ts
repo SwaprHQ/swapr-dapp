@@ -6,6 +6,7 @@ import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 export enum TransactionTypes {
   Swap = 'Swap',
   Bridge = 'Bridge',
+  Zap = 'Zap',
 }
 
 export enum TransactionStatus {
@@ -40,6 +41,20 @@ export interface SwapTransaction {
   alternateReceiver?: string
 }
 
+export interface ZapTransaction {
+  type: TransactionTypes.Zap
+  from: Token
+  to: Token
+  summary: string
+  addedTime: number
+  confirmedTime?: number
+  hash: string
+  status: string
+  network?: ChainId
+  swapProtocol?: string
+  alternateReceiver?: string
+}
+
 export interface BridgeTransaction
   extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime' | 'swapProtocol' | 'alternateReceiver'> {
   type: TransactionTypes.Bridge
@@ -48,4 +63,4 @@ export interface BridgeTransaction
   logs: BridgeTransactionLog[]
 }
 
-export type Transaction = SwapTransaction | BridgeTransaction
+export type Transaction = SwapTransaction | BridgeTransaction | ZapTransaction

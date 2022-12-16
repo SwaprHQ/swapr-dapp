@@ -15,11 +15,11 @@ import {
   TransactionDetails,
   TypeDetails,
 } from '../Account.styles'
-import { SwapTransaction } from '../Account.types'
+import { SwapTransaction, ZapTransaction } from '../Account.types'
 import { TokenIcon } from '../TokenIcon'
 
 interface SwapTransactionRowProps {
-  transaction: SwapTransaction
+  transaction: SwapTransaction | ZapTransaction
   showBackgroundStatus: boolean
 }
 

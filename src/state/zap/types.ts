@@ -1,4 +1,4 @@
-import { CurrencyAmount } from '@swapr/sdk'
+import { CurrencyAmount, Pair } from '@swapr/sdk'
 
 import { Zap } from '../../hooks/zap/Zap'
 
@@ -42,6 +42,7 @@ export interface ZapContractParams {
 }
 
 export interface UseZapCallbackParams {
+  zapPair: Pair | undefined
   zapContractParams: ZapContractParams
   parsedAmounts: { [Field.INPUT]: CurrencyAmount | undefined; [Field.OUTPUT]: CurrencyAmount | undefined }
 }

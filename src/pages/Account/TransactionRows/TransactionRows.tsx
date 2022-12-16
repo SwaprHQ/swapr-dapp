@@ -24,6 +24,10 @@ export function TransactionRows({ transactions, showBackgroundStatus = true }: T
             return (
               <BridgeTransactionRow transaction={transaction} key={key} showBackgroundStatus={showBackgroundStatus} />
             )
+          case TransactionTypes.Zap:
+            return (
+              <SwapTransactionRow transaction={transaction} key={key} showBackgroundStatus={showBackgroundStatus} />
+            )
 
           default:
             return <Fragment key={key} />

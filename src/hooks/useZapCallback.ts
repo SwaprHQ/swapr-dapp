@@ -1,4 +1,4 @@
-import { ChainId, CurrencyAmount } from '@swapr/sdk'
+import { ChainId, CurrencyAmount, Pair, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { BigNumberish, ContractTransaction } from 'ethers'
 import { useEffect, useMemo, useState } from 'react'
@@ -29,6 +29,7 @@ export enum ZapState {
  * Returns the zap summary for UI components
  */
 export function getZapSummary(
+  zapPair: Pair | undefined,
   parsedAmounts: { [Field.INPUT]: CurrencyAmount | undefined; [Field.OUTPUT]: CurrencyAmount | undefined },
   recipientAddressOrName: string | null,
   zapIn: boolean
@@ -37,8 +38,11 @@ export function getZapSummary(
   const outputSymbol = parsedAmounts[Field.OUTPUT]?.currency.symbol
   const inputAmount = limitNumberOfDecimalPlaces(parsedAmounts[Field.INPUT])
   const outputAmount = limitNumberOfDecimalPlaces(parsedAmounts[Field.OUTPUT])
+  const platformName = zapPair?.platform.name ?? ''
 
-  const base = `Zap ${zapIn ? 'in' : 'out'} ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+  const base = `Zap ${zapIn ? 'in' : 'out'} ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol} ${
+    platformName !== UniswapV2RoutablePlatform.SWAPR.name ? `on ${platformName}` : ''
+  }`
 
   return recipientAddressOrName != null
     ? `${base} to ${
@@ -59,7 +63,11 @@ export interface UseZapCallbackReturn {
  * Returns a function that will execute a zap, if the parameters are all valid
  * and the user has approved the slippage adjusted input amount for the trade
  */
-export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallbackParams): UseZapCallbackReturn {
+export function useZapCallback({
+  zapPair,
+  zapContractParams,
+  parsedAmounts,
+}: UseZapCallbackParams): UseZapCallbackReturn {
   const { zapIn, zapOut, swapTokenA, swapTokenB, recipient, affiliate, transferResidual = true } = zapContractParams
   const { account, chainId, library } = useActiveWeb3React()
   const zapContract = useZapContract() as Zap
@@ -132,7 +140,7 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
               }
             )
             setTransactionReceipt(zapInTx)
-            addTransaction(zapInTx, { summary: getZapSummary(parsedAmounts, receiver, true) })
+            addTransaction(zapInTx, { summary: getZapSummary(zapPair, parsedAmounts, receiver, true) })
             const zapInTxReceipt = await zapInTx.wait(1)
             if (zapInTxReceipt.status === 1) setZapState(ZapState.VALID)
             return 'Zap in succeeded'
@@ -170,7 +178,7 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
               gasPrice: normalizedGasPrice,
             })
             setTransactionReceipt(zapOutTx)
-            addTransaction(zapOutTx, { summary: getZapSummary(parsedAmounts, receiver, false) })
+            addTransaction(zapOutTx, { summary: getZapSummary(zapPair, parsedAmounts, receiver, false) })
             const zapOutTxReceipt = await zapOutTx.wait(1)
             if (zapOutTxReceipt.status === 1) setZapState(ZapState.VALID)
             return 'Zap out succeeded'
@@ -207,6 +215,7 @@ export function useZapCallback({ zapContractParams, parsedAmounts }: UseZapCallb
     affiliateAddress,
     transferResidual,
     addTransaction,
+    zapPair,
     parsedAmounts,
   ])
 }
