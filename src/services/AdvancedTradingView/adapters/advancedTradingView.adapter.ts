@@ -12,6 +12,7 @@ import {
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 import { actions } from '../store/advancedTradingView.reducer'
+import { BaseActionPayload } from './baseAdapter/base.types'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
@@ -28,7 +29,7 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
   abstract getPairTradingAndActivityData(fetchDetails: AdapterFetchDetails): any
 
   // TODO: UPDATE RES TYPE
-  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): Promise<void | BaseActionPayload>
 
   public updateActiveChainId(chainId: ChainId) {
     this._chainId = chainId
@@ -120,12 +121,10 @@ export class AdvancedTradingViewAdapter<AppState> {
       })
     )
 
-    const response = await Promise.allSettled(promises).then(
-      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
-        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    const response = await Promise.allSettled(promises).then(res =>
+      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
 
-    // @ts-ignore
     this.store.dispatch(this.actions.setSwapsBurnsAndMintsDataForAllPairs(response))
   }
 
@@ -138,13 +137,11 @@ export class AdvancedTradingViewAdapter<AppState> {
       })
     )
 
-    const response = await Promise.allSettled(promises).then(
-      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
-        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    const response = await Promise.allSettled(promises).then(res =>
+      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
 
-    // @ts-ignore
-    this.store.dispatch(this.actions.setDataTypeForAllPairs(response))
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response as BaseActionPayload[]))
   }
 
   public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
@@ -156,12 +153,10 @@ export class AdvancedTradingViewAdapter<AppState> {
       })
     )
 
-    const response = await Promise.allSettled(promises).then(
-      (res: PromiseSettledResult<{ status: 'fulfilled' | 'rejected'; value: any }>[]) =>
-        res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    const response = await Promise.allSettled(promises).then(res =>
+      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
     )
 
-    // @ts-ignore
-    this.store.dispatch(this.actions.setDataTypeForAllPairs(response))
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response as BaseActionPayload[]))
   }
 }
