@@ -1,23 +1,34 @@
-import { memo } from 'react'
-import { AdvancedRealTimeChart } from 'react-ts-tradingview-widgets'
+import { ChainId } from '@swapr/sdk'
 
-import { Wrapper } from './Chart.styles'
+import { memo } from 'react'
+
+import { useActiveWeb3React } from '../../../../hooks/index'
+import { DexScreenerIframe, Wrapper } from './Chart.styles'
 import { ChartLoader } from './ChartLoader.component'
 
-export const Chart = memo(({ symbol }: { symbol?: string }) => {
+const dexScreenChains: Record<number, string> = {
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.BSC_MAINNET]: 'bsc',
+  [ChainId.ARBITRUM_ONE]: 'arbitrum',
+  [ChainId.OPTIMISM_MAINNET]: 'optimism',
+  [ChainId.GNOSIS]: 'gnosischain',
+}
+
+export const Chart = memo(({ pairAddress }: { pairAddress?: string }) => {
+  const { chainId } = useActiveWeb3React()
+
+  const network = chainId && dexScreenChains[chainId]
+
+  const iframeSource = `https://dexscreener.com/${network}/${pairAddress}?embed=1&theme=dark&trades=0&info=0`
+
   return (
     <Wrapper>
-      <AdvancedRealTimeChart
-        symbol={symbol ?? 'USDCUSD'}
-        theme="dark"
-        style="8" // eslint-disable-line
-        autosize
-        allow_symbol_change={false}
-        disabled_features={['header_chart_type', 'header_compare', 'header_indicators']}
-        copyrightStyles={{ parent: { display: 'none' } }}
-        interval="60"
-      />
-      <ChartLoader symbol={symbol} />
+      {network && (
+        <DexScreenerIframe>
+          <iframe title="chartFrame" src={iframeSource} />
+        </DexScreenerIframe>
+      )}
+      <ChartLoader pairAddress={pairAddress} />
     </Wrapper>
   )
 })
