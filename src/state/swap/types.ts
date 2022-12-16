@@ -16,3 +16,8 @@ export interface SwapState {
   readonly recipient: string | null
   readonly protocolFeeTo: string | undefined
 }
+
+export enum StateKey {
+  SWAP = 'swap',
+  ZAP = 'zap',
+}

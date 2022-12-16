@@ -1,10 +1,10 @@
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { ChangeEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import useENS from '../../hooks/useENS'
-import { setRecipient } from '../../state/swap/actions'
 import { TYPE } from '../../theme'
 import { SearchInput } from '../SearchModal/shared'
 
@@ -20,9 +20,15 @@ const SearchInputStyled = styled(SearchInput)<{ error: boolean }>`
 
 export interface RecipientFieldProps {
   recipient: string | null
+  setRecipient: ActionCreatorWithPayload<
+    {
+      recipient: string | null
+    },
+    string
+  >
 }
 
-export const RecipientField = ({ recipient }: RecipientFieldProps) => {
+export const RecipientField = ({ recipient, setRecipient }: RecipientFieldProps) => {
   const { t } = useTranslation('swap')
   const dispatch = useDispatch()
   const { address, loading } = useENS(recipient)
@@ -36,7 +42,7 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
       const input = event.target.value
       dispatch(setRecipient({ recipient: input }))
     },
-    [dispatch]
+    [dispatch] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   // Unset recipient on unmount
@@ -44,7 +50,7 @@ export const RecipientField = ({ recipient }: RecipientFieldProps) => {
     return () => {
       dispatch(setRecipient({ recipient: null }))
     }
-  }, [dispatch])
+  }, [dispatch]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

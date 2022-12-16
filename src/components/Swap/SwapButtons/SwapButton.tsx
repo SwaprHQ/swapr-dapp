@@ -27,7 +27,7 @@ const StyledSwapButton = styled(ButtonPrimary)<{ gradientColor: string }>`
 
 const StyledSwapLoadingButton = styled(ButtonPrimary)`
   background-image: linear-gradient(90deg, #4c4c76 19.74%, #292942 120.26%);
-  cursor: 'wait';
+  cursor: wait;
   padding: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
@@ -87,6 +87,7 @@ interface SwapButtonProps {
   priceImpactSeverity: number
   isExpertMode: boolean
   amountInCurrencySymbol?: string
+  isZapIn?: boolean
 }
 
 export const SwapButton = ({
@@ -95,19 +96,23 @@ export const SwapButton = ({
   priceImpactSeverity,
   isExpertMode,
   amountInCurrencySymbol,
+  isZapIn,
   ...rest
 }: SwapButtonProps & ButtonProps) => {
   const { t } = useTranslation('swap')
+  const isZap = isZapIn !== undefined
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
     [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('button.enterAmount'),
-    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('button.selectToken'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t(isZap ? 'button.selectPair' : 'button.selectToken'),
     [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('button.enterRecipient'),
     [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('button.invalidRecipient'),
     [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
       currency: amountInCurrencySymbol,
     }),
+    [SWAP_INPUT_ERRORS.TRADE_NOT_FOUND]: t('button.tradeNotFound'),
+    [SWAP_INPUT_ERRORS.ZAP_NOT_AVAILABLE]: t('button.zapNotAvailable'),
   }
 
   return (
@@ -119,7 +124,9 @@ export const SwapButton = ({
           t('button.priceImpactTooHigh')
         ) : (
           <Flex alignItems="center" justifyContent="center" flexWrap="wrap">
-            <UnifiedText>{t('button.swapWith')}</UnifiedText>
+            <UnifiedText>
+              {isZap ? t(isZapIn ? 'button.zapInTo' : 'button.zapOutFrom') : t('button.swapWith')}
+            </UnifiedText>
             {platformName && (
               <Flex alignItems="center" marginLeft={2}>
                 <img

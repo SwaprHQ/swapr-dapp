@@ -16,6 +16,10 @@ const expressions = {
     'g'
   ),
   type: new RegExp('^(?<type>[A-Za-z]+)'),
+  zap: new RegExp(
+    '(?<num>\\d*\\.?\\d+) (?<token>(?:[0-9]{1})?[a-zA-Z]+)|on\\s+(?<protocol>\\w+)|(to (?<alternate>[\\S]*)$)',
+    'g'
+  ),
 }
 
 export const formattedTransactions = (
@@ -42,7 +46,7 @@ export const formattedTransactions = (
         type,
       }
 
-      if (expressions.swap.test(summary) && type === 'Swap') {
+      if (expressions.swap.test(summary) && (type === 'Swap' || type === 'Zap')) {
         expressions.swap.lastIndex = 0
         const [from, to, matchProtocol, matchAlternate] = [...summary.matchAll(expressions.swap)]
 

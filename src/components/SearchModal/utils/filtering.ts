@@ -1,8 +1,9 @@
-import { Currency, Pair, Token } from '@swapr/sdk'
+import { ChainId, Currency, Pair, Token } from '@swapr/sdk'
 
 import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'
 
+import { SUPPORTED_ZAP_PAIRS } from '../../../constants'
 import { isAddress } from '../../../utils'
 
 const alwaysTrue = () => true
@@ -142,4 +143,8 @@ export const useSortedTokensByQuery = (tokens: Token[] | undefined, searchQuery:
 
     return [...exactMatches, ...symbolSubtrings, ...rest]
   }, [tokens, searchQuery])
+}
+
+export const filterPairsForZap = (pair: Pair, chainId: ChainId): boolean => {
+  return SUPPORTED_ZAP_PAIRS[chainId].includes(pair.liquidityToken.address)
 }

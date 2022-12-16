@@ -35,6 +35,13 @@ interface UseWrapCallbackReturn {
   setWrapState?: (wrapState: WrapState) => void
 }
 
+interface UseWrapCallbackParams {
+  inputCurrency: Currency | undefined
+  outputCurrency: Currency | undefined
+  isGnosisTrade: boolean
+  typedValue?: string // can be also obtained from the SwapState
+}
+
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -42,12 +49,12 @@ interface UseWrapCallbackReturn {
  * @param isGnosisTrade if the trade is a GnosisTrade
  * @param typedValue the user input value
  */
-export function useWrapCallback(
-  inputCurrency: Currency | undefined,
-  outputCurrency: Currency | undefined,
+export function useWrapCallback({
+  inputCurrency,
+  outputCurrency,
   isGnosisTrade = false,
-  typedValue?: string // can be also obtained from the SwapState
-): UseWrapCallbackReturn {
+  typedValue,
+}: UseWrapCallbackParams): UseWrapCallbackReturn {
   const { chainId, account } = useActiveWeb3React()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapperToken = useWrappingToken(nativeCurrency)

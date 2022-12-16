@@ -1,6 +1,6 @@
 import { JSBI, Pair as PairType, Percent } from '@swapr/sdk'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
@@ -17,10 +17,12 @@ import { UserLiquidity } from '../../../components/Pool/PairView/UserLiquidity'
 import { ValueWithLabel } from '../../../components/Pool/PairView/ValueWithLabel'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { PairSearchModal } from '../../../components/SearchModal/PairSearchModal'
+import { filterPairsForZap } from '../../../components/SearchModal/utils/filtering'
 import { PairState, usePair } from '../../../data/Reserves'
 import { useToken } from '../../../hooks/Tokens'
 import { usePairLiquidityMiningCampaigns } from '../../../hooks/usePairLiquidityMiningCampaigns'
 import { useRouter } from '../../../hooks/useRouter'
+import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
 import { BlurBox } from '../../../ui/StyledElements/BlurBox'
 import { PageWrapper } from '../../../ui/StyledElements/PageWrapper'
 import { unwrappedToken } from '../../../utils/wrappedCurrency'
@@ -37,11 +39,16 @@ export default function Pair() {
   const token1 = useToken(currencyIdB)
 
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
+
   const [openPairsModal, setOpenPairsModal] = useState(false)
   const { t } = useTranslation('pool')
   const { loading: loadingPairs, miningCampaigns } = usePairLiquidityMiningCampaigns(
     wrappedPair[1] ? wrappedPair[1] : undefined
   )
+  const urlLoadedChainId = useTargetedChainIdFromUrl()
+  // refactor to put into the store just lp token address
+  // const currencyZap = useCurrency(PRE_SELECT_OUTPUT_CURRENCY_ID[urlLoadedChainId ? urlLoadedChainId : ChainId.MAINNET])
+  const pairZap = wrappedPair && wrappedPair[0] === PairState.EXISTS ? wrappedPair[1] : null
 
   const handleAllClick = useCallback(() => {
     setOpenPairsModal(true)
@@ -57,6 +64,10 @@ export default function Pair() {
     },
     [navigate]
   )
+
+  const isZapSupported = useMemo(() => {
+    return pairZap && urlLoadedChainId ? filterPairsForZap(pairZap, urlLoadedChainId) : false
+  }, [pairZap, urlLoadedChainId])
 
   if (token0 && (wrappedPair[0] === PairState.NOT_EXISTS || wrappedPair[0] === PairState.INVALID)) {
     return <Navigate to="/pools" replace />
@@ -96,6 +107,18 @@ export default function Pair() {
                 to={token0 && token1 ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}` : ''}
               >
                 {t('pair.trade')}
+              </ButtonPurpleDim>
+              <ButtonPurpleDim
+                disabled={!isZapSupported}
+                as={isZapSupported ? Link : ButtonPurpleDim}
+                to={
+                  isZapSupported && token0 && token1
+                    ? `/zap?pair=${pairZap?.liquidityToken.address}&token0=${token0.address}&token1=${token1.address}`
+                    : ''
+                }
+                // onClick={() => handlePairZap()}
+              >
+                {t('pair.zap')}
               </ButtonPurpleDim>
             </ButtonRow>
           </TitleRow>

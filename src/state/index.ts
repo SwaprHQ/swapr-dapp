@@ -19,6 +19,7 @@ import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import transactions from './transactions/reducer'
 import user from './user/reducer'
+import zap from './zap/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...ecoBridgePersistedKeys]
 
@@ -41,6 +42,7 @@ const store = configureStore({
     lists,
     bridgeTransactions,
     ecoBridge,
+    zap,
     advancedTradingView,
   },
   middleware: [

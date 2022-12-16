@@ -17,10 +17,10 @@ import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { useIsDesktop } from '../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../hooks/useRouter'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../state/swap/hooks'
-import { Field } from '../../state/swap/types'
+import { useDefaultsFromURLSearch, useDerivedSwapInfo, UseDerivedSwapInfoResult } from '../../state/swap/hooks'
+import { Field, StateKey, SwapState } from '../../state/swap/types'
 import { useUpdateSelectedChartOption, useUpdateSelectedSwapTab } from '../../state/user/hooks'
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOptions, SwapTabs } from '../../state/user/reducer'
 import BlogNavigation from './../../components/LandingPageComponents/BlogNavigation'
 import CommunityBanner from './../../components/LandingPageComponents/CommunityBanner'
 import CommunityLinks from './../../components/LandingPageComponents/CommunityLinks'
@@ -92,10 +92,19 @@ export default function Swap() {
     }
   }, [isDesktop, navigate, isInProMode])
 
+  useEffect(() => {
+    if (pathname.includes('swap') && activeTab !== SwapTabs.SWAP) {
+      setActiveTab(SwapTabs.SWAP)
+    }
+  }, [pathname]) // eslint-disable-line
+
   const { chainId } = useActiveWeb3React()
   const [selectedChartOption, setselectedChartOption] = useUpdateSelectedChartOption()
 
-  const { currencies } = useDerivedSwapInfo(platformOverride || undefined)
+  const { currencies } = useDerivedSwapInfo<SwapState, UseDerivedSwapInfoResult>({
+    key: StateKey.SWAP,
+    platformOverride: platformOverride || undefined,
+  })
   const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
 
   const renderSwapBox = () => (

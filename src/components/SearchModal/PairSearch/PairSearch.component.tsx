@@ -34,6 +34,7 @@ export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filt
 
   const filteredPairs: Pair[] = useMemo(() => {
     let pairs = allPairs
+    // TODO add loading indicator during filtering
     if (filterPairs) pairs = allPairs.filter(filterPairs)
     if (isAddressSearch) return searchPair ? [searchPair] : []
     return filterPairsBySearchQuery(pairs, searchQuery)

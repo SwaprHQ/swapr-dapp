@@ -327,6 +327,14 @@ export const PRICE_IMPACT_MEDIUM = 2
 export const PRICE_IMPACT_LOW = 1
 export const NO_PRICE_IMPACT = 0
 
+export enum PriceImpact {
+  NO_IMPACT,
+  LOW,
+  MEDIUM,
+  HIGH,
+  ONLY_EXPERT,
+}
+
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
@@ -751,4 +759,80 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
   ENTER_RECIPIENT: 4,
   INVALID_RECIPIENT: 5,
   INSUFFICIENT_BALANCE: 6,
+  TRADE_NOT_FOUND: 7,
+  ZAP_NOT_AVAILABLE: 8,
+}
+
+export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string[] } = {
+  [ChainId.MAINNET]: [WETH[ChainId.MAINNET].address, DAI[ChainId.MAINNET].address], //eth-dai
+  [ChainId.GNOSIS]: [WETH[ChainId.GNOSIS].address, GNO.address], //xdai-weth
+  [ChainId.ARBITRUM_ONE]: ['', ''],
+  [ChainId.POLYGON]: ['', ''],
+  [ChainId.OPTIMISM_MAINNET]: ['', ''],
+  [ChainId.BSC_MAINNET]: ['', ''],
+  [ChainId.RINKEBY]: ['', ''],
+  [ChainId.ARBITRUM_RINKEBY]: ['', ''],
+  [ChainId.GOERLI]: ['', ''],
+  [ChainId.ARBITRUM_GOERLI]: ['', ''],
+  [ChainId.OPTIMISM_GOERLI]: ['', ''],
+  [ChainId.BSC_TESTNET]: ['', ''],
+}
+
+export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '',
+  [ChainId.GNOSIS]: '0x618471C54443586E97FD81cDc357DCB9a1db8f87',
+  [ChainId.ARBITRUM_ONE]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.OPTIMISM_MAINNET]: '',
+  [ChainId.RINKEBY]: '',
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.GOERLI]: '0xb1ce168e32479Ca1575948a9473868436561e802',
+  [ChainId.ARBITRUM_GOERLI]: '',
+  [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.BSC_MAINNET]: '',
+  [ChainId.BSC_TESTNET]: '',
+}
+
+// index HAS TO BE THE SAME as set in contract supportedDEX
+export const SUPPORTED_ZAP_DEX_INDEX: { [key: string]: number } = {
+  [UniswapV2RoutablePlatform.SWAPR.name]: 0,
+  [UniswapV2RoutablePlatform.UNISWAP.name]: 1,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: 2,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: 3,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: 4,
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: 5,
+}
+
+const GNOSIS_WETH_XDAI = '0x1865d5445010E0baf8Be2eB410d3Eae4A68683c2'
+const GNOSIS_SWPR_XDAI = '0xa82029c1E11eA0aC18dd3551c6E670787e12E45E'
+const GNOSIS_WETH_GNO = '0x5fCA4cBdC182e40aeFBCb91AFBDE7AD8d3Dc18a8'
+const GNOSIS_GNO_XDAI = '0xD7b118271B1B7d26C9e044Fc927CA31DccB22a5a'
+const GNOSIS_DXD_WETH = '0x1bDe964eCd52429004CbC5812C07C28bEC9147e9'
+const GNOSIS_GNO_DXD = '0x558d777b24366f011e35a9f59114d1b45110d67b'
+const GNOSIS_COW_WETH = '0x8028457E452D7221dB69B1e0563AA600A059fab1'
+const GOERLI_USDC_SWPR = '0x1873144584A768F89aE8843849d44055F9FE46bC'
+const GOERLI_WETH_USDC = '0x730E034a37ff2D267B201B77001142009a3b8403'
+const GOERLI_SWPR_WETH = '0xe74c2b0025aC02f8007845BE5A075B77C43a4258'
+
+export const SUPPORTED_ZAP_PAIRS: { [chainId: number]: string[] } = {
+  [ChainId.MAINNET]: [],
+  [ChainId.GNOSIS]: [
+    GNOSIS_WETH_XDAI,
+    GNOSIS_SWPR_XDAI,
+    GNOSIS_WETH_GNO,
+    GNOSIS_GNO_XDAI,
+    GNOSIS_DXD_WETH,
+    GNOSIS_COW_WETH,
+    GNOSIS_GNO_DXD,
+  ],
+  [ChainId.ARBITRUM_ONE]: [],
+  [ChainId.ARBITRUM_RINKEBY]: [],
+  [ChainId.ARBITRUM_GOERLI]: [],
+  [ChainId.POLYGON]: [],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [],
+  [ChainId.GOERLI]: [GOERLI_SWPR_WETH, GOERLI_USDC_SWPR, GOERLI_WETH_USDC],
+  [ChainId.BSC_MAINNET]: [],
+  [ChainId.BSC_TESTNET]: [],
+  [ChainId.RINKEBY]: [],
 }

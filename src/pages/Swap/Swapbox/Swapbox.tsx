@@ -17,8 +17,13 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useAp
 import { useSwapCallback } from '../../../hooks/useSwapCallback'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../../hooks/useWrapCallback'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../../state/swap/hooks'
-import { Field } from '../../../state/swap/types'
+import {
+  useDerivedSwapInfo,
+  UseDerivedSwapInfoResult,
+  useSwapActionHandlers,
+  useSwapState,
+} from '../../../state/swap/hooks'
+import { Field, StateKey, SwapState } from '../../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
@@ -63,7 +68,10 @@ export function Swapbox() {
     currencies,
     inputError: swapInputError,
     loading,
-  } = useDerivedSwapInfo(platformOverride || undefined)
+  } = useDerivedSwapInfo<SwapState, UseDerivedSwapInfoResult>({
+    key: StateKey.SWAP,
+    platformOverride: platformOverride || undefined,
+  })
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
@@ -74,12 +82,13 @@ export function Swapbox() {
     inputError: wrapInputError,
     wrapState,
     setWrapState,
-  } = useWrapCallback(
-    currencies.INPUT,
-    currencies.OUTPUT,
-    potentialTrade instanceof CoWTrade,
-    potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
-  )
+  } = useWrapCallback({
+    inputCurrency: currencies.INPUT,
+    outputCurrency: currencies.OUTPUT,
+    isGnosisTrade: potentialTrade instanceof CoWTrade,
+    typedValue: potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue,
+  })
+
   const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
 

@@ -33,8 +33,11 @@ import {
   PRICE_IMPACT_LOW,
   PRICE_IMPACT_MEDIUM,
   PRICE_IMPACT_NON_EXPERT,
+  PriceImpact,
 } from '../constants'
+import { tryParseAmount } from '../state/swap/hooks'
 import { Field } from '../state/swap/types'
+import { wrappedCurrency, wrappedCurrencyAmount } from './wrappedCurrency'
 
 const Decimal = toFormat(_Decimal)
 
@@ -145,6 +148,19 @@ export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3
   return NO_PRICE_IMPACT
 }
 
+export function warningSeverityZap(
+  priceImpactTrade0: Percent | undefined,
+  priceImpactTrade1: Percent | undefined
+): PriceImpact {
+  const severityTrade0 = warningSeverity(priceImpactTrade0)
+  const severityTrade1 = warningSeverity(priceImpactTrade1)
+  if (severityTrade0 === 4 || severityTrade1 === 4) return PriceImpact.ONLY_EXPERT
+  if (severityTrade0 === 3 || severityTrade1 === 3) return PriceImpact.HIGH
+  if (severityTrade0 === 2 || severityTrade1 === 2) return PriceImpact.MEDIUM
+  if (severityTrade0 === 1 || severityTrade1 === 1) return PriceImpact.LOW
+  return PriceImpact.NO_IMPACT
+}
+
 export function simpleWarningSeverity(priceImpact: Percent | undefined): 0 | 3 {
   if (!priceImpact?.lessThan(ALLOWED_FIAT_PRICE_IMPACT_PERCENTAGE[PRICE_IMPACT_HIGH])) return PRICE_IMPACT_HIGH
   return NO_PRICE_IMPACT
@@ -230,4 +246,139 @@ export const limitNumberOfDecimalPlaces = (
   const quotient = new Decimal(fixedQuotient).toSignificantDigits(6)
 
   return quotient.toFormat(quotient.decimalPlaces(), format)
+}
+
+export interface ZapInAmountsResults {
+  amountFromForTokenA?: CurrencyAmount
+  amountFromForTokenB?: CurrencyAmount
+  amountAddLpTokenA?: CurrencyAmount
+  amountAddLpTokenB?: CurrencyAmount
+  estLpTokenMinted?: TokenAmount
+}
+
+/**
+ * Returns estimated tokens amounts used for zap in
+ */
+export const calculateZapInAmounts = (
+  amountFrom: CurrencyAmount | undefined,
+  pair: Pair | undefined,
+  pairTotalSupply: TokenAmount | undefined,
+  priceToken0TokenFrom: Price | undefined,
+  priceToken1TokenFrom: Price | undefined,
+  chainId: number | undefined
+): ZapInAmountsResults => {
+  if (!amountFrom || !pair || !pairTotalSupply || !priceToken0TokenFrom || !priceToken1TokenFrom || !chainId)
+    return {
+      amountAddLpTokenA: undefined,
+      amountAddLpTokenB: undefined,
+      amountFromForTokenA: undefined,
+      amountFromForTokenB: undefined,
+      estLpTokenMinted: undefined,
+    }
+  // determine significant digits
+  const significantDigits = amountFrom.currency.decimals
+
+  // convert amounts to number for calculations
+  const pairPrice = Number(pair.token1Price.toFixed(significantDigits))
+  const token0TokenFromPrice = Number(priceToken0TokenFrom.toFixed(significantDigits))
+  const token1TokenFromPrice = Number(priceToken1TokenFrom.toFixed(significantDigits))
+  const amountFromBN = Number(amountFrom.toFixed(significantDigits))
+
+  // calculate liquidity pool's tokens amounts which will be added to the LP
+  const rawLpAmountB = Number(
+    (amountFromBN / (pairPrice * token0TokenFromPrice + token1TokenFromPrice)).toFixed(significantDigits)
+  )
+  const rawLpAmountA = Number((rawLpAmountB * pairPrice).toFixed(significantDigits))
+
+  // calculate fromToken amount which should be used to buy pool's tokens accordingly
+  const rawFromForB = rawLpAmountB * token1TokenFromPrice
+  const rawFromForA = amountFromBN - rawFromForB
+
+  // amounts of input token which should be used to buy tokenA and tokenB
+  // amountFrom = amountFromForTokenA + amountFromForTokenB
+  const amountFromForTokenA = tryParseAmount(rawFromForA.toFixed(significantDigits), amountFrom.currency, chainId)
+  const amountFromForTokenB = tryParseAmount(rawFromForB.toFixed(significantDigits), amountFrom.currency, chainId)
+
+  // amounts of tokenA and tokenB which should be used to add liquidity accordingly
+  const amountAddLpTokenA = tryParseAmount(rawLpAmountA.toFixed(significantDigits), pair.token0, chainId)
+  const amountAddLpTokenB = tryParseAmount(rawLpAmountB.toFixed(significantDigits), pair.token1, chainId)
+
+  const [tokenAmountA, tokenAmountB] = [
+    wrappedCurrencyAmount(amountAddLpTokenA, chainId),
+    wrappedCurrencyAmount(amountAddLpTokenB, chainId),
+  ]
+  // estimated amount of LP tokens received after zap in
+  const estLpTokenMinted =
+    tokenAmountA && tokenAmountB && tokenAmountA.greaterThan('0') && tokenAmountB.greaterThan('0')
+      ? pair.getLiquidityMinted(pairTotalSupply, tokenAmountA, tokenAmountB)
+      : undefined
+
+  return { amountAddLpTokenA, amountAddLpTokenB, amountFromForTokenA, amountFromForTokenB, estLpTokenMinted }
+}
+
+export interface ZapOutAmountsResults {
+  estAmountTokenTo: TokenAmount | undefined
+}
+
+/**
+ * Returns estimated tokens amounts used for zap out
+ */
+export const calculateZapOutAmounts = (
+  amountFrom: CurrencyAmount | undefined,
+  pair: Pair | undefined,
+  pairTotalSupply: TokenAmount | undefined,
+  userLiquidity: TokenAmount | undefined,
+  priceToken0TokenTo: Price | undefined,
+  priceToken1TokenTo: Price | undefined,
+  chainId: number | undefined
+): ZapOutAmountsResults => {
+  if (
+    !amountFrom ||
+    !pair ||
+    !pairTotalSupply ||
+    !userLiquidity ||
+    !priceToken0TokenTo ||
+    !priceToken1TokenTo ||
+    !chainId
+  )
+    return {
+      estAmountTokenTo: undefined,
+    }
+  // determine significant digits in case currency has less than 9 decimals
+  const tokenTo = wrappedCurrency(priceToken0TokenTo.quoteCurrency, chainId)
+  // use token amount for output calculation (if user has no LP use parsed amount)
+  const lpTokenAmount = userLiquidity.greaterThan('0') ? userLiquidity : wrappedCurrencyAmount(amountFrom, chainId)
+
+  const [tokenA, tokenB] = [pair?.token0, pair?.token1]
+  // liquidity values of each token
+  const pooledAmountTokenA =
+    pair && pairTotalSupply && lpTokenAmount && tokenA
+      ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, pairTotalSupply, lpTokenAmount, false).raw)
+      : undefined
+  const pooledAmountTokenB =
+    pair && pairTotalSupply && lpTokenAmount && tokenB
+      ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, pairTotalSupply, lpTokenAmount, false).raw)
+      : undefined
+
+  let percentToRemove: Percent = new Percent('0', '100')
+  if (pair?.liquidityToken && amountFrom && lpTokenAmount) {
+    percentToRemove = new Percent(amountFrom.raw, lpTokenAmount.raw)
+  }
+
+  // calculate liquidity pool's tokens amounts which will be removed from the LP and
+  // then output token amount which will be swapped for LP's tokens
+  const amountTokenToLpTokenA = pooledAmountTokenA
+    ? percentToRemove.multiply(pooledAmountTokenA.raw).multiply(priceToken0TokenTo)
+    : undefined
+  const amountTokenToLpTokenB = pooledAmountTokenB
+    ? percentToRemove.multiply(pooledAmountTokenB.raw).multiply(priceToken1TokenTo)
+    : undefined
+
+  // estimate total amount of output token
+  const estAmountTokenTo =
+    tokenTo && amountTokenToLpTokenA?.greaterThan('0') && amountTokenToLpTokenB?.greaterThan('0')
+      ? new TokenAmount(tokenTo, amountTokenToLpTokenA.add(amountTokenToLpTokenB).quotient)
+      : undefined
+
+  return { estAmountTokenTo }
 }
