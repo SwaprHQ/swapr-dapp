@@ -780,7 +780,7 @@ export const PRE_SELECT_ZAP_PAIR_ID: { [chainId in ChainId]: string[] } = {
 
 export const ZAP_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MAINNET]: '',
-  [ChainId.GNOSIS]: '0x5B864A9b429240f1b6B8126a8EED36F94be16fCd',
+  [ChainId.GNOSIS]: '0x618471C54443586E97FD81cDc357DCB9a1db8f87',
   [ChainId.ARBITRUM_ONE]: '',
   [ChainId.POLYGON]: '',
   [ChainId.OPTIMISM_MAINNET]: '',
