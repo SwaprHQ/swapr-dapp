@@ -15,6 +15,8 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
+import { useActiveAccent } from '../../modules/profile/Profile.hooks'
+import { profileAccentBorderMixin } from '../../modules/profile/Profile.mixins'
 import { ApplicationModal } from '../../state/application/actions'
 import { useNetworkSwitcherPopoverToggle } from '../../state/application/hooks'
 import { shortenAddress } from '../../utils'
@@ -37,7 +39,7 @@ const ChainLogo: any = {
   [ChainId.BSC_MAINNET]: BSCLogo,
 }
 
-const View = styled.div`
+const View = styled.div<{ gradientColors?: string[] }>`
   height: 32px;
   display: flex;
   align-items: center;
@@ -49,6 +51,9 @@ const View = styled.div`
   white-space: nowrap;
   margin-left: 8px;
   padding: 1px;
+
+  ${({ gradientColors, theme }) =>
+    gradientColors && profileAccentBorderMixin({ backgroundColor: theme.dark1, gradientColors })}
 `
 
 const Web3StatusConnected = styled.button<{ pending?: boolean }>`
@@ -157,6 +162,7 @@ export function AccountStatus({
   const hasPendingTransactions = !!pendingTransactions.length
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const [networkSwitchingActive, setNetworkSwitchingActive] = useState(false)
+  const accent = useActiveAccent()
 
   useEffect(() => {
     setNetworkSwitchingActive(
@@ -170,7 +176,7 @@ export function AccountStatus({
   if (!networkConnectorChainId) return null
 
   return (
-    <View>
+    <View gradientColors={accent?.gradientColors}>
       {account && (
         <Web3StatusConnected id="web3-status-connected" onClick={onAddressClick} pending={hasPendingTransactions}>
           {hasPendingTransactions ? (

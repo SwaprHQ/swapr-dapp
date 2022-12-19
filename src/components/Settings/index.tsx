@@ -4,6 +4,8 @@ import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-fe
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
+import { useActiveAccent } from '../../modules/profile/Profile.hooks'
+import { profileAccentBorderMixin } from '../../modules/profile/Profile.mixins'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useSimpleSettingsModal, useToggleSettingsMenu } from '../../state/application/hooks'
 import {
@@ -89,7 +91,7 @@ const MenuModalInner = styled.div`
   }
 `
 
-const StyledMenu = styled.button`
+const StyledMenu = styled.button<{ gradientColors?: string[] }>`
   height: 32px;
   width: 32px;
   border-radius: 12px;
@@ -98,28 +100,31 @@ const StyledMenu = styled.button`
   justify-content: center;
   align-items: center;
   position: relative;
-  border: none;
+  border: solid 4px ${({ gradientColors, theme }) => (gradientColors ? 'transparent' : theme.dark1)};
   text-align: left;
   background: ${({ theme }) => transparentize(1, theme.bg1)};
   cursor: pointer;
   outline: none;
+
+  ${({ gradientColors, theme }) =>
+    gradientColors && profileAccentBorderMixin({ gradientColors, backgroundColor: theme.bg1 })}
 `
 
 const StyledMenuIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 8px;
-  height: 32px;
-  width: 32px;
+  padding: 0px 6px;
+  height: 28px;
+  width: 28px;
   cursor: pointer;
   background: ${props => props.theme.dark1};
   border-radius: 12px;
 `
 
 const StyledMenuIcon = styled(SettingsIcon)`
-  height: 15px;
-  width: 15px;
+  height: 24px;
+  width: 24px;
 
   > * {
     stroke: ${({ theme }) => theme.text4};
@@ -189,7 +194,7 @@ export function Settings({ simple }: { simple?: boolean }) {
   const [ttl, setTtl] = useUserTransactionTTL()
   const [expertMode, toggleExpertMode] = useExpertModeManager()
   const [multihop, toggleMultihop] = useMultihopManager()
-
+  const accent = useActiveAccent()
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -237,7 +242,7 @@ export function Settings({ simple }: { simple?: boolean }) {
           </ModalContentWrapper>
         )}
       </Modal>
-      <StyledMenu onClick={toggle} id="open-settings-dialog-button">
+      <StyledMenu onClick={toggle} id="open-settings-dialog-button" gradientColors={accent?.gradientColors}>
         <StyledMenuIconContainer>
           <StyledMenuIcon />
         </StyledMenuIconContainer>

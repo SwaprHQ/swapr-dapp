@@ -5,7 +5,7 @@ import { INFURA_PROJECT_ID } from '../../connectors'
 import { NETWORK_DETAIL } from '../../constants'
 import { EcoBridgeProviders } from './EcoBridge.types'
 
-const addInfuraKey = (rpcUrl: string) => {
+export const addInfuraKey = (rpcUrl: string) => {
   if (rpcUrl.includes('infura')) {
     return rpcUrl.endsWith('/') ? `${rpcUrl}${INFURA_PROJECT_ID}` : `${rpcUrl}/${INFURA_PROJECT_ID}`
   }

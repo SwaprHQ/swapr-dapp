@@ -8,6 +8,7 @@ import { HashRouter } from 'react-router-dom'
 import { AnalyticsProvider } from './analytics'
 import { NetworkContextName } from './constants'
 import './i18n'
+import { ProfileUpdater } from './modules/profile/Profile.updater'
 import App from './pages/App'
 import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
 import store from './state'
@@ -49,6 +50,7 @@ function Updaters() {
       <MulticallUpdater />
       <FeesUpdater />
       <TokenListUpdater />
+      <ProfileUpdater />
     </>
   )
 }

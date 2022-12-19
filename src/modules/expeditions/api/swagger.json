@@ -1,0 +1,422 @@
+{
+  "swagger": "2.0",
+  "host": "0.0.0.0:4000",
+  "basePath": "/v1.0",
+  "schemes": ["http"],
+  "info": {
+    "title": "Swapr Expeditions API Documentation",
+    "version": "1.0"
+  },
+  "tags": [],
+  "paths": {
+    "/expeditions/add-campaign": {
+      "post": {
+        "summary": "Adds new campaign for a given date. Initiator must be on verified address list",
+        "operationId": "postExpeditionsAddcampaign",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/AddCampaignRequest"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/AddCampaignResponse"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/claim-reward": {
+      "post": {
+        "summary": "Creates claim signature for nft reward that can be claimed on nft contract",
+        "operationId": "postExpeditionsClaimreward",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ClaimRewardRequest"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ClaimRewardResponse"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/claim-task": {
+      "post": {
+        "summary": "Claim rewards (fragments) for specified type of task",
+        "operationId": "postExpeditionsClaimtask",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ClaimTaskRequest"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ClaimTaskResponse"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/register-daily-swap": {
+      "post": {
+        "summary": "Registers a trade made through swapr dapp",
+        "operationId": "postExpeditionsRegisterdailyswap",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/RegisterDailySwapRequest"
+            }
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/RegisterDailySwapResponse"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/expeditions/progress": {
+      "get": {
+        "summary": "Get campaign status for a given address",
+        "operationId": "getExpeditionsProgress",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Ethereum address",
+            "name": "address",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "tags": ["expeditions"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetCampaignProgressResponse"
+            },
+            "description": "Successful"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AddCampaignRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Return value signer.signMessage()"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "redeemEndDate": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": ["address", "signature", "startDate", "endDate", "redeemEndDate"]
+    },
+    "AddCampaignResponse": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "redeemEndDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "initiatorAddress": {
+          "type": "string",
+          "description": "Ethereum address"
+        }
+      },
+      "required": ["startDate", "endDate", "redeemEndDate", "initiatorAddress"]
+    },
+    "ClaimRewardRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Return value signer.signMessage()"
+        },
+        "tokenId": {
+          "type": "string"
+        }
+      },
+      "required": ["address", "signature", "tokenId"]
+    },
+    "ClaimRewardResponse": {
+      "type": "object",
+      "properties": {
+        "tokenId": {
+          "type": "string"
+        },
+        "claimSignature": {
+          "type": "string"
+        },
+        "chainId": {
+          "type": "string"
+        },
+        "nftAddress": {
+          "type": "string",
+          "description": "Ethereum address"
+        }
+      },
+      "required": ["tokenId", "claimSignature", "chainId", "nftAddress"]
+    },
+    "ClaimTaskRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Return value signer.signMessage()"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT", "DAILY_SWAPS"]
+        }
+      },
+      "required": ["address", "signature", "type"]
+    },
+    "ClaimTaskResponse": {
+      "type": "object",
+      "properties": {
+        "claimedFragments": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT", "DAILY_SWAPS"]
+        }
+      },
+      "required": ["claimedFragments", "type"]
+    },
+    "RegisterDailySwapRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "tradeUSDValue": {
+          "type": "number"
+        }
+      },
+      "required": ["address", "tradeUSDValue"]
+    },
+    "RegisterDailySwapResponse": {
+      "type": "object",
+      "properties": {
+        "claimedFragments": {
+          "type": "number"
+        },
+        "totalTradeUSDValue": {
+          "type": "number"
+        }
+      },
+      "required": ["claimedFragments", "totalTradeUSDValue"]
+    },
+    "Reward": {
+      "type": "object",
+      "properties": {
+        "requiredFragments": {
+          "type": "number"
+        },
+        "nftAddress": {
+          "type": "string",
+          "description": "Ethereum address"
+        },
+        "tokenId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "rarity": {
+          "type": "string",
+          "enum": ["common", "uncommon", "rare", "epic", "legendary"]
+        },
+        "imageURI": {
+          "type": "string"
+        }
+      },
+      "required": ["requiredFragments", "nftAddress", "tokenId", "name", "description", "rarity", "imageURI"]
+    },
+    "Rewards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Reward"
+      }
+    },
+    "DailyVisit": {
+      "type": "object",
+      "properties": {
+        "allVisits": {
+          "type": "number"
+        },
+        "fragments": {
+          "type": "number"
+        },
+        "lastVisit": {
+          "type": "string",
+          "format": "date"
+        },
+        "nextVisit": {
+          "type": "string",
+          "format": "date"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT", "DAILY_SWAPS"]
+        }
+      },
+      "required": ["allVisits", "fragments", "lastVisit", "nextVisit", "type"]
+    },
+    "DailySwaps": {
+      "type": "object",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "fragments": {
+          "type": "number"
+        },
+        "totalTradeUSDValue": {
+          "type": "number"
+        }
+      },
+      "required": ["startDate", "endDate", "fragments", "totalTradeUSDValue"]
+    },
+    "WeeklyFragments": {
+      "type": "object",
+      "properties": {
+        "totalAmountUSD": {
+          "type": "number"
+        },
+        "claimableFragments": {
+          "type": "number"
+        },
+        "claimedFragments": {
+          "type": "number"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["LIQUIDITY_PROVISION", "LIQUIDITY_STAKING", "DAILY_VISIT", "DAILY_SWAPS"]
+        }
+      },
+      "required": ["totalAmountUSD", "claimableFragments", "claimedFragments", "startDate", "endDate", "type"]
+    },
+    "Tasks": {
+      "type": "object",
+      "properties": {
+        "dailyVisit": {
+          "$ref": "#/definitions/DailyVisit"
+        },
+        "dailySwaps": {
+          "$ref": "#/definitions/DailySwaps"
+        },
+        "liquidityProvision": {
+          "$ref": "#/definitions/WeeklyFragments"
+        },
+        "liquidityStaking": {
+          "$ref": "#/definitions/WeeklyFragments"
+        }
+      },
+      "required": ["dailyVisit", "dailySwaps", "liquidityProvision", "liquidityStaking"]
+    },
+    "GetCampaignProgressResponse": {
+      "type": "object",
+      "properties": {
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "redeemEndDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "claimedFragments": {
+          "type": "number"
+        },
+        "rewards": {
+          "$ref": "#/definitions/Rewards"
+        },
+        "tasks": {
+          "$ref": "#/definitions/Tasks"
+        }
+      },
+      "required": ["endDate", "redeemEndDate", "claimedFragments", "rewards", "tasks"]
+    }
+  }
+}

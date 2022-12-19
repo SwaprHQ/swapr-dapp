@@ -17,6 +17,7 @@ import { useMemo } from 'react'
 
 import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { useExpeditionsRegisterDailySwap } from '../modules/expeditions/Expeditions.hooks'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -165,6 +166,7 @@ export function useSwapCallback({
   const [preferredGasPrice] = useUserPreferredGasPrice()
 
   const { trackEcoEcoRouterTradeVolume } = useAnalytics()
+  const registerExpeditionsDailySwap = useExpeditionsRegisterDailySwap()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
   const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipientAddressOrName)
@@ -199,6 +201,7 @@ export function useSwapCallback({
           const orderId = await trade.submitOrder()
 
           trackEcoEcoRouterTradeVolume(trade)
+          registerExpeditionsDailySwap(trade)
 
           addTransaction(
             {
@@ -296,6 +299,7 @@ export function useSwapCallback({
           })
           .then(async response => {
             trackEcoEcoRouterTradeVolume(trade)
+            registerExpeditionsDailySwap(trade)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -320,12 +324,13 @@ export function useSwapCallback({
     library,
     account,
     chainId,
+    recipient,
+    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
-    mainnetGasPrices,
-    recipientAddressOrName,
-    recipient,
-    addTransaction,
     trackEcoEcoRouterTradeVolume,
+    registerExpeditionsDailySwap,
+    addTransaction,
+    mainnetGasPrices,
   ])
 }
