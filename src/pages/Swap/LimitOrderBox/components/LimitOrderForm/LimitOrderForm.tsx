@@ -217,6 +217,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
+      console.log('finalized Limit order', finalizedLimitOrder)
 
       const response = await createCoWLimitOrder({
         chainId,
