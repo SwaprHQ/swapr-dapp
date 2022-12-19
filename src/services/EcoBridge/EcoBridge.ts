@@ -153,7 +153,7 @@ export class EcoBridge {
   }
 
   public collect = async () => {
-    if (!this._account || !this._activeBridgeId) return
+    if (!this._account) return
 
     const l2Tx = selectBridgeCollectableTx(this.store.getState(), this._account)
 
@@ -162,7 +162,7 @@ export class EcoBridge {
     try {
       return this.bridges[l2Tx.bridgeId].collect(l2Tx)
     } catch (error) {
-      this.bridges[this._activeBridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+      this.bridges[l2Tx.bridgeId].ecoBridgeUtils.ui.modal.setBridgeModalStatus(
         BridgeModalStatus.ERROR,
         this._activeBridgeId,
         error
