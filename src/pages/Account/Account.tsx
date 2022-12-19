@@ -15,9 +15,10 @@ import { useENSName } from '../../hooks/useENSName'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { usePage } from '../../hooks/usePage'
 import { useResponsiveItemsPerPage } from '../../hooks/useResponsiveItemsPerPage'
+import { ProfileModal } from '../../modules/profile/components/ProfileModal'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
-import { useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
+import { useToggleProfilePopup, useWalletSwitcherPopoverToggle } from '../../state/application/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
@@ -62,6 +63,9 @@ export function Account() {
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const transactionsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
+
+  // Profile
+  const toggleProfileModalPopup = useToggleProfilePopup()
 
   useLayoutEffect(() => {
     // Resetting Eco Bridge transaction filtering in selectors
@@ -129,6 +133,7 @@ export function Account() {
             <CallToActionWrapper>
               <Button onClick={toggleWalletSwitcherPopover}>{t('changeWallet')}</Button>
               {active && <Button onClick={deactivate}>{t('disconnect')}</Button>}
+              <Button onClick={toggleProfileModalPopup}>Profile</Button>
             </CallToActionWrapper>
           </Flex>
         </Flex>
@@ -163,6 +168,7 @@ export function Account() {
           </Box>
         </PaginationRow>
       </PageWrapper>
+      <ProfileModal onDismiss={toggleProfileModalPopup} />
     </>
   )
 }

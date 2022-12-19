@@ -1,50 +1,53 @@
 import { useMemo } from 'react'
 
 import uriToHttp from '../../../../utils/uriToHttp'
-import { useExpeditions } from '../../Expeditions.hooks'
+import { useExpeditions, useExpeditionsRewardClaim } from '../../Expeditions.hooks'
 import { RewardCard, RewardCardProps } from '../ExpeditionsCards'
 
 export const ExpeditionsRewards = () => {
   const { rewards: rewardsRaw, claimedFragments, redeemEndDate } = useExpeditions()
 
-  // const claimReward = async (nftAddress: string, tokenId: string) => {
-  //   // create signature
-  //   // send request
-  //   // send tx to contract
-  //   // change local state
-  //   console.log('under construction')
-  // }
+  const { claimReward, claimedTokenId, changeNetwork, needsToChangeNetwork } = useExpeditionsRewardClaim()
 
   const rewards = useMemo(() => {
     if (!rewardsRaw || !redeemEndDate) {
       return []
     }
 
-    const map = rewardsRaw.map<RewardCardProps>(({ description, imageURI, name, rarity, requiredFragments }) => {
-      const hasEnoughFragments = claimedFragments >= requiredFragments
-      const claimed = false // temp
+    const map = rewardsRaw.map<RewardCardProps>(
+      ({ description, imageURI, name, rarity, requiredFragments, owned, tokenId }) => {
+        const hasEnoughFragments = claimedFragments >= requiredFragments
+        const claimed = owned
+        const expired = new Date().getTime() > redeemEndDate?.getTime()
+        const buttonDisabled = claimed || !hasEnoughFragments || claimedTokenId === tokenId
+        const buttonText =
+          claimedTokenId === tokenId
+            ? 'Claiming...'
+            : claimed
+            ? 'Owned'
+            : hasEnoughFragments
+            ? needsToChangeNetwork
+              ? 'Switch to Goerli/ArbOne'
+              : 'Claim'
+            : 'Not enough fragments'
 
-      // const expired todo - need to fetch campaign redeem end date from BE
-      const expired = new Date().getTime() > redeemEndDate?.getTime()
-      const buttonDisabled = claimed || !hasEnoughFragments
-      const buttonText = claimed ? 'Owned' : hasEnoughFragments ? 'Claim' : 'Not enough fragments'
-
-      return {
-        description,
-        title: name,
-        rarity,
-        requiredFragments,
-        imageUrl: uriToHttp(imageURI)[0],
-        buttonText,
-        claimed,
-        expired,
-        onClick: () => console.log('under construction'),
-        buttonDisabled,
+        return {
+          description,
+          title: name,
+          rarity,
+          requiredFragments,
+          imageUrl: uriToHttp(imageURI)[0],
+          buttonText,
+          claimed,
+          expired,
+          onClick: async () => (needsToChangeNetwork ? await changeNetwork() : await claimReward(tokenId)),
+          buttonDisabled,
+        }
       }
-    })
+    )
 
     return map
-  }, [rewardsRaw, redeemEndDate, claimedFragments])
+  }, [rewardsRaw, redeemEndDate, claimedFragments, claimedTokenId, claimReward])
 
   return (
     <>

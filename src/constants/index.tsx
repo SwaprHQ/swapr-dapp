@@ -752,3 +752,8 @@ export const SWAP_INPUT_ERRORS: Record<string, number> = {
   INVALID_RECIPIENT: 5,
   INSUFFICIENT_BALANCE: 6,
 }
+
+export const EXPEDITIONS_NFT_CONTRACTS: { [key: string]: string } = {
+  [ChainId.GOERLI]: '0xB0CF74DDB30d2B9Ec58eb3F9525a05C0A9012f16',
+  [ChainId.ARBITRUM_ONE]: '0x',
+}

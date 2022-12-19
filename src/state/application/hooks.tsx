@@ -62,6 +62,14 @@ export function useToggleShowExpeditionsPopup(): () => void {
   return useToggleModal(ApplicationModal.EXPEDITIONS)
 }
 
+export function useShowProfilePopup(): boolean {
+  return useModalOpen(ApplicationModal.PROFILE)
+}
+
+export function useToggleProfilePopup(): () => void {
+  return useToggleModal(ApplicationModal.PROFILE)
+}
+
 export function useToggleSelfClaimModal(): () => void {
   return useToggleModal(ApplicationModal.SELF_CLAIM)
 }

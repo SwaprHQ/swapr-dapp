@@ -24,6 +24,7 @@ export enum ApplicationModal {
   UNSUPPORTED_NETWORK,
   SIMPLE_SETTINGS,
   EXPEDITIONS,
+  PROFILE,
 }
 
 export enum MainnetGasPrice {

@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
 import { expeditionsReducer as expeditions } from '../modules/expeditions/Expeditions.reducer'
+import { profileReducer as profile } from '../modules/profile/Profile.reducer'
 import advancedTradingView from '../services/AdvancedTradingView/store'
 import {
   ecoBridgePersistedKeys,
@@ -28,6 +29,7 @@ const PERSISTED_KEYS: string[] = [
   'bridgeTransactions',
   ...ecoBridgePersistedKeys,
   'expeditions.dailySwapsTracked',
+  'profile.activeAccent',
 ]
 
 const persistenceNamespace = 'swapr'
@@ -51,6 +53,7 @@ const store = configureStore({
     ecoBridge,
     advancedTradingView,
     expeditions,
+    profile,
   },
   middleware: [
     save({

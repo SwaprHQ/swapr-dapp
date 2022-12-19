@@ -12,17 +12,17 @@ export interface SwaprExpeditionsAppProps {
   account: string
 }
 
-export function App({ account }: SwaprExpeditionsAppProps) {
+export function ExpeditionsApp({ account }: SwaprExpeditionsAppProps) {
   const isOpen = useShowExpeditionsPopup()
   const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
 
-  const refeshCampaignProgress = useExpeditionsRefreshProgress()
+  const refreshCampaignProgress = useExpeditionsRefreshProgress()
 
   useEffect(() => {
     if (isOpen) {
-      refeshCampaignProgress(account)
+      refreshCampaignProgress(account)
     }
-  }, [account, isOpen, refeshCampaignProgress])
+  }, [account, isOpen, refreshCampaignProgress])
 
   return (
     <>

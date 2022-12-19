@@ -1,13 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { GetCampaignProgressResponse } from './api/generated'
+import { GetCampaignProgressResponse, Reward } from './api/generated'
 
+export interface RewardWithOwned extends Reward {
+  owned?: boolean
+}
 export interface ExpeditionsState {
   dailySwapsTracked: boolean
   endDate?: GetCampaignProgressResponse['endDate']
   redeemEndDate?: GetCampaignProgressResponse['redeemEndDate']
   tasks: GetCampaignProgressResponse['tasks']
-  rewards: GetCampaignProgressResponse['rewards']
+  rewards: RewardWithOwned[]
   claimedFragments: GetCampaignProgressResponse['claimedFragments']
   status: 'idle' | 'pending' | 'success' | 'error'
   error?: string
@@ -35,8 +38,11 @@ export const expeditionsSlice = createSlice({
       state.status = status
       state.error = error
     },
-    expeditionsProgressUpdated(state, action: PayloadAction<GetCampaignProgressResponse>) {
-      const { claimedFragments, rewards, tasks, endDate, redeemEndDate } = action.payload
+    expeditionsProgressUpdated(
+      state,
+      action: PayloadAction<GetCampaignProgressResponse & { rewardsStatus: boolean[] }>
+    ) {
+      const { claimedFragments, rewards, tasks, endDate, redeemEndDate, rewardsStatus } = action.payload
 
       state.endDate = endDate
       state.redeemEndDate = redeemEndDate
@@ -45,6 +51,16 @@ export const expeditionsSlice = createSlice({
       state.tasks = tasks
       state.status = 'success'
       state.error = undefined
+
+      if (rewardsStatus?.length) {
+        const rewardsWithClaimStatus = rewards.map<RewardWithOwned>((reward, index) => ({
+          ...reward,
+          owned: rewardsStatus[index],
+        }))
+        state.rewards = rewardsWithClaimStatus
+      } else {
+        state.rewards = rewards
+      }
     },
   },
 })
