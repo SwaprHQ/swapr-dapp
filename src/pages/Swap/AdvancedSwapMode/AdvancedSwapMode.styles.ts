@@ -69,6 +69,7 @@ export const PairInfo = styled.div`
   white-space: nowrap;
   &:nth-child(-n + 2) {
     width: 13%;
+    min-width: 190px;
   }
 
   & > div:nth-child(2) {

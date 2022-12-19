@@ -16,6 +16,17 @@ interface PairDetailsProps {
   activeCurrencyOption: Token | null | undefined
 }
 
+const DoubleSizedPrice = ({ price }: { price: string }) => {
+  if (Number(price) > 1) return <>{price}</>
+
+  return (
+    <>
+      {price.substring(0, 8)}
+      <span style={{ fontSize: '10px' }}>{price.substring(8)}</span>
+    </>
+  )
+}
+
 export const PairDetails = ({ token0, token1, activeCurrencyOption }: PairDetailsProps) => {
   const { t } = useTranslation('swap')
 
@@ -37,7 +48,11 @@ export const PairDetails = ({ token0, token1, activeCurrencyOption }: PairDetail
         <Flex flexBasis="80%" marginLeft="30px">
           <PairInfo>
             <PairValueChange size="16px" positive={Boolean(activeCurrencyDetails.isIncome24h)}>
-              {isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.relativePrice}
+              {isLoading ? (
+                <Skeleton width="100px" height="14px" />
+              ) : (
+                <DoubleSizedPrice price={activeCurrencyDetails.relativePrice} />
+              )}
             </PairValueChange>
             <PairTab>{isLoading ? <Skeleton width="100px" height="14px" /> : activeCurrencyDetails.price}</PairTab>
           </PairInfo>
@@ -48,7 +63,8 @@ export const PairDetails = ({ token0, token1, activeCurrencyOption }: PairDetail
                 <Skeleton width="182px" height="14px" />
               ) : (
                 <>
-                  {activeCurrencyDetails.priceChange24h} {activeCurrencyDetails.percentPriceChange24h}
+                  {activeCurrencyDetails.percentPriceChange24h}
+                  <span style={{ fontSize: '10px', marginLeft: '7px' }}>{activeCurrencyDetails.priceChange24h}</span>
                 </>
               )}
             </PairValueChange>

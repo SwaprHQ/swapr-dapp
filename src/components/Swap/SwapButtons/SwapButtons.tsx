@@ -7,7 +7,7 @@ import { PRICE_IMPACT_HIGH, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_STYLE } from 
 import { useActiveWeb3React } from '../../../hooks'
 import { ApprovalState } from '../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../hooks/useWrapCallback'
-import { SwapData } from '../../../pages/Swap'
+import { SwapData } from '../../../pages/Swap/Swapbox/Swapbox'
 import { Field } from '../../../state/swap/types'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { warningSeverity } from '../../../utils/prices'
