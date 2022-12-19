@@ -14,7 +14,7 @@ export function ChartLoader({ pairAddress }: { pairAddress?: string }) {
     return () => clearTimeout(timeout)
   }, [pairAddress])
 
-  return pairAddress && isLoading ? (
+  return isLoading ? (
     <AbsoluteWrapper>
       <FallbackLoader />
     </AbsoluteWrapper>

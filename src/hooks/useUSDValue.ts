@@ -127,7 +127,10 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
         .then(priceResponse => {
           setError(undefined)
 
-          if (!priceResponse?.amount || !priceResponse.percentageAmountChange24h) return
+          if (!priceResponse?.amount || !priceResponse.percentageAmountChange24h) {
+            setLoading(false)
+            return
+          }
 
           const {
             amount: apiUsdPrice,
@@ -141,7 +144,10 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
           // in our case we stick to the USDC paradigm
           const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].stablecoin, chainId)
           // parse failure is unlikely - type safe
-          if (!quoteAmount) return
+          if (!quoteAmount) {
+            setLoading(false)
+            return
+          }
           // create a new Price object
           // we need to calculate the scalar
           // to take the different decimal places
