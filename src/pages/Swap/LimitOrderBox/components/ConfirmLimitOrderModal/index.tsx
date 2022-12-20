@@ -71,7 +71,7 @@ export default function ConfirmLimitOrderModal({
   }, [marketPriceDiffPercentage, isDiffPositive, onConfirm, askPrice, expiresInFormatted])
 
   // text to show while loading
-  const pendingText = 'Some text while loading'
+  const pendingText = 'Confirm Signature'
 
   const confirmationContent = useCallback(
     () =>
