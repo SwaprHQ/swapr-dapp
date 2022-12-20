@@ -2,16 +2,28 @@ import { Button } from '../../../../../theme'
 
 export type FooterData = {
   askPrice: string
-  marketPriceDifference: { value: string; color: string }
+  marketPriceDifference: number
+  isDiffPositive: boolean
   expiresIn: string
   market: string
+  onConfirm: () => void
 }
 
-export const ConfirmationFooter = ({ data, onConfirm }: { data: FooterData; onConfirm: () => void }) => {
-  const someshit = data
+export const ConfirmationFooter = ({
+  askPrice,
+  onConfirm,
+  expiresIn,
+  marketPriceDifference,
+  isDiffPositive,
+  market,
+}: FooterData) => {
+  console.log('isDiffPositive', isDiffPositive)
   return (
     <div>
-      <div>{someshit.askPrice}</div>
+      <div>AskPrice:{askPrice}</div>
+      <div>Diff market price: {marketPriceDifference}</div>
+      <div>Expires in : {expiresIn}</div>
+      <div>Market:{market}</div>
       <Button onClick={onConfirm}></Button>
     </div>
   )

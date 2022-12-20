@@ -1,12 +1,31 @@
-import { Currency } from '@swapr/sdk'
+import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
-export type HeaderData = { token0: { value: string; token: Currency }; token1: { value: string; token: Currency } }
+export type HeaderData = {
+  fiatValueInput: CurrencyAmount | null
+  fiatValueOutput: CurrencyAmount | null
+  isFallbackFiatValueInput: boolean
+  isFallbackFiatValueOutput: boolean
+  buyToken: TokenAmount
+  sellToken: TokenAmount
+}
 
-export const ConfirmationHeader = ({ data }: { data: HeaderData }) => {
-  const someshit = data
+export const ConfirmationHeader = ({
+  fiatValueInput,
+  fiatValueOutput,
+  isFallbackFiatValueInput,
+  isFallbackFiatValueOutput,
+  buyToken,
+  sellToken,
+}: HeaderData) => {
+  const fiatInput = fiatValueInput && isFallbackFiatValueInput && fiatValueInput.toFixed(2, { groupSeparator: ',' })
+  const fiatOutput = fiatValueOutput && isFallbackFiatValueOutput && fiatValueOutput.toFixed(2, { groupSeparator: ',' })
+
   return (
     <div>
-      <div>{someshit.token0.token.address}</div>
+      <div>{sellToken.currency.symbol}</div>
+      <div>{fiatInput}$</div>
+      <div>{buyToken.currency.symbol}</div>
+      <div>{fiatOutput}$</div>
     </div>
   )
 }

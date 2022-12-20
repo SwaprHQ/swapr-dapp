@@ -1,56 +1,105 @@
-import { Currency } from '@swapr/sdk'
+import { CurrencyAmount } from '@swapr/sdk'
 
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react'
 
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
-import { ConfirmationFooter, FooterData } from './ConfirmationFooter'
-import { ConfirmationHeader, HeaderData } from './ConfirmationHeader'
+import { LimitOrderFormContext } from '../../contexts'
+import { LimitOrderKind } from '../../interfaces'
+import { calcualtePriceDiffPercentage } from '../OrderLimitPriceField'
+import { ConfirmationFooter } from './ConfirmationFooter'
+import { ConfirmationHeader } from './ConfirmationHeader'
 
 export default function ConfirmSignatureModal({
-  footerContent,
-  headerContent,
   onConfirm,
   onDismiss,
-  swapErrorMessage,
+  errorMessage,
   isOpen,
   attemptingTxn,
+  fiatValueInput,
+  fiatValueOutput,
+  isFallbackFiatValueInput,
+  isFallbackFiatValueOutput,
 }: {
   isOpen: boolean
-  footerContent: FooterData | undefined
-  headerContent: HeaderData | undefined
   attemptingTxn: boolean
-  onAcceptChanges: () => void
   onConfirm: () => void
-  swapErrorMessage: string | undefined
+  errorMessage: string | undefined
   onDismiss: () => void
+  fiatValueInput: CurrencyAmount | null
+  fiatValueOutput: CurrencyAmount | null
+  isFallbackFiatValueInput: boolean
+  isFallbackFiatValueOutput: boolean
 }) {
+  const { expiresIn, expiresInUnit, limitOrder, buyTokenAmount, sellTokenAmount, formattedLimitPrice, marketPrices } =
+    useContext(LimitOrderFormContext)
+
+  const [baseTokenAmount, quoteTokenAmount] =
+    limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
+  const askPrice = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
+
+  let { marketPriceDiffPercentage, isDiffPositive } = calcualtePriceDiffPercentage(
+    limitOrder,
+    marketPrices,
+    formattedLimitPrice
+  )
+  const expiresInFormatted = `${expiresIn} ${expiresInUnit}`
+  console.log('expiredInFromated', expiresInFormatted)
+
+  //hardcoded for now
+  const market = 'Cow Protocol'
+
   const modalHeader = useCallback(() => {
-    return headerContent ? <ConfirmationHeader data={headerContent} /> : null
-  }, [headerContent])
+    return (
+      <ConfirmationHeader
+        fiatValueInput={fiatValueInput}
+        fiatValueOutput={fiatValueOutput}
+        isFallbackFiatValueInput={isFallbackFiatValueInput}
+        isFallbackFiatValueOutput={isFallbackFiatValueOutput}
+        buyToken={buyTokenAmount}
+        sellToken={sellTokenAmount}
+      />
+    )
+  }, [
+    fiatValueInput,
+    fiatValueOutput,
+    isFallbackFiatValueInput,
+    isFallbackFiatValueOutput,
+    buyTokenAmount,
+    sellTokenAmount,
+  ])
 
   const modalBottom = useCallback(() => {
-    return footerContent ? <ConfirmationFooter onConfirm={onConfirm} data={footerContent} /> : null
-  }, [footerContent, onConfirm])
+    return onConfirm ? (
+      <ConfirmationFooter
+        onConfirm={onConfirm}
+        askPrice={askPrice}
+        expiresIn={expiresInFormatted}
+        marketPriceDifference={marketPriceDiffPercentage}
+        market={market}
+        isDiffPositive={isDiffPositive}
+      />
+    ) : null
+  }, [marketPriceDiffPercentage, isDiffPositive, onConfirm, askPrice, expiresInFormatted])
 
   // text to show while loading
   const pendingText = 'Some text while loading'
 
   const confirmationContent = useCallback(
     () =>
-      swapErrorMessage ? (
-        <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
+      errorMessage ? (
+        <TransactionErrorContent onDismiss={onDismiss} message={errorMessage} />
       ) : (
         <ConfirmationModalContent
-          title="Confirm Swap"
+          title="Confirm Limit Order"
           onDismiss={onDismiss}
           topContent={modalHeader}
           bottomContent={modalBottom}
         />
       ),
-    [onDismiss, modalBottom, modalHeader, swapErrorMessage]
+    [onDismiss, modalBottom, modalHeader, errorMessage]
   )
 
   return (

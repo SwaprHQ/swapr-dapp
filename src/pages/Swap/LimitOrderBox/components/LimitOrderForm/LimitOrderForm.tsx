@@ -23,6 +23,7 @@ import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
 import { ApprovalFlow } from '../ApprovalFlow'
+import ConfirmSignatureModal from '../ConfrimSignatureModal'
 import { CurrencySelectTooltip } from '../CurrencySelectTooltip'
 import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
@@ -57,7 +58,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
   // Default expiry time set to 20 minutes
   const [expiresIn, setExpiresIn] = useState(20)
-
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   // IsPossibleToOrder
   const [isPossibleToOrder, setIsPossibleToOrder] = useState({
     status: false,
@@ -461,6 +463,17 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           marketPrices,
         }}
       >
+        <ConfirmSignatureModal
+          onConfirm={placeLimitOrder}
+          onDismiss={() => setIsModalOpen(false)}
+          isOpen={isModalOpen}
+          errorMessage={errorMessage}
+          attemptingTxn={false}
+          fiatValueInput={fiatValueInput}
+          fiatValueOutput={fiatValueOutput}
+          isFallbackFiatValueInput={isFallbackFiatValueInput}
+          isFallbackFiatValueOutput={isFallbackFiatValueOutput}
+        />
         <AutoColumn gap="12px">
           <AutoColumn gap="3px">
             <CurrencyInputPanel
@@ -521,7 +534,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   {formatMaxValue(isPossibleToOrder.value)}
                 </MaxAlert>
               )}
-              <ButtonPrimary onClick={placeLimitOrder} disabled={isPossibleToOrder.status}>
+              <ButtonPrimary onClick={() => setIsModalOpen(true)} disabled={isPossibleToOrder.status}>
                 Place Limit Order
               </ButtonPrimary>
             </>
