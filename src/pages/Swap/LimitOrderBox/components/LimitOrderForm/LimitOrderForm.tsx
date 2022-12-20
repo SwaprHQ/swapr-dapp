@@ -221,11 +221,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     // sign the order
     try {
       const signer = provider.getSigner()
+
       const finalizedLimitOrder = {
         ...limitOrder,
         expiresAt: dayjs().add(expiresIn, expiresInUnit).unix(),
       }
-      console.log('finalized Limit order', finalizedLimitOrder)
 
       const response = await createCoWLimitOrder({
         chainId,

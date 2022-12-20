@@ -12,13 +12,7 @@ export type HeaderData = {
   sellToken: TokenAmount
 }
 
-export const ConfirmationHeader = ({
-  fiatValueInput,
-  fiatValueOutput,
-
-  buyToken,
-  sellToken,
-}: HeaderData) => {
+export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, sellToken }: HeaderData) => {
   const fiatInput = fiatValueInput && fiatValueInput.toFixed(2, { groupSeparator: ',' })
   const fiatOutput = fiatValueOutput && fiatValueOutput.toFixed(2, { groupSeparator: ',' })
 
@@ -26,7 +20,7 @@ export const ConfirmationHeader = ({
     <Wrapper>
       <CurrencyAmountContainer>
         <CurrencyLogoInfo>
-          <LeftSideText>YOU SWAP</LeftSideText>
+          <PurpleText>YOU SWAP</PurpleText>
           <LogoWithText>
             <CurrencySymbol>{sellToken.currency.symbol}</CurrencySymbol>{' '}
             <CurrencyLogo size="20px" currency={sellToken.currency} />
@@ -34,13 +28,13 @@ export const ConfirmationHeader = ({
         </CurrencyLogoInfo>
         <AmountWithUsd>
           <Amount>{sellToken.toFixed(3)}</Amount>
-          {fiatInput && <AmountInUSD>${fiatInput}</AmountInUSD>}
+          {fiatInput && <PurpleText>${fiatInput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
       <StyledArrow />
       <CurrencyAmountContainer>
         <CurrencyLogoInfo>
-          <LeftSideText>YOU RECIEVE</LeftSideText>
+          <PurpleText>YOU RECIEVE</PurpleText>
           <LogoWithText>
             <CurrencySymbol>{buyToken.currency.symbol}</CurrencySymbol>{' '}
             <CurrencyLogo size="20px" currency={buyToken.currency} />
@@ -48,7 +42,7 @@ export const ConfirmationHeader = ({
         </CurrencyLogoInfo>
         <AmountWithUsd>
           <Amount>{buyToken.toFixed(3)}</Amount>
-          {fiatOutput && <AmountInUSD>${fiatOutput}</AmountInUSD>}
+          {fiatOutput && <PurpleText>${fiatOutput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
     </Wrapper>
@@ -84,13 +78,7 @@ const CurrencyLogoInfo = styled.div`
   flex-direction: column;
   gap: 8px;
 `
-const LeftSideText = styled.div`
-  font-weight: 600;
-  font-size: 10px;
-  line-height: 12px;
-  letter-spacing: 0.08em;
-  color: #8780bf;
-`
+
 const AmountWithUsd = styled.div`
   display: flex;
   flex-direction: column;
@@ -102,12 +90,12 @@ const Amount = styled.div`
   font-size: 28px;
   line-height: 34px;
 `
-const AmountInUSD = styled.div`
+const PurpleText = styled.div`
   font-weight: 600;
   font-size: 10px;
   line-height: 12px;
   letter-spacing: 0.08em;
-  color: #8780bf;
+  color: ${({ theme }) => theme.purple3};
 `
 const StyledArrow = styled(ArrowDown)`
   width: 100%;
