@@ -24,7 +24,7 @@ export const ConfirmationFooter = ({
       <div>Diff market price: {marketPriceDifference}</div>
       <div>Expires in : {expiresIn}</div>
       <div>Market:{market}</div>
-      <Button onClick={onConfirm}></Button>
+      <Button onClick={onConfirm}>Place Limit Order</Button>
     </div>
   )
 }

@@ -12,7 +12,7 @@ import { calcualtePriceDiffPercentage } from '../OrderLimitPriceField'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
 
-export default function ConfirmSignatureModal({
+export default function ConfirmLimitOrderModal({
   onConfirm,
   onDismiss,
   errorMessage,

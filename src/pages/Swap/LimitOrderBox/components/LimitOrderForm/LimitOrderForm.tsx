@@ -23,7 +23,7 @@ import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { getInitialState } from '../../utils'
 import { ApprovalFlow } from '../ApprovalFlow'
-import ConfirmSignatureModal from '../ConfrimSignatureModal'
+import ConfirmLimitOrderModal from '../ConfirmLimitOrderModal'
 import { CurrencySelectTooltip } from '../CurrencySelectTooltip'
 import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
@@ -88,7 +88,10 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     sellTokenAmount,
     getVaultRelayerAddress(chainId)
   )
-
+  const onModalDismiss = () => {
+    setIsModalOpen(false)
+    setErrorMessage('')
+  }
   const setToMarket = async () => {
     const signer = provider.getSigner()
     if (!limitOrder.buyToken || !limitOrder.sellToken) {
@@ -238,6 +241,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       }
     } catch (error) {
       console.error(error)
+      setErrorMessage('Failed to place limit order. Try again.')
       notify('Failed to place limit order. Try again.', false)
     } finally {
       setLoading(false)
@@ -463,12 +467,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           marketPrices,
         }}
       >
-        <ConfirmSignatureModal
+        <ConfirmLimitOrderModal
           onConfirm={placeLimitOrder}
-          onDismiss={() => setIsModalOpen(false)}
+          onDismiss={onModalDismiss}
           isOpen={isModalOpen}
           errorMessage={errorMessage}
-          attemptingTxn={false}
+          attemptingTxn={loading}
           fiatValueInput={fiatValueInput}
           fiatValueOutput={fiatValueOutput}
           isFallbackFiatValueInput={isFallbackFiatValueInput}
