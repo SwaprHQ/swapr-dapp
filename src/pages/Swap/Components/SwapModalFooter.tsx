@@ -120,13 +120,13 @@ export default function SwapModalFooter({
   )
 }
 
-const StyledKey = styled(TYPE.Body)`
+export const StyledKey = styled(TYPE.Body)`
   font-weight: 400;
   font-size: 13px;
   color: ${({ theme }) => theme.text5};
 `
-const StyledValue = styled(TYPE.Body)`
+export const StyledValue = styled(TYPE.Body)<{ color?: string }>`
   font-weight: 500;
   font-size: 12px;
-  color: ${({ theme }) => theme.text5};
+  color: ${({ theme, color }) => (color ? color : theme.text5)};
 `

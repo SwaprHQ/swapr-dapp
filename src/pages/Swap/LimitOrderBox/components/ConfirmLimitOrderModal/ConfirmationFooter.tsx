@@ -1,4 +1,8 @@
-import { Button } from '../../../../../theme'
+import styled, { useTheme } from 'styled-components'
+
+import { ButtonPrimary } from '../../../../../components/Button'
+import { theme } from '../../../../../theme'
+import { StyledKey, StyledValue } from '../../../Components/SwapModalFooter'
 
 export type FooterData = {
   askPrice: string
@@ -17,14 +21,40 @@ export const ConfirmationFooter = ({
   isDiffPositive,
   market,
 }: FooterData) => {
-  console.log('isDiffPositive', isDiffPositive)
+  const theme = useTheme()
+  const color = isDiffPositive ? theme.green1 : theme.red1
+
   return (
-    <div>
-      <div>AskPrice:{askPrice}</div>
-      <div>Diff market price: {marketPriceDifference}</div>
-      <div>Expires in : {expiresIn}</div>
-      <div>Market:{market}</div>
-      <Button onClick={onConfirm}>Place Limit Order</Button>
-    </div>
+    <Wrapper>
+      <SingleRow>
+        <StyledKey>Ask price</StyledKey>
+        <StyledValue>{askPrice}</StyledValue>
+      </SingleRow>
+      <SingleRow>
+        <StyledKey>Diff. market price</StyledKey>
+        <StyledValue color={color}>{marketPriceDifference.toFixed(0)}%</StyledValue>
+      </SingleRow>
+      <SingleRow>
+        <StyledKey>Expires in</StyledKey>
+        <StyledValue> {expiresIn}</StyledValue>
+      </SingleRow>
+      <SingleRow>
+        <StyledKey>Market</StyledKey>
+        <StyledValue>{market}</StyledValue>
+      </SingleRow>
+      <ButtonPrimary marginTop={'20px'} onClick={onConfirm}>
+        PLACE LIMIT ORDER
+      </ButtonPrimary>
+    </Wrapper>
   )
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  gap: 7px;
+  flex-direction: column;
+`
+const SingleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
