@@ -12,6 +12,7 @@ import { Flex } from 'rebass'
 import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
+import { PageMetaData } from '../../../../../components/PageMetaData'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
@@ -444,107 +445,110 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   }, [limitOrder.sellToken, limitOrder.buyToken])
 
   return (
-    <AppBody>
-      <LimitOrderFormContext.Provider
-        value={{
-          limitOrder,
-          setLimitOrder,
-          price,
-          setPrice,
-          buyTokenAmount,
-          setBuyTokenAmount,
-          sellTokenAmount,
-          setSellTokenAmount,
-          formattedLimitPrice,
-          setFormattedLimitPrice,
-          formattedBuyAmount,
-          setFormattedBuyAmount,
-          expiresIn,
-          setExpiresIn,
-          expiresInUnit,
-          setExpiresInUnit,
-          setToMarket,
-          marketPrices,
-        }}
-      >
-        <ConfirmLimitOrderModal
-          onConfirm={placeLimitOrder}
-          onDismiss={onModalDismiss}
-          isOpen={isModalOpen}
-          errorMessage={errorMessage}
-          attemptingTxn={loading}
-          fiatValueInput={fiatValueInput}
-          fiatValueOutput={fiatValueOutput}
-          isFallbackFiatValueInput={isFallbackFiatValueInput}
-          isFallbackFiatValueOutput={isFallbackFiatValueOutput}
-        />
-        <AutoColumn gap="12px">
-          <AutoColumn gap="3px">
-            <CurrencyInputPanel
-              id="limit-order-box-sell-currency"
-              currency={sellTokenAmount.currency}
-              onCurrencySelect={handleCurrencySelect(sellTokenAmount, handleSellCurrencyAmountChange)}
-              value={formattedSellAmount}
-              onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
-              onMax={() => {
-                if (!sellCurrencyMaxAmount) return
-                handleSellCurrencyAmountChange({
-                  currency: sellCurrencyMaxAmount?.currency as Token,
-                  amountWei: sellCurrencyMaxAmount?.raw.toString(),
-                  amountFormatted: sellCurrencyMaxAmount.toSignificant(6),
-                })
-              }}
-              maxAmount={sellCurrencyMaxAmount}
-              fiatValue={fiatValueInput}
-              isFallbackFiatValue={isFallbackFiatValueInput}
-              showNativeCurrency={false}
-              currencyOmitList={[buyTokenAmount.currency.address!]}
-              currencySelectWrapper={CurrencySelectTooltip}
-            />
-            <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
-            <CurrencyInputPanel
-              id="limit-order-box-buy-currency"
-              currency={buyTokenAmount?.currency}
-              onCurrencySelect={handleCurrencySelect(buyTokenAmount, handleBuyCurrencyAmountChange)}
-              value={formattedBuyAmount}
-              onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
-              maxAmount={buyCurrencyMaxAmount}
-              fiatValue={fiatValueOutput}
-              isFallbackFiatValue={isFallbackFiatValueOutput}
-              showNativeCurrency={false}
-              currencyOmitList={[sellTokenAmount.currency.address!]}
-              currencySelectWrapper={CurrencySelectTooltip}
-            />
+    <>
+      <PageMetaData title="Limit | Swapr" />
+      <AppBody>
+        <LimitOrderFormContext.Provider
+          value={{
+            limitOrder,
+            setLimitOrder,
+            price,
+            setPrice,
+            buyTokenAmount,
+            setBuyTokenAmount,
+            sellTokenAmount,
+            setSellTokenAmount,
+            formattedLimitPrice,
+            setFormattedLimitPrice,
+            formattedBuyAmount,
+            setFormattedBuyAmount,
+            expiresIn,
+            setExpiresIn,
+            expiresInUnit,
+            setExpiresInUnit,
+            setToMarket,
+            marketPrices,
+          }}
+        >
+          <ConfirmLimitOrderModal
+            onConfirm={placeLimitOrder}
+            onDismiss={onModalDismiss}
+            isOpen={isModalOpen}
+            errorMessage={errorMessage}
+            attemptingTxn={loading}
+            fiatValueInput={fiatValueInput}
+            fiatValueOutput={fiatValueOutput}
+            isFallbackFiatValueInput={isFallbackFiatValueInput}
+            isFallbackFiatValueOutput={isFallbackFiatValueOutput}
+          />
+          <AutoColumn gap="12px">
+            <AutoColumn gap="3px">
+              <CurrencyInputPanel
+                id="limit-order-box-sell-currency"
+                currency={sellTokenAmount.currency}
+                onCurrencySelect={handleCurrencySelect(sellTokenAmount, handleSellCurrencyAmountChange)}
+                value={formattedSellAmount}
+                onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
+                onMax={() => {
+                  if (!sellCurrencyMaxAmount) return
+                  handleSellCurrencyAmountChange({
+                    currency: sellCurrencyMaxAmount?.currency as Token,
+                    amountWei: sellCurrencyMaxAmount?.raw.toString(),
+                    amountFormatted: sellCurrencyMaxAmount.toSignificant(6),
+                  })
+                }}
+                maxAmount={sellCurrencyMaxAmount}
+                fiatValue={fiatValueInput}
+                isFallbackFiatValue={isFallbackFiatValueInput}
+                showNativeCurrency={false}
+                currencyOmitList={[buyTokenAmount.currency.address!]}
+                currencySelectWrapper={CurrencySelectTooltip}
+              />
+              <SwapTokens swapTokens={handleSwapTokens} loading={loading} />
+              <CurrencyInputPanel
+                id="limit-order-box-buy-currency"
+                currency={buyTokenAmount?.currency}
+                onCurrencySelect={handleCurrencySelect(buyTokenAmount, handleBuyCurrencyAmountChange)}
+                value={formattedBuyAmount}
+                onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
+                maxAmount={buyCurrencyMaxAmount}
+                fiatValue={fiatValueOutput}
+                isFallbackFiatValue={isFallbackFiatValueOutput}
+                showNativeCurrency={false}
+                currencyOmitList={[sellTokenAmount.currency.address!]}
+                currencySelectWrapper={CurrencySelectTooltip}
+              />
+            </AutoColumn>
+            <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
+              <Flex flex={60}>
+                <OrderLimitPriceField id="limitPrice" />
+              </Flex>
+              <Flex flex={40}>
+                <OrderExpiryField id="limitOrderExpiry" />
+              </Flex>
+            </AutoRow>
+            {showApproveFlow ? (
+              <ApprovalFlow
+                tokenInSymbol={sellTokenAmount.currency.symbol as string}
+                approval={tokenInApproval}
+                approveCallback={tokenInApprovalCallback}
+              />
+            ) : (
+              <>
+                {isPossibleToOrder.status && isPossibleToOrder.value > 0 && (
+                  <MaxAlert>
+                    Max possible amount with fees for {sellTokenAmount.currency.symbol} is{' '}
+                    {formatMaxValue(isPossibleToOrder.value)}
+                  </MaxAlert>
+                )}
+                <ButtonPrimary onClick={() => setIsModalOpen(true)} disabled={isPossibleToOrder.status}>
+                  Place Limit Order
+                </ButtonPrimary>
+              </>
+            )}
           </AutoColumn>
-          <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
-            <Flex flex={60}>
-              <OrderLimitPriceField id="limitPrice" />
-            </Flex>
-            <Flex flex={40}>
-              <OrderExpiryField id="limitOrderExpiry" />
-            </Flex>
-          </AutoRow>
-          {showApproveFlow ? (
-            <ApprovalFlow
-              tokenInSymbol={sellTokenAmount.currency.symbol as string}
-              approval={tokenInApproval}
-              approveCallback={tokenInApprovalCallback}
-            />
-          ) : (
-            <>
-              {isPossibleToOrder.status && isPossibleToOrder.value > 0 && (
-                <MaxAlert>
-                  Max possible amount with fees for {sellTokenAmount.currency.symbol} is{' '}
-                  {formatMaxValue(isPossibleToOrder.value)}
-                </MaxAlert>
-              )}
-              <ButtonPrimary onClick={() => setIsModalOpen(true)} disabled={isPossibleToOrder.status}>
-                Place Limit Order
-              </ButtonPrimary>
-            </>
-          )}
-        </AutoColumn>
-      </LimitOrderFormContext.Provider>
-    </AppBody>
+        </LimitOrderFormContext.Provider>
+      </AppBody>
+    </>
   )
 }
