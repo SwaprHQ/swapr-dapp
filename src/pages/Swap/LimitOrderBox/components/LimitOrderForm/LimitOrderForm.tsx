@@ -104,7 +104,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     const cowQuote = await getQuote({
       chainId,
       signer,
-      order: { ...order, expiresAt: dayjs().add(expiresIn, 'minutes').unix() },
+      order: { ...order, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
     })
 
     if (cowQuote !== undefined) {
@@ -330,45 +330,43 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     // Construct a new token amount and format it
+    const limitPriceFloat = parseFloat(formattedLimitPrice)
 
     const newLimitOrder = {
       ...updatedLimitOrder,
       buyAmount: amountWei,
       buyToken: currency.address as string,
     }
-    const nextBuyAmountFormatted = amountFormatted
+
+    const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
     const nextBuyAmountFloat = parseFloat(amountFormatted)
 
-    // Update the buy currency amount if the user has selected a token
-    // to prevent `TokenAmount` constructor from throwing an error
-    newLimitOrder.buyToken = currency.address as string
     // Update relevant state variables
-    const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
     setBuyTokenAmount(newBuyTokenAmount)
 
-    // get and parse the sell token amount
-    const sellTokenAmountFloat = parseFloat(
-      formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
-    )
-
-    let nextLimitPriceFloat = 0
+    let nextSellAmountFloat = 0
+    // Compute sell buy amount based on the new sell amount
 
     if (limitOrder.kind === LimitOrderKind.SELL) {
-      nextLimitPriceFloat = nextBuyAmountFloat / sellTokenAmountFloat
-      // multiply the sell amount by the new price
-      newLimitOrder.limitPrice = parseUnits(
-        nextLimitPriceFloat !== Infinity ? nextLimitPriceFloat.toFixed(6) : '0',
-        currency.decimals
-      ).toString()
+      nextSellAmountFloat = nextBuyAmountFloat / limitPriceFloat
     } else {
-      nextLimitPriceFloat = sellTokenAmountFloat / nextBuyAmountFloat
-      // divide the buy amount by the new price
-      newLimitOrder.limitPrice = JSBI.multiply(newBuyTokenAmount.raw, buyTokenAmount.raw).toString()
+      nextSellAmountFloat = nextBuyAmountFloat * limitPriceFloat
+    }
+    if (Number(amountWei ?? 0) === 0) {
+      setIsPossibleToOrder({ value: 0, status: true })
     }
 
-    // Update state
-    setFormattedBuyAmount(nextBuyAmountFormatted) // update the token amount input
-    setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat)) // update the token amount input
+    // Format the sell amount
+    // Update sell amount state variables
+    setSellTokenAmount(
+      new TokenAmount(
+        sellTokenAmount.currency as Token,
+        parseUnits(nextSellAmountFloat.toFixed(6), sellTokenAmount.currency.decimals).toString()
+      )
+    )
+    setFormattedSellAmount(toFixedSix(nextSellAmountFloat)) // update the token amount input
+    setBuyTokenAmount(newBuyTokenAmount)
+    // Re-compute the limit order buy
     setLimitOrder(newLimitOrder)
   }
 
