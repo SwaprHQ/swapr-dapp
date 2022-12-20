@@ -67,7 +67,11 @@ const CurrencyAmountContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.bg3};
   border-radius: 8.72381px;
 `
-const CurrencySymbol = styled.div``
+const CurrencySymbol = styled.div`
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+`
 const LogoWithText = styled.div`
   display: flex;
   align-items: center;
@@ -78,11 +82,28 @@ const CurrencyLogoInfo = styled.div`
   flex-direction: column;
   gap: 8px;
 `
-const LeftSideText = styled.div``
+const LeftSideText = styled.div`
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.08em;
+  color: #8780bf;
+`
 const AmountWithUsd = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: end;
   gap: 4px;
 `
-const Amount = styled.div``
-const AmountInUSD = styled.div``
+const Amount = styled.div`
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 34px;
+`
+const AmountInUSD = styled.div`
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.08em;
+  color: #8780bf;
+`
