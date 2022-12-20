@@ -2,6 +2,7 @@ import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
+import { ReactComponent as ArrowDown } from '../../../../../assets/images/bold-arrow-down.svg'
 import { CurrencyLogo } from '../../../../../components/CurrencyLogo'
 
 export type HeaderData = {
@@ -36,6 +37,7 @@ export const ConfirmationHeader = ({
           {fiatInput && <AmountInUSD>${fiatInput}</AmountInUSD>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
+      <StyledArrow />
       <CurrencyAmountContainer>
         <CurrencyLogoInfo>
           <LeftSideText>YOU RECIEVE</LeftSideText>
@@ -106,4 +108,8 @@ const AmountInUSD = styled.div`
   line-height: 12px;
   letter-spacing: 0.08em;
   color: #8780bf;
+`
+const StyledArrow = styled(ArrowDown)`
+  width: 100%;
+  margin: 4px 0;
 `
