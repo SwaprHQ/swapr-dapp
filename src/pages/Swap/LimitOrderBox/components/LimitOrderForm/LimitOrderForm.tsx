@@ -279,7 +279,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     const limitPriceFloat = parseFloat(formattedLimitPrice)
-
     // Construct a new token amount and format it
     const newLimitOrder = {
       ...updatedLimitOrder,
@@ -382,13 +381,19 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   }
 
   const handleCurrencySelect =
-    (prevTokenAmount: TokenAmount, handleCurrencyAmountChange: Function) => (currency: Currency) => {
-      const amountWei = prevTokenAmount?.raw
-        ? prevTokenAmount.raw.toString()
-        : formattedBuyAmount
-        ? parseUnits(parseFloat(formattedBuyAmount).toFixed(6), prevTokenAmount?.currency?.decimals).toString()
-        : '0' // use 0 if no buy currency amount is set
-      handleCurrencyAmountChange({ currency, amountWei, amountFormatted: formattedBuyAmount })
+    (prevTokenAmount: TokenAmount, handleCurrencyAmountChange: Function, amountFormatted: string) =>
+    (currency: Currency) => {
+      let amountWei
+      if (amountFormatted) amountWei = parseUnits(amountFormatted, currency?.decimals).toString()
+      else if (prevTokenAmount?.raw) {
+        const newAmount = JSBI.divide(
+          JSBI.BigInt(prevTokenAmount.raw.toString()),
+          JSBI.BigInt(10 ** prevTokenAmount?.currency?.decimals)
+        ).toString()
+        amountWei = parseUnits(newAmount, currency?.decimals).toString()
+      } else amountWei = '0' // use 0 if no buy currency amount is set
+
+      handleCurrencyAmountChange({ currency, amountWei, amountFormatted })
     }
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
@@ -465,7 +470,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             <CurrencyInputPanel
               id="limit-order-box-sell-currency"
               currency={sellTokenAmount.currency}
-              onCurrencySelect={handleCurrencySelect(sellTokenAmount, handleSellCurrencyAmountChange)}
+              onCurrencySelect={handleCurrencySelect(
+                sellTokenAmount,
+                handleSellCurrencyAmountChange,
+                formattedSellAmount
+              )}
               value={formattedSellAmount}
               onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
               onMax={() => {
@@ -487,7 +496,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             <CurrencyInputPanel
               id="limit-order-box-buy-currency"
               currency={buyTokenAmount?.currency}
-              onCurrencySelect={handleCurrencySelect(buyTokenAmount, handleBuyCurrencyAmountChange)}
+              onCurrencySelect={handleCurrencySelect(buyTokenAmount, handleBuyCurrencyAmountChange, formattedBuyAmount)}
               value={formattedBuyAmount}
               onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
               maxAmount={buyCurrencyMaxAmount}
@@ -499,10 +508,10 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             />
           </AutoColumn>
           <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
-            <Flex flex={60}>
+            <Flex flex={60} height="100%">
               <OrderLimitPriceField id="limitPrice" />
             </Flex>
-            <Flex flex={40}>
+            <Flex flex={40} height="100%">
               <OrderExpiryField id="limitOrderExpiry" />
             </Flex>
           </AutoRow>

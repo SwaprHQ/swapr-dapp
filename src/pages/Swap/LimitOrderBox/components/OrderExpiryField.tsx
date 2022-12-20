@@ -13,12 +13,14 @@ export const ExpiryUnitButton = styled.span<{
   color: #464366;
   cursor: pointer;
   ${({ isActive }) => isActive && `color: #8780BF;`};
+  min-height: 22px;
 `
 
 const ExpiryLabels = styled(Label)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 19px;
 `
 
 export const MaxExpiryTime = styled.button`
