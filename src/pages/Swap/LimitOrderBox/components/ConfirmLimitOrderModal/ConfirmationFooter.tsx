@@ -31,7 +31,7 @@ export const ConfirmationFooter = ({
       </SingleRow>
       <SingleRow>
         <StyledKey>Diff. market price</StyledKey>
-        <StyledValue color={priceDiffColor}>{marketPriceDifference.toFixed(0)}%</StyledValue>
+        <StyledValue color={priceDiffColor}>{marketPriceDifference.toFixed(2)}%</StyledValue>
       </SingleRow>
       <SingleRow>
         <StyledKey>Expires in</StyledKey>
