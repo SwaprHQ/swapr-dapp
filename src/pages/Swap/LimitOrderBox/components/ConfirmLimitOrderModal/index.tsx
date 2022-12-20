@@ -20,8 +20,6 @@ export default function ConfirmLimitOrderModal({
   attemptingTxn,
   fiatValueInput,
   fiatValueOutput,
-  isFallbackFiatValueInput,
-  isFallbackFiatValueOutput,
 }: {
   isOpen: boolean
   attemptingTxn: boolean
@@ -30,8 +28,6 @@ export default function ConfirmLimitOrderModal({
   onDismiss: () => void
   fiatValueInput: CurrencyAmount | null
   fiatValueOutput: CurrencyAmount | null
-  isFallbackFiatValueInput: boolean
-  isFallbackFiatValueOutput: boolean
 }) {
   const { expiresIn, expiresInUnit, limitOrder, buyTokenAmount, sellTokenAmount, formattedLimitPrice, marketPrices } =
     useContext(LimitOrderFormContext)
@@ -46,7 +42,6 @@ export default function ConfirmLimitOrderModal({
     formattedLimitPrice
   )
   const expiresInFormatted = `${expiresIn} ${expiresInUnit}`
-  console.log('expiredInFromated', expiresInFormatted)
 
   //hardcoded for now
   const market = 'Cow Protocol'
@@ -56,20 +51,11 @@ export default function ConfirmLimitOrderModal({
       <ConfirmationHeader
         fiatValueInput={fiatValueInput}
         fiatValueOutput={fiatValueOutput}
-        isFallbackFiatValueInput={isFallbackFiatValueInput}
-        isFallbackFiatValueOutput={isFallbackFiatValueOutput}
         buyToken={buyTokenAmount}
         sellToken={sellTokenAmount}
       />
     )
-  }, [
-    fiatValueInput,
-    fiatValueOutput,
-    isFallbackFiatValueInput,
-    isFallbackFiatValueOutput,
-    buyTokenAmount,
-    sellTokenAmount,
-  ])
+  }, [fiatValueInput, fiatValueOutput, buyTokenAmount, sellTokenAmount])
 
   const modalBottom = useCallback(() => {
     return onConfirm ? (

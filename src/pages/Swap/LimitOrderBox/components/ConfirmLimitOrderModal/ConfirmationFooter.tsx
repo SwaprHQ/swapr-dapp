@@ -1,7 +1,6 @@
 import styled, { useTheme } from 'styled-components'
 
 import { ButtonPrimary } from '../../../../../components/Button'
-import { theme } from '../../../../../theme'
 import { StyledKey, StyledValue } from '../../../Components/SwapModalFooter'
 
 export type FooterData = {
@@ -22,7 +21,7 @@ export const ConfirmationFooter = ({
   market,
 }: FooterData) => {
   const theme = useTheme()
-  const color = isDiffPositive ? theme.green1 : theme.red1
+  const priceDiffColor = isDiffPositive ? theme.green1 : theme.red1
 
   return (
     <Wrapper>
@@ -32,7 +31,7 @@ export const ConfirmationFooter = ({
       </SingleRow>
       <SingleRow>
         <StyledKey>Diff. market price</StyledKey>
-        <StyledValue color={color}>{marketPriceDifference.toFixed(0)}%</StyledValue>
+        <StyledValue color={priceDiffColor}>{marketPriceDifference.toFixed(0)}%</StyledValue>
       </SingleRow>
       <SingleRow>
         <StyledKey>Expires in</StyledKey>

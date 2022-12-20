@@ -478,8 +478,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             attemptingTxn={loading}
             fiatValueInput={fiatValueInput}
             fiatValueOutput={fiatValueOutput}
-            isFallbackFiatValueInput={isFallbackFiatValueInput}
-            isFallbackFiatValueOutput={isFallbackFiatValueOutput}
           />
           <AutoColumn gap="12px">
             <AutoColumn gap="3px">
