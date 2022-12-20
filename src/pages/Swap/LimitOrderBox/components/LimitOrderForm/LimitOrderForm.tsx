@@ -97,7 +97,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
 
-    order.sellAmount = parseUnits(token.toExact(), token.currency.decimals).toString()
+    const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
+
+    order.sellAmount = parseUnits(tokenAmount, token.currency.decimals).toString()
 
     const cowQuote = await getQuote({
       chainId,
@@ -112,8 +114,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       const nextLimitPriceFloat =
         limitOrder.kind === LimitOrderKind.SELL
-          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, token.toExact())
-          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, token.toExact())
+          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount)
+          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount)
 
       const limitPrice = parseUnits(
         nextLimitPriceFloat.toFixed(6),
@@ -405,7 +407,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
 
-      order.sellAmount = parseUnits(token.toExact(), token.currency.decimals).toString()
+      const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
+
+      order.sellAmount = parseUnits(tokenAmount, token.currency.decimals).toString()
 
       const cowQuote = await getQuote({
         chainId,
@@ -421,12 +425,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         if (limitOrder.kind === LimitOrderKind.SELL) {
           setMarketPrices(marketPrice => ({
             ...marketPrice,
-            buy: formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, token.toExact()),
+            buy: formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount),
           }))
         } else {
           setMarketPrices(marketPrice => ({
             ...marketPrice,
-            sell: formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, token.toExact()),
+            sell: formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount),
           }))
         }
       }
