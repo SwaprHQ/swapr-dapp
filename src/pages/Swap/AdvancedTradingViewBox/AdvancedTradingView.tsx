@@ -11,7 +11,6 @@ import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../../components/PageMetaData'
 import TokenWarningModal from '../../../components/TokenWarningModal'
 import { TESTNETS } from '../../../constants'
-import { REACT_APP_FEATURE_SIMPLE_CHART } from '../../../constants/features'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../../hooks'
 import { useAllTokens, useCurrency } from '../../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
@@ -29,7 +28,6 @@ import {
 } from '../../../state/swap/hooks'
 import { Field } from '../../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../state/user/hooks'
-import { ChartOptions } from '../../../state/user/reducer'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
@@ -351,11 +349,7 @@ export function AdvancedTradingViewBox() {
   const renderSwapBox = () => (
     <>
       <Tabs>
-        <ChartTabs
-          hasBothCurrenciesInput={hasBothCurrenciesInput}
-          activeChartTab={activeChartTab}
-          setActiveChartTab={setActiveChartTab}
-        />
+        <ChartTabs activeChartTab={activeChartTab} setActiveChartTab={setActiveChartTab} />
       </Tabs>
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">

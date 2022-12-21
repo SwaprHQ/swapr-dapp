@@ -9,11 +9,9 @@ import { ChartOptions } from '../../../state/user/reducer'
 export const ChartTabs = ({
   activeChartTab,
   setActiveChartTab,
-  hasBothCurrenciesInput,
 }: {
   activeChartTab: ChartOptions
   setActiveChartTab: (tab: ChartOptions) => void
-  hasBothCurrenciesInput?: boolean
 }) => {
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
