@@ -37,6 +37,7 @@ export function Swap() {
   const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
   const { pathname } = useRouter()
   const [, setAdvancedView] = useUpdateSelectedSwapTab()
+  const isPro = pathname.includes('/pro')
 
   useEffect(() => {
     if (activeTab === LimitOrder && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
@@ -47,13 +48,14 @@ export function Swap() {
   }, [account, chainId])
 
   useEffect(() => {
-    if (pathname.includes('/pro')) {
+    if (isPro) {
       setActiveTab(AdvancedTradingView)
       setAdvancedView(SwapTabs.SWAP)
     } else if (pathname.includes('swap')) {
+      setActiveChartTab(ChartOptions.OFF)
       setActiveTab(Swap)
     }
-  }, [AdvancedTradingView, Swap, pathname, setAdvancedView])
+  }, [AdvancedTradingView, Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
 
   return (
     <SwapContext.Provider
