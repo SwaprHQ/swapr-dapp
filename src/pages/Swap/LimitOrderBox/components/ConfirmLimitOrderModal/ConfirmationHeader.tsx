@@ -1,8 +1,8 @@
 import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
+import { ArrowDown } from 'react-feather'
 import styled from 'styled-components'
 
-import { ReactComponent as ArrowDown } from '../../../../../assets/images/bold-arrow-down.svg'
 import { CurrencyLogo } from '../../../../../components/CurrencyLogo'
 
 export type HeaderData = {
@@ -100,4 +100,5 @@ const PurpleText = styled.div`
 const StyledArrow = styled(ArrowDown)`
   width: 100%;
   margin: 4px 0;
+  height: 16px;
 `

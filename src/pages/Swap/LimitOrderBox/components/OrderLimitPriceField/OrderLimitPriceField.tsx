@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { LimitOrderKind, MarketPrices, SerializableLimitOrder } from '../../interfaces'
+import { LimitOrderKind, MarketPrices } from '../../interfaces'
 import { InputGroup } from '../InputGroup'
 import {
   LimitLabel,
@@ -43,8 +43,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   const toggleCurrencyButtonLabel = `${quoteTokenAmount?.currency?.symbol}`
   const [inputLimitPrice, setInputLimitPrice] = useState<string | number>(formattedLimitPrice)
 
-  let { marketPriceDiffPercentage, isDiffPositive } = calcualtePriceDiffPercentage(
-    limitOrder,
+  let { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
+    limitOrder.kind,
     marketPrices,
     formattedLimitPrice
   )
@@ -183,17 +183,17 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   )
 }
 
-export function calcualtePriceDiffPercentage(
-  limitOrder: SerializableLimitOrder,
+export function calculateMarketPriceDiffPercentage(
+  limitOrderKind: LimitOrderKind,
   marketPrices: MarketPrices,
   formattedLimitPrice: string
 ) {
-  const nextLimitPriceFloat = limitOrder.kind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
+  const nextLimitPriceFloat = limitOrderKind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
   let marketPriceDiffPercentage = 0
   let isDiffPositive = false
 
   if (Boolean(Number(nextLimitPriceFloat))) {
-    if (limitOrder.kind === LimitOrderKind.SELL) {
+    if (limitOrderKind === LimitOrderKind.SELL) {
       marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
       isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0
     } else {

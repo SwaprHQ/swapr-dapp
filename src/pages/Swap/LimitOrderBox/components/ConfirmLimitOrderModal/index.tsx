@@ -9,7 +9,7 @@ import TransactionConfirmationModal, {
 import { firstLetterCapital } from '../../../../../utils'
 import { LimitOrderFormContext } from '../../contexts'
 import { LimitOrderKind } from '../../interfaces'
-import { calcualtePriceDiffPercentage } from '../OrderLimitPriceField'
+import { calculateMarketPriceDiffPercentage } from '../OrderLimitPriceField'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
 
@@ -39,8 +39,8 @@ export default function ConfirmLimitOrderModal({
     baseTokenAmount?.currency?.symbol
   } at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
 
-  let { marketPriceDiffPercentage, isDiffPositive } = calcualtePriceDiffPercentage(
-    limitOrder,
+  let { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
+    limitOrder.kind,
     marketPrices,
     formattedLimitPrice
   )
