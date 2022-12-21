@@ -16,6 +16,10 @@ export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, 
   const fiatInput = fiatValueInput && fiatValueInput.toFixed(2, { groupSeparator: ',' })
   const fiatOutput = fiatValueOutput && fiatValueOutput.toFixed(2, { groupSeparator: ',' })
 
+  const formatTokenValue = (value: string) => value.match(new RegExp('^[0-9]*[.,]?[0-9]*$'))
+  const sellTokenFormatted = formatTokenValue(sellToken.toExact())
+  const buyTokenFormatted = formatTokenValue(buyToken.toExact())
+
   return (
     <Wrapper>
       <CurrencyAmountContainer>
@@ -27,7 +31,7 @@ export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, 
           </LogoWithText>
         </CurrencyLogoInfo>
         <AmountWithUsd>
-          <Amount>{sellToken.toFixed(3)}</Amount>
+          <Amount>{sellTokenFormatted}</Amount>
           {fiatInput && <PurpleText>${fiatInput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
@@ -41,7 +45,7 @@ export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, 
           </LogoWithText>
         </CurrencyLogoInfo>
         <AmountWithUsd>
-          <Amount>{buyToken.toFixed(3)}</Amount>
+          <Amount>{buyTokenFormatted}</Amount>
           {fiatOutput && <PurpleText>${fiatOutput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
