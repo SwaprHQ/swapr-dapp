@@ -29,6 +29,9 @@ export interface CurrencyInputPanelProps {
   setDisplayedValue?: (val: string) => void
   maxAmount?: CurrencyAmount
   isOutputPanel?: boolean
+  showNativeCurrency?: boolean
+  currencyOmitList?: string[]
+  currencySelectWrapper?: React.ElementType
 }
 
 export type CurrencyViewProps = Pick<

@@ -3,7 +3,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { NetworkContextName } from '../../constants'
@@ -81,6 +81,7 @@ export default function Web3Status() {
   const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
@@ -182,7 +183,12 @@ export default function Web3Status() {
             account={account}
             connector={activeConnector}
             networkConnectorChainId={networkConnectorChainId}
-            onAddressClick={() => navigate('/account')}
+            onAddressClick={() =>
+              navigate({
+                pathname: '/account',
+                search: `?${createSearchParams(searchParams)}`,
+              })
+            }
             avatar={ensAvatar ?? undefined}
           />
         </Row>

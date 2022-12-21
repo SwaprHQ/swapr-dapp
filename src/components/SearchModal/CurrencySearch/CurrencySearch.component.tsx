@@ -47,6 +47,7 @@ export const CurrencySearch = ({
   showNativeCurrency,
   otherSelectedCurrency,
   isOutputPanel,
+  currencyOmitList,
 }: CurrencySearchProps) => {
   const { t } = useTranslation('common')
   const { chainId } = useActiveWeb3React()
@@ -87,18 +88,25 @@ export const CurrencySearch = ({
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
 
   const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
+    let filteredTokensList = filteredSortedTokens
+    if ((currencyOmitList?.length ?? 0) > 0) {
+      filteredTokensList = filteredSortedTokens.filter(({ address }) =>
+        currencyOmitList?.some(addr => addr.toUpperCase() !== address.toUpperCase())
+      )
+    }
+
     if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name || isOutputPanel)
-      return filteredSortedTokens
+      return filteredTokensList
 
     if (
       nativeCurrency &&
       new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
     ) {
-      const tokensWithoutNativeCurrency = filteredSortedTokens.filter(token => token.address !== nativeCurrency.address)
+      const tokensWithoutNativeCurrency = filteredTokensList.filter(token => token.address !== nativeCurrency.address)
       return [nativeCurrency, ...tokensWithoutNativeCurrency]
     }
-    return filteredSortedTokens
-  }, [showNativeCurrency, nativeCurrency, isOutputPanel, filteredSortedTokens, debouncedQuery])
+    return filteredTokensList
+  }, [filteredSortedTokens, currencyOmitList, showNativeCurrency, nativeCurrency, isOutputPanel, debouncedQuery])
 
   // clear the input on open
   useEffect(() => {
