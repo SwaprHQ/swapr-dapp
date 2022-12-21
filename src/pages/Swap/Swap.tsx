@@ -8,8 +8,9 @@ import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
 import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
-import { SwapTabs } from '../../state/user/reducer'
+import { ChartOptions, SwapTabs } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
+import { ChartTabs } from './Components/ChartTabs'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
@@ -33,6 +34,7 @@ export function Swap() {
 
   // Control the active tab
   const [activeTab, setActiveTab] = useState(Swap)
+  const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
   const { pathname } = useRouter()
   const [, setAdvancedView] = useUpdateSelectedSwapTab()
 
@@ -58,11 +60,17 @@ export function Swap() {
       value={{
         activeTab,
         setActiveTab,
+        activeChartTab,
+        setActiveChartTab,
       }}
     >
       <Hero>
         <AppBodyContainer>
-          {activeTab !== AdvancedTradingView && <Tabs />}
+          {activeTab !== AdvancedTradingView && (
+            <Tabs>
+              <ChartTabs setActiveChartTab={setActiveChartTab} activeChartTab={activeChartTab} />
+            </Tabs>
+          )}
           {activeTab === Swap && <SwapBox />}
           {activeTab === AdvancedTradingView && <AdvancedTradingViewBox />}
           {activeTab === LimitOrder && <LimitOrderBox />}

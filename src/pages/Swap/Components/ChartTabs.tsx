@@ -13,16 +13,16 @@ export const ChartTabs = ({
 }: {
   activeChartTab: ChartOptions
   setActiveChartTab: (tab: ChartOptions) => void
-  hasBothCurrenciesInput: boolean
+  hasBothCurrenciesInput?: boolean
 }) => {
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktop()
-  const proOptionsDisabled = !hasBothCurrenciesInput || !isDesktop
+  const proOptionsDisabled = !isDesktop
 
   return (
     <Root>
-      <Tab
+      {/* <Tab
         active={activeChartTab === ChartOptions.SIMPLE_CHART}
         onClick={() => {
           if (activeChartTab !== ChartOptions.SIMPLE_CHART) {
@@ -34,7 +34,7 @@ export const ChartTabs = ({
         disabled={!hasBothCurrenciesInput}
       >
         {t('advancedTradingView.chartTabs.simple')}
-      </Tab>
+      </Tab> */}
       <Tab
         active={activeChartTab === ChartOptions.PRO}
         onClick={() => {
@@ -44,11 +44,11 @@ export const ChartTabs = ({
           }
         }}
         title={
-          proOptionsDisabled
-            ? t('advancedTradingView.chartTabs.proDisabledTitle')
-            : t('advancedTradingView.chartTabs.proTitle')
+          // proOptionsDisabled
+          //   ? t('advancedTradingView.chartTabs.proDisabledTitle'):
+          t('advancedTradingView.chartTabs.proTitle')
         }
-        disabled
+        disabled={proOptionsDisabled}
       >
         {t('advancedTradingView.chartTabs.pro')}
       </Tab>
@@ -59,7 +59,7 @@ export const ChartTabs = ({
           navigate('/swap')
         }}
         title={t('advancedTradingView.chartTabs.offTitle')}
-        disabled={!hasBothCurrenciesInput}
+        disabled={proOptionsDisabled}
       >
         {t('advancedTradingView.chartTabs.off')}
       </Tab>
