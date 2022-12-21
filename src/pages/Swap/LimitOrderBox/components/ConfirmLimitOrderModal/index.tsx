@@ -6,6 +6,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
+import { firstLetterCapital } from '../../../../../utils'
 import { LimitOrderFormContext } from '../../contexts'
 import { LimitOrderKind } from '../../interfaces'
 import { calcualtePriceDiffPercentage } from '../OrderLimitPriceField'
@@ -34,7 +35,9 @@ export default function ConfirmLimitOrderModal({
 
   const [baseTokenAmount, quoteTokenAmount] =
     limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
-  const askPrice = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
+  const askPrice = `${firstLetterCapital(limitOrder.kind)} ${
+    baseTokenAmount?.currency?.symbol
+  } at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
 
   let { marketPriceDiffPercentage, isDiffPositive } = calcualtePriceDiffPercentage(
     limitOrder,
@@ -44,7 +47,7 @@ export default function ConfirmLimitOrderModal({
   const expiresInFormatted = `${expiresIn} ${expiresInUnit}`
 
   //hardcoded for now
-  const market = 'Cow Protocol'
+  const market = 'CoW Protocol'
 
   const modalHeader = useCallback(() => {
     return (
@@ -63,7 +66,7 @@ export default function ConfirmLimitOrderModal({
         onConfirm={onConfirm}
         askPrice={askPrice}
         expiresIn={expiresInFormatted}
-        marketPriceDifference={marketPriceDiffPercentage}
+        marketPriceDifference={marketPriceDiffPercentage.toFixed(2)}
         market={market}
         isDiffPositive={isDiffPositive}
       />

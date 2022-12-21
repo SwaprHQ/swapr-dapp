@@ -203,6 +203,10 @@ export function isPairOnList(pairs: Pair[], pair?: Pair): boolean {
   return !!pairs.find(loopedPair => loopedPair.equals(pair))
 }
 
+export function firstLetterCapital(value: string): string {
+  return value.charAt(0).toLocaleUpperCase() + value.slice(1)
+}
+
 export const formatCurrencyAmount = (amount: CurrencyAmount, significantDecimalPlaces = 2): string => {
   const decimalAmount = new Decimal(amount.toExact())
   if (decimalAmount.lessThan('0.00000001')) {

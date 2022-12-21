@@ -5,7 +5,7 @@ import { StyledKey, StyledValue } from '../../../Components/SwapModalFooter'
 
 export type FooterData = {
   askPrice: string
-  marketPriceDifference: number
+  marketPriceDifference: string
   isDiffPositive: boolean
   expiresIn: string
   market: string
@@ -31,7 +31,7 @@ export const ConfirmationFooter = ({
       </SingleRow>
       <SingleRow>
         <StyledKey>Diff. market price</StyledKey>
-        <StyledValue color={priceDiffColor}>{marketPriceDifference.toFixed(2)}%</StyledValue>
+        <StyledValue color={priceDiffColor}>{marketPriceDifference}%</StyledValue>
       </SingleRow>
       <SingleRow>
         <StyledKey>Expires in</StyledKey>
