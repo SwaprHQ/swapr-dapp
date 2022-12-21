@@ -10,7 +10,6 @@ import { useRouter } from '../../hooks/useRouter'
 import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
 import { ChartOptions, SwapTabs } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
-import { ChartTabs } from './Components/ChartTabs'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
@@ -68,11 +67,7 @@ export function Swap() {
     >
       <Hero>
         <AppBodyContainer>
-          {activeTab !== AdvancedTradingView && (
-            <Tabs>
-              <ChartTabs setActiveChartTab={setActiveChartTab} activeChartTab={activeChartTab} />
-            </Tabs>
-          )}
+          {activeTab !== AdvancedTradingView && <Tabs />}
           {activeTab === Swap && <SwapBox />}
           {activeTab === AdvancedTradingView && <AdvancedTradingViewBox />}
           {activeTab === LimitOrder && <LimitOrderBox />}

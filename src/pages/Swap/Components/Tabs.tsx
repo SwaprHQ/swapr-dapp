@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from 'react'
+import { useContext } from 'react'
 import { Sliders } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -13,6 +13,7 @@ import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
 import { SwapContext, SwapTab } from '../SwapContext'
+import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`
   max-width: 457px;
@@ -72,9 +73,9 @@ const StyledBridge = styled(Bridge)`
   fill: ${({ theme }) => theme.text5};
 `
 
-export function Tabs({ children }: { children?: ReactNode }) {
+export function Tabs() {
   const { t } = useTranslation('swap')
-  const { activeTab, setActiveTab } = useContext(SwapContext)
+  const { activeTab, setActiveTab, setActiveChartTab, activeChartTab } = useContext(SwapContext)
   const dispatch = useDispatch()
 
   const { navigate, pathname } = useRouter()
@@ -104,7 +105,7 @@ export function Tabs({ children }: { children?: ReactNode }) {
           {t('tabs.bridgeSwap')}
         </Button>
       </TabsRow>
-      {children}
+      <ChartTabs setActiveChartTab={setActiveChartTab} activeChartTab={activeChartTab} />
     </TabsColumn>
   )
 }

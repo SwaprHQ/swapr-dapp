@@ -2,7 +2,7 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token } fro
 
 // Landing Page Imports
 import '../../../theme/landingPageTheme/stylesheet.css'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../../assets/images/swap-icon.svg'
@@ -33,7 +33,6 @@ import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
 import AppBody from '../../AppBody'
 import AdvancedSwapDetailsDropdown from '../Components/AdvancedSwapDetailsDropdown'
-import { ChartTabs } from '../Components/ChartTabs'
 import confirmPriceImpactWithoutFee from '../Components/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../Components/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Components/styles'
@@ -41,7 +40,6 @@ import SwapButtons from '../Components/SwapButtons'
 import { Tabs } from '../Components/Tabs'
 import { TradeDetails } from '../Components/TradeDetails'
 import { CoWTradeState, SwapData } from '../SwapBox/SwapBox.types'
-import { SwapContext } from '../SwapContext'
 import { AdvancedSwapMode } from './AdvancedSwapMode'
 
 const SwitchIconContainer = styled.div`
@@ -52,7 +50,6 @@ const SwitchIconContainer = styled.div`
 
 export function AdvancedTradingViewBox() {
   const isDesktop = useIsDesktop()
-  const { activeChartTab, setActiveChartTab } = useContext(SwapContext)
   const loadedUrlParams = useDefaultsFromURLSearch()
   const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
@@ -348,9 +345,7 @@ export function AdvancedTradingViewBox() {
 
   const renderSwapBox = () => (
     <>
-      <Tabs>
-        <ChartTabs activeChartTab={activeChartTab} setActiveChartTab={setActiveChartTab} />
-      </Tabs>
+      <Tabs />
       <AppBody tradeDetailsOpen={!!trade}>
         <Wrapper id="swap-page">
           <ConfirmSwapModal
