@@ -1,5 +1,4 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { Token, TokenAmount } from '@swapr/sdk'
 
 import { useContext, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
@@ -7,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { LimitOrderKind, MarketPrices } from '../../interfaces'
+import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
+import { computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
 import {
   LimitLabel,
@@ -33,8 +33,11 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedLimitPrice,
     setBuyTokenAmount,
     setFormattedBuyAmount,
+    setSellTokenAmount,
+    setFormattedSellAmount,
     setToMarket,
     marketPrices,
+    inputFocus,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -110,33 +113,40 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       // When price is below or equal to 0, set the limit price to 0, but don't update the state
 
       // get and parse the sell token amount
-      const sellTokenAmountFloat = parseFloat(
-        formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals)
-      )
 
-      let newBuyAmountAsFloat = 0 // the amount of buy token
+      if (inputFocus === InputFocus.SELL) {
+        const {
+          amount: newBuyAmountFloat,
+          buyAmountWei: nextBuyAmountWei,
+          newBuyTokenAmount,
+        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
 
-      if (limitOrder.kind === LimitOrderKind.SELL) {
-        newBuyAmountAsFloat = sellTokenAmountFloat * nextLimitPriceFloat
+        setBuyTokenAmount(newBuyTokenAmount)
+        setFormattedBuyAmount(newBuyAmountFloat.toString())
+
+        setFormattedLimitPrice(nextLimitPriceFormatted)
+        setLimitOrder({
+          ...limitOrder,
+          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
+          buyAmount: nextBuyAmountWei,
+        })
       } else {
-        newBuyAmountAsFloat = sellTokenAmountFloat / nextLimitPriceFloat
+        const {
+          amount: newSellAmountFloat,
+          sellAmountWei: nextSellAmountWei,
+          newSellTokenAmount,
+        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
+
+        setSellTokenAmount(newSellTokenAmount)
+        setFormattedSellAmount(newSellAmountFloat.toString())
+
+        setFormattedLimitPrice(nextLimitPriceFormatted)
+        setLimitOrder({
+          ...limitOrder,
+          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
+          sellAmount: nextSellAmountWei,
+        })
       }
-
-      const nextBuyAmountWei = parseUnits(
-        newBuyAmountAsFloat.toFixed(6), // 6 is the lowest precision we support due to tokens like USDC
-        buyTokenAmount?.currency?.decimals
-      ).toString()
-
-      const nextTokenBuyAmount = new TokenAmount(buyTokenAmount.currency as Token, nextBuyAmountWei)
-
-      setBuyTokenAmount(nextTokenBuyAmount)
-      setFormattedLimitPrice(nextLimitPriceFormatted)
-      setFormattedBuyAmount(newBuyAmountAsFloat.toString())
-      setLimitOrder({
-        ...limitOrder,
-        limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-        buyAmount: nextBuyAmountWei,
-      })
     }
   }
 
