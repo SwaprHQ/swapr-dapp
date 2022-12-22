@@ -3,6 +3,7 @@ import { Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
 import { useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
+import styled from 'styled-components'
 
 import { ButtonError } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
@@ -45,13 +46,8 @@ export default function SwapModalFooter({
     <>
       <AutoColumn gap="0px">
         <RowBetween align="center" mb="6px">
-          <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
-            Price
-          </TYPE.Body>
-          <TYPE.Body
-            fontWeight={500}
-            fontSize="12px"
-            color="text5"
+          <StyledKey>Price</StyledKey>
+          <StyledValue
             style={{
               justifyContent: 'center',
               alignItems: 'center',
@@ -64,50 +60,44 @@ export default function SwapModalFooter({
             <StyledBalanceMaxMini style={{ marginLeft: 6 }} onClick={() => setShowInverted(!showInverted)}>
               <Repeat size={14} />
             </StyledBalanceMaxMini>
-          </TYPE.Body>
+          </StyledValue>
         </RowBetween>
 
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
-              {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
-            </TYPE.Body>
+            <StyledKey>{trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}</StyledKey>
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
-            <TYPE.Body fontWeight={500} fontSize="12px" color="text5" data-testid="estimated-output">
+            <StyledValue data-testid="estimated-output">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
                 : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
-            </TYPE.Body>
-            <TYPE.Body fontWeight={500} fontSize="12px" color="text5" marginLeft={'4px'}>
+            </StyledValue>
+            <StyledValue marginLeft={'4px'}>
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? trade.outputAmount.currency.symbol
                 : trade.inputAmount.currency.symbol}
-            </TYPE.Body>
+            </StyledValue>
           </RowFixed>
         </RowBetween>
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
-              Price Impact
-            </TYPE.Body>
+            <StyledKey> Price Impact</StyledKey>
             <QuestionHelper text="The difference between the market price and your price due to trade size." />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>
         <RowBetween mb="6px">
           <RowFixed>
-            <TYPE.Body fontWeight={400} fontSize="13px" color="text5">
-              Liquidity provider fee
-            </TYPE.Body>
+            <StyledKey> Liquidity provider fee</StyledKey>
             <QuestionHelper text="A portion of each trade goes to liquidity providers as incentive." />
           </RowFixed>
-          <TYPE.Body fontWeight={500} fontSize="12px" color="text5">
+          <StyledValue>
             {realizedLPFeeAmount
               ? `${realizedLPFeeAmount?.toSignificant(6)} ${trade.inputAmount.currency.symbol}`
               : '-'}
-          </TYPE.Body>
+          </StyledValue>
         </RowBetween>
       </AutoColumn>
 
@@ -129,3 +119,14 @@ export default function SwapModalFooter({
     </>
   )
 }
+
+export const StyledKey = styled(TYPE.Body)`
+  font-weight: 400;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text5};
+`
+export const StyledValue = styled(TYPE.Body)<{ color?: string }>`
+  font-weight: 500;
+  font-size: 12px;
+  color: ${({ theme, color }) => (color ? color : theme.text5)};
+`
