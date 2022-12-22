@@ -13,11 +13,11 @@ export enum LimitOrderKind {
   /**
    * A sell order.
    */
-  SELL = 'sell',
+  SELL = 'Sell',
   /**
    * A buy order.
    */
-  BUY = 'buy',
+  BUY = 'Buy',
 }
 
 /**
